@@ -83,7 +83,7 @@ pub mod timer_traits;
 #[cfg(feature = "dma")]
 pub mod dmac;
 
-#[cfg(all(feature = "usb", feature = "device", not(feature = "usbp")))]
+#[cfg(all(feature = "usb", feature = "device", not(feature = "has-usb")))]
 compile_error!("The 'usb' feature is enabled, but this chip does not support USB");
 
 #[cfg(feature = "thumbv6")]

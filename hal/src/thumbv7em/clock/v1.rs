@@ -425,11 +425,11 @@ clock_generator!(
     (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1, Tcc0Tcc1),
     (tc2_tc3, Tc2Tc3Clock, TC2_TC3, Tc2Tc3),
     (tcc2_tcc3, Tcc2Tcc3Clock, TCC2_TCC3, Tcc2Tcc3),
-    #[cfg(all(feature = "tc4", feature = "tc5"))]
+    #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5, Tc4Tc5),
-    #[cfg(feature = "tcc4")]
+    #[cfg(feature = "has-tcc4")]
     (tcc4, Tcc4Clock, TCC4, Tcc4),
-    #[cfg(all(feature = "tc6", feature = "tc7"))]
+    #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
     (tc6_tc7, Tc6Tc7Clock, TC6_TC7, Tc6Tc7),
     (sercom0_core, Sercom0CoreClock, SERCOM0_CORE, Sercom0),
     (sercom1_core, Sercom1CoreClock, SERCOM1_CORE, Sercom1),
@@ -437,9 +437,9 @@ clock_generator!(
     (sercom3_core, Sercom3CoreClock, SERCOM3_CORE, Sercom3),
     (sercom4_core, Sercom4CoreClock, SERCOM4_CORE, Sercom4),
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE, Sercom5),
-    #[cfg(feature = "sercom6")]
+    #[cfg(feature = "has-sercom6")]
     (sercom6_core, Sercom6CoreClock, SERCOM6_CORE, Sercom6),
-    #[cfg(feature = "sercom7")]
+    #[cfg(feature = "has-sercom7")]
     (sercom7_core, Sercom7CoreClock, SERCOM7_CORE, Sercom7),
     (usb, UsbClock, USB, Usb),
     (adc0, Adc0Clock, ADC0, Adc0),
@@ -459,20 +459,20 @@ clock_generator!(
     (evsys9, Evsys9Clock, EVSYS9, EvSys9),
     (evsys10, Evsys10Clock, EVSYS10, EvSys10),
     (evsys11, Evsys11Clock, EVSYS11, EvSys11),
-    #[cfg(any(feature = "canp"))]
+    #[cfg(any(feature = "has-can"))]
     (can0, Can0Clock, CAN0, Can0),
-    #[cfg(any(feature = "canp"))]
+    #[cfg(any(feature = "has-can"))]
     (can1, Can1Clock, CAN1, Can1),
     (pdec, PdecClock, PDEC, PDec),
     (ac, AcClock, AC, Ac),
     (ccl, CclClock, CCL, Ccl),
     (dac, DacClock, DAC, Dac),
-    #[cfg(feature = "i2s")]
+    #[cfg(feature = "has-i2s")]
     (i2s0, I2S0Clock, I2S0, I2S0),
-    #[cfg(feature = "i2s")]
+    #[cfg(feature = "has-i2s")]
     (i2s1, I2S1Clock, I2S1, I2S1),
     (sdhc0, Sdhc0Clock, SDHC0, Sdhc0),
-    #[cfg(feature = "sdhc1")]
+    #[cfg(feature = "has-sdhc1")]
     (sdhc1, Sdhc1Clock, SDHC1, Sdhc1),
     (cm4_trace, Cm4TraceClock, CM4_TRACE, CM4Trace),
 );

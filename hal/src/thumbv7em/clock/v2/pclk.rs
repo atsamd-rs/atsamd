@@ -155,9 +155,9 @@ pub mod ids {
 
     pub use crate::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
 
-    #[cfg(feature = "sercom6")]
+    #[cfg(feature = "has-sercom6")]
     pub use crate::sercom::Sercom6;
-    #[cfg(feature = "sercom7")]
+    #[cfg(feature = "has-sercom7")]
     pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
@@ -169,17 +169,17 @@ pub mod ids {
         SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Tcc2Tcc3, Usb,
     };
 
-    #[cfg(feature = "sdhc1")]
+    #[cfg(feature = "has-sdhc1")]
     pub use super::super::types::Sdhc1;
-    #[cfg(all(feature = "tc4", feature = "tc5"))]
+    #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
     pub use super::super::types::Tc4Tc5;
-    #[cfg(all(feature = "tc6", feature = "tc7"))]
+    #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
     pub use super::super::types::Tc6Tc7;
-    #[cfg(feature = "tcc4")]
+    #[cfg(feature = "has-tcc4")]
     pub use super::super::types::Tcc4;
-    #[cfg(feature = "canp")]
+    #[cfg(feature = "has-can")]
     pub use super::super::types::{Can0, Can1};
-    #[cfg(feature = "i2s")]
+    #[cfg(feature = "has-i2s")]
     pub use super::super::types::{I2S0, I2S1};
 }
 
@@ -250,35 +250,35 @@ macro_rules! with_pclk_types_ids {
             (Sercom3 = 24, sercom3)
             (Tcc0Tcc1 = 25, tcc0_tcc1)
             (Tc2Tc3 = 26, tc2_tc3)
-            #[cfg(feature = "canp")]
+            #[cfg(feature = "has-can")]
             (Can0 = 27, can0)
-            #[cfg(feature = "canp")]
+            #[cfg(feature = "has-can")]
             (Can1 = 28, can1)
             (Tcc2Tcc3 = 29, tcc2_tcc3)
-            #[cfg(all(feature = "tc4", feature = "tc5"))]
+            #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
             (Tc4Tc5 = 30, tc4_tc5)
             (PDec = 31, pdec)
             (Ac = 32, ac)
             (Ccl = 33, ccl)
             (Sercom4 = 34, sercom4)
             (Sercom5 = 35, sercom5)
-            #[cfg(feature = "sercom6")]
+            #[cfg(feature = "has-sercom6")]
             (Sercom6 = 36, sercom6)
-            #[cfg(feature = "sercom7")]
+            #[cfg(feature = "has-sercom7")]
             (Sercom7 = 37, sercom7)
-            #[cfg(feature = "tcc4")]
+            #[cfg(feature = "has-tcc4")]
             (Tcc4 = 38, tcc4)
-            #[cfg(all(feature = "tc6", feature = "tc7"))]
+            #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
             (Tc6Tc7 = 39, tc6_tc7)
             (Adc0 = 40, adc0)
             (Adc1 = 41, adc1)
             (Dac = 42, dac)
-            #[cfg(feature = "i2s")]
+            #[cfg(feature = "has-i2s")]
             (I2S0 = 43, i2s0)
-            #[cfg(feature = "i2s")]
+            #[cfg(feature = "has-i2s")]
             (I2S1 = 44, i2s1)
             (Sdhc0 = 45, sdhc0)
-            #[cfg(feature = "sdhc1")]
+            #[cfg(feature = "has-sdhc1")]
             (Sdhc1 = 46, sdhc1)
             (CM4Trace = 47, cm4_trace)
         );

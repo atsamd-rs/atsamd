@@ -1065,9 +1065,9 @@ macro_rules! declare_pins {
 
 declare_pins!(
     A {
-        #[cfg(feature = "pa00")]
+        #[cfg(feature = "has-pa00")]
         (PA00, 00),
-        #[cfg(feature = "pa01")]
+        #[cfg(feature = "has-pa01")]
         (PA01, 01),
         #[cfg(feature = "pins-14")]
         (PA02, 02),
@@ -1117,9 +1117,9 @@ declare_pins!(
         (PA24, 24),
         #[cfg(feature = "pins-14")]
         (PA25, 25),
-        #[cfg(feature = "pa27")]
+        #[cfg(feature = "has-pa27")]
         (PA27, 27),
-        #[cfg(feature = "pa28")]
+        #[cfg(feature = "has-pa28")]
         (PA28, 28),
         #[cfg(feature = "pins-14")]
         (PA30, 30),
@@ -1127,17 +1127,17 @@ declare_pins!(
         (PA31, 31),
     }
     B {
-        #[cfg(feature = "pb00")]
+        #[cfg(feature = "has-pb00")]
         (PB00, 00),
-        #[cfg(feature = "pb01")]
+        #[cfg(feature = "has-pb01")]
         (PB01, 01),
-        #[cfg(feature = "pb02")]
+        #[cfg(feature = "has-pb02")]
         (PB02, 02),
-        #[cfg(feature = "pb03")]
+        #[cfg(feature = "has-pb03")]
         (PB03, 03),
-        #[cfg(feature = "pb04")]
+        #[cfg(feature = "has-pb04")]
         (PB04, 04),
-        #[cfg(feature = "pb05")]
+        #[cfg(feature = "has-pb05")]
         (PB05, 05),
         #[cfg(feature = "pins-64")]
         (PB06, 06),
@@ -1171,9 +1171,9 @@ declare_pins!(
         (PB20, 20),
         #[cfg(feature = "pins-100")]
         (PB21, 21),
-        #[cfg(feature = "pb22")]
+        #[cfg(feature = "has-pb22")]
         (PB22, 22),
-        #[cfg(feature = "pb23")]
+        #[cfg(feature = "has-pb23")]
         (PB23, 23),
         #[cfg(feature = "pins-100")]
         (PB24, 24),

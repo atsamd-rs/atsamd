@@ -788,9 +788,9 @@ mod gclkio_impl {
     impl GclkIo for gpio::PB20 { type GclkId = Gclk6Id; }
     #[cfg(feature = "pins-100")]
     impl GclkIo for gpio::PB21 { type GclkId = Gclk7Id; }
-    #[cfg(feature = "pb22")]
+    #[cfg(feature = "has-pb22")]
     impl GclkIo for gpio::PB22 { type GclkId = Gclk0Id; }
-    #[cfg(feature = "pb23")]
+    #[cfg(feature = "has-pb23")]
     impl GclkIo for gpio::PB23 { type GclkId = Gclk1Id; }
 }
 

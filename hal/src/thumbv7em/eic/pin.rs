@@ -207,7 +207,7 @@ crate::paste::item! {
 ei!(ExtInt[0] {
     PA00,
     PA16,
-    #[cfg(feature = "pb00")]
+    #[cfg(feature = "has-pb00")]
     PB00,
     #[cfg(feature = "pins-64")]
     PB16,
@@ -222,7 +222,7 @@ ei!(ExtInt[0] {
 ei!(ExtInt[1] {
     PA01,
     PA17,
-    #[cfg(feature = "pb01")]
+    #[cfg(feature = "has-pb01")]
     PB01,
     #[cfg(feature = "pins-64")]
     PB17,
@@ -263,7 +263,7 @@ ei!(ExtInt[3] {
 ei!(ExtInt[4] {
     PA04,
     PA20,
-    #[cfg(feature = "pb04")]
+    #[cfg(feature = "has-pb04")]
     PB04,
     #[cfg(feature = "pins-100")]
     PB20,
@@ -278,7 +278,7 @@ ei!(ExtInt[4] {
 ei!(ExtInt[5] {
     PA05,
     PA21,
-    #[cfg(feature = "pb05")]
+    #[cfg(feature = "has-pb05")]
     PB05,
     #[cfg(feature = "pins-100")]
     PB21,

@@ -19,5 +19,5 @@ pub mod pwm;
 #[cfg(feature = "unproven")]
 pub mod watchdog;
 
-#[cfg(all(feature = "usb", feature = "usbp"))]
+#[cfg(all(feature = "usb", feature = "has-usb"))]
 pub mod usb;

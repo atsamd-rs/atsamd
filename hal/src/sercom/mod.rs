@@ -82,14 +82,14 @@ macro_rules! sercom {
     ( $apbmask:ident: ($start:literal, $end:literal) ) => {
         seq!(N in $start..=$end {
             paste! {
-                #[cfg(feature = "" sercom~N "")]
+                #[cfg(feature = "has-" sercom~N)]
                 use pac::SERCOM~N;
                 /// Type alias for the corresponding SERCOM instance
-                #[cfg(feature = "" sercom~N "")]
+                #[cfg(feature = "has-" sercom~N)]
                 pub type Sercom~N = SERCOM~N;
-                #[cfg(feature = "" sercom~N "")]
+                #[cfg(feature = "has-" sercom~N)]
                 impl Sealed for Sercom~N {}
-                #[cfg(feature = "" sercom~N "")]
+                #[cfg(feature = "has-" sercom~N)]
                 impl Sercom for Sercom~N {
                     const NUM: usize = N;
                     #[cfg(feature = "dma")]

@@ -24,7 +24,7 @@ use crate::typelevel::Sealed;
 
 seq!(N in 0..=7 {
     paste! {
-        #[cfg(feature = "" sercom~N "")]
+        #[cfg(feature = "has-" sercom~N)]
         pub use crate::sercom::Sercom~N;
     }
 });
@@ -50,7 +50,7 @@ macro_rules! create_types {
 create_types!(Ac);
 create_types!(Adc0, Adc1);
 create_types!(Aes);
-#[cfg(feature = "canp")]
+#[cfg(feature = "has-can")]
 create_types!(Can0, Can1);
 create_types!(Ccl);
 create_types!(Cmcc);
@@ -67,13 +67,13 @@ create_types!(FreqM);
 create_types!(FreqMMeasure);
 create_types!(FreqMReference);
 create_types!(Gclk);
-#[cfg(feature = "gmac")]
+#[cfg(feature = "has-gmac")]
 create_types!(Gmac);
 create_types!(Hpb0, Hpb1, Hpb2, Hpb3);
 create_types!(Icm);
 create_types!(Mclk);
 create_types!(NvmCtrl, NvmCtrlSmeeProm, NvmCtrlCache);
-#[cfg(feature = "i2s")]
+#[cfg(feature = "has-i2s")]
 create_types!(I2S, I2S0, I2S1);
 create_types!(OscCtrl);
 create_types!(Osc32kCtrl);
@@ -88,21 +88,21 @@ create_types!(RamEcc);
 create_types!(RstC);
 create_types!(Rtc);
 create_types!(Sdhc0);
-#[cfg(feature = "sdhc1")]
+#[cfg(feature = "has-sdhc1")]
 create_types!(Sdhc1);
 create_types!(SlowClk);
 create_types!(SupC);
 create_types!(Tc0Tc1, Tc0, Tc1);
 create_types!(Tc2Tc3, Tc2, Tc3);
-#[cfg(all(feature = "tc4", feature = "tc5"))]
+#[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
 create_types!(Tc4Tc5, Tc4, Tc5);
-#[cfg(all(feature = "tc6", feature = "tc7"))]
+#[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
 create_types!(Tc6Tc7, Tc6, Tc7);
 create_types!(Tcc0Tcc1, Tcc0, Tcc1);
 create_types!(Tcc2Tcc3, Tcc2);
-#[cfg(feature = "tcc3")]
+#[cfg(feature = "has-tcc3")]
 create_types!(Tcc3);
-#[cfg(feature = "tcc4")]
+#[cfg(feature = "has-tcc4")]
 create_types!(Tcc4);
 create_types!(Trng);
 create_types!(Usb);

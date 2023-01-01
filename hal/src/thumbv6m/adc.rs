@@ -200,22 +200,22 @@ adc_pins! {
     PA11: 19
 }
 
-#[cfg(feature = "pb00")]
+#[cfg(feature = "has-pb00")]
 adc_pins! { PB00: 8 }
 
-#[cfg(feature = "pb01")]
+#[cfg(feature = "has-pb01")]
 adc_pins! { PB01: 9 }
 
-#[cfg(feature = "pb02")]
+#[cfg(feature = "has-pb02")]
 adc_pins! { PB02: 10 }
 
-#[cfg(feature = "pb03")]
+#[cfg(feature = "has-pb03")]
 adc_pins! { PB03: 11 }
 
-#[cfg(feature = "pb04")]
+#[cfg(feature = "has-pb04")]
 adc_pins! { PB04: 12 }
 
-#[cfg(feature = "pb05")]
+#[cfg(feature = "has-pb05")]
 adc_pins! { PB05: 13 }
 
 #[cfg(feature = "pins-48")]

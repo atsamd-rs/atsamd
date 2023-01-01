@@ -253,20 +253,20 @@ mod impls {
     use super::*;
 
     ei!(ExtInt[0] {
-        #[cfg(feature = "pa00")]
+        #[cfg(feature = "has-pa00")]
         PA00,
         PA16,
-        #[cfg(feature = "pb00")]
+        #[cfg(feature = "has-pb00")]
         PB00,
         #[cfg(feature = "pins-64")]
         PB16,
     });
 
     ei!(ExtInt[1] {
-        #[cfg(feature = "pa01")]
+        #[cfg(feature = "has-pa01")]
         PA01,
         PA17,
-        #[cfg(feature = "pb01")]
+        #[cfg(feature = "has-pb01")]
         PB01,
         #[cfg(feature = "pins-64")]
         PB17,
@@ -275,14 +275,14 @@ mod impls {
     ei!(ExtInt[2] {
         PA02,
         PA18,
-        #[cfg(feature = "pb02")]
+        #[cfg(feature = "has-pb02")]
         PB02,
     });
 
     ei!(ExtInt[3] {
         PA03,
         PA19,
-        #[cfg(feature = "pb03")]
+        #[cfg(feature = "has-pb03")]
         PB03,
     });
 
@@ -290,7 +290,7 @@ mod impls {
         PA04,
         #[cfg(feature = "pins-48")]
         PA20,
-        #[cfg(feature = "pb04")]
+        #[cfg(feature = "has-pb04")]
         PB04,
     });
 
@@ -298,7 +298,7 @@ mod impls {
         PA05,
         #[cfg(feature = "pins-48")]
         PA21,
-        #[cfg(feature = "pb05")]
+        #[cfg(feature = "has-pb05")]
         PB05,
     });
 
@@ -307,7 +307,7 @@ mod impls {
         PA22,
         #[cfg(feature = "pins-64")]
         PB06,
-        #[cfg(feature = "pb22")]
+        #[cfg(feature = "has-pb22")]
         PB22,
     });
 
@@ -316,12 +316,12 @@ mod impls {
         PA23,
         #[cfg(feature = "pins-64")]
         PB07,
-        #[cfg(feature = "pb23")]
+        #[cfg(feature = "has-pb23")]
         PB23,
     });
 
     ei!(ExtInt[8] {
-        #[cfg(feature = "pa28")]
+        #[cfg(feature = "has-pa28")]
         PA28,
         #[cfg(feature = "pins-48")]
         PB08,
@@ -373,7 +373,7 @@ mod impls {
 
     ei!(ExtInt[15] {
         PA15,
-        #[cfg(feature = "pa27")]
+        #[cfg(feature = "has-pa27")]
         PA27,
         #[cfg(feature = "pins-64")]
         PB15,

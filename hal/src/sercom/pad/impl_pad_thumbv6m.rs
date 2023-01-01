@@ -114,11 +114,11 @@ macro_rules! pad_table {
 // minimum of #[cfg(feature = "pins-14")], which cuts down on the number of
 // required features below.
 pad_table!(
-    #[cfg(feature = "pa00")]
+    #[cfg(feature = "has-pa00")]
     PA00 {
         D: (Sercom1, Pad0),
     }
-    #[cfg(feature = "pa01")]
+    #[cfg(feature = "has-pa01")]
     PA01 {
         D: (Sercom1, Pad1),
     }
@@ -185,7 +185,7 @@ pad_table!(
         C: (Sercom0, Pad0) + I2C,
         #[cfg(feature = "samd21")]
         C: (Sercom2, Pad2),
-        #[cfg(feature = "sercom4")]
+        #[cfg(feature = "has-sercom4")]
         D: (Sercom4, Pad2),
     }
     PA15 {
@@ -193,7 +193,7 @@ pad_table!(
         C: (Sercom0, Pad1) + I2C,
         #[cfg(feature = "samd21")]
         C: (Sercom2, Pad3),
-        #[cfg(feature = "sercom4")]
+        #[cfg(feature = "has-sercom4")]
         D: (Sercom4, Pad3),
     }
     #[cfg(feature = "samd21")]
@@ -229,13 +229,13 @@ pad_table!(
     PA22 {
         #[cfg(feature = "samd21")]
         C: (Sercom3, Pad0) + I2C,
-        #[cfg(feature = "sercom5")]
+        #[cfg(feature = "has-sercom5")]
         D: (Sercom5, Pad0) + I2C,
     }
     PA23 {
         #[cfg(feature = "samd21")]
         C: (Sercom3, Pad1) + I2C,
-        #[cfg(feature = "sercom5")]
+        #[cfg(feature = "has-sercom5")]
         D: (Sercom5, Pad1) + I2C,
     }
     PA24 {
@@ -243,7 +243,7 @@ pad_table!(
         C: (Sercom1, Pad2),
         #[cfg(feature = "samd21")]
         C: (Sercom3, Pad2),
-        #[cfg(feature = "sercom5")]
+        #[cfg(feature = "has-sercom5")]
         D: (Sercom5, Pad2),
     }
     PA25 {
@@ -251,7 +251,7 @@ pad_table!(
         C: (Sercom1, Pad3),
         #[cfg(feature = "samd21")]
         C: (Sercom3, Pad3),
-        #[cfg(feature = "sercom5")]
+        #[cfg(feature = "has-sercom5")]
         D: (Sercom5, Pad3),
     }
     PA30 {
@@ -264,19 +264,19 @@ pad_table!(
         C: (Sercom1, Pad1),
         D: (Sercom1, Pad3),
     }
-    #[cfg(feature = "pb00")]
+    #[cfg(feature = "has-pb00")]
     PB00 {
         D: (Sercom5, Pad2),
     }
-    #[cfg(feature = "pb01")]
+    #[cfg(feature = "has-pb01")]
     PB01 {
         D: (Sercom5, Pad3),
     }
-    #[cfg(feature = "sercom5")]
+    #[cfg(feature = "has-sercom5")]
     PB02 {
         D: (Sercom5, Pad0),
     }
-    #[cfg(feature = "sercom5")]
+    #[cfg(feature = "has-sercom5")]
     PB03 {
         D: (Sercom5, Pad1),
     }
@@ -320,11 +320,11 @@ pad_table!(
     PB17 {
         C: (Sercom5, Pad1) + I2C,
     }
-    #[cfg(feature = "pb22")]
+    #[cfg(feature = "has-pb22")]
     PB22 {
         D: (Sercom5, Pad2),
     }
-    #[cfg(feature = "pb23")]
+    #[cfg(feature = "has-pb23")]
     PB23 {
         D: (Sercom5, Pad3),
     }

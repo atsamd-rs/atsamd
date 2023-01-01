@@ -9,14 +9,14 @@ use crate::timer_params::TimerParams;
 
 seq!(N in 1..=7 {
     paste! {
-        #[cfg(feature = "" tc~N "")]
+        #[cfg(feature = "has-" tc~N)]
         use crate::pac::TC~N;
     }
 });
 
 seq!(N in 0..=2 {
     paste! {
-        #[cfg(feature = "" tcc~N "")]
+        #[cfg(feature = "has-" tcc~N)]
         use crate::pac::TCC~N;
     }
 });
@@ -140,20 +140,20 @@ impl PwmPin for $TYPE {
 
 )+}}
 
-#[cfg(feature = "tc1")]
+#[cfg(feature = "has-tc1")]
 pwm! { Pwm1: (TC1, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper) }
-#[cfg(feature = "tc2")]
+#[cfg(feature = "has-tc2")]
 pwm! { Pwm2: (TC2, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper) }
-#[cfg(feature = "tc3")]
+#[cfg(feature = "has-tc3")]
 pwm! { Pwm3: (TC3, Tcc2Tc3Clock, apbcmask, tc3_, Pwm3Wrapper) }
-#[cfg(feature = "tc4")]
+#[cfg(feature = "has-tc4")]
 pwm! { Pwm4: (TC4, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper) }
-#[cfg(feature = "tc5")]
+#[cfg(feature = "has-tc5")]
 pwm! { Pwm5: (TC5, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper) }
 
-#[cfg(feature = "tc6")]
+#[cfg(feature = "has-tc6")]
 pwm! { Pwm6: (TC6, Tc6Tc7Clock, apbcmask, tc6_, Pwm6Wrapper) }
-#[cfg(feature = "tc7")]
+#[cfg(feature = "has-tc7")]
 pwm! { Pwm7: (TC7, Tc6Tc7Clock, apbcmask, tc7_, Pwm7Wrapper) }
 
 // Timer/Counter for Control Applications (TCCx)
@@ -283,11 +283,11 @@ impl Pwm for $TYPE {
 
 )+}}
 
-#[cfg(all(feature = "samd11", feature = "tcc0"))]
+#[cfg(all(feature = "samd11", feature = "has-tcc0"))]
 pwm_tcc! { Pwm0: (TCC0, Tcc0Clock, apbcmask, tcc0_, Pwm0Wrapper) }
-#[cfg(all(feature = "samd21", feature = "tcc0"))]
+#[cfg(all(feature = "samd21", feature = "has-tcc0"))]
 pwm_tcc! { Pwm0: (TCC0, Tcc0Tcc1Clock, apbcmask, tcc0_, Pwm0Wrapper) }
-#[cfg(feature = "tcc1")]
+#[cfg(feature = "has-tcc1")]
 pwm_tcc! { Pwm1: (TCC1, Tcc0Tcc1Clock, apbcmask, tcc1_, Pwm1Wrapper) }
-#[cfg(feature = "tcc1")]
+#[cfg(feature = "has-tcc1")]
 pwm_tcc! { Pwm2: (TCC2, Tcc2Tc3Clock, apbcmask, tcc2_, Pwm2Wrapper) }

@@ -200,20 +200,20 @@ pad_table!(
         D: (Sercom5, Pad3, IoSet3),
     }
     PA30 {
-        #[cfg(feature = "sercom7")]
+        #[cfg(feature = "has-sercom7")]
         C: (Sercom7, Pad2, IoSet5),
         D: (Sercom1, Pad2, IoSet4),
     }
     PA31 {
-        #[cfg(feature = "sercom7")]
+        #[cfg(feature = "has-sercom7")]
         C: (Sercom7, Pad3, IoSet5),
         D: (Sercom1, Pad3, IoSet4),
     }
-    #[cfg(feature = "pb00")]
+    #[cfg(feature = "has-pb00")]
     PB00 {
         D: (Sercom5, Pad2, IoSet5, IoSet6),
     }
-    #[cfg(feature = "pb01")]
+    #[cfg(feature = "has-pb01")]
     PB01 {
         D: (Sercom5, Pad3, IoSet5, IoSet6),
     }
@@ -324,13 +324,13 @@ pad_table!(
         D: (Sercom4, Pad3, IoSet4),
     }
     PB30 {
-        #[cfg(feature = "sercom7")]
+        #[cfg(feature = "has-sercom7")]
         C: (Sercom7, Pad0, IoSet5),
         #[cfg(feature = "pins-64")]
         D: (Sercom5, Pad1, IoSet5),
     }
     PB31 {
-        #[cfg(feature = "sercom7")]
+        #[cfg(feature = "has-sercom7")]
         C: (Sercom7, Pad1, IoSet5),
         #[cfg(feature = "pins-64")]
         D: (Sercom5, Pad0, IoSet5),

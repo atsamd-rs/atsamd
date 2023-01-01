@@ -13,14 +13,14 @@ use crate::timer_params::TimerParams;
 
 seq!(N in 0..=7 {
     paste! {
-        #[cfg(feature = "" tc~N "")]
+        #[cfg(feature = "has-" tc~N)]
         use crate::pac::TC~N;
     }
 });
 
 seq!(N in 0..=4 {
     paste! {
-        #[cfg(feature = "" tcc~N "")]
+        #[cfg(feature = "has-" tcc~N)]
         use crate::pac::TCC~N;
     }
 });
@@ -69,7 +69,7 @@ macro_rules! impl_tc_pinout {
     };
 }
 
-#[cfg(feature = "tc0")]
+#[cfg(feature = "has-tc0")]
 impl_tc_pinout!(TC0Pinout: [
     (Pa5, PA05),
     (Pa9, PA09),
@@ -77,36 +77,36 @@ impl_tc_pinout!(TC0Pinout: [
     (Pb31, PB31)
 ]);
 
-#[cfg(feature = "tc1")]
+#[cfg(feature = "has-tc1")]
 impl_tc_pinout!(TC1Pinout: [
     (Pa7, PA07),
     (Pa11, PA11)
 ]);
 
-#[cfg(feature = "tc2")]
+#[cfg(feature = "has-tc2")]
 impl_tc_pinout!(TC2Pinout: [
-    #[cfg(feature = "pa01")]
+    #[cfg(feature = "has-pa01")]
     (Pa1, PA01),
     (Pa13, PA13),
     (Pa17, PA17)
 ]);
 
-#[cfg(feature = "tc3")]
+#[cfg(feature = "has-tc3")]
 impl_tc_pinout!(TC3Pinout: [
     (Pa15, PA15),
     (Pa19, PA19)
 ]);
 
-#[cfg(feature = "tc4")]
+#[cfg(feature = "has-tc4")]
 impl_tc_pinout!(TC4Pinout: [
     (Pa23, PA23),
-    #[cfg(feature = "pb00")]
+    #[cfg(feature = "has-pb00")]
     (Pb0, PB09),
     #[cfg(feature = "pins-64")]
     (Pb13, PB13)
 ]);
 
-#[cfg(feature = "tc5")]
+#[cfg(feature = "has-tc5")]
 impl_tc_pinout!(TC5Pinout: [
     (Pa25, PA25),
     (Pb11, PB11),
@@ -114,9 +114,9 @@ impl_tc_pinout!(TC5Pinout: [
     (Pb15, PB15)
 ]);
 
-#[cfg(feature = "tc6")]
+#[cfg(feature = "has-tc6")]
 impl_tc_pinout!(TC6Pinout: [
-    #[cfg(feature = "pb03")]
+    #[cfg(feature = "has-pb03")]
     (Pb3, PB03),
     #[cfg(feature = "pins-64")]
     (Pb17, PB17),
@@ -124,12 +124,12 @@ impl_tc_pinout!(TC6Pinout: [
     (Pa31, PA31)
 ]);
 
-#[cfg(feature = "tc7")]
+#[cfg(feature = "has-tc7")]
 impl_tc_pinout!(TC7Pinout: [
     (Pa21, PA21),
-    #[cfg(feature = "pb23")]
+    #[cfg(feature = "has-pb23")]
     (Pb23, PB23),
-    #[cfg(feature = "pb01")]
+    #[cfg(feature = "has-pb01")]
     (Pb1, PB01)
 ]);
 
@@ -258,21 +258,21 @@ impl<I: PinId> PwmPin for $TYPE<I> {
 
 )+}}
 
-#[cfg(feature = "tc0")]
+#[cfg(feature = "has-tc0")]
 pwm! { Pwm0: (TC0, TC0Pinout, Tc0Tc1Clock, apbamask, tc0_, Pwm0Wrapper) }
-#[cfg(feature = "tc1")]
+#[cfg(feature = "has-tc1")]
 pwm! { Pwm1: (TC1, TC1Pinout, Tc0Tc1Clock, apbamask, tc1_, Pwm1Wrapper) }
-#[cfg(feature = "tc2")]
+#[cfg(feature = "has-tc2")]
 pwm! { Pwm2: (TC2, TC2Pinout, Tc2Tc3Clock, apbbmask, tc2_, Pwm2Wrapper) }
-#[cfg(feature = "tc3")]
+#[cfg(feature = "has-tc3")]
 pwm! { Pwm3: (TC3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_, Pwm3Wrapper) }
-#[cfg(feature = "tc4")]
+#[cfg(feature = "has-tc4")]
 pwm! { Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper) }
-#[cfg(feature = "tc5")]
+#[cfg(feature = "has-tc5")]
 pwm! { Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper) }
-#[cfg(feature = "tc6")]
+#[cfg(feature = "has-tc6")]
 pwm! { Pwm6: (TC6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper) }
-#[cfg(feature = "tc7")]
+#[cfg(feature = "has-tc7")]
 pwm! { Pwm7: (TC7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper) }
 
 // Timer/Counter for Control Applications (TCCx)
@@ -331,7 +331,7 @@ macro_rules! impl_tcc_pinout {
     };
 }
 
-#[cfg(feature = "tcc0")]
+#[cfg(feature = "has-tcc0")]
 impl_tcc_pinout!(TCC0Pinout: [
     (Pa8, PA08, AlternateF),
     (Pa9, PA09, AlternateF),
@@ -407,7 +407,7 @@ impl_tcc_pinout!(TCC0Pinout: [
     (Pd12, PD12, AlternateF)
 ]);
 
-#[cfg(feature = "tcc1")]
+#[cfg(feature = "has-tcc1")]
 impl_tcc_pinout!(TCC1Pinout: [
     (Pa8, PA08, AlternateG),
     (Pa9, PA09, AlternateG),
@@ -461,18 +461,18 @@ impl_tcc_pinout!(TCC1Pinout: [
     (Pd21, PD21, AlternateF)
 ]);
 
-#[cfg(feature = "tcc2")]
+#[cfg(feature = "has-tcc2")]
 impl_tcc_pinout!(TCC2Pinout: [
     (Pa14, PA14, AlternateF),
     (Pa15, PA15, AlternateF),
     (Pa24, PA24, AlternateF),
     (Pa30, PA30, AlternateF),
     (Pa31, PA31, AlternateF),
-    #[cfg(feature = "pb02")]
+    #[cfg(feature = "has-pb02")]
     (Pb2,  PB02, AlternateF)
 ]);
 
-#[cfg(feature = "tcc3")]
+#[cfg(feature = "has-tcc3")]
 impl_tcc_pinout!(TCC3Pinout: [
     #[cfg(feature = "pins-64")]
     (Pb12, PB12, AlternateF),
@@ -484,7 +484,7 @@ impl_tcc_pinout!(TCC3Pinout: [
     (Pb17, PB17, AlternateF)
 ]);
 
-#[cfg(feature = "tcc4")]
+#[cfg(feature = "has-tcc4")]
 impl_tcc_pinout!(TCC4Pinout: [
     #[cfg(feature = "pins-64")]
     (Pb14, PB14, AlternateF),
@@ -623,13 +623,13 @@ impl<I: PinId, M: PinMode> Pwm for $TYPE<I, M> {
     };
 }
 
-#[cfg(feature = "tcc0")]
+#[cfg(feature = "has-tcc0")]
 pwm_tcc! { Tcc0Pwm: (TCC0, TCC0Pinout, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper) }
-#[cfg(feature = "tcc1")]
+#[cfg(feature = "has-tcc1")]
 pwm_tcc! { Tcc1Pwm: (TCC1, TCC1Pinout, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper) }
-#[cfg(feature = "tcc2")]
+#[cfg(feature = "has-tcc2")]
 pwm_tcc! { Tcc2Pwm: (TCC2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper) }
-#[cfg(feature = "tcc3")]
+#[cfg(feature = "has-tcc3")]
 pwm_tcc! { Tcc3Pwm: (TCC3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper) }
-#[cfg(feature = "tcc4")]
+#[cfg(feature = "has-tcc4")]
 pwm_tcc! { Tcc4Pwm: (TCC4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper) }
