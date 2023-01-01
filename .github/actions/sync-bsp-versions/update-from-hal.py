@@ -1,38 +1,24 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
+from tomlkit import parse, dumps
+from pathlib import Path
 import json
-import os
-import re
 import sys
-import toml
 
+hal_path = Path("hal") / "Cargo.toml"
+hal = parse(hal_path.read_text())
+hal_version = hal["package"]["version"]
 
-def upgrade_bsp(path, vers):
-    '''Update the HAL version in the Cargo.toml file at the given path.'''
-    start = -1
-    with open(path, 'r') as f:
-        lines = f.read().splitlines()
-        for i, l in enumerate(lines):
-            l = l.strip()
-            if l == '[dependencies.atsamd-hal]':
-                start = i
-    assert lines[start+2].startswith('version = "')
-    lines[start+2] = "version = \"%s\"" % vers
-    with open(path, 'w') as f:
-        f.write('\n'.join(lines) + '\n')
+crates = Path("crates.json")
+boards = json.loads(crates.read_text())["boards"]
+board_names = [name for name, info in boards.items() if info["tier"] == 1]
 
+for name in board_names:
+    bsp_path = Path("boards") / name / "Cargo.toml"
+    bsp = parse(bsp_path.read_text())
+    bsp_version = bsp["dependencies"]["atsamd-hal"]["version"]
+    if bsp_version != hal_version:
+        print(f"Upgrading {name} from {bsp_version} to {hal_version}.", file=sys.stderr)
+        bsp["dependencies"]["atsamd-hal"]["version"] = hal_version
+        bsp_path.write_text(dumps(bsp))
 
-h = toml.load("hal/Cargo.toml")
-hal_version = '.'.join(h['package']['version'].split('.')[:-1]) # Trim the patch.
-
-
-with open('crates.json', 'r') as f:
-    j = json.load(f)
-    bsps = [b for b in j['boards'].keys() if j['boards'][b]['tier'] == 1]
-
-for bsp in bsps:
-    cargo = toml.load("boards/" + bsp + "/Cargo.toml")
-    current = cargo['dependencies']['atsamd-hal']['version']
-    if current != hal_version:
-        print("Upgrading %s from %s to %s." % (bsp, current, hal_version))
-        upgrade_bsp("boards/" + bsp + "/Cargo.toml", hal_version)
