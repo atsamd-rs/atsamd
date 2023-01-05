@@ -62,6 +62,9 @@ opt-level = "s"
 [[example]]
 name = "blinky_basic"
 
+[[example]]
+name = "neopixel_rainbow"
+
 #[[example]]
 #name = "pwm"
 #required-features = ["unproven"]
