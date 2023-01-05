@@ -9,7 +9,7 @@ categories = ["embedded", "hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j/feather_m4/"
+documentation = "https://atsamd-rs.github.io/atsamd/atsame51j/feather_m4_can/"
 
 # for cargo flash
 [package.metadata]
@@ -65,34 +65,6 @@ name = "blinky_basic"
 [[example]]
 name = "neopixel_rainbow"
 
-#[[example]]
-#name = "pwm"
-#required-features = ["unproven"]
-#
 [[example]]
 name = "usb_echo"
 required-features = ["usb"]
-
-#[[example]]
-#name = "dmac"
-#required-features = ["dma"]
-#
-#[[example]]
-#name = "uart"
-#required-features = ["dma"]
-#
-#[[example]]
-#name = "pukcc_test"
-#required-features = ["unproven", "usb"]
-#
-#[[example]]
-#name = "nvm_dsu"
-#required-features = ["unproven", "usb"]
-#
-#[[example]]
-#name = "smart_eeprom"
-#required-features = ["unproven", "usb"]
-#
-#[[example]]
-#name = "i2c"
-#required-features = ["atsamd-hal/dma"]
