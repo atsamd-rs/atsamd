@@ -1,0 +1,13 @@
+[package]
+name = "atsaml22j"
+description = "Peripheral access API for ATSAML22J microcontrollers (generated using svd2rust)"
+version = "0.1.0"
+edition = "2021"
+authors = ["Wesley Ellis <tahnok@gmail.com>"]
+keywords = ["no-std", "arm", "cortex-m"]
+categories = ["embedded", "hardware-support", "no-std"]
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
