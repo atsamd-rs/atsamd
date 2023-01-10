@@ -9,3 +9,6 @@
 ## If Adding a new Board
   - [ ] Board CI added to `crates.json`
   - [ ] Board is properly following "Tier 2" conventions, unless otherwise decided to be "Tier 1"
+
+## If Adding a new cargo `feature` to the HAL
+  - [ ] Feature is added to the test matrix for applicable boards / PACs in `crates.json`

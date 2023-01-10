@@ -112,7 +112,7 @@ macro_rules! reg_proxy {
         paste! {
             /// Register proxy tied to a specific channel
             pub(super) struct [< $reg:camel Proxy >]<Id: ChId, REG> {
-                #[allow(ununsed)]
+                #[allow(unused)]
                 dmac: DMAC,
                 _id: PhantomData<Id>,
                 _reg: PhantomData<REG>,

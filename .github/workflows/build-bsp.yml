@@ -8,7 +8,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - id: set-matrix
       uses: ./.github/actions/list-BSPs
 
@@ -20,53 +20,31 @@ jobs:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v2
-    - name: Install Rust (thumbv6m)
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: ${{ matrix.toolchain }}
-        override: true
-        target: thumbv6m-none-eabi
-        components: clippy
-    - name: Install Rust (thumbv7em)
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: ${{ matrix.toolchain }}
-        override: true
-        target: thumbv7em-none-eabihf
-        components: clippy
+      uses: actions/checkout@v3
 
-    - name: Test ${{ matrix.bsp }}
+    - name: Install Rust
+      run: |
+        rustup set profile minimal
+        rustup override set ${{ matrix.toolchain }}
+        target=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .target')
+        rustup target add ${target}
+        rustup component add clippy
+
+    - name: Setup cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Build ${{ matrix.bsp }}
       run: |
         build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
         set -ex
         cd boards/${{ matrix.bsp }}
         $(${build_invocation})
 
-    - uses: actions-rs/clippy-check@v1
+    - name: Clippy ${{ matrix.bsp }}
       if: ${{ matrix.toolchain == 'nightly' }}
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        name: Clippy ${{ matrix.bsp }}
-        args: --all-features --manifest-path=boards/${{ matrix.bsp }}/Cargo.toml
-
-  build_hal:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout sources
-      uses: actions/checkout@v2
-    - name: Install Rust (thumbv6m)
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
-        target: thumbv6m-none-eabi
-        components: clippy
-    - name: Build HAL
       run: |
         set -ex
-        cd hal
-        cargo build --features="library"
+        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
+        clippy_invocation=$(echo ${build_invocation} | sed 's/cargo build/cargo clippy/g')
+        cd boards/${{ matrix.bsp }}
+        $(${clippy_invocation})

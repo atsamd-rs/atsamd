@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Fix NVM User Row Mapping for `BOD12` Calibration Parameters
 - Fix `ExternalInterrupt` implementations for `eic`
 - Fix for incorrect feature gates for pins of `samd21gl` chip
 - Fix bug in `dmac` where software trigger would not work

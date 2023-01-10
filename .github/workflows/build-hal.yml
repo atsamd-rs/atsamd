@@ -1,0 +1,49 @@
+name: Build HAL
+on: [push, pull_request]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v3
+    - id: set-matrix
+      uses: ./.github/actions/list-HAL-variants
+
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.toolchain == 'nightly' }}
+    needs: setup
+    strategy:
+      matrix: ${{fromJson(needs.setup.outputs.matrix)}}
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v3
+
+    - name: Install Rust
+      run: |
+        rustup set profile minimal
+        rustup override set ${{ matrix.toolchain }}
+        target=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].target')
+        rustup target add ${target}
+        rustup component add clippy
+
+    - name: Setup cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Build HAL for ${{ matrix.pac }}
+      run: |
+        set -ex
+        features=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].features | join(",")')
+        target=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].target')
+        cargo build --features=${features} --target=${target} --manifest-path=./hal/Cargo.toml
+
+    - name: Clippy HAL for ${{ matrix.pac }}
+      if: ${{ matrix.toolchain == 'nightly' }}
+      run: |
+        set -ex
+        features=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].features | join(",")')
+        target=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].target')
+        cargo clippy --features=${features} --target=${target} --manifest-path=./hal/Cargo.toml

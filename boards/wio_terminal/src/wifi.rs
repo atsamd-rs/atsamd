@@ -76,8 +76,7 @@ impl Wifi {
         .baud(
             WIFI_UART_BAUD.hz(),
             uart::BaudMode::Fractional(uart::Oversampling::Bits16),
-        )
-        .enable();
+        );
 
         delay.delay_ms(10u8);
 
@@ -93,6 +92,7 @@ impl Wifi {
 
         let sequence = 0;
 
+        let uart = uart.enable();
         Wifi {
             _pwr: pwr,
             uart,

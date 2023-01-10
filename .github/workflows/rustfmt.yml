@@ -13,10 +13,12 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-            toolchain: nightly
-            components: rustfmt
-            override: true
-      - run: ./rustfmt.sh
+      - name: Checkout sources
+        uses: actions/checkout@v3
+      - name: Install Rust
+        run: |
+          rustup set profile minimal
+          rustup override set nightly
+          rustup component add rustfmt
+      - name: Rustfmt
+        run: ./rustfmt.sh

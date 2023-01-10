@@ -777,7 +777,7 @@ impl_core_convert_from!(
 ///
 /// ## `v1` Compatibility
 ///
-/// Normally, this trait would use Is<Type = SpecificPin<Self>> as a super
+/// Normally, this trait would use `Is<Type = SpecificPin<Self>>` as a super
 /// trait. But doing so would restrict implementations to only the `v2` `Pin`
 /// type in this module. To aid in backwards compatibility, we want to implement
 /// `AnyPin` for the `v1` `Pin` type as well. This is possible for a few

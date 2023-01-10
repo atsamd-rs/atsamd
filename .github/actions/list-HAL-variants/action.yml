@@ -1,8 +1,9 @@
-name: 'Compute BSP matrix'
+name: 'Compute HAL matrix'
 description: 'Prepares the build environment'
+
 outputs:
   matrix:
-    description: "Build matrix"
+    description: "HAL Build matrix"
     value: ${{ steps.compute-matrix.outputs.matrix }}
 runs:
   using: "composite"
@@ -12,5 +13,5 @@ runs:
     - id: compute-matrix
       shell: bash
       run: |
-        matrix_json=$(cat crates.json | jq -Mr -c '{ "bsp": (.boards | keys ), "toolchain": ["stable", "nightly"] }')
+        matrix_json=$(cat crates.json | jq -Mr -c '{ "pac": (.hal_build_variants | keys ), "toolchain": ["stable", "nightly"] }')
         echo "matrix=${matrix_json}" >> $GITHUB_OUTPUT

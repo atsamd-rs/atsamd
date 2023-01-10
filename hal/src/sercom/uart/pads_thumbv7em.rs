@@ -381,8 +381,8 @@ where
 
 /// Marker trait for valid sets of [`Pads`]
 ///
-/// This trait labels sets of [`Pads`] that satisfy the [`Rxpo`] and [`Txpo`]
-/// traits. It guarantees to the [`Config`] struct that this set of `Pads` can
+/// This trait labels sets of [`Pads`] that satisfy the [`RxpoTxpo`]
+/// trait. It guarantees to the [`Config`] struct that this set of `Pads` can
 /// be configured through those traits.
 ///
 /// [`Config`]: crate::sercom::uart::Config
