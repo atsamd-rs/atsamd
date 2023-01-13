@@ -134,6 +134,7 @@ hal::bsp_pins!(
         name: sda
         aliases: {
             AlternateD: Sda
+            AlternateB: A6
         }
     }
     PB03 {
@@ -141,6 +142,7 @@ hal::bsp_pins!(
         name: scl
         aliases: {
             AlternateD: Scl
+            AlternateB: A7
         }
     }
 
