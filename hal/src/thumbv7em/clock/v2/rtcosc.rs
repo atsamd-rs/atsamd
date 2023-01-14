@@ -97,6 +97,7 @@ use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
 use crate::pac::osc32kctrl::RTCCTRL;
 use crate::pac::OSC32KCTRL;
 
+use crate::rtc::RtcClock as RtcClockMarker;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment};
 
@@ -285,5 +286,11 @@ impl<I: RtcSourceId> RtcOsc<I> {
     #[inline]
     pub fn freq(&self) -> Hertz {
         I::FREQ
+    }
+}
+
+unsafe impl<I: RtcSourceId> RtcClockMarker for RtcOsc<I> {
+    fn freq(&self) -> Hertz {
+        self.freq()
     }
 }
