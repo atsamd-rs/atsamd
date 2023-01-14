@@ -333,7 +333,7 @@ hal::bsp_pins!(
         /// The USB D- pad
         name: usb_dm
         aliases: {
-            AlternateG: UsbDm,
+            AlternateH: UsbDm,
             Reset: UsbDmReset,
         }
     }
@@ -341,7 +341,7 @@ hal::bsp_pins!(
         /// The USB D+ pad
         name: usb_dp
         aliases: {
-            AlternateG: UsbDp,
+            AlternateH: UsbDp,
             Reset: UsbDpReset,
         }
     }

@@ -221,7 +221,7 @@ hal::bsp_pins!(
         /// The USB D- pad
         name: usb_dm
         aliases: {
-            AlternateG: UsbDm
+            AlternateH: UsbDm
         }
 
     }
@@ -229,7 +229,7 @@ hal::bsp_pins!(
         /// The USB D+ pad
         name: usb_dp
         aliases: {
-            AlternateG: UsbDp
+            AlternateH: UsbDp
         }
 
     }
