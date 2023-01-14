@@ -40,4 +40,11 @@ fn main() {
     let out = &PathBuf::from(env::var_os("OUT_DIR").unwrap());
     let mut file = File::create(out.join("pac.rs")).expect("Couldn't create output file pac.rs");
     file.write_all(data.as_ref()).expect("Could not write code to pac.rs");
+
+    let mut file = File::create(out.join("device.x")).expect("Couldn't create output file device.x");
+    file.write_all(device_x.as_ref()).expect("Could not write device.x");
+    if env::var_os("CARGO_FEATURE_RT").is_some() {
+        println!("cargo:rustc-link-search={}", out.display());
+    }
+
 }

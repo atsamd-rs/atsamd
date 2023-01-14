@@ -10,22 +10,17 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2021"
 
-#[lib]
-#path = "target/generated-src/lib.rs"
-
 [dependencies]
-cortex-m = "0.7"
+critical-section = { version = "1.1.1", optional = true }
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"]}
+cortex-m-rt = { version = "0.7", optional = true }
 vcell = "0.1"
 
-[dependencies.cortex-m-rt]
-version = "0.7"
-optional = true
+[features]
+rt = ["cortex-m-rt/device", "critical-section"]
 
 [build-dependencies]
 log = { version = "~0.4", features = ["std"] }
 libxml = "0.3"
 libxslt = "0.1"
 svd2rust = "0.28"
-
-[features]
-rt = ["cortex-m-rt/device"]

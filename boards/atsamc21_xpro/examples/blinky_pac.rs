@@ -2,7 +2,6 @@
 #![no_main]
 
 use atsamc21_xpro as bsp;
-use atsamc21j as pac;
 use cortex_m::asm::delay as cycle_delay;
 
 #[cfg(not(feature = "use_semihosting"))]
@@ -14,7 +13,7 @@ use bsp::entry;
 
 #[entry]
 fn main() -> ! {
-    let mut peripherals = pac::Peripherals::take().unwrap();
+    let peripherals : atsamc21j::Peripherals = atsamc21j::Peripherals::take().unwrap();
     let pa = &peripherals.PORT.group0;
     unsafe {
         pa.dirset.write(|w| w.bits(0x8000));

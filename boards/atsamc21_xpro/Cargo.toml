@@ -16,30 +16,21 @@ readme = "README.md"
 [package.metadata]
 chip = "ATSAMC21J18A"
 
-[dependencies.cortex-m-rt]
-version = "0.7"
-optional = true
+[dependencies]
+cortex-m = "0.7.6"
+cortex-m-rt = { version = "0.7", optional = true }
 
 [dependencies.atsamc21j]
 path = "../../pac/atsamc21j"
 
-
-#[dependencies.atsamd-hal]
-#path = "../../hal"
-#version = "0.15"
-#default-features = false
-
 [dev-dependencies]
-cortex-m = "0.7"
+cortex-m = "0.7.6"
 panic-halt = "0.2"
 panic-semihosting = "0.6"
 
 [features]
-#default = ["rt", "atsamd-hal/samc21j", "atsamd-hal/unproven"]
-#rt = ["cortex-m-rt", "atsamd-hal/samc21j-rt"]
-#unproven = ["atsamd-hal/unproven"]
-default = ["rt", ]
-rt = ["cortex-m-rt"]
+default = ["rt"]
+rt = ["cortex-m-rt", "atsamc21j/rt"]
 
 [profile.dev]
 incremental = false
@@ -53,6 +44,3 @@ opt-level = "s"
 
 [[example]]
 name = "blinky_pac"
-
-#[[example]]
-#name = "blinky_basic"
