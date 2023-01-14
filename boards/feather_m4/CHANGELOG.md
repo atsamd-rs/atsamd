@@ -1,5 +1,7 @@
 # Unreleased
 
+- Use correct alternate for USB (#661)
+
 # v0.10.1
 
 - Update to `atsamd-hal` version `0.15.1`
