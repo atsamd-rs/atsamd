@@ -13,7 +13,7 @@ use bsp::entry;
 
 #[entry]
 fn main() -> ! {
-    let peripherals : atsamc21j::Peripherals = atsamc21j::Peripherals::take().unwrap();
+    let peripherals = atsamc21j::Peripherals::take().unwrap();
     let pa = &peripherals.PORT.group0;
     unsafe {
         pa.dirset.write(|w| w.bits(0x8000));
