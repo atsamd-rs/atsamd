@@ -105,6 +105,9 @@ macro_rules! pad_table {
     };
 }
 
+// Because we presume to be #[cfg(feature = "thumbv7")], we can also presume a
+// minimum of #[cfg(feature = "pins-48a")], which cuts down on the number of
+// required features below.
 pad_table!(
     PA00 {
         D: (Sercom1, Pad0, IoSet4),
@@ -197,20 +200,20 @@ pad_table!(
         D: (Sercom5, Pad3, IoSet3),
     }
     PA30 {
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "has-sercom7")]
         C: (Sercom7, Pad2, IoSet5),
         D: (Sercom1, Pad2, IoSet4),
     }
     PA31 {
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "has-sercom7")]
         C: (Sercom7, Pad3, IoSet5),
         D: (Sercom1, Pad3, IoSet4),
     }
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-pb00")]
     PB00 {
         D: (Sercom5, Pad2, IoSet5, IoSet6),
     }
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-pb01")]
     PB01 {
         D: (Sercom5, Pad3, IoSet5, IoSet6),
     }
@@ -234,48 +237,48 @@ pad_table!(
     PB11 {
         D: (Sercom4, Pad3, IoSet2),
     }
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB12 {
         C: (Sercom4, Pad0, IoSet1),
     }
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB13 {
         C: (Sercom4, Pad1, IoSet1),
     }
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB14 {
         C: (Sercom4, Pad2, IoSet1),
     }
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB15 {
         C: (Sercom4, Pad3, IoSet1),
     }
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB16 {
         C: (Sercom5, Pad0, IoSet1),
     }
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB17 {
         C: (Sercom5, Pad1, IoSet1),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB18 {
         C: (Sercom5, Pad2, IoSet1),
         D: (Sercom7, Pad2, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB19 {
         C: (Sercom5, Pad3, IoSet1),
         D: (Sercom7, Pad3, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB20 {
         // According to Grand Central M4, PB20 is I2C-capable. This disagrees with datasheet
         // table 6-8.
         C: (Sercom3, Pad0, IoSet2) + I2C,
         D: (Sercom7, Pad1, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB21 {
         // According to Grand Central M4, PB21 is I2C-capable. This disagrees with datasheet
         // table 6-8.
@@ -290,168 +293,168 @@ pad_table!(
         C: (Sercom1, Pad3, IoSet3),
         D: (Sercom5, Pad3, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB24 {
         C: (Sercom0, Pad0, IoSet2),
         D: (Sercom2, Pad1, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB25 {
         C: (Sercom0, Pad1, IoSet2),
         D: (Sercom2, Pad0, IoSet4),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PB26 {
         C: (Sercom2, Pad0, IoSet2),
         D: (Sercom4, Pad1, IoSet4),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PB27 {
         C: (Sercom2, Pad1, IoSet2),
         D: (Sercom4, Pad0, IoSet4),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PB28 {
         C: (Sercom2, Pad2, IoSet2),
         D: (Sercom4, Pad2, IoSet4),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PB29 {
         C: (Sercom2, Pad3, IoSet2),
         D: (Sercom4, Pad3, IoSet4),
     }
     PB30 {
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "has-sercom7")]
         C: (Sercom7, Pad0, IoSet5),
-        #[cfg(feature = "min-samd51j")]
+        #[cfg(feature = "pins-64")]
         D: (Sercom5, Pad1, IoSet5),
     }
     PB31 {
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "has-sercom7")]
         C: (Sercom7, Pad1, IoSet5),
-        #[cfg(feature = "min-samd51j")]
+        #[cfg(feature = "pins-64")]
         D: (Sercom5, Pad0, IoSet5),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PC04 {
         C: (Sercom6, Pad0, IoSet2),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC05 {
         C: (Sercom6, Pad1, IoSet2),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC06 {
         C: (Sercom6, Pad2, IoSet2),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC07 {
         C: (Sercom6, Pad3, IoSet2),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC10 {
         C: (Sercom6, Pad2, IoSet5),
         D: (Sercom7, Pad2, IoSet3),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC11 {
         C: (Sercom6, Pad3, IoSet5),
         D: (Sercom7, Pad3, IoSet3),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC12 {
         C: (Sercom7, Pad0, IoSet1, IoSet3),
         D: (Sercom6, Pad1, IoSet4, IoSet5),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC13 {
         C: (Sercom7, Pad1, IoSet1, IoSet3),
         D: (Sercom6, Pad0, IoSet4, IoSet5),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC14 {
         C: (Sercom7, Pad2, IoSet1),
         D: (Sercom6, Pad2, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC15 {
         C: (Sercom7, Pad3, IoSet1),
         D: (Sercom6, Pad3, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC16 {
         C: (Sercom6, Pad0, IoSet1),
         D: (Sercom0, Pad1, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC17 {
         C: (Sercom6, Pad1, IoSet1),
         D: (Sercom0, Pad0, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC18 {
         C: (Sercom6, Pad2, IoSet1),
         D: (Sercom0, Pad2, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC19 {
         C: (Sercom6, Pad3, IoSet1),
         D: (Sercom0, Pad3, IoSet4),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PC22 {
         C: (Sercom1, Pad0, IoSet2),
         D: (Sercom3, Pad1, IoSet4),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PC23 {
         C: (Sercom1, Pad1, IoSet2),
         D: (Sercom3, Pad0, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC24 {
         C: (Sercom0, Pad2, IoSet2),
         D: (Sercom2, Pad2, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC25 {
         C: (Sercom0, Pad3, IoSet2),
         D: (Sercom2, Pad3, IoSet4),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC27 {
         C: (Sercom1, Pad0, IoSet3),
     }
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC28 {
         C: (Sercom1, Pad1, IoSet3),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD08 {
         C: (Sercom7, Pad0, IoSet2) + I2C,
         D: (Sercom6, Pad1, IoSet3) + I2C,
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD09 {
         C: (Sercom7, Pad1, IoSet2) + I2C,
         D: (Sercom6, Pad0, IoSet3) + I2C,
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD10 {
         C: (Sercom7, Pad2, IoSet2),
         D: (Sercom6, Pad2, IoSet3),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD11 {
         C: (Sercom7, Pad3, IoSet2),
         D: (Sercom6, Pad3, IoSet3),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD20 {
         C: (Sercom1, Pad2, IoSet2),
         D: (Sercom3, Pad2, IoSet4),
     }
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD21 {
         C: (Sercom1, Pad3, IoSet2),
         D: (Sercom3, Pad3, IoSet4),

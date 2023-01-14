@@ -112,19 +112,19 @@ pub enum DynAlternate {
     E,
     F,
     G,
-    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
     H,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     I,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     J,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     K,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     L,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     M,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     N,
 }
 
@@ -184,9 +184,9 @@ macro_rules! dyn_alternate {
 }
 
 dyn_alternate!(B, C, D, E, F, G);
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+#[cfg(any(feature = "samd21", feature = "thumbv7"))]
 dyn_alternate!(H);
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 dyn_alternate!(I, J, K, L, M, N);
 
 //==============================================================================
@@ -197,11 +197,11 @@ dyn_alternate!(I, J, K, L, M, N);
 #[derive(PartialEq, Clone, Copy)]
 pub enum DynGroup {
     A,
-    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
     B,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     C,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     D,
 }
 

@@ -387,11 +387,11 @@ let (chan1, rx, rx_buffer) = rx_dma.wait();
 "
 )]
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 #[path = "uart/pads_thumbv6m.rs"]
 mod pads;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 #[path = "uart/pads_thumbv7em.rs"]
 mod pads;
 
@@ -416,11 +416,11 @@ use core::{convert::TryInto, marker::PhantomData};
 use num_traits::AsPrimitive;
 
 /// Size of the SERCOM's `DATA` register
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 pub type DataReg = u16;
 
 /// Size of the SERCOM's `DATA` register
-#[cfg(any(feature = "min-samd51g"))]
+#[cfg(feature = "thumbv7")]
 pub type DataReg = u32;
 
 //=============================================================================

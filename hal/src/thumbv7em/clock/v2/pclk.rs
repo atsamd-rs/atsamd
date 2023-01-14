@@ -154,22 +154,33 @@ impl<P: PclkId> PclkToken<P> {
 pub mod ids {
 
     pub use crate::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
-    #[cfg(feature = "min-samd51n")]
-    pub use crate::sercom::{Sercom6, Sercom7};
+
+    #[cfg(feature = "has-sercom6")]
+    pub use crate::sercom::Sercom6;
+    #[cfg(feature = "has-sercom7")]
+    pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
     pub use super::super::dpll::{Dpll0Id, Dpll1Id};
+
     pub use super::super::types::{
         Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys10, EvSys11, EvSys2, EvSys3,
         EvSys4, EvSys5, EvSys6, EvSys7, EvSys8, EvSys9, FreqMMeasure, FreqMReference, PDec, Sdhc0,
         SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Tcc2Tcc3, Usb,
     };
-    #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+
+    #[cfg(feature = "has-sdhc1")]
+    pub use super::super::types::Sdhc1;
+    #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
+    pub use super::super::types::Tc4Tc5;
+    #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
+    pub use super::super::types::Tc6Tc7;
+    #[cfg(feature = "has-tcc4")]
+    pub use super::super::types::Tcc4;
+    #[cfg(feature = "has-can")]
     pub use super::super::types::{Can0, Can1};
-    #[cfg(feature = "min-samd51n")]
-    pub use super::super::types::{Sdhc1, Tc6Tc7};
-    #[cfg(feature = "min-samd51j")]
-    pub use super::super::types::{Tc4Tc5, Tcc4, I2S0, I2S1};
+    #[cfg(feature = "has-i2s")]
+    pub use super::super::types::{I2S0, I2S1};
 }
 
 use ids::*;
@@ -187,8 +198,6 @@ use ids::*;
 ///
 /// An optional attribute is added just before each tuple. These are mainly used
 /// to declare the conditions under which the corresponding peripheral exists.
-/// For example, `Sercom6` and `Sercom7` are tagged with
-/// `#[cfg(feature = "min-samd51n")]`.
 ///
 /// The example below shows the pattern that should be used to match against the
 /// appended tokens.
@@ -241,35 +250,35 @@ macro_rules! with_pclk_types_ids {
             (Sercom3 = 24, sercom3)
             (Tcc0Tcc1 = 25, tcc0_tcc1)
             (Tc2Tc3 = 26, tc2_tc3)
-            #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+            #[cfg(feature = "has-can")]
             (Can0 = 27, can0)
-            #[cfg(any(feature = "same51", feature = "same53", feature = "same54"))]
+            #[cfg(feature = "has-can")]
             (Can1 = 28, can1)
             (Tcc2Tcc3 = 29, tcc2_tcc3)
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
             (Tc4Tc5 = 30, tc4_tc5)
             (PDec = 31, pdec)
             (Ac = 32, ac)
             (Ccl = 33, ccl)
             (Sercom4 = 34, sercom4)
             (Sercom5 = 35, sercom5)
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(feature = "has-sercom6")]
             (Sercom6 = 36, sercom6)
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(feature = "has-sercom7")]
             (Sercom7 = 37, sercom7)
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(feature = "has-tcc4")]
             (Tcc4 = 38, tcc4)
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
             (Tc6Tc7 = 39, tc6_tc7)
             (Adc0 = 40, adc0)
             (Adc1 = 41, adc1)
             (Dac = 42, dac)
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(feature = "has-i2s")]
             (I2S0 = 43, i2s0)
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(feature = "has-i2s")]
             (I2S1 = 44, i2s1)
             (Sdhc0 = 45, sdhc0)
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(feature = "has-sdhc1")]
             (Sdhc1 = 46, sdhc1)
             (CM4Trace = 47, cm4_trace)
         );

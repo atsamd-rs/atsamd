@@ -26,7 +26,7 @@
 //! [type class]: crate::typelevel#type-classes
 //! [type-level function]: crate::typelevel#type-level-functions
 #![cfg_attr(
-    feature = "min-samd51g",
+    feature = "thumbv7",
     doc = "
 # IOSET\n
 \n
@@ -48,11 +48,11 @@ use crate::gpio::OptionalPinId;
 use crate::gpio::{AnyPin, OptionalPin, Pin, PinId, PinMode};
 use crate::typelevel::{NoneT, Sealed};
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 #[path = "pad/impl_pad_thumbv6m.rs"]
 mod impl_pad;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 #[path = "pad/impl_pad_thumbv7em.rs"]
 mod impl_pad;
 
@@ -271,7 +271,7 @@ where
 // IoSet
 //==============================================================================
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 mod ioset {
 
     use super::*;
@@ -363,5 +363,5 @@ mod ioset {
     }
 }
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 pub use ioset::*;

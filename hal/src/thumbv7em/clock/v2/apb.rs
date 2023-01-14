@@ -385,14 +385,14 @@ define_apb_types!(
         RamEcc = 16,
     }
     C {
-        #[cfg(any(feature = "same53", feature = "same54"))]
+        #[cfg(feature = "has-gmac")]
         Gmac = 2,
         Tcc2 = 3,
-        #[cfg(feature = "min-samd51j")]
+        #[cfg(feature = "has-tcc3")]
         Tcc3 = 4,
-        #[cfg(feature = "min-samd51j")]
+        #[cfg(feature = "has-tc4")]
         Tc4 = 5,
-        #[cfg(feature = "min-samd51j")]
+        #[cfg(feature = "has-tc5")]
         Tc5 = 6,
         PDec = 7,
         Ac = 8,
@@ -405,20 +405,20 @@ define_apb_types!(
     D {
         Sercom4 = 0,
         Sercom5 = 1,
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "has-sercom6")]
         Sercom6 = 2,
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "has-sercom7")]
         Sercom7 = 3,
-        #[cfg(feature = "min-samd51j")]
+        #[cfg(feature = "has-tcc4")]
         Tcc4 = 4,
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "has-tc6")]
         Tc6 = 5,
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "has-tc7")]
         Tc7 = 6,
         Adc0 = 7,
         Adc1 = 8,
         Dac = 9,
-        #[cfg(feature = "min-samd51j")]
+        #[cfg(feature = "has-i2s")]
         I2S = 10,
         Pcc = 11,
     }
@@ -522,9 +522,9 @@ pub struct ApbTokens {
     pub tc2: ApbToken<Tc2>,
     pub tc3: ApbToken<Tc3>,
     pub tcc2: ApbToken<Tcc2>,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-tcc3")]
     pub tcc3: ApbToken<Tcc3>,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-tc5")]
     pub tc5: ApbToken<Tc5>,
     pub p_dec: ApbToken<PDec>,
     pub ac: ApbToken<Ac>,
@@ -534,20 +534,20 @@ pub struct ApbTokens {
     pub ccl: ApbToken<Ccl>,
     pub sercom4: ApbToken<Sercom4>,
     pub sercom5: ApbToken<Sercom5>,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "has-sercom6")]
     pub sercom6: ApbToken<Sercom6>,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "has-sercom7")]
     pub sercom7: ApbToken<Sercom7>,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-tcc4")]
     pub tcc4: ApbToken<Tcc4>,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "has-tc6")]
     pub tc6: ApbToken<Tc6>,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "has-tc7")]
     pub tc7: ApbToken<Tc7>,
     pub adc0: ApbToken<Adc0>,
     pub adc1: ApbToken<Adc1>,
     pub dac: ApbToken<Dac>,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-i2s")]
     pub i2s: ApbToken<I2S>,
     pub pcc: ApbToken<Pcc>,
 }
@@ -575,9 +575,9 @@ impl ApbTokens {
             tc2: ApbToken::new(),
             tc3: ApbToken::new(),
             tcc2: ApbToken::new(),
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(feature = "has-tcc3")]
             tcc3: ApbToken::new(),
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(feature = "has-tc5")]
             tc5: ApbToken::new(),
             p_dec: ApbToken::new(),
             ac: ApbToken::new(),
@@ -587,20 +587,20 @@ impl ApbTokens {
             ccl: ApbToken::new(),
             sercom4: ApbToken::new(),
             sercom5: ApbToken::new(),
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(feature = "has-sercom6")]
             sercom6: ApbToken::new(),
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(feature = "has-sercom7")]
             sercom7: ApbToken::new(),
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(feature = "has-tcc4")]
             tcc4: ApbToken::new(),
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(feature = "has-tc6")]
             tc6: ApbToken::new(),
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(feature = "has-tc7")]
             tc7: ApbToken::new(),
             adc0: ApbToken::new(),
             adc1: ApbToken::new(),
             dac: ApbToken::new(),
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(feature = "has-i2s")]
             i2s: ApbToken::new(),
             pcc: ApbToken::new(),
         }
@@ -628,9 +628,9 @@ pub struct ApbClks {
     pub nvm_ctrl: ApbClk<NvmCtrl>,
     pub port: ApbClk<Port>,
     pub ram_ecc: ApbClk<RamEcc>,
-    #[cfg(any(feature = "same53", feature = "same54"))]
+    #[cfg(feature = "has-gmac")]
     pub gmac: ApbClk<Gmac>,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-tc4")]
     pub tc4: ApbClk<Tc4>,
     pub qspi: ApbClk<Qspi>,
 }
@@ -659,9 +659,9 @@ impl ApbClks {
             nvm_ctrl: ApbClk::new(ApbToken::new()),
             port: ApbClk::new(ApbToken::new()),
             ram_ecc: ApbClk::new(ApbToken::new()),
-            #[cfg(any(feature = "same53", feature = "same54"))]
+            #[cfg(feature = "has-gmac")]
             gmac: ApbClk::new(ApbToken::new()),
-            #[cfg(feature = "min-samd51j")]
+            #[cfg(feature = "has-tc4")]
             tc4: ApbClk::new(ApbToken::new()),
             qspi: ApbClk::new(ApbToken::new()),
         }

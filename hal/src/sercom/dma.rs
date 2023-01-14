@@ -97,10 +97,10 @@ impl<C: i2c::AnyConfig> I2c<C> {
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -145,10 +145,10 @@ impl<C: i2c::AnyConfig> I2c<C> {
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -221,10 +221,10 @@ where
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -259,10 +259,10 @@ where
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -327,10 +327,10 @@ where
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -365,10 +365,10 @@ where
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "min-samd51g")]
+        #[cfg(feature = "thumbv7")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check

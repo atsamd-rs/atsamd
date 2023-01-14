@@ -207,30 +207,30 @@ crate::paste::item! {
 ei!(ExtInt[0] {
     PA00,
     PA16,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-pb00")]
     PB00,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB16,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC00,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC16,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD00,
 });
 
 ei!(ExtInt[1] {
     PA01,
     PA17,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-pb01")]
     PB01,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB17,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC01,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC17,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD01,
 });
 
@@ -238,11 +238,11 @@ ei!(ExtInt[2] {
     PA02,
     PA18,
     PB02,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB18,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC02,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-128")]
     PC18,
 });
 
@@ -250,78 +250,78 @@ ei!(ExtInt[3] {
     PA03,
     PA19,
     PB03,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB19,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC03,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC19,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD08,
 });
 
 ei!(ExtInt[4] {
     PA04,
     PA20,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-pb04")]
     PB04,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB20,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PC04,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC20,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD09,
 });
 
 ei!(ExtInt[5] {
     PA05,
     PA21,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "has-pb05")]
     PB05,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB21,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC05,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC21,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD10,
 });
 
 ei!(ExtInt[6] {
     PA06,
     PA22,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB06,
     PB22,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC06,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PC22,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD11,
 });
 
 ei!(ExtInt[7] {
     PA07,
     PA23,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB07,
     PB23,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PC23,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD12,
 });
 
 ei!(ExtInt[8] {
     PA24,
     PB08,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB24,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC24,
 });
 
@@ -329,22 +329,22 @@ ei!(ExtInt[9] {
     PA09,
     PA25,
     PB09,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PB25,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC07,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC25,
 });
 
 ei!(ExtInt[10] {
     PA10,
     PB10,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC10,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC26,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD20,
 });
 
@@ -352,62 +352,62 @@ ei!(ExtInt[11] {
     PA11,
     PA27,
     PB11,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC11,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC27,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PD21,
 });
 
 ei!(ExtInt[12] {
     PA12,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB12,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PB26,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC12,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC28,
 });
 
 ei!(ExtInt[13] {
     PA13,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB13,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PB27,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC13,
 });
 
 ei!(ExtInt[14] {
     PA14,
     PA30,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB14,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PB28,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB30,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC14,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PC30,
 });
 
 ei!(ExtInt[15] {
     PA15,
     PA31,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB15,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PB29,
-    #[cfg(feature = "min-samd51j")]
+    #[cfg(feature = "pins-64")]
     PB31,
-    #[cfg(feature = "min-samd51n")]
+    #[cfg(feature = "pins-100")]
     PC15,
-    #[cfg(feature = "min-samd51p")]
+    #[cfg(feature = "pins-128")]
     PC31,
 });

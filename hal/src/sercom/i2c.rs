@@ -255,11 +255,11 @@ fn i2c_send_with_dma<A: AnyConfig, C: AnyChannel<Status = Ready>>(i2c: I2c<A>, c
 "
 )]
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 #[path = "i2c/pads_thumbv6m.rs"]
 mod pads;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 #[path = "i2c/pads_thumbv7em.rs"]
 mod pads;
 

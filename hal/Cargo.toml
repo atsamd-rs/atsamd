@@ -1,227 +1,368 @@
+#===============================================================================
+# Package data
+#===============================================================================
+
 [package]
-name = "atsamd-hal"
-version = "0.15.1"
 authors = [
-    "Wez Furlong <wez@wezfurlong.org>",
-    "Paul Sajna <sajattack@gmail.com>",
-    "Michael van Niekerk <mvniekerk@gmail.com>",
-    "Jesse Braham <jesse@beta7.io>",
+  "Wez Furlong <wez@wezfurlong.org>",
+  "Paul Sajna <sajattack@gmail.com>",
+  "Michael van Niekerk <mvniekerk@gmail.com>",
+  "Jesse Braham <jesse@beta7.io>",
+  "Bradley Harden <bradleyharden@gmail.com>",
 ]
-description = "HAL and Peripheral access API for ATSAMD11, ATSAMD21, ATSAMD51, ATSAME51, ATSAME53 and ATSAME54 microcontrollers"
-keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
+description = "HAL and Peripheral access API for ATSAMD11, ATSAMD21, ATSAMD51, ATSAME51, ATSAME53 and ATSAME54 microcontrollers"
 documentation = "https://docs.rs/crate/atsamd-hal/"
 edition = "2021"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+name = "atsamd-hal"
+readme = "README.md"
+repository = "https://github.com/atsamd-rs/atsamd"
 rust-version = "1.65"
+version = "0.15.1"
 
 [package.metadata.docs.rs]
 features = ["samd21g", "samd21g-rt", "unproven", "usb"]
 
+#===============================================================================
+# Required depdendencies
+#===============================================================================
+
 [dependencies]
+aes = "0.7.5"
 bitfield = "0.13"
 bitflags = "1.2.1"
+cipher = "0.3"
 cortex-m = "0.7"
 embedded-hal = "0.2"
 modular-bitfield = "0.11"
 nb = "1.0"
-paste = "1.0"
+num-traits = {version = "0.2.14", default-features = false}
+opaque-debug = "0.3.0"
+paste = "1.0.11"
 rand_core = "0.6"
 seq-macro = "0.3"
 typenum = "1.12.0"
 vcell = "0.1"
-# AES related
-aes = "0.7.5"
-cipher = "0.3"
-opaque-debug = "0.3.0"
+void = {version = "1.0", default-features = false}
 
-[dependencies.jlink_rtt]
-optional = true
-version = "0.2"
+#===============================================================================
+# Optional depdendencies
+#===============================================================================
 
-[dependencies.num-traits]
-default-features = false
-version = "0.2.14"
+embedded-sdmmc = {version = "0.3", optional = true}
+fugit = {version = "0.3", optional = true}
+jlink_rtt = {version = "0.2", optional = true}
+rtic-monotonic = {version = "1.0", optional = true}
+usb-device = {version = "0.2", optional = true}
 
-[dependencies.usb-device]
-version = "0.2"
-optional = true
+#===============================================================================
+# PACs
+#===============================================================================
 
-[dependencies.rtic-monotonic]
-optional = true
-version = "1.0"
+# The peripheral access crates (PAC) for each supported chip variant are listed
+# here. Each is an optional dependency, which means each PAC name also appears
+# as a Cargo feature. Users should not select PAC features manually. Instead,
+# users should specify a corresponding variant (see below). The variant features
+# will select the correct PAC, as well as other configuration features.
 
-[dependencies.fugit]
-optional = true
-version = "0.3"
+atsamd11c = {version = "0.12.0", path = "../pac/atsamd11c", optional = true}
+atsamd11d = {version = "0.12.0", path = "../pac/atsamd11d", optional = true}
 
-[dependencies.void]
-default-features = false
-version = "1.0"
+atsamd21e = {version = "0.12.0", path = "../pac/atsamd21e", optional = true}
+atsamd21g = {version = "0.12.0", path = "../pac/atsamd21g", optional = true}
+atsamd21j = {version = "0.12.0", path = "../pac/atsamd21j", optional = true}
 
-# Each of the supported chips is listed as an optional dependency here.
-# This makes it available when the corresponding feature name is referenced.
-# We use a feature named "samdFOO" to pull in the dependency named "atsamdFOO"
-[dependencies.atsamd11c]
-path = "../pac/atsamd11c"
-version = "0.12"
-optional = true
+atsamd51g = {version = "0.12.0", path = "../pac/atsamd51g", optional = true}
+atsamd51j = {version = "0.12.0", path = "../pac/atsamd51j", optional = true}
+atsamd51n = {version = "0.12.0", path = "../pac/atsamd51n", optional = true}
+atsamd51p = {version = "0.12.0", path = "../pac/atsamd51p", optional = true}
 
-[dependencies.atsamd11d]
-path = "../pac/atsamd11d"
-version = "0.12"
-optional = true
+atsame51g = {version = "0.12.0", path = "../pac/atsame51g", optional = true}
+atsame51j = {version = "0.12.0", path = "../pac/atsame51j", optional = true}
+atsame51n = {version = "0.12.0", path = "../pac/atsame51n", optional = true}
 
-[dependencies.atsamd21e]
-path = "../pac/atsamd21e"
-version = "0.12"
-optional = true
+atsame53j = {version = "0.12.0", path = "../pac/atsame53j", optional = true}
+atsame53n = {version = "0.12.0", path = "../pac/atsame53n", optional = true}
 
-[dependencies.atsamd21g]
-path = "../pac/atsamd21g"
-version = "0.12"
-optional = true
+atsame54n = {version = "0.12.0", path = "../pac/atsame54n", optional = true}
+atsame54p = {version = "0.12.0", path = "../pac/atsame54p", optional = true}
 
-[dependencies.atsamd21j]
-path = "../pac/atsamd21j"
-version = "0.12"
-optional = true
-
-[dependencies.atsamd51g]
-path = "../pac/atsamd51g"
-version = "0.12"
-optional = true
-
-[dependencies.atsamd51j]
-path = "../pac/atsamd51j"
-version = "0.12"
-optional = true
-
-[dependencies.atsamd51n]
-path = "../pac/atsamd51n"
-version = "0.12"
-optional = true
-
-[dependencies.atsamd51p]
-path = "../pac/atsamd51p"
-version = "0.12"
-optional = true
-
-[dependencies.atsame51g]
-path = "../pac/atsame51g"
-version = "0.12"
-optional = true
-
-[dependencies.atsame51j]
-path = "../pac/atsame51j"
-version = "0.12"
-optional = true
-
-[dependencies.atsame51n]
-path = "../pac/atsame51n"
-version = "0.12"
-optional = true
-
-[dependencies.atsame53j]
-path = "../pac/atsame53j"
-version = "0.12"
-optional = true
-
-[dependencies.atsame53n]
-path = "../pac/atsame53n"
-version = "0.12"
-optional = true
-
-[dependencies.atsame54n]
-path = "../pac/atsame54n"
-version = "0.12"
-optional = true
-
-[dependencies.atsame54p]
-path = "../pac/atsame54p"
-version = "0.12"
-optional = true
-
-[dependencies.embedded-sdmmc]
-version = "0.3"
-optional = true
-
+#===============================================================================
+# Features
+#===============================================================================
 
 [features]
+
+#-------------------------------------------------------------------------------
+# Variant features
+#-------------------------------------------------------------------------------
+
+# Each of the following features corresponds to a supported chip variant. Users
+# should select one (and only one) feature corresponding to their target chip.
+# These features represent the public interface of the HAL and are not expected
+# to change. But all implied features are considered implementation details and
+# subject to change without notice.
+
+samd11c = ["samd11", "atsamd11c", "periph-d11c", "pins-d11c"]
+samd11d = ["samd11", "atsamd11d", "periph-d11d", "pins-d11d"]
+
+samd21e = ["samd21", "atsamd21e", "periph-d21e", "pins-d21e"]
+samd21g = ["samd21", "atsamd21g", "periph-d21g", "pins-d21g"]
+samd21j = ["samd21", "atsamd21j", "periph-d21j", "pins-d21j"]
+
+samd21el = ["samd21", "atsamd21e", "periph-d21el", "pins-d21el"]
+samd21gl = ["samd21", "atsamd21g", "periph-d21gl", "pins-d21gl"]
+
+samd51g = ["samd51", "atsamd51g", "periph-d51g", "pins-d51g"]
+samd51j = ["samd51", "atsamd51j", "periph-d51j", "pins-d51j"]
+samd51n = ["samd51", "atsamd51n", "periph-d51n", "pins-d51n"]
+samd51p = ["samd51", "atsamd51p", "periph-d51p", "pins-d51p"]
+
+same51g = ["same51", "atsamd51p", "periph-e51g", "pins-e51g"]
+same51j = ["same51", "atsame51j", "periph-e51j", "pins-e51j"]
+same51n = ["same51", "atsame51n", "periph-e51n", "pins-e51n"]
+
+same53j = ["same53", "atsame53j", "periph-e53j", "pins-e53j"]
+same53n = ["same53", "atsame53n", "periph-e53n", "pins-e53n"]
+
+same54n = ["same54", "atsame54n", "periph-e54n", "pins-e54n"]
+same54p = ["same54", "atsame54p", "periph-e54p", "pins-e54p"]
+
+#-------------------------------------------------------------------------------
+# RT features
+#-------------------------------------------------------------------------------
+
+# Instead of selecting a variant feature above, users can optionally select an
+# `-rt` feature, which enables the `rt` feature of the corresponding PAC.
+
+samd11c-rt = ["samd11c", "atsamd11c/rt"]
+samd11d-rt = ["samd11d", "atsamd11d/rt"]
+
+samd21e-rt = ["samd21e", "atsamd21e/rt"]
+samd21g-rt = ["samd21g", "atsamd21g/rt"]
+samd21j-rt = ["samd21j", "atsamd21j/rt"]
+
+samd21el-rt = ["samd21el", "atsamd21e/rt"]
+samd21gl-rt = ["samd21gl", "atsamd21g/rt"]
+
+samd51g-rt = ["samd51g", "atsamd51g/rt"]
+samd51j-rt = ["samd51j", "atsamd51j/rt"]
+samd51n-rt = ["samd51n", "atsamd51n/rt"]
+samd51p-rt = ["samd51p", "atsamd51p/rt"]
+
+same51g-rt = ["same51g", "atsame51g/rt"]
+same51j-rt = ["same51j", "atsame51j/rt"]
+same51n-rt = ["same51n", "atsame51n/rt"]
+
+same53j-rt = ["same53j", "atsame53j/rt"]
+same53n-rt = ["same53n", "atsame53n/rt"]
+
+same54n-rt = ["same54n", "atsame54n/rt"]
+same54p-rt = ["same54p", "atsame54p/rt"]
+
+#-------------------------------------------------------------------------------
+# User-selectable features
+#-------------------------------------------------------------------------------
+
+# These features are user-selectable and enable additional features within the
+# HAL, like USB or DMA support.
+
+# Many essential traits within embedded-hal are locked behind the `unproven`
+# feature. This is unfortunate, but it should be resolved with embedded-hal 1.0.
+# Until then, we make `unproven` a default feature.
 default = ["unproven"]
 
-# This section lists our feature name to dependency mapping.  This is separated
-# out so that the board support crates can reference a single feature name to
-# select the appropriate chip, and to keep that separate from the dependency name
-# for the `rt` feature below, which has to list out all possible optional deps.
-# If we simply used feature names that matched the dependency names, enabling the
-# rt feature would link all possible parts in and cause a linker error due to
-# the high degree of similar symbols present in the various parts.
+dma = ["unproven"]
+enable_unsafe_aes_newblock_cipher = []
+max-channels = ["dma"]
+rtic = ["rtic-monotonic", "fugit"]
+sdmmc = ["embedded-sdmmc"]
+unproven = ["embedded-hal/unproven"]
+usb = ["usb-device"]
+use_rtt = ["jlink_rtt"]
 
-# The `device` feature is a dependency of each specific target device.  It
-# should not be enabled directly, as that could lead to cryptic build errors.
-# The `library` feature can be enabled to use atsamd-hal without selecting a
-# specific target device.
+#===============================================================================
+# Implementation-details
+#===============================================================================
+
+# The remaining features are considered implementation details and subject to
+# change without notice. Users should not specify any of these features
+# manually.
+
+#-------------------------------------------------------------------------------
+# Chip
+#-------------------------------------------------------------------------------
+
+# The `device` feature tells the HAL that a device has been selected from the
+# feature list. It exists mostly to provide better error messages.
 device = []
 
-# Bypasses compile-time checks that a specific device is enabled.
+# The `library` feature exists to allow building the HAL without specifying a
+# device. It should be mutually exclusive with the `device` feature.
 library = []
 
-samd11 = ["device"] # Convenience feature for shared configuration of samd11 chips.
-samd11c = ["atsamd11c", "samd11"]
-samd11c-rt = ["samd11c", "atsamd11c/rt"]
-samd11d = ["atsamd11d", "samd11"]
-samd11d-rt = ["samd11d", "atsamd11d/rt"]
-samd21 = ["device"] # Convenience feature for shared configuration of samd21 chips.
-samd21e = ["atsamd21e", "samd21"]
-samd21e-rt = ["samd21e", "atsamd21e/rt"]
-samd21el = ["samd21e"]
-samd21el-rt = ["samd21e-rt", "samd21el"]
-samd21g = ["atsamd21g", "samd21", "min-samd21g"]
-samd21g-rt = ["samd21g", "atsamd21g/rt"]
-samd21gl = ["samd21g"]
-samd21gl-rt = ["samd21g-rt", "samd21gl"]
-samd21j = ["atsamd21j", "samd21", "min-samd21j"]
-samd21j-rt = ["samd21j", "atsamd21j/rt"]
-samd51 = ["device"] # Convenience feature for shared configuration of samd51 chips.
-samd51g = ["atsamd51g", "samd51", "min-samd51g"]
-samd51g-rt = ["samd51g", "atsamd51g/rt"]
-samd51j = ["atsamd51j", "samd51", "min-samd51j"]
-samd51j-rt = ["samd51j", "atsamd51j/rt"]
-samd51n = ["atsamd51n", "samd51", "min-samd51n"]
-samd51n-rt = ["samd51n", "atsamd51n/rt"]
-samd51p = ["atsamd51p", "samd51", "min-samd51p"]
-samd51p-rt = ["samd51p", "atsamd51p/rt"]
-same51 = ["device"] # Convenience feature for shared configuration of same51 chips
-same51g = ["atsame51g", "same51", "min-samd51g"]
-same51g-rt = ["same51g", "atsame51g/rt"]
-same51j = ["atsame51j", "same51", "min-samd51j"]
-same51j-rt = ["same51j", "atsame51j/rt"]
-same51n = ["atsame51n", "same51", "min-samd51n"]
-same51n-rt = ["same51n", "atsame51n/rt"]
-same53 = ["device"] # Convenience feature for shared configuration of same53 chips
-same53j = ["atsame53j", "same53", "min-samd51j"]
-same53j-rt = ["same53j", "atsame53j/rt"]
-same53n = ["atsame53n", "same53", "min-samd51n"]
-same53n-rt = ["same53n", "atsame53n/rt"]
-same54 = ["device"] # Convenience feature for shared configuration of same54 chips
-same54n = ["atsame54n", "same54", "min-samd51n"]
-same54n-rt = ["same54n", "atsame54n/rt"]
-same54p = ["atsame54p", "same54", "min-samd51p"]
-same54p-rt = ["same54p", "atsame54p/rt"]
-min-samd21g = []
-min-samd21j = ["min-samd21g"]
-min-samd51g = []
-min-samd51j = ["min-samd51g"]
-min-samd51n = ["min-samd51j"]
-min-samd51p = ["min-samd51n"]
-unproven = ["embedded-hal/unproven"]
-use_rtt = ["jlink_rtt"]
-usb = ["usb-device"]
-dma = ["unproven"]
-max-channels = ["dma"]
-sdmmc = ["embedded-sdmmc"]
-rtic = ["rtic-monotonic", "fugit"]
-enable_unsafe_aes_newblock_cipher = []
+# Define a feature for each instruction set
+thumbv6 = ["device"]
+thumbv7 = ["device"]
+
+# Map each series of chips to its instruction set
+samd11 = ["thumbv6"]
+samd21 = ["thumbv6"]
+samd51 = ["thumbv7"]
+same51 = ["thumbv7"]
+same53 = ["thumbv7"]
+same54 = ["thumbv7"]
+
+#-------------------------------------------------------------------------------
+# Pins
+#-------------------------------------------------------------------------------
+
+# Define features for specific pins
+#
+# Cargo features are purely additive. This mostly works well for GPIO pins,
+# because the pins in a larger package are typically a strict super set of the
+# pins in a smaller package. However, there are a few exceptions to this rule.
+# For these pins, we create dedicated features.
+has-pa00 = []
+has-pa01 = []
+has-pa27 = []
+has-pa28 = []
+has-pb00 = []
+has-pb01 = []
+has-pb02 = []
+has-pb03 = []
+has-pb04 = []
+has-pb05 = []
+has-pb22 = []
+has-pb23 = []
+
+# Define features for various sets of pins, each corresponding to a particular
+# device package
+pins-14 = []
+pins-24 = ["pins-14"]
+pins-32 = ["pins-24"]
+pins-32a = ["pins-32", "has-pa00", "has-pa01", "has-pa27"]
+pins-32l = ["pins-32", "has-pb02", "has-pb03", "has-pb04", "has-pb05"]
+pins-48 = ["pins-32", "has-pa27", "has-pb02", "has-pb03"]
+pins-48a = ["pins-48", "has-pa00", "has-pa01", "has-pb22", "has-pb23"]
+pins-48l = ["pins-48", "has-pb00", "has-pb01", "has-pb04", "has-pb05"]
+pins-64 = ["pins-48a", "pins-48l"]
+
+pins-100 = ["pins-64"]
+pins-128 = ["pins-100"]
+
+# Map each variant to its corresponding set of pins
+pins-d11c = ["pins-14", "has-pa28"]
+pins-d11d = ["pins-24", "has-pa28", "has-pa27"]
+
+pins-d21e = ["pins-32a", "has-pa28"]
+pins-d21g = ["pins-48a", "has-pa28"]
+pins-d21j = ["pins-64", "has-pa28"]
+
+pins-d21el = ["pins-32l", "has-pa28"]
+pins-d21gl = ["pins-48l", "has-pa28"]
+
+pins-d51g = ["pins-48a"]
+pins-d51j = ["pins-64"]
+pins-d51n = ["pins-100"]
+pins-d51p = ["pins-128"]
+
+pins-e51g = ["pins-48a"]
+pins-e51j = ["pins-64"]
+pins-e51n = ["pins-100"]
+
+pins-e53j = ["pins-64"]
+pins-e53n = ["pins-100"]
+
+pins-e54n = ["pins-100"]
+pins-e54p = ["pins-128"]
+
+#-------------------------------------------------------------------------------
+# Peripherals
+#-------------------------------------------------------------------------------
+
+# Define a feature for each optional peripheral
+has-can = []
+has-ethernet = []
+has-gmac = []
+has-i2s = []
+has-sdhc1 = []
+has-sercom0 = []
+has-sercom1 = []
+has-sercom2 = []
+has-sercom3 = []
+has-sercom4 = []
+has-sercom5 = []
+has-sercom6 = []
+has-sercom7 = []
+has-tc0 = []
+has-tc1 = []
+has-tc2 = []
+has-tc3 = []
+has-tc4 = []
+has-tc5 = []
+has-tc6 = []
+has-tc7 = []
+has-tcc0 = []
+has-tcc1 = []
+has-tcc2 = []
+has-tcc3 = []
+has-usb = []
+
+# Map each variant to its collection of peripherals
+periph-d11c = ["has-sercom0", "has-sercom1", "has-tc1", "has-tc2", "has-tcc0"]
+periph-d11d = ["periph-d11c", "has-sercom2"]
+
+periph-d21 = [
+  "has-i2s",
+  "has-sercom0",
+  "has-sercom1",
+  "has-sercom2",
+  "has-sercom3",
+  "has-tc3",
+  "has-tc4",
+  "has-tc5",
+  "has-tcc0",
+  "has-tcc1",
+  "has-tcc2",
+]
+
+periph-d21e = ["periph-d21", "has-usb"]
+periph-d21g = ["periph-d21e", "has-sercom4", "has-sercom5"]
+periph-d21j = ["periph-d21g", "has-tc6", "has-tc7"]
+
+periph-d21el = ["periph-d21"]
+periph-d21gl = ["periph-d21el", "has-sercom4", "has-sercom5"]
+
+periph-d51 = [
+  "has-sercom0",
+  "has-sercom1",
+  "has-sercom2",
+  "has-sercom3",
+  "has-sercom4",
+  "has-sercom5",
+  "has-tc0",
+  "has-tc1",
+  "has-tc2",
+  "has-tc3",
+  "has-tcc0",
+  "has-tcc1",
+  "has-usb",
+]
+
+periph-d51g = ["periph-d51"]
+periph-d51j = ["periph-d51g", "has-i2s", "has-tcc2", "has-tcc3", "has-tc4", "has-tc5"]
+periph-d51n = ["periph-d51j", "has-tc6", "has-tc7", "has-sdhc1", "has-sercom6", "has-sercom7"]
+periph-d51p = ["periph-d51n"]
+
+periph-e51g = ["periph-d51g", "has-can"]
+periph-e51j = ["periph-d51j", "has-can"]
+periph-e51n = ["periph-d51j", "has-can", "has-tc6", "has-tc7", "has-sercom6", "has-sercom7"]
+
+periph-e53j = ["periph-d51j", "has-ethernet"]
+periph-e53n = ["periph-d51n", "has-ethernet"]
+
+periph-e54n = ["periph-d51n", "has-ethernet", "has-can"]
+periph-e54p = ["periph-d51p", "has-ethernet", "has-can"]

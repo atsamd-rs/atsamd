@@ -256,7 +256,7 @@
       "target": "thumbv6m-none-eabi"
     },
     "samd21el":  {
-      "features": [ "samd21el", "unproven", "usb", "dma", "rtic" ],
+      "features": [ "samd21el", "unproven", "dma", "rtic" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21g":  {
@@ -264,7 +264,7 @@
       "target": "thumbv6m-none-eabi"
     },
     "samd21gl":  {
-      "features": [ "samd21gl", "unproven", "usb", "dma", "rtic" ],
+      "features": [ "samd21gl", "unproven", "dma", "rtic" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21j":  {

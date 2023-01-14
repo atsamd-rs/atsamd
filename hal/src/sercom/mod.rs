@@ -3,7 +3,7 @@
 //! The SERCOM module is used to configure the SERCOM peripherals as USART, SPI
 //! or I2C interfaces.
 #![cfg_attr(
-    feature = "min-samd51g",
+    feature = "thumbv7",
     doc = "
 # Undocumented features
  
@@ -37,19 +37,12 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::pac;
+use pac::sercom0;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use pac::MCLK as APB_CLK_CTRL;
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 use pac::PM as APB_CLK_CTRL;
-
-use pac::{sercom0, SERCOM0, SERCOM1};
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
-use pac::{SERCOM2, SERCOM3};
-#[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
-use pac::{SERCOM4, SERCOM5};
-#[cfg(feature = "min-samd51n")]
-use pac::{SERCOM6, SERCOM7};
 
 #[cfg(feature = "dma")]
 use crate::dmac::TriggerSource;
@@ -89,9 +82,14 @@ macro_rules! sercom {
     ( $apbmask:ident: ($start:literal, $end:literal) ) => {
         seq!(N in $start..=$end {
             paste! {
+                #[cfg(feature = "has-" sercom~N)]
+                use pac::SERCOM~N;
                 /// Type alias for the corresponding SERCOM instance
+                #[cfg(feature = "has-" sercom~N)]
                 pub type Sercom~N = SERCOM~N;
+                #[cfg(feature = "has-" sercom~N)]
                 impl Sealed for Sercom~N {}
+                #[cfg(feature = "has-" sercom~N)]
                 impl Sercom for Sercom~N {
                     const NUM: usize = N;
                     #[cfg(feature = "dma")]
@@ -108,18 +106,12 @@ macro_rules! sercom {
     };
 }
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-sercom!(apbcmask: (0, 1));
-#[cfg(feature = "samd21")]
-sercom!(apbcmask: (2, 3));
-#[cfg(feature = "min-samd21g")]
-sercom!(apbcmask: (4, 5));
+#[cfg(feature = "thumbv6")]
+sercom!(apbcmask: (0, 5));
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 sercom!(apbamask: (0, 1));
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 sercom!(apbbmask: (2, 3));
-#[cfg(feature = "min-samd51g")]
-sercom!(apbdmask: (4, 5));
-#[cfg(feature = "min-samd51n")]
-sercom!(apbdmask: (6, 7));
+#[cfg(feature = "thumbv7")]
+sercom!(apbdmask: (4, 7));

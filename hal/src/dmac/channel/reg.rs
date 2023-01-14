@@ -24,10 +24,10 @@ use crate::pac::{
     Peripherals, DMAC,
 };
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 use pac::dmac as channel_regs;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use pac::dmac::channel as channel_regs;
 
 use channel_regs::{
@@ -36,7 +36,7 @@ use channel_regs::{
 };
 use channel_regs::{CHCTRLA, CHCTRLB, CHINTENCLR, CHINTENSET, CHINTFLAG, CHSTATUS};
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use pac::dmac::{
     channel::{chprilvl::CHPRILVL_SPEC, CHPRILVL},
     CHANNEL,
@@ -56,7 +56,7 @@ pub(super) trait Register<Id: ChId> {
     /// the CHID register, then access the channel control registers.
     /// If an interrupt were to change the CHID register and not reset it
     /// to the expected value, we would be faced with undefined behaviour.
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     fn with_chid<F: FnOnce(&DMAC) -> R, R>(&mut self, fun: F) -> R {
         // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
@@ -92,7 +92,7 @@ pub(super) trait Register<Id: ChId> {
     /// the registers are accessed in an interrupt-safe way, as the SAMD21
     /// DMAC is a little funky. For the SAMD51/SAMEx, we simply take a reference
     /// to the correct channel number and run the closure on that.
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn with_chid<F: FnOnce(&CHANNEL) -> R, R>(&mut self, fun: F) -> R {
         // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
@@ -266,7 +266,7 @@ reg_proxy!(chintenclr, register, rw);
 reg_proxy!(chintenset, register, rw);
 reg_proxy!(chintflag, register, rw);
 reg_proxy!(chstatus, register, r);
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 reg_proxy!(chprilvl, register, rw);
 
 reg_proxy!(intstatus, bit, r);
@@ -289,7 +289,7 @@ pub(super) struct RegisterBlock<Id: ChId> {
     pub busych: BusychProxy<Id, BUSYCH>,
     pub pendch: PendchProxy<Id, PENDCH>,
     pub swtrigctrl: SwtrigctrlProxy<Id, SWTRIGCTRL>,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     pub chprilvl: ChprilvlProxy<Id, CHPRILVL>,
 }
 
@@ -306,7 +306,7 @@ impl<Id: ChId> RegisterBlock<Id> {
             busych: BusychProxy::new(),
             pendch: PendchProxy::new(),
             swtrigctrl: SwtrigctrlProxy::new(),
-            #[cfg(feature = "min-samd51g")]
+            #[cfg(feature = "thumbv7")]
             chprilvl: ChprilvlProxy::new(),
         }
     }

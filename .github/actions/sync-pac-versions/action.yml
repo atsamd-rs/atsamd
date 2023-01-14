@@ -3,7 +3,7 @@ description: 'Updates HAL file with latest PAC versions'
 runs:
   using: "composite"
   steps:
-    - run: sudo apt install python3-toml
+    - run: sudo apt install python3-pip && pip install --user tomlkit
       shell: bash
     - run: python3 ${{ github.action_path }}/update-from-pac.py
       shell: bash
