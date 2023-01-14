@@ -69,13 +69,13 @@ use seq_macro::seq;
 
 use crate::pac;
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 mod imports {
     pub use crate::pac::gclk::pchctrl::GEN_A;
     pub use crate::pac::gclk::PCHCTRL as CTRL;
 }
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 mod imports {
     pub use crate::pac::gclk::clkctrl::GEN_A;
     pub use crate::pac::gclk::CLKCTRL as CTRL;
@@ -86,7 +86,7 @@ use imports::*;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
-use super::gclk::{with_gclk_max_expr, DynGclkId, GclkId};
+use super::gclk::{DynGclkId, GclkId};
 use super::Source;
 
 //==============================================================================
@@ -129,11 +129,11 @@ impl<P: PclkId> PclkToken<P> {
         // of registers for the corresponding `PclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         unsafe {
             &(*pac::GCLK::PTR).pchctrl[P::DYN as usize]
         }
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         unsafe {
             &(*pac::GCLK::PTR).clkctrl
         }
@@ -144,12 +144,12 @@ impl<P: PclkId> PclkToken<P> {
     fn enable(&mut self, source: DynPclkSourceId) {
         self.ctrl().write(|w| {
             w.gen().variant(source.into());
-            #[cfg(feature = "samd21")]
+            #[cfg(feature = "thumbv6")]
             {
                 w.clken().set_bit();
                 unsafe { w.id().bits(P::DYN as u8) }
             }
-            #[cfg(feature = "samd51")]
+            #[cfg(feature = "thumbv7")]
             w.chen().set_bit()
         });
     }
@@ -158,12 +158,12 @@ impl<P: PclkId> PclkToken<P> {
     #[inline]
     fn disable(&mut self) {
         self.ctrl().modify(|_, w| {
-            #[cfg(feature = "samd21")]
+            #[cfg(feature = "thumbv6")]
             {
                 w.clken().clear_bit();
                 unsafe { w.id().bits(P::DYN as u8) }
             }
-            #[cfg(feature = "samd51")]
+            #[cfg(feature = "thumbv7")]
             w.chen().clear_bit()
         });
     }
@@ -182,6 +182,7 @@ impl<P: PclkId> PclkToken<P> {
 /// ```
 /// use atsamd_hal::clock::v2::pclk::ids::*;
 /// ```
+#[cfg(feature = "thumbv7")]
 pub mod ids {
 
     pub use crate::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
@@ -193,7 +194,6 @@ pub mod ids {
 
     pub use super::super::dfll::DfllId;
     pub use super::super::dpll::Dpll0Id;
-    #[cfg(feature = "has-dpll1")]
     pub use super::super::dpll::Dpll1Id;
     pub use super::super::types::{
         Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys10, EvSys11, EvSys2, EvSys3,
@@ -216,6 +216,37 @@ pub mod ids {
     #[cfg(feature = "has-i2s")]
     pub use super::super::types::{I2S0, I2S1};
 }
+
+#[cfg(feature = "thumbv6")]
+pub mod ids {
+    use paste::paste;
+    use seq_macro::seq;
+
+    pub use super::super::dfll::DfllId;
+    pub use super::super::dpll::Dpll0Id;
+    pub use super::super::types::{
+        AcAna, AcDig, Adc0, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5, Ptc, Rtc,
+        SercomSlow, SlowClk, Usb, Wdt,
+    };
+
+    seq!(N in 0..=5 {
+        paste! {
+            #[cfg(feature = "has-" sercom~N)]
+            pub use crate::sercom::Sercom~N;
+        }
+    });
+
+    #[cfg(feature = "samd11")]
+    pub use super::super::types::{Tc1Tc2, Tcc0};
+
+    #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
+    pub use super::super::types::Tc6Tc7;
+    #[cfg(feature = "samd21")]
+    pub use super::super::types::{
+        EvSys10, EvSys11, EvSys6, EvSys7, EvSys8, EvSys9, Tc4Tc5, Tcc0Tcc1, Tcc2Tc3, I2S0, I2S1,
+    };
+}
+
 use ids::*;
 
 /// Append the list of all [`PclkId`] types and `snake_case` id names to the
@@ -252,13 +283,13 @@ use ids::*;
 ///
 /// with_pclk_types_ids!(some_macro!(first, second));
 /// ```
+#[cfg(feature = "thumbv7")]
 macro_rules! with_pclk_types_ids {
     ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
         $some_macro!(
             $( $args )*
             (DfllId = 0, dfll)
             (Dpll0Id = 1, dpll0)
-            #[cfg(feature = "samd51")]
             (Dpll1Id = 2, dpll1)
             (SlowClk = 3, slow)
             (Eic = 4, eic)
@@ -315,6 +346,93 @@ macro_rules! with_pclk_types_ids {
             #[cfg(feature = "has-sdhc1")]
             (Sdhc1 = 46, sdhc1)
             (CM4Trace = 47, cm4_trace)
+        );
+    };
+}
+
+#[cfg(feature = "samd21")]
+macro_rules! with_pclk_types_ids {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        $some_macro!(
+            $( $args )*
+            (DfllId = 0, dfll)
+            (Dpll0Id = 1, dpll)
+            (SlowClk = 2, slow)
+            (Wdt = 3, wdt)
+            (Rtc = 4, rtc)
+            (Eic = 5, eic)
+            (Usb = 6, usb)
+            (EvSys0 = 7, ev_sys0)
+            (EvSys1 = 8, ev_sys1)
+            (EvSys2 = 9, ev_sys2)
+            (EvSys3 = 10, ev_sys3)
+            (EvSys4 = 11, ev_sys4)
+            (EvSys5 = 12, ev_sys5)
+            (EvSys6 = 13, ev_sys6)
+            (EvSys7 = 14, ev_sys7)
+            (EvSys8 = 15, ev_sys8)
+            (EvSys9 = 16, ev_sys9)
+            (EvSys10 = 17, ev_sys10)
+            (EvSys11 = 18, ev_sys11)
+            (SercomSlow = 19, sercom_slow)
+            (Sercom0 = 20, sercom0)
+            (Sercom1 = 21, sercom1)
+            #[cfg(feature = "has-sercom2")]
+            (Sercom2 = 22, sercom2)
+            #[cfg(feature = "has-sercom3")]
+            (Sercom3 = 23, sercom3)
+            #[cfg(feature = "has-sercom4")]
+            (Sercom4 = 24, sercom3)
+            #[cfg(feature = "has-sercom5")]
+            (Sercom5 = 25, sercom3)
+            (Tcc0Tcc1 = 26, tcc0_tcc1)
+            (Tcc2Tc3 = 27, tcc2_tc3)
+            (Tc4Tc5 = 28, tc4_tc5)
+            #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
+            (Tc6Tc7 = 29, tc6_tc7)
+            (Adc0 = 30, adc)
+            (AcDig = 31, ac_dig)
+            (AcAna = 32, ac_ana)
+            (Dac = 33, dac)
+            (Ptc = 34, ptc)
+            #[cfg(feature = "has-i2s")]
+            (I2S0 = 35, i2s0)
+            #[cfg(feature = "has-i2s")]
+            (I2S1 = 36, i2s1)
+        );
+    };
+}
+
+#[cfg(feature = "samd11")]
+macro_rules! with_pclk_types_ids {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        $some_macro!(
+            $( $args )*
+            (DfllId = 0, dfll)
+            (Dpll0Id = 1, dpll)
+            (SlowClk = 2, slow)
+            (Wdt = 3, wdt)
+            (Rtc = 4, rtc)
+            (Eic = 5, eic)
+            (Usb = 6, usb)
+            (EvSys0 = 7, ev_sys0)
+            (EvSys1 = 8, ev_sys1)
+            (EvSys2 = 9, ev_sys2)
+            (EvSys3 = 10, ev_sys3)
+            (EvSys4 = 11, ev_sys4)
+            (EvSys5 = 12, ev_sys5)
+            (SercomSlow = 13, sercom_slow)
+            (Sercom0 = 14, sercom0)
+            (Sercom1 = 15, sercom1)
+            #[cfg(feature = "has-sercom2")]
+            (Sercom2 = 16, sercom2)
+            (Tcc0 = 17, tcc0)
+            (Tc1Tc2 = 18, tc1_tc2)
+            (Adc0 = 19, adc)
+            (AcDig = 20, ac_dig)
+            (AcAna = 21, ac_ana)
+            (Dac = 22, dac)
+            (Ptc = 23, ptc)
         );
     };
 }
@@ -397,11 +515,14 @@ pub type DynPclkSourceId = DynGclkId;
 /// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
 impl From<DynPclkSourceId> for GEN_A {
     fn from(source: DynPclkSourceId) -> Self {
-        with_gclk_max_expr!(N in 0..=max {
-            match source {
-                #(
-                    DynGclkId::Gclk~N => GEN_A::GCLK~N,
-                )*
+        seq!(N in 0..=11 {
+            paste! {
+                match source {
+                    #(
+                        #[cfg(feature = "has-" gclk~N)]
+                        DynGclkId::Gclk~N => GEN_A::GCLK~N,
+                    )*
+                }
             }
         })
     }

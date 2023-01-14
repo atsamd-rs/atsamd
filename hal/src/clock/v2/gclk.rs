@@ -343,12 +343,11 @@ use seq_macro::seq;
 use typenum::{U0, U1};
 
 use crate::pac;
-use crate::pac::NVMCTRL;
 
 use crate::gpio::{self, AlternateH, AnyPin, Pin, PinId};
 use crate::pac::gclk::genctrl::SRC_A;
 use crate::pac::gclk::GENCTRL;
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 use crate::pac::gclk::GENDIV;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
@@ -357,7 +356,7 @@ use super::dfll::DfllId;
 // use super::dpll::{Dpll0Id, Dpll1Id};
 use super::osculp32k::OscUlp32kId;
 use super::xosc::Xosc0Id;
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 use super::xosc::Xosc1Id;
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
@@ -396,6 +395,7 @@ impl<G: GclkId> GclkToken<G> {
     }
 
     /// SYNCBUSY register mask for the corresponding GCLK
+    #[allow(unused)]
     const MASK: u16 = 1 << G::NUM;
 
     /// Provide a reference to the corresponding [`GENCTRL`] register
@@ -405,17 +405,17 @@ impl<G: GclkId> GclkToken<G> {
         // of registers for the corresponding `GclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         unsafe {
             &(*pac::GCLK::PTR).genctrl[G::NUM]
         }
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         unsafe {
             &(*pac::GCLK::PTR).genctrl
         }
     }
 
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     fn gendiv(&self) -> &GENDIV {
         unsafe { &(*pac::GCLK::PTR).gendiv }
@@ -430,12 +430,12 @@ impl<G: GclkId> GclkToken<G> {
         // Safety: We are only reading from the `SYNCBUSY` register, and we are
         // only observing the bit corresponding to this particular `GclkId`, so
         // there is no risk of memory corruption.
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         {
             let syncbusy = unsafe { &(*pac::GCLK::PTR).syncbusy };
             while syncbusy.read().genctrl().bits() & Self::MASK != 0 {}
         }
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         {
             let status = unsafe { &(*pac::GCLK::PTR).status };
             while status.read().syncbusy().bit() {}
@@ -458,14 +458,14 @@ impl<G: GclkId> GclkToken<G> {
         let (divsel, div) = div.divsel_div();
         // Safety: The `DIVSEL` and `DIV` values are derived from the
         // `GclkDivider` type, so they are guaranteed to be valid.
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         {
             self.genctrl().modify(|_, w| unsafe {
                 w.divsel().bit(divsel);
                 w.div().bits(div)
             });
         }
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         {
             self.genctrl().write(|w| {
                 unsafe { w.id().bits(G::NUM as u8) };
@@ -514,9 +514,9 @@ impl<G: GclkId> GclkToken<G> {
             // Safety: The `DIVSEL` and `DIV` values are derived from the
             // `GclkDivider` type, so they are guaranteed to be valid.
             unsafe {
-                #[cfg(feature = "samd51")]
+                #[cfg(feature = "thumbv7")]
                 w.div().bits(div);
-                #[cfg(feature = "samd21")]
+                #[cfg(feature = "thumbv6")]
                 w.id().bits(G::NUM as u8);
             };
             w.divsel().bit(divsel);
@@ -524,7 +524,7 @@ impl<G: GclkId> GclkToken<G> {
             w.idc().bit(settings.improve_duty_cycle);
             w.oov().bit(settings.output_off_value)
         });
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         self.gendiv().write(|w| unsafe { w.div().bits(div) });
         self.wait_syncbusy();
     }
@@ -554,14 +554,17 @@ pub enum DynGclkId {
     Gclk3,
     Gclk4,
     Gclk5,
+    #[cfg(feature = "has-gclk6")]
     Gclk6,
+    #[cfg(feature = "has-gclk7")]
     Gclk7,
+    #[cfg(feature = "has-gclk8")]
     Gclk8,
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "has-gclk9")]
     Gclk9,
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "has-gclk10")]
     Gclk10,
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "has-gclk11")]
     Gclk11,
 }
 
@@ -623,33 +626,9 @@ impl GclkId for Gclk1Id {
     type Divider = GclkDiv16;
 }
 
-macro_rules! with_gclk_max {
-    ($N:ident in $start:literal ..= max $mac:tt) => {
-        #[cfg(feature = "samd51")]
-        seq!($N in $start..=11 $mac);
-        #[cfg(feature = "samd21")]
-        seq!($N in $start..=8 $mac);
-    };
-}
-
-#[cfg(feature = "samd51")]
-macro_rules! with_gclk_max_expr {
-    ($N:ident in $start:literal ..= max $mac:tt) => {
-        seq!($N in $start..=11 $mac)
-    };
-}
-
-#[cfg(feature = "samd21")]
-macro_rules! with_gclk_max_expr {
-    ($N:ident in $start:literal ..= max $mac:tt) => {
-        seq!($N in $start..=8 $mac)
-    };
-}
-
-pub(super) use with_gclk_max_expr;
-
-with_gclk_max!(N in 2..=max {
+seq!(N in 2..=11 {
     paste! {
+        #[cfg(feature = "has-" gclk~N)]
         /// Type-level variant of [`GclkId`] representing the identity of
         #[doc = "GCLK" N]
         ///
@@ -659,7 +638,9 @@ with_gclk_max!(N in 2..=max {
         /// [type-level programming]: crate::typelevel
         /// [type-level enums]: crate::typelevel#type-level-enums
         pub enum [<Gclk N Id>] {}
+        #[cfg(feature = "has-" gclk~N)]
         impl Sealed for [<Gclk N Id>] {}
+        #[cfg(feature = "has-" gclk~N)]
         impl GclkId for [<Gclk N Id>] {
             const DYN: DynGclkId = DynGclkId::Gclk~N;
             const NUM: usize = N;
@@ -815,6 +796,7 @@ pub trait GclkIo: PinId {
 
 // These implementations are much easier to read with `#[rustfmt::skip]`
 #[rustfmt::skip]
+#[cfg(feature = "thumbv7")]
 mod gclkio_impl {
 
     use super::*;
@@ -855,6 +837,80 @@ mod gclkio_impl {
     impl GclkIo for gpio::PB23 { type GclkId = Gclk1Id; }
 }
 
+#[rustfmt::skip]
+#[cfg(feature = "samd21")]
+mod gclkio_impl {
+    use super::*;
+
+    impl GclkIo for gpio::PA10 { type GclkId = Gclk4Id; }
+    impl GclkIo for gpio::PA11 { type GclkId = Gclk5Id; }
+    impl GclkIo for gpio::PA14 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA15 { type GclkId = Gclk1Id; }
+    impl GclkIo for gpio::PA16 { type GclkId = Gclk2Id; }
+    impl GclkIo for gpio::PA17 { type GclkId = Gclk3Id; }
+    #[cfg(feature = "pins-48")]
+    impl GclkIo for gpio::PA20 { type GclkId = Gclk4Id; }
+    #[cfg(feature = "pins-48")]
+    impl GclkIo for gpio::PA21 { type GclkId = Gclk5Id; }
+    impl GclkIo for gpio::PA22 { type GclkId = Gclk6Id; }
+    impl GclkIo for gpio::PA23 { type GclkId = Gclk7Id; }
+    #[cfg(feature = "has-pa27")]
+    impl GclkIo for gpio::PA27 { type GclkId = Gclk0Id; }
+    #[cfg(feature = "has-pa28")]
+    impl GclkIo for gpio::PA28 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA30 { type GclkId = Gclk0Id; }
+
+    #[cfg(feature = "pins-48")]
+    impl GclkIo for gpio::PB10 { type GclkId = Gclk4Id; }
+    #[cfg(feature = "pins-48")]
+    impl GclkIo for gpio::PB11 { type GclkId = Gclk5Id; }
+    #[cfg(feature = "pins-64")]
+    impl GclkIo for gpio::PB12 { type GclkId = Gclk6Id; }
+    #[cfg(feature = "pins-64")]
+    impl GclkIo for gpio::PB13 { type GclkId = Gclk7Id; }
+    #[cfg(feature = "pins-64")]
+    impl GclkIo for gpio::PB14 { type GclkId = Gclk0Id; }
+    #[cfg(feature = "pins-64")]
+    impl GclkIo for gpio::PB15 { type GclkId = Gclk1Id; }
+    #[cfg(feature = "pins-64")]
+    impl GclkIo for gpio::PB16 { type GclkId = Gclk2Id; }
+    #[cfg(feature = "pins-64")]
+    impl GclkIo for gpio::PB17 { type GclkId = Gclk3Id; }
+    #[cfg(feature = "has-pb22")]
+    impl GclkIo for gpio::PB22 { type GclkId = Gclk0Id; }
+    #[cfg(feature = "has-pb23")]
+    impl GclkIo for gpio::PB23 { type GclkId = Gclk1Id; }
+}
+
+#[rustfmt::skip]
+#[cfg(feature = "samd11")]
+mod gclkio_impl {
+    use super::*;
+
+    impl GclkIo for gpio::PA08 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA09 { type GclkId = Gclk1Id; }
+    #[cfg(feature = "pins-24")]
+    impl GclkIo for gpio::PA10 { type GclkId = Gclk4Id; }
+    #[cfg(feature = "pins-24")]
+    impl GclkIo for gpio::PA11 { type GclkId = Gclk5Id; }
+    impl GclkIo for gpio::PA14 { type GclkId = Gclk4Id; }
+    impl GclkIo for gpio::PA15 { type GclkId = Gclk5Id; }
+    #[cfg(feature = "pins-24")]
+    impl GclkIo for gpio::PA16 { type GclkId = Gclk2Id; }
+    #[cfg(feature = "pins-24")]
+    impl GclkIo for gpio::PA17 { type GclkId = Gclk3Id; }
+    #[cfg(feature = "pins-24")]
+    impl GclkIo for gpio::PA22 { type GclkId = Gclk1Id; }
+    #[cfg(feature = "pins-24")]
+    impl GclkIo for gpio::PA23 { type GclkId = Gclk2Id; }
+    impl GclkIo for gpio::PA24 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA25 { type GclkId = Gclk0Id; }
+    #[cfg(feature = "has-pa27")]
+    impl GclkIo for gpio::PA27 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA30 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA31 { type GclkId = Gclk0Id; }
+}
+
 //==============================================================================
 // Gclk0Io
 //==============================================================================
@@ -889,11 +945,17 @@ impl<I: GclkIo<GclkId = Gclk0Id>> Gclk0Io for I {}
 pub enum DynGclkSourceId {
     Dfll,
     Dpll0,
+    #[cfg(feature = "thumbv7")]
     Dpll1,
     Gclk1,
     GclkIn,
+    #[cfg(feature = "thumbv6")]
+    Osc8M,
+    #[cfg(feature = "thumbv6")]
+    Osc32k,
     OscUlp32k,
     Xosc0,
+    #[cfg(feature = "thumbv7")]
     Xosc1,
     Xosc32k,
 }
@@ -902,26 +964,28 @@ impl From<DynGclkSourceId> for SRC_A {
     fn from(source: DynGclkSourceId) -> Self {
         use DynGclkSourceId::*;
         use SRC_A::*;
+        #[cfg(feature = "thumbv7")]
         match source {
-            #[cfg(feature = "samd51")]
             Dfll => DFLL,
-            #[cfg(feature = "samd21")]
-            Dfll => DFLL48M,
-            #[cfg(feature = "samd51")]
             Dpll0 => DPLL0,
-            #[cfg(feature = "samd51")]
             Dpll1 => DPLL1,
-            #[cfg(feature = "samd21")]
-            Dpll => DPLL96M,
             Gclk1 => GCLKGEN1,
             GclkIn => GCLKIN,
             OscUlp32k => OSCULP32K,
-            #[cfg(feature = "samd51")]
             Xosc0 => XOSC0,
-            #[cfg(feature = "samd51")]
             Xosc1 => XOSC1,
-            #[cfg(feature = "samd21")]
-            Xosc => XOSC,
+            Xosc32k => XOSC32K,
+        }
+        #[cfg(feature = "thumbv6")]
+        match source {
+            Dfll => DFLL48M,
+            Dpll0 => DPLL96M,
+            Gclk1 => GCLKGEN1,
+            GclkIn => GCLKIN,
+            Osc8M => OSC8M,
+            Osc32k => OSC32K,
+            OscUlp32k => OSCULP32K,
+            Xosc0 => XOSC,
             Xosc32k => XOSC32K,
         }
     }
@@ -984,7 +1048,7 @@ impl GclkSourceId for Xosc0Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc0;
     type Resource = ();
 }
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 impl GclkSourceId for Xosc1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
     type Resource = ();
@@ -1115,11 +1179,13 @@ pub type Gclk0<I> = Gclk<Gclk0Id, I>;
 /// on [`EnabledGclk0`] to configure the `Gclk` while it is actively running.
 pub type EnabledGclk0<I, N = U1> = EnabledGclk<Gclk0Id, I, N>;
 
-with_gclk_max!(G in 1..=max {
+seq!(G in 1..=11 {
     paste! {
+        #[cfg(feature = "has-" gclk~G)]
         /// Type alias for the corresponding [`Gclk`]
         pub type Gclk~G<I> = Gclk<[<Gclk G Id>], I>;
 
+        #[cfg(feature = "has-" gclk~G)]
         /// Type alias for the corresponding [`EnabledGclk`]
         pub type EnabledGclk~G<I, N = U0> = EnabledGclk<[<Gclk G Id>], I, N>;
     }
@@ -1461,7 +1527,7 @@ where
 // Tokens
 //==============================================================================
 
-with_gclk_max!(N in 1..=max {
+seq!(N in 1..=11 {
     paste! {
         /// Set of [`GclkToken`]s representing the disabled [`Gclk`]s at
         /// power-on reset
@@ -1469,6 +1535,7 @@ with_gclk_max!(N in 1..=max {
             #(
                 /// [`GclkToken`] for
                 #[doc = "[`Gclk" N "`]"]
+                #[cfg(feature = "has-" gclk~N)]
                 pub gclk~N: GclkToken<[<Gclk N Id>]>,
             )*
         }
@@ -1481,12 +1548,12 @@ with_gclk_max!(N in 1..=max {
             /// All of the invariants required by `GclkToken::new` must be
             /// upheld here as well.
             #[inline]
-            pub(super) unsafe fn new(nvmctrl: &mut NVMCTRL) -> Self {
-                // Use auto wait states
-                //nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
-                todo!();
+            pub(super) unsafe fn new() -> Self {
                 GclkTokens {
-                    #( gclk~N: GclkToken::new(), )*
+                    #(
+                        #[cfg(feature = "has-" gclk~N)]
+                        gclk~N: GclkToken::new(),
+                    )*
                 }
             }
         }

@@ -339,10 +339,7 @@ macro_rules! alternate {
     };
 }
 
-alternate!(B, C, D, E, F, G);
-
-#[cfg(any(feature = "samd21", feature = "thumbv7"))]
-alternate!(H);
+alternate!(B, C, D, E, F, G, H);
 
 #[cfg(feature = "thumbv7")]
 alternate!(I, J, K, L, M, N);
@@ -749,7 +746,6 @@ impl_core_convert_from!(
     AlternateE,
     AlternateF,
     AlternateG,
-    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
     AlternateH,
     #[cfg(feature = "thumbv7")]
     AlternateI,

@@ -4,7 +4,7 @@
 
 use typenum::U1;
 
-use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
+use crate::pac::{GCLK, PM, SYSCTRL};
 
 use super::*;
 
@@ -18,10 +18,9 @@ use super::*;
 /// sufficient. In these cases, users can access the registers directly by
 /// calling [`Pac::steal`] to recover the PAC structs.
 pub struct Pac {
-    oscctrl: OSCCTRL,
-    osc32kctrl: OSC32KCTRL,
     gclk: GCLK,
-    mclk: MCLK,
+    pm: PM,
+    sysctrl: SYSCTRL,
 }
 
 impl Pac {
@@ -36,8 +35,8 @@ impl Pac {
     ///
     /// Directly configuring clocks through the PAC API can invalidate the
     /// type-level guarantees of the `clock` module API.
-    pub unsafe fn steal(self) -> (OSCCTRL, OSC32KCTRL, GCLK, MCLK) {
-        (self.oscctrl, self.osc32kctrl, self.gclk, self.mclk)
+    pub unsafe fn steal(self) -> (GCLK, PM, SYSCTRL) {
+        (self.gclk, self.pm, self.sysctrl)
     }
 }
 
@@ -57,16 +56,10 @@ pub struct Buses {
     pub apb: apb::Apb,
 }
 
-#[cfg(feature = "samd51")]
 pub struct OscUlp32kClocks {
-    base: EnabledOscUlp32kBase,
-}
-
-#[cfg(feature = "samd21")]
-pub struct OscUlp32kClocks {
-    base: EnabledOscUlp32kBase,
-    osculp1k: EnabledOscUlp1k,
-    osculp32k: EnabledOscUlp32k,
+    pub base: osculp32k::EnabledOscUlp32kBase,
+    pub osculp1k: osculp32k::EnabledOscUlp1k,
+    pub osculp32k: osculp32k::EnabledOscUlp32k<U1>,
 }
 
 /// Enabled clocks at power-on reset
@@ -94,12 +87,13 @@ pub struct Clocks {
     pub ahbs: ahb::AhbClks,
     /// Enabled APB clocks
     pub apbs: apb::ApbClks,
-    /// Main system clock, driven at 48 MHz by the DFLL in open loop mode
-    pub gclk0: Enabled<gclk::Gclk0<dfll::DfllId>, U1>,
-    /// DFLL48 in open loop mode
-    pub dfll: Enabled<dfll::Dfll, U1>,
-    /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
-    /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
+    /// Main system clock, driven at 1 MHz by the OSC8M divided by 8
+    pub gclk0: Enabled<gclk::Gclk0<osc8m::Osc8mId>, U1>,
+    /// GCLK2, driven at 32 kHz by the OSCULP
+    pub gclk2: Enabled<gclk::Gclk2<osculp32k::OscUlp32kId>, U1>,
+    /// [`Pclk`](pclk::Pclk) for the watchdog timer, sourced from [`Gclk2`](gclk::Gclk2)
+    pub wdt: pclk::Pclk<types::Wdt, gclk::Gclk2Id>,
+    /// Always-enabled OSCULP oscillators
     pub osculp32k: OscUlp32kClocks,
 }
 
@@ -115,26 +109,19 @@ pub struct Clocks {
 pub struct Tokens {
     /// Tokens to create [`apb::ApbClk`]s
     pub apbs: apb::ApbTokens,
+    /// Token to create [`dfll::Dfll`]
+    pub dfll: dfll::DfllToken,
     /// Token to create [`dpll::Dpll0`]
-    pub dpll0: dpll::DpllToken<dpll::Dpll0Id>,
-    /// Token to create [`dpll::Dpll1`]
-    pub dpll1: dpll::DpllToken<dpll::Dpll1Id>,
+    pub dpll: dpll::DpllToken<dpll::Dpll0Id>,
     /// Tokens to create [`gclk::Gclk`]
     pub gclks: gclk::GclkTokens,
     /// Tokens to create [`pclk::Pclk`]s
     pub pclks: pclk::PclkTokens,
-    /// Tokens to create [`rtcosc::RtcOsc`]
-    pub rtcosc: rtcosc::RtcOscToken,
     /// Tokens [`xosc::Xosc0`]
-    pub xosc0: xosc::XoscToken<xosc::Xosc0Id>,
-    /// Token to create [`xosc::Xosc1`]
-    pub xosc1: xosc::XoscToken<xosc::Xosc1Id>,
+    pub xosc: xosc::XoscToken<xosc::Xosc0Id>,
     /// Tokens to create [`xosc32k::Xosc32kBase`], [`xosc32k::Xosc1k`] and
     /// [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Xosc32kTokens,
-    /// Tokens to create [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]
-    #[cfg(feature = "samd51")]
-    pub osculp32k: osculp32k::OscUlp32kTokens,
 }
 
 /// Consume the PAC clocking structs and return a HAL-level
@@ -145,62 +132,45 @@ pub struct Tokens {
 ///
 /// See the [module-level documentation](super) for more details.
 #[inline]
-pub fn clock_system_at_reset(
-    oscctrl: OSCCTRL,
-    osc32kctrl: OSC32KCTRL,
-    gclk: GCLK,
-    mclk: MCLK,
-    nvmctrl: &mut NVMCTRL,
-) -> (Buses, Clocks, Tokens) {
+pub fn clock_system_at_reset(gclk: GCLK, pm: PM, sysctrl: SYSCTRL) -> (Buses, Clocks, Tokens) {
     // Safety: No bus, clock or token is instantiated more than once
     unsafe {
         let buses = Buses {
             ahb: ahb::Ahb::new(),
             apb: apb::Apb::new(),
         };
-        let pac = Pac {
-            oscctrl,
-            osc32kctrl,
-            gclk,
-            mclk,
-        };
-        let dfll = Enabled::<_>::new(dfll::Dfll::open_loop(dfll::DfllToken::new()));
-        let (gclk0, dfll) = gclk::Gclk0::from_source(gclk::GclkToken::new(), dfll);
+        let pac = Pac { gclk, pm, sysctrl };
+        let osc8m = Enabled::new(osc8m::Osc8m::new(osc8m::Osc8mToken::new()));
+        let (gclk0, osc8m) = gclk::Gclk0::from_source(gclk::GclkToken::new(), osc8m);
         let gclk0 = Enabled::new(gclk0);
-        #[cfg(feature = "samd51")]
-        let osculp32k_clocks = {
-            OscUlp32kClocks {
-                base: osculp32k::OscUlp32kBase::new(),
-            }
-        };
-        #[cfg(feature = "samd21")]
-        let osculp32k_clocks = {
-            OscUlp32kClocks {
-                base: osculp32k::OscUlp32kBase::new(),
-                osculp1k: Enabled::new(osculp32k::OscUlp1k::new()),
-                osculp32k: Enabled::new(osculp32k::OscUlp32k::new()),
-            }
+        let base = osculp32k::OscUlp32kBase::new();
+        let osculp1k = Enabled::new(osculp32k::OscUlp1k::new());
+        let osculp32k = Enabled::new(osculp32k::OscUlp32k::new());
+        let (gclk2, osculp32k) = gclk::Gclk2::from_source(gclk::GclkToken::new(), osculp32k);
+        let gclk2 = Enabled::new(gclk2);
+        let wdt = pclk::Pclk::new(pclk::PclkToken::new(), gclk2.freq());
+        let osculp32k = OscUlp32kClocks {
+            base,
+            osculp1k,
+            osculp32k,
         };
         let clocks = Clocks {
             pac,
             ahbs: ahb::AhbClks::new(),
             apbs: apb::ApbClks::new(),
             gclk0,
-            dfll,
-            osculp32k: osculp32k_clocks,
+            gclk2,
+            wdt,
+            osculp32k,
         };
         let tokens = Tokens {
             apbs: apb::ApbTokens::new(),
-            dpll0: dpll::DpllToken::new(),
-            dpll1: dpll::DpllToken::new(),
-            gclks: gclk::GclkTokens::new(nvmctrl),
+            dfll: dfll::DfllToken::new(),
+            dpll: dpll::DpllToken::new(),
+            gclks: gclk::GclkTokens::new(),
             pclks: pclk::PclkTokens::new(),
-            rtcosc: rtcosc::RtcOscToken::new(),
-            xosc0: xosc::XoscToken::new(),
-            xosc1: xosc::XoscToken::new(),
+            xosc: xosc::XoscToken::new(),
             xosc32k: xosc32k::Xosc32kTokens::new(),
-            #[cfg(feature = "samd51")]
-            osculp32k: osculp32k::OscUlp32kTokens::new(),
         };
         (buses, clocks, tokens)
     }

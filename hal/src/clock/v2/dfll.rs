@@ -266,16 +266,18 @@
 //! [`from_usb`]: Dfll::from_usb
 //! [`into_mode`]: EnabledDfll::into_mode
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 mod imports {
     pub use crate::pac::oscctrl::{
         RegisterBlock, DFLLCTRLA as DFLLCTRL, DFLLCTRLB, DFLLMUL, DFLLSYNC,
     };
+    pub use crate::pac::OSCCTRL as PERIPHERAL;
 }
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 mod imports {
     pub use crate::pac::sysctrl::{RegisterBlock, DFLLCTRL, DFLLMUL, DFLLSYNC};
+    pub use crate::pac::SYSCTRL as PERIPHERAL;
 }
 
 use imports::*;
@@ -321,29 +323,22 @@ impl DfllToken {
         // of registers for the DFLL, and we use a shared reference to the
         // register block. See the notes on `Token` types and memory safety in
         // the root of the `clock` module for more details.
-        #[cfg(feature = "samd51")]
-        unsafe {
-            &*crate::pac::OSCCTRL::PTR
-        }
-        #[cfg(feature = "samd21")]
-        unsafe {
-            &*crate::pac::SYSCTRL::PTR
-        }
+        unsafe { &*PERIPHERAL::PTR }
     }
 
     #[inline]
     fn dfllctrl(&self) -> &DFLLCTRL {
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         let dfllctrl = &self.reg_block().dfllctrla;
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         let dfllctrl = &self.reg_block().dfllctrl;
         dfllctrl
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn dfllctrlb(&self) -> &crate::pac::oscctrl::DFLLCTRLB {
-        &self.oscctrl().dfllctrlb
+        &self.reg_block().dfllctrlb
     }
 
     #[inline]
@@ -351,31 +346,31 @@ impl DfllToken {
         &self.reg_block().dfllmul
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn dfllsync(&self) -> &DFLLSYNC {
         &self.reg_block().dfllsync
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn wait_sync_enable(&self) {
         while self.dfllsync().read().enable().bit() {}
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn wait_sync_dfllmul(&self) {
         while self.dfllsync().read().dfllmul().bit() {}
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn wait_sync_dfllctrlb(&self) {
         while self.dfllsync().read().dfllctrlb().bit() {}
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn enable(&mut self, settings: settings::All) {
         self.dfllctrlb().modify(|_, w| {
@@ -403,7 +398,7 @@ impl DfllToken {
         self.wait_sync_enable();
     }
 
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     fn enable(&mut self, settings: settings::All) {
         if settings.closed_loop {
@@ -429,7 +424,7 @@ impl DfllToken {
     #[inline]
     fn disable(&mut self) {
         self.dfllctrl().write(|w| w.enable().clear_bit());
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         self.wait_sync_enable();
     }
 }
@@ -440,9 +435,9 @@ impl DfllToken {
 
 type MultFactor = u16;
 type CoarseMaxStep = u8;
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 type FineMaxStep = u8;
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 type FineMaxStep = u16;
 
 //==============================================================================

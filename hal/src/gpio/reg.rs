@@ -122,7 +122,6 @@ impl From<DynPinMode> for ModeFields {
                     G => {
                         fields.pmux = 6;
                     }
-                    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
                     H => {
                         fields.pmux = 7;
                     }

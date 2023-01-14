@@ -242,7 +242,7 @@ use core::marker::PhantomData;
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 mod imports {
     pub use super::super::xosc::Xosc1Id;
     pub use crate::pac::oscctrl::{
@@ -254,7 +254,7 @@ mod imports {
     pub use crate::pac::OSCCTRL as PERIPHERAL;
 }
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 mod imports {
     pub use crate::pac::sysctrl::RegisterBlock as BLOCK;
     pub use crate::pac::sysctrl::{
@@ -317,11 +317,11 @@ impl<D: DpllId> DpllToken<D> {
         // of registers for the corresponding `DpllId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         unsafe {
             &(*PERIPHERAL::PTR).dpll[D::NUM]
         }
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         unsafe {
             &(*PERIPHERAL::PTR)
         }
@@ -345,7 +345,7 @@ impl<D: DpllId> DpllToken<D> {
         &self.dpll().dpllratio
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     /// Access the corresponding DPLLSYNCBUSY register for reading only
     #[inline]
     fn syncbusy(&self) -> dpllsyncbusy::R {
@@ -363,7 +363,7 @@ impl<D: DpllId> DpllToken<D> {
         // Convert the actual predivider to the `div` register field value
         let div = match id {
             DynDpllSourceId::Xosc0 => prediv / 2 - 1,
-            #[cfg(feature = "samd51")]
+            #[cfg(feature = "thumbv7")]
             DynDpllSourceId::Xosc1 => prediv / 2 - 1,
             _ => 0,
         };
@@ -383,7 +383,7 @@ impl<D: DpllId> DpllToken<D> {
             w.ldr().bits(settings.mult - 1);
             w.ldrfrac().bits(settings.frac)
         });
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         while self.syncbusy().dpllratio().bit_is_set() {}
         self.ctrla().modify(|_, w| {
             w.ondemand().bit(settings.on_demand);
@@ -402,17 +402,17 @@ impl<D: DpllId> DpllToken<D> {
 
     #[inline]
     fn wait_enabled(&self) {
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         while self.syncbusy().enable().bit_is_set() {}
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         while self.status().enable().bit_is_clear() {}
     }
 
     #[inline]
     fn wait_disabled(&self) {
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         while self.syncbusy().enable().bit_is_set() {}
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         while self.status().enable().bit_is_set() {}
     }
 
@@ -490,13 +490,13 @@ impl DpllId for Dpll0Id {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 pub enum Dpll1Id {}
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 impl Sealed for Dpll1Id {}
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 impl DpllId for Dpll1Id {
     const DYN: DynDpllId = DynDpllId::Dpll1;
     const NUM: usize = 1;
@@ -519,7 +519,7 @@ pub enum DynDpllSourceId {
     /// The DPLL is driven by [`Xosc0`](super::xosc::Xosc0)
     Xosc0,
     /// The DPLL is driven by [`Xosc1`](super::xosc::Xosc1)
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     Xosc1,
     /// The DPLL is driven by [`Xosc32k`](super::xosc32k::Xosc32k)
     Xosc32k,
@@ -527,14 +527,14 @@ pub enum DynDpllSourceId {
 
 impl From<DynDpllSourceId> for REFCLK_A {
     fn from(source: DynDpllSourceId) -> Self {
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         let refclk = match source {
             DynDpllSourceId::Pclk => REFCLK_A::GCLK,
             DynDpllSourceId::Xosc0 => REFCLK_A::XOSC0,
             DynDpllSourceId::Xosc1 => REFCLK_A::XOSC1,
             DynDpllSourceId::Xosc32k => REFCLK_A::XOSC32,
         };
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         let refclk = match source {
             DynDpllSourceId::Pclk => REFCLK_A::GCLK,
             DynDpllSourceId::Xosc0 => REFCLK_A::REF1,
@@ -578,7 +578,7 @@ impl DpllSourceId for Xosc0Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc0;
     type Reference<D: DpllId> = settings::Xosc;
 }
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 impl DpllSourceId for Xosc1Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc1;
     type Reference<D: DpllId> = settings::Xosc;
@@ -715,7 +715,7 @@ where
 pub type Dpll0<M> = Dpll<Dpll0Id, M>;
 
 /// Type alias for the corresponding [`Dpll`]
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 
 impl<D, I> Dpll<D, I>
@@ -1026,7 +1026,7 @@ pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
 pub type EnabledDpll0<I, N = U0> = EnabledDpll<Dpll0Id, I, N>;
 
 /// Type alias for the corresponding [`EnabledDpll`]
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 pub type EnabledDpll1<I, N = U0> = EnabledDpll<Dpll1Id, I, N>;
 
 impl<D, I> EnabledDpll<D, I>

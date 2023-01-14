@@ -127,12 +127,12 @@ use core::marker::PhantomData;
 use bitflags;
 use paste::paste;
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 mod imports {
     pub use crate::pac::{mclk::AHBMASK, MCLK as PERIPHERAL};
 }
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 mod imports {
     pub use crate::pac::{pm::AHBMASK, PM as PERIPHERAL};
 }
@@ -378,6 +378,7 @@ macro_rules! define_ahb_types {
     };
 }
 
+#[cfg(feature = "thumbv7")]
 define_ahb_types!(
     Hpb0 = 0,
     Hpb1 = 1,
@@ -388,7 +389,7 @@ define_ahb_types!(
     Cmcc = 8,
     Dmac = 9,
     Usb = 10,
-    Pac = 12,
+    Pac0 = 12,
     Qspi = 13,
     #[cfg(feature = "has-gmac")]
     Gmac = 14,
@@ -404,4 +405,15 @@ define_ahb_types!(
     Qspi2x = 21,
     NvmCtrlSmeeProm = 22,
     NvmCtrlCache = 23,
+);
+
+#[cfg(feature = "thumbv6")]
+define_ahb_types!(
+    Hpb0 = 0,
+    Hpb1 = 1,
+    Hpb2 = 2,
+    Dsu = 3,
+    NvmCtrl = 4,
+    Dmac = 5,
+    Usb = 6,
 );

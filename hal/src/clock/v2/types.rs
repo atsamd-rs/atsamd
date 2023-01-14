@@ -22,13 +22,6 @@ use seq_macro::seq;
 
 use crate::typelevel::Sealed;
 
-seq!(N in 0..=7 {
-    paste! {
-        #[cfg(feature = "has-" sercom~N)]
-        pub use crate::sercom::Sercom~N;
-    }
-});
-
 macro_rules! create_types {
     (
         $(
@@ -47,98 +40,138 @@ macro_rules! create_types {
     };
 }
 
-create_types!(Ac);
-create_types!(Adc0);
-#[cfg(feature = "min-samd51g")]
-create_types!(Adc1);
-#[cfg(feature = "min-samd51g")]
-create_types!(Aes);
-#[cfg(feature = "has-can0")]
-create_types!(Can0);
-#[cfg(feature = "has-can1")]
-create_types!(Can1);
-#[cfg(feature = "min-samd51g")]
-create_types!(Ccl);
-#[cfg(feature = "min-samd51g")]
-create_types!(Cmcc);
-#[cfg(feature = "min-samd51g")]
-create_types!(CM4Trace);
-create_types!(Dac);
+// AHB types
 create_types!(Dmac);
 create_types!(Dsu);
-create_types!(Eic);
-create_types!(
-    EvSys, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5, EvSys6, EvSys7, EvSys8, EvSys9, EvSys10,
-    EvSys11
-);
-#[cfg(feature = "min-samd51g")]
-create_types!(FreqM);
-#[cfg(feature = "min-samd51g")]
-create_types!(FreqMMeasure);
-#[cfg(feature = "min-samd51g")]
-create_types!(FreqMReference);
-create_types!(Gclk);
-#[cfg(feature = "has-gmac")]
-create_types!(Gmac);
 create_types!(Hpb0, Hpb1, Hpb2);
-#[cfg(feature = "min-samd51g")]
-create_types!(Hpb3);
-#[cfg(feature = "min-samd51g")]
-create_types!(Icm);
-#[cfg(feature = "min-samd51g")]
-create_types!(Mclk);
 create_types!(NvmCtrl);
-#[cfg(feature = "min-samd51g")]
-create_types!(NvmCtrlSmeeProm, NvmCtrlCache);
-#[cfg(feature = "min-samd51j")]
-create_types!(I2S, I2S0, I2S1);
-#[cfg(feature = "min-samd51g")]
-create_types!(OscCtrl);
-#[cfg(feature = "min-samd51g")]
-create_types!(Osc32kCtrl);
+create_types!(Usb);
+
+// APB types
+create_types!(Ac);
+create_types!(Adc0);
+create_types!(Dac);
+create_types!(Eic);
+create_types!(EvSys);
+create_types!(Gclk);
+#[cfg(feature = "has-i2s")]
+create_types!(I2S);
 create_types!(Pac0);
-#[cfg(feature = "samd21")]
-create_types!(Pac1, Pac2);
-#[cfg(feature = "min-samd51g")]
-create_types!(Pcc);
-#[cfg(feature = "min-samd51g")]
-create_types!(PDec);
 create_types!(Pm);
 create_types!(Port);
-#[cfg(feature = "min-samd51g")]
-create_types!(Pukcc);
-#[cfg(feature = "min-samd51g")]
-create_types!(Qspi, Qspi2x);
-#[cfg(feature = "min-samd51g")]
-create_types!(RamEcc);
-#[cfg(feature = "min-samd51g")]
-create_types!(RstC);
 create_types!(Rtc);
-#[cfg(feature = "min-samd51g")]
-create_types!(Sdhc0);
-#[cfg(feature = "has-sdhc1")]
-create_types!(Sdhc1);
-create_types!(SlowClk);
-#[cfg(feature = "min-samd51g")]
-create_types!(SupC);
-#[cfg(feature = "min-samd51g")]
-create_types!(Tc0Tc1, Tc0, Tc1);
-#[cfg(feature = "min-samd51g")]
-create_types!(Tc2Tc3, Tc2, Tc3);
-#[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
-create_types!(Tc4Tc5, Tc4, Tc5);
-#[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
-create_types!(Tc6Tc7, Tc6, Tc7);
-create_types!(Tcc0Tcc1, Tcc0, Tcc1);
-#[cfg(feature = "min-samd51g")]
-create_types!(Tcc2Tcc3, Tcc2);
-#[cfg(feature = "has-tcc3")]
-create_types!(Tcc3);
-#[cfg(feature = "has-tcc4")]
-create_types!(Tcc4);
-#[cfg(feature = "samd21")]
-create_types!(Tcc2Tc3, Tcc2, Tc3);
-#[cfg(feature = "min-samd51g")]
-create_types!(Trng);
-create_types!(Usb);
+seq!(N in 0..=7 {
+    paste! {
+        #[cfg(feature = "has-" sercom~N)]
+        pub use crate::sercom::Sercom~N;
+    }
+});
+seq!(N in 0..=7 {
+    paste! {
+        #[cfg(feature = "has-" tc~N)]
+        create_types!(Tc~N);
+    }
+});
+seq!(N in 0..=4 {
+    paste! {
+        #[cfg(feature = "has-" tcc~N)]
+        create_types!(Tcc~N);
+    }
+});
 create_types!(Wdt);
+
+// PCLK types
+create_types!(EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5);
+#[cfg(any(feature = "samd21", feature = "thumbv7"))]
+create_types!(EvSys6, EvSys7, EvSys8, EvSys9, EvSys10, EvSys11);
+#[cfg(feature = "has-i2s")]
+create_types!(I2S0, I2S1);
+create_types!(SlowClk);
+#[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
+create_types!(Tc4Tc5);
+#[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
+create_types!(Tc6Tc7);
+
+#[cfg(feature = "thumbv7")]
+mod variant_ahb_types {
+    use super::Sealed;
+
+    #[cfg(feature = "has-can0")]
+    create_types!(Can0);
+    #[cfg(feature = "has-can1")]
+    create_types!(Can1);
+    create_types!(Cmcc);
+    #[cfg(feature = "has-gmac")]
+    create_types!(Gmac);
+    create_types!(Hpb3);
+    create_types!(Icm);
+    create_types!(NvmCtrlSmeeProm, NvmCtrlCache);
+    create_types!(Pukcc);
+    create_types!(Qspi, Qspi2x);
+    create_types!(Sdhc0);
+    #[cfg(feature = "has-sdhc1")]
+    create_types!(Sdhc1);
+}
+
+#[cfg(feature = "thumbv7")]
+mod variant_apb_types {
+    use super::Sealed;
+
+    create_types!(Adc1);
+    create_types!(Aes);
+    create_types!(Ccl);
+    create_types!(FreqM);
+    create_types!(Mclk);
+    create_types!(OscCtrl);
+    create_types!(Osc32kCtrl);
+    create_types!(Pcc);
+    create_types!(PDec);
+    create_types!(RamEcc);
+    create_types!(RstC);
+    create_types!(SupC);
+    create_types!(Trng);
+}
+
+#[cfg(feature = "thumbv7")]
+mod variant_pclk_types {
+    use super::Sealed;
+
+    create_types!(CM4Trace);
+    create_types!(FreqMMeasure);
+    create_types!(FreqMReference);
+    create_types!(Tc0Tc1);
+    create_types!(Tc2Tc3);
+    create_types!(Tcc0Tcc1);
+    #[cfg(all(feature = "has-tcc2", feature = "has-tcc3"))]
+    create_types!(Tcc2Tcc3);
+}
+
+#[cfg(feature = "thumbv6")]
+mod variant_apb_types {
+    use super::Sealed;
+
+    #[cfg(feature = "samd21")]
+    create_types!(Ac1);
+    create_types!(Pac1, Pac2);
+    create_types!(Ptc);
+    create_types!(SysCtrl);
+}
+
+#[cfg(feature = "thumbv6")]
+mod variant_pclk_types {
+    use super::Sealed;
+    create_types!(AcDig);
+    create_types!(AcAna);
+    create_types!(SercomSlow);
+    #[cfg(feature = "samd11")]
+    create_types!(Tc1Tc2);
+    #[cfg(feature = "samd21")]
+    create_types!(Tcc0Tcc1);
+    #[cfg(feature = "samd21")]
+    create_types!(Tcc2Tc3);
+}
+
+#[cfg(feature = "thumbv7")]
+pub use variant_ahb_types::*;
+pub use variant_apb_types::*;
+pub use variant_pclk_types::*;

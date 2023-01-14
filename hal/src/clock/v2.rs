@@ -865,13 +865,21 @@ pub mod dpll;
 pub mod gclk;
 pub mod osculp32k;
 pub mod pclk;
-//pub mod rtcosc;
+#[cfg(feature = "thumbv7")]
+pub mod rtcosc;
 pub mod types;
 pub mod xosc;
 pub mod xosc32k;
-//
-//mod reset;
-//pub use reset::*;
+
+#[cfg(feature = "thumbv7")]
+#[path = "v2/reset_thumbv7em.rs"]
+mod reset;
+
+#[cfg(feature = "thumbv6")]
+#[path = "v2/reset_thumbv6m.rs"]
+mod reset;
+
+pub use reset::*;
 
 // `Token` types and memory safety
 //

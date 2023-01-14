@@ -164,13 +164,14 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 mod imports {
     pub use crate::pac::osc32kctrl::OSCULP32K;
-    pub use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
+    pub use crate::typelevel::{Decrement, Increment};
+    pub(crate) use crate::typelevel::{PrivateDecrement, PrivateIncrement};
 }
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 mod imports {
     pub use crate::pac::sysctrl::OSCULP32K;
 }
@@ -236,6 +237,7 @@ impl OscUlp32kTokens {
     /// There must never be more than one instance of each token at any given
     /// time. See the notes on `Token` types and memory safety in the root of
     /// the `clock` module for more details.
+    #[allow(unused)]
     pub(super) unsafe fn new() -> Self {
         Self {
             osculp1k: OscUlp1kToken(()),
@@ -250,11 +252,11 @@ impl OscUlp32kBaseToken {
         // Safety: The `OscUlp32kBaseToken` has exclusive access to the
         // `OSCULP32K` register. See the notes on `Token` types and memory
         // safety in the root of the `clock` module for more details.
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         unsafe {
             &(*crate::pac::OSC32KCTRL::PTR).osculp32k
         }
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         unsafe {
             &(*crate::pac::SYSCTRL::PTR).osculp32k
         }
@@ -268,28 +270,28 @@ impl OscUlp32kBaseToken {
             .modify(|_, w| unsafe { w.calib().bits(calib) });
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     /// Enable the 1 kHz output
     #[inline]
     fn enable_1k(&mut self) {
         self.osculp32k().modify(|_, w| w.en1k().set_bit());
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     /// Disable the 1 kHz output
     #[inline]
     fn disable_1k(&mut self) {
         self.osculp32k().modify(|_, w| w.en1k().clear_bit());
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     /// Enable the 32 kHz output
     #[inline]
     fn enable_32k(&mut self) {
         self.osculp32k().modify(|_, w| w.en32k().set_bit());
     }
 
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     /// Disable the 32 kHz output
     #[inline]
     fn disable_32k(&mut self) {
@@ -414,7 +416,7 @@ pub struct OscUlp1k {
 pub type EnabledOscUlp1k<N = U0> = Enabled<OscUlp1k, N>;
 
 impl OscUlp1k {
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "thumbv6")]
     pub(super) unsafe fn new() -> Self {
         let token = OscUlp1kToken(());
         Self { token }
@@ -423,7 +425,7 @@ impl OscUlp1k {
     /// Enable 1 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Increment`] the [`EnabledOscUlp32kBase`] counter.
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp1kToken,
@@ -438,7 +440,7 @@ impl EnabledOscUlp1k {
     /// Disable 1 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] counter.
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn disable<N: Decrement>(
         self,
@@ -486,7 +488,7 @@ pub struct OscUlp32k {
 pub type EnabledOscUlp32k<N = U0> = Enabled<OscUlp32k, N>;
 
 impl OscUlp32k {
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "thumbv6")]
     pub(super) unsafe fn new() -> Self {
         let token = OscUlp32kToken(());
         Self { token }
@@ -495,7 +497,7 @@ impl OscUlp32k {
     /// Enable 32 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Increment`] the [`EnabledOscUlp32kBase`] counter.
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp32kToken,
@@ -510,7 +512,7 @@ impl EnabledOscUlp32k {
     /// Disable 32 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] counter.
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn disable<N: Decrement>(
         self,

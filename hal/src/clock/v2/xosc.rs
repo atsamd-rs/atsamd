@@ -208,24 +208,29 @@ use core::marker::PhantomData;
 
 use typenum::U0;
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 mod imports {
     pub use super::super::dfll::DfllId;
-    pub use crate::gpio::{PB22, PB23};
+    pub use crate::gpio::{PA14 as XIn0Id, PA15 as XOut0Id};
+    pub use crate::gpio::{PB22 as XIn1Id, PB23 as XOut1Id};
     pub use crate::pac::oscctrl::{status::R as STATUS_R, XOSCCTRL};
     pub use crate::pac::OSCCTRL as PERIPHERAL;
     pub use crate::typelevel::{Decrement, Increment};
 }
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 mod imports {
+    #[cfg(feature = "samd11")]
+    pub use crate::gpio::{PA08 as XIn0Id, PA09 as XOut0Id};
+    #[cfg(feature = "samd21")]
+    pub use crate::gpio::{PA14 as XIn0Id, PA15 as XOut0Id};
     pub use crate::pac::sysctrl::{pclksr::R as STATUS_R, xosc::GAIN_A, XOSC as XOSCCTRL};
     pub use crate::pac::SYSCTRL as PERIPHERAL;
 }
 
 use imports::*;
 
-use crate::gpio::{FloatingDisabled, Pin, PinId, PA14, PA15};
+use crate::gpio::{FloatingDisabled, Pin, PinId};
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
 
@@ -271,11 +276,11 @@ impl<X: XoscId> XoscToken<X> {
         // of registers for the corresponding `XoscId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         unsafe {
             &(*PERIPHERAL::PTR).xoscctrl[X::NUM]
         }
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         unsafe {
             &(*PERIPHERAL::PTR).xosc
         }
@@ -286,11 +291,11 @@ impl<X: XoscId> XoscToken<X> {
     fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        #[cfg(feature = "samd51")]
+        #[cfg(feature = "thumbv7")]
         unsafe {
             (*PERIPHERAL::PTR).status.read()
         }
-        #[cfg(feature = "samd21")]
+        #[cfg(feature = "thumbv6")]
         unsafe {
             (*PERIPHERAL::PTR).pclksr.read()
         }
@@ -304,7 +309,7 @@ impl<X: XoscId> XoscToken<X> {
     }
 
     /// Check whether the XOSC has triggered failure detection
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn has_failed(&self) -> bool {
         let mask = 1 << (X::NUM + 2);
@@ -312,7 +317,7 @@ impl<X: XoscId> XoscToken<X> {
     }
 
     /// Check whether the XOSC has been switched to the safe clock
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn is_switched(&self) -> bool {
         let mask = 1 << (X::NUM + 4);
@@ -322,14 +327,14 @@ impl<X: XoscId> XoscToken<X> {
     /// Switch from the safe clock back to the XOSC clock/oscillator
     ///
     /// This bit is cleared by the hardware after successfully switching back
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn switch_back(&mut self) {
         self.xoscctrl().modify(|_, w| w.swben().set_bit());
     }
 
     /// Enable clock failure detection and set the safe clock divider
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn enable_failure_detection(&mut self, div: SafeClockDiv) {
         // Safety: The divider is guaranteed to be in the valid range 0..16.
@@ -343,7 +348,7 @@ impl<X: XoscId> XoscToken<X> {
     }
 
     /// Disable clock failure detection
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn disable_failure_detection(&mut self) {
         self.xoscctrl().modify(|_, w| w.cfden().clear_bit());
@@ -357,12 +362,12 @@ impl<X: XoscId> XoscToken<X> {
         // `CrystalCurrent`, so they are guaranteed to be valid.
         self.xoscctrl().write(|w| unsafe {
             w.startup().bits(settings.start_up as u8);
-            #[cfg(feature = "samd21")]
+            #[cfg(feature = "thumbv6")]
             {
                 w.ampgc().bit(settings.ampgc);
                 w.gain().variant(settings.gain.into())
             };
-            #[cfg(feature = "samd51")]
+            #[cfg(feature = "thumbv7")]
             {
                 w.enalc().bit(settings.loop_control);
                 w.imult().bits(settings.current.imult());
@@ -395,15 +400,15 @@ impl<X: XoscId> XoscToken<X> {
 #[derive(Clone, Copy)]
 struct Settings {
     start_up: StartUpDelay,
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     loop_control: bool,
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     current: CrystalCurrent,
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     low_buf_gain: bool,
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "thumbv6")]
     ampgc: bool,
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "thumbv6")]
     gain: Gain,
     on_demand: bool,
     run_standby: bool,
@@ -413,15 +418,15 @@ impl Default for Settings {
     fn default() -> Self {
         Settings {
             start_up: StartUpDelay::default(),
-            #[cfg(feature = "samd51")]
+            #[cfg(feature = "thumbv7")]
             loop_control: false,
-            #[cfg(feature = "samd51")]
+            #[cfg(feature = "thumbv7")]
             current: CrystalCurrent::default(),
-            #[cfg(feature = "samd51")]
+            #[cfg(feature = "thumbv7")]
             low_buf_gain: false,
-            #[cfg(feature = "samd21")]
+            #[cfg(feature = "thumbv6")]
             ampgc: false,
-            #[cfg(feature = "samd21")]
+            #[cfg(feature = "thumbv6")]
             gain: Gain::default(),
             on_demand: true,
             run_standby: false,
@@ -466,8 +471,8 @@ impl Sealed for Xosc0Id {}
 
 impl XoscId for Xosc0Id {
     const NUM: usize = 0;
-    type XIn = PA14;
-    type XOut = PA15;
+    type XIn = XIn0Id;
+    type XOut = XOut0Id;
 }
 
 /// Type-level variant of [`XoscId`] representing the identity of XOSC1
@@ -477,17 +482,17 @@ impl XoscId for Xosc0Id {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 pub enum Xosc1Id {}
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 impl Sealed for Xosc1Id {}
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 impl XoscId for Xosc1Id {
     const NUM: usize = 1;
-    type XIn = PB22;
-    type XOut = PB23;
+    type XIn = XIn1Id;
+    type XOut = XOut1Id;
 }
 
 //==============================================================================
@@ -585,7 +590,7 @@ pub enum StartUpDelay {
 /// each frequency range, it also acknowledges some flexibility in that choice.
 /// Specifically, it notes that users can save power by selecting the next-lower
 /// frequency range if the capacitive load is small.
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum CrystalCurrent {
     /// Used only in [`ClockMode`] to represent the default register values
@@ -601,7 +606,7 @@ pub enum CrystalCurrent {
     ExtraHigh,
 }
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 impl CrystalCurrent {
     #[inline]
     fn imult(&self) -> u8 {
@@ -630,7 +635,7 @@ impl CrystalCurrent {
 // Gain
 //==============================================================================
 
-#[cfg(feature = "samd21")]
+#[cfg(feature = "thumbv6")]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum Gain {
     #[default]
@@ -641,6 +646,7 @@ pub enum Gain {
     Four,
 }
 
+#[cfg(feature = "thumbv6")]
 impl From<Gain> for GAIN_A {
     fn from(gain: Gain) -> Self {
         match gain {
@@ -780,7 +786,7 @@ where
 pub type Xosc0<M> = Xosc<Xosc0Id, M>;
 
 /// Type alias for the corresponding [`Xosc`]
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 pub type Xosc1<M> = Xosc<Xosc1Id, M>;
 
 /// An [`Enabled`] [`Xosc`]
@@ -798,7 +804,7 @@ pub type EnabledXosc<X, M, N = U0> = Enabled<Xosc<X, M>, N>;
 pub type EnabledXosc0<M, N = U0> = EnabledXosc<Xosc0Id, M, N>;
 
 /// Type alias for the corresponding [`EnabledXosc`]
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 pub type EnabledXosc1<M, N = U0> = EnabledXosc<Xosc1Id, M, N>;
 
 impl<X: XoscId> Xosc<X, ClockMode> {
@@ -858,7 +864,7 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     }
 
     /// Set the [`CrystalCurrent`] drive strength
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn current(mut self, current: CrystalCurrent) -> Self {
         self.settings.current = current;
@@ -869,7 +875,7 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     ///
     /// If enabled, the hardware will automatically adjust the oscillator
     /// amplitude. In most cases, this will lower power consumption.
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn loop_control(mut self, loop_control: bool) -> Self {
         self.settings.loop_control = loop_control;
@@ -882,21 +888,21 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     /// loop control is enabled, setting the `LOWBUFGAIN` field to `1` will
     /// _increase_ the oscillator amplitude by a factor of appoximately 2. This
     /// can help solve stability issues.
-    #[cfg(feature = "samd51")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn low_buf_gain(mut self, low_buf_gain: bool) -> Self {
         self.settings.low_buf_gain = low_buf_gain;
         self
     }
 
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     pub fn amplitude_gain_control(mut self, enabled: bool) -> Self {
         self.settings.ampgc = enabled;
         self
     }
 
-    #[cfg(feature = "samd21")]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     pub fn gain(mut self, gain: Gain) -> Self {
         self.settings.gain = gain;
@@ -913,8 +919,8 @@ where
     fn new(token: XoscToken<X>, pins: M::Pins<X>, freq: Hertz) -> Self {
         #[allow(unused_mut)]
         let mut settings = Settings::default();
-        #[cfg(feature = "samd51")]
-        if let M::DYN = DynMode::CrystalMode {
+        #[cfg(feature = "thumbv7")]
+        if M::DYN == DynMode::CrystalMode {
             settings.current = match freq.0.to_Hz() {
                 8_000_000 => CrystalCurrent::Low,
                 8_000_001..=16_000_000 => CrystalCurrent::Medium,
@@ -1018,7 +1024,7 @@ where
     }
 }
 
-#[cfg(feature = "samd51")]
+#[cfg(feature = "thumbv7")]
 impl<X, M, N> EnabledXosc<X, M, N>
 where
     X: XoscId,
