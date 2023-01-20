@@ -26,6 +26,7 @@ version = "0.2"
 optional = true
 
 [dev-dependencies]
+mcan = "0.2"
 cortex-m-rtic = "1.1"
 dwt-systick-monotonic = "1.1"
 panic-rtt-target = { version = "0.1", features = ["cortex-m"] }
@@ -36,6 +37,7 @@ default = ["rt", "atsamd-hal/same54p", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/same54p-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
+can = ["atsamd-hal/can"]
 
 [profile.dev]
 incremental = false
@@ -46,3 +48,7 @@ lto = true
 [profile.release]
 lto = true
 opt-level = "s"
+
+[[example]]
+name = "mcan"
+required-features = ["can"]
