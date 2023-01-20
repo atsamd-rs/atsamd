@@ -5,29 +5,21 @@ This crate provides a type-safe Rust API for working with the
 
 ## Board Features
 
-- Microchip [ATSAME54P] Cortex-M4 microcontroller @ 120 MHz (32-bit, 3.3V logic and power)
+- Microchip [ATSAME54P] Cortex-M4F microcontroller
   - 1MB Flash
-  - 256kB SRAM
+  - 256kB SRAM (128kB if ECCRAM is enabled)
   - 8MB SPI Flash chip
 
 ## Prerequisites
-* Install the cross compile toolchain `rustup target add thumbv7em-none-eabihf`
-* Install [cargo-hf2 the hf2 bootloader flasher tool](https://crates.io/crates/cargo-hf2) however your platform requires
 
-## Uploading an example
-Check out the repository for examples:
+* Install the cross-compilation target
+    * `$ rustup target add thumbv7em-none-eabihf`
+* Install the [`cargo-embed`](https://github.com/probe-rs/probe-rs/tree/master/cargo-embed)
+    * `$ cargo install cargo-embed`
 
-https://github.com/atsamd-rs/atsamd/tree/master/boards/atsame54_xpro/examples
+## Running an example
 
-* Be in this directory `cd boards/atsame54_xpro`
-* Put your device in bootloader mode usually by hitting the reset button twice.
-* Build and upload in one step
-```
-$ cargo hf2 --release --example blinky_basic
-    Finished release [optimized + debuginfo] target(s) in 2m 02s
-    Searching for a connected device with known vid/pid pair.
-    Trying  Ok(Some("Microchip")) Ok(Some("SAM E54 Xplained Pro Evaluation Kit"))
-    Flashing "/path/to/atsamd/boards/atsame54_xpro/target/thumbv7em-none-eabihf/release/examples/blinky_basic"
-    Finished in 0.085s
-$
-```
+* Checkout the atsamd repository
+* Go to directory `boards/atsame54_xpro`
+* Build and flash the device
+    * eg. `cargo embed --release --example blinky_rtic`
