@@ -1,7 +1,17 @@
 MEMORY
 {
   FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x100000
-  RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x40000
+  RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x20000
+  /*
+    Defensive RAM configuration:
+    - If RAMECC is enabled in the UROW (userpage), RAM is cut in half.
+    - Accessing the higher addresses when ECC is enabled yields very
+      nasty and hard to debug HardFaults.
+    - In order to avoid user's frustration, BSP limits the RAM to lower half.
+
+    Original setting:
+  /*
+  /* RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x40000 */
 }
 
 /* This is where the call stack will be allocated. */

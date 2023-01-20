@@ -1,0 +1,32 @@
+[default.probe]
+# EDBG on SAME54XPro
+usb_vid = "03eb"
+usb_pid = "2111"
+protocol = "Swd"
+
+[default.flashing]
+enabled = true
+restore_unwritten_bytes = false
+do_chip_erase = false
+
+[default.reset]
+enabled = true
+halt_afterwards = false
+
+[default.general]
+chip = "ATSAME54P20A"
+chip_descriptions = []
+log_level = "ERROR"
+connect_under_reset = false
+
+[default.rtt]
+enabled = true
+channels = [
+   { up = 0, down = 0, name = "idle", format = "String" },
+]
+timeout = 500
+show_timestamps = true
+log_enabled = false
+
+[default.gdb]
+enabled = false
