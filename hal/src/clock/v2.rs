@@ -860,23 +860,31 @@ use crate::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
 
 pub mod ahb;
 pub mod apb;
+#[cfg(feature = "has-dfll48m")]
 pub mod dfll;
+#[cfg(any(feature = "has-dpll96m", feature = "has-dpll200m"))]
 pub mod dpll;
 pub mod gclk;
+#[cfg(feature = "has-osc")]
+pub mod osc;
+#[cfg(feature = "has-osc32k")]
+pub mod osc32k;
 pub mod osculp32k;
 pub mod pclk;
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-mclk-oscctrl")]
 pub mod rtcosc;
 pub mod types;
+#[cfg(feature = "has-xosc0")]
 pub mod xosc;
+#[cfg(feature = "has-xosc32k")]
 pub mod xosc32k;
 
-#[cfg(feature = "thumbv7")]
-#[path = "v2/reset_thumbv7em.rs"]
+#[cfg(feature = "samd5xe5x")]
+#[path = "v2/reset_d5x_e5x.rs"]
 mod reset;
 
-#[cfg(feature = "thumbv6")]
-#[path = "v2/reset_thumbv6m.rs"]
+#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[path = "v2/reset_d11_d21.rs"]
 mod reset;
 
 pub use reset::*;

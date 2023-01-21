@@ -31,8 +31,8 @@ macro_rules! create_types {
         $(
             /// Marker type representing the corresponding peripheral
             ///
-            /// This type is defined by and used within the [`clock`](super)
-            /// module. See the the [`types`](self) module documentation for
+            /// This type is defined by and used within the [`clock`](super::super)
+            /// module. See the the [`types`](super) module documentation for
             /// more details.
             pub enum $Type {}
             impl Sealed for $Type {}
@@ -82,7 +82,7 @@ create_types!(Wdt);
 
 // PCLK types
 create_types!(EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5);
-#[cfg(any(feature = "samd21", feature = "thumbv7"))]
+#[cfg(any(feature = "samd21", feature = "samd5xe5x"))]
 create_types!(EvSys6, EvSys7, EvSys8, EvSys9, EvSys10, EvSys11);
 #[cfg(feature = "has-i2s")]
 create_types!(I2S0, I2S1);
@@ -92,7 +92,7 @@ create_types!(Tc4Tc5);
 #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
 create_types!(Tc6Tc7);
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "samd5xe5x")]
 mod variant_ahb_types {
     use super::Sealed;
 
@@ -101,7 +101,7 @@ mod variant_ahb_types {
     #[cfg(feature = "has-can1")]
     create_types!(Can1);
     create_types!(Cmcc);
-    #[cfg(feature = "has-gmac")]
+    #[cfg(feature = "has-ethernet")]
     create_types!(Gmac);
     create_types!(Hpb3);
     create_types!(Icm);
@@ -113,7 +113,7 @@ mod variant_ahb_types {
     create_types!(Sdhc1);
 }
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "samd5xe5x")]
 mod variant_apb_types {
     use super::Sealed;
 
@@ -132,7 +132,7 @@ mod variant_apb_types {
     create_types!(Trng);
 }
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "samd5xe5x")]
 mod variant_pclk_types {
     use super::Sealed;
 
@@ -146,7 +146,7 @@ mod variant_pclk_types {
     create_types!(Tcc2Tcc3);
 }
 
-#[cfg(feature = "thumbv6")]
+#[cfg(any(feature = "samd11", feature = "samd21"))]
 mod variant_apb_types {
     use super::Sealed;
 
@@ -157,7 +157,7 @@ mod variant_apb_types {
     create_types!(SysCtrl);
 }
 
-#[cfg(feature = "thumbv6")]
+#[cfg(any(feature = "samd11", feature = "samd21"))]
 mod variant_pclk_types {
     use super::Sealed;
     create_types!(AcDig);
@@ -171,7 +171,7 @@ mod variant_pclk_types {
     create_types!(Tcc2Tc3);
 }
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "samd5xe5x")]
 pub use variant_ahb_types::*;
 pub use variant_apb_types::*;
 pub use variant_pclk_types::*;

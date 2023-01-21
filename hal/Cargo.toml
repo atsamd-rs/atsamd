@@ -214,10 +214,13 @@ thumbv7 = ["device"]
 # Map each series of chips to its instruction set
 samd11 = ["thumbv6"]
 samd21 = ["thumbv6"]
-samd51 = ["thumbv7"]
-same51 = ["thumbv7"]
-same53 = ["thumbv7"]
-same54 = ["thumbv7"]
+
+samd5xe5x = ["thumbv7"]
+
+samd51 = ["samd5xe5x"]
+same51 = ["samd5xe5x"]
+same53 = ["samd5xe5x"]
+same54 = ["samd5xe5x"]
 
 #-------------------------------------------------------------------------------
 # Pins
@@ -288,13 +291,23 @@ pins-e54p = ["pins-128"]
 #-------------------------------------------------------------------------------
 
 # Define a feature for each optional peripheral
+
+# Buses
 has-can0 = []
 has-can1 = []
 has-ethernet = []
+has-usb = []
+
+# Clock systems
+has-mclk-oscctrl = []
+has-sysctrl = []
+
+# APB
+has-apbd = []
+
+# Generic clock generators 
 has-gclk0 = []
 has-gclk1 = []
-has-gclk10 = []
-has-gclk11 = []
 has-gclk2 = []
 has-gclk3 = []
 has-gclk4 = []
@@ -303,9 +316,39 @@ has-gclk6 = []
 has-gclk7 = []
 has-gclk8 = []
 has-gclk9 = []
-has-gmac = []
-has-i2s = []
+
+has-gclk10 = []
+has-gclk11 = []
+
+# Clock peripherals
+has-dfll48m = []
+
+has-dpll200m = []
+has-dpll96m = []
+
+has-osc = []
+has-osc16m = ["has-osc"]
+has-osc48m = ["has-osc"]
+has-osc8m = ["has-osc"]
+
+has-osc1k = []
+has-osc32k = []
+
+has-osculp-disable = []
+
+has-xosc-cfd = []
+has-xosc0 = []
+has-xosc1 = []
+
+has-xosc1k = []
+has-xosc32k = []
+has-xosc32k-cfd = []
+
+# Storage
 has-sdhc1 = []
+
+# Serial communications
+has-i2s = []
 has-sercom0 = []
 has-sercom1 = []
 has-sercom2 = []
@@ -314,6 +357,8 @@ has-sercom4 = []
 has-sercom5 = []
 has-sercom6 = []
 has-sercom7 = []
+
+# Timers
 has-tc0 = []
 has-tc1 = []
 has-tc2 = []
@@ -326,16 +371,24 @@ has-tcc0 = []
 has-tcc1 = []
 has-tcc2 = []
 has-tcc3 = []
-has-usb = []
 
 # Map each variant to its collection of peripherals
 periph-d11c = [
+  "has-sysctrl",
   "has-gclk0",
   "has-gclk1",
   "has-gclk2",
   "has-gclk3",
   "has-gclk4",
   "has-gclk5",
+  "has-dfll48m",
+  "has-dpll96m",
+  "has-osc8m",
+  "has-osc1k",
+  "has-osc32k",
+  "has-xosc1k",
+  "has-xosc32k",
+  "has-xosc0",
   "has-sercom0",
   "has-sercom1",
   "has-tc1",
@@ -345,6 +398,7 @@ periph-d11c = [
 periph-d11d = ["periph-d11c", "has-sercom2"]
 
 periph-d21 = [
+  "has-sysctrl",
   "has-gclk0",
   "has-gclk1",
   "has-gclk2",
@@ -354,6 +408,12 @@ periph-d21 = [
   "has-gclk6",
   "has-gclk7",
   "has-gclk8",
+  "has-dfll48m",
+  "has-dpll96m",
+  "has-osc8m",
+  "has-osc32k",
+  "has-xosc32k",
+  "has-xosc0",
   "has-i2s",
   "has-sercom0",
   "has-sercom1",
@@ -375,12 +435,29 @@ periph-d21el = ["periph-d21"]
 periph-d21gl = ["periph-d21el", "has-sercom4", "has-sercom5"]
 
 periph-d51 = [
+  "has-mclk-oscctrl",
+  "has-apbd",
+  "has-gclk0",
+  "has-gclk1",
+  "has-gclk2",
+  "has-gclk3",
+  "has-gclk4",
+  "has-gclk5",
   "has-gclk6",
   "has-gclk7",
   "has-gclk8",
   "has-gclk9",
   "has-gclk10",
   "has-gclk11",
+  "has-dfll48m",
+  "has-dpll200m",
+  "has-osculp-disable",
+  "has-xosc1k",
+  "has-xosc32k",
+  "has-xosc32k-cfd",
+  "has-xosc0",
+  "has-xosc1",
+  "has-xosc-cfd",
   "has-sercom0",
   "has-sercom1",
   "has-sercom2",

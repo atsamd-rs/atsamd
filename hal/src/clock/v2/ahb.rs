@@ -127,12 +127,12 @@ use core::marker::PhantomData;
 use bitflags;
 use paste::paste;
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-mclk-oscctrl")]
 mod imports {
     pub use crate::pac::{mclk::AHBMASK, MCLK as PERIPHERAL};
 }
 
-#[cfg(feature = "thumbv6")]
+#[cfg(feature = "has-sysctrl")]
 mod imports {
     pub use crate::pac::{pm::AHBMASK, PM as PERIPHERAL};
 }
@@ -378,7 +378,7 @@ macro_rules! define_ahb_types {
     };
 }
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "samd5xe5x")]
 define_ahb_types!(
     Hpb0 = 0,
     Hpb1 = 1,
@@ -391,7 +391,7 @@ define_ahb_types!(
     Usb = 10,
     Pac0 = 12,
     Qspi = 13,
-    #[cfg(feature = "has-gmac")]
+    #[cfg(feature = "has-ethernet")]
     Gmac = 14,
     Sdhc0 = 15,
     #[cfg(feature = "has-sdhc1")]
@@ -407,7 +407,7 @@ define_ahb_types!(
     NvmCtrlCache = 23,
 );
 
-#[cfg(feature = "thumbv6")]
+#[cfg(any(feature = "samd11", feature = "samd21"))]
 define_ahb_types!(
     Hpb0 = 0,
     Hpb1 = 1,

@@ -266,7 +266,7 @@
 //! [`from_usb`]: Dfll::from_usb
 //! [`into_mode`]: EnabledDfll::into_mode
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-mclk-oscctrl")]
 mod imports {
     pub use crate::pac::oscctrl::{
         RegisterBlock, DFLLCTRLA as DFLLCTRL, DFLLCTRLB, DFLLMUL, DFLLSYNC,
@@ -274,7 +274,7 @@ mod imports {
     pub use crate::pac::OSCCTRL as PERIPHERAL;
 }
 
-#[cfg(feature = "thumbv6")]
+#[cfg(feature = "has-sysctrl")]
 mod imports {
     pub use crate::pac::sysctrl::{RegisterBlock, DFLLCTRL, DFLLMUL, DFLLSYNC};
     pub use crate::pac::SYSCTRL as PERIPHERAL;
@@ -328,14 +328,14 @@ impl DfllToken {
 
     #[inline]
     fn dfllctrl(&self) -> &DFLLCTRL {
-        #[cfg(feature = "thumbv7")]
+        #[cfg(feature = "has-mclk-oscctrl")]
         let dfllctrl = &self.reg_block().dfllctrla;
-        #[cfg(feature = "thumbv6")]
+        #[cfg(feature = "has-sysctrl")]
         let dfllctrl = &self.reg_block().dfllctrl;
         dfllctrl
     }
 
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-mclk-oscctrl")]
     #[inline]
     fn dfllctrlb(&self) -> &crate::pac::oscctrl::DFLLCTRLB {
         &self.reg_block().dfllctrlb
@@ -346,31 +346,31 @@ impl DfllToken {
         &self.reg_block().dfllmul
     }
 
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-mclk-oscctrl")]
     #[inline]
     fn dfllsync(&self) -> &DFLLSYNC {
         &self.reg_block().dfllsync
     }
 
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-mclk-oscctrl")]
     #[inline]
     fn wait_sync_enable(&self) {
         while self.dfllsync().read().enable().bit() {}
     }
 
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-mclk-oscctrl")]
     #[inline]
     fn wait_sync_dfllmul(&self) {
         while self.dfllsync().read().dfllmul().bit() {}
     }
 
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-mclk-oscctrl")]
     #[inline]
     fn wait_sync_dfllctrlb(&self) {
         while self.dfllsync().read().dfllctrlb().bit() {}
     }
 
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-mclk-oscctrl")]
     #[inline]
     fn enable(&mut self, settings: settings::All) {
         self.dfllctrlb().modify(|_, w| {
@@ -398,7 +398,7 @@ impl DfllToken {
         self.wait_sync_enable();
     }
 
-    #[cfg(feature = "thumbv6")]
+    #[cfg(feature = "has-sysctrl")]
     #[inline]
     fn enable(&mut self, settings: settings::All) {
         if settings.closed_loop {
@@ -424,7 +424,7 @@ impl DfllToken {
     #[inline]
     fn disable(&mut self) {
         self.dfllctrl().write(|w| w.enable().clear_bit());
-        #[cfg(feature = "thumbv7")]
+        #[cfg(feature = "has-mclk-oscctrl")]
         self.wait_sync_enable();
     }
 }
@@ -435,9 +435,9 @@ impl DfllToken {
 
 type MultFactor = u16;
 type CoarseMaxStep = u8;
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-mclk-oscctrl")]
 type FineMaxStep = u8;
-#[cfg(feature = "thumbv6")]
+#[cfg(feature = "has-sysctrl")]
 type FineMaxStep = u16;
 
 //==============================================================================

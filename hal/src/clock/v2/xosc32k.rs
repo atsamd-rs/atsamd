@@ -344,7 +344,7 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-mclk-oscctrl")]
 mod imports {
     pub use super::super::osculp32k::OscUlp32kId;
     pub use crate::gpio::{PA00 as XIn32Id, PA01 as XOut32Id};
@@ -353,7 +353,7 @@ mod imports {
     pub use crate::pac::OSC32KCTRL as PERIPHERAL;
 }
 
-#[cfg(feature = "thumbv6")]
+#[cfg(feature = "has-sysctrl")]
 mod imports {
     #[cfg(feature = "samd21")]
     pub use crate::gpio::{PA00 as XIn32Id, PA01 as XOut32Id};
@@ -395,6 +395,7 @@ pub struct Xosc32kBaseToken(());
 ///
 /// The [`Xosc1k`] clock is disabled at power-on reset. To use it, you must
 /// first exchange the token for an actual clock with [`Xosc1k::enable`].
+#[cfg(feature = "has-xosc1k")]
 pub struct Xosc1kToken(());
 
 /// Singleton token that can be exchanged for [`Xosc32k`]
@@ -416,15 +417,16 @@ pub struct Xosc32kToken(());
 ///
 /// Clock failure detection is disabled at power-on reset. To use it, you must
 /// first enable it by exchanging the token with [`Xosc32kCfd::enable`].
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-xosc32k-cfd")]
 pub struct Xosc32kCfdToken(());
 
 /// Set of tokens representing the disabled XOSC32K clocks power-on reset
 pub struct Xosc32kTokens {
     pub base: Xosc32kBaseToken,
+    #[cfg(feature = "has-xosc1k")]
     pub xosc1k: Xosc1kToken,
     pub xosc32k: Xosc32kToken,
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-xosc32k-cfd")]
     pub cfd: Xosc32kCfdToken,
 }
 
@@ -439,9 +441,10 @@ impl Xosc32kTokens {
     pub(super) unsafe fn new() -> Self {
         Self {
             base: Xosc32kBaseToken(()),
+            #[cfg(feature = "has-xosc1k")]
             xosc1k: Xosc1kToken(()),
             xosc32k: Xosc32kToken(()),
-            #[cfg(feature = "thumbv7")]
+            #[cfg(feature = "has-xosc32k-cfd")]
             cfd: Xosc32kCfdToken(()),
         }
     }
@@ -452,11 +455,11 @@ impl Xosc32kBaseToken {
     fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        #[cfg(feature = "thumbv7")]
+        #[cfg(feature = "has-mclk-oscctrl")]
         unsafe {
             (*PERIPHERAL::PTR).status.read()
         }
-        #[cfg(feature = "thumbv6")]
+        #[cfg(feature = "has-sysctrl")]
         unsafe {
             (*PERIPHERAL::PTR).pclksr.read()
         }
@@ -487,9 +490,9 @@ impl Xosc32kBaseToken {
     fn enable(&mut self, mode: DynMode, settings: Settings) {
         let xtalen = mode == DynMode::CrystalMode;
         self.xosc32k().write(|w| {
-            #[cfg(feature = "thumbv7")]
+            #[cfg(feature = "has-mclk-oscctrl")]
             w.cgm().variant(settings.cgm.into());
-            #[cfg(feature = "thumbv6")]
+            #[cfg(feature = "has-sysctrl")]
             w.aampen().bit(settings.aampen);
             unsafe { w.startup().bits(settings.start_up as u8) };
             w.ondemand().bit(settings.on_demand);
@@ -506,12 +509,14 @@ impl Xosc32kBaseToken {
     }
 
     /// Enable the 1 kHz output
+    #[cfg(feature = "has-xosc1k")]
     #[inline]
     fn enable_1k(&mut self) {
         self.xosc32k().modify(|_, w| w.en1k().set_bit());
     }
 
     /// Disable the 1 kHz output
+    #[cfg(feature = "has-xosc1k")]
     #[inline]
     fn disable_1k(&mut self) {
         self.xosc32k().modify(|_, w| w.en1k().clear_bit());
@@ -536,7 +541,7 @@ impl Xosc32kBaseToken {
     }
 }
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-xosc32k-cfd")]
 impl Xosc32kCfdToken {
     #[inline]
     fn status(&self) -> STATUS_R {
@@ -601,9 +606,9 @@ impl Xosc32kCfdToken {
 #[derive(Clone, Copy)]
 struct Settings {
     start_up: StartUpDelay,
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-mclk-oscctrl")]
     cgm: ControlGainMode,
-    #[cfg(feature = "thumbv6")]
+    #[cfg(feature = "has-sysctrl")]
     aampen: bool,
     on_demand: bool,
     run_standby: bool,
@@ -613,9 +618,9 @@ impl Default for Settings {
     fn default() -> Self {
         Settings {
             start_up: StartUpDelay::Delay63ms,
-            #[cfg(feature = "thumbv7")]
+            #[cfg(feature = "has-mclk-oscctrl")]
             cgm: ControlGainMode::Standard,
-            #[cfg(feature = "thumbv6")]
+            #[cfg(feature = "has-sysctrl")]
             aampen: false,
             on_demand: true,
             run_standby: false,
@@ -674,7 +679,7 @@ impl From<SafeClockDiv> for bool {
 /// The start up delay is counted using the [`OscUlp32k`] clock.
 ///
 /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-mclk-oscctrl")]
 #[repr(u8)]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum StartUpDelay {
@@ -688,7 +693,7 @@ pub enum StartUpDelay {
     Delay8s,
 }
 
-#[cfg(feature = "thumbv6")]
+#[cfg(feature = "has-sysctrl")]
 #[repr(u8)]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum StartUpDelay {
@@ -712,14 +717,14 @@ pub enum StartUpDelay {
 /// The XOSC32K crystal oscillator control loop has a configurable gain to allow
 /// users to trade power for speed and stability.
 #[derive(Copy, Clone, Default, PartialEq, Eq)]
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-mclk-oscctrl")]
 pub enum ControlGainMode {
     #[default]
     Standard,
     HighSpeed,
 }
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-mclk-oscctrl")]
 impl From<ControlGainMode> for CGM_A {
     fn from(cgm: ControlGainMode) -> Self {
         match cgm {
@@ -890,7 +895,7 @@ impl Xosc32kBase<CrystalMode> {
 
     /// Set the crystal oscillator [`ControlGainMode`]
     #[inline]
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-mclk-oscctrl")]
     pub fn control_gain_mode(mut self, cgm: ControlGainMode) -> Self {
         self.settings.cgm = cgm;
         self
@@ -1038,12 +1043,12 @@ impl<M: Mode, N> EnabledXosc32kBase<M, N> {
 ///
 /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
 /// [`EnabledOscUlp32k`]: super::osculp32k::EnabledOscUlp32k
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-xosc32k-cfd")]
 pub struct Xosc32kCfd {
     token: Xosc32kCfdToken,
 }
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-xosc32k-cfd")]
 impl Xosc32kCfd {
     /// Enable continuous monitoring of the XOSC32K for clock failure
     ///
@@ -1121,8 +1126,10 @@ impl Xosc32kCfd {
 /// Type representing the identity of the [`Xosc1k`] clock
 ///
 /// See the discussion on [`Id` types](super#id-types) for more information.
+#[cfg(feature = "has-xosc1k")]
 pub enum Xosc1kId {}
 
+#[cfg(feature = "has-xosc1k")]
 impl Sealed for Xosc1kId {}
 
 /// Type representing the identity of the [`Xosc32k`] clock
@@ -1143,6 +1150,7 @@ impl Sealed for Xosc32kId {}
 /// of three clocks forming a small clock tree. The [`Xosc1k`] clock is derived
 /// from the [`Xosc32kBase`] clock. See the [module-level documentation](super)
 /// for details and examples.
+#[cfg(feature = "has-xosc1k")]
 pub struct Xosc1k {
     token: Xosc1kToken,
 }
@@ -1156,8 +1164,10 @@ pub struct Xosc1k {
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
 /// the counter is assumed to be zero.
+#[cfg(feature = "has-xosc1k")]
 pub type EnabledXosc1k<N = U0> = Enabled<Xosc1k, N>;
 
+#[cfg(feature = "has-xosc1k")]
 impl Xosc1k {
     /// Enable 1 kHz output from the [`Xosc32kBase`] clock
     ///
@@ -1176,6 +1186,7 @@ impl Xosc1k {
     }
 }
 
+#[cfg(feature = "has-osc1k")]
 impl EnabledXosc1k {
     /// Disable 1 kHz output from the [`Xosc32kBase`] clock
     ///
@@ -1194,6 +1205,7 @@ impl EnabledXosc1k {
     }
 }
 
+#[cfg(feature = "has-osc1k")]
 impl<N> Source for EnabledXosc1k<N> {
     type Id = Xosc1kId;
 

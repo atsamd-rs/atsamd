@@ -242,7 +242,7 @@ use core::marker::PhantomData;
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-dpll200m")]
 mod imports {
     pub use super::super::xosc::Xosc1Id;
     pub use crate::pac::oscctrl::{
@@ -254,7 +254,7 @@ mod imports {
     pub use crate::pac::OSCCTRL as PERIPHERAL;
 }
 
-#[cfg(feature = "thumbv6")]
+#[cfg(feature = "has-dpll96m")]
 mod imports {
     pub use crate::pac::sysctrl::RegisterBlock as BLOCK;
     pub use crate::pac::sysctrl::{
@@ -317,11 +317,11 @@ impl<D: DpllId> DpllToken<D> {
         // of registers for the corresponding `DpllId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        #[cfg(feature = "thumbv7")]
+        #[cfg(feature = "has-dpll200m")]
         unsafe {
             &(*PERIPHERAL::PTR).dpll[D::NUM]
         }
-        #[cfg(feature = "thumbv6")]
+        #[cfg(feature = "has-dpll96m")]
         unsafe {
             &(*PERIPHERAL::PTR)
         }
@@ -345,7 +345,7 @@ impl<D: DpllId> DpllToken<D> {
         &self.dpll().dpllratio
     }
 
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-dpll200m")]
     /// Access the corresponding DPLLSYNCBUSY register for reading only
     #[inline]
     fn syncbusy(&self) -> dpllsyncbusy::R {
@@ -363,7 +363,7 @@ impl<D: DpllId> DpllToken<D> {
         // Convert the actual predivider to the `div` register field value
         let div = match id {
             DynDpllSourceId::Xosc0 => prediv / 2 - 1,
-            #[cfg(feature = "thumbv7")]
+            #[cfg(feature = "has-xosc1")]
             DynDpllSourceId::Xosc1 => prediv / 2 - 1,
             _ => 0,
         };
@@ -383,7 +383,7 @@ impl<D: DpllId> DpllToken<D> {
             w.ldr().bits(settings.mult - 1);
             w.ldrfrac().bits(settings.frac)
         });
-        #[cfg(feature = "thumbv7")]
+        #[cfg(feature = "has-dpll200m")]
         while self.syncbusy().dpllratio().bit_is_set() {}
         self.ctrla().modify(|_, w| {
             w.ondemand().bit(settings.on_demand);
@@ -402,17 +402,17 @@ impl<D: DpllId> DpllToken<D> {
 
     #[inline]
     fn wait_enabled(&self) {
-        #[cfg(feature = "thumbv7")]
+        #[cfg(feature = "has-dpll200m")]
         while self.syncbusy().enable().bit_is_set() {}
-        #[cfg(feature = "thumbv6")]
+        #[cfg(feature = "has-dpll96m")]
         while self.status().enable().bit_is_clear() {}
     }
 
     #[inline]
     fn wait_disabled(&self) {
-        #[cfg(feature = "thumbv7")]
+        #[cfg(feature = "has-dpll200m")]
         while self.syncbusy().enable().bit_is_set() {}
-        #[cfg(feature = "thumbv6")]
+        #[cfg(feature = "has-dpll96m")]
         while self.status().enable().bit_is_set() {}
     }
 
@@ -490,13 +490,13 @@ impl DpllId for Dpll0Id {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-dpll200m")]
 pub enum Dpll1Id {}
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-dpll200m")]
 impl Sealed for Dpll1Id {}
 
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-dpll200m")]
 impl DpllId for Dpll1Id {
     const DYN: DynDpllId = DynDpllId::Dpll1;
     const NUM: usize = 1;
@@ -519,7 +519,7 @@ pub enum DynDpllSourceId {
     /// The DPLL is driven by [`Xosc0`](super::xosc::Xosc0)
     Xosc0,
     /// The DPLL is driven by [`Xosc1`](super::xosc::Xosc1)
-    #[cfg(feature = "thumbv7")]
+    #[cfg(feature = "has-xosc1")]
     Xosc1,
     /// The DPLL is driven by [`Xosc32k`](super::xosc32k::Xosc32k)
     Xosc32k,
@@ -527,14 +527,14 @@ pub enum DynDpllSourceId {
 
 impl From<DynDpllSourceId> for REFCLK_A {
     fn from(source: DynDpllSourceId) -> Self {
-        #[cfg(feature = "thumbv7")]
+        #[cfg(feature = "has-dpll200m")]
         let refclk = match source {
             DynDpllSourceId::Pclk => REFCLK_A::GCLK,
             DynDpllSourceId::Xosc0 => REFCLK_A::XOSC0,
             DynDpllSourceId::Xosc1 => REFCLK_A::XOSC1,
             DynDpllSourceId::Xosc32k => REFCLK_A::XOSC32,
         };
-        #[cfg(feature = "thumbv6")]
+        #[cfg(feature = "has-dpll96m")]
         let refclk = match source {
             DynDpllSourceId::Pclk => REFCLK_A::GCLK,
             DynDpllSourceId::Xosc0 => REFCLK_A::REF1,
@@ -578,7 +578,7 @@ impl DpllSourceId for Xosc0Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc0;
     type Reference<D: DpllId> = settings::Xosc;
 }
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-xosc1")]
 impl DpllSourceId for Xosc1Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc1;
     type Reference<D: DpllId> = settings::Xosc;
@@ -591,6 +591,14 @@ impl DpllSourceId for Xosc32kId {
 //==============================================================================
 // Settings
 //==============================================================================
+
+#[cfg(feature = "has-dpll96m")]
+const __FRAC_DIV: u8 = 16;
+#[cfg(feature = "has-dpll200m")]
+const __FRAC_DIV: u8 = 32;
+
+/// Fractional divider for the `LDRFRAC` field
+pub const FRAC_DIV: u8 = __FRAC_DIV;
 
 /// [`Dpll`] settings relevant to all reference clocks
 #[derive(Copy, Clone)]
@@ -715,7 +723,7 @@ where
 pub type Dpll0<M> = Dpll<Dpll0Id, M>;
 
 /// Type alias for the corresponding [`Dpll`]
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-dpll200m")]
 pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 
 impl<D, I> Dpll<D, I>
@@ -889,7 +897,7 @@ where
     /// parts of the division factor, i.e. the division factor is:
     ///
     /// ```text
-    /// int + frac / 32
+    /// int + frac / FRAC_DIV
     /// ```
     ///
     /// This function will confirm that the `int` and `frac` values convert to
@@ -899,7 +907,7 @@ where
         if int < 1 || int > 0x2000 {
             panic!("Invalid integer part of the DPLL loop divider")
         }
-        if frac > 31 {
+        if frac > FRAC_DIV - 1 {
             panic!("Invalid fractional part of the DPLL loop divider")
         }
         self.settings.mult = int;
@@ -953,7 +961,14 @@ where
 
     #[inline]
     fn output_freq(&self) -> Hertz {
-        self.input_freq() * (self.settings.mult as u32 + self.settings.frac as u32 / 32)
+        use settings::Reference;
+        const DIV: u32 = FRAC_DIV as u32;
+        // Minimize truncation error as much as possible
+        let ref_freq = self.reference.freq().0;
+        let prediv = self.reference.prediv() as u32;
+        let int = self.settings.mult as u32;
+        let frac = self.settings.frac as u32;
+        ref_freq * (DIV * int + frac) / (DIV * prediv)
     }
 
     /// Return the output frequency of the [`Dpll`]
@@ -981,12 +996,29 @@ where
     /// frequency is invalid, this call will panic.
     #[inline]
     pub fn enable(self) -> EnabledDpll<D, I> {
+        const INPUT_MIN: u32 = 32_000;
+
+        #[cfg(feature = "has-dpll96m")]
+        const INPUT_MAX: u32 = 2_000_000;
+        #[cfg(feature = "has-dpll200m")]
+        const INPUT_MAX: u32 = 3_200_000;
+
+        #[cfg(feature = "has-dpll96m")]
+        const OUTPUT_MIN: u32 = 48_000_000;
+        #[cfg(feature = "has-dpll200m")]
+        const OUTPUT_MIN: u32 = 96_000_000;
+
+        #[cfg(feature = "has-dpll96m")]
+        const OUTPUT_MAX: u32 = 96_000_000;
+        #[cfg(feature = "has-dpll200m")]
+        const OUTPUT_MAX: u32 = 200_000_000;
+
         let input_freq = self.input_freq().to_Hz();
         let output_freq = self.output_freq().to_Hz();
-        if input_freq < 32_000 || input_freq > 3_200_000 {
+        if input_freq < INPUT_MIN || input_freq > INPUT_MAX {
             panic!("Invalid DPLL input frequency");
         }
-        if output_freq < 96_000_000 || output_freq > 200_000_000 {
+        if output_freq < OUTPUT_MIN || output_freq > OUTPUT_MAX {
             panic!("Invalid DPLL output frequency");
         }
         self.enable_unchecked()
@@ -1026,7 +1058,7 @@ pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
 pub type EnabledDpll0<I, N = U0> = EnabledDpll<Dpll0Id, I, N>;
 
 /// Type alias for the corresponding [`EnabledDpll`]
-#[cfg(feature = "thumbv7")]
+#[cfg(feature = "has-dpll200m")]
 pub type EnabledDpll1<I, N = U0> = EnabledDpll<Dpll1Id, I, N>;
 
 impl<D, I> EnabledDpll<D, I>
