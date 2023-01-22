@@ -21,11 +21,11 @@ use pac::{interrupt, CorePeripherals, Peripherals};
 // Added
 use hal::delay::Delay;
 // use hal::pac::{CorePeripherals, Peripherals};
-// use hal::prelude::*;
-// use hal::timer::TimerCounter;
+use hal::prelude::*;
+use hal::timer::TimerCounter;
 
-// use smart_leds::{hsv::RGB8, SmartLedsWrite};
-// use ws2812_timer_delay::Ws2812;
+use smart_leds::{hsv::RGB8, SmartLedsWrite};
+use ws2812_timer_delay::Ws2812;
 // End Added
 
 #[entry]
