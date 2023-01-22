@@ -69,13 +69,13 @@ use seq_macro::seq;
 
 use crate::pac;
 
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 mod imports {
     pub use crate::pac::gclk::pchctrl::GEN_A;
     pub use crate::pac::gclk::PCHCTRL as CTRL;
 }
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 mod imports {
     pub use crate::pac::gclk::clkctrl::GEN_A;
     pub use crate::pac::gclk::CLKCTRL as CTRL;
@@ -129,11 +129,11 @@ impl<P: PclkId> PclkToken<P> {
         // of registers for the corresponding `PclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         unsafe {
             &(*pac::GCLK::PTR).pchctrl[P::DYN as usize]
         }
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         unsafe {
             &(*pac::GCLK::PTR).clkctrl
         }
@@ -144,12 +144,12 @@ impl<P: PclkId> PclkToken<P> {
     fn enable(&mut self, source: DynPclkSourceId) {
         self.ctrl().write(|w| {
             w.gen().variant(source.into());
-            #[cfg(feature = "has-sysctrl")]
+            #[cfg(feature = "has-old-clock-system")]
             {
                 w.clken().set_bit();
                 unsafe { w.id().bits(P::DYN as u8) }
             }
-            #[cfg(feature = "has-mclk-oscctrl")]
+            #[cfg(feature = "has-new-clock-system")]
             w.chen().set_bit()
         });
     }
@@ -158,12 +158,12 @@ impl<P: PclkId> PclkToken<P> {
     #[inline]
     fn disable(&mut self) {
         self.ctrl().modify(|_, w| {
-            #[cfg(feature = "has-sysctrl")]
+            #[cfg(feature = "has-old-clock-system")]
             {
                 w.clken().clear_bit();
                 unsafe { w.id().bits(P::DYN as u8) }
             }
-            #[cfg(feature = "has-mclk-oscctrl")]
+            #[cfg(feature = "has-new-clock-system")]
             w.chen().clear_bit()
         });
     }

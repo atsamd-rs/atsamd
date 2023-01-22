@@ -344,7 +344,7 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 mod imports {
     pub use super::super::osculp32k::OscUlp32kId;
     pub use crate::gpio::{PA00 as XIn32Id, PA01 as XOut32Id};
@@ -353,7 +353,7 @@ mod imports {
     pub use crate::pac::OSC32KCTRL as PERIPHERAL;
 }
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 mod imports {
     #[cfg(feature = "samd21")]
     pub use crate::gpio::{PA00 as XIn32Id, PA01 as XOut32Id};
@@ -455,11 +455,11 @@ impl Xosc32kBaseToken {
     fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         unsafe {
             (*PERIPHERAL::PTR).status.read()
         }
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         unsafe {
             (*PERIPHERAL::PTR).pclksr.read()
         }
@@ -490,9 +490,9 @@ impl Xosc32kBaseToken {
     fn enable(&mut self, mode: DynMode, settings: Settings) {
         let xtalen = mode == DynMode::CrystalMode;
         self.xosc32k().write(|w| {
-            #[cfg(feature = "has-mclk-oscctrl")]
+            #[cfg(feature = "has-new-clock-system")]
             w.cgm().variant(settings.cgm.into());
-            #[cfg(feature = "has-sysctrl")]
+            #[cfg(feature = "has-old-clock-system")]
             w.aampen().bit(settings.aampen);
             unsafe { w.startup().bits(settings.start_up as u8) };
             w.ondemand().bit(settings.on_demand);
@@ -606,9 +606,9 @@ impl Xosc32kCfdToken {
 #[derive(Clone, Copy)]
 struct Settings {
     start_up: StartUpDelay,
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     cgm: ControlGainMode,
-    #[cfg(feature = "has-sysctrl")]
+    #[cfg(feature = "has-old-clock-system")]
     aampen: bool,
     on_demand: bool,
     run_standby: bool,
@@ -618,9 +618,9 @@ impl Default for Settings {
     fn default() -> Self {
         Settings {
             start_up: StartUpDelay::Delay63ms,
-            #[cfg(feature = "has-mclk-oscctrl")]
+            #[cfg(feature = "has-new-clock-system")]
             cgm: ControlGainMode::Standard,
-            #[cfg(feature = "has-sysctrl")]
+            #[cfg(feature = "has-old-clock-system")]
             aampen: false,
             on_demand: true,
             run_standby: false,
@@ -679,7 +679,7 @@ impl From<SafeClockDiv> for bool {
 /// The start up delay is counted using the [`OscUlp32k`] clock.
 ///
 /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 #[repr(u8)]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum StartUpDelay {
@@ -693,7 +693,7 @@ pub enum StartUpDelay {
     Delay8s,
 }
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 #[repr(u8)]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum StartUpDelay {
@@ -717,14 +717,14 @@ pub enum StartUpDelay {
 /// The XOSC32K crystal oscillator control loop has a configurable gain to allow
 /// users to trade power for speed and stability.
 #[derive(Copy, Clone, Default, PartialEq, Eq)]
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 pub enum ControlGainMode {
     #[default]
     Standard,
     HighSpeed,
 }
 
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 impl From<ControlGainMode> for CGM_A {
     fn from(cgm: ControlGainMode) -> Self {
         match cgm {
@@ -895,7 +895,7 @@ impl Xosc32kBase<CrystalMode> {
 
     /// Set the crystal oscillator [`ControlGainMode`]
     #[inline]
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     pub fn control_gain_mode(mut self, cgm: ControlGainMode) -> Self {
         self.settings.cgm = cgm;
         self
@@ -1186,7 +1186,7 @@ impl Xosc1k {
     }
 }
 
-#[cfg(feature = "has-osc1k")]
+#[cfg(feature = "has-xosc1k")]
 impl EnabledXosc1k {
     /// Disable 1 kHz output from the [`Xosc32kBase`] clock
     ///
@@ -1205,7 +1205,7 @@ impl EnabledXosc1k {
     }
 }
 
-#[cfg(feature = "has-osc1k")]
+#[cfg(feature = "has-xosc1k")]
 impl<N> Source for EnabledXosc1k<N> {
     type Id = Xosc1kId;
 

@@ -57,6 +57,12 @@ pub struct Buses {
     pub apb: apb::Apb,
 }
 
+pub struct OscUlpClocks {
+    pub base: osculp32k::EnabledOscUlp32kBase,
+    pub osculp1k: osculp32k::EnabledOscUlp1k,
+    pub osculp32k: osculp32k::EnabledOscUlp32k,
+}
+
 /// Enabled clocks at power-on reset
 ///
 /// This type is constructed using the [`clock_system_at_reset`] function, which
@@ -88,7 +94,7 @@ pub struct Clocks {
     pub dfll: Enabled<dfll::Dfll, U1>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
-    pub osculp32k_base: EnabledOscUlp32kBase,
+    pub osculp: OscUlpClocks,
 }
 
 /// Type-level tokens for unused clocks at power-on reset
@@ -120,8 +126,6 @@ pub struct Tokens {
     /// Tokens to create [`xosc32k::Xosc32kBase`], [`xosc32k::Xosc1k`] and
     /// [`xosc32k::Xosc32k`]
     pub xosc32k: xosc32k::Xosc32kTokens,
-    /// Tokens to create [`osculp32k::OscUlp1k`] and [`osculp32k::OscUlp32k`]
-    pub osculp32k: osculp32k::OscUlp32kTokens,
 }
 
 /// Consume the PAC clocking structs and return a HAL-level
@@ -153,13 +157,21 @@ pub fn clock_system_at_reset(
         let dfll = Enabled::<_>::new(dfll::Dfll::open_loop(dfll::DfllToken::new()));
         let (gclk0, dfll) = gclk::Gclk0::from_source(gclk::GclkToken::new(), dfll);
         let gclk0 = Enabled::new(gclk0);
+        let base = Enabled::new(osculp32k::OscUlp32kBase::new());
+        let osculp1k = Enabled::new(osculp32k::OscUlp1k::new());
+        let osculp32k = Enabled::new(osculp32k::OscUlp32k::new());
+        let osculp = OscUlpClocks {
+            base,
+            osculp1k,
+            osculp32k,
+        };
         let clocks = Clocks {
             pac,
             ahbs: ahb::AhbClks::new(),
             apbs: apb::ApbClks::new(),
             gclk0,
             dfll,
-            osculp32k_base: osculp32k::OscUlp32kBase::new(),
+            osculp,
         };
         let tokens = Tokens {
             apbs: apb::ApbTokens::new(),
@@ -171,7 +183,6 @@ pub fn clock_system_at_reset(
             xosc0: xosc::XoscToken::new(),
             xosc1: xosc::XoscToken::new(),
             xosc32k: xosc32k::Xosc32kTokens::new(),
-            osculp32k: osculp32k::OscUlp32kTokens::new(),
         };
         (buses, clocks, tokens)
     }

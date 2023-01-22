@@ -347,7 +347,7 @@ use crate::pac;
 use crate::gpio::{self, AlternateH, AnyPin, Pin, PinId};
 use crate::pac::gclk::genctrl::SRC_A;
 use crate::pac::gclk::GENCTRL;
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 use crate::pac::gclk::GENDIV;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
@@ -409,17 +409,17 @@ impl<G: GclkId> GclkToken<G> {
         // of registers for the corresponding `GclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         unsafe {
             &(*pac::GCLK::PTR).genctrl[G::NUM]
         }
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         unsafe {
             &(*pac::GCLK::PTR).genctrl
         }
     }
 
-    #[cfg(feature = "has-sysctrl")]
+    #[cfg(feature = "has-old-clock-system")]
     #[inline]
     fn gendiv(&self) -> &GENDIV {
         unsafe { &(*pac::GCLK::PTR).gendiv }
@@ -434,12 +434,12 @@ impl<G: GclkId> GclkToken<G> {
         // Safety: We are only reading from the `SYNCBUSY` register, and we are
         // only observing the bit corresponding to this particular `GclkId`, so
         // there is no risk of memory corruption.
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         {
             let syncbusy = unsafe { &(*pac::GCLK::PTR).syncbusy };
             while syncbusy.read().genctrl().bits() & Self::MASK != 0 {}
         }
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         {
             let status = unsafe { &(*pac::GCLK::PTR).status };
             while status.read().syncbusy().bit() {}
@@ -462,14 +462,14 @@ impl<G: GclkId> GclkToken<G> {
         let (divsel, div) = div.divsel_div();
         // Safety: The `DIVSEL` and `DIV` values are derived from the
         // `GclkDivider` type, so they are guaranteed to be valid.
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         {
             self.genctrl().modify(|_, w| unsafe {
                 w.divsel().bit(divsel);
                 w.div().bits(div)
             });
         }
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         {
             self.genctrl().write(|w| {
                 unsafe { w.id().bits(G::NUM as u8) };
@@ -518,9 +518,9 @@ impl<G: GclkId> GclkToken<G> {
             // Safety: The `DIVSEL` and `DIV` values are derived from the
             // `GclkDivider` type, so they are guaranteed to be valid.
             unsafe {
-                #[cfg(feature = "has-mclk-oscctrl")]
+                #[cfg(feature = "has-new-clock-system")]
                 w.div().bits(div);
-                #[cfg(feature = "has-sysctrl")]
+                #[cfg(feature = "has-old-clock-system")]
                 w.id().bits(G::NUM as u8);
             };
             w.divsel().bit(divsel);
@@ -528,7 +528,7 @@ impl<G: GclkId> GclkToken<G> {
             w.idc().bit(settings.improve_duty_cycle);
             w.oov().bit(settings.output_off_value)
         });
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         self.gendiv().write(|w| unsafe { w.div().bits(div) });
         self.wait_syncbusy();
     }
@@ -1045,6 +1045,7 @@ impl<I: GclkIo> GclkSourceId for I {
     const DYN: DynGclkSourceId = DynGclkSourceId::GclkIn;
     type Resource = Pin<I, AlternateH>;
 }
+#[cfg(feature = "has-osc")]
 impl GclkSourceId for OscId {
     const DYN: DynGclkSourceId = DynGclkSourceId::Osc;
     type Resource = ();

@@ -871,7 +871,7 @@ pub mod osc;
 pub mod osc32k;
 pub mod osculp32k;
 pub mod pclk;
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 pub mod rtcosc;
 pub mod types;
 #[cfg(feature = "has-xosc0")]

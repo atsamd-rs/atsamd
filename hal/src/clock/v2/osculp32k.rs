@@ -164,14 +164,14 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 mod imports {
     pub use crate::pac::osc32kctrl::OSCULP32K;
     pub use crate::typelevel::{Decrement, Increment};
     pub(crate) use crate::typelevel::{PrivateDecrement, PrivateIncrement};
 }
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 mod imports {
     pub use crate::pac::sysctrl::OSCULP32K;
 }
@@ -229,11 +229,11 @@ impl OscUlp32kBaseToken {
         // Safety: The `OscUlp32kBaseToken` has exclusive access to the
         // `OSCULP32K` register. See the notes on `Token` types and memory
         // safety in the root of the `clock` module for more details.
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         unsafe {
             &(*crate::pac::OSC32KCTRL::PTR).osculp32k
         }
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         unsafe {
             &(*crate::pac::SYSCTRL::PTR).osculp32k
         }

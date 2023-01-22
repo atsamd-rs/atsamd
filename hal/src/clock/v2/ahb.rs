@@ -127,12 +127,12 @@ use core::marker::PhantomData;
 use bitflags;
 use paste::paste;
 
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 mod imports {
     pub use crate::pac::{mclk::AHBMASK, MCLK as PERIPHERAL};
 }
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 mod imports {
     pub use crate::pac::{pm::AHBMASK, PM as PERIPHERAL};
 }

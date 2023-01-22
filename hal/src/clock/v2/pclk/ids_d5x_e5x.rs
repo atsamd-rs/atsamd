@@ -21,7 +21,7 @@ pub use super::super::dpll::Dpll1Id;
 pub use super::super::types::{
     Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys10, EvSys11, EvSys2, EvSys3,
     EvSys4, EvSys5, EvSys6, EvSys7, EvSys8, EvSys9, FreqMMeasure, FreqMReference, PDec, Sdhc0,
-    SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Tcc2Tcc3, Usb,
+    SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Usb,
 };
 
 #[cfg(feature = "has-sdhc1")]
@@ -30,6 +30,8 @@ pub use super::super::types::Sdhc1;
 pub use super::super::types::Tc4Tc5;
 #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
 pub use super::super::types::Tc6Tc7;
+#[cfg(all(feature = "has-tcc2", feature = "has-tcc3"))]
+pub use super::super::types::Tcc2Tcc3;
 #[cfg(feature = "has-tcc4")]
 pub use super::super::types::Tcc4;
 #[cfg(feature = "has-can0")]
@@ -74,6 +76,7 @@ macro_rules! with_pclk_types_ids {
             (Can0 = 27, can0)
             #[cfg(feature = "has-can1")]
             (Can1 = 28, can1)
+            #[cfg(all(feature = "has-tcc2", feature = "has-tcc3"))]
             (Tcc2Tcc3 = 29, tcc2_tcc3)
             #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
             (Tc4Tc5 = 30, tc4_tc5)
@@ -104,3 +107,5 @@ macro_rules! with_pclk_types_ids {
         );
     };
 }
+
+pub(super) use with_pclk_types_ids;

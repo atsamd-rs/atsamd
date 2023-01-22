@@ -426,6 +426,7 @@ clock_generator!(
     (tc0_tc1, Tc0Tc1Clock, TC0_TC1, Tc0Tc1),
     (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1, Tcc0Tcc1),
     (tc2_tc3, Tc2Tc3Clock, TC2_TC3, Tc2Tc3),
+    #[cfg(all(feature = "has-tcc2", feature = "has-tcc3"))]
     (tcc2_tcc3, Tcc2Tcc3Clock, TCC2_TCC3, Tcc2Tcc3),
     #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5, Tc4Tc5),

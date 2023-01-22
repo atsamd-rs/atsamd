@@ -67,9 +67,9 @@ macro_rules! with_pclk_types_ids {
             #[cfg(feature = "has-sercom3")]
             (Sercom3 = 23, sercom3)
             #[cfg(feature = "has-sercom4")]
-            (Sercom4 = 24, sercom3)
+            (Sercom4 = 24, sercom4)
             #[cfg(feature = "has-sercom5")]
-            (Sercom5 = 25, sercom3)
+            (Sercom5 = 25, sercom5)
             (Tcc0Tcc1 = 26, tcc0_tcc1)
             (Tcc2Tc3 = 27, tcc2_tc3)
             (Tc4Tc5 = 28, tc4_tc5)

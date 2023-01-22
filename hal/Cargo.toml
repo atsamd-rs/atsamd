@@ -299,8 +299,8 @@ has-ethernet = []
 has-usb = []
 
 # Clock systems
-has-mclk-oscctrl = []
-has-sysctrl = []
+has-old-clock-system = []
+has-new-clock-system = []
 
 # APB
 has-apbd = []
@@ -374,7 +374,7 @@ has-tcc3 = []
 
 # Map each variant to its collection of peripherals
 periph-d11c = [
-  "has-sysctrl",
+  "has-old-clock-system",
   "has-gclk0",
   "has-gclk1",
   "has-gclk2",
@@ -398,7 +398,7 @@ periph-d11c = [
 periph-d11d = ["periph-d11c", "has-sercom2"]
 
 periph-d21 = [
-  "has-sysctrl",
+  "has-old-clock-system",
   "has-gclk0",
   "has-gclk1",
   "has-gclk2",
@@ -435,7 +435,7 @@ periph-d21el = ["periph-d21"]
 periph-d21gl = ["periph-d21el", "has-sercom4", "has-sercom5"]
 
 periph-d51 = [
-  "has-mclk-oscctrl",
+  "has-new-clock-system",
   "has-apbd",
   "has-gclk0",
   "has-gclk1",

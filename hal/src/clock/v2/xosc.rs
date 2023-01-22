@@ -208,7 +208,7 @@ use core::marker::PhantomData;
 
 use typenum::U0;
 
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 mod imports {
     pub use super::super::dfll::DfllId;
     pub use crate::gpio::{PA14 as XIn0Id, PA15 as XOut0Id};
@@ -218,7 +218,7 @@ mod imports {
     pub use crate::typelevel::{Decrement, Increment};
 }
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 mod imports {
     #[cfg(feature = "samd11")]
     pub use crate::gpio::{PA08 as XIn0Id, PA09 as XOut0Id};
@@ -280,7 +280,7 @@ impl<X: XoscId> XoscToken<X> {
         unsafe {
             &(*PERIPHERAL::PTR).xoscctrl[X::NUM]
         }
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         unsafe {
             &(*PERIPHERAL::PTR).xosc
         }
@@ -291,11 +291,11 @@ impl<X: XoscId> XoscToken<X> {
     fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         unsafe {
             (*PERIPHERAL::PTR).status.read()
         }
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         unsafe {
             (*PERIPHERAL::PTR).pclksr.read()
         }
@@ -362,12 +362,12 @@ impl<X: XoscId> XoscToken<X> {
         // `CrystalCurrent`, so they are guaranteed to be valid.
         self.xoscctrl().write(|w| unsafe {
             w.startup().bits(settings.start_up as u8);
-            #[cfg(feature = "has-sysctrl")]
+            #[cfg(feature = "has-old-clock-system")]
             {
                 w.ampgc().bit(settings.ampgc);
                 w.gain().variant(settings.gain.into())
             };
-            #[cfg(feature = "has-mclk-oscctrl")]
+            #[cfg(feature = "has-new-clock-system")]
             {
                 w.enalc().bit(settings.loop_control);
                 w.imult().bits(settings.current.imult());
@@ -400,15 +400,15 @@ impl<X: XoscId> XoscToken<X> {
 #[derive(Clone, Copy)]
 struct Settings {
     start_up: StartUpDelay,
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     loop_control: bool,
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     current: CrystalCurrent,
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     low_buf_gain: bool,
-    #[cfg(feature = "has-sysctrl")]
+    #[cfg(feature = "has-old-clock-system")]
     ampgc: bool,
-    #[cfg(feature = "has-sysctrl")]
+    #[cfg(feature = "has-old-clock-system")]
     gain: Gain,
     on_demand: bool,
     run_standby: bool,
@@ -418,15 +418,15 @@ impl Default for Settings {
     fn default() -> Self {
         Settings {
             start_up: StartUpDelay::default(),
-            #[cfg(feature = "has-mclk-oscctrl")]
+            #[cfg(feature = "has-new-clock-system")]
             loop_control: false,
-            #[cfg(feature = "has-mclk-oscctrl")]
+            #[cfg(feature = "has-new-clock-system")]
             current: CrystalCurrent::default(),
-            #[cfg(feature = "has-mclk-oscctrl")]
+            #[cfg(feature = "has-new-clock-system")]
             low_buf_gain: false,
-            #[cfg(feature = "has-sysctrl")]
+            #[cfg(feature = "has-old-clock-system")]
             ampgc: false,
-            #[cfg(feature = "has-sysctrl")]
+            #[cfg(feature = "has-old-clock-system")]
             gain: Gain::default(),
             on_demand: true,
             run_standby: false,
@@ -590,7 +590,7 @@ pub enum StartUpDelay {
 /// each frequency range, it also acknowledges some flexibility in that choice.
 /// Specifically, it notes that users can save power by selecting the next-lower
 /// frequency range if the capacitive load is small.
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum CrystalCurrent {
     /// Used only in [`ClockMode`] to represent the default register values
@@ -606,7 +606,7 @@ pub enum CrystalCurrent {
     ExtraHigh,
 }
 
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 impl CrystalCurrent {
     #[inline]
     fn imult(&self) -> u8 {
@@ -635,7 +635,7 @@ impl CrystalCurrent {
 // Gain
 //==============================================================================
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum Gain {
     #[default]
@@ -646,7 +646,7 @@ pub enum Gain {
     Four,
 }
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 impl From<Gain> for GAIN_A {
     fn from(gain: Gain) -> Self {
         match gain {
@@ -864,7 +864,7 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     }
 
     /// Set the [`CrystalCurrent`] drive strength
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     pub fn current(mut self, current: CrystalCurrent) -> Self {
         self.settings.current = current;
@@ -875,7 +875,7 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     ///
     /// If enabled, the hardware will automatically adjust the oscillator
     /// amplitude. In most cases, this will lower power consumption.
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     pub fn loop_control(mut self, loop_control: bool) -> Self {
         self.settings.loop_control = loop_control;
@@ -888,21 +888,21 @@ impl<X: XoscId> Xosc<X, CrystalMode> {
     /// loop control is enabled, setting the `LOWBUFGAIN` field to `1` will
     /// _increase_ the oscillator amplitude by a factor of appoximately 2. This
     /// can help solve stability issues.
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     pub fn low_buf_gain(mut self, low_buf_gain: bool) -> Self {
         self.settings.low_buf_gain = low_buf_gain;
         self
     }
 
-    #[cfg(feature = "has-sysctrl")]
+    #[cfg(feature = "has-old-clock-system")]
     #[inline]
     pub fn amplitude_gain_control(mut self, enabled: bool) -> Self {
         self.settings.ampgc = enabled;
         self
     }
 
-    #[cfg(feature = "has-sysctrl")]
+    #[cfg(feature = "has-old-clock-system")]
     #[inline]
     pub fn gain(mut self, gain: Gain) -> Self {
         self.settings.gain = gain;
@@ -919,7 +919,7 @@ where
     fn new(token: XoscToken<X>, pins: M::Pins<X>, freq: Hertz) -> Self {
         #[allow(unused_mut)]
         let mut settings = Settings::default();
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         if M::DYN == DynMode::CrystalMode {
             settings.current = match freq.0.to_Hz() {
                 8_000_000 => CrystalCurrent::Low,

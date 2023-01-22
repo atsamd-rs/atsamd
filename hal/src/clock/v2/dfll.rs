@@ -266,7 +266,7 @@
 //! [`from_usb`]: Dfll::from_usb
 //! [`into_mode`]: EnabledDfll::into_mode
 
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 mod imports {
     pub use crate::pac::oscctrl::{
         RegisterBlock, DFLLCTRLA as DFLLCTRL, DFLLCTRLB, DFLLMUL, DFLLSYNC,
@@ -274,7 +274,7 @@ mod imports {
     pub use crate::pac::OSCCTRL as PERIPHERAL;
 }
 
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 mod imports {
     pub use crate::pac::sysctrl::{RegisterBlock, DFLLCTRL, DFLLMUL, DFLLSYNC};
     pub use crate::pac::SYSCTRL as PERIPHERAL;
@@ -328,14 +328,14 @@ impl DfllToken {
 
     #[inline]
     fn dfllctrl(&self) -> &DFLLCTRL {
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         let dfllctrl = &self.reg_block().dfllctrla;
-        #[cfg(feature = "has-sysctrl")]
+        #[cfg(feature = "has-old-clock-system")]
         let dfllctrl = &self.reg_block().dfllctrl;
         dfllctrl
     }
 
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     fn dfllctrlb(&self) -> &crate::pac::oscctrl::DFLLCTRLB {
         &self.reg_block().dfllctrlb
@@ -346,31 +346,31 @@ impl DfllToken {
         &self.reg_block().dfllmul
     }
 
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     fn dfllsync(&self) -> &DFLLSYNC {
         &self.reg_block().dfllsync
     }
 
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     fn wait_sync_enable(&self) {
         while self.dfllsync().read().enable().bit() {}
     }
 
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     fn wait_sync_dfllmul(&self) {
         while self.dfllsync().read().dfllmul().bit() {}
     }
 
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     fn wait_sync_dfllctrlb(&self) {
         while self.dfllsync().read().dfllctrlb().bit() {}
     }
 
-    #[cfg(feature = "has-mclk-oscctrl")]
+    #[cfg(feature = "has-new-clock-system")]
     #[inline]
     fn enable(&mut self, settings: settings::All) {
         self.dfllctrlb().modify(|_, w| {
@@ -398,7 +398,7 @@ impl DfllToken {
         self.wait_sync_enable();
     }
 
-    #[cfg(feature = "has-sysctrl")]
+    #[cfg(feature = "has-old-clock-system")]
     #[inline]
     fn enable(&mut self, settings: settings::All) {
         if settings.closed_loop {
@@ -424,7 +424,7 @@ impl DfllToken {
     #[inline]
     fn disable(&mut self) {
         self.dfllctrl().write(|w| w.enable().clear_bit());
-        #[cfg(feature = "has-mclk-oscctrl")]
+        #[cfg(feature = "has-new-clock-system")]
         self.wait_sync_enable();
     }
 }
@@ -435,9 +435,9 @@ impl DfllToken {
 
 type MultFactor = u16;
 type CoarseMaxStep = u8;
-#[cfg(feature = "has-mclk-oscctrl")]
+#[cfg(feature = "has-new-clock-system")]
 type FineMaxStep = u8;
-#[cfg(feature = "has-sysctrl")]
+#[cfg(feature = "has-old-clock-system")]
 type FineMaxStep = u16;
 
 //==============================================================================
