@@ -125,27 +125,114 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dot();
         }
         'e' => emit_morse_dot(),
-        // 'f' => emit_morse_dot_dot_dash_dot(),
-        // 'g' => emit_morse_dash_dash_dot(),
-        // 'h' => emit_morse_dot_dot_dot_dot(),
-        // 'i' => emit_morse_dot_dot(),
-        // 'j' => emit_morse_dot_dash_dash_dash(),
-        // 'k' => emit_morse_dash_dot_dash(),
-        // 'l' => emit_morse_dot_dash_dot_dot(),
-        // 'm' => emit_morse_dash_dash(),
-        // 'n' => emit_morse_dash_dot(),
-        // 'o' => emit_morse_dash_dash_dash(),
-        // 'p' => emit_morse_dot_dash_dash_dot(),
-        // 'q' => emit_morse_dash_dash_dot_dash(),
-        // 'r' => emit_morse_dot_dash_dot(),
-        // 's' => emit_morse_dot_dot_dot(),
-        // 't' => emit_morse_dash(),
-        // 'u' => emit_morse_dot_dot_dash(),
-        // 'v' => emit_morse_dot_dot_dot_dash(),
-        // 'w' => emit_morse_dot_dash_dash(),
-        // 'x' => emit_morse_dash_dot_dot_dash(),
-        // 'y' => emit_morse_dash_dot_dash_dash(),
-        // 'z' => emit_morse_dash_dash_dot_dot(),
+        'f' => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+        }
+        'g' => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+        }
+        'h' => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+        }
+        'i' => {
+            emit_morse_dot();
+            emit_morse_dot();
+        }
+        'j' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+        }
+        'k' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+        }
+        'l' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+        }
+        'm' => {
+            emit_morse_dash();
+            emit_morse_dash();
+        }
+        'n' => {
+            emit_morse_dash();
+            emit_morse_dash();
+        }
+        'o' => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+        }
+        'p' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+        }
+        'q' => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+        }
+        'r' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+        }
+        's' => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+        }
+        't' => emit_morse_dash(),
+        'u' => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+        }
+        'v' => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+        }
+        'w' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+        }
+        'x' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+        }
+        'y' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+        }
+        'z' => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+        }
         _ => {
             emit_morse_space();
         }
