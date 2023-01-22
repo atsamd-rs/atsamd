@@ -1,3 +1,9 @@
+### How to run our first example:
+
+```
+cargo hf2 --release --example blinky_usb_morse_out --features usb,leds
+```
+
 # Adafruit Neo Trinkey Board Support Crate
 
 This crate provides a type-safe API for working with the [Adafruit Neo Trinkey
