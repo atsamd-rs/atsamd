@@ -16,7 +16,6 @@ use bsp::pac;
 
 use hal::clock::GenericClockController;
 use hal::usb::UsbBus;
-use pac::{interrupt, CorePeripherals, Peripherals};
 
 // Added
 use hal::delay::Delay;
@@ -27,6 +26,7 @@ use hal::timer::TimerCounter;
 use smart_leds::{hsv::RGB8, SmartLedsWrite};
 use ws2812_timer_delay::Ws2812;
 // End Added
+use pac::{interrupt, CorePeripherals, Peripherals};
 
 #[entry]
 fn main() -> ! {
@@ -92,11 +92,89 @@ fn poll_usb() {
                         serial.write("Received: ".as_bytes()).ok();
                         serial.write(&[c.clone()]).ok();
                         serial.write("\r\n".as_bytes()).ok();
+                        emit_morse_letter('e');
+                        // emit_morse_letter(&[c.clone()].as_char());
                     }
                 };
             });
         });
     };
+}
+
+fn emit_morse_letter(letter: char) {
+    match letter {
+        'a' => {
+            emit_morse_dot();
+            emit_morse_dash();
+        }
+        'b' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+        }
+        'c' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+        }
+        'd' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+        }
+        'e' => emit_morse_dot(),
+        // 'f' => emit_morse_dot_dot_dash_dot(),
+        // 'g' => emit_morse_dash_dash_dot(),
+        // 'h' => emit_morse_dot_dot_dot_dot(),
+        // 'i' => emit_morse_dot_dot(),
+        // 'j' => emit_morse_dot_dash_dash_dash(),
+        // 'k' => emit_morse_dash_dot_dash(),
+        // 'l' => emit_morse_dot_dash_dot_dot(),
+        // 'm' => emit_morse_dash_dash(),
+        // 'n' => emit_morse_dash_dot(),
+        // 'o' => emit_morse_dash_dash_dash(),
+        // 'p' => emit_morse_dot_dash_dash_dot(),
+        // 'q' => emit_morse_dash_dash_dot_dash(),
+        // 'r' => emit_morse_dot_dash_dot(),
+        // 's' => emit_morse_dot_dot_dot(),
+        // 't' => emit_morse_dash(),
+        // 'u' => emit_morse_dot_dot_dash(),
+        // 'v' => emit_morse_dot_dot_dot_dash(),
+        // 'w' => emit_morse_dot_dash_dash(),
+        // 'x' => emit_morse_dash_dot_dot_dash(),
+        // 'y' => emit_morse_dash_dot_dash_dash(),
+        // 'z' => emit_morse_dash_dash_dot_dot(),
+        _ => {
+            emit_morse_space();
+        }
+    }
+}
+
+const INTERVAL: u16 = 500u16;
+
+fn emit_morse_dot() {
+    // let neo_pixel = pins.neo_pixel.into_push_pull_output();
+    // let mut ws2812 = Ws2812::new(timer, neo_pixel);
+    // ws2812.write(on.iter().cloned()).unwrap();
+    // delay.delay_ms(INTERVAL);
+    // ws2812.write(off.iter().cloned()).unwrap();
+    // delay.delay_ms(INTERVAL);
+}
+fn emit_morse_dash() {
+    // let neo_pixel = pins.neo_pixel.into_push_pull_output();
+    // let mut ws2812 = Ws2812::new(timer, neo_pixel);
+    // ws2812.write(on.iter().cloned()).unwrap();
+    // delay.delay_ms(3 * INTERVAL);
+    // ws2812.write(off.iter().cloned()).unwrap();
+    // delay.delay_ms(INTERVAL);
+}
+fn emit_morse_space() {
+    // let neo_pixel = pins.neo_pixel.into_push_pull_output();
+    // let mut ws2812 = Ws2812::new(timer, neo_pixel);
+    // ws2812.write(off.iter().cloned()).unwrap();
+    // delay.delay_ms(7 * INTERVAL);
 }
 
 #[interrupt]
