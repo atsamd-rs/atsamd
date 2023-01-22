@@ -1,7 +1,7 @@
 ### How to run our first example:
 
 ```
-cargo hf2 --release --example blinky_usb_morse_out --features usb,leds
+cargo hf2 --release --example usb_morse --features usb,leds
 ```
 
 # Adafruit Neo Trinkey Board Support Crate
