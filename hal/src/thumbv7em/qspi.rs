@@ -240,6 +240,25 @@ impl Qspi<OneShot> {
             _mode: PhantomData,
         }
     }
+
+    /// Return the consumed pins and the QSPI peripheral
+    ///
+    /// Order: `(qspi, sck, cs, io0, io1, io2, io3)`
+    pub fn free(
+        self,
+    ) -> (
+        QSPI,
+        Pin<PB10, AlternateH>,
+        Pin<PB11, AlternateH>,
+        Pin<PA08, AlternateH>,
+        Pin<PA09, AlternateH>,
+        Pin<PA10, AlternateH>,
+        Pin<PA11, AlternateH>,
+    ) {
+        (
+            self.qspi, self._sck, self._cs, self._io0, self._io1, self._io2, self._io3,
+        )
+    }
 }
 
 /// Operations available in XIP mode
