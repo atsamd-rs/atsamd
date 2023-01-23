@@ -68,7 +68,30 @@ fn main() -> ! {
         NVIC::unmask(interrupt::USB);
     }
 
+    let gclk0 = clocks.gclk0();
+    let timer_clock = clocks.tcc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.PM);
+    timer.start(3.mhz());
+    let neo_pixel = pins.neo_pixel.into_push_pull_output();
+    let mut ws2812 = Ws2812::new(timer, neo_pixel);
+
+    let mut delay = Delay::new(core.SYST, &mut clocks);
+
+    const NUM_LEDS: usize = 4;
+    let off = [RGB8::default(); NUM_LEDS];
+    let on = [
+        RGB8::new(5, 5, 0),
+        RGB8::new(0, 5, 5),
+        RGB8::new(5, 0, 5),
+        RGB8::new(2, 2, 2),
+    ];
+
     loop {
+        ws2812.write(off.iter().cloned()).unwrap();
+        delay.delay_ms(500u16);
+        ws2812.write(on.iter().cloned()).unwrap();
+        delay.delay_ms(500u16);
+
         cycle_delay(15 * 1024 * 1024);
     }
 }
