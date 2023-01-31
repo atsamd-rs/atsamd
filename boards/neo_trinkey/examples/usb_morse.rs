@@ -55,9 +55,9 @@ fn main() -> ! {
         USB_SERIAL = Some(SerialPort::new(&bus_allocator));
         USB_BUS = Some(
             UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
-                .manufacturer("Fake company")
+                .manufacturer("Agilistas!")
                 .product("Serial port")
-                .serial_number("TRINKEY_ACK")
+                .serial_number("TRINKEY_MORSE")
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
@@ -124,8 +124,19 @@ fn poll_usb() {
     };
 }
 
+fn print_to_serial(message: &str) {
+    unsafe {
+        USB_BUS.as_mut().map(|usb_dev| {
+            USB_SERIAL.as_mut().map(|serial| {
+                serial.write(message.as_bytes()).ok();
+            });
+        });
+    };
+}
+
 fn emit_morse_letter(letter: char) {
-    match letter {
+    let downcased_letter = letter.to_ascii_lowercase(); // Add support for Latin 1 later.
+    match downcased_letter {
         'a' => {
             emit_morse_dot();
             emit_morse_dash();
@@ -265,6 +276,7 @@ fn emit_morse_letter(letter: char) {
 const INTERVAL: u16 = 500u16;
 
 fn emit_morse_dot() {
+    print_to_serial(".");
     // let neo_pixel = pins.neo_pixel.into_push_pull_output();
     // let mut ws2812 = Ws2812::new(timer, neo_pixel);
     // ws2812.write(on.iter().cloned()).unwrap();
@@ -273,6 +285,7 @@ fn emit_morse_dot() {
     // delay.delay_ms(INTERVAL);
 }
 fn emit_morse_dash() {
+    print_to_serial("_");
     // let neo_pixel = pins.neo_pixel.into_push_pull_output();
     // let mut ws2812 = Ws2812::new(timer, neo_pixel);
     // ws2812.write(on.iter().cloned()).unwrap();

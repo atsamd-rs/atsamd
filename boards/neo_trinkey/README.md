@@ -3,6 +3,13 @@
 ```
 cargo hf2 --release --example usb_morse --features usb,leds
 ```
+Connect to the device at /dev/cu.usbmodemTRINKEY_MORSE1 
+```bash
+$ screen /dev/cu.usbmodemTRINKEY_MORSE1 9600
+```
+
+
+```
 
 # Adafruit Neo Trinkey Board Support Crate
 
