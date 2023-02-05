@@ -3,6 +3,10 @@
 This crate provides a type-safe API for working with the [Seeed Studio
 Seeeduino XIAO](http://wiki.seeedstudio.com/Seeeduino-XIAO/).
 
+## FORK NOTES:
+
+cargo hf2 --release --example usb_morse --features="unproven"
+
 ## Prerequisites
 
 * Install the cross compile toolchain `rustup target add thumbv6m-none-eabi`
