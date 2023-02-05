@@ -28,6 +28,39 @@ use ws2812_timer_delay::Ws2812;
 // End Added
 use pac::{interrupt, CorePeripherals, Peripherals};
 
+struct CharQueue {
+    queue: [char; 32],
+}
+
+static mut CHAR_QUEUE: Option<CharQueue> = None;
+
+fn push(c: char) {
+    unsafe {
+        let queue = CHAR_QUEUE.as_mut().unwrap();
+        for i in 0..queue.queue.len() {
+            if queue.queue[i] == '\0' {
+                queue.queue[i] = c;
+                return;
+            }
+        }
+    }
+}
+
+fn pop() -> Option<char> {
+    unsafe {
+        let queue = CHAR_QUEUE.as_mut().unwrap();
+        let c = queue.queue[0];
+        if c == '\0' {
+            return None;
+        }
+        for i in 0..queue.queue.len() - 1 {
+            queue.queue[i] = queue.queue[i + 1];
+        }
+        queue.queue[queue.queue.len() - 1] = '\0';
+        Some(c)
+    }
+}
+
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
@@ -87,8 +120,8 @@ fn main() -> ! {
     ];
 
     loop {
-        let letter = pop();
-        emit_morse_letter(letter);
+        // let letter = pop();
+        // emit_morse_letter(letter);
 
         ws2812.write(off.iter().cloned()).unwrap();
         delay.delay_ms(500u16);
@@ -108,9 +141,9 @@ fn main() -> ! {
     }
 }
 
-fn pop() -> char {
-    return 's';
-}
+// fn pop() -> char {
+//     return 's';
+// }
 
 static mut MORSE_QUEUE: [u8; 4] = [1, 2, 3, 4];
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
