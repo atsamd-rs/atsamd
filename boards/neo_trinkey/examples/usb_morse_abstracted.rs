@@ -32,7 +32,7 @@ struct Environment {
     // usb_serial: Option<UsbSerial>,
     // led0: Led0,
     peripherals: Peripherals,
-    // core: CorePeripherals,
+    core: CorePeripherals,
     // clocks: GenericClockController,
     // pins: bsp::Pins,
     // bus_allocator: UsbBusAllocator<UsbBus>,
@@ -46,6 +46,7 @@ fn main() -> ! {
 
 fn init() -> Environment {
     let mut peripherals = Peripherals::take().unwrap();
+    let mut core = CorePeripherals::take().unwrap();
 
 
     // Environment {
@@ -58,7 +59,8 @@ fn init() -> Environment {
     //     bus_allocator,
     // }
     Environment {
-        peripherals
+        peripherals,
+        core,
     }
 }
 
