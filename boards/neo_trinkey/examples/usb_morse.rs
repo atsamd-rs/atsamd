@@ -87,15 +87,32 @@ fn main() -> ! {
     ];
 
     loop {
+        let letter = pop();
+        emit_morse_letter(letter);
+
         ws2812.write(off.iter().cloned()).unwrap();
         delay.delay_ms(500u16);
-        ws2812.write(on.iter().cloned()).unwrap();
+
+        unsafe {
+            let colors: [RGB8; 4] = [
+                RGB8::new(MORSE_QUEUE[0], 5, 0),
+                RGB8::new(MORSE_QUEUE[1], 5, 0),
+                RGB8::new(MORSE_QUEUE[2], 5, 0),
+                RGB8::new(MORSE_QUEUE[3], 5, 0),
+            ];
+            ws2812.write(colors.iter().cloned()).unwrap();
+        }
         delay.delay_ms(500u16);
 
         cycle_delay(15 * 1024 * 1024);
     }
 }
 
+fn pop() -> char {
+    return 's';
+}
+
+static mut MORSE_QUEUE: [u8; 4] = [1, 2, 3, 4];
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
@@ -283,9 +300,15 @@ fn emit_morse_dot() {
     // delay.delay_ms(INTERVAL);
     // ws2812.write(off.iter().cloned()).unwrap();
     // delay.delay_ms(INTERVAL);
+    unsafe {
+        MORSE_QUEUE = [2, 3, 4, 1];
+    }
 }
 fn emit_morse_dash() {
     print_to_serial("_");
+    unsafe {
+        MORSE_QUEUE = [8, 7, 6, 5];
+    }
     // let neo_pixel = pins.neo_pixel.into_push_pull_output();
     // let mut ws2812 = Ws2812::new(timer, neo_pixel);
     // ws2812.write(on.iter().cloned()).unwrap();
