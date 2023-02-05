@@ -63,7 +63,7 @@ fn init() -> Environment {
 }
 
 fn legacy(env: Environment) -> ! {
-    let mut peripherals = Peripherals::take().unwrap();
+    let mut peripherals = env.peripherals;
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
         peripherals.GCLK,
