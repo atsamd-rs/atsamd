@@ -395,7 +395,7 @@ fn main() -> ! {
         // }
         // delay.delay_ms(500u16);
 
-        cycle_delay(15 * 1024 * 1024);
+        // cycle_delay(15 * 1024 * 1024);
     }
 }
 
