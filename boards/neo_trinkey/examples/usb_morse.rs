@@ -223,19 +223,18 @@ fn pushLetterInterval() {
 }
 
 static mut countDown: u8 = 0;
+static mut currentPinState: bool = false;
 
-static mut haxTempState: bool = false;
 fn getNextState() -> bool {
+    let mut pinState: bool;
     unsafe {
-        haxTempState = !haxTempState;
-        // return haxTempState;
-        if (countDown == 0) {
-            countDown = 3;
-            return false;
-        } else {
-            countDown -= 1;
-            return true;
+        if countDown == 0 {
+            let pinStateDescriptor = popState();
+            countDown = pinStateDescriptor.duration;
+            currentPinState = pinStateDescriptor.pinState;
         }
+        countDown -= 1;
+        return currentPinState;
     }
 }
 
