@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+use bsp::pac::dsu::length;
 use panic_halt as _;
 
 use core::mem::MaybeUninit;
@@ -36,9 +37,143 @@ struct CharQueue {
 }
 
 struct PinControlQueue {
-    queue: [Option<PinControlDescriptor>; 32],
-    length: u8,
+    queue: [PinControlDescriptor; 32],
+    length: usize,
 }
+
+static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
+    queue: [
+        PinControlDescriptor {
+            pinState: true,
+            duration: 3,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 3,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 3,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 3,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 3,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 3,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 3,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+    ],
+    length: 14,
+};
 
 struct PinControlDescriptor {
     pinState: bool,
@@ -79,6 +214,14 @@ fn pushSpace() {
     pushState(space);
 }
 
+fn pushLetterInterval() {
+    let space = PinControlDescriptor {
+        pinState: false,
+        duration: 3,
+    };
+    pushState(space);
+}
+
 static mut countDown: u8 = 0;
 
 static mut haxTempState: bool = false;
@@ -107,7 +250,13 @@ static mut PIN_QUEUE: Option<PinControlQueue> = None;
 //     length: 0,
 // };
 
-fn pushState(state: PinControlDescriptor) {}
+fn pushState(state: PinControlDescriptor) {
+    // unsafe {
+    //     let queue: PinControlQueue = PIN_CONTROL_QUEUE.as_mut().unwrap();
+    //     queue.queue[usize * queue.length] = state;
+    //     queue.length += 1;
+    // }
+}
 
 // fn pushState(state: PinControlDescriptor) {
 //     unsafe {
@@ -122,10 +271,18 @@ fn pushState(state: PinControlDescriptor) {}
 // }
 
 fn popState() -> PinControlDescriptor {
-    return PinControlDescriptor {
-        pinState: true,
-        duration: 1,
-    };
+    unsafe {
+        let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.length];
+        PIN_CONTROL_QUEUE.length -= 1;
+        return PinControlDescriptor {
+            pinState: returnValue.pinState,
+            duration: returnValue.duration,
+        };
+    }
+    // return PinControlDescriptor {
+    //     pinState: true,
+    //     duration: 1,
+    // };
 }
 
 // fn push(c: char) {
@@ -219,7 +376,7 @@ fn main() -> ! {
     loop {
         // let letter = pop();
         // emit_morse_letter(letter);
-        let mut state = getNextState();
+        let state = getNextState();
         if state {
             // turn on
             ws2812.write(on.iter().cloned()).unwrap();
