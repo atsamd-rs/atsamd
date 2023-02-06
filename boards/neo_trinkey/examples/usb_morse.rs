@@ -251,14 +251,6 @@ static mut PIN_QUEUE: Option<PinControlQueue> = None;
 //     length: 0,
 // };
 
-fn pushState(state: PinControlDescriptor) {
-    // unsafe {
-    //     let queue: PinControlQueue = PIN_CONTROL_QUEUE.as_mut().unwrap();
-    //     queue.queue[usize * queue.length] = state;
-    //     queue.length += 1;
-    // }
-}
-
 // fn pushState(state: PinControlDescriptor) {
 //     unsafe {
 //         let queue: PinControlQueue = PIN_QUEUE.as_mut().unwrap();
@@ -270,6 +262,22 @@ fn pushState(state: PinControlDescriptor) {
 //         }
 //     }
 // }
+
+const QUEUE_LENGTH: usize = 32;
+fn pushState(state: PinControlDescriptor) {
+    unsafe {
+        let index = PIN_CONTROL_QUEUE.position as usize;
+        let length: usize = PIN_CONTROL_QUEUE.length as usize;
+        let queue = &mut PIN_CONTROL_QUEUE;
+        queue.queue[index] = state;
+        if index == QUEUE_LENGTH {
+            queue.position = 0;
+        } else {
+            queue.position = index + 1;
+        }
+        queue.length += 1;
+    }
+}
 
 fn popState() -> PinControlDescriptor {
     unsafe {
