@@ -228,7 +228,7 @@ static mut currentPinState: bool = false;
 fn getNextState() -> bool {
     let mut pinState: bool;
     unsafe {
-        if countDown == 0 {
+        if countDown <= 0 {
             let pinStateDescriptor = popState();
             countDown = pinStateDescriptor.duration;
             currentPinState = pinStateDescriptor.pinState;
