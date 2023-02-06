@@ -279,10 +279,6 @@ fn popState() -> PinControlDescriptor {
             duration: returnValue.duration,
         };
     }
-    // return PinControlDescriptor {
-    //     pinState: true,
-    //     duration: 1,
-    // };
 }
 
 // fn push(c: char) {
