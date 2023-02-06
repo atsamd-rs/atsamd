@@ -73,7 +73,7 @@ static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 0,
+            duration: 1,
         },
         PinControlDescriptor {
             pinState: true,
@@ -105,39 +105,39 @@ static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 0,
+            duration: 3,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 3,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 0,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 3,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 0,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: true,
+            duration: 3,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 0,
+            duration: 1,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 0,
+            duration: 1,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 0,
-        },
-        PinControlDescriptor {
-            pinState: false,
-            duration: 0,
-        },
-        PinControlDescriptor {
-            pinState: false,
-            duration: 0,
-        },
-        PinControlDescriptor {
-            pinState: false,
-            duration: 0,
+            duration: 1,
         },
         PinControlDescriptor {
             pinState: false,
@@ -172,7 +172,7 @@ static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
             duration: 0,
         },
     ],
-    length: 14,
+    length: 21,
 };
 
 struct PinControlDescriptor {
