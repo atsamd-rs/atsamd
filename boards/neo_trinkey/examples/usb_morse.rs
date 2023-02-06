@@ -446,8 +446,10 @@ fn poll_usb() {
                         serial.write("Received: ".as_bytes()).ok();
                         serial.write(&[c.clone()]).ok();
                         serial.write("\r\n".as_bytes()).ok();
-                        emit_morse_letter('e');
-                        // emit_morse_letter(&[c.clone()].as_char());
+                        // emit_morse_letter('e');
+
+                        let letter = char::from_u32([c.clone()][0] as u32).unwrap();
+                        emit_morse_letter(letter);
                     }
                 };
             });
