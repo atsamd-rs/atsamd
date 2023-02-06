@@ -39,106 +39,107 @@ struct CharQueue {
 struct PinControlQueue {
     queue: [PinControlDescriptor; 32],
     length: usize,
-    position: usize,
+    writePosition: usize,
+    readPosition: usize,
 }
 
 static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
     queue: [
         PinControlDescriptor {
-            pinState: true,
-            duration: 10,
+            pinState: false,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 3,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 3,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 3,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 3,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 1,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 1,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 3,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 3,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 3,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 3,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
-            duration: 1,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 0,
         },
         PinControlDescriptor {
             pinState: false,
@@ -173,8 +174,9 @@ static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
             duration: 0,
         },
     ],
-    length: 21,
-    position: 21,
+    length: 0,
+    writePosition: 0,
+    readPosition: 0,
 };
 
 struct PinControlDescriptor {
@@ -266,11 +268,11 @@ static mut PIN_QUEUE: Option<PinControlQueue> = None;
 const QUEUE_LENGTH: usize = 32;
 fn pushState(state: PinControlDescriptor) {
     unsafe {
-        let index = PIN_CONTROL_QUEUE.position as usize;
+        let index = PIN_CONTROL_QUEUE.writePosition as usize;
         let length: usize = PIN_CONTROL_QUEUE.length as usize;
         let queue = &mut PIN_CONTROL_QUEUE;
         queue.queue[index] = state;
-        PIN_CONTROL_QUEUE.position = (PIN_CONTROL_QUEUE.position + 1) % QUEUE_LENGTH;
+        PIN_CONTROL_QUEUE.writePosition = (PIN_CONTROL_QUEUE.writePosition + 1) % QUEUE_LENGTH;
         queue.length += 1;
     }
 }
@@ -283,9 +285,9 @@ fn popState() -> PinControlDescriptor {
                 duration: 1,
             };
         }
-        let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.position];
+        let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.readPosition];
         PIN_CONTROL_QUEUE.length -= 1;
-        PIN_CONTROL_QUEUE.position = (PIN_CONTROL_QUEUE.position - 1) % QUEUE_LENGTH;
+        PIN_CONTROL_QUEUE.readPosition = (PIN_CONTROL_QUEUE.readPosition + 1) % QUEUE_LENGTH;
         return PinControlDescriptor {
             pinState: returnValue.pinState,
             duration: returnValue.duration,
@@ -381,6 +383,19 @@ fn main() -> ! {
         RGB8::new(2, 2, 2),
     ];
 
+    pushDash();
+    pushDash();
+    pushDash();
+    pushLetterInterval();
+    pushDot();
+    pushDot();
+    pushDot();
+    pushLetterInterval();
+    pushDash();
+    pushDash();
+    pushDash();
+    pushLetterInterval();
+
     loop {
         // let letter = pop();
         // emit_morse_letter(letter);
@@ -394,7 +409,7 @@ fn main() -> ! {
         }
 
         // ws2812.write(off.iter().cloned()).unwrap();
-        delay.delay_ms(500u16);
+        delay.delay_ms(100u16);
 
         // unsafe {
         //     let colors: [RGB8; 4] = [
