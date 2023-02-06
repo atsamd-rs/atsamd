@@ -39,273 +39,239 @@ struct CharQueue {
 struct PinControlQueue {
     queue: [PinControlDescriptor; 32],
     length: usize,
-    writePosition: usize,
-    readPosition: usize,
+    write_position: usize,
+    read_position: usize,
 }
 
 static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
     queue: [
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
         PinControlDescriptor {
-            pinState: false,
+            pin_state: false,
             duration: 0,
         },
     ],
     length: 0,
-    writePosition: 0,
-    readPosition: 0,
+    write_position: 0,
+    read_position: 0,
 };
 
 struct PinControlDescriptor {
-    pinState: bool,
+    pin_state: bool,
     duration: u8,
 }
 
-fn pushDot() {
+fn push_dot() {
     let dot = PinControlDescriptor {
-        pinState: true,
+        pin_state: true,
         duration: 1,
     };
     let interval = PinControlDescriptor {
-        pinState: false,
+        pin_state: false,
         duration: 1,
     };
-    pushState(dot);
-    pushState(interval);
+    push_state(dot);
+    push_state(interval);
 }
 
-fn pushDash() {
+fn push_dash() {
     let dash = PinControlDescriptor {
-        pinState: true,
+        pin_state: true,
         duration: 3,
     };
     let interval = PinControlDescriptor {
-        pinState: false,
+        pin_state: false,
         duration: 1,
     };
-    pushState(dash);
-    pushState(interval);
+    push_state(dash);
+    push_state(interval);
 }
 
-fn pushSpace() {
+fn push_space() {
     let space = PinControlDescriptor {
-        pinState: false,
+        pin_state: false,
         duration: 7,
     };
-    pushState(space);
+    push_state(space);
 }
 
-fn pushLetterInterval() {
+fn push_letter_interval() {
     let space = PinControlDescriptor {
-        pinState: false,
+        pin_state: false,
         duration: 3,
     };
-    pushState(space);
+    push_state(space);
 }
 
-static mut countDown: u8 = 0;
-static mut currentPinState: bool = false;
+static mut COUNT_DOWN: u8 = 0;
+static mut CURRENT_PIN_STATE: bool = false;
 
-fn getNextState() -> bool {
-    let mut pinState: bool;
+fn get_next_state() -> bool {
+    let mut pin_state: bool;
     unsafe {
-        if countDown <= 0 {
-            let pinStateDescriptor = popState();
-            countDown = pinStateDescriptor.duration;
-            currentPinState = pinStateDescriptor.pinState;
+        if COUNT_DOWN <= 0 {
+            let pin_state_descriptor = pop_state();
+            COUNT_DOWN = pin_state_descriptor.duration;
+            CURRENT_PIN_STATE = pin_state_descriptor.pin_state;
         }
-        countDown -= 1;
-        return currentPinState;
+        COUNT_DOWN -= 1;
+        return CURRENT_PIN_STATE;
     }
 }
 
 static mut CHAR_QUEUE: Option<CharQueue> = None;
-static mut PIN_QUEUE: Option<PinControlQueue> = None;
-//  {
-//     queue: [None; 32],
-//     length: 0,
-// };
-// static mut PIN_QUEUE: PinControlQueue = PinControlQueue {
-//     queue: [Option<PinControlDescriptor, 32] = [],
-//     length: 0,
-// };
-
-// fn pushState(state: PinControlDescriptor) {
-//     unsafe {
-//         let queue: PinControlQueue = PIN_QUEUE.as_mut().unwrap();
-//         for i in 0..queue.length {
-//             if queue.queue[i] == '\0' {
-//                 queue.queue[i] = c;
-//                 return;
-//             }
-//         }
-//     }
-// }
 
 const QUEUE_LENGTH: usize = 32;
-fn pushState(state: PinControlDescriptor) {
+fn push_state(state: PinControlDescriptor) {
     unsafe {
-        let index = PIN_CONTROL_QUEUE.writePosition as usize;
-        let length: usize = PIN_CONTROL_QUEUE.length as usize;
+        let index = PIN_CONTROL_QUEUE.write_position as usize;
         let queue = &mut PIN_CONTROL_QUEUE;
         queue.queue[index] = state;
-        PIN_CONTROL_QUEUE.writePosition = (PIN_CONTROL_QUEUE.writePosition + 1) % QUEUE_LENGTH;
+        PIN_CONTROL_QUEUE.write_position = (PIN_CONTROL_QUEUE.write_position + 1) % QUEUE_LENGTH;
         queue.length += 1;
     }
 }
 
-fn popState() -> PinControlDescriptor {
+fn pop_state() -> PinControlDescriptor {
     unsafe {
-        if (PIN_CONTROL_QUEUE.length == 0) {
+        if PIN_CONTROL_QUEUE.length == 0 {
             return PinControlDescriptor {
-                pinState: false,
+                pin_state: false,
                 duration: 1,
             };
         }
-        let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.readPosition];
+        let return_value = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.read_position];
         PIN_CONTROL_QUEUE.length -= 1;
-        PIN_CONTROL_QUEUE.readPosition = (PIN_CONTROL_QUEUE.readPosition + 1) % QUEUE_LENGTH;
+        PIN_CONTROL_QUEUE.read_position = (PIN_CONTROL_QUEUE.read_position + 1) % QUEUE_LENGTH;
         return PinControlDescriptor {
-            pinState: returnValue.pinState,
-            duration: returnValue.duration,
+            pin_state: return_value.pin_state,
+            duration: return_value.duration,
         };
     }
 }
-
-// fn push(c: char) {
-//     unsafe {
-//         let queue = CHAR_QUEUE.as_mut().unwrap();
-//         for i in 0..queue.queue.len() {
-//             if queue.queue[i] == '\0' {
-//                 queue.queue[i] = c;
-//                 return;
-//             }
-//         }
-//     }
-// }
 
 fn pop() -> char {
     return 's';
@@ -383,23 +349,10 @@ fn main() -> ! {
         RGB8::new(2, 2, 2),
     ];
 
-    pushDash();
-    pushDash();
-    pushDash();
-    pushLetterInterval();
-    pushDot();
-    pushDot();
-    pushDot();
-    pushLetterInterval();
-    pushDash();
-    pushDash();
-    pushDash();
-    pushLetterInterval();
-
     loop {
         // let letter = pop();
         // emit_morse_letter(letter);
-        let state = getNextState();
+        let state = get_next_state();
         if state {
             // turn on
             ws2812.write(on.iter().cloned()).unwrap();
@@ -409,24 +362,10 @@ fn main() -> ! {
         }
 
         // ws2812.write(off.iter().cloned()).unwrap();
-        delay.delay_ms(100u16);
-
-        // unsafe {
-        //     let colors: [RGB8; 4] = [
-        //         RGB8::new(MORSE_QUEUE[0], 5, 0),
-        //         RGB8::new(MORSE_QUEUE[1], 5, 0),
-        //         RGB8::new(MORSE_QUEUE[2], 5, 0),
-        //         RGB8::new(MORSE_QUEUE[3], 5, 0),
-        //     ];
-        //     ws2812.write(colors.iter().cloned()).unwrap();
-        // }
-        // delay.delay_ms(500u16);
-
-        // cycle_delay(15 * 1024 * 1024);
+        delay.delay_ms(INTERVAL);
     }
 }
 
-static mut MORSE_QUEUE: [u8; 4] = [1, 2, 3, 4];
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
@@ -457,148 +396,168 @@ fn poll_usb() {
     };
 }
 
-fn print_to_serial(message: &str) {
-    unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
-                serial.write(message.as_bytes()).ok();
-            });
-        });
-    };
-}
-
 fn emit_morse_letter(letter: char) {
     let downcased_letter = letter.to_ascii_lowercase(); // Add support for Latin 1 later.
     match downcased_letter {
         'a' => {
             emit_morse_dot();
             emit_morse_dash();
+            push_letter_interval();
         }
         'b' => {
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dot();
+            push_letter_interval();
         }
         'c' => {
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dot();
+            push_letter_interval();
         }
         'd' => {
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dot();
+            push_letter_interval();
         }
-        'e' => emit_morse_dot(),
+        'e' => {
+            emit_morse_dot();
+            push_letter_interval();
+        }
         'f' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dot();
+            push_letter_interval();
         }
         'g' => {
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dot();
+            push_letter_interval();
         }
         'h' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dot();
+            push_letter_interval();
         }
         'i' => {
             emit_morse_dot();
             emit_morse_dot();
+            push_letter_interval();
         }
         'j' => {
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dash();
+            push_letter_interval();
         }
         'k' => {
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dash();
+            push_letter_interval();
         }
         'l' => {
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dot();
+            push_letter_interval();
         }
         'm' => {
             emit_morse_dash();
             emit_morse_dash();
+            push_letter_interval();
         }
         'n' => {
             emit_morse_dash();
             emit_morse_dash();
+            push_letter_interval();
         }
         'o' => {
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dash();
+            push_letter_interval();
         }
         'p' => {
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dot();
+            push_letter_interval();
         }
         'q' => {
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dash();
+            push_letter_interval();
         }
         'r' => {
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dot();
+            push_letter_interval();
         }
         's' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dot();
+            push_letter_interval();
         }
-        't' => emit_morse_dash(),
+        't' => {
+            emit_morse_dash();
+            push_letter_interval();
+        }
         'u' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dash();
+            push_letter_interval();
         }
         'v' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dash();
+            push_letter_interval();
         }
         'w' => {
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dash();
+            push_letter_interval();
         }
         'x' => {
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dash();
+            push_letter_interval();
         }
         'y' => {
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dash();
+            push_letter_interval();
         }
         'z' => {
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dot();
+            push_letter_interval();
         }
         _ => {
             emit_morse_space();
@@ -606,40 +565,16 @@ fn emit_morse_letter(letter: char) {
     }
 }
 
-const INTERVAL: u16 = 500u16;
+const INTERVAL: u16 = 100u16;
 
 fn emit_morse_dot() {
-    pushDot();
-    print_to_serial(".");
-    // let neo_pixel = pins.neo_pixel.into_push_pull_output();
-    // let mut ws2812 = Ws2812::new(timer, neo_pixel);
-    // ws2812.write(on.iter().cloned()).unwrap();
-    // delay.delay_ms(INTERVAL);
-    // ws2812.write(off.iter().cloned()).unwrap();
-    // delay.delay_ms(INTERVAL);
-    // unsafe {
-    //     MORSE_QUEUE = [2, 3, 4, 1];
-    // }
+    push_dot();
 }
 fn emit_morse_dash() {
-    pushDash();
-    // print_to_serial("_");
-    // unsafe {
-    //     MORSE_QUEUE = [8, 7, 6, 5];
-    // }
-    // let neo_pixel = pins.neo_pixel.into_push_pull_output();
-    // let mut ws2812 = Ws2812::new(timer, neo_pixel);
-    // ws2812.write(on.iter().cloned()).unwrap();
-    // delay.delay_ms(3 * INTERVAL);
-    // ws2812.write(off.iter().cloned()).unwrap();
-    // delay.delay_ms(INTERVAL);
+    push_dash();
 }
 fn emit_morse_space() {
-    pushSpace();
-    // let neo_pixel = pins.neo_pixel.into_push_pull_output();
-    // let mut ws2812 = Ws2812::new(timer, neo_pixel);
-    // ws2812.write(off.iter().cloned()).unwrap();
-    // delay.delay_ms(7 * INTERVAL);
+    push_space();
 }
 
 #[interrupt]
