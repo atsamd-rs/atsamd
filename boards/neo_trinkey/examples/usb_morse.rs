@@ -174,7 +174,7 @@ static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
         },
     ],
     length: 21,
-    position: 0,
+    position: 21,
 };
 
 struct PinControlDescriptor {
@@ -270,11 +270,7 @@ fn pushState(state: PinControlDescriptor) {
         let length: usize = PIN_CONTROL_QUEUE.length as usize;
         let queue = &mut PIN_CONTROL_QUEUE;
         queue.queue[index] = state;
-        if index == QUEUE_LENGTH {
-            queue.position = 0;
-        } else {
-            queue.position = index + 1;
-        }
+        PIN_CONTROL_QUEUE.position = (PIN_CONTROL_QUEUE.position + 1) % QUEUE_LENGTH;
         queue.length += 1;
     }
 }
@@ -287,8 +283,9 @@ fn popState() -> PinControlDescriptor {
                 duration: 1,
             };
         }
+        let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.position];
         PIN_CONTROL_QUEUE.length -= 1;
-        let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.length];
+        PIN_CONTROL_QUEUE.position = (PIN_CONTROL_QUEUE.position - 1) % QUEUE_LENGTH;
         return PinControlDescriptor {
             pinState: returnValue.pinState,
             duration: returnValue.duration,
