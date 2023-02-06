@@ -2,6 +2,9 @@
 #![no_main]
 use panic_halt as _;
 
+use core::mem::MaybeUninit;
+use fixed_slice_vec::FixedSliceVec;
+
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
 use usb_device::bus::UsbBusAllocator;
