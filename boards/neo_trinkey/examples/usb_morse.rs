@@ -272,6 +272,12 @@ fn pushState(state: PinControlDescriptor) {
 
 fn popState() -> PinControlDescriptor {
     unsafe {
+        if (PIN_CONTROL_QUEUE.length == 0) {
+            return PinControlDescriptor {
+                pinState: false,
+                duration: 1,
+            };
+        }
         let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.length];
         PIN_CONTROL_QUEUE.length -= 1;
         return PinControlDescriptor {
