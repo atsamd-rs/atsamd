@@ -279,8 +279,8 @@ fn popState() -> PinControlDescriptor {
                 duration: 1,
             };
         }
-        let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.length];
         PIN_CONTROL_QUEUE.length -= 1;
+        let returnValue = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.length];
         return PinControlDescriptor {
             pinState: returnValue.pinState,
             duration: returnValue.duration,
