@@ -39,13 +39,30 @@ struct CharQueue {
 struct PinControlQueue {
     queue: [PinControlDescriptor; 32],
     length: usize,
+    position: usize,
 }
 
 static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
     queue: [
         PinControlDescriptor {
             pinState: true,
-            duration: 3,
+            duration: 10,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: false,
+            duration: 1,
         },
         PinControlDescriptor {
             pinState: false,
@@ -65,19 +82,11 @@ static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
         },
         PinControlDescriptor {
             pinState: false,
+            duration: 1,
+        },
+        PinControlDescriptor {
+            pinState: true,
             duration: 3,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: false,
-            duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 1,
         },
         PinControlDescriptor {
             pinState: false,
@@ -85,15 +94,7 @@ static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
         },
         PinControlDescriptor {
             pinState: true,
-            duration: 3,
-        },
-        PinControlDescriptor {
-            pinState: false,
             duration: 1,
-        },
-        PinControlDescriptor {
-            pinState: true,
-            duration: 3,
         },
         PinControlDescriptor {
             pinState: false,
@@ -173,6 +174,7 @@ static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
         },
     ],
     length: 21,
+    position: 0,
 };
 
 struct PinControlDescriptor {
