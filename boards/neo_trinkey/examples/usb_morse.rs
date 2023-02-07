@@ -32,16 +32,30 @@ use ws2812_timer_delay::Ws2812;
 // End Added
 use pac::{interrupt, CorePeripherals, Peripherals};
 
-struct CharQueue {
-    queue: [char; 32],
-}
+const INTERVAL: u16 = 100u16; // Controls the speed of morse code generation
+const CHAR_QUEUE_LENTGH: usize = 32;
+const STATE_QUEUE_LENGTH: usize = 32;
 
-struct PinControlQueue {
-    queue: [PinControlDescriptor; 32],
+struct CharQueue {
+    queue: [char; CHAR_QUEUE_LENTGH],
     length: usize,
     write_position: usize,
     read_position: usize,
 }
+
+struct PinControlQueue {
+    queue: [PinControlDescriptor; STATE_QUEUE_LENGTH],
+    length: usize,
+    write_position: usize,
+    read_position: usize,
+}
+
+static mut CHAR_QUEUE: CharQueue = CharQueue {
+    queue: ['\r'; CHAR_QUEUE_LENTGH],
+    length: 0,
+    write_position: 0,
+    read_position: 0,
+};
 
 static mut PIN_CONTROL_QUEUE: PinControlQueue = PinControlQueue {
     queue: [
@@ -242,15 +256,35 @@ fn get_next_state() -> bool {
     }
 }
 
-static mut CHAR_QUEUE: Option<CharQueue> = None;
+fn push_char(letter: char) {
+    unsafe {
+        let index = CHAR_QUEUE.write_position as usize;
+        let queue = &mut CHAR_QUEUE;
+        queue.queue[index] = letter;
+        CHAR_QUEUE.write_position = (CHAR_QUEUE.write_position + 1) % CHAR_QUEUE_LENTGH;
+        queue.length += 1;
+    }
+}
 
-const QUEUE_LENGTH: usize = 32;
+fn pop_char() -> char {
+    unsafe {
+        if CHAR_QUEUE.length == 0 {
+            return '\r'; // Use CR to indicate empty queue
+        }
+        let return_value = CHAR_QUEUE.queue[CHAR_QUEUE.read_position];
+        CHAR_QUEUE.read_position = (CHAR_QUEUE.read_position + 1) % CHAR_QUEUE_LENTGH;
+        CHAR_QUEUE.length -= 1;
+        return return_value;
+    }
+}
+
 fn push_state(state: PinControlDescriptor) {
     unsafe {
         let index = PIN_CONTROL_QUEUE.write_position as usize;
         let queue = &mut PIN_CONTROL_QUEUE;
         queue.queue[index] = state;
-        PIN_CONTROL_QUEUE.write_position = (PIN_CONTROL_QUEUE.write_position + 1) % QUEUE_LENGTH;
+        PIN_CONTROL_QUEUE.write_position =
+            (PIN_CONTROL_QUEUE.write_position + 1) % STATE_QUEUE_LENGTH;
         queue.length += 1;
     }
 }
@@ -265,29 +299,12 @@ fn pop_state() -> PinControlDescriptor {
         }
         let return_value = &PIN_CONTROL_QUEUE.queue[PIN_CONTROL_QUEUE.read_position];
         PIN_CONTROL_QUEUE.length -= 1;
-        PIN_CONTROL_QUEUE.read_position = (PIN_CONTROL_QUEUE.read_position + 1) % QUEUE_LENGTH;
+        PIN_CONTROL_QUEUE.read_position =
+            (PIN_CONTROL_QUEUE.read_position + 1) % STATE_QUEUE_LENGTH;
         return PinControlDescriptor {
             pin_state: return_value.pin_state,
             duration: return_value.duration,
         };
-    }
-}
-
-fn pop() -> char {
-    return 's';
-}
-fn real_pop() -> Option<char> {
-    unsafe {
-        let queue = CHAR_QUEUE.as_mut().unwrap();
-        let c = queue.queue[0];
-        if c == '\0' {
-            return None;
-        }
-        for i in 0..queue.queue.len() - 1 {
-            queue.queue[i] = queue.queue[i + 1];
-        }
-        queue.queue[queue.queue.len() - 1] = '\0';
-        Some(c)
     }
 }
 
@@ -559,13 +576,15 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dot();
             push_letter_interval();
         }
+        '\r' => {
+            // We use CR to indicate the quueue is empty, so we make it phs only one blank cycle.
+            push_letter_interval();
+        }
         _ => {
             emit_morse_space();
         }
     }
 }
-
-const INTERVAL: u16 = 100u16;
 
 fn emit_morse_dot() {
     push_dot();
