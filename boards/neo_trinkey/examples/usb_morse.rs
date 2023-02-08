@@ -581,7 +581,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dot();
             push_letter_interval();
         }
-        "0" => {
+        '0' => {
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dash();
@@ -589,7 +589,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dash();
             push_letter_interval();
         }
-        "1" => {
+        '1' => {
             emit_morse_dot();
             emit_morse_dash();
             emit_morse_dash();
@@ -597,7 +597,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dash();
             push_letter_interval();
         }
-        "2" => {
+        '2' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dash();
@@ -605,7 +605,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dash();
             push_letter_interval();
         }
-        "3" => {
+        '3' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dot();
@@ -613,7 +613,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dash();
             push_letter_interval();
         }
-        "4" => {
+        '4' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dot();
@@ -621,7 +621,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dash();
             push_letter_interval();
         }
-        "5" => {
+        '5' => {
             emit_morse_dot();
             emit_morse_dot();
             emit_morse_dot();
@@ -629,7 +629,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dot();
             push_letter_interval();
         }
-        "6" => {
+        '6' => {
             emit_morse_dash();
             emit_morse_dot();
             emit_morse_dot();
@@ -637,7 +637,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dot();
             push_letter_interval();
         }
-        "7" => {
+        '7' => {
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dot();
@@ -645,7 +645,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dot();
             push_letter_interval();
         }
-        "8" => {
+        '8' => {
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dash();
@@ -653,7 +653,7 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dot();
             push_letter_interval();
         }
-        "9" => {
+        '9' => {
             emit_morse_dash();
             emit_morse_dash();
             emit_morse_dash();
