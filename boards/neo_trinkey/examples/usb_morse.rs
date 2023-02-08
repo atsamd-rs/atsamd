@@ -506,7 +506,7 @@ fn emit_morse_letter(letter: char) {
         }
         'n' => {
             emit_morse_dash();
-            emit_morse_dash();
+            emit_morse_dot();
             push_letter_interval();
         }
         'o' => {
