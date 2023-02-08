@@ -33,7 +33,7 @@ use ws2812_timer_delay::Ws2812;
 use pac::{interrupt, CorePeripherals, Peripherals};
 
 const INTERVAL: u16 = 100u16; // Controls the speed of morse code generation
-const CHAR_QUEUE_LENTGH: usize = 32;
+const CHAR_QUEUE_LENTGH: usize = 1024;
 const STATE_QUEUE_LENGTH: usize = 32;
 
 struct CharQueue {
@@ -340,11 +340,12 @@ fn main() -> ! {
         USB_BUS = Some(
             UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .manufacturer("Agilistas!")
-                .product("Serial port")
-                .serial_number("TRINKEY_MORSE")
+                .product("Serial Port Morse Emitter")
+                .serial_number("TRINKY_MORSE")
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
+        // USB_BUS.event_queue = Some(&mut USB_BUS_EVENTS);
     }
 
     unsafe {
@@ -405,6 +406,9 @@ fn poll_usb() {
                         }
                         serial.write("Received: ".as_bytes()).ok();
                         serial.write(&[c.clone()]).ok();
+                        // serial.write("\tCharacter queue size: ".as_bytes()).ok(); // Hmmm. How do I do this in embedded Rust?
+                        // let queue_size = i32::from(CHAR_QUEUE.length);
+                        // serial.write(queue_size.to_str().as_bytes()).ok();
                         serial.write("\r\n".as_bytes()).ok();
                         // emit_morse_letter('e');
 
@@ -849,4 +853,18 @@ fn USB() {
     // this function, separating them allows you to add more functions to run on
     // the USB interrupt in the future.
     poll_usb();
+}
+
+fn print_serial_header() {
+    unsafe {
+        let serial = USB_SERIAL.as_mut().unwrap();
+        serial
+            .write("Connected to Neo Trinky Morse Echo.\r\n: ".as_bytes())
+            .ok();
+        serial
+            .write(
+                "Type letters and the LED will emit their morse code equivalents.\r\n: ".as_bytes(),
+            )
+            .ok();
+    }
 }
