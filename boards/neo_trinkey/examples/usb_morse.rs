@@ -247,6 +247,7 @@ fn get_next_state() -> bool {
     let mut pin_state: bool;
     unsafe {
         if COUNT_DOWN <= 0 {
+            emit_morse_letter(pop_char());
             let pin_state_descriptor = pop_state();
             COUNT_DOWN = pin_state_descriptor.duration;
             CURRENT_PIN_STATE = pin_state_descriptor.pin_state;
@@ -405,7 +406,8 @@ fn poll_usb() {
                         // emit_morse_letter('e');
 
                         let letter = char::from_u32([c.clone()][0] as u32).unwrap();
-                        emit_morse_letter(letter);
+                        push_char(letter);
+                        //                        emit_morse_letter(letter); // TODO: Move this to next state)_
                     }
                 };
             });
