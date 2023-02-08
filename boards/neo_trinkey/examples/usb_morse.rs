@@ -581,6 +581,247 @@ fn emit_morse_letter(letter: char) {
             emit_morse_dot();
             push_letter_interval();
         }
+        "0" => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        "1" => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        "2" => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        "3" => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        "4" => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        "5" => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        "6" => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        "7" => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        "8" => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        "9" => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        ' ' => {
+            push_word_interval();
+        }
+        ',' => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        '.' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        '?' => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        '\'' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        '!' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        '/' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        '(' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        ')' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        '&' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        ':' => {
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        ';' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        '=' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        '+' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        '-' => {
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        '_' => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            push_letter_interval();
+        }
+        '"' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        '$' => {
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
+        '@' => {
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dash();
+            emit_morse_dot();
+            emit_morse_dash();
+            emit_morse_dot();
+            push_letter_interval();
+        }
         '\r' => {
             // We use CR to indicate the quueue is empty, so we make it phs only one blank cycle.
             push_letter_interval();
