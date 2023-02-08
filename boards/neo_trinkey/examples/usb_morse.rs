@@ -662,7 +662,7 @@ fn emit_morse_letter(letter: char) {
             push_letter_interval();
         }
         ' ' => {
-            push_word_interval();
+            push_space();
         }
         ',' => {
             emit_morse_dash();
