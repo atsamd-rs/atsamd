@@ -1,17 +1,17 @@
 // const INTERVAL: u16 = 100u16; // Controls the speed of morse code generation
 
-mod morse_queues {
+pub mod morse_queues {
     const CHAR_QUEUE_LENTGH: usize = 1024;
     const STATE_QUEUE_LENGTH: usize = 32;
 
-    struct CharQueue {
+    pub struct CharQueue {
         queue: [char; CHAR_QUEUE_LENTGH],
         length: usize,
         write_position: usize,
         read_position: usize,
     }
 
-    struct PinControlQueue {
+    pub struct PinControlQueue {
         queue: [PinControlDescriptor; STATE_QUEUE_LENGTH],
         length: usize,
         write_position: usize,
@@ -161,12 +161,12 @@ mod morse_queues {
         read_position: 0,
     };
 
-    struct PinControlDescriptor {
+    pub struct PinControlDescriptor {
         pin_state: bool,
         duration: u8,
     }
 
-    fn push_dot() {
+    pub fn push_dot() {
         let dot = PinControlDescriptor {
             pin_state: true,
             duration: 1,
@@ -179,7 +179,7 @@ mod morse_queues {
         push_state(interval);
     }
 
-    fn push_dash() {
+    pub fn push_dash() {
         let dash = PinControlDescriptor {
             pin_state: true,
             duration: 3,
@@ -192,7 +192,7 @@ mod morse_queues {
         push_state(interval);
     }
 
-    fn push_space() {
+    pub fn push_space() {
         let space = PinControlDescriptor {
             pin_state: false,
             duration: 7,
@@ -200,7 +200,7 @@ mod morse_queues {
         push_state(space);
     }
 
-    fn push_letter_interval() {
+    pub fn push_letter_interval() {
         let space = PinControlDescriptor {
             pin_state: false,
             duration: 3,
@@ -211,7 +211,7 @@ mod morse_queues {
     static mut COUNT_DOWN: u8 = 0;
     static mut CURRENT_PIN_STATE: bool = false;
 
-    fn get_next_state() -> bool {
+    pub fn get_next_state() -> bool {
         let mut pin_state: bool;
         unsafe {
             if COUNT_DOWN <= 0 {
@@ -228,7 +228,7 @@ mod morse_queues {
         }
     }
 
-    fn push_char(letter: char) {
+    pub fn push_char(letter: char) {
         unsafe {
             let index = CHAR_QUEUE.write_position as usize;
             let queue = &mut CHAR_QUEUE;
@@ -238,7 +238,7 @@ mod morse_queues {
         }
     }
 
-    fn pop_char() -> char {
+    pub fn pop_char() -> char {
         unsafe {
             if CHAR_QUEUE.length == 0 {
                 return '\r'; // Use CR to indicate empty queue
@@ -250,7 +250,7 @@ mod morse_queues {
         }
     }
 
-    fn push_state(state: PinControlDescriptor) {
+    pub fn push_state(state: PinControlDescriptor) {
         unsafe {
             let index = PIN_CONTROL_QUEUE.write_position as usize;
             let queue = &mut PIN_CONTROL_QUEUE;
@@ -261,7 +261,7 @@ mod morse_queues {
         }
     }
 
-    fn pop_state() -> PinControlDescriptor {
+    pub fn pop_state() -> PinControlDescriptor {
         unsafe {
             if PIN_CONTROL_QUEUE.length == 0 {
                 return PinControlDescriptor {
@@ -280,7 +280,7 @@ mod morse_queues {
         }
     }
 
-    fn emit_morse_letter(letter: char) {
+    pub fn emit_morse_letter(letter: char) {
         let downcased_letter = letter.to_ascii_lowercase(); // Add support for Latin 1 later.
         match downcased_letter {
             'a' => {
@@ -694,13 +694,13 @@ mod morse_queues {
         }
     }
 
-    fn emit_morse_dot() {
+    pub fn emit_morse_dot() {
         push_dot();
     }
-    fn emit_morse_dash() {
+    pub fn emit_morse_dash() {
         push_dash();
     }
-    fn emit_morse_space() {
+    pub fn emit_morse_space() {
         push_space();
     }
 }
