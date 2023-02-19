@@ -307,7 +307,7 @@ adc_pins! {
     PA09: (ADC1, 3),
 }
 
-#[cfg(feature = "min-samd51j")]
+#[cfg(feature = "pins-64")]
 adc_pins! {
     PB00: (ADC0, 12),
     PB01: (ADC0, 13),
@@ -317,7 +317,7 @@ adc_pins! {
     PB07: (ADC1, 9),
 }
 
-#[cfg(feature = "min-samd51n")]
+#[cfg(feature = "pins-100")]
 adc_pins! {
     PC02: (ADC1, 4),
     PC03: (ADC1, 5),
@@ -325,7 +325,7 @@ adc_pins! {
     PC01: (ADC1, 11),
 }
 
-#[cfg(feature = "min-samd51p")]
+#[cfg(feature = "pins-128")]
 adc_pins! {
     PC30: (ADC1, 12),
     PC31: (ADC1, 13),

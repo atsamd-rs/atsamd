@@ -134,6 +134,7 @@ hal::bsp_pins!(
         name: sda
         aliases: {
             AlternateD: Sda
+            AlternateB: A6
         }
     }
     PB03 {
@@ -141,6 +142,7 @@ hal::bsp_pins!(
         name: scl
         aliases: {
             AlternateD: Scl
+            AlternateB: A7
         }
     }
 
@@ -219,7 +221,7 @@ hal::bsp_pins!(
         /// The USB D- pad
         name: usb_dm
         aliases: {
-            AlternateG: UsbDm
+            AlternateH: UsbDm
         }
 
     }
@@ -227,7 +229,7 @@ hal::bsp_pins!(
         /// The USB D+ pad
         name: usb_dp
         aliases: {
-            AlternateG: UsbDp
+            AlternateH: UsbDp
         }
 
     }

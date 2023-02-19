@@ -341,10 +341,10 @@ macro_rules! alternate {
 
 alternate!(B, C, D, E, F, G);
 
-#[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+#[cfg(any(feature = "samd21", feature = "thumbv7"))]
 alternate!(H);
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 alternate!(I, J, K, L, M, N);
 
 /// Type-level variant of [`PinMode`] for alternate peripheral functions
@@ -749,19 +749,19 @@ impl_core_convert_from!(
     AlternateE,
     AlternateF,
     AlternateG,
-    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
     AlternateH,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     AlternateI,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     AlternateJ,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     AlternateK,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     AlternateL,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     AlternateM,
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     AlternateN,
 );
 
@@ -986,7 +986,7 @@ where
 macro_rules! pins{
     (
         $(
-            $( #[$cfg:meta] )?
+            #[$cfg:meta]
             $Id:ident,
         )+
     ) => {
@@ -996,7 +996,7 @@ macro_rules! pins{
                 port: Option<PORT>,
                 $(
                     #[doc = "Pin " $Id]
-                    $( #[$cfg] )?
+                    #[$cfg]
                     pub [<$Id:lower>]: Pin<$Id, Reset>,
                 )+
             }
@@ -1010,7 +1010,7 @@ macro_rules! pins{
                         port: Some(port),
                         // Safe because we only create one `Pin` per `PinId`
                         $(
-                            $( #[$cfg] )?
+                            #[$cfg]
                             [<$Id:lower>]: unsafe { Pin::new() },
                         )+
                     }
@@ -1040,7 +1040,7 @@ macro_rules! declare_pins {
         $(
             $Group:ident {
                 $(
-                    $( #[$cfg:meta] )?
+                    #[$cfg:meta]
                     ($Id:ident, $NUM:literal),
                 )+
             }
@@ -1048,14 +1048,14 @@ macro_rules! declare_pins {
     ) => {
         $(
             $(
-                $( #[$cfg] )?
+                #[$cfg]
                 pin_id!($Group, $Id, $NUM);
             )+
         )+
         pins!(
             $(
                 $(
-                    $( #[$cfg] )?
+                    #[$cfg]
                     $Id,
                 )+
             )+
@@ -1065,200 +1065,211 @@ macro_rules! declare_pins {
 
 declare_pins!(
     A {
-        #[cfg(not(any(feature = "samd11", feature = "samd21el", feature = "samd21gl")))]
+        #[cfg(feature = "has-pa00")]
         (PA00, 00),
-        #[cfg(not(any(feature = "samd11", feature = "samd21el", feature = "samd21gl")))]
+        #[cfg(feature = "has-pa01")]
         (PA01, 01),
+        #[cfg(feature = "pins-14")]
         (PA02, 02),
-        #[cfg(not(feature = "samd11c"))]
+        #[cfg(feature = "pins-24")]
         (PA03, 03),
+        #[cfg(feature = "pins-14")]
         (PA04, 04),
+        #[cfg(feature = "pins-14")]
         (PA05, 05),
-        #[cfg(not(feature = "samd11c"))]
+        #[cfg(feature = "pins-24")]
         (PA06, 06),
-        #[cfg(not(feature = "samd11c"))]
+        #[cfg(feature = "pins-24")]
         (PA07, 07),
+        #[cfg(feature = "pins-14")]
         (PA08, 08),
+        #[cfg(feature = "pins-14")]
         (PA09, 09),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(feature = "pins-24")]
         (PA10, 10),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(feature = "pins-24")]
         (PA11, 11),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+        #[cfg(feature = "pins-48")]
         (PA12, 12),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+        #[cfg(feature = "pins-48")]
         (PA13, 13),
+        #[cfg(feature = "pins-14")]
         (PA14, 14),
+        #[cfg(feature = "pins-14")]
         (PA15, 15),
-        #[cfg(not(feature = "samd11c"))]
+        #[cfg(feature = "pins-24")]
         (PA16, 16),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(feature = "pins-24")]
         (PA17, 17),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(feature = "pins-32")]
         (PA18, 18),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(feature = "pins-32")]
         (PA19, 19),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+        #[cfg(feature = "pins-48")]
         (PA20, 20),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+        #[cfg(feature = "pins-48")]
         (PA21, 21),
-        #[cfg(not(feature = "samd11c"))]
+        #[cfg(feature = "pins-24")]
         (PA22, 22),
-        #[cfg(not(feature = "samd11c"))]
+        #[cfg(feature = "pins-24")]
         (PA23, 23),
+        #[cfg(feature = "pins-14")]
         (PA24, 24),
+        #[cfg(feature = "pins-14")]
         (PA25, 25),
-        #[cfg(not(feature = "samd11"))]
+        #[cfg(feature = "has-pa27")]
         (PA27, 27),
-        #[cfg(all(any(feature = "samd11", feature = "samd21"), not(feature = "samd21el")))]
+        #[cfg(feature = "has-pa28")]
         (PA28, 28),
+        #[cfg(feature = "pins-14")]
         (PA30, 30),
+        #[cfg(feature = "pins-14")]
         (PA31, 31),
     }
     B {
-        #[cfg(any(feature = "min-samd21j", feature = "samd21gl", feature = "min-samd51j"))]
+        #[cfg(feature = "has-pb00")]
         (PB00, 00),
-        #[cfg(any(feature = "min-samd21j", feature = "samd21gl", feature = "min-samd51j"))]
+        #[cfg(feature = "has-pb01")]
         (PB01, 01),
-        #[cfg(any(feature = "min-samd21g", feature = "samd21el", feature = "min-samd51g"))]
+        #[cfg(feature = "has-pb02")]
         (PB02, 02),
-        #[cfg(any(feature = "min-samd21g", feature = "samd21el", feature = "min-samd51g"))]
+        #[cfg(feature = "has-pb03")]
         (PB03, 03),
-        #[cfg(any(feature = "min-samd21j", feature = "samd21el", feature = "samd21gl", feature = "min-samd51j"))]
+        #[cfg(feature = "has-pb04")]
         (PB04, 04),
-        #[cfg(any(feature = "min-samd21j", feature = "samd21el", feature = "samd21gl", feature = "min-samd51j"))]
+        #[cfg(feature = "has-pb05")]
         (PB05, 05),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB06, 06),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB07, 07),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+        #[cfg(feature = "pins-48")]
         (PB08, 08),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+        #[cfg(feature = "pins-48")]
         (PB09, 09),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+        #[cfg(feature = "pins-48")]
         (PB10, 10),
-        #[cfg(any(feature = "min-samd21g", feature = "min-samd51g"))]
+        #[cfg(feature = "pins-48")]
         (PB11, 11),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB12, 12),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB13, 13),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB14, 14),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB15, 15),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB16, 16),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB17, 17),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PB18, 18),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PB19, 19),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PB20, 20),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PB21, 21),
-        #[cfg(all(any(feature = "min-samd21g", feature = "min-samd51g"), not(feature = "samd21gl")))]
+        #[cfg(feature = "has-pb22")]
         (PB22, 22),
-        #[cfg(all(any(feature = "min-samd21g", feature = "min-samd51g"), not(feature = "samd21gl")))]
+        #[cfg(feature = "has-pb23")]
         (PB23, 23),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PB24, 24),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PB25, 25),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PB26, 26),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PB27, 27),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PB28, 28),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PB29, 29),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB30, 30),
-        #[cfg(any(feature = "min-samd21j", feature = "min-samd51j"))]
+        #[cfg(feature = "pins-64")]
         (PB31, 31),
     }
     C {
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC00, 00),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC01, 01),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC02, 02),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC03, 03),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PC04, 04),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC05, 05),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC06, 06),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC07, 07),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC10, 10),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC11, 11),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC12, 12),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC13, 13),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC14, 14),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC15, 15),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC16, 16),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC17, 17),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC18, 18),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC19, 19),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC20, 20),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC21, 21),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PC22, 22),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PC23, 23),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC24, 24),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC25, 25),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC26, 26),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC27, 27),
-        #[cfg(feature = "min-samd51n")]
+        #[cfg(feature = "pins-100")]
         (PC28, 28),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PC30, 30),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PC31, 31),
     }
     D {
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD00, 00),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD01, 01),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD08, 08),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD09, 09),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD10, 10),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD11, 11),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD12, 12),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD20, 20),
-        #[cfg(feature = "min-samd51p")]
+        #[cfg(feature = "pins-128")]
         (PD21, 21),
     }
 );

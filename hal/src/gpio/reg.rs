@@ -1,10 +1,10 @@
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 use crate::pac::port::{
     CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG0_ as PINCFG,
     PMUX0_ as PMUX, WRCONFIG,
 };
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use crate::pac::port::group::{
     CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG, PMUX, WRCONFIG,
 };
@@ -122,31 +122,31 @@ impl From<DynPinMode> for ModeFields {
                     G => {
                         fields.pmux = 6;
                     }
-                    #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+                    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
                     H => {
                         fields.pmux = 7;
                     }
-                    #[cfg(feature = "min-samd51g")]
+                    #[cfg(feature = "thumbv7")]
                     I => {
                         fields.pmux = 8;
                     }
-                    #[cfg(feature = "min-samd51g")]
+                    #[cfg(feature = "thumbv7")]
                     J => {
                         fields.pmux = 9;
                     }
-                    #[cfg(feature = "min-samd51g")]
+                    #[cfg(feature = "thumbv7")]
                     K => {
                         fields.pmux = 10;
                     }
-                    #[cfg(feature = "min-samd51g")]
+                    #[cfg(feature = "thumbv7")]
                     L => {
                         fields.pmux = 11;
                     }
-                    #[cfg(feature = "min-samd51g")]
+                    #[cfg(feature = "thumbv7")]
                     M => {
                         fields.pmux = 12;
                     }
-                    #[cfg(feature = "min-samd51g")]
+                    #[cfg(feature = "thumbv7")]
                     N => {
                         fields.pmux = 13;
                     }
@@ -231,11 +231,11 @@ pub(super) unsafe trait RegisterInterface {
     fn group(&self) -> &GROUP {
         let offset = match self.id().group {
             DynGroup::A => 0,
-            #[cfg(any(feature = "samd21", feature = "min-samd51g"))]
+            #[cfg(any(feature = "samd21", feature = "thumbv7"))]
             DynGroup::B => 1,
-            #[cfg(feature = "min-samd51n")]
+            #[cfg(feature = "pins-100")]
             DynGroup::C => 2,
-            #[cfg(feature = "min-samd51p")]
+            #[cfg(feature = "pins-128")]
             DynGroup::D => 3,
         };
         // Safety: It is safe to create shared references to each PAC register

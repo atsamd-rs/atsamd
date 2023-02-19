@@ -28,8 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Rust
-        uses: hecrj/setup-rust-action@v1
-      - uses: actions/checkout@v2
+        run: |
+          rustup set profile minimal
+          rustup override set stable
+      - uses: actions/checkout@v3
       - name: Setup
         shell: bash
         run: |
@@ -108,7 +110,7 @@ jobs:
           git diff > bump.patch
 
       - name: Upload diff
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: bump.patch
           path: bump.patch

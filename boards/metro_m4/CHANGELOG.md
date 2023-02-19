@@ -1,6 +1,8 @@
 # Unreleased
 
+- Use correct alternate for USB (#661)
 - Correction to the clock in the usb convenience function
+- Add aliases for A6 and A7.
 
 # v0.11.1
 

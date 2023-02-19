@@ -292,7 +292,7 @@ macro_rules! with_num_channels {
     };
 }
 
-#[cfg(all(feature = "min-samd51g", feature = "max-channels"))]
+#[cfg(all(feature = "thumbv7", feature = "max-channels"))]
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
@@ -316,7 +316,7 @@ macro_rules! with_num_channels {
     };
 }
 
-#[cfg(all(feature = "min-samd51g", not(feature = "max-channels")))]
+#[cfg(all(feature = "thumbv7", not(feature = "max-channels")))]
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {

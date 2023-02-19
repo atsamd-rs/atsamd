@@ -50,12 +50,12 @@ where
 
 /// Clock type needed to create a new [`Config`]. [`PM`](pac::PM) for thumbv6m
 /// targets.
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 pub type Clock = pac::PM;
 
 /// Clock type needed to create a new [`Config`]. [`MCLK`](pac::MCLK) for
 /// thumbv7em targets.
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 pub type Clock = pac::MCLK;
 
 impl<P: ValidPads> Config<P> {

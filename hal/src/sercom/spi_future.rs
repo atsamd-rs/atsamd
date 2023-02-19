@@ -182,7 +182,7 @@ use crate::typelevel::NoneT;
 
 use super::spi::{AnySpi, Error, Flags};
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use {
     super::spi::{
         Capability, Config, DynLength, OpMode, Spi, StaticLength, ValidConfig, ValidPads,
@@ -190,13 +190,13 @@ use {
     typenum::Unsigned,
 };
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 use core::mem::size_of;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 type Data = u16;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 type Data = u32;
 
 //=============================================================================
@@ -206,13 +206,13 @@ type Data = u32;
 /// Trait used to verify the [`SpiFuture`] buffer length
 #[allow(clippy::len_without_is_empty)]
 pub trait CheckBufLen: AnySpi {
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     /// [`Spi`] transaction length
     ///
     /// This value is zero for an [`Spi`] with [`DynLength`]
     const LEN: usize = <Self::Size as Unsigned>::USIZE;
 
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(feature = "thumbv6")]
     /// [`Spi`] transaction length
     ///
     /// [`Spi`]: super::spi::Spi
@@ -267,10 +267,10 @@ pub trait CheckBufLen: AnySpi {
     }
 }
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 impl<S: AnySpi> CheckBufLen for S {}
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 impl<P, M, L, A> CheckBufLen for Spi<Config<P, M, L>, A>
 where
     Config<P, M, L>: ValidConfig,
@@ -281,7 +281,7 @@ where
 {
 }
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 impl<P, M, A> CheckBufLen for Spi<Config<P, M, DynLength>, A>
 where
     Config<P, M, DynLength>: ValidConfig,

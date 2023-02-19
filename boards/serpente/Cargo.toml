@@ -10,6 +10,10 @@ repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
 edition = "2021"
 
+[dependencies.panic-semihosting]
+version = "0.6"
+optional = true
+
 [dependencies.cortex-m-rt]
 version = "0.7"
 optional = true
@@ -26,7 +30,7 @@ panic-halt = "0.2"
 default = ["rt", "atsamd-hal/samd21e"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
-use_semihosting = []
+use_semihosting = ["panic-semihosting"]
 
 # for cargo flash
 [package.metadata]

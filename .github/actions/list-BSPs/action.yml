@@ -13,4 +13,4 @@ runs:
       shell: bash
       run: |
         matrix_json=$(cat crates.json | jq -Mr -c '{ "bsp": (.boards | keys ), "toolchain": ["stable", "nightly"] }')
-        echo "::set-output name=matrix::${matrix_json}"
+        echo "matrix=${matrix_json}" >> $GITHUB_OUTPUT

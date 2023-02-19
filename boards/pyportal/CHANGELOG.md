@@ -1,5 +1,7 @@
 # Unreleased
 
+- Use correct alternate for USB (#661)
+
 # v0.10.0
 
 - update to `atsamd-hal` to 0.15.1 and `cortex-m-rt` to 0.7.1

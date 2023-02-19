@@ -5,10 +5,10 @@ use super::{BaudMode, BitOrder, CharSizeEnum, Flags, Oversampling, Parity, Statu
 use crate::pac;
 use crate::sercom::*;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 use pac::sercom0::usart::ctrla::MODE_A;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use pac::sercom0::usart_int::ctrla::MODE_A;
 
 use crate::time::Hertz;
@@ -29,7 +29,7 @@ impl<S: Sercom> Registers<S> {
     }
 
     /// Helper function to access the underlying `USART` from the given `SERCOM`
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     fn usart(&self) -> &pac::sercom0::USART {
         self.sercom.usart()
@@ -37,7 +37,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Helper function to access the underlying `USART_INT` from the given
     /// `SERCOM`
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     fn usart(&self) -> &pac::sercom0::USART_INT {
         self.sercom.usart_int()

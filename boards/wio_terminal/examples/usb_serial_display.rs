@@ -143,7 +143,7 @@ impl<'a> Terminal<'a> {
     }
 
     pub fn write_character(&mut self, c: char) {
-        if self.cursor.x >= 320 || c == '\n' {
+        if self.cursor.x >= 320 - FONT_6X12.character_size.width as i32 || c == '\n' {
             self.cursor = Point::new(0, self.cursor.y + FONT_6X12.character_size.height as i32);
         }
         if self.cursor.y >= 240 {

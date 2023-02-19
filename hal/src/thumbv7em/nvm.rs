@@ -541,7 +541,7 @@ bitfield! {
     bod33_level, _: 8, 1;
     bod33_action, _: 10, 9;
     bod33_hysteresis, _: 14, 11;
-    bod12_calibration_parameters, _: 25, 12;
+    bod12_calibration_parameters, _: 25, 15;
     nvm_bootloader_size, _: 29, 26;
     see_sblk, _: 35, 32;
     see_psz, _: 38, 36;
