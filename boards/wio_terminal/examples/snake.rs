@@ -61,6 +61,8 @@ fn main() -> ! {
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let sets = wio::Pins::new(peripherals.PORT).split();
+    let mut uled = sets.user_led.into_push_pull_output();
+    uled.set_low().unwrap();
     let mut consumer = unsafe { Q.split().1 };
 
     // initializing styles
@@ -143,6 +145,7 @@ fn main() -> ! {
         }
 
         if player.is_self_intersecting() {
+            uled.set_high().unwrap();
             loop {} // effectively exiting...
         }
 
@@ -278,6 +281,18 @@ impl Snake {
     }
 
     fn set_direction(&mut self, direction: Direction) {
+        if self.snake_direction == Direction::Up && direction == Direction::Down {
+            return;
+        }
+        if self.snake_direction == Direction::Down && direction == Direction::Up {
+            return;
+        }
+        if self.snake_direction == Direction::Left && direction == Direction::Right {
+            return;
+        }
+        if self.snake_direction == Direction::Right && direction == Direction::Left {
+            return;
+        }
         self.snake_direction = direction;
     }
 
@@ -301,6 +316,7 @@ impl Snake {
     }
 }
 
+#[derive(PartialEq)]
 enum Direction {
     Up,
     Down,
