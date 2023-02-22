@@ -1,6 +1,6 @@
 //! I2C [`Config`] definition and implementation
 
-use super::{I2c, InactiveTimeout, PadSet, Registers};
+use super::{I2c, I2cMode, InactiveTimeout, Master, PadSet, Registers};
 use crate::{
     pac::sercom0::i2cm::ctrla::MODE_A,
     sercom::*,
@@ -26,15 +26,17 @@ use crate::{
 ///
 /// [`enable`]: Config::enable
 /// [`Pads`]: super::Pads
-pub struct Config<P>
+pub struct Config<P, M: I2cMode = Master>
 where
     P: PadSet,
 {
     pub(super) registers: Registers<P::Sercom>,
     pads: P,
+    op_mode: M,
     freq: Hertz,
 }
 
+/// Generic configuration
 impl<P: PadSet> Config<P> {
     /// Create a new [`Config`] in the default configuration.
     #[inline]
@@ -45,6 +47,7 @@ impl<P: PadSet> Config<P> {
         Self {
             registers,
             pads,
+            op_mode: Master,
             freq: freq.into(),
         }
     }
@@ -72,7 +75,8 @@ impl<P: PadSet> Config<P> {
     }
 }
 
-impl<P: PadSet> Config<P> {
+/// Configuration relevant when in host mode
+impl<P: PadSet> Config<P, Master> {
     /// Obtain a reference to the PAC `SERCOM` struct
     ///
     /// # Safety
@@ -224,9 +228,9 @@ impl<P: PadSet> Config<P> {
     ///
     /// I2C transactions are not possible until the peripheral is enabled.
     #[inline]
-    pub fn enable(mut self) -> I2c<Self>
+    pub fn enable(mut self) -> I2c<Self, Master>
     where
-        Self: AnyConfig,
+        Self: AnyConfig<Mode = Master>,
     {
         self.registers.enable();
 
@@ -253,31 +257,33 @@ impl<P: PadSet> Config<P> {
 pub trait AnyConfig: Is<Type = SpecificConfig<Self>> {
     type Sercom: Sercom;
     type Pads: PadSet<Sercom = Self::Sercom>;
+    type Mode: I2cMode; // default to super::Master when associated_type_defaults is stable
 }
 
 /// Type alias to recover the specific [`Config`] type from an implementation of
 /// [`AnyConfig`]
-pub type SpecificConfig<C> = Config<<C as AnyConfig>::Pads>;
+pub type SpecificConfig<C> = Config<<C as AnyConfig>::Pads, <C as AnyConfig>::Mode>;
 
 /// Type alias to recover the specific [`Sercom`] type from an implementation of
 /// [`AnyConfig`]
 pub type ConfigSercom<C> = <C as AnyConfig>::Sercom;
 
-impl<P: PadSet> Sealed for Config<P> {}
+impl<P: PadSet, M: I2cMode> Sealed for Config<P, M> {}
 
-impl<P: PadSet> AnyConfig for Config<P> {
+impl<P: PadSet, M: I2cMode> AnyConfig for Config<P, M> {
     type Sercom = P::Sercom;
     type Pads = P;
+    type Mode = M;
 }
 
-impl<P: PadSet> AsRef<Self> for Config<P> {
+impl<P: PadSet, M: I2cMode> AsRef<Self> for Config<P, M> {
     #[inline]
     fn as_ref(&self) -> &Self {
         self
     }
 }
 
-impl<P: PadSet> AsMut<Self> for Config<P> {
+impl<P: PadSet, M: I2cMode> AsMut<Self> for Config<P, M> {
     #[inline]
     fn as_mut(&mut self) -> &mut Self {
         self

@@ -276,8 +276,8 @@ pub use config::*;
 
 mod impl_ehal;
 
-mod client;
-pub use client::*;
+// mod client;
+// pub use client::*;
 
 /// Word size for an I2C message
 pub type Word = u8;
@@ -296,18 +296,30 @@ pub enum InactiveTimeout {
     Us205 = 0x3,
 }
 
+pub trait I2cMode {}
+/// Marker type for I2C master mode
+pub struct Master;
+/// Marker type for I2C client/slave mode
+pub struct Sleve;
+impl I2cMode for Master {}
+impl I2cMode for Sleve {}
+
 /// Abstraction over a I2C peripheral, allowing to perform I2C transactions.
-pub struct I2c<C: AnyConfig> {
+pub struct I2c<C: AnyConfig<Mode = M>, M: I2cMode = Master> {
     config: C,
 }
 
-impl<C: AnyConfig> I2c<C> {
+/// Implementation for both modes
+impl<C: AnyConfig<Mode = M>, M: I2cMode> I2c<C, M> {
     /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
     #[inline]
     pub fn data_ptr(&self) -> *mut Word {
         self.config.as_ref().registers.data_ptr()
     }
+}
 
+/// Host-only implementation
+impl<C: AnyConfig<Mode = Master>> I2c<C, Master> {
     /// Read the interrupt flags
     #[inline]
     pub fn read_flags(&self) -> Flags {
