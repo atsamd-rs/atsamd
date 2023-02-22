@@ -276,6 +276,9 @@ pub use config::*;
 
 mod impl_ehal;
 
+mod client;
+pub use client::*;
+
 /// Word size for an I2C message
 pub type Word = u8;
 
