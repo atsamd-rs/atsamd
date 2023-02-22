@@ -7,6 +7,7 @@ use crate::{
     time::Hertz,
     typelevel::{Is, Sealed},
 };
+use core::marker::PhantomData;
 
 //=============================================================================
 // Config
@@ -30,9 +31,9 @@ pub struct Config<P, M: I2cMode = Master>
 where
     P: PadSet,
 {
-    pub(super) registers: Registers<P::Sercom>,
+    pub(super) registers: Registers<P::Sercom, M>,
     pads: P,
-    op_mode: M,
+    op_mode: PhantomData<M>,
     freq: Hertz,
 }
 
@@ -47,8 +48,8 @@ impl<P: PadSet> Config<P> {
         Self {
             registers,
             pads,
-            op_mode: Master,
             freq: freq.into(),
+            op_mode: PhantomData,
         }
     }
 

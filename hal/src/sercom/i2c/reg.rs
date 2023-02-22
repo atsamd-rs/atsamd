@@ -2,38 +2,48 @@
 
 use super::flags::{BusState, Error};
 use super::InactiveTimeout;
-use super::{Flags, Status};
+use super::{Flags, I2cMode, Master, Status};
 use crate::pac;
 use crate::sercom::*;
 use crate::time::Hertz;
+use core::marker::PhantomData;
 
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
 
-pub(super) struct Registers<S: Sercom> {
+pub(super) struct Registers<S: Sercom, M: I2cMode> {
     pub sercom: S,
+    mode: PhantomData<M>,
 }
 
 // SAFETY: It is safe to implement Sync for Registers, because it erases the
 // interior mutability of the PAC SERCOM struct.
-unsafe impl<S: Sercom> Sync for Registers<S> {}
+unsafe impl<S: Sercom, M: I2cMode> Sync for Registers<S, M> {}
 
-impl<S: Sercom> Registers<S> {
+impl<S: Sercom, M: I2cMode> Registers<S, M> {
     /// Create a new `Registers` instance
     #[inline]
     pub(super) fn new(sercom: S) -> Self {
-        Self { sercom }
-    }
-
-    /// Helper function to access the underlying `I2CM` from the given `SERCOM`
-    #[inline]
-    fn i2c_master(&self) -> &pac::sercom0::I2CM {
-        self.sercom.i2cm()
+        Self {
+            sercom,
+            mode: PhantomData,
+        }
     }
 
     /// Get a pointer to the `DATA` register
     pub(super) fn data_ptr<T>(&self) -> *mut T {
-        self.i2c_master().data.as_ptr() as *mut _
+        // Use the master pointer, but both master and slave have the same data
+        // pointer. FIXME: once offset_of becomes available, add a debug assert
+        // for a sanity check.
+        self.sercom.i2cm().data.as_ptr().cast()
+    }
+}
+
+impl<S: Sercom> Registers<S, Master> {
+    /// Helper function to access the underlying `I2CM` from the given `SERCOM`
+    #[inline]
+    fn i2c_master(&self) -> &pac::sercom0::I2CM {
+        self.sercom.i2cm()
     }
 
     /// Free the `Registers` struct and return the underlying `Sercom` instance
