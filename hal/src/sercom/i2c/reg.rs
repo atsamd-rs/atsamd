@@ -58,10 +58,10 @@ impl<S: Sercom> Registers<S> {
     }
 
     /// Configure the baudrate for I2C master mode
-    pub(super) fn set_baud(&mut self, clock_freq: Hertz, baud: impl Into<Hertz>) {
+    pub(super) fn set_baud(&mut self, clock_freq: impl Into<Hertz>, baud: impl Into<Hertz>) {
         // Since BAUDLOW is 0, the baud rate is used to generate both SCL high and SCL
         // low periods.
-        let baud = (clock_freq.0 / (2 * baud.into().0) - 1) as u8;
+        let baud = (clock_freq.into().to_Hz() / (2 * baud.into().to_Hz()) - 1) as u8;
 
         unsafe {
             self.i2c_master().baud.modify(|_, w| w.baud().bits(baud));
