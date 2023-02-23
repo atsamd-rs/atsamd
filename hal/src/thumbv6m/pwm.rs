@@ -35,38 +35,35 @@ pub struct $TYPE {
 }
 
 impl $TYPE {
-    pub fn new<F: Into<Hertz>> (
+    pub fn new(
         clock: &clock::$clock,
-        freq: F,
+        freq: Hertz,
         tc: $TC,
         pm: &mut PM,
     ) -> Self {
-        let freq = freq.into();
-        {
-            let count = tc.count16();
-            let params = TimerParams::new(freq, clock.freq().0);
-            pm.$apmask.modify(|_, w| w.$apbits().set_bit());
-            count.ctrla.write(|w| w.swrst().set_bit());
-            while count.ctrla.read().bits() & 1 != 0 {}
-            count.ctrla.modify(|_, w| w.enable().clear_bit());
-            count.ctrla.modify(|_, w| {
-                match params.divider {
-                    1 => w.prescaler().div1(),
-                    2 => w.prescaler().div2(),
-                    4 => w.prescaler().div4(),
-                    8 => w.prescaler().div8(),
-                    16 => w.prescaler().div16(),
-                    64 => w.prescaler().div64(),
-                    256 => w.prescaler().div256(),
-                    1024 => w.prescaler().div1024(),
-                    _ => unreachable!(),
-                }
-            });
-            count.ctrla.write(|w| w.wavegen().mpwm());
-            count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
-            count.cc[1].write(|w| unsafe { w.cc().bits(0) });
-            count.ctrla.modify(|_, w| w.enable().set_bit());
-        }
+        let count = tc.count16();
+        let params = TimerParams::new(freq.convert(), clock.freq());
+        pm.$apmask.modify(|_, w| w.$apbits().set_bit());
+        count.ctrla.write(|w| w.swrst().set_bit());
+        while count.ctrla.read().bits() & 1 != 0 {}
+        count.ctrla.modify(|_, w| w.enable().clear_bit());
+        count.ctrla.modify(|_, w| {
+            match params.divider {
+                1 => w.prescaler().div1(),
+                2 => w.prescaler().div2(),
+                4 => w.prescaler().div4(),
+                8 => w.prescaler().div8(),
+                16 => w.prescaler().div16(),
+                64 => w.prescaler().div64(),
+                256 => w.prescaler().div256(),
+                1024 => w.prescaler().div1024(),
+                _ => unreachable!(),
+            }
+        });
+        count.ctrla.write(|w| w.wavegen().mpwm());
+        count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
+        count.cc[1].write(|w| unsafe { w.cc().bits(0) });
+        count.ctrla.modify(|_, w| w.enable().set_bit());
 
         Self {
             clock_freq: clock.freq(),
@@ -74,12 +71,9 @@ impl $TYPE {
         }
     }
 
-    pub fn set_period<P>(&mut self, period: P)
-    where
-        P: Into<Hertz>
+    pub fn set_period(&mut self, period: Hertz)
     {
-        let period = period.into();
-        let params = TimerParams::new(period, self.clock_freq.0);
+        let params = TimerParams::new(period, self.clock_freq);
         let count = self.tc.count16();
         count.ctrla.modify(|_, w| w.enable().clear_bit());
         count.ctrla.modify(|_, w| {
@@ -103,7 +97,7 @@ impl $TYPE {
         let count = self.tc.count16();
         let divisor = count.ctrla.read().prescaler().bits();
         let top = count.cc[0].read().cc().bits();
-        Hertz(self.clock_freq.0 / divisor as u32 / (top + 1) as u32)
+        self.clock_freq / divisor as u32 / (top + 1) as u32
     }
 }
 
@@ -186,7 +180,7 @@ impl $TYPE {
     ) -> Self {
         let freq = freq.into();
         {
-            let params = TimerParams::new(freq, clock.freq().0);
+            let params = TimerParams::new(freq, clock.freq());
             pm.$apmask.modify(|_, w| w.$apbits().set_bit());
             tcc.ctrla.write(|w| w.swrst().set_bit());
             while tcc.syncbusy.read().swrst().bit_is_set() {}
@@ -236,7 +230,7 @@ impl Pwm for $TYPE {
     fn get_period(&self) -> Self::Time {
         let divisor = self.tcc.ctrla.read().prescaler().bits();
         let top = self.tcc.per().read().bits();
-        Hertz(self.clock_freq.0 / divisor as u32 / (top + 1) as u32)
+        self.clock_freq / divisor as u32 / (top + 1) as u32
     }
 
     fn get_duty(&self, channel: Self::Channel) -> Self::Duty {
@@ -260,7 +254,7 @@ impl Pwm for $TYPE {
         P: Into<Self::Time>,
     {
         let period = period.into();
-        let params = TimerParams::new(period, self.clock_freq.0);
+        let params = TimerParams::new(period, self.clock_freq);
         self.tcc.ctrla.modify(|_, w| w.enable().clear_bit());
         self.tcc.ctrla.modify(|_, w| {
             match params.divider {
