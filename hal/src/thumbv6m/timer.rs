@@ -49,7 +49,7 @@ where
     where
         T: Into<Self::Time>,
     {
-        let params = TimerParams::new_us(timeout, self.freq.0);
+        let params = TimerParams::new_us(timeout.into(), self.freq);
         let divider = params.divider;
         let cycles = params.cycles;
 
