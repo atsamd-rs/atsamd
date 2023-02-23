@@ -21,6 +21,7 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
+use hal::time::Hertz;
 use hal::timer::*;
 
 use smart_leds::{
@@ -46,7 +47,7 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
     let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
-    timer.start(3.mhz());
+    timer.start(Hertz::MHz(3).into_duration());
 
     let neopixel_pin = pins.neopixel.into_push_pull_output();
     let mut neopixel = Ws2812::new(timer, neopixel_pin);

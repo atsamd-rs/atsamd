@@ -2,8 +2,8 @@ use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use atsamd_hal::pac::{ADC1, MCLK, SERCOM4};
+use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::{i2c, IoSet3, Sercom4};
-use atsamd_hal::time::U32Ext;
 
 use lis3dh::{Lis3dh, SlaveAddr};
 
@@ -41,7 +41,7 @@ impl Accelerometer {
         let (sda, scl): (I2c0Sda, I2c0Scl) = (self.sda.into(), self.scl.into());
         let pads: I2cPads = i2c::Pads::new(sda, scl);
         let i2c = i2c::Config::new(mclk, sercom4, pads, freq)
-            .baud(400.khz())
+            .baud(400.kHz())
             .enable();
 
         // The schematic states that the alternate I2C address `0x19` is used,

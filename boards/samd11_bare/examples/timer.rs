@@ -14,6 +14,7 @@ use bsp::pac;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::prelude::*;
+use hal::time::Hertz;
 use hal::timer::TimerCounter;
 use pac::Peripherals;
 
@@ -31,7 +32,7 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc1_tc2(&gclk0).unwrap();
     let mut timer = TimerCounter::tc1_(&timer_clock, peripherals.TC1, &mut peripherals.PM);
-    timer.start(1u32.hz());
+    timer.start(Hertz::Hz(1).into_duration());
 
     let pins = bsp::Pins::new(peripherals.PORT);
     let mut d2: bsp::Led = pins.d2.into();

@@ -23,7 +23,6 @@ use hal::pac::gclk::genctrl::SRC_A;
 use hal::pac::gclk::pchctrl::GEN_A;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::time::Hertz;
 
 #[entry]
 fn main() -> ! {
@@ -49,7 +48,7 @@ fn main() -> ! {
 
     let mut uart = bsp::uart(
         &mut clocks,
-        Hertz(19200),
+        19200.Hz(),
         uart_sercom,
         &mut peripherals.MCLK,
         uart_rx,

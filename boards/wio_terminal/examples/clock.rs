@@ -54,7 +54,7 @@ fn main() -> ! {
 
     // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
     // main clock
-    let rtc = rtc::Rtc::clock_mode(peripherals.RTC, 1024.hz(), &mut peripherals.MCLK);
+    let rtc = rtc::Rtc::clock_mode(peripherals.RTC, 1024.Hz(), &mut peripherals.MCLK);
 
     unsafe {
         RTC = Some(rtc);
@@ -68,7 +68,7 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            58.mhz(),
+            58.MHz(),
             &mut delay,
         )
         .unwrap();

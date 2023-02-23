@@ -5,9 +5,8 @@ use atsamd_hal::{
     ehal::digital::v2::OutputPin,
     ehal::serial::{Read, Write},
     pac::{interrupt, MCLK, SERCOM0},
-    prelude::nb,
+    prelude::*,
     sercom::{uart, IoSet2, Sercom0},
-    time::{Hertz, U32Ext},
 };
 use bbqueue::{self, BBBuffer, Consumer, Producer};
 use heapless::consts::*;
@@ -74,7 +73,7 @@ impl Wifi {
             clocks.sercom0_core(&gclk0).unwrap().freq(),
         )
         .baud(
-            WIFI_UART_BAUD.hz(),
+            WIFI_UART_BAUD.Hz(),
             uart::BaudMode::Fractional(uart::Oversampling::Bits16),
         );
 

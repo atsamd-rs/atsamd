@@ -247,7 +247,7 @@ pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 /// SPI Master in SPI Mode 0.
 pub fn spi_master(
     clocks: &mut GenericClockController,
-    baud: impl Into<Hertz>,
+    baud: Hertz,
     sercom: SpiSercom,
     pm: &mut pac::PM,
     sclk: impl Into<Sclk>,

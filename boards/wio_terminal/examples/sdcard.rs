@@ -60,7 +60,7 @@ fn main() -> ! {
             &mut clocks,
             peripherals.SERCOM7,
             &mut peripherals.MCLK,
-            58.mhz(),
+            58.MHz(),
             &mut delay,
         )
         .unwrap();
@@ -72,7 +72,7 @@ fn main() -> ! {
             Ok(_) => {
                 // Now that we have initialized, we can run the SPI bus at
                 // a reasonable speed.
-                cont.set_baud(20.mhz());
+                cont.set_baud(20.MHz());
 
                 let mut data = String::<U128>::new();
                 write!(data, "OK! ").unwrap();
