@@ -10,10 +10,12 @@ def main(clean=False, build=False):
     with open("crates.json", "r") as f:
         crates = json.load(f)
 
-    for (board, jobs) in crates["boards"].items():
+    boards_len = len(crates["boards"])
+    for (index, (board, jobs)) in enumerate(crates["boards"].items()):
+        index += 1
         print()
         print("-" * 80)
-        print(f"Crate:   {board}")
+        print(f"Crate:   {board} | {index:2}/{boards_len}")
         print(f"Command: {jobs['build']}\n")
 
         command = shlex.split(jobs["build"])
