@@ -161,6 +161,7 @@
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`Clocks`]: super::Clocks
 
+use fugit::RateExtU32;
 use typenum::U0;
 
 use crate::pac::osc32kctrl::OSCULP32K;
@@ -422,7 +423,7 @@ impl<N> Source for EnabledOscUlp1k<N> {
 
     #[inline]
     fn freq(&self) -> Hertz {
-        Hertz(1024)
+        1024.Hz()
     }
 }
 
@@ -485,6 +486,6 @@ impl<N> Source for EnabledOscUlp32k<N> {
 
     #[inline]
     fn freq(&self) -> Hertz {
-        Hertz(32_768)
+        32_768.Hz()
     }
 }
