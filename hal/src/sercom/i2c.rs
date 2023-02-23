@@ -274,10 +274,12 @@ pub use flags::*;
 mod config;
 pub use config::*;
 
+mod mode;
+pub use mode::*;
+
 mod impl_ehal;
 
-// mod client;
-// pub use client::*;
+use crate::typelevel::Sealed;
 
 /// Word size for an I2C message
 pub type Word = u8;
@@ -296,16 +298,8 @@ pub enum InactiveTimeout {
     Us205 = 0x3,
 }
 
-pub trait I2cMode {}
-/// Marker type for I2C master mode
-pub struct Master;
-/// Marker type for I2C client/slave mode
-pub struct Sleve;
-impl I2cMode for Master {}
-impl I2cMode for Sleve {}
-
 /// Abstraction over a I2C peripheral, allowing to perform I2C transactions.
-pub struct I2c<C: AnyConfig<Mode = M>, M: I2cMode = Master> {
+pub struct I2c<C: AnyConfig<Mode = M>, M: I2cMode = Host> {
     config: C,
 }
 
@@ -319,7 +313,7 @@ impl<C: AnyConfig<Mode = M>, M: I2cMode> I2c<C, M> {
 }
 
 /// Host-only implementation
-impl<C: AnyConfig<Mode = Master>> I2c<C, Master> {
+impl<C: AnyConfig<Mode = Host>> I2c<C, Host> {
     /// Read the interrupt flags
     #[inline]
     pub fn read_flags(&self) -> Flags {
@@ -429,6 +423,34 @@ impl<C: AnyConfig<Mode = Master>> I2c<C, Master> {
         config.as_mut().registers.disable();
         config
     }
+}
+
+/// Client implementation
+impl<C: AnyConfig<Mode = Client>> I2c<C, Client> {
+    /// Read the interrupt flags
+    #[inline]
+    pub fn read_flags(&self) -> ClientFlags {
+        self.config.as_ref().registers.read_flags()
+    }
+
+    /// Clear interrupt status flags
+    #[inline]
+    pub fn clear_flags(&mut self, flags: ClientFlags) {
+        self.config.as_mut().registers.clear_flags(flags);
+    }
+
+    /// Enable interrupts for the specified flags.
+    #[inline]
+    pub fn enable_interrupts(&mut self, flags: ClientFlags) {
+        self.config.as_mut().registers.enable_interrupts(flags);
+    }
+
+    /// Disable interrupts for the specified flags.
+    #[inline]
+    pub fn disable_interrupts(&mut self, flags: ClientFlags) {
+        self.config.as_mut().registers.disable_interrupts(flags);
+    }
+    
 }
 
 impl<P: PadSet> AsRef<Config<P>> for I2c<Config<P>> {

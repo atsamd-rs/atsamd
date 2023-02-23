@@ -25,29 +25,6 @@ impl<C: ClientAnyConfig> I2cClient<C> {
         self.config.as_ref().registers.data_ptr()
     }
 
-    /// Read the interrupt flags
-    #[inline]
-    pub fn read_flags(&self) -> ClientFlags {
-        self.config.as_ref().registers.read_flags()
-    }
-
-    /// Clear interrupt status flags
-    #[inline]
-    pub fn clear_flags(&mut self, flags: ClientFlags) {
-        self.config.as_mut().registers.clear_flags(flags);
-    }
-
-    /// Enable interrupts for the specified flags.
-    #[inline]
-    pub fn enable_interrupts(&mut self, flags: ClientFlags) {
-        self.config.as_mut().registers.enable_interrupts(flags);
-    }
-
-    /// Disable interrupts for the specified flags.
-    #[inline]
-    pub fn disable_interrupts(&mut self, flags: ClientFlags) {
-        self.config.as_mut().registers.disable_interrupts(flags);
-    }
 
     /// Read the status flags
     #[inline]

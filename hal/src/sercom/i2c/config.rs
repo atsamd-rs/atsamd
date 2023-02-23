@@ -1,8 +1,7 @@
 //! I2C [`Config`] definition and implementation
 
-use super::{I2c, I2cMode, InactiveTimeout, Master, PadSet, Registers};
+use super::{Host, I2c, I2cMode, InactiveTimeout, PadSet, Registers};
 use crate::{
-    pac::sercom0::i2cm::ctrla::MODE_A,
     sercom::*,
     time::Hertz,
     typelevel::{Is, Sealed},
@@ -27,24 +26,46 @@ use core::marker::PhantomData;
 ///
 /// [`enable`]: Config::enable
 /// [`Pads`]: super::Pads
-pub struct Config<P, M: I2cMode = Master>
+pub struct Config<P, M: I2cMode = Host>
 where
     P: PadSet,
 {
     pub(super) registers: Registers<P::Sercom, M>,
     pads: P,
-    op_mode: PhantomData<M>,
     freq: Hertz,
+    op_mode: PhantomData<M>,
 }
 
 /// Generic configuration
-impl<P: PadSet> Config<P> {
+impl<P: PadSet, M: I2cMode> Config<P, M> {
+    /// Obtain a reference to the PAC `SERCOM` struct
+    ///
+    /// # Safety
+    ///
+    /// Directly accessing the `SERCOM` could break the invariants of the
+    /// type-level tracking in this module, so it is unsafe.
+    #[inline]
+    pub unsafe fn sercom(&self) -> &P::Sercom {
+        &self.registers.sercom
+    }
+
+    /// Consume the [`Config`], reset the peripheral, and return the [`Sercom`]
+    /// and [`Pads`](super::Pads)
+    #[inline]
+    pub fn free(mut self) -> (P::Sercom, P) {
+        self.registers.swrst();
+        (self.registers.free(), self.pads)
+    }
+}
+
+/// Configuration relevant when in host mode
+impl<P: PadSet> Config<P, Host> {
     /// Create a new [`Config`] in the default configuration.
     #[inline]
     fn default(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         let mut registers = Registers::new(sercom);
         registers.swrst();
-        registers.set_op_mode(MODE_A::I2C_MASTER);
+        registers.set_master_mode();
         Self {
             registers,
             pads,
@@ -74,34 +95,12 @@ impl<P: PadSet> Config<P> {
         sercom.enable_apb_clock(apb_clk_ctrl);
         Self::default(sercom, pads, freq)
     }
-}
-
-/// Configuration relevant when in host mode
-impl<P: PadSet> Config<P, Master> {
-    /// Obtain a reference to the PAC `SERCOM` struct
-    ///
-    /// # Safety
-    ///
-    /// Directly accessing the `SERCOM` could break the invariants of the
-    /// type-level tracking in this module, so it is unsafe.
-    #[inline]
-    pub unsafe fn sercom(&self) -> &P::Sercom {
-        &self.registers.sercom
-    }
-
+    
     /// Trigger the [`Sercom`]'s SWRST and return a [`Config`] in the
     /// default configuration.
     #[inline]
     pub fn reset(self) -> Config<P> {
         Config::default(self.registers.sercom, self.pads, self.freq)
-    }
-
-    /// Consume the [`Config`], reset the peripheral, and return the [`Sercom`]
-    /// and [`Pads`](super::Pads)
-    #[inline]
-    pub fn free(mut self) -> (P::Sercom, P) {
-        self.registers.swrst();
-        (self.registers.free(), self.pads)
     }
 
     /// Run in standby mode (builder pattern version)
@@ -229,9 +228,9 @@ impl<P: PadSet> Config<P, Master> {
     ///
     /// I2C transactions are not possible until the peripheral is enabled.
     #[inline]
-    pub fn enable(mut self) -> I2c<Self, Master>
+    pub fn enable(mut self) -> I2c<Self, Host>
     where
-        Self: AnyConfig<Mode = Master>,
+        Self: AnyConfig<Mode = Host>,
     {
         self.registers.enable();
 
@@ -255,10 +254,10 @@ impl<P: PadSet> Config<P, Master> {
 ///
 /// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 /// [type class]: crate::typelevel#type-classes
-pub trait AnyConfig: Is<Type = SpecificConfig<Self>> {
+pub trait AnyConfig: Is<Type = SpecificConfig<Self>> + Sealed {
     type Sercom: Sercom;
     type Pads: PadSet<Sercom = Self::Sercom>;
-    type Mode: I2cMode; // default to super::Master when associated_type_defaults is stable
+    type Mode: I2cMode;
 }
 
 /// Type alias to recover the specific [`Config`] type from an implementation of
