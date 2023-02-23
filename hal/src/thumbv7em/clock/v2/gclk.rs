@@ -1184,7 +1184,7 @@ where
     #[inline]
     pub fn freq(&self) -> Hertz {
         let div = max(1, self.settings.div.divider());
-        Hertz(self.src_freq.0 / div)
+        self.src_freq / div
     }
 
     /// Set the state of [`GclkOut`] pins when [`GclkIo`] output is disabled
