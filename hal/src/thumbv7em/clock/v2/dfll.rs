@@ -266,9 +266,11 @@
 //! [`from_usb`]: Dfll::from_usb
 //! [`into_mode`]: EnabledDfll::into_mode
 
+use fugit::RateExtU32;
+use typenum::U0;
+
 use crate::time::Hertz;
 use crate::typelevel::{NoneT, Sealed};
-use typenum::U0;
 
 use super::gclk::GclkId;
 use super::pclk::Pclk;
@@ -571,6 +573,7 @@ mod settings {
     //! [`Dfll`]: super::Dfll
 
     use super::super::pclk;
+    use super::RateExtU32;
     use super::{CoarseMaxStep, DfllId, FineMaxStep, GclkId, Hertz, MultFactor};
 
     /// Collection of all possible [`Dfll`] settings
@@ -595,7 +598,7 @@ mod settings {
         #[inline]
         fn default() -> Self {
             All {
-                src_freq: Hertz(48_000_000),
+                src_freq: 48_000_000.Hz(),
                 closed_loop: false,
                 usb_recovery: false,
                 mult_factor: 1,
@@ -700,7 +703,7 @@ mod settings {
     impl<G: GclkId> Pclk<G> {
         pub fn new(pclk: pclk::Pclk<DfllId, G>) -> Self {
             // Cast is fine because division result cannot be greater than u16::MAX
-            let mult_factor = (48_000_000 / pclk.freq().0) as u16;
+            let mult_factor = (48_000_000 / pclk.freq().to_Hz()) as u16;
             Self {
                 pclk,
                 mult_factor,
@@ -766,7 +769,7 @@ mod settings {
         fn all(&self) -> All {
             All {
                 usb_recovery: true,
-                src_freq: Hertz(1_000),
+                src_freq: 1_000.Hz(),
                 mult_factor: 48_000,
                 ..All::default()
             }
@@ -913,7 +916,7 @@ impl<G: GclkId> Dfll<FromPclk<G>> {
     pub fn from_pclk(token: DfllToken, pclk: Pclk<DfllId, G>) -> Self {
         const MIN: u32 = 48_000_000 / MultFactor::MAX as u32;
         const MAX: u32 = 33_000;
-        let freq = pclk.freq().0;
+        let freq = pclk.freq().to_Hz();
         if freq < MIN || freq > MAX {
             panic!("Invalid Pclk<DfllId, _> input frequency");
         }
@@ -1052,7 +1055,7 @@ impl<M: Mode> Dfll<M> {
     pub fn freq(&self) -> Hertz {
         // Valid for all modes based on default values
         let settings = self.settings.all();
-        Hertz(settings.src_freq.0 * settings.mult_factor as u32)
+        settings.src_freq * settings.mult_factor as u32
     }
 
     /// Control the [`Dfll`] behavior during idle or standby sleep modes
