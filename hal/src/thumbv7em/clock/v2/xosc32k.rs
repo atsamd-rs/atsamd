@@ -341,6 +341,7 @@
 //! [`is_switched`]: Xosc32kCfd::is_switched
 //! [`switch_back`]: Xosc32kCfd::switch_back
 
+use fugit::RateExtU32;
 use typenum::U0;
 
 use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
@@ -1155,7 +1156,7 @@ impl<N> Source for EnabledXosc1k<N> {
 
     #[inline]
     fn freq(&self) -> Hertz {
-        Hertz(1024)
+        1024.Hz()
     }
 }
 
@@ -1226,6 +1227,6 @@ impl<N> Source for EnabledXosc32k<N> {
 
     #[inline]
     fn freq(&self) -> Hertz {
-        Hertz(32_768)
+        32_768.Hz()
     }
 }
