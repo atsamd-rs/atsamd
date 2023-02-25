@@ -151,7 +151,7 @@
       "target": "thumbv6m-none-eabi"
     },
     "wio_terminal": {
-      "tier": 1,
+      "tier": 2,
       "build": "cargo build --examples --all-features",
       "target": "thumbv7em-none-eabihf"
     },
