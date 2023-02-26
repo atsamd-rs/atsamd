@@ -9,8 +9,6 @@ use crate::{
 };
 use core::mem::ManuallyDrop;
 
-use super::EIC;
-
 /// The EicPin trait makes it more ergonomic to convert a gpio pin into an EIC
 /// pin. You should not implement this trait for yourself; only the
 /// implementations in the EIC module make sense.
@@ -157,10 +155,6 @@ crate::paste::item! {
                     _ => unreachable!(),
                 }
             });
-        }
-
-        fn id(&self) -> ExternalInterruptID {
-            $num
         }
     }
 
@@ -325,6 +319,9 @@ crate::paste::item! {
 // SAMD11
 
 #[cfg(feature = "samd11")]
+pub const NUM_CHANNELS: usize = 8;
+
+#[cfg(feature = "samd11")]
 mod impls {
     use super::*;
 
@@ -359,10 +356,10 @@ mod impls {
     });
 }
 
-#[cfg(feature = "samd11")]
-pub const NUM_CHANNELS: usize = 8;
-
 // SAMD21
+
+#[cfg(feature = "samd21")]
+pub const NUM_CHANNELS: usize = 16;
 
 #[cfg(feature = "samd21")]
 mod impls {

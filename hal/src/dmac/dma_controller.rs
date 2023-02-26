@@ -149,50 +149,6 @@ pub struct RoundRobinMask {
 }
 
 impl<T> DmaController<T> {
-    /// Initialize the DMAC and return a DmaController object useable by
-    /// [`Transfer`](super::transfer::Transfer)'s. By default, all
-    /// priority levels are enabled unless subsequently disabled using the
-    /// `level_x_enabled` methods.
-    #[inline]
-    pub fn init(mut dmac: DMAC, _pm: &mut PM) -> Self {
-        // ----- Initialize clocking ----- //
-        #[cfg(feature = "thumbv6")]
-        {
-            // Enable clocking
-            _pm.ahbmask.modify(|_, w| w.dmac_().set_bit());
-            _pm.apbbmask.modify(|_, w| w.dmac_().set_bit());
-        }
-
-        Self::swreset(&mut dmac);
-
-        // SAFETY this is safe because we write a whole u32 to 32-bit registers,
-        // and the descriptor array addesses will never change since they are static.
-        // We just need to ensure the writeback and descriptor_section addresses
-        // are valid.
-        unsafe {
-            dmac.baseaddr
-                .write(|w| w.baseaddr().bits(DESCRIPTOR_SECTION.as_ptr() as u32));
-            dmac.wrbaddr
-                .write(|w| w.wrbaddr().bits(WRITEBACK.as_ptr() as u32));
-        }
-
-        // ----- Select priority levels ----- //
-        dmac.ctrl.modify(|_, w| {
-            w.lvlen3().set_bit();
-            w.lvlen2().set_bit();
-            w.lvlen1().set_bit();
-            w.lvlen0().set_bit()
-        });
-
-        // Enable DMA controller
-        dmac.ctrl.modify(|_, w| w.dmaenable().set_bit());
-
-        Self {
-            dmac,
-            _interrupts: NoneT,
-        }
-    }
-
     /// Enable multiple priority levels simultaneously
     #[inline]
     pub fn enable_levels(&mut self, mask: PriorityLevelMask) {
@@ -265,7 +221,7 @@ impl<T> DmaController<T> {
     }
 }
 
-impl DmaController<NoneT> {
+impl DmaController {
     /// Initialize the DMAC and return a DmaController object useable by
     /// [`Transfer`](super::transfer::Transfer)'s. By default, all
     /// priority levels are enabled unless subsequently disabled using the
@@ -273,7 +229,7 @@ impl DmaController<NoneT> {
     #[inline]
     pub fn init(mut dmac: DMAC, _pm: &mut PM) -> Self {
         // ----- Initialize clocking ----- //
-        #[cfg(any(feature = "samd11", feature = "samd21"))]
+        #[cfg(feature = "thumbv6")]
         {
             // Enable clocking
             _pm.ahbmask.modify(|_, w| w.dmac_().set_bit());

@@ -92,7 +92,6 @@ pub use async_hal::*;
 #[cfg(feature = "async")]
 pub use cortex_m_interrupt::{self, take_exception, take_nvic_interrupt};
 
-#[cfg(all(feature = "unproven", feature = "dma"))]
 #[cfg(feature = "dma")]
 pub mod dmac;
 

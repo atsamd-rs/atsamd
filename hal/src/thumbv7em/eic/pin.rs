@@ -169,10 +169,6 @@ crate::paste::item! {
             });
         }
 
-        fn id(&self) -> ExternalInterruptID {
-            $num
-        }
-
         /// Turn an EIC pin into a pin usable as a [`Future`](core::future::Future).
         /// The correct interrupt source is needed.
         #[cfg(feature = "async")]
