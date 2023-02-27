@@ -40,6 +40,7 @@ optional = true
 version = "0.2.1-git"
 optional = true
 git = "https://github.com/datdenkikniet/cortex-m-interrupt.git"
+rev = "9baa936"
 
 [dev-dependencies]
 cortex-m-rtic = "1.1.3"
@@ -156,7 +157,7 @@ required-features = ["dma"]
 
 [[example]]
 name = "async_dmac"
-required-features = ["atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"]
+required-features = ["dma", "atsamd-hal/async", "atsamd-hal/rtic", "cortex-m-interrupt"]
 
 [[example]]
 name = "async_timer"

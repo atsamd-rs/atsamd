@@ -91,8 +91,7 @@ mod app {
             miso,
         )
         .into_future(sercom4_irq)
-        .with_rx_dma_channel(channel0)
-        .with_tx_dma_channel(channel1);
+        .with_dma_channels(channel0, channel1);
 
         async_task::spawn().ok();
 

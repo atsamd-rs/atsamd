@@ -53,12 +53,17 @@ void = {version = "1.0", default-features = false}
 # Optional depdendencies
 #===============================================================================
 
+cortex-m-interrupt = {version = "0.2.1-git", git = "https://github.com/datdenkikniet/cortex-m-interrupt.git", rev = "9baa936", optional = true}
+defmt = { version = "0.3", optional = true}
+embassy-sync = {version = "0.1", optional = true}
+embedded-hal-alpha = {package = "embedded-hal", version = "1.0.0-alpha.9"}
+embedded-hal-async = {version = "0.2.0-alpha.0", optional = true}
 embedded-sdmmc = {version = "0.3", optional = true}
+futures = {version = "0.3", default-features = false, features = ["async-await"], optional = true}
 jlink_rtt = {version = "0.2", optional = true}
 mcan-core = {version = "0.2", optional = true}
 rtic-monotonic = {version = "1.0", optional = true}
 usb-device = {version = "0.2", optional = true}
-defmt = {version = "0.3.4", optional = true}
 
 #===============================================================================
 # PACs
@@ -92,37 +97,8 @@ atsame53n = {version = "0.13.0", path = "../pac/atsame53n", optional = true}
 atsame54n = {version = "0.13.0", path = "../pac/atsame54n", optional = true}
 atsame54p = {version = "0.13.0", path = "../pac/atsame54p", optional = true}
 
-[dependencies.defmt]
-version = "0.3"
-optional = true
 
-[dependencies.embedded-hal-async]
-version = "0.2.0-alpha.0"
-optional = true
 
-[dependencies.embedded-hal-alpha]
-package = "embedded-hal"
-version = "1.0.0-alpha.9"
-
-[dependencies.critical-section]
-version = "0.2.7"
-optional = true
-
-[dependencies.embassy-sync]
-version = "0.1"
-optional = true
-git = "https://github.com/embassy-rs/embassy.git"
-
-[dependencies.futures]
-version = "0.3"
-default-features = false
-features = ["async-await"]
-optional = true
-
-[dependencies.cortex-m-interrupt]
-version = "0.2.1-git"
-git = "https://github.com/jbeaurivage/cortex-m-interrupt.git"
-optional = true
 
 #===============================================================================
 # Features
@@ -221,7 +197,6 @@ usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
 async = [
     "cortex-m-interrupt",
-    "critical-section",
     "unproven",
     "embassy-sync",
     "futures",
