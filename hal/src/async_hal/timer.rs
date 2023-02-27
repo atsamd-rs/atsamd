@@ -12,22 +12,26 @@ use cortex_m::interrupt::InterruptNumber;
 use cortex_m_interrupt::NvicInterruptRegistration;
 use embassy_sync::waitqueue::AtomicWaker;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
+#[cfg(feature = "thumbv6")]
 use crate::thumbv6m::timer;
 
-#[cfg(feature = "min-samd51g")]
+#[cfg(feature = "thumbv7")]
 use crate::thumbv7em::timer;
 
-#[cfg(feature = "samd11")]
+#[cfg(feature = "has-tc1")]
 use crate::pac::TC1;
-#[cfg(feature = "samd21")]
-use crate::pac::{TC3, TC4, TC5};
 
-#[cfg(feature = "min-samd51g")]
-use crate::pac::{TC2, TC3};
-// Only the G variants are missing these timers
-#[cfg(feature = "min-samd51j")]
-use crate::pac::{TC4, TC5};
+#[cfg(feature = "has-tc2")]
+use crate::pac::TC2;
+
+#[cfg(feature = "has-tc3")]
+use crate::pac::TC3;
+
+#[cfg(feature = "has-tc4")]
+use crate::pac::TC4;
+
+#[cfg(feature = "has-tc5")]
+use crate::pac::TC5;
 
 use timer::{Count16, TimerCounter};
 
@@ -90,9 +94,9 @@ impl_async_count16!((TC2, 0), (TC3, 1));
 #[cfg(feature = "samd51g")]
 const NUM_TIMERS: usize = 2;
 
-#[cfg(feature = "min-samd51j")]
+#[cfg(feature = "periph-d51j")]
 impl_async_count16!((TC2, 0), (TC3, 1), (TC4, 2), (TC5, 3));
-#[cfg(feature = "min-samd51j")]
+#[cfg(feature = "periph-d51j")]
 const NUM_TIMERS: usize = 4;
 
 impl<T> TimerCounter<T>
@@ -166,7 +170,7 @@ where
 mod impl_ehal {
     use super::*;
     use crate::time::U32Ext;
-    use core::{convert::Infallible, future::Future};
+    use core::convert::Infallible;
     use embedded_hal_async::delay::DelayUs;
 
     impl<T, I> DelayUs for TimerFuture<T, I>
@@ -175,20 +179,15 @@ mod impl_ehal {
         I: InterruptNumber,
     {
         type Error = Infallible;
-        type DelayMsFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
-        fn delay_ms(&mut self, ms: u32) -> Self::DelayMsFuture<'_> {
-            async move {
-                self.delay(ms.ms()).await;
-                Ok(())
-            }
+
+        async fn delay_ms(&mut self, ms: u32) -> Result<(), Self::Error> {
+            self.delay(ms.ms()).await;
+            Ok(())
         }
 
-        type DelayUsFuture<'a> = impl Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
-        fn delay_us(&mut self, us: u32) -> Self::DelayUsFuture<'_> {
-            async move {
-                self.delay(us.us()).await;
-                Ok(())
-            }
+        async fn delay_us(&mut self, us: u32) -> Result<(), Self::Error> {
+            self.delay(us.us()).await;
+            Ok(())
         }
     }
 }

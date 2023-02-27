@@ -21,7 +21,7 @@ where
     /// [`Spi`] is [`Duplex`], reading words need to be accompanied with sending
     /// a no-op word. By default it is set to 0x00, but you can configure it
     /// by using the [`nop_word`](SpiFuture::nop_word) method.
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> SpiFuture<C, A, N>
     where
@@ -45,7 +45,7 @@ where
     /// [`Spi`] is [`Duplex`], reading words need to be accompanied with sending
     /// a no-op word. By default it is set to 0x00, but you can configure it
     /// by using the [`nop_word`](SpiFuture::nop_word) method.
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn into_future<N, N0, N1, N2, NOther>(
         self,
@@ -288,7 +288,6 @@ where
 mod impl_ehal {
     use super::*;
     use crate::sercom::spi::{Error, Size};
-    use core::future::Future;
     use embedded_hal_async::spi::{ErrorType, SpiBus, SpiBusFlush, SpiBusRead, SpiBusWrite};
 
     impl<C, A, N, S, R, T> ErrorType for SpiFuture<C, A, N, R, T>
@@ -312,14 +311,10 @@ mod impl_ehal {
         N: InterruptNumber,
         S: Sercom,
     {
-        type FlushFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn flush(&mut self) -> Self::FlushFuture<'_> {
+        async fn flush(&mut self) -> Result<(), Self::Error> {
             // Wait for all transactions to complete, ignoring buffer overflow errors.
-            async {
-                self.wait_flags(Flags::TXC | Flags::RXC).await;
-                Ok(())
-            }
+            self.wait_flags(Flags::TXC | Flags::RXC).await;
+            Ok(())
         }
     }
 
@@ -331,10 +326,9 @@ mod impl_ehal {
         N: InterruptNumber,
         S: Sercom + 'static,
     {
-        type WriteFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn write<'a>(&'a mut self, words: &'a [C::Word]) -> Self::WriteFuture<'a> {
-            self.write(words)
+        async fn write(&mut self, words: &[C::Word]) -> Result<(), Self::Error> {
+            self.write(words).await?;
+            Ok(())
         }
     }
 
@@ -350,10 +344,9 @@ mod impl_ehal {
         R: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
         T: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
     {
-        type WriteFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn write<'a>(&'a mut self, words: &'a [C::Word]) -> Self::WriteFuture<'a> {
-            self.write(words)
+        async fn write(&mut self, words: &[C::Word]) -> Result<(), Self::Error> {
+            self.write(words).await?;
+            Ok(())
         }
     }
 
@@ -365,10 +358,9 @@ mod impl_ehal {
         N: InterruptNumber,
         S: Sercom + 'static,
     {
-        type ReadFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn read<'a>(&'a mut self, words: &'a mut [C::Word]) -> Self::ReadFuture<'a> {
-            self.read(words)
+        async fn read(&mut self, words: &mut [C::Word]) -> Result<(), Self::Error> {
+            self.read(words).await?;
+            Ok(())
         }
     }
 
@@ -384,10 +376,9 @@ mod impl_ehal {
         R: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
         T: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
     {
-        type ReadFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn read<'a>(&'a mut self, words: &'a mut [C::Word]) -> Self::ReadFuture<'a> {
-            self.read(words)
+        async fn read(&mut self, words: &mut [C::Word]) -> Result<(), Self::Error> {
+            self.read(words).await?;
+            Ok(())
         }
     }
 
@@ -400,31 +391,19 @@ mod impl_ehal {
         S: Sercom + 'static,
         Self: SpiBusWrite<W> + SpiBusRead<W> + ErrorType<Error = Error>,
     {
-        type TransferFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn transfer<'a>(
-            &'a mut self,
-            read: &'a mut [W],
-            write: &'a [W],
-        ) -> Self::TransferFuture<'a> {
-            self.transfer_word_by_word(read, write)
+        async fn transfer(&mut self, read: &mut [W], write: &[W]) -> Result<(), Self::Error> {
+            self.transfer_word_by_word(read, write).await?;
+            Ok(())
         }
 
-        type TransferInPlaceFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn transfer_in_place<'a>(
-            &'a mut self,
-            words: &'a mut [W],
-        ) -> Self::TransferInPlaceFuture<'a> {
+        async fn transfer_in_place(&mut self, words: &mut [W]) -> Result<(), Self::Error> {
             // Can only ever do word-by-word to avoid DMA race conditions
-            async {
-                for word in words {
-                    let read = self.simultaneous_word(*word).await?;
-                    *word = read;
-                }
-
-                Ok(())
+            for word in words {
+                let read = self.simultaneous_word(*word).await?;
+                *word = read;
             }
+
+            Ok(())
         }
     }
 
@@ -440,31 +419,19 @@ mod impl_ehal {
         T: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
         S: Sercom + 'static,
     {
-        type TransferFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn transfer<'a>(
-            &'a mut self,
-            read: &'a mut [W],
-            write: &'a [W],
-        ) -> Self::TransferFuture<'a> {
-            self.transfer_dma(Some(read), Some(write))
+        async fn transfer(&mut self, read: &mut [W], write: &[W]) -> Result<(), Self::Error> {
+            self.transfer_dma(Some(read), Some(write)).await?;
+            Ok(())
         }
 
-        type TransferInPlaceFuture<'a> = impl Future<Output= Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn transfer_in_place<'a>(
-            &'a mut self,
-            words: &'a mut [W],
-        ) -> Self::TransferInPlaceFuture<'a> {
+        async fn transfer_in_place(&mut self, words: &mut [W]) -> Result<(), Self::Error> {
             // Can only ever do word-by-word to avoid DMA race conditions
-            async {
-                for word in words {
-                    let read = self.simultaneous_word(*word).await?;
-                    *word = read;
-                }
-
-                Ok(())
+            for word in words {
+                let read = self.simultaneous_word(*word).await?;
+                *word = read;
             }
+
+            Ok(())
         }
     }
 }

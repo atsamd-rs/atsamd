@@ -36,7 +36,7 @@ use core::ops::Deref;
 use paste::paste;
 use seq_macro::seq;
 
-use crate::pac::{self, Peripherals};
+use crate::pac::{self, sercom0, Peripherals};
 
 #[cfg(feature = "thumbv7")]
 use pac::MCLK as APB_CLK_CTRL;
@@ -169,9 +169,9 @@ macro_rules! sercom {
                         unsafe {
                             let mut peripherals = crate::pac::Peripherals::steal();
 
-                            #[cfg(any(feature = "samd11", feature = "samd21"))]
+                            #[cfg(feature = "thumbv6")]
                             let uart = Self::reg_block(&mut peripherals).usart();
-                            #[cfg(feature = "min-samd51g")]
+                            #[cfg(feature = "thumbv7")]
                             let uart = Self::reg_block(&mut peripherals).usart_int();
 
                             let flags_pending = Flags::from_bits_unchecked(uart.intflag.read().bits());
@@ -197,9 +197,9 @@ macro_rules! sercom {
                         unsafe {
                             let mut peripherals = crate::pac::Peripherals::steal();
 
-                            #[cfg(any(feature = "samd11", feature = "samd21"))]
+							#[cfg(feature = "thumbv6")]
                             let spi = Self::reg_block(&mut peripherals).spi();
-                            #[cfg(feature = "min-samd51g")]
+                            #[cfg(feature = "thumbv7")]
                             let spi = Self::reg_block(&mut peripherals).spim();
 
                             let flags_pending = Flags::from_bits_truncate(spi.intflag.read().bits());
@@ -243,11 +243,11 @@ const NUM_SERCOM: usize = 2;
 const NUM_SERCOM: usize = 4;
 
 #[allow(dead_code)]
-#[cfg(any(feature = "min-samd21g", feature = "samd51g", feature = "samd51j"))]
+#[cfg(any(feature = "periph-d21g", feature = "samd51g", feature = "samd51j"))]
 const NUM_SERCOM: usize = 6;
 
 #[allow(dead_code)]
-#[cfg(feature = "min-samd51n")]
+#[cfg(feature = "periph-d51n")]
 const NUM_SERCOM: usize = 8;
 
 #[cfg(feature = "async")]
@@ -265,8 +265,8 @@ pub(super) mod async_api {
     /// Waker for a TX event.
     pub(super) static TX_WAKERS: [AtomicWaker; super::NUM_SERCOM] = [NEW_WAKER; super::NUM_SERCOM];
 
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
-    mod thumbv6m {
+    #[cfg(feature = "thumbv6")]
+    mod impls {
 
         use super::*;
 
@@ -307,11 +307,8 @@ pub(super) mod async_api {
         }
     }
 
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
-    pub use thumbv6m::*;
-
-    #[cfg(feature = "min-samd51g")]
-    mod thumbv7em {
+    #[cfg(feature = "thumbv7")]
+    mod impls {
         use super::*;
 
         pub struct Interrupts<N, N0, N1, N2, NOther>
@@ -383,8 +380,7 @@ pub(super) mod async_api {
         }
     }
 
-    #[cfg(feature = "min-samd51g")]
-    pub use thumbv7em::*;
+    pub use impls::*;
 }
 
 #[cfg(feature = "async")]

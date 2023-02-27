@@ -1,5 +1,6 @@
 #![no_std]
 #![cfg_attr(feature = "nightly", feature(type_alias_impl_trait))]
+#![cfg_attr(feature = "nightly", feature(async_fn_in_trait))]
 
 pub use embedded_hal as ehal;
 pub use fugit;

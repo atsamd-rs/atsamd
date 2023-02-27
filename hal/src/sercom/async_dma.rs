@@ -103,10 +103,10 @@ where
     B: Buffer<Beat = T>,
     S: Sercom,
 {
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     let trigger_action = TriggerAction::BURST;
 
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(feature = "thumbv6")]
     let trigger_action = TriggerAction::BEAT;
 
     channel
@@ -139,10 +139,10 @@ where
     B: Buffer<Beat = T>,
     S: Sercom,
 {
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     let trigger_action = TriggerAction::BURST;
 
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(feature = "thumbv6")]
     let trigger_action = TriggerAction::BEAT;
 
     channel

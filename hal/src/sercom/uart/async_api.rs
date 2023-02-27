@@ -23,7 +23,7 @@ where
     /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available for
     /// [`Uart`]s which have a [`Tx`](crate::sercom::uart::Tx),
     /// [`Rx`](crate::sercom::uart::Rx) or [`Duplex`] [`Capability`].
-    #[cfg(any(feature = "samd11", feature = "samd21"))]
+    #[cfg(feature = "thumbv6")]
     #[inline]
     pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> UartFuture<C, D, N>
     where
@@ -43,7 +43,7 @@ where
     /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available for
     /// [`Uart`]s which have a [`Tx`](crate::sercom::uart::Tx),
     /// [`Rx`](crate::sercom::uart::Rx) or [`Duplex`] [`Capability`].
-    #[cfg(feature = "min-samd51g")]
+    #[cfg(feature = "thumbv7")]
     #[inline]
     pub fn into_future<N, N0, N1, N2, NOther>(
         self,

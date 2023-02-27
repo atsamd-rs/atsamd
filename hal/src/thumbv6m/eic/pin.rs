@@ -2,9 +2,7 @@ use super::EIC;
 #[cfg(feature = "unproven")]
 use crate::ehal::digital::v2::InputPin;
 use crate::{
-    gpio::{
-        self, pin::*, AnyPin, FloatingInterrupt, PinId, PinMode, PullDownInterrupt, PullUpInterrupt,
-    },
+    gpio::{self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt},
     pac,
 };
 use core::mem::ManuallyDrop;
@@ -185,7 +183,7 @@ crate::paste::item! {
                     return Poll::Ready(());
                 }
 
-                super::async_api::WAKERS[$num].register(cx.waker());
+                super::super::async_api::WAKERS[$num].register(cx.waker());
                 self.enable_interrupt();
 
                 if self.is_interrupt(){
@@ -217,49 +215,29 @@ crate::paste::item! {
         Self: InputPin<Error = core::convert::Infallible>,
         I: cortex_m::interrupt::InterruptNumber,
     {
-        type WaitForHighFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> + 'a where Self: 'a;
-
-        fn wait_for_high<'a>(&'a mut self) -> Self::WaitForHighFuture<'a> {
-            async {
+        async fn wait_for_high(&mut self) -> Result<(), Self::Error>{
                 self.wait(Sense::HIGH).await;
                 Ok(())
-            }
         }
 
-        type WaitForLowFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> +'a where Self: 'a;
-
-        fn wait_for_low<'a>(&'a mut self) -> Self::WaitForLowFuture<'a> {
-            async{
+        async fn wait_for_low(&mut self) ->  Result<(), Self::Error> {
                 self.wait(Sense::LOW).await;
                 Ok(())
-            }
         }
 
-        type WaitForRisingEdgeFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> +'a where Self: 'a;
-
-        fn wait_for_rising_edge<'a>(&'a mut self) -> Self::WaitForRisingEdgeFuture<'a> {
-            async {
+        async fn wait_for_rising_edge(&mut self) -> Result<(), Self::Error> {
                 self.wait(Sense::RISE).await;
                 Ok(())
-            }
         }
 
-        type WaitForFallingEdgeFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> +'a where Self: 'a;
-
-        fn wait_for_falling_edge<'a>(&'a mut self) -> Self::WaitForFallingEdgeFuture<'a> {
-            async {
+        async fn wait_for_falling_edge(&mut self) -> Result<(), Self::Error>{
                 self.wait(Sense::FALL).await;
                 Ok(())
-            }
         }
 
-        type WaitForAnyEdgeFuture<'a> = impl core::future::Future<Output = Result<(), Self::Error>> +'a where Self: 'a;
-
-        fn wait_for_any_edge<'a>(&'a mut self) -> Self::WaitForAnyEdgeFuture<'a> {
-            async {
+        async fn wait_for_any_edge(&mut self) -> Result<(), Self::Error> {
                 self.wait(Sense::BOTH).await;
                 Ok(())
-            }
         }
     }
 

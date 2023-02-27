@@ -5,8 +5,8 @@ use crate::{
 use cortex_m::interrupt::InterruptNumber;
 use cortex_m_interrupt::NvicInterruptRegistration;
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-mod thumbv6m {
+#[cfg(feature = "thumbv6")]
+mod impls {
     use super::*;
 
     pub struct Interrupts<N>
@@ -74,11 +74,8 @@ mod thumbv6m {
     }
 }
 
-#[cfg(any(feature = "samd11", feature = "samd21"))]
-pub use thumbv6m::*;
-
-#[cfg(feature = "min-samd51g")]
-mod thumbv7em {
+#[cfg(feature = "thumbv7")]
+mod impls {
     use super::*;
 
     pub struct Interrupts<N>
@@ -197,5 +194,4 @@ mod thumbv7em {
     }
 }
 
-#[cfg(feature = "min-samd51g")]
-pub use thumbv7em::*;
+pub use impls::*;

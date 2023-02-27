@@ -121,7 +121,7 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// It is recommended that you check for errors after the transfer is
     /// complete by calling [`read_status`](I2c::read_status).
     #[inline]
-    pub fn send_with_dma<Ch, B, W>(
+    pub fn send_with_dma<Ch, B>(
         self,
         address: u8,
         _ready_token: I2cBusReady,

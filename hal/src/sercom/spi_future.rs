@@ -489,7 +489,7 @@ where
         if self.rcvd < self.sent {
             let buf = unsafe { buf.get_unchecked_mut(self.rcvd..) };
             let mut data = buf.iter_mut();
-            let word = unsafe { self.spi.as_mut().read_data() as u32 };
+            let word = unsafe { self.spi.as_mut().read_data() };
             let bytes = word.to_le_bytes();
             let mut iter = bytes.iter();
             for _ in 0..self.spi.step() {
