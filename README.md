@@ -109,7 +109,7 @@ A BSP (**B**oard **S**upport **P**ackage) is a crate that contains definitions s
 
 * `samd11_bare`
 
-* `wio_terminal`
+* `atsame54_xpro`
 
 To bootstrap your own project you should be able to copy/paste the Rust code from the examples folder within the folder of the BSP you've chosen. But you shouldn't copy the `Cargo.toml` file from there, since that's not only used for the examples, but also for the whole BSP itself. You want to make your own `Cargo.toml` file. If you're new to this and have no clue what you're doing then this is probably the line you want in there:
 

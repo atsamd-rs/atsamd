@@ -332,6 +332,19 @@ hal::bsp_pins!(
             AlternateI: SdData3
         }
     }
+    PB22 {
+        /// PB22: Xosc1 XIn/clock pin
+        aliases: {
+            FloatingDisabled: Xosc1XIn
+            FloatingDisabled: Xosc1Clock
+        }
+    }
+    PB23 {
+        /// PB23: Xosc1 XOut pin
+        aliases: {
+            FloatingDisabled: Xosc1XOut
+        }
+    }
     PB24 {
         /// PB24: EDBG connection UART receive pin
         aliases: {

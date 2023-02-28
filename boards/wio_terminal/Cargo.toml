@@ -44,6 +44,9 @@ generic-array = { version = "0.14", optional = true }
 seeed-erpc = { version = "0.1.1", optional = true }
 
 [dependencies.atsamd-hal]
+# this needs a bump at the next release,
+# it doesn't build with the 0.15.1 on crates.io
+# don't forget to remove the path dep as it was demoted
 path = "../../hal"
 version = "0.15.1"
 default-features = false

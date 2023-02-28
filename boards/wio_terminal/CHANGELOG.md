@@ -6,6 +6,7 @@
 - Fix buttons by re-enabling debounce code
 - Fix various documentation and clippy warnings
 - Fix Wi-Fi by delaying UART init until device reset
+- Demote to tier 2, as there have been difficulties maintaining this board, and no current maintainer owns one
 
 # v0.6.1
 

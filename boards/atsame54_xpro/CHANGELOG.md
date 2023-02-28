@@ -1,4 +1,6 @@
 # Unreleased
+- Limit RAM memory to avoid HardFaults when `UROW:ECCRAM` is enabled
+- Remove re-export of `cortex-m-rt::entry`
 
 # v0.5.0
 - update to `atsamd-hal-0.15`
