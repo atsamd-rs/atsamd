@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Fix incorrect PAC provided for `same51g` target
 - Fix NVM User Row Mapping for `BOD12` Calibration Parameters
 - Fix `ExternalInterrupt` implementations for `eic`
 - Fix for incorrect feature gates for pins of `samd21gl` chip
