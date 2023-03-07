@@ -31,11 +31,11 @@ jobs:
           mkdir -pv "${docs_path}"
           (cd "$docs_path" && git init && git checkout -b main)
 
-          for variant in $(cat crates.json | jq -Mr -c '.hal_doc_variants | keys[]');
+          for variant in $(cat crates.json | jq -Mr -c '.hal_variants | keys[]');
           do
             (
-              feature_str=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_doc_variants[$variant].features | join(",")')
-              target=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_doc_variants[$variant].target')
+              feature_str=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_variants[$variant].features | join(",")')
+              target=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_variants[$variant].target')
 
               mkdir -pv "${docs_path}/${variant}"
               cd hal
@@ -69,10 +69,10 @@ jobs:
           echo '      </thead>' >> "${docs_path}/index.html"
 
           echo '      <tbody>' >> "${docs_path}/index.html"
-          for variant in $(cat crates.json | jq -Mr -c '.hal_doc_variants | keys[]');
+          for variant in $(cat crates.json | jq -Mr -c '.hal_variants | keys[]');
           do
-              target=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_doc_variants[$variant].target')
-              features_html=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_doc_variants[$variant].features | map("<span class=\"label label-default\">", . , "</span>") | join(" ")')
+              target=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_variants[$variant].target')
+              features_html=$(cat crates.json | jq -Mr --arg variant "${variant}" -c '.hal_variants[$variant].features | map("<span class=\"label label-default\">", . , "</span>") | join(" ")')
 
               echo '        <tr>' >> "${docs_path}/index.html"
               echo "          <td><a href='${variant}/${target}/doc/atsamd_hal/index.html'>${variant}</a></td>" >> "${docs_path}/index.html"

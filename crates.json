@@ -171,112 +171,36 @@
       "target": "thumbv6m-none-eabi"
     }
   },
-  "hal_doc_variants": {
+  "hal_variants": {
     "samd11c": {
-      "features": [
-        "samd11c",
-        "dma",
-        "defmt"
-      ],
-      "target": "thumbv6m-none-eabi"
-    },
-    "samd11d": {
-      "features": [
-        "samd11d",
-        "dma",
-        "defmt"
-      ],
-      "target": "thumbv6m-none-eabi"
-    },
-    "samd21g": {
-      "features": [
-        "samd21g",
-        "usb",
-        "dma",
-        "defmt"
-      ],
-      "target": "thumbv6m-none-eabi"
-    },
-    "samd21j": {
-      "features": [
-        "samd21j",
-        "usb",
-        "dma",
-        "defmt"
-      ],
-      "target": "thumbv6m-none-eabi"
-    },
-    "samd51g": {
-      "features": [
-        "samd51g",
-        "usb",
-        "sdmmc",
-        "dma",
-        "defmt"
-      ],
-      "target": "thumbv7em-none-eabihf"
-    },
-    "samd51j": {
-      "features": [
-        "samd51j",
-        "usb",
-        "sdmmc",
-        "dma",
-        "defmt"
-      ],
-      "target": "thumbv7em-none-eabihf"
-    },
-    "samd51n": {
-      "features": [
-        "samd51n",
-        "usb",
-        "sdmmc",
-        "dma",
-        "defmt"
-      ],
-      "target": "thumbv7em-none-eabihf"
-    },
-    "samd51p": {
-      "features": [
-        "samd51p",
-        "usb",
-        "sdmmc",
-        "dma",
-        "defmt"
-      ],
-      "target": "thumbv7em-none-eabihf"
-    }
-  },
-  "hal_build_variants": {
-    "samd11c":  {
       "features": [ "samd11c", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
-    "samd11d":  {
+    "samd11d": {
       "features": [ "samd11d", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
-    "samd21e":  {
+    "samd21e": {
       "features": [ "samd21e", "usb", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
-    "samd21el":  {
+    "samd21el": {
       "features": [ "samd21el", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
-    "samd21g":  {
+    "samd21g": {
       "features": [ "samd21g", "usb", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
-    "samd21gl":  {
+    "samd21gl": {
       "features": [ "samd21gl", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
-    "samd21j":  {
+    "samd21j": {
       "features": [ "samd21j", "usb", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
-    "samd51g":  {
+    "samd51g": {
       "features": [ "samd51g", "usb", "dma", "sdmmc", "rtic", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
