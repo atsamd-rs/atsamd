@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Add `mcan` integration (#654)
 - Fix incorrect PAC provided for `same51g` target
 - Fix NVM User Row Mapping for `BOD12` Calibration Parameters
 - Fix `ExternalInterrupt` implementations for `eic`
