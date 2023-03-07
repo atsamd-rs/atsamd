@@ -181,6 +181,7 @@ rtic = ["rtic-monotonic", "fugit"]
 sdmmc = ["embedded-sdmmc"]
 unproven = ["embedded-hal/unproven"]
 usb = ["usb-device"]
+usb_low_speed = []
 use_rtt = ["jlink_rtt"]
 
 #===============================================================================

@@ -42,6 +42,7 @@ rtic = ["atsamd-hal/rtic"]
 unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt"]
 usb = ["atsamd-hal/usb", "usb-device"]
+usb_low_speed = ["atsamd-hal/usb_low_speed"]
 use_semihosting = []
 
 [profile.dev]

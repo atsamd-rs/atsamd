@@ -645,6 +645,9 @@ impl Inner {
         });
         // full speed
         usb.ctrlb.modify(|_, w| w.spdconf().fs());
+        #[cfg(feature = "usb_low_speed")] {
+            usb.ctrlb.modify(|_, w| w.spdconf().ls());
+        }
 
         usb.ctrla.modify(|_, w| w.enable().set_bit());
         while usb.syncbusy.read().enable().bit_is_set() {}
