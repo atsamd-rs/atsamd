@@ -120,7 +120,7 @@ samd51j = ["samd51", "atsamd51j", "periph-d51j", "pins-d51j"]
 samd51n = ["samd51", "atsamd51n", "periph-d51n", "pins-d51n"]
 samd51p = ["samd51", "atsamd51p", "periph-d51p", "pins-d51p"]
 
-same51g = ["same51", "atsamd51p", "periph-e51g", "pins-e51g"]
+same51g = ["same51", "atsame51g", "periph-e51g", "pins-e51g"]
 same51j = ["same51", "atsame51j", "periph-e51j", "pins-e51j"]
 same51n = ["same51", "atsame51n", "periph-e51n", "pins-e51n"]
 
