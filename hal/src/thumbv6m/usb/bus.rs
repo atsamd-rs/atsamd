@@ -645,7 +645,8 @@ impl Inner {
         });
         // full speed
         usb.ctrlb.modify(|_, w| w.spdconf().fs());
-        #[cfg(feature = "usb_low_speed")] {
+        #[cfg(feature = "usb_low_speed")]
+        {
             usb.ctrlb.modify(|_, w| w.spdconf().ls());
         }
 
