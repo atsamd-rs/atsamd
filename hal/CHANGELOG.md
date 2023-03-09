@@ -9,6 +9,7 @@
 - Fix failing `bsp_pins!` invocation with no aliases (#605 fixes #599)
 - Add Advanced Encryption Standard (AES) peripheral support including RustCrypto compatible backend
 - Add embedded-hal `InputPin` trait to EIC pins
+- Add `usb_low_speed` usb cfg feature to set USB speed to low speed (1.5Mbps).
 
 # v0.15.1
 
