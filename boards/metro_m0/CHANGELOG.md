@@ -1,5 +1,7 @@
 # Unreleased
 
+- Add `usb_low_speed` usb cfg feature to set USB speed to low speed (1.5Mbps).
+
 # v0.12.1
 
 - Update to `atsamd-hal` version `0.15.1`
