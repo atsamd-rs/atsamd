@@ -248,7 +248,10 @@ impl<'a> SmartEeprom<'a, Unlocked> {
 
     /// Locks SmartEEPROM, allowing only to perform read operations
     pub fn lock(self) -> SmartEeprom<'a, Locked> {
-        self.nvm.command_sync(CMD_AW::LSEE);
+        // Panic case should never happen as we wait for STATUS.READY
+        self.nvm
+            .command_sync(CMD_AW::LSEE)
+            .expect("SmartEEPROM locking failed");
         let Self {
             nvm, virtual_size, ..
         } = self;
@@ -263,7 +266,10 @@ impl<'a> SmartEeprom<'a, Unlocked> {
 impl<'a> SmartEeprom<'a, Locked> {
     /// Unlocks SmartEEPROM, allowing to perform both read and write operations
     pub fn unlock(self) -> SmartEeprom<'a, Unlocked> {
-        self.nvm.command_sync(CMD_AW::USEE);
+        // Panic case should never happen as we wait for STATUS.READY
+        self.nvm
+            .command_sync(CMD_AW::USEE)
+            .expect("SmartEEPROM unlocking failed");
         let Self {
             nvm, virtual_size, ..
         } = self;
