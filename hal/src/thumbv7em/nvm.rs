@@ -427,6 +427,34 @@ impl Nvm {
         }
     }
 
+    /// Enable/disable region lock
+    ///
+    /// Flash memory is split into 32 regions. `u32` based mask allow to enable
+    /// (if bit is `1`) or disable (if bit is `0`) region lock in a given
+    /// region.
+    ///
+    /// Younger bits represent lower addresses, older bites represent higher
+    /// addresses.
+    ///
+    /// For example mask `0xFFFF_0000` implies that active bank should be locked
+    /// while inactive bank should be unlocked.
+    #[inline]
+    pub fn region_lock(&mut self, mask: u32) -> Result<()> {
+        const REGIONS_COUNT: u32 = 32;
+        const FLASH_START: u32 = 0;
+        let flash_end = retrieve_flash_size();
+        let region_size = (flash_end - FLASH_START) / REGIONS_COUNT;
+        for (i, address) in (FLASH_START..flash_end)
+            .step_by(region_size as usize)
+            .enumerate()
+        {
+            self.set_address(address);
+            let protect = mask & (1 << i) != 0;
+            self.command_sync(if !protect { CMD_AW::UR } else { CMD_AW::LR })?;
+        }
+        Ok(())
+    }
+
     /// Write to the main address space flash memory from a slice
     ///
     /// This call will fail if area that is being written to is
