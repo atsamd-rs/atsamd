@@ -415,12 +415,12 @@ impl Nvm {
         // Check if requested state differs from current state
         if self.is_boot_protected() != protect {
             // Requires both command and key so the command is allowed to execute
-            if !protect {
-                // Issue Set boot protection disable (disable bootprotection)
-                self.command_sync(CMD_AW::SBPDIS)
-            } else {
+            if protect {
                 // Issue Clear boot protection disable (enable bootprotection)
                 self.command_sync(CMD_AW::CBPDIS)
+            } else {
+                // Issue Set boot protection disable (disable bootprotection)
+                self.command_sync(CMD_AW::SBPDIS)
             }
         } else {
             Ok(())
@@ -449,8 +449,8 @@ impl Nvm {
             .enumerate()
         {
             self.set_address(address);
-            let protect = mask & (1 << i) != 0;
-            self.command_sync(if !protect { CMD_AW::UR } else { CMD_AW::LR })?;
+            let protect = mask & (1 << i) == 0;
+            self.command_sync(if protect { CMD_AW::LR } else { CMD_AW::UR })?;
         }
         Ok(())
     }
