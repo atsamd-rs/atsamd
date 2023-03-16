@@ -14,11 +14,13 @@
   - Add the ability to modify the user row
   - Add security bit and chip-erase lock management
   - Add escape hatch to access the underlying NVMCTRL PAC
+  - Add `Nvm::region_lock` method
   - Change flash read/write/erase method signatures
       - `Nvm::userpage` -> `Nvm::read_userpage`
       - `Nvm::write` -> `Nvm::write_flash`
       - `Nvm::write_from_slice` -> `Nvm::write_flash_from_slice`
       - `Nvm::erase` -> `Nvm::erase_flash`
+  - Refactor `Nvm::command_sync` to be less error-prone
 
 # v0.15.1
 
