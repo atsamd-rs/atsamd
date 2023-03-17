@@ -429,12 +429,13 @@ impl Nvm {
 
     /// Enable/disable region lock
     ///
-    /// Flash memory is split into 32 regions. `u32` based mask allow to enable
-    /// (if bit is `1`) or disable (if bit is `0`) region lock in a given
-    /// region.
+    /// Flash memory is split into 32 regions. The 32 bits of the `mask`
+    /// determine if each region should be locked (if its bit is 0) and prevent
+    /// writing and erasing pages, or unlocked (if its bit is 1) and allow
+    /// writing and erasing pages.
     ///
-    /// Younger bits represent lower addresses, older bites represent higher
-    /// addresses.
+    /// Less significant bits represent lower addresses, more significant bits
+    /// represent higher addresses.
     ///
     /// For example mask `0xFFFF_0000` implies that active bank should be locked
     /// while inactive bank should be unlocked.
