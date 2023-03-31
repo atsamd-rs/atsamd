@@ -43,7 +43,7 @@ impl Flags {
     pub const RX: Self = unsafe { Self::from_bits_unchecked(RX_FLAG_MASK) };
 
     /// [`Flags`] which can be used for transmitting
-    pub const TX: Self = unsafe { Self::from_bits_unchecked(RX_FLAG_MASK) };
+    pub const TX: Self = unsafe { Self::from_bits_unchecked(TX_FLAG_MASK) };
 }
 
 //=============================================================================

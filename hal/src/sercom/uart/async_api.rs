@@ -440,6 +440,7 @@ mod dma {
             write_dma::<_, S>(&mut self.tx_channel, uart_ptr, words)
                 .await
                 .expect("DMA error");
+            self.wait_flags(Flags::TXC).await;
         }
     }
 }
