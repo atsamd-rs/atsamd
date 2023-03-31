@@ -30,7 +30,7 @@ where
         I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
+        let irq_numbers = interrupts.occupy(S::on_interrupt_uart);
 
         UartFuture {
             uart: self,
@@ -56,7 +56,7 @@ where
         N2: NvicInterruptRegistration<N>,
         NOther: NvicInterruptRegistration<N>,
     {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
+        let irq_numbers = interrupts.occupy(S::on_interrupt_uart);
 
         UartFuture {
             uart: self,

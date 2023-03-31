@@ -30,7 +30,7 @@ where
         I: NvicInterruptRegistration<N>,
         N: InterruptNumber,
     {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
+        let irq_numbers = interrupts.occupy(S::on_interrupt_spi);
 
         SpiFuture {
             spi: self,
@@ -60,7 +60,7 @@ where
         N2: NvicInterruptRegistration<N>,
         NOther: NvicInterruptRegistration<N>,
     {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
+        let irq_numbers = interrupts.occupy(S::on_interrupt_spi);
 
         SpiFuture {
             spi: self,
