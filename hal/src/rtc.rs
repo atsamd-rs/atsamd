@@ -77,6 +77,11 @@ pub enum Count32Mode {}
 impl RtcMode for Count32Mode {}
 impl Sealed for Count32Mode {}
 
+/// RtcClock marks a clock that powers the RTC.
+pub unsafe trait RtcClock {
+    fn freq(&self) -> Hertz;
+}
+
 #[cfg(feature = "sdmmc")]
 impl From<Datetime> for Timestamp {
     fn from(clock: Datetime) -> Timestamp {
@@ -92,13 +97,13 @@ impl From<Datetime> for Timestamp {
 }
 
 /// Rtc represents the RTC peripheral for either clock/calendar or timer mode.
-pub struct Rtc<Mode: RtcMode> {
+pub struct Rtc<Mode: RtcMode, Clock: RtcClock> {
     rtc: RTC,
-    rtc_clock_freq: Hertz,
+    rtc_clock: Clock,
     _mode: PhantomData<Mode>,
 }
 
-impl<Mode: RtcMode> Rtc<Mode> {
+impl<Mode: RtcMode, Clock: RtcClock> Rtc<Mode, Clock> {
     // --- Helper Functions for M0 vs M4 targets
     #[inline]
     fn mode0(&self) -> &MODE0 {
@@ -150,20 +155,20 @@ impl<Mode: RtcMode> Rtc<Mode> {
         self.sync();
     }
 
-    fn create(rtc: RTC, rtc_clock_freq: Hertz) -> Self {
+    fn create(rtc: RTC, rtc_clock: Clock) -> Self {
         Self {
             rtc,
-            rtc_clock_freq,
+            rtc_clock,
             _mode: PhantomData,
         }
     }
 
-    fn into_mode<M: RtcMode>(self) -> Rtc<M> {
-        Rtc::create(self.rtc, self.rtc_clock_freq)
+    fn into_mode<M: RtcMode>(self) -> Rtc<M, Clock> {
+        Rtc::create(self.rtc, self.rtc_clock)
     }
 
     /// Reonfigures the peripheral for 32bit counter mode.
-    pub fn into_count32_mode(mut self) -> Rtc<Count32Mode> {
+    pub fn into_count32_mode(mut self) -> Rtc<Count32Mode, Clock> {
         self.enable(false);
         self.sync();
         self.mode0_ctrla().modify(|_, w| {
@@ -189,9 +194,9 @@ impl<Mode: RtcMode> Rtc<Mode> {
 
     /// Reconfigures the peripheral for clock/calendar mode. Requires the source
     /// clock to be running at 1024 Hz.
-    pub fn into_clock_mode(mut self) -> Rtc<ClockMode> {
+    pub fn into_clock_mode(mut self) -> Rtc<ClockMode, Clock> {
         // The max divisor is 1024, so to get 1 Hz, we need a 1024 Hz source.
-        assert_eq!(self.rtc_clock_freq.0, 1024_u32, "RTC clk not 1024 Hz!");
+        assert_eq!(self.rtc_clock.freq().0, 1024_u32, "RTC clk not 1024 Hz!");
 
         self.sync();
         self.enable(false);
@@ -224,15 +229,15 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 }
 
-impl Rtc<Count32Mode> {
+impl<Clock: RtcClock> Rtc<Count32Mode, Clock> {
     /// Configures the RTC in 32-bit counter mode with no prescaler (default
     /// state after reset) and the counter initialized to zero.
-    pub fn count32_mode(rtc: RTC, rtc_clock_freq: Hertz, pm: &mut PM) -> Self {
+    pub fn count32_mode(rtc: RTC, rtc_clock: Clock, pm: &mut PM) -> Self {
         pm.apbamask.modify(|_, w| w.rtc_().set_bit());
 
         let mut new_rtc = Self {
             rtc,
-            rtc_clock_freq,
+            rtc_clock,
             _mode: PhantomData,
         };
 
@@ -275,7 +280,7 @@ impl Rtc<Count32Mode> {
         &mut self,
         timeout: T,
     ) -> &Self {
-        let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
+        let params = TimerParams::new_us(timeout, self.rtc_clock.freq().0);
         let divider = params.divider;
 
         // Disable the timer while we reconfigure it
@@ -299,9 +304,9 @@ impl Rtc<Count32Mode> {
     }
 }
 
-impl Rtc<ClockMode> {
-    pub fn clock_mode(rtc: RTC, rtc_clock_freq: Hertz, pm: &mut PM) -> Self {
-        Rtc::count32_mode(rtc, rtc_clock_freq, pm).into_clock_mode()
+impl<Clock: RtcClock> Rtc<ClockMode, Clock> {
+    pub fn clock_mode(rtc: RTC, rtc_clock: Clock, pm: &mut PM) -> Self {
+        Rtc::count32_mode(rtc, rtc_clock, pm).into_clock_mode()
     }
 
     /// Returns the current clock/calendar value.
@@ -337,15 +342,15 @@ impl Rtc<ClockMode> {
 
 // --- Timer / Counter Functionality
 
-impl Periodic for Rtc<Count32Mode> {}
-impl CountDown for Rtc<Count32Mode> {
+impl<Clock: RtcClock> Periodic for Rtc<Count32Mode, Clock> {}
+impl<Clock: RtcClock> CountDown for Rtc<Count32Mode, Clock> {
     type Time = Nanoseconds;
 
     fn start<T>(&mut self, timeout: T)
     where
         T: Into<Self::Time>,
     {
-        let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
+        let params = TimerParams::new_us(timeout, self.rtc_clock.freq().0);
         let divider = params.divider;
         let cycles = params.cycles;
 
@@ -380,7 +385,7 @@ impl CountDown for Rtc<Count32Mode> {
     }
 }
 
-impl InterruptDrivenTimer for Rtc<Count32Mode> {
+impl<Clock: RtcClock> InterruptDrivenTimer for Rtc<Count32Mode, Clock> {
     /// Enable the interrupt generation for this hardware timer.
     /// This method only sets the clock configuration to trigger
     /// the interrupt; it does not configure the interrupt controller
@@ -399,7 +404,7 @@ impl InterruptDrivenTimer for Rtc<Count32Mode> {
 }
 
 #[cfg(feature = "sdmmc")]
-impl TimeSource for Rtc<ClockMode> {
+impl<Clock: RtcClock> TimeSource for Rtc<ClockMode, Clock> {
     fn get_timestamp(&self) -> Timestamp {
         self.current_time().into()
     }
@@ -461,7 +466,7 @@ impl TimerParams {
 }
 
 #[cfg(feature = "rtic")]
-impl Monotonic for Rtc<Count32Mode> {
+impl<Clock: RtcClock> Monotonic for Rtc<Count32Mode, Clock> {
     type Instant = Instant;
     type Duration = Duration;
     unsafe fn reset(&mut self) {

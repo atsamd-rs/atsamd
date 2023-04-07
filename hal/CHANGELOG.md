@@ -10,6 +10,7 @@
 - Fix failing `bsp_pins!` invocation with no aliases (#605 fixes #599)
 - Add Advanced Encryption Standard (AES) peripheral support including RustCrypto compatible backend
 - Add embedded-hal `InputPin` trait to EIC pins
+- Use a typed `RtcClock` token to configure the RTC peripheral
 
 # v0.15.1
 

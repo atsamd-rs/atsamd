@@ -9,6 +9,7 @@ use crate::pac::gclk::clkctrl::GEN_A::*;
 use crate::pac::gclk::clkctrl::ID_A::*;
 use crate::pac::gclk::genctrl::SRC_A::*;
 use crate::pac::{self, GCLK, NVMCTRL, PM, SYSCTRL};
+use crate::rtc::RtcClock as RtcClockMarker;
 use crate::time::{Hertz, U32Ext};
 
 pub type ClockId = pac::gclk::clkctrl::ID_A;
@@ -452,6 +453,12 @@ clock_generator!(
     (i2s0, I2S0Clock, I2S_0),
     (i2s1, I2S1Clock, I2S_1),
 );
+
+unsafe impl RtcClockMarker for RtcClock {
+    fn freq(&self) -> Hertz {
+        self.freq()
+    }
+}
 
 /// The frequency of the 48Mhz source.
 pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
