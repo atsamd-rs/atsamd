@@ -170,7 +170,6 @@ where
 mod impl_ehal {
     use super::*;
     use crate::time::U32Ext;
-    use core::convert::Infallible;
     use embedded_hal_async::delay::DelayUs;
 
     impl<T, I> DelayUs for TimerFuture<T, I>
@@ -178,16 +177,12 @@ mod impl_ehal {
         T: AsyncCount16,
         I: InterruptNumber,
     {
-        type Error = Infallible;
-
-        async fn delay_ms(&mut self, ms: u32) -> Result<(), Self::Error> {
+        async fn delay_ms(&mut self, ms: u32) {
             self.delay(ms.ms()).await;
-            Ok(())
         }
 
-        async fn delay_us(&mut self, us: u32) -> Result<(), Self::Error> {
+        async fn delay_us(&mut self, us: u32) {
             self.delay(us.us()).await;
-            Ok(())
         }
     }
 }

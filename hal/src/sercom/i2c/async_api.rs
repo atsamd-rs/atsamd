@@ -276,8 +276,8 @@ mod impl_ehal {
         }
 
         #[inline]
-        async fn transaction<'a, 'b>(
-            &'a mut self,
+        async fn transaction<'mut_self, 'a, 'b>(
+            &'mut_self mut self,
             address: u8,
             operations: &'a mut [embedded_hal_async::i2c::Operation<'b>],
         ) -> Result<(), Self::Error> {
@@ -323,8 +323,8 @@ mod impl_ehal {
         }
 
         #[inline]
-        async fn transaction<'a, 'b>(
-            &'a mut self,
+        async fn transaction<'mut_self, 'a, 'b>(
+            &'mut_self mut self,
             address: u8,
             operations: &'a mut [embedded_hal_async::i2c::Operation<'b>],
         ) -> Result<(), Self::Error> {
