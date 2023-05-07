@@ -35,148 +35,52 @@ impl From<crate::W<HFSR_SPEC>> for W {
     }
 }
 #[doc = "Field `VECTTBL` reader - BusFault on a Vector Table read during exception processing"]
-pub struct VECTTBL_R(crate::FieldReader<bool, bool>);
-impl VECTTBL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        VECTTBL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for VECTTBL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type VECTTBL_R = crate::BitReader<bool>;
 #[doc = "Field `VECTTBL` writer - BusFault on a Vector Table read during exception processing"]
-pub struct VECTTBL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> VECTTBL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type VECTTBL_W<'a, const O: u8> = crate::BitWriter<'a, u32, HFSR_SPEC, bool, O>;
 #[doc = "Field `FORCED` reader - Forced Hard Fault"]
-pub struct FORCED_R(crate::FieldReader<bool, bool>);
-impl FORCED_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FORCED_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FORCED_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FORCED_R = crate::BitReader<bool>;
 #[doc = "Field `FORCED` writer - Forced Hard Fault"]
-pub struct FORCED_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FORCED_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 30)) | ((value as u32 & 0x01) << 30);
-        self.w
-    }
-}
+pub type FORCED_W<'a, const O: u8> = crate::BitWriter<'a, u32, HFSR_SPEC, bool, O>;
 #[doc = "Field `DEBUGEVT` reader - Debug: always write 0"]
-pub struct DEBUGEVT_R(crate::FieldReader<bool, bool>);
-impl DEBUGEVT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DEBUGEVT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DEBUGEVT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DEBUGEVT_R = crate::BitReader<bool>;
 #[doc = "Field `DEBUGEVT` writer - Debug: always write 0"]
-pub struct DEBUGEVT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DEBUGEVT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
-        self.w
-    }
-}
+pub type DEBUGEVT_W<'a, const O: u8> = crate::BitWriter<'a, u32, HFSR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 1 - BusFault on a Vector Table read during exception processing"]
     #[inline(always)]
     pub fn vecttbl(&self) -> VECTTBL_R {
-        VECTTBL_R::new(((self.bits >> 1) & 0x01) != 0)
+        VECTTBL_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 30 - Forced Hard Fault"]
     #[inline(always)]
     pub fn forced(&self) -> FORCED_R {
-        FORCED_R::new(((self.bits >> 30) & 0x01) != 0)
+        FORCED_R::new(((self.bits >> 30) & 1) != 0)
     }
     #[doc = "Bit 31 - Debug: always write 0"]
     #[inline(always)]
     pub fn debugevt(&self) -> DEBUGEVT_R {
-        DEBUGEVT_R::new(((self.bits >> 31) & 0x01) != 0)
+        DEBUGEVT_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 1 - BusFault on a Vector Table read during exception processing"]
     #[inline(always)]
-    pub fn vecttbl(&mut self) -> VECTTBL_W {
-        VECTTBL_W { w: self }
+    #[must_use]
+    pub fn vecttbl(&mut self) -> VECTTBL_W<1> {
+        VECTTBL_W::new(self)
     }
     #[doc = "Bit 30 - Forced Hard Fault"]
     #[inline(always)]
-    pub fn forced(&mut self) -> FORCED_W {
-        FORCED_W { w: self }
+    #[must_use]
+    pub fn forced(&mut self) -> FORCED_W<30> {
+        FORCED_W::new(self)
     }
     #[doc = "Bit 31 - Debug: always write 0"]
     #[inline(always)]
-    pub fn debugevt(&mut self) -> DEBUGEVT_W {
-        DEBUGEVT_W { w: self }
+    #[must_use]
+    pub fn debugevt(&mut self) -> DEBUGEVT_W<31> {
+        DEBUGEVT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -197,11 +101,10 @@ impl crate::Readable for HFSR_SPEC {
 #[doc = "`write(|w| ..)` method takes [hfsr::W](W) writer structure"]
 impl crate::Writable for HFSR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets HFSR to value 0"]
 impl crate::Resettable for HFSR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -34,10 +34,12 @@ impl From<crate::W<SEQCTRL_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `SEQSEL` reader - Sequential Selection"]
+pub type SEQSEL_R = crate::FieldReader<u8, SEQSELSELECT_A>;
 #[doc = "Sequential Selection\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum SEQSEL_A {
+pub enum SEQSELSELECT_A {
     #[doc = "0: Sequential logic is disabled"]
     DISABLE = 0,
     #[doc = "1: D flip flop"]
@@ -49,118 +51,94 @@ pub enum SEQSEL_A {
     #[doc = "4: RS latch"]
     RS = 4,
 }
-impl From<SEQSEL_A> for u8 {
+impl From<SEQSELSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: SEQSEL_A) -> Self {
+    fn from(variant: SEQSELSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `SEQSEL` reader - Sequential Selection"]
-pub struct SEQSEL_R(crate::FieldReader<u8, SEQSEL_A>);
 impl SEQSEL_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        SEQSEL_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<SEQSEL_A> {
+    pub fn variant(&self) -> Option<SEQSELSELECT_A> {
         match self.bits {
-            0 => Some(SEQSEL_A::DISABLE),
-            1 => Some(SEQSEL_A::DFF),
-            2 => Some(SEQSEL_A::JK),
-            3 => Some(SEQSEL_A::LATCH),
-            4 => Some(SEQSEL_A::RS),
+            0 => Some(SEQSELSELECT_A::DISABLE),
+            1 => Some(SEQSELSELECT_A::DFF),
+            2 => Some(SEQSELSELECT_A::JK),
+            3 => Some(SEQSELSELECT_A::LATCH),
+            4 => Some(SEQSELSELECT_A::RS),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        **self == SEQSEL_A::DISABLE
+        *self == SEQSELSELECT_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `DFF`"]
     #[inline(always)]
     pub fn is_dff(&self) -> bool {
-        **self == SEQSEL_A::DFF
+        *self == SEQSELSELECT_A::DFF
     }
     #[doc = "Checks if the value of the field is `JK`"]
     #[inline(always)]
     pub fn is_jk(&self) -> bool {
-        **self == SEQSEL_A::JK
+        *self == SEQSELSELECT_A::JK
     }
     #[doc = "Checks if the value of the field is `LATCH`"]
     #[inline(always)]
     pub fn is_latch(&self) -> bool {
-        **self == SEQSEL_A::LATCH
+        *self == SEQSELSELECT_A::LATCH
     }
     #[doc = "Checks if the value of the field is `RS`"]
     #[inline(always)]
     pub fn is_rs(&self) -> bool {
-        **self == SEQSEL_A::RS
-    }
-}
-impl core::ops::Deref for SEQSEL_R {
-    type Target = crate::FieldReader<u8, SEQSEL_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == SEQSELSELECT_A::RS
     }
 }
 #[doc = "Field `SEQSEL` writer - Sequential Selection"]
-pub struct SEQSEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SEQSEL_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SEQSEL_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type SEQSEL_W<'a, const O: u8> =
+    crate::FieldWriter<'a, u8, SEQCTRL_SPEC, u8, SEQSELSELECT_A, 4, O>;
+impl<'a, const O: u8> SEQSEL_W<'a, O> {
     #[doc = "Sequential logic is disabled"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(SEQSEL_A::DISABLE)
+        self.variant(SEQSELSELECT_A::DISABLE)
     }
     #[doc = "D flip flop"]
     #[inline(always)]
     pub fn dff(self) -> &'a mut W {
-        self.variant(SEQSEL_A::DFF)
+        self.variant(SEQSELSELECT_A::DFF)
     }
     #[doc = "JK flip flop"]
     #[inline(always)]
     pub fn jk(self) -> &'a mut W {
-        self.variant(SEQSEL_A::JK)
+        self.variant(SEQSELSELECT_A::JK)
     }
     #[doc = "D latch"]
     #[inline(always)]
     pub fn latch(self) -> &'a mut W {
-        self.variant(SEQSEL_A::LATCH)
+        self.variant(SEQSELSELECT_A::LATCH)
     }
     #[doc = "RS latch"]
     #[inline(always)]
     pub fn rs(self) -> &'a mut W {
-        self.variant(SEQSEL_A::RS)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u8 & 0x0f);
-        self.w
+        self.variant(SEQSELSELECT_A::RS)
     }
 }
 impl R {
     #[doc = "Bits 0:3 - Sequential Selection"]
     #[inline(always)]
     pub fn seqsel(&self) -> SEQSEL_R {
-        SEQSEL_R::new((self.bits & 0x0f) as u8)
+        SEQSEL_R::new(self.bits & 0x0f)
     }
 }
 impl W {
     #[doc = "Bits 0:3 - Sequential Selection"]
     #[inline(always)]
-    pub fn seqsel(&mut self) -> SEQSEL_W {
-        SEQSEL_W { w: self }
+    #[must_use]
+    pub fn seqsel(&mut self) -> SEQSEL_W<0> {
+        SEQSEL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -181,12 +159,11 @@ impl crate::Readable for SEQCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [seqctrl::W](W) writer structure"]
 impl crate::Writable for SEQCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets SEQCTRL[%s]
 to value 0"]
 impl crate::Resettable for SEQCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

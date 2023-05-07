@@ -35,289 +35,97 @@ impl From<crate::W<SWTRIGCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `SWTRIG0` reader - Channel 0 Software Trigger"]
-pub struct SWTRIG0_R(crate::FieldReader<bool, bool>);
-impl SWTRIG0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SWTRIG0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SWTRIG0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SWTRIG0_R = crate::BitReader<bool>;
 #[doc = "Field `SWTRIG0` writer - Channel 0 Software Trigger"]
-pub struct SWTRIG0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SWTRIG0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type SWTRIG0_W<'a, const O: u8> = crate::BitWriter<'a, u32, SWTRIGCTRL_SPEC, bool, O>;
 #[doc = "Field `SWTRIG1` reader - Channel 1 Software Trigger"]
-pub struct SWTRIG1_R(crate::FieldReader<bool, bool>);
-impl SWTRIG1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SWTRIG1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SWTRIG1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SWTRIG1_R = crate::BitReader<bool>;
 #[doc = "Field `SWTRIG1` writer - Channel 1 Software Trigger"]
-pub struct SWTRIG1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SWTRIG1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type SWTRIG1_W<'a, const O: u8> = crate::BitWriter<'a, u32, SWTRIGCTRL_SPEC, bool, O>;
 #[doc = "Field `SWTRIG2` reader - Channel 2 Software Trigger"]
-pub struct SWTRIG2_R(crate::FieldReader<bool, bool>);
-impl SWTRIG2_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SWTRIG2_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SWTRIG2_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SWTRIG2_R = crate::BitReader<bool>;
 #[doc = "Field `SWTRIG2` writer - Channel 2 Software Trigger"]
-pub struct SWTRIG2_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SWTRIG2_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
-    }
-}
+pub type SWTRIG2_W<'a, const O: u8> = crate::BitWriter<'a, u32, SWTRIGCTRL_SPEC, bool, O>;
 #[doc = "Field `SWTRIG3` reader - Channel 3 Software Trigger"]
-pub struct SWTRIG3_R(crate::FieldReader<bool, bool>);
-impl SWTRIG3_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SWTRIG3_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SWTRIG3_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SWTRIG3_R = crate::BitReader<bool>;
 #[doc = "Field `SWTRIG3` writer - Channel 3 Software Trigger"]
-pub struct SWTRIG3_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SWTRIG3_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
-        self.w
-    }
-}
+pub type SWTRIG3_W<'a, const O: u8> = crate::BitWriter<'a, u32, SWTRIGCTRL_SPEC, bool, O>;
 #[doc = "Field `SWTRIG4` reader - Channel 4 Software Trigger"]
-pub struct SWTRIG4_R(crate::FieldReader<bool, bool>);
-impl SWTRIG4_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SWTRIG4_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SWTRIG4_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SWTRIG4_R = crate::BitReader<bool>;
 #[doc = "Field `SWTRIG4` writer - Channel 4 Software Trigger"]
-pub struct SWTRIG4_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SWTRIG4_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u32 & 0x01) << 4);
-        self.w
-    }
-}
+pub type SWTRIG4_W<'a, const O: u8> = crate::BitWriter<'a, u32, SWTRIGCTRL_SPEC, bool, O>;
 #[doc = "Field `SWTRIG5` reader - Channel 5 Software Trigger"]
-pub struct SWTRIG5_R(crate::FieldReader<bool, bool>);
-impl SWTRIG5_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SWTRIG5_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SWTRIG5_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SWTRIG5_R = crate::BitReader<bool>;
 #[doc = "Field `SWTRIG5` writer - Channel 5 Software Trigger"]
-pub struct SWTRIG5_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SWTRIG5_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u32 & 0x01) << 5);
-        self.w
-    }
-}
+pub type SWTRIG5_W<'a, const O: u8> = crate::BitWriter<'a, u32, SWTRIGCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Channel 0 Software Trigger"]
     #[inline(always)]
     pub fn swtrig0(&self) -> SWTRIG0_R {
-        SWTRIG0_R::new((self.bits & 0x01) != 0)
+        SWTRIG0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Channel 1 Software Trigger"]
     #[inline(always)]
     pub fn swtrig1(&self) -> SWTRIG1_R {
-        SWTRIG1_R::new(((self.bits >> 1) & 0x01) != 0)
+        SWTRIG1_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Channel 2 Software Trigger"]
     #[inline(always)]
     pub fn swtrig2(&self) -> SWTRIG2_R {
-        SWTRIG2_R::new(((self.bits >> 2) & 0x01) != 0)
+        SWTRIG2_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Channel 3 Software Trigger"]
     #[inline(always)]
     pub fn swtrig3(&self) -> SWTRIG3_R {
-        SWTRIG3_R::new(((self.bits >> 3) & 0x01) != 0)
+        SWTRIG3_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Channel 4 Software Trigger"]
     #[inline(always)]
     pub fn swtrig4(&self) -> SWTRIG4_R {
-        SWTRIG4_R::new(((self.bits >> 4) & 0x01) != 0)
+        SWTRIG4_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Channel 5 Software Trigger"]
     #[inline(always)]
     pub fn swtrig5(&self) -> SWTRIG5_R {
-        SWTRIG5_R::new(((self.bits >> 5) & 0x01) != 0)
+        SWTRIG5_R::new(((self.bits >> 5) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Channel 0 Software Trigger"]
     #[inline(always)]
-    pub fn swtrig0(&mut self) -> SWTRIG0_W {
-        SWTRIG0_W { w: self }
+    #[must_use]
+    pub fn swtrig0(&mut self) -> SWTRIG0_W<0> {
+        SWTRIG0_W::new(self)
     }
     #[doc = "Bit 1 - Channel 1 Software Trigger"]
     #[inline(always)]
-    pub fn swtrig1(&mut self) -> SWTRIG1_W {
-        SWTRIG1_W { w: self }
+    #[must_use]
+    pub fn swtrig1(&mut self) -> SWTRIG1_W<1> {
+        SWTRIG1_W::new(self)
     }
     #[doc = "Bit 2 - Channel 2 Software Trigger"]
     #[inline(always)]
-    pub fn swtrig2(&mut self) -> SWTRIG2_W {
-        SWTRIG2_W { w: self }
+    #[must_use]
+    pub fn swtrig2(&mut self) -> SWTRIG2_W<2> {
+        SWTRIG2_W::new(self)
     }
     #[doc = "Bit 3 - Channel 3 Software Trigger"]
     #[inline(always)]
-    pub fn swtrig3(&mut self) -> SWTRIG3_W {
-        SWTRIG3_W { w: self }
+    #[must_use]
+    pub fn swtrig3(&mut self) -> SWTRIG3_W<3> {
+        SWTRIG3_W::new(self)
     }
     #[doc = "Bit 4 - Channel 4 Software Trigger"]
     #[inline(always)]
-    pub fn swtrig4(&mut self) -> SWTRIG4_W {
-        SWTRIG4_W { w: self }
+    #[must_use]
+    pub fn swtrig4(&mut self) -> SWTRIG4_W<4> {
+        SWTRIG4_W::new(self)
     }
     #[doc = "Bit 5 - Channel 5 Software Trigger"]
     #[inline(always)]
-    pub fn swtrig5(&mut self) -> SWTRIG5_W {
-        SWTRIG5_W { w: self }
+    #[must_use]
+    pub fn swtrig5(&mut self) -> SWTRIG5_W<5> {
+        SWTRIG5_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -338,11 +146,10 @@ impl crate::Readable for SWTRIGCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [swtrigctrl::W](W) writer structure"]
 impl crate::Writable for SWTRIGCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets SWTRIGCTRL to value 0"]
 impl crate::Resettable for SWTRIGCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

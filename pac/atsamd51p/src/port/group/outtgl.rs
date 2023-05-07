@@ -35,44 +35,22 @@ impl From<crate::W<OUTTGL_SPEC>> for W {
     }
 }
 #[doc = "Field `OUTTGL` reader - PORT Data Output Value Toggle"]
-pub struct OUTTGL_R(crate::FieldReader<u32, u32>);
-impl OUTTGL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        OUTTGL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OUTTGL_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OUTTGL_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `OUTTGL` writer - PORT Data Output Value Toggle"]
-pub struct OUTTGL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OUTTGL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = value as u32;
-        self.w
-    }
-}
+pub type OUTTGL_W<'a, const O: u8> = crate::FieldWriter<'a, u32, OUTTGL_SPEC, u32, u32, 32, O>;
 impl R {
     #[doc = "Bits 0:31 - PORT Data Output Value Toggle"]
     #[inline(always)]
     pub fn outtgl(&self) -> OUTTGL_R {
-        OUTTGL_R::new(self.bits as u32)
+        OUTTGL_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - PORT Data Output Value Toggle"]
     #[inline(always)]
-    pub fn outtgl(&mut self) -> OUTTGL_W {
-        OUTTGL_W { w: self }
+    #[must_use]
+    pub fn outtgl(&mut self) -> OUTTGL_W<0> {
+        OUTTGL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for OUTTGL_SPEC {
 #[doc = "`write(|w| ..)` method takes [outtgl::W](W) writer structure"]
 impl crate::Writable for OUTTGL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets OUTTGL to value 0"]
 impl crate::Resettable for OUTTGL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -35,101 +35,37 @@ impl From<crate::W<VREG_SPEC>> for W {
     }
 }
 #[doc = "Field `RUNSTDBY` reader - Run in Standby"]
-pub struct RUNSTDBY_R(crate::FieldReader<bool, bool>);
-impl RUNSTDBY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RUNSTDBY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RUNSTDBY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RUNSTDBY_R = crate::BitReader<bool>;
 #[doc = "Field `RUNSTDBY` writer - Run in Standby"]
-pub struct RUNSTDBY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RUNSTDBY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u16 & 0x01) << 6);
-        self.w
-    }
-}
+pub type RUNSTDBY_W<'a, const O: u8> = crate::BitWriter<'a, u16, VREG_SPEC, bool, O>;
 #[doc = "Field `FORCELDO` reader - Force LDO Voltage Regulator"]
-pub struct FORCELDO_R(crate::FieldReader<bool, bool>);
-impl FORCELDO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FORCELDO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FORCELDO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FORCELDO_R = crate::BitReader<bool>;
 #[doc = "Field `FORCELDO` writer - Force LDO Voltage Regulator"]
-pub struct FORCELDO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FORCELDO_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 13)) | ((value as u16 & 0x01) << 13);
-        self.w
-    }
-}
+pub type FORCELDO_W<'a, const O: u8> = crate::BitWriter<'a, u16, VREG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
     pub fn runstdby(&self) -> RUNSTDBY_R {
-        RUNSTDBY_R::new(((self.bits >> 6) & 0x01) != 0)
+        RUNSTDBY_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 13 - Force LDO Voltage Regulator"]
     #[inline(always)]
     pub fn forceldo(&self) -> FORCELDO_R {
-        FORCELDO_R::new(((self.bits >> 13) & 0x01) != 0)
+        FORCELDO_R::new(((self.bits >> 13) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    pub fn runstdby(&mut self) -> RUNSTDBY_W {
-        RUNSTDBY_W { w: self }
+    #[must_use]
+    pub fn runstdby(&mut self) -> RUNSTDBY_W<6> {
+        RUNSTDBY_W::new(self)
     }
     #[doc = "Bit 13 - Force LDO Voltage Regulator"]
     #[inline(always)]
-    pub fn forceldo(&mut self) -> FORCELDO_W {
-        FORCELDO_W { w: self }
+    #[must_use]
+    pub fn forceldo(&mut self) -> FORCELDO_W<13> {
+        FORCELDO_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for VREG_SPEC {
 #[doc = "`write(|w| ..)` method takes [vreg::W](W) writer structure"]
 impl crate::Writable for VREG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets VREG to value 0"]
 impl crate::Resettable for VREG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

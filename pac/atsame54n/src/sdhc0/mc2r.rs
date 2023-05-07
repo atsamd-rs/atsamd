@@ -20,59 +20,21 @@ impl From<crate::W<MC2R_SPEC>> for W {
     }
 }
 #[doc = "Field `SRESP` writer - e.MMC Abort Wait IRQ"]
-pub struct SRESP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SRESP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type SRESP_W<'a, const O: u8> = crate::BitWriter<'a, u8, MC2R_SPEC, bool, O>;
 #[doc = "Field `ABOOT` writer - e.MMC Abort Boot"]
-pub struct ABOOT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ABOOT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type ABOOT_W<'a, const O: u8> = crate::BitWriter<'a, u8, MC2R_SPEC, bool, O>;
 impl W {
     #[doc = "Bit 0 - e.MMC Abort Wait IRQ"]
     #[inline(always)]
-    pub fn sresp(&mut self) -> SRESP_W {
-        SRESP_W { w: self }
+    #[must_use]
+    pub fn sresp(&mut self) -> SRESP_W<0> {
+        SRESP_W::new(self)
     }
     #[doc = "Bit 1 - e.MMC Abort Boot"]
     #[inline(always)]
-    pub fn aboot(&mut self) -> ABOOT_W {
-        ABOOT_W { w: self }
+    #[must_use]
+    pub fn aboot(&mut self) -> ABOOT_W<1> {
+        ABOOT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -89,11 +51,10 @@ impl crate::RegisterSpec for MC2R_SPEC {
 #[doc = "`write(|w| ..)` method takes [mc2r::W](W) writer structure"]
 impl crate::Writable for MC2R_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets MC2R to value 0"]
 impl crate::Resettable for MC2R_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

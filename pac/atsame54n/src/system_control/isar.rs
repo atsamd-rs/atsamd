@@ -25,8 +25,5 @@ impl crate::Readable for ISAR_SPEC {
 #[doc = "`reset()` method sets ISAR[%s]
 to value 0"]
 impl crate::Resettable for ISAR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

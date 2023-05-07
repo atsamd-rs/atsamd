@@ -35,36 +35,15 @@ impl From<crate::W<BSR_SPEC>> for W {
     }
 }
 #[doc = "Field `BLOCKSIZE` reader - Transfer Block Size"]
-pub struct BLOCKSIZE_R(crate::FieldReader<u16, u16>);
-impl BLOCKSIZE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        BLOCKSIZE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BLOCKSIZE_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BLOCKSIZE_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `BLOCKSIZE` writer - Transfer Block Size"]
-pub struct BLOCKSIZE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BLOCKSIZE_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03ff) | (value as u16 & 0x03ff);
-        self.w
-    }
-}
+pub type BLOCKSIZE_W<'a, const O: u8> = crate::FieldWriter<'a, u16, BSR_SPEC, u16, u16, 10, O>;
+#[doc = "Field `BOUNDARY` reader - SDMA Buffer Boundary"]
+pub type BOUNDARY_R = crate::FieldReader<u8, BOUNDARYSELECT_A>;
 #[doc = "SDMA Buffer Boundary\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum BOUNDARY_A {
+pub enum BOUNDARYSELECT_A {
     #[doc = "0: 4k bytes"]
     _4K = 0,
     #[doc = "1: 8k bytes"]
@@ -82,161 +61,138 @@ pub enum BOUNDARY_A {
     #[doc = "7: 512k bytes"]
     _512K = 7,
 }
-impl From<BOUNDARY_A> for u8 {
+impl From<BOUNDARYSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: BOUNDARY_A) -> Self {
+    fn from(variant: BOUNDARYSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `BOUNDARY` reader - SDMA Buffer Boundary"]
-pub struct BOUNDARY_R(crate::FieldReader<u8, BOUNDARY_A>);
 impl BOUNDARY_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BOUNDARY_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> BOUNDARY_A {
+    pub fn variant(&self) -> BOUNDARYSELECT_A {
         match self.bits {
-            0 => BOUNDARY_A::_4K,
-            1 => BOUNDARY_A::_8K,
-            2 => BOUNDARY_A::_16K,
-            3 => BOUNDARY_A::_32K,
-            4 => BOUNDARY_A::_64K,
-            5 => BOUNDARY_A::_128K,
-            6 => BOUNDARY_A::_256K,
-            7 => BOUNDARY_A::_512K,
+            0 => BOUNDARYSELECT_A::_4K,
+            1 => BOUNDARYSELECT_A::_8K,
+            2 => BOUNDARYSELECT_A::_16K,
+            3 => BOUNDARYSELECT_A::_32K,
+            4 => BOUNDARYSELECT_A::_64K,
+            5 => BOUNDARYSELECT_A::_128K,
+            6 => BOUNDARYSELECT_A::_256K,
+            7 => BOUNDARYSELECT_A::_512K,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `_4K`"]
     #[inline(always)]
     pub fn is_4k(&self) -> bool {
-        **self == BOUNDARY_A::_4K
+        *self == BOUNDARYSELECT_A::_4K
     }
     #[doc = "Checks if the value of the field is `_8K`"]
     #[inline(always)]
     pub fn is_8k(&self) -> bool {
-        **self == BOUNDARY_A::_8K
+        *self == BOUNDARYSELECT_A::_8K
     }
     #[doc = "Checks if the value of the field is `_16K`"]
     #[inline(always)]
     pub fn is_16k(&self) -> bool {
-        **self == BOUNDARY_A::_16K
+        *self == BOUNDARYSELECT_A::_16K
     }
     #[doc = "Checks if the value of the field is `_32K`"]
     #[inline(always)]
     pub fn is_32k(&self) -> bool {
-        **self == BOUNDARY_A::_32K
+        *self == BOUNDARYSELECT_A::_32K
     }
     #[doc = "Checks if the value of the field is `_64K`"]
     #[inline(always)]
     pub fn is_64k(&self) -> bool {
-        **self == BOUNDARY_A::_64K
+        *self == BOUNDARYSELECT_A::_64K
     }
     #[doc = "Checks if the value of the field is `_128K`"]
     #[inline(always)]
     pub fn is_128k(&self) -> bool {
-        **self == BOUNDARY_A::_128K
+        *self == BOUNDARYSELECT_A::_128K
     }
     #[doc = "Checks if the value of the field is `_256K`"]
     #[inline(always)]
     pub fn is_256k(&self) -> bool {
-        **self == BOUNDARY_A::_256K
+        *self == BOUNDARYSELECT_A::_256K
     }
     #[doc = "Checks if the value of the field is `_512K`"]
     #[inline(always)]
     pub fn is_512k(&self) -> bool {
-        **self == BOUNDARY_A::_512K
-    }
-}
-impl core::ops::Deref for BOUNDARY_R {
-    type Target = crate::FieldReader<u8, BOUNDARY_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == BOUNDARYSELECT_A::_512K
     }
 }
 #[doc = "Field `BOUNDARY` writer - SDMA Buffer Boundary"]
-pub struct BOUNDARY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BOUNDARY_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: BOUNDARY_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type BOUNDARY_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u16, BSR_SPEC, u8, BOUNDARYSELECT_A, 3, O>;
+impl<'a, const O: u8> BOUNDARY_W<'a, O> {
     #[doc = "4k bytes"]
     #[inline(always)]
     pub fn _4k(self) -> &'a mut W {
-        self.variant(BOUNDARY_A::_4K)
+        self.variant(BOUNDARYSELECT_A::_4K)
     }
     #[doc = "8k bytes"]
     #[inline(always)]
     pub fn _8k(self) -> &'a mut W {
-        self.variant(BOUNDARY_A::_8K)
+        self.variant(BOUNDARYSELECT_A::_8K)
     }
     #[doc = "16k bytes"]
     #[inline(always)]
     pub fn _16k(self) -> &'a mut W {
-        self.variant(BOUNDARY_A::_16K)
+        self.variant(BOUNDARYSELECT_A::_16K)
     }
     #[doc = "32k bytes"]
     #[inline(always)]
     pub fn _32k(self) -> &'a mut W {
-        self.variant(BOUNDARY_A::_32K)
+        self.variant(BOUNDARYSELECT_A::_32K)
     }
     #[doc = "64k bytes"]
     #[inline(always)]
     pub fn _64k(self) -> &'a mut W {
-        self.variant(BOUNDARY_A::_64K)
+        self.variant(BOUNDARYSELECT_A::_64K)
     }
     #[doc = "128k bytes"]
     #[inline(always)]
     pub fn _128k(self) -> &'a mut W {
-        self.variant(BOUNDARY_A::_128K)
+        self.variant(BOUNDARYSELECT_A::_128K)
     }
     #[doc = "256k bytes"]
     #[inline(always)]
     pub fn _256k(self) -> &'a mut W {
-        self.variant(BOUNDARY_A::_256K)
+        self.variant(BOUNDARYSELECT_A::_256K)
     }
     #[doc = "512k bytes"]
     #[inline(always)]
     pub fn _512k(self) -> &'a mut W {
-        self.variant(BOUNDARY_A::_512K)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 12)) | ((value as u16 & 0x07) << 12);
-        self.w
+        self.variant(BOUNDARYSELECT_A::_512K)
     }
 }
 impl R {
     #[doc = "Bits 0:9 - Transfer Block Size"]
     #[inline(always)]
     pub fn blocksize(&self) -> BLOCKSIZE_R {
-        BLOCKSIZE_R::new((self.bits & 0x03ff) as u16)
+        BLOCKSIZE_R::new(self.bits & 0x03ff)
     }
     #[doc = "Bits 12:14 - SDMA Buffer Boundary"]
     #[inline(always)]
     pub fn boundary(&self) -> BOUNDARY_R {
-        BOUNDARY_R::new(((self.bits >> 12) & 0x07) as u8)
+        BOUNDARY_R::new(((self.bits >> 12) & 7) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:9 - Transfer Block Size"]
     #[inline(always)]
-    pub fn blocksize(&mut self) -> BLOCKSIZE_W {
-        BLOCKSIZE_W { w: self }
+    #[must_use]
+    pub fn blocksize(&mut self) -> BLOCKSIZE_W<0> {
+        BLOCKSIZE_W::new(self)
     }
     #[doc = "Bits 12:14 - SDMA Buffer Boundary"]
     #[inline(always)]
-    pub fn boundary(&mut self) -> BOUNDARY_W {
-        BOUNDARY_W { w: self }
+    #[must_use]
+    pub fn boundary(&mut self) -> BOUNDARY_W<12> {
+        BOUNDARY_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -257,11 +213,10 @@ impl crate::Readable for BSR_SPEC {
 #[doc = "`write(|w| ..)` method takes [bsr::W](W) writer structure"]
 impl crate::Writable for BSR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets BSR to value 0"]
 impl crate::Resettable for BSR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

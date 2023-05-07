@@ -34,10 +34,12 @@ impl From<crate::W<CONFIG_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `PER` reader - Time-Out Period"]
+pub type PER_R = crate::FieldReader<u8, PERSELECT_A>;
 #[doc = "Time-Out Period\n\nValue on reset: 11"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum PER_A {
+pub enum PERSELECT_A {
     #[doc = "0: 8 clock cycles"]
     CYC8 = 0,
     #[doc = "1: 16 clock cycles"]
@@ -63,187 +65,163 @@ pub enum PER_A {
     #[doc = "11: 16384 clock cycles"]
     CYC16384 = 11,
 }
-impl From<PER_A> for u8 {
+impl From<PERSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: PER_A) -> Self {
+    fn from(variant: PERSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `PER` reader - Time-Out Period"]
-pub struct PER_R(crate::FieldReader<u8, PER_A>);
 impl PER_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PER_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<PER_A> {
+    pub fn variant(&self) -> Option<PERSELECT_A> {
         match self.bits {
-            0 => Some(PER_A::CYC8),
-            1 => Some(PER_A::CYC16),
-            2 => Some(PER_A::CYC32),
-            3 => Some(PER_A::CYC64),
-            4 => Some(PER_A::CYC128),
-            5 => Some(PER_A::CYC256),
-            6 => Some(PER_A::CYC512),
-            7 => Some(PER_A::CYC1024),
-            8 => Some(PER_A::CYC2048),
-            9 => Some(PER_A::CYC4096),
-            10 => Some(PER_A::CYC8192),
-            11 => Some(PER_A::CYC16384),
+            0 => Some(PERSELECT_A::CYC8),
+            1 => Some(PERSELECT_A::CYC16),
+            2 => Some(PERSELECT_A::CYC32),
+            3 => Some(PERSELECT_A::CYC64),
+            4 => Some(PERSELECT_A::CYC128),
+            5 => Some(PERSELECT_A::CYC256),
+            6 => Some(PERSELECT_A::CYC512),
+            7 => Some(PERSELECT_A::CYC1024),
+            8 => Some(PERSELECT_A::CYC2048),
+            9 => Some(PERSELECT_A::CYC4096),
+            10 => Some(PERSELECT_A::CYC8192),
+            11 => Some(PERSELECT_A::CYC16384),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `CYC8`"]
     #[inline(always)]
     pub fn is_cyc8(&self) -> bool {
-        **self == PER_A::CYC8
+        *self == PERSELECT_A::CYC8
     }
     #[doc = "Checks if the value of the field is `CYC16`"]
     #[inline(always)]
     pub fn is_cyc16(&self) -> bool {
-        **self == PER_A::CYC16
+        *self == PERSELECT_A::CYC16
     }
     #[doc = "Checks if the value of the field is `CYC32`"]
     #[inline(always)]
     pub fn is_cyc32(&self) -> bool {
-        **self == PER_A::CYC32
+        *self == PERSELECT_A::CYC32
     }
     #[doc = "Checks if the value of the field is `CYC64`"]
     #[inline(always)]
     pub fn is_cyc64(&self) -> bool {
-        **self == PER_A::CYC64
+        *self == PERSELECT_A::CYC64
     }
     #[doc = "Checks if the value of the field is `CYC128`"]
     #[inline(always)]
     pub fn is_cyc128(&self) -> bool {
-        **self == PER_A::CYC128
+        *self == PERSELECT_A::CYC128
     }
     #[doc = "Checks if the value of the field is `CYC256`"]
     #[inline(always)]
     pub fn is_cyc256(&self) -> bool {
-        **self == PER_A::CYC256
+        *self == PERSELECT_A::CYC256
     }
     #[doc = "Checks if the value of the field is `CYC512`"]
     #[inline(always)]
     pub fn is_cyc512(&self) -> bool {
-        **self == PER_A::CYC512
+        *self == PERSELECT_A::CYC512
     }
     #[doc = "Checks if the value of the field is `CYC1024`"]
     #[inline(always)]
     pub fn is_cyc1024(&self) -> bool {
-        **self == PER_A::CYC1024
+        *self == PERSELECT_A::CYC1024
     }
     #[doc = "Checks if the value of the field is `CYC2048`"]
     #[inline(always)]
     pub fn is_cyc2048(&self) -> bool {
-        **self == PER_A::CYC2048
+        *self == PERSELECT_A::CYC2048
     }
     #[doc = "Checks if the value of the field is `CYC4096`"]
     #[inline(always)]
     pub fn is_cyc4096(&self) -> bool {
-        **self == PER_A::CYC4096
+        *self == PERSELECT_A::CYC4096
     }
     #[doc = "Checks if the value of the field is `CYC8192`"]
     #[inline(always)]
     pub fn is_cyc8192(&self) -> bool {
-        **self == PER_A::CYC8192
+        *self == PERSELECT_A::CYC8192
     }
     #[doc = "Checks if the value of the field is `CYC16384`"]
     #[inline(always)]
     pub fn is_cyc16384(&self) -> bool {
-        **self == PER_A::CYC16384
-    }
-}
-impl core::ops::Deref for PER_R {
-    type Target = crate::FieldReader<u8, PER_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == PERSELECT_A::CYC16384
     }
 }
 #[doc = "Field `PER` writer - Time-Out Period"]
-pub struct PER_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PER_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: PER_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type PER_W<'a, const O: u8> = crate::FieldWriter<'a, u8, CONFIG_SPEC, u8, PERSELECT_A, 4, O>;
+impl<'a, const O: u8> PER_W<'a, O> {
     #[doc = "8 clock cycles"]
     #[inline(always)]
     pub fn cyc8(self) -> &'a mut W {
-        self.variant(PER_A::CYC8)
+        self.variant(PERSELECT_A::CYC8)
     }
     #[doc = "16 clock cycles"]
     #[inline(always)]
     pub fn cyc16(self) -> &'a mut W {
-        self.variant(PER_A::CYC16)
+        self.variant(PERSELECT_A::CYC16)
     }
     #[doc = "32 clock cycles"]
     #[inline(always)]
     pub fn cyc32(self) -> &'a mut W {
-        self.variant(PER_A::CYC32)
+        self.variant(PERSELECT_A::CYC32)
     }
     #[doc = "64 clock cycles"]
     #[inline(always)]
     pub fn cyc64(self) -> &'a mut W {
-        self.variant(PER_A::CYC64)
+        self.variant(PERSELECT_A::CYC64)
     }
     #[doc = "128 clock cycles"]
     #[inline(always)]
     pub fn cyc128(self) -> &'a mut W {
-        self.variant(PER_A::CYC128)
+        self.variant(PERSELECT_A::CYC128)
     }
     #[doc = "256 clock cycles"]
     #[inline(always)]
     pub fn cyc256(self) -> &'a mut W {
-        self.variant(PER_A::CYC256)
+        self.variant(PERSELECT_A::CYC256)
     }
     #[doc = "512 clock cycles"]
     #[inline(always)]
     pub fn cyc512(self) -> &'a mut W {
-        self.variant(PER_A::CYC512)
+        self.variant(PERSELECT_A::CYC512)
     }
     #[doc = "1024 clock cycles"]
     #[inline(always)]
     pub fn cyc1024(self) -> &'a mut W {
-        self.variant(PER_A::CYC1024)
+        self.variant(PERSELECT_A::CYC1024)
     }
     #[doc = "2048 clock cycles"]
     #[inline(always)]
     pub fn cyc2048(self) -> &'a mut W {
-        self.variant(PER_A::CYC2048)
+        self.variant(PERSELECT_A::CYC2048)
     }
     #[doc = "4096 clock cycles"]
     #[inline(always)]
     pub fn cyc4096(self) -> &'a mut W {
-        self.variant(PER_A::CYC4096)
+        self.variant(PERSELECT_A::CYC4096)
     }
     #[doc = "8192 clock cycles"]
     #[inline(always)]
     pub fn cyc8192(self) -> &'a mut W {
-        self.variant(PER_A::CYC8192)
+        self.variant(PERSELECT_A::CYC8192)
     }
     #[doc = "16384 clock cycles"]
     #[inline(always)]
     pub fn cyc16384(self) -> &'a mut W {
-        self.variant(PER_A::CYC16384)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u8 & 0x0f);
-        self.w
+        self.variant(PERSELECT_A::CYC16384)
     }
 }
+#[doc = "Field `WINDOW` reader - Window Mode Time-Out Period"]
+pub type WINDOW_R = crate::FieldReader<u8, WINDOWSELECT_A>;
 #[doc = "Window Mode Time-Out Period\n\nValue on reset: 11"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum WINDOW_A {
+pub enum WINDOWSELECT_A {
     #[doc = "0: 8 clock cycles"]
     CYC8 = 0,
     #[doc = "1: 16 clock cycles"]
@@ -269,205 +247,182 @@ pub enum WINDOW_A {
     #[doc = "11: 16384 clock cycles"]
     CYC16384 = 11,
 }
-impl From<WINDOW_A> for u8 {
+impl From<WINDOWSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: WINDOW_A) -> Self {
+    fn from(variant: WINDOWSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `WINDOW` reader - Window Mode Time-Out Period"]
-pub struct WINDOW_R(crate::FieldReader<u8, WINDOW_A>);
 impl WINDOW_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        WINDOW_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<WINDOW_A> {
+    pub fn variant(&self) -> Option<WINDOWSELECT_A> {
         match self.bits {
-            0 => Some(WINDOW_A::CYC8),
-            1 => Some(WINDOW_A::CYC16),
-            2 => Some(WINDOW_A::CYC32),
-            3 => Some(WINDOW_A::CYC64),
-            4 => Some(WINDOW_A::CYC128),
-            5 => Some(WINDOW_A::CYC256),
-            6 => Some(WINDOW_A::CYC512),
-            7 => Some(WINDOW_A::CYC1024),
-            8 => Some(WINDOW_A::CYC2048),
-            9 => Some(WINDOW_A::CYC4096),
-            10 => Some(WINDOW_A::CYC8192),
-            11 => Some(WINDOW_A::CYC16384),
+            0 => Some(WINDOWSELECT_A::CYC8),
+            1 => Some(WINDOWSELECT_A::CYC16),
+            2 => Some(WINDOWSELECT_A::CYC32),
+            3 => Some(WINDOWSELECT_A::CYC64),
+            4 => Some(WINDOWSELECT_A::CYC128),
+            5 => Some(WINDOWSELECT_A::CYC256),
+            6 => Some(WINDOWSELECT_A::CYC512),
+            7 => Some(WINDOWSELECT_A::CYC1024),
+            8 => Some(WINDOWSELECT_A::CYC2048),
+            9 => Some(WINDOWSELECT_A::CYC4096),
+            10 => Some(WINDOWSELECT_A::CYC8192),
+            11 => Some(WINDOWSELECT_A::CYC16384),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `CYC8`"]
     #[inline(always)]
     pub fn is_cyc8(&self) -> bool {
-        **self == WINDOW_A::CYC8
+        *self == WINDOWSELECT_A::CYC8
     }
     #[doc = "Checks if the value of the field is `CYC16`"]
     #[inline(always)]
     pub fn is_cyc16(&self) -> bool {
-        **self == WINDOW_A::CYC16
+        *self == WINDOWSELECT_A::CYC16
     }
     #[doc = "Checks if the value of the field is `CYC32`"]
     #[inline(always)]
     pub fn is_cyc32(&self) -> bool {
-        **self == WINDOW_A::CYC32
+        *self == WINDOWSELECT_A::CYC32
     }
     #[doc = "Checks if the value of the field is `CYC64`"]
     #[inline(always)]
     pub fn is_cyc64(&self) -> bool {
-        **self == WINDOW_A::CYC64
+        *self == WINDOWSELECT_A::CYC64
     }
     #[doc = "Checks if the value of the field is `CYC128`"]
     #[inline(always)]
     pub fn is_cyc128(&self) -> bool {
-        **self == WINDOW_A::CYC128
+        *self == WINDOWSELECT_A::CYC128
     }
     #[doc = "Checks if the value of the field is `CYC256`"]
     #[inline(always)]
     pub fn is_cyc256(&self) -> bool {
-        **self == WINDOW_A::CYC256
+        *self == WINDOWSELECT_A::CYC256
     }
     #[doc = "Checks if the value of the field is `CYC512`"]
     #[inline(always)]
     pub fn is_cyc512(&self) -> bool {
-        **self == WINDOW_A::CYC512
+        *self == WINDOWSELECT_A::CYC512
     }
     #[doc = "Checks if the value of the field is `CYC1024`"]
     #[inline(always)]
     pub fn is_cyc1024(&self) -> bool {
-        **self == WINDOW_A::CYC1024
+        *self == WINDOWSELECT_A::CYC1024
     }
     #[doc = "Checks if the value of the field is `CYC2048`"]
     #[inline(always)]
     pub fn is_cyc2048(&self) -> bool {
-        **self == WINDOW_A::CYC2048
+        *self == WINDOWSELECT_A::CYC2048
     }
     #[doc = "Checks if the value of the field is `CYC4096`"]
     #[inline(always)]
     pub fn is_cyc4096(&self) -> bool {
-        **self == WINDOW_A::CYC4096
+        *self == WINDOWSELECT_A::CYC4096
     }
     #[doc = "Checks if the value of the field is `CYC8192`"]
     #[inline(always)]
     pub fn is_cyc8192(&self) -> bool {
-        **self == WINDOW_A::CYC8192
+        *self == WINDOWSELECT_A::CYC8192
     }
     #[doc = "Checks if the value of the field is `CYC16384`"]
     #[inline(always)]
     pub fn is_cyc16384(&self) -> bool {
-        **self == WINDOW_A::CYC16384
-    }
-}
-impl core::ops::Deref for WINDOW_R {
-    type Target = crate::FieldReader<u8, WINDOW_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == WINDOWSELECT_A::CYC16384
     }
 }
 #[doc = "Field `WINDOW` writer - Window Mode Time-Out Period"]
-pub struct WINDOW_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WINDOW_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: WINDOW_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type WINDOW_W<'a, const O: u8> =
+    crate::FieldWriter<'a, u8, CONFIG_SPEC, u8, WINDOWSELECT_A, 4, O>;
+impl<'a, const O: u8> WINDOW_W<'a, O> {
     #[doc = "8 clock cycles"]
     #[inline(always)]
     pub fn cyc8(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC8)
+        self.variant(WINDOWSELECT_A::CYC8)
     }
     #[doc = "16 clock cycles"]
     #[inline(always)]
     pub fn cyc16(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC16)
+        self.variant(WINDOWSELECT_A::CYC16)
     }
     #[doc = "32 clock cycles"]
     #[inline(always)]
     pub fn cyc32(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC32)
+        self.variant(WINDOWSELECT_A::CYC32)
     }
     #[doc = "64 clock cycles"]
     #[inline(always)]
     pub fn cyc64(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC64)
+        self.variant(WINDOWSELECT_A::CYC64)
     }
     #[doc = "128 clock cycles"]
     #[inline(always)]
     pub fn cyc128(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC128)
+        self.variant(WINDOWSELECT_A::CYC128)
     }
     #[doc = "256 clock cycles"]
     #[inline(always)]
     pub fn cyc256(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC256)
+        self.variant(WINDOWSELECT_A::CYC256)
     }
     #[doc = "512 clock cycles"]
     #[inline(always)]
     pub fn cyc512(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC512)
+        self.variant(WINDOWSELECT_A::CYC512)
     }
     #[doc = "1024 clock cycles"]
     #[inline(always)]
     pub fn cyc1024(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC1024)
+        self.variant(WINDOWSELECT_A::CYC1024)
     }
     #[doc = "2048 clock cycles"]
     #[inline(always)]
     pub fn cyc2048(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC2048)
+        self.variant(WINDOWSELECT_A::CYC2048)
     }
     #[doc = "4096 clock cycles"]
     #[inline(always)]
     pub fn cyc4096(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC4096)
+        self.variant(WINDOWSELECT_A::CYC4096)
     }
     #[doc = "8192 clock cycles"]
     #[inline(always)]
     pub fn cyc8192(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC8192)
+        self.variant(WINDOWSELECT_A::CYC8192)
     }
     #[doc = "16384 clock cycles"]
     #[inline(always)]
     pub fn cyc16384(self) -> &'a mut W {
-        self.variant(WINDOW_A::CYC16384)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 4)) | ((value as u8 & 0x0f) << 4);
-        self.w
+        self.variant(WINDOWSELECT_A::CYC16384)
     }
 }
 impl R {
     #[doc = "Bits 0:3 - Time-Out Period"]
     #[inline(always)]
     pub fn per(&self) -> PER_R {
-        PER_R::new((self.bits & 0x0f) as u8)
+        PER_R::new(self.bits & 0x0f)
     }
     #[doc = "Bits 4:7 - Window Mode Time-Out Period"]
     #[inline(always)]
     pub fn window(&self) -> WINDOW_R {
-        WINDOW_R::new(((self.bits >> 4) & 0x0f) as u8)
+        WINDOW_R::new((self.bits >> 4) & 0x0f)
     }
 }
 impl W {
     #[doc = "Bits 0:3 - Time-Out Period"]
     #[inline(always)]
-    pub fn per(&mut self) -> PER_W {
-        PER_W { w: self }
+    #[must_use]
+    pub fn per(&mut self) -> PER_W<0> {
+        PER_W::new(self)
     }
     #[doc = "Bits 4:7 - Window Mode Time-Out Period"]
     #[inline(always)]
-    pub fn window(&mut self) -> WINDOW_W {
-        WINDOW_W { w: self }
+    #[must_use]
+    pub fn window(&mut self) -> WINDOW_W<4> {
+        WINDOW_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -488,11 +443,10 @@ impl crate::Readable for CONFIG_SPEC {
 #[doc = "`write(|w| ..)` method takes [config::W](W) writer structure"]
 impl crate::Writable for CONFIG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CONFIG to value 0xbb"]
 impl crate::Resettable for CONFIG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0xbb
-    }
+    const RESET_VALUE: Self::Ux = 0xbb;
 }

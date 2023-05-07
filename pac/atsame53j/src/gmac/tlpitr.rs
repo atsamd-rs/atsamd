@@ -14,20 +14,7 @@ impl From<crate::R<TLPITR_SPEC>> for R {
     }
 }
 #[doc = "Field `TLPITR` reader - Count number of times enable LPI tx bit 20 goes from low to high"]
-pub struct TLPITR_R(crate::FieldReader<u16, u16>);
-impl TLPITR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        TLPITR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TLPITR_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TLPITR_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:15 - Count number of times enable LPI tx bit 20 goes from low to high"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for TLPITR_SPEC {
 }
 #[doc = "`reset()` method sets TLPITR to value 0"]
 impl crate::Resettable for TLPITR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

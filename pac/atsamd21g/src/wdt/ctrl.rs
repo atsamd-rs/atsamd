@@ -35,148 +35,52 @@ impl From<crate::W<CTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `ENABLE` reader - Enable"]
-pub struct ENABLE_R(crate::FieldReader<bool, bool>);
-impl ENABLE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENABLE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENABLE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ENABLE_R = crate::BitReader<bool>;
 #[doc = "Field `ENABLE` writer - Enable"]
-pub struct ENABLE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ENABLE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type ENABLE_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRL_SPEC, bool, O>;
 #[doc = "Field `WEN` reader - Watchdog Timer Window Mode Enable"]
-pub struct WEN_R(crate::FieldReader<bool, bool>);
-impl WEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WEN_R = crate::BitReader<bool>;
 #[doc = "Field `WEN` writer - Watchdog Timer Window Mode Enable"]
-pub struct WEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type WEN_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRL_SPEC, bool, O>;
 #[doc = "Field `ALWAYSON` reader - Always-On"]
-pub struct ALWAYSON_R(crate::FieldReader<bool, bool>);
-impl ALWAYSON_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ALWAYSON_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ALWAYSON_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ALWAYSON_R = crate::BitReader<bool>;
 #[doc = "Field `ALWAYSON` writer - Always-On"]
-pub struct ALWAYSON_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ALWAYSON_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type ALWAYSON_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
+        ENABLE_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Watchdog Timer Window Mode Enable"]
     #[inline(always)]
     pub fn wen(&self) -> WEN_R {
-        WEN_R::new(((self.bits >> 2) & 0x01) != 0)
+        WEN_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 7 - Always-On"]
     #[inline(always)]
     pub fn alwayson(&self) -> ALWAYSON_R {
-        ALWAYSON_R::new(((self.bits >> 7) & 0x01) != 0)
+        ALWAYSON_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    pub fn enable(&mut self) -> ENABLE_W {
-        ENABLE_W { w: self }
+    #[must_use]
+    pub fn enable(&mut self) -> ENABLE_W<1> {
+        ENABLE_W::new(self)
     }
     #[doc = "Bit 2 - Watchdog Timer Window Mode Enable"]
     #[inline(always)]
-    pub fn wen(&mut self) -> WEN_W {
-        WEN_W { w: self }
+    #[must_use]
+    pub fn wen(&mut self) -> WEN_W<2> {
+        WEN_W::new(self)
     }
     #[doc = "Bit 7 - Always-On"]
     #[inline(always)]
-    pub fn alwayson(&mut self) -> ALWAYSON_W {
-        ALWAYSON_W { w: self }
+    #[must_use]
+    pub fn alwayson(&mut self) -> ALWAYSON_W<7> {
+        ALWAYSON_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -197,11 +101,10 @@ impl crate::Readable for CTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [ctrl::W](W) writer structure"]
 impl crate::Writable for CTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRL to value 0"]
 impl crate::Resettable for CTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -34,102 +34,69 @@ impl From<crate::W<CC2R_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `FSDCLKD` reader - Force SDCK Disabled"]
+pub type FSDCLKD_R = crate::BitReader<FSDCLKDSELECT_A>;
 #[doc = "Force SDCK Disabled\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum FSDCLKD_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum FSDCLKDSELECT_A {
     #[doc = "0: No effect"]
     NOEFFECT = 0,
     #[doc = "1: SDCLK can be stopped at any time after DATA transfer.SDCLK enable forcing for 8 SDCLK cycles is disabled"]
     DISABLE = 1,
 }
-impl From<FSDCLKD_A> for bool {
+impl From<FSDCLKDSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: FSDCLKD_A) -> Self {
+    fn from(variant: FSDCLKDSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `FSDCLKD` reader - Force SDCK Disabled"]
-pub struct FSDCLKD_R(crate::FieldReader<bool, FSDCLKD_A>);
 impl FSDCLKD_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FSDCLKD_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> FSDCLKD_A {
+    pub fn variant(&self) -> FSDCLKDSELECT_A {
         match self.bits {
-            false => FSDCLKD_A::NOEFFECT,
-            true => FSDCLKD_A::DISABLE,
+            false => FSDCLKDSELECT_A::NOEFFECT,
+            true => FSDCLKDSELECT_A::DISABLE,
         }
     }
     #[doc = "Checks if the value of the field is `NOEFFECT`"]
     #[inline(always)]
     pub fn is_noeffect(&self) -> bool {
-        **self == FSDCLKD_A::NOEFFECT
+        *self == FSDCLKDSELECT_A::NOEFFECT
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        **self == FSDCLKD_A::DISABLE
-    }
-}
-impl core::ops::Deref for FSDCLKD_R {
-    type Target = crate::FieldReader<bool, FSDCLKD_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == FSDCLKDSELECT_A::DISABLE
     }
 }
 #[doc = "Field `FSDCLKD` writer - Force SDCK Disabled"]
-pub struct FSDCLKD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FSDCLKD_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: FSDCLKD_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type FSDCLKD_W<'a, const O: u8> = crate::BitWriter<'a, u32, CC2R_SPEC, FSDCLKDSELECT_A, O>;
+impl<'a, const O: u8> FSDCLKD_W<'a, O> {
     #[doc = "No effect"]
     #[inline(always)]
     pub fn noeffect(self) -> &'a mut W {
-        self.variant(FSDCLKD_A::NOEFFECT)
+        self.variant(FSDCLKDSELECT_A::NOEFFECT)
     }
     #[doc = "SDCLK can be stopped at any time after DATA transfer.SDCLK enable forcing for 8 SDCLK cycles is disabled"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(FSDCLKD_A::DISABLE)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
+        self.variant(FSDCLKDSELECT_A::DISABLE)
     }
 }
 impl R {
     #[doc = "Bit 0 - Force SDCK Disabled"]
     #[inline(always)]
     pub fn fsdclkd(&self) -> FSDCLKD_R {
-        FSDCLKD_R::new((self.bits & 0x01) != 0)
+        FSDCLKD_R::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Force SDCK Disabled"]
     #[inline(always)]
-    pub fn fsdclkd(&mut self) -> FSDCLKD_W {
-        FSDCLKD_W { w: self }
+    #[must_use]
+    pub fn fsdclkd(&mut self) -> FSDCLKD_W<0> {
+        FSDCLKD_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +117,10 @@ impl crate::Readable for CC2R_SPEC {
 #[doc = "`write(|w| ..)` method takes [cc2r::W](W) writer structure"]
 impl crate::Writable for CC2R_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CC2R to value 0"]
 impl crate::Resettable for CC2R_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

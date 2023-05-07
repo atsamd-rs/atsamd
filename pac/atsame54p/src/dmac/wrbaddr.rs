@@ -35,44 +35,22 @@ impl From<crate::W<WRBADDR_SPEC>> for W {
     }
 }
 #[doc = "Field `WRBADDR` reader - Write-Back Memory Base Address"]
-pub struct WRBADDR_R(crate::FieldReader<u32, u32>);
-impl WRBADDR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        WRBADDR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WRBADDR_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WRBADDR_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `WRBADDR` writer - Write-Back Memory Base Address"]
-pub struct WRBADDR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WRBADDR_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = value as u32;
-        self.w
-    }
-}
+pub type WRBADDR_W<'a, const O: u8> = crate::FieldWriter<'a, u32, WRBADDR_SPEC, u32, u32, 32, O>;
 impl R {
     #[doc = "Bits 0:31 - Write-Back Memory Base Address"]
     #[inline(always)]
     pub fn wrbaddr(&self) -> WRBADDR_R {
-        WRBADDR_R::new(self.bits as u32)
+        WRBADDR_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Write-Back Memory Base Address"]
     #[inline(always)]
-    pub fn wrbaddr(&mut self) -> WRBADDR_W {
-        WRBADDR_W { w: self }
+    #[must_use]
+    pub fn wrbaddr(&mut self) -> WRBADDR_W<0> {
+        WRBADDR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for WRBADDR_SPEC {
 #[doc = "`write(|w| ..)` method takes [wrbaddr::W](W) writer structure"]
 impl crate::Writable for WRBADDR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets WRBADDR to value 0"]
 impl crate::Resettable for WRBADDR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

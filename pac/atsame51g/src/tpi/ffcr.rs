@@ -35,101 +35,37 @@ impl From<crate::W<FFCR_SPEC>> for W {
     }
 }
 #[doc = "Field `EnFCont` reader - "]
-pub struct ENFCONT_R(crate::FieldReader<bool, bool>);
-impl ENFCONT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENFCONT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENFCONT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EN_FCONT_R = crate::BitReader<bool>;
 #[doc = "Field `EnFCont` writer - "]
-pub struct ENFCONT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ENFCONT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type EN_FCONT_W<'a, const O: u8> = crate::BitWriter<'a, u32, FFCR_SPEC, bool, O>;
 #[doc = "Field `TrigIn` reader - "]
-pub struct TRIGIN_R(crate::FieldReader<bool, bool>);
-impl TRIGIN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TRIGIN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TRIGIN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TRIG_IN_R = crate::BitReader<bool>;
 #[doc = "Field `TrigIn` writer - "]
-pub struct TRIGIN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TRIGIN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
-        self.w
-    }
-}
+pub type TRIG_IN_W<'a, const O: u8> = crate::BitWriter<'a, u32, FFCR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 1"]
     #[inline(always)]
-    pub fn en_fcont(&self) -> ENFCONT_R {
-        ENFCONT_R::new(((self.bits >> 1) & 0x01) != 0)
+    pub fn en_fcont(&self) -> EN_FCONT_R {
+        EN_FCONT_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 8"]
     #[inline(always)]
-    pub fn trig_in(&self) -> TRIGIN_R {
-        TRIGIN_R::new(((self.bits >> 8) & 0x01) != 0)
+    pub fn trig_in(&self) -> TRIG_IN_R {
+        TRIG_IN_R::new(((self.bits >> 8) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 1"]
     #[inline(always)]
-    pub fn en_fcont(&mut self) -> ENFCONT_W {
-        ENFCONT_W { w: self }
+    #[must_use]
+    pub fn en_fcont(&mut self) -> EN_FCONT_W<1> {
+        EN_FCONT_W::new(self)
     }
     #[doc = "Bit 8"]
     #[inline(always)]
-    pub fn trig_in(&mut self) -> TRIGIN_W {
-        TRIGIN_W { w: self }
+    #[must_use]
+    pub fn trig_in(&mut self) -> TRIG_IN_W<8> {
+        TRIG_IN_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for FFCR_SPEC {
 #[doc = "`write(|w| ..)` method takes [ffcr::W](W) writer structure"]
 impl crate::Writable for FFCR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets FFCR to value 0"]
 impl crate::Resettable for FFCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

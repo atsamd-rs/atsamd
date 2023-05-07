@@ -35,44 +35,22 @@ impl From<crate::W<DATABUF_SPEC>> for W {
     }
 }
 #[doc = "Field `DATABUF` reader - Data Buffer"]
-pub struct DATABUF_R(crate::FieldReader<u16, u16>);
-impl DATABUF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        DATABUF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DATABUF_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DATABUF_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `DATABUF` writer - Data Buffer"]
-pub struct DATABUF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DATABUF_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = value as u16;
-        self.w
-    }
-}
+pub type DATABUF_W<'a, const O: u8> = crate::FieldWriter<'a, u16, DATABUF_SPEC, u16, u16, 16, O>;
 impl R {
     #[doc = "Bits 0:15 - Data Buffer"]
     #[inline(always)]
     pub fn databuf(&self) -> DATABUF_R {
-        DATABUF_R::new(self.bits as u16)
+        DATABUF_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:15 - Data Buffer"]
     #[inline(always)]
-    pub fn databuf(&mut self) -> DATABUF_W {
-        DATABUF_W { w: self }
+    #[must_use]
+    pub fn databuf(&mut self) -> DATABUF_W<0> {
+        DATABUF_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for DATABUF_SPEC {
 #[doc = "`write(|w| ..)` method takes [databuf::W](W) writer structure"]
 impl crate::Writable for DATABUF_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets DATABUF to value 0"]
 impl crate::Resettable for DATABUF_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

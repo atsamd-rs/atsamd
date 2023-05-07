@@ -34,149 +34,84 @@ impl From<crate::W<BBPS_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `CONF` reader - Battery Backup Configuration"]
+pub type CONF_R = crate::BitReader<CONFSELECT_A>;
 #[doc = "Battery Backup Configuration\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CONF_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CONFSELECT_A {
     #[doc = "0: The power switch is handled by the BOD33"]
     BOD33 = 0,
     #[doc = "1: In Backup Domain, the backup domain is always supplied by battery backup power"]
     FORCED = 1,
 }
-impl From<CONF_A> for bool {
+impl From<CONFSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: CONF_A) -> Self {
+    fn from(variant: CONFSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `CONF` reader - Battery Backup Configuration"]
-pub struct CONF_R(crate::FieldReader<bool, CONF_A>);
 impl CONF_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CONF_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> CONF_A {
+    pub fn variant(&self) -> CONFSELECT_A {
         match self.bits {
-            false => CONF_A::BOD33,
-            true => CONF_A::FORCED,
+            false => CONFSELECT_A::BOD33,
+            true => CONFSELECT_A::FORCED,
         }
     }
     #[doc = "Checks if the value of the field is `BOD33`"]
     #[inline(always)]
     pub fn is_bod33(&self) -> bool {
-        **self == CONF_A::BOD33
+        *self == CONFSELECT_A::BOD33
     }
     #[doc = "Checks if the value of the field is `FORCED`"]
     #[inline(always)]
     pub fn is_forced(&self) -> bool {
-        **self == CONF_A::FORCED
-    }
-}
-impl core::ops::Deref for CONF_R {
-    type Target = crate::FieldReader<bool, CONF_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CONFSELECT_A::FORCED
     }
 }
 #[doc = "Field `CONF` writer - Battery Backup Configuration"]
-pub struct CONF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CONF_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CONF_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type CONF_W<'a, const O: u8> = crate::BitWriter<'a, u32, BBPS_SPEC, CONFSELECT_A, O>;
+impl<'a, const O: u8> CONF_W<'a, O> {
     #[doc = "The power switch is handled by the BOD33"]
     #[inline(always)]
     pub fn bod33(self) -> &'a mut W {
-        self.variant(CONF_A::BOD33)
+        self.variant(CONFSELECT_A::BOD33)
     }
     #[doc = "In Backup Domain, the backup domain is always supplied by battery backup power"]
     #[inline(always)]
     pub fn forced(self) -> &'a mut W {
-        self.variant(CONF_A::FORCED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
+        self.variant(CONFSELECT_A::FORCED)
     }
 }
 #[doc = "Field `WAKEEN` reader - Wake Enable"]
-pub struct WAKEEN_R(crate::FieldReader<bool, bool>);
-impl WAKEEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WAKEEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WAKEEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WAKEEN_R = crate::BitReader<bool>;
 #[doc = "Field `WAKEEN` writer - Wake Enable"]
-pub struct WAKEEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WAKEEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
-    }
-}
+pub type WAKEEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, BBPS_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Battery Backup Configuration"]
     #[inline(always)]
     pub fn conf(&self) -> CONF_R {
-        CONF_R::new((self.bits & 0x01) != 0)
+        CONF_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 2 - Wake Enable"]
     #[inline(always)]
     pub fn wakeen(&self) -> WAKEEN_R {
-        WAKEEN_R::new(((self.bits >> 2) & 0x01) != 0)
+        WAKEEN_R::new(((self.bits >> 2) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Battery Backup Configuration"]
     #[inline(always)]
-    pub fn conf(&mut self) -> CONF_W {
-        CONF_W { w: self }
+    #[must_use]
+    pub fn conf(&mut self) -> CONF_W<0> {
+        CONF_W::new(self)
     }
     #[doc = "Bit 2 - Wake Enable"]
     #[inline(always)]
-    pub fn wakeen(&mut self) -> WAKEEN_W {
-        WAKEEN_W { w: self }
+    #[must_use]
+    pub fn wakeen(&mut self) -> WAKEEN_W<2> {
+        WAKEEN_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -197,11 +132,10 @@ impl crate::Readable for BBPS_SPEC {
 #[doc = "`write(|w| ..)` method takes [bbps::W](W) writer structure"]
 impl crate::Writable for BBPS_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets BBPS to value 0"]
 impl crate::Resettable for BBPS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -35,195 +35,67 @@ impl From<crate::W<CTRLB_SPEC>> for W {
     }
 }
 #[doc = "Field `START` reader - Start Encryption/Decryption"]
-pub struct START_R(crate::FieldReader<bool, bool>);
-impl START_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        START_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for START_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type START_R = crate::BitReader<bool>;
 #[doc = "Field `START` writer - Start Encryption/Decryption"]
-pub struct START_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> START_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type START_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
 #[doc = "Field `NEWMSG` reader - New message"]
-pub struct NEWMSG_R(crate::FieldReader<bool, bool>);
-impl NEWMSG_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        NEWMSG_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NEWMSG_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NEWMSG_R = crate::BitReader<bool>;
 #[doc = "Field `NEWMSG` writer - New message"]
-pub struct NEWMSG_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NEWMSG_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type NEWMSG_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
 #[doc = "Field `EOM` reader - End of message"]
-pub struct EOM_R(crate::FieldReader<bool, bool>);
-impl EOM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EOM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EOM_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EOM_R = crate::BitReader<bool>;
 #[doc = "Field `EOM` writer - End of message"]
-pub struct EOM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EOM_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type EOM_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
 #[doc = "Field `GFMUL` reader - GF Multiplication"]
-pub struct GFMUL_R(crate::FieldReader<bool, bool>);
-impl GFMUL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        GFMUL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for GFMUL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type GFMUL_R = crate::BitReader<bool>;
 #[doc = "Field `GFMUL` writer - GF Multiplication"]
-pub struct GFMUL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> GFMUL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
-        self.w
-    }
-}
+pub type GFMUL_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Start Encryption/Decryption"]
     #[inline(always)]
     pub fn start(&self) -> START_R {
-        START_R::new((self.bits & 0x01) != 0)
+        START_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - New message"]
     #[inline(always)]
     pub fn newmsg(&self) -> NEWMSG_R {
-        NEWMSG_R::new(((self.bits >> 1) & 0x01) != 0)
+        NEWMSG_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - End of message"]
     #[inline(always)]
     pub fn eom(&self) -> EOM_R {
-        EOM_R::new(((self.bits >> 2) & 0x01) != 0)
+        EOM_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - GF Multiplication"]
     #[inline(always)]
     pub fn gfmul(&self) -> GFMUL_R {
-        GFMUL_R::new(((self.bits >> 3) & 0x01) != 0)
+        GFMUL_R::new(((self.bits >> 3) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Start Encryption/Decryption"]
     #[inline(always)]
-    pub fn start(&mut self) -> START_W {
-        START_W { w: self }
+    #[must_use]
+    pub fn start(&mut self) -> START_W<0> {
+        START_W::new(self)
     }
     #[doc = "Bit 1 - New message"]
     #[inline(always)]
-    pub fn newmsg(&mut self) -> NEWMSG_W {
-        NEWMSG_W { w: self }
+    #[must_use]
+    pub fn newmsg(&mut self) -> NEWMSG_W<1> {
+        NEWMSG_W::new(self)
     }
     #[doc = "Bit 2 - End of message"]
     #[inline(always)]
-    pub fn eom(&mut self) -> EOM_W {
-        EOM_W { w: self }
+    #[must_use]
+    pub fn eom(&mut self) -> EOM_W<2> {
+        EOM_W::new(self)
     }
     #[doc = "Bit 3 - GF Multiplication"]
     #[inline(always)]
-    pub fn gfmul(&mut self) -> GFMUL_W {
-        GFMUL_W { w: self }
+    #[must_use]
+    pub fn gfmul(&mut self) -> GFMUL_W<3> {
+        GFMUL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -244,11 +116,10 @@ impl crate::Readable for CTRLB_SPEC {
 #[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
 impl crate::Resettable for CTRLB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

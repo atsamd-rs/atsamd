@@ -35,44 +35,22 @@ impl From<crate::W<GAINCORR_SPEC>> for W {
     }
 }
 #[doc = "Field `GAINCORR` reader - Gain Correction Value"]
-pub struct GAINCORR_R(crate::FieldReader<u16, u16>);
-impl GAINCORR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        GAINCORR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for GAINCORR_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type GAINCORR_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `GAINCORR` writer - Gain Correction Value"]
-pub struct GAINCORR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> GAINCORR_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0fff) | (value as u16 & 0x0fff);
-        self.w
-    }
-}
+pub type GAINCORR_W<'a, const O: u8> = crate::FieldWriter<'a, u16, GAINCORR_SPEC, u16, u16, 12, O>;
 impl R {
     #[doc = "Bits 0:11 - Gain Correction Value"]
     #[inline(always)]
     pub fn gaincorr(&self) -> GAINCORR_R {
-        GAINCORR_R::new((self.bits & 0x0fff) as u16)
+        GAINCORR_R::new(self.bits & 0x0fff)
     }
 }
 impl W {
     #[doc = "Bits 0:11 - Gain Correction Value"]
     #[inline(always)]
-    pub fn gaincorr(&mut self) -> GAINCORR_W {
-        GAINCORR_W { w: self }
+    #[must_use]
+    pub fn gaincorr(&mut self) -> GAINCORR_W<0> {
+        GAINCORR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for GAINCORR_SPEC {
 #[doc = "`write(|w| ..)` method takes [gaincorr::W](W) writer structure"]
 impl crate::Writable for GAINCORR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets GAINCORR to value 0"]
 impl crate::Resettable for GAINCORR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

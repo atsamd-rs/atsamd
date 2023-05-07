@@ -35,44 +35,22 @@ impl From<crate::W<TCR_SPEC>> for W {
     }
 }
 #[doc = "Field `DTCVAL` reader - Data Timeout Counter Value"]
-pub struct DTCVAL_R(crate::FieldReader<u8, u8>);
-impl DTCVAL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DTCVAL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DTCVAL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DTCVAL_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DTCVAL` writer - Data Timeout Counter Value"]
-pub struct DTCVAL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DTCVAL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u8 & 0x0f);
-        self.w
-    }
-}
+pub type DTCVAL_W<'a, const O: u8> = crate::FieldWriter<'a, u8, TCR_SPEC, u8, u8, 4, O>;
 impl R {
     #[doc = "Bits 0:3 - Data Timeout Counter Value"]
     #[inline(always)]
     pub fn dtcval(&self) -> DTCVAL_R {
-        DTCVAL_R::new((self.bits & 0x0f) as u8)
+        DTCVAL_R::new(self.bits & 0x0f)
     }
 }
 impl W {
     #[doc = "Bits 0:3 - Data Timeout Counter Value"]
     #[inline(always)]
-    pub fn dtcval(&mut self) -> DTCVAL_W {
-        DTCVAL_W { w: self }
+    #[must_use]
+    pub fn dtcval(&mut self) -> DTCVAL_W<0> {
+        DTCVAL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for TCR_SPEC {
 #[doc = "`write(|w| ..)` method takes [tcr::W](W) writer structure"]
 impl crate::Writable for TCR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TCR to value 0"]
 impl crate::Resettable for TCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

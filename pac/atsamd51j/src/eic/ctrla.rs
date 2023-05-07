@@ -35,195 +35,98 @@ impl From<crate::W<CTRLA_SPEC>> for W {
     }
 }
 #[doc = "Field `SWRST` reader - Software Reset"]
-pub struct SWRST_R(crate::FieldReader<bool, bool>);
-impl SWRST_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SWRST_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SWRST_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SWRST_R = crate::BitReader<bool>;
 #[doc = "Field `SWRST` writer - Software Reset"]
-pub struct SWRST_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SWRST_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type SWRST_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLA_SPEC, bool, O>;
 #[doc = "Field `ENABLE` reader - Enable"]
-pub struct ENABLE_R(crate::FieldReader<bool, bool>);
-impl ENABLE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENABLE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENABLE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ENABLE_R = crate::BitReader<bool>;
 #[doc = "Field `ENABLE` writer - Enable"]
-pub struct ENABLE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ENABLE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type ENABLE_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLA_SPEC, bool, O>;
+#[doc = "Field `CKSEL` reader - Clock Selection"]
+pub type CKSEL_R = crate::BitReader<CKSELSELECT_A>;
 #[doc = "Clock Selection\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CKSEL_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CKSELSELECT_A {
     #[doc = "0: Clocked by GCLK"]
     CLK_GCLK = 0,
     #[doc = "1: Clocked by ULP32K"]
     CLK_ULP32K = 1,
 }
-impl From<CKSEL_A> for bool {
+impl From<CKSELSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: CKSEL_A) -> Self {
+    fn from(variant: CKSELSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `CKSEL` reader - Clock Selection"]
-pub struct CKSEL_R(crate::FieldReader<bool, CKSEL_A>);
 impl CKSEL_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CKSEL_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> CKSEL_A {
+    pub fn variant(&self) -> CKSELSELECT_A {
         match self.bits {
-            false => CKSEL_A::CLK_GCLK,
-            true => CKSEL_A::CLK_ULP32K,
+            false => CKSELSELECT_A::CLK_GCLK,
+            true => CKSELSELECT_A::CLK_ULP32K,
         }
     }
     #[doc = "Checks if the value of the field is `CLK_GCLK`"]
     #[inline(always)]
     pub fn is_clk_gclk(&self) -> bool {
-        **self == CKSEL_A::CLK_GCLK
+        *self == CKSELSELECT_A::CLK_GCLK
     }
     #[doc = "Checks if the value of the field is `CLK_ULP32K`"]
     #[inline(always)]
     pub fn is_clk_ulp32k(&self) -> bool {
-        **self == CKSEL_A::CLK_ULP32K
-    }
-}
-impl core::ops::Deref for CKSEL_R {
-    type Target = crate::FieldReader<bool, CKSEL_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CKSELSELECT_A::CLK_ULP32K
     }
 }
 #[doc = "Field `CKSEL` writer - Clock Selection"]
-pub struct CKSEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CKSEL_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CKSEL_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type CKSEL_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLA_SPEC, CKSELSELECT_A, O>;
+impl<'a, const O: u8> CKSEL_W<'a, O> {
     #[doc = "Clocked by GCLK"]
     #[inline(always)]
     pub fn clk_gclk(self) -> &'a mut W {
-        self.variant(CKSEL_A::CLK_GCLK)
+        self.variant(CKSELSELECT_A::CLK_GCLK)
     }
     #[doc = "Clocked by ULP32K"]
     #[inline(always)]
     pub fn clk_ulp32k(self) -> &'a mut W {
-        self.variant(CKSEL_A::CLK_ULP32K)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
-        self.w
+        self.variant(CKSELSELECT_A::CLK_ULP32K)
     }
 }
 impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
     pub fn swrst(&self) -> SWRST_R {
-        SWRST_R::new((self.bits & 0x01) != 0)
+        SWRST_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
+        ENABLE_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 4 - Clock Selection"]
     #[inline(always)]
     pub fn cksel(&self) -> CKSEL_R {
-        CKSEL_R::new(((self.bits >> 4) & 0x01) != 0)
+        CKSEL_R::new(((self.bits >> 4) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    pub fn swrst(&mut self) -> SWRST_W {
-        SWRST_W { w: self }
+    #[must_use]
+    pub fn swrst(&mut self) -> SWRST_W<0> {
+        SWRST_W::new(self)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    pub fn enable(&mut self) -> ENABLE_W {
-        ENABLE_W { w: self }
+    #[must_use]
+    pub fn enable(&mut self) -> ENABLE_W<1> {
+        ENABLE_W::new(self)
     }
     #[doc = "Bit 4 - Clock Selection"]
     #[inline(always)]
-    pub fn cksel(&mut self) -> CKSEL_W {
-        CKSEL_W { w: self }
+    #[must_use]
+    pub fn cksel(&mut self) -> CKSEL_W<4> {
+        CKSEL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -244,11 +147,10 @@ impl crate::Readable for CTRLA_SPEC {
 #[doc = "`write(|w| ..)` method takes [ctrla::W](W) writer structure"]
 impl crate::Writable for CTRLA_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
 impl crate::Resettable for CTRLA_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -24,8 +24,5 @@ impl crate::Readable for ENTRY1_SPEC {
 }
 #[doc = "`reset()` method sets ENTRY1 to value 0"]
 impl crate::Resettable for ENTRY1_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

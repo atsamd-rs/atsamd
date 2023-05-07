@@ -35,101 +35,37 @@ impl From<crate::W<EVCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `CFDEO0` reader - Clock 0 Failure Detector Event Output Enable"]
-pub struct CFDEO0_R(crate::FieldReader<bool, bool>);
-impl CFDEO0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CFDEO0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CFDEO0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CFDEO0_R = crate::BitReader<bool>;
 #[doc = "Field `CFDEO0` writer - Clock 0 Failure Detector Event Output Enable"]
-pub struct CFDEO0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CFDEO0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type CFDEO0_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `CFDEO1` reader - Clock 1 Failure Detector Event Output Enable"]
-pub struct CFDEO1_R(crate::FieldReader<bool, bool>);
-impl CFDEO1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CFDEO1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CFDEO1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CFDEO1_R = crate::BitReader<bool>;
 #[doc = "Field `CFDEO1` writer - Clock 1 Failure Detector Event Output Enable"]
-pub struct CFDEO1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CFDEO1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type CFDEO1_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Clock 0 Failure Detector Event Output Enable"]
     #[inline(always)]
     pub fn cfdeo0(&self) -> CFDEO0_R {
-        CFDEO0_R::new((self.bits & 0x01) != 0)
+        CFDEO0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Clock 1 Failure Detector Event Output Enable"]
     #[inline(always)]
     pub fn cfdeo1(&self) -> CFDEO1_R {
-        CFDEO1_R::new(((self.bits >> 1) & 0x01) != 0)
+        CFDEO1_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Clock 0 Failure Detector Event Output Enable"]
     #[inline(always)]
-    pub fn cfdeo0(&mut self) -> CFDEO0_W {
-        CFDEO0_W { w: self }
+    #[must_use]
+    pub fn cfdeo0(&mut self) -> CFDEO0_W<0> {
+        CFDEO0_W::new(self)
     }
     #[doc = "Bit 1 - Clock 1 Failure Detector Event Output Enable"]
     #[inline(always)]
-    pub fn cfdeo1(&mut self) -> CFDEO1_W {
-        CFDEO1_W { w: self }
+    #[must_use]
+    pub fn cfdeo1(&mut self) -> CFDEO1_W<1> {
+        CFDEO1_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for EVCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
 impl crate::Resettable for EVCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

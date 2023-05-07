@@ -14,35 +14,9 @@ impl From<crate::R<PID4_SPEC>> for R {
     }
 }
 #[doc = "Field `JEPCC` reader - JEP-106 Continuation Code"]
-pub struct JEPCC_R(crate::FieldReader<u8, u8>);
-impl JEPCC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        JEPCC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for JEPCC_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type JEPCC_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `FKBC` reader - 4KB count"]
-pub struct FKBC_R(crate::FieldReader<u8, u8>);
-impl FKBC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        FKBC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FKBC_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FKBC_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:3 - JEP-106 Continuation Code"]
     #[inline(always)]
@@ -66,8 +40,5 @@ impl crate::Readable for PID4_SPEC {
 }
 #[doc = "`reset()` method sets PID4 to value 0"]
 impl crate::Resettable for PID4_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

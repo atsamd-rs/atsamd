@@ -35,54 +35,22 @@ impl From<crate::W<UR_SPEC>> for W {
     }
 }
 #[doc = "Field `MII` reader - MII Mode"]
-pub struct MII_R(crate::FieldReader<bool, bool>);
-impl MII_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        MII_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for MII_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type MII_R = crate::BitReader<bool>;
 #[doc = "Field `MII` writer - MII Mode"]
-pub struct MII_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> MII_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type MII_W<'a, const O: u8> = crate::BitWriter<'a, u32, UR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - MII Mode"]
     #[inline(always)]
     pub fn mii(&self) -> MII_R {
-        MII_R::new((self.bits & 0x01) != 0)
+        MII_R::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - MII Mode"]
     #[inline(always)]
-    pub fn mii(&mut self) -> MII_W {
-        MII_W { w: self }
+    #[must_use]
+    pub fn mii(&mut self) -> MII_W<0> {
+        MII_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -103,11 +71,10 @@ impl crate::Readable for UR_SPEC {
 #[doc = "`write(|w| ..)` method takes [ur::W](W) writer structure"]
 impl crate::Writable for UR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets UR to value 0"]
 impl crate::Resettable for UR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

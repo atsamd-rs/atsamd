@@ -35,165 +35,60 @@ impl From<crate::W<CTRLB_SPEC>> for W {
     }
 }
 #[doc = "Field `SMEN` reader - Smart Mode Enable"]
-pub struct SMEN_R(crate::FieldReader<bool, bool>);
-impl SMEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SMEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SMEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SMEN_R = crate::BitReader<bool>;
 #[doc = "Field `SMEN` writer - Smart Mode Enable"]
-pub struct SMEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SMEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
-        self.w
-    }
-}
+pub type SMEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `QCEN` reader - Quick Command Enable"]
-pub struct QCEN_R(crate::FieldReader<bool, bool>);
-impl QCEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        QCEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for QCEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type QCEN_R = crate::BitReader<bool>;
 #[doc = "Field `QCEN` writer - Quick Command Enable"]
-pub struct QCEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> QCEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u32 & 0x01) << 9);
-        self.w
-    }
-}
+pub type QCEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `CMD` writer - Command"]
-pub struct CMD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CMD_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 16)) | ((value as u32 & 0x03) << 16);
-        self.w
-    }
-}
+pub type CMD_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLB_SPEC, u8, u8, 2, O>;
 #[doc = "Field `ACKACT` reader - Acknowledge Action"]
-pub struct ACKACT_R(crate::FieldReader<bool, bool>);
-impl ACKACT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ACKACT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ACKACT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ACKACT_R = crate::BitReader<bool>;
 #[doc = "Field `ACKACT` writer - Acknowledge Action"]
-pub struct ACKACT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ACKACT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 18)) | ((value as u32 & 0x01) << 18);
-        self.w
-    }
-}
+pub type ACKACT_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 8 - Smart Mode Enable"]
     #[inline(always)]
     pub fn smen(&self) -> SMEN_R {
-        SMEN_R::new(((self.bits >> 8) & 0x01) != 0)
+        SMEN_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Quick Command Enable"]
     #[inline(always)]
     pub fn qcen(&self) -> QCEN_R {
-        QCEN_R::new(((self.bits >> 9) & 0x01) != 0)
+        QCEN_R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 18 - Acknowledge Action"]
     #[inline(always)]
     pub fn ackact(&self) -> ACKACT_R {
-        ACKACT_R::new(((self.bits >> 18) & 0x01) != 0)
+        ACKACT_R::new(((self.bits >> 18) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 8 - Smart Mode Enable"]
     #[inline(always)]
-    pub fn smen(&mut self) -> SMEN_W {
-        SMEN_W { w: self }
+    #[must_use]
+    pub fn smen(&mut self) -> SMEN_W<8> {
+        SMEN_W::new(self)
     }
     #[doc = "Bit 9 - Quick Command Enable"]
     #[inline(always)]
-    pub fn qcen(&mut self) -> QCEN_W {
-        QCEN_W { w: self }
+    #[must_use]
+    pub fn qcen(&mut self) -> QCEN_W<9> {
+        QCEN_W::new(self)
     }
     #[doc = "Bits 16:17 - Command"]
     #[inline(always)]
-    pub fn cmd(&mut self) -> CMD_W {
-        CMD_W { w: self }
+    #[must_use]
+    pub fn cmd(&mut self) -> CMD_W<16> {
+        CMD_W::new(self)
     }
     #[doc = "Bit 18 - Acknowledge Action"]
     #[inline(always)]
-    pub fn ackact(&mut self) -> ACKACT_W {
-        ACKACT_W { w: self }
+    #[must_use]
+    pub fn ackact(&mut self) -> ACKACT_W<18> {
+        ACKACT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -214,11 +109,10 @@ impl crate::Readable for CTRLB_SPEC {
 #[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
 impl crate::Resettable for CTRLB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

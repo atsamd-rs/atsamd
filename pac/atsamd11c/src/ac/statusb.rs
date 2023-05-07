@@ -14,65 +14,26 @@ impl From<crate::R<STATUSB_SPEC>> for R {
     }
 }
 #[doc = "Field `READY0` reader - Comparator 0 Ready"]
-pub struct READY0_R(crate::FieldReader<bool, bool>);
-impl READY0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        READY0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for READY0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type READY0_R = crate::BitReader<bool>;
 #[doc = "Field `READY1` reader - Comparator 1 Ready"]
-pub struct READY1_R(crate::FieldReader<bool, bool>);
-impl READY1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        READY1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for READY1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type READY1_R = crate::BitReader<bool>;
 #[doc = "Field `SYNCBUSY` reader - Synchronization Busy"]
-pub struct SYNCBUSY_R(crate::FieldReader<bool, bool>);
-impl SYNCBUSY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SYNCBUSY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SYNCBUSY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SYNCBUSY_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bit 0 - Comparator 0 Ready"]
     #[inline(always)]
     pub fn ready0(&self) -> READY0_R {
-        READY0_R::new((self.bits & 0x01) != 0)
+        READY0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Comparator 1 Ready"]
     #[inline(always)]
     pub fn ready1(&self) -> READY1_R {
-        READY1_R::new(((self.bits >> 1) & 0x01) != 0)
+        READY1_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 7 - Synchronization Busy"]
     #[inline(always)]
     pub fn syncbusy(&self) -> SYNCBUSY_R {
-        SYNCBUSY_R::new(((self.bits >> 7) & 0x01) != 0)
+        SYNCBUSY_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 #[doc = "Status B\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusb](index.html) module"]
@@ -86,8 +47,5 @@ impl crate::Readable for STATUSB_SPEC {
 }
 #[doc = "`reset()` method sets STATUSB to value 0"]
 impl crate::Resettable for STATUSB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

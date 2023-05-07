@@ -35,195 +35,67 @@ impl From<crate::W<RSR_SPEC>> for W {
     }
 }
 #[doc = "Field `BNA` reader - Buffer Not Available"]
-pub struct BNA_R(crate::FieldReader<bool, bool>);
-impl BNA_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BNA_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BNA_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BNA_R = crate::BitReader<bool>;
 #[doc = "Field `BNA` writer - Buffer Not Available"]
-pub struct BNA_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BNA_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type BNA_W<'a, const O: u8> = crate::BitWriter<'a, u32, RSR_SPEC, bool, O>;
 #[doc = "Field `REC` reader - Frame Received"]
-pub struct REC_R(crate::FieldReader<bool, bool>);
-impl REC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        REC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for REC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type REC_R = crate::BitReader<bool>;
 #[doc = "Field `REC` writer - Frame Received"]
-pub struct REC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> REC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type REC_W<'a, const O: u8> = crate::BitWriter<'a, u32, RSR_SPEC, bool, O>;
 #[doc = "Field `RXOVR` reader - Receive Overrun"]
-pub struct RXOVR_R(crate::FieldReader<bool, bool>);
-impl RXOVR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RXOVR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXOVR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXOVR_R = crate::BitReader<bool>;
 #[doc = "Field `RXOVR` writer - Receive Overrun"]
-pub struct RXOVR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RXOVR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
-    }
-}
+pub type RXOVR_W<'a, const O: u8> = crate::BitWriter<'a, u32, RSR_SPEC, bool, O>;
 #[doc = "Field `HNO` reader - HRESP Not OK"]
-pub struct HNO_R(crate::FieldReader<bool, bool>);
-impl HNO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        HNO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for HNO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type HNO_R = crate::BitReader<bool>;
 #[doc = "Field `HNO` writer - HRESP Not OK"]
-pub struct HNO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> HNO_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
-        self.w
-    }
-}
+pub type HNO_W<'a, const O: u8> = crate::BitWriter<'a, u32, RSR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Buffer Not Available"]
     #[inline(always)]
     pub fn bna(&self) -> BNA_R {
-        BNA_R::new((self.bits & 0x01) != 0)
+        BNA_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Frame Received"]
     #[inline(always)]
     pub fn rec(&self) -> REC_R {
-        REC_R::new(((self.bits >> 1) & 0x01) != 0)
+        REC_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Receive Overrun"]
     #[inline(always)]
     pub fn rxovr(&self) -> RXOVR_R {
-        RXOVR_R::new(((self.bits >> 2) & 0x01) != 0)
+        RXOVR_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - HRESP Not OK"]
     #[inline(always)]
     pub fn hno(&self) -> HNO_R {
-        HNO_R::new(((self.bits >> 3) & 0x01) != 0)
+        HNO_R::new(((self.bits >> 3) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Buffer Not Available"]
     #[inline(always)]
-    pub fn bna(&mut self) -> BNA_W {
-        BNA_W { w: self }
+    #[must_use]
+    pub fn bna(&mut self) -> BNA_W<0> {
+        BNA_W::new(self)
     }
     #[doc = "Bit 1 - Frame Received"]
     #[inline(always)]
-    pub fn rec(&mut self) -> REC_W {
-        REC_W { w: self }
+    #[must_use]
+    pub fn rec(&mut self) -> REC_W<1> {
+        REC_W::new(self)
     }
     #[doc = "Bit 2 - Receive Overrun"]
     #[inline(always)]
-    pub fn rxovr(&mut self) -> RXOVR_W {
-        RXOVR_W { w: self }
+    #[must_use]
+    pub fn rxovr(&mut self) -> RXOVR_W<2> {
+        RXOVR_W::new(self)
     }
     #[doc = "Bit 3 - HRESP Not OK"]
     #[inline(always)]
-    pub fn hno(&mut self) -> HNO_W {
-        HNO_W { w: self }
+    #[must_use]
+    pub fn hno(&mut self) -> HNO_W<3> {
+        HNO_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -244,11 +116,10 @@ impl crate::Readable for RSR_SPEC {
 #[doc = "`write(|w| ..)` method takes [rsr::W](W) writer structure"]
 impl crate::Writable for RSR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets RSR to value 0"]
 impl crate::Resettable for RSR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

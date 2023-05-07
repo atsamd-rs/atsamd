@@ -35,101 +35,37 @@ impl From<crate::W<SWTRIG_SPEC>> for W {
     }
 }
 #[doc = "Field `FLUSH` reader - ADC Conversion Flush"]
-pub struct FLUSH_R(crate::FieldReader<bool, bool>);
-impl FLUSH_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FLUSH_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FLUSH_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FLUSH_R = crate::BitReader<bool>;
 #[doc = "Field `FLUSH` writer - ADC Conversion Flush"]
-pub struct FLUSH_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FLUSH_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type FLUSH_W<'a, const O: u8> = crate::BitWriter<'a, u8, SWTRIG_SPEC, bool, O>;
 #[doc = "Field `START` reader - Start ADC Conversion"]
-pub struct START_R(crate::FieldReader<bool, bool>);
-impl START_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        START_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for START_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type START_R = crate::BitReader<bool>;
 #[doc = "Field `START` writer - Start ADC Conversion"]
-pub struct START_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> START_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type START_W<'a, const O: u8> = crate::BitWriter<'a, u8, SWTRIG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - ADC Conversion Flush"]
     #[inline(always)]
     pub fn flush(&self) -> FLUSH_R {
-        FLUSH_R::new((self.bits & 0x01) != 0)
+        FLUSH_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Start ADC Conversion"]
     #[inline(always)]
     pub fn start(&self) -> START_R {
-        START_R::new(((self.bits >> 1) & 0x01) != 0)
+        START_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - ADC Conversion Flush"]
     #[inline(always)]
-    pub fn flush(&mut self) -> FLUSH_W {
-        FLUSH_W { w: self }
+    #[must_use]
+    pub fn flush(&mut self) -> FLUSH_W<0> {
+        FLUSH_W::new(self)
     }
     #[doc = "Bit 1 - Start ADC Conversion"]
     #[inline(always)]
-    pub fn start(&mut self) -> START_W {
-        START_W { w: self }
+    #[must_use]
+    pub fn start(&mut self) -> START_W<1> {
+        START_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for SWTRIG_SPEC {
 #[doc = "`write(|w| ..)` method takes [swtrig::W](W) writer structure"]
 impl crate::Writable for SWTRIG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets SWTRIG to value 0"]
 impl crate::Resettable for SWTRIG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

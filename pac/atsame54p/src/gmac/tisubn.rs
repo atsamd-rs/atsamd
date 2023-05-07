@@ -35,32 +35,9 @@ impl From<crate::W<TISUBN_SPEC>> for W {
     }
 }
 #[doc = "Field `LSBTIR` reader - Lower Significant Bits of Timer Increment"]
-pub struct LSBTIR_R(crate::FieldReader<u16, u16>);
-impl LSBTIR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        LSBTIR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LSBTIR_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LSBTIR_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `LSBTIR` writer - Lower Significant Bits of Timer Increment"]
-pub struct LSBTIR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LSBTIR_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
-        self.w
-    }
-}
+pub type LSBTIR_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TISUBN_SPEC, u16, u16, 16, O>;
 impl R {
     #[doc = "Bits 0:15 - Lower Significant Bits of Timer Increment"]
     #[inline(always)]
@@ -71,8 +48,9 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Lower Significant Bits of Timer Increment"]
     #[inline(always)]
-    pub fn lsbtir(&mut self) -> LSBTIR_W {
-        LSBTIR_W { w: self }
+    #[must_use]
+    pub fn lsbtir(&mut self) -> LSBTIR_W<0> {
+        LSBTIR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -94,11 +72,10 @@ impl crate::Readable for TISUBN_SPEC {
 #[doc = "`write(|w| ..)` method takes [tisubn::W](W) writer structure"]
 impl crate::Writable for TISUBN_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TISUBN to value 0"]
 impl crate::Resettable for TISUBN_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

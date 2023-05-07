@@ -14,20 +14,7 @@ impl From<crate::R<PINSTATE_SPEC>> for R {
     }
 }
 #[doc = "Field `PINSTATE` reader - Pin State"]
-pub struct PINSTATE_R(crate::FieldReader<u16, u16>);
-impl PINSTATE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        PINSTATE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PINSTATE_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PINSTATE_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:15 - Pin State"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for PINSTATE_SPEC {
 }
 #[doc = "`reset()` method sets PINSTATE to value 0"]
 impl crate::Resettable for PINSTATE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

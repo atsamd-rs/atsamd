@@ -14,55 +14,16 @@ impl From<crate::R<SR_SPEC>> for R {
     }
 }
 #[doc = "Field `ENABLE` reader - ICM Controller Enable Register"]
-pub struct ENABLE_R(crate::FieldReader<bool, bool>);
-impl ENABLE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENABLE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENABLE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ENABLE_R = crate::BitReader<bool>;
 #[doc = "Field `RAWRMDIS` reader - RAW Region Monitoring Disabled Status"]
-pub struct RAWRMDIS_R(crate::FieldReader<u8, u8>);
-impl RAWRMDIS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        RAWRMDIS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RAWRMDIS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RAWRMDIS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `RMDIS` reader - Region Monitoring Disabled Status"]
-pub struct RMDIS_R(crate::FieldReader<u8, u8>);
-impl RMDIS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        RMDIS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RMDIS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RMDIS_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bit 0 - ICM Controller Enable Register"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new((self.bits & 0x01) != 0)
+        ENABLE_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bits 8:11 - RAW Region Monitoring Disabled Status"]
     #[inline(always)]
@@ -86,8 +47,5 @@ impl crate::Readable for SR_SPEC {
 }
 #[doc = "`reset()` method sets SR to value 0"]
 impl crate::Resettable for SR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

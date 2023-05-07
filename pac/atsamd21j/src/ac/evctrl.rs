@@ -35,242 +35,82 @@ impl From<crate::W<EVCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `COMPEO0` reader - Comparator 0 Event Output Enable"]
-pub struct COMPEO0_R(crate::FieldReader<bool, bool>);
-impl COMPEO0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        COMPEO0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COMPEO0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COMPEO0_R = crate::BitReader<bool>;
 #[doc = "Field `COMPEO0` writer - Comparator 0 Event Output Enable"]
-pub struct COMPEO0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COMPEO0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u16 & 0x01);
-        self.w
-    }
-}
+pub type COMPEO0_W<'a, const O: u8> = crate::BitWriter<'a, u16, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `COMPEO1` reader - Comparator 1 Event Output Enable"]
-pub struct COMPEO1_R(crate::FieldReader<bool, bool>);
-impl COMPEO1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        COMPEO1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COMPEO1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COMPEO1_R = crate::BitReader<bool>;
 #[doc = "Field `COMPEO1` writer - Comparator 1 Event Output Enable"]
-pub struct COMPEO1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COMPEO1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
-        self.w
-    }
-}
+pub type COMPEO1_W<'a, const O: u8> = crate::BitWriter<'a, u16, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `WINEO0` reader - Window 0 Event Output Enable"]
-pub struct WINEO0_R(crate::FieldReader<bool, bool>);
-impl WINEO0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WINEO0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WINEO0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WINEO0_R = crate::BitReader<bool>;
 #[doc = "Field `WINEO0` writer - Window 0 Event Output Enable"]
-pub struct WINEO0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WINEO0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
-        self.w
-    }
-}
+pub type WINEO0_W<'a, const O: u8> = crate::BitWriter<'a, u16, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `COMPEI0` reader - Comparator 0 Event Input"]
-pub struct COMPEI0_R(crate::FieldReader<bool, bool>);
-impl COMPEI0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        COMPEI0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COMPEI0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COMPEI0_R = crate::BitReader<bool>;
 #[doc = "Field `COMPEI0` writer - Comparator 0 Event Input"]
-pub struct COMPEI0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COMPEI0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u16 & 0x01) << 8);
-        self.w
-    }
-}
+pub type COMPEI0_W<'a, const O: u8> = crate::BitWriter<'a, u16, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `COMPEI1` reader - Comparator 1 Event Input"]
-pub struct COMPEI1_R(crate::FieldReader<bool, bool>);
-impl COMPEI1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        COMPEI1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COMPEI1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COMPEI1_R = crate::BitReader<bool>;
 #[doc = "Field `COMPEI1` writer - Comparator 1 Event Input"]
-pub struct COMPEI1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COMPEI1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u16 & 0x01) << 9);
-        self.w
-    }
-}
+pub type COMPEI1_W<'a, const O: u8> = crate::BitWriter<'a, u16, EVCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Comparator 0 Event Output Enable"]
     #[inline(always)]
     pub fn compeo0(&self) -> COMPEO0_R {
-        COMPEO0_R::new((self.bits & 0x01) != 0)
+        COMPEO0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Comparator 1 Event Output Enable"]
     #[inline(always)]
     pub fn compeo1(&self) -> COMPEO1_R {
-        COMPEO1_R::new(((self.bits >> 1) & 0x01) != 0)
+        COMPEO1_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 4 - Window 0 Event Output Enable"]
     #[inline(always)]
     pub fn wineo0(&self) -> WINEO0_R {
-        WINEO0_R::new(((self.bits >> 4) & 0x01) != 0)
+        WINEO0_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 8 - Comparator 0 Event Input"]
     #[inline(always)]
     pub fn compei0(&self) -> COMPEI0_R {
-        COMPEI0_R::new(((self.bits >> 8) & 0x01) != 0)
+        COMPEI0_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Comparator 1 Event Input"]
     #[inline(always)]
     pub fn compei1(&self) -> COMPEI1_R {
-        COMPEI1_R::new(((self.bits >> 9) & 0x01) != 0)
+        COMPEI1_R::new(((self.bits >> 9) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Comparator 0 Event Output Enable"]
     #[inline(always)]
-    pub fn compeo0(&mut self) -> COMPEO0_W {
-        COMPEO0_W { w: self }
+    #[must_use]
+    pub fn compeo0(&mut self) -> COMPEO0_W<0> {
+        COMPEO0_W::new(self)
     }
     #[doc = "Bit 1 - Comparator 1 Event Output Enable"]
     #[inline(always)]
-    pub fn compeo1(&mut self) -> COMPEO1_W {
-        COMPEO1_W { w: self }
+    #[must_use]
+    pub fn compeo1(&mut self) -> COMPEO1_W<1> {
+        COMPEO1_W::new(self)
     }
     #[doc = "Bit 4 - Window 0 Event Output Enable"]
     #[inline(always)]
-    pub fn wineo0(&mut self) -> WINEO0_W {
-        WINEO0_W { w: self }
+    #[must_use]
+    pub fn wineo0(&mut self) -> WINEO0_W<4> {
+        WINEO0_W::new(self)
     }
     #[doc = "Bit 8 - Comparator 0 Event Input"]
     #[inline(always)]
-    pub fn compei0(&mut self) -> COMPEI0_W {
-        COMPEI0_W { w: self }
+    #[must_use]
+    pub fn compei0(&mut self) -> COMPEI0_W<8> {
+        COMPEI0_W::new(self)
     }
     #[doc = "Bit 9 - Comparator 1 Event Input"]
     #[inline(always)]
-    pub fn compei1(&mut self) -> COMPEI1_W {
-        COMPEI1_W { w: self }
+    #[must_use]
+    pub fn compei1(&mut self) -> COMPEI1_W<9> {
+        COMPEI1_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -291,11 +131,10 @@ impl crate::Readable for EVCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
 impl crate::Resettable for EVCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

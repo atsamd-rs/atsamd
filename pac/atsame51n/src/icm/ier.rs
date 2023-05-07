@@ -20,134 +20,61 @@ impl From<crate::W<IER_SPEC>> for W {
     }
 }
 #[doc = "Field `RHC` writer - Region Hash Completed Interrupt Enable"]
-pub struct RHC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RHC_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u32 & 0x0f);
-        self.w
-    }
-}
+pub type RHC_W<'a, const O: u8> = crate::FieldWriter<'a, u32, IER_SPEC, u8, u8, 4, O>;
 #[doc = "Field `RDM` writer - Region Digest Mismatch Interrupt Enable"]
-pub struct RDM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RDM_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 4)) | ((value as u32 & 0x0f) << 4);
-        self.w
-    }
-}
+pub type RDM_W<'a, const O: u8> = crate::FieldWriter<'a, u32, IER_SPEC, u8, u8, 4, O>;
 #[doc = "Field `RBE` writer - Region Bus Error Interrupt Enable"]
-pub struct RBE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RBE_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 8)) | ((value as u32 & 0x0f) << 8);
-        self.w
-    }
-}
+pub type RBE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, IER_SPEC, u8, u8, 4, O>;
 #[doc = "Field `RWC` writer - Region Wrap Condition detected Interrupt Enable"]
-pub struct RWC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RWC_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 12)) | ((value as u32 & 0x0f) << 12);
-        self.w
-    }
-}
+pub type RWC_W<'a, const O: u8> = crate::FieldWriter<'a, u32, IER_SPEC, u8, u8, 4, O>;
 #[doc = "Field `REC` writer - Region End bit Condition Detected Interrupt Enable"]
-pub struct REC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> REC_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 16)) | ((value as u32 & 0x0f) << 16);
-        self.w
-    }
-}
+pub type REC_W<'a, const O: u8> = crate::FieldWriter<'a, u32, IER_SPEC, u8, u8, 4, O>;
 #[doc = "Field `RSU` writer - Region Status Updated Interrupt Disable"]
-pub struct RSU_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RSU_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 20)) | ((value as u32 & 0x0f) << 20);
-        self.w
-    }
-}
+pub type RSU_W<'a, const O: u8> = crate::FieldWriter<'a, u32, IER_SPEC, u8, u8, 4, O>;
 #[doc = "Field `URAD` writer - Undefined Register Access Detection Interrupt Enable"]
-pub struct URAD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> URAD_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 24)) | ((value as u32 & 0x01) << 24);
-        self.w
-    }
-}
+pub type URAD_W<'a, const O: u8> = crate::BitWriter<'a, u32, IER_SPEC, bool, O>;
 impl W {
     #[doc = "Bits 0:3 - Region Hash Completed Interrupt Enable"]
     #[inline(always)]
-    pub fn rhc(&mut self) -> RHC_W {
-        RHC_W { w: self }
+    #[must_use]
+    pub fn rhc(&mut self) -> RHC_W<0> {
+        RHC_W::new(self)
     }
     #[doc = "Bits 4:7 - Region Digest Mismatch Interrupt Enable"]
     #[inline(always)]
-    pub fn rdm(&mut self) -> RDM_W {
-        RDM_W { w: self }
+    #[must_use]
+    pub fn rdm(&mut self) -> RDM_W<4> {
+        RDM_W::new(self)
     }
     #[doc = "Bits 8:11 - Region Bus Error Interrupt Enable"]
     #[inline(always)]
-    pub fn rbe(&mut self) -> RBE_W {
-        RBE_W { w: self }
+    #[must_use]
+    pub fn rbe(&mut self) -> RBE_W<8> {
+        RBE_W::new(self)
     }
     #[doc = "Bits 12:15 - Region Wrap Condition detected Interrupt Enable"]
     #[inline(always)]
-    pub fn rwc(&mut self) -> RWC_W {
-        RWC_W { w: self }
+    #[must_use]
+    pub fn rwc(&mut self) -> RWC_W<12> {
+        RWC_W::new(self)
     }
     #[doc = "Bits 16:19 - Region End bit Condition Detected Interrupt Enable"]
     #[inline(always)]
-    pub fn rec(&mut self) -> REC_W {
-        REC_W { w: self }
+    #[must_use]
+    pub fn rec(&mut self) -> REC_W<16> {
+        REC_W::new(self)
     }
     #[doc = "Bits 20:23 - Region Status Updated Interrupt Disable"]
     #[inline(always)]
-    pub fn rsu(&mut self) -> RSU_W {
-        RSU_W { w: self }
+    #[must_use]
+    pub fn rsu(&mut self) -> RSU_W<20> {
+        RSU_W::new(self)
     }
     #[doc = "Bit 24 - Undefined Register Access Detection Interrupt Enable"]
     #[inline(always)]
-    pub fn urad(&mut self) -> URAD_W {
-        URAD_W { w: self }
+    #[must_use]
+    pub fn urad(&mut self) -> URAD_W<24> {
+        URAD_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -164,11 +91,10 @@ impl crate::RegisterSpec for IER_SPEC {
 #[doc = "`write(|w| ..)` method takes [ier::W](W) writer structure"]
 impl crate::Writable for IER_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets IER to value 0"]
 impl crate::Resettable for IER_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

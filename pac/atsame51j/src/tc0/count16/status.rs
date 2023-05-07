@@ -35,242 +35,82 @@ impl From<crate::W<STATUS_SPEC>> for W {
     }
 }
 #[doc = "Field `STOP` reader - Stop Status Flag"]
-pub struct STOP_R(crate::FieldReader<bool, bool>);
-impl STOP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        STOP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for STOP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type STOP_R = crate::BitReader<bool>;
 #[doc = "Field `STOP` writer - Stop Status Flag"]
-pub struct STOP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> STOP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type STOP_W<'a, const O: u8> = crate::BitWriter<'a, u8, STATUS_SPEC, bool, O>;
 #[doc = "Field `SLAVE` reader - Slave Status Flag"]
-pub struct SLAVE_R(crate::FieldReader<bool, bool>);
-impl SLAVE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SLAVE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SLAVE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SLAVE_R = crate::BitReader<bool>;
 #[doc = "Field `SLAVE` writer - Slave Status Flag"]
-pub struct SLAVE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SLAVE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type SLAVE_W<'a, const O: u8> = crate::BitWriter<'a, u8, STATUS_SPEC, bool, O>;
 #[doc = "Field `PERBUFV` reader - Synchronization Busy Status"]
-pub struct PERBUFV_R(crate::FieldReader<bool, bool>);
-impl PERBUFV_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PERBUFV_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PERBUFV_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PERBUFV_R = crate::BitReader<bool>;
 #[doc = "Field `PERBUFV` writer - Synchronization Busy Status"]
-pub struct PERBUFV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PERBUFV_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
-        self.w
-    }
-}
+pub type PERBUFV_W<'a, const O: u8> = crate::BitWriter<'a, u8, STATUS_SPEC, bool, O>;
 #[doc = "Field `CCBUFV0` reader - Compare channel buffer 0 valid"]
-pub struct CCBUFV0_R(crate::FieldReader<bool, bool>);
-impl CCBUFV0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CCBUFV0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CCBUFV0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CCBUFV0_R = crate::BitReader<bool>;
 #[doc = "Field `CCBUFV0` writer - Compare channel buffer 0 valid"]
-pub struct CCBUFV0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CCBUFV0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
-        self.w
-    }
-}
+pub type CCBUFV0_W<'a, const O: u8> = crate::BitWriter<'a, u8, STATUS_SPEC, bool, O>;
 #[doc = "Field `CCBUFV1` reader - Compare channel buffer 1 valid"]
-pub struct CCBUFV1_R(crate::FieldReader<bool, bool>);
-impl CCBUFV1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CCBUFV1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CCBUFV1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CCBUFV1_R = crate::BitReader<bool>;
 #[doc = "Field `CCBUFV1` writer - Compare channel buffer 1 valid"]
-pub struct CCBUFV1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CCBUFV1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u8 & 0x01) << 5);
-        self.w
-    }
-}
+pub type CCBUFV1_W<'a, const O: u8> = crate::BitWriter<'a, u8, STATUS_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Stop Status Flag"]
     #[inline(always)]
     pub fn stop(&self) -> STOP_R {
-        STOP_R::new((self.bits & 0x01) != 0)
+        STOP_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Slave Status Flag"]
     #[inline(always)]
     pub fn slave(&self) -> SLAVE_R {
-        SLAVE_R::new(((self.bits >> 1) & 0x01) != 0)
+        SLAVE_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 3 - Synchronization Busy Status"]
     #[inline(always)]
     pub fn perbufv(&self) -> PERBUFV_R {
-        PERBUFV_R::new(((self.bits >> 3) & 0x01) != 0)
+        PERBUFV_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Compare channel buffer 0 valid"]
     #[inline(always)]
     pub fn ccbufv0(&self) -> CCBUFV0_R {
-        CCBUFV0_R::new(((self.bits >> 4) & 0x01) != 0)
+        CCBUFV0_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Compare channel buffer 1 valid"]
     #[inline(always)]
     pub fn ccbufv1(&self) -> CCBUFV1_R {
-        CCBUFV1_R::new(((self.bits >> 5) & 0x01) != 0)
+        CCBUFV1_R::new(((self.bits >> 5) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Stop Status Flag"]
     #[inline(always)]
-    pub fn stop(&mut self) -> STOP_W {
-        STOP_W { w: self }
+    #[must_use]
+    pub fn stop(&mut self) -> STOP_W<0> {
+        STOP_W::new(self)
     }
     #[doc = "Bit 1 - Slave Status Flag"]
     #[inline(always)]
-    pub fn slave(&mut self) -> SLAVE_W {
-        SLAVE_W { w: self }
+    #[must_use]
+    pub fn slave(&mut self) -> SLAVE_W<1> {
+        SLAVE_W::new(self)
     }
     #[doc = "Bit 3 - Synchronization Busy Status"]
     #[inline(always)]
-    pub fn perbufv(&mut self) -> PERBUFV_W {
-        PERBUFV_W { w: self }
+    #[must_use]
+    pub fn perbufv(&mut self) -> PERBUFV_W<3> {
+        PERBUFV_W::new(self)
     }
     #[doc = "Bit 4 - Compare channel buffer 0 valid"]
     #[inline(always)]
-    pub fn ccbufv0(&mut self) -> CCBUFV0_W {
-        CCBUFV0_W { w: self }
+    #[must_use]
+    pub fn ccbufv0(&mut self) -> CCBUFV0_W<4> {
+        CCBUFV0_W::new(self)
     }
     #[doc = "Bit 5 - Compare channel buffer 1 valid"]
     #[inline(always)]
-    pub fn ccbufv1(&mut self) -> CCBUFV1_W {
-        CCBUFV1_W { w: self }
+    #[must_use]
+    pub fn ccbufv1(&mut self) -> CCBUFV1_W<5> {
+        CCBUFV1_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -291,11 +131,10 @@ impl crate::Readable for STATUS_SPEC {
 #[doc = "`write(|w| ..)` method takes [status::W](W) writer structure"]
 impl crate::Writable for STATUS_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0x01"]
 impl crate::Resettable for STATUS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x01
-    }
+    const RESET_VALUE: Self::Ux = 0x01;
 }

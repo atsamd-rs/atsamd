@@ -35,383 +35,127 @@ impl From<crate::W<INTFLAG_SPEC>> for W {
     }
 }
 #[doc = "Field `UNDERRUN0` reader - Result 0 Underrun"]
-pub struct UNDERRUN0_R(crate::FieldReader<bool, bool>);
-impl UNDERRUN0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        UNDERRUN0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for UNDERRUN0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type UNDERRUN0_R = crate::BitReader<bool>;
 #[doc = "Field `UNDERRUN0` writer - Result 0 Underrun"]
-pub struct UNDERRUN0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> UNDERRUN0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type UNDERRUN0_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `UNDERRUN1` reader - Result 1 Underrun"]
-pub struct UNDERRUN1_R(crate::FieldReader<bool, bool>);
-impl UNDERRUN1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        UNDERRUN1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for UNDERRUN1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type UNDERRUN1_R = crate::BitReader<bool>;
 #[doc = "Field `UNDERRUN1` writer - Result 1 Underrun"]
-pub struct UNDERRUN1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> UNDERRUN1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type UNDERRUN1_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `EMPTY0` reader - Data Buffer 0 Empty"]
-pub struct EMPTY0_R(crate::FieldReader<bool, bool>);
-impl EMPTY0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EMPTY0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EMPTY0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EMPTY0_R = crate::BitReader<bool>;
 #[doc = "Field `EMPTY0` writer - Data Buffer 0 Empty"]
-pub struct EMPTY0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EMPTY0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type EMPTY0_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `EMPTY1` reader - Data Buffer 1 Empty"]
-pub struct EMPTY1_R(crate::FieldReader<bool, bool>);
-impl EMPTY1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EMPTY1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EMPTY1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EMPTY1_R = crate::BitReader<bool>;
 #[doc = "Field `EMPTY1` writer - Data Buffer 1 Empty"]
-pub struct EMPTY1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EMPTY1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
-        self.w
-    }
-}
+pub type EMPTY1_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `RESRDY0` reader - Result 0 Ready"]
-pub struct RESRDY0_R(crate::FieldReader<bool, bool>);
-impl RESRDY0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RESRDY0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RESRDY0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RESRDY0_R = crate::BitReader<bool>;
 #[doc = "Field `RESRDY0` writer - Result 0 Ready"]
-pub struct RESRDY0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RESRDY0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
-        self.w
-    }
-}
+pub type RESRDY0_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `RESRDY1` reader - Result 1 Ready"]
-pub struct RESRDY1_R(crate::FieldReader<bool, bool>);
-impl RESRDY1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RESRDY1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RESRDY1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RESRDY1_R = crate::BitReader<bool>;
 #[doc = "Field `RESRDY1` writer - Result 1 Ready"]
-pub struct RESRDY1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RESRDY1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u8 & 0x01) << 5);
-        self.w
-    }
-}
+pub type RESRDY1_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `OVERRUN0` reader - Result 0 Overrun"]
-pub struct OVERRUN0_R(crate::FieldReader<bool, bool>);
-impl OVERRUN0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        OVERRUN0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OVERRUN0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OVERRUN0_R = crate::BitReader<bool>;
 #[doc = "Field `OVERRUN0` writer - Result 0 Overrun"]
-pub struct OVERRUN0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OVERRUN0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u8 & 0x01) << 6);
-        self.w
-    }
-}
+pub type OVERRUN0_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `OVERRUN1` reader - Result 1 Overrun"]
-pub struct OVERRUN1_R(crate::FieldReader<bool, bool>);
-impl OVERRUN1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        OVERRUN1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OVERRUN1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OVERRUN1_R = crate::BitReader<bool>;
 #[doc = "Field `OVERRUN1` writer - Result 1 Overrun"]
-pub struct OVERRUN1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OVERRUN1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type OVERRUN1_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Result 0 Underrun"]
     #[inline(always)]
     pub fn underrun0(&self) -> UNDERRUN0_R {
-        UNDERRUN0_R::new((self.bits & 0x01) != 0)
+        UNDERRUN0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Result 1 Underrun"]
     #[inline(always)]
     pub fn underrun1(&self) -> UNDERRUN1_R {
-        UNDERRUN1_R::new(((self.bits >> 1) & 0x01) != 0)
+        UNDERRUN1_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Data Buffer 0 Empty"]
     #[inline(always)]
     pub fn empty0(&self) -> EMPTY0_R {
-        EMPTY0_R::new(((self.bits >> 2) & 0x01) != 0)
+        EMPTY0_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Data Buffer 1 Empty"]
     #[inline(always)]
     pub fn empty1(&self) -> EMPTY1_R {
-        EMPTY1_R::new(((self.bits >> 3) & 0x01) != 0)
+        EMPTY1_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Result 0 Ready"]
     #[inline(always)]
     pub fn resrdy0(&self) -> RESRDY0_R {
-        RESRDY0_R::new(((self.bits >> 4) & 0x01) != 0)
+        RESRDY0_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Result 1 Ready"]
     #[inline(always)]
     pub fn resrdy1(&self) -> RESRDY1_R {
-        RESRDY1_R::new(((self.bits >> 5) & 0x01) != 0)
+        RESRDY1_R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - Result 0 Overrun"]
     #[inline(always)]
     pub fn overrun0(&self) -> OVERRUN0_R {
-        OVERRUN0_R::new(((self.bits >> 6) & 0x01) != 0)
+        OVERRUN0_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Result 1 Overrun"]
     #[inline(always)]
     pub fn overrun1(&self) -> OVERRUN1_R {
-        OVERRUN1_R::new(((self.bits >> 7) & 0x01) != 0)
+        OVERRUN1_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Result 0 Underrun"]
     #[inline(always)]
-    pub fn underrun0(&mut self) -> UNDERRUN0_W {
-        UNDERRUN0_W { w: self }
+    #[must_use]
+    pub fn underrun0(&mut self) -> UNDERRUN0_W<0> {
+        UNDERRUN0_W::new(self)
     }
     #[doc = "Bit 1 - Result 1 Underrun"]
     #[inline(always)]
-    pub fn underrun1(&mut self) -> UNDERRUN1_W {
-        UNDERRUN1_W { w: self }
+    #[must_use]
+    pub fn underrun1(&mut self) -> UNDERRUN1_W<1> {
+        UNDERRUN1_W::new(self)
     }
     #[doc = "Bit 2 - Data Buffer 0 Empty"]
     #[inline(always)]
-    pub fn empty0(&mut self) -> EMPTY0_W {
-        EMPTY0_W { w: self }
+    #[must_use]
+    pub fn empty0(&mut self) -> EMPTY0_W<2> {
+        EMPTY0_W::new(self)
     }
     #[doc = "Bit 3 - Data Buffer 1 Empty"]
     #[inline(always)]
-    pub fn empty1(&mut self) -> EMPTY1_W {
-        EMPTY1_W { w: self }
+    #[must_use]
+    pub fn empty1(&mut self) -> EMPTY1_W<3> {
+        EMPTY1_W::new(self)
     }
     #[doc = "Bit 4 - Result 0 Ready"]
     #[inline(always)]
-    pub fn resrdy0(&mut self) -> RESRDY0_W {
-        RESRDY0_W { w: self }
+    #[must_use]
+    pub fn resrdy0(&mut self) -> RESRDY0_W<4> {
+        RESRDY0_W::new(self)
     }
     #[doc = "Bit 5 - Result 1 Ready"]
     #[inline(always)]
-    pub fn resrdy1(&mut self) -> RESRDY1_W {
-        RESRDY1_W { w: self }
+    #[must_use]
+    pub fn resrdy1(&mut self) -> RESRDY1_W<5> {
+        RESRDY1_W::new(self)
     }
     #[doc = "Bit 6 - Result 0 Overrun"]
     #[inline(always)]
-    pub fn overrun0(&mut self) -> OVERRUN0_W {
-        OVERRUN0_W { w: self }
+    #[must_use]
+    pub fn overrun0(&mut self) -> OVERRUN0_W<6> {
+        OVERRUN0_W::new(self)
     }
     #[doc = "Bit 7 - Result 1 Overrun"]
     #[inline(always)]
-    pub fn overrun1(&mut self) -> OVERRUN1_W {
-        OVERRUN1_W { w: self }
+    #[must_use]
+    pub fn overrun1(&mut self) -> OVERRUN1_W<7> {
+        OVERRUN1_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -432,11 +176,10 @@ impl crate::Readable for INTFLAG_SPEC {
 #[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for INTFLAG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

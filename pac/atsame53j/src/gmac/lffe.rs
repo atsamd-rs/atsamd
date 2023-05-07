@@ -14,20 +14,7 @@ impl From<crate::R<LFFE_SPEC>> for R {
     }
 }
 #[doc = "Field `LFER` reader - Length Field Frame Errors"]
-pub struct LFER_R(crate::FieldReader<u16, u16>);
-impl LFER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        LFER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LFER_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LFER_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:9 - Length Field Frame Errors"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for LFFE_SPEC {
 }
 #[doc = "`reset()` method sets LFFE to value 0"]
 impl crate::Resettable for LFFE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

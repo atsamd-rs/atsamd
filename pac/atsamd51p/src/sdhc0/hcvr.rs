@@ -14,35 +14,9 @@ impl From<crate::R<HCVR_SPEC>> for R {
     }
 }
 #[doc = "Field `SVER` reader - Spec Version"]
-pub struct SVER_R(crate::FieldReader<u8, u8>);
-impl SVER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        SVER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SVER_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SVER_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `VVER` reader - Vendor Version"]
-pub struct VVER_R(crate::FieldReader<u8, u8>);
-impl VVER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        VVER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for VVER_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type VVER_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:7 - Spec Version"]
     #[inline(always)]
@@ -66,8 +40,5 @@ impl crate::Readable for HCVR_SPEC {
 }
 #[doc = "`reset()` method sets HCVR to value 0x1802"]
 impl crate::Resettable for HCVR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x1802
-    }
+    const RESET_VALUE: Self::Ux = 0x1802;
 }

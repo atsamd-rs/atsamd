@@ -35,54 +35,22 @@ impl From<crate::W<EVCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `ERREO` reader - Peripheral acess error event output"]
-pub struct ERREO_R(crate::FieldReader<bool, bool>);
-impl ERREO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ERREO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ERREO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ERREO_R = crate::BitReader<bool>;
 #[doc = "Field `ERREO` writer - Peripheral acess error event output"]
-pub struct ERREO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ERREO_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type ERREO_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Peripheral acess error event output"]
     #[inline(always)]
     pub fn erreo(&self) -> ERREO_R {
-        ERREO_R::new((self.bits & 0x01) != 0)
+        ERREO_R::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Peripheral acess error event output"]
     #[inline(always)]
-    pub fn erreo(&mut self) -> ERREO_W {
-        ERREO_W { w: self }
+    #[must_use]
+    pub fn erreo(&mut self) -> ERREO_W<0> {
+        ERREO_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -103,11 +71,10 @@ impl crate::Readable for EVCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
 impl crate::Resettable for EVCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

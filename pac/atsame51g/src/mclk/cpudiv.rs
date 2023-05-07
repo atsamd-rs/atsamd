@@ -34,10 +34,12 @@ impl From<crate::W<CPUDIV_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `DIV` reader - Low-Power Clock Division Factor"]
+pub type DIV_R = crate::FieldReader<u8, DIVSELECT_A>;
 #[doc = "Low-Power Clock Division Factor\n\nValue on reset: 1"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum DIV_A {
+pub enum DIVSELECT_A {
     #[doc = "1: Divide by 1"]
     DIV1 = 1,
     #[doc = "2: Divide by 2"]
@@ -55,151 +57,126 @@ pub enum DIV_A {
     #[doc = "128: Divide by 128"]
     DIV128 = 128,
 }
-impl From<DIV_A> for u8 {
+impl From<DIVSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: DIV_A) -> Self {
+    fn from(variant: DIVSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `DIV` reader - Low-Power Clock Division Factor"]
-pub struct DIV_R(crate::FieldReader<u8, DIV_A>);
 impl DIV_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DIV_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<DIV_A> {
+    pub fn variant(&self) -> Option<DIVSELECT_A> {
         match self.bits {
-            1 => Some(DIV_A::DIV1),
-            2 => Some(DIV_A::DIV2),
-            4 => Some(DIV_A::DIV4),
-            8 => Some(DIV_A::DIV8),
-            16 => Some(DIV_A::DIV16),
-            32 => Some(DIV_A::DIV32),
-            64 => Some(DIV_A::DIV64),
-            128 => Some(DIV_A::DIV128),
+            1 => Some(DIVSELECT_A::DIV1),
+            2 => Some(DIVSELECT_A::DIV2),
+            4 => Some(DIVSELECT_A::DIV4),
+            8 => Some(DIVSELECT_A::DIV8),
+            16 => Some(DIVSELECT_A::DIV16),
+            32 => Some(DIVSELECT_A::DIV32),
+            64 => Some(DIVSELECT_A::DIV64),
+            128 => Some(DIVSELECT_A::DIV128),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `DIV1`"]
     #[inline(always)]
     pub fn is_div1(&self) -> bool {
-        **self == DIV_A::DIV1
+        *self == DIVSELECT_A::DIV1
     }
     #[doc = "Checks if the value of the field is `DIV2`"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        **self == DIV_A::DIV2
+        *self == DIVSELECT_A::DIV2
     }
     #[doc = "Checks if the value of the field is `DIV4`"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        **self == DIV_A::DIV4
+        *self == DIVSELECT_A::DIV4
     }
     #[doc = "Checks if the value of the field is `DIV8`"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        **self == DIV_A::DIV8
+        *self == DIVSELECT_A::DIV8
     }
     #[doc = "Checks if the value of the field is `DIV16`"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        **self == DIV_A::DIV16
+        *self == DIVSELECT_A::DIV16
     }
     #[doc = "Checks if the value of the field is `DIV32`"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        **self == DIV_A::DIV32
+        *self == DIVSELECT_A::DIV32
     }
     #[doc = "Checks if the value of the field is `DIV64`"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        **self == DIV_A::DIV64
+        *self == DIVSELECT_A::DIV64
     }
     #[doc = "Checks if the value of the field is `DIV128`"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        **self == DIV_A::DIV128
-    }
-}
-impl core::ops::Deref for DIV_R {
-    type Target = crate::FieldReader<u8, DIV_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == DIVSELECT_A::DIV128
     }
 }
 #[doc = "Field `DIV` writer - Low-Power Clock Division Factor"]
-pub struct DIV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DIV_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: DIV_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type DIV_W<'a, const O: u8> = crate::FieldWriter<'a, u8, CPUDIV_SPEC, u8, DIVSELECT_A, 8, O>;
+impl<'a, const O: u8> DIV_W<'a, O> {
     #[doc = "Divide by 1"]
     #[inline(always)]
     pub fn div1(self) -> &'a mut W {
-        self.variant(DIV_A::DIV1)
+        self.variant(DIVSELECT_A::DIV1)
     }
     #[doc = "Divide by 2"]
     #[inline(always)]
     pub fn div2(self) -> &'a mut W {
-        self.variant(DIV_A::DIV2)
+        self.variant(DIVSELECT_A::DIV2)
     }
     #[doc = "Divide by 4"]
     #[inline(always)]
     pub fn div4(self) -> &'a mut W {
-        self.variant(DIV_A::DIV4)
+        self.variant(DIVSELECT_A::DIV4)
     }
     #[doc = "Divide by 8"]
     #[inline(always)]
     pub fn div8(self) -> &'a mut W {
-        self.variant(DIV_A::DIV8)
+        self.variant(DIVSELECT_A::DIV8)
     }
     #[doc = "Divide by 16"]
     #[inline(always)]
     pub fn div16(self) -> &'a mut W {
-        self.variant(DIV_A::DIV16)
+        self.variant(DIVSELECT_A::DIV16)
     }
     #[doc = "Divide by 32"]
     #[inline(always)]
     pub fn div32(self) -> &'a mut W {
-        self.variant(DIV_A::DIV32)
+        self.variant(DIVSELECT_A::DIV32)
     }
     #[doc = "Divide by 64"]
     #[inline(always)]
     pub fn div64(self) -> &'a mut W {
-        self.variant(DIV_A::DIV64)
+        self.variant(DIVSELECT_A::DIV64)
     }
     #[doc = "Divide by 128"]
     #[inline(always)]
     pub fn div128(self) -> &'a mut W {
-        self.variant(DIV_A::DIV128)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = value as u8;
-        self.w
+        self.variant(DIVSELECT_A::DIV128)
     }
 }
 impl R {
     #[doc = "Bits 0:7 - Low-Power Clock Division Factor"]
     #[inline(always)]
     pub fn div(&self) -> DIV_R {
-        DIV_R::new(self.bits as u8)
+        DIV_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Low-Power Clock Division Factor"]
     #[inline(always)]
-    pub fn div(&mut self) -> DIV_W {
-        DIV_W { w: self }
+    #[must_use]
+    pub fn div(&mut self) -> DIV_W<0> {
+        DIV_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -220,11 +197,10 @@ impl crate::Readable for CPUDIV_SPEC {
 #[doc = "`write(|w| ..)` method takes [cpudiv::W](W) writer structure"]
 impl crate::Writable for CPUDIV_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CPUDIV to value 0x01"]
 impl crate::Resettable for CPUDIV_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x01
-    }
+    const RESET_VALUE: Self::Ux = 0x01;
 }

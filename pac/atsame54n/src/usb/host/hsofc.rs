@@ -35,91 +35,37 @@ impl From<crate::W<HSOFC_SPEC>> for W {
     }
 }
 #[doc = "Field `FLENC` reader - Frame Length Control"]
-pub struct FLENC_R(crate::FieldReader<u8, u8>);
-impl FLENC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        FLENC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FLENC_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FLENC_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `FLENC` writer - Frame Length Control"]
-pub struct FLENC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FLENC_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u8 & 0x0f);
-        self.w
-    }
-}
+pub type FLENC_W<'a, const O: u8> = crate::FieldWriter<'a, u8, HSOFC_SPEC, u8, u8, 4, O>;
 #[doc = "Field `FLENCE` reader - Frame Length Control Enable"]
-pub struct FLENCE_R(crate::FieldReader<bool, bool>);
-impl FLENCE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FLENCE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FLENCE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FLENCE_R = crate::BitReader<bool>;
 #[doc = "Field `FLENCE` writer - Frame Length Control Enable"]
-pub struct FLENCE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FLENCE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type FLENCE_W<'a, const O: u8> = crate::BitWriter<'a, u8, HSOFC_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:3 - Frame Length Control"]
     #[inline(always)]
     pub fn flenc(&self) -> FLENC_R {
-        FLENC_R::new((self.bits & 0x0f) as u8)
+        FLENC_R::new(self.bits & 0x0f)
     }
     #[doc = "Bit 7 - Frame Length Control Enable"]
     #[inline(always)]
     pub fn flence(&self) -> FLENCE_R {
-        FLENCE_R::new(((self.bits >> 7) & 0x01) != 0)
+        FLENCE_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:3 - Frame Length Control"]
     #[inline(always)]
-    pub fn flenc(&mut self) -> FLENC_W {
-        FLENC_W { w: self }
+    #[must_use]
+    pub fn flenc(&mut self) -> FLENC_W<0> {
+        FLENC_W::new(self)
     }
     #[doc = "Bit 7 - Frame Length Control Enable"]
     #[inline(always)]
-    pub fn flence(&mut self) -> FLENCE_W {
-        FLENCE_W { w: self }
+    #[must_use]
+    pub fn flence(&mut self) -> FLENCE_W<7> {
+        FLENCE_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -140,11 +86,10 @@ impl crate::Readable for HSOFC_SPEC {
 #[doc = "`write(|w| ..)` method takes [hsofc::W](W) writer structure"]
 impl crate::Writable for HSOFC_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets HSOFC to value 0"]
 impl crate::Resettable for HSOFC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

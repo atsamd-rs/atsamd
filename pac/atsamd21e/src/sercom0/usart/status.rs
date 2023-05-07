@@ -35,262 +35,89 @@ impl From<crate::W<STATUS_SPEC>> for W {
     }
 }
 #[doc = "Field `PERR` reader - Parity Error"]
-pub struct PERR_R(crate::FieldReader<bool, bool>);
-impl PERR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PERR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PERR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PERR_R = crate::BitReader<bool>;
 #[doc = "Field `PERR` writer - Parity Error"]
-pub struct PERR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PERR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u16 & 0x01);
-        self.w
-    }
-}
+pub type PERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `FERR` reader - Frame Error"]
-pub struct FERR_R(crate::FieldReader<bool, bool>);
-impl FERR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FERR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FERR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FERR_R = crate::BitReader<bool>;
 #[doc = "Field `FERR` writer - Frame Error"]
-pub struct FERR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FERR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
-        self.w
-    }
-}
+pub type FERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `BUFOVF` reader - Buffer Overflow"]
-pub struct BUFOVF_R(crate::FieldReader<bool, bool>);
-impl BUFOVF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BUFOVF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BUFOVF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BUFOVF_R = crate::BitReader<bool>;
 #[doc = "Field `BUFOVF` writer - Buffer Overflow"]
-pub struct BUFOVF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BUFOVF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
-        self.w
-    }
-}
+pub type BUFOVF_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `CTS` reader - Clear To Send"]
-pub struct CTS_R(crate::FieldReader<bool, bool>);
-impl CTS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CTS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CTS_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CTS_R = crate::BitReader<bool>;
 #[doc = "Field `ISF` reader - Inconsistent Sync Field"]
-pub struct ISF_R(crate::FieldReader<bool, bool>);
-impl ISF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ISF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ISF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ISF_R = crate::BitReader<bool>;
 #[doc = "Field `ISF` writer - Inconsistent Sync Field"]
-pub struct ISF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ISF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
-        self.w
-    }
-}
+pub type ISF_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `COLL` reader - Collision Detected"]
-pub struct COLL_R(crate::FieldReader<bool, bool>);
-impl COLL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        COLL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COLL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COLL_R = crate::BitReader<bool>;
 #[doc = "Field `COLL` writer - Collision Detected"]
-pub struct COLL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COLL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u16 & 0x01) << 5);
-        self.w
-    }
-}
+pub type COLL_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Parity Error"]
     #[inline(always)]
     pub fn perr(&self) -> PERR_R {
-        PERR_R::new((self.bits & 0x01) != 0)
+        PERR_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Frame Error"]
     #[inline(always)]
     pub fn ferr(&self) -> FERR_R {
-        FERR_R::new(((self.bits >> 1) & 0x01) != 0)
+        FERR_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Buffer Overflow"]
     #[inline(always)]
     pub fn bufovf(&self) -> BUFOVF_R {
-        BUFOVF_R::new(((self.bits >> 2) & 0x01) != 0)
+        BUFOVF_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Clear To Send"]
     #[inline(always)]
     pub fn cts(&self) -> CTS_R {
-        CTS_R::new(((self.bits >> 3) & 0x01) != 0)
+        CTS_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Inconsistent Sync Field"]
     #[inline(always)]
     pub fn isf(&self) -> ISF_R {
-        ISF_R::new(((self.bits >> 4) & 0x01) != 0)
+        ISF_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Collision Detected"]
     #[inline(always)]
     pub fn coll(&self) -> COLL_R {
-        COLL_R::new(((self.bits >> 5) & 0x01) != 0)
+        COLL_R::new(((self.bits >> 5) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Parity Error"]
     #[inline(always)]
-    pub fn perr(&mut self) -> PERR_W {
-        PERR_W { w: self }
+    #[must_use]
+    pub fn perr(&mut self) -> PERR_W<0> {
+        PERR_W::new(self)
     }
     #[doc = "Bit 1 - Frame Error"]
     #[inline(always)]
-    pub fn ferr(&mut self) -> FERR_W {
-        FERR_W { w: self }
+    #[must_use]
+    pub fn ferr(&mut self) -> FERR_W<1> {
+        FERR_W::new(self)
     }
     #[doc = "Bit 2 - Buffer Overflow"]
     #[inline(always)]
-    pub fn bufovf(&mut self) -> BUFOVF_W {
-        BUFOVF_W { w: self }
+    #[must_use]
+    pub fn bufovf(&mut self) -> BUFOVF_W<2> {
+        BUFOVF_W::new(self)
     }
     #[doc = "Bit 4 - Inconsistent Sync Field"]
     #[inline(always)]
-    pub fn isf(&mut self) -> ISF_W {
-        ISF_W { w: self }
+    #[must_use]
+    pub fn isf(&mut self) -> ISF_W<4> {
+        ISF_W::new(self)
     }
     #[doc = "Bit 5 - Collision Detected"]
     #[inline(always)]
-    pub fn coll(&mut self) -> COLL_W {
-        COLL_W { w: self }
+    #[must_use]
+    pub fn coll(&mut self) -> COLL_W<5> {
+        COLL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -311,11 +138,10 @@ impl crate::Readable for STATUS_SPEC {
 #[doc = "`write(|w| ..)` method takes [status::W](W) writer structure"]
 impl crate::Writable for STATUS_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0"]
 impl crate::Resettable for STATUS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

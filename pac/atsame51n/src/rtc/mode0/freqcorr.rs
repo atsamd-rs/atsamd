@@ -35,91 +35,37 @@ impl From<crate::W<FREQCORR_SPEC>> for W {
     }
 }
 #[doc = "Field `VALUE` reader - Correction Value"]
-pub struct VALUE_R(crate::FieldReader<u8, u8>);
-impl VALUE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        VALUE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for VALUE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type VALUE_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `VALUE` writer - Correction Value"]
-pub struct VALUE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> VALUE_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x7f) | (value as u8 & 0x7f);
-        self.w
-    }
-}
+pub type VALUE_W<'a, const O: u8> = crate::FieldWriter<'a, u8, FREQCORR_SPEC, u8, u8, 7, O>;
 #[doc = "Field `SIGN` reader - Correction Sign"]
-pub struct SIGN_R(crate::FieldReader<bool, bool>);
-impl SIGN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SIGN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SIGN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SIGN_R = crate::BitReader<bool>;
 #[doc = "Field `SIGN` writer - Correction Sign"]
-pub struct SIGN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SIGN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type SIGN_W<'a, const O: u8> = crate::BitWriter<'a, u8, FREQCORR_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:6 - Correction Value"]
     #[inline(always)]
     pub fn value(&self) -> VALUE_R {
-        VALUE_R::new((self.bits & 0x7f) as u8)
+        VALUE_R::new(self.bits & 0x7f)
     }
     #[doc = "Bit 7 - Correction Sign"]
     #[inline(always)]
     pub fn sign(&self) -> SIGN_R {
-        SIGN_R::new(((self.bits >> 7) & 0x01) != 0)
+        SIGN_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:6 - Correction Value"]
     #[inline(always)]
-    pub fn value(&mut self) -> VALUE_W {
-        VALUE_W { w: self }
+    #[must_use]
+    pub fn value(&mut self) -> VALUE_W<0> {
+        VALUE_W::new(self)
     }
     #[doc = "Bit 7 - Correction Sign"]
     #[inline(always)]
-    pub fn sign(&mut self) -> SIGN_W {
-        SIGN_W { w: self }
+    #[must_use]
+    pub fn sign(&mut self) -> SIGN_W<7> {
+        SIGN_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -140,11 +86,10 @@ impl crate::Readable for FREQCORR_SPEC {
 #[doc = "`write(|w| ..)` method takes [freqcorr::W](W) writer structure"]
 impl crate::Writable for FREQCORR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets FREQCORR to value 0"]
 impl crate::Resettable for FREQCORR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -35,289 +35,97 @@ impl From<crate::W<EVCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `FLUSHEI` reader - Flush Event Input Enable"]
-pub struct FLUSHEI_R(crate::FieldReader<bool, bool>);
-impl FLUSHEI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FLUSHEI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FLUSHEI_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FLUSHEI_R = crate::BitReader<bool>;
 #[doc = "Field `FLUSHEI` writer - Flush Event Input Enable"]
-pub struct FLUSHEI_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FLUSHEI_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type FLUSHEI_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `STARTEI` reader - Start Conversion Event Input Enable"]
-pub struct STARTEI_R(crate::FieldReader<bool, bool>);
-impl STARTEI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        STARTEI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for STARTEI_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type STARTEI_R = crate::BitReader<bool>;
 #[doc = "Field `STARTEI` writer - Start Conversion Event Input Enable"]
-pub struct STARTEI_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> STARTEI_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type STARTEI_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `FLUSHINV` reader - Flush Event Invert Enable"]
-pub struct FLUSHINV_R(crate::FieldReader<bool, bool>);
-impl FLUSHINV_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FLUSHINV_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FLUSHINV_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FLUSHINV_R = crate::BitReader<bool>;
 #[doc = "Field `FLUSHINV` writer - Flush Event Invert Enable"]
-pub struct FLUSHINV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FLUSHINV_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type FLUSHINV_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `STARTINV` reader - Start Conversion Event Invert Enable"]
-pub struct STARTINV_R(crate::FieldReader<bool, bool>);
-impl STARTINV_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        STARTINV_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for STARTINV_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type STARTINV_R = crate::BitReader<bool>;
 #[doc = "Field `STARTINV` writer - Start Conversion Event Invert Enable"]
-pub struct STARTINV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> STARTINV_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
-        self.w
-    }
-}
+pub type STARTINV_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `RESRDYEO` reader - Result Ready Event Out"]
-pub struct RESRDYEO_R(crate::FieldReader<bool, bool>);
-impl RESRDYEO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RESRDYEO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RESRDYEO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RESRDYEO_R = crate::BitReader<bool>;
 #[doc = "Field `RESRDYEO` writer - Result Ready Event Out"]
-pub struct RESRDYEO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RESRDYEO_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
-        self.w
-    }
-}
+pub type RESRDYEO_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `WINMONEO` reader - Window Monitor Event Out"]
-pub struct WINMONEO_R(crate::FieldReader<bool, bool>);
-impl WINMONEO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WINMONEO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WINMONEO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WINMONEO_R = crate::BitReader<bool>;
 #[doc = "Field `WINMONEO` writer - Window Monitor Event Out"]
-pub struct WINMONEO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WINMONEO_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u8 & 0x01) << 5);
-        self.w
-    }
-}
+pub type WINMONEO_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Flush Event Input Enable"]
     #[inline(always)]
     pub fn flushei(&self) -> FLUSHEI_R {
-        FLUSHEI_R::new((self.bits & 0x01) != 0)
+        FLUSHEI_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Start Conversion Event Input Enable"]
     #[inline(always)]
     pub fn startei(&self) -> STARTEI_R {
-        STARTEI_R::new(((self.bits >> 1) & 0x01) != 0)
+        STARTEI_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Flush Event Invert Enable"]
     #[inline(always)]
     pub fn flushinv(&self) -> FLUSHINV_R {
-        FLUSHINV_R::new(((self.bits >> 2) & 0x01) != 0)
+        FLUSHINV_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Start Conversion Event Invert Enable"]
     #[inline(always)]
     pub fn startinv(&self) -> STARTINV_R {
-        STARTINV_R::new(((self.bits >> 3) & 0x01) != 0)
+        STARTINV_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Result Ready Event Out"]
     #[inline(always)]
     pub fn resrdyeo(&self) -> RESRDYEO_R {
-        RESRDYEO_R::new(((self.bits >> 4) & 0x01) != 0)
+        RESRDYEO_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Window Monitor Event Out"]
     #[inline(always)]
     pub fn winmoneo(&self) -> WINMONEO_R {
-        WINMONEO_R::new(((self.bits >> 5) & 0x01) != 0)
+        WINMONEO_R::new(((self.bits >> 5) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Flush Event Input Enable"]
     #[inline(always)]
-    pub fn flushei(&mut self) -> FLUSHEI_W {
-        FLUSHEI_W { w: self }
+    #[must_use]
+    pub fn flushei(&mut self) -> FLUSHEI_W<0> {
+        FLUSHEI_W::new(self)
     }
     #[doc = "Bit 1 - Start Conversion Event Input Enable"]
     #[inline(always)]
-    pub fn startei(&mut self) -> STARTEI_W {
-        STARTEI_W { w: self }
+    #[must_use]
+    pub fn startei(&mut self) -> STARTEI_W<1> {
+        STARTEI_W::new(self)
     }
     #[doc = "Bit 2 - Flush Event Invert Enable"]
     #[inline(always)]
-    pub fn flushinv(&mut self) -> FLUSHINV_W {
-        FLUSHINV_W { w: self }
+    #[must_use]
+    pub fn flushinv(&mut self) -> FLUSHINV_W<2> {
+        FLUSHINV_W::new(self)
     }
     #[doc = "Bit 3 - Start Conversion Event Invert Enable"]
     #[inline(always)]
-    pub fn startinv(&mut self) -> STARTINV_W {
-        STARTINV_W { w: self }
+    #[must_use]
+    pub fn startinv(&mut self) -> STARTINV_W<3> {
+        STARTINV_W::new(self)
     }
     #[doc = "Bit 4 - Result Ready Event Out"]
     #[inline(always)]
-    pub fn resrdyeo(&mut self) -> RESRDYEO_W {
-        RESRDYEO_W { w: self }
+    #[must_use]
+    pub fn resrdyeo(&mut self) -> RESRDYEO_W<4> {
+        RESRDYEO_W::new(self)
     }
     #[doc = "Bit 5 - Window Monitor Event Out"]
     #[inline(always)]
-    pub fn winmoneo(&mut self) -> WINMONEO_W {
-        WINMONEO_W { w: self }
+    #[must_use]
+    pub fn winmoneo(&mut self) -> WINMONEO_W<5> {
+        WINMONEO_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -338,11 +146,10 @@ impl crate::Readable for EVCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
 impl crate::Resettable for EVCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

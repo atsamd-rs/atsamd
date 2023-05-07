@@ -20,59 +20,21 @@ impl From<crate::W<CTRLB_SPEC>> for W {
     }
 }
 #[doc = "Field `START0` writer - Comparator 0 Start Comparison"]
-pub struct START0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> START0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type START0_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
 #[doc = "Field `START1` writer - Comparator 1 Start Comparison"]
-pub struct START1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> START1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type START1_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
 impl W {
     #[doc = "Bit 0 - Comparator 0 Start Comparison"]
     #[inline(always)]
-    pub fn start0(&mut self) -> START0_W {
-        START0_W { w: self }
+    #[must_use]
+    pub fn start0(&mut self) -> START0_W<0> {
+        START0_W::new(self)
     }
     #[doc = "Bit 1 - Comparator 1 Start Comparison"]
     #[inline(always)]
-    pub fn start1(&mut self) -> START1_W {
-        START1_W { w: self }
+    #[must_use]
+    pub fn start1(&mut self) -> START1_W<1> {
+        START1_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -89,11 +51,10 @@ impl crate::RegisterSpec for CTRLB_SPEC {
 #[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
 impl crate::Resettable for CTRLB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

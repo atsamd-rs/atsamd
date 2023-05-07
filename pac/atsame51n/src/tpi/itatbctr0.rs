@@ -14,25 +14,12 @@ impl From<crate::R<ITATBCTR0_SPEC>> for R {
     }
 }
 #[doc = "Field `ATREADY` reader - "]
-pub struct ATREADY_R(crate::FieldReader<bool, bool>);
-impl ATREADY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ATREADY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ATREADY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ATREADY_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bit 0"]
     #[inline(always)]
     pub fn atready(&self) -> ATREADY_R {
-        ATREADY_R::new((self.bits & 0x01) != 0)
+        ATREADY_R::new((self.bits & 1) != 0)
     }
 }
 #[doc = "ITATBCTR0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [itatbctr0](index.html) module"]
@@ -46,8 +33,5 @@ impl crate::Readable for ITATBCTR0_SPEC {
 }
 #[doc = "`reset()` method sets ITATBCTR0 to value 0"]
 impl crate::Resettable for ITATBCTR0_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

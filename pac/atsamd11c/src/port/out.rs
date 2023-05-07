@@ -35,44 +35,22 @@ impl From<crate::W<OUT_SPEC>> for W {
     }
 }
 #[doc = "Field `OUT` reader - Port Data Output Value"]
-pub struct OUT_R(crate::FieldReader<u32, u32>);
-impl OUT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        OUT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OUT_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OUT_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `OUT` writer - Port Data Output Value"]
-pub struct OUT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OUT_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = value as u32;
-        self.w
-    }
-}
+pub type OUT_W<'a, const O: u8> = crate::FieldWriter<'a, u32, OUT_SPEC, u32, u32, 32, O>;
 impl R {
     #[doc = "Bits 0:31 - Port Data Output Value"]
     #[inline(always)]
     pub fn out(&self) -> OUT_R {
-        OUT_R::new(self.bits as u32)
+        OUT_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Port Data Output Value"]
     #[inline(always)]
-    pub fn out(&mut self) -> OUT_W {
-        OUT_W { w: self }
+    #[must_use]
+    pub fn out(&mut self) -> OUT_W<0> {
+        OUT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for OUT_SPEC {
 #[doc = "`write(|w| ..)` method takes [out::W](W) writer structure"]
 impl crate::Writable for OUT_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets OUT%s to value 0"]
 impl crate::Resettable for OUT_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

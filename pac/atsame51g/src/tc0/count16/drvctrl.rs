@@ -35,101 +35,37 @@ impl From<crate::W<DRVCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `INVEN0` reader - Output Waveform Invert Enable 0"]
-pub struct INVEN0_R(crate::FieldReader<bool, bool>);
-impl INVEN0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        INVEN0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INVEN0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INVEN0_R = crate::BitReader<bool>;
 #[doc = "Field `INVEN0` writer - Output Waveform Invert Enable 0"]
-pub struct INVEN0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INVEN0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type INVEN0_W<'a, const O: u8> = crate::BitWriter<'a, u8, DRVCTRL_SPEC, bool, O>;
 #[doc = "Field `INVEN1` reader - Output Waveform Invert Enable 1"]
-pub struct INVEN1_R(crate::FieldReader<bool, bool>);
-impl INVEN1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        INVEN1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INVEN1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INVEN1_R = crate::BitReader<bool>;
 #[doc = "Field `INVEN1` writer - Output Waveform Invert Enable 1"]
-pub struct INVEN1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INVEN1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type INVEN1_W<'a, const O: u8> = crate::BitWriter<'a, u8, DRVCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Output Waveform Invert Enable 0"]
     #[inline(always)]
     pub fn inven0(&self) -> INVEN0_R {
-        INVEN0_R::new((self.bits & 0x01) != 0)
+        INVEN0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Output Waveform Invert Enable 1"]
     #[inline(always)]
     pub fn inven1(&self) -> INVEN1_R {
-        INVEN1_R::new(((self.bits >> 1) & 0x01) != 0)
+        INVEN1_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Output Waveform Invert Enable 0"]
     #[inline(always)]
-    pub fn inven0(&mut self) -> INVEN0_W {
-        INVEN0_W { w: self }
+    #[must_use]
+    pub fn inven0(&mut self) -> INVEN0_W<0> {
+        INVEN0_W::new(self)
     }
     #[doc = "Bit 1 - Output Waveform Invert Enable 1"]
     #[inline(always)]
-    pub fn inven1(&mut self) -> INVEN1_W {
-        INVEN1_W { w: self }
+    #[must_use]
+    pub fn inven1(&mut self) -> INVEN1_W<1> {
+        INVEN1_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for DRVCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [drvctrl::W](W) writer structure"]
 impl crate::Writable for DRVCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets DRVCTRL to value 0"]
 impl crate::Resettable for DRVCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

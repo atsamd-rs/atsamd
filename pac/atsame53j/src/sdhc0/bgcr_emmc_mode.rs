@@ -34,196 +34,131 @@ impl From<crate::W<BGCR_EMMC_MODE_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `STPBGR` reader - Stop at Block Gap Request"]
+pub type STPBGR_R = crate::BitReader<STPBGRSELECT_A>;
 #[doc = "Stop at Block Gap Request\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum STPBGR_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum STPBGRSELECT_A {
     #[doc = "0: Transfer"]
     TRANSFER = 0,
     #[doc = "1: Stop"]
     STOP = 1,
 }
-impl From<STPBGR_A> for bool {
+impl From<STPBGRSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: STPBGR_A) -> Self {
+    fn from(variant: STPBGRSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `STPBGR` reader - Stop at Block Gap Request"]
-pub struct STPBGR_R(crate::FieldReader<bool, STPBGR_A>);
 impl STPBGR_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        STPBGR_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> STPBGR_A {
+    pub fn variant(&self) -> STPBGRSELECT_A {
         match self.bits {
-            false => STPBGR_A::TRANSFER,
-            true => STPBGR_A::STOP,
+            false => STPBGRSELECT_A::TRANSFER,
+            true => STPBGRSELECT_A::STOP,
         }
     }
     #[doc = "Checks if the value of the field is `TRANSFER`"]
     #[inline(always)]
     pub fn is_transfer(&self) -> bool {
-        **self == STPBGR_A::TRANSFER
+        *self == STPBGRSELECT_A::TRANSFER
     }
     #[doc = "Checks if the value of the field is `STOP`"]
     #[inline(always)]
     pub fn is_stop(&self) -> bool {
-        **self == STPBGR_A::STOP
-    }
-}
-impl core::ops::Deref for STPBGR_R {
-    type Target = crate::FieldReader<bool, STPBGR_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == STPBGRSELECT_A::STOP
     }
 }
 #[doc = "Field `STPBGR` writer - Stop at Block Gap Request"]
-pub struct STPBGR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> STPBGR_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: STPBGR_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type STPBGR_W<'a, const O: u8> =
+    crate::BitWriter<'a, u8, BGCR_EMMC_MODE_SPEC, STPBGRSELECT_A, O>;
+impl<'a, const O: u8> STPBGR_W<'a, O> {
     #[doc = "Transfer"]
     #[inline(always)]
     pub fn transfer(self) -> &'a mut W {
-        self.variant(STPBGR_A::TRANSFER)
+        self.variant(STPBGRSELECT_A::TRANSFER)
     }
     #[doc = "Stop"]
     #[inline(always)]
     pub fn stop(self) -> &'a mut W {
-        self.variant(STPBGR_A::STOP)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
+        self.variant(STPBGRSELECT_A::STOP)
     }
 }
+#[doc = "Field `CONTR` reader - Continue Request"]
+pub type CONTR_R = crate::BitReader<CONTRSELECT_A>;
 #[doc = "Continue Request\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CONTR_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CONTRSELECT_A {
     #[doc = "0: Not affected"]
     GO_ON = 0,
     #[doc = "1: Restart"]
     RESTART = 1,
 }
-impl From<CONTR_A> for bool {
+impl From<CONTRSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: CONTR_A) -> Self {
+    fn from(variant: CONTRSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `CONTR` reader - Continue Request"]
-pub struct CONTR_R(crate::FieldReader<bool, CONTR_A>);
 impl CONTR_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CONTR_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> CONTR_A {
+    pub fn variant(&self) -> CONTRSELECT_A {
         match self.bits {
-            false => CONTR_A::GO_ON,
-            true => CONTR_A::RESTART,
+            false => CONTRSELECT_A::GO_ON,
+            true => CONTRSELECT_A::RESTART,
         }
     }
     #[doc = "Checks if the value of the field is `GO_ON`"]
     #[inline(always)]
     pub fn is_go_on(&self) -> bool {
-        **self == CONTR_A::GO_ON
+        *self == CONTRSELECT_A::GO_ON
     }
     #[doc = "Checks if the value of the field is `RESTART`"]
     #[inline(always)]
     pub fn is_restart(&self) -> bool {
-        **self == CONTR_A::RESTART
-    }
-}
-impl core::ops::Deref for CONTR_R {
-    type Target = crate::FieldReader<bool, CONTR_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CONTRSELECT_A::RESTART
     }
 }
 #[doc = "Field `CONTR` writer - Continue Request"]
-pub struct CONTR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CONTR_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CONTR_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type CONTR_W<'a, const O: u8> = crate::BitWriter<'a, u8, BGCR_EMMC_MODE_SPEC, CONTRSELECT_A, O>;
+impl<'a, const O: u8> CONTR_W<'a, O> {
     #[doc = "Not affected"]
     #[inline(always)]
     pub fn go_on(self) -> &'a mut W {
-        self.variant(CONTR_A::GO_ON)
+        self.variant(CONTRSELECT_A::GO_ON)
     }
     #[doc = "Restart"]
     #[inline(always)]
     pub fn restart(self) -> &'a mut W {
-        self.variant(CONTR_A::RESTART)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
+        self.variant(CONTRSELECT_A::RESTART)
     }
 }
 impl R {
     #[doc = "Bit 0 - Stop at Block Gap Request"]
     #[inline(always)]
     pub fn stpbgr(&self) -> STPBGR_R {
-        STPBGR_R::new((self.bits & 0x01) != 0)
+        STPBGR_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Continue Request"]
     #[inline(always)]
     pub fn contr(&self) -> CONTR_R {
-        CONTR_R::new(((self.bits >> 1) & 0x01) != 0)
+        CONTR_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Stop at Block Gap Request"]
     #[inline(always)]
-    pub fn stpbgr(&mut self) -> STPBGR_W {
-        STPBGR_W { w: self }
+    #[must_use]
+    pub fn stpbgr(&mut self) -> STPBGR_W<0> {
+        STPBGR_W::new(self)
     }
     #[doc = "Bit 1 - Continue Request"]
     #[inline(always)]
-    pub fn contr(&mut self) -> CONTR_W {
-        CONTR_W { w: self }
+    #[must_use]
+    pub fn contr(&mut self) -> CONTR_W<1> {
+        CONTR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -244,11 +179,10 @@ impl crate::Readable for BGCR_EMMC_MODE_SPEC {
 #[doc = "`write(|w| ..)` method takes [bgcr_emmc_mode::W](W) writer structure"]
 impl crate::Writable for BGCR_EMMC_MODE_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets BGCR_EMMC_MODE to value 0"]
 impl crate::Resettable for BGCR_EMMC_MODE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

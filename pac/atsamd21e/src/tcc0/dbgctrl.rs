@@ -35,101 +35,37 @@ impl From<crate::W<DBGCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `DBGRUN` reader - Debug Running Mode"]
-pub struct DBGRUN_R(crate::FieldReader<bool, bool>);
-impl DBGRUN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DBGRUN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DBGRUN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DBGRUN_R = crate::BitReader<bool>;
 #[doc = "Field `DBGRUN` writer - Debug Running Mode"]
-pub struct DBGRUN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DBGRUN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type DBGRUN_W<'a, const O: u8> = crate::BitWriter<'a, u8, DBGCTRL_SPEC, bool, O>;
 #[doc = "Field `FDDBD` reader - Fault Detection on Debug Break Detection"]
-pub struct FDDBD_R(crate::FieldReader<bool, bool>);
-impl FDDBD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FDDBD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FDDBD_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FDDBD_R = crate::BitReader<bool>;
 #[doc = "Field `FDDBD` writer - Fault Detection on Debug Break Detection"]
-pub struct FDDBD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FDDBD_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type FDDBD_W<'a, const O: u8> = crate::BitWriter<'a, u8, DBGCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Debug Running Mode"]
     #[inline(always)]
     pub fn dbgrun(&self) -> DBGRUN_R {
-        DBGRUN_R::new((self.bits & 0x01) != 0)
+        DBGRUN_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 2 - Fault Detection on Debug Break Detection"]
     #[inline(always)]
     pub fn fddbd(&self) -> FDDBD_R {
-        FDDBD_R::new(((self.bits >> 2) & 0x01) != 0)
+        FDDBD_R::new(((self.bits >> 2) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Debug Running Mode"]
     #[inline(always)]
-    pub fn dbgrun(&mut self) -> DBGRUN_W {
-        DBGRUN_W { w: self }
+    #[must_use]
+    pub fn dbgrun(&mut self) -> DBGRUN_W<0> {
+        DBGRUN_W::new(self)
     }
     #[doc = "Bit 2 - Fault Detection on Debug Break Detection"]
     #[inline(always)]
-    pub fn fddbd(&mut self) -> FDDBD_W {
-        FDDBD_W { w: self }
+    #[must_use]
+    pub fn fddbd(&mut self) -> FDDBD_W<2> {
+        FDDBD_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for DBGCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [dbgctrl::W](W) writer structure"]
 impl crate::Writable for DBGCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets DBGCTRL to value 0"]
 impl crate::Resettable for DBGCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

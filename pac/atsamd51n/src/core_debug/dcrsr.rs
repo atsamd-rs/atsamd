@@ -20,49 +20,21 @@ impl From<crate::W<DCRSR_SPEC>> for W {
     }
 }
 #[doc = "Field `REGSEL` writer - "]
-pub struct REGSEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> REGSEL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x1f) | (value as u32 & 0x1f);
-        self.w
-    }
-}
+pub type REGSEL_W<'a, const O: u8> = crate::FieldWriter<'a, u32, DCRSR_SPEC, u8, u8, 5, O>;
 #[doc = "Field `REGWnR` writer - "]
-pub struct REGWNR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> REGWNR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
-        self.w
-    }
-}
+pub type REGWN_R_W<'a, const O: u8> = crate::BitWriter<'a, u32, DCRSR_SPEC, bool, O>;
 impl W {
     #[doc = "Bits 0:4"]
     #[inline(always)]
-    pub fn regsel(&mut self) -> REGSEL_W {
-        REGSEL_W { w: self }
+    #[must_use]
+    pub fn regsel(&mut self) -> REGSEL_W<0> {
+        REGSEL_W::new(self)
     }
     #[doc = "Bit 16"]
     #[inline(always)]
-    pub fn regwn_r(&mut self) -> REGWNR_W {
-        REGWNR_W { w: self }
+    #[must_use]
+    pub fn regwn_r(&mut self) -> REGWN_R_W<16> {
+        REGWN_R_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -79,11 +51,10 @@ impl crate::RegisterSpec for DCRSR_SPEC {
 #[doc = "`write(|w| ..)` method takes [dcrsr::W](W) writer structure"]
 impl crate::Writable for DCRSR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets DCRSR to value 0"]
 impl crate::Resettable for DCRSR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

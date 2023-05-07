@@ -35,44 +35,22 @@ impl From<crate::W<PER_SPEC>> for W {
     }
 }
 #[doc = "Field `PER` reader - Counter Period"]
-pub struct PER_R(crate::FieldReader<u16, u16>);
-impl PER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        PER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PER_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PER_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `PER` writer - Counter Period"]
-pub struct PER_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PER_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = value as u16;
-        self.w
-    }
-}
+pub type PER_W<'a, const O: u8> = crate::FieldWriter<'a, u16, PER_SPEC, u16, u16, 16, O>;
 impl R {
     #[doc = "Bits 0:15 - Counter Period"]
     #[inline(always)]
     pub fn per(&self) -> PER_R {
-        PER_R::new(self.bits as u16)
+        PER_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:15 - Counter Period"]
     #[inline(always)]
-    pub fn per(&mut self) -> PER_W {
-        PER_W { w: self }
+    #[must_use]
+    pub fn per(&mut self) -> PER_W<0> {
+        PER_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for PER_SPEC {
 #[doc = "`write(|w| ..)` method takes [per::W](W) writer structure"]
 impl crate::Writable for PER_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets PER to value 0"]
 impl crate::Resettable for PER_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

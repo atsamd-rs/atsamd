@@ -35,44 +35,22 @@ impl From<crate::W<WINLT_SPEC>> for W {
     }
 }
 #[doc = "Field `WINLT` reader - Window Lower Threshold"]
-pub struct WINLT_R(crate::FieldReader<u16, u16>);
-impl WINLT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        WINLT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WINLT_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WINLT_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `WINLT` writer - Window Lower Threshold"]
-pub struct WINLT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WINLT_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = value as u16;
-        self.w
-    }
-}
+pub type WINLT_W<'a, const O: u8> = crate::FieldWriter<'a, u16, WINLT_SPEC, u16, u16, 16, O>;
 impl R {
     #[doc = "Bits 0:15 - Window Lower Threshold"]
     #[inline(always)]
     pub fn winlt(&self) -> WINLT_R {
-        WINLT_R::new(self.bits as u16)
+        WINLT_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:15 - Window Lower Threshold"]
     #[inline(always)]
-    pub fn winlt(&mut self) -> WINLT_W {
-        WINLT_W { w: self }
+    #[must_use]
+    pub fn winlt(&mut self) -> WINLT_W<0> {
+        WINLT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for WINLT_SPEC {
 #[doc = "`write(|w| ..)` method takes [winlt::W](W) writer structure"]
 impl crate::Writable for WINLT_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets WINLT to value 0"]
 impl crate::Resettable for WINLT_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

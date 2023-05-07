@@ -24,8 +24,5 @@ impl crate::Readable for FSCR_SPEC {
 }
 #[doc = "`reset()` method sets FSCR to value 0"]
 impl crate::Resettable for FSCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -14,20 +14,7 @@ impl From<crate::R<CID2_SPEC>> for R {
     }
 }
 #[doc = "Field `PREAMBLEB2` reader - Preamble Byte 2"]
-pub struct PREAMBLEB2_R(crate::FieldReader<u8, u8>);
-impl PREAMBLEB2_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PREAMBLEB2_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PREAMBLEB2_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PREAMBLEB2_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:7 - Preamble Byte 2"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for CID2_SPEC {
 }
 #[doc = "`reset()` method sets CID2 to value 0x05"]
 impl crate::Resettable for CID2_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x05
-    }
+    const RESET_VALUE: Self::Ux = 0x05;
 }

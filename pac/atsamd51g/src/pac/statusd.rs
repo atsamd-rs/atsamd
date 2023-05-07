@@ -14,125 +14,47 @@ impl From<crate::R<STATUSD_SPEC>> for R {
     }
 }
 #[doc = "Field `SERCOM4_` reader - SERCOM4 APB Protect Enable"]
-pub struct SERCOM4__R(crate::FieldReader<bool, bool>);
-impl SERCOM4__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SERCOM4__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SERCOM4__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SERCOM4__R = crate::BitReader<bool>;
 #[doc = "Field `SERCOM5_` reader - SERCOM5 APB Protect Enable"]
-pub struct SERCOM5__R(crate::FieldReader<bool, bool>);
-impl SERCOM5__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SERCOM5__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SERCOM5__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SERCOM5__R = crate::BitReader<bool>;
 #[doc = "Field `ADC0_` reader - ADC0 APB Protect Enable"]
-pub struct ADC0__R(crate::FieldReader<bool, bool>);
-impl ADC0__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ADC0__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ADC0__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ADC0__R = crate::BitReader<bool>;
 #[doc = "Field `ADC1_` reader - ADC1 APB Protect Enable"]
-pub struct ADC1__R(crate::FieldReader<bool, bool>);
-impl ADC1__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ADC1__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ADC1__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ADC1__R = crate::BitReader<bool>;
 #[doc = "Field `DAC_` reader - DAC APB Protect Enable"]
-pub struct DAC__R(crate::FieldReader<bool, bool>);
-impl DAC__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DAC__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DAC__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DAC__R = crate::BitReader<bool>;
 #[doc = "Field `PCC_` reader - PCC APB Protect Enable"]
-pub struct PCC__R(crate::FieldReader<bool, bool>);
-impl PCC__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PCC__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PCC__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PCC__R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bit 0 - SERCOM4 APB Protect Enable"]
     #[inline(always)]
     pub fn sercom4_(&self) -> SERCOM4__R {
-        SERCOM4__R::new((self.bits & 0x01) != 0)
+        SERCOM4__R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - SERCOM5 APB Protect Enable"]
     #[inline(always)]
     pub fn sercom5_(&self) -> SERCOM5__R {
-        SERCOM5__R::new(((self.bits >> 1) & 0x01) != 0)
+        SERCOM5__R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 7 - ADC0 APB Protect Enable"]
     #[inline(always)]
     pub fn adc0_(&self) -> ADC0__R {
-        ADC0__R::new(((self.bits >> 7) & 0x01) != 0)
+        ADC0__R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - ADC1 APB Protect Enable"]
     #[inline(always)]
     pub fn adc1_(&self) -> ADC1__R {
-        ADC1__R::new(((self.bits >> 8) & 0x01) != 0)
+        ADC1__R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - DAC APB Protect Enable"]
     #[inline(always)]
     pub fn dac_(&self) -> DAC__R {
-        DAC__R::new(((self.bits >> 9) & 0x01) != 0)
+        DAC__R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 11 - PCC APB Protect Enable"]
     #[inline(always)]
     pub fn pcc_(&self) -> PCC__R {
-        PCC__R::new(((self.bits >> 11) & 0x01) != 0)
+        PCC__R::new(((self.bits >> 11) & 1) != 0)
     }
 }
 #[doc = "Peripheral write protection status - Bridge D\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusd](index.html) module"]
@@ -146,8 +68,5 @@ impl crate::Readable for STATUSD_SPEC {
 }
 #[doc = "`reset()` method sets STATUSD to value 0"]
 impl crate::Resettable for STATUSD_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

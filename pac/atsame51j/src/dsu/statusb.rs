@@ -14,165 +14,61 @@ impl From<crate::R<STATUSB_SPEC>> for R {
     }
 }
 #[doc = "Field `PROT` reader - Protected"]
-pub struct PROT_R(crate::FieldReader<bool, bool>);
-impl PROT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PROT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PROT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PROT_R = crate::BitReader<bool>;
 #[doc = "Field `DBGPRES` reader - Debugger Present"]
-pub struct DBGPRES_R(crate::FieldReader<bool, bool>);
-impl DBGPRES_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DBGPRES_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DBGPRES_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DBGPRES_R = crate::BitReader<bool>;
 #[doc = "Field `DCCD0` reader - Debug Communication Channel 0 Dirty"]
-pub struct DCCD0_R(crate::FieldReader<bool, bool>);
-impl DCCD0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DCCD0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DCCD0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DCCD0_R = crate::BitReader<bool>;
 #[doc = "Field `DCCD1` reader - Debug Communication Channel 1 Dirty"]
-pub struct DCCD1_R(crate::FieldReader<bool, bool>);
-impl DCCD1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DCCD1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DCCD1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DCCD1_R = crate::BitReader<bool>;
 #[doc = "Field `HPE` reader - Hot-Plugging Enable"]
-pub struct HPE_R(crate::FieldReader<bool, bool>);
-impl HPE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        HPE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for HPE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type HPE_R = crate::BitReader<bool>;
 #[doc = "Field `CELCK` reader - Chip Erase Locked"]
-pub struct CELCK_R(crate::FieldReader<bool, bool>);
-impl CELCK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CELCK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CELCK_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CELCK_R = crate::BitReader<bool>;
 #[doc = "Field `TDCCD0` reader - Test Debug Communication Channel 0 Dirty"]
-pub struct TDCCD0_R(crate::FieldReader<bool, bool>);
-impl TDCCD0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TDCCD0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TDCCD0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TDCCD0_R = crate::BitReader<bool>;
 #[doc = "Field `TDCCD1` reader - Test Debug Communication Channel 1 Dirty"]
-pub struct TDCCD1_R(crate::FieldReader<bool, bool>);
-impl TDCCD1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TDCCD1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TDCCD1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TDCCD1_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bit 0 - Protected"]
     #[inline(always)]
     pub fn prot(&self) -> PROT_R {
-        PROT_R::new((self.bits & 0x01) != 0)
+        PROT_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Debugger Present"]
     #[inline(always)]
     pub fn dbgpres(&self) -> DBGPRES_R {
-        DBGPRES_R::new(((self.bits >> 1) & 0x01) != 0)
+        DBGPRES_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Debug Communication Channel 0 Dirty"]
     #[inline(always)]
     pub fn dccd0(&self) -> DCCD0_R {
-        DCCD0_R::new(((self.bits >> 2) & 0x01) != 0)
+        DCCD0_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Debug Communication Channel 1 Dirty"]
     #[inline(always)]
     pub fn dccd1(&self) -> DCCD1_R {
-        DCCD1_R::new(((self.bits >> 3) & 0x01) != 0)
+        DCCD1_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Hot-Plugging Enable"]
     #[inline(always)]
     pub fn hpe(&self) -> HPE_R {
-        HPE_R::new(((self.bits >> 4) & 0x01) != 0)
+        HPE_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Chip Erase Locked"]
     #[inline(always)]
     pub fn celck(&self) -> CELCK_R {
-        CELCK_R::new(((self.bits >> 5) & 0x01) != 0)
+        CELCK_R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - Test Debug Communication Channel 0 Dirty"]
     #[inline(always)]
     pub fn tdccd0(&self) -> TDCCD0_R {
-        TDCCD0_R::new(((self.bits >> 6) & 0x01) != 0)
+        TDCCD0_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Test Debug Communication Channel 1 Dirty"]
     #[inline(always)]
     pub fn tdccd1(&self) -> TDCCD1_R {
-        TDCCD1_R::new(((self.bits >> 7) & 0x01) != 0)
+        TDCCD1_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 #[doc = "Status B\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusb](index.html) module"]
@@ -186,8 +82,5 @@ impl crate::Readable for STATUSB_SPEC {
 }
 #[doc = "`reset()` method sets STATUSB to value 0"]
 impl crate::Resettable for STATUSB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

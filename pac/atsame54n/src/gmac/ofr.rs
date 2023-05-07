@@ -14,20 +14,7 @@ impl From<crate::R<OFR_SPEC>> for R {
     }
 }
 #[doc = "Field `OFRX` reader - Oversized Frames Received"]
-pub struct OFRX_R(crate::FieldReader<u16, u16>);
-impl OFRX_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        OFRX_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OFRX_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OFRX_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:9 - Oversized Frames Received"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for OFR_SPEC {
 }
 #[doc = "`reset()` method sets OFR to value 0"]
 impl crate::Resettable for OFR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

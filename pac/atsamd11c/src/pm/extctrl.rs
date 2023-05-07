@@ -35,54 +35,22 @@ impl From<crate::W<EXTCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `SETDIS` reader - External Reset Disable"]
-pub struct SETDIS_R(crate::FieldReader<bool, bool>);
-impl SETDIS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SETDIS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SETDIS_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SETDIS_R = crate::BitReader<bool>;
 #[doc = "Field `SETDIS` writer - External Reset Disable"]
-pub struct SETDIS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SETDIS_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type SETDIS_W<'a, const O: u8> = crate::BitWriter<'a, u8, EXTCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - External Reset Disable"]
     #[inline(always)]
     pub fn setdis(&self) -> SETDIS_R {
-        SETDIS_R::new((self.bits & 0x01) != 0)
+        SETDIS_R::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - External Reset Disable"]
     #[inline(always)]
-    pub fn setdis(&mut self) -> SETDIS_W {
-        SETDIS_W { w: self }
+    #[must_use]
+    pub fn setdis(&mut self) -> SETDIS_W<0> {
+        SETDIS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -103,11 +71,10 @@ impl crate::Readable for EXTCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [extctrl::W](W) writer structure"]
 impl crate::Writable for EXTCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EXTCTRL to value 0"]
 impl crate::Resettable for EXTCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

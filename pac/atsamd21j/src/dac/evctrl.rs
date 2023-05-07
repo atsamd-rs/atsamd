@@ -35,101 +35,37 @@ impl From<crate::W<EVCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `STARTEI` reader - Start Conversion Event Input"]
-pub struct STARTEI_R(crate::FieldReader<bool, bool>);
-impl STARTEI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        STARTEI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for STARTEI_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type STARTEI_R = crate::BitReader<bool>;
 #[doc = "Field `STARTEI` writer - Start Conversion Event Input"]
-pub struct STARTEI_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> STARTEI_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type STARTEI_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 #[doc = "Field `EMPTYEO` reader - Data Buffer Empty Event Output"]
-pub struct EMPTYEO_R(crate::FieldReader<bool, bool>);
-impl EMPTYEO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EMPTYEO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EMPTYEO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EMPTYEO_R = crate::BitReader<bool>;
 #[doc = "Field `EMPTYEO` writer - Data Buffer Empty Event Output"]
-pub struct EMPTYEO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EMPTYEO_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type EMPTYEO_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Start Conversion Event Input"]
     #[inline(always)]
     pub fn startei(&self) -> STARTEI_R {
-        STARTEI_R::new((self.bits & 0x01) != 0)
+        STARTEI_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Data Buffer Empty Event Output"]
     #[inline(always)]
     pub fn emptyeo(&self) -> EMPTYEO_R {
-        EMPTYEO_R::new(((self.bits >> 1) & 0x01) != 0)
+        EMPTYEO_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Start Conversion Event Input"]
     #[inline(always)]
-    pub fn startei(&mut self) -> STARTEI_W {
-        STARTEI_W { w: self }
+    #[must_use]
+    pub fn startei(&mut self) -> STARTEI_W<0> {
+        STARTEI_W::new(self)
     }
     #[doc = "Bit 1 - Data Buffer Empty Event Output"]
     #[inline(always)]
-    pub fn emptyeo(&mut self) -> EMPTYEO_W {
-        EMPTYEO_W { w: self }
+    #[must_use]
+    pub fn emptyeo(&mut self) -> EMPTYEO_W<1> {
+        EMPTYEO_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for EVCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
 impl crate::Resettable for EVCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

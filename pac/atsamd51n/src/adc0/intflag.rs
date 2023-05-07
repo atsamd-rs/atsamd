@@ -35,148 +35,52 @@ impl From<crate::W<INTFLAG_SPEC>> for W {
     }
 }
 #[doc = "Field `RESRDY` reader - Result Ready Interrupt Flag"]
-pub struct RESRDY_R(crate::FieldReader<bool, bool>);
-impl RESRDY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RESRDY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RESRDY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RESRDY_R = crate::BitReader<bool>;
 #[doc = "Field `RESRDY` writer - Result Ready Interrupt Flag"]
-pub struct RESRDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RESRDY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type RESRDY_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `OVERRUN` reader - Overrun Interrupt Flag"]
-pub struct OVERRUN_R(crate::FieldReader<bool, bool>);
-impl OVERRUN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        OVERRUN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OVERRUN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OVERRUN_R = crate::BitReader<bool>;
 #[doc = "Field `OVERRUN` writer - Overrun Interrupt Flag"]
-pub struct OVERRUN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OVERRUN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type OVERRUN_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `WINMON` reader - Window Monitor Interrupt Flag"]
-pub struct WINMON_R(crate::FieldReader<bool, bool>);
-impl WINMON_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WINMON_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WINMON_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WINMON_R = crate::BitReader<bool>;
 #[doc = "Field `WINMON` writer - Window Monitor Interrupt Flag"]
-pub struct WINMON_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WINMON_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type WINMON_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Result Ready Interrupt Flag"]
     #[inline(always)]
     pub fn resrdy(&self) -> RESRDY_R {
-        RESRDY_R::new((self.bits & 0x01) != 0)
+        RESRDY_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Overrun Interrupt Flag"]
     #[inline(always)]
     pub fn overrun(&self) -> OVERRUN_R {
-        OVERRUN_R::new(((self.bits >> 1) & 0x01) != 0)
+        OVERRUN_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Window Monitor Interrupt Flag"]
     #[inline(always)]
     pub fn winmon(&self) -> WINMON_R {
-        WINMON_R::new(((self.bits >> 2) & 0x01) != 0)
+        WINMON_R::new(((self.bits >> 2) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Result Ready Interrupt Flag"]
     #[inline(always)]
-    pub fn resrdy(&mut self) -> RESRDY_W {
-        RESRDY_W { w: self }
+    #[must_use]
+    pub fn resrdy(&mut self) -> RESRDY_W<0> {
+        RESRDY_W::new(self)
     }
     #[doc = "Bit 1 - Overrun Interrupt Flag"]
     #[inline(always)]
-    pub fn overrun(&mut self) -> OVERRUN_W {
-        OVERRUN_W { w: self }
+    #[must_use]
+    pub fn overrun(&mut self) -> OVERRUN_W<1> {
+        OVERRUN_W::new(self)
     }
     #[doc = "Bit 2 - Window Monitor Interrupt Flag"]
     #[inline(always)]
-    pub fn winmon(&mut self) -> WINMON_W {
-        WINMON_W { w: self }
+    #[must_use]
+    pub fn winmon(&mut self) -> WINMON_W<2> {
+        WINMON_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -197,11 +101,10 @@ impl crate::Readable for INTFLAG_SPEC {
 #[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for INTFLAG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

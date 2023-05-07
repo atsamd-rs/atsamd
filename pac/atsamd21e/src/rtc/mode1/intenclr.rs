@@ -35,195 +35,67 @@ impl From<crate::W<INTENCLR_SPEC>> for W {
     }
 }
 #[doc = "Field `CMP0` reader - Compare 0 Interrupt Enable"]
-pub struct CMP0_R(crate::FieldReader<bool, bool>);
-impl CMP0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CMP0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CMP0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CMP0_R = crate::BitReader<bool>;
 #[doc = "Field `CMP0` writer - Compare 0 Interrupt Enable"]
-pub struct CMP0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CMP0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type CMP0_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `CMP1` reader - Compare 1 Interrupt Enable"]
-pub struct CMP1_R(crate::FieldReader<bool, bool>);
-impl CMP1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CMP1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CMP1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CMP1_R = crate::BitReader<bool>;
 #[doc = "Field `CMP1` writer - Compare 1 Interrupt Enable"]
-pub struct CMP1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CMP1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type CMP1_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `SYNCRDY` reader - Synchronization Ready Interrupt Enable"]
-pub struct SYNCRDY_R(crate::FieldReader<bool, bool>);
-impl SYNCRDY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SYNCRDY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SYNCRDY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SYNCRDY_R = crate::BitReader<bool>;
 #[doc = "Field `SYNCRDY` writer - Synchronization Ready Interrupt Enable"]
-pub struct SYNCRDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SYNCRDY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u8 & 0x01) << 6);
-        self.w
-    }
-}
+pub type SYNCRDY_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `OVF` reader - Overflow Interrupt Enable"]
-pub struct OVF_R(crate::FieldReader<bool, bool>);
-impl OVF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        OVF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OVF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OVF_R = crate::BitReader<bool>;
 #[doc = "Field `OVF` writer - Overflow Interrupt Enable"]
-pub struct OVF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OVF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type OVF_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Compare 0 Interrupt Enable"]
     #[inline(always)]
     pub fn cmp0(&self) -> CMP0_R {
-        CMP0_R::new((self.bits & 0x01) != 0)
+        CMP0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Compare 1 Interrupt Enable"]
     #[inline(always)]
     pub fn cmp1(&self) -> CMP1_R {
-        CMP1_R::new(((self.bits >> 1) & 0x01) != 0)
+        CMP1_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 6 - Synchronization Ready Interrupt Enable"]
     #[inline(always)]
     pub fn syncrdy(&self) -> SYNCRDY_R {
-        SYNCRDY_R::new(((self.bits >> 6) & 0x01) != 0)
+        SYNCRDY_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Overflow Interrupt Enable"]
     #[inline(always)]
     pub fn ovf(&self) -> OVF_R {
-        OVF_R::new(((self.bits >> 7) & 0x01) != 0)
+        OVF_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Compare 0 Interrupt Enable"]
     #[inline(always)]
-    pub fn cmp0(&mut self) -> CMP0_W {
-        CMP0_W { w: self }
+    #[must_use]
+    pub fn cmp0(&mut self) -> CMP0_W<0> {
+        CMP0_W::new(self)
     }
     #[doc = "Bit 1 - Compare 1 Interrupt Enable"]
     #[inline(always)]
-    pub fn cmp1(&mut self) -> CMP1_W {
-        CMP1_W { w: self }
+    #[must_use]
+    pub fn cmp1(&mut self) -> CMP1_W<1> {
+        CMP1_W::new(self)
     }
     #[doc = "Bit 6 - Synchronization Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn syncrdy(&mut self) -> SYNCRDY_W {
-        SYNCRDY_W { w: self }
+    #[must_use]
+    pub fn syncrdy(&mut self) -> SYNCRDY_W<6> {
+        SYNCRDY_W::new(self)
     }
     #[doc = "Bit 7 - Overflow Interrupt Enable"]
     #[inline(always)]
-    pub fn ovf(&mut self) -> OVF_W {
-        OVF_W { w: self }
+    #[must_use]
+    pub fn ovf(&mut self) -> OVF_W<7> {
+        OVF_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -244,11 +116,10 @@ impl crate::Readable for INTENCLR_SPEC {
 #[doc = "`write(|w| ..)` method takes [intenclr::W](W) writer structure"]
 impl crate::Writable for INTENCLR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for INTENCLR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

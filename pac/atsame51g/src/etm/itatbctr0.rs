@@ -35,11 +35,10 @@ impl crate::RegisterSpec for ITATBCTR0_SPEC {
 #[doc = "`write(|w| ..)` method takes [itatbctr0::W](W) writer structure"]
 impl crate::Writable for ITATBCTR0_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets ITATBCTR0 to value 0"]
 impl crate::Resettable for ITATBCTR0_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

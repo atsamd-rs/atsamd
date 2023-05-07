@@ -25,8 +25,5 @@ impl crate::Readable for MMFR_SPEC {
 #[doc = "`reset()` method sets MMFR[%s]
 to value 0"]
 impl crate::Resettable for MMFR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -24,8 +24,5 @@ impl crate::Readable for ADR_SPEC {
 }
 #[doc = "`reset()` method sets ADR to value 0"]
 impl crate::Resettable for ADR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -14,110 +14,19 @@ impl From<crate::R<ISR_SPEC>> for R {
     }
 }
 #[doc = "Field `RHC` reader - Region Hash Completed"]
-pub struct RHC_R(crate::FieldReader<u8, u8>);
-impl RHC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        RHC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RHC_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RHC_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `RDM` reader - Region Digest Mismatch"]
-pub struct RDM_R(crate::FieldReader<u8, u8>);
-impl RDM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        RDM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RDM_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RDM_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `RBE` reader - Region Bus Error"]
-pub struct RBE_R(crate::FieldReader<u8, u8>);
-impl RBE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        RBE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RBE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RBE_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `RWC` reader - Region Wrap Condition Detected"]
-pub struct RWC_R(crate::FieldReader<u8, u8>);
-impl RWC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        RWC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RWC_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RWC_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `REC` reader - Region End bit Condition Detected"]
-pub struct REC_R(crate::FieldReader<u8, u8>);
-impl REC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        REC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for REC_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type REC_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `RSU` reader - Region Status Updated Detected"]
-pub struct RSU_R(crate::FieldReader<u8, u8>);
-impl RSU_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        RSU_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RSU_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RSU_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `URAD` reader - Undefined Register Access Detection Status"]
-pub struct URAD_R(crate::FieldReader<bool, bool>);
-impl URAD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        URAD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for URAD_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type URAD_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bits 0:3 - Region Hash Completed"]
     #[inline(always)]
@@ -152,7 +61,7 @@ impl R {
     #[doc = "Bit 24 - Undefined Register Access Detection Status"]
     #[inline(always)]
     pub fn urad(&self) -> URAD_R {
-        URAD_R::new(((self.bits >> 24) & 0x01) != 0)
+        URAD_R::new(((self.bits >> 24) & 1) != 0)
     }
 }
 #[doc = "Interrupt Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [isr](index.html) module"]
@@ -166,8 +75,5 @@ impl crate::Readable for ISR_SPEC {
 }
 #[doc = "`reset()` method sets ISR to value 0"]
 impl crate::Resettable for ISR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

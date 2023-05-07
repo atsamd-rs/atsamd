@@ -14,20 +14,7 @@ impl From<crate::R<ICTR_SPEC>> for R {
     }
 }
 #[doc = "Field `INTLINESNUM` reader - "]
-pub struct INTLINESNUM_R(crate::FieldReader<u8, u8>);
-impl INTLINESNUM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        INTLINESNUM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INTLINESNUM_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INTLINESNUM_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:3"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for ICTR_SPEC {
 }
 #[doc = "`reset()` method sets ICTR to value 0"]
 impl crate::Resettable for ICTR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

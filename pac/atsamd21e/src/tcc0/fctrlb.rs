@@ -34,10 +34,12 @@ impl From<crate::W<FCTRLB_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `SRC` reader - Fault B Source"]
+pub type SRC_R = crate::FieldReader<u8, SRCSELECT_A>;
 #[doc = "Fault B Source\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum SRC_A {
+pub enum SRCSELECT_A {
     #[doc = "0: Fault input disabled"]
     DISABLE = 0,
     #[doc = "1: MCEx (x=0,1) event input"]
@@ -47,173 +49,84 @@ pub enum SRC_A {
     #[doc = "3: Alternate fault (A or B) state at the end of the previous period"]
     ALTFAULT = 3,
 }
-impl From<SRC_A> for u8 {
+impl From<SRCSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: SRC_A) -> Self {
+    fn from(variant: SRCSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `SRC` reader - Fault B Source"]
-pub struct SRC_R(crate::FieldReader<u8, SRC_A>);
 impl SRC_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        SRC_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> SRC_A {
+    pub fn variant(&self) -> SRCSELECT_A {
         match self.bits {
-            0 => SRC_A::DISABLE,
-            1 => SRC_A::ENABLE,
-            2 => SRC_A::INVERT,
-            3 => SRC_A::ALTFAULT,
+            0 => SRCSELECT_A::DISABLE,
+            1 => SRCSELECT_A::ENABLE,
+            2 => SRCSELECT_A::INVERT,
+            3 => SRCSELECT_A::ALTFAULT,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        **self == SRC_A::DISABLE
+        *self == SRCSELECT_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `ENABLE`"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        **self == SRC_A::ENABLE
+        *self == SRCSELECT_A::ENABLE
     }
     #[doc = "Checks if the value of the field is `INVERT`"]
     #[inline(always)]
     pub fn is_invert(&self) -> bool {
-        **self == SRC_A::INVERT
+        *self == SRCSELECT_A::INVERT
     }
     #[doc = "Checks if the value of the field is `ALTFAULT`"]
     #[inline(always)]
     pub fn is_altfault(&self) -> bool {
-        **self == SRC_A::ALTFAULT
-    }
-}
-impl core::ops::Deref for SRC_R {
-    type Target = crate::FieldReader<u8, SRC_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == SRCSELECT_A::ALTFAULT
     }
 }
 #[doc = "Field `SRC` writer - Fault B Source"]
-pub struct SRC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SRC_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SRC_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type SRC_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u32, FCTRLB_SPEC, u8, SRCSELECT_A, 2, O>;
+impl<'a, const O: u8> SRC_W<'a, O> {
     #[doc = "Fault input disabled"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(SRC_A::DISABLE)
+        self.variant(SRCSELECT_A::DISABLE)
     }
     #[doc = "MCEx (x=0,1) event input"]
     #[inline(always)]
     pub fn enable(self) -> &'a mut W {
-        self.variant(SRC_A::ENABLE)
+        self.variant(SRCSELECT_A::ENABLE)
     }
     #[doc = "Inverted MCEx (x=0,1) event input"]
     #[inline(always)]
     pub fn invert(self) -> &'a mut W {
-        self.variant(SRC_A::INVERT)
+        self.variant(SRCSELECT_A::INVERT)
     }
     #[doc = "Alternate fault (A or B) state at the end of the previous period"]
     #[inline(always)]
     pub fn altfault(self) -> &'a mut W {
-        self.variant(SRC_A::ALTFAULT)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u32 & 0x03);
-        self.w
+        self.variant(SRCSELECT_A::ALTFAULT)
     }
 }
 #[doc = "Field `KEEP` reader - Fault B Keeper"]
-pub struct KEEP_R(crate::FieldReader<bool, bool>);
-impl KEEP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        KEEP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for KEEP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type KEEP_R = crate::BitReader<bool>;
 #[doc = "Field `KEEP` writer - Fault B Keeper"]
-pub struct KEEP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> KEEP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
-        self.w
-    }
-}
+pub type KEEP_W<'a, const O: u8> = crate::BitWriter<'a, u32, FCTRLB_SPEC, bool, O>;
 #[doc = "Field `QUAL` reader - Fault B Qualification"]
-pub struct QUAL_R(crate::FieldReader<bool, bool>);
-impl QUAL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        QUAL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for QUAL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type QUAL_R = crate::BitReader<bool>;
 #[doc = "Field `QUAL` writer - Fault B Qualification"]
-pub struct QUAL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> QUAL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u32 & 0x01) << 4);
-        self.w
-    }
-}
+pub type QUAL_W<'a, const O: u8> = crate::BitWriter<'a, u32, FCTRLB_SPEC, bool, O>;
+#[doc = "Field `BLANK` reader - Fault B Blanking Mode"]
+pub type BLANK_R = crate::FieldReader<u8, BLANKSELECT_A>;
 #[doc = "Fault B Blanking Mode\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum BLANK_A {
+pub enum BLANKSELECT_A {
     #[doc = "0: No blanking applied"]
     NONE = 0,
     #[doc = "1: Blanking applied from rising edge of the output waveform"]
@@ -223,136 +136,80 @@ pub enum BLANK_A {
     #[doc = "3: Blanking applied from each toggle of the output waveform"]
     BOTH = 3,
 }
-impl From<BLANK_A> for u8 {
+impl From<BLANKSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: BLANK_A) -> Self {
+    fn from(variant: BLANKSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `BLANK` reader - Fault B Blanking Mode"]
-pub struct BLANK_R(crate::FieldReader<u8, BLANK_A>);
 impl BLANK_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BLANK_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> BLANK_A {
+    pub fn variant(&self) -> BLANKSELECT_A {
         match self.bits {
-            0 => BLANK_A::NONE,
-            1 => BLANK_A::RISE,
-            2 => BLANK_A::FALL,
-            3 => BLANK_A::BOTH,
+            0 => BLANKSELECT_A::NONE,
+            1 => BLANKSELECT_A::RISE,
+            2 => BLANKSELECT_A::FALL,
+            3 => BLANKSELECT_A::BOTH,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `NONE`"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        **self == BLANK_A::NONE
+        *self == BLANKSELECT_A::NONE
     }
     #[doc = "Checks if the value of the field is `RISE`"]
     #[inline(always)]
     pub fn is_rise(&self) -> bool {
-        **self == BLANK_A::RISE
+        *self == BLANKSELECT_A::RISE
     }
     #[doc = "Checks if the value of the field is `FALL`"]
     #[inline(always)]
     pub fn is_fall(&self) -> bool {
-        **self == BLANK_A::FALL
+        *self == BLANKSELECT_A::FALL
     }
     #[doc = "Checks if the value of the field is `BOTH`"]
     #[inline(always)]
     pub fn is_both(&self) -> bool {
-        **self == BLANK_A::BOTH
-    }
-}
-impl core::ops::Deref for BLANK_R {
-    type Target = crate::FieldReader<u8, BLANK_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == BLANKSELECT_A::BOTH
     }
 }
 #[doc = "Field `BLANK` writer - Fault B Blanking Mode"]
-pub struct BLANK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BLANK_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: BLANK_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type BLANK_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u32, FCTRLB_SPEC, u8, BLANKSELECT_A, 2, O>;
+impl<'a, const O: u8> BLANK_W<'a, O> {
     #[doc = "No blanking applied"]
     #[inline(always)]
     pub fn none(self) -> &'a mut W {
-        self.variant(BLANK_A::NONE)
+        self.variant(BLANKSELECT_A::NONE)
     }
     #[doc = "Blanking applied from rising edge of the output waveform"]
     #[inline(always)]
     pub fn rise(self) -> &'a mut W {
-        self.variant(BLANK_A::RISE)
+        self.variant(BLANKSELECT_A::RISE)
     }
     #[doc = "Blanking applied from falling edge of the output waveform"]
     #[inline(always)]
     pub fn fall(self) -> &'a mut W {
-        self.variant(BLANK_A::FALL)
+        self.variant(BLANKSELECT_A::FALL)
     }
     #[doc = "Blanking applied from each toggle of the output waveform"]
     #[inline(always)]
     pub fn both(self) -> &'a mut W {
-        self.variant(BLANK_A::BOTH)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 5)) | ((value as u32 & 0x03) << 5);
-        self.w
+        self.variant(BLANKSELECT_A::BOTH)
     }
 }
 #[doc = "Field `RESTART` reader - Fault B Restart"]
-pub struct RESTART_R(crate::FieldReader<bool, bool>);
-impl RESTART_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RESTART_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RESTART_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RESTART_R = crate::BitReader<bool>;
 #[doc = "Field `RESTART` writer - Fault B Restart"]
-pub struct RESTART_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RESTART_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
-        self.w
-    }
-}
+pub type RESTART_W<'a, const O: u8> = crate::BitWriter<'a, u32, FCTRLB_SPEC, bool, O>;
+#[doc = "Field `HALT` reader - Fault B Halt Mode"]
+pub type HALT_R = crate::FieldReader<u8, HALTSELECT_A>;
 #[doc = "Fault B Halt Mode\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum HALT_A {
+pub enum HALTSELECT_A {
     #[doc = "0: Halt action disabled"]
     DISABLE = 0,
     #[doc = "1: Hardware halt action"]
@@ -362,99 +219,76 @@ pub enum HALT_A {
     #[doc = "3: Non-recoverable fault"]
     NR = 3,
 }
-impl From<HALT_A> for u8 {
+impl From<HALTSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: HALT_A) -> Self {
+    fn from(variant: HALTSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `HALT` reader - Fault B Halt Mode"]
-pub struct HALT_R(crate::FieldReader<u8, HALT_A>);
 impl HALT_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        HALT_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> HALT_A {
+    pub fn variant(&self) -> HALTSELECT_A {
         match self.bits {
-            0 => HALT_A::DISABLE,
-            1 => HALT_A::HW,
-            2 => HALT_A::SW,
-            3 => HALT_A::NR,
+            0 => HALTSELECT_A::DISABLE,
+            1 => HALTSELECT_A::HW,
+            2 => HALTSELECT_A::SW,
+            3 => HALTSELECT_A::NR,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        **self == HALT_A::DISABLE
+        *self == HALTSELECT_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `HW`"]
     #[inline(always)]
     pub fn is_hw(&self) -> bool {
-        **self == HALT_A::HW
+        *self == HALTSELECT_A::HW
     }
     #[doc = "Checks if the value of the field is `SW`"]
     #[inline(always)]
     pub fn is_sw(&self) -> bool {
-        **self == HALT_A::SW
+        *self == HALTSELECT_A::SW
     }
     #[doc = "Checks if the value of the field is `NR`"]
     #[inline(always)]
     pub fn is_nr(&self) -> bool {
-        **self == HALT_A::NR
-    }
-}
-impl core::ops::Deref for HALT_R {
-    type Target = crate::FieldReader<u8, HALT_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == HALTSELECT_A::NR
     }
 }
 #[doc = "Field `HALT` writer - Fault B Halt Mode"]
-pub struct HALT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> HALT_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: HALT_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type HALT_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u32, FCTRLB_SPEC, u8, HALTSELECT_A, 2, O>;
+impl<'a, const O: u8> HALT_W<'a, O> {
     #[doc = "Halt action disabled"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(HALT_A::DISABLE)
+        self.variant(HALTSELECT_A::DISABLE)
     }
     #[doc = "Hardware halt action"]
     #[inline(always)]
     pub fn hw(self) -> &'a mut W {
-        self.variant(HALT_A::HW)
+        self.variant(HALTSELECT_A::HW)
     }
     #[doc = "Software halt action"]
     #[inline(always)]
     pub fn sw(self) -> &'a mut W {
-        self.variant(HALT_A::SW)
+        self.variant(HALTSELECT_A::SW)
     }
     #[doc = "Non-recoverable fault"]
     #[inline(always)]
     pub fn nr(self) -> &'a mut W {
-        self.variant(HALT_A::NR)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 8)) | ((value as u32 & 0x03) << 8);
-        self.w
+        self.variant(HALTSELECT_A::NR)
     }
 }
+#[doc = "Field `CHSEL` reader - Fault B Capture Channel"]
+pub type CHSEL_R = crate::FieldReader<u8, CHSELSELECT_A>;
 #[doc = "Fault B Capture Channel\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CHSEL_A {
+pub enum CHSELSELECT_A {
     #[doc = "0: Capture value stored in channel 0"]
     CC0 = 0,
     #[doc = "1: Capture value stored in channel 1"]
@@ -464,99 +298,76 @@ pub enum CHSEL_A {
     #[doc = "3: Capture value stored in channel 3"]
     CC3 = 3,
 }
-impl From<CHSEL_A> for u8 {
+impl From<CHSELSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: CHSEL_A) -> Self {
+    fn from(variant: CHSELSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `CHSEL` reader - Fault B Capture Channel"]
-pub struct CHSEL_R(crate::FieldReader<u8, CHSEL_A>);
 impl CHSEL_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CHSEL_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> CHSEL_A {
+    pub fn variant(&self) -> CHSELSELECT_A {
         match self.bits {
-            0 => CHSEL_A::CC0,
-            1 => CHSEL_A::CC1,
-            2 => CHSEL_A::CC2,
-            3 => CHSEL_A::CC3,
+            0 => CHSELSELECT_A::CC0,
+            1 => CHSELSELECT_A::CC1,
+            2 => CHSELSELECT_A::CC2,
+            3 => CHSELSELECT_A::CC3,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `CC0`"]
     #[inline(always)]
     pub fn is_cc0(&self) -> bool {
-        **self == CHSEL_A::CC0
+        *self == CHSELSELECT_A::CC0
     }
     #[doc = "Checks if the value of the field is `CC1`"]
     #[inline(always)]
     pub fn is_cc1(&self) -> bool {
-        **self == CHSEL_A::CC1
+        *self == CHSELSELECT_A::CC1
     }
     #[doc = "Checks if the value of the field is `CC2`"]
     #[inline(always)]
     pub fn is_cc2(&self) -> bool {
-        **self == CHSEL_A::CC2
+        *self == CHSELSELECT_A::CC2
     }
     #[doc = "Checks if the value of the field is `CC3`"]
     #[inline(always)]
     pub fn is_cc3(&self) -> bool {
-        **self == CHSEL_A::CC3
-    }
-}
-impl core::ops::Deref for CHSEL_R {
-    type Target = crate::FieldReader<u8, CHSEL_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CHSELSELECT_A::CC3
     }
 }
 #[doc = "Field `CHSEL` writer - Fault B Capture Channel"]
-pub struct CHSEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CHSEL_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CHSEL_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type CHSEL_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u32, FCTRLB_SPEC, u8, CHSELSELECT_A, 2, O>;
+impl<'a, const O: u8> CHSEL_W<'a, O> {
     #[doc = "Capture value stored in channel 0"]
     #[inline(always)]
     pub fn cc0(self) -> &'a mut W {
-        self.variant(CHSEL_A::CC0)
+        self.variant(CHSELSELECT_A::CC0)
     }
     #[doc = "Capture value stored in channel 1"]
     #[inline(always)]
     pub fn cc1(self) -> &'a mut W {
-        self.variant(CHSEL_A::CC1)
+        self.variant(CHSELSELECT_A::CC1)
     }
     #[doc = "Capture value stored in channel 2"]
     #[inline(always)]
     pub fn cc2(self) -> &'a mut W {
-        self.variant(CHSEL_A::CC2)
+        self.variant(CHSELSELECT_A::CC2)
     }
     #[doc = "Capture value stored in channel 3"]
     #[inline(always)]
     pub fn cc3(self) -> &'a mut W {
-        self.variant(CHSEL_A::CC3)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 10)) | ((value as u32 & 0x03) << 10);
-        self.w
+        self.variant(CHSELSELECT_A::CC3)
     }
 }
+#[doc = "Field `CAPTURE` reader - Fault B Capture Action"]
+pub type CAPTURE_R = crate::FieldReader<u8, CAPTURESELECT_A>;
 #[doc = "Fault B Capture Action\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CAPTURE_A {
+pub enum CAPTURESELECT_A {
     #[doc = "0: No capture"]
     DISABLE = 0,
     #[doc = "1: Capture on fault"]
@@ -572,222 +383,151 @@ pub enum CAPTURE_A {
     #[doc = "6: Minimum and maximum local detection"]
     DERIV0 = 6,
 }
-impl From<CAPTURE_A> for u8 {
+impl From<CAPTURESELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: CAPTURE_A) -> Self {
+    fn from(variant: CAPTURESELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `CAPTURE` reader - Fault B Capture Action"]
-pub struct CAPTURE_R(crate::FieldReader<u8, CAPTURE_A>);
 impl CAPTURE_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CAPTURE_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<CAPTURE_A> {
+    pub fn variant(&self) -> Option<CAPTURESELECT_A> {
         match self.bits {
-            0 => Some(CAPTURE_A::DISABLE),
-            1 => Some(CAPTURE_A::CAPT),
-            2 => Some(CAPTURE_A::CAPTMIN),
-            3 => Some(CAPTURE_A::CAPTMAX),
-            4 => Some(CAPTURE_A::LOCMIN),
-            5 => Some(CAPTURE_A::LOCMAX),
-            6 => Some(CAPTURE_A::DERIV0),
+            0 => Some(CAPTURESELECT_A::DISABLE),
+            1 => Some(CAPTURESELECT_A::CAPT),
+            2 => Some(CAPTURESELECT_A::CAPTMIN),
+            3 => Some(CAPTURESELECT_A::CAPTMAX),
+            4 => Some(CAPTURESELECT_A::LOCMIN),
+            5 => Some(CAPTURESELECT_A::LOCMAX),
+            6 => Some(CAPTURESELECT_A::DERIV0),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        **self == CAPTURE_A::DISABLE
+        *self == CAPTURESELECT_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `CAPT`"]
     #[inline(always)]
     pub fn is_capt(&self) -> bool {
-        **self == CAPTURE_A::CAPT
+        *self == CAPTURESELECT_A::CAPT
     }
     #[doc = "Checks if the value of the field is `CAPTMIN`"]
     #[inline(always)]
     pub fn is_captmin(&self) -> bool {
-        **self == CAPTURE_A::CAPTMIN
+        *self == CAPTURESELECT_A::CAPTMIN
     }
     #[doc = "Checks if the value of the field is `CAPTMAX`"]
     #[inline(always)]
     pub fn is_captmax(&self) -> bool {
-        **self == CAPTURE_A::CAPTMAX
+        *self == CAPTURESELECT_A::CAPTMAX
     }
     #[doc = "Checks if the value of the field is `LOCMIN`"]
     #[inline(always)]
     pub fn is_locmin(&self) -> bool {
-        **self == CAPTURE_A::LOCMIN
+        *self == CAPTURESELECT_A::LOCMIN
     }
     #[doc = "Checks if the value of the field is `LOCMAX`"]
     #[inline(always)]
     pub fn is_locmax(&self) -> bool {
-        **self == CAPTURE_A::LOCMAX
+        *self == CAPTURESELECT_A::LOCMAX
     }
     #[doc = "Checks if the value of the field is `DERIV0`"]
     #[inline(always)]
     pub fn is_deriv0(&self) -> bool {
-        **self == CAPTURE_A::DERIV0
-    }
-}
-impl core::ops::Deref for CAPTURE_R {
-    type Target = crate::FieldReader<u8, CAPTURE_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CAPTURESELECT_A::DERIV0
     }
 }
 #[doc = "Field `CAPTURE` writer - Fault B Capture Action"]
-pub struct CAPTURE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CAPTURE_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CAPTURE_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type CAPTURE_W<'a, const O: u8> =
+    crate::FieldWriter<'a, u32, FCTRLB_SPEC, u8, CAPTURESELECT_A, 3, O>;
+impl<'a, const O: u8> CAPTURE_W<'a, O> {
     #[doc = "No capture"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(CAPTURE_A::DISABLE)
+        self.variant(CAPTURESELECT_A::DISABLE)
     }
     #[doc = "Capture on fault"]
     #[inline(always)]
     pub fn capt(self) -> &'a mut W {
-        self.variant(CAPTURE_A::CAPT)
+        self.variant(CAPTURESELECT_A::CAPT)
     }
     #[doc = "Minimum capture"]
     #[inline(always)]
     pub fn captmin(self) -> &'a mut W {
-        self.variant(CAPTURE_A::CAPTMIN)
+        self.variant(CAPTURESELECT_A::CAPTMIN)
     }
     #[doc = "Maximum capture"]
     #[inline(always)]
     pub fn captmax(self) -> &'a mut W {
-        self.variant(CAPTURE_A::CAPTMAX)
+        self.variant(CAPTURESELECT_A::CAPTMAX)
     }
     #[doc = "Minimum local detection"]
     #[inline(always)]
     pub fn locmin(self) -> &'a mut W {
-        self.variant(CAPTURE_A::LOCMIN)
+        self.variant(CAPTURESELECT_A::LOCMIN)
     }
     #[doc = "Maximum local detection"]
     #[inline(always)]
     pub fn locmax(self) -> &'a mut W {
-        self.variant(CAPTURE_A::LOCMAX)
+        self.variant(CAPTURESELECT_A::LOCMAX)
     }
     #[doc = "Minimum and maximum local detection"]
     #[inline(always)]
     pub fn deriv0(self) -> &'a mut W {
-        self.variant(CAPTURE_A::DERIV0)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 12)) | ((value as u32 & 0x07) << 12);
-        self.w
+        self.variant(CAPTURESELECT_A::DERIV0)
     }
 }
 #[doc = "Field `BLANKVAL` reader - Fault B Blanking Time"]
-pub struct BLANKVAL_R(crate::FieldReader<u8, u8>);
-impl BLANKVAL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BLANKVAL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BLANKVAL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BLANKVAL_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `BLANKVAL` writer - Fault B Blanking Time"]
-pub struct BLANKVAL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BLANKVAL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 16)) | ((value as u32 & 0xff) << 16);
-        self.w
-    }
-}
+pub type BLANKVAL_W<'a, const O: u8> = crate::FieldWriter<'a, u32, FCTRLB_SPEC, u8, u8, 8, O>;
 #[doc = "Field `FILTERVAL` reader - Fault B Filter Value"]
-pub struct FILTERVAL_R(crate::FieldReader<u8, u8>);
-impl FILTERVAL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        FILTERVAL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FILTERVAL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FILTERVAL_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `FILTERVAL` writer - Fault B Filter Value"]
-pub struct FILTERVAL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTERVAL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 24)) | ((value as u32 & 0x0f) << 24);
-        self.w
-    }
-}
+pub type FILTERVAL_W<'a, const O: u8> = crate::FieldWriter<'a, u32, FCTRLB_SPEC, u8, u8, 4, O>;
 impl R {
     #[doc = "Bits 0:1 - Fault B Source"]
     #[inline(always)]
     pub fn src(&self) -> SRC_R {
-        SRC_R::new((self.bits & 0x03) as u8)
+        SRC_R::new((self.bits & 3) as u8)
     }
     #[doc = "Bit 3 - Fault B Keeper"]
     #[inline(always)]
     pub fn keep(&self) -> KEEP_R {
-        KEEP_R::new(((self.bits >> 3) & 0x01) != 0)
+        KEEP_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Fault B Qualification"]
     #[inline(always)]
     pub fn qual(&self) -> QUAL_R {
-        QUAL_R::new(((self.bits >> 4) & 0x01) != 0)
+        QUAL_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bits 5:6 - Fault B Blanking Mode"]
     #[inline(always)]
     pub fn blank(&self) -> BLANK_R {
-        BLANK_R::new(((self.bits >> 5) & 0x03) as u8)
+        BLANK_R::new(((self.bits >> 5) & 3) as u8)
     }
     #[doc = "Bit 7 - Fault B Restart"]
     #[inline(always)]
     pub fn restart(&self) -> RESTART_R {
-        RESTART_R::new(((self.bits >> 7) & 0x01) != 0)
+        RESTART_R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bits 8:9 - Fault B Halt Mode"]
     #[inline(always)]
     pub fn halt(&self) -> HALT_R {
-        HALT_R::new(((self.bits >> 8) & 0x03) as u8)
+        HALT_R::new(((self.bits >> 8) & 3) as u8)
     }
     #[doc = "Bits 10:11 - Fault B Capture Channel"]
     #[inline(always)]
     pub fn chsel(&self) -> CHSEL_R {
-        CHSEL_R::new(((self.bits >> 10) & 0x03) as u8)
+        CHSEL_R::new(((self.bits >> 10) & 3) as u8)
     }
     #[doc = "Bits 12:14 - Fault B Capture Action"]
     #[inline(always)]
     pub fn capture(&self) -> CAPTURE_R {
-        CAPTURE_R::new(((self.bits >> 12) & 0x07) as u8)
+        CAPTURE_R::new(((self.bits >> 12) & 7) as u8)
     }
     #[doc = "Bits 16:23 - Fault B Blanking Time"]
     #[inline(always)]
@@ -803,53 +543,63 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Fault B Source"]
     #[inline(always)]
-    pub fn src(&mut self) -> SRC_W {
-        SRC_W { w: self }
+    #[must_use]
+    pub fn src(&mut self) -> SRC_W<0> {
+        SRC_W::new(self)
     }
     #[doc = "Bit 3 - Fault B Keeper"]
     #[inline(always)]
-    pub fn keep(&mut self) -> KEEP_W {
-        KEEP_W { w: self }
+    #[must_use]
+    pub fn keep(&mut self) -> KEEP_W<3> {
+        KEEP_W::new(self)
     }
     #[doc = "Bit 4 - Fault B Qualification"]
     #[inline(always)]
-    pub fn qual(&mut self) -> QUAL_W {
-        QUAL_W { w: self }
+    #[must_use]
+    pub fn qual(&mut self) -> QUAL_W<4> {
+        QUAL_W::new(self)
     }
     #[doc = "Bits 5:6 - Fault B Blanking Mode"]
     #[inline(always)]
-    pub fn blank(&mut self) -> BLANK_W {
-        BLANK_W { w: self }
+    #[must_use]
+    pub fn blank(&mut self) -> BLANK_W<5> {
+        BLANK_W::new(self)
     }
     #[doc = "Bit 7 - Fault B Restart"]
     #[inline(always)]
-    pub fn restart(&mut self) -> RESTART_W {
-        RESTART_W { w: self }
+    #[must_use]
+    pub fn restart(&mut self) -> RESTART_W<7> {
+        RESTART_W::new(self)
     }
     #[doc = "Bits 8:9 - Fault B Halt Mode"]
     #[inline(always)]
-    pub fn halt(&mut self) -> HALT_W {
-        HALT_W { w: self }
+    #[must_use]
+    pub fn halt(&mut self) -> HALT_W<8> {
+        HALT_W::new(self)
     }
     #[doc = "Bits 10:11 - Fault B Capture Channel"]
     #[inline(always)]
-    pub fn chsel(&mut self) -> CHSEL_W {
-        CHSEL_W { w: self }
+    #[must_use]
+    pub fn chsel(&mut self) -> CHSEL_W<10> {
+        CHSEL_W::new(self)
     }
     #[doc = "Bits 12:14 - Fault B Capture Action"]
     #[inline(always)]
-    pub fn capture(&mut self) -> CAPTURE_W {
-        CAPTURE_W { w: self }
+    #[must_use]
+    pub fn capture(&mut self) -> CAPTURE_W<12> {
+        CAPTURE_W::new(self)
     }
     #[doc = "Bits 16:23 - Fault B Blanking Time"]
     #[inline(always)]
-    pub fn blankval(&mut self) -> BLANKVAL_W {
-        BLANKVAL_W { w: self }
+    #[must_use]
+    pub fn blankval(&mut self) -> BLANKVAL_W<16> {
+        BLANKVAL_W::new(self)
     }
     #[doc = "Bits 24:27 - Fault B Filter Value"]
     #[inline(always)]
-    pub fn filterval(&mut self) -> FILTERVAL_W {
-        FILTERVAL_W { w: self }
+    #[must_use]
+    pub fn filterval(&mut self) -> FILTERVAL_W<24> {
+        FILTERVAL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -870,11 +620,10 @@ impl crate::Readable for FCTRLB_SPEC {
 #[doc = "`write(|w| ..)` method takes [fctrlb::W](W) writer structure"]
 impl crate::Writable for FCTRLB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets FCTRLB to value 0"]
 impl crate::Resettable for FCTRLB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

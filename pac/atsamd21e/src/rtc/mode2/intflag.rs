@@ -35,148 +35,52 @@ impl From<crate::W<INTFLAG_SPEC>> for W {
     }
 }
 #[doc = "Field `ALARM0` reader - Alarm 0"]
-pub struct ALARM0_R(crate::FieldReader<bool, bool>);
-impl ALARM0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ALARM0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ALARM0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ALARM0_R = crate::BitReader<bool>;
 #[doc = "Field `ALARM0` writer - Alarm 0"]
-pub struct ALARM0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ALARM0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type ALARM0_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `SYNCRDY` reader - Synchronization Ready"]
-pub struct SYNCRDY_R(crate::FieldReader<bool, bool>);
-impl SYNCRDY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SYNCRDY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SYNCRDY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SYNCRDY_R = crate::BitReader<bool>;
 #[doc = "Field `SYNCRDY` writer - Synchronization Ready"]
-pub struct SYNCRDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SYNCRDY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u8 & 0x01) << 6);
-        self.w
-    }
-}
+pub type SYNCRDY_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `OVF` reader - Overflow"]
-pub struct OVF_R(crate::FieldReader<bool, bool>);
-impl OVF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        OVF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OVF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OVF_R = crate::BitReader<bool>;
 #[doc = "Field `OVF` writer - Overflow"]
-pub struct OVF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OVF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type OVF_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Alarm 0"]
     #[inline(always)]
     pub fn alarm0(&self) -> ALARM0_R {
-        ALARM0_R::new((self.bits & 0x01) != 0)
+        ALARM0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 6 - Synchronization Ready"]
     #[inline(always)]
     pub fn syncrdy(&self) -> SYNCRDY_R {
-        SYNCRDY_R::new(((self.bits >> 6) & 0x01) != 0)
+        SYNCRDY_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Overflow"]
     #[inline(always)]
     pub fn ovf(&self) -> OVF_R {
-        OVF_R::new(((self.bits >> 7) & 0x01) != 0)
+        OVF_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Alarm 0"]
     #[inline(always)]
-    pub fn alarm0(&mut self) -> ALARM0_W {
-        ALARM0_W { w: self }
+    #[must_use]
+    pub fn alarm0(&mut self) -> ALARM0_W<0> {
+        ALARM0_W::new(self)
     }
     #[doc = "Bit 6 - Synchronization Ready"]
     #[inline(always)]
-    pub fn syncrdy(&mut self) -> SYNCRDY_W {
-        SYNCRDY_W { w: self }
+    #[must_use]
+    pub fn syncrdy(&mut self) -> SYNCRDY_W<6> {
+        SYNCRDY_W::new(self)
     }
     #[doc = "Bit 7 - Overflow"]
     #[inline(always)]
-    pub fn ovf(&mut self) -> OVF_W {
-        OVF_W { w: self }
+    #[must_use]
+    pub fn ovf(&mut self) -> OVF_W<7> {
+        OVF_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -197,11 +101,10 @@ impl crate::Readable for INTFLAG_SPEC {
 #[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for INTFLAG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

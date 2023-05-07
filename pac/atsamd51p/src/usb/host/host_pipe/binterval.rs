@@ -35,44 +35,22 @@ impl From<crate::W<BINTERVAL_SPEC>> for W {
     }
 }
 #[doc = "Field `BITINTERVAL` reader - Bit Interval"]
-pub struct BITINTERVAL_R(crate::FieldReader<u8, u8>);
-impl BITINTERVAL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BITINTERVAL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BITINTERVAL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BITINTERVAL_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `BITINTERVAL` writer - Bit Interval"]
-pub struct BITINTERVAL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BITINTERVAL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = value as u8;
-        self.w
-    }
-}
+pub type BITINTERVAL_W<'a, const O: u8> = crate::FieldWriter<'a, u8, BINTERVAL_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Bit Interval"]
     #[inline(always)]
     pub fn bitinterval(&self) -> BITINTERVAL_R {
-        BITINTERVAL_R::new(self.bits as u8)
+        BITINTERVAL_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Bit Interval"]
     #[inline(always)]
-    pub fn bitinterval(&mut self) -> BITINTERVAL_W {
-        BITINTERVAL_W { w: self }
+    #[must_use]
+    pub fn bitinterval(&mut self) -> BITINTERVAL_W<0> {
+        BITINTERVAL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for BINTERVAL_SPEC {
 #[doc = "`write(|w| ..)` method takes [binterval::W](W) writer structure"]
 impl crate::Writable for BINTERVAL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets BINTERVAL to value 0"]
 impl crate::Resettable for BINTERVAL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

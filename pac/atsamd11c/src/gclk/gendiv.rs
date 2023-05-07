@@ -35,59 +35,13 @@ impl From<crate::W<GENDIV_SPEC>> for W {
     }
 }
 #[doc = "Field `ID` reader - Generic Clock Generator Selection"]
-pub struct ID_R(crate::FieldReader<u8, u8>);
-impl ID_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        ID_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ID_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ID_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `ID` writer - Generic Clock Generator Selection"]
-pub struct ID_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ID_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u32 & 0x0f);
-        self.w
-    }
-}
+pub type ID_W<'a, const O: u8> = crate::FieldWriter<'a, u32, GENDIV_SPEC, u8, u8, 4, O>;
 #[doc = "Field `DIV` reader - Division Factor"]
-pub struct DIV_R(crate::FieldReader<u16, u16>);
-impl DIV_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        DIV_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DIV_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DIV_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `DIV` writer - Division Factor"]
-pub struct DIV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DIV_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xffff << 8)) | ((value as u32 & 0xffff) << 8);
-        self.w
-    }
-}
+pub type DIV_W<'a, const O: u8> = crate::FieldWriter<'a, u32, GENDIV_SPEC, u16, u16, 16, O>;
 impl R {
     #[doc = "Bits 0:3 - Generic Clock Generator Selection"]
     #[inline(always)]
@@ -103,13 +57,15 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Generic Clock Generator Selection"]
     #[inline(always)]
-    pub fn id(&mut self) -> ID_W {
-        ID_W { w: self }
+    #[must_use]
+    pub fn id(&mut self) -> ID_W<0> {
+        ID_W::new(self)
     }
     #[doc = "Bits 8:23 - Division Factor"]
     #[inline(always)]
-    pub fn div(&mut self) -> DIV_W {
-        DIV_W { w: self }
+    #[must_use]
+    pub fn div(&mut self) -> DIV_W<8> {
+        DIV_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,11 +86,10 @@ impl crate::Readable for GENDIV_SPEC {
 #[doc = "`write(|w| ..)` method takes [gendiv::W](W) writer structure"]
 impl crate::Writable for GENDIV_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets GENDIV to value 0"]
 impl crate::Resettable for GENDIV_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

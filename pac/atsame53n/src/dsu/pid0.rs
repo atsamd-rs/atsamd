@@ -14,20 +14,7 @@ impl From<crate::R<PID0_SPEC>> for R {
     }
 }
 #[doc = "Field `PARTNBL` reader - Part Number Low"]
-pub struct PARTNBL_R(crate::FieldReader<u8, u8>);
-impl PARTNBL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PARTNBL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PARTNBL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PARTNBL_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:7 - Part Number Low"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for PID0_SPEC {
 }
 #[doc = "`reset()` method sets PID0 to value 0xd0"]
 impl crate::Resettable for PID0_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0xd0
-    }
+    const RESET_VALUE: Self::Ux = 0xd0;
 }

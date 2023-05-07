@@ -35,153 +35,31 @@ impl From<crate::W<OSCULP32K_SPEC>> for W {
     }
 }
 #[doc = "Field `EN32K` reader - Enable Out 32k"]
-pub struct EN32K_R(crate::FieldReader<bool, bool>);
-impl EN32K_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EN32K_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EN32K_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EN32K_R = crate::BitReader<bool>;
 #[doc = "Field `EN32K` writer - Enable Out 32k"]
-pub struct EN32K_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EN32K_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type EN32K_W<'a, const O: u8> = crate::BitWriter<'a, u32, OSCULP32K_SPEC, bool, O>;
 #[doc = "Field `EN1K` reader - Enable Out 1k"]
-pub struct EN1K_R(crate::FieldReader<bool, bool>);
-impl EN1K_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EN1K_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EN1K_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EN1K_R = crate::BitReader<bool>;
 #[doc = "Field `EN1K` writer - Enable Out 1k"]
-pub struct EN1K_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EN1K_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
-    }
-}
+pub type EN1K_W<'a, const O: u8> = crate::BitWriter<'a, u32, OSCULP32K_SPEC, bool, O>;
 #[doc = "Field `CALIB` reader - Oscillator Calibration"]
-pub struct CALIB_R(crate::FieldReader<u8, u8>);
-impl CALIB_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CALIB_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CALIB_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CALIB_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `CALIB` writer - Oscillator Calibration"]
-pub struct CALIB_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CALIB_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x3f << 8)) | ((value as u32 & 0x3f) << 8);
-        self.w
-    }
-}
+pub type CALIB_W<'a, const O: u8> = crate::FieldWriter<'a, u32, OSCULP32K_SPEC, u8, u8, 6, O>;
 #[doc = "Field `WRTLOCK` reader - Write Lock"]
-pub struct WRTLOCK_R(crate::FieldReader<bool, bool>);
-impl WRTLOCK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WRTLOCK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WRTLOCK_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WRTLOCK_R = crate::BitReader<bool>;
 #[doc = "Field `WRTLOCK` writer - Write Lock"]
-pub struct WRTLOCK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WRTLOCK_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
-        self.w
-    }
-}
+pub type WRTLOCK_W<'a, const O: u8> = crate::BitWriter<'a, u32, OSCULP32K_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 1 - Enable Out 32k"]
     #[inline(always)]
     pub fn en32k(&self) -> EN32K_R {
-        EN32K_R::new(((self.bits >> 1) & 0x01) != 0)
+        EN32K_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Enable Out 1k"]
     #[inline(always)]
     pub fn en1k(&self) -> EN1K_R {
-        EN1K_R::new(((self.bits >> 2) & 0x01) != 0)
+        EN1K_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bits 8:13 - Oscillator Calibration"]
     #[inline(always)]
@@ -191,29 +69,33 @@ impl R {
     #[doc = "Bit 15 - Write Lock"]
     #[inline(always)]
     pub fn wrtlock(&self) -> WRTLOCK_R {
-        WRTLOCK_R::new(((self.bits >> 15) & 0x01) != 0)
+        WRTLOCK_R::new(((self.bits >> 15) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 1 - Enable Out 32k"]
     #[inline(always)]
-    pub fn en32k(&mut self) -> EN32K_W {
-        EN32K_W { w: self }
+    #[must_use]
+    pub fn en32k(&mut self) -> EN32K_W<1> {
+        EN32K_W::new(self)
     }
     #[doc = "Bit 2 - Enable Out 1k"]
     #[inline(always)]
-    pub fn en1k(&mut self) -> EN1K_W {
-        EN1K_W { w: self }
+    #[must_use]
+    pub fn en1k(&mut self) -> EN1K_W<2> {
+        EN1K_W::new(self)
     }
     #[doc = "Bits 8:13 - Oscillator Calibration"]
     #[inline(always)]
-    pub fn calib(&mut self) -> CALIB_W {
-        CALIB_W { w: self }
+    #[must_use]
+    pub fn calib(&mut self) -> CALIB_W<8> {
+        CALIB_W::new(self)
     }
     #[doc = "Bit 15 - Write Lock"]
     #[inline(always)]
-    pub fn wrtlock(&mut self) -> WRTLOCK_W {
-        WRTLOCK_W { w: self }
+    #[must_use]
+    pub fn wrtlock(&mut self) -> WRTLOCK_W<15> {
+        WRTLOCK_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -234,11 +116,10 @@ impl crate::Readable for OSCULP32K_SPEC {
 #[doc = "`write(|w| ..)` method takes [osculp32k::W](W) writer structure"]
 impl crate::Writable for OSCULP32K_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets OSCULP32K to value 0"]
 impl crate::Resettable for OSCULP32K_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

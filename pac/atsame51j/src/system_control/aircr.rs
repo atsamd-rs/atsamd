@@ -35,326 +35,148 @@ impl From<crate::W<AIRCR_SPEC>> for W {
     }
 }
 #[doc = "Field `VECTRESET` reader - Must write 0"]
-pub struct VECTRESET_R(crate::FieldReader<bool, bool>);
-impl VECTRESET_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        VECTRESET_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for VECTRESET_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type VECTRESET_R = crate::BitReader<bool>;
 #[doc = "Field `VECTRESET` writer - Must write 0"]
-pub struct VECTRESET_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> VECTRESET_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type VECTRESET_W<'a, const O: u8> = crate::BitWriter<'a, u32, AIRCR_SPEC, bool, O>;
 #[doc = "Field `VECTCLRACTIVE` reader - Must write 0"]
-pub struct VECTCLRACTIVE_R(crate::FieldReader<bool, bool>);
-impl VECTCLRACTIVE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        VECTCLRACTIVE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for VECTCLRACTIVE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type VECTCLRACTIVE_R = crate::BitReader<bool>;
 #[doc = "Field `VECTCLRACTIVE` writer - Must write 0"]
-pub struct VECTCLRACTIVE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> VECTCLRACTIVE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type VECTCLRACTIVE_W<'a, const O: u8> = crate::BitWriter<'a, u32, AIRCR_SPEC, bool, O>;
+#[doc = "Field `SYSRESETREQ` reader - System Reset Request"]
+pub type SYSRESETREQ_R = crate::BitReader<SYSRESETREQSELECT_A>;
 #[doc = "System Reset Request\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SYSRESETREQ_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SYSRESETREQSELECT_A {
     #[doc = "0: No system reset request"]
     VALUE_0 = 0,
     #[doc = "1: Asserts a signal to the outer system that requests a reset"]
     VALUE_1 = 1,
 }
-impl From<SYSRESETREQ_A> for bool {
+impl From<SYSRESETREQSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: SYSRESETREQ_A) -> Self {
+    fn from(variant: SYSRESETREQSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `SYSRESETREQ` reader - System Reset Request"]
-pub struct SYSRESETREQ_R(crate::FieldReader<bool, SYSRESETREQ_A>);
 impl SYSRESETREQ_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SYSRESETREQ_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> SYSRESETREQ_A {
+    pub fn variant(&self) -> SYSRESETREQSELECT_A {
         match self.bits {
-            false => SYSRESETREQ_A::VALUE_0,
-            true => SYSRESETREQ_A::VALUE_1,
+            false => SYSRESETREQSELECT_A::VALUE_0,
+            true => SYSRESETREQSELECT_A::VALUE_1,
         }
     }
     #[doc = "Checks if the value of the field is `VALUE_0`"]
     #[inline(always)]
     pub fn is_value_0(&self) -> bool {
-        **self == SYSRESETREQ_A::VALUE_0
+        *self == SYSRESETREQSELECT_A::VALUE_0
     }
     #[doc = "Checks if the value of the field is `VALUE_1`"]
     #[inline(always)]
     pub fn is_value_1(&self) -> bool {
-        **self == SYSRESETREQ_A::VALUE_1
-    }
-}
-impl core::ops::Deref for SYSRESETREQ_R {
-    type Target = crate::FieldReader<bool, SYSRESETREQ_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == SYSRESETREQSELECT_A::VALUE_1
     }
 }
 #[doc = "Field `SYSRESETREQ` writer - System Reset Request"]
-pub struct SYSRESETREQ_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SYSRESETREQ_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SYSRESETREQ_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type SYSRESETREQ_W<'a, const O: u8> =
+    crate::BitWriter<'a, u32, AIRCR_SPEC, SYSRESETREQSELECT_A, O>;
+impl<'a, const O: u8> SYSRESETREQ_W<'a, O> {
     #[doc = "No system reset request"]
     #[inline(always)]
     pub fn value_0(self) -> &'a mut W {
-        self.variant(SYSRESETREQ_A::VALUE_0)
+        self.variant(SYSRESETREQSELECT_A::VALUE_0)
     }
     #[doc = "Asserts a signal to the outer system that requests a reset"]
     #[inline(always)]
     pub fn value_1(self) -> &'a mut W {
-        self.variant(SYSRESETREQ_A::VALUE_1)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
+        self.variant(SYSRESETREQSELECT_A::VALUE_1)
     }
 }
 #[doc = "Field `PRIGROUP` reader - Interrupt priority grouping"]
-pub struct PRIGROUP_R(crate::FieldReader<u8, u8>);
-impl PRIGROUP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PRIGROUP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PRIGROUP_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PRIGROUP_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PRIGROUP` writer - Interrupt priority grouping"]
-pub struct PRIGROUP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PRIGROUP_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 8)) | ((value as u32 & 0x07) << 8);
-        self.w
-    }
-}
+pub type PRIGROUP_W<'a, const O: u8> = crate::FieldWriter<'a, u32, AIRCR_SPEC, u8, u8, 3, O>;
+#[doc = "Field `ENDIANNESS` reader - Data endianness, 0=little, 1=big"]
+pub type ENDIANNESS_R = crate::BitReader<ENDIANNESSSELECT_A>;
 #[doc = "Data endianness, 0=little, 1=big\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ENDIANNESS_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ENDIANNESSSELECT_A {
     #[doc = "0: Little-endian"]
     VALUE_0 = 0,
     #[doc = "1: Big-endian"]
     VALUE_1 = 1,
 }
-impl From<ENDIANNESS_A> for bool {
+impl From<ENDIANNESSSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: ENDIANNESS_A) -> Self {
+    fn from(variant: ENDIANNESSSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `ENDIANNESS` reader - Data endianness, 0=little, 1=big"]
-pub struct ENDIANNESS_R(crate::FieldReader<bool, ENDIANNESS_A>);
 impl ENDIANNESS_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENDIANNESS_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> ENDIANNESS_A {
+    pub fn variant(&self) -> ENDIANNESSSELECT_A {
         match self.bits {
-            false => ENDIANNESS_A::VALUE_0,
-            true => ENDIANNESS_A::VALUE_1,
+            false => ENDIANNESSSELECT_A::VALUE_0,
+            true => ENDIANNESSSELECT_A::VALUE_1,
         }
     }
     #[doc = "Checks if the value of the field is `VALUE_0`"]
     #[inline(always)]
     pub fn is_value_0(&self) -> bool {
-        **self == ENDIANNESS_A::VALUE_0
+        *self == ENDIANNESSSELECT_A::VALUE_0
     }
     #[doc = "Checks if the value of the field is `VALUE_1`"]
     #[inline(always)]
     pub fn is_value_1(&self) -> bool {
-        **self == ENDIANNESS_A::VALUE_1
-    }
-}
-impl core::ops::Deref for ENDIANNESS_R {
-    type Target = crate::FieldReader<bool, ENDIANNESS_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == ENDIANNESSSELECT_A::VALUE_1
     }
 }
 #[doc = "Field `ENDIANNESS` writer - Data endianness, 0=little, 1=big"]
-pub struct ENDIANNESS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ENDIANNESS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: ENDIANNESS_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type ENDIANNESS_W<'a, const O: u8> =
+    crate::BitWriter<'a, u32, AIRCR_SPEC, ENDIANNESSSELECT_A, O>;
+impl<'a, const O: u8> ENDIANNESS_W<'a, O> {
     #[doc = "Little-endian"]
     #[inline(always)]
     pub fn value_0(self) -> &'a mut W {
-        self.variant(ENDIANNESS_A::VALUE_0)
+        self.variant(ENDIANNESSSELECT_A::VALUE_0)
     }
     #[doc = "Big-endian"]
     #[inline(always)]
     pub fn value_1(self) -> &'a mut W {
-        self.variant(ENDIANNESS_A::VALUE_1)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
-        self.w
+        self.variant(ENDIANNESSSELECT_A::VALUE_1)
     }
 }
 #[doc = "Field `VECTKEY` reader - Register key"]
-pub struct VECTKEY_R(crate::FieldReader<u16, u16>);
-impl VECTKEY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        VECTKEY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for VECTKEY_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type VECTKEY_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `VECTKEY` writer - Register key"]
-pub struct VECTKEY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> VECTKEY_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xffff << 16)) | ((value as u32 & 0xffff) << 16);
-        self.w
-    }
-}
+pub type VECTKEY_W<'a, const O: u8> = crate::FieldWriter<'a, u32, AIRCR_SPEC, u16, u16, 16, O>;
 impl R {
     #[doc = "Bit 0 - Must write 0"]
     #[inline(always)]
     pub fn vectreset(&self) -> VECTRESET_R {
-        VECTRESET_R::new((self.bits & 0x01) != 0)
+        VECTRESET_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Must write 0"]
     #[inline(always)]
     pub fn vectclractive(&self) -> VECTCLRACTIVE_R {
-        VECTCLRACTIVE_R::new(((self.bits >> 1) & 0x01) != 0)
+        VECTCLRACTIVE_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - System Reset Request"]
     #[inline(always)]
     pub fn sysresetreq(&self) -> SYSRESETREQ_R {
-        SYSRESETREQ_R::new(((self.bits >> 2) & 0x01) != 0)
+        SYSRESETREQ_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bits 8:10 - Interrupt priority grouping"]
     #[inline(always)]
     pub fn prigroup(&self) -> PRIGROUP_R {
-        PRIGROUP_R::new(((self.bits >> 8) & 0x07) as u8)
+        PRIGROUP_R::new(((self.bits >> 8) & 7) as u8)
     }
     #[doc = "Bit 15 - Data endianness, 0=little, 1=big"]
     #[inline(always)]
     pub fn endianness(&self) -> ENDIANNESS_R {
-        ENDIANNESS_R::new(((self.bits >> 15) & 0x01) != 0)
+        ENDIANNESS_R::new(((self.bits >> 15) & 1) != 0)
     }
     #[doc = "Bits 16:31 - Register key"]
     #[inline(always)]
@@ -365,33 +187,39 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Must write 0"]
     #[inline(always)]
-    pub fn vectreset(&mut self) -> VECTRESET_W {
-        VECTRESET_W { w: self }
+    #[must_use]
+    pub fn vectreset(&mut self) -> VECTRESET_W<0> {
+        VECTRESET_W::new(self)
     }
     #[doc = "Bit 1 - Must write 0"]
     #[inline(always)]
-    pub fn vectclractive(&mut self) -> VECTCLRACTIVE_W {
-        VECTCLRACTIVE_W { w: self }
+    #[must_use]
+    pub fn vectclractive(&mut self) -> VECTCLRACTIVE_W<1> {
+        VECTCLRACTIVE_W::new(self)
     }
     #[doc = "Bit 2 - System Reset Request"]
     #[inline(always)]
-    pub fn sysresetreq(&mut self) -> SYSRESETREQ_W {
-        SYSRESETREQ_W { w: self }
+    #[must_use]
+    pub fn sysresetreq(&mut self) -> SYSRESETREQ_W<2> {
+        SYSRESETREQ_W::new(self)
     }
     #[doc = "Bits 8:10 - Interrupt priority grouping"]
     #[inline(always)]
-    pub fn prigroup(&mut self) -> PRIGROUP_W {
-        PRIGROUP_W { w: self }
+    #[must_use]
+    pub fn prigroup(&mut self) -> PRIGROUP_W<8> {
+        PRIGROUP_W::new(self)
     }
     #[doc = "Bit 15 - Data endianness, 0=little, 1=big"]
     #[inline(always)]
-    pub fn endianness(&mut self) -> ENDIANNESS_W {
-        ENDIANNESS_W { w: self }
+    #[must_use]
+    pub fn endianness(&mut self) -> ENDIANNESS_W<15> {
+        ENDIANNESS_W::new(self)
     }
     #[doc = "Bits 16:31 - Register key"]
     #[inline(always)]
-    pub fn vectkey(&mut self) -> VECTKEY_W {
-        VECTKEY_W { w: self }
+    #[must_use]
+    pub fn vectkey(&mut self) -> VECTKEY_W<16> {
+        VECTKEY_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -412,11 +240,10 @@ impl crate::Readable for AIRCR_SPEC {
 #[doc = "`write(|w| ..)` method takes [aircr::W](W) writer structure"]
 impl crate::Writable for AIRCR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets AIRCR to value 0xfa05_0000"]
 impl crate::Resettable for AIRCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0xfa05_0000
-    }
+    const RESET_VALUE: Self::Ux = 0xfa05_0000;
 }

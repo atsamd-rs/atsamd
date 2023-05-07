@@ -34,10 +34,12 @@ impl From<crate::W<EWCTRL_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `EWOFFSET` reader - Early Warning Interrupt Time Offset"]
+pub type EWOFFSET_R = crate::FieldReader<u8, EWOFFSETSELECT_A>;
 #[doc = "Early Warning Interrupt Time Offset\n\nValue on reset: 11"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum EWOFFSET_A {
+pub enum EWOFFSETSELECT_A {
     #[doc = "0: 8 clock cycles"]
     CYC8 = 0,
     #[doc = "1: 16 clock cycles"]
@@ -63,195 +65,171 @@ pub enum EWOFFSET_A {
     #[doc = "11: 16384 clock cycles"]
     CYC16384 = 11,
 }
-impl From<EWOFFSET_A> for u8 {
+impl From<EWOFFSETSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: EWOFFSET_A) -> Self {
+    fn from(variant: EWOFFSETSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `EWOFFSET` reader - Early Warning Interrupt Time Offset"]
-pub struct EWOFFSET_R(crate::FieldReader<u8, EWOFFSET_A>);
 impl EWOFFSET_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        EWOFFSET_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<EWOFFSET_A> {
+    pub fn variant(&self) -> Option<EWOFFSETSELECT_A> {
         match self.bits {
-            0 => Some(EWOFFSET_A::CYC8),
-            1 => Some(EWOFFSET_A::CYC16),
-            2 => Some(EWOFFSET_A::CYC32),
-            3 => Some(EWOFFSET_A::CYC64),
-            4 => Some(EWOFFSET_A::CYC128),
-            5 => Some(EWOFFSET_A::CYC256),
-            6 => Some(EWOFFSET_A::CYC512),
-            7 => Some(EWOFFSET_A::CYC1024),
-            8 => Some(EWOFFSET_A::CYC2048),
-            9 => Some(EWOFFSET_A::CYC4096),
-            10 => Some(EWOFFSET_A::CYC8192),
-            11 => Some(EWOFFSET_A::CYC16384),
+            0 => Some(EWOFFSETSELECT_A::CYC8),
+            1 => Some(EWOFFSETSELECT_A::CYC16),
+            2 => Some(EWOFFSETSELECT_A::CYC32),
+            3 => Some(EWOFFSETSELECT_A::CYC64),
+            4 => Some(EWOFFSETSELECT_A::CYC128),
+            5 => Some(EWOFFSETSELECT_A::CYC256),
+            6 => Some(EWOFFSETSELECT_A::CYC512),
+            7 => Some(EWOFFSETSELECT_A::CYC1024),
+            8 => Some(EWOFFSETSELECT_A::CYC2048),
+            9 => Some(EWOFFSETSELECT_A::CYC4096),
+            10 => Some(EWOFFSETSELECT_A::CYC8192),
+            11 => Some(EWOFFSETSELECT_A::CYC16384),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `CYC8`"]
     #[inline(always)]
     pub fn is_cyc8(&self) -> bool {
-        **self == EWOFFSET_A::CYC8
+        *self == EWOFFSETSELECT_A::CYC8
     }
     #[doc = "Checks if the value of the field is `CYC16`"]
     #[inline(always)]
     pub fn is_cyc16(&self) -> bool {
-        **self == EWOFFSET_A::CYC16
+        *self == EWOFFSETSELECT_A::CYC16
     }
     #[doc = "Checks if the value of the field is `CYC32`"]
     #[inline(always)]
     pub fn is_cyc32(&self) -> bool {
-        **self == EWOFFSET_A::CYC32
+        *self == EWOFFSETSELECT_A::CYC32
     }
     #[doc = "Checks if the value of the field is `CYC64`"]
     #[inline(always)]
     pub fn is_cyc64(&self) -> bool {
-        **self == EWOFFSET_A::CYC64
+        *self == EWOFFSETSELECT_A::CYC64
     }
     #[doc = "Checks if the value of the field is `CYC128`"]
     #[inline(always)]
     pub fn is_cyc128(&self) -> bool {
-        **self == EWOFFSET_A::CYC128
+        *self == EWOFFSETSELECT_A::CYC128
     }
     #[doc = "Checks if the value of the field is `CYC256`"]
     #[inline(always)]
     pub fn is_cyc256(&self) -> bool {
-        **self == EWOFFSET_A::CYC256
+        *self == EWOFFSETSELECT_A::CYC256
     }
     #[doc = "Checks if the value of the field is `CYC512`"]
     #[inline(always)]
     pub fn is_cyc512(&self) -> bool {
-        **self == EWOFFSET_A::CYC512
+        *self == EWOFFSETSELECT_A::CYC512
     }
     #[doc = "Checks if the value of the field is `CYC1024`"]
     #[inline(always)]
     pub fn is_cyc1024(&self) -> bool {
-        **self == EWOFFSET_A::CYC1024
+        *self == EWOFFSETSELECT_A::CYC1024
     }
     #[doc = "Checks if the value of the field is `CYC2048`"]
     #[inline(always)]
     pub fn is_cyc2048(&self) -> bool {
-        **self == EWOFFSET_A::CYC2048
+        *self == EWOFFSETSELECT_A::CYC2048
     }
     #[doc = "Checks if the value of the field is `CYC4096`"]
     #[inline(always)]
     pub fn is_cyc4096(&self) -> bool {
-        **self == EWOFFSET_A::CYC4096
+        *self == EWOFFSETSELECT_A::CYC4096
     }
     #[doc = "Checks if the value of the field is `CYC8192`"]
     #[inline(always)]
     pub fn is_cyc8192(&self) -> bool {
-        **self == EWOFFSET_A::CYC8192
+        *self == EWOFFSETSELECT_A::CYC8192
     }
     #[doc = "Checks if the value of the field is `CYC16384`"]
     #[inline(always)]
     pub fn is_cyc16384(&self) -> bool {
-        **self == EWOFFSET_A::CYC16384
-    }
-}
-impl core::ops::Deref for EWOFFSET_R {
-    type Target = crate::FieldReader<u8, EWOFFSET_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == EWOFFSETSELECT_A::CYC16384
     }
 }
 #[doc = "Field `EWOFFSET` writer - Early Warning Interrupt Time Offset"]
-pub struct EWOFFSET_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EWOFFSET_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: EWOFFSET_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type EWOFFSET_W<'a, const O: u8> =
+    crate::FieldWriter<'a, u8, EWCTRL_SPEC, u8, EWOFFSETSELECT_A, 4, O>;
+impl<'a, const O: u8> EWOFFSET_W<'a, O> {
     #[doc = "8 clock cycles"]
     #[inline(always)]
     pub fn cyc8(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC8)
+        self.variant(EWOFFSETSELECT_A::CYC8)
     }
     #[doc = "16 clock cycles"]
     #[inline(always)]
     pub fn cyc16(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC16)
+        self.variant(EWOFFSETSELECT_A::CYC16)
     }
     #[doc = "32 clock cycles"]
     #[inline(always)]
     pub fn cyc32(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC32)
+        self.variant(EWOFFSETSELECT_A::CYC32)
     }
     #[doc = "64 clock cycles"]
     #[inline(always)]
     pub fn cyc64(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC64)
+        self.variant(EWOFFSETSELECT_A::CYC64)
     }
     #[doc = "128 clock cycles"]
     #[inline(always)]
     pub fn cyc128(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC128)
+        self.variant(EWOFFSETSELECT_A::CYC128)
     }
     #[doc = "256 clock cycles"]
     #[inline(always)]
     pub fn cyc256(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC256)
+        self.variant(EWOFFSETSELECT_A::CYC256)
     }
     #[doc = "512 clock cycles"]
     #[inline(always)]
     pub fn cyc512(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC512)
+        self.variant(EWOFFSETSELECT_A::CYC512)
     }
     #[doc = "1024 clock cycles"]
     #[inline(always)]
     pub fn cyc1024(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC1024)
+        self.variant(EWOFFSETSELECT_A::CYC1024)
     }
     #[doc = "2048 clock cycles"]
     #[inline(always)]
     pub fn cyc2048(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC2048)
+        self.variant(EWOFFSETSELECT_A::CYC2048)
     }
     #[doc = "4096 clock cycles"]
     #[inline(always)]
     pub fn cyc4096(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC4096)
+        self.variant(EWOFFSETSELECT_A::CYC4096)
     }
     #[doc = "8192 clock cycles"]
     #[inline(always)]
     pub fn cyc8192(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC8192)
+        self.variant(EWOFFSETSELECT_A::CYC8192)
     }
     #[doc = "16384 clock cycles"]
     #[inline(always)]
     pub fn cyc16384(self) -> &'a mut W {
-        self.variant(EWOFFSET_A::CYC16384)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u8 & 0x0f);
-        self.w
+        self.variant(EWOFFSETSELECT_A::CYC16384)
     }
 }
 impl R {
     #[doc = "Bits 0:3 - Early Warning Interrupt Time Offset"]
     #[inline(always)]
     pub fn ewoffset(&self) -> EWOFFSET_R {
-        EWOFFSET_R::new((self.bits & 0x0f) as u8)
+        EWOFFSET_R::new(self.bits & 0x0f)
     }
 }
 impl W {
     #[doc = "Bits 0:3 - Early Warning Interrupt Time Offset"]
     #[inline(always)]
-    pub fn ewoffset(&mut self) -> EWOFFSET_W {
-        EWOFFSET_W { w: self }
+    #[must_use]
+    pub fn ewoffset(&mut self) -> EWOFFSET_W<0> {
+        EWOFFSET_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -272,11 +250,10 @@ impl crate::Readable for EWCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [ewctrl::W](W) writer structure"]
 impl crate::Writable for EWCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EWCTRL to value 0x0b"]
 impl crate::Resettable for EWCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x0b
-    }
+    const RESET_VALUE: Self::Ux = 0x0b;
 }

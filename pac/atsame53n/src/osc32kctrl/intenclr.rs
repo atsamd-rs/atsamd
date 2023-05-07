@@ -35,101 +35,37 @@ impl From<crate::W<INTENCLR_SPEC>> for W {
     }
 }
 #[doc = "Field `XOSC32KRDY` reader - XOSC32K Ready Interrupt Enable"]
-pub struct XOSC32KRDY_R(crate::FieldReader<bool, bool>);
-impl XOSC32KRDY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        XOSC32KRDY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for XOSC32KRDY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type XOSC32KRDY_R = crate::BitReader<bool>;
 #[doc = "Field `XOSC32KRDY` writer - XOSC32K Ready Interrupt Enable"]
-pub struct XOSC32KRDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> XOSC32KRDY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type XOSC32KRDY_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `XOSC32KFAIL` reader - XOSC32K Clock Failure Detector Interrupt Enable"]
-pub struct XOSC32KFAIL_R(crate::FieldReader<bool, bool>);
-impl XOSC32KFAIL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        XOSC32KFAIL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for XOSC32KFAIL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type XOSC32KFAIL_R = crate::BitReader<bool>;
 #[doc = "Field `XOSC32KFAIL` writer - XOSC32K Clock Failure Detector Interrupt Enable"]
-pub struct XOSC32KFAIL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> XOSC32KFAIL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
-    }
-}
+pub type XOSC32KFAIL_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENCLR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - XOSC32K Ready Interrupt Enable"]
     #[inline(always)]
     pub fn xosc32krdy(&self) -> XOSC32KRDY_R {
-        XOSC32KRDY_R::new((self.bits & 0x01) != 0)
+        XOSC32KRDY_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 2 - XOSC32K Clock Failure Detector Interrupt Enable"]
     #[inline(always)]
     pub fn xosc32kfail(&self) -> XOSC32KFAIL_R {
-        XOSC32KFAIL_R::new(((self.bits >> 2) & 0x01) != 0)
+        XOSC32KFAIL_R::new(((self.bits >> 2) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - XOSC32K Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn xosc32krdy(&mut self) -> XOSC32KRDY_W {
-        XOSC32KRDY_W { w: self }
+    #[must_use]
+    pub fn xosc32krdy(&mut self) -> XOSC32KRDY_W<0> {
+        XOSC32KRDY_W::new(self)
     }
     #[doc = "Bit 2 - XOSC32K Clock Failure Detector Interrupt Enable"]
     #[inline(always)]
-    pub fn xosc32kfail(&mut self) -> XOSC32KFAIL_W {
-        XOSC32KFAIL_W { w: self }
+    #[must_use]
+    pub fn xosc32kfail(&mut self) -> XOSC32KFAIL_W<2> {
+        XOSC32KFAIL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for INTENCLR_SPEC {
 #[doc = "`write(|w| ..)` method takes [intenclr::W](W) writer structure"]
 impl crate::Writable for INTENCLR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for INTENCLR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

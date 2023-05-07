@@ -35,81 +35,37 @@ impl From<crate::W<QOSCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `CQOS` reader - Configuration Quality of Service"]
-pub struct CQOS_R(crate::FieldReader<u8, u8>);
-impl CQOS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CQOS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CQOS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CQOS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `CQOS` writer - Configuration Quality of Service"]
-pub struct CQOS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CQOS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u8 & 0x03);
-        self.w
-    }
-}
+pub type CQOS_W<'a, const O: u8> = crate::FieldWriter<'a, u8, QOSCTRL_SPEC, u8, u8, 2, O>;
 #[doc = "Field `DQOS` reader - Data Quality of Service"]
-pub struct DQOS_R(crate::FieldReader<u8, u8>);
-impl DQOS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DQOS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DQOS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DQOS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DQOS` writer - Data Quality of Service"]
-pub struct DQOS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DQOS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 2)) | ((value as u8 & 0x03) << 2);
-        self.w
-    }
-}
+pub type DQOS_W<'a, const O: u8> = crate::FieldWriter<'a, u8, QOSCTRL_SPEC, u8, u8, 2, O>;
 impl R {
     #[doc = "Bits 0:1 - Configuration Quality of Service"]
     #[inline(always)]
     pub fn cqos(&self) -> CQOS_R {
-        CQOS_R::new((self.bits & 0x03) as u8)
+        CQOS_R::new(self.bits & 3)
     }
     #[doc = "Bits 2:3 - Data Quality of Service"]
     #[inline(always)]
     pub fn dqos(&self) -> DQOS_R {
-        DQOS_R::new(((self.bits >> 2) & 0x03) as u8)
+        DQOS_R::new((self.bits >> 2) & 3)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Configuration Quality of Service"]
     #[inline(always)]
-    pub fn cqos(&mut self) -> CQOS_W {
-        CQOS_W { w: self }
+    #[must_use]
+    pub fn cqos(&mut self) -> CQOS_W<0> {
+        CQOS_W::new(self)
     }
     #[doc = "Bits 2:3 - Data Quality of Service"]
     #[inline(always)]
-    pub fn dqos(&mut self) -> DQOS_W {
-        DQOS_W { w: self }
+    #[must_use]
+    pub fn dqos(&mut self) -> DQOS_W<2> {
+        DQOS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,11 +86,10 @@ impl crate::Readable for QOSCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [qosctrl::W](W) writer structure"]
 impl crate::Writable for QOSCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets QOSCTRL to value 0x0f"]
 impl crate::Resettable for QOSCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x0f
-    }
+    const RESET_VALUE: Self::Ux = 0x0f;
 }

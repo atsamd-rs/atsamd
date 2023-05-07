@@ -14,45 +14,19 @@ impl From<crate::R<DEVTYPE_SPEC>> for R {
     }
 }
 #[doc = "Field `SubType` reader - "]
-pub struct SUBTYPE_R(crate::FieldReader<u8, u8>);
-impl SUBTYPE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        SUBTYPE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SUBTYPE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SUB_TYPE_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `MajorType` reader - "]
-pub struct MAJORTYPE_R(crate::FieldReader<u8, u8>);
-impl MAJORTYPE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        MAJORTYPE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for MAJORTYPE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type MAJOR_TYPE_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:3"]
     #[inline(always)]
-    pub fn sub_type(&self) -> SUBTYPE_R {
-        SUBTYPE_R::new((self.bits & 0x0f) as u8)
+    pub fn sub_type(&self) -> SUB_TYPE_R {
+        SUB_TYPE_R::new((self.bits & 0x0f) as u8)
     }
     #[doc = "Bits 4:7"]
     #[inline(always)]
-    pub fn major_type(&self) -> MAJORTYPE_R {
-        MAJORTYPE_R::new(((self.bits >> 4) & 0x0f) as u8)
+    pub fn major_type(&self) -> MAJOR_TYPE_R {
+        MAJOR_TYPE_R::new(((self.bits >> 4) & 0x0f) as u8)
     }
 }
 #[doc = "TPIU_DEVTYPE\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [devtype](index.html) module"]
@@ -66,8 +40,5 @@ impl crate::Readable for DEVTYPE_SPEC {
 }
 #[doc = "`reset()` method sets DEVTYPE to value 0"]
 impl crate::Resettable for DEVTYPE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

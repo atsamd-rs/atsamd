@@ -14,80 +14,15 @@ impl From<crate::R<CPUID_SPEC>> for R {
     }
 }
 #[doc = "Field `REVISION` reader - Processor revision number"]
-pub struct REVISION_R(crate::FieldReader<u8, u8>);
-impl REVISION_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        REVISION_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for REVISION_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type REVISION_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PARTNO` reader - Process Part Number, 0xC24=Cortex-M4"]
-pub struct PARTNO_R(crate::FieldReader<u16, u16>);
-impl PARTNO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        PARTNO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PARTNO_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PARTNO_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `CONSTANT` reader - Constant"]
-pub struct CONSTANT_R(crate::FieldReader<u8, u8>);
-impl CONSTANT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CONSTANT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CONSTANT_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CONSTANT_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `VARIANT` reader - Variant number"]
-pub struct VARIANT_R(crate::FieldReader<u8, u8>);
-impl VARIANT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        VARIANT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for VARIANT_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type VARIANT_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `IMPLEMENTER` reader - Implementer code, 0x41=ARM"]
-pub struct IMPLEMENTER_R(crate::FieldReader<u8, u8>);
-impl IMPLEMENTER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        IMPLEMENTER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for IMPLEMENTER_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type IMPLEMENTER_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:3 - Processor revision number"]
     #[inline(always)]
@@ -126,8 +61,5 @@ impl crate::Readable for CPUID_SPEC {
 }
 #[doc = "`reset()` method sets CPUID to value 0x410f_c240"]
 impl crate::Resettable for CPUID_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x410f_c240
-    }
+    const RESET_VALUE: Self::Ux = 0x410f_c240;
 }

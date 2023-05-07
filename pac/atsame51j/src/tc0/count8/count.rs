@@ -35,44 +35,22 @@ impl From<crate::W<COUNT_SPEC>> for W {
     }
 }
 #[doc = "Field `COUNT` reader - Counter Value"]
-pub struct COUNT_R(crate::FieldReader<u8, u8>);
-impl COUNT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        COUNT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COUNT_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COUNT_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `COUNT` writer - Counter Value"]
-pub struct COUNT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COUNT_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = value as u8;
-        self.w
-    }
-}
+pub type COUNT_W<'a, const O: u8> = crate::FieldWriter<'a, u8, COUNT_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Counter Value"]
     #[inline(always)]
     pub fn count(&self) -> COUNT_R {
-        COUNT_R::new(self.bits as u8)
+        COUNT_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Counter Value"]
     #[inline(always)]
-    pub fn count(&mut self) -> COUNT_W {
-        COUNT_W { w: self }
+    #[must_use]
+    pub fn count(&mut self) -> COUNT_W<0> {
+        COUNT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for COUNT_SPEC {
 #[doc = "`write(|w| ..)` method takes [count::W](W) writer structure"]
 impl crate::Writable for COUNT_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets COUNT to value 0"]
 impl crate::Resettable for COUNT_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

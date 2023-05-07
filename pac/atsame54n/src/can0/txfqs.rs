@@ -14,65 +14,13 @@ impl From<crate::R<TXFQS_SPEC>> for R {
     }
 }
 #[doc = "Field `TFFL` reader - Tx FIFO Free Level"]
-pub struct TFFL_R(crate::FieldReader<u8, u8>);
-impl TFFL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TFFL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TFFL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TFFL_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `TFGI` reader - Tx FIFO Get Index"]
-pub struct TFGI_R(crate::FieldReader<u8, u8>);
-impl TFGI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TFGI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TFGI_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TFGI_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `TFQPI` reader - Tx FIFO/Queue Put Index"]
-pub struct TFQPI_R(crate::FieldReader<u8, u8>);
-impl TFQPI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TFQPI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TFQPI_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TFQPI_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `TFQF` reader - Tx FIFO/Queue Full"]
-pub struct TFQF_R(crate::FieldReader<bool, bool>);
-impl TFQF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TFQF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TFQF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TFQF_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bits 0:5 - Tx FIFO Free Level"]
     #[inline(always)]
@@ -92,7 +40,7 @@ impl R {
     #[doc = "Bit 21 - Tx FIFO/Queue Full"]
     #[inline(always)]
     pub fn tfqf(&self) -> TFQF_R {
-        TFQF_R::new(((self.bits >> 21) & 0x01) != 0)
+        TFQF_R::new(((self.bits >> 21) & 1) != 0)
     }
 }
 #[doc = "Tx FIFO / Queue Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txfqs](index.html) module"]
@@ -106,8 +54,5 @@ impl crate::Readable for TXFQS_SPEC {
 }
 #[doc = "`reset()` method sets TXFQS to value 0"]
 impl crate::Resettable for TXFQS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

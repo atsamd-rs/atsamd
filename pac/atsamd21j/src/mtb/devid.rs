@@ -24,8 +24,5 @@ impl crate::Readable for DEVID_SPEC {
 }
 #[doc = "`reset()` method sets DEVID to value 0"]
 impl crate::Resettable for DEVID_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

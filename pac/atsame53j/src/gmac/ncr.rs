@@ -35,806 +35,262 @@ impl From<crate::W<NCR_SPEC>> for W {
     }
 }
 #[doc = "Field `LBL` reader - Loop Back Local"]
-pub struct LBL_R(crate::FieldReader<bool, bool>);
-impl LBL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        LBL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LBL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LBL_R = crate::BitReader<bool>;
 #[doc = "Field `LBL` writer - Loop Back Local"]
-pub struct LBL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LBL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type LBL_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `RXEN` reader - Receive Enable"]
-pub struct RXEN_R(crate::FieldReader<bool, bool>);
-impl RXEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RXEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXEN_R = crate::BitReader<bool>;
 #[doc = "Field `RXEN` writer - Receive Enable"]
-pub struct RXEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RXEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
-    }
-}
+pub type RXEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `TXEN` reader - Transmit Enable"]
-pub struct TXEN_R(crate::FieldReader<bool, bool>);
-impl TXEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TXEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TXEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TXEN_R = crate::BitReader<bool>;
 #[doc = "Field `TXEN` writer - Transmit Enable"]
-pub struct TXEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TXEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
-        self.w
-    }
-}
+pub type TXEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `MPE` reader - Management Port Enable"]
-pub struct MPE_R(crate::FieldReader<bool, bool>);
-impl MPE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        MPE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for MPE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type MPE_R = crate::BitReader<bool>;
 #[doc = "Field `MPE` writer - Management Port Enable"]
-pub struct MPE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> MPE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u32 & 0x01) << 4);
-        self.w
-    }
-}
+pub type MPE_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `CLRSTAT` reader - Clear Statistics Registers"]
-pub struct CLRSTAT_R(crate::FieldReader<bool, bool>);
-impl CLRSTAT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CLRSTAT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CLRSTAT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CLRSTAT_R = crate::BitReader<bool>;
 #[doc = "Field `CLRSTAT` writer - Clear Statistics Registers"]
-pub struct CLRSTAT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CLRSTAT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u32 & 0x01) << 5);
-        self.w
-    }
-}
+pub type CLRSTAT_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `INCSTAT` reader - Increment Statistics Registers"]
-pub struct INCSTAT_R(crate::FieldReader<bool, bool>);
-impl INCSTAT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        INCSTAT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INCSTAT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INCSTAT_R = crate::BitReader<bool>;
 #[doc = "Field `INCSTAT` writer - Increment Statistics Registers"]
-pub struct INCSTAT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INCSTAT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u32 & 0x01) << 6);
-        self.w
-    }
-}
+pub type INCSTAT_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `WESTAT` reader - Write Enable for Statistics Registers"]
-pub struct WESTAT_R(crate::FieldReader<bool, bool>);
-impl WESTAT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WESTAT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WESTAT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WESTAT_R = crate::BitReader<bool>;
 #[doc = "Field `WESTAT` writer - Write Enable for Statistics Registers"]
-pub struct WESTAT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WESTAT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
-        self.w
-    }
-}
+pub type WESTAT_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `BP` reader - Back pressure"]
-pub struct BP_R(crate::FieldReader<bool, bool>);
-impl BP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BP_R = crate::BitReader<bool>;
 #[doc = "Field `BP` writer - Back pressure"]
-pub struct BP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
-        self.w
-    }
-}
+pub type BP_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `TSTART` reader - Start Transmission"]
-pub struct TSTART_R(crate::FieldReader<bool, bool>);
-impl TSTART_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TSTART_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TSTART_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TSTART_R = crate::BitReader<bool>;
 #[doc = "Field `TSTART` writer - Start Transmission"]
-pub struct TSTART_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TSTART_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u32 & 0x01) << 9);
-        self.w
-    }
-}
+pub type TSTART_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `THALT` reader - Transmit Halt"]
-pub struct THALT_R(crate::FieldReader<bool, bool>);
-impl THALT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        THALT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for THALT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type THALT_R = crate::BitReader<bool>;
 #[doc = "Field `THALT` writer - Transmit Halt"]
-pub struct THALT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> THALT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u32 & 0x01) << 10);
-        self.w
-    }
-}
+pub type THALT_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `TXPF` reader - Transmit Pause Frame"]
-pub struct TXPF_R(crate::FieldReader<bool, bool>);
-impl TXPF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TXPF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TXPF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TXPF_R = crate::BitReader<bool>;
 #[doc = "Field `TXPF` writer - Transmit Pause Frame"]
-pub struct TXPF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TXPF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | ((value as u32 & 0x01) << 11);
-        self.w
-    }
-}
+pub type TXPF_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `TXZQPF` reader - Transmit Zero Quantum Pause Frame"]
-pub struct TXZQPF_R(crate::FieldReader<bool, bool>);
-impl TXZQPF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TXZQPF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TXZQPF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TXZQPF_R = crate::BitReader<bool>;
 #[doc = "Field `TXZQPF` writer - Transmit Zero Quantum Pause Frame"]
-pub struct TXZQPF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TXZQPF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 12)) | ((value as u32 & 0x01) << 12);
-        self.w
-    }
-}
+pub type TXZQPF_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `SRTSM` reader - Store Receive Time Stamp to Memory"]
-pub struct SRTSM_R(crate::FieldReader<bool, bool>);
-impl SRTSM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SRTSM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SRTSM_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SRTSM_R = crate::BitReader<bool>;
 #[doc = "Field `SRTSM` writer - Store Receive Time Stamp to Memory"]
-pub struct SRTSM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SRTSM_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
-        self.w
-    }
-}
+pub type SRTSM_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `ENPBPR` reader - Enable PFC Priority-based Pause Reception"]
-pub struct ENPBPR_R(crate::FieldReader<bool, bool>);
-impl ENPBPR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENPBPR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENPBPR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ENPBPR_R = crate::BitReader<bool>;
 #[doc = "Field `ENPBPR` writer - Enable PFC Priority-based Pause Reception"]
-pub struct ENPBPR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ENPBPR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
-        self.w
-    }
-}
+pub type ENPBPR_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `TXPBPF` reader - Transmit PFC Priority-based Pause Frame"]
-pub struct TXPBPF_R(crate::FieldReader<bool, bool>);
-impl TXPBPF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TXPBPF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TXPBPF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TXPBPF_R = crate::BitReader<bool>;
 #[doc = "Field `TXPBPF` writer - Transmit PFC Priority-based Pause Frame"]
-pub struct TXPBPF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TXPBPF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 17)) | ((value as u32 & 0x01) << 17);
-        self.w
-    }
-}
+pub type TXPBPF_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `FNP` reader - Flush Next Packet"]
-pub struct FNP_R(crate::FieldReader<bool, bool>);
-impl FNP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FNP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FNP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FNP_R = crate::BitReader<bool>;
 #[doc = "Field `FNP` writer - Flush Next Packet"]
-pub struct FNP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FNP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 18)) | ((value as u32 & 0x01) << 18);
-        self.w
-    }
-}
+pub type FNP_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 #[doc = "Field `LPI` reader - Low Power Idle Enable"]
-pub struct LPI_R(crate::FieldReader<bool, bool>);
-impl LPI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        LPI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LPI_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LPI_R = crate::BitReader<bool>;
 #[doc = "Field `LPI` writer - Low Power Idle Enable"]
-pub struct LPI_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LPI_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 19)) | ((value as u32 & 0x01) << 19);
-        self.w
-    }
-}
+pub type LPI_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 1 - Loop Back Local"]
     #[inline(always)]
     pub fn lbl(&self) -> LBL_R {
-        LBL_R::new(((self.bits >> 1) & 0x01) != 0)
+        LBL_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Receive Enable"]
     #[inline(always)]
     pub fn rxen(&self) -> RXEN_R {
-        RXEN_R::new(((self.bits >> 2) & 0x01) != 0)
+        RXEN_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Transmit Enable"]
     #[inline(always)]
     pub fn txen(&self) -> TXEN_R {
-        TXEN_R::new(((self.bits >> 3) & 0x01) != 0)
+        TXEN_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Management Port Enable"]
     #[inline(always)]
     pub fn mpe(&self) -> MPE_R {
-        MPE_R::new(((self.bits >> 4) & 0x01) != 0)
+        MPE_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Clear Statistics Registers"]
     #[inline(always)]
     pub fn clrstat(&self) -> CLRSTAT_R {
-        CLRSTAT_R::new(((self.bits >> 5) & 0x01) != 0)
+        CLRSTAT_R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - Increment Statistics Registers"]
     #[inline(always)]
     pub fn incstat(&self) -> INCSTAT_R {
-        INCSTAT_R::new(((self.bits >> 6) & 0x01) != 0)
+        INCSTAT_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Write Enable for Statistics Registers"]
     #[inline(always)]
     pub fn westat(&self) -> WESTAT_R {
-        WESTAT_R::new(((self.bits >> 7) & 0x01) != 0)
+        WESTAT_R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - Back pressure"]
     #[inline(always)]
     pub fn bp(&self) -> BP_R {
-        BP_R::new(((self.bits >> 8) & 0x01) != 0)
+        BP_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Start Transmission"]
     #[inline(always)]
     pub fn tstart(&self) -> TSTART_R {
-        TSTART_R::new(((self.bits >> 9) & 0x01) != 0)
+        TSTART_R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - Transmit Halt"]
     #[inline(always)]
     pub fn thalt(&self) -> THALT_R {
-        THALT_R::new(((self.bits >> 10) & 0x01) != 0)
+        THALT_R::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bit 11 - Transmit Pause Frame"]
     #[inline(always)]
     pub fn txpf(&self) -> TXPF_R {
-        TXPF_R::new(((self.bits >> 11) & 0x01) != 0)
+        TXPF_R::new(((self.bits >> 11) & 1) != 0)
     }
     #[doc = "Bit 12 - Transmit Zero Quantum Pause Frame"]
     #[inline(always)]
     pub fn txzqpf(&self) -> TXZQPF_R {
-        TXZQPF_R::new(((self.bits >> 12) & 0x01) != 0)
+        TXZQPF_R::new(((self.bits >> 12) & 1) != 0)
     }
     #[doc = "Bit 15 - Store Receive Time Stamp to Memory"]
     #[inline(always)]
     pub fn srtsm(&self) -> SRTSM_R {
-        SRTSM_R::new(((self.bits >> 15) & 0x01) != 0)
+        SRTSM_R::new(((self.bits >> 15) & 1) != 0)
     }
     #[doc = "Bit 16 - Enable PFC Priority-based Pause Reception"]
     #[inline(always)]
     pub fn enpbpr(&self) -> ENPBPR_R {
-        ENPBPR_R::new(((self.bits >> 16) & 0x01) != 0)
+        ENPBPR_R::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - Transmit PFC Priority-based Pause Frame"]
     #[inline(always)]
     pub fn txpbpf(&self) -> TXPBPF_R {
-        TXPBPF_R::new(((self.bits >> 17) & 0x01) != 0)
+        TXPBPF_R::new(((self.bits >> 17) & 1) != 0)
     }
     #[doc = "Bit 18 - Flush Next Packet"]
     #[inline(always)]
     pub fn fnp(&self) -> FNP_R {
-        FNP_R::new(((self.bits >> 18) & 0x01) != 0)
+        FNP_R::new(((self.bits >> 18) & 1) != 0)
     }
     #[doc = "Bit 19 - Low Power Idle Enable"]
     #[inline(always)]
     pub fn lpi(&self) -> LPI_R {
-        LPI_R::new(((self.bits >> 19) & 0x01) != 0)
+        LPI_R::new(((self.bits >> 19) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 1 - Loop Back Local"]
     #[inline(always)]
-    pub fn lbl(&mut self) -> LBL_W {
-        LBL_W { w: self }
+    #[must_use]
+    pub fn lbl(&mut self) -> LBL_W<1> {
+        LBL_W::new(self)
     }
     #[doc = "Bit 2 - Receive Enable"]
     #[inline(always)]
-    pub fn rxen(&mut self) -> RXEN_W {
-        RXEN_W { w: self }
+    #[must_use]
+    pub fn rxen(&mut self) -> RXEN_W<2> {
+        RXEN_W::new(self)
     }
     #[doc = "Bit 3 - Transmit Enable"]
     #[inline(always)]
-    pub fn txen(&mut self) -> TXEN_W {
-        TXEN_W { w: self }
+    #[must_use]
+    pub fn txen(&mut self) -> TXEN_W<3> {
+        TXEN_W::new(self)
     }
     #[doc = "Bit 4 - Management Port Enable"]
     #[inline(always)]
-    pub fn mpe(&mut self) -> MPE_W {
-        MPE_W { w: self }
+    #[must_use]
+    pub fn mpe(&mut self) -> MPE_W<4> {
+        MPE_W::new(self)
     }
     #[doc = "Bit 5 - Clear Statistics Registers"]
     #[inline(always)]
-    pub fn clrstat(&mut self) -> CLRSTAT_W {
-        CLRSTAT_W { w: self }
+    #[must_use]
+    pub fn clrstat(&mut self) -> CLRSTAT_W<5> {
+        CLRSTAT_W::new(self)
     }
     #[doc = "Bit 6 - Increment Statistics Registers"]
     #[inline(always)]
-    pub fn incstat(&mut self) -> INCSTAT_W {
-        INCSTAT_W { w: self }
+    #[must_use]
+    pub fn incstat(&mut self) -> INCSTAT_W<6> {
+        INCSTAT_W::new(self)
     }
     #[doc = "Bit 7 - Write Enable for Statistics Registers"]
     #[inline(always)]
-    pub fn westat(&mut self) -> WESTAT_W {
-        WESTAT_W { w: self }
+    #[must_use]
+    pub fn westat(&mut self) -> WESTAT_W<7> {
+        WESTAT_W::new(self)
     }
     #[doc = "Bit 8 - Back pressure"]
     #[inline(always)]
-    pub fn bp(&mut self) -> BP_W {
-        BP_W { w: self }
+    #[must_use]
+    pub fn bp(&mut self) -> BP_W<8> {
+        BP_W::new(self)
     }
     #[doc = "Bit 9 - Start Transmission"]
     #[inline(always)]
-    pub fn tstart(&mut self) -> TSTART_W {
-        TSTART_W { w: self }
+    #[must_use]
+    pub fn tstart(&mut self) -> TSTART_W<9> {
+        TSTART_W::new(self)
     }
     #[doc = "Bit 10 - Transmit Halt"]
     #[inline(always)]
-    pub fn thalt(&mut self) -> THALT_W {
-        THALT_W { w: self }
+    #[must_use]
+    pub fn thalt(&mut self) -> THALT_W<10> {
+        THALT_W::new(self)
     }
     #[doc = "Bit 11 - Transmit Pause Frame"]
     #[inline(always)]
-    pub fn txpf(&mut self) -> TXPF_W {
-        TXPF_W { w: self }
+    #[must_use]
+    pub fn txpf(&mut self) -> TXPF_W<11> {
+        TXPF_W::new(self)
     }
     #[doc = "Bit 12 - Transmit Zero Quantum Pause Frame"]
     #[inline(always)]
-    pub fn txzqpf(&mut self) -> TXZQPF_W {
-        TXZQPF_W { w: self }
+    #[must_use]
+    pub fn txzqpf(&mut self) -> TXZQPF_W<12> {
+        TXZQPF_W::new(self)
     }
     #[doc = "Bit 15 - Store Receive Time Stamp to Memory"]
     #[inline(always)]
-    pub fn srtsm(&mut self) -> SRTSM_W {
-        SRTSM_W { w: self }
+    #[must_use]
+    pub fn srtsm(&mut self) -> SRTSM_W<15> {
+        SRTSM_W::new(self)
     }
     #[doc = "Bit 16 - Enable PFC Priority-based Pause Reception"]
     #[inline(always)]
-    pub fn enpbpr(&mut self) -> ENPBPR_W {
-        ENPBPR_W { w: self }
+    #[must_use]
+    pub fn enpbpr(&mut self) -> ENPBPR_W<16> {
+        ENPBPR_W::new(self)
     }
     #[doc = "Bit 17 - Transmit PFC Priority-based Pause Frame"]
     #[inline(always)]
-    pub fn txpbpf(&mut self) -> TXPBPF_W {
-        TXPBPF_W { w: self }
+    #[must_use]
+    pub fn txpbpf(&mut self) -> TXPBPF_W<17> {
+        TXPBPF_W::new(self)
     }
     #[doc = "Bit 18 - Flush Next Packet"]
     #[inline(always)]
-    pub fn fnp(&mut self) -> FNP_W {
-        FNP_W { w: self }
+    #[must_use]
+    pub fn fnp(&mut self) -> FNP_W<18> {
+        FNP_W::new(self)
     }
     #[doc = "Bit 19 - Low Power Idle Enable"]
     #[inline(always)]
-    pub fn lpi(&mut self) -> LPI_W {
-        LPI_W { w: self }
+    #[must_use]
+    pub fn lpi(&mut self) -> LPI_W<19> {
+        LPI_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -855,11 +311,10 @@ impl crate::Readable for NCR_SPEC {
 #[doc = "`write(|w| ..)` method takes [ncr::W](W) writer structure"]
 impl crate::Writable for NCR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets NCR to value 0"]
 impl crate::Resettable for NCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

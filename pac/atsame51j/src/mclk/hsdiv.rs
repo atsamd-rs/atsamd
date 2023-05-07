@@ -13,52 +13,41 @@ impl From<crate::R<HSDIV_SPEC>> for R {
         R(reader)
     }
 }
+#[doc = "Field `DIV` reader - CPU Clock Division Factor"]
+pub type DIV_R = crate::FieldReader<u8, DIVSELECT_A>;
 #[doc = "CPU Clock Division Factor\n\nValue on reset: 1"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum DIV_A {
+pub enum DIVSELECT_A {
     #[doc = "1: Divide by 1"]
     DIV1 = 1,
 }
-impl From<DIV_A> for u8 {
+impl From<DIVSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: DIV_A) -> Self {
+    fn from(variant: DIVSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `DIV` reader - CPU Clock Division Factor"]
-pub struct DIV_R(crate::FieldReader<u8, DIV_A>);
 impl DIV_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DIV_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<DIV_A> {
+    pub fn variant(&self) -> Option<DIVSELECT_A> {
         match self.bits {
-            1 => Some(DIV_A::DIV1),
+            1 => Some(DIVSELECT_A::DIV1),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `DIV1`"]
     #[inline(always)]
     pub fn is_div1(&self) -> bool {
-        **self == DIV_A::DIV1
-    }
-}
-impl core::ops::Deref for DIV_R {
-    type Target = crate::FieldReader<u8, DIV_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == DIVSELECT_A::DIV1
     }
 }
 impl R {
     #[doc = "Bits 0:7 - CPU Clock Division Factor"]
     #[inline(always)]
     pub fn div(&self) -> DIV_R {
-        DIV_R::new(self.bits as u8)
+        DIV_R::new(self.bits)
     }
 }
 #[doc = "HS Clock Division\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [hsdiv](index.html) module"]
@@ -72,8 +61,5 @@ impl crate::Readable for HSDIV_SPEC {
 }
 #[doc = "`reset()` method sets HSDIV to value 0x01"]
 impl crate::Resettable for HSDIV_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x01
-    }
+    const RESET_VALUE: Self::Ux = 0x01;
 }

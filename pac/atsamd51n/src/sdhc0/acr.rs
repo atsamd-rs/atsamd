@@ -34,10 +34,12 @@ impl From<crate::W<ACR_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `BMAX` reader - AHB Maximum Burst"]
+pub type BMAX_R = crate::FieldReader<u8, BMAXSELECT_A>;
 #[doc = "AHB Maximum Burst\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum BMAX_A {
+pub enum BMAXSELECT_A {
     #[doc = "0: `0`"]
     INCR16 = 0,
     #[doc = "1: `1`"]
@@ -47,107 +49,83 @@ pub enum BMAX_A {
     #[doc = "3: `11`"]
     SINGLE = 3,
 }
-impl From<BMAX_A> for u8 {
+impl From<BMAXSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: BMAX_A) -> Self {
+    fn from(variant: BMAXSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `BMAX` reader - AHB Maximum Burst"]
-pub struct BMAX_R(crate::FieldReader<u8, BMAX_A>);
 impl BMAX_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BMAX_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> BMAX_A {
+    pub fn variant(&self) -> BMAXSELECT_A {
         match self.bits {
-            0 => BMAX_A::INCR16,
-            1 => BMAX_A::INCR8,
-            2 => BMAX_A::INCR4,
-            3 => BMAX_A::SINGLE,
+            0 => BMAXSELECT_A::INCR16,
+            1 => BMAXSELECT_A::INCR8,
+            2 => BMAXSELECT_A::INCR4,
+            3 => BMAXSELECT_A::SINGLE,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `INCR16`"]
     #[inline(always)]
     pub fn is_incr16(&self) -> bool {
-        **self == BMAX_A::INCR16
+        *self == BMAXSELECT_A::INCR16
     }
     #[doc = "Checks if the value of the field is `INCR8`"]
     #[inline(always)]
     pub fn is_incr8(&self) -> bool {
-        **self == BMAX_A::INCR8
+        *self == BMAXSELECT_A::INCR8
     }
     #[doc = "Checks if the value of the field is `INCR4`"]
     #[inline(always)]
     pub fn is_incr4(&self) -> bool {
-        **self == BMAX_A::INCR4
+        *self == BMAXSELECT_A::INCR4
     }
     #[doc = "Checks if the value of the field is `SINGLE`"]
     #[inline(always)]
     pub fn is_single(&self) -> bool {
-        **self == BMAX_A::SINGLE
-    }
-}
-impl core::ops::Deref for BMAX_R {
-    type Target = crate::FieldReader<u8, BMAX_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == BMAXSELECT_A::SINGLE
     }
 }
 #[doc = "Field `BMAX` writer - AHB Maximum Burst"]
-pub struct BMAX_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BMAX_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: BMAX_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type BMAX_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u32, ACR_SPEC, u8, BMAXSELECT_A, 2, O>;
+impl<'a, const O: u8> BMAX_W<'a, O> {
     #[doc = "`0`"]
     #[inline(always)]
     pub fn incr16(self) -> &'a mut W {
-        self.variant(BMAX_A::INCR16)
+        self.variant(BMAXSELECT_A::INCR16)
     }
     #[doc = "`1`"]
     #[inline(always)]
     pub fn incr8(self) -> &'a mut W {
-        self.variant(BMAX_A::INCR8)
+        self.variant(BMAXSELECT_A::INCR8)
     }
     #[doc = "`10`"]
     #[inline(always)]
     pub fn incr4(self) -> &'a mut W {
-        self.variant(BMAX_A::INCR4)
+        self.variant(BMAXSELECT_A::INCR4)
     }
     #[doc = "`11`"]
     #[inline(always)]
     pub fn single(self) -> &'a mut W {
-        self.variant(BMAX_A::SINGLE)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u32 & 0x03);
-        self.w
+        self.variant(BMAXSELECT_A::SINGLE)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - AHB Maximum Burst"]
     #[inline(always)]
     pub fn bmax(&self) -> BMAX_R {
-        BMAX_R::new((self.bits & 0x03) as u8)
+        BMAX_R::new((self.bits & 3) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - AHB Maximum Burst"]
     #[inline(always)]
-    pub fn bmax(&mut self) -> BMAX_W {
-        BMAX_W { w: self }
+    #[must_use]
+    pub fn bmax(&mut self) -> BMAX_W<0> {
+        BMAX_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -168,11 +146,10 @@ impl crate::Readable for ACR_SPEC {
 #[doc = "`write(|w| ..)` method takes [acr::W](W) writer structure"]
 impl crate::Writable for ACR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets ACR to value 0"]
 impl crate::Resettable for ACR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

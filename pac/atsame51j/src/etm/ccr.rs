@@ -24,8 +24,5 @@ impl crate::Readable for CCR_SPEC {
 }
 #[doc = "`reset()` method sets CCR to value 0x8c80_2000"]
 impl crate::Resettable for CCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x8c80_2000
-    }
+    const RESET_VALUE: Self::Ux = 0x8c80_2000;
 }

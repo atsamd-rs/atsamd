@@ -34,854 +34,557 @@ impl From<crate::W<NISTER_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `CMDC` reader - Command Complete Status Enable"]
+pub type CMDC_R = crate::BitReader<CMDCSELECT_A>;
 #[doc = "Command Complete Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CMDC_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CMDCSELECT_A {
     #[doc = "0: Masked"]
     MASKED = 0,
     #[doc = "1: Enabled"]
     ENABLED = 1,
 }
-impl From<CMDC_A> for bool {
+impl From<CMDCSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: CMDC_A) -> Self {
+    fn from(variant: CMDCSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `CMDC` reader - Command Complete Status Enable"]
-pub struct CMDC_R(crate::FieldReader<bool, CMDC_A>);
 impl CMDC_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CMDC_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> CMDC_A {
+    pub fn variant(&self) -> CMDCSELECT_A {
         match self.bits {
-            false => CMDC_A::MASKED,
-            true => CMDC_A::ENABLED,
+            false => CMDCSELECT_A::MASKED,
+            true => CMDCSELECT_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
-        **self == CMDC_A::MASKED
+        *self == CMDCSELECT_A::MASKED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        **self == CMDC_A::ENABLED
-    }
-}
-impl core::ops::Deref for CMDC_R {
-    type Target = crate::FieldReader<bool, CMDC_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CMDCSELECT_A::ENABLED
     }
 }
 #[doc = "Field `CMDC` writer - Command Complete Status Enable"]
-pub struct CMDC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CMDC_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CMDC_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type CMDC_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, CMDCSELECT_A, O>;
+impl<'a, const O: u8> CMDC_W<'a, O> {
     #[doc = "Masked"]
     #[inline(always)]
     pub fn masked(self) -> &'a mut W {
-        self.variant(CMDC_A::MASKED)
+        self.variant(CMDCSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut W {
-        self.variant(CMDC_A::ENABLED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u16 & 0x01);
-        self.w
-    }
-}
-#[doc = "Transfer Complete Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum TRFC_A {
-    #[doc = "0: Masked"]
-    MASKED = 0,
-    #[doc = "1: Enabled"]
-    ENABLED = 1,
-}
-impl From<TRFC_A> for bool {
-    #[inline(always)]
-    fn from(variant: TRFC_A) -> Self {
-        variant as u8 != 0
+        self.variant(CMDCSELECT_A::ENABLED)
     }
 }
 #[doc = "Field `TRFC` reader - Transfer Complete Status Enable"]
-pub struct TRFC_R(crate::FieldReader<bool, TRFC_A>);
-impl TRFC_R {
+pub type TRFC_R = crate::BitReader<TRFCSELECT_A>;
+#[doc = "Transfer Complete Status Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TRFCSELECT_A {
+    #[doc = "0: Masked"]
+    MASKED = 0,
+    #[doc = "1: Enabled"]
+    ENABLED = 1,
+}
+impl From<TRFCSELECT_A> for bool {
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TRFC_R(crate::FieldReader::new(bits))
+    fn from(variant: TRFCSELECT_A) -> Self {
+        variant as u8 != 0
     }
-    #[doc = r"Get enumerated values variant"]
+}
+impl TRFC_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> TRFC_A {
+    pub fn variant(&self) -> TRFCSELECT_A {
         match self.bits {
-            false => TRFC_A::MASKED,
-            true => TRFC_A::ENABLED,
+            false => TRFCSELECT_A::MASKED,
+            true => TRFCSELECT_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
-        **self == TRFC_A::MASKED
+        *self == TRFCSELECT_A::MASKED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        **self == TRFC_A::ENABLED
-    }
-}
-impl core::ops::Deref for TRFC_R {
-    type Target = crate::FieldReader<bool, TRFC_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == TRFCSELECT_A::ENABLED
     }
 }
 #[doc = "Field `TRFC` writer - Transfer Complete Status Enable"]
-pub struct TRFC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TRFC_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: TRFC_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type TRFC_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, TRFCSELECT_A, O>;
+impl<'a, const O: u8> TRFC_W<'a, O> {
     #[doc = "Masked"]
     #[inline(always)]
     pub fn masked(self) -> &'a mut W {
-        self.variant(TRFC_A::MASKED)
+        self.variant(TRFCSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut W {
-        self.variant(TRFC_A::ENABLED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
-        self.w
-    }
-}
-#[doc = "Block Gap Event Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum BLKGE_A {
-    #[doc = "0: Masked"]
-    MASKED = 0,
-    #[doc = "1: Enabled"]
-    ENABLED = 1,
-}
-impl From<BLKGE_A> for bool {
-    #[inline(always)]
-    fn from(variant: BLKGE_A) -> Self {
-        variant as u8 != 0
+        self.variant(TRFCSELECT_A::ENABLED)
     }
 }
 #[doc = "Field `BLKGE` reader - Block Gap Event Status Enable"]
-pub struct BLKGE_R(crate::FieldReader<bool, BLKGE_A>);
-impl BLKGE_R {
+pub type BLKGE_R = crate::BitReader<BLKGESELECT_A>;
+#[doc = "Block Gap Event Status Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum BLKGESELECT_A {
+    #[doc = "0: Masked"]
+    MASKED = 0,
+    #[doc = "1: Enabled"]
+    ENABLED = 1,
+}
+impl From<BLKGESELECT_A> for bool {
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BLKGE_R(crate::FieldReader::new(bits))
+    fn from(variant: BLKGESELECT_A) -> Self {
+        variant as u8 != 0
     }
-    #[doc = r"Get enumerated values variant"]
+}
+impl BLKGE_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> BLKGE_A {
+    pub fn variant(&self) -> BLKGESELECT_A {
         match self.bits {
-            false => BLKGE_A::MASKED,
-            true => BLKGE_A::ENABLED,
+            false => BLKGESELECT_A::MASKED,
+            true => BLKGESELECT_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
-        **self == BLKGE_A::MASKED
+        *self == BLKGESELECT_A::MASKED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        **self == BLKGE_A::ENABLED
-    }
-}
-impl core::ops::Deref for BLKGE_R {
-    type Target = crate::FieldReader<bool, BLKGE_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == BLKGESELECT_A::ENABLED
     }
 }
 #[doc = "Field `BLKGE` writer - Block Gap Event Status Enable"]
-pub struct BLKGE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BLKGE_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: BLKGE_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type BLKGE_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, BLKGESELECT_A, O>;
+impl<'a, const O: u8> BLKGE_W<'a, O> {
     #[doc = "Masked"]
     #[inline(always)]
     pub fn masked(self) -> &'a mut W {
-        self.variant(BLKGE_A::MASKED)
+        self.variant(BLKGESELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut W {
-        self.variant(BLKGE_A::ENABLED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
-        self.w
-    }
-}
-#[doc = "DMA Interrupt Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DMAINT_A {
-    #[doc = "0: Masked"]
-    MASKED = 0,
-    #[doc = "1: Enabled"]
-    ENABLED = 1,
-}
-impl From<DMAINT_A> for bool {
-    #[inline(always)]
-    fn from(variant: DMAINT_A) -> Self {
-        variant as u8 != 0
+        self.variant(BLKGESELECT_A::ENABLED)
     }
 }
 #[doc = "Field `DMAINT` reader - DMA Interrupt Status Enable"]
-pub struct DMAINT_R(crate::FieldReader<bool, DMAINT_A>);
-impl DMAINT_R {
+pub type DMAINT_R = crate::BitReader<DMAINTSELECT_A>;
+#[doc = "DMA Interrupt Status Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum DMAINTSELECT_A {
+    #[doc = "0: Masked"]
+    MASKED = 0,
+    #[doc = "1: Enabled"]
+    ENABLED = 1,
+}
+impl From<DMAINTSELECT_A> for bool {
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DMAINT_R(crate::FieldReader::new(bits))
+    fn from(variant: DMAINTSELECT_A) -> Self {
+        variant as u8 != 0
     }
-    #[doc = r"Get enumerated values variant"]
+}
+impl DMAINT_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DMAINT_A {
+    pub fn variant(&self) -> DMAINTSELECT_A {
         match self.bits {
-            false => DMAINT_A::MASKED,
-            true => DMAINT_A::ENABLED,
+            false => DMAINTSELECT_A::MASKED,
+            true => DMAINTSELECT_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
-        **self == DMAINT_A::MASKED
+        *self == DMAINTSELECT_A::MASKED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        **self == DMAINT_A::ENABLED
-    }
-}
-impl core::ops::Deref for DMAINT_R {
-    type Target = crate::FieldReader<bool, DMAINT_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == DMAINTSELECT_A::ENABLED
     }
 }
 #[doc = "Field `DMAINT` writer - DMA Interrupt Status Enable"]
-pub struct DMAINT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DMAINT_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: DMAINT_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type DMAINT_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, DMAINTSELECT_A, O>;
+impl<'a, const O: u8> DMAINT_W<'a, O> {
     #[doc = "Masked"]
     #[inline(always)]
     pub fn masked(self) -> &'a mut W {
-        self.variant(DMAINT_A::MASKED)
+        self.variant(DMAINTSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut W {
-        self.variant(DMAINT_A::ENABLED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u16 & 0x01) << 3);
-        self.w
-    }
-}
-#[doc = "Buffer Write Ready Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum BWRRDY_A {
-    #[doc = "0: Masked"]
-    MASKED = 0,
-    #[doc = "1: Enabled"]
-    ENABLED = 1,
-}
-impl From<BWRRDY_A> for bool {
-    #[inline(always)]
-    fn from(variant: BWRRDY_A) -> Self {
-        variant as u8 != 0
+        self.variant(DMAINTSELECT_A::ENABLED)
     }
 }
 #[doc = "Field `BWRRDY` reader - Buffer Write Ready Status Enable"]
-pub struct BWRRDY_R(crate::FieldReader<bool, BWRRDY_A>);
-impl BWRRDY_R {
+pub type BWRRDY_R = crate::BitReader<BWRRDYSELECT_A>;
+#[doc = "Buffer Write Ready Status Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum BWRRDYSELECT_A {
+    #[doc = "0: Masked"]
+    MASKED = 0,
+    #[doc = "1: Enabled"]
+    ENABLED = 1,
+}
+impl From<BWRRDYSELECT_A> for bool {
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BWRRDY_R(crate::FieldReader::new(bits))
+    fn from(variant: BWRRDYSELECT_A) -> Self {
+        variant as u8 != 0
     }
-    #[doc = r"Get enumerated values variant"]
+}
+impl BWRRDY_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> BWRRDY_A {
+    pub fn variant(&self) -> BWRRDYSELECT_A {
         match self.bits {
-            false => BWRRDY_A::MASKED,
-            true => BWRRDY_A::ENABLED,
+            false => BWRRDYSELECT_A::MASKED,
+            true => BWRRDYSELECT_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
-        **self == BWRRDY_A::MASKED
+        *self == BWRRDYSELECT_A::MASKED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        **self == BWRRDY_A::ENABLED
-    }
-}
-impl core::ops::Deref for BWRRDY_R {
-    type Target = crate::FieldReader<bool, BWRRDY_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == BWRRDYSELECT_A::ENABLED
     }
 }
 #[doc = "Field `BWRRDY` writer - Buffer Write Ready Status Enable"]
-pub struct BWRRDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BWRRDY_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: BWRRDY_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type BWRRDY_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, BWRRDYSELECT_A, O>;
+impl<'a, const O: u8> BWRRDY_W<'a, O> {
     #[doc = "Masked"]
     #[inline(always)]
     pub fn masked(self) -> &'a mut W {
-        self.variant(BWRRDY_A::MASKED)
+        self.variant(BWRRDYSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut W {
-        self.variant(BWRRDY_A::ENABLED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
-        self.w
-    }
-}
-#[doc = "Buffer Read Ready Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum BRDRDY_A {
-    #[doc = "0: Masked"]
-    MASKED = 0,
-    #[doc = "1: Enabled"]
-    ENABLED = 1,
-}
-impl From<BRDRDY_A> for bool {
-    #[inline(always)]
-    fn from(variant: BRDRDY_A) -> Self {
-        variant as u8 != 0
+        self.variant(BWRRDYSELECT_A::ENABLED)
     }
 }
 #[doc = "Field `BRDRDY` reader - Buffer Read Ready Status Enable"]
-pub struct BRDRDY_R(crate::FieldReader<bool, BRDRDY_A>);
-impl BRDRDY_R {
+pub type BRDRDY_R = crate::BitReader<BRDRDYSELECT_A>;
+#[doc = "Buffer Read Ready Status Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum BRDRDYSELECT_A {
+    #[doc = "0: Masked"]
+    MASKED = 0,
+    #[doc = "1: Enabled"]
+    ENABLED = 1,
+}
+impl From<BRDRDYSELECT_A> for bool {
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BRDRDY_R(crate::FieldReader::new(bits))
+    fn from(variant: BRDRDYSELECT_A) -> Self {
+        variant as u8 != 0
     }
-    #[doc = r"Get enumerated values variant"]
+}
+impl BRDRDY_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> BRDRDY_A {
+    pub fn variant(&self) -> BRDRDYSELECT_A {
         match self.bits {
-            false => BRDRDY_A::MASKED,
-            true => BRDRDY_A::ENABLED,
+            false => BRDRDYSELECT_A::MASKED,
+            true => BRDRDYSELECT_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
-        **self == BRDRDY_A::MASKED
+        *self == BRDRDYSELECT_A::MASKED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        **self == BRDRDY_A::ENABLED
-    }
-}
-impl core::ops::Deref for BRDRDY_R {
-    type Target = crate::FieldReader<bool, BRDRDY_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == BRDRDYSELECT_A::ENABLED
     }
 }
 #[doc = "Field `BRDRDY` writer - Buffer Read Ready Status Enable"]
-pub struct BRDRDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BRDRDY_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: BRDRDY_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type BRDRDY_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, BRDRDYSELECT_A, O>;
+impl<'a, const O: u8> BRDRDY_W<'a, O> {
     #[doc = "Masked"]
     #[inline(always)]
     pub fn masked(self) -> &'a mut W {
-        self.variant(BRDRDY_A::MASKED)
+        self.variant(BRDRDYSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut W {
-        self.variant(BRDRDY_A::ENABLED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u16 & 0x01) << 5);
-        self.w
-    }
-}
-#[doc = "Card Insertion Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CINS_A {
-    #[doc = "0: Masked"]
-    MASKED = 0,
-    #[doc = "1: Enabled"]
-    ENABLED = 1,
-}
-impl From<CINS_A> for bool {
-    #[inline(always)]
-    fn from(variant: CINS_A) -> Self {
-        variant as u8 != 0
+        self.variant(BRDRDYSELECT_A::ENABLED)
     }
 }
 #[doc = "Field `CINS` reader - Card Insertion Status Enable"]
-pub struct CINS_R(crate::FieldReader<bool, CINS_A>);
-impl CINS_R {
+pub type CINS_R = crate::BitReader<CINSSELECT_A>;
+#[doc = "Card Insertion Status Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CINSSELECT_A {
+    #[doc = "0: Masked"]
+    MASKED = 0,
+    #[doc = "1: Enabled"]
+    ENABLED = 1,
+}
+impl From<CINSSELECT_A> for bool {
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CINS_R(crate::FieldReader::new(bits))
+    fn from(variant: CINSSELECT_A) -> Self {
+        variant as u8 != 0
     }
-    #[doc = r"Get enumerated values variant"]
+}
+impl CINS_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CINS_A {
+    pub fn variant(&self) -> CINSSELECT_A {
         match self.bits {
-            false => CINS_A::MASKED,
-            true => CINS_A::ENABLED,
+            false => CINSSELECT_A::MASKED,
+            true => CINSSELECT_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
-        **self == CINS_A::MASKED
+        *self == CINSSELECT_A::MASKED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        **self == CINS_A::ENABLED
-    }
-}
-impl core::ops::Deref for CINS_R {
-    type Target = crate::FieldReader<bool, CINS_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CINSSELECT_A::ENABLED
     }
 }
 #[doc = "Field `CINS` writer - Card Insertion Status Enable"]
-pub struct CINS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CINS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CINS_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type CINS_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, CINSSELECT_A, O>;
+impl<'a, const O: u8> CINS_W<'a, O> {
     #[doc = "Masked"]
     #[inline(always)]
     pub fn masked(self) -> &'a mut W {
-        self.variant(CINS_A::MASKED)
+        self.variant(CINSSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut W {
-        self.variant(CINS_A::ENABLED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u16 & 0x01) << 6);
-        self.w
-    }
-}
-#[doc = "Card Removal Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CREM_A {
-    #[doc = "0: Masked"]
-    MASKED = 0,
-    #[doc = "1: Enabled"]
-    ENABLED = 1,
-}
-impl From<CREM_A> for bool {
-    #[inline(always)]
-    fn from(variant: CREM_A) -> Self {
-        variant as u8 != 0
+        self.variant(CINSSELECT_A::ENABLED)
     }
 }
 #[doc = "Field `CREM` reader - Card Removal Status Enable"]
-pub struct CREM_R(crate::FieldReader<bool, CREM_A>);
-impl CREM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CREM_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> CREM_A {
-        match self.bits {
-            false => CREM_A::MASKED,
-            true => CREM_A::ENABLED,
-        }
-    }
-    #[doc = "Checks if the value of the field is `MASKED`"]
-    #[inline(always)]
-    pub fn is_masked(&self) -> bool {
-        **self == CREM_A::MASKED
-    }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
-    #[inline(always)]
-    pub fn is_enabled(&self) -> bool {
-        **self == CREM_A::ENABLED
-    }
-}
-impl core::ops::Deref for CREM_R {
-    type Target = crate::FieldReader<bool, CREM_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `CREM` writer - Card Removal Status Enable"]
-pub struct CREM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CREM_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CREM_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
-    #[doc = "Masked"]
-    #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
-        self.variant(CREM_A::MASKED)
-    }
-    #[doc = "Enabled"]
-    #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
-        self.variant(CREM_A::ENABLED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u16 & 0x01) << 7);
-        self.w
-    }
-}
-#[doc = "Card Interrupt Status Enable\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum CINT_A {
+pub type CREM_R = crate::BitReader<CREMSELECT_A>;
+#[doc = "Card Removal Status Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CREMSELECT_A {
     #[doc = "0: Masked"]
     MASKED = 0,
     #[doc = "1: Enabled"]
     ENABLED = 1,
 }
-impl From<CINT_A> for bool {
+impl From<CREMSELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: CINT_A) -> Self {
+    fn from(variant: CREMSELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `CINT` reader - Card Interrupt Status Enable"]
-pub struct CINT_R(crate::FieldReader<bool, CINT_A>);
-impl CINT_R {
+impl CREM_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CINT_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> CINT_A {
+    pub fn variant(&self) -> CREMSELECT_A {
         match self.bits {
-            false => CINT_A::MASKED,
-            true => CINT_A::ENABLED,
+            false => CREMSELECT_A::MASKED,
+            true => CREMSELECT_A::ENABLED,
         }
     }
     #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
-        **self == CINT_A::MASKED
+        *self == CREMSELECT_A::MASKED
     }
     #[doc = "Checks if the value of the field is `ENABLED`"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        **self == CINT_A::ENABLED
+        *self == CREMSELECT_A::ENABLED
     }
 }
-impl core::ops::Deref for CINT_R {
-    type Target = crate::FieldReader<bool, CINT_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `CINT` writer - Card Interrupt Status Enable"]
-pub struct CINT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CINT_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CINT_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+#[doc = "Field `CREM` writer - Card Removal Status Enable"]
+pub type CREM_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, CREMSELECT_A, O>;
+impl<'a, const O: u8> CREM_W<'a, O> {
     #[doc = "Masked"]
     #[inline(always)]
     pub fn masked(self) -> &'a mut W {
-        self.variant(CINT_A::MASKED)
+        self.variant(CREMSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut W {
-        self.variant(CINT_A::ENABLED)
+        self.variant(CREMSELECT_A::ENABLED)
     }
-    #[doc = r"Sets the field bit"]
+}
+#[doc = "Field `CINT` reader - Card Interrupt Status Enable"]
+pub type CINT_R = crate::BitReader<CINTSELECT_A>;
+#[doc = "Card Interrupt Status Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CINTSELECT_A {
+    #[doc = "0: Masked"]
+    MASKED = 0,
+    #[doc = "1: Enabled"]
+    ENABLED = 1,
+}
+impl From<CINTSELECT_A> for bool {
     #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
+    fn from(variant: CINTSELECT_A) -> Self {
+        variant as u8 != 0
     }
-    #[doc = r"Clears the field bit"]
+}
+impl CINT_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
+    pub fn variant(&self) -> CINTSELECT_A {
+        match self.bits {
+            false => CINTSELECT_A::MASKED,
+            true => CINTSELECT_A::ENABLED,
+        }
     }
-    #[doc = r"Writes raw bits to the field"]
+    #[doc = "Checks if the value of the field is `MASKED`"]
     #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u16 & 0x01) << 8);
-        self.w
+    pub fn is_masked(&self) -> bool {
+        *self == CINTSELECT_A::MASKED
+    }
+    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[inline(always)]
+    pub fn is_enabled(&self) -> bool {
+        *self == CINTSELECT_A::ENABLED
+    }
+}
+#[doc = "Field `CINT` writer - Card Interrupt Status Enable"]
+pub type CINT_W<'a, const O: u8> = crate::BitWriter<'a, u16, NISTER_SPEC, CINTSELECT_A, O>;
+impl<'a, const O: u8> CINT_W<'a, O> {
+    #[doc = "Masked"]
+    #[inline(always)]
+    pub fn masked(self) -> &'a mut W {
+        self.variant(CINTSELECT_A::MASKED)
+    }
+    #[doc = "Enabled"]
+    #[inline(always)]
+    pub fn enabled(self) -> &'a mut W {
+        self.variant(CINTSELECT_A::ENABLED)
     }
 }
 impl R {
     #[doc = "Bit 0 - Command Complete Status Enable"]
     #[inline(always)]
     pub fn cmdc(&self) -> CMDC_R {
-        CMDC_R::new((self.bits & 0x01) != 0)
+        CMDC_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Transfer Complete Status Enable"]
     #[inline(always)]
     pub fn trfc(&self) -> TRFC_R {
-        TRFC_R::new(((self.bits >> 1) & 0x01) != 0)
+        TRFC_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Block Gap Event Status Enable"]
     #[inline(always)]
     pub fn blkge(&self) -> BLKGE_R {
-        BLKGE_R::new(((self.bits >> 2) & 0x01) != 0)
+        BLKGE_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - DMA Interrupt Status Enable"]
     #[inline(always)]
     pub fn dmaint(&self) -> DMAINT_R {
-        DMAINT_R::new(((self.bits >> 3) & 0x01) != 0)
+        DMAINT_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Buffer Write Ready Status Enable"]
     #[inline(always)]
     pub fn bwrrdy(&self) -> BWRRDY_R {
-        BWRRDY_R::new(((self.bits >> 4) & 0x01) != 0)
+        BWRRDY_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Buffer Read Ready Status Enable"]
     #[inline(always)]
     pub fn brdrdy(&self) -> BRDRDY_R {
-        BRDRDY_R::new(((self.bits >> 5) & 0x01) != 0)
+        BRDRDY_R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - Card Insertion Status Enable"]
     #[inline(always)]
     pub fn cins(&self) -> CINS_R {
-        CINS_R::new(((self.bits >> 6) & 0x01) != 0)
+        CINS_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Card Removal Status Enable"]
     #[inline(always)]
     pub fn crem(&self) -> CREM_R {
-        CREM_R::new(((self.bits >> 7) & 0x01) != 0)
+        CREM_R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - Card Interrupt Status Enable"]
     #[inline(always)]
     pub fn cint(&self) -> CINT_R {
-        CINT_R::new(((self.bits >> 8) & 0x01) != 0)
+        CINT_R::new(((self.bits >> 8) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Command Complete Status Enable"]
     #[inline(always)]
-    pub fn cmdc(&mut self) -> CMDC_W {
-        CMDC_W { w: self }
+    #[must_use]
+    pub fn cmdc(&mut self) -> CMDC_W<0> {
+        CMDC_W::new(self)
     }
     #[doc = "Bit 1 - Transfer Complete Status Enable"]
     #[inline(always)]
-    pub fn trfc(&mut self) -> TRFC_W {
-        TRFC_W { w: self }
+    #[must_use]
+    pub fn trfc(&mut self) -> TRFC_W<1> {
+        TRFC_W::new(self)
     }
     #[doc = "Bit 2 - Block Gap Event Status Enable"]
     #[inline(always)]
-    pub fn blkge(&mut self) -> BLKGE_W {
-        BLKGE_W { w: self }
+    #[must_use]
+    pub fn blkge(&mut self) -> BLKGE_W<2> {
+        BLKGE_W::new(self)
     }
     #[doc = "Bit 3 - DMA Interrupt Status Enable"]
     #[inline(always)]
-    pub fn dmaint(&mut self) -> DMAINT_W {
-        DMAINT_W { w: self }
+    #[must_use]
+    pub fn dmaint(&mut self) -> DMAINT_W<3> {
+        DMAINT_W::new(self)
     }
     #[doc = "Bit 4 - Buffer Write Ready Status Enable"]
     #[inline(always)]
-    pub fn bwrrdy(&mut self) -> BWRRDY_W {
-        BWRRDY_W { w: self }
+    #[must_use]
+    pub fn bwrrdy(&mut self) -> BWRRDY_W<4> {
+        BWRRDY_W::new(self)
     }
     #[doc = "Bit 5 - Buffer Read Ready Status Enable"]
     #[inline(always)]
-    pub fn brdrdy(&mut self) -> BRDRDY_W {
-        BRDRDY_W { w: self }
+    #[must_use]
+    pub fn brdrdy(&mut self) -> BRDRDY_W<5> {
+        BRDRDY_W::new(self)
     }
     #[doc = "Bit 6 - Card Insertion Status Enable"]
     #[inline(always)]
-    pub fn cins(&mut self) -> CINS_W {
-        CINS_W { w: self }
+    #[must_use]
+    pub fn cins(&mut self) -> CINS_W<6> {
+        CINS_W::new(self)
     }
     #[doc = "Bit 7 - Card Removal Status Enable"]
     #[inline(always)]
-    pub fn crem(&mut self) -> CREM_W {
-        CREM_W { w: self }
+    #[must_use]
+    pub fn crem(&mut self) -> CREM_W<7> {
+        CREM_W::new(self)
     }
     #[doc = "Bit 8 - Card Interrupt Status Enable"]
     #[inline(always)]
-    pub fn cint(&mut self) -> CINT_W {
-        CINT_W { w: self }
+    #[must_use]
+    pub fn cint(&mut self) -> CINT_W<8> {
+        CINT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -902,11 +605,10 @@ impl crate::Readable for NISTER_SPEC {
 #[doc = "`write(|w| ..)` method takes [nister::W](W) writer structure"]
 impl crate::Writable for NISTER_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets NISTER to value 0"]
 impl crate::Resettable for NISTER_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

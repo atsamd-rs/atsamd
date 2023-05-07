@@ -14,20 +14,7 @@ impl From<crate::R<RSE_SPEC>> for R {
     }
 }
 #[doc = "Field `RXSE` reader - Receive Symbol Errors"]
-pub struct RXSE_R(crate::FieldReader<u16, u16>);
-impl RXSE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        RXSE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXSE_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXSE_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:9 - Receive Symbol Errors"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for RSE_SPEC {
 }
 #[doc = "`reset()` method sets RSE to value 0"]
 impl crate::Resettable for RSE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

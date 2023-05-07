@@ -35,59 +35,13 @@ impl From<crate::W<CALIB_SPEC>> for W {
     }
 }
 #[doc = "Field `LINEARITY_CAL` reader - Linearity Calibration Value"]
-pub struct LINEARITY_CAL_R(crate::FieldReader<u8, u8>);
-impl LINEARITY_CAL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        LINEARITY_CAL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LINEARITY_CAL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LINEARITY_CAL_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `LINEARITY_CAL` writer - Linearity Calibration Value"]
-pub struct LINEARITY_CAL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LINEARITY_CAL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xff) | (value as u16 & 0xff);
-        self.w
-    }
-}
+pub type LINEARITY_CAL_W<'a, const O: u8> = crate::FieldWriter<'a, u16, CALIB_SPEC, u8, u8, 8, O>;
 #[doc = "Field `BIAS_CAL` reader - Bias Calibration Value"]
-pub struct BIAS_CAL_R(crate::FieldReader<u8, u8>);
-impl BIAS_CAL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BIAS_CAL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BIAS_CAL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BIAS_CAL_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `BIAS_CAL` writer - Bias Calibration Value"]
-pub struct BIAS_CAL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BIAS_CAL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 8)) | ((value as u16 & 0x07) << 8);
-        self.w
-    }
-}
+pub type BIAS_CAL_W<'a, const O: u8> = crate::FieldWriter<'a, u16, CALIB_SPEC, u8, u8, 3, O>;
 impl R {
     #[doc = "Bits 0:7 - Linearity Calibration Value"]
     #[inline(always)]
@@ -97,19 +51,21 @@ impl R {
     #[doc = "Bits 8:10 - Bias Calibration Value"]
     #[inline(always)]
     pub fn bias_cal(&self) -> BIAS_CAL_R {
-        BIAS_CAL_R::new(((self.bits >> 8) & 0x07) as u8)
+        BIAS_CAL_R::new(((self.bits >> 8) & 7) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Linearity Calibration Value"]
     #[inline(always)]
-    pub fn linearity_cal(&mut self) -> LINEARITY_CAL_W {
-        LINEARITY_CAL_W { w: self }
+    #[must_use]
+    pub fn linearity_cal(&mut self) -> LINEARITY_CAL_W<0> {
+        LINEARITY_CAL_W::new(self)
     }
     #[doc = "Bits 8:10 - Bias Calibration Value"]
     #[inline(always)]
-    pub fn bias_cal(&mut self) -> BIAS_CAL_W {
-        BIAS_CAL_W { w: self }
+    #[must_use]
+    pub fn bias_cal(&mut self) -> BIAS_CAL_W<8> {
+        BIAS_CAL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,11 +86,10 @@ impl crate::Readable for CALIB_SPEC {
 #[doc = "`write(|w| ..)` method takes [calib::W](W) writer structure"]
 impl crate::Writable for CALIB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CALIB to value 0"]
 impl crate::Resettable for CALIB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

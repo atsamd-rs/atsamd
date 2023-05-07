@@ -35,59 +35,13 @@ impl From<crate::W<TPFCP_SPEC>> for W {
     }
 }
 #[doc = "Field `PEV` reader - Priority Enable Vector"]
-pub struct PEV_R(crate::FieldReader<u8, u8>);
-impl PEV_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PEV_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PEV_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PEV_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PEV` writer - Priority Enable Vector"]
-pub struct PEV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PEV_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xff) | (value as u32 & 0xff);
-        self.w
-    }
-}
+pub type PEV_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TPFCP_SPEC, u8, u8, 8, O>;
 #[doc = "Field `PQ` reader - Pause Quantum"]
-pub struct PQ_R(crate::FieldReader<u8, u8>);
-impl PQ_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PQ_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PQ_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PQ_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PQ` writer - Pause Quantum"]
-pub struct PQ_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PQ_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 8)) | ((value as u32 & 0xff) << 8);
-        self.w
-    }
-}
+pub type PQ_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TPFCP_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Priority Enable Vector"]
     #[inline(always)]
@@ -103,13 +57,15 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Priority Enable Vector"]
     #[inline(always)]
-    pub fn pev(&mut self) -> PEV_W {
-        PEV_W { w: self }
+    #[must_use]
+    pub fn pev(&mut self) -> PEV_W<0> {
+        PEV_W::new(self)
     }
     #[doc = "Bits 8:15 - Pause Quantum"]
     #[inline(always)]
-    pub fn pq(&mut self) -> PQ_W {
-        PQ_W { w: self }
+    #[must_use]
+    pub fn pq(&mut self) -> PQ_W<8> {
+        PQ_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,11 +86,10 @@ impl crate::Readable for TPFCP_SPEC {
 #[doc = "`write(|w| ..)` method takes [tpfcp::W](W) writer structure"]
 impl crate::Writable for TPFCP_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TPFCP to value 0"]
 impl crate::Resettable for TPFCP_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

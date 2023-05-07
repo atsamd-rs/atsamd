@@ -34,10 +34,12 @@ impl From<crate::W<CTRLB_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `CHSIZE` reader - Character Size"]
+pub type CHSIZE_R = crate::FieldReader<u8, CHSIZESELECT_A>;
 #[doc = "Character Size\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CHSIZE_A {
+pub enum CHSIZESELECT_A {
     #[doc = "0: 8 Bits"]
     _8_BIT = 0,
     #[doc = "1: 9 Bits"]
@@ -49,578 +51,306 @@ pub enum CHSIZE_A {
     #[doc = "7: 7 Bits"]
     _7_BIT = 7,
 }
-impl From<CHSIZE_A> for u8 {
+impl From<CHSIZESELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: CHSIZE_A) -> Self {
+    fn from(variant: CHSIZESELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `CHSIZE` reader - Character Size"]
-pub struct CHSIZE_R(crate::FieldReader<u8, CHSIZE_A>);
 impl CHSIZE_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CHSIZE_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<CHSIZE_A> {
+    pub fn variant(&self) -> Option<CHSIZESELECT_A> {
         match self.bits {
-            0 => Some(CHSIZE_A::_8_BIT),
-            1 => Some(CHSIZE_A::_9_BIT),
-            5 => Some(CHSIZE_A::_5_BIT),
-            6 => Some(CHSIZE_A::_6_BIT),
-            7 => Some(CHSIZE_A::_7_BIT),
+            0 => Some(CHSIZESELECT_A::_8_BIT),
+            1 => Some(CHSIZESELECT_A::_9_BIT),
+            5 => Some(CHSIZESELECT_A::_5_BIT),
+            6 => Some(CHSIZESELECT_A::_6_BIT),
+            7 => Some(CHSIZESELECT_A::_7_BIT),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `_8_BIT`"]
     #[inline(always)]
     pub fn is_8_bit(&self) -> bool {
-        **self == CHSIZE_A::_8_BIT
+        *self == CHSIZESELECT_A::_8_BIT
     }
     #[doc = "Checks if the value of the field is `_9_BIT`"]
     #[inline(always)]
     pub fn is_9_bit(&self) -> bool {
-        **self == CHSIZE_A::_9_BIT
+        *self == CHSIZESELECT_A::_9_BIT
     }
     #[doc = "Checks if the value of the field is `_5_BIT`"]
     #[inline(always)]
     pub fn is_5_bit(&self) -> bool {
-        **self == CHSIZE_A::_5_BIT
+        *self == CHSIZESELECT_A::_5_BIT
     }
     #[doc = "Checks if the value of the field is `_6_BIT`"]
     #[inline(always)]
     pub fn is_6_bit(&self) -> bool {
-        **self == CHSIZE_A::_6_BIT
+        *self == CHSIZESELECT_A::_6_BIT
     }
     #[doc = "Checks if the value of the field is `_7_BIT`"]
     #[inline(always)]
     pub fn is_7_bit(&self) -> bool {
-        **self == CHSIZE_A::_7_BIT
-    }
-}
-impl core::ops::Deref for CHSIZE_R {
-    type Target = crate::FieldReader<u8, CHSIZE_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CHSIZESELECT_A::_7_BIT
     }
 }
 #[doc = "Field `CHSIZE` writer - Character Size"]
-pub struct CHSIZE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CHSIZE_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CHSIZE_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type CHSIZE_W<'a, const O: u8> =
+    crate::FieldWriter<'a, u32, CTRLB_SPEC, u8, CHSIZESELECT_A, 3, O>;
+impl<'a, const O: u8> CHSIZE_W<'a, O> {
     #[doc = "8 Bits"]
     #[inline(always)]
     pub fn _8_bit(self) -> &'a mut W {
-        self.variant(CHSIZE_A::_8_BIT)
+        self.variant(CHSIZESELECT_A::_8_BIT)
     }
     #[doc = "9 Bits"]
     #[inline(always)]
     pub fn _9_bit(self) -> &'a mut W {
-        self.variant(CHSIZE_A::_9_BIT)
+        self.variant(CHSIZESELECT_A::_9_BIT)
     }
     #[doc = "5 Bits"]
     #[inline(always)]
     pub fn _5_bit(self) -> &'a mut W {
-        self.variant(CHSIZE_A::_5_BIT)
+        self.variant(CHSIZESELECT_A::_5_BIT)
     }
     #[doc = "6 Bits"]
     #[inline(always)]
     pub fn _6_bit(self) -> &'a mut W {
-        self.variant(CHSIZE_A::_6_BIT)
+        self.variant(CHSIZESELECT_A::_6_BIT)
     }
     #[doc = "7 Bits"]
     #[inline(always)]
     pub fn _7_bit(self) -> &'a mut W {
-        self.variant(CHSIZE_A::_7_BIT)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | (value as u32 & 0x07);
-        self.w
+        self.variant(CHSIZESELECT_A::_7_BIT)
     }
 }
+#[doc = "Field `SBMODE` reader - Stop Bit Mode"]
+pub type SBMODE_R = crate::BitReader<SBMODESELECT_A>;
 #[doc = "Stop Bit Mode\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum SBMODE_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SBMODESELECT_A {
     #[doc = "0: One Stop Bit"]
     _1_BIT = 0,
     #[doc = "1: Two Stop Bits"]
     _2_BIT = 1,
 }
-impl From<SBMODE_A> for bool {
+impl From<SBMODESELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: SBMODE_A) -> Self {
+    fn from(variant: SBMODESELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `SBMODE` reader - Stop Bit Mode"]
-pub struct SBMODE_R(crate::FieldReader<bool, SBMODE_A>);
 impl SBMODE_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SBMODE_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> SBMODE_A {
+    pub fn variant(&self) -> SBMODESELECT_A {
         match self.bits {
-            false => SBMODE_A::_1_BIT,
-            true => SBMODE_A::_2_BIT,
+            false => SBMODESELECT_A::_1_BIT,
+            true => SBMODESELECT_A::_2_BIT,
         }
     }
     #[doc = "Checks if the value of the field is `_1_BIT`"]
     #[inline(always)]
     pub fn is_1_bit(&self) -> bool {
-        **self == SBMODE_A::_1_BIT
+        *self == SBMODESELECT_A::_1_BIT
     }
     #[doc = "Checks if the value of the field is `_2_BIT`"]
     #[inline(always)]
     pub fn is_2_bit(&self) -> bool {
-        **self == SBMODE_A::_2_BIT
-    }
-}
-impl core::ops::Deref for SBMODE_R {
-    type Target = crate::FieldReader<bool, SBMODE_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == SBMODESELECT_A::_2_BIT
     }
 }
 #[doc = "Field `SBMODE` writer - Stop Bit Mode"]
-pub struct SBMODE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SBMODE_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: SBMODE_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type SBMODE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, SBMODESELECT_A, O>;
+impl<'a, const O: u8> SBMODE_W<'a, O> {
     #[doc = "One Stop Bit"]
     #[inline(always)]
     pub fn _1_bit(self) -> &'a mut W {
-        self.variant(SBMODE_A::_1_BIT)
+        self.variant(SBMODESELECT_A::_1_BIT)
     }
     #[doc = "Two Stop Bits"]
     #[inline(always)]
     pub fn _2_bit(self) -> &'a mut W {
-        self.variant(SBMODE_A::_2_BIT)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u32 & 0x01) << 6);
-        self.w
+        self.variant(SBMODESELECT_A::_2_BIT)
     }
 }
 #[doc = "Field `COLDEN` reader - Collision Detection Enable"]
-pub struct COLDEN_R(crate::FieldReader<bool, bool>);
-impl COLDEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        COLDEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COLDEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COLDEN_R = crate::BitReader<bool>;
 #[doc = "Field `COLDEN` writer - Collision Detection Enable"]
-pub struct COLDEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COLDEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
-        self.w
-    }
-}
+pub type COLDEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `SFDE` reader - Start of Frame Detection Enable"]
-pub struct SFDE_R(crate::FieldReader<bool, bool>);
-impl SFDE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SFDE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SFDE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SFDE_R = crate::BitReader<bool>;
 #[doc = "Field `SFDE` writer - Start of Frame Detection Enable"]
-pub struct SFDE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SFDE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u32 & 0x01) << 9);
-        self.w
-    }
-}
+pub type SFDE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `ENC` reader - Encoding Format"]
-pub struct ENC_R(crate::FieldReader<bool, bool>);
-impl ENC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ENC_R = crate::BitReader<bool>;
 #[doc = "Field `ENC` writer - Encoding Format"]
-pub struct ENC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ENC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u32 & 0x01) << 10);
-        self.w
-    }
-}
+pub type ENC_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
+#[doc = "Field `PMODE` reader - Parity Mode"]
+pub type PMODE_R = crate::BitReader<PMODESELECT_A>;
 #[doc = "Parity Mode\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PMODE_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PMODESELECT_A {
     #[doc = "0: Even Parity"]
     EVEN = 0,
     #[doc = "1: Odd Parity"]
     ODD = 1,
 }
-impl From<PMODE_A> for bool {
+impl From<PMODESELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: PMODE_A) -> Self {
+    fn from(variant: PMODESELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `PMODE` reader - Parity Mode"]
-pub struct PMODE_R(crate::FieldReader<bool, PMODE_A>);
 impl PMODE_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PMODE_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> PMODE_A {
+    pub fn variant(&self) -> PMODESELECT_A {
         match self.bits {
-            false => PMODE_A::EVEN,
-            true => PMODE_A::ODD,
+            false => PMODESELECT_A::EVEN,
+            true => PMODESELECT_A::ODD,
         }
     }
     #[doc = "Checks if the value of the field is `EVEN`"]
     #[inline(always)]
     pub fn is_even(&self) -> bool {
-        **self == PMODE_A::EVEN
+        *self == PMODESELECT_A::EVEN
     }
     #[doc = "Checks if the value of the field is `ODD`"]
     #[inline(always)]
     pub fn is_odd(&self) -> bool {
-        **self == PMODE_A::ODD
-    }
-}
-impl core::ops::Deref for PMODE_R {
-    type Target = crate::FieldReader<bool, PMODE_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == PMODESELECT_A::ODD
     }
 }
 #[doc = "Field `PMODE` writer - Parity Mode"]
-pub struct PMODE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PMODE_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: PMODE_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type PMODE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, PMODESELECT_A, O>;
+impl<'a, const O: u8> PMODE_W<'a, O> {
     #[doc = "Even Parity"]
     #[inline(always)]
     pub fn even(self) -> &'a mut W {
-        self.variant(PMODE_A::EVEN)
+        self.variant(PMODESELECT_A::EVEN)
     }
     #[doc = "Odd Parity"]
     #[inline(always)]
     pub fn odd(self) -> &'a mut W {
-        self.variant(PMODE_A::ODD)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 13)) | ((value as u32 & 0x01) << 13);
-        self.w
+        self.variant(PMODESELECT_A::ODD)
     }
 }
 #[doc = "Field `TXEN` reader - Transmitter Enable"]
-pub struct TXEN_R(crate::FieldReader<bool, bool>);
-impl TXEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TXEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TXEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TXEN_R = crate::BitReader<bool>;
 #[doc = "Field `TXEN` writer - Transmitter Enable"]
-pub struct TXEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TXEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
-        self.w
-    }
-}
+pub type TXEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `RXEN` reader - Receiver Enable"]
-pub struct RXEN_R(crate::FieldReader<bool, bool>);
-impl RXEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RXEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXEN_R = crate::BitReader<bool>;
 #[doc = "Field `RXEN` writer - Receiver Enable"]
-pub struct RXEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RXEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 17)) | ((value as u32 & 0x01) << 17);
-        self.w
-    }
-}
+pub type RXEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `LINCMD` reader - LIN Command"]
-pub struct LINCMD_R(crate::FieldReader<u8, u8>);
-impl LINCMD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        LINCMD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LINCMD_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LINCMD_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `LINCMD` writer - LIN Command"]
-pub struct LINCMD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LINCMD_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 24)) | ((value as u32 & 0x03) << 24);
-        self.w
-    }
-}
+pub type LINCMD_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLB_SPEC, u8, u8, 2, O>;
 impl R {
     #[doc = "Bits 0:2 - Character Size"]
     #[inline(always)]
     pub fn chsize(&self) -> CHSIZE_R {
-        CHSIZE_R::new((self.bits & 0x07) as u8)
+        CHSIZE_R::new((self.bits & 7) as u8)
     }
     #[doc = "Bit 6 - Stop Bit Mode"]
     #[inline(always)]
     pub fn sbmode(&self) -> SBMODE_R {
-        SBMODE_R::new(((self.bits >> 6) & 0x01) != 0)
+        SBMODE_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 8 - Collision Detection Enable"]
     #[inline(always)]
     pub fn colden(&self) -> COLDEN_R {
-        COLDEN_R::new(((self.bits >> 8) & 0x01) != 0)
+        COLDEN_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Start of Frame Detection Enable"]
     #[inline(always)]
     pub fn sfde(&self) -> SFDE_R {
-        SFDE_R::new(((self.bits >> 9) & 0x01) != 0)
+        SFDE_R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - Encoding Format"]
     #[inline(always)]
     pub fn enc(&self) -> ENC_R {
-        ENC_R::new(((self.bits >> 10) & 0x01) != 0)
+        ENC_R::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bit 13 - Parity Mode"]
     #[inline(always)]
     pub fn pmode(&self) -> PMODE_R {
-        PMODE_R::new(((self.bits >> 13) & 0x01) != 0)
+        PMODE_R::new(((self.bits >> 13) & 1) != 0)
     }
     #[doc = "Bit 16 - Transmitter Enable"]
     #[inline(always)]
     pub fn txen(&self) -> TXEN_R {
-        TXEN_R::new(((self.bits >> 16) & 0x01) != 0)
+        TXEN_R::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - Receiver Enable"]
     #[inline(always)]
     pub fn rxen(&self) -> RXEN_R {
-        RXEN_R::new(((self.bits >> 17) & 0x01) != 0)
+        RXEN_R::new(((self.bits >> 17) & 1) != 0)
     }
     #[doc = "Bits 24:25 - LIN Command"]
     #[inline(always)]
     pub fn lincmd(&self) -> LINCMD_R {
-        LINCMD_R::new(((self.bits >> 24) & 0x03) as u8)
+        LINCMD_R::new(((self.bits >> 24) & 3) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:2 - Character Size"]
     #[inline(always)]
-    pub fn chsize(&mut self) -> CHSIZE_W {
-        CHSIZE_W { w: self }
+    #[must_use]
+    pub fn chsize(&mut self) -> CHSIZE_W<0> {
+        CHSIZE_W::new(self)
     }
     #[doc = "Bit 6 - Stop Bit Mode"]
     #[inline(always)]
-    pub fn sbmode(&mut self) -> SBMODE_W {
-        SBMODE_W { w: self }
+    #[must_use]
+    pub fn sbmode(&mut self) -> SBMODE_W<6> {
+        SBMODE_W::new(self)
     }
     #[doc = "Bit 8 - Collision Detection Enable"]
     #[inline(always)]
-    pub fn colden(&mut self) -> COLDEN_W {
-        COLDEN_W { w: self }
+    #[must_use]
+    pub fn colden(&mut self) -> COLDEN_W<8> {
+        COLDEN_W::new(self)
     }
     #[doc = "Bit 9 - Start of Frame Detection Enable"]
     #[inline(always)]
-    pub fn sfde(&mut self) -> SFDE_W {
-        SFDE_W { w: self }
+    #[must_use]
+    pub fn sfde(&mut self) -> SFDE_W<9> {
+        SFDE_W::new(self)
     }
     #[doc = "Bit 10 - Encoding Format"]
     #[inline(always)]
-    pub fn enc(&mut self) -> ENC_W {
-        ENC_W { w: self }
+    #[must_use]
+    pub fn enc(&mut self) -> ENC_W<10> {
+        ENC_W::new(self)
     }
     #[doc = "Bit 13 - Parity Mode"]
     #[inline(always)]
-    pub fn pmode(&mut self) -> PMODE_W {
-        PMODE_W { w: self }
+    #[must_use]
+    pub fn pmode(&mut self) -> PMODE_W<13> {
+        PMODE_W::new(self)
     }
     #[doc = "Bit 16 - Transmitter Enable"]
     #[inline(always)]
-    pub fn txen(&mut self) -> TXEN_W {
-        TXEN_W { w: self }
+    #[must_use]
+    pub fn txen(&mut self) -> TXEN_W<16> {
+        TXEN_W::new(self)
     }
     #[doc = "Bit 17 - Receiver Enable"]
     #[inline(always)]
-    pub fn rxen(&mut self) -> RXEN_W {
-        RXEN_W { w: self }
+    #[must_use]
+    pub fn rxen(&mut self) -> RXEN_W<17> {
+        RXEN_W::new(self)
     }
     #[doc = "Bits 24:25 - LIN Command"]
     #[inline(always)]
-    pub fn lincmd(&mut self) -> LINCMD_W {
-        LINCMD_W { w: self }
+    #[must_use]
+    pub fn lincmd(&mut self) -> LINCMD_W<24> {
+        LINCMD_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -641,11 +371,10 @@ impl crate::Readable for CTRLB_SPEC {
 #[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
 impl crate::Resettable for CTRLB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

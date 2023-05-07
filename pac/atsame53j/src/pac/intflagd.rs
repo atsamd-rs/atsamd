@@ -35,383 +35,127 @@ impl From<crate::W<INTFLAGD_SPEC>> for W {
     }
 }
 #[doc = "Field `SERCOM4_` reader - SERCOM4"]
-pub struct SERCOM4__R(crate::FieldReader<bool, bool>);
-impl SERCOM4__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SERCOM4__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SERCOM4__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SERCOM4__R = crate::BitReader<bool>;
 #[doc = "Field `SERCOM4_` writer - SERCOM4"]
-pub struct SERCOM4__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SERCOM4__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type SERCOM4__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGD_SPEC, bool, O>;
 #[doc = "Field `SERCOM5_` reader - SERCOM5"]
-pub struct SERCOM5__R(crate::FieldReader<bool, bool>);
-impl SERCOM5__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SERCOM5__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SERCOM5__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SERCOM5__R = crate::BitReader<bool>;
 #[doc = "Field `SERCOM5_` writer - SERCOM5"]
-pub struct SERCOM5__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SERCOM5__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type SERCOM5__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGD_SPEC, bool, O>;
 #[doc = "Field `TCC4_` reader - TCC4"]
-pub struct TCC4__R(crate::FieldReader<bool, bool>);
-impl TCC4__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TCC4__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TCC4__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TCC4__R = crate::BitReader<bool>;
 #[doc = "Field `TCC4_` writer - TCC4"]
-pub struct TCC4__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TCC4__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u32 & 0x01) << 4);
-        self.w
-    }
-}
+pub type TCC4__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGD_SPEC, bool, O>;
 #[doc = "Field `ADC0_` reader - ADC0"]
-pub struct ADC0__R(crate::FieldReader<bool, bool>);
-impl ADC0__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ADC0__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ADC0__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ADC0__R = crate::BitReader<bool>;
 #[doc = "Field `ADC0_` writer - ADC0"]
-pub struct ADC0__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ADC0__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
-        self.w
-    }
-}
+pub type ADC0__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGD_SPEC, bool, O>;
 #[doc = "Field `ADC1_` reader - ADC1"]
-pub struct ADC1__R(crate::FieldReader<bool, bool>);
-impl ADC1__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ADC1__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ADC1__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ADC1__R = crate::BitReader<bool>;
 #[doc = "Field `ADC1_` writer - ADC1"]
-pub struct ADC1__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ADC1__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
-        self.w
-    }
-}
+pub type ADC1__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGD_SPEC, bool, O>;
 #[doc = "Field `DAC_` reader - DAC"]
-pub struct DAC__R(crate::FieldReader<bool, bool>);
-impl DAC__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DAC__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DAC__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DAC__R = crate::BitReader<bool>;
 #[doc = "Field `DAC_` writer - DAC"]
-pub struct DAC__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DAC__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u32 & 0x01) << 9);
-        self.w
-    }
-}
+pub type DAC__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGD_SPEC, bool, O>;
 #[doc = "Field `I2S_` reader - I2S"]
-pub struct I2S__R(crate::FieldReader<bool, bool>);
-impl I2S__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        I2S__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for I2S__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type I2S__R = crate::BitReader<bool>;
 #[doc = "Field `I2S_` writer - I2S"]
-pub struct I2S__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> I2S__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u32 & 0x01) << 10);
-        self.w
-    }
-}
+pub type I2S__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGD_SPEC, bool, O>;
 #[doc = "Field `PCC_` reader - PCC"]
-pub struct PCC__R(crate::FieldReader<bool, bool>);
-impl PCC__R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PCC__R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PCC__R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PCC__R = crate::BitReader<bool>;
 #[doc = "Field `PCC_` writer - PCC"]
-pub struct PCC__W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PCC__W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 11)) | ((value as u32 & 0x01) << 11);
-        self.w
-    }
-}
+pub type PCC__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGD_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - SERCOM4"]
     #[inline(always)]
     pub fn sercom4_(&self) -> SERCOM4__R {
-        SERCOM4__R::new((self.bits & 0x01) != 0)
+        SERCOM4__R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - SERCOM5"]
     #[inline(always)]
     pub fn sercom5_(&self) -> SERCOM5__R {
-        SERCOM5__R::new(((self.bits >> 1) & 0x01) != 0)
+        SERCOM5__R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 4 - TCC4"]
     #[inline(always)]
     pub fn tcc4_(&self) -> TCC4__R {
-        TCC4__R::new(((self.bits >> 4) & 0x01) != 0)
+        TCC4__R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 7 - ADC0"]
     #[inline(always)]
     pub fn adc0_(&self) -> ADC0__R {
-        ADC0__R::new(((self.bits >> 7) & 0x01) != 0)
+        ADC0__R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - ADC1"]
     #[inline(always)]
     pub fn adc1_(&self) -> ADC1__R {
-        ADC1__R::new(((self.bits >> 8) & 0x01) != 0)
+        ADC1__R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - DAC"]
     #[inline(always)]
     pub fn dac_(&self) -> DAC__R {
-        DAC__R::new(((self.bits >> 9) & 0x01) != 0)
+        DAC__R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - I2S"]
     #[inline(always)]
     pub fn i2s_(&self) -> I2S__R {
-        I2S__R::new(((self.bits >> 10) & 0x01) != 0)
+        I2S__R::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bit 11 - PCC"]
     #[inline(always)]
     pub fn pcc_(&self) -> PCC__R {
-        PCC__R::new(((self.bits >> 11) & 0x01) != 0)
+        PCC__R::new(((self.bits >> 11) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - SERCOM4"]
     #[inline(always)]
-    pub fn sercom4_(&mut self) -> SERCOM4__W {
-        SERCOM4__W { w: self }
+    #[must_use]
+    pub fn sercom4_(&mut self) -> SERCOM4__W<0> {
+        SERCOM4__W::new(self)
     }
     #[doc = "Bit 1 - SERCOM5"]
     #[inline(always)]
-    pub fn sercom5_(&mut self) -> SERCOM5__W {
-        SERCOM5__W { w: self }
+    #[must_use]
+    pub fn sercom5_(&mut self) -> SERCOM5__W<1> {
+        SERCOM5__W::new(self)
     }
     #[doc = "Bit 4 - TCC4"]
     #[inline(always)]
-    pub fn tcc4_(&mut self) -> TCC4__W {
-        TCC4__W { w: self }
+    #[must_use]
+    pub fn tcc4_(&mut self) -> TCC4__W<4> {
+        TCC4__W::new(self)
     }
     #[doc = "Bit 7 - ADC0"]
     #[inline(always)]
-    pub fn adc0_(&mut self) -> ADC0__W {
-        ADC0__W { w: self }
+    #[must_use]
+    pub fn adc0_(&mut self) -> ADC0__W<7> {
+        ADC0__W::new(self)
     }
     #[doc = "Bit 8 - ADC1"]
     #[inline(always)]
-    pub fn adc1_(&mut self) -> ADC1__W {
-        ADC1__W { w: self }
+    #[must_use]
+    pub fn adc1_(&mut self) -> ADC1__W<8> {
+        ADC1__W::new(self)
     }
     #[doc = "Bit 9 - DAC"]
     #[inline(always)]
-    pub fn dac_(&mut self) -> DAC__W {
-        DAC__W { w: self }
+    #[must_use]
+    pub fn dac_(&mut self) -> DAC__W<9> {
+        DAC__W::new(self)
     }
     #[doc = "Bit 10 - I2S"]
     #[inline(always)]
-    pub fn i2s_(&mut self) -> I2S__W {
-        I2S__W { w: self }
+    #[must_use]
+    pub fn i2s_(&mut self) -> I2S__W<10> {
+        I2S__W::new(self)
     }
     #[doc = "Bit 11 - PCC"]
     #[inline(always)]
-    pub fn pcc_(&mut self) -> PCC__W {
-        PCC__W { w: self }
+    #[must_use]
+    pub fn pcc_(&mut self) -> PCC__W<11> {
+        PCC__W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -432,11 +176,10 @@ impl crate::Readable for INTFLAGD_SPEC {
 #[doc = "`write(|w| ..)` method takes [intflagd::W](W) writer structure"]
 impl crate::Writable for INTFLAGD_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTFLAGD to value 0"]
 impl crate::Resettable for INTFLAGD_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -24,8 +24,5 @@ impl crate::Readable for DEVARCH_SPEC {
 }
 #[doc = "`reset()` method sets DEVARCH to value 0"]
 impl crate::Resettable for DEVARCH_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

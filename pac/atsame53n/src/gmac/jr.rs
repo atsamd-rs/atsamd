@@ -14,20 +14,7 @@ impl From<crate::R<JR_SPEC>> for R {
     }
 }
 #[doc = "Field `JRX` reader - Jabbers Received"]
-pub struct JRX_R(crate::FieldReader<u16, u16>);
-impl JRX_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        JRX_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for JRX_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type JRX_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:9 - Jabbers Received"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for JR_SPEC {
 }
 #[doc = "`reset()` method sets JR to value 0"]
 impl crate::Resettable for JR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

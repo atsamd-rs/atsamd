@@ -35,336 +35,112 @@ impl From<crate::W<INTENCLR_SPEC>> for W {
     }
 }
 #[doc = "Field `DRE` reader - Data Register Empty Interrupt Disable"]
-pub struct DRE_R(crate::FieldReader<bool, bool>);
-impl DRE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DRE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DRE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DRE_R = crate::BitReader<bool>;
 #[doc = "Field `DRE` writer - Data Register Empty Interrupt Disable"]
-pub struct DRE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DRE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type DRE_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `TXC` reader - Transmit Complete Interrupt Disable"]
-pub struct TXC_R(crate::FieldReader<bool, bool>);
-impl TXC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TXC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TXC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TXC_R = crate::BitReader<bool>;
 #[doc = "Field `TXC` writer - Transmit Complete Interrupt Disable"]
-pub struct TXC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TXC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type TXC_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `RXC` reader - Receive Complete Interrupt Disable"]
-pub struct RXC_R(crate::FieldReader<bool, bool>);
-impl RXC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RXC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXC_R = crate::BitReader<bool>;
 #[doc = "Field `RXC` writer - Receive Complete Interrupt Disable"]
-pub struct RXC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RXC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type RXC_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `RXS` reader - Receive Start Interrupt Disable"]
-pub struct RXS_R(crate::FieldReader<bool, bool>);
-impl RXS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RXS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXS_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXS_R = crate::BitReader<bool>;
 #[doc = "Field `RXS` writer - Receive Start Interrupt Disable"]
-pub struct RXS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RXS_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
-        self.w
-    }
-}
+pub type RXS_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `CTSIC` reader - Clear To Send Input Change Interrupt Disable"]
-pub struct CTSIC_R(crate::FieldReader<bool, bool>);
-impl CTSIC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CTSIC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CTSIC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CTSIC_R = crate::BitReader<bool>;
 #[doc = "Field `CTSIC` writer - Clear To Send Input Change Interrupt Disable"]
-pub struct CTSIC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CTSIC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
-        self.w
-    }
-}
+pub type CTSIC_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `RXBRK` reader - Break Received Interrupt Disable"]
-pub struct RXBRK_R(crate::FieldReader<bool, bool>);
-impl RXBRK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RXBRK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXBRK_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXBRK_R = crate::BitReader<bool>;
 #[doc = "Field `RXBRK` writer - Break Received Interrupt Disable"]
-pub struct RXBRK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RXBRK_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u8 & 0x01) << 5);
-        self.w
-    }
-}
+pub type RXBRK_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 #[doc = "Field `ERROR` reader - Combined Error Interrupt Disable"]
-pub struct ERROR_R(crate::FieldReader<bool, bool>);
-impl ERROR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ERROR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ERROR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ERROR_R = crate::BitReader<bool>;
 #[doc = "Field `ERROR` writer - Combined Error Interrupt Disable"]
-pub struct ERROR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ERROR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type ERROR_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Data Register Empty Interrupt Disable"]
     #[inline(always)]
     pub fn dre(&self) -> DRE_R {
-        DRE_R::new((self.bits & 0x01) != 0)
+        DRE_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Transmit Complete Interrupt Disable"]
     #[inline(always)]
     pub fn txc(&self) -> TXC_R {
-        TXC_R::new(((self.bits >> 1) & 0x01) != 0)
+        TXC_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Receive Complete Interrupt Disable"]
     #[inline(always)]
     pub fn rxc(&self) -> RXC_R {
-        RXC_R::new(((self.bits >> 2) & 0x01) != 0)
+        RXC_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Receive Start Interrupt Disable"]
     #[inline(always)]
     pub fn rxs(&self) -> RXS_R {
-        RXS_R::new(((self.bits >> 3) & 0x01) != 0)
+        RXS_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Clear To Send Input Change Interrupt Disable"]
     #[inline(always)]
     pub fn ctsic(&self) -> CTSIC_R {
-        CTSIC_R::new(((self.bits >> 4) & 0x01) != 0)
+        CTSIC_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Break Received Interrupt Disable"]
     #[inline(always)]
     pub fn rxbrk(&self) -> RXBRK_R {
-        RXBRK_R::new(((self.bits >> 5) & 0x01) != 0)
+        RXBRK_R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 7 - Combined Error Interrupt Disable"]
     #[inline(always)]
     pub fn error(&self) -> ERROR_R {
-        ERROR_R::new(((self.bits >> 7) & 0x01) != 0)
+        ERROR_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Data Register Empty Interrupt Disable"]
     #[inline(always)]
-    pub fn dre(&mut self) -> DRE_W {
-        DRE_W { w: self }
+    #[must_use]
+    pub fn dre(&mut self) -> DRE_W<0> {
+        DRE_W::new(self)
     }
     #[doc = "Bit 1 - Transmit Complete Interrupt Disable"]
     #[inline(always)]
-    pub fn txc(&mut self) -> TXC_W {
-        TXC_W { w: self }
+    #[must_use]
+    pub fn txc(&mut self) -> TXC_W<1> {
+        TXC_W::new(self)
     }
     #[doc = "Bit 2 - Receive Complete Interrupt Disable"]
     #[inline(always)]
-    pub fn rxc(&mut self) -> RXC_W {
-        RXC_W { w: self }
+    #[must_use]
+    pub fn rxc(&mut self) -> RXC_W<2> {
+        RXC_W::new(self)
     }
     #[doc = "Bit 3 - Receive Start Interrupt Disable"]
     #[inline(always)]
-    pub fn rxs(&mut self) -> RXS_W {
-        RXS_W { w: self }
+    #[must_use]
+    pub fn rxs(&mut self) -> RXS_W<3> {
+        RXS_W::new(self)
     }
     #[doc = "Bit 4 - Clear To Send Input Change Interrupt Disable"]
     #[inline(always)]
-    pub fn ctsic(&mut self) -> CTSIC_W {
-        CTSIC_W { w: self }
+    #[must_use]
+    pub fn ctsic(&mut self) -> CTSIC_W<4> {
+        CTSIC_W::new(self)
     }
     #[doc = "Bit 5 - Break Received Interrupt Disable"]
     #[inline(always)]
-    pub fn rxbrk(&mut self) -> RXBRK_W {
-        RXBRK_W { w: self }
+    #[must_use]
+    pub fn rxbrk(&mut self) -> RXBRK_W<5> {
+        RXBRK_W::new(self)
     }
     #[doc = "Bit 7 - Combined Error Interrupt Disable"]
     #[inline(always)]
-    pub fn error(&mut self) -> ERROR_W {
-        ERROR_W { w: self }
+    #[must_use]
+    pub fn error(&mut self) -> ERROR_W<7> {
+        ERROR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -385,11 +161,10 @@ impl crate::Readable for INTENCLR_SPEC {
 #[doc = "`write(|w| ..)` method takes [intenclr::W](W) writer structure"]
 impl crate::Writable for INTENCLR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for INTENCLR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

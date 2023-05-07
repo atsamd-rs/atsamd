@@ -35,93 +35,47 @@ impl From<crate::W<USER_SPEC>> for W {
     }
 }
 #[doc = "Field `USER` reader - User Multiplexer Selection"]
-pub struct USER_R(crate::FieldReader<u8, u8>);
-impl USER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        USER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for USER_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type USER_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `USER` writer - User Multiplexer Selection"]
-pub struct USER_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> USER_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x1f) | (value as u16 & 0x1f);
-        self.w
-    }
-}
+pub type USER_W<'a, const O: u8> = crate::FieldWriter<'a, u16, USER_SPEC, u8, u8, 5, O>;
+#[doc = "Field `CHANNEL` reader - Channel Event Selection"]
+pub type CHANNEL_R = crate::FieldReader<u8, CHANNELSELECT_A>;
 #[doc = "Channel Event Selection\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CHANNEL_A {
+pub enum CHANNELSELECT_A {
     #[doc = "0: No Channel Output Selected"]
     _0 = 0,
 }
-impl From<CHANNEL_A> for u8 {
+impl From<CHANNELSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: CHANNEL_A) -> Self {
+    fn from(variant: CHANNELSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `CHANNEL` reader - Channel Event Selection"]
-pub struct CHANNEL_R(crate::FieldReader<u8, CHANNEL_A>);
 impl CHANNEL_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CHANNEL_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<CHANNEL_A> {
+    pub fn variant(&self) -> Option<CHANNELSELECT_A> {
         match self.bits {
-            0 => Some(CHANNEL_A::_0),
+            0 => Some(CHANNELSELECT_A::_0),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `_0`"]
     #[inline(always)]
     pub fn is_0(&self) -> bool {
-        **self == CHANNEL_A::_0
-    }
-}
-impl core::ops::Deref for CHANNEL_R {
-    type Target = crate::FieldReader<u8, CHANNEL_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CHANNELSELECT_A::_0
     }
 }
 #[doc = "Field `CHANNEL` writer - Channel Event Selection"]
-pub struct CHANNEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CHANNEL_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CHANNEL_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type CHANNEL_W<'a, const O: u8> =
+    crate::FieldWriter<'a, u16, USER_SPEC, u8, CHANNELSELECT_A, 4, O>;
+impl<'a, const O: u8> CHANNEL_W<'a, O> {
     #[doc = "No Channel Output Selected"]
     #[inline(always)]
     pub fn _0(self) -> &'a mut W {
-        self.variant(CHANNEL_A::_0)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 8)) | ((value as u16 & 0x0f) << 8);
-        self.w
+        self.variant(CHANNELSELECT_A::_0)
     }
 }
 impl R {
@@ -139,13 +93,15 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - User Multiplexer Selection"]
     #[inline(always)]
-    pub fn user(&mut self) -> USER_W {
-        USER_W { w: self }
+    #[must_use]
+    pub fn user(&mut self) -> USER_W<0> {
+        USER_W::new(self)
     }
     #[doc = "Bits 8:11 - Channel Event Selection"]
     #[inline(always)]
-    pub fn channel(&mut self) -> CHANNEL_W {
-        CHANNEL_W { w: self }
+    #[must_use]
+    pub fn channel(&mut self) -> CHANNEL_W<8> {
+        CHANNEL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -166,11 +122,10 @@ impl crate::Readable for USER_SPEC {
 #[doc = "`write(|w| ..)` method takes [user::W](W) writer structure"]
 impl crate::Writable for USER_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets USER to value 0"]
 impl crate::Resettable for USER_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

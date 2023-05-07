@@ -35,44 +35,22 @@ impl From<crate::W<TSL_SPEC>> for W {
     }
 }
 #[doc = "Field `TCS` reader - Timer Count in Seconds"]
-pub struct TCS_R(crate::FieldReader<u32, u32>);
-impl TCS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        TCS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TCS_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TCS_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `TCS` writer - Timer Count in Seconds"]
-pub struct TCS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TCS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = value as u32;
-        self.w
-    }
-}
+pub type TCS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TSL_SPEC, u32, u32, 32, O>;
 impl R {
     #[doc = "Bits 0:31 - Timer Count in Seconds"]
     #[inline(always)]
     pub fn tcs(&self) -> TCS_R {
-        TCS_R::new(self.bits as u32)
+        TCS_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Timer Count in Seconds"]
     #[inline(always)]
-    pub fn tcs(&mut self) -> TCS_W {
-        TCS_W { w: self }
+    #[must_use]
+    pub fn tcs(&mut self) -> TCS_W<0> {
+        TCS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -94,11 +72,10 @@ impl crate::Readable for TSL_SPEC {
 #[doc = "`write(|w| ..)` method takes [tsl::W](W) writer structure"]
 impl crate::Writable for TSL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TSL to value 0"]
 impl crate::Resettable for TSL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

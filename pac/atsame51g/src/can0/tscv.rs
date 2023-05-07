@@ -14,20 +14,7 @@ impl From<crate::R<TSCV_SPEC>> for R {
     }
 }
 #[doc = "Field `TSC` reader - Timestamp Counter"]
-pub struct TSC_R(crate::FieldReader<u16, u16>);
-impl TSC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        TSC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TSC_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TSC_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:15 - Timestamp Counter"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for TSCV_SPEC {
 }
 #[doc = "`reset()` method sets TSCV to value 0"]
 impl crate::Resettable for TSCV_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

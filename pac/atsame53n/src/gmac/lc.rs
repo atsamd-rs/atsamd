@@ -14,20 +14,7 @@ impl From<crate::R<LC_SPEC>> for R {
     }
 }
 #[doc = "Field `LCOL` reader - Late Collisions"]
-pub struct LCOL_R(crate::FieldReader<u16, u16>);
-impl LCOL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        LCOL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LCOL_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LCOL_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:9 - Late Collisions"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for LC_SPEC {
 }
 #[doc = "`reset()` method sets LC to value 0"]
 impl crate::Resettable for LC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

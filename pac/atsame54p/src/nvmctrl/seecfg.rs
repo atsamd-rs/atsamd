@@ -34,149 +34,84 @@ impl From<crate::W<SEECFG_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `WMODE` reader - Write Mode"]
+pub type WMODE_R = crate::BitReader<WMODESELECT_A>;
 #[doc = "Write Mode\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum WMODE_A {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum WMODESELECT_A {
     #[doc = "0: A NVM write command is issued after each write in the pagebuffer"]
     UNBUFFERED = 0,
     #[doc = "1: A NVM write command is issued when a write to a new page is requested"]
     BUFFERED = 1,
 }
-impl From<WMODE_A> for bool {
+impl From<WMODESELECT_A> for bool {
     #[inline(always)]
-    fn from(variant: WMODE_A) -> Self {
+    fn from(variant: WMODESELECT_A) -> Self {
         variant as u8 != 0
     }
 }
-#[doc = "Field `WMODE` reader - Write Mode"]
-pub struct WMODE_R(crate::FieldReader<bool, WMODE_A>);
 impl WMODE_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WMODE_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> WMODE_A {
+    pub fn variant(&self) -> WMODESELECT_A {
         match self.bits {
-            false => WMODE_A::UNBUFFERED,
-            true => WMODE_A::BUFFERED,
+            false => WMODESELECT_A::UNBUFFERED,
+            true => WMODESELECT_A::BUFFERED,
         }
     }
     #[doc = "Checks if the value of the field is `UNBUFFERED`"]
     #[inline(always)]
     pub fn is_unbuffered(&self) -> bool {
-        **self == WMODE_A::UNBUFFERED
+        *self == WMODESELECT_A::UNBUFFERED
     }
     #[doc = "Checks if the value of the field is `BUFFERED`"]
     #[inline(always)]
     pub fn is_buffered(&self) -> bool {
-        **self == WMODE_A::BUFFERED
-    }
-}
-impl core::ops::Deref for WMODE_R {
-    type Target = crate::FieldReader<bool, WMODE_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == WMODESELECT_A::BUFFERED
     }
 }
 #[doc = "Field `WMODE` writer - Write Mode"]
-pub struct WMODE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WMODE_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: WMODE_A) -> &'a mut W {
-        self.bit(variant.into())
-    }
+pub type WMODE_W<'a, const O: u8> = crate::BitWriter<'a, u8, SEECFG_SPEC, WMODESELECT_A, O>;
+impl<'a, const O: u8> WMODE_W<'a, O> {
     #[doc = "A NVM write command is issued after each write in the pagebuffer"]
     #[inline(always)]
     pub fn unbuffered(self) -> &'a mut W {
-        self.variant(WMODE_A::UNBUFFERED)
+        self.variant(WMODESELECT_A::UNBUFFERED)
     }
     #[doc = "A NVM write command is issued when a write to a new page is requested"]
     #[inline(always)]
     pub fn buffered(self) -> &'a mut W {
-        self.variant(WMODE_A::BUFFERED)
-    }
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
+        self.variant(WMODESELECT_A::BUFFERED)
     }
 }
 #[doc = "Field `APRDIS` reader - Automatic Page Reallocation Disable"]
-pub struct APRDIS_R(crate::FieldReader<bool, bool>);
-impl APRDIS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        APRDIS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for APRDIS_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type APRDIS_R = crate::BitReader<bool>;
 #[doc = "Field `APRDIS` writer - Automatic Page Reallocation Disable"]
-pub struct APRDIS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> APRDIS_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type APRDIS_W<'a, const O: u8> = crate::BitWriter<'a, u8, SEECFG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Write Mode"]
     #[inline(always)]
     pub fn wmode(&self) -> WMODE_R {
-        WMODE_R::new((self.bits & 0x01) != 0)
+        WMODE_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Automatic Page Reallocation Disable"]
     #[inline(always)]
     pub fn aprdis(&self) -> APRDIS_R {
-        APRDIS_R::new(((self.bits >> 1) & 0x01) != 0)
+        APRDIS_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Write Mode"]
     #[inline(always)]
-    pub fn wmode(&mut self) -> WMODE_W {
-        WMODE_W { w: self }
+    #[must_use]
+    pub fn wmode(&mut self) -> WMODE_W<0> {
+        WMODE_W::new(self)
     }
     #[doc = "Bit 1 - Automatic Page Reallocation Disable"]
     #[inline(always)]
-    pub fn aprdis(&mut self) -> APRDIS_W {
-        APRDIS_W { w: self }
+    #[must_use]
+    pub fn aprdis(&mut self) -> APRDIS_W<1> {
+        APRDIS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -197,11 +132,10 @@ impl crate::Readable for SEECFG_SPEC {
 #[doc = "`write(|w| ..)` method takes [seecfg::W](W) writer structure"]
 impl crate::Writable for SEECFG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets SEECFG to value 0"]
 impl crate::Resettable for SEECFG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

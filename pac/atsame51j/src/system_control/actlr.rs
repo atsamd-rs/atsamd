@@ -35,242 +35,82 @@ impl From<crate::W<ACTLR_SPEC>> for W {
     }
 }
 #[doc = "Field `DISMCYCINT` reader - Disable interruption of LDM/STM instructions"]
-pub struct DISMCYCINT_R(crate::FieldReader<bool, bool>);
-impl DISMCYCINT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DISMCYCINT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DISMCYCINT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DISMCYCINT_R = crate::BitReader<bool>;
 #[doc = "Field `DISMCYCINT` writer - Disable interruption of LDM/STM instructions"]
-pub struct DISMCYCINT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DISMCYCINT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type DISMCYCINT_W<'a, const O: u8> = crate::BitWriter<'a, u32, ACTLR_SPEC, bool, O>;
 #[doc = "Field `DISDEFWBUF` reader - Disable wruite buffer use during default memory map accesses"]
-pub struct DISDEFWBUF_R(crate::FieldReader<bool, bool>);
-impl DISDEFWBUF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DISDEFWBUF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DISDEFWBUF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DISDEFWBUF_R = crate::BitReader<bool>;
 #[doc = "Field `DISDEFWBUF` writer - Disable wruite buffer use during default memory map accesses"]
-pub struct DISDEFWBUF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DISDEFWBUF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type DISDEFWBUF_W<'a, const O: u8> = crate::BitWriter<'a, u32, ACTLR_SPEC, bool, O>;
 #[doc = "Field `DISFOLD` reader - Disable IT folding"]
-pub struct DISFOLD_R(crate::FieldReader<bool, bool>);
-impl DISFOLD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DISFOLD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DISFOLD_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DISFOLD_R = crate::BitReader<bool>;
 #[doc = "Field `DISFOLD` writer - Disable IT folding"]
-pub struct DISFOLD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DISFOLD_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
-    }
-}
+pub type DISFOLD_W<'a, const O: u8> = crate::BitWriter<'a, u32, ACTLR_SPEC, bool, O>;
 #[doc = "Field `DISFPCA` reader - Disable automatic update of CONTROL.FPCA"]
-pub struct DISFPCA_R(crate::FieldReader<bool, bool>);
-impl DISFPCA_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DISFPCA_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DISFPCA_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DISFPCA_R = crate::BitReader<bool>;
 #[doc = "Field `DISFPCA` writer - Disable automatic update of CONTROL.FPCA"]
-pub struct DISFPCA_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DISFPCA_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
-        self.w
-    }
-}
+pub type DISFPCA_W<'a, const O: u8> = crate::BitWriter<'a, u32, ACTLR_SPEC, bool, O>;
 #[doc = "Field `DISOOFP` reader - Disable out-of-order FP instructions"]
-pub struct DISOOFP_R(crate::FieldReader<bool, bool>);
-impl DISOOFP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DISOOFP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DISOOFP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DISOOFP_R = crate::BitReader<bool>;
 #[doc = "Field `DISOOFP` writer - Disable out-of-order FP instructions"]
-pub struct DISOOFP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DISOOFP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u32 & 0x01) << 9);
-        self.w
-    }
-}
+pub type DISOOFP_W<'a, const O: u8> = crate::BitWriter<'a, u32, ACTLR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Disable interruption of LDM/STM instructions"]
     #[inline(always)]
     pub fn dismcycint(&self) -> DISMCYCINT_R {
-        DISMCYCINT_R::new((self.bits & 0x01) != 0)
+        DISMCYCINT_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Disable wruite buffer use during default memory map accesses"]
     #[inline(always)]
     pub fn disdefwbuf(&self) -> DISDEFWBUF_R {
-        DISDEFWBUF_R::new(((self.bits >> 1) & 0x01) != 0)
+        DISDEFWBUF_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Disable IT folding"]
     #[inline(always)]
     pub fn disfold(&self) -> DISFOLD_R {
-        DISFOLD_R::new(((self.bits >> 2) & 0x01) != 0)
+        DISFOLD_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 8 - Disable automatic update of CONTROL.FPCA"]
     #[inline(always)]
     pub fn disfpca(&self) -> DISFPCA_R {
-        DISFPCA_R::new(((self.bits >> 8) & 0x01) != 0)
+        DISFPCA_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Disable out-of-order FP instructions"]
     #[inline(always)]
     pub fn disoofp(&self) -> DISOOFP_R {
-        DISOOFP_R::new(((self.bits >> 9) & 0x01) != 0)
+        DISOOFP_R::new(((self.bits >> 9) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Disable interruption of LDM/STM instructions"]
     #[inline(always)]
-    pub fn dismcycint(&mut self) -> DISMCYCINT_W {
-        DISMCYCINT_W { w: self }
+    #[must_use]
+    pub fn dismcycint(&mut self) -> DISMCYCINT_W<0> {
+        DISMCYCINT_W::new(self)
     }
     #[doc = "Bit 1 - Disable wruite buffer use during default memory map accesses"]
     #[inline(always)]
-    pub fn disdefwbuf(&mut self) -> DISDEFWBUF_W {
-        DISDEFWBUF_W { w: self }
+    #[must_use]
+    pub fn disdefwbuf(&mut self) -> DISDEFWBUF_W<1> {
+        DISDEFWBUF_W::new(self)
     }
     #[doc = "Bit 2 - Disable IT folding"]
     #[inline(always)]
-    pub fn disfold(&mut self) -> DISFOLD_W {
-        DISFOLD_W { w: self }
+    #[must_use]
+    pub fn disfold(&mut self) -> DISFOLD_W<2> {
+        DISFOLD_W::new(self)
     }
     #[doc = "Bit 8 - Disable automatic update of CONTROL.FPCA"]
     #[inline(always)]
-    pub fn disfpca(&mut self) -> DISFPCA_W {
-        DISFPCA_W { w: self }
+    #[must_use]
+    pub fn disfpca(&mut self) -> DISFPCA_W<8> {
+        DISFPCA_W::new(self)
     }
     #[doc = "Bit 9 - Disable out-of-order FP instructions"]
     #[inline(always)]
-    pub fn disoofp(&mut self) -> DISOOFP_W {
-        DISOOFP_W { w: self }
+    #[must_use]
+    pub fn disoofp(&mut self) -> DISOOFP_W<9> {
+        DISOOFP_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -291,11 +131,10 @@ impl crate::Readable for ACTLR_SPEC {
 #[doc = "`write(|w| ..)` method takes [actlr::W](W) writer structure"]
 impl crate::Writable for ACTLR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets ACTLR to value 0"]
 impl crate::Resettable for ACTLR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

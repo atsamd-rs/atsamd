@@ -35,195 +35,67 @@ impl From<crate::W<PINCFG0__SPEC>> for W {
     }
 }
 #[doc = "Field `PMUXEN` reader - Peripheral Multiplexer Enable"]
-pub struct PMUXEN_R(crate::FieldReader<bool, bool>);
-impl PMUXEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PMUXEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PMUXEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PMUXEN_R = crate::BitReader<bool>;
 #[doc = "Field `PMUXEN` writer - Peripheral Multiplexer Enable"]
-pub struct PMUXEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PMUXEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type PMUXEN_W<'a, const O: u8> = crate::BitWriter<'a, u8, PINCFG0__SPEC, bool, O>;
 #[doc = "Field `INEN` reader - Input Enable"]
-pub struct INEN_R(crate::FieldReader<bool, bool>);
-impl INEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        INEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INEN_R = crate::BitReader<bool>;
 #[doc = "Field `INEN` writer - Input Enable"]
-pub struct INEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type INEN_W<'a, const O: u8> = crate::BitWriter<'a, u8, PINCFG0__SPEC, bool, O>;
 #[doc = "Field `PULLEN` reader - Pull Enable"]
-pub struct PULLEN_R(crate::FieldReader<bool, bool>);
-impl PULLEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PULLEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PULLEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PULLEN_R = crate::BitReader<bool>;
 #[doc = "Field `PULLEN` writer - Pull Enable"]
-pub struct PULLEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PULLEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type PULLEN_W<'a, const O: u8> = crate::BitWriter<'a, u8, PINCFG0__SPEC, bool, O>;
 #[doc = "Field `DRVSTR` reader - Output Driver Strength Selection"]
-pub struct DRVSTR_R(crate::FieldReader<bool, bool>);
-impl DRVSTR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DRVSTR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DRVSTR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DRVSTR_R = crate::BitReader<bool>;
 #[doc = "Field `DRVSTR` writer - Output Driver Strength Selection"]
-pub struct DRVSTR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DRVSTR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u8 & 0x01) << 6);
-        self.w
-    }
-}
+pub type DRVSTR_W<'a, const O: u8> = crate::BitWriter<'a, u8, PINCFG0__SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Peripheral Multiplexer Enable"]
     #[inline(always)]
     pub fn pmuxen(&self) -> PMUXEN_R {
-        PMUXEN_R::new((self.bits & 0x01) != 0)
+        PMUXEN_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Input Enable"]
     #[inline(always)]
     pub fn inen(&self) -> INEN_R {
-        INEN_R::new(((self.bits >> 1) & 0x01) != 0)
+        INEN_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Pull Enable"]
     #[inline(always)]
     pub fn pullen(&self) -> PULLEN_R {
-        PULLEN_R::new(((self.bits >> 2) & 0x01) != 0)
+        PULLEN_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 6 - Output Driver Strength Selection"]
     #[inline(always)]
     pub fn drvstr(&self) -> DRVSTR_R {
-        DRVSTR_R::new(((self.bits >> 6) & 0x01) != 0)
+        DRVSTR_R::new(((self.bits >> 6) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Peripheral Multiplexer Enable"]
     #[inline(always)]
-    pub fn pmuxen(&mut self) -> PMUXEN_W {
-        PMUXEN_W { w: self }
+    #[must_use]
+    pub fn pmuxen(&mut self) -> PMUXEN_W<0> {
+        PMUXEN_W::new(self)
     }
     #[doc = "Bit 1 - Input Enable"]
     #[inline(always)]
-    pub fn inen(&mut self) -> INEN_W {
-        INEN_W { w: self }
+    #[must_use]
+    pub fn inen(&mut self) -> INEN_W<1> {
+        INEN_W::new(self)
     }
     #[doc = "Bit 2 - Pull Enable"]
     #[inline(always)]
-    pub fn pullen(&mut self) -> PULLEN_W {
-        PULLEN_W { w: self }
+    #[must_use]
+    pub fn pullen(&mut self) -> PULLEN_W<2> {
+        PULLEN_W::new(self)
     }
     #[doc = "Bit 6 - Output Driver Strength Selection"]
     #[inline(always)]
-    pub fn drvstr(&mut self) -> DRVSTR_W {
-        DRVSTR_W { w: self }
+    #[must_use]
+    pub fn drvstr(&mut self) -> DRVSTR_W<6> {
+        DRVSTR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -244,11 +116,10 @@ impl crate::Readable for PINCFG0__SPEC {
 #[doc = "`write(|w| ..)` method takes [pincfg0_::W](W) writer structure"]
 impl crate::Writable for PINCFG0__SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets PINCFG0_%s to value 0"]
 impl crate::Resettable for PINCFG0__SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

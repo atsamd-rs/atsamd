@@ -35,81 +35,37 @@ impl From<crate::W<PMUX_SPEC>> for W {
     }
 }
 #[doc = "Field `PMUXE` reader - Peripheral Multiplexing for Even-Numbered Pin"]
-pub struct PMUXE_R(crate::FieldReader<u8, u8>);
-impl PMUXE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PMUXE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PMUXE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PMUXE_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PMUXE` writer - Peripheral Multiplexing for Even-Numbered Pin"]
-pub struct PMUXE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PMUXE_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u8 & 0x0f);
-        self.w
-    }
-}
+pub type PMUXE_W<'a, const O: u8> = crate::FieldWriter<'a, u8, PMUX_SPEC, u8, u8, 4, O>;
 #[doc = "Field `PMUXO` reader - Peripheral Multiplexing for Odd-Numbered Pin"]
-pub struct PMUXO_R(crate::FieldReader<u8, u8>);
-impl PMUXO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PMUXO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PMUXO_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PMUXO_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PMUXO` writer - Peripheral Multiplexing for Odd-Numbered Pin"]
-pub struct PMUXO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PMUXO_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 4)) | ((value as u8 & 0x0f) << 4);
-        self.w
-    }
-}
+pub type PMUXO_W<'a, const O: u8> = crate::FieldWriter<'a, u8, PMUX_SPEC, u8, u8, 4, O>;
 impl R {
     #[doc = "Bits 0:3 - Peripheral Multiplexing for Even-Numbered Pin"]
     #[inline(always)]
     pub fn pmuxe(&self) -> PMUXE_R {
-        PMUXE_R::new((self.bits & 0x0f) as u8)
+        PMUXE_R::new(self.bits & 0x0f)
     }
     #[doc = "Bits 4:7 - Peripheral Multiplexing for Odd-Numbered Pin"]
     #[inline(always)]
     pub fn pmuxo(&self) -> PMUXO_R {
-        PMUXO_R::new(((self.bits >> 4) & 0x0f) as u8)
+        PMUXO_R::new((self.bits >> 4) & 0x0f)
     }
 }
 impl W {
     #[doc = "Bits 0:3 - Peripheral Multiplexing for Even-Numbered Pin"]
     #[inline(always)]
-    pub fn pmuxe(&mut self) -> PMUXE_W {
-        PMUXE_W { w: self }
+    #[must_use]
+    pub fn pmuxe(&mut self) -> PMUXE_W<0> {
+        PMUXE_W::new(self)
     }
     #[doc = "Bits 4:7 - Peripheral Multiplexing for Odd-Numbered Pin"]
     #[inline(always)]
-    pub fn pmuxo(&mut self) -> PMUXO_W {
-        PMUXO_W { w: self }
+    #[must_use]
+    pub fn pmuxo(&mut self) -> PMUXO_W<4> {
+        PMUXO_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,12 +86,11 @@ impl crate::Readable for PMUX_SPEC {
 #[doc = "`write(|w| ..)` method takes [pmux::W](W) writer structure"]
 impl crate::Writable for PMUX_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets PMUX[%s]
 to value 0"]
 impl crate::Resettable for PMUX_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

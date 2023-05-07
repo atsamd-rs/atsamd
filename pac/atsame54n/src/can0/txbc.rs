@@ -35,123 +35,21 @@ impl From<crate::W<TXBC_SPEC>> for W {
     }
 }
 #[doc = "Field `TBSA` reader - Tx Buffers Start Address"]
-pub struct TBSA_R(crate::FieldReader<u16, u16>);
-impl TBSA_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        TBSA_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TBSA_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TBSA_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `TBSA` writer - Tx Buffers Start Address"]
-pub struct TBSA_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TBSA_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
-        self.w
-    }
-}
+pub type TBSA_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TXBC_SPEC, u16, u16, 16, O>;
 #[doc = "Field `NDTB` reader - Number of Dedicated Transmit Buffers"]
-pub struct NDTB_R(crate::FieldReader<u8, u8>);
-impl NDTB_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        NDTB_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NDTB_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NDTB_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `NDTB` writer - Number of Dedicated Transmit Buffers"]
-pub struct NDTB_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NDTB_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x3f << 16)) | ((value as u32 & 0x3f) << 16);
-        self.w
-    }
-}
+pub type NDTB_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TXBC_SPEC, u8, u8, 6, O>;
 #[doc = "Field `TFQS` reader - Transmit FIFO/Queue Size"]
-pub struct TFQS_R(crate::FieldReader<u8, u8>);
-impl TFQS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TFQS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TFQS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TFQS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `TFQS` writer - Transmit FIFO/Queue Size"]
-pub struct TFQS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TFQS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x3f << 24)) | ((value as u32 & 0x3f) << 24);
-        self.w
-    }
-}
+pub type TFQS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TXBC_SPEC, u8, u8, 6, O>;
 #[doc = "Field `TFQM` reader - Tx FIFO/Queue Mode"]
-pub struct TFQM_R(crate::FieldReader<bool, bool>);
-impl TFQM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TFQM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TFQM_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TFQM_R = crate::BitReader<bool>;
 #[doc = "Field `TFQM` writer - Tx FIFO/Queue Mode"]
-pub struct TFQM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TFQM_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 30)) | ((value as u32 & 0x01) << 30);
-        self.w
-    }
-}
+pub type TFQM_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBC_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:15 - Tx Buffers Start Address"]
     #[inline(always)]
@@ -171,29 +69,33 @@ impl R {
     #[doc = "Bit 30 - Tx FIFO/Queue Mode"]
     #[inline(always)]
     pub fn tfqm(&self) -> TFQM_R {
-        TFQM_R::new(((self.bits >> 30) & 0x01) != 0)
+        TFQM_R::new(((self.bits >> 30) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:15 - Tx Buffers Start Address"]
     #[inline(always)]
-    pub fn tbsa(&mut self) -> TBSA_W {
-        TBSA_W { w: self }
+    #[must_use]
+    pub fn tbsa(&mut self) -> TBSA_W<0> {
+        TBSA_W::new(self)
     }
     #[doc = "Bits 16:21 - Number of Dedicated Transmit Buffers"]
     #[inline(always)]
-    pub fn ndtb(&mut self) -> NDTB_W {
-        NDTB_W { w: self }
+    #[must_use]
+    pub fn ndtb(&mut self) -> NDTB_W<16> {
+        NDTB_W::new(self)
     }
     #[doc = "Bits 24:29 - Transmit FIFO/Queue Size"]
     #[inline(always)]
-    pub fn tfqs(&mut self) -> TFQS_W {
-        TFQS_W { w: self }
+    #[must_use]
+    pub fn tfqs(&mut self) -> TFQS_W<24> {
+        TFQS_W::new(self)
     }
     #[doc = "Bit 30 - Tx FIFO/Queue Mode"]
     #[inline(always)]
-    pub fn tfqm(&mut self) -> TFQM_W {
-        TFQM_W { w: self }
+    #[must_use]
+    pub fn tfqm(&mut self) -> TFQM_W<30> {
+        TFQM_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -214,11 +116,10 @@ impl crate::Readable for TXBC_SPEC {
 #[doc = "`write(|w| ..)` method takes [txbc::W](W) writer structure"]
 impl crate::Writable for TXBC_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TXBC to value 0"]
 impl crate::Resettable for TXBC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

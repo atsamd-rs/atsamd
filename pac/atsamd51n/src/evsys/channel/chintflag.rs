@@ -35,101 +35,37 @@ impl From<crate::W<CHINTFLAG_SPEC>> for W {
     }
 }
 #[doc = "Field `OVR` reader - Channel Overrun"]
-pub struct OVR_R(crate::FieldReader<bool, bool>);
-impl OVR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        OVR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OVR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OVR_R = crate::BitReader<bool>;
 #[doc = "Field `OVR` writer - Channel Overrun"]
-pub struct OVR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OVR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type OVR_W<'a, const O: u8> = crate::BitWriter<'a, u8, CHINTFLAG_SPEC, bool, O>;
 #[doc = "Field `EVD` reader - Channel Event Detected"]
-pub struct EVD_R(crate::FieldReader<bool, bool>);
-impl EVD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EVD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EVD_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EVD_R = crate::BitReader<bool>;
 #[doc = "Field `EVD` writer - Channel Event Detected"]
-pub struct EVD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EVD_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type EVD_W<'a, const O: u8> = crate::BitWriter<'a, u8, CHINTFLAG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Channel Overrun"]
     #[inline(always)]
     pub fn ovr(&self) -> OVR_R {
-        OVR_R::new((self.bits & 0x01) != 0)
+        OVR_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Channel Event Detected"]
     #[inline(always)]
     pub fn evd(&self) -> EVD_R {
-        EVD_R::new(((self.bits >> 1) & 0x01) != 0)
+        EVD_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Channel Overrun"]
     #[inline(always)]
-    pub fn ovr(&mut self) -> OVR_W {
-        OVR_W { w: self }
+    #[must_use]
+    pub fn ovr(&mut self) -> OVR_W<0> {
+        OVR_W::new(self)
     }
     #[doc = "Bit 1 - Channel Event Detected"]
     #[inline(always)]
-    pub fn evd(&mut self) -> EVD_W {
-        EVD_W { w: self }
+    #[must_use]
+    pub fn evd(&mut self) -> EVD_W<1> {
+        EVD_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for CHINTFLAG_SPEC {
 #[doc = "`write(|w| ..)` method takes [chintflag::W](W) writer structure"]
 impl crate::Writable for CHINTFLAG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CHINTFLAG to value 0"]
 impl crate::Resettable for CHINTFLAG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

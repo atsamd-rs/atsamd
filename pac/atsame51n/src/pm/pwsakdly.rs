@@ -35,91 +35,37 @@ impl From<crate::W<PWSAKDLY_SPEC>> for W {
     }
 }
 #[doc = "Field `DLYVAL` reader - Delay Value"]
-pub struct DLYVAL_R(crate::FieldReader<u8, u8>);
-impl DLYVAL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DLYVAL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DLYVAL_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DLYVAL_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DLYVAL` writer - Delay Value"]
-pub struct DLYVAL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DLYVAL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x7f) | (value as u8 & 0x7f);
-        self.w
-    }
-}
+pub type DLYVAL_W<'a, const O: u8> = crate::FieldWriter<'a, u8, PWSAKDLY_SPEC, u8, u8, 7, O>;
 #[doc = "Field `IGNACK` reader - Ignore Acknowledge"]
-pub struct IGNACK_R(crate::FieldReader<bool, bool>);
-impl IGNACK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        IGNACK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for IGNACK_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type IGNACK_R = crate::BitReader<bool>;
 #[doc = "Field `IGNACK` writer - Ignore Acknowledge"]
-pub struct IGNACK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> IGNACK_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type IGNACK_W<'a, const O: u8> = crate::BitWriter<'a, u8, PWSAKDLY_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:6 - Delay Value"]
     #[inline(always)]
     pub fn dlyval(&self) -> DLYVAL_R {
-        DLYVAL_R::new((self.bits & 0x7f) as u8)
+        DLYVAL_R::new(self.bits & 0x7f)
     }
     #[doc = "Bit 7 - Ignore Acknowledge"]
     #[inline(always)]
     pub fn ignack(&self) -> IGNACK_R {
-        IGNACK_R::new(((self.bits >> 7) & 0x01) != 0)
+        IGNACK_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:6 - Delay Value"]
     #[inline(always)]
-    pub fn dlyval(&mut self) -> DLYVAL_W {
-        DLYVAL_W { w: self }
+    #[must_use]
+    pub fn dlyval(&mut self) -> DLYVAL_W<0> {
+        DLYVAL_W::new(self)
     }
     #[doc = "Bit 7 - Ignore Acknowledge"]
     #[inline(always)]
-    pub fn ignack(&mut self) -> IGNACK_W {
-        IGNACK_W { w: self }
+    #[must_use]
+    pub fn ignack(&mut self) -> IGNACK_W<7> {
+        IGNACK_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -140,11 +86,10 @@ impl crate::Readable for PWSAKDLY_SPEC {
 #[doc = "`write(|w| ..)` method takes [pwsakdly::W](W) writer structure"]
 impl crate::Writable for PWSAKDLY_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets PWSAKDLY to value 0"]
 impl crate::Resettable for PWSAKDLY_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

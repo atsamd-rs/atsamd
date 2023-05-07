@@ -35,59 +35,13 @@ impl From<crate::W<RWD_SPEC>> for W {
     }
 }
 #[doc = "Field `WDC` reader - Watchdog Configuration"]
-pub struct WDC_R(crate::FieldReader<u8, u8>);
-impl WDC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        WDC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WDC_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WDC_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `WDC` writer - Watchdog Configuration"]
-pub struct WDC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WDC_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xff) | (value as u32 & 0xff);
-        self.w
-    }
-}
+pub type WDC_W<'a, const O: u8> = crate::FieldWriter<'a, u32, RWD_SPEC, u8, u8, 8, O>;
 #[doc = "Field `WDV` reader - Watchdog Value"]
-pub struct WDV_R(crate::FieldReader<u8, u8>);
-impl WDV_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        WDV_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WDV_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WDV_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `WDV` writer - Watchdog Value"]
-pub struct WDV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WDV_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 8)) | ((value as u32 & 0xff) << 8);
-        self.w
-    }
-}
+pub type WDV_W<'a, const O: u8> = crate::FieldWriter<'a, u32, RWD_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Watchdog Configuration"]
     #[inline(always)]
@@ -103,13 +57,15 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Watchdog Configuration"]
     #[inline(always)]
-    pub fn wdc(&mut self) -> WDC_W {
-        WDC_W { w: self }
+    #[must_use]
+    pub fn wdc(&mut self) -> WDC_W<0> {
+        WDC_W::new(self)
     }
     #[doc = "Bits 8:15 - Watchdog Value"]
     #[inline(always)]
-    pub fn wdv(&mut self) -> WDV_W {
-        WDV_W { w: self }
+    #[must_use]
+    pub fn wdv(&mut self) -> WDV_W<8> {
+        WDV_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,11 +86,10 @@ impl crate::Readable for RWD_SPEC {
 #[doc = "`write(|w| ..)` method takes [rwd::W](W) writer structure"]
 impl crate::Writable for RWD_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets RWD to value 0"]
 impl crate::Resettable for RWD_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

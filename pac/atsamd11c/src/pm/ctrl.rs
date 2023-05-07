@@ -35,101 +35,37 @@ impl From<crate::W<CTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `CFDEN` reader - Clock Failure Detector Enable"]
-pub struct CFDEN_R(crate::FieldReader<bool, bool>);
-impl CFDEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CFDEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CFDEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CFDEN_R = crate::BitReader<bool>;
 #[doc = "Field `CFDEN` writer - Clock Failure Detector Enable"]
-pub struct CFDEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CFDEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type CFDEN_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRL_SPEC, bool, O>;
 #[doc = "Field `BKUPCLK` reader - Backup Clock Select"]
-pub struct BKUPCLK_R(crate::FieldReader<bool, bool>);
-impl BKUPCLK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BKUPCLK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BKUPCLK_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BKUPCLK_R = crate::BitReader<bool>;
 #[doc = "Field `BKUPCLK` writer - Backup Clock Select"]
-pub struct BKUPCLK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BKUPCLK_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
-        self.w
-    }
-}
+pub type BKUPCLK_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 2 - Clock Failure Detector Enable"]
     #[inline(always)]
     pub fn cfden(&self) -> CFDEN_R {
-        CFDEN_R::new(((self.bits >> 2) & 0x01) != 0)
+        CFDEN_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 4 - Backup Clock Select"]
     #[inline(always)]
     pub fn bkupclk(&self) -> BKUPCLK_R {
-        BKUPCLK_R::new(((self.bits >> 4) & 0x01) != 0)
+        BKUPCLK_R::new(((self.bits >> 4) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 2 - Clock Failure Detector Enable"]
     #[inline(always)]
-    pub fn cfden(&mut self) -> CFDEN_W {
-        CFDEN_W { w: self }
+    #[must_use]
+    pub fn cfden(&mut self) -> CFDEN_W<2> {
+        CFDEN_W::new(self)
     }
     #[doc = "Bit 4 - Backup Clock Select"]
     #[inline(always)]
-    pub fn bkupclk(&mut self) -> BKUPCLK_W {
-        BKUPCLK_W { w: self }
+    #[must_use]
+    pub fn bkupclk(&mut self) -> BKUPCLK_W<4> {
+        BKUPCLK_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for CTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [ctrl::W](W) writer structure"]
 impl crate::Writable for CTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRL to value 0"]
 impl crate::Resettable for CTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

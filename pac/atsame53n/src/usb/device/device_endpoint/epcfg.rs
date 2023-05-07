@@ -35,128 +35,52 @@ impl From<crate::W<EPCFG_SPEC>> for W {
     }
 }
 #[doc = "Field `EPTYPE0` reader - End Point Type0"]
-pub struct EPTYPE0_R(crate::FieldReader<u8, u8>);
-impl EPTYPE0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        EPTYPE0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EPTYPE0_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EPTYPE0_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `EPTYPE0` writer - End Point Type0"]
-pub struct EPTYPE0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EPTYPE0_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | (value as u8 & 0x07);
-        self.w
-    }
-}
+pub type EPTYPE0_W<'a, const O: u8> = crate::FieldWriter<'a, u8, EPCFG_SPEC, u8, u8, 3, O>;
 #[doc = "Field `EPTYPE1` reader - End Point Type1"]
-pub struct EPTYPE1_R(crate::FieldReader<u8, u8>);
-impl EPTYPE1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        EPTYPE1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EPTYPE1_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EPTYPE1_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `EPTYPE1` writer - End Point Type1"]
-pub struct EPTYPE1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EPTYPE1_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 4)) | ((value as u8 & 0x07) << 4);
-        self.w
-    }
-}
+pub type EPTYPE1_W<'a, const O: u8> = crate::FieldWriter<'a, u8, EPCFG_SPEC, u8, u8, 3, O>;
 #[doc = "Field `NYETDIS` reader - NYET Token Disable"]
-pub struct NYETDIS_R(crate::FieldReader<bool, bool>);
-impl NYETDIS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        NYETDIS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NYETDIS_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NYETDIS_R = crate::BitReader<bool>;
 #[doc = "Field `NYETDIS` writer - NYET Token Disable"]
-pub struct NYETDIS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NYETDIS_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type NYETDIS_W<'a, const O: u8> = crate::BitWriter<'a, u8, EPCFG_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:2 - End Point Type0"]
     #[inline(always)]
     pub fn eptype0(&self) -> EPTYPE0_R {
-        EPTYPE0_R::new((self.bits & 0x07) as u8)
+        EPTYPE0_R::new(self.bits & 7)
     }
     #[doc = "Bits 4:6 - End Point Type1"]
     #[inline(always)]
     pub fn eptype1(&self) -> EPTYPE1_R {
-        EPTYPE1_R::new(((self.bits >> 4) & 0x07) as u8)
+        EPTYPE1_R::new((self.bits >> 4) & 7)
     }
     #[doc = "Bit 7 - NYET Token Disable"]
     #[inline(always)]
     pub fn nyetdis(&self) -> NYETDIS_R {
-        NYETDIS_R::new(((self.bits >> 7) & 0x01) != 0)
+        NYETDIS_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:2 - End Point Type0"]
     #[inline(always)]
-    pub fn eptype0(&mut self) -> EPTYPE0_W {
-        EPTYPE0_W { w: self }
+    #[must_use]
+    pub fn eptype0(&mut self) -> EPTYPE0_W<0> {
+        EPTYPE0_W::new(self)
     }
     #[doc = "Bits 4:6 - End Point Type1"]
     #[inline(always)]
-    pub fn eptype1(&mut self) -> EPTYPE1_W {
-        EPTYPE1_W { w: self }
+    #[must_use]
+    pub fn eptype1(&mut self) -> EPTYPE1_W<4> {
+        EPTYPE1_W::new(self)
     }
     #[doc = "Bit 7 - NYET Token Disable"]
     #[inline(always)]
-    pub fn nyetdis(&mut self) -> NYETDIS_W {
-        NYETDIS_W { w: self }
+    #[must_use]
+    pub fn nyetdis(&mut self) -> NYETDIS_W<7> {
+        NYETDIS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -177,11 +101,10 @@ impl crate::Readable for EPCFG_SPEC {
 #[doc = "`write(|w| ..)` method takes [epcfg::W](W) writer structure"]
 impl crate::Writable for EPCFG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EPCFG to value 0"]
 impl crate::Resettable for EPCFG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

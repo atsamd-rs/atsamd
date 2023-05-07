@@ -24,8 +24,5 @@ impl crate::Readable for PIDR4_SPEC {
 }
 #[doc = "`reset()` method sets PIDR4 to value 0x04"]
 impl crate::Resettable for PIDR4_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x04
-    }
+    const RESET_VALUE: Self::Ux = 0x04;
 }

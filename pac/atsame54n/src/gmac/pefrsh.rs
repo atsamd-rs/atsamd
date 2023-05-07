@@ -14,20 +14,7 @@ impl From<crate::R<PEFRSH_SPEC>> for R {
     }
 }
 #[doc = "Field `RUD` reader - Register Update"]
-pub struct RUD_R(crate::FieldReader<u16, u16>);
-impl RUD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        RUD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RUD_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RUD_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:15 - Register Update"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for PEFRSH_SPEC {
 }
 #[doc = "`reset()` method sets PEFRSH to value 0"]
 impl crate::Resettable for PEFRSH_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

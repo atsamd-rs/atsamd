@@ -35,44 +35,22 @@ impl From<crate::W<DCFG_SPEC>> for W {
     }
 }
 #[doc = "Field `DCFG` reader - Device Configuration"]
-pub struct DCFG_R(crate::FieldReader<u32, u32>);
-impl DCFG_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        DCFG_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DCFG_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DCFG_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `DCFG` writer - Device Configuration"]
-pub struct DCFG_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DCFG_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = value as u32;
-        self.w
-    }
-}
+pub type DCFG_W<'a, const O: u8> = crate::FieldWriter<'a, u32, DCFG_SPEC, u32, u32, 32, O>;
 impl R {
     #[doc = "Bits 0:31 - Device Configuration"]
     #[inline(always)]
     pub fn dcfg(&self) -> DCFG_R {
-        DCFG_R::new(self.bits as u32)
+        DCFG_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Device Configuration"]
     #[inline(always)]
-    pub fn dcfg(&mut self) -> DCFG_W {
-        DCFG_W { w: self }
+    #[must_use]
+    pub fn dcfg(&mut self) -> DCFG_W<0> {
+        DCFG_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for DCFG_SPEC {
 #[doc = "`write(|w| ..)` method takes [dcfg::W](W) writer structure"]
 impl crate::Writable for DCFG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets DCFG%s to value 0"]
 impl crate::Resettable for DCFG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

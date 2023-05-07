@@ -35,44 +35,22 @@ impl From<crate::W<TN_SPEC>> for W {
     }
 }
 #[doc = "Field `TNS` reader - Timer Count in Nanoseconds"]
-pub struct TNS_R(crate::FieldReader<u32, u32>);
-impl TNS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        TNS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TNS_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TNS_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `TNS` writer - Timer Count in Nanoseconds"]
-pub struct TNS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TNS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x3fff_ffff) | (value as u32 & 0x3fff_ffff);
-        self.w
-    }
-}
+pub type TNS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TN_SPEC, u32, u32, 30, O>;
 impl R {
     #[doc = "Bits 0:29 - Timer Count in Nanoseconds"]
     #[inline(always)]
     pub fn tns(&self) -> TNS_R {
-        TNS_R::new((self.bits & 0x3fff_ffff) as u32)
+        TNS_R::new(self.bits & 0x3fff_ffff)
     }
 }
 impl W {
     #[doc = "Bits 0:29 - Timer Count in Nanoseconds"]
     #[inline(always)]
-    pub fn tns(&mut self) -> TNS_W {
-        TNS_W { w: self }
+    #[must_use]
+    pub fn tns(&mut self) -> TNS_W<0> {
+        TNS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for TN_SPEC {
 #[doc = "`write(|w| ..)` method takes [tn::W](W) writer structure"]
 impl crate::Writable for TN_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TN to value 0"]
 impl crate::Resettable for TN_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

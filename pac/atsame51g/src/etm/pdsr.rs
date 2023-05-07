@@ -24,8 +24,5 @@ impl crate::Readable for PDSR_SPEC {
 }
 #[doc = "`reset()` method sets PDSR to value 0x01"]
 impl crate::Resettable for PDSR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x01
-    }
+    const RESET_VALUE: Self::Ux = 0x01;
 }

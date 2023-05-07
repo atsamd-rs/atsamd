@@ -20,228 +20,77 @@ impl From<crate::W<WRCONFIG_SPEC>> for W {
     }
 }
 #[doc = "Field `PINMASK` writer - Pin Mask for Multiple Pin Configuration"]
-pub struct PINMASK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PINMASK_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
-        self.w
-    }
-}
+pub type PINMASK_W<'a, const O: u8> = crate::FieldWriter<'a, u32, WRCONFIG_SPEC, u16, u16, 16, O>;
 #[doc = "Field `PMUXEN` writer - Peripheral Multiplexer Enable"]
-pub struct PMUXEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PMUXEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
-        self.w
-    }
-}
+pub type PMUXEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, WRCONFIG_SPEC, bool, O>;
 #[doc = "Field `INEN` writer - Input Enable"]
-pub struct INEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 17)) | ((value as u32 & 0x01) << 17);
-        self.w
-    }
-}
+pub type INEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, WRCONFIG_SPEC, bool, O>;
 #[doc = "Field `PULLEN` writer - Pull Enable"]
-pub struct PULLEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PULLEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 18)) | ((value as u32 & 0x01) << 18);
-        self.w
-    }
-}
+pub type PULLEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, WRCONFIG_SPEC, bool, O>;
 #[doc = "Field `DRVSTR` writer - Output Driver Strength Selection"]
-pub struct DRVSTR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DRVSTR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 22)) | ((value as u32 & 0x01) << 22);
-        self.w
-    }
-}
+pub type DRVSTR_W<'a, const O: u8> = crate::BitWriter<'a, u32, WRCONFIG_SPEC, bool, O>;
 #[doc = "Field `PMUX` writer - Peripheral Multiplexing"]
-pub struct PMUX_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PMUX_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 24)) | ((value as u32 & 0x0f) << 24);
-        self.w
-    }
-}
+pub type PMUX_W<'a, const O: u8> = crate::FieldWriter<'a, u32, WRCONFIG_SPEC, u8, u8, 4, O>;
 #[doc = "Field `WRPMUX` writer - Write PMUX"]
-pub struct WRPMUX_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WRPMUX_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 28)) | ((value as u32 & 0x01) << 28);
-        self.w
-    }
-}
+pub type WRPMUX_W<'a, const O: u8> = crate::BitWriter<'a, u32, WRCONFIG_SPEC, bool, O>;
 #[doc = "Field `WRPINCFG` writer - Write PINCFG"]
-pub struct WRPINCFG_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WRPINCFG_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 30)) | ((value as u32 & 0x01) << 30);
-        self.w
-    }
-}
+pub type WRPINCFG_W<'a, const O: u8> = crate::BitWriter<'a, u32, WRCONFIG_SPEC, bool, O>;
 #[doc = "Field `HWSEL` writer - Half-Word Select"]
-pub struct HWSEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> HWSEL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
-        self.w
-    }
-}
+pub type HWSEL_W<'a, const O: u8> = crate::BitWriter<'a, u32, WRCONFIG_SPEC, bool, O>;
 impl W {
     #[doc = "Bits 0:15 - Pin Mask for Multiple Pin Configuration"]
     #[inline(always)]
-    pub fn pinmask(&mut self) -> PINMASK_W {
-        PINMASK_W { w: self }
+    #[must_use]
+    pub fn pinmask(&mut self) -> PINMASK_W<0> {
+        PINMASK_W::new(self)
     }
     #[doc = "Bit 16 - Peripheral Multiplexer Enable"]
     #[inline(always)]
-    pub fn pmuxen(&mut self) -> PMUXEN_W {
-        PMUXEN_W { w: self }
+    #[must_use]
+    pub fn pmuxen(&mut self) -> PMUXEN_W<16> {
+        PMUXEN_W::new(self)
     }
     #[doc = "Bit 17 - Input Enable"]
     #[inline(always)]
-    pub fn inen(&mut self) -> INEN_W {
-        INEN_W { w: self }
+    #[must_use]
+    pub fn inen(&mut self) -> INEN_W<17> {
+        INEN_W::new(self)
     }
     #[doc = "Bit 18 - Pull Enable"]
     #[inline(always)]
-    pub fn pullen(&mut self) -> PULLEN_W {
-        PULLEN_W { w: self }
+    #[must_use]
+    pub fn pullen(&mut self) -> PULLEN_W<18> {
+        PULLEN_W::new(self)
     }
     #[doc = "Bit 22 - Output Driver Strength Selection"]
     #[inline(always)]
-    pub fn drvstr(&mut self) -> DRVSTR_W {
-        DRVSTR_W { w: self }
+    #[must_use]
+    pub fn drvstr(&mut self) -> DRVSTR_W<22> {
+        DRVSTR_W::new(self)
     }
     #[doc = "Bits 24:27 - Peripheral Multiplexing"]
     #[inline(always)]
-    pub fn pmux(&mut self) -> PMUX_W {
-        PMUX_W { w: self }
+    #[must_use]
+    pub fn pmux(&mut self) -> PMUX_W<24> {
+        PMUX_W::new(self)
     }
     #[doc = "Bit 28 - Write PMUX"]
     #[inline(always)]
-    pub fn wrpmux(&mut self) -> WRPMUX_W {
-        WRPMUX_W { w: self }
+    #[must_use]
+    pub fn wrpmux(&mut self) -> WRPMUX_W<28> {
+        WRPMUX_W::new(self)
     }
     #[doc = "Bit 30 - Write PINCFG"]
     #[inline(always)]
-    pub fn wrpincfg(&mut self) -> WRPINCFG_W {
-        WRPINCFG_W { w: self }
+    #[must_use]
+    pub fn wrpincfg(&mut self) -> WRPINCFG_W<30> {
+        WRPINCFG_W::new(self)
     }
     #[doc = "Bit 31 - Half-Word Select"]
     #[inline(always)]
-    pub fn hwsel(&mut self) -> HWSEL_W {
-        HWSEL_W { w: self }
+    #[must_use]
+    pub fn hwsel(&mut self) -> HWSEL_W<31> {
+        HWSEL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -258,11 +107,10 @@ impl crate::RegisterSpec for WRCONFIG_SPEC {
 #[doc = "`write(|w| ..)` method takes [wrconfig::W](W) writer structure"]
 impl crate::Writable for WRCONFIG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets WRCONFIG to value 0"]
 impl crate::Resettable for WRCONFIG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

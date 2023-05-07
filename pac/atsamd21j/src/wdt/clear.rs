@@ -20,45 +20,34 @@ impl From<crate::W<CLEAR_SPEC>> for W {
     }
 }
 #[doc = "Watchdog Clear\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CLEAR_AW {
+pub enum CLEARSELECT_AW {
     #[doc = "165: Clear Key"]
     KEY = 165,
 }
-impl From<CLEAR_AW> for u8 {
+impl From<CLEARSELECT_AW> for u8 {
     #[inline(always)]
-    fn from(variant: CLEAR_AW) -> Self {
+    fn from(variant: CLEARSELECT_AW) -> Self {
         variant as _
     }
 }
 #[doc = "Field `CLEAR` writer - Watchdog Clear"]
-pub struct CLEAR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CLEAR_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CLEAR_AW) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type CLEAR_W<'a, const O: u8> =
+    crate::FieldWriter<'a, u8, CLEAR_SPEC, u8, CLEARSELECT_AW, 8, O>;
+impl<'a, const O: u8> CLEAR_W<'a, O> {
     #[doc = "Clear Key"]
     #[inline(always)]
     pub fn key(self) -> &'a mut W {
-        self.variant(CLEAR_AW::KEY)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = value as u8;
-        self.w
+        self.variant(CLEARSELECT_AW::KEY)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Watchdog Clear"]
     #[inline(always)]
-    pub fn clear(&mut self) -> CLEAR_W {
-        CLEAR_W { w: self }
+    #[must_use]
+    pub fn clear(&mut self) -> CLEAR_W<0> {
+        CLEAR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -75,11 +64,10 @@ impl crate::RegisterSpec for CLEAR_SPEC {
 #[doc = "`write(|w| ..)` method takes [clear::W](W) writer structure"]
 impl crate::Writable for CLEAR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CLEAR to value 0"]
 impl crate::Resettable for CLEAR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

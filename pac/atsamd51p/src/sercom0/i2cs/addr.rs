@@ -35,138 +35,26 @@ impl From<crate::W<ADDR_SPEC>> for W {
     }
 }
 #[doc = "Field `GENCEN` reader - General Call Address Enable"]
-pub struct GENCEN_R(crate::FieldReader<bool, bool>);
-impl GENCEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        GENCEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for GENCEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type GENCEN_R = crate::BitReader<bool>;
 #[doc = "Field `GENCEN` writer - General Call Address Enable"]
-pub struct GENCEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> GENCEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type GENCEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, ADDR_SPEC, bool, O>;
 #[doc = "Field `ADDR` reader - Address Value"]
-pub struct ADDR_R(crate::FieldReader<u16, u16>);
-impl ADDR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        ADDR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ADDR_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ADDR_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `ADDR` writer - Address Value"]
-pub struct ADDR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ADDR_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03ff << 1)) | ((value as u32 & 0x03ff) << 1);
-        self.w
-    }
-}
+pub type ADDR_W<'a, const O: u8> = crate::FieldWriter<'a, u32, ADDR_SPEC, u16, u16, 10, O>;
 #[doc = "Field `TENBITEN` reader - Ten Bit Addressing Enable"]
-pub struct TENBITEN_R(crate::FieldReader<bool, bool>);
-impl TENBITEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TENBITEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TENBITEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TENBITEN_R = crate::BitReader<bool>;
 #[doc = "Field `TENBITEN` writer - Ten Bit Addressing Enable"]
-pub struct TENBITEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TENBITEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 15)) | ((value as u32 & 0x01) << 15);
-        self.w
-    }
-}
+pub type TENBITEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, ADDR_SPEC, bool, O>;
 #[doc = "Field `ADDRMASK` reader - Address Mask"]
-pub struct ADDRMASK_R(crate::FieldReader<u16, u16>);
-impl ADDRMASK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        ADDRMASK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ADDRMASK_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ADDRMASK_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `ADDRMASK` writer - Address Mask"]
-pub struct ADDRMASK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ADDRMASK_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03ff << 17)) | ((value as u32 & 0x03ff) << 17);
-        self.w
-    }
-}
+pub type ADDRMASK_W<'a, const O: u8> = crate::FieldWriter<'a, u32, ADDR_SPEC, u16, u16, 10, O>;
 impl R {
     #[doc = "Bit 0 - General Call Address Enable"]
     #[inline(always)]
     pub fn gencen(&self) -> GENCEN_R {
-        GENCEN_R::new((self.bits & 0x01) != 0)
+        GENCEN_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bits 1:10 - Address Value"]
     #[inline(always)]
@@ -176,7 +64,7 @@ impl R {
     #[doc = "Bit 15 - Ten Bit Addressing Enable"]
     #[inline(always)]
     pub fn tenbiten(&self) -> TENBITEN_R {
-        TENBITEN_R::new(((self.bits >> 15) & 0x01) != 0)
+        TENBITEN_R::new(((self.bits >> 15) & 1) != 0)
     }
     #[doc = "Bits 17:26 - Address Mask"]
     #[inline(always)]
@@ -187,23 +75,27 @@ impl R {
 impl W {
     #[doc = "Bit 0 - General Call Address Enable"]
     #[inline(always)]
-    pub fn gencen(&mut self) -> GENCEN_W {
-        GENCEN_W { w: self }
+    #[must_use]
+    pub fn gencen(&mut self) -> GENCEN_W<0> {
+        GENCEN_W::new(self)
     }
     #[doc = "Bits 1:10 - Address Value"]
     #[inline(always)]
-    pub fn addr(&mut self) -> ADDR_W {
-        ADDR_W { w: self }
+    #[must_use]
+    pub fn addr(&mut self) -> ADDR_W<1> {
+        ADDR_W::new(self)
     }
     #[doc = "Bit 15 - Ten Bit Addressing Enable"]
     #[inline(always)]
-    pub fn tenbiten(&mut self) -> TENBITEN_W {
-        TENBITEN_W { w: self }
+    #[must_use]
+    pub fn tenbiten(&mut self) -> TENBITEN_W<15> {
+        TENBITEN_W::new(self)
     }
     #[doc = "Bits 17:26 - Address Mask"]
     #[inline(always)]
-    pub fn addrmask(&mut self) -> ADDRMASK_W {
-        ADDRMASK_W { w: self }
+    #[must_use]
+    pub fn addrmask(&mut self) -> ADDRMASK_W<17> {
+        ADDRMASK_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -224,11 +116,10 @@ impl crate::Readable for ADDR_SPEC {
 #[doc = "`write(|w| ..)` method takes [addr::W](W) writer structure"]
 impl crate::Writable for ADDR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets ADDR to value 0"]
 impl crate::Resettable for ADDR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

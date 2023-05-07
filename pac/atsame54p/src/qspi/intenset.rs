@@ -35,289 +35,97 @@ impl From<crate::W<INTENSET_SPEC>> for W {
     }
 }
 #[doc = "Field `RXC` reader - Receive Data Register Full Interrupt Enable"]
-pub struct RXC_R(crate::FieldReader<bool, bool>);
-impl RXC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RXC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXC_R = crate::BitReader<bool>;
 #[doc = "Field `RXC` writer - Receive Data Register Full Interrupt Enable"]
-pub struct RXC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RXC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type RXC_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENSET_SPEC, bool, O>;
 #[doc = "Field `DRE` reader - Transmit Data Register Empty Interrupt Enable"]
-pub struct DRE_R(crate::FieldReader<bool, bool>);
-impl DRE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DRE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DRE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DRE_R = crate::BitReader<bool>;
 #[doc = "Field `DRE` writer - Transmit Data Register Empty Interrupt Enable"]
-pub struct DRE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DRE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type DRE_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENSET_SPEC, bool, O>;
 #[doc = "Field `TXC` reader - Transmission Complete Interrupt Enable"]
-pub struct TXC_R(crate::FieldReader<bool, bool>);
-impl TXC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TXC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TXC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TXC_R = crate::BitReader<bool>;
 #[doc = "Field `TXC` writer - Transmission Complete Interrupt Enable"]
-pub struct TXC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TXC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u32 & 0x01) << 2);
-        self.w
-    }
-}
+pub type TXC_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENSET_SPEC, bool, O>;
 #[doc = "Field `ERROR` reader - Overrun Error Interrupt Enable"]
-pub struct ERROR_R(crate::FieldReader<bool, bool>);
-impl ERROR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ERROR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ERROR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ERROR_R = crate::BitReader<bool>;
 #[doc = "Field `ERROR` writer - Overrun Error Interrupt Enable"]
-pub struct ERROR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ERROR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u32 & 0x01) << 3);
-        self.w
-    }
-}
+pub type ERROR_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENSET_SPEC, bool, O>;
 #[doc = "Field `CSRISE` reader - Chip Select Rise Interrupt Enable"]
-pub struct CSRISE_R(crate::FieldReader<bool, bool>);
-impl CSRISE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CSRISE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CSRISE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CSRISE_R = crate::BitReader<bool>;
 #[doc = "Field `CSRISE` writer - Chip Select Rise Interrupt Enable"]
-pub struct CSRISE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CSRISE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
-        self.w
-    }
-}
+pub type CSRISE_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENSET_SPEC, bool, O>;
 #[doc = "Field `INSTREND` reader - Instruction End Interrupt Enable"]
-pub struct INSTREND_R(crate::FieldReader<bool, bool>);
-impl INSTREND_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        INSTREND_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INSTREND_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INSTREND_R = crate::BitReader<bool>;
 #[doc = "Field `INSTREND` writer - Instruction End Interrupt Enable"]
-pub struct INSTREND_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INSTREND_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u32 & 0x01) << 10);
-        self.w
-    }
-}
+pub type INSTREND_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENSET_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Receive Data Register Full Interrupt Enable"]
     #[inline(always)]
     pub fn rxc(&self) -> RXC_R {
-        RXC_R::new((self.bits & 0x01) != 0)
+        RXC_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Transmit Data Register Empty Interrupt Enable"]
     #[inline(always)]
     pub fn dre(&self) -> DRE_R {
-        DRE_R::new(((self.bits >> 1) & 0x01) != 0)
+        DRE_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Transmission Complete Interrupt Enable"]
     #[inline(always)]
     pub fn txc(&self) -> TXC_R {
-        TXC_R::new(((self.bits >> 2) & 0x01) != 0)
+        TXC_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Overrun Error Interrupt Enable"]
     #[inline(always)]
     pub fn error(&self) -> ERROR_R {
-        ERROR_R::new(((self.bits >> 3) & 0x01) != 0)
+        ERROR_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 8 - Chip Select Rise Interrupt Enable"]
     #[inline(always)]
     pub fn csrise(&self) -> CSRISE_R {
-        CSRISE_R::new(((self.bits >> 8) & 0x01) != 0)
+        CSRISE_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 10 - Instruction End Interrupt Enable"]
     #[inline(always)]
     pub fn instrend(&self) -> INSTREND_R {
-        INSTREND_R::new(((self.bits >> 10) & 0x01) != 0)
+        INSTREND_R::new(((self.bits >> 10) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Receive Data Register Full Interrupt Enable"]
     #[inline(always)]
-    pub fn rxc(&mut self) -> RXC_W {
-        RXC_W { w: self }
+    #[must_use]
+    pub fn rxc(&mut self) -> RXC_W<0> {
+        RXC_W::new(self)
     }
     #[doc = "Bit 1 - Transmit Data Register Empty Interrupt Enable"]
     #[inline(always)]
-    pub fn dre(&mut self) -> DRE_W {
-        DRE_W { w: self }
+    #[must_use]
+    pub fn dre(&mut self) -> DRE_W<1> {
+        DRE_W::new(self)
     }
     #[doc = "Bit 2 - Transmission Complete Interrupt Enable"]
     #[inline(always)]
-    pub fn txc(&mut self) -> TXC_W {
-        TXC_W { w: self }
+    #[must_use]
+    pub fn txc(&mut self) -> TXC_W<2> {
+        TXC_W::new(self)
     }
     #[doc = "Bit 3 - Overrun Error Interrupt Enable"]
     #[inline(always)]
-    pub fn error(&mut self) -> ERROR_W {
-        ERROR_W { w: self }
+    #[must_use]
+    pub fn error(&mut self) -> ERROR_W<3> {
+        ERROR_W::new(self)
     }
     #[doc = "Bit 8 - Chip Select Rise Interrupt Enable"]
     #[inline(always)]
-    pub fn csrise(&mut self) -> CSRISE_W {
-        CSRISE_W { w: self }
+    #[must_use]
+    pub fn csrise(&mut self) -> CSRISE_W<8> {
+        CSRISE_W::new(self)
     }
     #[doc = "Bit 10 - Instruction End Interrupt Enable"]
     #[inline(always)]
-    pub fn instrend(&mut self) -> INSTREND_W {
-        INSTREND_W { w: self }
+    #[must_use]
+    pub fn instrend(&mut self) -> INSTREND_W<10> {
+        INSTREND_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -338,11 +146,10 @@ impl crate::Readable for INTENSET_SPEC {
 #[doc = "`write(|w| ..)` method takes [intenset::W](W) writer structure"]
 impl crate::Writable for INTENSET_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
 impl crate::Resettable for INTENSET_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

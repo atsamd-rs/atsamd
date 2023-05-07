@@ -35,44 +35,22 @@ impl From<crate::W<DSCR_SPEC>> for W {
     }
 }
 #[doc = "Field `DASA` reader - Descriptor Area Start Address"]
-pub struct DASA_R(crate::FieldReader<u32, u32>);
-impl DASA_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        DASA_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DASA_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DASA_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `DASA` writer - Descriptor Area Start Address"]
-pub struct DASA_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DASA_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03ff_ffff << 6)) | ((value as u32 & 0x03ff_ffff) << 6);
-        self.w
-    }
-}
+pub type DASA_W<'a, const O: u8> = crate::FieldWriter<'a, u32, DSCR_SPEC, u32, u32, 26, O>;
 impl R {
     #[doc = "Bits 6:31 - Descriptor Area Start Address"]
     #[inline(always)]
     pub fn dasa(&self) -> DASA_R {
-        DASA_R::new(((self.bits >> 6) & 0x03ff_ffff) as u32)
+        DASA_R::new((self.bits >> 6) & 0x03ff_ffff)
     }
 }
 impl W {
     #[doc = "Bits 6:31 - Descriptor Area Start Address"]
     #[inline(always)]
-    pub fn dasa(&mut self) -> DASA_W {
-        DASA_W { w: self }
+    #[must_use]
+    pub fn dasa(&mut self) -> DASA_W<6> {
+        DASA_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for DSCR_SPEC {
 #[doc = "`write(|w| ..)` method takes [dscr::W](W) writer structure"]
 impl crate::Writable for DSCR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets DSCR to value 0"]
 impl crate::Resettable for DSCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

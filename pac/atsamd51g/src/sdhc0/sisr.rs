@@ -14,25 +14,12 @@ impl From<crate::R<SISR_SPEC>> for R {
     }
 }
 #[doc = "Field `INTSSL` reader - Interrupt Signal for Each Slot"]
-pub struct INTSSL_R(crate::FieldReader<bool, bool>);
-impl INTSSL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        INTSSL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INTSSL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INTSSL_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bit 0 - Interrupt Signal for Each Slot"]
     #[inline(always)]
     pub fn intssl(&self) -> INTSSL_R {
-        INTSSL_R::new((self.bits & 0x01) != 0)
+        INTSSL_R::new((self.bits & 1) != 0)
     }
 }
 #[doc = "Slot Interrupt Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [sisr](index.html) module"]
@@ -46,8 +33,5 @@ impl crate::Readable for SISR_SPEC {
 }
 #[doc = "`reset()` method sets SISR to value 0"]
 impl crate::Resettable for SISR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

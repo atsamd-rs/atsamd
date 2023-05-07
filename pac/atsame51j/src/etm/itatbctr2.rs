@@ -24,8 +24,5 @@ impl crate::Readable for ITATBCTR2_SPEC {
 }
 #[doc = "`reset()` method sets ITATBCTR2 to value 0"]
 impl crate::Resettable for ITATBCTR2_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

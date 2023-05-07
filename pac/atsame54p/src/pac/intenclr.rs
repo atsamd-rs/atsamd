@@ -35,54 +35,22 @@ impl From<crate::W<INTENCLR_SPEC>> for W {
     }
 }
 #[doc = "Field `ERR` reader - Peripheral access error interrupt disable"]
-pub struct ERR_R(crate::FieldReader<bool, bool>);
-impl ERR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ERR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ERR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ERR_R = crate::BitReader<bool>;
 #[doc = "Field `ERR` writer - Peripheral access error interrupt disable"]
-pub struct ERR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ERR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type ERR_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENCLR_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Peripheral access error interrupt disable"]
     #[inline(always)]
     pub fn err(&self) -> ERR_R {
-        ERR_R::new((self.bits & 0x01) != 0)
+        ERR_R::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Peripheral access error interrupt disable"]
     #[inline(always)]
-    pub fn err(&mut self) -> ERR_W {
-        ERR_W { w: self }
+    #[must_use]
+    pub fn err(&mut self) -> ERR_W<0> {
+        ERR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -103,11 +71,10 @@ impl crate::Readable for INTENCLR_SPEC {
 #[doc = "`write(|w| ..)` method takes [intenclr::W](W) writer structure"]
 impl crate::Writable for INTENCLR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for INTENCLR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

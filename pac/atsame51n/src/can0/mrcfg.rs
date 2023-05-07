@@ -34,10 +34,12 @@ impl From<crate::W<MRCFG_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `QOS` reader - Quality of Service"]
+pub type QOS_R = crate::FieldReader<u8, QOSSELECT_A>;
 #[doc = "Quality of Service\n\nValue on reset: 2"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum QOS_A {
+pub enum QOSSELECT_A {
     #[doc = "0: Background (no sensitive operation)"]
     DISABLE = 0,
     #[doc = "1: Sensitive Bandwidth"]
@@ -47,107 +49,83 @@ pub enum QOS_A {
     #[doc = "3: Critical Latency"]
     HIGH = 3,
 }
-impl From<QOS_A> for u8 {
+impl From<QOSSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: QOS_A) -> Self {
+    fn from(variant: QOSSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `QOS` reader - Quality of Service"]
-pub struct QOS_R(crate::FieldReader<u8, QOS_A>);
 impl QOS_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        QOS_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> QOS_A {
+    pub fn variant(&self) -> QOSSELECT_A {
         match self.bits {
-            0 => QOS_A::DISABLE,
-            1 => QOS_A::LOW,
-            2 => QOS_A::MEDIUM,
-            3 => QOS_A::HIGH,
+            0 => QOSSELECT_A::DISABLE,
+            1 => QOSSELECT_A::LOW,
+            2 => QOSSELECT_A::MEDIUM,
+            3 => QOSSELECT_A::HIGH,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DISABLE`"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        **self == QOS_A::DISABLE
+        *self == QOSSELECT_A::DISABLE
     }
     #[doc = "Checks if the value of the field is `LOW`"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        **self == QOS_A::LOW
+        *self == QOSSELECT_A::LOW
     }
     #[doc = "Checks if the value of the field is `MEDIUM`"]
     #[inline(always)]
     pub fn is_medium(&self) -> bool {
-        **self == QOS_A::MEDIUM
+        *self == QOSSELECT_A::MEDIUM
     }
     #[doc = "Checks if the value of the field is `HIGH`"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        **self == QOS_A::HIGH
-    }
-}
-impl core::ops::Deref for QOS_R {
-    type Target = crate::FieldReader<u8, QOS_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == QOSSELECT_A::HIGH
     }
 }
 #[doc = "Field `QOS` writer - Quality of Service"]
-pub struct QOS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> QOS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: QOS_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type QOS_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u32, MRCFG_SPEC, u8, QOSSELECT_A, 2, O>;
+impl<'a, const O: u8> QOS_W<'a, O> {
     #[doc = "Background (no sensitive operation)"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut W {
-        self.variant(QOS_A::DISABLE)
+        self.variant(QOSSELECT_A::DISABLE)
     }
     #[doc = "Sensitive Bandwidth"]
     #[inline(always)]
     pub fn low(self) -> &'a mut W {
-        self.variant(QOS_A::LOW)
+        self.variant(QOSSELECT_A::LOW)
     }
     #[doc = "Sensitive Latency"]
     #[inline(always)]
     pub fn medium(self) -> &'a mut W {
-        self.variant(QOS_A::MEDIUM)
+        self.variant(QOSSELECT_A::MEDIUM)
     }
     #[doc = "Critical Latency"]
     #[inline(always)]
     pub fn high(self) -> &'a mut W {
-        self.variant(QOS_A::HIGH)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u32 & 0x03);
-        self.w
+        self.variant(QOSSELECT_A::HIGH)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - Quality of Service"]
     #[inline(always)]
     pub fn qos(&self) -> QOS_R {
-        QOS_R::new((self.bits & 0x03) as u8)
+        QOS_R::new((self.bits & 3) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Quality of Service"]
     #[inline(always)]
-    pub fn qos(&mut self) -> QOS_W {
-        QOS_W { w: self }
+    #[must_use]
+    pub fn qos(&mut self) -> QOS_W<0> {
+        QOS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -168,11 +146,10 @@ impl crate::Readable for MRCFG_SPEC {
 #[doc = "`write(|w| ..)` method takes [mrcfg::W](W) writer structure"]
 impl crate::Writable for MRCFG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets MRCFG to value 0x02"]
 impl crate::Resettable for MRCFG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x02
-    }
+    const RESET_VALUE: Self::Ux = 0x02;
 }

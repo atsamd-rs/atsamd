@@ -35,59 +35,13 @@ impl From<crate::W<SIDFC_SPEC>> for W {
     }
 }
 #[doc = "Field `FLSSA` reader - Filter List Standard Start Address"]
-pub struct FLSSA_R(crate::FieldReader<u16, u16>);
-impl FLSSA_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        FLSSA_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FLSSA_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FLSSA_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `FLSSA` writer - Filter List Standard Start Address"]
-pub struct FLSSA_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FLSSA_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
-        self.w
-    }
-}
+pub type FLSSA_W<'a, const O: u8> = crate::FieldWriter<'a, u32, SIDFC_SPEC, u16, u16, 16, O>;
 #[doc = "Field `LSS` reader - List Size Standard"]
-pub struct LSS_R(crate::FieldReader<u8, u8>);
-impl LSS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        LSS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LSS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LSS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `LSS` writer - List Size Standard"]
-pub struct LSS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LSS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 16)) | ((value as u32 & 0xff) << 16);
-        self.w
-    }
-}
+pub type LSS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, SIDFC_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bits 0:15 - Filter List Standard Start Address"]
     #[inline(always)]
@@ -103,13 +57,15 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Filter List Standard Start Address"]
     #[inline(always)]
-    pub fn flssa(&mut self) -> FLSSA_W {
-        FLSSA_W { w: self }
+    #[must_use]
+    pub fn flssa(&mut self) -> FLSSA_W<0> {
+        FLSSA_W::new(self)
     }
     #[doc = "Bits 16:23 - List Size Standard"]
     #[inline(always)]
-    pub fn lss(&mut self) -> LSS_W {
-        LSS_W { w: self }
+    #[must_use]
+    pub fn lss(&mut self) -> LSS_W<16> {
+        LSS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,11 +86,10 @@ impl crate::Readable for SIDFC_SPEC {
 #[doc = "`write(|w| ..)` method takes [sidfc::W](W) writer structure"]
 impl crate::Writable for SIDFC_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets SIDFC to value 0"]
 impl crate::Resettable for SIDFC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

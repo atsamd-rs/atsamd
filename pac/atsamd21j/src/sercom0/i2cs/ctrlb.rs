@@ -35,249 +35,90 @@ impl From<crate::W<CTRLB_SPEC>> for W {
     }
 }
 #[doc = "Field `SMEN` reader - Smart Mode Enable"]
-pub struct SMEN_R(crate::FieldReader<bool, bool>);
-impl SMEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SMEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SMEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SMEN_R = crate::BitReader<bool>;
 #[doc = "Field `SMEN` writer - Smart Mode Enable"]
-pub struct SMEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SMEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u32 & 0x01) << 8);
-        self.w
-    }
-}
+pub type SMEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `GCMD` reader - PMBus Group Command"]
-pub struct GCMD_R(crate::FieldReader<bool, bool>);
-impl GCMD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        GCMD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for GCMD_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type GCMD_R = crate::BitReader<bool>;
 #[doc = "Field `GCMD` writer - PMBus Group Command"]
-pub struct GCMD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> GCMD_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u32 & 0x01) << 9);
-        self.w
-    }
-}
+pub type GCMD_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `AACKEN` reader - Automatic Address Acknowledge"]
-pub struct AACKEN_R(crate::FieldReader<bool, bool>);
-impl AACKEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        AACKEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for AACKEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type AACKEN_R = crate::BitReader<bool>;
 #[doc = "Field `AACKEN` writer - Automatic Address Acknowledge"]
-pub struct AACKEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> AACKEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u32 & 0x01) << 10);
-        self.w
-    }
-}
+pub type AACKEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 #[doc = "Field `AMODE` reader - Address Mode"]
-pub struct AMODE_R(crate::FieldReader<u8, u8>);
-impl AMODE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        AMODE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for AMODE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type AMODE_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `AMODE` writer - Address Mode"]
-pub struct AMODE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> AMODE_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 14)) | ((value as u32 & 0x03) << 14);
-        self.w
-    }
-}
+pub type AMODE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLB_SPEC, u8, u8, 2, O>;
 #[doc = "Field `CMD` writer - Command"]
-pub struct CMD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CMD_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 16)) | ((value as u32 & 0x03) << 16);
-        self.w
-    }
-}
+pub type CMD_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLB_SPEC, u8, u8, 2, O>;
 #[doc = "Field `ACKACT` reader - Acknowledge Action"]
-pub struct ACKACT_R(crate::FieldReader<bool, bool>);
-impl ACKACT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ACKACT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ACKACT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ACKACT_R = crate::BitReader<bool>;
 #[doc = "Field `ACKACT` writer - Acknowledge Action"]
-pub struct ACKACT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ACKACT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 18)) | ((value as u32 & 0x01) << 18);
-        self.w
-    }
-}
+pub type ACKACT_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 8 - Smart Mode Enable"]
     #[inline(always)]
     pub fn smen(&self) -> SMEN_R {
-        SMEN_R::new(((self.bits >> 8) & 0x01) != 0)
+        SMEN_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - PMBus Group Command"]
     #[inline(always)]
     pub fn gcmd(&self) -> GCMD_R {
-        GCMD_R::new(((self.bits >> 9) & 0x01) != 0)
+        GCMD_R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - Automatic Address Acknowledge"]
     #[inline(always)]
     pub fn aacken(&self) -> AACKEN_R {
-        AACKEN_R::new(((self.bits >> 10) & 0x01) != 0)
+        AACKEN_R::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bits 14:15 - Address Mode"]
     #[inline(always)]
     pub fn amode(&self) -> AMODE_R {
-        AMODE_R::new(((self.bits >> 14) & 0x03) as u8)
+        AMODE_R::new(((self.bits >> 14) & 3) as u8)
     }
     #[doc = "Bit 18 - Acknowledge Action"]
     #[inline(always)]
     pub fn ackact(&self) -> ACKACT_R {
-        ACKACT_R::new(((self.bits >> 18) & 0x01) != 0)
+        ACKACT_R::new(((self.bits >> 18) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 8 - Smart Mode Enable"]
     #[inline(always)]
-    pub fn smen(&mut self) -> SMEN_W {
-        SMEN_W { w: self }
+    #[must_use]
+    pub fn smen(&mut self) -> SMEN_W<8> {
+        SMEN_W::new(self)
     }
     #[doc = "Bit 9 - PMBus Group Command"]
     #[inline(always)]
-    pub fn gcmd(&mut self) -> GCMD_W {
-        GCMD_W { w: self }
+    #[must_use]
+    pub fn gcmd(&mut self) -> GCMD_W<9> {
+        GCMD_W::new(self)
     }
     #[doc = "Bit 10 - Automatic Address Acknowledge"]
     #[inline(always)]
-    pub fn aacken(&mut self) -> AACKEN_W {
-        AACKEN_W { w: self }
+    #[must_use]
+    pub fn aacken(&mut self) -> AACKEN_W<10> {
+        AACKEN_W::new(self)
     }
     #[doc = "Bits 14:15 - Address Mode"]
     #[inline(always)]
-    pub fn amode(&mut self) -> AMODE_W {
-        AMODE_W { w: self }
+    #[must_use]
+    pub fn amode(&mut self) -> AMODE_W<14> {
+        AMODE_W::new(self)
     }
     #[doc = "Bits 16:17 - Command"]
     #[inline(always)]
-    pub fn cmd(&mut self) -> CMD_W {
-        CMD_W { w: self }
+    #[must_use]
+    pub fn cmd(&mut self) -> CMD_W<16> {
+        CMD_W::new(self)
     }
     #[doc = "Bit 18 - Acknowledge Action"]
     #[inline(always)]
-    pub fn ackact(&mut self) -> ACKACT_W {
-        ACKACT_W { w: self }
+    #[must_use]
+    pub fn ackact(&mut self) -> ACKACT_W<18> {
+        ACKACT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -298,11 +139,10 @@ impl crate::Readable for CTRLB_SPEC {
 #[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
 impl crate::Resettable for CTRLB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

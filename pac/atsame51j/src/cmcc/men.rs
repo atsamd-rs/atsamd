@@ -35,54 +35,22 @@ impl From<crate::W<MEN_SPEC>> for W {
     }
 }
 #[doc = "Field `MENABLE` reader - Cache Controller Monitor Enable"]
-pub struct MENABLE_R(crate::FieldReader<bool, bool>);
-impl MENABLE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        MENABLE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for MENABLE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type MENABLE_R = crate::BitReader<bool>;
 #[doc = "Field `MENABLE` writer - Cache Controller Monitor Enable"]
-pub struct MENABLE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> MENABLE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type MENABLE_W<'a, const O: u8> = crate::BitWriter<'a, u32, MEN_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Cache Controller Monitor Enable"]
     #[inline(always)]
     pub fn menable(&self) -> MENABLE_R {
-        MENABLE_R::new((self.bits & 0x01) != 0)
+        MENABLE_R::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Cache Controller Monitor Enable"]
     #[inline(always)]
-    pub fn menable(&mut self) -> MENABLE_W {
-        MENABLE_W { w: self }
+    #[must_use]
+    pub fn menable(&mut self) -> MENABLE_W<0> {
+        MENABLE_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -103,11 +71,10 @@ impl crate::Readable for MEN_SPEC {
 #[doc = "`write(|w| ..)` method takes [men::W](W) writer structure"]
 impl crate::Writable for MEN_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets MEN to value 0"]
 impl crate::Resettable for MEN_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

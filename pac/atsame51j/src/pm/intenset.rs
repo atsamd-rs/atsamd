@@ -35,54 +35,22 @@ impl From<crate::W<INTENSET_SPEC>> for W {
     }
 }
 #[doc = "Field `SLEEPRDY` reader - Sleep Mode Entry Ready Enable"]
-pub struct SLEEPRDY_R(crate::FieldReader<bool, bool>);
-impl SLEEPRDY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SLEEPRDY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SLEEPRDY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SLEEPRDY_R = crate::BitReader<bool>;
 #[doc = "Field `SLEEPRDY` writer - Sleep Mode Entry Ready Enable"]
-pub struct SLEEPRDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SLEEPRDY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type SLEEPRDY_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENSET_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Sleep Mode Entry Ready Enable"]
     #[inline(always)]
     pub fn sleeprdy(&self) -> SLEEPRDY_R {
-        SLEEPRDY_R::new((self.bits & 0x01) != 0)
+        SLEEPRDY_R::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Sleep Mode Entry Ready Enable"]
     #[inline(always)]
-    pub fn sleeprdy(&mut self) -> SLEEPRDY_W {
-        SLEEPRDY_W { w: self }
+    #[must_use]
+    pub fn sleeprdy(&mut self) -> SLEEPRDY_W<0> {
+        SLEEPRDY_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -103,11 +71,10 @@ impl crate::Readable for INTENSET_SPEC {
 #[doc = "`write(|w| ..)` method takes [intenset::W](W) writer structure"]
 impl crate::Writable for INTENSET_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
 impl crate::Resettable for INTENSET_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

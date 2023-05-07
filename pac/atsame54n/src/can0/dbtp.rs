@@ -35,150 +35,25 @@ impl From<crate::W<DBTP_SPEC>> for W {
     }
 }
 #[doc = "Field `DSJW` reader - Data (Re)Synchronization Jump Width"]
-pub struct DSJW_R(crate::FieldReader<u8, u8>);
-impl DSJW_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DSJW_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DSJW_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DSJW_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DSJW` writer - Data (Re)Synchronization Jump Width"]
-pub struct DSJW_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DSJW_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x0f) | (value as u32 & 0x0f);
-        self.w
-    }
-}
+pub type DSJW_W<'a, const O: u8> = crate::FieldWriter<'a, u32, DBTP_SPEC, u8, u8, 4, O>;
 #[doc = "Field `DTSEG2` reader - Data time segment after sample point"]
-pub struct DTSEG2_R(crate::FieldReader<u8, u8>);
-impl DTSEG2_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DTSEG2_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DTSEG2_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DTSEG2_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DTSEG2` writer - Data time segment after sample point"]
-pub struct DTSEG2_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DTSEG2_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 4)) | ((value as u32 & 0x0f) << 4);
-        self.w
-    }
-}
+pub type DTSEG2_W<'a, const O: u8> = crate::FieldWriter<'a, u32, DBTP_SPEC, u8, u8, 4, O>;
 #[doc = "Field `DTSEG1` reader - Data time segment before sample point"]
-pub struct DTSEG1_R(crate::FieldReader<u8, u8>);
-impl DTSEG1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DTSEG1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DTSEG1_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DTSEG1_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DTSEG1` writer - Data time segment before sample point"]
-pub struct DTSEG1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DTSEG1_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x1f << 8)) | ((value as u32 & 0x1f) << 8);
-        self.w
-    }
-}
+pub type DTSEG1_W<'a, const O: u8> = crate::FieldWriter<'a, u32, DBTP_SPEC, u8, u8, 5, O>;
 #[doc = "Field `DBRP` reader - Data Baud Rate Prescaler"]
-pub struct DBRP_R(crate::FieldReader<u8, u8>);
-impl DBRP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DBRP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DBRP_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DBRP_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DBRP` writer - Data Baud Rate Prescaler"]
-pub struct DBRP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DBRP_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x1f << 16)) | ((value as u32 & 0x1f) << 16);
-        self.w
-    }
-}
+pub type DBRP_W<'a, const O: u8> = crate::FieldWriter<'a, u32, DBTP_SPEC, u8, u8, 5, O>;
 #[doc = "Field `TDC` reader - Tranceiver Delay Compensation"]
-pub struct TDC_R(crate::FieldReader<bool, bool>);
-impl TDC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        TDC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TDC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TDC_R = crate::BitReader<bool>;
 #[doc = "Field `TDC` writer - Tranceiver Delay Compensation"]
-pub struct TDC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TDC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 23)) | ((value as u32 & 0x01) << 23);
-        self.w
-    }
-}
+pub type TDC_W<'a, const O: u8> = crate::BitWriter<'a, u32, DBTP_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:3 - Data (Re)Synchronization Jump Width"]
     #[inline(always)]
@@ -203,34 +78,39 @@ impl R {
     #[doc = "Bit 23 - Tranceiver Delay Compensation"]
     #[inline(always)]
     pub fn tdc(&self) -> TDC_R {
-        TDC_R::new(((self.bits >> 23) & 0x01) != 0)
+        TDC_R::new(((self.bits >> 23) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:3 - Data (Re)Synchronization Jump Width"]
     #[inline(always)]
-    pub fn dsjw(&mut self) -> DSJW_W {
-        DSJW_W { w: self }
+    #[must_use]
+    pub fn dsjw(&mut self) -> DSJW_W<0> {
+        DSJW_W::new(self)
     }
     #[doc = "Bits 4:7 - Data time segment after sample point"]
     #[inline(always)]
-    pub fn dtseg2(&mut self) -> DTSEG2_W {
-        DTSEG2_W { w: self }
+    #[must_use]
+    pub fn dtseg2(&mut self) -> DTSEG2_W<4> {
+        DTSEG2_W::new(self)
     }
     #[doc = "Bits 8:12 - Data time segment before sample point"]
     #[inline(always)]
-    pub fn dtseg1(&mut self) -> DTSEG1_W {
-        DTSEG1_W { w: self }
+    #[must_use]
+    pub fn dtseg1(&mut self) -> DTSEG1_W<8> {
+        DTSEG1_W::new(self)
     }
     #[doc = "Bits 16:20 - Data Baud Rate Prescaler"]
     #[inline(always)]
-    pub fn dbrp(&mut self) -> DBRP_W {
-        DBRP_W { w: self }
+    #[must_use]
+    pub fn dbrp(&mut self) -> DBRP_W<16> {
+        DBRP_W::new(self)
     }
     #[doc = "Bit 23 - Tranceiver Delay Compensation"]
     #[inline(always)]
-    pub fn tdc(&mut self) -> TDC_W {
-        TDC_W { w: self }
+    #[must_use]
+    pub fn tdc(&mut self) -> TDC_W<23> {
+        TDC_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -251,11 +131,10 @@ impl crate::Readable for DBTP_SPEC {
 #[doc = "`write(|w| ..)` method takes [dbtp::W](W) writer structure"]
 impl crate::Writable for DBTP_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets DBTP to value 0x0a33"]
 impl crate::Resettable for DBTP_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x0a33
-    }
+    const RESET_VALUE: Self::Ux = 0x0a33;
 }

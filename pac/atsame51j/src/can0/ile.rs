@@ -35,101 +35,37 @@ impl From<crate::W<ILE_SPEC>> for W {
     }
 }
 #[doc = "Field `EINT0` reader - Enable Interrupt Line 0"]
-pub struct EINT0_R(crate::FieldReader<bool, bool>);
-impl EINT0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EINT0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EINT0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EINT0_R = crate::BitReader<bool>;
 #[doc = "Field `EINT0` writer - Enable Interrupt Line 0"]
-pub struct EINT0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EINT0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type EINT0_W<'a, const O: u8> = crate::BitWriter<'a, u32, ILE_SPEC, bool, O>;
 #[doc = "Field `EINT1` reader - Enable Interrupt Line 1"]
-pub struct EINT1_R(crate::FieldReader<bool, bool>);
-impl EINT1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EINT1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EINT1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EINT1_R = crate::BitReader<bool>;
 #[doc = "Field `EINT1` writer - Enable Interrupt Line 1"]
-pub struct EINT1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EINT1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type EINT1_W<'a, const O: u8> = crate::BitWriter<'a, u32, ILE_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Enable Interrupt Line 0"]
     #[inline(always)]
     pub fn eint0(&self) -> EINT0_R {
-        EINT0_R::new((self.bits & 0x01) != 0)
+        EINT0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Enable Interrupt Line 1"]
     #[inline(always)]
     pub fn eint1(&self) -> EINT1_R {
-        EINT1_R::new(((self.bits >> 1) & 0x01) != 0)
+        EINT1_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Enable Interrupt Line 0"]
     #[inline(always)]
-    pub fn eint0(&mut self) -> EINT0_W {
-        EINT0_W { w: self }
+    #[must_use]
+    pub fn eint0(&mut self) -> EINT0_W<0> {
+        EINT0_W::new(self)
     }
     #[doc = "Bit 1 - Enable Interrupt Line 1"]
     #[inline(always)]
-    pub fn eint1(&mut self) -> EINT1_W {
-        EINT1_W { w: self }
+    #[must_use]
+    pub fn eint1(&mut self) -> EINT1_W<1> {
+        EINT1_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -150,11 +86,10 @@ impl crate::Readable for ILE_SPEC {
 #[doc = "`write(|w| ..)` method takes [ile::W](W) writer structure"]
 impl crate::Writable for ILE_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets ILE to value 0"]
 impl crate::Resettable for ILE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

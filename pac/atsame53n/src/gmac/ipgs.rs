@@ -35,32 +35,9 @@ impl From<crate::W<IPGS_SPEC>> for W {
     }
 }
 #[doc = "Field `FL` reader - Frame Length"]
-pub struct FL_R(crate::FieldReader<u16, u16>);
-impl FL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        FL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FL_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FL_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `FL` writer - Frame Length"]
-pub struct FL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
-        self.w
-    }
-}
+pub type FL_W<'a, const O: u8> = crate::FieldWriter<'a, u32, IPGS_SPEC, u16, u16, 16, O>;
 impl R {
     #[doc = "Bits 0:15 - Frame Length"]
     #[inline(always)]
@@ -71,8 +48,9 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Frame Length"]
     #[inline(always)]
-    pub fn fl(&mut self) -> FL_W {
-        FL_W { w: self }
+    #[must_use]
+    pub fn fl(&mut self) -> FL_W<0> {
+        FL_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for IPGS_SPEC {
 #[doc = "`write(|w| ..)` method takes [ipgs::W](W) writer structure"]
 impl crate::Writable for IPGS_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets IPGS to value 0"]
 impl crate::Resettable for IPGS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -35,32 +35,9 @@ impl From<crate::W<TOCV_SPEC>> for W {
     }
 }
 #[doc = "Field `TOC` reader - Timeout Counter"]
-pub struct TOC_R(crate::FieldReader<u16, u16>);
-impl TOC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        TOC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TOC_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TOC_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `TOC` writer - Timeout Counter"]
-pub struct TOC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TOC_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
-        self.w
-    }
-}
+pub type TOC_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TOCV_SPEC, u16, u16, 16, O>;
 impl R {
     #[doc = "Bits 0:15 - Timeout Counter"]
     #[inline(always)]
@@ -71,8 +48,9 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Timeout Counter"]
     #[inline(always)]
-    pub fn toc(&mut self) -> TOC_W {
-        TOC_W { w: self }
+    #[must_use]
+    pub fn toc(&mut self) -> TOC_W<0> {
+        TOC_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for TOCV_SPEC {
 #[doc = "`write(|w| ..)` method takes [tocv::W](W) writer structure"]
 impl crate::Writable for TOCV_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TOCV to value 0xffff"]
 impl crate::Resettable for TOCV_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0xffff
-    }
+    const RESET_VALUE: Self::Ux = 0xffff;
 }

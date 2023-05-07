@@ -24,8 +24,5 @@ impl crate::Readable for CCER_SPEC {
 }
 #[doc = "`reset()` method sets CCER to value 0x1854_1800"]
 impl crate::Resettable for CCER_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x1854_1800
-    }
+    const RESET_VALUE: Self::Ux = 0x1854_1800;
 }

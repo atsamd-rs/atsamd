@@ -14,35 +14,9 @@ impl From<crate::R<CID1_SPEC>> for R {
     }
 }
 #[doc = "Field `PREAMBLE` reader - Preamble"]
-pub struct PREAMBLE_R(crate::FieldReader<u8, u8>);
-impl PREAMBLE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PREAMBLE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PREAMBLE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PREAMBLE_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `CCLASS` reader - Component Class"]
-pub struct CCLASS_R(crate::FieldReader<u8, u8>);
-impl CCLASS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CCLASS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CCLASS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CCLASS_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:3 - Preamble"]
     #[inline(always)]
@@ -66,8 +40,5 @@ impl crate::Readable for CID1_SPEC {
 }
 #[doc = "`reset()` method sets CID1 to value 0x10"]
 impl crate::Resettable for CID1_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x10
-    }
+    const RESET_VALUE: Self::Ux = 0x10;
 }

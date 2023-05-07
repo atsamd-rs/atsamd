@@ -35,44 +35,22 @@ impl From<crate::W<CHID_SPEC>> for W {
     }
 }
 #[doc = "Field `ID` reader - Channel ID"]
-pub struct ID_R(crate::FieldReader<u8, u8>);
-impl ID_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        ID_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ID_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ID_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `ID` writer - Channel ID"]
-pub struct ID_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ID_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | (value as u8 & 0x07);
-        self.w
-    }
-}
+pub type ID_W<'a, const O: u8> = crate::FieldWriter<'a, u8, CHID_SPEC, u8, u8, 3, O>;
 impl R {
     #[doc = "Bits 0:2 - Channel ID"]
     #[inline(always)]
     pub fn id(&self) -> ID_R {
-        ID_R::new((self.bits & 0x07) as u8)
+        ID_R::new(self.bits & 7)
     }
 }
 impl W {
     #[doc = "Bits 0:2 - Channel ID"]
     #[inline(always)]
-    pub fn id(&mut self) -> ID_W {
-        ID_W { w: self }
+    #[must_use]
+    pub fn id(&mut self) -> ID_W<0> {
+        ID_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for CHID_SPEC {
 #[doc = "`write(|w| ..)` method takes [chid::W](W) writer structure"]
 impl crate::Writable for CHID_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CHID to value 0"]
 impl crate::Resettable for CHID_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -35,86 +35,17 @@ impl From<crate::W<TXEFC_SPEC>> for W {
     }
 }
 #[doc = "Field `EFSA` reader - Event FIFO Start Address"]
-pub struct EFSA_R(crate::FieldReader<u16, u16>);
-impl EFSA_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        EFSA_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EFSA_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EFSA_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `EFSA` writer - Event FIFO Start Address"]
-pub struct EFSA_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EFSA_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
-        self.w
-    }
-}
+pub type EFSA_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TXEFC_SPEC, u16, u16, 16, O>;
 #[doc = "Field `EFS` reader - Event FIFO Size"]
-pub struct EFS_R(crate::FieldReader<u8, u8>);
-impl EFS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        EFS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EFS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EFS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `EFS` writer - Event FIFO Size"]
-pub struct EFS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EFS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x3f << 16)) | ((value as u32 & 0x3f) << 16);
-        self.w
-    }
-}
+pub type EFS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TXEFC_SPEC, u8, u8, 6, O>;
 #[doc = "Field `EFWM` reader - Event FIFO Watermark"]
-pub struct EFWM_R(crate::FieldReader<u8, u8>);
-impl EFWM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        EFWM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EFWM_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EFWM_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `EFWM` writer - Event FIFO Watermark"]
-pub struct EFWM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EFWM_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x3f << 24)) | ((value as u32 & 0x3f) << 24);
-        self.w
-    }
-}
+pub type EFWM_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TXEFC_SPEC, u8, u8, 6, O>;
 impl R {
     #[doc = "Bits 0:15 - Event FIFO Start Address"]
     #[inline(always)]
@@ -135,18 +66,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Event FIFO Start Address"]
     #[inline(always)]
-    pub fn efsa(&mut self) -> EFSA_W {
-        EFSA_W { w: self }
+    #[must_use]
+    pub fn efsa(&mut self) -> EFSA_W<0> {
+        EFSA_W::new(self)
     }
     #[doc = "Bits 16:21 - Event FIFO Size"]
     #[inline(always)]
-    pub fn efs(&mut self) -> EFS_W {
-        EFS_W { w: self }
+    #[must_use]
+    pub fn efs(&mut self) -> EFS_W<16> {
+        EFS_W::new(self)
     }
     #[doc = "Bits 24:29 - Event FIFO Watermark"]
     #[inline(always)]
-    pub fn efwm(&mut self) -> EFWM_W {
-        EFWM_W { w: self }
+    #[must_use]
+    pub fn efwm(&mut self) -> EFWM_W<24> {
+        EFWM_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -167,11 +101,10 @@ impl crate::Readable for TXEFC_SPEC {
 #[doc = "`write(|w| ..)` method takes [txefc::W](W) writer structure"]
 impl crate::Writable for TXEFC_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TXEFC to value 0"]
 impl crate::Resettable for TXEFC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

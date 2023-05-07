@@ -24,8 +24,5 @@ impl crate::Readable for SCR_SPEC {
 }
 #[doc = "`reset()` method sets SCR to value 0x0002_0d09"]
 impl crate::Resettable for SCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x0002_0d09
-    }
+    const RESET_VALUE: Self::Ux = 0x0002_0d09;
 }

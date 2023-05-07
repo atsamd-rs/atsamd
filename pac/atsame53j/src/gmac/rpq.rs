@@ -14,20 +14,7 @@ impl From<crate::R<RPQ_SPEC>> for R {
     }
 }
 #[doc = "Field `RPQ` reader - Received Pause Quantum"]
-pub struct RPQ_R(crate::FieldReader<u16, u16>);
-impl RPQ_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        RPQ_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RPQ_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RPQ_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:15 - Received Pause Quantum"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for RPQ_SPEC {
 }
 #[doc = "`reset()` method sets RPQ to value 0"]
 impl crate::Resettable for RPQ_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

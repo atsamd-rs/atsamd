@@ -35,128 +35,52 @@ impl From<crate::W<PCFG_SPEC>> for W {
     }
 }
 #[doc = "Field `PTOKEN` reader - Pipe Token"]
-pub struct PTOKEN_R(crate::FieldReader<u8, u8>);
-impl PTOKEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PTOKEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PTOKEN_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PTOKEN_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PTOKEN` writer - Pipe Token"]
-pub struct PTOKEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PTOKEN_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u8 & 0x03);
-        self.w
-    }
-}
+pub type PTOKEN_W<'a, const O: u8> = crate::FieldWriter<'a, u8, PCFG_SPEC, u8, u8, 2, O>;
 #[doc = "Field `BK` reader - Pipe Bank"]
-pub struct BK_R(crate::FieldReader<bool, bool>);
-impl BK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BK_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BK_R = crate::BitReader<bool>;
 #[doc = "Field `BK` writer - Pipe Bank"]
-pub struct BK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BK_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type BK_W<'a, const O: u8> = crate::BitWriter<'a, u8, PCFG_SPEC, bool, O>;
 #[doc = "Field `PTYPE` reader - Pipe Type"]
-pub struct PTYPE_R(crate::FieldReader<u8, u8>);
-impl PTYPE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PTYPE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PTYPE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PTYPE_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PTYPE` writer - Pipe Type"]
-pub struct PTYPE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PTYPE_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 3)) | ((value as u8 & 0x07) << 3);
-        self.w
-    }
-}
+pub type PTYPE_W<'a, const O: u8> = crate::FieldWriter<'a, u8, PCFG_SPEC, u8, u8, 3, O>;
 impl R {
     #[doc = "Bits 0:1 - Pipe Token"]
     #[inline(always)]
     pub fn ptoken(&self) -> PTOKEN_R {
-        PTOKEN_R::new((self.bits & 0x03) as u8)
+        PTOKEN_R::new(self.bits & 3)
     }
     #[doc = "Bit 2 - Pipe Bank"]
     #[inline(always)]
     pub fn bk(&self) -> BK_R {
-        BK_R::new(((self.bits >> 2) & 0x01) != 0)
+        BK_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bits 3:5 - Pipe Type"]
     #[inline(always)]
     pub fn ptype(&self) -> PTYPE_R {
-        PTYPE_R::new(((self.bits >> 3) & 0x07) as u8)
+        PTYPE_R::new((self.bits >> 3) & 7)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Pipe Token"]
     #[inline(always)]
-    pub fn ptoken(&mut self) -> PTOKEN_W {
-        PTOKEN_W { w: self }
+    #[must_use]
+    pub fn ptoken(&mut self) -> PTOKEN_W<0> {
+        PTOKEN_W::new(self)
     }
     #[doc = "Bit 2 - Pipe Bank"]
     #[inline(always)]
-    pub fn bk(&mut self) -> BK_W {
-        BK_W { w: self }
+    #[must_use]
+    pub fn bk(&mut self) -> BK_W<2> {
+        BK_W::new(self)
     }
     #[doc = "Bits 3:5 - Pipe Type"]
     #[inline(always)]
-    pub fn ptype(&mut self) -> PTYPE_W {
-        PTYPE_W { w: self }
+    #[must_use]
+    pub fn ptype(&mut self) -> PTYPE_W<3> {
+        PTYPE_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -177,11 +101,10 @@ impl crate::Readable for PCFG_SPEC {
 #[doc = "`write(|w| ..)` method takes [pcfg::W](W) writer structure"]
 impl crate::Writable for PCFG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets PCFG%s to value 0"]
 impl crate::Resettable for PCFG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

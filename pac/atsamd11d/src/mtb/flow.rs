@@ -35,138 +35,52 @@ impl From<crate::W<FLOW_SPEC>> for W {
     }
 }
 #[doc = "Field `AUTOSTOP` reader - Auto Stop Tracing"]
-pub struct AUTOSTOP_R(crate::FieldReader<bool, bool>);
-impl AUTOSTOP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        AUTOSTOP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for AUTOSTOP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type AUTOSTOP_R = crate::BitReader<bool>;
 #[doc = "Field `AUTOSTOP` writer - Auto Stop Tracing"]
-pub struct AUTOSTOP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> AUTOSTOP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type AUTOSTOP_W<'a, const O: u8> = crate::BitWriter<'a, u32, FLOW_SPEC, bool, O>;
 #[doc = "Field `AUTOHALT` reader - Auto Halt Request"]
-pub struct AUTOHALT_R(crate::FieldReader<bool, bool>);
-impl AUTOHALT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        AUTOHALT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for AUTOHALT_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type AUTOHALT_R = crate::BitReader<bool>;
 #[doc = "Field `AUTOHALT` writer - Auto Halt Request"]
-pub struct AUTOHALT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> AUTOHALT_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type AUTOHALT_W<'a, const O: u8> = crate::BitWriter<'a, u32, FLOW_SPEC, bool, O>;
 #[doc = "Field `WATERMARK` reader - Watermark value"]
-pub struct WATERMARK_R(crate::FieldReader<u32, u32>);
-impl WATERMARK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        WATERMARK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WATERMARK_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WATERMARK_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `WATERMARK` writer - Watermark value"]
-pub struct WATERMARK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WATERMARK_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x1fff_ffff << 3)) | ((value as u32 & 0x1fff_ffff) << 3);
-        self.w
-    }
-}
+pub type WATERMARK_W<'a, const O: u8> = crate::FieldWriter<'a, u32, FLOW_SPEC, u32, u32, 29, O>;
 impl R {
     #[doc = "Bit 0 - Auto Stop Tracing"]
     #[inline(always)]
     pub fn autostop(&self) -> AUTOSTOP_R {
-        AUTOSTOP_R::new((self.bits & 0x01) != 0)
+        AUTOSTOP_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Auto Halt Request"]
     #[inline(always)]
     pub fn autohalt(&self) -> AUTOHALT_R {
-        AUTOHALT_R::new(((self.bits >> 1) & 0x01) != 0)
+        AUTOHALT_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bits 3:31 - Watermark value"]
     #[inline(always)]
     pub fn watermark(&self) -> WATERMARK_R {
-        WATERMARK_R::new(((self.bits >> 3) & 0x1fff_ffff) as u32)
+        WATERMARK_R::new((self.bits >> 3) & 0x1fff_ffff)
     }
 }
 impl W {
     #[doc = "Bit 0 - Auto Stop Tracing"]
     #[inline(always)]
-    pub fn autostop(&mut self) -> AUTOSTOP_W {
-        AUTOSTOP_W { w: self }
+    #[must_use]
+    pub fn autostop(&mut self) -> AUTOSTOP_W<0> {
+        AUTOSTOP_W::new(self)
     }
     #[doc = "Bit 1 - Auto Halt Request"]
     #[inline(always)]
-    pub fn autohalt(&mut self) -> AUTOHALT_W {
-        AUTOHALT_W { w: self }
+    #[must_use]
+    pub fn autohalt(&mut self) -> AUTOHALT_W<1> {
+        AUTOHALT_W::new(self)
     }
     #[doc = "Bits 3:31 - Watermark value"]
     #[inline(always)]
-    pub fn watermark(&mut self) -> WATERMARK_W {
-        WATERMARK_W { w: self }
+    #[must_use]
+    pub fn watermark(&mut self) -> WATERMARK_W<3> {
+        WATERMARK_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -187,11 +101,10 @@ impl crate::Readable for FLOW_SPEC {
 #[doc = "`write(|w| ..)` method takes [flow::W](W) writer structure"]
 impl crate::Writable for FLOW_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets FLOW to value 0"]
 impl crate::Resettable for FLOW_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

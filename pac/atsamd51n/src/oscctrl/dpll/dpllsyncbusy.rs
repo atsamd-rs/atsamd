@@ -14,45 +14,19 @@ impl From<crate::R<DPLLSYNCBUSY_SPEC>> for R {
     }
 }
 #[doc = "Field `ENABLE` reader - DPLL Enable Synchronization Status"]
-pub struct ENABLE_R(crate::FieldReader<bool, bool>);
-impl ENABLE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENABLE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENABLE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ENABLE_R = crate::BitReader<bool>;
 #[doc = "Field `DPLLRATIO` reader - DPLL Loop Divider Ratio Synchronization Status"]
-pub struct DPLLRATIO_R(crate::FieldReader<bool, bool>);
-impl DPLLRATIO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DPLLRATIO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DPLLRATIO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DPLLRATIO_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bit 1 - DPLL Enable Synchronization Status"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
+        ENABLE_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - DPLL Loop Divider Ratio Synchronization Status"]
     #[inline(always)]
     pub fn dpllratio(&self) -> DPLLRATIO_R {
-        DPLLRATIO_R::new(((self.bits >> 2) & 0x01) != 0)
+        DPLLRATIO_R::new(((self.bits >> 2) & 1) != 0)
     }
 }
 #[doc = "DPLL Synchronization Busy\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dpllsyncbusy](index.html) module"]
@@ -66,8 +40,5 @@ impl crate::Readable for DPLLSYNCBUSY_SPEC {
 }
 #[doc = "`reset()` method sets DPLLSYNCBUSY to value 0"]
 impl crate::Resettable for DPLLSYNCBUSY_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

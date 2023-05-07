@@ -35,54 +35,22 @@ impl From<crate::W<EVCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `DATARDYEO` reader - Data Ready Event Output"]
-pub struct DATARDYEO_R(crate::FieldReader<bool, bool>);
-impl DATARDYEO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DATARDYEO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DATARDYEO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DATARDYEO_R = crate::BitReader<bool>;
 #[doc = "Field `DATARDYEO` writer - Data Ready Event Output"]
-pub struct DATARDYEO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DATARDYEO_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type DATARDYEO_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Data Ready Event Output"]
     #[inline(always)]
     pub fn datardyeo(&self) -> DATARDYEO_R {
-        DATARDYEO_R::new((self.bits & 0x01) != 0)
+        DATARDYEO_R::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Data Ready Event Output"]
     #[inline(always)]
-    pub fn datardyeo(&mut self) -> DATARDYEO_W {
-        DATARDYEO_W { w: self }
+    #[must_use]
+    pub fn datardyeo(&mut self) -> DATARDYEO_W<0> {
+        DATARDYEO_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -103,11 +71,10 @@ impl crate::Readable for EVCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
 impl crate::Resettable for EVCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

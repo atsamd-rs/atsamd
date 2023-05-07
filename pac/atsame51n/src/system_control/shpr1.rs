@@ -35,86 +35,17 @@ impl From<crate::W<SHPR1_SPEC>> for W {
     }
 }
 #[doc = "Field `PRI_4` reader - Priority of system handler 4, MemManage"]
-pub struct PRI_4_R(crate::FieldReader<u8, u8>);
-impl PRI_4_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PRI_4_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PRI_4_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PRI_4_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PRI_4` writer - Priority of system handler 4, MemManage"]
-pub struct PRI_4_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PRI_4_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xff) | (value as u32 & 0xff);
-        self.w
-    }
-}
+pub type PRI_4_W<'a, const O: u8> = crate::FieldWriter<'a, u32, SHPR1_SPEC, u8, u8, 8, O>;
 #[doc = "Field `PRI_5` reader - Priority of system handler 5, BusFault"]
-pub struct PRI_5_R(crate::FieldReader<u8, u8>);
-impl PRI_5_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PRI_5_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PRI_5_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PRI_5_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PRI_5` writer - Priority of system handler 5, BusFault"]
-pub struct PRI_5_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PRI_5_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 8)) | ((value as u32 & 0xff) << 8);
-        self.w
-    }
-}
+pub type PRI_5_W<'a, const O: u8> = crate::FieldWriter<'a, u32, SHPR1_SPEC, u8, u8, 8, O>;
 #[doc = "Field `PRI_6` reader - Priority of system handler 6, UsageFault"]
-pub struct PRI_6_R(crate::FieldReader<u8, u8>);
-impl PRI_6_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        PRI_6_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PRI_6_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PRI_6_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `PRI_6` writer - Priority of system handler 6, UsageFault"]
-pub struct PRI_6_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PRI_6_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 16)) | ((value as u32 & 0xff) << 16);
-        self.w
-    }
-}
+pub type PRI_6_W<'a, const O: u8> = crate::FieldWriter<'a, u32, SHPR1_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Priority of system handler 4, MemManage"]
     #[inline(always)]
@@ -135,18 +66,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Priority of system handler 4, MemManage"]
     #[inline(always)]
-    pub fn pri_4(&mut self) -> PRI_4_W {
-        PRI_4_W { w: self }
+    #[must_use]
+    pub fn pri_4(&mut self) -> PRI_4_W<0> {
+        PRI_4_W::new(self)
     }
     #[doc = "Bits 8:15 - Priority of system handler 5, BusFault"]
     #[inline(always)]
-    pub fn pri_5(&mut self) -> PRI_5_W {
-        PRI_5_W { w: self }
+    #[must_use]
+    pub fn pri_5(&mut self) -> PRI_5_W<8> {
+        PRI_5_W::new(self)
     }
     #[doc = "Bits 16:23 - Priority of system handler 6, UsageFault"]
     #[inline(always)]
-    pub fn pri_6(&mut self) -> PRI_6_W {
-        PRI_6_W { w: self }
+    #[must_use]
+    pub fn pri_6(&mut self) -> PRI_6_W<16> {
+        PRI_6_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -167,11 +101,10 @@ impl crate::Readable for SHPR1_SPEC {
 #[doc = "`write(|w| ..)` method takes [shpr1::W](W) writer structure"]
 impl crate::Writable for SHPR1_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets SHPR1 to value 0"]
 impl crate::Resettable for SHPR1_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

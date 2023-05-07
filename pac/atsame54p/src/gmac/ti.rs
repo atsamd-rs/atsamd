@@ -35,86 +35,17 @@ impl From<crate::W<TI_SPEC>> for W {
     }
 }
 #[doc = "Field `CNS` reader - Count Nanoseconds"]
-pub struct CNS_R(crate::FieldReader<u8, u8>);
-impl CNS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CNS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CNS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CNS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `CNS` writer - Count Nanoseconds"]
-pub struct CNS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CNS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xff) | (value as u32 & 0xff);
-        self.w
-    }
-}
+pub type CNS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TI_SPEC, u8, u8, 8, O>;
 #[doc = "Field `ACNS` reader - Alternative Count Nanoseconds"]
-pub struct ACNS_R(crate::FieldReader<u8, u8>);
-impl ACNS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        ACNS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ACNS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ACNS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `ACNS` writer - Alternative Count Nanoseconds"]
-pub struct ACNS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ACNS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 8)) | ((value as u32 & 0xff) << 8);
-        self.w
-    }
-}
+pub type ACNS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TI_SPEC, u8, u8, 8, O>;
 #[doc = "Field `NIT` reader - Number of Increments"]
-pub struct NIT_R(crate::FieldReader<u8, u8>);
-impl NIT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        NIT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NIT_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NIT_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `NIT` writer - Number of Increments"]
-pub struct NIT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NIT_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 16)) | ((value as u32 & 0xff) << 16);
-        self.w
-    }
-}
+pub type NIT_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TI_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Count Nanoseconds"]
     #[inline(always)]
@@ -135,18 +66,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Count Nanoseconds"]
     #[inline(always)]
-    pub fn cns(&mut self) -> CNS_W {
-        CNS_W { w: self }
+    #[must_use]
+    pub fn cns(&mut self) -> CNS_W<0> {
+        CNS_W::new(self)
     }
     #[doc = "Bits 8:15 - Alternative Count Nanoseconds"]
     #[inline(always)]
-    pub fn acns(&mut self) -> ACNS_W {
-        ACNS_W { w: self }
+    #[must_use]
+    pub fn acns(&mut self) -> ACNS_W<8> {
+        ACNS_W::new(self)
     }
     #[doc = "Bits 16:23 - Number of Increments"]
     #[inline(always)]
-    pub fn nit(&mut self) -> NIT_W {
-        NIT_W { w: self }
+    #[must_use]
+    pub fn nit(&mut self) -> NIT_W<16> {
+        NIT_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -167,11 +101,10 @@ impl crate::Readable for TI_SPEC {
 #[doc = "`write(|w| ..)` method takes [ti::W](W) writer structure"]
 impl crate::Writable for TI_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TI to value 0"]
 impl crate::Resettable for TI_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

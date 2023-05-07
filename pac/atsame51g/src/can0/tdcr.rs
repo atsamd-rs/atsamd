@@ -35,59 +35,13 @@ impl From<crate::W<TDCR_SPEC>> for W {
     }
 }
 #[doc = "Field `TDCF` reader - Transmitter Delay Compensation Filter Length"]
-pub struct TDCF_R(crate::FieldReader<u8, u8>);
-impl TDCF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TDCF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TDCF_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TDCF_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `TDCF` writer - Transmitter Delay Compensation Filter Length"]
-pub struct TDCF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TDCF_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x7f) | (value as u32 & 0x7f);
-        self.w
-    }
-}
+pub type TDCF_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TDCR_SPEC, u8, u8, 7, O>;
 #[doc = "Field `TDCO` reader - Transmitter Delay Compensation Offset"]
-pub struct TDCO_R(crate::FieldReader<u8, u8>);
-impl TDCO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TDCO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TDCO_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TDCO_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `TDCO` writer - Transmitter Delay Compensation Offset"]
-pub struct TDCO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TDCO_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x7f << 8)) | ((value as u32 & 0x7f) << 8);
-        self.w
-    }
-}
+pub type TDCO_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TDCR_SPEC, u8, u8, 7, O>;
 impl R {
     #[doc = "Bits 0:6 - Transmitter Delay Compensation Filter Length"]
     #[inline(always)]
@@ -103,13 +57,15 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Transmitter Delay Compensation Filter Length"]
     #[inline(always)]
-    pub fn tdcf(&mut self) -> TDCF_W {
-        TDCF_W { w: self }
+    #[must_use]
+    pub fn tdcf(&mut self) -> TDCF_W<0> {
+        TDCF_W::new(self)
     }
     #[doc = "Bits 8:14 - Transmitter Delay Compensation Offset"]
     #[inline(always)]
-    pub fn tdco(&mut self) -> TDCO_W {
-        TDCO_W { w: self }
+    #[must_use]
+    pub fn tdco(&mut self) -> TDCO_W<8> {
+        TDCO_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,11 +86,10 @@ impl crate::Readable for TDCR_SPEC {
 #[doc = "`write(|w| ..)` method takes [tdcr::W](W) writer structure"]
 impl crate::Writable for TDCR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TDCR to value 0"]
 impl crate::Resettable for TDCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

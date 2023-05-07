@@ -14,20 +14,7 @@ impl From<crate::R<IHCE_SPEC>> for R {
     }
 }
 #[doc = "Field `HCKER` reader - IP Header Checksum Errors"]
-pub struct HCKER_R(crate::FieldReader<u8, u8>);
-impl HCKER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        HCKER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for HCKER_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type HCKER_R = crate::FieldReader<u8, u8>;
 impl R {
     #[doc = "Bits 0:7 - IP Header Checksum Errors"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for IHCE_SPEC {
 }
 #[doc = "`reset()` method sets IHCE to value 0"]
 impl crate::Resettable for IHCE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

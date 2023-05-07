@@ -35,46 +35,15 @@ impl From<crate::W<WINCTRL_SPEC>> for W {
     }
 }
 #[doc = "Field `WEN0` reader - Window 0 Mode Enable"]
-pub struct WEN0_R(crate::FieldReader<bool, bool>);
-impl WEN0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WEN0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WEN0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WEN0_R = crate::BitReader<bool>;
 #[doc = "Field `WEN0` writer - Window 0 Mode Enable"]
-pub struct WEN0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WEN0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type WEN0_W<'a, const O: u8> = crate::BitWriter<'a, u8, WINCTRL_SPEC, bool, O>;
+#[doc = "Field `WINTSEL0` reader - Window 0 Interrupt Selection"]
+pub type WINTSEL0_R = crate::FieldReader<u8, WINTSEL0SELECT_A>;
 #[doc = "Window 0 Interrupt Selection\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum WINTSEL0_A {
+pub enum WINTSEL0SELECT_A {
     #[doc = "0: Interrupt on signal above window"]
     ABOVE = 0,
     #[doc = "1: Interrupt on signal inside window"]
@@ -84,117 +53,94 @@ pub enum WINTSEL0_A {
     #[doc = "3: Interrupt on signal outside window"]
     OUTSIDE = 3,
 }
-impl From<WINTSEL0_A> for u8 {
+impl From<WINTSEL0SELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: WINTSEL0_A) -> Self {
+    fn from(variant: WINTSEL0SELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `WINTSEL0` reader - Window 0 Interrupt Selection"]
-pub struct WINTSEL0_R(crate::FieldReader<u8, WINTSEL0_A>);
 impl WINTSEL0_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        WINTSEL0_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> WINTSEL0_A {
+    pub fn variant(&self) -> WINTSEL0SELECT_A {
         match self.bits {
-            0 => WINTSEL0_A::ABOVE,
-            1 => WINTSEL0_A::INSIDE,
-            2 => WINTSEL0_A::BELOW,
-            3 => WINTSEL0_A::OUTSIDE,
+            0 => WINTSEL0SELECT_A::ABOVE,
+            1 => WINTSEL0SELECT_A::INSIDE,
+            2 => WINTSEL0SELECT_A::BELOW,
+            3 => WINTSEL0SELECT_A::OUTSIDE,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `ABOVE`"]
     #[inline(always)]
     pub fn is_above(&self) -> bool {
-        **self == WINTSEL0_A::ABOVE
+        *self == WINTSEL0SELECT_A::ABOVE
     }
     #[doc = "Checks if the value of the field is `INSIDE`"]
     #[inline(always)]
     pub fn is_inside(&self) -> bool {
-        **self == WINTSEL0_A::INSIDE
+        *self == WINTSEL0SELECT_A::INSIDE
     }
     #[doc = "Checks if the value of the field is `BELOW`"]
     #[inline(always)]
     pub fn is_below(&self) -> bool {
-        **self == WINTSEL0_A::BELOW
+        *self == WINTSEL0SELECT_A::BELOW
     }
     #[doc = "Checks if the value of the field is `OUTSIDE`"]
     #[inline(always)]
     pub fn is_outside(&self) -> bool {
-        **self == WINTSEL0_A::OUTSIDE
-    }
-}
-impl core::ops::Deref for WINTSEL0_R {
-    type Target = crate::FieldReader<u8, WINTSEL0_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == WINTSEL0SELECT_A::OUTSIDE
     }
 }
 #[doc = "Field `WINTSEL0` writer - Window 0 Interrupt Selection"]
-pub struct WINTSEL0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WINTSEL0_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: WINTSEL0_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type WINTSEL0_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u8, WINCTRL_SPEC, u8, WINTSEL0SELECT_A, 2, O>;
+impl<'a, const O: u8> WINTSEL0_W<'a, O> {
     #[doc = "Interrupt on signal above window"]
     #[inline(always)]
     pub fn above(self) -> &'a mut W {
-        self.variant(WINTSEL0_A::ABOVE)
+        self.variant(WINTSEL0SELECT_A::ABOVE)
     }
     #[doc = "Interrupt on signal inside window"]
     #[inline(always)]
     pub fn inside(self) -> &'a mut W {
-        self.variant(WINTSEL0_A::INSIDE)
+        self.variant(WINTSEL0SELECT_A::INSIDE)
     }
     #[doc = "Interrupt on signal below window"]
     #[inline(always)]
     pub fn below(self) -> &'a mut W {
-        self.variant(WINTSEL0_A::BELOW)
+        self.variant(WINTSEL0SELECT_A::BELOW)
     }
     #[doc = "Interrupt on signal outside window"]
     #[inline(always)]
     pub fn outside(self) -> &'a mut W {
-        self.variant(WINTSEL0_A::OUTSIDE)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 1)) | ((value as u8 & 0x03) << 1);
-        self.w
+        self.variant(WINTSEL0SELECT_A::OUTSIDE)
     }
 }
 impl R {
     #[doc = "Bit 0 - Window 0 Mode Enable"]
     #[inline(always)]
     pub fn wen0(&self) -> WEN0_R {
-        WEN0_R::new((self.bits & 0x01) != 0)
+        WEN0_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bits 1:2 - Window 0 Interrupt Selection"]
     #[inline(always)]
     pub fn wintsel0(&self) -> WINTSEL0_R {
-        WINTSEL0_R::new(((self.bits >> 1) & 0x03) as u8)
+        WINTSEL0_R::new((self.bits >> 1) & 3)
     }
 }
 impl W {
     #[doc = "Bit 0 - Window 0 Mode Enable"]
     #[inline(always)]
-    pub fn wen0(&mut self) -> WEN0_W {
-        WEN0_W { w: self }
+    #[must_use]
+    pub fn wen0(&mut self) -> WEN0_W<0> {
+        WEN0_W::new(self)
     }
     #[doc = "Bits 1:2 - Window 0 Interrupt Selection"]
     #[inline(always)]
-    pub fn wintsel0(&mut self) -> WINTSEL0_W {
-        WINTSEL0_W { w: self }
+    #[must_use]
+    pub fn wintsel0(&mut self) -> WINTSEL0_W<1> {
+        WINTSEL0_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -215,11 +161,10 @@ impl crate::Readable for WINCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [winctrl::W](W) writer structure"]
 impl crate::Writable for WINCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets WINCTRL to value 0"]
 impl crate::Resettable for WINCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

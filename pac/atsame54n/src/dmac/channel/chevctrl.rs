@@ -34,10 +34,12 @@ impl From<crate::W<CHEVCTRL_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `EVACT` reader - Channel Event Input Action"]
+pub type EVACT_R = crate::FieldReader<u8, EVACTSELECT_A>;
 #[doc = "Channel Event Input Action\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum EVACT_A {
+pub enum EVACTSELECT_A {
     #[doc = "0: No action"]
     NOACT = 0,
     #[doc = "1: Transfer and periodic transfer trigger"]
@@ -55,331 +57,221 @@ pub enum EVACT_A {
     #[doc = "7: Increase priority"]
     INCPRI = 7,
 }
-impl From<EVACT_A> for u8 {
+impl From<EVACTSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: EVACT_A) -> Self {
+    fn from(variant: EVACTSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `EVACT` reader - Channel Event Input Action"]
-pub struct EVACT_R(crate::FieldReader<u8, EVACT_A>);
 impl EVACT_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        EVACT_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> EVACT_A {
+    pub fn variant(&self) -> EVACTSELECT_A {
         match self.bits {
-            0 => EVACT_A::NOACT,
-            1 => EVACT_A::TRIG,
-            2 => EVACT_A::CTRIG,
-            3 => EVACT_A::CBLOCK,
-            4 => EVACT_A::SUSPEND,
-            5 => EVACT_A::RESUME,
-            6 => EVACT_A::SSKIP,
-            7 => EVACT_A::INCPRI,
+            0 => EVACTSELECT_A::NOACT,
+            1 => EVACTSELECT_A::TRIG,
+            2 => EVACTSELECT_A::CTRIG,
+            3 => EVACTSELECT_A::CBLOCK,
+            4 => EVACTSELECT_A::SUSPEND,
+            5 => EVACTSELECT_A::RESUME,
+            6 => EVACTSELECT_A::SSKIP,
+            7 => EVACTSELECT_A::INCPRI,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `NOACT`"]
     #[inline(always)]
     pub fn is_noact(&self) -> bool {
-        **self == EVACT_A::NOACT
+        *self == EVACTSELECT_A::NOACT
     }
     #[doc = "Checks if the value of the field is `TRIG`"]
     #[inline(always)]
     pub fn is_trig(&self) -> bool {
-        **self == EVACT_A::TRIG
+        *self == EVACTSELECT_A::TRIG
     }
     #[doc = "Checks if the value of the field is `CTRIG`"]
     #[inline(always)]
     pub fn is_ctrig(&self) -> bool {
-        **self == EVACT_A::CTRIG
+        *self == EVACTSELECT_A::CTRIG
     }
     #[doc = "Checks if the value of the field is `CBLOCK`"]
     #[inline(always)]
     pub fn is_cblock(&self) -> bool {
-        **self == EVACT_A::CBLOCK
+        *self == EVACTSELECT_A::CBLOCK
     }
     #[doc = "Checks if the value of the field is `SUSPEND`"]
     #[inline(always)]
     pub fn is_suspend(&self) -> bool {
-        **self == EVACT_A::SUSPEND
+        *self == EVACTSELECT_A::SUSPEND
     }
     #[doc = "Checks if the value of the field is `RESUME`"]
     #[inline(always)]
     pub fn is_resume(&self) -> bool {
-        **self == EVACT_A::RESUME
+        *self == EVACTSELECT_A::RESUME
     }
     #[doc = "Checks if the value of the field is `SSKIP`"]
     #[inline(always)]
     pub fn is_sskip(&self) -> bool {
-        **self == EVACT_A::SSKIP
+        *self == EVACTSELECT_A::SSKIP
     }
     #[doc = "Checks if the value of the field is `INCPRI`"]
     #[inline(always)]
     pub fn is_incpri(&self) -> bool {
-        **self == EVACT_A::INCPRI
-    }
-}
-impl core::ops::Deref for EVACT_R {
-    type Target = crate::FieldReader<u8, EVACT_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == EVACTSELECT_A::INCPRI
     }
 }
 #[doc = "Field `EVACT` writer - Channel Event Input Action"]
-pub struct EVACT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EVACT_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: EVACT_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type EVACT_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u8, CHEVCTRL_SPEC, u8, EVACTSELECT_A, 3, O>;
+impl<'a, const O: u8> EVACT_W<'a, O> {
     #[doc = "No action"]
     #[inline(always)]
     pub fn noact(self) -> &'a mut W {
-        self.variant(EVACT_A::NOACT)
+        self.variant(EVACTSELECT_A::NOACT)
     }
     #[doc = "Transfer and periodic transfer trigger"]
     #[inline(always)]
     pub fn trig(self) -> &'a mut W {
-        self.variant(EVACT_A::TRIG)
+        self.variant(EVACTSELECT_A::TRIG)
     }
     #[doc = "Conditional transfer trigger"]
     #[inline(always)]
     pub fn ctrig(self) -> &'a mut W {
-        self.variant(EVACT_A::CTRIG)
+        self.variant(EVACTSELECT_A::CTRIG)
     }
     #[doc = "Conditional block transfer"]
     #[inline(always)]
     pub fn cblock(self) -> &'a mut W {
-        self.variant(EVACT_A::CBLOCK)
+        self.variant(EVACTSELECT_A::CBLOCK)
     }
     #[doc = "Channel suspend operation"]
     #[inline(always)]
     pub fn suspend(self) -> &'a mut W {
-        self.variant(EVACT_A::SUSPEND)
+        self.variant(EVACTSELECT_A::SUSPEND)
     }
     #[doc = "Channel resume operation"]
     #[inline(always)]
     pub fn resume(self) -> &'a mut W {
-        self.variant(EVACT_A::RESUME)
+        self.variant(EVACTSELECT_A::RESUME)
     }
     #[doc = "Skip next block suspend action"]
     #[inline(always)]
     pub fn sskip(self) -> &'a mut W {
-        self.variant(EVACT_A::SSKIP)
+        self.variant(EVACTSELECT_A::SSKIP)
     }
     #[doc = "Increase priority"]
     #[inline(always)]
     pub fn incpri(self) -> &'a mut W {
-        self.variant(EVACT_A::INCPRI)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | (value as u8 & 0x07);
-        self.w
+        self.variant(EVACTSELECT_A::INCPRI)
     }
 }
+#[doc = "Field `EVOMODE` reader - Channel Event Output Mode"]
+pub type EVOMODE_R = crate::FieldReader<u8, EVOMODESELECT_A>;
 #[doc = "Channel Event Output Mode\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum EVOMODE_A {
+pub enum EVOMODESELECT_A {
     #[doc = "0: Block event output selection. Refer to BTCTRL.EVOSEL for available selections."]
     DEFAULT = 0,
     #[doc = "1: Ongoing trigger action"]
     TRIGACT = 1,
 }
-impl From<EVOMODE_A> for u8 {
+impl From<EVOMODESELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: EVOMODE_A) -> Self {
+    fn from(variant: EVOMODESELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `EVOMODE` reader - Channel Event Output Mode"]
-pub struct EVOMODE_R(crate::FieldReader<u8, EVOMODE_A>);
 impl EVOMODE_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        EVOMODE_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<EVOMODE_A> {
+    pub fn variant(&self) -> Option<EVOMODESELECT_A> {
         match self.bits {
-            0 => Some(EVOMODE_A::DEFAULT),
-            1 => Some(EVOMODE_A::TRIGACT),
+            0 => Some(EVOMODESELECT_A::DEFAULT),
+            1 => Some(EVOMODESELECT_A::TRIGACT),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `DEFAULT`"]
     #[inline(always)]
     pub fn is_default(&self) -> bool {
-        **self == EVOMODE_A::DEFAULT
+        *self == EVOMODESELECT_A::DEFAULT
     }
     #[doc = "Checks if the value of the field is `TRIGACT`"]
     #[inline(always)]
     pub fn is_trigact(&self) -> bool {
-        **self == EVOMODE_A::TRIGACT
-    }
-}
-impl core::ops::Deref for EVOMODE_R {
-    type Target = crate::FieldReader<u8, EVOMODE_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == EVOMODESELECT_A::TRIGACT
     }
 }
 #[doc = "Field `EVOMODE` writer - Channel Event Output Mode"]
-pub struct EVOMODE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EVOMODE_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: EVOMODE_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type EVOMODE_W<'a, const O: u8> =
+    crate::FieldWriter<'a, u8, CHEVCTRL_SPEC, u8, EVOMODESELECT_A, 2, O>;
+impl<'a, const O: u8> EVOMODE_W<'a, O> {
     #[doc = "Block event output selection. Refer to BTCTRL.EVOSEL for available selections."]
     #[inline(always)]
     pub fn default(self) -> &'a mut W {
-        self.variant(EVOMODE_A::DEFAULT)
+        self.variant(EVOMODESELECT_A::DEFAULT)
     }
     #[doc = "Ongoing trigger action"]
     #[inline(always)]
     pub fn trigact(self) -> &'a mut W {
-        self.variant(EVOMODE_A::TRIGACT)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 4)) | ((value as u8 & 0x03) << 4);
-        self.w
+        self.variant(EVOMODESELECT_A::TRIGACT)
     }
 }
 #[doc = "Field `EVIE` reader - Channel Event Input Enable"]
-pub struct EVIE_R(crate::FieldReader<bool, bool>);
-impl EVIE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EVIE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EVIE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EVIE_R = crate::BitReader<bool>;
 #[doc = "Field `EVIE` writer - Channel Event Input Enable"]
-pub struct EVIE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EVIE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u8 & 0x01) << 6);
-        self.w
-    }
-}
+pub type EVIE_W<'a, const O: u8> = crate::BitWriter<'a, u8, CHEVCTRL_SPEC, bool, O>;
 #[doc = "Field `EVOE` reader - Channel Event Output Enable"]
-pub struct EVOE_R(crate::FieldReader<bool, bool>);
-impl EVOE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EVOE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EVOE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EVOE_R = crate::BitReader<bool>;
 #[doc = "Field `EVOE` writer - Channel Event Output Enable"]
-pub struct EVOE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EVOE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type EVOE_W<'a, const O: u8> = crate::BitWriter<'a, u8, CHEVCTRL_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:2 - Channel Event Input Action"]
     #[inline(always)]
     pub fn evact(&self) -> EVACT_R {
-        EVACT_R::new((self.bits & 0x07) as u8)
+        EVACT_R::new(self.bits & 7)
     }
     #[doc = "Bits 4:5 - Channel Event Output Mode"]
     #[inline(always)]
     pub fn evomode(&self) -> EVOMODE_R {
-        EVOMODE_R::new(((self.bits >> 4) & 0x03) as u8)
+        EVOMODE_R::new((self.bits >> 4) & 3)
     }
     #[doc = "Bit 6 - Channel Event Input Enable"]
     #[inline(always)]
     pub fn evie(&self) -> EVIE_R {
-        EVIE_R::new(((self.bits >> 6) & 0x01) != 0)
+        EVIE_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Channel Event Output Enable"]
     #[inline(always)]
     pub fn evoe(&self) -> EVOE_R {
-        EVOE_R::new(((self.bits >> 7) & 0x01) != 0)
+        EVOE_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:2 - Channel Event Input Action"]
     #[inline(always)]
-    pub fn evact(&mut self) -> EVACT_W {
-        EVACT_W { w: self }
+    #[must_use]
+    pub fn evact(&mut self) -> EVACT_W<0> {
+        EVACT_W::new(self)
     }
     #[doc = "Bits 4:5 - Channel Event Output Mode"]
     #[inline(always)]
-    pub fn evomode(&mut self) -> EVOMODE_W {
-        EVOMODE_W { w: self }
+    #[must_use]
+    pub fn evomode(&mut self) -> EVOMODE_W<4> {
+        EVOMODE_W::new(self)
     }
     #[doc = "Bit 6 - Channel Event Input Enable"]
     #[inline(always)]
-    pub fn evie(&mut self) -> EVIE_W {
-        EVIE_W { w: self }
+    #[must_use]
+    pub fn evie(&mut self) -> EVIE_W<6> {
+        EVIE_W::new(self)
     }
     #[doc = "Bit 7 - Channel Event Output Enable"]
     #[inline(always)]
-    pub fn evoe(&mut self) -> EVOE_W {
-        EVOE_W { w: self }
+    #[must_use]
+    pub fn evoe(&mut self) -> EVOE_W<7> {
+        EVOE_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -400,11 +292,10 @@ impl crate::Readable for CHEVCTRL_SPEC {
 #[doc = "`write(|w| ..)` method takes [chevctrl::W](W) writer structure"]
 impl crate::Writable for CHEVCTRL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CHEVCTRL to value 0"]
 impl crate::Resettable for CHEVCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

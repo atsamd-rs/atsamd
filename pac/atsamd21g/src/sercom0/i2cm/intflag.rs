@@ -35,148 +35,52 @@ impl From<crate::W<INTFLAG_SPEC>> for W {
     }
 }
 #[doc = "Field `MB` reader - Master On Bus Interrupt"]
-pub struct MB_R(crate::FieldReader<bool, bool>);
-impl MB_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        MB_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for MB_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type MB_R = crate::BitReader<bool>;
 #[doc = "Field `MB` writer - Master On Bus Interrupt"]
-pub struct MB_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> MB_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type MB_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `SB` reader - Slave On Bus Interrupt"]
-pub struct SB_R(crate::FieldReader<bool, bool>);
-impl SB_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SB_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SB_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SB_R = crate::BitReader<bool>;
 #[doc = "Field `SB` writer - Slave On Bus Interrupt"]
-pub struct SB_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SB_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type SB_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `ERROR` reader - Combined Error Interrupt"]
-pub struct ERROR_R(crate::FieldReader<bool, bool>);
-impl ERROR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ERROR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ERROR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ERROR_R = crate::BitReader<bool>;
 #[doc = "Field `ERROR` writer - Combined Error Interrupt"]
-pub struct ERROR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ERROR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type ERROR_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Master On Bus Interrupt"]
     #[inline(always)]
     pub fn mb(&self) -> MB_R {
-        MB_R::new((self.bits & 0x01) != 0)
+        MB_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Slave On Bus Interrupt"]
     #[inline(always)]
     pub fn sb(&self) -> SB_R {
-        SB_R::new(((self.bits >> 1) & 0x01) != 0)
+        SB_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 7 - Combined Error Interrupt"]
     #[inline(always)]
     pub fn error(&self) -> ERROR_R {
-        ERROR_R::new(((self.bits >> 7) & 0x01) != 0)
+        ERROR_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Master On Bus Interrupt"]
     #[inline(always)]
-    pub fn mb(&mut self) -> MB_W {
-        MB_W { w: self }
+    #[must_use]
+    pub fn mb(&mut self) -> MB_W<0> {
+        MB_W::new(self)
     }
     #[doc = "Bit 1 - Slave On Bus Interrupt"]
     #[inline(always)]
-    pub fn sb(&mut self) -> SB_W {
-        SB_W { w: self }
+    #[must_use]
+    pub fn sb(&mut self) -> SB_W<1> {
+        SB_W::new(self)
     }
     #[doc = "Bit 7 - Combined Error Interrupt"]
     #[inline(always)]
-    pub fn error(&mut self) -> ERROR_W {
-        ERROR_W { w: self }
+    #[must_use]
+    pub fn error(&mut self) -> ERROR_W<7> {
+        ERROR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -197,11 +101,10 @@ impl crate::Readable for INTFLAG_SPEC {
 #[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for INTFLAG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -13,29 +13,45 @@ impl From<crate::R<LOCK_SPEC>> for R {
         R(reader)
     }
 }
-#[doc = "Field `LOCK` reader - Region Lock Bits"]
-pub struct LOCK_R(crate::FieldReader<u16, u16>);
-impl LOCK_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        LOCK_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LOCK_R {
-    type Target = crate::FieldReader<u16, u16>;
+#[doc = "Register `LOCK` writer"]
+pub struct W(crate::W<LOCK_SPEC>);
+impl core::ops::Deref for W {
+    type Target = crate::W<LOCK_SPEC>;
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
+impl core::ops::DerefMut for W {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+impl From<crate::W<LOCK_SPEC>> for W {
+    #[inline(always)]
+    fn from(writer: crate::W<LOCK_SPEC>) -> Self {
+        W(writer)
+    }
+}
+#[doc = "Field `LOCK` reader - Region Lock Bits"]
+pub type LOCK_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:15 - Region Lock Bits"]
     #[inline(always)]
     pub fn lock(&self) -> LOCK_R {
-        LOCK_R::new(self.bits as u16)
+        LOCK_R::new(self.bits)
     }
 }
-#[doc = "Lock Section\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [lock](index.html) module"]
+impl W {
+    #[doc = "Writes raw bits to the register."]
+    #[inline(always)]
+    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
+        self.0.bits(bits);
+        self
+    }
+}
+#[doc = "Lock Section\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [lock](index.html) module"]
 pub struct LOCK_SPEC;
 impl crate::RegisterSpec for LOCK_SPEC {
     type Ux = u16;
@@ -44,10 +60,13 @@ impl crate::RegisterSpec for LOCK_SPEC {
 impl crate::Readable for LOCK_SPEC {
     type Reader = R;
 }
+#[doc = "`write(|w| ..)` method takes [lock::W](W) writer structure"]
+impl crate::Writable for LOCK_SPEC {
+    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+}
 #[doc = "`reset()` method sets LOCK to value 0"]
 impl crate::Resettable for LOCK_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

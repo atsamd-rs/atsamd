@@ -35,143 +35,31 @@ impl From<crate::W<BAUD_SPEC>> for W {
     }
 }
 #[doc = "Field `CPOL` reader - Clock Polarity"]
-pub struct CPOL_R(crate::FieldReader<bool, bool>);
-impl CPOL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CPOL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CPOL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CPOL_R = crate::BitReader<bool>;
 #[doc = "Field `CPOL` writer - Clock Polarity"]
-pub struct CPOL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CPOL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type CPOL_W<'a, const O: u8> = crate::BitWriter<'a, u32, BAUD_SPEC, bool, O>;
 #[doc = "Field `CPHA` reader - Clock Phase"]
-pub struct CPHA_R(crate::FieldReader<bool, bool>);
-impl CPHA_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CPHA_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CPHA_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CPHA_R = crate::BitReader<bool>;
 #[doc = "Field `CPHA` writer - Clock Phase"]
-pub struct CPHA_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CPHA_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type CPHA_W<'a, const O: u8> = crate::BitWriter<'a, u32, BAUD_SPEC, bool, O>;
 #[doc = "Field `BAUD` reader - Serial Clock Baud Rate"]
-pub struct BAUD_R(crate::FieldReader<u8, u8>);
-impl BAUD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BAUD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BAUD_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BAUD_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `BAUD` writer - Serial Clock Baud Rate"]
-pub struct BAUD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BAUD_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 8)) | ((value as u32 & 0xff) << 8);
-        self.w
-    }
-}
+pub type BAUD_W<'a, const O: u8> = crate::FieldWriter<'a, u32, BAUD_SPEC, u8, u8, 8, O>;
 #[doc = "Field `DLYBS` reader - Delay Before SCK"]
-pub struct DLYBS_R(crate::FieldReader<u8, u8>);
-impl DLYBS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DLYBS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DLYBS_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DLYBS_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DLYBS` writer - Delay Before SCK"]
-pub struct DLYBS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DLYBS_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 16)) | ((value as u32 & 0xff) << 16);
-        self.w
-    }
-}
+pub type DLYBS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, BAUD_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bit 0 - Clock Polarity"]
     #[inline(always)]
     pub fn cpol(&self) -> CPOL_R {
-        CPOL_R::new((self.bits & 0x01) != 0)
+        CPOL_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Clock Phase"]
     #[inline(always)]
     pub fn cpha(&self) -> CPHA_R {
-        CPHA_R::new(((self.bits >> 1) & 0x01) != 0)
+        CPHA_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bits 8:15 - Serial Clock Baud Rate"]
     #[inline(always)]
@@ -187,23 +75,27 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Clock Polarity"]
     #[inline(always)]
-    pub fn cpol(&mut self) -> CPOL_W {
-        CPOL_W { w: self }
+    #[must_use]
+    pub fn cpol(&mut self) -> CPOL_W<0> {
+        CPOL_W::new(self)
     }
     #[doc = "Bit 1 - Clock Phase"]
     #[inline(always)]
-    pub fn cpha(&mut self) -> CPHA_W {
-        CPHA_W { w: self }
+    #[must_use]
+    pub fn cpha(&mut self) -> CPHA_W<1> {
+        CPHA_W::new(self)
     }
     #[doc = "Bits 8:15 - Serial Clock Baud Rate"]
     #[inline(always)]
-    pub fn baud(&mut self) -> BAUD_W {
-        BAUD_W { w: self }
+    #[must_use]
+    pub fn baud(&mut self) -> BAUD_W<8> {
+        BAUD_W::new(self)
     }
     #[doc = "Bits 16:23 - Delay Before SCK"]
     #[inline(always)]
-    pub fn dlybs(&mut self) -> DLYBS_W {
-        DLYBS_W { w: self }
+    #[must_use]
+    pub fn dlybs(&mut self) -> DLYBS_W<16> {
+        DLYBS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -224,11 +116,10 @@ impl crate::Readable for BAUD_SPEC {
 #[doc = "`write(|w| ..)` method takes [baud::W](W) writer structure"]
 impl crate::Writable for BAUD_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets BAUD to value 0"]
 impl crate::Resettable for BAUD_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

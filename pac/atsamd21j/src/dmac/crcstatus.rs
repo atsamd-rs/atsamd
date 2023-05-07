@@ -35,74 +35,29 @@ impl From<crate::W<CRCSTATUS_SPEC>> for W {
     }
 }
 #[doc = "Field `CRCBUSY` reader - CRC Module Busy"]
-pub struct CRCBUSY_R(crate::FieldReader<bool, bool>);
-impl CRCBUSY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CRCBUSY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CRCBUSY_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CRCBUSY_R = crate::BitReader<bool>;
 #[doc = "Field `CRCBUSY` writer - CRC Module Busy"]
-pub struct CRCBUSY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CRCBUSY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type CRCBUSY_W<'a, const O: u8> = crate::BitWriter<'a, u8, CRCSTATUS_SPEC, bool, O>;
 #[doc = "Field `CRCZERO` reader - CRC Zero"]
-pub struct CRCZERO_R(crate::FieldReader<bool, bool>);
-impl CRCZERO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CRCZERO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CRCZERO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CRCZERO_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bit 0 - CRC Module Busy"]
     #[inline(always)]
     pub fn crcbusy(&self) -> CRCBUSY_R {
-        CRCBUSY_R::new((self.bits & 0x01) != 0)
+        CRCBUSY_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - CRC Zero"]
     #[inline(always)]
     pub fn crczero(&self) -> CRCZERO_R {
-        CRCZERO_R::new(((self.bits >> 1) & 0x01) != 0)
+        CRCZERO_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - CRC Module Busy"]
     #[inline(always)]
-    pub fn crcbusy(&mut self) -> CRCBUSY_W {
-        CRCBUSY_W { w: self }
+    #[must_use]
+    pub fn crcbusy(&mut self) -> CRCBUSY_W<0> {
+        CRCBUSY_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -123,11 +78,10 @@ impl crate::Readable for CRCSTATUS_SPEC {
 #[doc = "`write(|w| ..)` method takes [crcstatus::W](W) writer structure"]
 impl crate::Writable for CRCSTATUS_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CRCSTATUS to value 0"]
 impl crate::Resettable for CRCSTATUS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

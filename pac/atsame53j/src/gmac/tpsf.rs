@@ -35,69 +35,13 @@ impl From<crate::W<TPSF_SPEC>> for W {
     }
 }
 #[doc = "Field `TPB1ADR` reader - TX packet buffer address"]
-pub struct TPB1ADR_R(crate::FieldReader<u16, u16>);
-impl TPB1ADR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        TPB1ADR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TPB1ADR_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TPB1ADR_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `TPB1ADR` writer - TX packet buffer address"]
-pub struct TPB1ADR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TPB1ADR_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03ff) | (value as u32 & 0x03ff);
-        self.w
-    }
-}
+pub type TPB1ADR_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TPSF_SPEC, u16, u16, 10, O>;
 #[doc = "Field `ENTXP` reader - Enable TX partial store and forward operation"]
-pub struct ENTXP_R(crate::FieldReader<bool, bool>);
-impl ENTXP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENTXP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENTXP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ENTXP_R = crate::BitReader<bool>;
 #[doc = "Field `ENTXP` writer - Enable TX partial store and forward operation"]
-pub struct ENTXP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ENTXP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 31)) | ((value as u32 & 0x01) << 31);
-        self.w
-    }
-}
+pub type ENTXP_W<'a, const O: u8> = crate::BitWriter<'a, u32, TPSF_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:9 - TX packet buffer address"]
     #[inline(always)]
@@ -107,19 +51,21 @@ impl R {
     #[doc = "Bit 31 - Enable TX partial store and forward operation"]
     #[inline(always)]
     pub fn entxp(&self) -> ENTXP_R {
-        ENTXP_R::new(((self.bits >> 31) & 0x01) != 0)
+        ENTXP_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:9 - TX packet buffer address"]
     #[inline(always)]
-    pub fn tpb1adr(&mut self) -> TPB1ADR_W {
-        TPB1ADR_W { w: self }
+    #[must_use]
+    pub fn tpb1adr(&mut self) -> TPB1ADR_W<0> {
+        TPB1ADR_W::new(self)
     }
     #[doc = "Bit 31 - Enable TX partial store and forward operation"]
     #[inline(always)]
-    pub fn entxp(&mut self) -> ENTXP_W {
-        ENTXP_W { w: self }
+    #[must_use]
+    pub fn entxp(&mut self) -> ENTXP_W<31> {
+        ENTXP_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -140,11 +86,10 @@ impl crate::Readable for TPSF_SPEC {
 #[doc = "`write(|w| ..)` method takes [tpsf::W](W) writer structure"]
 impl crate::Writable for TPSF_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TPSF to value 0x03ff"]
 impl crate::Resettable for TPSF_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x03ff
-    }
+    const RESET_VALUE: Self::Ux = 0x03ff;
 }

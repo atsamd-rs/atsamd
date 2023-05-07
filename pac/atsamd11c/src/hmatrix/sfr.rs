@@ -35,44 +35,22 @@ impl From<crate::W<SFR_SPEC>> for W {
     }
 }
 #[doc = "Field `SFR` reader - Special Function Register"]
-pub struct SFR_R(crate::FieldReader<u32, u32>);
-impl SFR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        SFR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SFR_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SFR_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `SFR` writer - Special Function Register"]
-pub struct SFR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SFR_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = value as u32;
-        self.w
-    }
-}
+pub type SFR_W<'a, const O: u8> = crate::FieldWriter<'a, u32, SFR_SPEC, u32, u32, 32, O>;
 impl R {
     #[doc = "Bits 0:31 - Special Function Register"]
     #[inline(always)]
     pub fn sfr(&self) -> SFR_R {
-        SFR_R::new(self.bits as u32)
+        SFR_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Special Function Register"]
     #[inline(always)]
-    pub fn sfr(&mut self) -> SFR_W {
-        SFR_W { w: self }
+    #[must_use]
+    pub fn sfr(&mut self) -> SFR_W<0> {
+        SFR_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for SFR_SPEC {
 #[doc = "`write(|w| ..)` method takes [sfr::W](W) writer structure"]
 impl crate::Writable for SFR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets SFR%s to value 0"]
 impl crate::Resettable for SFR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

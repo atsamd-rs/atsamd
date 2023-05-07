@@ -35,59 +35,13 @@ impl From<crate::W<PER_DITH6_SPEC>> for W {
     }
 }
 #[doc = "Field `DITHERCY` reader - Dithering Cycle Number"]
-pub struct DITHERCY_R(crate::FieldReader<u8, u8>);
-impl DITHERCY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        DITHERCY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DITHERCY_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DITHERCY_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `DITHERCY` writer - Dithering Cycle Number"]
-pub struct DITHERCY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DITHERCY_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x3f) | (value as u32 & 0x3f);
-        self.w
-    }
-}
+pub type DITHERCY_W<'a, const O: u8> = crate::FieldWriter<'a, u32, PER_DITH6_SPEC, u8, u8, 6, O>;
 #[doc = "Field `PER` reader - Period Value"]
-pub struct PER_R(crate::FieldReader<u32, u32>);
-impl PER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        PER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PER_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PER_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `PER` writer - Period Value"]
-pub struct PER_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PER_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0003_ffff << 6)) | ((value as u32 & 0x0003_ffff) << 6);
-        self.w
-    }
-}
+pub type PER_W<'a, const O: u8> = crate::FieldWriter<'a, u32, PER_DITH6_SPEC, u32, u32, 18, O>;
 impl R {
     #[doc = "Bits 0:5 - Dithering Cycle Number"]
     #[inline(always)]
@@ -97,19 +51,21 @@ impl R {
     #[doc = "Bits 6:23 - Period Value"]
     #[inline(always)]
     pub fn per(&self) -> PER_R {
-        PER_R::new(((self.bits >> 6) & 0x0003_ffff) as u32)
+        PER_R::new((self.bits >> 6) & 0x0003_ffff)
     }
 }
 impl W {
     #[doc = "Bits 0:5 - Dithering Cycle Number"]
     #[inline(always)]
-    pub fn dithercy(&mut self) -> DITHERCY_W {
-        DITHERCY_W { w: self }
+    #[must_use]
+    pub fn dithercy(&mut self) -> DITHERCY_W<0> {
+        DITHERCY_W::new(self)
     }
     #[doc = "Bits 6:23 - Period Value"]
     #[inline(always)]
-    pub fn per(&mut self) -> PER_W {
-        PER_W { w: self }
+    #[must_use]
+    pub fn per(&mut self) -> PER_W<6> {
+        PER_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -130,11 +86,10 @@ impl crate::Readable for PER_DITH6_SPEC {
 #[doc = "`write(|w| ..)` method takes [per_dith6::W](W) writer structure"]
 impl crate::Writable for PER_DITH6_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets PER_DITH6 to value 0xffff_ffff"]
 impl crate::Resettable for PER_DITH6_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0xffff_ffff
-    }
+    const RESET_VALUE: Self::Ux = 0xffff_ffff;
 }

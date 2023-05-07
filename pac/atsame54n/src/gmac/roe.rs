@@ -14,20 +14,7 @@ impl From<crate::R<ROE_SPEC>> for R {
     }
 }
 #[doc = "Field `RXOVR` reader - Receive Overruns"]
-pub struct RXOVR_R(crate::FieldReader<u16, u16>);
-impl RXOVR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        RXOVR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RXOVR_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RXOVR_R = crate::FieldReader<u16, u16>;
 impl R {
     #[doc = "Bits 0:9 - Receive Overruns"]
     #[inline(always)]
@@ -46,8 +33,5 @@ impl crate::Readable for ROE_SPEC {
 }
 #[doc = "`reset()` method sets ROE to value 0"]
 impl crate::Resettable for ROE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

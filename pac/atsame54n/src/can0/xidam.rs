@@ -35,44 +35,22 @@ impl From<crate::W<XIDAM_SPEC>> for W {
     }
 }
 #[doc = "Field `EIDM` reader - Extended ID Mask"]
-pub struct EIDM_R(crate::FieldReader<u32, u32>);
-impl EIDM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        EIDM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EIDM_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EIDM_R = crate::FieldReader<u32, u32>;
 #[doc = "Field `EIDM` writer - Extended ID Mask"]
-pub struct EIDM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EIDM_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x1fff_ffff) | (value as u32 & 0x1fff_ffff);
-        self.w
-    }
-}
+pub type EIDM_W<'a, const O: u8> = crate::FieldWriter<'a, u32, XIDAM_SPEC, u32, u32, 29, O>;
 impl R {
     #[doc = "Bits 0:28 - Extended ID Mask"]
     #[inline(always)]
     pub fn eidm(&self) -> EIDM_R {
-        EIDM_R::new((self.bits & 0x1fff_ffff) as u32)
+        EIDM_R::new(self.bits & 0x1fff_ffff)
     }
 }
 impl W {
     #[doc = "Bits 0:28 - Extended ID Mask"]
     #[inline(always)]
-    pub fn eidm(&mut self) -> EIDM_W {
-        EIDM_W { w: self }
+    #[must_use]
+    pub fn eidm(&mut self) -> EIDM_W<0> {
+        EIDM_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -93,11 +71,10 @@ impl crate::Readable for XIDAM_SPEC {
 #[doc = "`write(|w| ..)` method takes [xidam::W](W) writer structure"]
 impl crate::Writable for XIDAM_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets XIDAM to value 0x1fff_ffff"]
 impl crate::Resettable for XIDAM_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x1fff_ffff
-    }
+    const RESET_VALUE: Self::Ux = 0x1fff_ffff;
 }

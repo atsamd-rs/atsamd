@@ -20,113 +20,37 @@ impl From<crate::W<PSTATUSCLR_SPEC>> for W {
     }
 }
 #[doc = "Field `CURBK` writer - Curren Bank clear"]
-pub struct CURBK_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CURBK_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type CURBK_W<'a, const O: u8> = crate::BitWriter<'a, u8, PSTATUSCLR_SPEC, bool, O>;
 #[doc = "Field `PFREEZE` writer - Pipe Freeze Clear"]
-pub struct PFREEZE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PFREEZE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
-        self.w
-    }
-}
+pub type PFREEZE_W<'a, const O: u8> = crate::BitWriter<'a, u8, PSTATUSCLR_SPEC, bool, O>;
 #[doc = "Field `BK0RDY` writer - Bank 0 Ready Clear"]
-pub struct BK0RDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BK0RDY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u8 & 0x01) << 6);
-        self.w
-    }
-}
+pub type BK0RDY_W<'a, const O: u8> = crate::BitWriter<'a, u8, PSTATUSCLR_SPEC, bool, O>;
 #[doc = "Field `BK1RDY` writer - Bank 1 Ready Clear"]
-pub struct BK1RDY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BK1RDY_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u8 & 0x01) << 7);
-        self.w
-    }
-}
+pub type BK1RDY_W<'a, const O: u8> = crate::BitWriter<'a, u8, PSTATUSCLR_SPEC, bool, O>;
 impl W {
     #[doc = "Bit 2 - Curren Bank clear"]
     #[inline(always)]
-    pub fn curbk(&mut self) -> CURBK_W {
-        CURBK_W { w: self }
+    #[must_use]
+    pub fn curbk(&mut self) -> CURBK_W<2> {
+        CURBK_W::new(self)
     }
     #[doc = "Bit 4 - Pipe Freeze Clear"]
     #[inline(always)]
-    pub fn pfreeze(&mut self) -> PFREEZE_W {
-        PFREEZE_W { w: self }
+    #[must_use]
+    pub fn pfreeze(&mut self) -> PFREEZE_W<4> {
+        PFREEZE_W::new(self)
     }
     #[doc = "Bit 6 - Bank 0 Ready Clear"]
     #[inline(always)]
-    pub fn bk0rdy(&mut self) -> BK0RDY_W {
-        BK0RDY_W { w: self }
+    #[must_use]
+    pub fn bk0rdy(&mut self) -> BK0RDY_W<6> {
+        BK0RDY_W::new(self)
     }
     #[doc = "Bit 7 - Bank 1 Ready Clear"]
     #[inline(always)]
-    pub fn bk1rdy(&mut self) -> BK1RDY_W {
-        BK1RDY_W { w: self }
+    #[must_use]
+    pub fn bk1rdy(&mut self) -> BK1RDY_W<7> {
+        BK1RDY_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -143,11 +67,10 @@ impl crate::RegisterSpec for PSTATUSCLR_SPEC {
 #[doc = "`write(|w| ..)` method takes [pstatusclr::W](W) writer structure"]
 impl crate::Writable for PSTATUSCLR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets PSTATUSCLR%s to value 0"]
 impl crate::Resettable for PSTATUSCLR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

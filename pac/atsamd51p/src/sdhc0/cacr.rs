@@ -35,74 +35,18 @@ impl From<crate::W<CACR_SPEC>> for W {
     }
 }
 #[doc = "Field `CAPWREN` reader - Capabilities Registers Write Enable (Required to write the correct frequencies in the Capabilities Registers)"]
-pub struct CAPWREN_R(crate::FieldReader<bool, bool>);
-impl CAPWREN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CAPWREN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CAPWREN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CAPWREN_R = crate::BitReader<bool>;
 #[doc = "Field `CAPWREN` writer - Capabilities Registers Write Enable (Required to write the correct frequencies in the Capabilities Registers)"]
-pub struct CAPWREN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CAPWREN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type CAPWREN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CACR_SPEC, bool, O>;
 #[doc = "Field `KEY` reader - Key (0x46)"]
-pub struct KEY_R(crate::FieldReader<u8, u8>);
-impl KEY_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        KEY_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for KEY_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type KEY_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `KEY` writer - Key (0x46)"]
-pub struct KEY_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> KEY_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 8)) | ((value as u32 & 0xff) << 8);
-        self.w
-    }
-}
+pub type KEY_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CACR_SPEC, u8, u8, 8, O>;
 impl R {
     #[doc = "Bit 0 - Capabilities Registers Write Enable (Required to write the correct frequencies in the Capabilities Registers)"]
     #[inline(always)]
     pub fn capwren(&self) -> CAPWREN_R {
-        CAPWREN_R::new((self.bits & 0x01) != 0)
+        CAPWREN_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bits 8:15 - Key (0x46)"]
     #[inline(always)]
@@ -113,13 +57,15 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Capabilities Registers Write Enable (Required to write the correct frequencies in the Capabilities Registers)"]
     #[inline(always)]
-    pub fn capwren(&mut self) -> CAPWREN_W {
-        CAPWREN_W { w: self }
+    #[must_use]
+    pub fn capwren(&mut self) -> CAPWREN_W<0> {
+        CAPWREN_W::new(self)
     }
     #[doc = "Bits 8:15 - Key (0x46)"]
     #[inline(always)]
-    pub fn key(&mut self) -> KEY_W {
-        KEY_W { w: self }
+    #[must_use]
+    pub fn key(&mut self) -> KEY_W<8> {
+        KEY_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -140,11 +86,10 @@ impl crate::Readable for CACR_SPEC {
 #[doc = "`write(|w| ..)` method takes [cacr::W](W) writer structure"]
 impl crate::Writable for CACR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CACR to value 0"]
 impl crate::Resettable for CACR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

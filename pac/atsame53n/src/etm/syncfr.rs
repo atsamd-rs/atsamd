@@ -24,8 +24,5 @@ impl crate::Readable for SYNCFR_SPEC {
 }
 #[doc = "`reset()` method sets SYNCFR to value 0x0400"]
 impl crate::Resettable for SYNCFR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x0400
-    }
+    const RESET_VALUE: Self::Ux = 0x0400;
 }

@@ -24,8 +24,5 @@ impl crate::Readable for AUTHSTATUS_SPEC {
 }
 #[doc = "`reset()` method sets AUTHSTATUS to value 0"]
 impl crate::Resettable for AUTHSTATUS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

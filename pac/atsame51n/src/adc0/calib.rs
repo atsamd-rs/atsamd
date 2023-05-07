@@ -35,118 +35,52 @@ impl From<crate::W<CALIB_SPEC>> for W {
     }
 }
 #[doc = "Field `BIASCOMP` reader - Bias Comparator Scaling"]
-pub struct BIASCOMP_R(crate::FieldReader<u8, u8>);
-impl BIASCOMP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BIASCOMP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BIASCOMP_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BIASCOMP_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `BIASCOMP` writer - Bias Comparator Scaling"]
-pub struct BIASCOMP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BIASCOMP_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | (value as u16 & 0x07);
-        self.w
-    }
-}
+pub type BIASCOMP_W<'a, const O: u8> = crate::FieldWriter<'a, u16, CALIB_SPEC, u8, u8, 3, O>;
 #[doc = "Field `BIASR2R` reader - Bias R2R Ampli scaling"]
-pub struct BIASR2R_R(crate::FieldReader<u8, u8>);
-impl BIASR2R_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BIASR2R_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BIASR2R_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BIASR2R_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `BIASR2R` writer - Bias R2R Ampli scaling"]
-pub struct BIASR2R_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BIASR2R_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 4)) | ((value as u16 & 0x07) << 4);
-        self.w
-    }
-}
+pub type BIASR2R_W<'a, const O: u8> = crate::FieldWriter<'a, u16, CALIB_SPEC, u8, u8, 3, O>;
 #[doc = "Field `BIASREFBUF` reader - Bias Reference Buffer Scaling"]
-pub struct BIASREFBUF_R(crate::FieldReader<u8, u8>);
-impl BIASREFBUF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BIASREFBUF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BIASREFBUF_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BIASREFBUF_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `BIASREFBUF` writer - Bias Reference Buffer Scaling"]
-pub struct BIASREFBUF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BIASREFBUF_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x07 << 8)) | ((value as u16 & 0x07) << 8);
-        self.w
-    }
-}
+pub type BIASREFBUF_W<'a, const O: u8> = crate::FieldWriter<'a, u16, CALIB_SPEC, u8, u8, 3, O>;
 impl R {
     #[doc = "Bits 0:2 - Bias Comparator Scaling"]
     #[inline(always)]
     pub fn biascomp(&self) -> BIASCOMP_R {
-        BIASCOMP_R::new((self.bits & 0x07) as u8)
+        BIASCOMP_R::new((self.bits & 7) as u8)
     }
     #[doc = "Bits 4:6 - Bias R2R Ampli scaling"]
     #[inline(always)]
     pub fn biasr2r(&self) -> BIASR2R_R {
-        BIASR2R_R::new(((self.bits >> 4) & 0x07) as u8)
+        BIASR2R_R::new(((self.bits >> 4) & 7) as u8)
     }
     #[doc = "Bits 8:10 - Bias Reference Buffer Scaling"]
     #[inline(always)]
     pub fn biasrefbuf(&self) -> BIASREFBUF_R {
-        BIASREFBUF_R::new(((self.bits >> 8) & 0x07) as u8)
+        BIASREFBUF_R::new(((self.bits >> 8) & 7) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:2 - Bias Comparator Scaling"]
     #[inline(always)]
-    pub fn biascomp(&mut self) -> BIASCOMP_W {
-        BIASCOMP_W { w: self }
+    #[must_use]
+    pub fn biascomp(&mut self) -> BIASCOMP_W<0> {
+        BIASCOMP_W::new(self)
     }
     #[doc = "Bits 4:6 - Bias R2R Ampli scaling"]
     #[inline(always)]
-    pub fn biasr2r(&mut self) -> BIASR2R_W {
-        BIASR2R_W { w: self }
+    #[must_use]
+    pub fn biasr2r(&mut self) -> BIASR2R_W<4> {
+        BIASR2R_W::new(self)
     }
     #[doc = "Bits 8:10 - Bias Reference Buffer Scaling"]
     #[inline(always)]
-    pub fn biasrefbuf(&mut self) -> BIASREFBUF_W {
-        BIASREFBUF_W { w: self }
+    #[must_use]
+    pub fn biasrefbuf(&mut self) -> BIASREFBUF_W<8> {
+        BIASREFBUF_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -167,11 +101,10 @@ impl crate::Readable for CALIB_SPEC {
 #[doc = "`write(|w| ..)` method takes [calib::W](W) writer structure"]
 impl crate::Writable for CALIB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CALIB to value 0"]
 impl crate::Resettable for CALIB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

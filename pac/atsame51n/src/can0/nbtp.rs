@@ -35,113 +35,21 @@ impl From<crate::W<NBTP_SPEC>> for W {
     }
 }
 #[doc = "Field `NTSEG2` reader - Nominal Time segment after sample point"]
-pub struct NTSEG2_R(crate::FieldReader<u8, u8>);
-impl NTSEG2_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        NTSEG2_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NTSEG2_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NTSEG2_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `NTSEG2` writer - Nominal Time segment after sample point"]
-pub struct NTSEG2_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NTSEG2_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x7f) | (value as u32 & 0x7f);
-        self.w
-    }
-}
+pub type NTSEG2_W<'a, const O: u8> = crate::FieldWriter<'a, u32, NBTP_SPEC, u8, u8, 7, O>;
 #[doc = "Field `NTSEG1` reader - Nominal Time segment before sample point"]
-pub struct NTSEG1_R(crate::FieldReader<u8, u8>);
-impl NTSEG1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        NTSEG1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NTSEG1_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NTSEG1_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `NTSEG1` writer - Nominal Time segment before sample point"]
-pub struct NTSEG1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NTSEG1_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 8)) | ((value as u32 & 0xff) << 8);
-        self.w
-    }
-}
+pub type NTSEG1_W<'a, const O: u8> = crate::FieldWriter<'a, u32, NBTP_SPEC, u8, u8, 8, O>;
 #[doc = "Field `NBRP` reader - Nominal Baud Rate Prescaler"]
-pub struct NBRP_R(crate::FieldReader<u16, u16>);
-impl NBRP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        NBRP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NBRP_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NBRP_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `NBRP` writer - Nominal Baud Rate Prescaler"]
-pub struct NBRP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NBRP_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01ff << 16)) | ((value as u32 & 0x01ff) << 16);
-        self.w
-    }
-}
+pub type NBRP_W<'a, const O: u8> = crate::FieldWriter<'a, u32, NBTP_SPEC, u16, u16, 9, O>;
 #[doc = "Field `NSJW` reader - Nominal (Re)Synchronization Jump Width"]
-pub struct NSJW_R(crate::FieldReader<u8, u8>);
-impl NSJW_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        NSJW_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NSJW_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NSJW_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `NSJW` writer - Nominal (Re)Synchronization Jump Width"]
-pub struct NSJW_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NSJW_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x7f << 25)) | ((value as u32 & 0x7f) << 25);
-        self.w
-    }
-}
+pub type NSJW_W<'a, const O: u8> = crate::FieldWriter<'a, u32, NBTP_SPEC, u8, u8, 7, O>;
 impl R {
     #[doc = "Bits 0:6 - Nominal Time segment after sample point"]
     #[inline(always)]
@@ -167,23 +75,27 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Nominal Time segment after sample point"]
     #[inline(always)]
-    pub fn ntseg2(&mut self) -> NTSEG2_W {
-        NTSEG2_W { w: self }
+    #[must_use]
+    pub fn ntseg2(&mut self) -> NTSEG2_W<0> {
+        NTSEG2_W::new(self)
     }
     #[doc = "Bits 8:15 - Nominal Time segment before sample point"]
     #[inline(always)]
-    pub fn ntseg1(&mut self) -> NTSEG1_W {
-        NTSEG1_W { w: self }
+    #[must_use]
+    pub fn ntseg1(&mut self) -> NTSEG1_W<8> {
+        NTSEG1_W::new(self)
     }
     #[doc = "Bits 16:24 - Nominal Baud Rate Prescaler"]
     #[inline(always)]
-    pub fn nbrp(&mut self) -> NBRP_W {
-        NBRP_W { w: self }
+    #[must_use]
+    pub fn nbrp(&mut self) -> NBRP_W<16> {
+        NBRP_W::new(self)
     }
     #[doc = "Bits 25:31 - Nominal (Re)Synchronization Jump Width"]
     #[inline(always)]
-    pub fn nsjw(&mut self) -> NSJW_W {
-        NSJW_W { w: self }
+    #[must_use]
+    pub fn nsjw(&mut self) -> NSJW_W<25> {
+        NSJW_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -204,11 +116,10 @@ impl crate::Readable for NBTP_SPEC {
 #[doc = "`write(|w| ..)` method takes [nbtp::W](W) writer structure"]
 impl crate::Writable for NBTP_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets NBTP to value 0x0600_0a03"]
 impl crate::Resettable for NBTP_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x0600_0a03
-    }
+    const RESET_VALUE: Self::Ux = 0x0600_0a03;
 }

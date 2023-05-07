@@ -35,235 +35,81 @@ impl From<crate::W<STATUS_SPEC>> for W {
     }
 }
 #[doc = "Field `PRM` reader - Power Reduction Mode"]
-pub struct PRM_R(crate::FieldReader<bool, bool>);
-impl PRM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PRM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PRM_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PRM_R = crate::BitReader<bool>;
 #[doc = "Field `LOAD` reader - NVM Page Buffer Active Loading"]
-pub struct LOAD_R(crate::FieldReader<bool, bool>);
-impl LOAD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        LOAD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LOAD_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LOAD_R = crate::BitReader<bool>;
 #[doc = "Field `LOAD` writer - NVM Page Buffer Active Loading"]
-pub struct LOAD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LOAD_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
-        self.w
-    }
-}
+pub type LOAD_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `PROGE` reader - Programming Error Status"]
-pub struct PROGE_R(crate::FieldReader<bool, bool>);
-impl PROGE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PROGE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PROGE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PROGE_R = crate::BitReader<bool>;
 #[doc = "Field `PROGE` writer - Programming Error Status"]
-pub struct PROGE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PROGE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
-        self.w
-    }
-}
+pub type PROGE_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `LOCKE` reader - Lock Error Status"]
-pub struct LOCKE_R(crate::FieldReader<bool, bool>);
-impl LOCKE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        LOCKE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LOCKE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LOCKE_R = crate::BitReader<bool>;
 #[doc = "Field `LOCKE` writer - Lock Error Status"]
-pub struct LOCKE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LOCKE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u16 & 0x01) << 3);
-        self.w
-    }
-}
+pub type LOCKE_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `NVME` reader - NVM Error"]
-pub struct NVME_R(crate::FieldReader<bool, bool>);
-impl NVME_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        NVME_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NVME_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NVME_R = crate::BitReader<bool>;
 #[doc = "Field `NVME` writer - NVM Error"]
-pub struct NVME_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NVME_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
-        self.w
-    }
-}
+pub type NVME_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `SB` reader - Security Bit Status"]
-pub struct SB_R(crate::FieldReader<bool, bool>);
-impl SB_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SB_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SB_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SB_R = crate::BitReader<bool>;
 impl R {
     #[doc = "Bit 0 - Power Reduction Mode"]
     #[inline(always)]
     pub fn prm(&self) -> PRM_R {
-        PRM_R::new((self.bits & 0x01) != 0)
+        PRM_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - NVM Page Buffer Active Loading"]
     #[inline(always)]
     pub fn load(&self) -> LOAD_R {
-        LOAD_R::new(((self.bits >> 1) & 0x01) != 0)
+        LOAD_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Programming Error Status"]
     #[inline(always)]
     pub fn proge(&self) -> PROGE_R {
-        PROGE_R::new(((self.bits >> 2) & 0x01) != 0)
+        PROGE_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Lock Error Status"]
     #[inline(always)]
     pub fn locke(&self) -> LOCKE_R {
-        LOCKE_R::new(((self.bits >> 3) & 0x01) != 0)
+        LOCKE_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - NVM Error"]
     #[inline(always)]
     pub fn nvme(&self) -> NVME_R {
-        NVME_R::new(((self.bits >> 4) & 0x01) != 0)
+        NVME_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 8 - Security Bit Status"]
     #[inline(always)]
     pub fn sb(&self) -> SB_R {
-        SB_R::new(((self.bits >> 8) & 0x01) != 0)
+        SB_R::new(((self.bits >> 8) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 1 - NVM Page Buffer Active Loading"]
     #[inline(always)]
-    pub fn load(&mut self) -> LOAD_W {
-        LOAD_W { w: self }
+    #[must_use]
+    pub fn load(&mut self) -> LOAD_W<1> {
+        LOAD_W::new(self)
     }
     #[doc = "Bit 2 - Programming Error Status"]
     #[inline(always)]
-    pub fn proge(&mut self) -> PROGE_W {
-        PROGE_W { w: self }
+    #[must_use]
+    pub fn proge(&mut self) -> PROGE_W<2> {
+        PROGE_W::new(self)
     }
     #[doc = "Bit 3 - Lock Error Status"]
     #[inline(always)]
-    pub fn locke(&mut self) -> LOCKE_W {
-        LOCKE_W { w: self }
+    #[must_use]
+    pub fn locke(&mut self) -> LOCKE_W<3> {
+        LOCKE_W::new(self)
     }
     #[doc = "Bit 4 - NVM Error"]
     #[inline(always)]
-    pub fn nvme(&mut self) -> NVME_W {
-        NVME_W { w: self }
+    #[must_use]
+    pub fn nvme(&mut self) -> NVME_W<4> {
+        NVME_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -284,11 +130,10 @@ impl crate::Readable for STATUS_SPEC {
 #[doc = "`write(|w| ..)` method takes [status::W](W) writer structure"]
 impl crate::Writable for STATUS_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0"]
 impl crate::Resettable for STATUS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -34,10 +34,12 @@ impl From<crate::W<CHCTRLB_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `CMD` reader - Software Command"]
+pub type CMD_R = crate::FieldReader<u8, CMDSELECT_A>;
 #[doc = "Software Command\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CMD_A {
+pub enum CMDSELECT_A {
     #[doc = "0: No action"]
     NOACT = 0,
     #[doc = "1: Channel suspend operation"]
@@ -45,96 +47,71 @@ pub enum CMD_A {
     #[doc = "2: Channel resume operation"]
     RESUME = 2,
 }
-impl From<CMD_A> for u8 {
+impl From<CMDSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: CMD_A) -> Self {
+    fn from(variant: CMDSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `CMD` reader - Software Command"]
-pub struct CMD_R(crate::FieldReader<u8, CMD_A>);
 impl CMD_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        CMD_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<CMD_A> {
+    pub fn variant(&self) -> Option<CMDSELECT_A> {
         match self.bits {
-            0 => Some(CMD_A::NOACT),
-            1 => Some(CMD_A::SUSPEND),
-            2 => Some(CMD_A::RESUME),
+            0 => Some(CMDSELECT_A::NOACT),
+            1 => Some(CMDSELECT_A::SUSPEND),
+            2 => Some(CMDSELECT_A::RESUME),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `NOACT`"]
     #[inline(always)]
     pub fn is_noact(&self) -> bool {
-        **self == CMD_A::NOACT
+        *self == CMDSELECT_A::NOACT
     }
     #[doc = "Checks if the value of the field is `SUSPEND`"]
     #[inline(always)]
     pub fn is_suspend(&self) -> bool {
-        **self == CMD_A::SUSPEND
+        *self == CMDSELECT_A::SUSPEND
     }
     #[doc = "Checks if the value of the field is `RESUME`"]
     #[inline(always)]
     pub fn is_resume(&self) -> bool {
-        **self == CMD_A::RESUME
-    }
-}
-impl core::ops::Deref for CMD_R {
-    type Target = crate::FieldReader<u8, CMD_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == CMDSELECT_A::RESUME
     }
 }
 #[doc = "Field `CMD` writer - Software Command"]
-pub struct CMD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CMD_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: CMD_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type CMD_W<'a, const O: u8> = crate::FieldWriter<'a, u8, CHCTRLB_SPEC, u8, CMDSELECT_A, 2, O>;
+impl<'a, const O: u8> CMD_W<'a, O> {
     #[doc = "No action"]
     #[inline(always)]
     pub fn noact(self) -> &'a mut W {
-        self.variant(CMD_A::NOACT)
+        self.variant(CMDSELECT_A::NOACT)
     }
     #[doc = "Channel suspend operation"]
     #[inline(always)]
     pub fn suspend(self) -> &'a mut W {
-        self.variant(CMD_A::SUSPEND)
+        self.variant(CMDSELECT_A::SUSPEND)
     }
     #[doc = "Channel resume operation"]
     #[inline(always)]
     pub fn resume(self) -> &'a mut W {
-        self.variant(CMD_A::RESUME)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u8 & 0x03);
-        self.w
+        self.variant(CMDSELECT_A::RESUME)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - Software Command"]
     #[inline(always)]
     pub fn cmd(&self) -> CMD_R {
-        CMD_R::new((self.bits & 0x03) as u8)
+        CMD_R::new(self.bits & 3)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Software Command"]
     #[inline(always)]
-    pub fn cmd(&mut self) -> CMD_W {
-        CMD_W { w: self }
+    #[must_use]
+    pub fn cmd(&mut self) -> CMD_W<0> {
+        CMD_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -155,11 +132,10 @@ impl crate::Readable for CHCTRLB_SPEC {
 #[doc = "`write(|w| ..)` method takes [chctrlb::W](W) writer structure"]
 impl crate::Writable for CHCTRLB_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CHCTRLB to value 0"]
 impl crate::Resettable for CHCTRLB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

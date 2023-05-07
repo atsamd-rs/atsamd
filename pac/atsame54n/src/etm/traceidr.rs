@@ -54,11 +54,10 @@ impl crate::Readable for TRACEIDR_SPEC {
 #[doc = "`write(|w| ..)` method takes [traceidr::W](W) writer structure"]
 impl crate::Writable for TRACEIDR_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TRACEIDR to value 0"]
 impl crate::Resettable for TRACEIDR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -34,10 +34,12 @@ impl From<crate::W<TXESC_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `TBDS` reader - Tx Buffer Data Field Size"]
+pub type TBDS_R = crate::FieldReader<u8, TBDSSELECT_A>;
 #[doc = "Tx Buffer Data Field Size\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum TBDS_A {
+pub enum TBDSSELECT_A {
     #[doc = "0: 8 byte data field"]
     DATA8 = 0,
     #[doc = "1: 12 byte data field"]
@@ -55,151 +57,127 @@ pub enum TBDS_A {
     #[doc = "7: 64 byte data field"]
     DATA64 = 7,
 }
-impl From<TBDS_A> for u8 {
+impl From<TBDSSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: TBDS_A) -> Self {
+    fn from(variant: TBDSSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `TBDS` reader - Tx Buffer Data Field Size"]
-pub struct TBDS_R(crate::FieldReader<u8, TBDS_A>);
 impl TBDS_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TBDS_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> TBDS_A {
+    pub fn variant(&self) -> TBDSSELECT_A {
         match self.bits {
-            0 => TBDS_A::DATA8,
-            1 => TBDS_A::DATA12,
-            2 => TBDS_A::DATA16,
-            3 => TBDS_A::DATA20,
-            4 => TBDS_A::DATA24,
-            5 => TBDS_A::DATA32,
-            6 => TBDS_A::DATA48,
-            7 => TBDS_A::DATA64,
+            0 => TBDSSELECT_A::DATA8,
+            1 => TBDSSELECT_A::DATA12,
+            2 => TBDSSELECT_A::DATA16,
+            3 => TBDSSELECT_A::DATA20,
+            4 => TBDSSELECT_A::DATA24,
+            5 => TBDSSELECT_A::DATA32,
+            6 => TBDSSELECT_A::DATA48,
+            7 => TBDSSELECT_A::DATA64,
             _ => unreachable!(),
         }
     }
     #[doc = "Checks if the value of the field is `DATA8`"]
     #[inline(always)]
     pub fn is_data8(&self) -> bool {
-        **self == TBDS_A::DATA8
+        *self == TBDSSELECT_A::DATA8
     }
     #[doc = "Checks if the value of the field is `DATA12`"]
     #[inline(always)]
     pub fn is_data12(&self) -> bool {
-        **self == TBDS_A::DATA12
+        *self == TBDSSELECT_A::DATA12
     }
     #[doc = "Checks if the value of the field is `DATA16`"]
     #[inline(always)]
     pub fn is_data16(&self) -> bool {
-        **self == TBDS_A::DATA16
+        *self == TBDSSELECT_A::DATA16
     }
     #[doc = "Checks if the value of the field is `DATA20`"]
     #[inline(always)]
     pub fn is_data20(&self) -> bool {
-        **self == TBDS_A::DATA20
+        *self == TBDSSELECT_A::DATA20
     }
     #[doc = "Checks if the value of the field is `DATA24`"]
     #[inline(always)]
     pub fn is_data24(&self) -> bool {
-        **self == TBDS_A::DATA24
+        *self == TBDSSELECT_A::DATA24
     }
     #[doc = "Checks if the value of the field is `DATA32`"]
     #[inline(always)]
     pub fn is_data32(&self) -> bool {
-        **self == TBDS_A::DATA32
+        *self == TBDSSELECT_A::DATA32
     }
     #[doc = "Checks if the value of the field is `DATA48`"]
     #[inline(always)]
     pub fn is_data48(&self) -> bool {
-        **self == TBDS_A::DATA48
+        *self == TBDSSELECT_A::DATA48
     }
     #[doc = "Checks if the value of the field is `DATA64`"]
     #[inline(always)]
     pub fn is_data64(&self) -> bool {
-        **self == TBDS_A::DATA64
-    }
-}
-impl core::ops::Deref for TBDS_R {
-    type Target = crate::FieldReader<u8, TBDS_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == TBDSSELECT_A::DATA64
     }
 }
 #[doc = "Field `TBDS` writer - Tx Buffer Data Field Size"]
-pub struct TBDS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TBDS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: TBDS_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
+pub type TBDS_W<'a, const O: u8> =
+    crate::FieldWriterSafe<'a, u32, TXESC_SPEC, u8, TBDSSELECT_A, 3, O>;
+impl<'a, const O: u8> TBDS_W<'a, O> {
     #[doc = "8 byte data field"]
     #[inline(always)]
     pub fn data8(self) -> &'a mut W {
-        self.variant(TBDS_A::DATA8)
+        self.variant(TBDSSELECT_A::DATA8)
     }
     #[doc = "12 byte data field"]
     #[inline(always)]
     pub fn data12(self) -> &'a mut W {
-        self.variant(TBDS_A::DATA12)
+        self.variant(TBDSSELECT_A::DATA12)
     }
     #[doc = "16 byte data field"]
     #[inline(always)]
     pub fn data16(self) -> &'a mut W {
-        self.variant(TBDS_A::DATA16)
+        self.variant(TBDSSELECT_A::DATA16)
     }
     #[doc = "20 byte data field"]
     #[inline(always)]
     pub fn data20(self) -> &'a mut W {
-        self.variant(TBDS_A::DATA20)
+        self.variant(TBDSSELECT_A::DATA20)
     }
     #[doc = "24 byte data field"]
     #[inline(always)]
     pub fn data24(self) -> &'a mut W {
-        self.variant(TBDS_A::DATA24)
+        self.variant(TBDSSELECT_A::DATA24)
     }
     #[doc = "32 byte data field"]
     #[inline(always)]
     pub fn data32(self) -> &'a mut W {
-        self.variant(TBDS_A::DATA32)
+        self.variant(TBDSSELECT_A::DATA32)
     }
     #[doc = "48 byte data field"]
     #[inline(always)]
     pub fn data48(self) -> &'a mut W {
-        self.variant(TBDS_A::DATA48)
+        self.variant(TBDSSELECT_A::DATA48)
     }
     #[doc = "64 byte data field"]
     #[inline(always)]
     pub fn data64(self) -> &'a mut W {
-        self.variant(TBDS_A::DATA64)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x07) | (value as u32 & 0x07);
-        self.w
+        self.variant(TBDSSELECT_A::DATA64)
     }
 }
 impl R {
     #[doc = "Bits 0:2 - Tx Buffer Data Field Size"]
     #[inline(always)]
     pub fn tbds(&self) -> TBDS_R {
-        TBDS_R::new((self.bits & 0x07) as u8)
+        TBDS_R::new((self.bits & 7) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:2 - Tx Buffer Data Field Size"]
     #[inline(always)]
-    pub fn tbds(&mut self) -> TBDS_W {
-        TBDS_W { w: self }
+    #[must_use]
+    pub fn tbds(&mut self) -> TBDS_W<0> {
+        TBDS_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -220,11 +198,10 @@ impl crate::Readable for TXESC_SPEC {
 #[doc = "`write(|w| ..)` method takes [txesc::W](W) writer structure"]
 impl crate::Writable for TXESC_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TXESC to value 0"]
 impl crate::Resettable for TXESC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

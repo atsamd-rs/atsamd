@@ -35,180 +35,25 @@ impl From<crate::W<WOL_SPEC>> for W {
     }
 }
 #[doc = "Field `IP` reader - IP address"]
-pub struct IP_R(crate::FieldReader<u16, u16>);
-impl IP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        IP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for IP_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type IP_R = crate::FieldReader<u16, u16>;
 #[doc = "Field `IP` writer - IP address"]
-pub struct IP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> IP_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xffff) | (value as u32 & 0xffff);
-        self.w
-    }
-}
+pub type IP_W<'a, const O: u8> = crate::FieldWriter<'a, u32, WOL_SPEC, u16, u16, 16, O>;
 #[doc = "Field `MAG` reader - Event enable"]
-pub struct MAG_R(crate::FieldReader<bool, bool>);
-impl MAG_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        MAG_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for MAG_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type MAG_R = crate::BitReader<bool>;
 #[doc = "Field `MAG` writer - Event enable"]
-pub struct MAG_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> MAG_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 16)) | ((value as u32 & 0x01) << 16);
-        self.w
-    }
-}
+pub type MAG_W<'a, const O: u8> = crate::BitWriter<'a, u32, WOL_SPEC, bool, O>;
 #[doc = "Field `ARP` reader - LAN ARP req"]
-pub struct ARP_R(crate::FieldReader<bool, bool>);
-impl ARP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ARP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ARP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ARP_R = crate::BitReader<bool>;
 #[doc = "Field `ARP` writer - LAN ARP req"]
-pub struct ARP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ARP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 17)) | ((value as u32 & 0x01) << 17);
-        self.w
-    }
-}
+pub type ARP_W<'a, const O: u8> = crate::BitWriter<'a, u32, WOL_SPEC, bool, O>;
 #[doc = "Field `SA1` reader - WOL specific address reg 1"]
-pub struct SA1_R(crate::FieldReader<bool, bool>);
-impl SA1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SA1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SA1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SA1_R = crate::BitReader<bool>;
 #[doc = "Field `SA1` writer - WOL specific address reg 1"]
-pub struct SA1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SA1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 18)) | ((value as u32 & 0x01) << 18);
-        self.w
-    }
-}
+pub type SA1_W<'a, const O: u8> = crate::BitWriter<'a, u32, WOL_SPEC, bool, O>;
 #[doc = "Field `MTI` reader - WOL LAN multicast"]
-pub struct MTI_R(crate::FieldReader<bool, bool>);
-impl MTI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        MTI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for MTI_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type MTI_R = crate::BitReader<bool>;
 #[doc = "Field `MTI` writer - WOL LAN multicast"]
-pub struct MTI_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> MTI_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 19)) | ((value as u32 & 0x01) << 19);
-        self.w
-    }
-}
+pub type MTI_W<'a, const O: u8> = crate::BitWriter<'a, u32, WOL_SPEC, bool, O>;
 impl R {
     #[doc = "Bits 0:15 - IP address"]
     #[inline(always)]
@@ -218,49 +63,54 @@ impl R {
     #[doc = "Bit 16 - Event enable"]
     #[inline(always)]
     pub fn mag(&self) -> MAG_R {
-        MAG_R::new(((self.bits >> 16) & 0x01) != 0)
+        MAG_R::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - LAN ARP req"]
     #[inline(always)]
     pub fn arp(&self) -> ARP_R {
-        ARP_R::new(((self.bits >> 17) & 0x01) != 0)
+        ARP_R::new(((self.bits >> 17) & 1) != 0)
     }
     #[doc = "Bit 18 - WOL specific address reg 1"]
     #[inline(always)]
     pub fn sa1(&self) -> SA1_R {
-        SA1_R::new(((self.bits >> 18) & 0x01) != 0)
+        SA1_R::new(((self.bits >> 18) & 1) != 0)
     }
     #[doc = "Bit 19 - WOL LAN multicast"]
     #[inline(always)]
     pub fn mti(&self) -> MTI_R {
-        MTI_R::new(((self.bits >> 19) & 0x01) != 0)
+        MTI_R::new(((self.bits >> 19) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:15 - IP address"]
     #[inline(always)]
-    pub fn ip(&mut self) -> IP_W {
-        IP_W { w: self }
+    #[must_use]
+    pub fn ip(&mut self) -> IP_W<0> {
+        IP_W::new(self)
     }
     #[doc = "Bit 16 - Event enable"]
     #[inline(always)]
-    pub fn mag(&mut self) -> MAG_W {
-        MAG_W { w: self }
+    #[must_use]
+    pub fn mag(&mut self) -> MAG_W<16> {
+        MAG_W::new(self)
     }
     #[doc = "Bit 17 - LAN ARP req"]
     #[inline(always)]
-    pub fn arp(&mut self) -> ARP_W {
-        ARP_W { w: self }
+    #[must_use]
+    pub fn arp(&mut self) -> ARP_W<17> {
+        ARP_W::new(self)
     }
     #[doc = "Bit 18 - WOL specific address reg 1"]
     #[inline(always)]
-    pub fn sa1(&mut self) -> SA1_W {
-        SA1_W { w: self }
+    #[must_use]
+    pub fn sa1(&mut self) -> SA1_W<18> {
+        SA1_W::new(self)
     }
     #[doc = "Bit 19 - WOL LAN multicast"]
     #[inline(always)]
-    pub fn mti(&mut self) -> MTI_W {
-        MTI_W { w: self }
+    #[must_use]
+    pub fn mti(&mut self) -> MTI_W<19> {
+        MTI_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -281,11 +131,10 @@ impl crate::Readable for WOL_SPEC {
 #[doc = "`write(|w| ..)` method takes [wol::W](W) writer structure"]
 impl crate::Writable for WOL_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets WOL to value 0"]
 impl crate::Resettable for WOL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

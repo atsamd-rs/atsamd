@@ -35,383 +35,127 @@ impl From<crate::W<INTFLAG_SPEC>> for W {
     }
 }
 #[doc = "Field `HSOF` reader - Host Start Of Frame"]
-pub struct HSOF_R(crate::FieldReader<bool, bool>);
-impl HSOF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        HSOF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for HSOF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type HSOF_R = crate::BitReader<bool>;
 #[doc = "Field `HSOF` writer - Host Start Of Frame"]
-pub struct HSOF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> HSOF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
-        self.w
-    }
-}
+pub type HSOF_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `RST` reader - Bus Reset"]
-pub struct RST_R(crate::FieldReader<bool, bool>);
-impl RST_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RST_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RST_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RST_R = crate::BitReader<bool>;
 #[doc = "Field `RST` writer - Bus Reset"]
-pub struct RST_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RST_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u16 & 0x01) << 3);
-        self.w
-    }
-}
+pub type RST_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `WAKEUP` reader - Wake Up"]
-pub struct WAKEUP_R(crate::FieldReader<bool, bool>);
-impl WAKEUP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WAKEUP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WAKEUP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WAKEUP_R = crate::BitReader<bool>;
 #[doc = "Field `WAKEUP` writer - Wake Up"]
-pub struct WAKEUP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WAKEUP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
-        self.w
-    }
-}
+pub type WAKEUP_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `DNRSM` reader - Downstream"]
-pub struct DNRSM_R(crate::FieldReader<bool, bool>);
-impl DNRSM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DNRSM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DNRSM_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DNRSM_R = crate::BitReader<bool>;
 #[doc = "Field `DNRSM` writer - Downstream"]
-pub struct DNRSM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DNRSM_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u16 & 0x01) << 5);
-        self.w
-    }
-}
+pub type DNRSM_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `UPRSM` reader - Upstream Resume from the Device"]
-pub struct UPRSM_R(crate::FieldReader<bool, bool>);
-impl UPRSM_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        UPRSM_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for UPRSM_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type UPRSM_R = crate::BitReader<bool>;
 #[doc = "Field `UPRSM` writer - Upstream Resume from the Device"]
-pub struct UPRSM_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> UPRSM_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u16 & 0x01) << 6);
-        self.w
-    }
-}
+pub type UPRSM_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `RAMACER` reader - Ram Access"]
-pub struct RAMACER_R(crate::FieldReader<bool, bool>);
-impl RAMACER_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RAMACER_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RAMACER_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RAMACER_R = crate::BitReader<bool>;
 #[doc = "Field `RAMACER` writer - Ram Access"]
-pub struct RAMACER_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RAMACER_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u16 & 0x01) << 7);
-        self.w
-    }
-}
+pub type RAMACER_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `DCONN` reader - Device Connection"]
-pub struct DCONN_R(crate::FieldReader<bool, bool>);
-impl DCONN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DCONN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DCONN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DCONN_R = crate::BitReader<bool>;
 #[doc = "Field `DCONN` writer - Device Connection"]
-pub struct DCONN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DCONN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u16 & 0x01) << 8);
-        self.w
-    }
-}
+pub type DCONN_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
 #[doc = "Field `DDISC` reader - Device Disconnection"]
-pub struct DDISC_R(crate::FieldReader<bool, bool>);
-impl DDISC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DDISC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DDISC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DDISC_R = crate::BitReader<bool>;
 #[doc = "Field `DDISC` writer - Device Disconnection"]
-pub struct DDISC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DDISC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u16 & 0x01) << 9);
-        self.w
-    }
-}
+pub type DDISC_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 2 - Host Start Of Frame"]
     #[inline(always)]
     pub fn hsof(&self) -> HSOF_R {
-        HSOF_R::new(((self.bits >> 2) & 0x01) != 0)
+        HSOF_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Bus Reset"]
     #[inline(always)]
     pub fn rst(&self) -> RST_R {
-        RST_R::new(((self.bits >> 3) & 0x01) != 0)
+        RST_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Wake Up"]
     #[inline(always)]
     pub fn wakeup(&self) -> WAKEUP_R {
-        WAKEUP_R::new(((self.bits >> 4) & 0x01) != 0)
+        WAKEUP_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Downstream"]
     #[inline(always)]
     pub fn dnrsm(&self) -> DNRSM_R {
-        DNRSM_R::new(((self.bits >> 5) & 0x01) != 0)
+        DNRSM_R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - Upstream Resume from the Device"]
     #[inline(always)]
     pub fn uprsm(&self) -> UPRSM_R {
-        UPRSM_R::new(((self.bits >> 6) & 0x01) != 0)
+        UPRSM_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Ram Access"]
     #[inline(always)]
     pub fn ramacer(&self) -> RAMACER_R {
-        RAMACER_R::new(((self.bits >> 7) & 0x01) != 0)
+        RAMACER_R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - Device Connection"]
     #[inline(always)]
     pub fn dconn(&self) -> DCONN_R {
-        DCONN_R::new(((self.bits >> 8) & 0x01) != 0)
+        DCONN_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Device Disconnection"]
     #[inline(always)]
     pub fn ddisc(&self) -> DDISC_R {
-        DDISC_R::new(((self.bits >> 9) & 0x01) != 0)
+        DDISC_R::new(((self.bits >> 9) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 2 - Host Start Of Frame"]
     #[inline(always)]
-    pub fn hsof(&mut self) -> HSOF_W {
-        HSOF_W { w: self }
+    #[must_use]
+    pub fn hsof(&mut self) -> HSOF_W<2> {
+        HSOF_W::new(self)
     }
     #[doc = "Bit 3 - Bus Reset"]
     #[inline(always)]
-    pub fn rst(&mut self) -> RST_W {
-        RST_W { w: self }
+    #[must_use]
+    pub fn rst(&mut self) -> RST_W<3> {
+        RST_W::new(self)
     }
     #[doc = "Bit 4 - Wake Up"]
     #[inline(always)]
-    pub fn wakeup(&mut self) -> WAKEUP_W {
-        WAKEUP_W { w: self }
+    #[must_use]
+    pub fn wakeup(&mut self) -> WAKEUP_W<4> {
+        WAKEUP_W::new(self)
     }
     #[doc = "Bit 5 - Downstream"]
     #[inline(always)]
-    pub fn dnrsm(&mut self) -> DNRSM_W {
-        DNRSM_W { w: self }
+    #[must_use]
+    pub fn dnrsm(&mut self) -> DNRSM_W<5> {
+        DNRSM_W::new(self)
     }
     #[doc = "Bit 6 - Upstream Resume from the Device"]
     #[inline(always)]
-    pub fn uprsm(&mut self) -> UPRSM_W {
-        UPRSM_W { w: self }
+    #[must_use]
+    pub fn uprsm(&mut self) -> UPRSM_W<6> {
+        UPRSM_W::new(self)
     }
     #[doc = "Bit 7 - Ram Access"]
     #[inline(always)]
-    pub fn ramacer(&mut self) -> RAMACER_W {
-        RAMACER_W { w: self }
+    #[must_use]
+    pub fn ramacer(&mut self) -> RAMACER_W<7> {
+        RAMACER_W::new(self)
     }
     #[doc = "Bit 8 - Device Connection"]
     #[inline(always)]
-    pub fn dconn(&mut self) -> DCONN_W {
-        DCONN_W { w: self }
+    #[must_use]
+    pub fn dconn(&mut self) -> DCONN_W<8> {
+        DCONN_W::new(self)
     }
     #[doc = "Bit 9 - Device Disconnection"]
     #[inline(always)]
-    pub fn ddisc(&mut self) -> DDISC_W {
-        DDISC_W { w: self }
+    #[must_use]
+    pub fn ddisc(&mut self) -> DDISC_W<9> {
+        DDISC_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -432,11 +176,10 @@ impl crate::Readable for INTFLAG_SPEC {
 #[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for INTFLAG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

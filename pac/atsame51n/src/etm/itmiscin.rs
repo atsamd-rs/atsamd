@@ -24,8 +24,5 @@ impl crate::Readable for ITMISCIN_SPEC {
 }
 #[doc = "`reset()` method sets ITMISCIN to value 0"]
 impl crate::Resettable for ITMISCIN_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

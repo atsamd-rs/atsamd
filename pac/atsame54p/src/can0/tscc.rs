@@ -34,10 +34,12 @@ impl From<crate::W<TSCC_SPEC>> for W {
         W(writer)
     }
 }
+#[doc = "Field `TSS` reader - Timestamp Select"]
+pub type TSS_R = crate::FieldReader<u8, TSSSELECT_A>;
 #[doc = "Timestamp Select\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum TSS_A {
+pub enum TSSSELECT_A {
     #[doc = "0: Timestamp counter value always 0x0000"]
     ZERO = 0,
     #[doc = "1: Timestamp counter value incremented by TCP"]
@@ -45,116 +47,67 @@ pub enum TSS_A {
     #[doc = "2: External timestamp counter value used"]
     EXT = 2,
 }
-impl From<TSS_A> for u8 {
+impl From<TSSSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: TSS_A) -> Self {
+    fn from(variant: TSSSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `TSS` reader - Timestamp Select"]
-pub struct TSS_R(crate::FieldReader<u8, TSS_A>);
 impl TSS_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TSS_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<TSS_A> {
+    pub fn variant(&self) -> Option<TSSSELECT_A> {
         match self.bits {
-            0 => Some(TSS_A::ZERO),
-            1 => Some(TSS_A::INC),
-            2 => Some(TSS_A::EXT),
+            0 => Some(TSSSELECT_A::ZERO),
+            1 => Some(TSSSELECT_A::INC),
+            2 => Some(TSSSELECT_A::EXT),
             _ => None,
         }
     }
     #[doc = "Checks if the value of the field is `ZERO`"]
     #[inline(always)]
     pub fn is_zero(&self) -> bool {
-        **self == TSS_A::ZERO
+        *self == TSSSELECT_A::ZERO
     }
     #[doc = "Checks if the value of the field is `INC`"]
     #[inline(always)]
     pub fn is_inc(&self) -> bool {
-        **self == TSS_A::INC
+        *self == TSSSELECT_A::INC
     }
     #[doc = "Checks if the value of the field is `EXT`"]
     #[inline(always)]
     pub fn is_ext(&self) -> bool {
-        **self == TSS_A::EXT
-    }
-}
-impl core::ops::Deref for TSS_R {
-    type Target = crate::FieldReader<u8, TSS_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == TSSSELECT_A::EXT
     }
 }
 #[doc = "Field `TSS` writer - Timestamp Select"]
-pub struct TSS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TSS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: TSS_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type TSS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TSCC_SPEC, u8, TSSSELECT_A, 2, O>;
+impl<'a, const O: u8> TSS_W<'a, O> {
     #[doc = "Timestamp counter value always 0x0000"]
     #[inline(always)]
     pub fn zero(self) -> &'a mut W {
-        self.variant(TSS_A::ZERO)
+        self.variant(TSSSELECT_A::ZERO)
     }
     #[doc = "Timestamp counter value incremented by TCP"]
     #[inline(always)]
     pub fn inc(self) -> &'a mut W {
-        self.variant(TSS_A::INC)
+        self.variant(TSSSELECT_A::INC)
     }
     #[doc = "External timestamp counter value used"]
     #[inline(always)]
     pub fn ext(self) -> &'a mut W {
-        self.variant(TSS_A::EXT)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u32 & 0x03);
-        self.w
+        self.variant(TSSSELECT_A::EXT)
     }
 }
 #[doc = "Field `TCP` reader - Timestamp Counter Prescaler"]
-pub struct TCP_R(crate::FieldReader<u8, u8>);
-impl TCP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TCP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TCP_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TCP_R = crate::FieldReader<u8, u8>;
 #[doc = "Field `TCP` writer - Timestamp Counter Prescaler"]
-pub struct TCP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TCP_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 16)) | ((value as u32 & 0x0f) << 16);
-        self.w
-    }
-}
+pub type TCP_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TSCC_SPEC, u8, u8, 4, O>;
 impl R {
     #[doc = "Bits 0:1 - Timestamp Select"]
     #[inline(always)]
     pub fn tss(&self) -> TSS_R {
-        TSS_R::new((self.bits & 0x03) as u8)
+        TSS_R::new((self.bits & 3) as u8)
     }
     #[doc = "Bits 16:19 - Timestamp Counter Prescaler"]
     #[inline(always)]
@@ -165,13 +118,15 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Timestamp Select"]
     #[inline(always)]
-    pub fn tss(&mut self) -> TSS_W {
-        TSS_W { w: self }
+    #[must_use]
+    pub fn tss(&mut self) -> TSS_W<0> {
+        TSS_W::new(self)
     }
     #[doc = "Bits 16:19 - Timestamp Counter Prescaler"]
     #[inline(always)]
-    pub fn tcp(&mut self) -> TCP_W {
-        TCP_W { w: self }
+    #[must_use]
+    pub fn tcp(&mut self) -> TCP_W<16> {
+        TCP_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -192,11 +147,10 @@ impl crate::Readable for TSCC_SPEC {
 #[doc = "`write(|w| ..)` method takes [tscc::W](W) writer structure"]
 impl crate::Writable for TSCC_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets TSCC to value 0"]
 impl crate::Resettable for TSCC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

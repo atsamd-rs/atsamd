@@ -35,524 +35,172 @@ impl From<crate::W<STATUS_SPEC>> for W {
     }
 }
 #[doc = "Field `QERR` reader - Quadrature Error Flag"]
-pub struct QERR_R(crate::FieldReader<bool, bool>);
-impl QERR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        QERR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for QERR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type QERR_R = crate::BitReader<bool>;
 #[doc = "Field `QERR` writer - Quadrature Error Flag"]
-pub struct QERR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> QERR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u16 & 0x01);
-        self.w
-    }
-}
+pub type QERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `IDXERR` reader - Index Error Flag"]
-pub struct IDXERR_R(crate::FieldReader<bool, bool>);
-impl IDXERR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        IDXERR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for IDXERR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type IDXERR_R = crate::BitReader<bool>;
 #[doc = "Field `IDXERR` writer - Index Error Flag"]
-pub struct IDXERR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> IDXERR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
-        self.w
-    }
-}
+pub type IDXERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `MPERR` reader - Missing Pulse Error flag"]
-pub struct MPERR_R(crate::FieldReader<bool, bool>);
-impl MPERR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        MPERR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for MPERR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type MPERR_R = crate::BitReader<bool>;
 #[doc = "Field `MPERR` writer - Missing Pulse Error flag"]
-pub struct MPERR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> MPERR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
-        self.w
-    }
-}
+pub type MPERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `WINERR` reader - Window Error Flag"]
-pub struct WINERR_R(crate::FieldReader<bool, bool>);
-impl WINERR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        WINERR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for WINERR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type WINERR_R = crate::BitReader<bool>;
 #[doc = "Field `WINERR` writer - Window Error Flag"]
-pub struct WINERR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WINERR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
-        self.w
-    }
-}
+pub type WINERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `HERR` reader - Hall Error Flag"]
-pub struct HERR_R(crate::FieldReader<bool, bool>);
-impl HERR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        HERR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for HERR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type HERR_R = crate::BitReader<bool>;
 #[doc = "Field `HERR` writer - Hall Error Flag"]
-pub struct HERR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> HERR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u16 & 0x01) << 5);
-        self.w
-    }
-}
+pub type HERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `STOP` reader - Stop"]
-pub struct STOP_R(crate::FieldReader<bool, bool>);
-impl STOP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        STOP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for STOP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type STOP_R = crate::BitReader<bool>;
 #[doc = "Field `STOP` writer - Stop"]
-pub struct STOP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> STOP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u16 & 0x01) << 6);
-        self.w
-    }
-}
+pub type STOP_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `DIR` reader - Direction Status Flag"]
-pub struct DIR_R(crate::FieldReader<bool, bool>);
-impl DIR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DIR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DIR_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DIR_R = crate::BitReader<bool>;
 #[doc = "Field `DIR` writer - Direction Status Flag"]
-pub struct DIR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DIR_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u16 & 0x01) << 7);
-        self.w
-    }
-}
+pub type DIR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `PRESCBUFV` reader - Prescaler Buffer Valid"]
-pub struct PRESCBUFV_R(crate::FieldReader<bool, bool>);
-impl PRESCBUFV_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PRESCBUFV_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PRESCBUFV_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PRESCBUFV_R = crate::BitReader<bool>;
 #[doc = "Field `PRESCBUFV` writer - Prescaler Buffer Valid"]
-pub struct PRESCBUFV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PRESCBUFV_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u16 & 0x01) << 8);
-        self.w
-    }
-}
+pub type PRESCBUFV_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `FILTERBUFV` reader - Filter Buffer Valid"]
-pub struct FILTERBUFV_R(crate::FieldReader<bool, bool>);
-impl FILTERBUFV_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        FILTERBUFV_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for FILTERBUFV_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type FILTERBUFV_R = crate::BitReader<bool>;
 #[doc = "Field `FILTERBUFV` writer - Filter Buffer Valid"]
-pub struct FILTERBUFV_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTERBUFV_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u16 & 0x01) << 9);
-        self.w
-    }
-}
+pub type FILTERBUFV_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `CCBUFV0` reader - Compare Channel 0 Buffer Valid"]
-pub struct CCBUFV0_R(crate::FieldReader<bool, bool>);
-impl CCBUFV0_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CCBUFV0_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CCBUFV0_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CCBUFV0_R = crate::BitReader<bool>;
 #[doc = "Field `CCBUFV0` writer - Compare Channel 0 Buffer Valid"]
-pub struct CCBUFV0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CCBUFV0_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 12)) | ((value as u16 & 0x01) << 12);
-        self.w
-    }
-}
+pub type CCBUFV0_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 #[doc = "Field `CCBUFV1` reader - Compare Channel 1 Buffer Valid"]
-pub struct CCBUFV1_R(crate::FieldReader<bool, bool>);
-impl CCBUFV1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        CCBUFV1_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CCBUFV1_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CCBUFV1_R = crate::BitReader<bool>;
 #[doc = "Field `CCBUFV1` writer - Compare Channel 1 Buffer Valid"]
-pub struct CCBUFV1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CCBUFV1_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 13)) | ((value as u16 & 0x01) << 13);
-        self.w
-    }
-}
+pub type CCBUFV1_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
 impl R {
     #[doc = "Bit 0 - Quadrature Error Flag"]
     #[inline(always)]
     pub fn qerr(&self) -> QERR_R {
-        QERR_R::new((self.bits & 0x01) != 0)
+        QERR_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Index Error Flag"]
     #[inline(always)]
     pub fn idxerr(&self) -> IDXERR_R {
-        IDXERR_R::new(((self.bits >> 1) & 0x01) != 0)
+        IDXERR_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Missing Pulse Error flag"]
     #[inline(always)]
     pub fn mperr(&self) -> MPERR_R {
-        MPERR_R::new(((self.bits >> 2) & 0x01) != 0)
+        MPERR_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 4 - Window Error Flag"]
     #[inline(always)]
     pub fn winerr(&self) -> WINERR_R {
-        WINERR_R::new(((self.bits >> 4) & 0x01) != 0)
+        WINERR_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Hall Error Flag"]
     #[inline(always)]
     pub fn herr(&self) -> HERR_R {
-        HERR_R::new(((self.bits >> 5) & 0x01) != 0)
+        HERR_R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - Stop"]
     #[inline(always)]
     pub fn stop(&self) -> STOP_R {
-        STOP_R::new(((self.bits >> 6) & 0x01) != 0)
+        STOP_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Direction Status Flag"]
     #[inline(always)]
     pub fn dir(&self) -> DIR_R {
-        DIR_R::new(((self.bits >> 7) & 0x01) != 0)
+        DIR_R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - Prescaler Buffer Valid"]
     #[inline(always)]
     pub fn prescbufv(&self) -> PRESCBUFV_R {
-        PRESCBUFV_R::new(((self.bits >> 8) & 0x01) != 0)
+        PRESCBUFV_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Filter Buffer Valid"]
     #[inline(always)]
     pub fn filterbufv(&self) -> FILTERBUFV_R {
-        FILTERBUFV_R::new(((self.bits >> 9) & 0x01) != 0)
+        FILTERBUFV_R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 12 - Compare Channel 0 Buffer Valid"]
     #[inline(always)]
     pub fn ccbufv0(&self) -> CCBUFV0_R {
-        CCBUFV0_R::new(((self.bits >> 12) & 0x01) != 0)
+        CCBUFV0_R::new(((self.bits >> 12) & 1) != 0)
     }
     #[doc = "Bit 13 - Compare Channel 1 Buffer Valid"]
     #[inline(always)]
     pub fn ccbufv1(&self) -> CCBUFV1_R {
-        CCBUFV1_R::new(((self.bits >> 13) & 0x01) != 0)
+        CCBUFV1_R::new(((self.bits >> 13) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Quadrature Error Flag"]
     #[inline(always)]
-    pub fn qerr(&mut self) -> QERR_W {
-        QERR_W { w: self }
+    #[must_use]
+    pub fn qerr(&mut self) -> QERR_W<0> {
+        QERR_W::new(self)
     }
     #[doc = "Bit 1 - Index Error Flag"]
     #[inline(always)]
-    pub fn idxerr(&mut self) -> IDXERR_W {
-        IDXERR_W { w: self }
+    #[must_use]
+    pub fn idxerr(&mut self) -> IDXERR_W<1> {
+        IDXERR_W::new(self)
     }
     #[doc = "Bit 2 - Missing Pulse Error flag"]
     #[inline(always)]
-    pub fn mperr(&mut self) -> MPERR_W {
-        MPERR_W { w: self }
+    #[must_use]
+    pub fn mperr(&mut self) -> MPERR_W<2> {
+        MPERR_W::new(self)
     }
     #[doc = "Bit 4 - Window Error Flag"]
     #[inline(always)]
-    pub fn winerr(&mut self) -> WINERR_W {
-        WINERR_W { w: self }
+    #[must_use]
+    pub fn winerr(&mut self) -> WINERR_W<4> {
+        WINERR_W::new(self)
     }
     #[doc = "Bit 5 - Hall Error Flag"]
     #[inline(always)]
-    pub fn herr(&mut self) -> HERR_W {
-        HERR_W { w: self }
+    #[must_use]
+    pub fn herr(&mut self) -> HERR_W<5> {
+        HERR_W::new(self)
     }
     #[doc = "Bit 6 - Stop"]
     #[inline(always)]
-    pub fn stop(&mut self) -> STOP_W {
-        STOP_W { w: self }
+    #[must_use]
+    pub fn stop(&mut self) -> STOP_W<6> {
+        STOP_W::new(self)
     }
     #[doc = "Bit 7 - Direction Status Flag"]
     #[inline(always)]
-    pub fn dir(&mut self) -> DIR_W {
-        DIR_W { w: self }
+    #[must_use]
+    pub fn dir(&mut self) -> DIR_W<7> {
+        DIR_W::new(self)
     }
     #[doc = "Bit 8 - Prescaler Buffer Valid"]
     #[inline(always)]
-    pub fn prescbufv(&mut self) -> PRESCBUFV_W {
-        PRESCBUFV_W { w: self }
+    #[must_use]
+    pub fn prescbufv(&mut self) -> PRESCBUFV_W<8> {
+        PRESCBUFV_W::new(self)
     }
     #[doc = "Bit 9 - Filter Buffer Valid"]
     #[inline(always)]
-    pub fn filterbufv(&mut self) -> FILTERBUFV_W {
-        FILTERBUFV_W { w: self }
+    #[must_use]
+    pub fn filterbufv(&mut self) -> FILTERBUFV_W<9> {
+        FILTERBUFV_W::new(self)
     }
     #[doc = "Bit 12 - Compare Channel 0 Buffer Valid"]
     #[inline(always)]
-    pub fn ccbufv0(&mut self) -> CCBUFV0_W {
-        CCBUFV0_W { w: self }
+    #[must_use]
+    pub fn ccbufv0(&mut self) -> CCBUFV0_W<12> {
+        CCBUFV0_W::new(self)
     }
     #[doc = "Bit 13 - Compare Channel 1 Buffer Valid"]
     #[inline(always)]
-    pub fn ccbufv1(&mut self) -> CCBUFV1_W {
-        CCBUFV1_W { w: self }
+    #[must_use]
+    pub fn ccbufv1(&mut self) -> CCBUFV1_W<13> {
+        CCBUFV1_W::new(self)
     }
     #[doc = "Writes raw bits to the register."]
     #[inline(always)]
@@ -573,11 +221,10 @@ impl crate::Readable for STATUS_SPEC {
 #[doc = "`write(|w| ..)` method takes [status::W](W) writer structure"]
 impl crate::Writable for STATUS_SPEC {
     type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0x40"]
 impl crate::Resettable for STATUS_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0x40
-    }
+    const RESET_VALUE: Self::Ux = 0x40;
 }
