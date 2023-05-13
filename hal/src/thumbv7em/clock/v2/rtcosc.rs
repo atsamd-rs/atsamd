@@ -93,7 +93,7 @@
 
 use core::marker::PhantomData;
 
-use crate::pac::osc32kctrl::rtcctrl::RTCSEL_A;
+use crate::pac::osc32kctrl::rtcctrl::RTCSELSELECT_A;
 use crate::pac::osc32kctrl::RTCCTRL;
 use crate::pac::OSC32KCTRL;
 
@@ -168,11 +168,11 @@ pub enum DynRtcSourceId {
     Xosc32k,
 }
 
-impl From<DynRtcSourceId> for RTCSEL_A {
+impl From<DynRtcSourceId> for RTCSELSELECT_A {
     #[inline]
     fn from(source: DynRtcSourceId) -> Self {
         use DynRtcSourceId::*;
-        use RTCSEL_A::*;
+        use RTCSELSELECT_A::*;
         match source {
             OscUlp1k => ULP1K,
             OscUlp32k => ULP32K,

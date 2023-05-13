@@ -101,7 +101,7 @@
 
 // Re-exports
 pub use crate::pac::aes::ctrla::{
-    AESMODE_A, CFBS_A, CIPHER_A, KEYSIZE_A, LOD_A, STARTMODE_A, XORKEY_A,
+    AESMODESELECT_A, CFBSSELECT_A, CIPHERSELECT_A, KEYSIZESELECT_A, LODSELECT_A, STARTMODESELECT_A, XORKEYSELECT_A,
 };
 
 // Re-export Aes128 with hardware backing
@@ -402,37 +402,37 @@ impl Aes {
 
     /// Set AES Mode
     #[inline]
-    pub fn set_aesmode(self, mode: AESMODE_A) {
+    pub fn set_aesmode(self, mode: AESMODESELECT_A) {
         self.ctrla().modify(|_, w| w.aesmode().variant(mode));
     }
 
     /// Set Cipher Feedback Block Size (CFBS)
     #[inline]
-    pub fn set_cfbs(self, blocksize: CFBS_A) {
+    pub fn set_cfbs(self, blocksize: CFBSSELECT_A) {
         self.ctrla().modify(|_, w| w.cfbs().variant(blocksize));
     }
 
     /// Set Encryption Key Size
     #[inline]
-    pub fn set_keysize(self, keysize: KEYSIZE_A) {
+    pub fn set_keysize(self, keysize: KEYSIZESELECT_A) {
         self.ctrla().modify(|_, w| w.keysize().variant(keysize));
     }
 
     /// Set Cipher Mode
     #[inline]
-    pub fn set_cipher(self, mode: CIPHER_A) {
+    pub fn set_cipher(self, mode: CIPHERSELECT_A) {
         self.ctrla().modify(|_, w| w.cipher().variant(mode));
     }
 
     /// Set Start Mode
     #[inline]
-    pub fn set_startmode(self, mode: STARTMODE_A) {
+    pub fn set_startmode(self, mode: STARTMODESELECT_A) {
         self.ctrla().modify(|_, w| w.startmode().variant(mode));
     }
 
     /// Set Last Output Data (LOD) Mode
     #[inline]
-    pub fn set_lod(self, mode: LOD_A) {
+    pub fn set_lod(self, mode: LODSELECT_A) {
         self.ctrla().modify(|_, w| w.lod().variant(mode));
     }
 
@@ -448,7 +448,7 @@ impl Aes {
     ///
     /// The user keyword gets XORed with the previous keyword register content
     #[inline]
-    pub fn set_xorkey(self, mode: XORKEY_A) {
+    pub fn set_xorkey(self, mode: XORKEYSELECT_A) {
         self.ctrla().modify(|_, w| w.xorkey().variant(mode));
     }
 

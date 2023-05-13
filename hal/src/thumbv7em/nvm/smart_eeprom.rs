@@ -32,7 +32,7 @@
 use core::marker::PhantomData;
 
 use super::Nvm;
-use crate::pac::{nvmctrl::ctrlb::CMD_AW, NVMCTRL};
+use crate::pac::{nvmctrl::ctrlb::CMDSELECT_AW, NVMCTRL};
 use crate::typelevel::Sealed;
 
 /// Struct representing a SmartEEPROM instance.
@@ -248,7 +248,7 @@ impl<'a> SmartEeprom<'a, Unlocked> {
 
     /// Locks SmartEEPROM, allowing only to perform read operations
     pub fn lock(self) -> SmartEeprom<'a, Locked> {
-        self.nvm.command_sync(CMD_AW::LSEE);
+        self.nvm.command_sync(CMDSELECT_AW::LSEE);
         let Self {
             nvm, virtual_size, ..
         } = self;
@@ -263,7 +263,7 @@ impl<'a> SmartEeprom<'a, Unlocked> {
 impl<'a> SmartEeprom<'a, Locked> {
     /// Unlocks SmartEEPROM, allowing to perform both read and write operations
     pub fn unlock(self) -> SmartEeprom<'a, Unlocked> {
-        self.nvm.command_sync(CMD_AW::USEE);
+        self.nvm.command_sync(CMDSELECT_AW::USEE);
         let Self {
             nvm, virtual_size, ..
         } = self;

@@ -5,15 +5,15 @@
 //! that the peripherals have been correctly configured.
 #![allow(clippy::from_over_into)]
 
-use crate::pac::gclk::clkctrl::GEN_A::*;
-use crate::pac::gclk::clkctrl::ID_A::*;
-use crate::pac::gclk::genctrl::SRC_A::*;
+use crate::pac::gclk::clkctrl::GENSELECT_A::*;
+use crate::pac::gclk::clkctrl::IDSELECT_A::*;
+use crate::pac::gclk::genctrl::SRCSELECT_A::*;
 use crate::pac::{self, GCLK, NVMCTRL, PM, SYSCTRL};
 use crate::time::{Hertz, U32Ext};
 
-pub type ClockId = pac::gclk::clkctrl::ID_A;
-pub type ClockGenId = pac::gclk::clkctrl::GEN_A;
-pub type ClockSource = pac::gclk::genctrl::SRC_A;
+pub type ClockId = pac::gclk::clkctrl::IDSELECT_A;
+pub type ClockGenId = pac::gclk::clkctrl::GENSELECT_A;
+pub type ClockSource = pac::gclk::genctrl::SRCSELECT_A;
 
 /// Represents a configured clock generator.
 /// Can be converted into the effective clock frequency.

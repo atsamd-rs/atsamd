@@ -24,16 +24,16 @@ use seq_macro::seq;
 
 #[cfg(feature = "thumbv6")]
 pub use crate::pac::dmac::chctrlb::{
-    LVL_A as PriorityLevel, TRIGACT_A as TriggerAction, TRIGSRC_A as TriggerSource,
+    LVLSELECT_A as PriorityLevel, TRIGACTSELECT_A as TriggerAction, TRIGSRCSELECT_A as TriggerSource,
 };
 
 #[cfg(feature = "thumbv7")]
 pub use crate::pac::dmac::channel::{
     chctrla::{
-        BURSTLEN_A as BurstLength, THRESHOLD_A as FifoThreshold, TRIGACT_A as TriggerAction,
-        TRIGSRC_A as TriggerSource,
+        BURSTLENSELECT_A as BurstLength, THRESHOLDSELECT_A as FifoThreshold, TRIGACTSELECT_A as TriggerAction,
+        TRIGSRCSELECT_A as TriggerSource,
     },
-    chprilvl::PRILVL_A as PriorityLevel,
+    chprilvl::PRILVLSELECT_A as PriorityLevel,
 };
 
 use super::{

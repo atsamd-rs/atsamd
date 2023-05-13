@@ -22,8 +22,8 @@
 
 pub mod smart_eeprom;
 
-pub use crate::pac::nvmctrl::ctrla::PRM_A;
-use crate::pac::nvmctrl::ctrlb::CMD_AW;
+pub use crate::pac::nvmctrl::ctrla::PRMSELECT_A;
+use crate::pac::nvmctrl::ctrlb::CMDSELECT_AW;
 use crate::pac::NVMCTRL;
 use core::num::NonZeroU32;
 use core::ops::Range;
@@ -174,7 +174,7 @@ impl Nvm {
     /// Ensure there is a working, memory safe program in place in the inactive
     /// bank before calling.
     pub unsafe fn bank_swap(&mut self) -> ! {
-        self.command_sync(CMD_AW::BKSWRST);
+        self.command_sync(CMDSELECT_AW::BKSWRST);
         // The reset will happen atomically with the rest of the command, so getting
         // here is an error.
         unreachable!();
@@ -182,7 +182,7 @@ impl Nvm {
 
     /// Set the power reduction mode
     #[inline]
-    pub fn power_reduction_mode(&mut self, prm: PRM_A) {
+    pub fn power_reduction_mode(&mut self, prm: PRMSELECT_A) {
         self.nvm.ctrla.modify(|_, w| w.prm().variant(prm));
     }
 
@@ -218,14 +218,14 @@ impl Nvm {
     }
 
     /// Execute a command, do not wait for it to finish
-    fn command(&mut self, command: CMD_AW) {
+    fn command(&mut self, command: CMDSELECT_AW) {
         self.nvm
             .ctrlb
             .write(|w| w.cmdex().key().cmd().variant(command));
     }
 
     /// Execute a command, wait until it is done
-    fn command_sync(&mut self, command: CMD_AW) {
+    fn command_sync(&mut self, command: CMDSELECT_AW) {
         self.command(command);
 
         while !self.nvm.intflag.read().done().bit() {}
@@ -311,10 +311,10 @@ impl Nvm {
             // Requires both command and key so the command is allowed to execute
             if !protect {
                 // Issue Set boot protection disable (disable bootprotection)
-                self.command_sync(CMD_AW::SBPDIS);
+                self.command_sync(CMDSELECT_AW::SBPDIS);
             } else {
                 // Issue Clear boot protection disable (enable bootprotection)
-                self.command_sync(CMD_AW::CBPDIS);
+                self.command_sync(CMDSELECT_AW::CBPDIS);
             }
 
             self.manage_error_states()
@@ -383,7 +383,7 @@ impl Nvm {
             Err(Error::SmartEepromArea)
         } else {
             while !self.is_ready() {}
-            self.command_sync(CMD_AW::PBC);
+            self.command_sync(CMDSELECT_AW::PBC);
             // Track whether we have unwritten data in the page buffer
             let mut dirty = false;
             // Zip two iterators, one counter and one with the addr word aligned
@@ -406,7 +406,7 @@ impl Nvm {
 
                     dirty = false;
                     // Perform a write
-                    self.command_sync(CMD_AW::WP);
+                    self.command_sync(CMDSELECT_AW::WP);
                 }
             }
 
@@ -417,7 +417,7 @@ impl Nvm {
                 // The dirty flag has fulfilled its role here, so we don't bother to maintain
                 // its invariant anymore. Otherwise, the compiler would warn of
                 // unused assignments. Write last page
-                self.command_sync(CMD_AW::WP);
+                self.command_sync(CMDSELECT_AW::WP);
             }
 
             self.manage_error_states()
@@ -512,10 +512,10 @@ pub enum EraseGranularity {
 }
 
 impl EraseGranularity {
-    fn command(&self) -> CMD_AW {
+    fn command(&self) -> CMDSELECT_AW {
         match self {
-            EraseGranularity::Block => CMD_AW::EB,
-            EraseGranularity::Page => CMD_AW::EP,
+            EraseGranularity::Block => CMDSELECT_AW::EB,
+            EraseGranularity::Page => CMDSELECT_AW::EP,
         }
     }
 

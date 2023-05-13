@@ -2,7 +2,7 @@
 
 use super::{I2c, InactiveTimeout, PadSet, Registers};
 use crate::{
-    pac::sercom0::i2cm::ctrla::MODE_A,
+    pac::sercom0::i2cm::ctrla::MODESELECT_A,
     sercom::*,
     time::Hertz,
     typelevel::{Is, Sealed},
@@ -41,7 +41,7 @@ impl<P: PadSet> Config<P> {
     fn default(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         let mut registers = Registers::new(sercom);
         registers.swrst();
-        registers.set_op_mode(MODE_A::I2C_MASTER);
+        registers.set_op_mode(MODESELECT_A::I2C_MASTER);
         Self {
             registers,
             pads,

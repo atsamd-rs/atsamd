@@ -23,14 +23,14 @@ use rtic_monotonic::Monotonic;
 // SAMx5x imports
 #[cfg(feature = "thumbv7")]
 use crate::pac::{
-    rtc::mode0::ctrla::PRESCALER_A, rtc::mode0::CTRLA as MODE0_CTRLA,
+    rtc::mode0::ctrla::PRESCALERSELECT_A, rtc::mode0::CTRLA as MODE0_CTRLA,
     rtc::mode2::CTRLA as MODE2_CTRLA, MCLK as PM,
 };
 
 // SAMD11/SAMD21 imports
 #[cfg(feature = "thumbv6")]
 use crate::pac::{
-    rtc::mode0::ctrl::PRESCALER_A, rtc::mode0::CTRL as MODE0_CTRLA,
+    rtc::mode0::ctrl::PRESCALERSELECT_A, rtc::mode0::CTRL as MODE0_CTRLA,
     rtc::mode2::CTRL as MODE2_CTRLA, PM,
 };
 
@@ -408,7 +408,7 @@ impl TimeSource for Rtc<ClockMode> {
 /// Helper type for computing cycles and divider given frequency
 #[derive(Debug, Clone, Copy)]
 pub struct TimerParams {
-    pub divider: PRESCALER_A,
+    pub divider: PRESCALERSELECT_A,
     pub cycles: u32,
 }
 
@@ -439,18 +439,18 @@ impl TimerParams {
     fn new_from_ticks(ticks: u32) -> Self {
         let divider_value = ((ticks >> 16) + 1).next_power_of_two();
         let divider = match divider_value {
-            1 => PRESCALER_A::DIV1,
-            2 => PRESCALER_A::DIV2,
-            4 => PRESCALER_A::DIV4,
-            8 => PRESCALER_A::DIV8,
-            16 => PRESCALER_A::DIV16,
-            32 => PRESCALER_A::DIV32,
-            64 => PRESCALER_A::DIV64,
-            128 => PRESCALER_A::DIV128,
-            256 => PRESCALER_A::DIV256,
-            512 => PRESCALER_A::DIV512,
-            1024 => PRESCALER_A::DIV1024,
-            _ => PRESCALER_A::DIV1024, /* would be nice to catch this at compile time
+            1 => PRESCALERSELECT_A::DIV1,
+            2 => PRESCALERSELECT_A::DIV2,
+            4 => PRESCALERSELECT_A::DIV4,
+            8 => PRESCALERSELECT_A::DIV8,
+            16 => PRESCALERSELECT_A::DIV16,
+            32 => PRESCALERSELECT_A::DIV32,
+            64 => PRESCALERSELECT_A::DIV64,
+            128 => PRESCALERSELECT_A::DIV128,
+            256 => PRESCALERSELECT_A::DIV256,
+            512 => PRESCALERSELECT_A::DIV512,
+            1024 => PRESCALERSELECT_A::DIV1024,
+            _ => PRESCALERSELECT_A::DIV1024, /* would be nice to catch this at compile time
                                         * (rust-lang/rust#51999) */
         };
 

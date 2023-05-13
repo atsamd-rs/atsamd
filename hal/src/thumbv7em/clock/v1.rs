@@ -8,14 +8,14 @@
 #![allow(clippy::from_over_into)]
 
 use crate::clock::v2::pclk::{ids::*, Pclk, PclkSourceId};
-use crate::pac::gclk::genctrl::SRC_A::*;
-use crate::pac::gclk::pchctrl::GEN_A::*;
+use crate::pac::gclk::genctrl::SRCSELECT_A::*;
+use crate::pac::gclk::pchctrl::GENSELECT_A::*;
 use crate::pac::{self, GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
 use crate::sercom::*;
 use crate::time::{Hertz, MegaHertz};
 
-pub type ClockGenId = pac::gclk::pchctrl::GEN_A;
-pub type ClockSource = pac::gclk::genctrl::SRC_A;
+pub type ClockGenId = pac::gclk::pchctrl::GENSELECT_A;
+pub type ClockSource = pac::gclk::genctrl::SRCSELECT_A;
 
 #[allow(non_camel_case_types)]
 pub enum ClockId {

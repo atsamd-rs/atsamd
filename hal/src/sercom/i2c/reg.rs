@@ -51,7 +51,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Configure the SERCOM to use I2C master mode
     #[inline]
-    pub(super) fn set_op_mode(&mut self, mode: pac::sercom0::i2cm::ctrla::MODE_A) {
+    pub(super) fn set_op_mode(&mut self, mode: pac::sercom0::i2cm::ctrla::MODESELECT_A) {
         self.i2c_master()
             .ctrla
             .modify(|_, w| w.mode().variant(mode));

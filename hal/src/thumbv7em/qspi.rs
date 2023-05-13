@@ -292,9 +292,9 @@ impl<MODE> Qspi<MODE> {
             tfm.instrframe(
                 w,
                 if command == Command::QuadPageProgram {
-                    instrframe::TFRTYPE_A::WRITEMEMORY
+                    instrframe::TFRTYPESELECT_A::WRITEMEMORY
                 } else {
-                    instrframe::TFRTYPE_A::WRITE
+                    instrframe::TFRTYPESELECT_A::WRITE
                 },
             )
         });
@@ -322,9 +322,9 @@ impl<MODE> Qspi<MODE> {
             tfm.instrframe(
                 w,
                 if command == Command::QuadRead {
-                    instrframe::TFRTYPE_A::READMEMORY
+                    instrframe::TFRTYPESELECT_A::READMEMORY
                 } else {
-                    instrframe::TFRTYPE_A::READ
+                    instrframe::TFRTYPESELECT_A::READ
                 },
             )
         });
@@ -370,7 +370,7 @@ impl TransferMode {
     unsafe fn instrframe(
         self,
         instrframe: &mut instrframe::W,
-        tfrtype: instrframe::TFRTYPE_A,
+        tfrtype: instrframe::TFRTYPESELECT_A,
     ) -> &mut instrframe::W {
         if self.quad_width {
             instrframe.width().quad_output();
