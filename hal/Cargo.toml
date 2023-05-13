@@ -184,6 +184,24 @@ sdmmc = ["embedded-sdmmc"]
 unproven = ["embedded-hal/unproven"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
+critical-section = [
+  "atsamd11c?/critical-section",
+  "atsamd11d?/critical-section",
+  "atsamd21e?/critical-section",
+  "atsamd21g?/critical-section",
+  "atsamd21j?/critical-section",
+  "atsamd51g?/critical-section",
+  "atsamd51j?/critical-section",
+  "atsamd51n?/critical-section",
+  "atsamd51p?/critical-section",
+  "atsame51g?/critical-section",
+  "atsame51j?/critical-section",
+  "atsame51n?/critical-section",
+  "atsame53j?/critical-section",
+  "atsame53n?/critical-section",
+  "atsame54n?/critical-section",
+  "atsame54p?/critical-section",
+  ]
 
 #===============================================================================
 # Implementation-details

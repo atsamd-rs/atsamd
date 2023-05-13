@@ -13,7 +13,7 @@ edition = "2021"
 [dependencies]
 cortex-m = "0.7.6"
 vcell = "0.1.2"
-critical-section = "1.0"
+critical-section = { version = "1.0", optional = true }
 
 [dependencies.cortex-m-rt]
 version = "0.7"
