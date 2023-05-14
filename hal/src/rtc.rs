@@ -451,7 +451,7 @@ impl TimerParams {
             512 => PRESCALERSELECT_A::DIV512,
             1024 => PRESCALERSELECT_A::DIV1024,
             _ => PRESCALERSELECT_A::DIV1024, /* would be nice to catch this at compile time
-                                        * (rust-lang/rust#51999) */
+                                              * (rust-lang/rust#51999) */
         };
 
         let cycles: u32 = ticks / divider_value as u32;
