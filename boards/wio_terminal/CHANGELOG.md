@@ -7,6 +7,7 @@
 - Fix various documentation and clippy warnings
 - Fix Wi-Fi by delaying UART init until device reset
 - Demote to tier 2, as there have been difficulties maintaining this board, and no current maintainer owns one
+- Added an example program which is the snake game (`snake.rs`). User can control the direction of the snake using the 5-way-switch.
 
 # v0.6.1
 
