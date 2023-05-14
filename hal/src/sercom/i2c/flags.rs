@@ -74,6 +74,7 @@ impl Status {
 
 /// Errors available for I2C transactions
 #[derive(Debug, Clone, Copy)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     BusError,
     ArbitrationLost,

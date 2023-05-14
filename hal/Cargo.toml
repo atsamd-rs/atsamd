@@ -57,6 +57,7 @@ jlink_rtt = {version = "0.2", optional = true}
 mcan-core = {version = "0.2", optional = true}
 rtic-monotonic = {version = "1.0", optional = true}
 usb-device = {version = "0.2", optional = true}
+defmt = {version = "0.3.4", optional = true}
 
 #===============================================================================
 # PACs
@@ -184,6 +185,7 @@ sdmmc = ["embedded-sdmmc"]
 unproven = ["embedded-hal/unproven"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
+defmt = ["dep:defmt"]
 
 #===============================================================================
 # Implementation-details

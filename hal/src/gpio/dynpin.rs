@@ -254,6 +254,7 @@ impl DynRegisters {
 ///
 /// [`DynPin`]s are not tracked and verified at compile-time, so run-time
 /// operations are fallible. This `enum` represents the corresponding errors.
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     /// The pin did not have the correct ID or mode for the requested operation
     InvalidPinType,
