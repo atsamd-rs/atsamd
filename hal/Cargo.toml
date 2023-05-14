@@ -54,6 +54,7 @@ void = {version = "1.0", default-features = false}
 embedded-sdmmc = {version = "0.3", optional = true}
 fugit = {version = "0.3", optional = true}
 jlink_rtt = {version = "0.2", optional = true}
+mcan-core = {version = "0.2", optional = true}
 rtic-monotonic = {version = "1.0", optional = true}
 usb-device = {version = "0.2", optional = true}
 
@@ -120,7 +121,7 @@ samd51j = ["samd51", "atsamd51j", "periph-d51j", "pins-d51j"]
 samd51n = ["samd51", "atsamd51n", "periph-d51n", "pins-d51n"]
 samd51p = ["samd51", "atsamd51p", "periph-d51p", "pins-d51p"]
 
-same51g = ["same51", "atsamd51p", "periph-e51g", "pins-e51g"]
+same51g = ["same51", "atsame51g", "periph-e51g", "pins-e51g"]
 same51j = ["same51", "atsame51j", "periph-e51j", "pins-e51j"]
 same51n = ["same51", "atsame51n", "periph-e51n", "pins-e51n"]
 
@@ -174,6 +175,7 @@ same54p-rt = ["same54p", "atsame54p/rt"]
 # Until then, we make `unproven` a default feature.
 default = ["unproven"]
 
+can = ["mcan-core"]
 dma = ["unproven"]
 enable_unsafe_aes_newblock_cipher = []
 max-channels = ["dma"]
@@ -284,7 +286,8 @@ pins-e54p = ["pins-128"]
 #-------------------------------------------------------------------------------
 
 # Define a feature for each optional peripheral
-has-can = []
+has-can0 = []
+has-can1 = []
 has-ethernet = []
 has-gmac = []
 has-i2s = []
@@ -357,12 +360,12 @@ periph-d51j = ["periph-d51g", "has-i2s", "has-tcc2", "has-tcc3", "has-tc4", "has
 periph-d51n = ["periph-d51j", "has-tc6", "has-tc7", "has-sdhc1", "has-sercom6", "has-sercom7"]
 periph-d51p = ["periph-d51n"]
 
-periph-e51g = ["periph-d51g", "has-can"]
-periph-e51j = ["periph-d51j", "has-can"]
-periph-e51n = ["periph-d51j", "has-can", "has-tc6", "has-tc7", "has-sercom6", "has-sercom7"]
+periph-e51g = ["periph-d51g", "has-can0"]
+periph-e51j = ["periph-d51j", "has-can0", "has-can1"]
+periph-e51n = ["periph-d51j", "has-can0", "has-can1", "has-tc6", "has-tc7", "has-sercom6", "has-sercom7"]
 
 periph-e53j = ["periph-d51j", "has-ethernet"]
 periph-e53n = ["periph-d51n", "has-ethernet"]
 
-periph-e54n = ["periph-d51n", "has-ethernet", "has-can"]
-periph-e54p = ["periph-d51p", "has-ethernet", "has-can"]
+periph-e54n = ["periph-d51n", "has-ethernet", "has-can0", "has-can1"]
+periph-e54p = ["periph-d51p", "has-ethernet", "has-can0", "has-can1"]

@@ -459,9 +459,9 @@ clock_generator!(
     (evsys9, Evsys9Clock, EVSYS9, EvSys9),
     (evsys10, Evsys10Clock, EVSYS10, EvSys10),
     (evsys11, Evsys11Clock, EVSYS11, EvSys11),
-    #[cfg(any(feature = "has-can"))]
+    #[cfg(feature = "has-can0")]
     (can0, Can0Clock, CAN0, Can0),
-    #[cfg(any(feature = "has-can"))]
+    #[cfg(feature = "has-can1")]
     (can1, Can1Clock, CAN1, Can1),
     (pdec, PdecClock, PDEC, PDec),
     (ac, AcClock, AC, Ac),

@@ -385,9 +385,9 @@ define_ahb_types!(
     Sdhc0 = 15,
     #[cfg(feature = "has-sdhc1")]
     Sdhc1 = 16,
-    #[cfg(feature = "has-can")]
+    #[cfg(feature = "has-can0")]
     Can0 = 17,
-    #[cfg(feature = "has-can")]
+    #[cfg(feature = "has-can1")]
     Can1 = 18,
     Icm = 19,
     Pukcc = 20,
