@@ -6,7 +6,7 @@ use atsamd_hal::time::Hertz;
 #[cfg(feature = "usb")]
 use atsamd_hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 #[cfg(feature = "usb")]
-use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+use pac::gclk::{genctrl::SRCSELECT_A, pchctrl::GENSELECT_A};
 
 use super::pins::aliases::*;
 
@@ -69,8 +69,8 @@ impl Usb {
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
     ) -> UsbBusAllocator<UsbBus> {
-        clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
-        let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+        clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
+        let usb_gclk = clocks.get_gclk(GENSELECT_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
 
         UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, self.dm, self.dp, usb))

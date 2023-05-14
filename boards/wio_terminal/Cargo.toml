@@ -31,7 +31,7 @@ chip = "ATSAMD51P19A"
 
 [dependencies]
 bitfield = "0.13"
-cortex-m = "0.7.3"
+cortex-m = { version = "0.7.3", features = ["critical-section-single-core"] }
 cortex-m-rt = { version = "0.7", optional = true }
 display-interface-spi = "0.4"
 heapless = "0.5"
@@ -50,6 +50,7 @@ seeed-erpc = { version = "0.1.1", optional = true }
 path = "../../hal"
 version = "0.15.1"
 default-features = false
+features= ["critical-section"]
 
 [dev-dependencies]
 usbd-serial = "0.1"
