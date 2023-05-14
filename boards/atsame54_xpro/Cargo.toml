@@ -17,9 +17,14 @@ readme = "README.md"
 version = "0.7"
 optional = true
 
+[dependencies.cortex-m]
+version = "0.7"
+features = ["critical-section-single-core"]
+
 [dependencies.atsamd-hal]
 path = "../../hal"
 default-features = false
+features = ["critical-section" ]
 
 [dependencies.usb-device]
 version = "0.2"

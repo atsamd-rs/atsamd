@@ -15,8 +15,8 @@ use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::gpio::M;
 
-use pac::gclk::genctrl::SRC_A::DPLL0;
-use pac::gclk::pchctrl::GEN_A::GCLK2;
+use pac::gclk::genctrl::SRCSELECT_A::DPLL0;
+use pac::gclk::pchctrl::GENSELECT_A::GCLK2;
 use pac::Peripherals;
 
 #[entry]

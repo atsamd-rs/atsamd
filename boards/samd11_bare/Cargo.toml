@@ -17,10 +17,15 @@ chip = "ATSAMD11C14A"
 version = "0.7"
 optional = true
 
+[dependencies.cortex-m]
+version = "0.7"
+features = ["critical-section-single-core"]
+
 [dependencies.atsamd-hal]
 path = "../../hal"
 version = "0.15.1"
 default-features = false
+features= ["critical-section"]
 
 [dev-dependencies]
 cortex-m = "0.7"

@@ -19,8 +19,8 @@ use panic_semihosting as _;
 use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::pac::gclk::genctrl::SRC_A;
-use hal::pac::gclk::pchctrl::GEN_A;
+use hal::pac::gclk::genctrl::SRCSELECT_A;
+use hal::pac::gclk::pchctrl::GENSELECT_A;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::time::Hertz;
@@ -36,7 +36,7 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
+    clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
 
     let pins = bsp::Pins::new(peripherals.PORT);
     let mut delay = Delay::new(core.SYST, &mut clocks);
