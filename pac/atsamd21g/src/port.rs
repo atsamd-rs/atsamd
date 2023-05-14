@@ -53,9 +53,9 @@ pub struct RegisterBlock {
     pub wrconfig1: WRCONFIG,
     _reserved24: [u8; 0x04],
     #[doc = "0xb0..0xc0 - Peripheral Multiplexing n - Group 1"]
-    pub pmux1_0: [PMUX1_; 16],
+    pub pmux1_: [PMUX1_; 16],
     #[doc = "0xc0..0xe0 - Pin Configuration n - Group 1"]
-    pub pincfg1_0: [PINCFG1_; 32],
+    pub pincfg1_: [PINCFG1_; 32],
 }
 #[doc = "DIR (rw) register accessor: an alias for `Reg<DIR_SPEC>`"]
 pub type DIR = crate::Reg<dir::DIR_SPEC>;
