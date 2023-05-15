@@ -15,7 +15,7 @@ use bsp::entry;
 use ehal::digital::v2::ToggleableOutputPin;
 use hal::clock::GenericClockController;
 use hal::dsu::Dsu;
-use hal::nvm::{retrieve_bank_size, Bank, EraseGranularity, Nvm, BLOCKSIZE};
+use hal::nvm::{retrieve_bank_size, Bank, Nvm, WriteGranularity, BLOCKSIZE};
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::usb::UsbBus;
 
@@ -105,17 +105,14 @@ fn main() -> ! {
         if crc32_checksum_active_bank != crc32_checksum_inactive_bank {
             serial_writeln!("Checksums differ: overwrite inactive bank with active one");
             serial_writeln!("Erase inactive bank");
-            nvm.erase(
-                inactive_bank_address,
-                bank_size_in_blocks,
-                EraseGranularity::Block,
-            )
-            .unwrap();
+            nvm.erase_flash(inactive_bank_address as *mut _, bank_size_in_blocks)
+                .unwrap();
             serial_writeln!("Overwrite inactive bank with active bank");
-            nvm.write(
-                inactive_bank_address,
-                active_bank_address,
+            nvm.write_flash(
+                inactive_bank_address as *mut _,
+                active_bank_address as *const _,
                 bank_size_in_words,
+                WriteGranularity::Page,
             )
             .unwrap();
             serial_writeln!("Swapping banks & reset!");
