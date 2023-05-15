@@ -68,7 +68,7 @@ fn main() -> ! {
         if let Ok(slave_msg) = spi1.transfer(&mut message.clone()) {
             cs.set_high().unwrap();
             for c in slave_msg {
-                let _ = nb::block!(&mut serial.write(*c));
+                let _ = nb::block!(serial.write(*c));
             }
         }
         delay.delay_ms(200u8);
