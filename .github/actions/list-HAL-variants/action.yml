@@ -13,5 +13,5 @@ runs:
     - id: compute-matrix
       shell: bash
       run: |
-        matrix_json=$(cat crates.json | jq -Mr -c '{ "pac": (.hal_build_variants | keys ), "toolchain": ["stable", "nightly"] }')
+        matrix_json=$(cat crates.json | jq -Mr -c '{ "pac": (.hal_variants | keys ), "toolchain": ["stable", "nightly"] }')
         echo "matrix=${matrix_json}" >> $GITHUB_OUTPUT
