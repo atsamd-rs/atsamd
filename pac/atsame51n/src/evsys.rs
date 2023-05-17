@@ -18,8 +18,8 @@ pub struct RegisterBlock {
     pub busych: BUSYCH,
     #[doc = "0x1c - Ready Users"]
     pub readyusr: READYUSR,
-    #[doc = "0x20..0x120 - CHANNEL\\[%s\\]"]
-    pub channel: [CHANNEL; 32],
+    #[doc = "0x20..0x120 - CHANNELS\\[%s\\]"]
+    pub channels: [CHANNELS; 32],
     #[doc = "0x120..0x22c - User Multiplexer n"]
     pub user: [USER; 67],
 }
@@ -51,11 +51,11 @@ pub mod busych;
 pub type READYUSR = crate::Reg<readyusr::READYUSR_SPEC>;
 #[doc = "Ready Users"]
 pub mod readyusr;
-#[doc = "CHANNEL\\[%s\\]"]
-pub use self::channel::CHANNEL;
+#[doc = "CHANNELS\\[%s\\]"]
+pub use self::channels::CHANNELS;
 #[doc = r"Cluster"]
-#[doc = "CHANNEL\\[%s\\]"]
-pub mod channel;
+#[doc = "CHANNELS\\[%s\\]"]
+pub mod channels;
 #[doc = "USER (rw) register accessor: an alias for `Reg<USER_SPEC>`"]
 pub type USER = crate::Reg<user::USER_SPEC>;
 #[doc = "User Multiplexer n"]

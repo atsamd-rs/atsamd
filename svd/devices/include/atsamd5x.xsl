@@ -32,8 +32,8 @@
     </fields>
   </xsl:template>
 
-  <xsl:template match="/device/peripherals/peripheral[name='EVSYS']/registers/cluster/register[name='CHANNEL']/name">
-    <name>CHANNELCTRL</name>
+  <xsl:template match="/device/peripherals/peripheral[name='EVSYS']/registers/cluster[name='CHANNEL[%s]']/name">
+    <name>CHANNELS[%s]</name>
   </xsl:template>
 
   <!-- The GMAC::TIDM::ENIDn fields are all missing. -->
