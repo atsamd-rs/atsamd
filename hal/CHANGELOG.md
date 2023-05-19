@@ -24,6 +24,7 @@
       - `Nvm::write_from_slice` -> `Nvm::write_flash_from_slice`
       - `Nvm::erase` -> `Nvm::erase_flash`
   - Refactor `Nvm::command_sync` to be less error-prone
+- Add the missing ADC traits for the SAMD11D
 
 # v0.15.1
 
