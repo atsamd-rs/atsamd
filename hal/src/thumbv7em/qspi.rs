@@ -6,6 +6,7 @@ use crate::{
 use core::marker::PhantomData;
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     /// The command you selected cannot be performed by this function
     CommandFunctionMismatch,

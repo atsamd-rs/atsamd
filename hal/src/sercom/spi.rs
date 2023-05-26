@@ -378,6 +378,7 @@ pub mod impl_ehal;
 /// Define the bit order of transactions
 #[repr(u8)]
 #[derive(Copy, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum BitOrder {
     LsbFirst,
     MsbFirst,
@@ -442,6 +443,7 @@ impl TryFrom<Status> for () {
 /// The SPI peripheral only has two error types, buffer overflow and transaction
 /// length error.
 #[derive(Debug)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     Overflow,
     LengthError,
