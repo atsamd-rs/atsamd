@@ -25,7 +25,6 @@ use hal::eic::pin::*;
 use hal::gpio::{Interrupt as GpioInterrupt, *};
 use hal::prelude::*;
 
-use dwt_systick_monotonic::fugit::RateExtU32 as _;
 use dwt_systick_monotonic::{DwtSystick, ExtU32};
 
 use mcan::embedded_can as ecan;
@@ -133,7 +132,7 @@ mod app {
             &mut ctx.core.DCB,
             ctx.core.DWT,
             ctx.core.SYST,
-            clocks.gclk0.freq().0,
+            clocks.gclk0.freq().to_Hz(),
         );
 
         let pins = bsp::Pins::new(ctx.device.PORT);

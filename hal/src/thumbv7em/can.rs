@@ -61,7 +61,7 @@ impl<ID: PclkId + AhbId, PS: PclkSourceId, RX, TX, CAN> Dependencies<ID, PS, RX,
         (
             Self {
                 pclk,
-                host_freq: HertzU32::from_raw(gclk0.freq().0),
+                host_freq: gclk0.freq(),
                 ahbclk,
                 rx,
                 tx,
@@ -102,7 +102,7 @@ where
     }
 
     fn can_clock(&self) -> HertzU32 {
-        HertzU32::from_raw(self.pclk.freq().0)
+        self.pclk.freq()
     }
 
     fn eligible_message_ram_start(&self) -> *const () {
