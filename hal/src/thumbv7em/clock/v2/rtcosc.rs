@@ -217,19 +217,19 @@ pub trait RtcSourceId {
 
 impl RtcSourceId for OscUlp1kId {
     const DYN: DynRtcSourceId = DynRtcSourceId::OscUlp1k;
-    const FREQ: Hertz = Hertz(1024);
+    const FREQ: Hertz = Hertz::Hz(1024);
 }
 impl RtcSourceId for OscUlp32kId {
     const DYN: DynRtcSourceId = DynRtcSourceId::OscUlp32k;
-    const FREQ: Hertz = Hertz(32_768);
+    const FREQ: Hertz = Hertz::Hz(32_768);
 }
 impl RtcSourceId for Xosc1kId {
     const DYN: DynRtcSourceId = DynRtcSourceId::Xosc1k;
-    const FREQ: Hertz = Hertz(1024);
+    const FREQ: Hertz = Hertz::Hz(1024);
 }
 impl RtcSourceId for Xosc32kId {
     const DYN: DynRtcSourceId = DynRtcSourceId::Xosc32k;
-    const FREQ: Hertz = Hertz(32_768);
+    const FREQ: Hertz = Hertz::Hz(32_768);
 }
 
 //==============================================================================

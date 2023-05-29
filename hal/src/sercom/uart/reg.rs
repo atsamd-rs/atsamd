@@ -223,11 +223,10 @@ impl<S: Sercom> Registers<S> {
     ///
     /// Note that 3x oversampling is not supported.
     #[inline]
-    pub(super) fn set_baud<B: Into<Hertz>>(&mut self, freq: Hertz, baud: B, mode: BaudMode) {
+    pub(super) fn set_baud(&mut self, freq: Hertz, baud: Hertz, mode: BaudMode) {
         use BaudMode::*;
         use Oversampling::*;
 
-        let baud: Hertz = baud.into();
         let usart = self.usart();
 
         let sampr = match mode {
@@ -246,12 +245,13 @@ impl<S: Sercom> Registers<S> {
 
         match mode {
             BaudMode::Arithmetic(n) => {
-                let baud = calculate_baud_asynchronous_arithm(baud.0, freq.0, n as u8);
+                let baud = calculate_baud_asynchronous_arithm(baud.to_Hz(), freq.to_Hz(), n as u8);
                 unsafe { usart.baud_usartfp_mode().write(|w| w.baud().bits(baud)) };
             }
 
             BaudMode::Fractional(n) => {
-                let (baud, frac) = calculate_baud_asynchronous_fractional(baud.0, freq.0, n as u8);
+                let (baud, frac) =
+                    calculate_baud_asynchronous_fractional(baud.to_Hz(), freq.to_Hz(), n as u8);
                 unsafe {
                     usart.baud_frac_mode().write(|w| {
                         w.fp().bits(frac);

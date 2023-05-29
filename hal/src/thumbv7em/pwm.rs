@@ -147,41 +147,38 @@ pub struct $TYPE<I: PinId> {
 }
 
 impl<I: PinId> $TYPE<I> {
-    pub fn new<F: Into<Hertz>> (
+    pub fn new(
         clock: &clock::$clock,
-        freq: F,
+        freq: Hertz,
         tc: $TC,
         pinout: $pinout<I>,
         mclk: &mut MCLK,
     ) -> Self {
-        let freq = freq.into();
-        {
-            let count = tc.count16();
-            let params = TimerParams::new(freq, clock.freq().0);
-            mclk.$apmask.modify(|_, w| w.$apbits().set_bit());
-            count.ctrla.write(|w| w.swrst().set_bit());
-            while count.ctrla.read().bits() & 1 != 0 {}
-            count.ctrla.modify(|_, w| w.enable().clear_bit());
-            count.ctrla.modify(|_, w| {
-                match params.divider {
-                    1 => w.prescaler().div1(),
-                    2 => w.prescaler().div2(),
-                    4 => w.prescaler().div4(),
-                    8 => w.prescaler().div8(),
-                    16 => w.prescaler().div16(),
-                    64 => w.prescaler().div64(),
-                    256 => w.prescaler().div256(),
-                    1024 => w.prescaler().div1024(),
-                    _ => unreachable!(),
-                }
-            });
-            count.wave.write(|w| w.wavegen().mpwm());
-            count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
-            while count.syncbusy.read().cc0().bit_is_set() {}
-            count.cc[1].write(|w| unsafe { w.cc().bits(0) });
-            while count.syncbusy.read().cc1().bit_is_set() {}
-            count.ctrla.modify(|_, w| w.enable().set_bit());
-        }
+        let count = tc.count16();
+        let params = TimerParams::new(freq.convert(), clock.freq());
+        mclk.$apmask.modify(|_, w| w.$apbits().set_bit());
+        count.ctrla.write(|w| w.swrst().set_bit());
+        while count.ctrla.read().bits() & 1 != 0 {}
+        count.ctrla.modify(|_, w| w.enable().clear_bit());
+        count.ctrla.modify(|_, w| {
+            match params.divider {
+                1 => w.prescaler().div1(),
+                2 => w.prescaler().div2(),
+                4 => w.prescaler().div4(),
+                8 => w.prescaler().div8(),
+                16 => w.prescaler().div16(),
+                64 => w.prescaler().div64(),
+                256 => w.prescaler().div256(),
+                1024 => w.prescaler().div1024(),
+                _ => unreachable!(),
+            }
+        });
+        count.wave.write(|w| w.wavegen().mpwm());
+        count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
+        while count.syncbusy.read().cc0().bit_is_set() {}
+        count.cc[1].write(|w| unsafe { w.cc().bits(0) });
+        while count.syncbusy.read().cc1().bit_is_set() {}
+        count.ctrla.modify(|_, w| w.enable().set_bit());
 
         Self {
             clock_freq: clock.freq(),
@@ -194,15 +191,13 @@ impl<I: PinId> $TYPE<I> {
         let count = self.tc.count16();
         let divisor = count.ctrla.read().prescaler().bits();
         let top = count.cc[0].read().cc().bits();
-        Hertz(self.clock_freq.0 / divisor as u32 / (top + 1) as u32)
+        self.clock_freq / divisor as u32 / (top + 1) as u32
     }
 
-    pub fn set_period<P>(&mut self, period: P)
-    where
-        P: Into<Hertz>
+    pub fn set_period(&mut self, period: Hertz)
     {
         let period = period.into();
-        let params = TimerParams::new(period, self.clock_freq.0);
+        let params = TimerParams::new(period, self.clock_freq);
         let count = self.tc.count16();
         count.ctrla.modify(|_, w| w.enable().clear_bit());
         count.ctrla.modify(|_, w| {
@@ -510,41 +505,38 @@ pub struct $TYPE<I: PinId, M: PinMode> {
 }
 
 impl<I: PinId, M: PinMode> $TYPE<I, M> {
-    pub fn new<F: Into<Hertz>> (
+    pub fn new(
         clock: &clock::$clock,
-        freq: F,
+        freq: Hertz,
         tcc: $TCC,
         pinout: $pinout<I, M>,
         mclk: &mut MCLK,
     ) -> Self {
-        let freq = freq.into();
-        {
-            let params = TimerParams::new(freq, clock.freq().0);
-            mclk.$apmask.modify(|_, w| w.$apbits().set_bit());
-            tcc.ctrla.write(|w| w.swrst().set_bit());
-            while tcc.syncbusy.read().swrst().bit_is_set() {}
-            tcc.ctrlbclr.write(|w| w.dir().set_bit() );
-            while tcc.syncbusy.read().ctrlb().bit_is_set() {}
-            tcc.ctrla.modify(|_, w| w.enable().clear_bit());
-            tcc.ctrla.modify(|_, w| {
-                match params.divider {
-                    1 => w.prescaler().div1(),
-                    2 => w.prescaler().div2(),
-                    4 => w.prescaler().div4(),
-                    8 => w.prescaler().div8(),
-                    16 => w.prescaler().div16(),
-                    64 => w.prescaler().div64(),
-                    256 => w.prescaler().div256(),
-                    1024 => w.prescaler().div1024(),
-                    _ => unreachable!(),
-                }
-            });
-            tcc.wave.write(|w| w.wavegen().npwm());
-            while tcc.syncbusy.read().wave().bit_is_set() {}
-            tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
-            while tcc.syncbusy.read().per().bit_is_set() {}
-            tcc.ctrla.modify(|_, w| w.enable().set_bit());
-        }
+        let params = TimerParams::new(freq.convert(), clock.freq());
+        mclk.$apmask.modify(|_, w| w.$apbits().set_bit());
+        tcc.ctrla.write(|w| w.swrst().set_bit());
+        while tcc.syncbusy.read().swrst().bit_is_set() {}
+        tcc.ctrlbclr.write(|w| w.dir().set_bit() );
+        while tcc.syncbusy.read().ctrlb().bit_is_set() {}
+        tcc.ctrla.modify(|_, w| w.enable().clear_bit());
+        tcc.ctrla.modify(|_, w| {
+            match params.divider {
+                1 => w.prescaler().div1(),
+                2 => w.prescaler().div2(),
+                4 => w.prescaler().div4(),
+                8 => w.prescaler().div8(),
+                16 => w.prescaler().div16(),
+                64 => w.prescaler().div64(),
+                256 => w.prescaler().div256(),
+                1024 => w.prescaler().div1024(),
+                _ => unreachable!(),
+            }
+        });
+        tcc.wave.write(|w| w.wavegen().npwm());
+        while tcc.syncbusy.read().wave().bit_is_set() {}
+        tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
+        while tcc.syncbusy.read().per().bit_is_set() {}
+        tcc.ctrla.modify(|_, w| w.enable().set_bit());
 
         Self {
             clock_freq: clock.freq(),
@@ -572,7 +564,7 @@ impl<I: PinId, M: PinMode> Pwm for $TYPE<I, M> {
     fn get_period(&self) -> Self::Time {
         let divisor = self.tcc.ctrla.read().prescaler().bits();
         let top = self.tcc.per().read().bits();
-        Hertz(self.clock_freq.0 / divisor as u32 / (top + 1) as u32)
+        self.clock_freq / divisor as u32 / (top + 1) as u32
     }
 
     fn get_duty(&self, channel: Self::Channel) -> Self::Duty {
@@ -595,8 +587,7 @@ impl<I: PinId, M: PinMode> Pwm for $TYPE<I, M> {
     where
         P: Into<Self::Time>,
     {
-        let period = period.into();
-        let params = TimerParams::new(period, self.clock_freq.0);
+        let params = TimerParams::new(period.into().convert(), self.clock_freq);
         self.tcc.ctrla.modify(|_, w| w.enable().clear_bit());
         while self.tcc.syncbusy.read().enable().bit_is_set() {}
         self.tcc.ctrla.modify(|_, w| {

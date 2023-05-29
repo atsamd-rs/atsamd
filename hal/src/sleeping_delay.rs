@@ -1,9 +1,9 @@
 //! Delays with WFI sleep while we wait using a timer
 use core::sync::atomic;
 use cortex_m::asm;
+use fugit::ExtU32;
 
 use crate::ehal::blocking::delay::{DelayMs, DelayUs};
-use crate::time::U32Ext;
 use crate::timer_traits::InterruptDrivenTimer;
 
 const NUM_US_IN_S: u32 = 1_000_000;
@@ -49,7 +49,7 @@ where
         let mut count: u32 = 1 + (us / NUM_US_IN_S);
 
         // Start the timer and sleep!
-        self.timer.start((us / count).us());
+        self.timer.start((us / count).nanos());
         self.timer.enable_interrupt();
         loop {
             asm::wfi();

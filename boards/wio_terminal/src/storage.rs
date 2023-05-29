@@ -1,9 +1,10 @@
 use atsamd_hal::{
     clock::{GenericClockController, Sercom6CoreClock},
     pac::{MCLK, QSPI, SERCOM6},
+    prelude::*,
     qspi,
     sercom::{spi, IoSet1, Sercom6},
-    time::{Hertz, U32Ext},
+    time::Hertz,
     typelevel::NoneT,
 };
 use embedded_sdmmc::{SdMmcSpi, TimeSource};
@@ -70,7 +71,7 @@ pub struct SDCardController<TS: TimeSource> {
 impl<TS: TimeSource> SDCardController<TS> {
     /// Initializes the MMC card. An error is returned if there is no card
     /// or a communications error occurs.
-    pub fn set_baud<B: Into<Hertz>>(&mut self, baud: B) {
+    pub fn set_baud(&mut self, baud: Hertz) {
         self.cont.device().spi().reconfigure(|c| c.set_baud(baud));
     }
 }
@@ -106,7 +107,7 @@ impl SDCard {
             .sclk(self.sck);
         let spi = spi::Config::new(mclk, sercom6, pads, sercom6_clk.freq())
             .spi_mode(spi::MODE_0)
-            .baud(400.khz())
+            .baud(400.kHz())
             .enable();
 
         let cs = self.cs.into_push_pull_output();

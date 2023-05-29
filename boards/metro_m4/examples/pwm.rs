@@ -35,7 +35,7 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let mut pwm2 = Pwm2::new(
         &clocks.tc2_tc3(&gclk0).unwrap(),
-        1.khz(),
+        1.kHz(),
         peripherals.TC2,
         TC2Pinout::Pa17(d12),
         &mut peripherals.MCLK,

@@ -13,6 +13,7 @@ use feather_m0 as bsp;
 use bsp::{entry, pin_alias};
 use hal::clock::GenericClockController;
 use hal::prelude::*;
+use hal::time::Hertz;
 use hal::timer::TimerCounter;
 use pac::Peripherals;
 
@@ -35,7 +36,7 @@ fn main() -> ! {
     // instantiate a timer objec for the TC4 peripheral
     let mut timer = TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
     // start a 5Hz timer
-    timer.start(5.hz());
+    timer.start(Hertz::Hz(5).into_duration());
 
     // toggle the red LED at the frequency set by the timer
     loop {

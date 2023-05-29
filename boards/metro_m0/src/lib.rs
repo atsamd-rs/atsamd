@@ -10,7 +10,7 @@ pub use hal::pac;
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::sercom::{i2c, spi, uart, Sercom0, Sercom3, Sercom4, Sercom5};
-use hal::time::{Hertz, MegaHertz};
+use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
@@ -217,7 +217,7 @@ pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 /// any OutputPin, or even a pulled up line on the slave.
 pub fn spi_master(
     clocks: &mut GenericClockController,
-    baud: impl Into<Hertz>,
+    baud: Hertz,
     sercom4: pac::SERCOM4,
     pm: &mut pac::PM,
     sclk: impl Into<Sclk>,
@@ -261,7 +261,7 @@ pub fn flash_spi_master(
     let (miso, mosi, sclk, mut cs) = (miso.into(), mosi.into(), sclk.into(), cs.into());
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
     let spi = spi::Config::new(pm, sercom5, pads, freq)
-        .baud(MegaHertz(48))
+        .baud(48.MHz())
         .spi_mode(spi::MODE_0)
         .enable();
 

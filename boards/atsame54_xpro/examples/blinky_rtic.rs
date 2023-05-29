@@ -45,7 +45,7 @@ mod app {
             bsp::pin_alias!(pins.xosc1_x_in),
             bsp::pin_alias!(pins.xosc1_x_out),
             // Xosc1 on Same54Xpro is 12 MHz
-            12.mhz(),
+            12.MHz(),
         )
         .enable();
 
@@ -55,7 +55,7 @@ mod app {
             &mut ctx.core.DCB,
             ctx.core.DWT,
             ctx.core.SYST,
-            gclk0.freq().0,
+            gclk0.freq().to_Hz(),
         );
 
         let led = bsp::pin_alias!(pins.led).into();

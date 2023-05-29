@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Replace homebrew time library with `fugit` (#672)
 - Add `defmt` feature and derive `defmt::Format` for error types (#684, obsoletes #522).
 - Add `mcan` integration (#654)
 - Fix incorrect PAC provided for `same51g` target

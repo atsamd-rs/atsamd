@@ -880,7 +880,7 @@ where
     /// half the GCLK frequency. The minimum baud rate is the GCLK frequency /
     /// 512. Values outside this range will saturate at the extremes.
     #[inline]
-    pub fn set_baud(&mut self, baud: impl Into<Hertz>) {
+    pub fn set_baud(&mut self, baud: Hertz) {
         self.regs.set_baud(self.freq, baud);
     }
 
@@ -891,7 +891,7 @@ where
     /// half the GCLK frequency. The minimum baud rate is the GCLK frequency /
     /// 512. Values outside this range will saturate at the extremes.
     #[inline]
-    pub fn baud(mut self, baud: impl Into<Hertz>) -> Self {
+    pub fn baud(mut self, baud: Hertz) -> Self {
         self.set_baud(baud);
         self
     }
