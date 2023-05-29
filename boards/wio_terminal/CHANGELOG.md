@@ -1,5 +1,6 @@
 # Unreleased
 
+- Replace homebrew time library with `fugit` (#672)
 - Fix end-of-line glyph loss in usb_serial_display example
 - Fix display frequency in examples that did not work
 - Fix display offsets in buttons example
