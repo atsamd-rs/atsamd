@@ -40,6 +40,7 @@ fugit = "0.3"
 modular-bitfield = "0.11"
 nb = "1.0"
 num-traits = {version = "0.2.14", default-features = false}
+num-derive = "0.3"
 opaque-debug = "0.3.0"
 paste = "1.0.11"
 rand_core = "0.6"
@@ -47,6 +48,7 @@ seq-macro = "0.3"
 typenum = "1.12.0"
 vcell = "0.1"
 void = {version = "1.0", default-features = false}
+rtt-target = { version = "0.3", features = ["cortex-m"] }
 
 #===============================================================================
 # Optional depdendencies
