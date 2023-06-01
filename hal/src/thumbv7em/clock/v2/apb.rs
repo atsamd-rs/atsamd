@@ -521,6 +521,8 @@ pub struct ApbTokens {
     pub tcc1: ApbToken<Tcc1>,
     pub tc2: ApbToken<Tc2>,
     pub tc3: ApbToken<Tc3>,
+    #[cfg(feature = "has-tc4")]
+    pub tc4: ApbToken<Tc4>,
     pub tcc2: ApbToken<Tcc2>,
     #[cfg(feature = "has-tcc3")]
     pub tcc3: ApbToken<Tcc3>,
@@ -574,6 +576,8 @@ impl ApbTokens {
             tcc1: ApbToken::new(),
             tc2: ApbToken::new(),
             tc3: ApbToken::new(),
+            #[cfg(feature = "has-tc4")]
+            tc4: ApbToken::new(),
             tcc2: ApbToken::new(),
             #[cfg(feature = "has-tcc3")]
             tcc3: ApbToken::new(),
@@ -630,8 +634,6 @@ pub struct ApbClks {
     pub ram_ecc: ApbClk<RamEcc>,
     #[cfg(feature = "has-gmac")]
     pub gmac: ApbClk<Gmac>,
-    #[cfg(feature = "has-tc4")]
-    pub tc4: ApbClk<Tc4>,
     pub qspi: ApbClk<Qspi>,
 }
 
@@ -661,8 +663,6 @@ impl ApbClks {
             ram_ecc: ApbClk::new(ApbToken::new()),
             #[cfg(feature = "has-gmac")]
             gmac: ApbClk::new(ApbToken::new()),
-            #[cfg(feature = "has-tc4")]
-            tc4: ApbClk::new(ApbToken::new()),
             qspi: ApbClk::new(ApbToken::new()),
         }
     }
