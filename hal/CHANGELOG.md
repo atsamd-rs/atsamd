@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Implement `Debug, Clone, Copy, Eq, PartialEq` for all HAL error types (#691).
 - Replace homebrew time library with `fugit` (#672)
 - Add `defmt` feature and derive `defmt::Format` for error types (#684, obsoletes #522).
 - Add `mcan` integration (#654)
