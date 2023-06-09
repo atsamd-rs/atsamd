@@ -442,7 +442,7 @@ impl TryFrom<Status> for () {
 ///
 /// The SPI peripheral only has two error types, buffer overflow and transaction
 /// length error.
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     Overflow,

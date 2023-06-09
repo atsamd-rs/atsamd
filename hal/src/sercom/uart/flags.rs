@@ -76,7 +76,7 @@ bitflags! {
 //=============================================================================
 
 /// Errors available for UART transactions
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     /// Detected a parity error

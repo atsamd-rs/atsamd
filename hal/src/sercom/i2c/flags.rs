@@ -73,7 +73,7 @@ impl Status {
 }
 
 /// Errors available for I2C transactions
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     BusError,
