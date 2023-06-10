@@ -14,7 +14,7 @@ pub struct Dsu {
 }
 
 /// Errors from hardware
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum PeripheralError {
     /// Usually misaligned address of length
@@ -22,7 +22,7 @@ pub enum PeripheralError {
 }
 
 /// Error from within the DSU
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     /// Address or length was not word aligned
