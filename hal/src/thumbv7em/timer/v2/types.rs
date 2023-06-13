@@ -1,7 +1,7 @@
 use core::ops::Deref;
 
-use crate::clock::v2::apb::ApbId;
-use crate::clock::v2::pclk::PclkId;
+use crate::clock::v2::apb::{ApbClk, ApbId};
+use crate::clock::v2::pclk::{Pclk, PclkId, PclkSourceId};
 use crate::clock::v2::types;
 use crate::pac;
 
@@ -143,34 +143,37 @@ pub mod state {
 }
 
 pub mod timer_width {
-    pub trait TimerWidth: Copy + Clone + num_traits::AsPrimitive<u32> {
-        fn from_u32(v: u32) -> Self;
+    use num_traits::*;
+    pub trait TimerWidth: Copy + Clone + AsPrimitive<u32> + FromPrimitive + Bounded {
+        fn truncated_from_u32(v: u32) -> Self;
     }
 
-    impl TimerWidth for u8 {
-        fn from_u32(v: u32) -> Self {
-            v as Self
+    macro_rules! impl_timer_width_for {
+        (
+            $($t:ty),+
+        ) => {
+            $(
+            impl TimerWidth for $t {
+                fn truncated_from_u32(v: u32) -> Self {
+                    v as Self
+                }
+            }
+            )+
         }
     }
-    impl TimerWidth for u16 {
-        fn from_u32(v: u32) -> Self {
-            v as Self
-        }
-    }
-    impl TimerWidth for u32 {
-        fn from_u32(v: u32) -> Self {
-            v as Self
-        }
-    }
+
+    impl_timer_width_for!(u8, u16, u32);
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum TimerDirection {
     Increment,
     Decrement,
 }
 
 pub type TimerPrescaler = crate::pac::tc0::count8::ctrla::PRESCALER_A;
+
+pub type TimerMode = crate::pac::tc0::count8::wave::WAVEGEN_A;
 
 #[derive(Copy, Clone, Debug)]
 pub enum TimerError {
@@ -210,3 +213,15 @@ pub enum TimerCompareRegister {
 pub(super) type SecondaryTimer<T> =
     <<T as PrimaryTimerId>::CombinedTimer as CombinedTimerId>::SecondaryTimer;
 pub(super) type Reg<T> = <T as AbstractTimerId>::Reg;
+
+pub trait FreeTimerResourcesExt<T: PrimaryTimerId, I: PclkSourceId> {
+    fn free(
+        self,
+    ) -> (
+        T::Reg,
+        ApbClk<T>,
+        Reg<SecondaryTimer<T>>,
+        ApbClk<SecondaryTimer<T>>,
+        Pclk<T::CombinedTimer, I>,
+    );
+}

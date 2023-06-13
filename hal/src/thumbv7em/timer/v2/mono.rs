@@ -1,38 +1,64 @@
 use super::*;
 
-impl<T: AbstractTimerId, I> Timer<T, I, u32> {
-    pub fn into_monotonic<const TIMER_HZ: u32>(
+pub trait IntoMonotonic<T: AbstractTimerId, I> {
+    fn into_monotonic<const TIMER_HZ: u32>(
+        self,
+    ) -> Result<MonotonicTimer<TIMER_HZ, T, I>, TimerError>;
+}
+
+impl<T: CombinedTimerId, I, TW> IntoMonotonic<T, I> for TimerBuilder<T, I, TW> {
+    fn into_monotonic<const TIMER_HZ: u32>(
         self,
     ) -> Result<MonotonicTimer<TIMER_HZ, T, I>, TimerError> {
-        MonotonicTimer::enable(self)
+        let raw = self
+            .into_32_bit()
+            .into_raw()
+            .with_frequency(Hertz::Hz(TIMER_HZ))?
+            .with_mode(TimerMode::NFRQ)
+            .with_oneshot(false)
+            .with_direction(TimerDirection::Increment)
+            .with_interrupts(TimerInterrupt::Overflow.into());
+        Ok(MonotonicTimer { raw, high_bits: 0 })
     }
 }
 
-pub struct MonotonicTimer<const TIMER_HZ: u32, T: AbstractTimerId, I> {
-    inner_timer: Timer<T, I, u32, state::Enabled>,
+pub struct MonotonicTimer<const TIMER_HZ: u32, T: AbstractTimerId, I, S = state::Disabled> {
+    raw: RawTimer<T, I, u32, S>,
     high_bits: u32,
 }
 
 impl<const TIMER_HZ: u32, T: AbstractTimerId, I> MonotonicTimer<TIMER_HZ, T, I> {
-    fn enable(inner: Timer<T, I, u32>) -> Result<Self, TimerError> {
-        let inner_timer = inner
-            .with_frequency(Hertz::Hz(TIMER_HZ))?
-            .with_direction(TimerDirection::Increment)
-            .with_interrupts(Interrupt::Overflow.into())
-            .enable();
-        Ok(Self {
-            inner_timer,
-            high_bits: 0,
-        })
+    pub fn enable(self) -> MonotonicTimer<TIMER_HZ, T, I, state::Enabled> {
+        MonotonicTimer {
+            raw: self.raw.enable(),
+            high_bits: self.high_bits,
+        }
+    }
+}
+
+impl<const TIMER_HZ: u32, T: AbstractTimerId, I> MonotonicTimer<TIMER_HZ, T, I, state::Enabled> {
+    pub unsafe fn inner_raw(&mut self) -> &mut RawTimer<T, I, u32, state::Enabled> {
+        &mut self.raw
     }
 
-    pub fn disable(self) -> Timer<T, I, u32> {
-        self.inner_timer.disable()
+    pub fn disable(self) -> MonotonicTimer<TIMER_HZ, T, I> {
+        MonotonicTimer {
+            raw: self.raw.disable(),
+            high_bits: self.high_bits,
+        }
+    }
+}
+
+impl<const TIMER_HZ: u32, T: AbstractTimerId, I, S> IntoRaw<T, I, u32, S>
+    for MonotonicTimer<TIMER_HZ, T, I, S>
+{
+    fn into_raw(self) -> RawTimer<T, I, u32, S> {
+        self.raw
     }
 }
 
 impl<const TIMER_HZ: u32, T: AbstractTimerId, I> rtic_monotonic::Monotonic
-    for MonotonicTimer<TIMER_HZ, T, I>
+    for MonotonicTimer<TIMER_HZ, T, I, state::Enabled>
 {
     const DISABLE_INTERRUPT_ON_EMPTY_QUEUE: bool = false;
 
@@ -41,7 +67,7 @@ impl<const TIMER_HZ: u32, T: AbstractTimerId, I> rtic_monotonic::Monotonic
     type Duration = fugit::TimerDurationU64<TIMER_HZ>;
 
     fn now(&mut self) -> Self::Instant {
-        let ticks = u64::from(self.high_bits) << u32::BITS | u64::from(self.inner_timer.count());
+        let ticks = u64::from(self.high_bits) << u32::BITS | u64::from(self.raw.count());
         Self::Instant::from_ticks(ticks)
     }
 
@@ -54,20 +80,20 @@ impl<const TIMER_HZ: u32, T: AbstractTimerId, I> rtic_monotonic::Monotonic
             .map_or(0, |d| d.ticks())
             <= u32::MAX.into()
         {
-            let timer = &mut self.inner_timer;
-            timer.enable_interrupts(Interrupt::MatchOrCaptureChannel0.into());
+            let timer = &mut self.raw;
+            timer.enable_interrupts(TimerInterrupt::MatchOrCaptureChannel0.into());
             timer.set_compare(TimerCompareRegister::Zero, instant.ticks() as u32);
         }
     }
 
     fn clear_compare_flag(&mut self) {
-        let timer = &mut self.inner_timer;
+        let timer = &mut self.raw;
         let interrupts = timer.interrupt_flags();
         for interrupt in interrupts {
             match interrupt {
-                Interrupt::Overflow => self.high_bits += 1,
-                Interrupt::MatchOrCaptureChannel0 => {
-                    timer.disable_interrupts(Interrupt::MatchOrCaptureChannel0.into());
+                TimerInterrupt::Overflow => self.high_bits += 1,
+                TimerInterrupt::MatchOrCaptureChannel0 => {
+                    timer.disable_interrupts(TimerInterrupt::MatchOrCaptureChannel0.into());
                     timer.set_compare(TimerCompareRegister::Zero, 0);
                 }
                 _ => {}
@@ -81,6 +107,6 @@ impl<const TIMER_HZ: u32, T: AbstractTimerId, I> rtic_monotonic::Monotonic
 
     unsafe fn reset(&mut self) {
         self.high_bits = 0;
-        self.inner_timer.set_count(0);
+        self.raw.set_count(0);
     }
 }

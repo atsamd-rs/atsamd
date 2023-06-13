@@ -4,6 +4,9 @@ pub use crate::timer_traits::InterruptDrivenTimer as _atsamd_hal_timer_traits_In
 pub use fugit::ExtU32 as _;
 pub use fugit::RateExtU32 as _;
 
+#[cfg(feature = "thumbv7")]
+pub use crate::timer::v2::prelude::*;
+
 // embedded-hal doesn’t yet have v2 in its prelude, so we need to
 // export it ourselves
 #[cfg(feature = "unproven")]

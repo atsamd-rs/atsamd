@@ -2,7 +2,7 @@ use num_traits::FromPrimitive;
 
 #[repr(u8)]
 #[derive(Copy, Clone, PartialEq, Debug, Eq, num_derive::FromPrimitive)]
-pub enum Interrupt {
+pub enum TimerInterrupt {
     MatchOrCaptureChannel1 = 1 << 5,
     MatchOrCaptureChannel0 = 1 << 4,
     Error = 1 << 1,
@@ -12,7 +12,7 @@ pub enum Interrupt {
 bitfield::bitfield! {
     /// Raw userpage POD struct that exposes bitfields via methods
     #[derive(Copy, Clone, PartialEq, Eq)]
-    pub struct InterruptSet(u8);
+    pub struct TimerInterruptSet(u8);
     impl Debug;
     u8;
     pub overflow, set_overflow: 0;
@@ -21,26 +21,30 @@ bitfield::bitfield! {
     pub match_or_capture_channel_1, set_match_or_capture_channel_1: 5;
 }
 
-impl InterruptSet {
+impl TimerInterruptSet {
     pub fn full() -> Self {
         Self::from_iter(Self(u8::MAX))
     }
+
+    pub fn empty() -> Self {
+        Self(0)
+    }
 }
 
-impl From<Interrupt> for InterruptSet {
-    fn from(value: Interrupt) -> Self {
+impl From<TimerInterrupt> for TimerInterruptSet {
+    fn from(value: TimerInterrupt) -> Self {
         Self(value as _)
     }
 }
 
-impl FromIterator<Interrupt> for InterruptSet {
-    fn from_iter<T: IntoIterator<Item = Interrupt>>(iter: T) -> Self {
+impl FromIterator<TimerInterrupt> for TimerInterruptSet {
+    fn from_iter<T: IntoIterator<Item = TimerInterrupt>>(iter: T) -> Self {
         Self(iter.into_iter().fold(0, |l, r| l | r as u8))
     }
 }
 
-impl Iterator for InterruptSet {
-    type Item = Interrupt;
+impl Iterator for TimerInterruptSet {
+    type Item = TimerInterrupt;
 
     fn next(&mut self) -> Option<Self::Item> {
         let raw_interrupt_set = &mut self.0;
@@ -49,7 +53,7 @@ impl Iterator for InterruptSet {
             let raw_interrupt = 1 << raw_interrupt_set.trailing_zeros();
             // Clear the bit
             *raw_interrupt_set &= !raw_interrupt;
-            match Interrupt::from_u8(raw_interrupt) {
+            match TimerInterrupt::from_u8(raw_interrupt) {
                 None => continue,
                 Some(i) => return Some(i),
             }
@@ -64,35 +68,35 @@ mod tests {
     #[test]
     fn test_full_interrupt_set() {
         let interrupts = [
-            Interrupt::MatchOrCaptureChannel0,
-            Interrupt::MatchOrCaptureChannel1,
-            Interrupt::Error,
-            Interrupt::Overflow,
+            TimerInterrupt::MatchOrCaptureChannel0,
+            TimerInterrupt::MatchOrCaptureChannel1,
+            TimerInterrupt::Error,
+            TimerInterrupt::Overflow,
         ];
-        let full_interrupt_set_from_u8_max = InterruptSet::full();
-        let full_interrupt_set_from_summed_variants = InterruptSet(
-            Interrupt::MatchOrCaptureChannel0 as u8
-                | Interrupt::MatchOrCaptureChannel1 as u8
-                | Interrupt::Error as u8
-                | Interrupt::Overflow as u8,
+        let full_interrupt_set_from_u8_max = TimerInterruptSet::full();
+        let full_interrupt_set_from_summed_variants = TimerInterruptSet(
+            TimerInterrupt::MatchOrCaptureChannel0 as u8
+                | TimerInterrupt::MatchOrCaptureChannel1 as u8
+                | TimerInterrupt::Error as u8
+                | TimerInterrupt::Overflow as u8,
         );
-        let full_interrupt_set = InterruptSet::from_iter(interrupts);
+        let full_interrupt_set = TimerInterruptSet::from_iter(interrupts);
         assert_eq!(full_interrupt_set_from_u8_max, full_interrupt_set);
         assert_eq!(full_interrupt_set_from_summed_variants, full_interrupt_set);
         assert_eq!(full_interrupt_set.count(), interrupts.len());
     }
     #[test]
     fn test_interrupt_set_with_single_interrupts() {
-        for interrupt in InterruptSet(u8::MAX) {
-            let is_from = InterruptSet::from(interrupt);
-            let is_from_iter = InterruptSet::from_iter([interrupt]);
+        for interrupt in TimerInterruptSet(u8::MAX) {
+            let is_from = TimerInterruptSet::from(interrupt);
+            let is_from_iter = TimerInterruptSet::from_iter([interrupt]);
             assert_eq!(is_from, is_from_iter);
         }
     }
     #[test]
     fn test_empty_interrupt_set() {
-        let interrupt_set_from_0 = InterruptSet(0);
-        let interrupt_set_from_empty_iterator = InterruptSet::from_iter([]);
+        let interrupt_set_from_0 = TimerInterruptSet(0);
+        let interrupt_set_from_empty_iterator = TimerInterruptSet::from_iter([]);
         assert_eq!(0, interrupt_set_from_0.count());
         assert_eq!(interrupt_set_from_0, interrupt_set_from_empty_iterator);
     }

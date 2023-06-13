@@ -22,18 +22,21 @@ use rtt_target::{rprintln, rtt_init_print};
 
 type Button = ExtInt15<Pin<PB31, GpioInterrupt<PullUp>>>;
 
+const TIMER_HZ: u32 = 32;
+
 #[rtic::app(device = hal::pac, peripherals = true, dispatchers = [FREQM])]
 mod app {
     use super::*;
 
     #[monotonic(binds = TC0, default = true)]
-    type Mono = MonotonicTimer<32, Tc0Tc1, Gclk1Id>;
+    type Mono = MonotonicTimer<TIMER_HZ, Tc0Tc1, Gclk1Id, state::Enabled>;
 
     #[shared]
     struct Shared {}
 
     #[local]
     struct Local {
+        countdown: CountdownTimer<TIMER_HZ, Tc7, Gclk1Id, u8, state::Enabled>,
         button: Button,
         led: bsp::Led,
     }
@@ -73,23 +76,70 @@ mod app {
         let tc0_clk = buses.apb.enable(tokens.apbs.tc0);
         let tc1_clk = buses.apb.enable(tokens.apbs.tc1);
 
-        let (tc0_tc1_pclk, _gclk1) = clock::pclk::Pclk::enable(tokens.pclks.tc0_tc1, gclk1);
+        let (tc0_tc1_pclk, gclk1) = clock::pclk::Pclk::enable(tokens.pclks.tc0_tc1, gclk1);
 
-        let mono = Timer::paired(
+        let monotonic = TimerBuilder::paired(
             ctx.device.TC0,
             tc0_clk,
             ctx.device.TC1,
             tc1_clk,
             tc0_tc1_pclk,
         )
-        .into_32_bit()
         .into_monotonic()
-        .unwrap();
+        .unwrap()
+        .enable();
+
+        let tc6_clk = buses.apb.enable(tokens.apbs.tc6);
+        let tc7_clk = buses.apb.enable(tokens.apbs.tc7);
+
+        let (tc6_tc7_pclk, _gclk1) = clock::pclk::Pclk::enable(tokens.pclks.tc6_tc7, gclk1);
+
+        let (_, countdown) = TimerBuilder::disjoint(
+            ctx.device.TC6,
+            tc6_clk,
+            ctx.device.TC7,
+            tc7_clk,
+            tc6_tc7_pclk,
+        );
+
+        // TODO: Create a PR to fugit to fix extension traits
+        use atsamd_hal::fugit::ExtU32;
+        let mut countdown = countdown
+            .into_8_bit()
+            .into_countdown()
+            .unwrap()
+            .with_saturated_period(1_u32.secs())
+            .with_interrupt();
+
+        unsafe {
+            countdown
+                .inner_raw()
+                .registers()
+                .count8()
+                .ctrla
+                .modify(|_, w| w.prescsync().resync());
+        }
+
+        let countdown = countdown.enable();
 
         let led: bsp::Led = bsp::pin_alias!(pins.led).into();
         bump_activity_led();
 
-        (Shared {}, Local { button, led }, init::Monotonics(mono))
+        (
+            Shared {},
+            Local {
+                button,
+                led,
+                countdown,
+            },
+            init::Monotonics(monotonic),
+        )
+    }
+    #[task(binds = TC7, local = [countdown])]
+    fn countdown(ctx: countdown::Context) {
+        ctx.local.countdown.clear_interrupt_flag();
+        rprintln!("Countdown timer run out!");
+        bump_activity_led();
     }
 
     #[task(binds = EIC_EXTINT_15, local = [button])]
