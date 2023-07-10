@@ -15,7 +15,7 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.15.1"
 default-features = false
 
 [dependencies.usb-device]
@@ -23,6 +23,7 @@ version = "0.2"
 optional = true
 
 [dev-dependencies]
+cortex-m-rtic = "1.0.0"
 cortex-m = "0.7"
 usbd-serial = "0.1"
 panic-halt = "0.2"
@@ -36,10 +37,15 @@ default = ["rt", "atsamd-hal/samd21g", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
+rtic = [ "atsamd-hal/rtic"]
 
 [[example]]
 name = "blink"
 required-features = ["unproven"]
+
+[[example]]
+name = "blinky_rtic"
+required-features = ["rtic","unproven"]
 
 [[example]]
 name = "eic"
