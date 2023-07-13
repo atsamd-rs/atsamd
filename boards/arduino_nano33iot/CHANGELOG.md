@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.7.1
+
 - add Nina pin aliases
 
 ## v0.7.0

@@ -1,7 +1,10 @@
 # Unreleased
 
+# v0.12.1
+
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
-# 0.12.0
+
+# v0.12.0
 
 - bump hal dependency to 0.14.0
 - bump cortex-m dependency to 0.7
@@ -10,7 +13,7 @@
   - use sercom interrupts
 - create `eic` example to show the relation between `Pin`, `ExtIntX` and `INTFLAG`
 
-# 0.11.0
+# v0.11.0
 
 - update gpio and sercom dependencies to v2
 - create shared_i2c example with I2C bus used for SSD1306 OLED screen and accelerometer

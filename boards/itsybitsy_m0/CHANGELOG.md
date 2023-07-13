@@ -1,4 +1,6 @@
 # Unreleased
+
+# v0.13.1
 - Fix issue with twitching_usb_mouse example not working on MacOS
 
 # 0.13.0
