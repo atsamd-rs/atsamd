@@ -1,6 +1,6 @@
 # Unreleased
 
-# v0.10.0
+# v0.12.0
 
 - Use correct alternate for USB (#661)
 - Correction to the clock in the usb convenience function
