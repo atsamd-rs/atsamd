@@ -1,5 +1,7 @@
 # Unreleased
 
+# v0.13.0
+
 - Replace homebrew time library with `fugit` (#672)
 
 # v0.12.1
