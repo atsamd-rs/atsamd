@@ -64,6 +64,7 @@ impl Dac {
     /// internally.
     pub fn set_voltage(&mut self, v_out: f32) {
         let value = self.voltage_as_u16(v_out);
+        defmt::trace!("DATA: {}", value);
         self.dac.data.modify(|_, w| unsafe { w.data().bits(value) });
         self.syncbusy();
     }
@@ -101,6 +102,6 @@ impl Dac {
     /// [`voltage_as_u16`](Self::voltage_as_u16)
     fn voltage_as_u16(&self, v_out: f32) -> u16 {
         // 0x3FF is the maximum for a 10 bit number
-        (v_out / self.v_ref) as u16 * 0x3FF
+        ((v_out / self.v_ref) * 1024.0) as u16
     }
 }
