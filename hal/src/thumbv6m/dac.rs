@@ -64,10 +64,15 @@ impl Dac {
     /// internally.
     pub fn set_voltage(&mut self, v_out: f32) {
         let value = self.voltage_as_u16(v_out);
-        defmt::trace!("DATA: {}", value);
         self.dac.data.modify(|_, w| unsafe { w.data().bits(value) });
         self.syncbusy();
     }
+
+    pub fn set_voltage_raw(&mut self, v_out: u16) {
+        self.dac.data.modify(|_, w| unsafe { w.data().bits(v_out) });
+        self.syncbusy();
+    }
+
     /// Release the resources owned by the [`Dac`]. The DAC peripheral is reset
     /// before being released.
     pub fn free(mut self) -> (DAC, Pin<PA02, AlternateB>) {
@@ -103,5 +108,54 @@ impl Dac {
     fn voltage_as_u16(&self, v_out: f32) -> u16 {
         // 0x3FF is the maximum for a 10 bit number
         ((v_out / self.v_ref) * 1024.0) as u16
+    }
+}
+
+#[cfg(feature = "dma")]
+mod dma {
+    use super::Dac;
+    use crate::dmac::{
+        AnyChannel, Buffer, BufferPair, Busy, Channel, Ready, Transfer, TriggerAction,
+        TriggerSource,
+    };
+
+    unsafe impl Buffer for Dac {
+        type Beat = u16;
+
+        #[inline]
+        fn dma_ptr(&mut self) -> *mut Self::Beat {
+            self.dac.data.as_ptr()
+        }
+
+        #[inline]
+        fn incrementing(&self) -> bool {
+            false
+        }
+
+        #[inline]
+        fn buffer_len(&self) -> usize {
+            1
+        }
+    }
+
+    impl Dac {
+        pub fn transfer_with_dma<B, Ch>(
+            self,
+            buffer: B,
+            mut channel: Ch,
+            trigger_source: TriggerSource,
+            circular: bool,
+        ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, ()>
+        where
+            Ch: AnyChannel<Status = Ready> + 'static,
+            B: Buffer<Beat = <Self as Buffer>::Beat> + 'static,
+        {
+            let trigger_action = TriggerAction::BEAT;
+
+            // SAFETY: This is safe because the of the `'static` bound check
+            // for `B`, and the fact that the buffer length of an `Dac` is always 1.
+            let xfer = unsafe { Transfer::new_unchecked(channel, self, buffer, circular) };
+            xfer.begin(trigger_source, trigger_action)
+        }
     }
 }
