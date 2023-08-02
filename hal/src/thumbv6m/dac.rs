@@ -139,17 +139,25 @@ mod dma {
     }
 
     impl Dac {
+        /// This function is used for transferring values with DMA.
+        /// 'self' represents the DAC, 'buffer' is the values to be returned, and 'channel' is chosen according to the needs from 0 to 11.
+        /// Trigger source must be determined in order to control the triggering of the data transfer.
+        /// 'circular', true or false, the function will be executed in a loop.
         pub fn transfer_with_dma<B, Ch>(
             self,
             buffer: B,
-            mut channel: Ch,
+            channel: Ch,
             trigger_source: TriggerSource,
             circular: bool,
         ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, ()>
         where
+            // Allows the user to choose the type without restrictions
             Ch: AnyChannel<Status = Ready> + 'static,
             B: Buffer<Beat = <Self as Buffer>::Beat> + 'static,
         {
+            // Whenever triggered, the DMA will transfer a BEAT containing a u16 value.
+            // It's important to remember that the DAC has a 10-bit limit.
+
             let trigger_action = TriggerAction::BEAT;
 
             // SAFETY: This is safe because the of the `'static` bound check
