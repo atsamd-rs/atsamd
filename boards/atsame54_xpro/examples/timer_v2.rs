@@ -104,21 +104,12 @@ mod app {
 
         // TODO: Create a PR to fugit to fix extension traits
         use atsamd_hal::fugit::ExtU32;
-        let mut countdown = countdown
+        let countdown = countdown
             .into_8_bit()
             .into_countdown()
             .unwrap()
             .with_saturated_period(1_u32.secs())
             .with_interrupt();
-
-        unsafe {
-            countdown
-                .inner_raw()
-                .registers()
-                .count8()
-                .ctrla
-                .modify(|_, w| w.prescsync().resync());
-        }
 
         let countdown = countdown.enable();
 
