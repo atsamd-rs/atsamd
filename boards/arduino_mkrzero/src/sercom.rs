@@ -24,6 +24,7 @@ pub type SpiPads = spi::Pads<SpiSercom, SpiCipo, SpiCopi, SpiSck>;
 pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 
 /// Set up the SPI peripheral
+#[allow(clippy::too_many_arguments)]
 pub fn setup_spi(
     clocks: &mut GenericClockController,
     baud: Hertz,

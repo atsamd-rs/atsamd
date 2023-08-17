@@ -181,6 +181,18 @@ hal::bsp_pins! {
             PushPullOutput: D17
         }
     }
+    PB08 {
+        /// PB08: LED
+        aliases: {
+            PushPullOutput: Led
+        }
+    }
+    PB09 {
+        /// PB09: Battery voltage sensor
+        aliases: {
+            AlternateB: VBatt
+        }
+    }
     PB10 {
         /// PB10: Digital pin 4
         aliases: {
