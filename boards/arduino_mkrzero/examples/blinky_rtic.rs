@@ -11,15 +11,15 @@ use arduino_mkrzero as bsp;
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
-use rtic;
+use rtic::app;
 
-#[rtic::app(device = bsp::pac, peripherals = true, dispatchers = [EVSYS])]
+#[app(device = bsp::pac, peripherals = true, dispatchers = [EVSYS])]
 mod app {
     use super::*;
     use bsp::hal;
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
-    use hal::gpio::{v2::PB08, Output, Pin, PushPull};
     use hal::pac::Peripherals;
+    use hal::prelude::*;
     use hal::rtc::{Count32Mode, Duration, Rtc};
 
     #[local]
@@ -29,7 +29,7 @@ mod app {
     struct Shared {
         // The LED could be a local resource, since it is only used in one task
         // But we want to showcase shared resources and locking
-        led: Pin<PB08, Output<PushPull>>,
+        led: bsp::pins::Led,
     }
 
     #[monotonic(binds = RTC, default = true)]
@@ -38,7 +38,7 @@ mod app {
     #[init]
     fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         let mut peripherals: Peripherals = cx.device;
-        let mut pins = bsp::Pins::new(peripherals.PORT);
+        let pins = bsp::pins::Pins::new(peripherals.PORT);
         let mut core: rtic::export::Peripherals = cx.core;
         let mut clocks = GenericClockController::with_external_32kosc(
             peripherals.GCLK,
@@ -53,7 +53,7 @@ mod app {
         clocks.configure_standby(ClockGenId::GCLK2, true);
         let rtc_clock = clocks.rtc(&rtc_clock_src).unwrap();
         let rtc = Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
-        let led = pins.led_builtin.into_open_drain_output(&mut pins.port);
+        let led = bsp::pin_alias!(pins.led).into();
 
         // We can use the RTC in standby for maximum power savings
         core.SCB.set_sleepdeep();
@@ -67,7 +67,7 @@ mod app {
     #[task(shared = [led])]
     fn blink(mut cx: blink::Context) {
         // If the LED were a local resource, the lock would not be necessary
-        cx.shared.led.lock(|led| led.toggle());
+        let _ = cx.shared.led.lock(|led| led.toggle());
         blink::spawn_after(Duration::secs(3)).ok();
     }
 }
