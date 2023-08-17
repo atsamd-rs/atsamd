@@ -15,7 +15,7 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.16"
 default-features = false
 
 [dependencies.usb-device]
@@ -39,6 +39,9 @@ use_semihosting = []
 # for cargo flash
 [package.metadata]
 chip = "ATSAMD21G18A"
+
+[dependencies]
+embedded-hal = "0.2.7"
 
 [[example]]
 name = "blinky_basic"
