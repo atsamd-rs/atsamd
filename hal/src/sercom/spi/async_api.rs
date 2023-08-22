@@ -287,7 +287,7 @@ where
 #[cfg(feature = "nightly")]
 mod impl_ehal {
     use super::*;
-    use crate::sercom::spi::{Error, Size};
+    use crate::sercom::spi::Error;
     use embedded_hal_async::spi::{ErrorType, SpiBus, SpiBusFlush, SpiBusRead, SpiBusWrite};
 
     impl<C, A, N, S, R, T> ErrorType for SpiFuture<C, A, N, R, T>
@@ -391,12 +391,19 @@ mod impl_ehal {
         S: Sercom + 'static,
         Self: SpiBusWrite<W> + SpiBusRead<W> + ErrorType<Error = Error>,
     {
-        async fn transfer(&mut self, read: &mut [W], write: &[W]) -> Result<(), Self::Error> {
+        async fn transfer<'a>(
+            &'a mut self,
+            read: &'a mut [W],
+            write: &'a [W],
+        ) -> Result<(), Self::Error> {
             self.transfer_word_by_word(read, write).await?;
             Ok(())
         }
 
-        async fn transfer_in_place(&mut self, words: &mut [W]) -> Result<(), Self::Error> {
+        async fn transfer_in_place<'a>(
+            &'a mut self,
+            words: &'a mut [W],
+        ) -> Result<(), Self::Error> {
             // Can only ever do word-by-word to avoid DMA race conditions
             for word in words {
                 let read = self.simultaneous_word(*word).await?;
@@ -412,7 +419,7 @@ mod impl_ehal {
     where
         C: ValidConfig<Sercom = S, Word = W>,
         C::Word: PrimInt + AsPrimitive<DataWidth> + crate::dmac::Beat + Copy,
-        C::Size: Size<Word = C::Word>,
+        C::Size: super::super::Size<Word = C::Word>,
         DataWidth: AsPrimitive<C::Word>,
         N: InterruptNumber,
         R: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,

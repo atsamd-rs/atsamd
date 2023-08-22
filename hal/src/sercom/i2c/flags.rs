@@ -87,6 +87,8 @@ pub enum Error {
 
 #[cfg(feature = "nightly")]
 impl embedded_hal_async::i2c::Error for Error {
+    // _ pattern reachable when "dma" feature enabled.
+    #[allow(unreachable_patterns)]
     fn kind(&self) -> embedded_hal_async::i2c::ErrorKind {
         use embedded_hal_async::i2c::{ErrorKind, NoAcknowledgeSource};
         match self {

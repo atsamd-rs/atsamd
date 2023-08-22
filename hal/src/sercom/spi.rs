@@ -472,6 +472,8 @@ pub enum Error {
 
 #[cfg(all(feature = "async", feature = "nightly"))]
 impl embedded_hal_async::spi::Error for Error {
+    // _ pattern reachable when "dma" feature enabled.
+    #[allow(unreachable_patterns)]
     fn kind(&self) -> embedded_hal_async::spi::ErrorKind {
         use embedded_hal_async::spi::ErrorKind;
 

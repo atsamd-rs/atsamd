@@ -88,8 +88,6 @@ pub mod timer_traits;
 
 #[cfg(feature = "async")]
 pub mod async_hal;
-#[cfg(feature = "async")]
-pub use async_hal::*;
 
 #[cfg(feature = "async")]
 pub use cortex_m_interrupt::{self, take_exception, take_nvic_interrupt};

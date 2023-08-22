@@ -1,7 +1,4 @@
-use crate::{
-    ehal::timer::CountDown, time::Nanoseconds, timer_traits::InterruptDrivenTimer,
-    typelevel::Sealed,
-};
+use crate::{ehal::timer::CountDown, timer_traits::InterruptDrivenTimer, typelevel::Sealed};
 use atomic_polyfill::AtomicBool;
 use core::{
     future::poll_fn,
@@ -11,6 +8,7 @@ use core::{
 use cortex_m::interrupt::InterruptNumber;
 use cortex_m_interrupt::NvicInterruptRegistration;
 use embassy_sync::waitqueue::AtomicWaker;
+use fugit::{MicrosDurationU32, MillisDurationU32, NanosDurationU32};
 
 #[cfg(feature = "thumbv6")]
 use crate::thumbv6m::timer;
@@ -139,7 +137,7 @@ where
 {
     /// Delay asynchronously
     #[inline]
-    pub async fn delay(&mut self, count: impl Into<Nanoseconds>) {
+    pub async fn delay(&mut self, count: NanosDurationU32) {
         self.timer.start(count);
         self.timer.enable_interrupt();
 
@@ -169,7 +167,6 @@ where
 #[cfg(feature = "nightly")]
 mod impl_ehal {
     use super::*;
-    use crate::time::U32Ext;
     use embedded_hal_async::delay::DelayUs;
 
     impl<T, I> DelayUs for TimerFuture<T, I>
@@ -178,11 +175,13 @@ mod impl_ehal {
         I: InterruptNumber,
     {
         async fn delay_ms(&mut self, ms: u32) {
-            self.delay(ms.ms()).await;
+            self.delay(MillisDurationU32::from_ticks(ms).convert())
+                .await;
         }
 
         async fn delay_us(&mut self, us: u32) {
-            self.delay(us.us()).await;
+            self.delay(MicrosDurationU32::from_ticks(us).convert())
+                .await;
         }
     }
 }
