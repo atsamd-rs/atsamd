@@ -3,9 +3,9 @@
 A peripheral access crate for the ATSAMD11D chip from Microchip (née Atmel) for Rust Embedded projects.
 
 [![Build Status](https://travis-ci.org/atsamd-rs/atsamd.svg?branch=master)](https://travis-ci.org/atsamd-rs/atsamd)
-[![Crates.io](https://img.shields.io/crates/v/atsamd11c.svg)](https://crates.io/crates/atsamd11c)
+[![Crates.io](https://img.shields.io/crates/v/atsamd11d.svg)](https://crates.io/crates/atsamd11d)
 
-## [Documentation](https://docs.rs/atsamd11c)
+## [Documentation](https://docs.rs/atsamd11d)
 
 This source was automatically generated using `svd2rust`, split into smaller pieces using `form` and formatted via `rustfmt`.
 
