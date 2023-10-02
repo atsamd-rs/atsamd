@@ -1,5 +1,8 @@
 //! Analogue-to-Digital Conversion
-use crate::clock::GenericClockController;
+
+use core::ops::Deref;
+
+use crate::clock::{GClock, GenericClockController};
 #[rustfmt::skip]
 use crate::gpio::*;
 use crate::ehal::adc::{Channel, OneShot};
@@ -8,6 +11,7 @@ use crate::pac::gclk::pchctrl::GEN_A;
 use crate::pac::{adc0, ADC0, ADC1, MCLK};
 
 use crate::calibration;
+use crate::typelevel::Sealed;
 
 /// Samples per reading
 pub use adc0::avgctrl::SAMPLENUM_A as SampleRate;
@@ -18,9 +22,45 @@ pub use adc0::ctrlb::RESSEL_A as Resolution;
 /// Reference voltage (or its source)
 pub use adc0::refctrl::REFSEL_A as Reference;
 
+pub trait AdcPeripheral: Sealed + Deref<Target = adc0::RegisterBlock> {
+    /// ADC number
+    const NUM: usize;
+    /// Enable the corresponding APB clock
+    fn enable_apb_clock(mclk: &mut MCLK);
+    /// Enable the corresponding peripheral clock
+    fn enable_peripheral_clock(clocks: &mut GenericClockController, gclock: &GClock);
+}
+
+impl Sealed for ADC0 {}
+impl AdcPeripheral for ADC0 {
+    const NUM: usize = 0;
+    #[inline]
+    fn enable_apb_clock(mclk: &mut MCLK) {
+        mclk.apbdmask.modify(|_, w| w.adc0_().set_bit());
+    }
+    #[inline]
+    fn enable_peripheral_clock(clocks: &mut GenericClockController, gclock: &GClock) {
+        clocks.adc0(gclock).expect("adc clock setup failed");
+    }
+}
+
+impl Sealed for ADC1 {}
+impl AdcPeripheral for ADC1 {
+    const NUM: usize = 1;
+    #[inline]
+    fn enable_apb_clock(mclk: &mut MCLK) {
+        mclk.apbdmask.modify(|_, w| w.adc1_().set_bit());
+    }
+    #[inline]
+    fn enable_peripheral_clock(clocks: &mut GenericClockController, gclock: &GClock) {
+        clocks.adc1(gclock).expect("adc clock setup failed");
+    }
+}
+
 /// An ADC where results are accessible via interrupt servicing.
 pub struct InterruptAdc<ADC, C>
 where
+    ADC: AdcPeripheral,
     C: ConversionMode<ADC>,
 {
     adc: Adc<ADC>,
@@ -28,13 +68,13 @@ where
 }
 
 /// `Adc` encapsulates the device ADC
-pub struct Adc<ADC> {
+pub struct Adc<ADC: AdcPeripheral> {
     adc: ADC,
 }
 
 /// Describes how an interrupt-driven ADC should finalize the peripheral
 /// upon the completion of a conversion.
-pub trait ConversionMode<ADC> {
+pub trait ConversionMode<ADC: AdcPeripheral> {
     fn on_start(adc: &mut Adc<ADC>);
     fn on_complete(adc: &mut Adc<ADC>);
     fn on_stop(adc: &mut Adc<ADC>);
@@ -43,28 +83,53 @@ pub trait ConversionMode<ADC> {
 pub struct SingleConversion;
 pub struct FreeRunning;
 
-macro_rules! adc_hal {
-    ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident, $compcal:ident, $refcal:ident, $r2rcal:ident),)+) => {
-        $(
-impl Adc<$ADC> {
-    pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController, gclk:GEN_A) -> Self {
-        mclk.$mclk.modify(|_, w| w.$apmask().set_bit());
+impl Adc<ADC0> {
+    pub fn adc0(
+        adc: ADC0,
+        mclk: &mut MCLK,
+        clocks: &mut GenericClockController,
+        gclk: GEN_A,
+    ) -> Self {
+        Adc::new(adc, mclk, clocks, gclk)
+    }
+}
+
+impl Adc<ADC1> {
+    pub fn adc1(
+        adc: ADC1,
+        mclk: &mut MCLK,
+        clocks: &mut GenericClockController,
+        gclk: GEN_A,
+    ) -> Self {
+        Adc::new(adc, mclk, clocks, gclk)
+    }
+}
+
+impl<ADC: AdcPeripheral> Adc<ADC> {
+    pub fn new(
+        adc: ADC,
+        mclk: &mut MCLK,
+        clocks: &mut GenericClockController,
+        gclk: GEN_A,
+    ) -> Self {
+        ADC::enable_apb_clock(mclk);
         // set to 1/(1/(48000000/32) * 6) = 250000 SPS
-        let adc_clock = clocks.configure_gclk_divider_and_source(gclk, 1, DFLL, false)
+        let adc_clock = clocks
+            .configure_gclk_divider_and_source(gclk, 1, DFLL, false)
             .expect("adc clock setup failed");
-        clocks.$init(&adc_clock).expect("adc clock setup failed");
+        ADC::enable_peripheral_clock(clocks, &adc_clock);
         adc.ctrla.modify(|_, w| w.prescaler().div32());
         adc.ctrlb.modify(|_, w| w.ressel()._12bit());
         while adc.syncbusy.read().ctrlb().bit_is_set() {}
-        adc.sampctrl.modify(|_, w| unsafe {w.samplen().bits(5)}); // sample length
+        adc.sampctrl.modify(|_, w| unsafe { w.samplen().bits(5) }); // sample length
         while adc.syncbusy.read().sampctrl().bit_is_set() {}
         adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
         while adc.syncbusy.read().inputctrl().bit_is_set() {}
 
         adc.calib.write(|w| unsafe {
-            w.biascomp().bits(calibration::$compcal());
-            w.biasrefbuf().bits(calibration::$refcal());
-            w.biasr2r().bits(calibration::$r2rcal())
+            w.biascomp().bits(calibration::biascomp_scale_cal::<ADC>());
+            w.biasrefbuf().bits(calibration::biasref_scale_cal::<ADC>());
+            w.biasr2r().bits(calibration::biasr2r_scale_cal::<ADC>())
         });
 
         let mut newadc = Self { adc };
@@ -112,9 +177,7 @@ impl Adc<$ADC> {
 
     /// Set the input resolution
     pub fn resolution(&mut self, resolution: Resolution) {
-        self.adc
-            .ctrlb
-            .modify(|_, w| w.ressel().variant(resolution));
+        self.adc.ctrlb.modify(|_, w| w.ressel().variant(resolution));
         while self.adc.syncbusy.read().ctrlb().bit_is_set() {}
     }
 
@@ -178,39 +241,38 @@ impl Adc<$ADC> {
 
     /// Sets the mux to a particular pin. The pin mux is enabled-protected,
     /// so must be called while the peripheral is disabled.
-    fn mux<PIN: Channel<$ADC, ID=u8>>(&mut self, _pin: &mut PIN) {
+    fn mux<PIN: Channel<ADC, ID = u8>>(&mut self, _pin: &mut PIN) {
         let chan = PIN::channel();
         while self.adc.syncbusy.read().inputctrl().bit_is_set() {}
         self.adc.inputctrl.modify(|_, w| w.muxpos().bits(chan));
     }
 }
 
-impl ConversionMode<$ADC> for SingleConversion  {
-    fn on_start(_adc: &mut Adc<$ADC>) {
-    }
-    fn on_complete(adc: &mut Adc<$ADC>) {
+impl<ADC: AdcPeripheral> ConversionMode<ADC> for SingleConversion {
+    fn on_start(_adc: &mut Adc<ADC>) {}
+    fn on_complete(adc: &mut Adc<ADC>) {
         adc.disable_interrupts();
         adc.power_down();
     }
-    fn on_stop(_adc: &mut Adc<$ADC>) {
-    }
+    fn on_stop(_adc: &mut Adc<ADC>) {}
 }
 
-impl ConversionMode<$ADC> for FreeRunning {
-    fn on_start(adc: &mut Adc<$ADC>) {
+impl<ADC: AdcPeripheral> ConversionMode<ADC> for FreeRunning {
+    fn on_start(adc: &mut Adc<ADC>) {
         adc.enable_freerunning();
     }
-    fn on_complete(_adc: &mut Adc<$ADC>) {
-    }
-    fn on_stop(adc: &mut Adc<$ADC>) {
+    fn on_complete(_adc: &mut Adc<ADC>) {}
+    fn on_stop(adc: &mut Adc<ADC>) {
         adc.disable_interrupts();
         adc.power_down();
         adc.disable_freerunning();
     }
 }
 
-impl<C> InterruptAdc<$ADC, C>
-    where C: ConversionMode<$ADC>
+impl<ADC, C> InterruptAdc<ADC, C>
+where
+    ADC: AdcPeripheral,
+    C: ConversionMode<ADC>,
 {
     pub fn service_interrupt_ready(&mut self) -> Option<u16> {
         if let Some(res) = self.adc.service_interrupt_ready() {
@@ -222,7 +284,7 @@ impl<C> InterruptAdc<$ADC, C>
     }
 
     /// Starts a conversion sampling the specified pin.
-    pub fn start_conversion<PIN: Channel<$ADC, ID=u8>>(&mut self, pin: &mut PIN) {
+    pub fn start_conversion<PIN: Channel<ADC, ID = u8>>(&mut self, pin: &mut PIN) {
         self.adc.mux(pin);
         self.adc.power_up();
         C::on_start(&mut self.adc);
@@ -235,100 +297,111 @@ impl<C> InterruptAdc<$ADC, C>
     }
 }
 
-impl<C> From<Adc<$ADC>> for InterruptAdc<$ADC, C>
-    where C: ConversionMode<$ADC>
+impl<ADC, C> From<Adc<ADC>> for InterruptAdc<ADC, C>
+where
+    ADC: AdcPeripheral,
+    C: ConversionMode<ADC>,
 {
-    fn from(adc: Adc<$ADC>) -> Self {
+    fn from(adc: Adc<ADC>) -> Self {
         Self {
             adc,
-            m: core::marker::PhantomData{},
+            m: core::marker::PhantomData {},
         }
     }
 }
 
-impl<WORD, PIN> OneShot<$ADC, WORD, PIN> for Adc<$ADC>
+impl<ADC, WORD, PIN> OneShot<ADC, WORD, PIN> for Adc<ADC>
 where
-   WORD: From<u16>,
-   PIN: Channel<$ADC, ID=u8>,
+    ADC: AdcPeripheral,
+    WORD: From<u16>,
+    PIN: Channel<ADC, ID = u8>,
 {
-   type Error = ();
+    type Error = ();
 
-   fn read(&mut self, pin: &mut PIN) -> nb::Result<WORD, Self::Error> {
+    fn read(&mut self, pin: &mut PIN) -> nb::Result<WORD, Self::Error> {
         self.mux(pin);
         self.power_up();
         let result = self.synchronous_convert();
         self.power_down();
         Ok(result.into())
-   }
-}
-        )+
     }
 }
 
-adc_hal! {
-    ADC0: (adc0, apbdmask, adc0_, adc0_biascomp_scale_cal, adc0_biasref_scale_cal, adc0_biasr2r_scale_cal),
-    ADC1: (adc1, apbdmask, adc1_, adc1_biascomp_scale_cal, adc1_biasref_scale_cal, adc1_biasr2r_scale_cal),
+pub trait AdcChannel<ADC: AdcPeripheral>: PinId {
+    const CHANNEL: u8;
+}
+
+impl<ADC, I> Channel<ADC> for Pin<I, AlternateB>
+where
+    ADC: AdcPeripheral,
+    I: AdcChannel<ADC>,
+{
+    type ID = u8;
+    fn channel() -> u8 {
+        I::CHANNEL
+    }
 }
 
 macro_rules! adc_pins {
     (
         $(
-            $PinId:ident: ($ADC:ident, $CHAN:literal),
+            $PinId:ident: [ $( ($ADC:ident, $CHAN:literal) ),+ ],
         )+
     ) => {
         $(
-            impl Channel<$ADC> for Pin<$PinId, AlternateB> {
-               type ID = u8;
-               fn channel() -> u8 { $CHAN }
-            }
+            $(
+                impl AdcChannel<$ADC> for $PinId {
+                    const CHANNEL: u8 = $CHAN;
+                }
+            )+
         )+
     }
 }
 
 adc_pins! {
-    PA02: (ADC0, 0),
-    PA03: (ADC0, 1),
-    PB08: (ADC0, 2),
-    PB09: (ADC0, 3),
-    PA04: (ADC0, 4),
-    PA05: (ADC0, 5),
-    PA06: (ADC0, 6),
-    PA07: (ADC0, 7),
-    PA08: (ADC0, 8),
-    PA09: (ADC0, 9),
-    PA10: (ADC0, 10),
-    PA11: (ADC0, 11),
-    PB02: (ADC0, 14),
-    PB03: (ADC0, 15),
+    PA02: [(ADC0, 0)],
+    PA03: [(ADC0, 1)],
+    PB08: [(ADC0, 2)],
+    PB09: [(ADC0, 3)],
+    PA04: [(ADC0, 4)],
+    PA05: [(ADC0, 5)],
+    PA06: [(ADC0, 6)],
+    PA07: [(ADC0, 7)],
+    PA08: [(ADC0, 8)],
+    PA09: [(ADC0, 9)],
+    PA10: [(ADC0, 10)],
+    PA11: [(ADC0, 11)],
+    PB02: [(ADC0, 14)],
+    PB03: [(ADC0, 15)],
 
-    PB08: (ADC1, 0),
-    PB09: (ADC1, 1),
-    PA08: (ADC1, 2),
-    PA09: (ADC1, 3),
+    PB08: [(ADC1, 0)],
+    PB09: [(ADC1, 1)],
+    PA08: [(ADC1, 2)],
+    PA09: [(ADC1, 3)],
 }
 
 #[cfg(feature = "pins-64")]
 adc_pins! {
-    PB00: (ADC0, 12),
-    PB01: (ADC0, 13),
-    PB04: (ADC1, 6),
-    PB05: (ADC1, 7),
-    PB06: (ADC1, 8),
-    PB07: (ADC1, 9),
+    PB00: [(ADC0, 12)],
+    PB01: [(ADC0, 13)],
+    PB04: [(ADC1, 6)],
+    PB05: [(ADC1, 7)],
+    PB06: [(ADC1, 8)],
+    PB07: [(ADC1, 9)],
 }
 
 #[cfg(feature = "pins-100")]
 adc_pins! {
-    PC02: (ADC1, 4),
-    PC03: (ADC1, 5),
-    PC00: (ADC1, 10),
-    PC01: (ADC1, 11),
+    PC02: [(ADC1, 4)],
+    PC03: [(ADC1, 5)],
+    PC00: [(ADC1, 10)],
+    PC01: [(ADC1, 11)],
 }
 
 #[cfg(feature = "pins-128")]
 adc_pins! {
-    PC30: (ADC1, 12),
-    PC31: (ADC1, 13),
-    PD00: (ADC1, 14),
-    PD01: (ADC1, 15),
+    PC30: [(ADC1, 12)],
+    PC31: [(ADC1, 13)],
+    PD00: [(ADC1, 14)],
+    PD01: [(ADC1, 15)],
 }
