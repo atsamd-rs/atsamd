@@ -25,8 +25,8 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut led = pins.led_builtin.into_open_drain_output(&mut pins.port);
+    let pins = bsp::pins::Pins::new(peripherals.PORT);
+    let mut led = bsp::pin_alias!(pins.led).into_push_pull_output();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     loop {
