@@ -15,7 +15,7 @@ readme = "README.md"
 edition = "2021"
 
 [dependencies]
-cortex-m = "0.7"
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
 vcell = "0.1"
 critical-section = { version = "1.0", optional = true }
 
