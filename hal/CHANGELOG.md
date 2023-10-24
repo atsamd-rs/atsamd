@@ -1,6 +1,6 @@
 # Unreleased Changes
 
-- Update the PACs to svd2rust 0.30.2. Expose `critical-section` as a default feature flag.
+- Update the PACs to svd2rust 0.30.2.
 
 # v0.16.0
 

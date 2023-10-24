@@ -1,7 +1,6 @@
 # 0.13.0
 
 - Update PAC generated code to use `svd2rust-0.30.2` and `form-0.10.0`
-- Add an optional dependency on critical-section
 
 # 0.12.0
 
