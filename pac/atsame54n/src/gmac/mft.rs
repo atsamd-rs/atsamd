@@ -1,20 +1,7 @@
 #[doc = "Register `MFT` reader"]
-pub struct R(crate::R<MFT_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<MFT_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<MFT_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<MFT_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<MFT_SPEC>;
 #[doc = "Field `MFTX` reader - Multicast Frames Transmitted without Error"]
-pub type MFTX_R = crate::FieldReader<u32, u32>;
+pub type MFTX_R = crate::FieldReader<u32>;
 impl R {
     #[doc = "Bits 0:31 - Multicast Frames Transmitted without Error"]
     #[inline(always)]
@@ -22,15 +9,13 @@ impl R {
         MFTX_R::new(self.bits)
     }
 }
-#[doc = "Multicast Frames Transmitted Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mft](index.html) module"]
+#[doc = "Multicast Frames Transmitted Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`mft::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct MFT_SPEC;
 impl crate::RegisterSpec for MFT_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [mft::R](R) reader structure"]
-impl crate::Readable for MFT_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`mft::R`](R) reader structure"]
+impl crate::Readable for MFT_SPEC {}
 #[doc = "`reset()` method sets MFT to value 0"]
 impl crate::Resettable for MFT_SPEC {
     const RESET_VALUE: Self::Ux = 0;

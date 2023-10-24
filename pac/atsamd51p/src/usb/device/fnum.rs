@@ -1,24 +1,11 @@
 #[doc = "Register `FNUM` reader"]
-pub struct R(crate::R<FNUM_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<FNUM_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<FNUM_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<FNUM_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<FNUM_SPEC>;
 #[doc = "Field `MFNUM` reader - Micro Frame Number"]
-pub type MFNUM_R = crate::FieldReader<u8, u8>;
+pub type MFNUM_R = crate::FieldReader;
 #[doc = "Field `FNUM` reader - Frame Number"]
-pub type FNUM_R = crate::FieldReader<u16, u16>;
+pub type FNUM_R = crate::FieldReader<u16>;
 #[doc = "Field `FNCERR` reader - Frame Number CRC Error"]
-pub type FNCERR_R = crate::BitReader<bool>;
+pub type FNCERR_R = crate::BitReader;
 impl R {
     #[doc = "Bits 0:2 - Micro Frame Number"]
     #[inline(always)]
@@ -36,15 +23,13 @@ impl R {
         FNCERR_R::new(((self.bits >> 15) & 1) != 0)
     }
 }
-#[doc = "DEVICE Device Frame Number\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [fnum](index.html) module"]
+#[doc = "DEVICE Device Frame Number\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`fnum::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct FNUM_SPEC;
 impl crate::RegisterSpec for FNUM_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [fnum::R](R) reader structure"]
-impl crate::Readable for FNUM_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`fnum::R`](R) reader structure"]
+impl crate::Readable for FNUM_SPEC {}
 #[doc = "`reset()` method sets FNUM to value 0"]
 impl crate::Resettable for FNUM_SPEC {
     const RESET_VALUE: Self::Ux = 0;

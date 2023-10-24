@@ -1,26 +1,13 @@
 #[doc = "Register `STATUS` reader"]
-pub struct R(crate::R<STATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUS_SPEC>;
 #[doc = "Field `READY0` reader - DAC 0 Startup Ready"]
-pub type READY0_R = crate::BitReader<bool>;
+pub type READY0_R = crate::BitReader;
 #[doc = "Field `READY1` reader - DAC 1 Startup Ready"]
-pub type READY1_R = crate::BitReader<bool>;
+pub type READY1_R = crate::BitReader;
 #[doc = "Field `EOC0` reader - DAC 0 End of Conversion"]
-pub type EOC0_R = crate::BitReader<bool>;
+pub type EOC0_R = crate::BitReader;
 #[doc = "Field `EOC1` reader - DAC 1 End of Conversion"]
-pub type EOC1_R = crate::BitReader<bool>;
+pub type EOC1_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - DAC 0 Startup Ready"]
     #[inline(always)]
@@ -43,15 +30,13 @@ impl R {
         EOC1_R::new(((self.bits >> 3) & 1) != 0)
     }
 }
-#[doc = "Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [status](index.html) module"]
+#[doc = "Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUS_SPEC;
 impl crate::RegisterSpec for STATUS_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [status::R](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`status::R`](R) reader structure"]
+impl crate::Readable for STATUS_SPEC {}
 #[doc = "`reset()` method sets STATUS to value 0"]
 impl crate::Resettable for STATUS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

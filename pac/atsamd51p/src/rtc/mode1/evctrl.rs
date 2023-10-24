@@ -1,99 +1,67 @@
 #[doc = "Register `EVCTRL` reader"]
-pub struct R(crate::R<EVCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<EVCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<EVCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<EVCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<EVCTRL_SPEC>;
 #[doc = "Register `EVCTRL` writer"]
-pub struct W(crate::W<EVCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<EVCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<EVCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<EVCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<EVCTRL_SPEC>;
 #[doc = "Field `PEREO0` reader - Periodic Interval 0 Event Output Enable"]
-pub type PEREO0_R = crate::BitReader<bool>;
+pub type PEREO0_R = crate::BitReader;
 #[doc = "Field `PEREO0` writer - Periodic Interval 0 Event Output Enable"]
-pub type PEREO0_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PEREO0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEREO1` reader - Periodic Interval 1 Event Output Enable"]
-pub type PEREO1_R = crate::BitReader<bool>;
+pub type PEREO1_R = crate::BitReader;
 #[doc = "Field `PEREO1` writer - Periodic Interval 1 Event Output Enable"]
-pub type PEREO1_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PEREO1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEREO2` reader - Periodic Interval 2 Event Output Enable"]
-pub type PEREO2_R = crate::BitReader<bool>;
+pub type PEREO2_R = crate::BitReader;
 #[doc = "Field `PEREO2` writer - Periodic Interval 2 Event Output Enable"]
-pub type PEREO2_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PEREO2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEREO3` reader - Periodic Interval 3 Event Output Enable"]
-pub type PEREO3_R = crate::BitReader<bool>;
+pub type PEREO3_R = crate::BitReader;
 #[doc = "Field `PEREO3` writer - Periodic Interval 3 Event Output Enable"]
-pub type PEREO3_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PEREO3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEREO4` reader - Periodic Interval 4 Event Output Enable"]
-pub type PEREO4_R = crate::BitReader<bool>;
+pub type PEREO4_R = crate::BitReader;
 #[doc = "Field `PEREO4` writer - Periodic Interval 4 Event Output Enable"]
-pub type PEREO4_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PEREO4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEREO5` reader - Periodic Interval 5 Event Output Enable"]
-pub type PEREO5_R = crate::BitReader<bool>;
+pub type PEREO5_R = crate::BitReader;
 #[doc = "Field `PEREO5` writer - Periodic Interval 5 Event Output Enable"]
-pub type PEREO5_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PEREO5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEREO6` reader - Periodic Interval 6 Event Output Enable"]
-pub type PEREO6_R = crate::BitReader<bool>;
+pub type PEREO6_R = crate::BitReader;
 #[doc = "Field `PEREO6` writer - Periodic Interval 6 Event Output Enable"]
-pub type PEREO6_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PEREO6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEREO7` reader - Periodic Interval 7 Event Output Enable"]
-pub type PEREO7_R = crate::BitReader<bool>;
+pub type PEREO7_R = crate::BitReader;
 #[doc = "Field `PEREO7` writer - Periodic Interval 7 Event Output Enable"]
-pub type PEREO7_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PEREO7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMPEO0` reader - Compare 0 Event Output Enable"]
-pub type CMPEO0_R = crate::BitReader<bool>;
+pub type CMPEO0_R = crate::BitReader;
 #[doc = "Field `CMPEO0` writer - Compare 0 Event Output Enable"]
-pub type CMPEO0_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type CMPEO0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMPEO1` reader - Compare 1 Event Output Enable"]
-pub type CMPEO1_R = crate::BitReader<bool>;
+pub type CMPEO1_R = crate::BitReader;
 #[doc = "Field `CMPEO1` writer - Compare 1 Event Output Enable"]
-pub type CMPEO1_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type CMPEO1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMPEO2` reader - Compare 2 Event Output Enable"]
-pub type CMPEO2_R = crate::BitReader<bool>;
+pub type CMPEO2_R = crate::BitReader;
 #[doc = "Field `CMPEO2` writer - Compare 2 Event Output Enable"]
-pub type CMPEO2_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type CMPEO2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMPEO3` reader - Compare 3 Event Output Enable"]
-pub type CMPEO3_R = crate::BitReader<bool>;
+pub type CMPEO3_R = crate::BitReader;
 #[doc = "Field `CMPEO3` writer - Compare 3 Event Output Enable"]
-pub type CMPEO3_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type CMPEO3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TAMPEREO` reader - Tamper Event Output Enable"]
-pub type TAMPEREO_R = crate::BitReader<bool>;
+pub type TAMPEREO_R = crate::BitReader;
 #[doc = "Field `TAMPEREO` writer - Tamper Event Output Enable"]
-pub type TAMPEREO_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type TAMPEREO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVFEO` reader - Overflow Event Output Enable"]
-pub type OVFEO_R = crate::BitReader<bool>;
+pub type OVFEO_R = crate::BitReader;
 #[doc = "Field `OVFEO` writer - Overflow Event Output Enable"]
-pub type OVFEO_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type OVFEO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TAMPEVEI` reader - Tamper Event Input Enable"]
-pub type TAMPEVEI_R = crate::BitReader<bool>;
+pub type TAMPEVEI_R = crate::BitReader;
 #[doc = "Field `TAMPEVEI` writer - Tamper Event Input Enable"]
-pub type TAMPEVEI_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type TAMPEVEI_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Periodic Interval 0 Event Output Enable"]
     #[inline(always)]
@@ -175,112 +143,113 @@ impl W {
     #[doc = "Bit 0 - Periodic Interval 0 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pereo0(&mut self) -> PEREO0_W<0> {
+    pub fn pereo0(&mut self) -> PEREO0_W<EVCTRL_SPEC, 0> {
         PEREO0_W::new(self)
     }
     #[doc = "Bit 1 - Periodic Interval 1 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pereo1(&mut self) -> PEREO1_W<1> {
+    pub fn pereo1(&mut self) -> PEREO1_W<EVCTRL_SPEC, 1> {
         PEREO1_W::new(self)
     }
     #[doc = "Bit 2 - Periodic Interval 2 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pereo2(&mut self) -> PEREO2_W<2> {
+    pub fn pereo2(&mut self) -> PEREO2_W<EVCTRL_SPEC, 2> {
         PEREO2_W::new(self)
     }
     #[doc = "Bit 3 - Periodic Interval 3 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pereo3(&mut self) -> PEREO3_W<3> {
+    pub fn pereo3(&mut self) -> PEREO3_W<EVCTRL_SPEC, 3> {
         PEREO3_W::new(self)
     }
     #[doc = "Bit 4 - Periodic Interval 4 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pereo4(&mut self) -> PEREO4_W<4> {
+    pub fn pereo4(&mut self) -> PEREO4_W<EVCTRL_SPEC, 4> {
         PEREO4_W::new(self)
     }
     #[doc = "Bit 5 - Periodic Interval 5 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pereo5(&mut self) -> PEREO5_W<5> {
+    pub fn pereo5(&mut self) -> PEREO5_W<EVCTRL_SPEC, 5> {
         PEREO5_W::new(self)
     }
     #[doc = "Bit 6 - Periodic Interval 6 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pereo6(&mut self) -> PEREO6_W<6> {
+    pub fn pereo6(&mut self) -> PEREO6_W<EVCTRL_SPEC, 6> {
         PEREO6_W::new(self)
     }
     #[doc = "Bit 7 - Periodic Interval 7 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pereo7(&mut self) -> PEREO7_W<7> {
+    pub fn pereo7(&mut self) -> PEREO7_W<EVCTRL_SPEC, 7> {
         PEREO7_W::new(self)
     }
     #[doc = "Bit 8 - Compare 0 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmpeo0(&mut self) -> CMPEO0_W<8> {
+    pub fn cmpeo0(&mut self) -> CMPEO0_W<EVCTRL_SPEC, 8> {
         CMPEO0_W::new(self)
     }
     #[doc = "Bit 9 - Compare 1 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmpeo1(&mut self) -> CMPEO1_W<9> {
+    pub fn cmpeo1(&mut self) -> CMPEO1_W<EVCTRL_SPEC, 9> {
         CMPEO1_W::new(self)
     }
     #[doc = "Bit 10 - Compare 2 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmpeo2(&mut self) -> CMPEO2_W<10> {
+    pub fn cmpeo2(&mut self) -> CMPEO2_W<EVCTRL_SPEC, 10> {
         CMPEO2_W::new(self)
     }
     #[doc = "Bit 11 - Compare 3 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmpeo3(&mut self) -> CMPEO3_W<11> {
+    pub fn cmpeo3(&mut self) -> CMPEO3_W<EVCTRL_SPEC, 11> {
         CMPEO3_W::new(self)
     }
     #[doc = "Bit 14 - Tamper Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn tampereo(&mut self) -> TAMPEREO_W<14> {
+    pub fn tampereo(&mut self) -> TAMPEREO_W<EVCTRL_SPEC, 14> {
         TAMPEREO_W::new(self)
     }
     #[doc = "Bit 15 - Overflow Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ovfeo(&mut self) -> OVFEO_W<15> {
+    pub fn ovfeo(&mut self) -> OVFEO_W<EVCTRL_SPEC, 15> {
         OVFEO_W::new(self)
     }
     #[doc = "Bit 16 - Tamper Event Input Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn tampevei(&mut self) -> TAMPEVEI_W<16> {
+    pub fn tampevei(&mut self) -> TAMPEVEI_W<EVCTRL_SPEC, 16> {
         TAMPEVEI_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "MODE1 Event Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [evctrl](index.html) module"]
+#[doc = "MODE1 Event Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`evctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`evctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct EVCTRL_SPEC;
 impl crate::RegisterSpec for EVCTRL_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [evctrl::R](R) reader structure"]
-impl crate::Readable for EVCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`evctrl::R`](R) reader structure"]
+impl crate::Readable for EVCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

@@ -1,38 +1,25 @@
 #[doc = "Register `DSEQSTAT` reader"]
-pub struct R(crate::R<DSEQSTAT_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DSEQSTAT_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DSEQSTAT_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DSEQSTAT_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DSEQSTAT_SPEC>;
 #[doc = "Field `INPUTCTRL` reader - Input Control"]
-pub type INPUTCTRL_R = crate::BitReader<bool>;
+pub type INPUTCTRL_R = crate::BitReader;
 #[doc = "Field `CTRLB` reader - Control B"]
-pub type CTRLB_R = crate::BitReader<bool>;
+pub type CTRLB_R = crate::BitReader;
 #[doc = "Field `REFCTRL` reader - Reference Control"]
-pub type REFCTRL_R = crate::BitReader<bool>;
+pub type REFCTRL_R = crate::BitReader;
 #[doc = "Field `AVGCTRL` reader - Average Control"]
-pub type AVGCTRL_R = crate::BitReader<bool>;
+pub type AVGCTRL_R = crate::BitReader;
 #[doc = "Field `SAMPCTRL` reader - Sampling Time Control"]
-pub type SAMPCTRL_R = crate::BitReader<bool>;
+pub type SAMPCTRL_R = crate::BitReader;
 #[doc = "Field `WINLT` reader - Window Monitor Lower Threshold"]
-pub type WINLT_R = crate::BitReader<bool>;
+pub type WINLT_R = crate::BitReader;
 #[doc = "Field `WINUT` reader - Window Monitor Upper Threshold"]
-pub type WINUT_R = crate::BitReader<bool>;
+pub type WINUT_R = crate::BitReader;
 #[doc = "Field `GAINCORR` reader - Gain Correction"]
-pub type GAINCORR_R = crate::BitReader<bool>;
+pub type GAINCORR_R = crate::BitReader;
 #[doc = "Field `OFFSETCORR` reader - Offset Correction"]
-pub type OFFSETCORR_R = crate::BitReader<bool>;
+pub type OFFSETCORR_R = crate::BitReader;
 #[doc = "Field `BUSY` reader - DMA Sequencing Busy"]
-pub type BUSY_R = crate::BitReader<bool>;
+pub type BUSY_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Input Control"]
     #[inline(always)]
@@ -85,15 +72,13 @@ impl R {
         BUSY_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
-#[doc = "DMA Sequencial Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dseqstat](index.html) module"]
+#[doc = "DMA Sequencial Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dseqstat::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DSEQSTAT_SPEC;
 impl crate::RegisterSpec for DSEQSTAT_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [dseqstat::R](R) reader structure"]
-impl crate::Readable for DSEQSTAT_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`dseqstat::R`](R) reader structure"]
+impl crate::Readable for DSEQSTAT_SPEC {}
 #[doc = "`reset()` method sets DSEQSTAT to value 0"]
 impl crate::Resettable for DSEQSTAT_SPEC {
     const RESET_VALUE: Self::Ux = 0;

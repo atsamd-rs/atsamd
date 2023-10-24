@@ -1,43 +1,11 @@
 #[doc = "Register `CTRLC` reader"]
-pub struct R(crate::R<CTRLC_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLC_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLC_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLC_SPEC>;
 #[doc = "Register `CTRLC` writer"]
-pub struct W(crate::W<CTRLC_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLC_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLC_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLC_SPEC>;
 #[doc = "Field `ICSPACE` reader - Inter-Character Spacing"]
-pub type ICSPACE_R = crate::FieldReader<u8, u8>;
+pub type ICSPACE_R = crate::FieldReader;
 #[doc = "Field `ICSPACE` writer - Inter-Character Spacing"]
-pub type ICSPACE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLC_SPEC, u8, u8, 6, O>;
+pub type ICSPACE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 6, O>;
 #[doc = "Field `DATA32B` reader - Data 32 Bit"]
 pub type DATA32B_R = crate::BitReader<DATA32BSELECT_A>;
 #[doc = "Data 32 Bit\n\nValue on reset: 0"]
@@ -57,34 +25,37 @@ impl From<DATA32BSELECT_A> for bool {
 impl DATA32B_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DATA32BSELECT_A {
+    pub const fn variant(&self) -> DATA32BSELECT_A {
         match self.bits {
             false => DATA32BSELECT_A::DATA_TRANS_8BIT,
             true => DATA32BSELECT_A::DATA_TRANS_32BIT,
         }
     }
-    #[doc = "Checks if the value of the field is `DATA_TRANS_8BIT`"]
+    #[doc = "Transaction from and to DATA register are 8-bit"]
     #[inline(always)]
     pub fn is_data_trans_8bit(&self) -> bool {
         *self == DATA32BSELECT_A::DATA_TRANS_8BIT
     }
-    #[doc = "Checks if the value of the field is `DATA_TRANS_32BIT`"]
+    #[doc = "Transaction from and to DATA register are 32-bit"]
     #[inline(always)]
     pub fn is_data_trans_32bit(&self) -> bool {
         *self == DATA32BSELECT_A::DATA_TRANS_32BIT
     }
 }
 #[doc = "Field `DATA32B` writer - Data 32 Bit"]
-pub type DATA32B_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLC_SPEC, DATA32BSELECT_A, O>;
-impl<'a, const O: u8> DATA32B_W<'a, O> {
+pub type DATA32B_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, DATA32BSELECT_A>;
+impl<'a, REG, const O: u8> DATA32B_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Transaction from and to DATA register are 8-bit"]
     #[inline(always)]
-    pub fn data_trans_8bit(self) -> &'a mut W {
+    pub fn data_trans_8bit(self) -> &'a mut crate::W<REG> {
         self.variant(DATA32BSELECT_A::DATA_TRANS_8BIT)
     }
     #[doc = "Transaction from and to DATA register are 32-bit"]
     #[inline(always)]
-    pub fn data_trans_32bit(self) -> &'a mut W {
+    pub fn data_trans_32bit(self) -> &'a mut crate::W<REG> {
         self.variant(DATA32BSELECT_A::DATA_TRANS_32BIT)
     }
 }
@@ -104,34 +75,35 @@ impl W {
     #[doc = "Bits 0:5 - Inter-Character Spacing"]
     #[inline(always)]
     #[must_use]
-    pub fn icspace(&mut self) -> ICSPACE_W<0> {
+    pub fn icspace(&mut self) -> ICSPACE_W<CTRLC_SPEC, 0> {
         ICSPACE_W::new(self)
     }
     #[doc = "Bit 24 - Data 32 Bit"]
     #[inline(always)]
     #[must_use]
-    pub fn data32b(&mut self) -> DATA32B_W<24> {
+    pub fn data32b(&mut self) -> DATA32B_W<CTRLC_SPEC, 24> {
         DATA32B_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "SPIM Control C\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlc](index.html) module"]
+#[doc = "SPIM Control C\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlc::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlc::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLC_SPEC;
 impl crate::RegisterSpec for CTRLC_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ctrlc::R](R) reader structure"]
-impl crate::Readable for CTRLC_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrlc::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrlc::R`](R) reader structure"]
+impl crate::Readable for CTRLC_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrlc::W`](W) writer structure"]
 impl crate::Writable for CTRLC_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

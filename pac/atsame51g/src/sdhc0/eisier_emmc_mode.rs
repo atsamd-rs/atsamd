@@ -1,39 +1,7 @@
 #[doc = "Register `EISIER_EMMC_MODE` reader"]
-pub struct R(crate::R<EISIER_EMMC_MODE_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<EISIER_EMMC_MODE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<EISIER_EMMC_MODE_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<EISIER_EMMC_MODE_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<EISIER_EMMC_MODE_SPEC>;
 #[doc = "Register `EISIER_EMMC_MODE` writer"]
-pub struct W(crate::W<EISIER_EMMC_MODE_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<EISIER_EMMC_MODE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<EISIER_EMMC_MODE_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<EISIER_EMMC_MODE_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<EISIER_EMMC_MODE_SPEC>;
 #[doc = "Field `CMDTEO` reader - Command Timeout Error Signal Enable"]
 pub type CMDTEO_R = crate::BitReader<CMDTEOSELECT_A>;
 #[doc = "Command Timeout Error Signal Enable\n\nValue on reset: 0"]
@@ -53,35 +21,37 @@ impl From<CMDTEOSELECT_A> for bool {
 impl CMDTEO_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CMDTEOSELECT_A {
+    pub const fn variant(&self) -> CMDTEOSELECT_A {
         match self.bits {
             false => CMDTEOSELECT_A::MASKED,
             true => CMDTEOSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == CMDTEOSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == CMDTEOSELECT_A::ENABLED
     }
 }
 #[doc = "Field `CMDTEO` writer - Command Timeout Error Signal Enable"]
-pub type CMDTEO_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, CMDTEOSELECT_A, O>;
-impl<'a, const O: u8> CMDTEO_W<'a, O> {
+pub type CMDTEO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, CMDTEOSELECT_A>;
+impl<'a, REG, const O: u8> CMDTEO_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(CMDTEOSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(CMDTEOSELECT_A::ENABLED)
     }
 }
@@ -104,35 +74,37 @@ impl From<CMDCRCSELECT_A> for bool {
 impl CMDCRC_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CMDCRCSELECT_A {
+    pub const fn variant(&self) -> CMDCRCSELECT_A {
         match self.bits {
             false => CMDCRCSELECT_A::MASKED,
             true => CMDCRCSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == CMDCRCSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == CMDCRCSELECT_A::ENABLED
     }
 }
 #[doc = "Field `CMDCRC` writer - Command CRC Error Signal Enable"]
-pub type CMDCRC_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, CMDCRCSELECT_A, O>;
-impl<'a, const O: u8> CMDCRC_W<'a, O> {
+pub type CMDCRC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, CMDCRCSELECT_A>;
+impl<'a, REG, const O: u8> CMDCRC_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(CMDCRCSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(CMDCRCSELECT_A::ENABLED)
     }
 }
@@ -155,35 +127,37 @@ impl From<CMDENDSELECT_A> for bool {
 impl CMDEND_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CMDENDSELECT_A {
+    pub const fn variant(&self) -> CMDENDSELECT_A {
         match self.bits {
             false => CMDENDSELECT_A::MASKED,
             true => CMDENDSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == CMDENDSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == CMDENDSELECT_A::ENABLED
     }
 }
 #[doc = "Field `CMDEND` writer - Command End Bit Error Signal Enable"]
-pub type CMDEND_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, CMDENDSELECT_A, O>;
-impl<'a, const O: u8> CMDEND_W<'a, O> {
+pub type CMDEND_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, CMDENDSELECT_A>;
+impl<'a, REG, const O: u8> CMDEND_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(CMDENDSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(CMDENDSELECT_A::ENABLED)
     }
 }
@@ -206,35 +180,37 @@ impl From<CMDIDXSELECT_A> for bool {
 impl CMDIDX_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CMDIDXSELECT_A {
+    pub const fn variant(&self) -> CMDIDXSELECT_A {
         match self.bits {
             false => CMDIDXSELECT_A::MASKED,
             true => CMDIDXSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == CMDIDXSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == CMDIDXSELECT_A::ENABLED
     }
 }
 #[doc = "Field `CMDIDX` writer - Command Index Error Signal Enable"]
-pub type CMDIDX_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, CMDIDXSELECT_A, O>;
-impl<'a, const O: u8> CMDIDX_W<'a, O> {
+pub type CMDIDX_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, CMDIDXSELECT_A>;
+impl<'a, REG, const O: u8> CMDIDX_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(CMDIDXSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(CMDIDXSELECT_A::ENABLED)
     }
 }
@@ -257,35 +233,37 @@ impl From<DATTEOSELECT_A> for bool {
 impl DATTEO_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DATTEOSELECT_A {
+    pub const fn variant(&self) -> DATTEOSELECT_A {
         match self.bits {
             false => DATTEOSELECT_A::MASKED,
             true => DATTEOSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == DATTEOSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == DATTEOSELECT_A::ENABLED
     }
 }
 #[doc = "Field `DATTEO` writer - Data Timeout Error Signal Enable"]
-pub type DATTEO_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, DATTEOSELECT_A, O>;
-impl<'a, const O: u8> DATTEO_W<'a, O> {
+pub type DATTEO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, DATTEOSELECT_A>;
+impl<'a, REG, const O: u8> DATTEO_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(DATTEOSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(DATTEOSELECT_A::ENABLED)
     }
 }
@@ -308,35 +286,37 @@ impl From<DATCRCSELECT_A> for bool {
 impl DATCRC_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DATCRCSELECT_A {
+    pub const fn variant(&self) -> DATCRCSELECT_A {
         match self.bits {
             false => DATCRCSELECT_A::MASKED,
             true => DATCRCSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == DATCRCSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == DATCRCSELECT_A::ENABLED
     }
 }
 #[doc = "Field `DATCRC` writer - Data CRC Error Signal Enable"]
-pub type DATCRC_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, DATCRCSELECT_A, O>;
-impl<'a, const O: u8> DATCRC_W<'a, O> {
+pub type DATCRC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, DATCRCSELECT_A>;
+impl<'a, REG, const O: u8> DATCRC_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(DATCRCSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(DATCRCSELECT_A::ENABLED)
     }
 }
@@ -359,35 +339,37 @@ impl From<DATENDSELECT_A> for bool {
 impl DATEND_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DATENDSELECT_A {
+    pub const fn variant(&self) -> DATENDSELECT_A {
         match self.bits {
             false => DATENDSELECT_A::MASKED,
             true => DATENDSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == DATENDSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == DATENDSELECT_A::ENABLED
     }
 }
 #[doc = "Field `DATEND` writer - Data End Bit Error Signal Enable"]
-pub type DATEND_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, DATENDSELECT_A, O>;
-impl<'a, const O: u8> DATEND_W<'a, O> {
+pub type DATEND_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, DATENDSELECT_A>;
+impl<'a, REG, const O: u8> DATEND_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(DATENDSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(DATENDSELECT_A::ENABLED)
     }
 }
@@ -410,35 +392,37 @@ impl From<CURLIMSELECT_A> for bool {
 impl CURLIM_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CURLIMSELECT_A {
+    pub const fn variant(&self) -> CURLIMSELECT_A {
         match self.bits {
             false => CURLIMSELECT_A::MASKED,
             true => CURLIMSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == CURLIMSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == CURLIMSELECT_A::ENABLED
     }
 }
 #[doc = "Field `CURLIM` writer - Current Limit Error Signal Enable"]
-pub type CURLIM_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, CURLIMSELECT_A, O>;
-impl<'a, const O: u8> CURLIM_W<'a, O> {
+pub type CURLIM_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, CURLIMSELECT_A>;
+impl<'a, REG, const O: u8> CURLIM_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(CURLIMSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(CURLIMSELECT_A::ENABLED)
     }
 }
@@ -461,35 +445,37 @@ impl From<ACMDSELECT_A> for bool {
 impl ACMD_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ACMDSELECT_A {
+    pub const fn variant(&self) -> ACMDSELECT_A {
         match self.bits {
             false => ACMDSELECT_A::MASKED,
             true => ACMDSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == ACMDSELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == ACMDSELECT_A::ENABLED
     }
 }
 #[doc = "Field `ACMD` writer - Auto CMD Error Signal Enable"]
-pub type ACMD_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, ACMDSELECT_A, O>;
-impl<'a, const O: u8> ACMD_W<'a, O> {
+pub type ACMD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, ACMDSELECT_A>;
+impl<'a, REG, const O: u8> ACMD_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(ACMDSELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(ACMDSELECT_A::ENABLED)
     }
 }
@@ -512,42 +498,44 @@ impl From<ADMASELECT_A> for bool {
 impl ADMA_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ADMASELECT_A {
+    pub const fn variant(&self) -> ADMASELECT_A {
         match self.bits {
             false => ADMASELECT_A::MASKED,
             true => ADMASELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `MASKED`"]
+    #[doc = "Masked"]
     #[inline(always)]
     pub fn is_masked(&self) -> bool {
         *self == ADMASELECT_A::MASKED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == ADMASELECT_A::ENABLED
     }
 }
 #[doc = "Field `ADMA` writer - ADMA Error Signal Enable"]
-pub type ADMA_W<'a, const O: u8> =
-    crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, ADMASELECT_A, O>;
-impl<'a, const O: u8> ADMA_W<'a, O> {
+pub type ADMA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, ADMASELECT_A>;
+impl<'a, REG, const O: u8> ADMA_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Masked"]
     #[inline(always)]
-    pub fn masked(self) -> &'a mut W {
+    pub fn masked(self) -> &'a mut crate::W<REG> {
         self.variant(ADMASELECT_A::MASKED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(ADMASELECT_A::ENABLED)
     }
 }
 #[doc = "Field `BOOTAE` reader - Boot Acknowledge Error Signal Enable"]
-pub type BOOTAE_R = crate::BitReader<bool>;
+pub type BOOTAE_R = crate::BitReader;
 #[doc = "Field `BOOTAE` writer - Boot Acknowledge Error Signal Enable"]
-pub type BOOTAE_W<'a, const O: u8> = crate::BitWriter<'a, u16, EISIER_EMMC_MODE_SPEC, bool, O>;
+pub type BOOTAE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Command Timeout Error Signal Enable"]
     #[inline(always)]
@@ -609,88 +597,89 @@ impl W {
     #[doc = "Bit 0 - Command Timeout Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmdteo(&mut self) -> CMDTEO_W<0> {
+    pub fn cmdteo(&mut self) -> CMDTEO_W<EISIER_EMMC_MODE_SPEC, 0> {
         CMDTEO_W::new(self)
     }
     #[doc = "Bit 1 - Command CRC Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmdcrc(&mut self) -> CMDCRC_W<1> {
+    pub fn cmdcrc(&mut self) -> CMDCRC_W<EISIER_EMMC_MODE_SPEC, 1> {
         CMDCRC_W::new(self)
     }
     #[doc = "Bit 2 - Command End Bit Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmdend(&mut self) -> CMDEND_W<2> {
+    pub fn cmdend(&mut self) -> CMDEND_W<EISIER_EMMC_MODE_SPEC, 2> {
         CMDEND_W::new(self)
     }
     #[doc = "Bit 3 - Command Index Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmdidx(&mut self) -> CMDIDX_W<3> {
+    pub fn cmdidx(&mut self) -> CMDIDX_W<EISIER_EMMC_MODE_SPEC, 3> {
         CMDIDX_W::new(self)
     }
     #[doc = "Bit 4 - Data Timeout Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn datteo(&mut self) -> DATTEO_W<4> {
+    pub fn datteo(&mut self) -> DATTEO_W<EISIER_EMMC_MODE_SPEC, 4> {
         DATTEO_W::new(self)
     }
     #[doc = "Bit 5 - Data CRC Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn datcrc(&mut self) -> DATCRC_W<5> {
+    pub fn datcrc(&mut self) -> DATCRC_W<EISIER_EMMC_MODE_SPEC, 5> {
         DATCRC_W::new(self)
     }
     #[doc = "Bit 6 - Data End Bit Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn datend(&mut self) -> DATEND_W<6> {
+    pub fn datend(&mut self) -> DATEND_W<EISIER_EMMC_MODE_SPEC, 6> {
         DATEND_W::new(self)
     }
     #[doc = "Bit 7 - Current Limit Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn curlim(&mut self) -> CURLIM_W<7> {
+    pub fn curlim(&mut self) -> CURLIM_W<EISIER_EMMC_MODE_SPEC, 7> {
         CURLIM_W::new(self)
     }
     #[doc = "Bit 8 - Auto CMD Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn acmd(&mut self) -> ACMD_W<8> {
+    pub fn acmd(&mut self) -> ACMD_W<EISIER_EMMC_MODE_SPEC, 8> {
         ACMD_W::new(self)
     }
     #[doc = "Bit 9 - ADMA Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn adma(&mut self) -> ADMA_W<9> {
+    pub fn adma(&mut self) -> ADMA_W<EISIER_EMMC_MODE_SPEC, 9> {
         ADMA_W::new(self)
     }
     #[doc = "Bit 12 - Boot Acknowledge Error Signal Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn bootae(&mut self) -> BOOTAE_W<12> {
+    pub fn bootae(&mut self) -> BOOTAE_W<EISIER_EMMC_MODE_SPEC, 12> {
         BOOTAE_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Error Interrupt Signal Enable\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [eisier_emmc_mode](index.html) module"]
+#[doc = "Error Interrupt Signal Enable\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`eisier_emmc_mode::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`eisier_emmc_mode::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct EISIER_EMMC_MODE_SPEC;
 impl crate::RegisterSpec for EISIER_EMMC_MODE_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [eisier_emmc_mode::R](R) reader structure"]
-impl crate::Readable for EISIER_EMMC_MODE_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [eisier_emmc_mode::W](W) writer structure"]
+#[doc = "`read()` method returns [`eisier_emmc_mode::R`](R) reader structure"]
+impl crate::Readable for EISIER_EMMC_MODE_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`eisier_emmc_mode::W`](W) writer structure"]
 impl crate::Writable for EISIER_EMMC_MODE_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

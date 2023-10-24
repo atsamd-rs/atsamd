@@ -1,22 +1,9 @@
 #[doc = "Register `SYNCBUSY` reader"]
-pub struct R(crate::R<SYNCBUSY_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<SYNCBUSY_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<SYNCBUSY_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<SYNCBUSY_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<SYNCBUSY_SPEC>;
 #[doc = "Field `SWRST` reader - Software Reset Synchroniation Busy bit"]
-pub type SWRST_R = crate::BitReader<bool>;
+pub type SWRST_R = crate::BitReader;
 #[doc = "Field `GENCTRL` reader - Generic Clock Generator Control n Synchronization Busy bits"]
-pub type GENCTRL_R = crate::FieldReader<u16, GENCTRLSELECT_A>;
+pub type GENCTRL_R = crate::FieldReader<GENCTRLSELECT_A>;
 #[doc = "Generic Clock Generator Control n Synchronization Busy bits\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u16)]
@@ -52,10 +39,13 @@ impl From<GENCTRLSELECT_A> for u16 {
         variant as _
     }
 }
+impl crate::FieldSpec for GENCTRLSELECT_A {
+    type Ux = u16;
+}
 impl GENCTRL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<GENCTRLSELECT_A> {
+    pub const fn variant(&self) -> Option<GENCTRLSELECT_A> {
         match self.bits {
             1 => Some(GENCTRLSELECT_A::GCLK0),
             2 => Some(GENCTRLSELECT_A::GCLK1),
@@ -72,62 +62,62 @@ impl GENCTRL_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `GCLK0`"]
+    #[doc = "Generic clock generator 0"]
     #[inline(always)]
     pub fn is_gclk0(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK0
     }
-    #[doc = "Checks if the value of the field is `GCLK1`"]
+    #[doc = "Generic clock generator 1"]
     #[inline(always)]
     pub fn is_gclk1(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK1
     }
-    #[doc = "Checks if the value of the field is `GCLK2`"]
+    #[doc = "Generic clock generator 2"]
     #[inline(always)]
     pub fn is_gclk2(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK2
     }
-    #[doc = "Checks if the value of the field is `GCLK3`"]
+    #[doc = "Generic clock generator 3"]
     #[inline(always)]
     pub fn is_gclk3(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK3
     }
-    #[doc = "Checks if the value of the field is `GCLK4`"]
+    #[doc = "Generic clock generator 4"]
     #[inline(always)]
     pub fn is_gclk4(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK4
     }
-    #[doc = "Checks if the value of the field is `GCLK5`"]
+    #[doc = "Generic clock generator 5"]
     #[inline(always)]
     pub fn is_gclk5(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK5
     }
-    #[doc = "Checks if the value of the field is `GCLK6`"]
+    #[doc = "Generic clock generator 6"]
     #[inline(always)]
     pub fn is_gclk6(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK6
     }
-    #[doc = "Checks if the value of the field is `GCLK7`"]
+    #[doc = "Generic clock generator 7"]
     #[inline(always)]
     pub fn is_gclk7(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK7
     }
-    #[doc = "Checks if the value of the field is `GCLK8`"]
+    #[doc = "Generic clock generator 8"]
     #[inline(always)]
     pub fn is_gclk8(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK8
     }
-    #[doc = "Checks if the value of the field is `GCLK9`"]
+    #[doc = "Generic clock generator 9"]
     #[inline(always)]
     pub fn is_gclk9(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK9
     }
-    #[doc = "Checks if the value of the field is `GCLK10`"]
+    #[doc = "Generic clock generator 10"]
     #[inline(always)]
     pub fn is_gclk10(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK10
     }
-    #[doc = "Checks if the value of the field is `GCLK11`"]
+    #[doc = "Generic clock generator 11"]
     #[inline(always)]
     pub fn is_gclk11(&self) -> bool {
         *self == GENCTRLSELECT_A::GCLK11
@@ -145,15 +135,13 @@ impl R {
         GENCTRL_R::new(((self.bits >> 2) & 0x0fff) as u16)
     }
 }
-#[doc = "Synchronization Busy\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [syncbusy](index.html) module"]
+#[doc = "Synchronization Busy\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`syncbusy::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct SYNCBUSY_SPEC;
 impl crate::RegisterSpec for SYNCBUSY_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [syncbusy::R](R) reader structure"]
-impl crate::Readable for SYNCBUSY_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`syncbusy::R`](R) reader structure"]
+impl crate::Readable for SYNCBUSY_SPEC {}
 #[doc = "`reset()` method sets SYNCBUSY to value 0"]
 impl crate::Resettable for SYNCBUSY_SPEC {
     const RESET_VALUE: Self::Ux = 0;

@@ -1,42 +1,29 @@
 #[doc = "Register `CHSTATUS` reader"]
-pub struct R(crate::R<CHSTATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CHSTATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CHSTATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CHSTATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CHSTATUS_SPEC>;
 #[doc = "Field `USRRDY0` reader - Channel 0 User Ready"]
-pub type USRRDY0_R = crate::BitReader<bool>;
+pub type USRRDY0_R = crate::BitReader;
 #[doc = "Field `USRRDY1` reader - Channel 1 User Ready"]
-pub type USRRDY1_R = crate::BitReader<bool>;
+pub type USRRDY1_R = crate::BitReader;
 #[doc = "Field `USRRDY2` reader - Channel 2 User Ready"]
-pub type USRRDY2_R = crate::BitReader<bool>;
+pub type USRRDY2_R = crate::BitReader;
 #[doc = "Field `USRRDY3` reader - Channel 3 User Ready"]
-pub type USRRDY3_R = crate::BitReader<bool>;
+pub type USRRDY3_R = crate::BitReader;
 #[doc = "Field `USRRDY4` reader - Channel 4 User Ready"]
-pub type USRRDY4_R = crate::BitReader<bool>;
+pub type USRRDY4_R = crate::BitReader;
 #[doc = "Field `USRRDY5` reader - Channel 5 User Ready"]
-pub type USRRDY5_R = crate::BitReader<bool>;
+pub type USRRDY5_R = crate::BitReader;
 #[doc = "Field `CHBUSY0` reader - Channel 0 Busy"]
-pub type CHBUSY0_R = crate::BitReader<bool>;
+pub type CHBUSY0_R = crate::BitReader;
 #[doc = "Field `CHBUSY1` reader - Channel 1 Busy"]
-pub type CHBUSY1_R = crate::BitReader<bool>;
+pub type CHBUSY1_R = crate::BitReader;
 #[doc = "Field `CHBUSY2` reader - Channel 2 Busy"]
-pub type CHBUSY2_R = crate::BitReader<bool>;
+pub type CHBUSY2_R = crate::BitReader;
 #[doc = "Field `CHBUSY3` reader - Channel 3 Busy"]
-pub type CHBUSY3_R = crate::BitReader<bool>;
+pub type CHBUSY3_R = crate::BitReader;
 #[doc = "Field `CHBUSY4` reader - Channel 4 Busy"]
-pub type CHBUSY4_R = crate::BitReader<bool>;
+pub type CHBUSY4_R = crate::BitReader;
 #[doc = "Field `CHBUSY5` reader - Channel 5 Busy"]
-pub type CHBUSY5_R = crate::BitReader<bool>;
+pub type CHBUSY5_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Channel 0 User Ready"]
     #[inline(always)]
@@ -99,15 +86,13 @@ impl R {
         CHBUSY5_R::new(((self.bits >> 13) & 1) != 0)
     }
 }
-#[doc = "Channel Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [chstatus](index.html) module"]
+#[doc = "Channel Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`chstatus::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CHSTATUS_SPEC;
 impl crate::RegisterSpec for CHSTATUS_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [chstatus::R](R) reader structure"]
-impl crate::Readable for CHSTATUS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`chstatus::R`](R) reader structure"]
+impl crate::Readable for CHSTATUS_SPEC {}
 #[doc = "`reset()` method sets CHSTATUS to value 0x3f"]
 impl crate::Resettable for CHSTATUS_SPEC {
     const RESET_VALUE: Self::Ux = 0x3f;

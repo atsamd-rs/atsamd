@@ -1,41 +1,9 @@
 #[doc = "Register `RXESC` reader"]
-pub struct R(crate::R<RXESC_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<RXESC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<RXESC_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<RXESC_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<RXESC_SPEC>;
 #[doc = "Register `RXESC` writer"]
-pub struct W(crate::W<RXESC_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<RXESC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<RXESC_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<RXESC_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<RXESC_SPEC>;
 #[doc = "Field `F0DS` reader - Rx FIFO 0 Data Field Size"]
-pub type F0DS_R = crate::FieldReader<u8, F0DSSELECT_A>;
+pub type F0DS_R = crate::FieldReader<F0DSSELECT_A>;
 #[doc = "Rx FIFO 0 Data Field Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -63,10 +31,13 @@ impl From<F0DSSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for F0DSSELECT_A {
+    type Ux = u8;
+}
 impl F0DS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> F0DSSELECT_A {
+    pub const fn variant(&self) -> F0DSSELECT_A {
         match self.bits {
             0 => F0DSSELECT_A::DATA8,
             1 => F0DSSELECT_A::DATA12,
@@ -79,94 +50,97 @@ impl F0DS_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `DATA8`"]
+    #[doc = "8 byte data field"]
     #[inline(always)]
     pub fn is_data8(&self) -> bool {
         *self == F0DSSELECT_A::DATA8
     }
-    #[doc = "Checks if the value of the field is `DATA12`"]
+    #[doc = "12 byte data field"]
     #[inline(always)]
     pub fn is_data12(&self) -> bool {
         *self == F0DSSELECT_A::DATA12
     }
-    #[doc = "Checks if the value of the field is `DATA16`"]
+    #[doc = "16 byte data field"]
     #[inline(always)]
     pub fn is_data16(&self) -> bool {
         *self == F0DSSELECT_A::DATA16
     }
-    #[doc = "Checks if the value of the field is `DATA20`"]
+    #[doc = "20 byte data field"]
     #[inline(always)]
     pub fn is_data20(&self) -> bool {
         *self == F0DSSELECT_A::DATA20
     }
-    #[doc = "Checks if the value of the field is `DATA24`"]
+    #[doc = "24 byte data field"]
     #[inline(always)]
     pub fn is_data24(&self) -> bool {
         *self == F0DSSELECT_A::DATA24
     }
-    #[doc = "Checks if the value of the field is `DATA32`"]
+    #[doc = "32 byte data field"]
     #[inline(always)]
     pub fn is_data32(&self) -> bool {
         *self == F0DSSELECT_A::DATA32
     }
-    #[doc = "Checks if the value of the field is `DATA48`"]
+    #[doc = "48 byte data field"]
     #[inline(always)]
     pub fn is_data48(&self) -> bool {
         *self == F0DSSELECT_A::DATA48
     }
-    #[doc = "Checks if the value of the field is `DATA64`"]
+    #[doc = "64 byte data field"]
     #[inline(always)]
     pub fn is_data64(&self) -> bool {
         *self == F0DSSELECT_A::DATA64
     }
 }
 #[doc = "Field `F0DS` writer - Rx FIFO 0 Data Field Size"]
-pub type F0DS_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, RXESC_SPEC, u8, F0DSSELECT_A, 3, O>;
-impl<'a, const O: u8> F0DS_W<'a, O> {
+pub type F0DS_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 3, O, F0DSSELECT_A>;
+impl<'a, REG, const O: u8> F0DS_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "8 byte data field"]
     #[inline(always)]
-    pub fn data8(self) -> &'a mut W {
+    pub fn data8(self) -> &'a mut crate::W<REG> {
         self.variant(F0DSSELECT_A::DATA8)
     }
     #[doc = "12 byte data field"]
     #[inline(always)]
-    pub fn data12(self) -> &'a mut W {
+    pub fn data12(self) -> &'a mut crate::W<REG> {
         self.variant(F0DSSELECT_A::DATA12)
     }
     #[doc = "16 byte data field"]
     #[inline(always)]
-    pub fn data16(self) -> &'a mut W {
+    pub fn data16(self) -> &'a mut crate::W<REG> {
         self.variant(F0DSSELECT_A::DATA16)
     }
     #[doc = "20 byte data field"]
     #[inline(always)]
-    pub fn data20(self) -> &'a mut W {
+    pub fn data20(self) -> &'a mut crate::W<REG> {
         self.variant(F0DSSELECT_A::DATA20)
     }
     #[doc = "24 byte data field"]
     #[inline(always)]
-    pub fn data24(self) -> &'a mut W {
+    pub fn data24(self) -> &'a mut crate::W<REG> {
         self.variant(F0DSSELECT_A::DATA24)
     }
     #[doc = "32 byte data field"]
     #[inline(always)]
-    pub fn data32(self) -> &'a mut W {
+    pub fn data32(self) -> &'a mut crate::W<REG> {
         self.variant(F0DSSELECT_A::DATA32)
     }
     #[doc = "48 byte data field"]
     #[inline(always)]
-    pub fn data48(self) -> &'a mut W {
+    pub fn data48(self) -> &'a mut crate::W<REG> {
         self.variant(F0DSSELECT_A::DATA48)
     }
     #[doc = "64 byte data field"]
     #[inline(always)]
-    pub fn data64(self) -> &'a mut W {
+    pub fn data64(self) -> &'a mut crate::W<REG> {
         self.variant(F0DSSELECT_A::DATA64)
     }
 }
 #[doc = "Field `F1DS` reader - Rx FIFO 1 Data Field Size"]
-pub type F1DS_R = crate::FieldReader<u8, F1DSSELECT_A>;
+pub type F1DS_R = crate::FieldReader<F1DSSELECT_A>;
 #[doc = "Rx FIFO 1 Data Field Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -194,10 +168,13 @@ impl From<F1DSSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for F1DSSELECT_A {
+    type Ux = u8;
+}
 impl F1DS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> F1DSSELECT_A {
+    pub const fn variant(&self) -> F1DSSELECT_A {
         match self.bits {
             0 => F1DSSELECT_A::DATA8,
             1 => F1DSSELECT_A::DATA12,
@@ -210,94 +187,97 @@ impl F1DS_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `DATA8`"]
+    #[doc = "8 byte data field"]
     #[inline(always)]
     pub fn is_data8(&self) -> bool {
         *self == F1DSSELECT_A::DATA8
     }
-    #[doc = "Checks if the value of the field is `DATA12`"]
+    #[doc = "12 byte data field"]
     #[inline(always)]
     pub fn is_data12(&self) -> bool {
         *self == F1DSSELECT_A::DATA12
     }
-    #[doc = "Checks if the value of the field is `DATA16`"]
+    #[doc = "16 byte data field"]
     #[inline(always)]
     pub fn is_data16(&self) -> bool {
         *self == F1DSSELECT_A::DATA16
     }
-    #[doc = "Checks if the value of the field is `DATA20`"]
+    #[doc = "20 byte data field"]
     #[inline(always)]
     pub fn is_data20(&self) -> bool {
         *self == F1DSSELECT_A::DATA20
     }
-    #[doc = "Checks if the value of the field is `DATA24`"]
+    #[doc = "24 byte data field"]
     #[inline(always)]
     pub fn is_data24(&self) -> bool {
         *self == F1DSSELECT_A::DATA24
     }
-    #[doc = "Checks if the value of the field is `DATA32`"]
+    #[doc = "32 byte data field"]
     #[inline(always)]
     pub fn is_data32(&self) -> bool {
         *self == F1DSSELECT_A::DATA32
     }
-    #[doc = "Checks if the value of the field is `DATA48`"]
+    #[doc = "48 byte data field"]
     #[inline(always)]
     pub fn is_data48(&self) -> bool {
         *self == F1DSSELECT_A::DATA48
     }
-    #[doc = "Checks if the value of the field is `DATA64`"]
+    #[doc = "64 byte data field"]
     #[inline(always)]
     pub fn is_data64(&self) -> bool {
         *self == F1DSSELECT_A::DATA64
     }
 }
 #[doc = "Field `F1DS` writer - Rx FIFO 1 Data Field Size"]
-pub type F1DS_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, RXESC_SPEC, u8, F1DSSELECT_A, 3, O>;
-impl<'a, const O: u8> F1DS_W<'a, O> {
+pub type F1DS_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 3, O, F1DSSELECT_A>;
+impl<'a, REG, const O: u8> F1DS_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "8 byte data field"]
     #[inline(always)]
-    pub fn data8(self) -> &'a mut W {
+    pub fn data8(self) -> &'a mut crate::W<REG> {
         self.variant(F1DSSELECT_A::DATA8)
     }
     #[doc = "12 byte data field"]
     #[inline(always)]
-    pub fn data12(self) -> &'a mut W {
+    pub fn data12(self) -> &'a mut crate::W<REG> {
         self.variant(F1DSSELECT_A::DATA12)
     }
     #[doc = "16 byte data field"]
     #[inline(always)]
-    pub fn data16(self) -> &'a mut W {
+    pub fn data16(self) -> &'a mut crate::W<REG> {
         self.variant(F1DSSELECT_A::DATA16)
     }
     #[doc = "20 byte data field"]
     #[inline(always)]
-    pub fn data20(self) -> &'a mut W {
+    pub fn data20(self) -> &'a mut crate::W<REG> {
         self.variant(F1DSSELECT_A::DATA20)
     }
     #[doc = "24 byte data field"]
     #[inline(always)]
-    pub fn data24(self) -> &'a mut W {
+    pub fn data24(self) -> &'a mut crate::W<REG> {
         self.variant(F1DSSELECT_A::DATA24)
     }
     #[doc = "32 byte data field"]
     #[inline(always)]
-    pub fn data32(self) -> &'a mut W {
+    pub fn data32(self) -> &'a mut crate::W<REG> {
         self.variant(F1DSSELECT_A::DATA32)
     }
     #[doc = "48 byte data field"]
     #[inline(always)]
-    pub fn data48(self) -> &'a mut W {
+    pub fn data48(self) -> &'a mut crate::W<REG> {
         self.variant(F1DSSELECT_A::DATA48)
     }
     #[doc = "64 byte data field"]
     #[inline(always)]
-    pub fn data64(self) -> &'a mut W {
+    pub fn data64(self) -> &'a mut crate::W<REG> {
         self.variant(F1DSSELECT_A::DATA64)
     }
 }
 #[doc = "Field `RBDS` reader - Rx Buffer Data Field Size"]
-pub type RBDS_R = crate::FieldReader<u8, RBDSSELECT_A>;
+pub type RBDS_R = crate::FieldReader<RBDSSELECT_A>;
 #[doc = "Rx Buffer Data Field Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -325,10 +305,13 @@ impl From<RBDSSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for RBDSSELECT_A {
+    type Ux = u8;
+}
 impl RBDS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> RBDSSELECT_A {
+    pub const fn variant(&self) -> RBDSSELECT_A {
         match self.bits {
             0 => RBDSSELECT_A::DATA8,
             1 => RBDSSELECT_A::DATA12,
@@ -341,89 +324,92 @@ impl RBDS_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `DATA8`"]
+    #[doc = "8 byte data field"]
     #[inline(always)]
     pub fn is_data8(&self) -> bool {
         *self == RBDSSELECT_A::DATA8
     }
-    #[doc = "Checks if the value of the field is `DATA12`"]
+    #[doc = "12 byte data field"]
     #[inline(always)]
     pub fn is_data12(&self) -> bool {
         *self == RBDSSELECT_A::DATA12
     }
-    #[doc = "Checks if the value of the field is `DATA16`"]
+    #[doc = "16 byte data field"]
     #[inline(always)]
     pub fn is_data16(&self) -> bool {
         *self == RBDSSELECT_A::DATA16
     }
-    #[doc = "Checks if the value of the field is `DATA20`"]
+    #[doc = "20 byte data field"]
     #[inline(always)]
     pub fn is_data20(&self) -> bool {
         *self == RBDSSELECT_A::DATA20
     }
-    #[doc = "Checks if the value of the field is `DATA24`"]
+    #[doc = "24 byte data field"]
     #[inline(always)]
     pub fn is_data24(&self) -> bool {
         *self == RBDSSELECT_A::DATA24
     }
-    #[doc = "Checks if the value of the field is `DATA32`"]
+    #[doc = "32 byte data field"]
     #[inline(always)]
     pub fn is_data32(&self) -> bool {
         *self == RBDSSELECT_A::DATA32
     }
-    #[doc = "Checks if the value of the field is `DATA48`"]
+    #[doc = "48 byte data field"]
     #[inline(always)]
     pub fn is_data48(&self) -> bool {
         *self == RBDSSELECT_A::DATA48
     }
-    #[doc = "Checks if the value of the field is `DATA64`"]
+    #[doc = "64 byte data field"]
     #[inline(always)]
     pub fn is_data64(&self) -> bool {
         *self == RBDSSELECT_A::DATA64
     }
 }
 #[doc = "Field `RBDS` writer - Rx Buffer Data Field Size"]
-pub type RBDS_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, RXESC_SPEC, u8, RBDSSELECT_A, 3, O>;
-impl<'a, const O: u8> RBDS_W<'a, O> {
+pub type RBDS_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 3, O, RBDSSELECT_A>;
+impl<'a, REG, const O: u8> RBDS_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "8 byte data field"]
     #[inline(always)]
-    pub fn data8(self) -> &'a mut W {
+    pub fn data8(self) -> &'a mut crate::W<REG> {
         self.variant(RBDSSELECT_A::DATA8)
     }
     #[doc = "12 byte data field"]
     #[inline(always)]
-    pub fn data12(self) -> &'a mut W {
+    pub fn data12(self) -> &'a mut crate::W<REG> {
         self.variant(RBDSSELECT_A::DATA12)
     }
     #[doc = "16 byte data field"]
     #[inline(always)]
-    pub fn data16(self) -> &'a mut W {
+    pub fn data16(self) -> &'a mut crate::W<REG> {
         self.variant(RBDSSELECT_A::DATA16)
     }
     #[doc = "20 byte data field"]
     #[inline(always)]
-    pub fn data20(self) -> &'a mut W {
+    pub fn data20(self) -> &'a mut crate::W<REG> {
         self.variant(RBDSSELECT_A::DATA20)
     }
     #[doc = "24 byte data field"]
     #[inline(always)]
-    pub fn data24(self) -> &'a mut W {
+    pub fn data24(self) -> &'a mut crate::W<REG> {
         self.variant(RBDSSELECT_A::DATA24)
     }
     #[doc = "32 byte data field"]
     #[inline(always)]
-    pub fn data32(self) -> &'a mut W {
+    pub fn data32(self) -> &'a mut crate::W<REG> {
         self.variant(RBDSSELECT_A::DATA32)
     }
     #[doc = "48 byte data field"]
     #[inline(always)]
-    pub fn data48(self) -> &'a mut W {
+    pub fn data48(self) -> &'a mut crate::W<REG> {
         self.variant(RBDSSELECT_A::DATA48)
     }
     #[doc = "64 byte data field"]
     #[inline(always)]
-    pub fn data64(self) -> &'a mut W {
+    pub fn data64(self) -> &'a mut crate::W<REG> {
         self.variant(RBDSSELECT_A::DATA64)
     }
 }
@@ -448,40 +434,41 @@ impl W {
     #[doc = "Bits 0:2 - Rx FIFO 0 Data Field Size"]
     #[inline(always)]
     #[must_use]
-    pub fn f0ds(&mut self) -> F0DS_W<0> {
+    pub fn f0ds(&mut self) -> F0DS_W<RXESC_SPEC, 0> {
         F0DS_W::new(self)
     }
     #[doc = "Bits 4:6 - Rx FIFO 1 Data Field Size"]
     #[inline(always)]
     #[must_use]
-    pub fn f1ds(&mut self) -> F1DS_W<4> {
+    pub fn f1ds(&mut self) -> F1DS_W<RXESC_SPEC, 4> {
         F1DS_W::new(self)
     }
     #[doc = "Bits 8:10 - Rx Buffer Data Field Size"]
     #[inline(always)]
     #[must_use]
-    pub fn rbds(&mut self) -> RBDS_W<8> {
+    pub fn rbds(&mut self) -> RBDS_W<RXESC_SPEC, 8> {
         RBDS_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Rx Buffer / FIFO Element Size Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxesc](index.html) module"]
+#[doc = "Rx Buffer / FIFO Element Size Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`rxesc::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`rxesc::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct RXESC_SPEC;
 impl crate::RegisterSpec for RXESC_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [rxesc::R](R) reader structure"]
-impl crate::Readable for RXESC_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [rxesc::W](W) writer structure"]
+#[doc = "`read()` method returns [`rxesc::R`](R) reader structure"]
+impl crate::Readable for RXESC_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`rxesc::W`](W) writer structure"]
 impl crate::Writable for RXESC_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

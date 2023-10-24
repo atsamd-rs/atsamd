@@ -1,82 +1,69 @@
 #[doc = "Register `TXBTO` reader"]
-pub struct R(crate::R<TXBTO_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<TXBTO_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<TXBTO_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<TXBTO_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<TXBTO_SPEC>;
 #[doc = "Field `TO0` reader - Transmission Occurred 0"]
-pub type TO0_R = crate::BitReader<bool>;
+pub type TO0_R = crate::BitReader;
 #[doc = "Field `TO1` reader - Transmission Occurred 1"]
-pub type TO1_R = crate::BitReader<bool>;
+pub type TO1_R = crate::BitReader;
 #[doc = "Field `TO2` reader - Transmission Occurred 2"]
-pub type TO2_R = crate::BitReader<bool>;
+pub type TO2_R = crate::BitReader;
 #[doc = "Field `TO3` reader - Transmission Occurred 3"]
-pub type TO3_R = crate::BitReader<bool>;
+pub type TO3_R = crate::BitReader;
 #[doc = "Field `TO4` reader - Transmission Occurred 4"]
-pub type TO4_R = crate::BitReader<bool>;
+pub type TO4_R = crate::BitReader;
 #[doc = "Field `TO5` reader - Transmission Occurred 5"]
-pub type TO5_R = crate::BitReader<bool>;
+pub type TO5_R = crate::BitReader;
 #[doc = "Field `TO6` reader - Transmission Occurred 6"]
-pub type TO6_R = crate::BitReader<bool>;
+pub type TO6_R = crate::BitReader;
 #[doc = "Field `TO7` reader - Transmission Occurred 7"]
-pub type TO7_R = crate::BitReader<bool>;
+pub type TO7_R = crate::BitReader;
 #[doc = "Field `TO8` reader - Transmission Occurred 8"]
-pub type TO8_R = crate::BitReader<bool>;
+pub type TO8_R = crate::BitReader;
 #[doc = "Field `TO9` reader - Transmission Occurred 9"]
-pub type TO9_R = crate::BitReader<bool>;
+pub type TO9_R = crate::BitReader;
 #[doc = "Field `TO10` reader - Transmission Occurred 10"]
-pub type TO10_R = crate::BitReader<bool>;
+pub type TO10_R = crate::BitReader;
 #[doc = "Field `TO11` reader - Transmission Occurred 11"]
-pub type TO11_R = crate::BitReader<bool>;
+pub type TO11_R = crate::BitReader;
 #[doc = "Field `TO12` reader - Transmission Occurred 12"]
-pub type TO12_R = crate::BitReader<bool>;
+pub type TO12_R = crate::BitReader;
 #[doc = "Field `TO13` reader - Transmission Occurred 13"]
-pub type TO13_R = crate::BitReader<bool>;
+pub type TO13_R = crate::BitReader;
 #[doc = "Field `TO14` reader - Transmission Occurred 14"]
-pub type TO14_R = crate::BitReader<bool>;
+pub type TO14_R = crate::BitReader;
 #[doc = "Field `TO15` reader - Transmission Occurred 15"]
-pub type TO15_R = crate::BitReader<bool>;
+pub type TO15_R = crate::BitReader;
 #[doc = "Field `TO16` reader - Transmission Occurred 16"]
-pub type TO16_R = crate::BitReader<bool>;
+pub type TO16_R = crate::BitReader;
 #[doc = "Field `TO17` reader - Transmission Occurred 17"]
-pub type TO17_R = crate::BitReader<bool>;
+pub type TO17_R = crate::BitReader;
 #[doc = "Field `TO18` reader - Transmission Occurred 18"]
-pub type TO18_R = crate::BitReader<bool>;
+pub type TO18_R = crate::BitReader;
 #[doc = "Field `TO19` reader - Transmission Occurred 19"]
-pub type TO19_R = crate::BitReader<bool>;
+pub type TO19_R = crate::BitReader;
 #[doc = "Field `TO20` reader - Transmission Occurred 20"]
-pub type TO20_R = crate::BitReader<bool>;
+pub type TO20_R = crate::BitReader;
 #[doc = "Field `TO21` reader - Transmission Occurred 21"]
-pub type TO21_R = crate::BitReader<bool>;
+pub type TO21_R = crate::BitReader;
 #[doc = "Field `TO22` reader - Transmission Occurred 22"]
-pub type TO22_R = crate::BitReader<bool>;
+pub type TO22_R = crate::BitReader;
 #[doc = "Field `TO23` reader - Transmission Occurred 23"]
-pub type TO23_R = crate::BitReader<bool>;
+pub type TO23_R = crate::BitReader;
 #[doc = "Field `TO24` reader - Transmission Occurred 24"]
-pub type TO24_R = crate::BitReader<bool>;
+pub type TO24_R = crate::BitReader;
 #[doc = "Field `TO25` reader - Transmission Occurred 25"]
-pub type TO25_R = crate::BitReader<bool>;
+pub type TO25_R = crate::BitReader;
 #[doc = "Field `TO26` reader - Transmission Occurred 26"]
-pub type TO26_R = crate::BitReader<bool>;
+pub type TO26_R = crate::BitReader;
 #[doc = "Field `TO27` reader - Transmission Occurred 27"]
-pub type TO27_R = crate::BitReader<bool>;
+pub type TO27_R = crate::BitReader;
 #[doc = "Field `TO28` reader - Transmission Occurred 28"]
-pub type TO28_R = crate::BitReader<bool>;
+pub type TO28_R = crate::BitReader;
 #[doc = "Field `TO29` reader - Transmission Occurred 29"]
-pub type TO29_R = crate::BitReader<bool>;
+pub type TO29_R = crate::BitReader;
 #[doc = "Field `TO30` reader - Transmission Occurred 30"]
-pub type TO30_R = crate::BitReader<bool>;
+pub type TO30_R = crate::BitReader;
 #[doc = "Field `TO31` reader - Transmission Occurred 31"]
-pub type TO31_R = crate::BitReader<bool>;
+pub type TO31_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Transmission Occurred 0"]
     #[inline(always)]
@@ -239,15 +226,13 @@ impl R {
         TO31_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
-#[doc = "Tx Buffer Transmission Occurred\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txbto](index.html) module"]
+#[doc = "Tx Buffer Transmission Occurred\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`txbto::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct TXBTO_SPEC;
 impl crate::RegisterSpec for TXBTO_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [txbto::R](R) reader structure"]
-impl crate::Readable for TXBTO_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`txbto::R`](R) reader structure"]
+impl crate::Readable for TXBTO_SPEC {}
 #[doc = "`reset()` method sets TXBTO to value 0"]
 impl crate::Resettable for TXBTO_SPEC {
     const RESET_VALUE: Self::Ux = 0;

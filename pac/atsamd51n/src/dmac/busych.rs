@@ -1,82 +1,69 @@
 #[doc = "Register `BUSYCH` reader"]
-pub struct R(crate::R<BUSYCH_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<BUSYCH_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<BUSYCH_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<BUSYCH_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<BUSYCH_SPEC>;
 #[doc = "Field `BUSYCH0` reader - Busy Channel 0"]
-pub type BUSYCH0_R = crate::BitReader<bool>;
+pub type BUSYCH0_R = crate::BitReader;
 #[doc = "Field `BUSYCH1` reader - Busy Channel 1"]
-pub type BUSYCH1_R = crate::BitReader<bool>;
+pub type BUSYCH1_R = crate::BitReader;
 #[doc = "Field `BUSYCH2` reader - Busy Channel 2"]
-pub type BUSYCH2_R = crate::BitReader<bool>;
+pub type BUSYCH2_R = crate::BitReader;
 #[doc = "Field `BUSYCH3` reader - Busy Channel 3"]
-pub type BUSYCH3_R = crate::BitReader<bool>;
+pub type BUSYCH3_R = crate::BitReader;
 #[doc = "Field `BUSYCH4` reader - Busy Channel 4"]
-pub type BUSYCH4_R = crate::BitReader<bool>;
+pub type BUSYCH4_R = crate::BitReader;
 #[doc = "Field `BUSYCH5` reader - Busy Channel 5"]
-pub type BUSYCH5_R = crate::BitReader<bool>;
+pub type BUSYCH5_R = crate::BitReader;
 #[doc = "Field `BUSYCH6` reader - Busy Channel 6"]
-pub type BUSYCH6_R = crate::BitReader<bool>;
+pub type BUSYCH6_R = crate::BitReader;
 #[doc = "Field `BUSYCH7` reader - Busy Channel 7"]
-pub type BUSYCH7_R = crate::BitReader<bool>;
+pub type BUSYCH7_R = crate::BitReader;
 #[doc = "Field `BUSYCH8` reader - Busy Channel 8"]
-pub type BUSYCH8_R = crate::BitReader<bool>;
+pub type BUSYCH8_R = crate::BitReader;
 #[doc = "Field `BUSYCH9` reader - Busy Channel 9"]
-pub type BUSYCH9_R = crate::BitReader<bool>;
+pub type BUSYCH9_R = crate::BitReader;
 #[doc = "Field `BUSYCH10` reader - Busy Channel 10"]
-pub type BUSYCH10_R = crate::BitReader<bool>;
+pub type BUSYCH10_R = crate::BitReader;
 #[doc = "Field `BUSYCH11` reader - Busy Channel 11"]
-pub type BUSYCH11_R = crate::BitReader<bool>;
+pub type BUSYCH11_R = crate::BitReader;
 #[doc = "Field `BUSYCH12` reader - Busy Channel 12"]
-pub type BUSYCH12_R = crate::BitReader<bool>;
+pub type BUSYCH12_R = crate::BitReader;
 #[doc = "Field `BUSYCH13` reader - Busy Channel 13"]
-pub type BUSYCH13_R = crate::BitReader<bool>;
+pub type BUSYCH13_R = crate::BitReader;
 #[doc = "Field `BUSYCH14` reader - Busy Channel 14"]
-pub type BUSYCH14_R = crate::BitReader<bool>;
+pub type BUSYCH14_R = crate::BitReader;
 #[doc = "Field `BUSYCH15` reader - Busy Channel 15"]
-pub type BUSYCH15_R = crate::BitReader<bool>;
+pub type BUSYCH15_R = crate::BitReader;
 #[doc = "Field `BUSYCH16` reader - Busy Channel 16"]
-pub type BUSYCH16_R = crate::BitReader<bool>;
+pub type BUSYCH16_R = crate::BitReader;
 #[doc = "Field `BUSYCH17` reader - Busy Channel 17"]
-pub type BUSYCH17_R = crate::BitReader<bool>;
+pub type BUSYCH17_R = crate::BitReader;
 #[doc = "Field `BUSYCH18` reader - Busy Channel 18"]
-pub type BUSYCH18_R = crate::BitReader<bool>;
+pub type BUSYCH18_R = crate::BitReader;
 #[doc = "Field `BUSYCH19` reader - Busy Channel 19"]
-pub type BUSYCH19_R = crate::BitReader<bool>;
+pub type BUSYCH19_R = crate::BitReader;
 #[doc = "Field `BUSYCH20` reader - Busy Channel 20"]
-pub type BUSYCH20_R = crate::BitReader<bool>;
+pub type BUSYCH20_R = crate::BitReader;
 #[doc = "Field `BUSYCH21` reader - Busy Channel 21"]
-pub type BUSYCH21_R = crate::BitReader<bool>;
+pub type BUSYCH21_R = crate::BitReader;
 #[doc = "Field `BUSYCH22` reader - Busy Channel 22"]
-pub type BUSYCH22_R = crate::BitReader<bool>;
+pub type BUSYCH22_R = crate::BitReader;
 #[doc = "Field `BUSYCH23` reader - Busy Channel 23"]
-pub type BUSYCH23_R = crate::BitReader<bool>;
+pub type BUSYCH23_R = crate::BitReader;
 #[doc = "Field `BUSYCH24` reader - Busy Channel 24"]
-pub type BUSYCH24_R = crate::BitReader<bool>;
+pub type BUSYCH24_R = crate::BitReader;
 #[doc = "Field `BUSYCH25` reader - Busy Channel 25"]
-pub type BUSYCH25_R = crate::BitReader<bool>;
+pub type BUSYCH25_R = crate::BitReader;
 #[doc = "Field `BUSYCH26` reader - Busy Channel 26"]
-pub type BUSYCH26_R = crate::BitReader<bool>;
+pub type BUSYCH26_R = crate::BitReader;
 #[doc = "Field `BUSYCH27` reader - Busy Channel 27"]
-pub type BUSYCH27_R = crate::BitReader<bool>;
+pub type BUSYCH27_R = crate::BitReader;
 #[doc = "Field `BUSYCH28` reader - Busy Channel 28"]
-pub type BUSYCH28_R = crate::BitReader<bool>;
+pub type BUSYCH28_R = crate::BitReader;
 #[doc = "Field `BUSYCH29` reader - Busy Channel 29"]
-pub type BUSYCH29_R = crate::BitReader<bool>;
+pub type BUSYCH29_R = crate::BitReader;
 #[doc = "Field `BUSYCH30` reader - Busy Channel 30"]
-pub type BUSYCH30_R = crate::BitReader<bool>;
+pub type BUSYCH30_R = crate::BitReader;
 #[doc = "Field `BUSYCH31` reader - Busy Channel 31"]
-pub type BUSYCH31_R = crate::BitReader<bool>;
+pub type BUSYCH31_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Busy Channel 0"]
     #[inline(always)]
@@ -239,15 +226,13 @@ impl R {
         BUSYCH31_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
-#[doc = "Busy Channels\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [busych](index.html) module"]
+#[doc = "Busy Channels\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`busych::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct BUSYCH_SPEC;
 impl crate::RegisterSpec for BUSYCH_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [busych::R](R) reader structure"]
-impl crate::Readable for BUSYCH_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`busych::R`](R) reader structure"]
+impl crate::Readable for BUSYCH_SPEC {}
 #[doc = "`reset()` method sets BUSYCH to value 0"]
 impl crate::Resettable for BUSYCH_SPEC {
     const RESET_VALUE: Self::Ux = 0;

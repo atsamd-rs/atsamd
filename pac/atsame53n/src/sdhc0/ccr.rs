@@ -1,39 +1,7 @@
 #[doc = "Register `CCR` reader"]
-pub struct R(crate::R<CCR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CCR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CCR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CCR_SPEC>;
 #[doc = "Register `CCR` writer"]
-pub struct W(crate::W<CCR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CCR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CCR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CCR_SPEC>;
 #[doc = "Field `INTCLKEN` reader - Internal Clock Enable"]
 pub type INTCLKEN_R = crate::BitReader<INTCLKENSELECT_A>;
 #[doc = "Internal Clock Enable\n\nValue on reset: 0"]
@@ -53,34 +21,37 @@ impl From<INTCLKENSELECT_A> for bool {
 impl INTCLKEN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> INTCLKENSELECT_A {
+    pub const fn variant(&self) -> INTCLKENSELECT_A {
         match self.bits {
             false => INTCLKENSELECT_A::OFF,
             true => INTCLKENSELECT_A::ON,
         }
     }
-    #[doc = "Checks if the value of the field is `OFF`"]
+    #[doc = "Stop"]
     #[inline(always)]
     pub fn is_off(&self) -> bool {
         *self == INTCLKENSELECT_A::OFF
     }
-    #[doc = "Checks if the value of the field is `ON`"]
+    #[doc = "Oscillate"]
     #[inline(always)]
     pub fn is_on(&self) -> bool {
         *self == INTCLKENSELECT_A::ON
     }
 }
 #[doc = "Field `INTCLKEN` writer - Internal Clock Enable"]
-pub type INTCLKEN_W<'a, const O: u8> = crate::BitWriter<'a, u16, CCR_SPEC, INTCLKENSELECT_A, O>;
-impl<'a, const O: u8> INTCLKEN_W<'a, O> {
+pub type INTCLKEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, INTCLKENSELECT_A>;
+impl<'a, REG, const O: u8> INTCLKEN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Stop"]
     #[inline(always)]
-    pub fn off(self) -> &'a mut W {
+    pub fn off(self) -> &'a mut crate::W<REG> {
         self.variant(INTCLKENSELECT_A::OFF)
     }
     #[doc = "Oscillate"]
     #[inline(always)]
-    pub fn on(self) -> &'a mut W {
+    pub fn on(self) -> &'a mut crate::W<REG> {
         self.variant(INTCLKENSELECT_A::ON)
     }
 }
@@ -103,34 +74,37 @@ impl From<INTCLKSSELECT_A> for bool {
 impl INTCLKS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> INTCLKSSELECT_A {
+    pub const fn variant(&self) -> INTCLKSSELECT_A {
         match self.bits {
             false => INTCLKSSELECT_A::NOT_READY,
             true => INTCLKSSELECT_A::READY,
         }
     }
-    #[doc = "Checks if the value of the field is `NOT_READY`"]
+    #[doc = "Not Ready"]
     #[inline(always)]
     pub fn is_not_ready(&self) -> bool {
         *self == INTCLKSSELECT_A::NOT_READY
     }
-    #[doc = "Checks if the value of the field is `READY`"]
+    #[doc = "Ready"]
     #[inline(always)]
     pub fn is_ready(&self) -> bool {
         *self == INTCLKSSELECT_A::READY
     }
 }
 #[doc = "Field `INTCLKS` writer - Internal Clock Stable"]
-pub type INTCLKS_W<'a, const O: u8> = crate::BitWriter<'a, u16, CCR_SPEC, INTCLKSSELECT_A, O>;
-impl<'a, const O: u8> INTCLKS_W<'a, O> {
+pub type INTCLKS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, INTCLKSSELECT_A>;
+impl<'a, REG, const O: u8> INTCLKS_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Not Ready"]
     #[inline(always)]
-    pub fn not_ready(self) -> &'a mut W {
+    pub fn not_ready(self) -> &'a mut crate::W<REG> {
         self.variant(INTCLKSSELECT_A::NOT_READY)
     }
     #[doc = "Ready"]
     #[inline(always)]
-    pub fn ready(self) -> &'a mut W {
+    pub fn ready(self) -> &'a mut crate::W<REG> {
         self.variant(INTCLKSSELECT_A::READY)
     }
 }
@@ -153,34 +127,37 @@ impl From<SDCLKENSELECT_A> for bool {
 impl SDCLKEN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SDCLKENSELECT_A {
+    pub const fn variant(&self) -> SDCLKENSELECT_A {
         match self.bits {
             false => SDCLKENSELECT_A::DISABLE,
             true => SDCLKENSELECT_A::ENABLE,
         }
     }
-    #[doc = "Checks if the value of the field is `DISABLE`"]
+    #[doc = "Disable"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
         *self == SDCLKENSELECT_A::DISABLE
     }
-    #[doc = "Checks if the value of the field is `ENABLE`"]
+    #[doc = "Enable"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
         *self == SDCLKENSELECT_A::ENABLE
     }
 }
 #[doc = "Field `SDCLKEN` writer - SD Clock Enable"]
-pub type SDCLKEN_W<'a, const O: u8> = crate::BitWriter<'a, u16, CCR_SPEC, SDCLKENSELECT_A, O>;
-impl<'a, const O: u8> SDCLKEN_W<'a, O> {
+pub type SDCLKEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, SDCLKENSELECT_A>;
+impl<'a, REG, const O: u8> SDCLKEN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Disable"]
     #[inline(always)]
-    pub fn disable(self) -> &'a mut W {
+    pub fn disable(self) -> &'a mut crate::W<REG> {
         self.variant(SDCLKENSELECT_A::DISABLE)
     }
     #[doc = "Enable"]
     #[inline(always)]
-    pub fn enable(self) -> &'a mut W {
+    pub fn enable(self) -> &'a mut crate::W<REG> {
         self.variant(SDCLKENSELECT_A::ENABLE)
     }
 }
@@ -203,45 +180,48 @@ impl From<CLKGSELSELECT_A> for bool {
 impl CLKGSEL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CLKGSELSELECT_A {
+    pub const fn variant(&self) -> CLKGSELSELECT_A {
         match self.bits {
             false => CLKGSELSELECT_A::DIV,
             true => CLKGSELSELECT_A::PROG,
         }
     }
-    #[doc = "Checks if the value of the field is `DIV`"]
+    #[doc = "Divided Clock Mode"]
     #[inline(always)]
     pub fn is_div(&self) -> bool {
         *self == CLKGSELSELECT_A::DIV
     }
-    #[doc = "Checks if the value of the field is `PROG`"]
+    #[doc = "Programmable Clock Mode"]
     #[inline(always)]
     pub fn is_prog(&self) -> bool {
         *self == CLKGSELSELECT_A::PROG
     }
 }
 #[doc = "Field `CLKGSEL` writer - Clock Generator Select"]
-pub type CLKGSEL_W<'a, const O: u8> = crate::BitWriter<'a, u16, CCR_SPEC, CLKGSELSELECT_A, O>;
-impl<'a, const O: u8> CLKGSEL_W<'a, O> {
+pub type CLKGSEL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, CLKGSELSELECT_A>;
+impl<'a, REG, const O: u8> CLKGSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Divided Clock Mode"]
     #[inline(always)]
-    pub fn div(self) -> &'a mut W {
+    pub fn div(self) -> &'a mut crate::W<REG> {
         self.variant(CLKGSELSELECT_A::DIV)
     }
     #[doc = "Programmable Clock Mode"]
     #[inline(always)]
-    pub fn prog(self) -> &'a mut W {
+    pub fn prog(self) -> &'a mut crate::W<REG> {
         self.variant(CLKGSELSELECT_A::PROG)
     }
 }
 #[doc = "Field `USDCLKFSEL` reader - Upper Bits of SDCLK Frequency Select"]
-pub type USDCLKFSEL_R = crate::FieldReader<u8, u8>;
+pub type USDCLKFSEL_R = crate::FieldReader;
 #[doc = "Field `USDCLKFSEL` writer - Upper Bits of SDCLK Frequency Select"]
-pub type USDCLKFSEL_W<'a, const O: u8> = crate::FieldWriter<'a, u16, CCR_SPEC, u8, u8, 2, O>;
+pub type USDCLKFSEL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `SDCLKFSEL` reader - SDCLK Frequency Select"]
-pub type SDCLKFSEL_R = crate::FieldReader<u8, u8>;
+pub type SDCLKFSEL_R = crate::FieldReader;
 #[doc = "Field `SDCLKFSEL` writer - SDCLK Frequency Select"]
-pub type SDCLKFSEL_W<'a, const O: u8> = crate::FieldWriter<'a, u16, CCR_SPEC, u8, u8, 8, O>;
+pub type SDCLKFSEL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 impl R {
     #[doc = "Bit 0 - Internal Clock Enable"]
     #[inline(always)]
@@ -278,58 +258,59 @@ impl W {
     #[doc = "Bit 0 - Internal Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn intclken(&mut self) -> INTCLKEN_W<0> {
+    pub fn intclken(&mut self) -> INTCLKEN_W<CCR_SPEC, 0> {
         INTCLKEN_W::new(self)
     }
     #[doc = "Bit 1 - Internal Clock Stable"]
     #[inline(always)]
     #[must_use]
-    pub fn intclks(&mut self) -> INTCLKS_W<1> {
+    pub fn intclks(&mut self) -> INTCLKS_W<CCR_SPEC, 1> {
         INTCLKS_W::new(self)
     }
     #[doc = "Bit 2 - SD Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn sdclken(&mut self) -> SDCLKEN_W<2> {
+    pub fn sdclken(&mut self) -> SDCLKEN_W<CCR_SPEC, 2> {
         SDCLKEN_W::new(self)
     }
     #[doc = "Bit 5 - Clock Generator Select"]
     #[inline(always)]
     #[must_use]
-    pub fn clkgsel(&mut self) -> CLKGSEL_W<5> {
+    pub fn clkgsel(&mut self) -> CLKGSEL_W<CCR_SPEC, 5> {
         CLKGSEL_W::new(self)
     }
     #[doc = "Bits 6:7 - Upper Bits of SDCLK Frequency Select"]
     #[inline(always)]
     #[must_use]
-    pub fn usdclkfsel(&mut self) -> USDCLKFSEL_W<6> {
+    pub fn usdclkfsel(&mut self) -> USDCLKFSEL_W<CCR_SPEC, 6> {
         USDCLKFSEL_W::new(self)
     }
     #[doc = "Bits 8:15 - SDCLK Frequency Select"]
     #[inline(always)]
     #[must_use]
-    pub fn sdclkfsel(&mut self) -> SDCLKFSEL_W<8> {
+    pub fn sdclkfsel(&mut self) -> SDCLKFSEL_W<CCR_SPEC, 8> {
         SDCLKFSEL_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Clock Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccr](index.html) module"]
+#[doc = "Clock Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ccr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ccr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CCR_SPEC;
 impl crate::RegisterSpec for CCR_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [ccr::R](R) reader structure"]
-impl crate::Readable for CCR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ccr::W](W) writer structure"]
+#[doc = "`read()` method returns [`ccr::R`](R) reader structure"]
+impl crate::Readable for CCR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ccr::W`](W) writer structure"]
 impl crate::Writable for CCR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

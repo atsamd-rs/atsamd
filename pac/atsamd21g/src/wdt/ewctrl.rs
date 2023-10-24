@@ -1,41 +1,9 @@
 #[doc = "Register `EWCTRL` reader"]
-pub struct R(crate::R<EWCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<EWCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<EWCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<EWCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<EWCTRL_SPEC>;
 #[doc = "Register `EWCTRL` writer"]
-pub struct W(crate::W<EWCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<EWCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<EWCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<EWCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<EWCTRL_SPEC>;
 #[doc = "Field `EWOFFSET` reader - Early Warning Interrupt Time Offset"]
-pub type EWOFFSET_R = crate::FieldReader<u8, EWOFFSETSELECT_A>;
+pub type EWOFFSET_R = crate::FieldReader<EWOFFSETSELECT_A>;
 #[doc = "Early Warning Interrupt Time Offset\n\nValue on reset: 11"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -71,10 +39,13 @@ impl From<EWOFFSETSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for EWOFFSETSELECT_A {
+    type Ux = u8;
+}
 impl EWOFFSET_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<EWOFFSETSELECT_A> {
+    pub const fn variant(&self) -> Option<EWOFFSETSELECT_A> {
         match self.bits {
             0 => Some(EWOFFSETSELECT_A::_8),
             1 => Some(EWOFFSETSELECT_A::_16),
@@ -91,129 +62,132 @@ impl EWOFFSET_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `_8`"]
+    #[doc = "8 clock cycles"]
     #[inline(always)]
     pub fn is_8(&self) -> bool {
         *self == EWOFFSETSELECT_A::_8
     }
-    #[doc = "Checks if the value of the field is `_16`"]
+    #[doc = "16 clock cycles"]
     #[inline(always)]
     pub fn is_16(&self) -> bool {
         *self == EWOFFSETSELECT_A::_16
     }
-    #[doc = "Checks if the value of the field is `_32`"]
+    #[doc = "32 clock cycles"]
     #[inline(always)]
     pub fn is_32(&self) -> bool {
         *self == EWOFFSETSELECT_A::_32
     }
-    #[doc = "Checks if the value of the field is `_64`"]
+    #[doc = "64 clock cycles"]
     #[inline(always)]
     pub fn is_64(&self) -> bool {
         *self == EWOFFSETSELECT_A::_64
     }
-    #[doc = "Checks if the value of the field is `_128`"]
+    #[doc = "128 clock cycles"]
     #[inline(always)]
     pub fn is_128(&self) -> bool {
         *self == EWOFFSETSELECT_A::_128
     }
-    #[doc = "Checks if the value of the field is `_256`"]
+    #[doc = "256 clock cycles"]
     #[inline(always)]
     pub fn is_256(&self) -> bool {
         *self == EWOFFSETSELECT_A::_256
     }
-    #[doc = "Checks if the value of the field is `_512`"]
+    #[doc = "512 clock cycles"]
     #[inline(always)]
     pub fn is_512(&self) -> bool {
         *self == EWOFFSETSELECT_A::_512
     }
-    #[doc = "Checks if the value of the field is `_1K`"]
+    #[doc = "1024 clock cycles"]
     #[inline(always)]
     pub fn is_1k(&self) -> bool {
         *self == EWOFFSETSELECT_A::_1K
     }
-    #[doc = "Checks if the value of the field is `_2K`"]
+    #[doc = "2048 clock cycles"]
     #[inline(always)]
     pub fn is_2k(&self) -> bool {
         *self == EWOFFSETSELECT_A::_2K
     }
-    #[doc = "Checks if the value of the field is `_4K`"]
+    #[doc = "4096 clock cycles"]
     #[inline(always)]
     pub fn is_4k(&self) -> bool {
         *self == EWOFFSETSELECT_A::_4K
     }
-    #[doc = "Checks if the value of the field is `_8K`"]
+    #[doc = "8192 clock cycles"]
     #[inline(always)]
     pub fn is_8k(&self) -> bool {
         *self == EWOFFSETSELECT_A::_8K
     }
-    #[doc = "Checks if the value of the field is `_16K`"]
+    #[doc = "16384 clock cycles"]
     #[inline(always)]
     pub fn is_16k(&self) -> bool {
         *self == EWOFFSETSELECT_A::_16K
     }
 }
 #[doc = "Field `EWOFFSET` writer - Early Warning Interrupt Time Offset"]
-pub type EWOFFSET_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u8, EWCTRL_SPEC, u8, EWOFFSETSELECT_A, 4, O>;
-impl<'a, const O: u8> EWOFFSET_W<'a, O> {
+pub type EWOFFSET_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O, EWOFFSETSELECT_A>;
+impl<'a, REG, const O: u8> EWOFFSET_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "8 clock cycles"]
     #[inline(always)]
-    pub fn _8(self) -> &'a mut W {
+    pub fn _8(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_8)
     }
     #[doc = "16 clock cycles"]
     #[inline(always)]
-    pub fn _16(self) -> &'a mut W {
+    pub fn _16(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_16)
     }
     #[doc = "32 clock cycles"]
     #[inline(always)]
-    pub fn _32(self) -> &'a mut W {
+    pub fn _32(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_32)
     }
     #[doc = "64 clock cycles"]
     #[inline(always)]
-    pub fn _64(self) -> &'a mut W {
+    pub fn _64(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_64)
     }
     #[doc = "128 clock cycles"]
     #[inline(always)]
-    pub fn _128(self) -> &'a mut W {
+    pub fn _128(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_128)
     }
     #[doc = "256 clock cycles"]
     #[inline(always)]
-    pub fn _256(self) -> &'a mut W {
+    pub fn _256(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_256)
     }
     #[doc = "512 clock cycles"]
     #[inline(always)]
-    pub fn _512(self) -> &'a mut W {
+    pub fn _512(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_512)
     }
     #[doc = "1024 clock cycles"]
     #[inline(always)]
-    pub fn _1k(self) -> &'a mut W {
+    pub fn _1k(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_1K)
     }
     #[doc = "2048 clock cycles"]
     #[inline(always)]
-    pub fn _2k(self) -> &'a mut W {
+    pub fn _2k(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_2K)
     }
     #[doc = "4096 clock cycles"]
     #[inline(always)]
-    pub fn _4k(self) -> &'a mut W {
+    pub fn _4k(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_4K)
     }
     #[doc = "8192 clock cycles"]
     #[inline(always)]
-    pub fn _8k(self) -> &'a mut W {
+    pub fn _8k(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_8K)
     }
     #[doc = "16384 clock cycles"]
     #[inline(always)]
-    pub fn _16k(self) -> &'a mut W {
+    pub fn _16k(self) -> &'a mut crate::W<REG> {
         self.variant(EWOFFSETSELECT_A::_16K)
     }
 }
@@ -228,28 +202,29 @@ impl W {
     #[doc = "Bits 0:3 - Early Warning Interrupt Time Offset"]
     #[inline(always)]
     #[must_use]
-    pub fn ewoffset(&mut self) -> EWOFFSET_W<0> {
+    pub fn ewoffset(&mut self) -> EWOFFSET_W<EWCTRL_SPEC, 0> {
         EWOFFSET_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Early Warning Interrupt Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ewctrl](index.html) module"]
+#[doc = "Early Warning Interrupt Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ewctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ewctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct EWCTRL_SPEC;
 impl crate::RegisterSpec for EWCTRL_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [ewctrl::R](R) reader structure"]
-impl crate::Readable for EWCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ewctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`ewctrl::R`](R) reader structure"]
+impl crate::Readable for EWCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ewctrl::W`](W) writer structure"]
 impl crate::Writable for EWCTRL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

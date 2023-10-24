@@ -1,34 +1,21 @@
 #[doc = "Register `SYNCBUSY` reader"]
-pub struct R(crate::R<SYNCBUSY_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<SYNCBUSY_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<SYNCBUSY_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<SYNCBUSY_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<SYNCBUSY_SPEC>;
 #[doc = "Field `SWRST` reader - Software Reset Synchronization Status"]
-pub type SWRST_R = crate::BitReader<bool>;
+pub type SWRST_R = crate::BitReader;
 #[doc = "Field `ENABLE` reader - Enable Synchronization Status"]
-pub type ENABLE_R = crate::BitReader<bool>;
+pub type ENABLE_R = crate::BitReader;
 #[doc = "Field `CKEN0` reader - Clock Unit 0 Enable Synchronization Status"]
-pub type CKEN0_R = crate::BitReader<bool>;
+pub type CKEN0_R = crate::BitReader;
 #[doc = "Field `CKEN1` reader - Clock Unit 1 Enable Synchronization Status"]
-pub type CKEN1_R = crate::BitReader<bool>;
+pub type CKEN1_R = crate::BitReader;
 #[doc = "Field `SEREN0` reader - Serializer 0 Enable Synchronization Status"]
-pub type SEREN0_R = crate::BitReader<bool>;
+pub type SEREN0_R = crate::BitReader;
 #[doc = "Field `SEREN1` reader - Serializer 1 Enable Synchronization Status"]
-pub type SEREN1_R = crate::BitReader<bool>;
+pub type SEREN1_R = crate::BitReader;
 #[doc = "Field `DATA0` reader - Data 0 Synchronization Status"]
-pub type DATA0_R = crate::BitReader<bool>;
+pub type DATA0_R = crate::BitReader;
 #[doc = "Field `DATA1` reader - Data 1 Synchronization Status"]
-pub type DATA1_R = crate::BitReader<bool>;
+pub type DATA1_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Software Reset Synchronization Status"]
     #[inline(always)]
@@ -71,15 +58,13 @@ impl R {
         DATA1_R::new(((self.bits >> 9) & 1) != 0)
     }
 }
-#[doc = "Synchronization Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [syncbusy](index.html) module"]
+#[doc = "Synchronization Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`syncbusy::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct SYNCBUSY_SPEC;
 impl crate::RegisterSpec for SYNCBUSY_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [syncbusy::R](R) reader structure"]
-impl crate::Readable for SYNCBUSY_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`syncbusy::R`](R) reader structure"]
+impl crate::Readable for SYNCBUSY_SPEC {}
 #[doc = "`reset()` method sets SYNCBUSY to value 0"]
 impl crate::Resettable for SYNCBUSY_SPEC {
     const RESET_VALUE: Self::Ux = 0;

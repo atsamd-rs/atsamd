@@ -1,47 +1,15 @@
 #[doc = "Register `FFCR` reader"]
-pub struct R(crate::R<FFCR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<FFCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<FFCR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<FFCR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<FFCR_SPEC>;
 #[doc = "Register `FFCR` writer"]
-pub struct W(crate::W<FFCR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<FFCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<FFCR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<FFCR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<FFCR_SPEC>;
 #[doc = "Field `EnFCont` reader - "]
-pub type EN_FCONT_R = crate::BitReader<bool>;
+pub type EN_FCONT_R = crate::BitReader;
 #[doc = "Field `EnFCont` writer - "]
-pub type EN_FCONT_W<'a, const O: u8> = crate::BitWriter<'a, u32, FFCR_SPEC, bool, O>;
+pub type EN_FCONT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TrigIn` reader - "]
-pub type TRIG_IN_R = crate::BitReader<bool>;
+pub type TRIG_IN_R = crate::BitReader;
 #[doc = "Field `TrigIn` writer - "]
-pub type TRIG_IN_W<'a, const O: u8> = crate::BitWriter<'a, u32, FFCR_SPEC, bool, O>;
+pub type TRIG_IN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 1"]
     #[inline(always)]
@@ -58,34 +26,35 @@ impl W {
     #[doc = "Bit 1"]
     #[inline(always)]
     #[must_use]
-    pub fn en_fcont(&mut self) -> EN_FCONT_W<1> {
+    pub fn en_fcont(&mut self) -> EN_FCONT_W<FFCR_SPEC, 1> {
         EN_FCONT_W::new(self)
     }
     #[doc = "Bit 8"]
     #[inline(always)]
     #[must_use]
-    pub fn trig_in(&mut self) -> TRIG_IN_W<8> {
+    pub fn trig_in(&mut self) -> TRIG_IN_W<FFCR_SPEC, 8> {
         TRIG_IN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Formatter and Flush Control Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ffcr](index.html) module"]
+#[doc = "Formatter and Flush Control Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ffcr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ffcr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct FFCR_SPEC;
 impl crate::RegisterSpec for FFCR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ffcr::R](R) reader structure"]
-impl crate::Readable for FFCR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ffcr::W](W) writer structure"]
+#[doc = "`read()` method returns [`ffcr::R`](R) reader structure"]
+impl crate::Readable for FFCR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ffcr::W`](W) writer structure"]
 impl crate::Writable for FFCR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

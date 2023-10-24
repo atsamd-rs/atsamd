@@ -1,20 +1,7 @@
 #[doc = "Register `OTLO` reader"]
-pub struct R(crate::R<OTLO_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<OTLO_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<OTLO_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<OTLO_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<OTLO_SPEC>;
 #[doc = "Field `TXO` reader - Transmitted Octets"]
-pub type TXO_R = crate::FieldReader<u32, u32>;
+pub type TXO_R = crate::FieldReader<u32>;
 impl R {
     #[doc = "Bits 0:31 - Transmitted Octets"]
     #[inline(always)]
@@ -23,15 +10,13 @@ impl R {
     }
 }
 #[doc = "Octets Transmitted \\[31:0\\]
-Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [otlo](index.html) module"]
+Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`otlo::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct OTLO_SPEC;
 impl crate::RegisterSpec for OTLO_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [otlo::R](R) reader structure"]
-impl crate::Readable for OTLO_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`otlo::R`](R) reader structure"]
+impl crate::Readable for OTLO_SPEC {}
 #[doc = "`reset()` method sets OTLO to value 0"]
 impl crate::Resettable for OTLO_SPEC {
     const RESET_VALUE: Self::Ux = 0;

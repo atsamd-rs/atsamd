@@ -1,42 +1,29 @@
 #[doc = "Register `PENDCH` reader"]
-pub struct R(crate::R<PENDCH_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PENDCH_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PENDCH_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PENDCH_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PENDCH_SPEC>;
 #[doc = "Field `PENDCH0` reader - Pending Channel 0"]
-pub type PENDCH0_R = crate::BitReader<bool>;
+pub type PENDCH0_R = crate::BitReader;
 #[doc = "Field `PENDCH1` reader - Pending Channel 1"]
-pub type PENDCH1_R = crate::BitReader<bool>;
+pub type PENDCH1_R = crate::BitReader;
 #[doc = "Field `PENDCH2` reader - Pending Channel 2"]
-pub type PENDCH2_R = crate::BitReader<bool>;
+pub type PENDCH2_R = crate::BitReader;
 #[doc = "Field `PENDCH3` reader - Pending Channel 3"]
-pub type PENDCH3_R = crate::BitReader<bool>;
+pub type PENDCH3_R = crate::BitReader;
 #[doc = "Field `PENDCH4` reader - Pending Channel 4"]
-pub type PENDCH4_R = crate::BitReader<bool>;
+pub type PENDCH4_R = crate::BitReader;
 #[doc = "Field `PENDCH5` reader - Pending Channel 5"]
-pub type PENDCH5_R = crate::BitReader<bool>;
+pub type PENDCH5_R = crate::BitReader;
 #[doc = "Field `PENDCH6` reader - Pending Channel 6"]
-pub type PENDCH6_R = crate::BitReader<bool>;
+pub type PENDCH6_R = crate::BitReader;
 #[doc = "Field `PENDCH7` reader - Pending Channel 7"]
-pub type PENDCH7_R = crate::BitReader<bool>;
+pub type PENDCH7_R = crate::BitReader;
 #[doc = "Field `PENDCH8` reader - Pending Channel 8"]
-pub type PENDCH8_R = crate::BitReader<bool>;
+pub type PENDCH8_R = crate::BitReader;
 #[doc = "Field `PENDCH9` reader - Pending Channel 9"]
-pub type PENDCH9_R = crate::BitReader<bool>;
+pub type PENDCH9_R = crate::BitReader;
 #[doc = "Field `PENDCH10` reader - Pending Channel 10"]
-pub type PENDCH10_R = crate::BitReader<bool>;
+pub type PENDCH10_R = crate::BitReader;
 #[doc = "Field `PENDCH11` reader - Pending Channel 11"]
-pub type PENDCH11_R = crate::BitReader<bool>;
+pub type PENDCH11_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Pending Channel 0"]
     #[inline(always)]
@@ -99,15 +86,13 @@ impl R {
         PENDCH11_R::new(((self.bits >> 11) & 1) != 0)
     }
 }
-#[doc = "Pending Channels\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pendch](index.html) module"]
+#[doc = "Pending Channels\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pendch::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PENDCH_SPEC;
 impl crate::RegisterSpec for PENDCH_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [pendch::R](R) reader structure"]
-impl crate::Readable for PENDCH_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`pendch::R`](R) reader structure"]
+impl crate::Readable for PENDCH_SPEC {}
 #[doc = "`reset()` method sets PENDCH to value 0"]
 impl crate::Resettable for PENDCH_SPEC {
     const RESET_VALUE: Self::Ux = 0;

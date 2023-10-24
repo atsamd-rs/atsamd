@@ -1,49 +1,17 @@
 #[doc = "Register `COMPCTRL%s` reader"]
-pub struct R(crate::R<COMPCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<COMPCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<COMPCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<COMPCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<COMPCTRL_SPEC>;
 #[doc = "Register `COMPCTRL%s` writer"]
-pub struct W(crate::W<COMPCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<COMPCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<COMPCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<COMPCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<COMPCTRL_SPEC>;
 #[doc = "Field `ENABLE` reader - Enable"]
-pub type ENABLE_R = crate::BitReader<bool>;
+pub type ENABLE_R = crate::BitReader;
 #[doc = "Field `ENABLE` writer - Enable"]
-pub type ENABLE_W<'a, const O: u8> = crate::BitWriter<'a, u32, COMPCTRL_SPEC, bool, O>;
+pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SINGLE` reader - Single-Shot Mode"]
-pub type SINGLE_R = crate::BitReader<bool>;
+pub type SINGLE_R = crate::BitReader;
 #[doc = "Field `SINGLE` writer - Single-Shot Mode"]
-pub type SINGLE_W<'a, const O: u8> = crate::BitWriter<'a, u32, COMPCTRL_SPEC, bool, O>;
+pub type SINGLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SPEED` reader - Speed Selection"]
-pub type SPEED_R = crate::FieldReader<u8, SPEEDSELECT_A>;
+pub type SPEED_R = crate::FieldReader<SPEEDSELECT_A>;
 #[doc = "Speed Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -59,44 +27,50 @@ impl From<SPEEDSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for SPEEDSELECT_A {
+    type Ux = u8;
+}
 impl SPEED_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<SPEEDSELECT_A> {
+    pub const fn variant(&self) -> Option<SPEEDSELECT_A> {
         match self.bits {
             0 => Some(SPEEDSELECT_A::LOW),
             1 => Some(SPEEDSELECT_A::HIGH),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `LOW`"]
+    #[doc = "Low speed"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
         *self == SPEEDSELECT_A::LOW
     }
-    #[doc = "Checks if the value of the field is `HIGH`"]
+    #[doc = "High speed"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
         *self == SPEEDSELECT_A::HIGH
     }
 }
 #[doc = "Field `SPEED` writer - Speed Selection"]
-pub type SPEED_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u32, COMPCTRL_SPEC, u8, SPEEDSELECT_A, 2, O>;
-impl<'a, const O: u8> SPEED_W<'a, O> {
+pub type SPEED_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, SPEEDSELECT_A>;
+impl<'a, REG, const O: u8> SPEED_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Low speed"]
     #[inline(always)]
-    pub fn low(self) -> &'a mut W {
+    pub fn low(self) -> &'a mut crate::W<REG> {
         self.variant(SPEEDSELECT_A::LOW)
     }
     #[doc = "High speed"]
     #[inline(always)]
-    pub fn high(self) -> &'a mut W {
+    pub fn high(self) -> &'a mut crate::W<REG> {
         self.variant(SPEEDSELECT_A::HIGH)
     }
 }
 #[doc = "Field `INTSEL` reader - Interrupt Selection"]
-pub type INTSEL_R = crate::FieldReader<u8, INTSELSELECT_A>;
+pub type INTSEL_R = crate::FieldReader<INTSELSELECT_A>;
 #[doc = "Interrupt Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -116,10 +90,13 @@ impl From<INTSELSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for INTSELSELECT_A {
+    type Ux = u8;
+}
 impl INTSEL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> INTSELSELECT_A {
+    pub const fn variant(&self) -> INTSELSELECT_A {
         match self.bits {
             0 => INTSELSELECT_A::TOGGLE,
             1 => INTSELSELECT_A::RISING,
@@ -128,54 +105,57 @@ impl INTSEL_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `TOGGLE`"]
+    #[doc = "Interrupt on comparator output toggle"]
     #[inline(always)]
     pub fn is_toggle(&self) -> bool {
         *self == INTSELSELECT_A::TOGGLE
     }
-    #[doc = "Checks if the value of the field is `RISING`"]
+    #[doc = "Interrupt on comparator output rising"]
     #[inline(always)]
     pub fn is_rising(&self) -> bool {
         *self == INTSELSELECT_A::RISING
     }
-    #[doc = "Checks if the value of the field is `FALLING`"]
+    #[doc = "Interrupt on comparator output falling"]
     #[inline(always)]
     pub fn is_falling(&self) -> bool {
         *self == INTSELSELECT_A::FALLING
     }
-    #[doc = "Checks if the value of the field is `EOC`"]
+    #[doc = "Interrupt on end of comparison (single-shot mode only)"]
     #[inline(always)]
     pub fn is_eoc(&self) -> bool {
         *self == INTSELSELECT_A::EOC
     }
 }
 #[doc = "Field `INTSEL` writer - Interrupt Selection"]
-pub type INTSEL_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, COMPCTRL_SPEC, u8, INTSELSELECT_A, 2, O>;
-impl<'a, const O: u8> INTSEL_W<'a, O> {
+pub type INTSEL_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, INTSELSELECT_A>;
+impl<'a, REG, const O: u8> INTSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Interrupt on comparator output toggle"]
     #[inline(always)]
-    pub fn toggle(self) -> &'a mut W {
+    pub fn toggle(self) -> &'a mut crate::W<REG> {
         self.variant(INTSELSELECT_A::TOGGLE)
     }
     #[doc = "Interrupt on comparator output rising"]
     #[inline(always)]
-    pub fn rising(self) -> &'a mut W {
+    pub fn rising(self) -> &'a mut crate::W<REG> {
         self.variant(INTSELSELECT_A::RISING)
     }
     #[doc = "Interrupt on comparator output falling"]
     #[inline(always)]
-    pub fn falling(self) -> &'a mut W {
+    pub fn falling(self) -> &'a mut crate::W<REG> {
         self.variant(INTSELSELECT_A::FALLING)
     }
     #[doc = "Interrupt on end of comparison (single-shot mode only)"]
     #[inline(always)]
-    pub fn eoc(self) -> &'a mut W {
+    pub fn eoc(self) -> &'a mut crate::W<REG> {
         self.variant(INTSELSELECT_A::EOC)
     }
 }
 #[doc = "Field `MUXNEG` reader - Negative Input Mux Selection"]
-pub type MUXNEG_R = crate::FieldReader<u8, MUXNEGSELECT_A>;
+pub type MUXNEG_R = crate::FieldReader<MUXNEGSELECT_A>;
 #[doc = "Negative Input Mux Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -203,10 +183,13 @@ impl From<MUXNEGSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for MUXNEGSELECT_A {
+    type Ux = u8;
+}
 impl MUXNEG_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> MUXNEGSELECT_A {
+    pub const fn variant(&self) -> MUXNEGSELECT_A {
         match self.bits {
             0 => MUXNEGSELECT_A::PIN0,
             1 => MUXNEGSELECT_A::PIN1,
@@ -219,94 +202,97 @@ impl MUXNEG_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `PIN0`"]
+    #[doc = "I/O pin 0"]
     #[inline(always)]
     pub fn is_pin0(&self) -> bool {
         *self == MUXNEGSELECT_A::PIN0
     }
-    #[doc = "Checks if the value of the field is `PIN1`"]
+    #[doc = "I/O pin 1"]
     #[inline(always)]
     pub fn is_pin1(&self) -> bool {
         *self == MUXNEGSELECT_A::PIN1
     }
-    #[doc = "Checks if the value of the field is `PIN2`"]
+    #[doc = "I/O pin 2"]
     #[inline(always)]
     pub fn is_pin2(&self) -> bool {
         *self == MUXNEGSELECT_A::PIN2
     }
-    #[doc = "Checks if the value of the field is `PIN3`"]
+    #[doc = "I/O pin 3"]
     #[inline(always)]
     pub fn is_pin3(&self) -> bool {
         *self == MUXNEGSELECT_A::PIN3
     }
-    #[doc = "Checks if the value of the field is `GND`"]
+    #[doc = "Ground"]
     #[inline(always)]
     pub fn is_gnd(&self) -> bool {
         *self == MUXNEGSELECT_A::GND
     }
-    #[doc = "Checks if the value of the field is `VSCALE`"]
+    #[doc = "VDD scaler"]
     #[inline(always)]
     pub fn is_vscale(&self) -> bool {
         *self == MUXNEGSELECT_A::VSCALE
     }
-    #[doc = "Checks if the value of the field is `BANDGAP`"]
+    #[doc = "Internal bandgap voltage"]
     #[inline(always)]
     pub fn is_bandgap(&self) -> bool {
         *self == MUXNEGSELECT_A::BANDGAP
     }
-    #[doc = "Checks if the value of the field is `DAC`"]
+    #[doc = "DAC output"]
     #[inline(always)]
     pub fn is_dac(&self) -> bool {
         *self == MUXNEGSELECT_A::DAC
     }
 }
 #[doc = "Field `MUXNEG` writer - Negative Input Mux Selection"]
-pub type MUXNEG_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, COMPCTRL_SPEC, u8, MUXNEGSELECT_A, 3, O>;
-impl<'a, const O: u8> MUXNEG_W<'a, O> {
+pub type MUXNEG_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 3, O, MUXNEGSELECT_A>;
+impl<'a, REG, const O: u8> MUXNEG_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "I/O pin 0"]
     #[inline(always)]
-    pub fn pin0(self) -> &'a mut W {
+    pub fn pin0(self) -> &'a mut crate::W<REG> {
         self.variant(MUXNEGSELECT_A::PIN0)
     }
     #[doc = "I/O pin 1"]
     #[inline(always)]
-    pub fn pin1(self) -> &'a mut W {
+    pub fn pin1(self) -> &'a mut crate::W<REG> {
         self.variant(MUXNEGSELECT_A::PIN1)
     }
     #[doc = "I/O pin 2"]
     #[inline(always)]
-    pub fn pin2(self) -> &'a mut W {
+    pub fn pin2(self) -> &'a mut crate::W<REG> {
         self.variant(MUXNEGSELECT_A::PIN2)
     }
     #[doc = "I/O pin 3"]
     #[inline(always)]
-    pub fn pin3(self) -> &'a mut W {
+    pub fn pin3(self) -> &'a mut crate::W<REG> {
         self.variant(MUXNEGSELECT_A::PIN3)
     }
     #[doc = "Ground"]
     #[inline(always)]
-    pub fn gnd(self) -> &'a mut W {
+    pub fn gnd(self) -> &'a mut crate::W<REG> {
         self.variant(MUXNEGSELECT_A::GND)
     }
     #[doc = "VDD scaler"]
     #[inline(always)]
-    pub fn vscale(self) -> &'a mut W {
+    pub fn vscale(self) -> &'a mut crate::W<REG> {
         self.variant(MUXNEGSELECT_A::VSCALE)
     }
     #[doc = "Internal bandgap voltage"]
     #[inline(always)]
-    pub fn bandgap(self) -> &'a mut W {
+    pub fn bandgap(self) -> &'a mut crate::W<REG> {
         self.variant(MUXNEGSELECT_A::BANDGAP)
     }
     #[doc = "DAC output"]
     #[inline(always)]
-    pub fn dac(self) -> &'a mut W {
+    pub fn dac(self) -> &'a mut crate::W<REG> {
         self.variant(MUXNEGSELECT_A::DAC)
     }
 }
 #[doc = "Field `MUXPOS` reader - Positive Input Mux Selection"]
-pub type MUXPOS_R = crate::FieldReader<u8, MUXPOSSELECT_A>;
+pub type MUXPOS_R = crate::FieldReader<MUXPOSSELECT_A>;
 #[doc = "Positive Input Mux Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -326,10 +312,13 @@ impl From<MUXPOSSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for MUXPOSSELECT_A {
+    type Ux = u8;
+}
 impl MUXPOS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> MUXPOSSELECT_A {
+    pub const fn variant(&self) -> MUXPOSSELECT_A {
         match self.bits {
             0 => MUXPOSSELECT_A::PIN0,
             1 => MUXPOSSELECT_A::PIN1,
@@ -338,58 +327,61 @@ impl MUXPOS_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `PIN0`"]
+    #[doc = "I/O pin 0"]
     #[inline(always)]
     pub fn is_pin0(&self) -> bool {
         *self == MUXPOSSELECT_A::PIN0
     }
-    #[doc = "Checks if the value of the field is `PIN1`"]
+    #[doc = "I/O pin 1"]
     #[inline(always)]
     pub fn is_pin1(&self) -> bool {
         *self == MUXPOSSELECT_A::PIN1
     }
-    #[doc = "Checks if the value of the field is `PIN2`"]
+    #[doc = "I/O pin 2"]
     #[inline(always)]
     pub fn is_pin2(&self) -> bool {
         *self == MUXPOSSELECT_A::PIN2
     }
-    #[doc = "Checks if the value of the field is `PIN3`"]
+    #[doc = "I/O pin 3"]
     #[inline(always)]
     pub fn is_pin3(&self) -> bool {
         *self == MUXPOSSELECT_A::PIN3
     }
 }
 #[doc = "Field `MUXPOS` writer - Positive Input Mux Selection"]
-pub type MUXPOS_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, COMPCTRL_SPEC, u8, MUXPOSSELECT_A, 2, O>;
-impl<'a, const O: u8> MUXPOS_W<'a, O> {
+pub type MUXPOS_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, MUXPOSSELECT_A>;
+impl<'a, REG, const O: u8> MUXPOS_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "I/O pin 0"]
     #[inline(always)]
-    pub fn pin0(self) -> &'a mut W {
+    pub fn pin0(self) -> &'a mut crate::W<REG> {
         self.variant(MUXPOSSELECT_A::PIN0)
     }
     #[doc = "I/O pin 1"]
     #[inline(always)]
-    pub fn pin1(self) -> &'a mut W {
+    pub fn pin1(self) -> &'a mut crate::W<REG> {
         self.variant(MUXPOSSELECT_A::PIN1)
     }
     #[doc = "I/O pin 2"]
     #[inline(always)]
-    pub fn pin2(self) -> &'a mut W {
+    pub fn pin2(self) -> &'a mut crate::W<REG> {
         self.variant(MUXPOSSELECT_A::PIN2)
     }
     #[doc = "I/O pin 3"]
     #[inline(always)]
-    pub fn pin3(self) -> &'a mut W {
+    pub fn pin3(self) -> &'a mut crate::W<REG> {
         self.variant(MUXPOSSELECT_A::PIN3)
     }
 }
 #[doc = "Field `SWAP` reader - Swap Inputs and Invert"]
-pub type SWAP_R = crate::BitReader<bool>;
+pub type SWAP_R = crate::BitReader;
 #[doc = "Field `SWAP` writer - Swap Inputs and Invert"]
-pub type SWAP_W<'a, const O: u8> = crate::BitWriter<'a, u32, COMPCTRL_SPEC, bool, O>;
+pub type SWAP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OUT` reader - Output"]
-pub type OUT_R = crate::FieldReader<u8, OUTSELECT_A>;
+pub type OUT_R = crate::FieldReader<OUTSELECT_A>;
 #[doc = "Output\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -407,10 +399,13 @@ impl From<OUTSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for OUTSELECT_A {
+    type Ux = u8;
+}
 impl OUT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<OUTSELECT_A> {
+    pub const fn variant(&self) -> Option<OUTSELECT_A> {
         match self.bits {
             0 => Some(OUTSELECT_A::OFF),
             1 => Some(OUTSELECT_A::ASYNC),
@@ -418,47 +413,51 @@ impl OUT_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `OFF`"]
+    #[doc = "The output of COMPn is not routed to the COMPn I/O port"]
     #[inline(always)]
     pub fn is_off(&self) -> bool {
         *self == OUTSELECT_A::OFF
     }
-    #[doc = "Checks if the value of the field is `ASYNC`"]
+    #[doc = "The asynchronous output of COMPn is routed to the COMPn I/O port"]
     #[inline(always)]
     pub fn is_async(&self) -> bool {
         *self == OUTSELECT_A::ASYNC
     }
-    #[doc = "Checks if the value of the field is `SYNC`"]
+    #[doc = "The synchronous output (including filtering) of COMPn is routed to the COMPn I/O port"]
     #[inline(always)]
     pub fn is_sync(&self) -> bool {
         *self == OUTSELECT_A::SYNC
     }
 }
 #[doc = "Field `OUT` writer - Output"]
-pub type OUT_W<'a, const O: u8> = crate::FieldWriter<'a, u32, COMPCTRL_SPEC, u8, OUTSELECT_A, 2, O>;
-impl<'a, const O: u8> OUT_W<'a, O> {
+pub type OUT_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, OUTSELECT_A>;
+impl<'a, REG, const O: u8> OUT_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "The output of COMPn is not routed to the COMPn I/O port"]
     #[inline(always)]
-    pub fn off(self) -> &'a mut W {
+    pub fn off(self) -> &'a mut crate::W<REG> {
         self.variant(OUTSELECT_A::OFF)
     }
     #[doc = "The asynchronous output of COMPn is routed to the COMPn I/O port"]
     #[inline(always)]
-    pub fn async_(self) -> &'a mut W {
+    pub fn async_(self) -> &'a mut crate::W<REG> {
         self.variant(OUTSELECT_A::ASYNC)
     }
     #[doc = "The synchronous output (including filtering) of COMPn is routed to the COMPn I/O port"]
     #[inline(always)]
-    pub fn sync(self) -> &'a mut W {
+    pub fn sync(self) -> &'a mut crate::W<REG> {
         self.variant(OUTSELECT_A::SYNC)
     }
 }
 #[doc = "Field `HYST` reader - Hysteresis Enable"]
-pub type HYST_R = crate::BitReader<bool>;
+pub type HYST_R = crate::BitReader;
 #[doc = "Field `HYST` writer - Hysteresis Enable"]
-pub type HYST_W<'a, const O: u8> = crate::BitWriter<'a, u32, COMPCTRL_SPEC, bool, O>;
+pub type HYST_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FLEN` reader - Filter Length"]
-pub type FLEN_R = crate::FieldReader<u8, FLENSELECT_A>;
+pub type FLEN_R = crate::FieldReader<FLENSELECT_A>;
 #[doc = "Filter Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -476,10 +475,13 @@ impl From<FLENSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for FLENSELECT_A {
+    type Ux = u8;
+}
 impl FLEN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<FLENSELECT_A> {
+    pub const fn variant(&self) -> Option<FLENSELECT_A> {
         match self.bits {
             0 => Some(FLENSELECT_A::OFF),
             1 => Some(FLENSELECT_A::MAJ3),
@@ -487,39 +489,42 @@ impl FLEN_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `OFF`"]
+    #[doc = "No filtering"]
     #[inline(always)]
     pub fn is_off(&self) -> bool {
         *self == FLENSELECT_A::OFF
     }
-    #[doc = "Checks if the value of the field is `MAJ3`"]
+    #[doc = "3-bit majority function (2 of 3)"]
     #[inline(always)]
     pub fn is_maj3(&self) -> bool {
         *self == FLENSELECT_A::MAJ3
     }
-    #[doc = "Checks if the value of the field is `MAJ5`"]
+    #[doc = "5-bit majority function (3 of 5)"]
     #[inline(always)]
     pub fn is_maj5(&self) -> bool {
         *self == FLENSELECT_A::MAJ5
     }
 }
 #[doc = "Field `FLEN` writer - Filter Length"]
-pub type FLEN_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u32, COMPCTRL_SPEC, u8, FLENSELECT_A, 3, O>;
-impl<'a, const O: u8> FLEN_W<'a, O> {
+pub type FLEN_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, FLENSELECT_A>;
+impl<'a, REG, const O: u8> FLEN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "No filtering"]
     #[inline(always)]
-    pub fn off(self) -> &'a mut W {
+    pub fn off(self) -> &'a mut crate::W<REG> {
         self.variant(FLENSELECT_A::OFF)
     }
     #[doc = "3-bit majority function (2 of 3)"]
     #[inline(always)]
-    pub fn maj3(self) -> &'a mut W {
+    pub fn maj3(self) -> &'a mut crate::W<REG> {
         self.variant(FLENSELECT_A::MAJ3)
     }
     #[doc = "5-bit majority function (3 of 5)"]
     #[inline(always)]
-    pub fn maj5(self) -> &'a mut W {
+    pub fn maj5(self) -> &'a mut crate::W<REG> {
         self.variant(FLENSELECT_A::MAJ5)
     }
 }
@@ -579,82 +584,83 @@ impl W {
     #[doc = "Bit 0 - Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn enable(&mut self) -> ENABLE_W<0> {
+    pub fn enable(&mut self) -> ENABLE_W<COMPCTRL_SPEC, 0> {
         ENABLE_W::new(self)
     }
     #[doc = "Bit 1 - Single-Shot Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn single(&mut self) -> SINGLE_W<1> {
+    pub fn single(&mut self) -> SINGLE_W<COMPCTRL_SPEC, 1> {
         SINGLE_W::new(self)
     }
     #[doc = "Bits 2:3 - Speed Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn speed(&mut self) -> SPEED_W<2> {
+    pub fn speed(&mut self) -> SPEED_W<COMPCTRL_SPEC, 2> {
         SPEED_W::new(self)
     }
     #[doc = "Bits 5:6 - Interrupt Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn intsel(&mut self) -> INTSEL_W<5> {
+    pub fn intsel(&mut self) -> INTSEL_W<COMPCTRL_SPEC, 5> {
         INTSEL_W::new(self)
     }
     #[doc = "Bits 8:10 - Negative Input Mux Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn muxneg(&mut self) -> MUXNEG_W<8> {
+    pub fn muxneg(&mut self) -> MUXNEG_W<COMPCTRL_SPEC, 8> {
         MUXNEG_W::new(self)
     }
     #[doc = "Bits 12:13 - Positive Input Mux Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn muxpos(&mut self) -> MUXPOS_W<12> {
+    pub fn muxpos(&mut self) -> MUXPOS_W<COMPCTRL_SPEC, 12> {
         MUXPOS_W::new(self)
     }
     #[doc = "Bit 15 - Swap Inputs and Invert"]
     #[inline(always)]
     #[must_use]
-    pub fn swap(&mut self) -> SWAP_W<15> {
+    pub fn swap(&mut self) -> SWAP_W<COMPCTRL_SPEC, 15> {
         SWAP_W::new(self)
     }
     #[doc = "Bits 16:17 - Output"]
     #[inline(always)]
     #[must_use]
-    pub fn out(&mut self) -> OUT_W<16> {
+    pub fn out(&mut self) -> OUT_W<COMPCTRL_SPEC, 16> {
         OUT_W::new(self)
     }
     #[doc = "Bit 19 - Hysteresis Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn hyst(&mut self) -> HYST_W<19> {
+    pub fn hyst(&mut self) -> HYST_W<COMPCTRL_SPEC, 19> {
         HYST_W::new(self)
     }
     #[doc = "Bits 24:26 - Filter Length"]
     #[inline(always)]
     #[must_use]
-    pub fn flen(&mut self) -> FLEN_W<24> {
+    pub fn flen(&mut self) -> FLEN_W<COMPCTRL_SPEC, 24> {
         FLEN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Comparator Control n\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [compctrl](index.html) module"]
+#[doc = "Comparator Control n\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`compctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`compctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct COMPCTRL_SPEC;
 impl crate::RegisterSpec for COMPCTRL_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [compctrl::R](R) reader structure"]
-impl crate::Readable for COMPCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [compctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`compctrl::R`](R) reader structure"]
+impl crate::Readable for COMPCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`compctrl::W`](W) writer structure"]
 impl crate::Writable for COMPCTRL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

@@ -1,49 +1,17 @@
 #[doc = "Register `CTRLA` reader"]
-pub struct R(crate::R<CTRLA_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLA_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLA_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLA_SPEC>;
 #[doc = "Register `CTRLA` writer"]
-pub struct W(crate::W<CTRLA_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLA_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLA_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLA_SPEC>;
 #[doc = "Field `SWRST` reader - Software Reset"]
-pub type SWRST_R = crate::BitReader<bool>;
+pub type SWRST_R = crate::BitReader;
 #[doc = "Field `SWRST` writer - Software Reset"]
-pub type SWRST_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type SWRST_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ENABLE` reader - Enable"]
-pub type ENABLE_R = crate::BitReader<bool>;
+pub type ENABLE_R = crate::BitReader;
 #[doc = "Field `ENABLE` writer - Enable"]
-pub type ENABLE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `AESMODE` reader - AES Modes of operation"]
-pub type AESMODE_R = crate::FieldReader<u8, AESMODESELECT_A>;
+pub type AESMODE_R = crate::FieldReader<AESMODESELECT_A>;
 #[doc = "AES Modes of operation\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -69,10 +37,13 @@ impl From<AESMODESELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for AESMODESELECT_A {
+    type Ux = u8;
+}
 impl AESMODE_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<AESMODESELECT_A> {
+    pub const fn variant(&self) -> Option<AESMODESELECT_A> {
         match self.bits {
             0 => Some(AESMODESELECT_A::ECB),
             1 => Some(AESMODESELECT_A::CBC),
@@ -84,84 +55,87 @@ impl AESMODE_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `ECB`"]
+    #[doc = "Electronic code book mode"]
     #[inline(always)]
     pub fn is_ecb(&self) -> bool {
         *self == AESMODESELECT_A::ECB
     }
-    #[doc = "Checks if the value of the field is `CBC`"]
+    #[doc = "Cipher block chaining mode"]
     #[inline(always)]
     pub fn is_cbc(&self) -> bool {
         *self == AESMODESELECT_A::CBC
     }
-    #[doc = "Checks if the value of the field is `OFB`"]
+    #[doc = "Output feedback mode"]
     #[inline(always)]
     pub fn is_ofb(&self) -> bool {
         *self == AESMODESELECT_A::OFB
     }
-    #[doc = "Checks if the value of the field is `CFB`"]
+    #[doc = "Cipher feedback mode"]
     #[inline(always)]
     pub fn is_cfb(&self) -> bool {
         *self == AESMODESELECT_A::CFB
     }
-    #[doc = "Checks if the value of the field is `COUNTER`"]
+    #[doc = "Counter mode"]
     #[inline(always)]
     pub fn is_counter(&self) -> bool {
         *self == AESMODESELECT_A::COUNTER
     }
-    #[doc = "Checks if the value of the field is `CCM`"]
+    #[doc = "CCM mode"]
     #[inline(always)]
     pub fn is_ccm(&self) -> bool {
         *self == AESMODESELECT_A::CCM
     }
-    #[doc = "Checks if the value of the field is `GCM`"]
+    #[doc = "Galois counter mode"]
     #[inline(always)]
     pub fn is_gcm(&self) -> bool {
         *self == AESMODESELECT_A::GCM
     }
 }
 #[doc = "Field `AESMODE` writer - AES Modes of operation"]
-pub type AESMODE_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u32, CTRLA_SPEC, u8, AESMODESELECT_A, 3, O>;
-impl<'a, const O: u8> AESMODE_W<'a, O> {
+pub type AESMODE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, AESMODESELECT_A>;
+impl<'a, REG, const O: u8> AESMODE_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Electronic code book mode"]
     #[inline(always)]
-    pub fn ecb(self) -> &'a mut W {
+    pub fn ecb(self) -> &'a mut crate::W<REG> {
         self.variant(AESMODESELECT_A::ECB)
     }
     #[doc = "Cipher block chaining mode"]
     #[inline(always)]
-    pub fn cbc(self) -> &'a mut W {
+    pub fn cbc(self) -> &'a mut crate::W<REG> {
         self.variant(AESMODESELECT_A::CBC)
     }
     #[doc = "Output feedback mode"]
     #[inline(always)]
-    pub fn ofb(self) -> &'a mut W {
+    pub fn ofb(self) -> &'a mut crate::W<REG> {
         self.variant(AESMODESELECT_A::OFB)
     }
     #[doc = "Cipher feedback mode"]
     #[inline(always)]
-    pub fn cfb(self) -> &'a mut W {
+    pub fn cfb(self) -> &'a mut crate::W<REG> {
         self.variant(AESMODESELECT_A::CFB)
     }
     #[doc = "Counter mode"]
     #[inline(always)]
-    pub fn counter(self) -> &'a mut W {
+    pub fn counter(self) -> &'a mut crate::W<REG> {
         self.variant(AESMODESELECT_A::COUNTER)
     }
     #[doc = "CCM mode"]
     #[inline(always)]
-    pub fn ccm(self) -> &'a mut W {
+    pub fn ccm(self) -> &'a mut crate::W<REG> {
         self.variant(AESMODESELECT_A::CCM)
     }
     #[doc = "Galois counter mode"]
     #[inline(always)]
-    pub fn gcm(self) -> &'a mut W {
+    pub fn gcm(self) -> &'a mut crate::W<REG> {
         self.variant(AESMODESELECT_A::GCM)
     }
 }
 #[doc = "Field `CFBS` reader - Cipher Feedback Block Size"]
-pub type CFBS_R = crate::FieldReader<u8, CFBSSELECT_A>;
+pub type CFBS_R = crate::FieldReader<CFBSSELECT_A>;
 #[doc = "Cipher Feedback Block Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -183,10 +157,13 @@ impl From<CFBSSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for CFBSSELECT_A {
+    type Ux = u8;
+}
 impl CFBS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<CFBSSELECT_A> {
+    pub const fn variant(&self) -> Option<CFBSSELECT_A> {
         match self.bits {
             0 => Some(CFBSSELECT_A::_128BIT),
             1 => Some(CFBSSELECT_A::_64BIT),
@@ -196,63 +173,67 @@ impl CFBS_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `_128BIT`"]
+    #[doc = "128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
     pub fn is_128bit(&self) -> bool {
         *self == CFBSSELECT_A::_128BIT
     }
-    #[doc = "Checks if the value of the field is `_64BIT`"]
+    #[doc = "64-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
     pub fn is_64bit(&self) -> bool {
         *self == CFBSSELECT_A::_64BIT
     }
-    #[doc = "Checks if the value of the field is `_32BIT`"]
+    #[doc = "32-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
     pub fn is_32bit(&self) -> bool {
         *self == CFBSSELECT_A::_32BIT
     }
-    #[doc = "Checks if the value of the field is `_16BIT`"]
+    #[doc = "16-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
     pub fn is_16bit(&self) -> bool {
         *self == CFBSSELECT_A::_16BIT
     }
-    #[doc = "Checks if the value of the field is `_8BIT`"]
+    #[doc = "8-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
     pub fn is_8bit(&self) -> bool {
         *self == CFBSSELECT_A::_8BIT
     }
 }
 #[doc = "Field `CFBS` writer - Cipher Feedback Block Size"]
-pub type CFBS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLA_SPEC, u8, CFBSSELECT_A, 3, O>;
-impl<'a, const O: u8> CFBS_W<'a, O> {
+pub type CFBS_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, CFBSSELECT_A>;
+impl<'a, REG, const O: u8> CFBS_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "128-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
-    pub fn _128bit(self) -> &'a mut W {
+    pub fn _128bit(self) -> &'a mut crate::W<REG> {
         self.variant(CFBSSELECT_A::_128BIT)
     }
     #[doc = "64-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
-    pub fn _64bit(self) -> &'a mut W {
+    pub fn _64bit(self) -> &'a mut crate::W<REG> {
         self.variant(CFBSSELECT_A::_64BIT)
     }
     #[doc = "32-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
-    pub fn _32bit(self) -> &'a mut W {
+    pub fn _32bit(self) -> &'a mut crate::W<REG> {
         self.variant(CFBSSELECT_A::_32BIT)
     }
     #[doc = "16-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
-    pub fn _16bit(self) -> &'a mut W {
+    pub fn _16bit(self) -> &'a mut crate::W<REG> {
         self.variant(CFBSSELECT_A::_16BIT)
     }
     #[doc = "8-bit Input data block for Encryption/Decryption in Cipher Feedback mode"]
     #[inline(always)]
-    pub fn _8bit(self) -> &'a mut W {
+    pub fn _8bit(self) -> &'a mut crate::W<REG> {
         self.variant(CFBSSELECT_A::_8BIT)
     }
 }
 #[doc = "Field `KEYSIZE` reader - Encryption Key Size"]
-pub type KEYSIZE_R = crate::FieldReader<u8, KEYSIZESELECT_A>;
+pub type KEYSIZE_R = crate::FieldReader<KEYSIZESELECT_A>;
 #[doc = "Encryption Key Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -270,10 +251,13 @@ impl From<KEYSIZESELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for KEYSIZESELECT_A {
+    type Ux = u8;
+}
 impl KEYSIZE_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<KEYSIZESELECT_A> {
+    pub const fn variant(&self) -> Option<KEYSIZESELECT_A> {
         match self.bits {
             0 => Some(KEYSIZESELECT_A::_128BIT),
             1 => Some(KEYSIZESELECT_A::_192BIT),
@@ -281,39 +265,42 @@ impl KEYSIZE_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `_128BIT`"]
+    #[doc = "128-bit Key for Encryption / Decryption"]
     #[inline(always)]
     pub fn is_128bit(&self) -> bool {
         *self == KEYSIZESELECT_A::_128BIT
     }
-    #[doc = "Checks if the value of the field is `_192BIT`"]
+    #[doc = "192-bit Key for Encryption / Decryption"]
     #[inline(always)]
     pub fn is_192bit(&self) -> bool {
         *self == KEYSIZESELECT_A::_192BIT
     }
-    #[doc = "Checks if the value of the field is `_256BIT`"]
+    #[doc = "256-bit Key for Encryption / Decryption"]
     #[inline(always)]
     pub fn is_256bit(&self) -> bool {
         *self == KEYSIZESELECT_A::_256BIT
     }
 }
 #[doc = "Field `KEYSIZE` writer - Encryption Key Size"]
-pub type KEYSIZE_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u32, CTRLA_SPEC, u8, KEYSIZESELECT_A, 2, O>;
-impl<'a, const O: u8> KEYSIZE_W<'a, O> {
+pub type KEYSIZE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, KEYSIZESELECT_A>;
+impl<'a, REG, const O: u8> KEYSIZE_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "128-bit Key for Encryption / Decryption"]
     #[inline(always)]
-    pub fn _128bit(self) -> &'a mut W {
+    pub fn _128bit(self) -> &'a mut crate::W<REG> {
         self.variant(KEYSIZESELECT_A::_128BIT)
     }
     #[doc = "192-bit Key for Encryption / Decryption"]
     #[inline(always)]
-    pub fn _192bit(self) -> &'a mut W {
+    pub fn _192bit(self) -> &'a mut crate::W<REG> {
         self.variant(KEYSIZESELECT_A::_192BIT)
     }
     #[doc = "256-bit Key for Encryption / Decryption"]
     #[inline(always)]
-    pub fn _256bit(self) -> &'a mut W {
+    pub fn _256bit(self) -> &'a mut crate::W<REG> {
         self.variant(KEYSIZESELECT_A::_256BIT)
     }
 }
@@ -336,34 +323,37 @@ impl From<CIPHERSELECT_A> for bool {
 impl CIPHER_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CIPHERSELECT_A {
+    pub const fn variant(&self) -> CIPHERSELECT_A {
         match self.bits {
             false => CIPHERSELECT_A::DEC,
             true => CIPHERSELECT_A::ENC,
         }
     }
-    #[doc = "Checks if the value of the field is `DEC`"]
+    #[doc = "Decryption"]
     #[inline(always)]
     pub fn is_dec(&self) -> bool {
         *self == CIPHERSELECT_A::DEC
     }
-    #[doc = "Checks if the value of the field is `ENC`"]
+    #[doc = "Encryption"]
     #[inline(always)]
     pub fn is_enc(&self) -> bool {
         *self == CIPHERSELECT_A::ENC
     }
 }
 #[doc = "Field `CIPHER` writer - Cipher Mode"]
-pub type CIPHER_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, CIPHERSELECT_A, O>;
-impl<'a, const O: u8> CIPHER_W<'a, O> {
+pub type CIPHER_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, CIPHERSELECT_A>;
+impl<'a, REG, const O: u8> CIPHER_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Decryption"]
     #[inline(always)]
-    pub fn dec(self) -> &'a mut W {
+    pub fn dec(self) -> &'a mut crate::W<REG> {
         self.variant(CIPHERSELECT_A::DEC)
     }
     #[doc = "Encryption"]
     #[inline(always)]
-    pub fn enc(self) -> &'a mut W {
+    pub fn enc(self) -> &'a mut crate::W<REG> {
         self.variant(CIPHERSELECT_A::ENC)
     }
 }
@@ -386,34 +376,37 @@ impl From<STARTMODESELECT_A> for bool {
 impl STARTMODE_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> STARTMODESELECT_A {
+    pub const fn variant(&self) -> STARTMODESELECT_A {
         match self.bits {
             false => STARTMODESELECT_A::MANUAL,
             true => STARTMODESELECT_A::AUTO,
         }
     }
-    #[doc = "Checks if the value of the field is `MANUAL`"]
+    #[doc = "Start Encryption / Decryption in Manual mode"]
     #[inline(always)]
     pub fn is_manual(&self) -> bool {
         *self == STARTMODESELECT_A::MANUAL
     }
-    #[doc = "Checks if the value of the field is `AUTO`"]
+    #[doc = "Start Encryption / Decryption in Auto mode"]
     #[inline(always)]
     pub fn is_auto(&self) -> bool {
         *self == STARTMODESELECT_A::AUTO
     }
 }
 #[doc = "Field `STARTMODE` writer - Start Mode Select"]
-pub type STARTMODE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, STARTMODESELECT_A, O>;
-impl<'a, const O: u8> STARTMODE_W<'a, O> {
+pub type STARTMODE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, STARTMODESELECT_A>;
+impl<'a, REG, const O: u8> STARTMODE_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Start Encryption / Decryption in Manual mode"]
     #[inline(always)]
-    pub fn manual(self) -> &'a mut W {
+    pub fn manual(self) -> &'a mut crate::W<REG> {
         self.variant(STARTMODESELECT_A::MANUAL)
     }
     #[doc = "Start Encryption / Decryption in Auto mode"]
     #[inline(always)]
-    pub fn auto(self) -> &'a mut W {
+    pub fn auto(self) -> &'a mut crate::W<REG> {
         self.variant(STARTMODESELECT_A::AUTO)
     }
 }
@@ -436,34 +429,37 @@ impl From<LODSELECT_A> for bool {
 impl LOD_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> LODSELECT_A {
+    pub const fn variant(&self) -> LODSELECT_A {
         match self.bits {
             false => LODSELECT_A::NONE,
             true => LODSELECT_A::LAST,
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No effect"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
         *self == LODSELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `LAST`"]
+    #[doc = "Start encryption in Last Output Data mode"]
     #[inline(always)]
     pub fn is_last(&self) -> bool {
         *self == LODSELECT_A::LAST
     }
 }
 #[doc = "Field `LOD` writer - Last Output Data Mode"]
-pub type LOD_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, LODSELECT_A, O>;
-impl<'a, const O: u8> LOD_W<'a, O> {
+pub type LOD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, LODSELECT_A>;
+impl<'a, REG, const O: u8> LOD_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "No effect"]
     #[inline(always)]
-    pub fn none(self) -> &'a mut W {
+    pub fn none(self) -> &'a mut crate::W<REG> {
         self.variant(LODSELECT_A::NONE)
     }
     #[doc = "Start encryption in Last Output Data mode"]
     #[inline(always)]
-    pub fn last(self) -> &'a mut W {
+    pub fn last(self) -> &'a mut crate::W<REG> {
         self.variant(LODSELECT_A::LAST)
     }
 }
@@ -486,34 +482,37 @@ impl From<KEYGENSELECT_A> for bool {
 impl KEYGEN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> KEYGENSELECT_A {
+    pub const fn variant(&self) -> KEYGENSELECT_A {
         match self.bits {
             false => KEYGENSELECT_A::NONE,
             true => KEYGENSELECT_A::LAST,
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No effect"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
         *self == KEYGENSELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `LAST`"]
+    #[doc = "Start Computation of the last NK words of the expanded key"]
     #[inline(always)]
     pub fn is_last(&self) -> bool {
         *self == KEYGENSELECT_A::LAST
     }
 }
 #[doc = "Field `KEYGEN` writer - Last Key Generation"]
-pub type KEYGEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, KEYGENSELECT_A, O>;
-impl<'a, const O: u8> KEYGEN_W<'a, O> {
+pub type KEYGEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, KEYGENSELECT_A>;
+impl<'a, REG, const O: u8> KEYGEN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "No effect"]
     #[inline(always)]
-    pub fn none(self) -> &'a mut W {
+    pub fn none(self) -> &'a mut crate::W<REG> {
         self.variant(KEYGENSELECT_A::NONE)
     }
     #[doc = "Start Computation of the last NK words of the expanded key"]
     #[inline(always)]
-    pub fn last(self) -> &'a mut W {
+    pub fn last(self) -> &'a mut crate::W<REG> {
         self.variant(KEYGENSELECT_A::LAST)
     }
 }
@@ -536,41 +535,44 @@ impl From<XORKEYSELECT_A> for bool {
 impl XORKEY_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> XORKEYSELECT_A {
+    pub const fn variant(&self) -> XORKEYSELECT_A {
         match self.bits {
             false => XORKEYSELECT_A::NONE,
             true => XORKEYSELECT_A::XOR,
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No effect"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
         *self == XORKEYSELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `XOR`"]
+    #[doc = "The user keyword gets XORed with the previous keyword register content."]
     #[inline(always)]
     pub fn is_xor(&self) -> bool {
         *self == XORKEYSELECT_A::XOR
     }
 }
 #[doc = "Field `XORKEY` writer - XOR Key Operation"]
-pub type XORKEY_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, XORKEYSELECT_A, O>;
-impl<'a, const O: u8> XORKEY_W<'a, O> {
+pub type XORKEY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, XORKEYSELECT_A>;
+impl<'a, REG, const O: u8> XORKEY_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "No effect"]
     #[inline(always)]
-    pub fn none(self) -> &'a mut W {
+    pub fn none(self) -> &'a mut crate::W<REG> {
         self.variant(XORKEYSELECT_A::NONE)
     }
     #[doc = "The user keyword gets XORed with the previous keyword register content."]
     #[inline(always)]
-    pub fn xor(self) -> &'a mut W {
+    pub fn xor(self) -> &'a mut crate::W<REG> {
         self.variant(XORKEYSELECT_A::XOR)
     }
 }
 #[doc = "Field `CTYPE` reader - Counter Measure Type"]
-pub type CTYPE_R = crate::FieldReader<u8, u8>;
+pub type CTYPE_R = crate::FieldReader;
 #[doc = "Field `CTYPE` writer - Counter Measure Type"]
-pub type CTYPE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLA_SPEC, u8, u8, 4, O>;
+pub type CTYPE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O>;
 impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
@@ -632,88 +634,89 @@ impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
     #[must_use]
-    pub fn swrst(&mut self) -> SWRST_W<0> {
+    pub fn swrst(&mut self) -> SWRST_W<CTRLA_SPEC, 0> {
         SWRST_W::new(self)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn enable(&mut self) -> ENABLE_W<1> {
+    pub fn enable(&mut self) -> ENABLE_W<CTRLA_SPEC, 1> {
         ENABLE_W::new(self)
     }
     #[doc = "Bits 2:4 - AES Modes of operation"]
     #[inline(always)]
     #[must_use]
-    pub fn aesmode(&mut self) -> AESMODE_W<2> {
+    pub fn aesmode(&mut self) -> AESMODE_W<CTRLA_SPEC, 2> {
         AESMODE_W::new(self)
     }
     #[doc = "Bits 5:7 - Cipher Feedback Block Size"]
     #[inline(always)]
     #[must_use]
-    pub fn cfbs(&mut self) -> CFBS_W<5> {
+    pub fn cfbs(&mut self) -> CFBS_W<CTRLA_SPEC, 5> {
         CFBS_W::new(self)
     }
     #[doc = "Bits 8:9 - Encryption Key Size"]
     #[inline(always)]
     #[must_use]
-    pub fn keysize(&mut self) -> KEYSIZE_W<8> {
+    pub fn keysize(&mut self) -> KEYSIZE_W<CTRLA_SPEC, 8> {
         KEYSIZE_W::new(self)
     }
     #[doc = "Bit 10 - Cipher Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn cipher(&mut self) -> CIPHER_W<10> {
+    pub fn cipher(&mut self) -> CIPHER_W<CTRLA_SPEC, 10> {
         CIPHER_W::new(self)
     }
     #[doc = "Bit 11 - Start Mode Select"]
     #[inline(always)]
     #[must_use]
-    pub fn startmode(&mut self) -> STARTMODE_W<11> {
+    pub fn startmode(&mut self) -> STARTMODE_W<CTRLA_SPEC, 11> {
         STARTMODE_W::new(self)
     }
     #[doc = "Bit 12 - Last Output Data Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn lod(&mut self) -> LOD_W<12> {
+    pub fn lod(&mut self) -> LOD_W<CTRLA_SPEC, 12> {
         LOD_W::new(self)
     }
     #[doc = "Bit 13 - Last Key Generation"]
     #[inline(always)]
     #[must_use]
-    pub fn keygen(&mut self) -> KEYGEN_W<13> {
+    pub fn keygen(&mut self) -> KEYGEN_W<CTRLA_SPEC, 13> {
         KEYGEN_W::new(self)
     }
     #[doc = "Bit 14 - XOR Key Operation"]
     #[inline(always)]
     #[must_use]
-    pub fn xorkey(&mut self) -> XORKEY_W<14> {
+    pub fn xorkey(&mut self) -> XORKEY_W<CTRLA_SPEC, 14> {
         XORKEY_W::new(self)
     }
     #[doc = "Bits 16:19 - Counter Measure Type"]
     #[inline(always)]
     #[must_use]
-    pub fn ctype(&mut self) -> CTYPE_W<16> {
+    pub fn ctype(&mut self) -> CTYPE_W<CTRLA_SPEC, 16> {
         CTYPE_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Control A\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrla](index.html) module"]
+#[doc = "Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLA_SPEC;
 impl crate::RegisterSpec for CTRLA_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ctrla::R](R) reader structure"]
-impl crate::Readable for CTRLA_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrla::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrla::R`](R) reader structure"]
+impl crate::Readable for CTRLA_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CTRLA_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

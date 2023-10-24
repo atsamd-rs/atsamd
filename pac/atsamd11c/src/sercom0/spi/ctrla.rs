@@ -1,49 +1,17 @@
 #[doc = "Register `CTRLA` reader"]
-pub struct R(crate::R<CTRLA_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLA_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLA_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLA_SPEC>;
 #[doc = "Register `CTRLA` writer"]
-pub struct W(crate::W<CTRLA_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLA_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLA_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLA_SPEC>;
 #[doc = "Field `SWRST` reader - Software Reset"]
-pub type SWRST_R = crate::BitReader<bool>;
+pub type SWRST_R = crate::BitReader;
 #[doc = "Field `SWRST` writer - Software Reset"]
-pub type SWRST_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type SWRST_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ENABLE` reader - Enable"]
-pub type ENABLE_R = crate::BitReader<bool>;
+pub type ENABLE_R = crate::BitReader;
 #[doc = "Field `ENABLE` writer - Enable"]
-pub type ENABLE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MODE` reader - Operating Mode"]
-pub type MODE_R = crate::FieldReader<u8, MODESELECT_A>;
+pub type MODE_R = crate::FieldReader<MODESELECT_A>;
 #[doc = "Operating Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -67,10 +35,13 @@ impl From<MODESELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for MODESELECT_A {
+    type Ux = u8;
+}
 impl MODE_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<MODESELECT_A> {
+    pub const fn variant(&self) -> Option<MODESELECT_A> {
         match self.bits {
             0 => Some(MODESELECT_A::USART_EXT_CLK),
             1 => Some(MODESELECT_A::USART_INT_CLK),
@@ -81,103 +52,107 @@ impl MODE_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `USART_EXT_CLK`"]
+    #[doc = "USART mode with external clock"]
     #[inline(always)]
     pub fn is_usart_ext_clk(&self) -> bool {
         *self == MODESELECT_A::USART_EXT_CLK
     }
-    #[doc = "Checks if the value of the field is `USART_INT_CLK`"]
+    #[doc = "USART mode with internal clock"]
     #[inline(always)]
     pub fn is_usart_int_clk(&self) -> bool {
         *self == MODESELECT_A::USART_INT_CLK
     }
-    #[doc = "Checks if the value of the field is `SPI_SLAVE`"]
+    #[doc = "SPI mode with external clock"]
     #[inline(always)]
     pub fn is_spi_slave(&self) -> bool {
         *self == MODESELECT_A::SPI_SLAVE
     }
-    #[doc = "Checks if the value of the field is `SPI_MASTER`"]
+    #[doc = "SPI mode with internal clock"]
     #[inline(always)]
     pub fn is_spi_master(&self) -> bool {
         *self == MODESELECT_A::SPI_MASTER
     }
-    #[doc = "Checks if the value of the field is `I2C_SLAVE`"]
+    #[doc = "I2C mode with external clock"]
     #[inline(always)]
     pub fn is_i2c_slave(&self) -> bool {
         *self == MODESELECT_A::I2C_SLAVE
     }
-    #[doc = "Checks if the value of the field is `I2C_MASTER`"]
+    #[doc = "I2C mode with internal clock"]
     #[inline(always)]
     pub fn is_i2c_master(&self) -> bool {
         *self == MODESELECT_A::I2C_MASTER
     }
 }
 #[doc = "Field `MODE` writer - Operating Mode"]
-pub type MODE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLA_SPEC, u8, MODESELECT_A, 3, O>;
-impl<'a, const O: u8> MODE_W<'a, O> {
+pub type MODE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, MODESELECT_A>;
+impl<'a, REG, const O: u8> MODE_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "USART mode with external clock"]
     #[inline(always)]
-    pub fn usart_ext_clk(self) -> &'a mut W {
+    pub fn usart_ext_clk(self) -> &'a mut crate::W<REG> {
         self.variant(MODESELECT_A::USART_EXT_CLK)
     }
     #[doc = "USART mode with internal clock"]
     #[inline(always)]
-    pub fn usart_int_clk(self) -> &'a mut W {
+    pub fn usart_int_clk(self) -> &'a mut crate::W<REG> {
         self.variant(MODESELECT_A::USART_INT_CLK)
     }
     #[doc = "SPI mode with external clock"]
     #[inline(always)]
-    pub fn spi_slave(self) -> &'a mut W {
+    pub fn spi_slave(self) -> &'a mut crate::W<REG> {
         self.variant(MODESELECT_A::SPI_SLAVE)
     }
     #[doc = "SPI mode with internal clock"]
     #[inline(always)]
-    pub fn spi_master(self) -> &'a mut W {
+    pub fn spi_master(self) -> &'a mut crate::W<REG> {
         self.variant(MODESELECT_A::SPI_MASTER)
     }
     #[doc = "I2C mode with external clock"]
     #[inline(always)]
-    pub fn i2c_slave(self) -> &'a mut W {
+    pub fn i2c_slave(self) -> &'a mut crate::W<REG> {
         self.variant(MODESELECT_A::I2C_SLAVE)
     }
     #[doc = "I2C mode with internal clock"]
     #[inline(always)]
-    pub fn i2c_master(self) -> &'a mut W {
+    pub fn i2c_master(self) -> &'a mut crate::W<REG> {
         self.variant(MODESELECT_A::I2C_MASTER)
     }
 }
 #[doc = "Field `RUNSTDBY` reader - Run during Standby"]
-pub type RUNSTDBY_R = crate::BitReader<bool>;
+pub type RUNSTDBY_R = crate::BitReader;
 #[doc = "Field `RUNSTDBY` writer - Run during Standby"]
-pub type RUNSTDBY_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type RUNSTDBY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `IBON` reader - Immediate Buffer Overflow Notification"]
-pub type IBON_R = crate::BitReader<bool>;
+pub type IBON_R = crate::BitReader;
 #[doc = "Field `IBON` writer - Immediate Buffer Overflow Notification"]
-pub type IBON_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type IBON_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DOPO` reader - Data Out Pinout"]
-pub type DOPO_R = crate::FieldReader<u8, u8>;
+pub type DOPO_R = crate::FieldReader;
 #[doc = "Field `DOPO` writer - Data Out Pinout"]
-pub type DOPO_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLA_SPEC, u8, u8, 2, O>;
+pub type DOPO_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `DIPO` reader - Data In Pinout"]
-pub type DIPO_R = crate::FieldReader<u8, u8>;
+pub type DIPO_R = crate::FieldReader;
 #[doc = "Field `DIPO` writer - Data In Pinout"]
-pub type DIPO_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLA_SPEC, u8, u8, 2, O>;
+pub type DIPO_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `FORM` reader - Frame Format"]
-pub type FORM_R = crate::FieldReader<u8, u8>;
+pub type FORM_R = crate::FieldReader;
 #[doc = "Field `FORM` writer - Frame Format"]
-pub type FORM_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLA_SPEC, u8, u8, 4, O>;
+pub type FORM_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O>;
 #[doc = "Field `CPHA` reader - Clock Phase"]
-pub type CPHA_R = crate::BitReader<bool>;
+pub type CPHA_R = crate::BitReader;
 #[doc = "Field `CPHA` writer - Clock Phase"]
-pub type CPHA_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type CPHA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CPOL` reader - Clock Polarity"]
-pub type CPOL_R = crate::BitReader<bool>;
+pub type CPOL_R = crate::BitReader;
 #[doc = "Field `CPOL` writer - Clock Polarity"]
-pub type CPOL_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type CPOL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DORD` reader - Data Order"]
-pub type DORD_R = crate::BitReader<bool>;
+pub type DORD_R = crate::BitReader;
 #[doc = "Field `DORD` writer - Data Order"]
-pub type DORD_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLA_SPEC, bool, O>;
+pub type DORD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
@@ -239,88 +214,89 @@ impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
     #[must_use]
-    pub fn swrst(&mut self) -> SWRST_W<0> {
+    pub fn swrst(&mut self) -> SWRST_W<CTRLA_SPEC, 0> {
         SWRST_W::new(self)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn enable(&mut self) -> ENABLE_W<1> {
+    pub fn enable(&mut self) -> ENABLE_W<CTRLA_SPEC, 1> {
         ENABLE_W::new(self)
     }
     #[doc = "Bits 2:4 - Operating Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn mode(&mut self) -> MODE_W<2> {
+    pub fn mode(&mut self) -> MODE_W<CTRLA_SPEC, 2> {
         MODE_W::new(self)
     }
     #[doc = "Bit 7 - Run during Standby"]
     #[inline(always)]
     #[must_use]
-    pub fn runstdby(&mut self) -> RUNSTDBY_W<7> {
+    pub fn runstdby(&mut self) -> RUNSTDBY_W<CTRLA_SPEC, 7> {
         RUNSTDBY_W::new(self)
     }
     #[doc = "Bit 8 - Immediate Buffer Overflow Notification"]
     #[inline(always)]
     #[must_use]
-    pub fn ibon(&mut self) -> IBON_W<8> {
+    pub fn ibon(&mut self) -> IBON_W<CTRLA_SPEC, 8> {
         IBON_W::new(self)
     }
     #[doc = "Bits 16:17 - Data Out Pinout"]
     #[inline(always)]
     #[must_use]
-    pub fn dopo(&mut self) -> DOPO_W<16> {
+    pub fn dopo(&mut self) -> DOPO_W<CTRLA_SPEC, 16> {
         DOPO_W::new(self)
     }
     #[doc = "Bits 20:21 - Data In Pinout"]
     #[inline(always)]
     #[must_use]
-    pub fn dipo(&mut self) -> DIPO_W<20> {
+    pub fn dipo(&mut self) -> DIPO_W<CTRLA_SPEC, 20> {
         DIPO_W::new(self)
     }
     #[doc = "Bits 24:27 - Frame Format"]
     #[inline(always)]
     #[must_use]
-    pub fn form(&mut self) -> FORM_W<24> {
+    pub fn form(&mut self) -> FORM_W<CTRLA_SPEC, 24> {
         FORM_W::new(self)
     }
     #[doc = "Bit 28 - Clock Phase"]
     #[inline(always)]
     #[must_use]
-    pub fn cpha(&mut self) -> CPHA_W<28> {
+    pub fn cpha(&mut self) -> CPHA_W<CTRLA_SPEC, 28> {
         CPHA_W::new(self)
     }
     #[doc = "Bit 29 - Clock Polarity"]
     #[inline(always)]
     #[must_use]
-    pub fn cpol(&mut self) -> CPOL_W<29> {
+    pub fn cpol(&mut self) -> CPOL_W<CTRLA_SPEC, 29> {
         CPOL_W::new(self)
     }
     #[doc = "Bit 30 - Data Order"]
     #[inline(always)]
     #[must_use]
-    pub fn dord(&mut self) -> DORD_W<30> {
+    pub fn dord(&mut self) -> DORD_W<CTRLA_SPEC, 30> {
         DORD_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "SPI Control A\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrla](index.html) module"]
+#[doc = "SPI Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLA_SPEC;
 impl crate::RegisterSpec for CTRLA_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ctrla::R](R) reader structure"]
-impl crate::Readable for CTRLA_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrla::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrla::R`](R) reader structure"]
+impl crate::Readable for CTRLA_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CTRLA_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

@@ -1,34 +1,21 @@
 #[doc = "Register `RCAUSE` reader"]
-pub struct R(crate::R<RCAUSE_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<RCAUSE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<RCAUSE_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<RCAUSE_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<RCAUSE_SPEC>;
 #[doc = "Field `POR` reader - Power On Reset"]
-pub type POR_R = crate::BitReader<bool>;
+pub type POR_R = crate::BitReader;
 #[doc = "Field `BODCORE` reader - Brown Out CORE Detector Reset"]
-pub type BODCORE_R = crate::BitReader<bool>;
+pub type BODCORE_R = crate::BitReader;
 #[doc = "Field `BODVDD` reader - Brown Out VDD Detector Reset"]
-pub type BODVDD_R = crate::BitReader<bool>;
+pub type BODVDD_R = crate::BitReader;
 #[doc = "Field `NVM` reader - NVM Reset"]
-pub type NVM_R = crate::BitReader<bool>;
+pub type NVM_R = crate::BitReader;
 #[doc = "Field `EXT` reader - External Reset"]
-pub type EXT_R = crate::BitReader<bool>;
+pub type EXT_R = crate::BitReader;
 #[doc = "Field `WDT` reader - Watchdog Reset"]
-pub type WDT_R = crate::BitReader<bool>;
+pub type WDT_R = crate::BitReader;
 #[doc = "Field `SYST` reader - System Reset Request"]
-pub type SYST_R = crate::BitReader<bool>;
+pub type SYST_R = crate::BitReader;
 #[doc = "Field `BACKUP` reader - Backup Reset"]
-pub type BACKUP_R = crate::BitReader<bool>;
+pub type BACKUP_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Power On Reset"]
     #[inline(always)]
@@ -71,15 +58,13 @@ impl R {
         BACKUP_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
-#[doc = "Reset Cause\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rcause](index.html) module"]
+#[doc = "Reset Cause\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`rcause::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct RCAUSE_SPEC;
 impl crate::RegisterSpec for RCAUSE_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [rcause::R](R) reader structure"]
-impl crate::Readable for RCAUSE_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`rcause::R`](R) reader structure"]
+impl crate::Readable for RCAUSE_SPEC {}
 #[doc = "`reset()` method sets RCAUSE to value 0"]
 impl crate::Resettable for RCAUSE_SPEC {
     const RESET_VALUE: Self::Ux = 0;

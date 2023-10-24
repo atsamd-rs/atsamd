@@ -1,49 +1,17 @@
 #[doc = "Register `DACCTRL[%s]` reader"]
-pub struct R(crate::R<DACCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DACCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DACCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DACCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DACCTRL_SPEC>;
 #[doc = "Register `DACCTRL[%s]` writer"]
-pub struct W(crate::W<DACCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<DACCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<DACCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<DACCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<DACCTRL_SPEC>;
 #[doc = "Field `LEFTADJ` reader - Left Adjusted Data"]
-pub type LEFTADJ_R = crate::BitReader<bool>;
+pub type LEFTADJ_R = crate::BitReader;
 #[doc = "Field `LEFTADJ` writer - Left Adjusted Data"]
-pub type LEFTADJ_W<'a, const O: u8> = crate::BitWriter<'a, u16, DACCTRL_SPEC, bool, O>;
+pub type LEFTADJ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ENABLE` reader - Enable DAC0"]
-pub type ENABLE_R = crate::BitReader<bool>;
+pub type ENABLE_R = crate::BitReader;
 #[doc = "Field `ENABLE` writer - Enable DAC0"]
-pub type ENABLE_W<'a, const O: u8> = crate::BitWriter<'a, u16, DACCTRL_SPEC, bool, O>;
+pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CCTRL` reader - Current Control"]
-pub type CCTRL_R = crate::FieldReader<u8, CCTRLSELECT_A>;
+pub type CCTRL_R = crate::FieldReader<CCTRLSELECT_A>;
 #[doc = "Current Control\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -61,10 +29,13 @@ impl From<CCTRLSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for CCTRLSELECT_A {
+    type Ux = u8;
+}
 impl CCTRL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<CCTRLSELECT_A> {
+    pub const fn variant(&self) -> Option<CCTRLSELECT_A> {
         match self.bits {
             0 => Some(CCTRLSELECT_A::CC100K),
             1 => Some(CCTRLSELECT_A::CC1M),
@@ -72,56 +43,59 @@ impl CCTRL_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `CC100K`"]
+    #[doc = "100kSPS"]
     #[inline(always)]
     pub fn is_cc100k(&self) -> bool {
         *self == CCTRLSELECT_A::CC100K
     }
-    #[doc = "Checks if the value of the field is `CC1M`"]
+    #[doc = "500kSPS"]
     #[inline(always)]
     pub fn is_cc1m(&self) -> bool {
         *self == CCTRLSELECT_A::CC1M
     }
-    #[doc = "Checks if the value of the field is `CC12M`"]
+    #[doc = "1MSPS"]
     #[inline(always)]
     pub fn is_cc12m(&self) -> bool {
         *self == CCTRLSELECT_A::CC12M
     }
 }
 #[doc = "Field `CCTRL` writer - Current Control"]
-pub type CCTRL_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u16, DACCTRL_SPEC, u8, CCTRLSELECT_A, 2, O>;
-impl<'a, const O: u8> CCTRL_W<'a, O> {
+pub type CCTRL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, CCTRLSELECT_A>;
+impl<'a, REG, const O: u8> CCTRL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "100kSPS"]
     #[inline(always)]
-    pub fn cc100k(self) -> &'a mut W {
+    pub fn cc100k(self) -> &'a mut crate::W<REG> {
         self.variant(CCTRLSELECT_A::CC100K)
     }
     #[doc = "500kSPS"]
     #[inline(always)]
-    pub fn cc1m(self) -> &'a mut W {
+    pub fn cc1m(self) -> &'a mut crate::W<REG> {
         self.variant(CCTRLSELECT_A::CC1M)
     }
     #[doc = "1MSPS"]
     #[inline(always)]
-    pub fn cc12m(self) -> &'a mut W {
+    pub fn cc12m(self) -> &'a mut crate::W<REG> {
         self.variant(CCTRLSELECT_A::CC12M)
     }
 }
 #[doc = "Field `FEXT` reader - Standalone Filter"]
-pub type FEXT_R = crate::BitReader<bool>;
+pub type FEXT_R = crate::BitReader;
 #[doc = "Field `FEXT` writer - Standalone Filter"]
-pub type FEXT_W<'a, const O: u8> = crate::BitWriter<'a, u16, DACCTRL_SPEC, bool, O>;
+pub type FEXT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RUNSTDBY` reader - Run in Standby"]
-pub type RUNSTDBY_R = crate::BitReader<bool>;
+pub type RUNSTDBY_R = crate::BitReader;
 #[doc = "Field `RUNSTDBY` writer - Run in Standby"]
-pub type RUNSTDBY_W<'a, const O: u8> = crate::BitWriter<'a, u16, DACCTRL_SPEC, bool, O>;
+pub type RUNSTDBY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DITHER` reader - Dithering Mode"]
-pub type DITHER_R = crate::BitReader<bool>;
+pub type DITHER_R = crate::BitReader;
 #[doc = "Field `DITHER` writer - Dithering Mode"]
-pub type DITHER_W<'a, const O: u8> = crate::BitWriter<'a, u16, DACCTRL_SPEC, bool, O>;
+pub type DITHER_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `REFRESH` reader - Refresh period"]
-pub type REFRESH_R = crate::FieldReader<u8, REFRESHSELECT_A>;
+pub type REFRESH_R = crate::FieldReader<REFRESHSELECT_A>;
 #[doc = "Refresh period\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -165,10 +139,13 @@ impl From<REFRESHSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for REFRESHSELECT_A {
+    type Ux = u8;
+}
 impl REFRESH_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> REFRESHSELECT_A {
+    pub const fn variant(&self) -> REFRESHSELECT_A {
         match self.bits {
             0 => REFRESHSELECT_A::REFRESH_0,
             1 => REFRESHSELECT_A::REFRESH_1,
@@ -189,174 +166,177 @@ impl REFRESH_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `REFRESH_0`"]
+    #[doc = "Do not Refresh"]
     #[inline(always)]
     pub fn is_refresh_0(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_0
     }
-    #[doc = "Checks if the value of the field is `REFRESH_1`"]
+    #[doc = "Refresh every 30 us"]
     #[inline(always)]
     pub fn is_refresh_1(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_1
     }
-    #[doc = "Checks if the value of the field is `REFRESH_2`"]
+    #[doc = "Refresh every 60 us"]
     #[inline(always)]
     pub fn is_refresh_2(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_2
     }
-    #[doc = "Checks if the value of the field is `REFRESH_3`"]
+    #[doc = "Refresh every 90 us"]
     #[inline(always)]
     pub fn is_refresh_3(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_3
     }
-    #[doc = "Checks if the value of the field is `REFRESH_4`"]
+    #[doc = "Refresh every 120 us"]
     #[inline(always)]
     pub fn is_refresh_4(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_4
     }
-    #[doc = "Checks if the value of the field is `REFRESH_5`"]
+    #[doc = "Refresh every 150 us"]
     #[inline(always)]
     pub fn is_refresh_5(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_5
     }
-    #[doc = "Checks if the value of the field is `REFRESH_6`"]
+    #[doc = "Refresh every 180 us"]
     #[inline(always)]
     pub fn is_refresh_6(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_6
     }
-    #[doc = "Checks if the value of the field is `REFRESH_7`"]
+    #[doc = "Refresh every 210 us"]
     #[inline(always)]
     pub fn is_refresh_7(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_7
     }
-    #[doc = "Checks if the value of the field is `REFRESH_8`"]
+    #[doc = "Refresh every 240 us"]
     #[inline(always)]
     pub fn is_refresh_8(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_8
     }
-    #[doc = "Checks if the value of the field is `REFRESH_9`"]
+    #[doc = "Refresh every 270 us"]
     #[inline(always)]
     pub fn is_refresh_9(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_9
     }
-    #[doc = "Checks if the value of the field is `REFRESH_10`"]
+    #[doc = "Refresh every 300 us"]
     #[inline(always)]
     pub fn is_refresh_10(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_10
     }
-    #[doc = "Checks if the value of the field is `REFRESH_11`"]
+    #[doc = "Refresh every 330 us"]
     #[inline(always)]
     pub fn is_refresh_11(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_11
     }
-    #[doc = "Checks if the value of the field is `REFRESH_12`"]
+    #[doc = "Refresh every 360 us"]
     #[inline(always)]
     pub fn is_refresh_12(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_12
     }
-    #[doc = "Checks if the value of the field is `REFRESH_13`"]
+    #[doc = "Refresh every 390 us"]
     #[inline(always)]
     pub fn is_refresh_13(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_13
     }
-    #[doc = "Checks if the value of the field is `REFRESH_14`"]
+    #[doc = "Refresh every 420 us"]
     #[inline(always)]
     pub fn is_refresh_14(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_14
     }
-    #[doc = "Checks if the value of the field is `REFRESH_15`"]
+    #[doc = "Refresh every 450 us"]
     #[inline(always)]
     pub fn is_refresh_15(&self) -> bool {
         *self == REFRESHSELECT_A::REFRESH_15
     }
 }
 #[doc = "Field `REFRESH` writer - Refresh period"]
-pub type REFRESH_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u16, DACCTRL_SPEC, u8, REFRESHSELECT_A, 4, O>;
-impl<'a, const O: u8> REFRESH_W<'a, O> {
+pub type REFRESH_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 4, O, REFRESHSELECT_A>;
+impl<'a, REG, const O: u8> REFRESH_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Do not Refresh"]
     #[inline(always)]
-    pub fn refresh_0(self) -> &'a mut W {
+    pub fn refresh_0(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_0)
     }
     #[doc = "Refresh every 30 us"]
     #[inline(always)]
-    pub fn refresh_1(self) -> &'a mut W {
+    pub fn refresh_1(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_1)
     }
     #[doc = "Refresh every 60 us"]
     #[inline(always)]
-    pub fn refresh_2(self) -> &'a mut W {
+    pub fn refresh_2(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_2)
     }
     #[doc = "Refresh every 90 us"]
     #[inline(always)]
-    pub fn refresh_3(self) -> &'a mut W {
+    pub fn refresh_3(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_3)
     }
     #[doc = "Refresh every 120 us"]
     #[inline(always)]
-    pub fn refresh_4(self) -> &'a mut W {
+    pub fn refresh_4(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_4)
     }
     #[doc = "Refresh every 150 us"]
     #[inline(always)]
-    pub fn refresh_5(self) -> &'a mut W {
+    pub fn refresh_5(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_5)
     }
     #[doc = "Refresh every 180 us"]
     #[inline(always)]
-    pub fn refresh_6(self) -> &'a mut W {
+    pub fn refresh_6(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_6)
     }
     #[doc = "Refresh every 210 us"]
     #[inline(always)]
-    pub fn refresh_7(self) -> &'a mut W {
+    pub fn refresh_7(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_7)
     }
     #[doc = "Refresh every 240 us"]
     #[inline(always)]
-    pub fn refresh_8(self) -> &'a mut W {
+    pub fn refresh_8(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_8)
     }
     #[doc = "Refresh every 270 us"]
     #[inline(always)]
-    pub fn refresh_9(self) -> &'a mut W {
+    pub fn refresh_9(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_9)
     }
     #[doc = "Refresh every 300 us"]
     #[inline(always)]
-    pub fn refresh_10(self) -> &'a mut W {
+    pub fn refresh_10(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_10)
     }
     #[doc = "Refresh every 330 us"]
     #[inline(always)]
-    pub fn refresh_11(self) -> &'a mut W {
+    pub fn refresh_11(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_11)
     }
     #[doc = "Refresh every 360 us"]
     #[inline(always)]
-    pub fn refresh_12(self) -> &'a mut W {
+    pub fn refresh_12(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_12)
     }
     #[doc = "Refresh every 390 us"]
     #[inline(always)]
-    pub fn refresh_13(self) -> &'a mut W {
+    pub fn refresh_13(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_13)
     }
     #[doc = "Refresh every 420 us"]
     #[inline(always)]
-    pub fn refresh_14(self) -> &'a mut W {
+    pub fn refresh_14(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_14)
     }
     #[doc = "Refresh every 450 us"]
     #[inline(always)]
-    pub fn refresh_15(self) -> &'a mut W {
+    pub fn refresh_15(self) -> &'a mut crate::W<REG> {
         self.variant(REFRESHSELECT_A::REFRESH_15)
     }
 }
 #[doc = "Field `OSR` reader - Sampling Rate"]
-pub type OSR_R = crate::FieldReader<u8, OSRSELECT_A>;
+pub type OSR_R = crate::FieldReader<OSRSELECT_A>;
 #[doc = "Sampling Rate\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -380,10 +360,13 @@ impl From<OSRSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for OSRSELECT_A {
+    type Ux = u8;
+}
 impl OSR_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<OSRSELECT_A> {
+    pub const fn variant(&self) -> Option<OSRSELECT_A> {
         match self.bits {
             0 => Some(OSRSELECT_A::OSR_1),
             1 => Some(OSRSELECT_A::OSR_2),
@@ -394,68 +377,72 @@ impl OSR_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `OSR_1`"]
+    #[doc = "No Over Sampling"]
     #[inline(always)]
     pub fn is_osr_1(&self) -> bool {
         *self == OSRSELECT_A::OSR_1
     }
-    #[doc = "Checks if the value of the field is `OSR_2`"]
+    #[doc = "2x Over Sampling Ratio"]
     #[inline(always)]
     pub fn is_osr_2(&self) -> bool {
         *self == OSRSELECT_A::OSR_2
     }
-    #[doc = "Checks if the value of the field is `OSR_4`"]
+    #[doc = "4x Over Sampling Ratio"]
     #[inline(always)]
     pub fn is_osr_4(&self) -> bool {
         *self == OSRSELECT_A::OSR_4
     }
-    #[doc = "Checks if the value of the field is `OSR_8`"]
+    #[doc = "8x Over Sampling Ratio"]
     #[inline(always)]
     pub fn is_osr_8(&self) -> bool {
         *self == OSRSELECT_A::OSR_8
     }
-    #[doc = "Checks if the value of the field is `OSR_16`"]
+    #[doc = "16x Over Sampling Ratio"]
     #[inline(always)]
     pub fn is_osr_16(&self) -> bool {
         *self == OSRSELECT_A::OSR_16
     }
-    #[doc = "Checks if the value of the field is `OSR_32`"]
+    #[doc = "32x Over Sampling Ratio"]
     #[inline(always)]
     pub fn is_osr_32(&self) -> bool {
         *self == OSRSELECT_A::OSR_32
     }
 }
 #[doc = "Field `OSR` writer - Sampling Rate"]
-pub type OSR_W<'a, const O: u8> = crate::FieldWriter<'a, u16, DACCTRL_SPEC, u8, OSRSELECT_A, 3, O>;
-impl<'a, const O: u8> OSR_W<'a, O> {
+pub type OSR_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, OSRSELECT_A>;
+impl<'a, REG, const O: u8> OSR_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "No Over Sampling"]
     #[inline(always)]
-    pub fn osr_1(self) -> &'a mut W {
+    pub fn osr_1(self) -> &'a mut crate::W<REG> {
         self.variant(OSRSELECT_A::OSR_1)
     }
     #[doc = "2x Over Sampling Ratio"]
     #[inline(always)]
-    pub fn osr_2(self) -> &'a mut W {
+    pub fn osr_2(self) -> &'a mut crate::W<REG> {
         self.variant(OSRSELECT_A::OSR_2)
     }
     #[doc = "4x Over Sampling Ratio"]
     #[inline(always)]
-    pub fn osr_4(self) -> &'a mut W {
+    pub fn osr_4(self) -> &'a mut crate::W<REG> {
         self.variant(OSRSELECT_A::OSR_4)
     }
     #[doc = "8x Over Sampling Ratio"]
     #[inline(always)]
-    pub fn osr_8(self) -> &'a mut W {
+    pub fn osr_8(self) -> &'a mut crate::W<REG> {
         self.variant(OSRSELECT_A::OSR_8)
     }
     #[doc = "16x Over Sampling Ratio"]
     #[inline(always)]
-    pub fn osr_16(self) -> &'a mut W {
+    pub fn osr_16(self) -> &'a mut crate::W<REG> {
         self.variant(OSRSELECT_A::OSR_16)
     }
     #[doc = "32x Over Sampling Ratio"]
     #[inline(always)]
-    pub fn osr_32(self) -> &'a mut W {
+    pub fn osr_32(self) -> &'a mut crate::W<REG> {
         self.variant(OSRSELECT_A::OSR_32)
     }
 }
@@ -505,70 +492,71 @@ impl W {
     #[doc = "Bit 0 - Left Adjusted Data"]
     #[inline(always)]
     #[must_use]
-    pub fn leftadj(&mut self) -> LEFTADJ_W<0> {
+    pub fn leftadj(&mut self) -> LEFTADJ_W<DACCTRL_SPEC, 0> {
         LEFTADJ_W::new(self)
     }
     #[doc = "Bit 1 - Enable DAC0"]
     #[inline(always)]
     #[must_use]
-    pub fn enable(&mut self) -> ENABLE_W<1> {
+    pub fn enable(&mut self) -> ENABLE_W<DACCTRL_SPEC, 1> {
         ENABLE_W::new(self)
     }
     #[doc = "Bits 2:3 - Current Control"]
     #[inline(always)]
     #[must_use]
-    pub fn cctrl(&mut self) -> CCTRL_W<2> {
+    pub fn cctrl(&mut self) -> CCTRL_W<DACCTRL_SPEC, 2> {
         CCTRL_W::new(self)
     }
     #[doc = "Bit 5 - Standalone Filter"]
     #[inline(always)]
     #[must_use]
-    pub fn fext(&mut self) -> FEXT_W<5> {
+    pub fn fext(&mut self) -> FEXT_W<DACCTRL_SPEC, 5> {
         FEXT_W::new(self)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
     #[must_use]
-    pub fn runstdby(&mut self) -> RUNSTDBY_W<6> {
+    pub fn runstdby(&mut self) -> RUNSTDBY_W<DACCTRL_SPEC, 6> {
         RUNSTDBY_W::new(self)
     }
     #[doc = "Bit 7 - Dithering Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn dither(&mut self) -> DITHER_W<7> {
+    pub fn dither(&mut self) -> DITHER_W<DACCTRL_SPEC, 7> {
         DITHER_W::new(self)
     }
     #[doc = "Bits 8:11 - Refresh period"]
     #[inline(always)]
     #[must_use]
-    pub fn refresh(&mut self) -> REFRESH_W<8> {
+    pub fn refresh(&mut self) -> REFRESH_W<DACCTRL_SPEC, 8> {
         REFRESH_W::new(self)
     }
     #[doc = "Bits 13:15 - Sampling Rate"]
     #[inline(always)]
     #[must_use]
-    pub fn osr(&mut self) -> OSR_W<13> {
+    pub fn osr(&mut self) -> OSR_W<DACCTRL_SPEC, 13> {
         OSR_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "DAC n Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dacctrl](index.html) module"]
+#[doc = "DAC n Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dacctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dacctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DACCTRL_SPEC;
 impl crate::RegisterSpec for DACCTRL_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [dacctrl::R](R) reader structure"]
-impl crate::Readable for DACCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [dacctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`dacctrl::R`](R) reader structure"]
+impl crate::Readable for DACCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`dacctrl::W`](W) writer structure"]
 impl crate::Writable for DACCTRL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

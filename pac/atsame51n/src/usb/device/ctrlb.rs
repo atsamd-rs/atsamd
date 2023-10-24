@@ -1,49 +1,17 @@
 #[doc = "Register `CTRLB` reader"]
-pub struct R(crate::R<CTRLB_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLB_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLB_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLB_SPEC>;
 #[doc = "Register `CTRLB` writer"]
-pub struct W(crate::W<CTRLB_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLB_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLB_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLB_SPEC>;
 #[doc = "Field `DETACH` reader - Detach"]
-pub type DETACH_R = crate::BitReader<bool>;
+pub type DETACH_R = crate::BitReader;
 #[doc = "Field `DETACH` writer - Detach"]
-pub type DETACH_W<'a, const O: u8> = crate::BitWriter<'a, u16, CTRLB_SPEC, bool, O>;
+pub type DETACH_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `UPRSM` reader - Upstream Resume"]
-pub type UPRSM_R = crate::BitReader<bool>;
+pub type UPRSM_R = crate::BitReader;
 #[doc = "Field `UPRSM` writer - Upstream Resume"]
-pub type UPRSM_W<'a, const O: u8> = crate::BitWriter<'a, u16, CTRLB_SPEC, bool, O>;
+pub type UPRSM_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SPDCONF` reader - Speed Configuration"]
-pub type SPDCONF_R = crate::FieldReader<u8, SPDCONFSELECT_A>;
+pub type SPDCONF_R = crate::FieldReader<SPDCONFSELECT_A>;
 #[doc = "Speed Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -63,10 +31,13 @@ impl From<SPDCONFSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for SPDCONFSELECT_A {
+    type Ux = u8;
+}
 impl SPDCONF_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SPDCONFSELECT_A {
+    pub const fn variant(&self) -> SPDCONFSELECT_A {
         match self.bits {
             0 => SPDCONFSELECT_A::FS,
             1 => SPDCONFSELECT_A::LS,
@@ -75,78 +46,81 @@ impl SPDCONF_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `FS`"]
+    #[doc = "FS : Full Speed"]
     #[inline(always)]
     pub fn is_fs(&self) -> bool {
         *self == SPDCONFSELECT_A::FS
     }
-    #[doc = "Checks if the value of the field is `LS`"]
+    #[doc = "LS : Low Speed"]
     #[inline(always)]
     pub fn is_ls(&self) -> bool {
         *self == SPDCONFSELECT_A::LS
     }
-    #[doc = "Checks if the value of the field is `HS`"]
+    #[doc = "HS : High Speed capable"]
     #[inline(always)]
     pub fn is_hs(&self) -> bool {
         *self == SPDCONFSELECT_A::HS
     }
-    #[doc = "Checks if the value of the field is `HSTM`"]
+    #[doc = "HSTM: High Speed Test Mode (force high-speed mode for test mode)"]
     #[inline(always)]
     pub fn is_hstm(&self) -> bool {
         *self == SPDCONFSELECT_A::HSTM
     }
 }
 #[doc = "Field `SPDCONF` writer - Speed Configuration"]
-pub type SPDCONF_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u16, CTRLB_SPEC, u8, SPDCONFSELECT_A, 2, O>;
-impl<'a, const O: u8> SPDCONF_W<'a, O> {
+pub type SPDCONF_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, SPDCONFSELECT_A>;
+impl<'a, REG, const O: u8> SPDCONF_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "FS : Full Speed"]
     #[inline(always)]
-    pub fn fs(self) -> &'a mut W {
+    pub fn fs(self) -> &'a mut crate::W<REG> {
         self.variant(SPDCONFSELECT_A::FS)
     }
     #[doc = "LS : Low Speed"]
     #[inline(always)]
-    pub fn ls(self) -> &'a mut W {
+    pub fn ls(self) -> &'a mut crate::W<REG> {
         self.variant(SPDCONFSELECT_A::LS)
     }
     #[doc = "HS : High Speed capable"]
     #[inline(always)]
-    pub fn hs(self) -> &'a mut W {
+    pub fn hs(self) -> &'a mut crate::W<REG> {
         self.variant(SPDCONFSELECT_A::HS)
     }
     #[doc = "HSTM: High Speed Test Mode (force high-speed mode for test mode)"]
     #[inline(always)]
-    pub fn hstm(self) -> &'a mut W {
+    pub fn hstm(self) -> &'a mut crate::W<REG> {
         self.variant(SPDCONFSELECT_A::HSTM)
     }
 }
 #[doc = "Field `NREPLY` reader - No Reply"]
-pub type NREPLY_R = crate::BitReader<bool>;
+pub type NREPLY_R = crate::BitReader;
 #[doc = "Field `NREPLY` writer - No Reply"]
-pub type NREPLY_W<'a, const O: u8> = crate::BitWriter<'a, u16, CTRLB_SPEC, bool, O>;
+pub type NREPLY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TSTJ` reader - Test mode J"]
-pub type TSTJ_R = crate::BitReader<bool>;
+pub type TSTJ_R = crate::BitReader;
 #[doc = "Field `TSTJ` writer - Test mode J"]
-pub type TSTJ_W<'a, const O: u8> = crate::BitWriter<'a, u16, CTRLB_SPEC, bool, O>;
+pub type TSTJ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TSTK` reader - Test mode K"]
-pub type TSTK_R = crate::BitReader<bool>;
+pub type TSTK_R = crate::BitReader;
 #[doc = "Field `TSTK` writer - Test mode K"]
-pub type TSTK_W<'a, const O: u8> = crate::BitWriter<'a, u16, CTRLB_SPEC, bool, O>;
+pub type TSTK_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TSTPCKT` reader - Test packet mode"]
-pub type TSTPCKT_R = crate::BitReader<bool>;
+pub type TSTPCKT_R = crate::BitReader;
 #[doc = "Field `TSTPCKT` writer - Test packet mode"]
-pub type TSTPCKT_W<'a, const O: u8> = crate::BitWriter<'a, u16, CTRLB_SPEC, bool, O>;
+pub type TSTPCKT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OPMODE2` reader - Specific Operational Mode"]
-pub type OPMODE2_R = crate::BitReader<bool>;
+pub type OPMODE2_R = crate::BitReader;
 #[doc = "Field `OPMODE2` writer - Specific Operational Mode"]
-pub type OPMODE2_W<'a, const O: u8> = crate::BitWriter<'a, u16, CTRLB_SPEC, bool, O>;
+pub type OPMODE2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `GNAK` reader - Global NAK"]
-pub type GNAK_R = crate::BitReader<bool>;
+pub type GNAK_R = crate::BitReader;
 #[doc = "Field `GNAK` writer - Global NAK"]
-pub type GNAK_W<'a, const O: u8> = crate::BitWriter<'a, u16, CTRLB_SPEC, bool, O>;
+pub type GNAK_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LPMHDSK` reader - Link Power Management Handshake"]
-pub type LPMHDSK_R = crate::FieldReader<u8, LPMHDSKSELECT_A>;
+pub type LPMHDSK_R = crate::FieldReader<LPMHDSKSELECT_A>;
 #[doc = "Link Power Management Handshake\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -166,10 +140,13 @@ impl From<LPMHDSKSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for LPMHDSKSELECT_A {
+    type Ux = u8;
+}
 impl LPMHDSK_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> LPMHDSKSELECT_A {
+    pub const fn variant(&self) -> LPMHDSKSELECT_A {
         match self.bits {
             0 => LPMHDSKSELECT_A::NO,
             1 => LPMHDSKSELECT_A::ACK,
@@ -178,49 +155,52 @@ impl LPMHDSK_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No handshake. LPM is not supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == LPMHDSKSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `ACK`"]
+    #[doc = "ACK"]
     #[inline(always)]
     pub fn is_ack(&self) -> bool {
         *self == LPMHDSKSELECT_A::ACK
     }
-    #[doc = "Checks if the value of the field is `NYET`"]
+    #[doc = "NYET"]
     #[inline(always)]
     pub fn is_nyet(&self) -> bool {
         *self == LPMHDSKSELECT_A::NYET
     }
-    #[doc = "Checks if the value of the field is `STALL`"]
+    #[doc = "STALL"]
     #[inline(always)]
     pub fn is_stall(&self) -> bool {
         *self == LPMHDSKSELECT_A::STALL
     }
 }
 #[doc = "Field `LPMHDSK` writer - Link Power Management Handshake"]
-pub type LPMHDSK_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u16, CTRLB_SPEC, u8, LPMHDSKSELECT_A, 2, O>;
-impl<'a, const O: u8> LPMHDSK_W<'a, O> {
+pub type LPMHDSK_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, LPMHDSKSELECT_A>;
+impl<'a, REG, const O: u8> LPMHDSK_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "No handshake. LPM is not supported"]
     #[inline(always)]
-    pub fn no(self) -> &'a mut W {
+    pub fn no(self) -> &'a mut crate::W<REG> {
         self.variant(LPMHDSKSELECT_A::NO)
     }
     #[doc = "ACK"]
     #[inline(always)]
-    pub fn ack(self) -> &'a mut W {
+    pub fn ack(self) -> &'a mut crate::W<REG> {
         self.variant(LPMHDSKSELECT_A::ACK)
     }
     #[doc = "NYET"]
     #[inline(always)]
-    pub fn nyet(self) -> &'a mut W {
+    pub fn nyet(self) -> &'a mut crate::W<REG> {
         self.variant(LPMHDSKSELECT_A::NYET)
     }
     #[doc = "STALL"]
     #[inline(always)]
-    pub fn stall(self) -> &'a mut W {
+    pub fn stall(self) -> &'a mut crate::W<REG> {
         self.variant(LPMHDSKSELECT_A::STALL)
     }
 }
@@ -280,82 +260,83 @@ impl W {
     #[doc = "Bit 0 - Detach"]
     #[inline(always)]
     #[must_use]
-    pub fn detach(&mut self) -> DETACH_W<0> {
+    pub fn detach(&mut self) -> DETACH_W<CTRLB_SPEC, 0> {
         DETACH_W::new(self)
     }
     #[doc = "Bit 1 - Upstream Resume"]
     #[inline(always)]
     #[must_use]
-    pub fn uprsm(&mut self) -> UPRSM_W<1> {
+    pub fn uprsm(&mut self) -> UPRSM_W<CTRLB_SPEC, 1> {
         UPRSM_W::new(self)
     }
     #[doc = "Bits 2:3 - Speed Configuration"]
     #[inline(always)]
     #[must_use]
-    pub fn spdconf(&mut self) -> SPDCONF_W<2> {
+    pub fn spdconf(&mut self) -> SPDCONF_W<CTRLB_SPEC, 2> {
         SPDCONF_W::new(self)
     }
     #[doc = "Bit 4 - No Reply"]
     #[inline(always)]
     #[must_use]
-    pub fn nreply(&mut self) -> NREPLY_W<4> {
+    pub fn nreply(&mut self) -> NREPLY_W<CTRLB_SPEC, 4> {
         NREPLY_W::new(self)
     }
     #[doc = "Bit 5 - Test mode J"]
     #[inline(always)]
     #[must_use]
-    pub fn tstj(&mut self) -> TSTJ_W<5> {
+    pub fn tstj(&mut self) -> TSTJ_W<CTRLB_SPEC, 5> {
         TSTJ_W::new(self)
     }
     #[doc = "Bit 6 - Test mode K"]
     #[inline(always)]
     #[must_use]
-    pub fn tstk(&mut self) -> TSTK_W<6> {
+    pub fn tstk(&mut self) -> TSTK_W<CTRLB_SPEC, 6> {
         TSTK_W::new(self)
     }
     #[doc = "Bit 7 - Test packet mode"]
     #[inline(always)]
     #[must_use]
-    pub fn tstpckt(&mut self) -> TSTPCKT_W<7> {
+    pub fn tstpckt(&mut self) -> TSTPCKT_W<CTRLB_SPEC, 7> {
         TSTPCKT_W::new(self)
     }
     #[doc = "Bit 8 - Specific Operational Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn opmode2(&mut self) -> OPMODE2_W<8> {
+    pub fn opmode2(&mut self) -> OPMODE2_W<CTRLB_SPEC, 8> {
         OPMODE2_W::new(self)
     }
     #[doc = "Bit 9 - Global NAK"]
     #[inline(always)]
     #[must_use]
-    pub fn gnak(&mut self) -> GNAK_W<9> {
+    pub fn gnak(&mut self) -> GNAK_W<CTRLB_SPEC, 9> {
         GNAK_W::new(self)
     }
     #[doc = "Bits 10:11 - Link Power Management Handshake"]
     #[inline(always)]
     #[must_use]
-    pub fn lpmhdsk(&mut self) -> LPMHDSK_W<10> {
+    pub fn lpmhdsk(&mut self) -> LPMHDSK_W<CTRLB_SPEC, 10> {
         LPMHDSK_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "DEVICE Control B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlb](index.html) module"]
+#[doc = "DEVICE Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLB_SPEC;
 impl crate::RegisterSpec for CTRLB_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [ctrlb::R](R) reader structure"]
-impl crate::Readable for CTRLB_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrlb::R`](R) reader structure"]
+impl crate::Readable for CTRLB_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

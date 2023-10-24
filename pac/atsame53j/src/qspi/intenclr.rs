@@ -1,63 +1,31 @@
 #[doc = "Register `INTENCLR` reader"]
-pub struct R(crate::R<INTENCLR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTENCLR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTENCLR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTENCLR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTENCLR_SPEC>;
 #[doc = "Register `INTENCLR` writer"]
-pub struct W(crate::W<INTENCLR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTENCLR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTENCLR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTENCLR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTENCLR_SPEC>;
 #[doc = "Field `RXC` reader - Receive Data Register Full Interrupt Disable"]
-pub type RXC_R = crate::BitReader<bool>;
+pub type RXC_R = crate::BitReader;
 #[doc = "Field `RXC` writer - Receive Data Register Full Interrupt Disable"]
-pub type RXC_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENCLR_SPEC, bool, O>;
+pub type RXC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DRE` reader - Transmit Data Register Empty Interrupt Disable"]
-pub type DRE_R = crate::BitReader<bool>;
+pub type DRE_R = crate::BitReader;
 #[doc = "Field `DRE` writer - Transmit Data Register Empty Interrupt Disable"]
-pub type DRE_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENCLR_SPEC, bool, O>;
+pub type DRE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TXC` reader - Transmission Complete Interrupt Disable"]
-pub type TXC_R = crate::BitReader<bool>;
+pub type TXC_R = crate::BitReader;
 #[doc = "Field `TXC` writer - Transmission Complete Interrupt Disable"]
-pub type TXC_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENCLR_SPEC, bool, O>;
+pub type TXC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ERROR` reader - Overrun Error Interrupt Disable"]
-pub type ERROR_R = crate::BitReader<bool>;
+pub type ERROR_R = crate::BitReader;
 #[doc = "Field `ERROR` writer - Overrun Error Interrupt Disable"]
-pub type ERROR_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENCLR_SPEC, bool, O>;
+pub type ERROR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CSRISE` reader - Chip Select Rise Interrupt Disable"]
-pub type CSRISE_R = crate::BitReader<bool>;
+pub type CSRISE_R = crate::BitReader;
 #[doc = "Field `CSRISE` writer - Chip Select Rise Interrupt Disable"]
-pub type CSRISE_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENCLR_SPEC, bool, O>;
+pub type CSRISE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `INSTREND` reader - Instruction End Interrupt Disable"]
-pub type INSTREND_R = crate::BitReader<bool>;
+pub type INSTREND_R = crate::BitReader;
 #[doc = "Field `INSTREND` writer - Instruction End Interrupt Disable"]
-pub type INSTREND_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTENCLR_SPEC, bool, O>;
+pub type INSTREND_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Receive Data Register Full Interrupt Disable"]
     #[inline(always)]
@@ -94,58 +62,59 @@ impl W {
     #[doc = "Bit 0 - Receive Data Register Full Interrupt Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn rxc(&mut self) -> RXC_W<0> {
+    pub fn rxc(&mut self) -> RXC_W<INTENCLR_SPEC, 0> {
         RXC_W::new(self)
     }
     #[doc = "Bit 1 - Transmit Data Register Empty Interrupt Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn dre(&mut self) -> DRE_W<1> {
+    pub fn dre(&mut self) -> DRE_W<INTENCLR_SPEC, 1> {
         DRE_W::new(self)
     }
     #[doc = "Bit 2 - Transmission Complete Interrupt Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn txc(&mut self) -> TXC_W<2> {
+    pub fn txc(&mut self) -> TXC_W<INTENCLR_SPEC, 2> {
         TXC_W::new(self)
     }
     #[doc = "Bit 3 - Overrun Error Interrupt Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn error(&mut self) -> ERROR_W<3> {
+    pub fn error(&mut self) -> ERROR_W<INTENCLR_SPEC, 3> {
         ERROR_W::new(self)
     }
     #[doc = "Bit 8 - Chip Select Rise Interrupt Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn csrise(&mut self) -> CSRISE_W<8> {
+    pub fn csrise(&mut self) -> CSRISE_W<INTENCLR_SPEC, 8> {
         CSRISE_W::new(self)
     }
     #[doc = "Bit 10 - Instruction End Interrupt Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn instrend(&mut self) -> INSTREND_W<10> {
+    pub fn instrend(&mut self) -> INSTREND_W<INTENCLR_SPEC, 10> {
         INSTREND_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Enable Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intenclr](index.html) module"]
+#[doc = "Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTENCLR_SPEC;
 impl crate::RegisterSpec for INTENCLR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [intenclr::R](R) reader structure"]
-impl crate::Readable for INTENCLR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intenclr::W](W) writer structure"]
+#[doc = "`read()` method returns [`intenclr::R`](R) reader structure"]
+impl crate::Readable for INTENCLR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for INTENCLR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

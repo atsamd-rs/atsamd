@@ -1,20 +1,7 @@
 #[doc = "Register `IHCE` reader"]
-pub struct R(crate::R<IHCE_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<IHCE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<IHCE_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<IHCE_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<IHCE_SPEC>;
 #[doc = "Field `HCKER` reader - IP Header Checksum Errors"]
-pub type HCKER_R = crate::FieldReader<u8, u8>;
+pub type HCKER_R = crate::FieldReader;
 impl R {
     #[doc = "Bits 0:7 - IP Header Checksum Errors"]
     #[inline(always)]
@@ -22,15 +9,13 @@ impl R {
         HCKER_R::new((self.bits & 0xff) as u8)
     }
 }
-#[doc = "IP Header Checksum Errors Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ihce](index.html) module"]
+#[doc = "IP Header Checksum Errors Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ihce::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct IHCE_SPEC;
 impl crate::RegisterSpec for IHCE_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ihce::R](R) reader structure"]
-impl crate::Readable for IHCE_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`ihce::R`](R) reader structure"]
+impl crate::Readable for IHCE_SPEC {}
 #[doc = "`reset()` method sets IHCE to value 0"]
 impl crate::Resettable for IHCE_SPEC {
     const RESET_VALUE: Self::Ux = 0;

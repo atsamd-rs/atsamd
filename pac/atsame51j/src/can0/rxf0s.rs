@@ -1,28 +1,15 @@
 #[doc = "Register `RXF0S` reader"]
-pub struct R(crate::R<RXF0S_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<RXF0S_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<RXF0S_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<RXF0S_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<RXF0S_SPEC>;
 #[doc = "Field `F0FL` reader - Rx FIFO 0 Fill Level"]
-pub type F0FL_R = crate::FieldReader<u8, u8>;
+pub type F0FL_R = crate::FieldReader;
 #[doc = "Field `F0GI` reader - Rx FIFO 0 Get Index"]
-pub type F0GI_R = crate::FieldReader<u8, u8>;
+pub type F0GI_R = crate::FieldReader;
 #[doc = "Field `F0PI` reader - Rx FIFO 0 Put Index"]
-pub type F0PI_R = crate::FieldReader<u8, u8>;
+pub type F0PI_R = crate::FieldReader;
 #[doc = "Field `F0F` reader - Rx FIFO 0 Full"]
-pub type F0F_R = crate::BitReader<bool>;
+pub type F0F_R = crate::BitReader;
 #[doc = "Field `RF0L` reader - Rx FIFO 0 Message Lost"]
-pub type RF0L_R = crate::BitReader<bool>;
+pub type RF0L_R = crate::BitReader;
 impl R {
     #[doc = "Bits 0:6 - Rx FIFO 0 Fill Level"]
     #[inline(always)]
@@ -50,15 +37,13 @@ impl R {
         RF0L_R::new(((self.bits >> 25) & 1) != 0)
     }
 }
-#[doc = "Rx FIFO 0 Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxf0s](index.html) module"]
+#[doc = "Rx FIFO 0 Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`rxf0s::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct RXF0S_SPEC;
 impl crate::RegisterSpec for RXF0S_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [rxf0s::R](R) reader structure"]
-impl crate::Readable for RXF0S_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`rxf0s::R`](R) reader structure"]
+impl crate::Readable for RXF0S_SPEC {}
 #[doc = "`reset()` method sets RXF0S to value 0"]
 impl crate::Resettable for RXF0S_SPEC {
     const RESET_VALUE: Self::Ux = 0;

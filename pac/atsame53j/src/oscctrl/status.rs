@@ -1,56 +1,43 @@
 #[doc = "Register `STATUS` reader"]
-pub struct R(crate::R<STATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUS_SPEC>;
 #[doc = "Field `XOSCRDY0` reader - XOSC 0 Ready"]
-pub type XOSCRDY0_R = crate::BitReader<bool>;
+pub type XOSCRDY0_R = crate::BitReader;
 #[doc = "Field `XOSCRDY1` reader - XOSC 1 Ready"]
-pub type XOSCRDY1_R = crate::BitReader<bool>;
+pub type XOSCRDY1_R = crate::BitReader;
 #[doc = "Field `XOSCFAIL0` reader - XOSC 0 Clock Failure Detector"]
-pub type XOSCFAIL0_R = crate::BitReader<bool>;
+pub type XOSCFAIL0_R = crate::BitReader;
 #[doc = "Field `XOSCFAIL1` reader - XOSC 1 Clock Failure Detector"]
-pub type XOSCFAIL1_R = crate::BitReader<bool>;
+pub type XOSCFAIL1_R = crate::BitReader;
 #[doc = "Field `XOSCCKSW0` reader - XOSC 0 Clock Switch"]
-pub type XOSCCKSW0_R = crate::BitReader<bool>;
+pub type XOSCCKSW0_R = crate::BitReader;
 #[doc = "Field `XOSCCKSW1` reader - XOSC 1 Clock Switch"]
-pub type XOSCCKSW1_R = crate::BitReader<bool>;
+pub type XOSCCKSW1_R = crate::BitReader;
 #[doc = "Field `DFLLRDY` reader - DFLL Ready"]
-pub type DFLLRDY_R = crate::BitReader<bool>;
+pub type DFLLRDY_R = crate::BitReader;
 #[doc = "Field `DFLLOOB` reader - DFLL Out Of Bounds"]
-pub type DFLLOOB_R = crate::BitReader<bool>;
+pub type DFLLOOB_R = crate::BitReader;
 #[doc = "Field `DFLLLCKF` reader - DFLL Lock Fine"]
-pub type DFLLLCKF_R = crate::BitReader<bool>;
+pub type DFLLLCKF_R = crate::BitReader;
 #[doc = "Field `DFLLLCKC` reader - DFLL Lock Coarse"]
-pub type DFLLLCKC_R = crate::BitReader<bool>;
+pub type DFLLLCKC_R = crate::BitReader;
 #[doc = "Field `DFLLRCS` reader - DFLL Reference Clock Stopped"]
-pub type DFLLRCS_R = crate::BitReader<bool>;
+pub type DFLLRCS_R = crate::BitReader;
 #[doc = "Field `DPLL0LCKR` reader - DPLL0 Lock Rise"]
-pub type DPLL0LCKR_R = crate::BitReader<bool>;
+pub type DPLL0LCKR_R = crate::BitReader;
 #[doc = "Field `DPLL0LCKF` reader - DPLL0 Lock Fall"]
-pub type DPLL0LCKF_R = crate::BitReader<bool>;
+pub type DPLL0LCKF_R = crate::BitReader;
 #[doc = "Field `DPLL0TO` reader - DPLL0 Timeout"]
-pub type DPLL0TO_R = crate::BitReader<bool>;
+pub type DPLL0TO_R = crate::BitReader;
 #[doc = "Field `DPLL0LDRTO` reader - DPLL0 Loop Divider Ratio Update Complete"]
-pub type DPLL0LDRTO_R = crate::BitReader<bool>;
+pub type DPLL0LDRTO_R = crate::BitReader;
 #[doc = "Field `DPLL1LCKR` reader - DPLL1 Lock Rise"]
-pub type DPLL1LCKR_R = crate::BitReader<bool>;
+pub type DPLL1LCKR_R = crate::BitReader;
 #[doc = "Field `DPLL1LCKF` reader - DPLL1 Lock Fall"]
-pub type DPLL1LCKF_R = crate::BitReader<bool>;
+pub type DPLL1LCKF_R = crate::BitReader;
 #[doc = "Field `DPLL1TO` reader - DPLL1 Timeout"]
-pub type DPLL1TO_R = crate::BitReader<bool>;
+pub type DPLL1TO_R = crate::BitReader;
 #[doc = "Field `DPLL1LDRTO` reader - DPLL1 Loop Divider Ratio Update Complete"]
-pub type DPLL1LDRTO_R = crate::BitReader<bool>;
+pub type DPLL1LDRTO_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - XOSC 0 Ready"]
     #[inline(always)]
@@ -148,15 +135,13 @@ impl R {
         DPLL1LDRTO_R::new(((self.bits >> 27) & 1) != 0)
     }
 }
-#[doc = "Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [status](index.html) module"]
+#[doc = "Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUS_SPEC;
 impl crate::RegisterSpec for STATUS_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [status::R](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`status::R`](R) reader structure"]
+impl crate::Readable for STATUS_SPEC {}
 #[doc = "`reset()` method sets STATUS to value 0"]
 impl crate::Resettable for STATUS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

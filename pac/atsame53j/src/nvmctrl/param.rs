@@ -1,22 +1,9 @@
 #[doc = "Register `PARAM` reader"]
-pub struct R(crate::R<PARAM_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PARAM_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PARAM_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PARAM_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PARAM_SPEC>;
 #[doc = "Field `NVMP` reader - NVM Pages"]
-pub type NVMP_R = crate::FieldReader<u16, u16>;
+pub type NVMP_R = crate::FieldReader<u16>;
 #[doc = "Field `PSZ` reader - Page Size"]
-pub type PSZ_R = crate::FieldReader<u8, PSZSELECT_A>;
+pub type PSZ_R = crate::FieldReader<PSZSELECT_A>;
 #[doc = "Page Size\n\nValue on reset: 6"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -44,10 +31,13 @@ impl From<PSZSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for PSZSELECT_A {
+    type Ux = u8;
+}
 impl PSZ_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> PSZSELECT_A {
+    pub const fn variant(&self) -> PSZSELECT_A {
         match self.bits {
             0 => PSZSELECT_A::_8,
             1 => PSZSELECT_A::_16,
@@ -60,49 +50,49 @@ impl PSZ_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `_8`"]
+    #[doc = "8 bytes"]
     #[inline(always)]
     pub fn is_8(&self) -> bool {
         *self == PSZSELECT_A::_8
     }
-    #[doc = "Checks if the value of the field is `_16`"]
+    #[doc = "16 bytes"]
     #[inline(always)]
     pub fn is_16(&self) -> bool {
         *self == PSZSELECT_A::_16
     }
-    #[doc = "Checks if the value of the field is `_32`"]
+    #[doc = "32 bytes"]
     #[inline(always)]
     pub fn is_32(&self) -> bool {
         *self == PSZSELECT_A::_32
     }
-    #[doc = "Checks if the value of the field is `_64`"]
+    #[doc = "64 bytes"]
     #[inline(always)]
     pub fn is_64(&self) -> bool {
         *self == PSZSELECT_A::_64
     }
-    #[doc = "Checks if the value of the field is `_128`"]
+    #[doc = "128 bytes"]
     #[inline(always)]
     pub fn is_128(&self) -> bool {
         *self == PSZSELECT_A::_128
     }
-    #[doc = "Checks if the value of the field is `_256`"]
+    #[doc = "256 bytes"]
     #[inline(always)]
     pub fn is_256(&self) -> bool {
         *self == PSZSELECT_A::_256
     }
-    #[doc = "Checks if the value of the field is `_512`"]
+    #[doc = "512 bytes"]
     #[inline(always)]
     pub fn is_512(&self) -> bool {
         *self == PSZSELECT_A::_512
     }
-    #[doc = "Checks if the value of the field is `_1024`"]
+    #[doc = "1024 bytes"]
     #[inline(always)]
     pub fn is_1024(&self) -> bool {
         *self == PSZSELECT_A::_1024
     }
 }
 #[doc = "Field `SEE` reader - SmartEEPROM Supported"]
-pub type SEE_R = crate::BitReader<bool>;
+pub type SEE_R = crate::BitReader;
 impl R {
     #[doc = "Bits 0:15 - NVM Pages"]
     #[inline(always)]
@@ -120,15 +110,13 @@ impl R {
         SEE_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
-#[doc = "NVM Parameter\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [param](index.html) module"]
+#[doc = "NVM Parameter\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`param::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PARAM_SPEC;
 impl crate::RegisterSpec for PARAM_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [param::R](R) reader structure"]
-impl crate::Readable for PARAM_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`param::R`](R) reader structure"]
+impl crate::Readable for PARAM_SPEC {}
 #[doc = "`reset()` method sets PARAM to value 0x0006_0000"]
 impl crate::Resettable for PARAM_SPEC {
     const RESET_VALUE: Self::Ux = 0x0006_0000;

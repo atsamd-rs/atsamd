@@ -1,20 +1,7 @@
 #[doc = "Register `CALIB` reader"]
-pub struct R(crate::R<CALIB_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CALIB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CALIB_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CALIB_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CALIB_SPEC>;
 #[doc = "Field `TENMS` reader - Reload value to use for 10ms timing"]
-pub type TENMS_R = crate::FieldReader<u32, u32>;
+pub type TENMS_R = crate::FieldReader<u32>;
 #[doc = "Field `SKEW` reader - TENMS is rounded from non-integer ratio"]
 pub type SKEW_R = crate::BitReader<SKEWSELECT_A>;
 #[doc = "TENMS is rounded from non-integer ratio\n\nValue on reset: 0"]
@@ -34,18 +21,18 @@ impl From<SKEWSELECT_A> for bool {
 impl SKEW_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SKEWSELECT_A {
+    pub const fn variant(&self) -> SKEWSELECT_A {
         match self.bits {
             false => SKEWSELECT_A::VALUE_0,
             true => SKEWSELECT_A::VALUE_1,
         }
     }
-    #[doc = "Checks if the value of the field is `VALUE_0`"]
+    #[doc = "10ms calibration value is exact"]
     #[inline(always)]
     pub fn is_value_0(&self) -> bool {
         *self == SKEWSELECT_A::VALUE_0
     }
-    #[doc = "Checks if the value of the field is `VALUE_1`"]
+    #[doc = "10ms calibration value is inexact, because of the clock frequency"]
     #[inline(always)]
     pub fn is_value_1(&self) -> bool {
         *self == SKEWSELECT_A::VALUE_1
@@ -70,18 +57,18 @@ impl From<NOREFSELECT_A> for bool {
 impl NOREF_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> NOREFSELECT_A {
+    pub const fn variant(&self) -> NOREFSELECT_A {
         match self.bits {
             false => NOREFSELECT_A::VALUE_0,
             true => NOREFSELECT_A::VALUE_1,
         }
     }
-    #[doc = "Checks if the value of the field is `VALUE_0`"]
+    #[doc = "The reference clock is provided"]
     #[inline(always)]
     pub fn is_value_0(&self) -> bool {
         *self == NOREFSELECT_A::VALUE_0
     }
-    #[doc = "Checks if the value of the field is `VALUE_1`"]
+    #[doc = "The reference clock is not provided"]
     #[inline(always)]
     pub fn is_value_1(&self) -> bool {
         *self == NOREFSELECT_A::VALUE_1
@@ -104,15 +91,13 @@ impl R {
         NOREF_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
-#[doc = "SysTick Calibration Value Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [calib](index.html) module"]
+#[doc = "SysTick Calibration Value Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`calib::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CALIB_SPEC;
 impl crate::RegisterSpec for CALIB_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [calib::R](R) reader structure"]
-impl crate::Readable for CALIB_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`calib::R`](R) reader structure"]
+impl crate::Readable for CALIB_SPEC {}
 #[doc = "`reset()` method sets CALIB to value 0"]
 impl crate::Resettable for CALIB_SPEC {
     const RESET_VALUE: Self::Ux = 0;

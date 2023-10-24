@@ -1,41 +1,9 @@
 #[doc = "Register `CPUSEL` reader"]
-pub struct R(crate::R<CPUSEL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CPUSEL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CPUSEL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CPUSEL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CPUSEL_SPEC>;
 #[doc = "Register `CPUSEL` writer"]
-pub struct W(crate::W<CPUSEL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CPUSEL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CPUSEL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CPUSEL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CPUSEL_SPEC>;
 #[doc = "Field `CPUDIV` reader - CPU Prescaler Selection"]
-pub type CPUDIV_R = crate::FieldReader<u8, CPUDIVSELECT_A>;
+pub type CPUDIV_R = crate::FieldReader<CPUDIVSELECT_A>;
 #[doc = "CPU Prescaler Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -63,10 +31,13 @@ impl From<CPUDIVSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for CPUDIVSELECT_A {
+    type Ux = u8;
+}
 impl CPUDIV_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CPUDIVSELECT_A {
+    pub const fn variant(&self) -> CPUDIVSELECT_A {
         match self.bits {
             0 => CPUDIVSELECT_A::DIV1,
             1 => CPUDIVSELECT_A::DIV2,
@@ -79,89 +50,92 @@ impl CPUDIV_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `DIV1`"]
+    #[doc = "Divide by 1"]
     #[inline(always)]
     pub fn is_div1(&self) -> bool {
         *self == CPUDIVSELECT_A::DIV1
     }
-    #[doc = "Checks if the value of the field is `DIV2`"]
+    #[doc = "Divide by 2"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
         *self == CPUDIVSELECT_A::DIV2
     }
-    #[doc = "Checks if the value of the field is `DIV4`"]
+    #[doc = "Divide by 4"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
         *self == CPUDIVSELECT_A::DIV4
     }
-    #[doc = "Checks if the value of the field is `DIV8`"]
+    #[doc = "Divide by 8"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
         *self == CPUDIVSELECT_A::DIV8
     }
-    #[doc = "Checks if the value of the field is `DIV16`"]
+    #[doc = "Divide by 16"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
         *self == CPUDIVSELECT_A::DIV16
     }
-    #[doc = "Checks if the value of the field is `DIV32`"]
+    #[doc = "Divide by 32"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
         *self == CPUDIVSELECT_A::DIV32
     }
-    #[doc = "Checks if the value of the field is `DIV64`"]
+    #[doc = "Divide by 64"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
         *self == CPUDIVSELECT_A::DIV64
     }
-    #[doc = "Checks if the value of the field is `DIV128`"]
+    #[doc = "Divide by 128"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
         *self == CPUDIVSELECT_A::DIV128
     }
 }
 #[doc = "Field `CPUDIV` writer - CPU Prescaler Selection"]
-pub type CPUDIV_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u8, CPUSEL_SPEC, u8, CPUDIVSELECT_A, 3, O>;
-impl<'a, const O: u8> CPUDIV_W<'a, O> {
+pub type CPUDIV_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 3, O, CPUDIVSELECT_A>;
+impl<'a, REG, const O: u8> CPUDIV_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Divide by 1"]
     #[inline(always)]
-    pub fn div1(self) -> &'a mut W {
+    pub fn div1(self) -> &'a mut crate::W<REG> {
         self.variant(CPUDIVSELECT_A::DIV1)
     }
     #[doc = "Divide by 2"]
     #[inline(always)]
-    pub fn div2(self) -> &'a mut W {
+    pub fn div2(self) -> &'a mut crate::W<REG> {
         self.variant(CPUDIVSELECT_A::DIV2)
     }
     #[doc = "Divide by 4"]
     #[inline(always)]
-    pub fn div4(self) -> &'a mut W {
+    pub fn div4(self) -> &'a mut crate::W<REG> {
         self.variant(CPUDIVSELECT_A::DIV4)
     }
     #[doc = "Divide by 8"]
     #[inline(always)]
-    pub fn div8(self) -> &'a mut W {
+    pub fn div8(self) -> &'a mut crate::W<REG> {
         self.variant(CPUDIVSELECT_A::DIV8)
     }
     #[doc = "Divide by 16"]
     #[inline(always)]
-    pub fn div16(self) -> &'a mut W {
+    pub fn div16(self) -> &'a mut crate::W<REG> {
         self.variant(CPUDIVSELECT_A::DIV16)
     }
     #[doc = "Divide by 32"]
     #[inline(always)]
-    pub fn div32(self) -> &'a mut W {
+    pub fn div32(self) -> &'a mut crate::W<REG> {
         self.variant(CPUDIVSELECT_A::DIV32)
     }
     #[doc = "Divide by 64"]
     #[inline(always)]
-    pub fn div64(self) -> &'a mut W {
+    pub fn div64(self) -> &'a mut crate::W<REG> {
         self.variant(CPUDIVSELECT_A::DIV64)
     }
     #[doc = "Divide by 128"]
     #[inline(always)]
-    pub fn div128(self) -> &'a mut W {
+    pub fn div128(self) -> &'a mut crate::W<REG> {
         self.variant(CPUDIVSELECT_A::DIV128)
     }
 }
@@ -176,28 +150,29 @@ impl W {
     #[doc = "Bits 0:2 - CPU Prescaler Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn cpudiv(&mut self) -> CPUDIV_W<0> {
+    pub fn cpudiv(&mut self) -> CPUDIV_W<CPUSEL_SPEC, 0> {
         CPUDIV_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "CPU Clock Select\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cpusel](index.html) module"]
+#[doc = "CPU Clock Select\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cpusel::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cpusel::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CPUSEL_SPEC;
 impl crate::RegisterSpec for CPUSEL_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [cpusel::R](R) reader structure"]
-impl crate::Readable for CPUSEL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [cpusel::W](W) writer structure"]
+#[doc = "`read()` method returns [`cpusel::R`](R) reader structure"]
+impl crate::Readable for CPUSEL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`cpusel::W`](W) writer structure"]
 impl crate::Writable for CPUSEL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

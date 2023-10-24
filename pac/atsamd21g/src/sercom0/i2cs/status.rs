@@ -1,67 +1,35 @@
 #[doc = "Register `STATUS` reader"]
-pub struct R(crate::R<STATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUS_SPEC>;
 #[doc = "Register `STATUS` writer"]
-pub struct W(crate::W<STATUS_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<STATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<STATUS_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<STATUS_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<STATUS_SPEC>;
 #[doc = "Field `BUSERR` reader - Bus Error"]
-pub type BUSERR_R = crate::BitReader<bool>;
+pub type BUSERR_R = crate::BitReader;
 #[doc = "Field `BUSERR` writer - Bus Error"]
-pub type BUSERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type BUSERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `COLL` reader - Transmit Collision"]
-pub type COLL_R = crate::BitReader<bool>;
+pub type COLL_R = crate::BitReader;
 #[doc = "Field `COLL` writer - Transmit Collision"]
-pub type COLL_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type COLL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXNACK` reader - Received Not Acknowledge"]
-pub type RXNACK_R = crate::BitReader<bool>;
+pub type RXNACK_R = crate::BitReader;
 #[doc = "Field `DIR` reader - Read/Write Direction"]
-pub type DIR_R = crate::BitReader<bool>;
+pub type DIR_R = crate::BitReader;
 #[doc = "Field `SR` reader - Repeated Start"]
-pub type SR_R = crate::BitReader<bool>;
+pub type SR_R = crate::BitReader;
 #[doc = "Field `LOWTOUT` reader - SCL Low Timeout"]
-pub type LOWTOUT_R = crate::BitReader<bool>;
+pub type LOWTOUT_R = crate::BitReader;
 #[doc = "Field `LOWTOUT` writer - SCL Low Timeout"]
-pub type LOWTOUT_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type LOWTOUT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CLKHOLD` reader - Clock Hold"]
-pub type CLKHOLD_R = crate::BitReader<bool>;
+pub type CLKHOLD_R = crate::BitReader;
 #[doc = "Field `SEXTTOUT` reader - Slave SCL Low Extend Timeout"]
-pub type SEXTTOUT_R = crate::BitReader<bool>;
+pub type SEXTTOUT_R = crate::BitReader;
 #[doc = "Field `SEXTTOUT` writer - Slave SCL Low Extend Timeout"]
-pub type SEXTTOUT_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type SEXTTOUT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `HS` reader - High Speed"]
-pub type HS_R = crate::BitReader<bool>;
+pub type HS_R = crate::BitReader;
 #[doc = "Field `HS` writer - High Speed"]
-pub type HS_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type HS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Bus Error"]
     #[inline(always)]
@@ -113,52 +81,53 @@ impl W {
     #[doc = "Bit 0 - Bus Error"]
     #[inline(always)]
     #[must_use]
-    pub fn buserr(&mut self) -> BUSERR_W<0> {
+    pub fn buserr(&mut self) -> BUSERR_W<STATUS_SPEC, 0> {
         BUSERR_W::new(self)
     }
     #[doc = "Bit 1 - Transmit Collision"]
     #[inline(always)]
     #[must_use]
-    pub fn coll(&mut self) -> COLL_W<1> {
+    pub fn coll(&mut self) -> COLL_W<STATUS_SPEC, 1> {
         COLL_W::new(self)
     }
     #[doc = "Bit 6 - SCL Low Timeout"]
     #[inline(always)]
     #[must_use]
-    pub fn lowtout(&mut self) -> LOWTOUT_W<6> {
+    pub fn lowtout(&mut self) -> LOWTOUT_W<STATUS_SPEC, 6> {
         LOWTOUT_W::new(self)
     }
     #[doc = "Bit 9 - Slave SCL Low Extend Timeout"]
     #[inline(always)]
     #[must_use]
-    pub fn sexttout(&mut self) -> SEXTTOUT_W<9> {
+    pub fn sexttout(&mut self) -> SEXTTOUT_W<STATUS_SPEC, 9> {
         SEXTTOUT_W::new(self)
     }
     #[doc = "Bit 10 - High Speed"]
     #[inline(always)]
     #[must_use]
-    pub fn hs(&mut self) -> HS_W<10> {
+    pub fn hs(&mut self) -> HS_W<STATUS_SPEC, 10> {
         HS_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "I2CS Status\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [status](index.html) module"]
+#[doc = "I2CS Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`status::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUS_SPEC;
 impl crate::RegisterSpec for STATUS_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [status::R](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [status::W](W) writer structure"]
+#[doc = "`read()` method returns [`status::R`](R) reader structure"]
+impl crate::Readable for STATUS_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for STATUS_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

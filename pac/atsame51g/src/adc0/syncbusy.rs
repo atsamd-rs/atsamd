@@ -1,42 +1,29 @@
 #[doc = "Register `SYNCBUSY` reader"]
-pub struct R(crate::R<SYNCBUSY_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<SYNCBUSY_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<SYNCBUSY_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<SYNCBUSY_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<SYNCBUSY_SPEC>;
 #[doc = "Field `SWRST` reader - SWRST Synchronization Busy"]
-pub type SWRST_R = crate::BitReader<bool>;
+pub type SWRST_R = crate::BitReader;
 #[doc = "Field `ENABLE` reader - ENABLE Synchronization Busy"]
-pub type ENABLE_R = crate::BitReader<bool>;
+pub type ENABLE_R = crate::BitReader;
 #[doc = "Field `INPUTCTRL` reader - Input Control Synchronization Busy"]
-pub type INPUTCTRL_R = crate::BitReader<bool>;
+pub type INPUTCTRL_R = crate::BitReader;
 #[doc = "Field `CTRLB` reader - Control B Synchronization Busy"]
-pub type CTRLB_R = crate::BitReader<bool>;
+pub type CTRLB_R = crate::BitReader;
 #[doc = "Field `REFCTRL` reader - Reference Control Synchronization Busy"]
-pub type REFCTRL_R = crate::BitReader<bool>;
+pub type REFCTRL_R = crate::BitReader;
 #[doc = "Field `AVGCTRL` reader - Average Control Synchronization Busy"]
-pub type AVGCTRL_R = crate::BitReader<bool>;
+pub type AVGCTRL_R = crate::BitReader;
 #[doc = "Field `SAMPCTRL` reader - Sampling Time Control Synchronization Busy"]
-pub type SAMPCTRL_R = crate::BitReader<bool>;
+pub type SAMPCTRL_R = crate::BitReader;
 #[doc = "Field `WINLT` reader - Window Monitor Lower Threshold Synchronization Busy"]
-pub type WINLT_R = crate::BitReader<bool>;
+pub type WINLT_R = crate::BitReader;
 #[doc = "Field `WINUT` reader - Window Monitor Upper Threshold Synchronization Busy"]
-pub type WINUT_R = crate::BitReader<bool>;
+pub type WINUT_R = crate::BitReader;
 #[doc = "Field `GAINCORR` reader - Gain Correction Synchronization Busy"]
-pub type GAINCORR_R = crate::BitReader<bool>;
+pub type GAINCORR_R = crate::BitReader;
 #[doc = "Field `OFFSETCORR` reader - Offset Correction Synchronization Busy"]
-pub type OFFSETCORR_R = crate::BitReader<bool>;
+pub type OFFSETCORR_R = crate::BitReader;
 #[doc = "Field `SWTRIG` reader - Software Trigger Synchronization Busy"]
-pub type SWTRIG_R = crate::BitReader<bool>;
+pub type SWTRIG_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - SWRST Synchronization Busy"]
     #[inline(always)]
@@ -99,15 +86,13 @@ impl R {
         SWTRIG_R::new(((self.bits >> 11) & 1) != 0)
     }
 }
-#[doc = "Synchronization Busy\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [syncbusy](index.html) module"]
+#[doc = "Synchronization Busy\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`syncbusy::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct SYNCBUSY_SPEC;
 impl crate::RegisterSpec for SYNCBUSY_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [syncbusy::R](R) reader structure"]
-impl crate::Readable for SYNCBUSY_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`syncbusy::R`](R) reader structure"]
+impl crate::Readable for SYNCBUSY_SPEC {}
 #[doc = "`reset()` method sets SYNCBUSY to value 0"]
 impl crate::Resettable for SYNCBUSY_SPEC {
     const RESET_VALUE: Self::Ux = 0;

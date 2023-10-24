@@ -1,36 +1,23 @@
 #[doc = "Register `STATUSC` reader"]
-pub struct R(crate::R<STATUSC_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUSC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUSC_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUSC_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUSC_SPEC>;
 #[doc = "Field `TCC2_` reader - TCC2 APB Protect Enable"]
-pub type TCC2__R = crate::BitReader<bool>;
+pub type TCC2__R = crate::BitReader;
 #[doc = "Field `PDEC_` reader - PDEC APB Protect Enable"]
-pub type PDEC__R = crate::BitReader<bool>;
+pub type PDEC__R = crate::BitReader;
 #[doc = "Field `AC_` reader - AC APB Protect Enable"]
-pub type AC__R = crate::BitReader<bool>;
+pub type AC__R = crate::BitReader;
 #[doc = "Field `AES_` reader - AES APB Protect Enable"]
-pub type AES__R = crate::BitReader<bool>;
+pub type AES__R = crate::BitReader;
 #[doc = "Field `TRNG_` reader - TRNG APB Protect Enable"]
-pub type TRNG__R = crate::BitReader<bool>;
+pub type TRNG__R = crate::BitReader;
 #[doc = "Field `ICM_` reader - ICM APB Protect Enable"]
-pub type ICM__R = crate::BitReader<bool>;
+pub type ICM__R = crate::BitReader;
 #[doc = "Field `PUKCC_` reader - PUKCC APB Protect Enable"]
-pub type PUKCC__R = crate::BitReader<bool>;
+pub type PUKCC__R = crate::BitReader;
 #[doc = "Field `QSPI_` reader - QSPI APB Protect Enable"]
-pub type QSPI__R = crate::BitReader<bool>;
+pub type QSPI__R = crate::BitReader;
 #[doc = "Field `CCL_` reader - CCL APB Protect Enable"]
-pub type CCL__R = crate::BitReader<bool>;
+pub type CCL__R = crate::BitReader;
 impl R {
     #[doc = "Bit 3 - TCC2 APB Protect Enable"]
     #[inline(always)]
@@ -78,15 +65,13 @@ impl R {
         CCL__R::new(((self.bits >> 14) & 1) != 0)
     }
 }
-#[doc = "Peripheral write protection status - Bridge C\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusc](index.html) module"]
+#[doc = "Peripheral write protection status - Bridge C\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`statusc::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUSC_SPEC;
 impl crate::RegisterSpec for STATUSC_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [statusc::R](R) reader structure"]
-impl crate::Readable for STATUSC_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`statusc::R`](R) reader structure"]
+impl crate::Readable for STATUSC_SPEC {}
 #[doc = "`reset()` method sets STATUSC to value 0"]
 impl crate::Resettable for STATUSC_SPEC {
     const RESET_VALUE: Self::Ux = 0;

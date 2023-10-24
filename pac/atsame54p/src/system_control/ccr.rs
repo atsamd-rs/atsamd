@@ -1,47 +1,15 @@
 #[doc = "Register `CCR` reader"]
-pub struct R(crate::R<CCR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CCR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CCR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CCR_SPEC>;
 #[doc = "Register `CCR` writer"]
-pub struct W(crate::W<CCR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CCR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CCR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CCR_SPEC>;
 #[doc = "Field `NONBASETHRDENA` reader - Indicates how processor enters Thread mode"]
-pub type NONBASETHRDENA_R = crate::BitReader<bool>;
+pub type NONBASETHRDENA_R = crate::BitReader;
 #[doc = "Field `NONBASETHRDENA` writer - Indicates how processor enters Thread mode"]
-pub type NONBASETHRDENA_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCR_SPEC, bool, O>;
+pub type NONBASETHRDENA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `USERSETMPEND` reader - Enables unprivileged software access to STIR register"]
-pub type USERSETMPEND_R = crate::BitReader<bool>;
+pub type USERSETMPEND_R = crate::BitReader;
 #[doc = "Field `USERSETMPEND` writer - Enables unprivileged software access to STIR register"]
-pub type USERSETMPEND_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCR_SPEC, bool, O>;
+pub type USERSETMPEND_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `UNALIGN_TRP` reader - Enables unaligned access traps"]
 pub type UNALIGN_TRP_R = crate::BitReader<UNALIGN_TRPSELECT_A>;
 #[doc = "Enables unaligned access traps\n\nValue on reset: 0"]
@@ -61,46 +29,48 @@ impl From<UNALIGN_TRPSELECT_A> for bool {
 impl UNALIGN_TRP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> UNALIGN_TRPSELECT_A {
+    pub const fn variant(&self) -> UNALIGN_TRPSELECT_A {
         match self.bits {
             false => UNALIGN_TRPSELECT_A::VALUE_0,
             true => UNALIGN_TRPSELECT_A::VALUE_1,
         }
     }
-    #[doc = "Checks if the value of the field is `VALUE_0`"]
+    #[doc = "Do not trap unaligned halfword and word accesses"]
     #[inline(always)]
     pub fn is_value_0(&self) -> bool {
         *self == UNALIGN_TRPSELECT_A::VALUE_0
     }
-    #[doc = "Checks if the value of the field is `VALUE_1`"]
+    #[doc = "Trap unaligned halfword and word accesses"]
     #[inline(always)]
     pub fn is_value_1(&self) -> bool {
         *self == UNALIGN_TRPSELECT_A::VALUE_1
     }
 }
 #[doc = "Field `UNALIGN_TRP` writer - Enables unaligned access traps"]
-pub type UNALIGN_TRP_W<'a, const O: u8> =
-    crate::BitWriter<'a, u32, CCR_SPEC, UNALIGN_TRPSELECT_A, O>;
-impl<'a, const O: u8> UNALIGN_TRP_W<'a, O> {
+pub type UNALIGN_TRP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, UNALIGN_TRPSELECT_A>;
+impl<'a, REG, const O: u8> UNALIGN_TRP_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Do not trap unaligned halfword and word accesses"]
     #[inline(always)]
-    pub fn value_0(self) -> &'a mut W {
+    pub fn value_0(self) -> &'a mut crate::W<REG> {
         self.variant(UNALIGN_TRPSELECT_A::VALUE_0)
     }
     #[doc = "Trap unaligned halfword and word accesses"]
     #[inline(always)]
-    pub fn value_1(self) -> &'a mut W {
+    pub fn value_1(self) -> &'a mut crate::W<REG> {
         self.variant(UNALIGN_TRPSELECT_A::VALUE_1)
     }
 }
 #[doc = "Field `DIV_0_TRP` reader - Enables divide by 0 trap"]
-pub type DIV_0_TRP_R = crate::BitReader<bool>;
+pub type DIV_0_TRP_R = crate::BitReader;
 #[doc = "Field `DIV_0_TRP` writer - Enables divide by 0 trap"]
-pub type DIV_0_TRP_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCR_SPEC, bool, O>;
+pub type DIV_0_TRP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BFHFNMIGN` reader - Ignore LDM/STM BusFault for -1/-2 priority handlers"]
-pub type BFHFNMIGN_R = crate::BitReader<bool>;
+pub type BFHFNMIGN_R = crate::BitReader;
 #[doc = "Field `BFHFNMIGN` writer - Ignore LDM/STM BusFault for -1/-2 priority handlers"]
-pub type BFHFNMIGN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCR_SPEC, bool, O>;
+pub type BFHFNMIGN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `STKALIGN` reader - Indicates stack alignment on exception entry"]
 pub type STKALIGN_R = crate::BitReader<STKALIGNSELECT_A>;
 #[doc = "Indicates stack alignment on exception entry\n\nValue on reset: 1"]
@@ -120,34 +90,37 @@ impl From<STKALIGNSELECT_A> for bool {
 impl STKALIGN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> STKALIGNSELECT_A {
+    pub const fn variant(&self) -> STKALIGNSELECT_A {
         match self.bits {
             false => STKALIGNSELECT_A::VALUE_0,
             true => STKALIGNSELECT_A::VALUE_1,
         }
     }
-    #[doc = "Checks if the value of the field is `VALUE_0`"]
+    #[doc = "4-byte aligned"]
     #[inline(always)]
     pub fn is_value_0(&self) -> bool {
         *self == STKALIGNSELECT_A::VALUE_0
     }
-    #[doc = "Checks if the value of the field is `VALUE_1`"]
+    #[doc = "8-byte aligned"]
     #[inline(always)]
     pub fn is_value_1(&self) -> bool {
         *self == STKALIGNSELECT_A::VALUE_1
     }
 }
 #[doc = "Field `STKALIGN` writer - Indicates stack alignment on exception entry"]
-pub type STKALIGN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCR_SPEC, STKALIGNSELECT_A, O>;
-impl<'a, const O: u8> STKALIGN_W<'a, O> {
+pub type STKALIGN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, STKALIGNSELECT_A>;
+impl<'a, REG, const O: u8> STKALIGN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "4-byte aligned"]
     #[inline(always)]
-    pub fn value_0(self) -> &'a mut W {
+    pub fn value_0(self) -> &'a mut crate::W<REG> {
         self.variant(STKALIGNSELECT_A::VALUE_0)
     }
     #[doc = "8-byte aligned"]
     #[inline(always)]
-    pub fn value_1(self) -> &'a mut W {
+    pub fn value_1(self) -> &'a mut crate::W<REG> {
         self.variant(STKALIGNSELECT_A::VALUE_1)
     }
 }
@@ -187,58 +160,59 @@ impl W {
     #[doc = "Bit 0 - Indicates how processor enters Thread mode"]
     #[inline(always)]
     #[must_use]
-    pub fn nonbasethrdena(&mut self) -> NONBASETHRDENA_W<0> {
+    pub fn nonbasethrdena(&mut self) -> NONBASETHRDENA_W<CCR_SPEC, 0> {
         NONBASETHRDENA_W::new(self)
     }
     #[doc = "Bit 1 - Enables unprivileged software access to STIR register"]
     #[inline(always)]
     #[must_use]
-    pub fn usersetmpend(&mut self) -> USERSETMPEND_W<1> {
+    pub fn usersetmpend(&mut self) -> USERSETMPEND_W<CCR_SPEC, 1> {
         USERSETMPEND_W::new(self)
     }
     #[doc = "Bit 3 - Enables unaligned access traps"]
     #[inline(always)]
     #[must_use]
-    pub fn unalign_trp(&mut self) -> UNALIGN_TRP_W<3> {
+    pub fn unalign_trp(&mut self) -> UNALIGN_TRP_W<CCR_SPEC, 3> {
         UNALIGN_TRP_W::new(self)
     }
     #[doc = "Bit 4 - Enables divide by 0 trap"]
     #[inline(always)]
     #[must_use]
-    pub fn div_0_trp(&mut self) -> DIV_0_TRP_W<4> {
+    pub fn div_0_trp(&mut self) -> DIV_0_TRP_W<CCR_SPEC, 4> {
         DIV_0_TRP_W::new(self)
     }
     #[doc = "Bit 8 - Ignore LDM/STM BusFault for -1/-2 priority handlers"]
     #[inline(always)]
     #[must_use]
-    pub fn bfhfnmign(&mut self) -> BFHFNMIGN_W<8> {
+    pub fn bfhfnmign(&mut self) -> BFHFNMIGN_W<CCR_SPEC, 8> {
         BFHFNMIGN_W::new(self)
     }
     #[doc = "Bit 9 - Indicates stack alignment on exception entry"]
     #[inline(always)]
     #[must_use]
-    pub fn stkalign(&mut self) -> STKALIGN_W<9> {
+    pub fn stkalign(&mut self) -> STKALIGN_W<CCR_SPEC, 9> {
         STKALIGN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Configuration and Control Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ccr](index.html) module"]
+#[doc = "Configuration and Control Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ccr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ccr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CCR_SPEC;
 impl crate::RegisterSpec for CCR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ccr::R](R) reader structure"]
-impl crate::Readable for CCR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ccr::W](W) writer structure"]
+#[doc = "`read()` method returns [`ccr::R`](R) reader structure"]
+impl crate::Readable for CCR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ccr::W`](W) writer structure"]
 impl crate::Writable for CCR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

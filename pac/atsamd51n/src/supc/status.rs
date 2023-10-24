@@ -1,28 +1,15 @@
 #[doc = "Register `STATUS` reader"]
-pub struct R(crate::R<STATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUS_SPEC>;
 #[doc = "Field `BOD33RDY` reader - BOD33 Ready"]
-pub type BOD33RDY_R = crate::BitReader<bool>;
+pub type BOD33RDY_R = crate::BitReader;
 #[doc = "Field `BOD33DET` reader - BOD33 Detection"]
-pub type BOD33DET_R = crate::BitReader<bool>;
+pub type BOD33DET_R = crate::BitReader;
 #[doc = "Field `B33SRDY` reader - BOD33 Synchronization Ready"]
-pub type B33SRDY_R = crate::BitReader<bool>;
+pub type B33SRDY_R = crate::BitReader;
 #[doc = "Field `VREGRDY` reader - Voltage Regulator Ready"]
-pub type VREGRDY_R = crate::BitReader<bool>;
+pub type VREGRDY_R = crate::BitReader;
 #[doc = "Field `VCORERDY` reader - VDDCORE Ready"]
-pub type VCORERDY_R = crate::BitReader<bool>;
+pub type VCORERDY_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - BOD33 Ready"]
     #[inline(always)]
@@ -50,15 +37,13 @@ impl R {
         VCORERDY_R::new(((self.bits >> 10) & 1) != 0)
     }
 }
-#[doc = "Power and Clocks Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [status](index.html) module"]
+#[doc = "Power and Clocks Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUS_SPEC;
 impl crate::RegisterSpec for STATUS_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [status::R](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`status::R`](R) reader structure"]
+impl crate::Readable for STATUS_SPEC {}
 #[doc = "`reset()` method sets STATUS to value 0"]
 impl crate::Resettable for STATUS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

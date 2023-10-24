@@ -1,24 +1,11 @@
 #[doc = "Register `STATUSA` reader"]
-pub struct R(crate::R<STATUSA_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUSA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUSA_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUSA_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUSA_SPEC>;
 #[doc = "Field `STATE0` reader - Comparator 0 Current State"]
-pub type STATE0_R = crate::BitReader<bool>;
+pub type STATE0_R = crate::BitReader;
 #[doc = "Field `STATE1` reader - Comparator 1 Current State"]
-pub type STATE1_R = crate::BitReader<bool>;
+pub type STATE1_R = crate::BitReader;
 #[doc = "Field `WSTATE0` reader - Window 0 Current State"]
-pub type WSTATE0_R = crate::FieldReader<u8, WSTATE0SELECT_A>;
+pub type WSTATE0_R = crate::FieldReader<WSTATE0SELECT_A>;
 #[doc = "Window 0 Current State\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -36,10 +23,13 @@ impl From<WSTATE0SELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for WSTATE0SELECT_A {
+    type Ux = u8;
+}
 impl WSTATE0_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<WSTATE0SELECT_A> {
+    pub const fn variant(&self) -> Option<WSTATE0SELECT_A> {
         match self.bits {
             0 => Some(WSTATE0SELECT_A::ABOVE),
             1 => Some(WSTATE0SELECT_A::INSIDE),
@@ -47,17 +37,17 @@ impl WSTATE0_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `ABOVE`"]
+    #[doc = "Signal is above window"]
     #[inline(always)]
     pub fn is_above(&self) -> bool {
         *self == WSTATE0SELECT_A::ABOVE
     }
-    #[doc = "Checks if the value of the field is `INSIDE`"]
+    #[doc = "Signal is inside window"]
     #[inline(always)]
     pub fn is_inside(&self) -> bool {
         *self == WSTATE0SELECT_A::INSIDE
     }
-    #[doc = "Checks if the value of the field is `BELOW`"]
+    #[doc = "Signal is below window"]
     #[inline(always)]
     pub fn is_below(&self) -> bool {
         *self == WSTATE0SELECT_A::BELOW
@@ -80,15 +70,13 @@ impl R {
         WSTATE0_R::new((self.bits >> 4) & 3)
     }
 }
-#[doc = "Status A\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusa](index.html) module"]
+#[doc = "Status A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`statusa::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUSA_SPEC;
 impl crate::RegisterSpec for STATUSA_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [statusa::R](R) reader structure"]
-impl crate::Readable for STATUSA_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`statusa::R`](R) reader structure"]
+impl crate::Readable for STATUSA_SPEC {}
 #[doc = "`reset()` method sets STATUSA to value 0"]
 impl crate::Resettable for STATUSA_SPEC {
     const RESET_VALUE: Self::Ux = 0;

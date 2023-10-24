@@ -1,50 +1,37 @@
 #[doc = "Register `STATUSA` reader"]
-pub struct R(crate::R<STATUSA_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUSA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUSA_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUSA_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUSA_SPEC>;
 #[doc = "Field `PAC_` reader - PAC APB Protect Enable"]
-pub type PAC__R = crate::BitReader<bool>;
+pub type PAC__R = crate::BitReader;
 #[doc = "Field `PM_` reader - PM APB Protect Enable"]
-pub type PM__R = crate::BitReader<bool>;
+pub type PM__R = crate::BitReader;
 #[doc = "Field `MCLK_` reader - MCLK APB Protect Enable"]
-pub type MCLK__R = crate::BitReader<bool>;
+pub type MCLK__R = crate::BitReader;
 #[doc = "Field `RSTC_` reader - RSTC APB Protect Enable"]
-pub type RSTC__R = crate::BitReader<bool>;
+pub type RSTC__R = crate::BitReader;
 #[doc = "Field `OSCCTRL_` reader - OSCCTRL APB Protect Enable"]
-pub type OSCCTRL__R = crate::BitReader<bool>;
+pub type OSCCTRL__R = crate::BitReader;
 #[doc = "Field `OSC32KCTRL_` reader - OSC32KCTRL APB Protect Enable"]
-pub type OSC32KCTRL__R = crate::BitReader<bool>;
+pub type OSC32KCTRL__R = crate::BitReader;
 #[doc = "Field `SUPC_` reader - SUPC APB Protect Enable"]
-pub type SUPC__R = crate::BitReader<bool>;
+pub type SUPC__R = crate::BitReader;
 #[doc = "Field `GCLK_` reader - GCLK APB Protect Enable"]
-pub type GCLK__R = crate::BitReader<bool>;
+pub type GCLK__R = crate::BitReader;
 #[doc = "Field `WDT_` reader - WDT APB Protect Enable"]
-pub type WDT__R = crate::BitReader<bool>;
+pub type WDT__R = crate::BitReader;
 #[doc = "Field `RTC_` reader - RTC APB Protect Enable"]
-pub type RTC__R = crate::BitReader<bool>;
+pub type RTC__R = crate::BitReader;
 #[doc = "Field `EIC_` reader - EIC APB Protect Enable"]
-pub type EIC__R = crate::BitReader<bool>;
+pub type EIC__R = crate::BitReader;
 #[doc = "Field `FREQM_` reader - FREQM APB Protect Enable"]
-pub type FREQM__R = crate::BitReader<bool>;
+pub type FREQM__R = crate::BitReader;
 #[doc = "Field `SERCOM0_` reader - SERCOM0 APB Protect Enable"]
-pub type SERCOM0__R = crate::BitReader<bool>;
+pub type SERCOM0__R = crate::BitReader;
 #[doc = "Field `SERCOM1_` reader - SERCOM1 APB Protect Enable"]
-pub type SERCOM1__R = crate::BitReader<bool>;
+pub type SERCOM1__R = crate::BitReader;
 #[doc = "Field `TC0_` reader - TC0 APB Protect Enable"]
-pub type TC0__R = crate::BitReader<bool>;
+pub type TC0__R = crate::BitReader;
 #[doc = "Field `TC1_` reader - TC1 APB Protect Enable"]
-pub type TC1__R = crate::BitReader<bool>;
+pub type TC1__R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - PAC APB Protect Enable"]
     #[inline(always)]
@@ -127,15 +114,13 @@ impl R {
         TC1__R::new(((self.bits >> 15) & 1) != 0)
     }
 }
-#[doc = "Peripheral write protection status - Bridge A\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [statusa](index.html) module"]
+#[doc = "Peripheral write protection status - Bridge A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`statusa::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUSA_SPEC;
 impl crate::RegisterSpec for STATUSA_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [statusa::R](R) reader structure"]
-impl crate::Readable for STATUSA_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`statusa::R`](R) reader structure"]
+impl crate::Readable for STATUSA_SPEC {}
 #[doc = "`reset()` method sets STATUSA to value 0x0001_0000"]
 impl crate::Resettable for STATUSA_SPEC {
     const RESET_VALUE: Self::Ux = 0x0001_0000;

@@ -1,71 +1,39 @@
 #[doc = "Register `INTPEND` reader"]
-pub struct R(crate::R<INTPEND_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTPEND_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTPEND_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTPEND_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTPEND_SPEC>;
 #[doc = "Register `INTPEND` writer"]
-pub struct W(crate::W<INTPEND_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTPEND_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTPEND_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTPEND_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTPEND_SPEC>;
 #[doc = "Field `ID` reader - Channel ID"]
-pub type ID_R = crate::FieldReader<u8, u8>;
+pub type ID_R = crate::FieldReader;
 #[doc = "Field `ID` writer - Channel ID"]
-pub type ID_W<'a, const O: u8> = crate::FieldWriter<'a, u16, INTPEND_SPEC, u8, u8, 5, O>;
+pub type ID_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 5, O>;
 #[doc = "Field `TERR` reader - Transfer Error"]
-pub type TERR_R = crate::BitReader<bool>;
+pub type TERR_R = crate::BitReader;
 #[doc = "Field `TERR` writer - Transfer Error"]
-pub type TERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTPEND_SPEC, bool, O>;
+pub type TERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TCMPL` reader - Transfer Complete"]
-pub type TCMPL_R = crate::BitReader<bool>;
+pub type TCMPL_R = crate::BitReader;
 #[doc = "Field `TCMPL` writer - Transfer Complete"]
-pub type TCMPL_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTPEND_SPEC, bool, O>;
+pub type TCMPL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SUSP` reader - Channel Suspend"]
-pub type SUSP_R = crate::BitReader<bool>;
+pub type SUSP_R = crate::BitReader;
 #[doc = "Field `SUSP` writer - Channel Suspend"]
-pub type SUSP_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTPEND_SPEC, bool, O>;
+pub type SUSP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CRCERR` reader - CRC Error"]
-pub type CRCERR_R = crate::BitReader<bool>;
+pub type CRCERR_R = crate::BitReader;
 #[doc = "Field `CRCERR` writer - CRC Error"]
-pub type CRCERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTPEND_SPEC, bool, O>;
+pub type CRCERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FERR` reader - Fetch Error"]
-pub type FERR_R = crate::BitReader<bool>;
+pub type FERR_R = crate::BitReader;
 #[doc = "Field `FERR` writer - Fetch Error"]
-pub type FERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTPEND_SPEC, bool, O>;
+pub type FERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BUSY` reader - Busy"]
-pub type BUSY_R = crate::BitReader<bool>;
+pub type BUSY_R = crate::BitReader;
 #[doc = "Field `BUSY` writer - Busy"]
-pub type BUSY_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTPEND_SPEC, bool, O>;
+pub type BUSY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEND` reader - Pending"]
-pub type PEND_R = crate::BitReader<bool>;
+pub type PEND_R = crate::BitReader;
 #[doc = "Field `PEND` writer - Pending"]
-pub type PEND_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTPEND_SPEC, bool, O>;
+pub type PEND_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bits 0:4 - Channel ID"]
     #[inline(always)]
@@ -112,70 +80,71 @@ impl W {
     #[doc = "Bits 0:4 - Channel ID"]
     #[inline(always)]
     #[must_use]
-    pub fn id(&mut self) -> ID_W<0> {
+    pub fn id(&mut self) -> ID_W<INTPEND_SPEC, 0> {
         ID_W::new(self)
     }
     #[doc = "Bit 8 - Transfer Error"]
     #[inline(always)]
     #[must_use]
-    pub fn terr(&mut self) -> TERR_W<8> {
+    pub fn terr(&mut self) -> TERR_W<INTPEND_SPEC, 8> {
         TERR_W::new(self)
     }
     #[doc = "Bit 9 - Transfer Complete"]
     #[inline(always)]
     #[must_use]
-    pub fn tcmpl(&mut self) -> TCMPL_W<9> {
+    pub fn tcmpl(&mut self) -> TCMPL_W<INTPEND_SPEC, 9> {
         TCMPL_W::new(self)
     }
     #[doc = "Bit 10 - Channel Suspend"]
     #[inline(always)]
     #[must_use]
-    pub fn susp(&mut self) -> SUSP_W<10> {
+    pub fn susp(&mut self) -> SUSP_W<INTPEND_SPEC, 10> {
         SUSP_W::new(self)
     }
     #[doc = "Bit 12 - CRC Error"]
     #[inline(always)]
     #[must_use]
-    pub fn crcerr(&mut self) -> CRCERR_W<12> {
+    pub fn crcerr(&mut self) -> CRCERR_W<INTPEND_SPEC, 12> {
         CRCERR_W::new(self)
     }
     #[doc = "Bit 13 - Fetch Error"]
     #[inline(always)]
     #[must_use]
-    pub fn ferr(&mut self) -> FERR_W<13> {
+    pub fn ferr(&mut self) -> FERR_W<INTPEND_SPEC, 13> {
         FERR_W::new(self)
     }
     #[doc = "Bit 14 - Busy"]
     #[inline(always)]
     #[must_use]
-    pub fn busy(&mut self) -> BUSY_W<14> {
+    pub fn busy(&mut self) -> BUSY_W<INTPEND_SPEC, 14> {
         BUSY_W::new(self)
     }
     #[doc = "Bit 15 - Pending"]
     #[inline(always)]
     #[must_use]
-    pub fn pend(&mut self) -> PEND_W<15> {
+    pub fn pend(&mut self) -> PEND_W<INTPEND_SPEC, 15> {
         PEND_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Pending\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intpend](index.html) module"]
+#[doc = "Interrupt Pending\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intpend::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intpend::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTPEND_SPEC;
 impl crate::RegisterSpec for INTPEND_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [intpend::R](R) reader structure"]
-impl crate::Readable for INTPEND_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intpend::W](W) writer structure"]
+#[doc = "`read()` method returns [`intpend::R`](R) reader structure"]
+impl crate::Readable for INTPEND_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intpend::W`](W) writer structure"]
 impl crate::Writable for INTPEND_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

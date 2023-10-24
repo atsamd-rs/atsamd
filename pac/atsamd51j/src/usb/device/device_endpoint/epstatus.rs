@@ -1,32 +1,19 @@
 #[doc = "Register `EPSTATUS` reader"]
-pub struct R(crate::R<EPSTATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<EPSTATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<EPSTATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<EPSTATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<EPSTATUS_SPEC>;
 #[doc = "Field `DTGLOUT` reader - Data Toggle Out"]
-pub type DTGLOUT_R = crate::BitReader<bool>;
+pub type DTGLOUT_R = crate::BitReader;
 #[doc = "Field `DTGLIN` reader - Data Toggle In"]
-pub type DTGLIN_R = crate::BitReader<bool>;
+pub type DTGLIN_R = crate::BitReader;
 #[doc = "Field `CURBK` reader - Current Bank"]
-pub type CURBK_R = crate::BitReader<bool>;
+pub type CURBK_R = crate::BitReader;
 #[doc = "Field `STALLRQ0` reader - Stall 0 Request"]
-pub type STALLRQ0_R = crate::BitReader<bool>;
+pub type STALLRQ0_R = crate::BitReader;
 #[doc = "Field `STALLRQ1` reader - Stall 1 Request"]
-pub type STALLRQ1_R = crate::BitReader<bool>;
+pub type STALLRQ1_R = crate::BitReader;
 #[doc = "Field `BK0RDY` reader - Bank 0 ready"]
-pub type BK0RDY_R = crate::BitReader<bool>;
+pub type BK0RDY_R = crate::BitReader;
 #[doc = "Field `BK1RDY` reader - Bank 1 ready"]
-pub type BK1RDY_R = crate::BitReader<bool>;
+pub type BK1RDY_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Data Toggle Out"]
     #[inline(always)]
@@ -64,15 +51,13 @@ impl R {
         BK1RDY_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
-#[doc = "DEVICE_ENDPOINT End Point Pipe Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [epstatus](index.html) module"]
+#[doc = "DEVICE_ENDPOINT End Point Pipe Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`epstatus::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct EPSTATUS_SPEC;
 impl crate::RegisterSpec for EPSTATUS_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [epstatus::R](R) reader structure"]
-impl crate::Readable for EPSTATUS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`epstatus::R`](R) reader structure"]
+impl crate::Readable for EPSTATUS_SPEC {}
 #[doc = "`reset()` method sets EPSTATUS to value 0"]
 impl crate::Resettable for EPSTATUS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

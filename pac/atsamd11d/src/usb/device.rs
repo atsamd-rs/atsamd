@@ -167,87 +167,108 @@ pub struct DEVICE {
     #[doc = "0x1e9 - DEVICE End Point Interrupt Set Flag"]
     pub epintenset7: EPINTENSET,
 }
-#[doc = "CTRLA (rw) register accessor: an alias for `Reg<CTRLA_SPEC>`"]
+#[doc = "CTRLA (rw) register accessor: Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrla`]
+module"]
 pub type CTRLA = crate::Reg<ctrla::CTRLA_SPEC>;
 #[doc = "Control A"]
 pub mod ctrla;
-#[doc = "SYNCBUSY (r) register accessor: an alias for `Reg<SYNCBUSY_SPEC>`"]
+#[doc = "SYNCBUSY (r) register accessor: Synchronization Busy\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`syncbusy::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@syncbusy`]
+module"]
 pub type SYNCBUSY = crate::Reg<syncbusy::SYNCBUSY_SPEC>;
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
-#[doc = "QOSCTRL (rw) register accessor: an alias for `Reg<QOSCTRL_SPEC>`"]
+#[doc = "QOSCTRL (rw) register accessor: USB Quality Of Service\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`qosctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`qosctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@qosctrl`]
+module"]
 pub type QOSCTRL = crate::Reg<qosctrl::QOSCTRL_SPEC>;
 #[doc = "USB Quality Of Service"]
 pub mod qosctrl;
-#[doc = "CTRLB (rw) register accessor: an alias for `Reg<CTRLB_SPEC>`"]
+#[doc = "CTRLB (rw) register accessor: DEVICE Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrlb`]
+module"]
 pub type CTRLB = crate::Reg<ctrlb::CTRLB_SPEC>;
 #[doc = "DEVICE Control B"]
 pub mod ctrlb;
-#[doc = "DADD (rw) register accessor: an alias for `Reg<DADD_SPEC>`"]
+#[doc = "DADD (rw) register accessor: DEVICE Device Address\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dadd::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dadd::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dadd`]
+module"]
 pub type DADD = crate::Reg<dadd::DADD_SPEC>;
 #[doc = "DEVICE Device Address"]
 pub mod dadd;
-#[doc = "STATUS (r) register accessor: an alias for `Reg<STATUS_SPEC>`"]
+#[doc = "STATUS (r) register accessor: DEVICE Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@status`]
+module"]
 pub type STATUS = crate::Reg<status::STATUS_SPEC>;
 #[doc = "DEVICE Status"]
 pub mod status;
-#[doc = "FSMSTATUS (r) register accessor: an alias for `Reg<FSMSTATUS_SPEC>`"]
+#[doc = "FSMSTATUS (r) register accessor: Finite State Machine Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`fsmstatus::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@fsmstatus`]
+module"]
 pub type FSMSTATUS = crate::Reg<fsmstatus::FSMSTATUS_SPEC>;
 #[doc = "Finite State Machine Status"]
 pub mod fsmstatus;
-#[doc = "FNUM (r) register accessor: an alias for `Reg<FNUM_SPEC>`"]
+#[doc = "FNUM (r) register accessor: DEVICE Device Frame Number\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`fnum::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@fnum`]
+module"]
 pub type FNUM = crate::Reg<fnum::FNUM_SPEC>;
 #[doc = "DEVICE Device Frame Number"]
 pub mod fnum;
-#[doc = "INTENCLR (rw) register accessor: an alias for `Reg<INTENCLR_SPEC>`"]
+#[doc = "INTENCLR (rw) register accessor: DEVICE Device Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`]
+module"]
 pub type INTENCLR = crate::Reg<intenclr::INTENCLR_SPEC>;
 #[doc = "DEVICE Device Interrupt Enable Clear"]
 pub mod intenclr;
-#[doc = "INTENSET (rw) register accessor: an alias for `Reg<INTENSET_SPEC>`"]
+#[doc = "INTENSET (rw) register accessor: DEVICE Device Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`]
+module"]
 pub type INTENSET = crate::Reg<intenset::INTENSET_SPEC>;
 #[doc = "DEVICE Device Interrupt Enable Set"]
 pub mod intenset;
-#[doc = "INTFLAG (rw) register accessor: an alias for `Reg<INTFLAG_SPEC>`"]
+#[doc = "INTFLAG (rw) register accessor: DEVICE Device Interrupt Flag\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`]
+module"]
 pub type INTFLAG = crate::Reg<intflag::INTFLAG_SPEC>;
 #[doc = "DEVICE Device Interrupt Flag"]
 pub mod intflag;
-#[doc = "EPINTSMRY (r) register accessor: an alias for `Reg<EPINTSMRY_SPEC>`"]
+#[doc = "EPINTSMRY (r) register accessor: DEVICE End Point Interrupt Summary\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`epintsmry::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@epintsmry`]
+module"]
 pub type EPINTSMRY = crate::Reg<epintsmry::EPINTSMRY_SPEC>;
 #[doc = "DEVICE End Point Interrupt Summary"]
 pub mod epintsmry;
-#[doc = "DESCADD (rw) register accessor: an alias for `Reg<DESCADD_SPEC>`"]
+#[doc = "DESCADD (rw) register accessor: Descriptor Address\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`descadd::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`descadd::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@descadd`]
+module"]
 pub type DESCADD = crate::Reg<descadd::DESCADD_SPEC>;
 #[doc = "Descriptor Address"]
 pub mod descadd;
-#[doc = "PADCAL (rw) register accessor: an alias for `Reg<PADCAL_SPEC>`"]
+#[doc = "PADCAL (rw) register accessor: USB PAD Calibration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`padcal::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`padcal::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@padcal`]
+module"]
 pub type PADCAL = crate::Reg<padcal::PADCAL_SPEC>;
 #[doc = "USB PAD Calibration"]
 pub mod padcal;
-#[doc = "EPCFG (rw) register accessor: an alias for `Reg<EPCFG_SPEC>`"]
+#[doc = "EPCFG (rw) register accessor: DEVICE End Point Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`epcfg::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`epcfg::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@epcfg`]
+module"]
 pub type EPCFG = crate::Reg<epcfg::EPCFG_SPEC>;
 #[doc = "DEVICE End Point Configuration"]
 pub mod epcfg;
-#[doc = "EPSTATUSCLR (w) register accessor: an alias for `Reg<EPSTATUSCLR_SPEC>`"]
+#[doc = "EPSTATUSCLR (w) register accessor: DEVICE End Point Pipe Status Clear\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`epstatusclr::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@epstatusclr`]
+module"]
 pub type EPSTATUSCLR = crate::Reg<epstatusclr::EPSTATUSCLR_SPEC>;
 #[doc = "DEVICE End Point Pipe Status Clear"]
 pub mod epstatusclr;
-#[doc = "EPSTATUSSET (w) register accessor: an alias for `Reg<EPSTATUSSET_SPEC>`"]
+#[doc = "EPSTATUSSET (w) register accessor: DEVICE End Point Pipe Status Set\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`epstatusset::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@epstatusset`]
+module"]
 pub type EPSTATUSSET = crate::Reg<epstatusset::EPSTATUSSET_SPEC>;
 #[doc = "DEVICE End Point Pipe Status Set"]
 pub mod epstatusset;
-#[doc = "EPSTATUS (r) register accessor: an alias for `Reg<EPSTATUS_SPEC>`"]
+#[doc = "EPSTATUS (r) register accessor: DEVICE End Point Pipe Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`epstatus::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@epstatus`]
+module"]
 pub type EPSTATUS = crate::Reg<epstatus::EPSTATUS_SPEC>;
 #[doc = "DEVICE End Point Pipe Status"]
 pub mod epstatus;
-#[doc = "EPINTFLAG (rw) register accessor: an alias for `Reg<EPINTFLAG_SPEC>`"]
+#[doc = "EPINTFLAG (rw) register accessor: DEVICE End Point Interrupt Flag\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`epintflag::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`epintflag::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@epintflag`]
+module"]
 pub type EPINTFLAG = crate::Reg<epintflag::EPINTFLAG_SPEC>;
 #[doc = "DEVICE End Point Interrupt Flag"]
 pub mod epintflag;
-#[doc = "EPINTENCLR (rw) register accessor: an alias for `Reg<EPINTENCLR_SPEC>`"]
+#[doc = "EPINTENCLR (rw) register accessor: DEVICE End Point Interrupt Clear Flag\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`epintenclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`epintenclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@epintenclr`]
+module"]
 pub type EPINTENCLR = crate::Reg<epintenclr::EPINTENCLR_SPEC>;
 #[doc = "DEVICE End Point Interrupt Clear Flag"]
 pub mod epintenclr;
-#[doc = "EPINTENSET (rw) register accessor: an alias for `Reg<EPINTENSET_SPEC>`"]
+#[doc = "EPINTENSET (rw) register accessor: DEVICE End Point Interrupt Set Flag\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`epintenset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`epintenset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@epintenset`]
+module"]
 pub type EPINTENSET = crate::Reg<epintenset::EPINTENSET_SPEC>;
 #[doc = "DEVICE End Point Interrupt Set Flag"]
 pub mod epintenset;

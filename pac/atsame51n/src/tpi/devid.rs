@@ -1,30 +1,17 @@
 #[doc = "Register `DEVID` reader"]
-pub struct R(crate::R<DEVID_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DEVID_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DEVID_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DEVID_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DEVID_SPEC>;
 #[doc = "Field `NrTraceInput` reader - "]
-pub type NR_TRACE_INPUT_R = crate::BitReader<bool>;
+pub type NR_TRACE_INPUT_R = crate::BitReader;
 #[doc = "Field `AsynClkIn` reader - "]
-pub type ASYN_CLK_IN_R = crate::BitReader<bool>;
+pub type ASYN_CLK_IN_R = crate::BitReader;
 #[doc = "Field `MinBufSz` reader - "]
-pub type MIN_BUF_SZ_R = crate::FieldReader<u8, u8>;
+pub type MIN_BUF_SZ_R = crate::FieldReader;
 #[doc = "Field `PTINVALID` reader - "]
-pub type PTINVALID_R = crate::BitReader<bool>;
+pub type PTINVALID_R = crate::BitReader;
 #[doc = "Field `MANCVALID` reader - "]
-pub type MANCVALID_R = crate::BitReader<bool>;
+pub type MANCVALID_R = crate::BitReader;
 #[doc = "Field `NRZVALID` reader - "]
-pub type NRZVALID_R = crate::BitReader<bool>;
+pub type NRZVALID_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0"]
     #[inline(always)]
@@ -57,15 +44,13 @@ impl R {
         NRZVALID_R::new(((self.bits >> 11) & 1) != 0)
     }
 }
-#[doc = "TPIU_DEVID\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [devid](index.html) module"]
+#[doc = "TPIU_DEVID\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`devid::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DEVID_SPEC;
 impl crate::RegisterSpec for DEVID_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [devid::R](R) reader structure"]
-impl crate::Readable for DEVID_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`devid::R`](R) reader structure"]
+impl crate::Readable for DEVID_SPEC {}
 #[doc = "`reset()` method sets DEVID to value 0"]
 impl crate::Resettable for DEVID_SPEC {
     const RESET_VALUE: Self::Ux = 0;

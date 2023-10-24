@@ -1,61 +1,29 @@
 #[doc = "Register `CTRLB` reader"]
-pub struct R(crate::R<CTRLB_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLB_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLB_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLB_SPEC>;
 #[doc = "Register `CTRLB` writer"]
-pub struct W(crate::W<CTRLB_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLB_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLB_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLB_SPEC>;
 #[doc = "Field `EOEN` reader - External Output Enable"]
-pub type EOEN_R = crate::BitReader<bool>;
+pub type EOEN_R = crate::BitReader;
 #[doc = "Field `EOEN` writer - External Output Enable"]
-pub type EOEN_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
+pub type EOEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `IOEN` reader - Internal Output Enable"]
-pub type IOEN_R = crate::BitReader<bool>;
+pub type IOEN_R = crate::BitReader;
 #[doc = "Field `IOEN` writer - Internal Output Enable"]
-pub type IOEN_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
+pub type IOEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LEFTADJ` reader - Left Adjusted Data"]
-pub type LEFTADJ_R = crate::BitReader<bool>;
+pub type LEFTADJ_R = crate::BitReader;
 #[doc = "Field `LEFTADJ` writer - Left Adjusted Data"]
-pub type LEFTADJ_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
+pub type LEFTADJ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `VPD` reader - Voltage Pump Disable"]
-pub type VPD_R = crate::BitReader<bool>;
+pub type VPD_R = crate::BitReader;
 #[doc = "Field `VPD` writer - Voltage Pump Disable"]
-pub type VPD_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
+pub type VPD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BDWP` reader - Bypass DATABUF Write Protection"]
-pub type BDWP_R = crate::BitReader<bool>;
+pub type BDWP_R = crate::BitReader;
 #[doc = "Field `BDWP` writer - Bypass DATABUF Write Protection"]
-pub type BDWP_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
+pub type BDWP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `REFSEL` reader - Reference Selection"]
-pub type REFSEL_R = crate::FieldReader<u8, REFSELSELECT_A>;
+pub type REFSEL_R = crate::FieldReader<REFSELSELECT_A>;
 #[doc = "Reference Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -73,10 +41,13 @@ impl From<REFSELSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for REFSELSELECT_A {
+    type Ux = u8;
+}
 impl REFSEL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<REFSELSELECT_A> {
+    pub const fn variant(&self) -> Option<REFSELSELECT_A> {
         match self.bits {
             0 => Some(REFSELSELECT_A::INT1V),
             1 => Some(REFSELSELECT_A::AVCC),
@@ -84,39 +55,42 @@ impl REFSEL_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `INT1V`"]
+    #[doc = "Internal 1.0V reference"]
     #[inline(always)]
     pub fn is_int1v(&self) -> bool {
         *self == REFSELSELECT_A::INT1V
     }
-    #[doc = "Checks if the value of the field is `AVCC`"]
+    #[doc = "AVCC"]
     #[inline(always)]
     pub fn is_avcc(&self) -> bool {
         *self == REFSELSELECT_A::AVCC
     }
-    #[doc = "Checks if the value of the field is `VREFP`"]
+    #[doc = "External reference"]
     #[inline(always)]
     pub fn is_vrefp(&self) -> bool {
         *self == REFSELSELECT_A::VREFP
     }
 }
 #[doc = "Field `REFSEL` writer - Reference Selection"]
-pub type REFSEL_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u8, CTRLB_SPEC, u8, REFSELSELECT_A, 2, O>;
-impl<'a, const O: u8> REFSEL_W<'a, O> {
+pub type REFSEL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, REFSELSELECT_A>;
+impl<'a, REG, const O: u8> REFSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Internal 1.0V reference"]
     #[inline(always)]
-    pub fn int1v(self) -> &'a mut W {
+    pub fn int1v(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::INT1V)
     }
     #[doc = "AVCC"]
     #[inline(always)]
-    pub fn avcc(self) -> &'a mut W {
+    pub fn avcc(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::AVCC)
     }
     #[doc = "External reference"]
     #[inline(always)]
-    pub fn vrefp(self) -> &'a mut W {
+    pub fn vrefp(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::VREFP)
     }
 }
@@ -156,58 +130,59 @@ impl W {
     #[doc = "Bit 0 - External Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn eoen(&mut self) -> EOEN_W<0> {
+    pub fn eoen(&mut self) -> EOEN_W<CTRLB_SPEC, 0> {
         EOEN_W::new(self)
     }
     #[doc = "Bit 1 - Internal Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ioen(&mut self) -> IOEN_W<1> {
+    pub fn ioen(&mut self) -> IOEN_W<CTRLB_SPEC, 1> {
         IOEN_W::new(self)
     }
     #[doc = "Bit 2 - Left Adjusted Data"]
     #[inline(always)]
     #[must_use]
-    pub fn leftadj(&mut self) -> LEFTADJ_W<2> {
+    pub fn leftadj(&mut self) -> LEFTADJ_W<CTRLB_SPEC, 2> {
         LEFTADJ_W::new(self)
     }
     #[doc = "Bit 3 - Voltage Pump Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn vpd(&mut self) -> VPD_W<3> {
+    pub fn vpd(&mut self) -> VPD_W<CTRLB_SPEC, 3> {
         VPD_W::new(self)
     }
     #[doc = "Bit 4 - Bypass DATABUF Write Protection"]
     #[inline(always)]
     #[must_use]
-    pub fn bdwp(&mut self) -> BDWP_W<4> {
+    pub fn bdwp(&mut self) -> BDWP_W<CTRLB_SPEC, 4> {
         BDWP_W::new(self)
     }
     #[doc = "Bits 6:7 - Reference Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn refsel(&mut self) -> REFSEL_W<6> {
+    pub fn refsel(&mut self) -> REFSEL_W<CTRLB_SPEC, 6> {
         REFSEL_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Control B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlb](index.html) module"]
+#[doc = "Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLB_SPEC;
 impl crate::RegisterSpec for CTRLB_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [ctrlb::R](R) reader structure"]
-impl crate::Readable for CTRLB_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrlb::R`](R) reader structure"]
+impl crate::Readable for CTRLB_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

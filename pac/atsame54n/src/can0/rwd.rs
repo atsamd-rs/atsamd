@@ -1,47 +1,15 @@
 #[doc = "Register `RWD` reader"]
-pub struct R(crate::R<RWD_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<RWD_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<RWD_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<RWD_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<RWD_SPEC>;
 #[doc = "Register `RWD` writer"]
-pub struct W(crate::W<RWD_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<RWD_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<RWD_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<RWD_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<RWD_SPEC>;
 #[doc = "Field `WDC` reader - Watchdog Configuration"]
-pub type WDC_R = crate::FieldReader<u8, u8>;
+pub type WDC_R = crate::FieldReader;
 #[doc = "Field `WDC` writer - Watchdog Configuration"]
-pub type WDC_W<'a, const O: u8> = crate::FieldWriter<'a, u32, RWD_SPEC, u8, u8, 8, O>;
+pub type WDC_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 #[doc = "Field `WDV` reader - Watchdog Value"]
-pub type WDV_R = crate::FieldReader<u8, u8>;
+pub type WDV_R = crate::FieldReader;
 #[doc = "Field `WDV` writer - Watchdog Value"]
-pub type WDV_W<'a, const O: u8> = crate::FieldWriter<'a, u32, RWD_SPEC, u8, u8, 8, O>;
+pub type WDV_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Watchdog Configuration"]
     #[inline(always)]
@@ -58,34 +26,35 @@ impl W {
     #[doc = "Bits 0:7 - Watchdog Configuration"]
     #[inline(always)]
     #[must_use]
-    pub fn wdc(&mut self) -> WDC_W<0> {
+    pub fn wdc(&mut self) -> WDC_W<RWD_SPEC, 0> {
         WDC_W::new(self)
     }
     #[doc = "Bits 8:15 - Watchdog Value"]
     #[inline(always)]
     #[must_use]
-    pub fn wdv(&mut self) -> WDV_W<8> {
+    pub fn wdv(&mut self) -> WDV_W<RWD_SPEC, 8> {
         WDV_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "RAM Watchdog\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rwd](index.html) module"]
+#[doc = "RAM Watchdog\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`rwd::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`rwd::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct RWD_SPEC;
 impl crate::RegisterSpec for RWD_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [rwd::R](R) reader structure"]
-impl crate::Readable for RWD_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [rwd::W](W) writer structure"]
+#[doc = "`read()` method returns [`rwd::R`](R) reader structure"]
+impl crate::Readable for RWD_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`rwd::W`](W) writer structure"]
 impl crate::Writable for RWD_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

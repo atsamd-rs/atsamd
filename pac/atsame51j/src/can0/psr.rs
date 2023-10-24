@@ -1,20 +1,7 @@
 #[doc = "Register `PSR` reader"]
-pub struct R(crate::R<PSR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PSR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PSR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PSR_SPEC>;
 #[doc = "Field `LEC` reader - Last Error Code"]
-pub type LEC_R = crate::FieldReader<u8, LECSELECT_A>;
+pub type LEC_R = crate::FieldReader<LECSELECT_A>;
 #[doc = "Last Error Code\n\nValue on reset: 7"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -42,10 +29,13 @@ impl From<LECSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for LECSELECT_A {
+    type Ux = u8;
+}
 impl LEC_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> LECSELECT_A {
+    pub const fn variant(&self) -> LECSELECT_A {
         match self.bits {
             0 => LECSELECT_A::NONE,
             1 => LECSELECT_A::STUFF,
@@ -58,49 +48,49 @@ impl LEC_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No Error"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
         *self == LECSELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `STUFF`"]
+    #[doc = "Stuff Error"]
     #[inline(always)]
     pub fn is_stuff(&self) -> bool {
         *self == LECSELECT_A::STUFF
     }
-    #[doc = "Checks if the value of the field is `FORM`"]
+    #[doc = "Form Error"]
     #[inline(always)]
     pub fn is_form(&self) -> bool {
         *self == LECSELECT_A::FORM
     }
-    #[doc = "Checks if the value of the field is `ACK`"]
+    #[doc = "Ack Error"]
     #[inline(always)]
     pub fn is_ack(&self) -> bool {
         *self == LECSELECT_A::ACK
     }
-    #[doc = "Checks if the value of the field is `BIT1`"]
+    #[doc = "Bit1 Error"]
     #[inline(always)]
     pub fn is_bit1(&self) -> bool {
         *self == LECSELECT_A::BIT1
     }
-    #[doc = "Checks if the value of the field is `BIT0`"]
+    #[doc = "Bit0 Error"]
     #[inline(always)]
     pub fn is_bit0(&self) -> bool {
         *self == LECSELECT_A::BIT0
     }
-    #[doc = "Checks if the value of the field is `CRC`"]
+    #[doc = "CRC Error"]
     #[inline(always)]
     pub fn is_crc(&self) -> bool {
         *self == LECSELECT_A::CRC
     }
-    #[doc = "Checks if the value of the field is `NC`"]
+    #[doc = "No Change"]
     #[inline(always)]
     pub fn is_nc(&self) -> bool {
         *self == LECSELECT_A::NC
     }
 }
 #[doc = "Field `ACT` reader - Activity"]
-pub type ACT_R = crate::FieldReader<u8, ACTSELECT_A>;
+pub type ACT_R = crate::FieldReader<ACTSELECT_A>;
 #[doc = "Activity\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -120,10 +110,13 @@ impl From<ACTSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for ACTSELECT_A {
+    type Ux = u8;
+}
 impl ACT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ACTSELECT_A {
+    pub const fn variant(&self) -> ACTSELECT_A {
         match self.bits {
             0 => ACTSELECT_A::SYNC,
             1 => ACTSELECT_A::IDLE,
@@ -132,35 +125,35 @@ impl ACT_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `SYNC`"]
+    #[doc = "Node is synchronizing on CAN communication"]
     #[inline(always)]
     pub fn is_sync(&self) -> bool {
         *self == ACTSELECT_A::SYNC
     }
-    #[doc = "Checks if the value of the field is `IDLE`"]
+    #[doc = "Node is neither receiver nor transmitter"]
     #[inline(always)]
     pub fn is_idle(&self) -> bool {
         *self == ACTSELECT_A::IDLE
     }
-    #[doc = "Checks if the value of the field is `RX`"]
+    #[doc = "Node is operating as receiver"]
     #[inline(always)]
     pub fn is_rx(&self) -> bool {
         *self == ACTSELECT_A::RX
     }
-    #[doc = "Checks if the value of the field is `TX`"]
+    #[doc = "Node is operating as transmitter"]
     #[inline(always)]
     pub fn is_tx(&self) -> bool {
         *self == ACTSELECT_A::TX
     }
 }
 #[doc = "Field `EP` reader - Error Passive"]
-pub type EP_R = crate::BitReader<bool>;
+pub type EP_R = crate::BitReader;
 #[doc = "Field `EW` reader - Warning Status"]
-pub type EW_R = crate::BitReader<bool>;
+pub type EW_R = crate::BitReader;
 #[doc = "Field `BO` reader - Bus_Off Status"]
-pub type BO_R = crate::BitReader<bool>;
+pub type BO_R = crate::BitReader;
 #[doc = "Field `DLEC` reader - Data Phase Last Error Code"]
-pub type DLEC_R = crate::FieldReader<u8, DLECSELECT_A>;
+pub type DLEC_R = crate::FieldReader<DLECSELECT_A>;
 #[doc = "Data Phase Last Error Code\n\nValue on reset: 7"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -188,10 +181,13 @@ impl From<DLECSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for DLECSELECT_A {
+    type Ux = u8;
+}
 impl DLEC_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DLECSELECT_A {
+    pub const fn variant(&self) -> DLECSELECT_A {
         match self.bits {
             0 => DLECSELECT_A::NONE,
             1 => DLECSELECT_A::STUFF,
@@ -204,57 +200,57 @@ impl DLEC_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No Error"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
         *self == DLECSELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `STUFF`"]
+    #[doc = "Stuff Error"]
     #[inline(always)]
     pub fn is_stuff(&self) -> bool {
         *self == DLECSELECT_A::STUFF
     }
-    #[doc = "Checks if the value of the field is `FORM`"]
+    #[doc = "Form Error"]
     #[inline(always)]
     pub fn is_form(&self) -> bool {
         *self == DLECSELECT_A::FORM
     }
-    #[doc = "Checks if the value of the field is `ACK`"]
+    #[doc = "Ack Error"]
     #[inline(always)]
     pub fn is_ack(&self) -> bool {
         *self == DLECSELECT_A::ACK
     }
-    #[doc = "Checks if the value of the field is `BIT1`"]
+    #[doc = "Bit1 Error"]
     #[inline(always)]
     pub fn is_bit1(&self) -> bool {
         *self == DLECSELECT_A::BIT1
     }
-    #[doc = "Checks if the value of the field is `BIT0`"]
+    #[doc = "Bit0 Error"]
     #[inline(always)]
     pub fn is_bit0(&self) -> bool {
         *self == DLECSELECT_A::BIT0
     }
-    #[doc = "Checks if the value of the field is `CRC`"]
+    #[doc = "CRC Error"]
     #[inline(always)]
     pub fn is_crc(&self) -> bool {
         *self == DLECSELECT_A::CRC
     }
-    #[doc = "Checks if the value of the field is `NC`"]
+    #[doc = "No Change"]
     #[inline(always)]
     pub fn is_nc(&self) -> bool {
         *self == DLECSELECT_A::NC
     }
 }
 #[doc = "Field `RESI` reader - ESI flag of last received CAN FD Message"]
-pub type RESI_R = crate::BitReader<bool>;
+pub type RESI_R = crate::BitReader;
 #[doc = "Field `RBRS` reader - BRS flag of last received CAN FD Message"]
-pub type RBRS_R = crate::BitReader<bool>;
+pub type RBRS_R = crate::BitReader;
 #[doc = "Field `RFDF` reader - Received a CAN FD Message"]
-pub type RFDF_R = crate::BitReader<bool>;
+pub type RFDF_R = crate::BitReader;
 #[doc = "Field `PXE` reader - Protocol Exception Event"]
-pub type PXE_R = crate::BitReader<bool>;
+pub type PXE_R = crate::BitReader;
 #[doc = "Field `TDCV` reader - Transmitter Delay Compensation Value"]
-pub type TDCV_R = crate::FieldReader<u8, u8>;
+pub type TDCV_R = crate::FieldReader;
 impl R {
     #[doc = "Bits 0:2 - Last Error Code"]
     #[inline(always)]
@@ -312,15 +308,13 @@ impl R {
         TDCV_R::new(((self.bits >> 16) & 0x7f) as u8)
     }
 }
-#[doc = "Protocol Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [psr](index.html) module"]
+#[doc = "Protocol Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`psr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PSR_SPEC;
 impl crate::RegisterSpec for PSR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [psr::R](R) reader structure"]
-impl crate::Readable for PSR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`psr::R`](R) reader structure"]
+impl crate::Readable for PSR_SPEC {}
 #[doc = "`reset()` method sets PSR to value 0x0707"]
 impl crate::Resettable for PSR_SPEC {
     const RESET_VALUE: Self::Ux = 0x0707;

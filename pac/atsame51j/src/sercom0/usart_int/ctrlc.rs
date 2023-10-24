@@ -1,65 +1,33 @@
 #[doc = "Register `CTRLC` reader"]
-pub struct R(crate::R<CTRLC_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLC_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLC_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLC_SPEC>;
 #[doc = "Register `CTRLC` writer"]
-pub struct W(crate::W<CTRLC_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLC_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLC_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLC_SPEC>;
 #[doc = "Field `GTIME` reader - Guard Time"]
-pub type GTIME_R = crate::FieldReader<u8, u8>;
+pub type GTIME_R = crate::FieldReader;
 #[doc = "Field `GTIME` writer - Guard Time"]
-pub type GTIME_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLC_SPEC, u8, u8, 3, O>;
+pub type GTIME_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O>;
 #[doc = "Field `BRKLEN` reader - LIN Master Break Length"]
-pub type BRKLEN_R = crate::FieldReader<u8, u8>;
+pub type BRKLEN_R = crate::FieldReader;
 #[doc = "Field `BRKLEN` writer - LIN Master Break Length"]
-pub type BRKLEN_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLC_SPEC, u8, u8, 2, O>;
+pub type BRKLEN_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `HDRDLY` reader - LIN Master Header Delay"]
-pub type HDRDLY_R = crate::FieldReader<u8, u8>;
+pub type HDRDLY_R = crate::FieldReader;
 #[doc = "Field `HDRDLY` writer - LIN Master Header Delay"]
-pub type HDRDLY_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLC_SPEC, u8, u8, 2, O>;
+pub type HDRDLY_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `INACK` reader - Inhibit Not Acknowledge"]
-pub type INACK_R = crate::BitReader<bool>;
+pub type INACK_R = crate::BitReader;
 #[doc = "Field `INACK` writer - Inhibit Not Acknowledge"]
-pub type INACK_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLC_SPEC, bool, O>;
+pub type INACK_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DSNACK` reader - Disable Successive NACK"]
-pub type DSNACK_R = crate::BitReader<bool>;
+pub type DSNACK_R = crate::BitReader;
 #[doc = "Field `DSNACK` writer - Disable Successive NACK"]
-pub type DSNACK_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLC_SPEC, bool, O>;
+pub type DSNACK_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MAXITER` reader - Maximum Iterations"]
-pub type MAXITER_R = crate::FieldReader<u8, u8>;
+pub type MAXITER_R = crate::FieldReader;
 #[doc = "Field `MAXITER` writer - Maximum Iterations"]
-pub type MAXITER_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLC_SPEC, u8, u8, 3, O>;
+pub type MAXITER_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O>;
 #[doc = "Field `DATA32B` reader - Data 32 Bit"]
-pub type DATA32B_R = crate::FieldReader<u8, DATA32BSELECT_A>;
+pub type DATA32B_R = crate::FieldReader<DATA32BSELECT_A>;
 #[doc = "Data 32 Bit\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -79,10 +47,13 @@ impl From<DATA32BSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for DATA32BSELECT_A {
+    type Ux = u8;
+}
 impl DATA32B_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DATA32BSELECT_A {
+    pub const fn variant(&self) -> DATA32BSELECT_A {
         match self.bits {
             0 => DATA32BSELECT_A::DATA_READ_WRITE_CHSIZE,
             1 => DATA32BSELECT_A::DATA_READ_CHSIZE_WRITE_32BIT,
@@ -91,49 +62,52 @@ impl DATA32B_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `DATA_READ_WRITE_CHSIZE`"]
+    #[doc = "Data reads and writes according CTRLB.CHSIZE"]
     #[inline(always)]
     pub fn is_data_read_write_chsize(&self) -> bool {
         *self == DATA32BSELECT_A::DATA_READ_WRITE_CHSIZE
     }
-    #[doc = "Checks if the value of the field is `DATA_READ_CHSIZE_WRITE_32BIT`"]
+    #[doc = "Data reads according CTRLB.CHSIZE and writes according 32-bit extension"]
     #[inline(always)]
     pub fn is_data_read_chsize_write_32bit(&self) -> bool {
         *self == DATA32BSELECT_A::DATA_READ_CHSIZE_WRITE_32BIT
     }
-    #[doc = "Checks if the value of the field is `DATA_READ_32BIT_WRITE_CHSIZE`"]
+    #[doc = "Data reads according 32-bit extension and writes according CTRLB.CHSIZE"]
     #[inline(always)]
     pub fn is_data_read_32bit_write_chsize(&self) -> bool {
         *self == DATA32BSELECT_A::DATA_READ_32BIT_WRITE_CHSIZE
     }
-    #[doc = "Checks if the value of the field is `DATA_READ_WRITE_32BIT`"]
+    #[doc = "Data reads and writes according 32-bit extension"]
     #[inline(always)]
     pub fn is_data_read_write_32bit(&self) -> bool {
         *self == DATA32BSELECT_A::DATA_READ_WRITE_32BIT
     }
 }
 #[doc = "Field `DATA32B` writer - Data 32 Bit"]
-pub type DATA32B_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, CTRLC_SPEC, u8, DATA32BSELECT_A, 2, O>;
-impl<'a, const O: u8> DATA32B_W<'a, O> {
+pub type DATA32B_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, DATA32BSELECT_A>;
+impl<'a, REG, const O: u8> DATA32B_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Data reads and writes according CTRLB.CHSIZE"]
     #[inline(always)]
-    pub fn data_read_write_chsize(self) -> &'a mut W {
+    pub fn data_read_write_chsize(self) -> &'a mut crate::W<REG> {
         self.variant(DATA32BSELECT_A::DATA_READ_WRITE_CHSIZE)
     }
     #[doc = "Data reads according CTRLB.CHSIZE and writes according 32-bit extension"]
     #[inline(always)]
-    pub fn data_read_chsize_write_32bit(self) -> &'a mut W {
+    pub fn data_read_chsize_write_32bit(self) -> &'a mut crate::W<REG> {
         self.variant(DATA32BSELECT_A::DATA_READ_CHSIZE_WRITE_32BIT)
     }
     #[doc = "Data reads according 32-bit extension and writes according CTRLB.CHSIZE"]
     #[inline(always)]
-    pub fn data_read_32bit_write_chsize(self) -> &'a mut W {
+    pub fn data_read_32bit_write_chsize(self) -> &'a mut crate::W<REG> {
         self.variant(DATA32BSELECT_A::DATA_READ_32BIT_WRITE_CHSIZE)
     }
     #[doc = "Data reads and writes according 32-bit extension"]
     #[inline(always)]
-    pub fn data_read_write_32bit(self) -> &'a mut W {
+    pub fn data_read_write_32bit(self) -> &'a mut crate::W<REG> {
         self.variant(DATA32BSELECT_A::DATA_READ_WRITE_32BIT)
     }
 }
@@ -178,64 +152,65 @@ impl W {
     #[doc = "Bits 0:2 - Guard Time"]
     #[inline(always)]
     #[must_use]
-    pub fn gtime(&mut self) -> GTIME_W<0> {
+    pub fn gtime(&mut self) -> GTIME_W<CTRLC_SPEC, 0> {
         GTIME_W::new(self)
     }
     #[doc = "Bits 8:9 - LIN Master Break Length"]
     #[inline(always)]
     #[must_use]
-    pub fn brklen(&mut self) -> BRKLEN_W<8> {
+    pub fn brklen(&mut self) -> BRKLEN_W<CTRLC_SPEC, 8> {
         BRKLEN_W::new(self)
     }
     #[doc = "Bits 10:11 - LIN Master Header Delay"]
     #[inline(always)]
     #[must_use]
-    pub fn hdrdly(&mut self) -> HDRDLY_W<10> {
+    pub fn hdrdly(&mut self) -> HDRDLY_W<CTRLC_SPEC, 10> {
         HDRDLY_W::new(self)
     }
     #[doc = "Bit 16 - Inhibit Not Acknowledge"]
     #[inline(always)]
     #[must_use]
-    pub fn inack(&mut self) -> INACK_W<16> {
+    pub fn inack(&mut self) -> INACK_W<CTRLC_SPEC, 16> {
         INACK_W::new(self)
     }
     #[doc = "Bit 17 - Disable Successive NACK"]
     #[inline(always)]
     #[must_use]
-    pub fn dsnack(&mut self) -> DSNACK_W<17> {
+    pub fn dsnack(&mut self) -> DSNACK_W<CTRLC_SPEC, 17> {
         DSNACK_W::new(self)
     }
     #[doc = "Bits 20:22 - Maximum Iterations"]
     #[inline(always)]
     #[must_use]
-    pub fn maxiter(&mut self) -> MAXITER_W<20> {
+    pub fn maxiter(&mut self) -> MAXITER_W<CTRLC_SPEC, 20> {
         MAXITER_W::new(self)
     }
     #[doc = "Bits 24:25 - Data 32 Bit"]
     #[inline(always)]
     #[must_use]
-    pub fn data32b(&mut self) -> DATA32B_W<24> {
+    pub fn data32b(&mut self) -> DATA32B_W<CTRLC_SPEC, 24> {
         DATA32B_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "USART_INT Control C\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlc](index.html) module"]
+#[doc = "USART_INT Control C\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlc::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlc::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLC_SPEC;
 impl crate::RegisterSpec for CTRLC_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ctrlc::R](R) reader structure"]
-impl crate::Readable for CTRLC_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrlc::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrlc::R`](R) reader structure"]
+impl crate::Readable for CTRLC_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrlc::W`](W) writer structure"]
 impl crate::Writable for CTRLC_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

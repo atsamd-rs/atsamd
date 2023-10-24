@@ -1,45 +1,13 @@
 #[doc = "Register `CTRLB` reader"]
-pub struct R(crate::R<CTRLB_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLB_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLB_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLB_SPEC>;
 #[doc = "Register `CTRLB` writer"]
-pub struct W(crate::W<CTRLB_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLB_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLB_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLB_SPEC>;
 #[doc = "Field `DIFF` reader - Differential mode enable"]
-pub type DIFF_R = crate::BitReader<bool>;
+pub type DIFF_R = crate::BitReader;
 #[doc = "Field `DIFF` writer - Differential mode enable"]
-pub type DIFF_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLB_SPEC, bool, O>;
+pub type DIFF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `REFSEL` reader - Reference Selection for DAC0/1"]
-pub type REFSEL_R = crate::FieldReader<u8, REFSELSELECT_A>;
+pub type REFSEL_R = crate::FieldReader<REFSELSELECT_A>;
 #[doc = "Reference Selection for DAC0/1\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -59,10 +27,13 @@ impl From<REFSELSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for REFSELSELECT_A {
+    type Ux = u8;
+}
 impl REFSEL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> REFSELSELECT_A {
+    pub const fn variant(&self) -> REFSELSELECT_A {
         match self.bits {
             0 => REFSELSELECT_A::VREFPU,
             1 => REFSELSELECT_A::VDDANA,
@@ -71,49 +42,52 @@ impl REFSEL_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `VREFPU`"]
+    #[doc = "External reference unbuffered"]
     #[inline(always)]
     pub fn is_vrefpu(&self) -> bool {
         *self == REFSELSELECT_A::VREFPU
     }
-    #[doc = "Checks if the value of the field is `VDDANA`"]
+    #[doc = "Analog supply"]
     #[inline(always)]
     pub fn is_vddana(&self) -> bool {
         *self == REFSELSELECT_A::VDDANA
     }
-    #[doc = "Checks if the value of the field is `VREFPB`"]
+    #[doc = "External reference buffered"]
     #[inline(always)]
     pub fn is_vrefpb(&self) -> bool {
         *self == REFSELSELECT_A::VREFPB
     }
-    #[doc = "Checks if the value of the field is `INTREF`"]
+    #[doc = "Internal bandgap reference"]
     #[inline(always)]
     pub fn is_intref(&self) -> bool {
         *self == REFSELSELECT_A::INTREF
     }
 }
 #[doc = "Field `REFSEL` writer - Reference Selection for DAC0/1"]
-pub type REFSEL_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u8, CTRLB_SPEC, u8, REFSELSELECT_A, 2, O>;
-impl<'a, const O: u8> REFSEL_W<'a, O> {
+pub type REFSEL_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, REFSELSELECT_A>;
+impl<'a, REG, const O: u8> REFSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "External reference unbuffered"]
     #[inline(always)]
-    pub fn vrefpu(self) -> &'a mut W {
+    pub fn vrefpu(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::VREFPU)
     }
     #[doc = "Analog supply"]
     #[inline(always)]
-    pub fn vddana(self) -> &'a mut W {
+    pub fn vddana(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::VDDANA)
     }
     #[doc = "External reference buffered"]
     #[inline(always)]
-    pub fn vrefpb(self) -> &'a mut W {
+    pub fn vrefpb(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::VREFPB)
     }
     #[doc = "Internal bandgap reference"]
     #[inline(always)]
-    pub fn intref(self) -> &'a mut W {
+    pub fn intref(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::INTREF)
     }
 }
@@ -133,34 +107,35 @@ impl W {
     #[doc = "Bit 0 - Differential mode enable"]
     #[inline(always)]
     #[must_use]
-    pub fn diff(&mut self) -> DIFF_W<0> {
+    pub fn diff(&mut self) -> DIFF_W<CTRLB_SPEC, 0> {
         DIFF_W::new(self)
     }
     #[doc = "Bits 1:2 - Reference Selection for DAC0/1"]
     #[inline(always)]
     #[must_use]
-    pub fn refsel(&mut self) -> REFSEL_W<1> {
+    pub fn refsel(&mut self) -> REFSEL_W<CTRLB_SPEC, 1> {
         REFSEL_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Control B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlb](index.html) module"]
+#[doc = "Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLB_SPEC;
 impl crate::RegisterSpec for CTRLB_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [ctrlb::R](R) reader structure"]
-impl crate::Readable for CTRLB_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrlb::R`](R) reader structure"]
+impl crate::Readable for CTRLB_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

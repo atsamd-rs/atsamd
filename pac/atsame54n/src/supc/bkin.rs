@@ -1,22 +1,9 @@
 #[doc = "Register `BKIN` reader"]
-pub struct R(crate::R<BKIN_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<BKIN_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<BKIN_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<BKIN_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<BKIN_SPEC>;
 #[doc = "Field `BKIN0` reader - Backup Input 0"]
-pub type BKIN0_R = crate::BitReader<bool>;
+pub type BKIN0_R = crate::BitReader;
 #[doc = "Field `BKIN1` reader - Backup Input 1"]
-pub type BKIN1_R = crate::BitReader<bool>;
+pub type BKIN1_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Backup Input 0"]
     #[inline(always)]
@@ -29,15 +16,13 @@ impl R {
         BKIN1_R::new(((self.bits >> 1) & 1) != 0)
     }
 }
-#[doc = "Backup Input Control\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [bkin](index.html) module"]
+#[doc = "Backup Input Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bkin::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct BKIN_SPEC;
 impl crate::RegisterSpec for BKIN_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [bkin::R](R) reader structure"]
-impl crate::Readable for BKIN_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`bkin::R`](R) reader structure"]
+impl crate::Readable for BKIN_SPEC {}
 #[doc = "`reset()` method sets BKIN to value 0"]
 impl crate::Resettable for BKIN_SPEC {
     const RESET_VALUE: Self::Ux = 0;

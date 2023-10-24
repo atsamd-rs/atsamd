@@ -1,159 +1,127 @@
 #[doc = "Register `IR` reader"]
-pub struct R(crate::R<IR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<IR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<IR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<IR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<IR_SPEC>;
 #[doc = "Register `IR` writer"]
-pub struct W(crate::W<IR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<IR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<IR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<IR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<IR_SPEC>;
 #[doc = "Field `RF0N` reader - Rx FIFO 0 New Message"]
-pub type RF0N_R = crate::BitReader<bool>;
+pub type RF0N_R = crate::BitReader;
 #[doc = "Field `RF0N` writer - Rx FIFO 0 New Message"]
-pub type RF0N_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type RF0N_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RF0W` reader - Rx FIFO 0 Watermark Reached"]
-pub type RF0W_R = crate::BitReader<bool>;
+pub type RF0W_R = crate::BitReader;
 #[doc = "Field `RF0W` writer - Rx FIFO 0 Watermark Reached"]
-pub type RF0W_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type RF0W_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RF0F` reader - Rx FIFO 0 Full"]
-pub type RF0F_R = crate::BitReader<bool>;
+pub type RF0F_R = crate::BitReader;
 #[doc = "Field `RF0F` writer - Rx FIFO 0 Full"]
-pub type RF0F_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type RF0F_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RF0L` reader - Rx FIFO 0 Message Lost"]
-pub type RF0L_R = crate::BitReader<bool>;
+pub type RF0L_R = crate::BitReader;
 #[doc = "Field `RF0L` writer - Rx FIFO 0 Message Lost"]
-pub type RF0L_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type RF0L_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RF1N` reader - Rx FIFO 1 New Message"]
-pub type RF1N_R = crate::BitReader<bool>;
+pub type RF1N_R = crate::BitReader;
 #[doc = "Field `RF1N` writer - Rx FIFO 1 New Message"]
-pub type RF1N_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type RF1N_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RF1W` reader - Rx FIFO 1 Watermark Reached"]
-pub type RF1W_R = crate::BitReader<bool>;
+pub type RF1W_R = crate::BitReader;
 #[doc = "Field `RF1W` writer - Rx FIFO 1 Watermark Reached"]
-pub type RF1W_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type RF1W_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RF1F` reader - Rx FIFO 1 FIFO Full"]
-pub type RF1F_R = crate::BitReader<bool>;
+pub type RF1F_R = crate::BitReader;
 #[doc = "Field `RF1F` writer - Rx FIFO 1 FIFO Full"]
-pub type RF1F_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type RF1F_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RF1L` reader - Rx FIFO 1 Message Lost"]
-pub type RF1L_R = crate::BitReader<bool>;
+pub type RF1L_R = crate::BitReader;
 #[doc = "Field `RF1L` writer - Rx FIFO 1 Message Lost"]
-pub type RF1L_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type RF1L_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `HPM` reader - High Priority Message"]
-pub type HPM_R = crate::BitReader<bool>;
+pub type HPM_R = crate::BitReader;
 #[doc = "Field `HPM` writer - High Priority Message"]
-pub type HPM_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type HPM_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TC` reader - Timestamp Completed"]
-pub type TC_R = crate::BitReader<bool>;
+pub type TC_R = crate::BitReader;
 #[doc = "Field `TC` writer - Timestamp Completed"]
-pub type TC_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TCF` reader - Transmission Cancellation Finished"]
-pub type TCF_R = crate::BitReader<bool>;
+pub type TCF_R = crate::BitReader;
 #[doc = "Field `TCF` writer - Transmission Cancellation Finished"]
-pub type TCF_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TCF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TFE` reader - Tx FIFO Empty"]
-pub type TFE_R = crate::BitReader<bool>;
+pub type TFE_R = crate::BitReader;
 #[doc = "Field `TFE` writer - Tx FIFO Empty"]
-pub type TFE_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TFE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TEFN` reader - Tx Event FIFO New Entry"]
-pub type TEFN_R = crate::BitReader<bool>;
+pub type TEFN_R = crate::BitReader;
 #[doc = "Field `TEFN` writer - Tx Event FIFO New Entry"]
-pub type TEFN_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TEFN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TEFW` reader - Tx Event FIFO Watermark Reached"]
-pub type TEFW_R = crate::BitReader<bool>;
+pub type TEFW_R = crate::BitReader;
 #[doc = "Field `TEFW` writer - Tx Event FIFO Watermark Reached"]
-pub type TEFW_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TEFW_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TEFF` reader - Tx Event FIFO Full"]
-pub type TEFF_R = crate::BitReader<bool>;
+pub type TEFF_R = crate::BitReader;
 #[doc = "Field `TEFF` writer - Tx Event FIFO Full"]
-pub type TEFF_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TEFF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TEFL` reader - Tx Event FIFO Element Lost"]
-pub type TEFL_R = crate::BitReader<bool>;
+pub type TEFL_R = crate::BitReader;
 #[doc = "Field `TEFL` writer - Tx Event FIFO Element Lost"]
-pub type TEFL_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TEFL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TSW` reader - Timestamp Wraparound"]
-pub type TSW_R = crate::BitReader<bool>;
+pub type TSW_R = crate::BitReader;
 #[doc = "Field `TSW` writer - Timestamp Wraparound"]
-pub type TSW_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TSW_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MRAF` reader - Message RAM Access Failure"]
-pub type MRAF_R = crate::BitReader<bool>;
+pub type MRAF_R = crate::BitReader;
 #[doc = "Field `MRAF` writer - Message RAM Access Failure"]
-pub type MRAF_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type MRAF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TOO` reader - Timeout Occurred"]
-pub type TOO_R = crate::BitReader<bool>;
+pub type TOO_R = crate::BitReader;
 #[doc = "Field `TOO` writer - Timeout Occurred"]
-pub type TOO_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type TOO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DRX` reader - Message stored to Dedicated Rx Buffer"]
-pub type DRX_R = crate::BitReader<bool>;
+pub type DRX_R = crate::BitReader;
 #[doc = "Field `DRX` writer - Message stored to Dedicated Rx Buffer"]
-pub type DRX_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type DRX_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BEC` reader - Bit Error Corrected"]
-pub type BEC_R = crate::BitReader<bool>;
+pub type BEC_R = crate::BitReader;
 #[doc = "Field `BEC` writer - Bit Error Corrected"]
-pub type BEC_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type BEC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BEU` reader - Bit Error Uncorrected"]
-pub type BEU_R = crate::BitReader<bool>;
+pub type BEU_R = crate::BitReader;
 #[doc = "Field `BEU` writer - Bit Error Uncorrected"]
-pub type BEU_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type BEU_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ELO` reader - Error Logging Overflow"]
-pub type ELO_R = crate::BitReader<bool>;
+pub type ELO_R = crate::BitReader;
 #[doc = "Field `ELO` writer - Error Logging Overflow"]
-pub type ELO_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type ELO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EP` reader - Error Passive"]
-pub type EP_R = crate::BitReader<bool>;
+pub type EP_R = crate::BitReader;
 #[doc = "Field `EP` writer - Error Passive"]
-pub type EP_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type EP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EW` reader - Warning Status"]
-pub type EW_R = crate::BitReader<bool>;
+pub type EW_R = crate::BitReader;
 #[doc = "Field `EW` writer - Warning Status"]
-pub type EW_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type EW_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BO` reader - Bus_Off Status"]
-pub type BO_R = crate::BitReader<bool>;
+pub type BO_R = crate::BitReader;
 #[doc = "Field `BO` writer - Bus_Off Status"]
-pub type BO_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type BO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WDI` reader - Watchdog Interrupt"]
-pub type WDI_R = crate::BitReader<bool>;
+pub type WDI_R = crate::BitReader;
 #[doc = "Field `WDI` writer - Watchdog Interrupt"]
-pub type WDI_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type WDI_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEA` reader - Protocol Error in Arbitration Phase"]
-pub type PEA_R = crate::BitReader<bool>;
+pub type PEA_R = crate::BitReader;
 #[doc = "Field `PEA` writer - Protocol Error in Arbitration Phase"]
-pub type PEA_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type PEA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PED` reader - Protocol Error in Data Phase"]
-pub type PED_R = crate::BitReader<bool>;
+pub type PED_R = crate::BitReader;
 #[doc = "Field `PED` writer - Protocol Error in Data Phase"]
-pub type PED_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type PED_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ARA` reader - Access to Reserved Address"]
-pub type ARA_R = crate::BitReader<bool>;
+pub type ARA_R = crate::BitReader;
 #[doc = "Field `ARA` writer - Access to Reserved Address"]
-pub type ARA_W<'a, const O: u8> = crate::BitWriter<'a, u32, IR_SPEC, bool, O>;
+pub type ARA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Rx FIFO 0 New Message"]
     #[inline(always)]
@@ -310,202 +278,203 @@ impl W {
     #[doc = "Bit 0 - Rx FIFO 0 New Message"]
     #[inline(always)]
     #[must_use]
-    pub fn rf0n(&mut self) -> RF0N_W<0> {
+    pub fn rf0n(&mut self) -> RF0N_W<IR_SPEC, 0> {
         RF0N_W::new(self)
     }
     #[doc = "Bit 1 - Rx FIFO 0 Watermark Reached"]
     #[inline(always)]
     #[must_use]
-    pub fn rf0w(&mut self) -> RF0W_W<1> {
+    pub fn rf0w(&mut self) -> RF0W_W<IR_SPEC, 1> {
         RF0W_W::new(self)
     }
     #[doc = "Bit 2 - Rx FIFO 0 Full"]
     #[inline(always)]
     #[must_use]
-    pub fn rf0f(&mut self) -> RF0F_W<2> {
+    pub fn rf0f(&mut self) -> RF0F_W<IR_SPEC, 2> {
         RF0F_W::new(self)
     }
     #[doc = "Bit 3 - Rx FIFO 0 Message Lost"]
     #[inline(always)]
     #[must_use]
-    pub fn rf0l(&mut self) -> RF0L_W<3> {
+    pub fn rf0l(&mut self) -> RF0L_W<IR_SPEC, 3> {
         RF0L_W::new(self)
     }
     #[doc = "Bit 4 - Rx FIFO 1 New Message"]
     #[inline(always)]
     #[must_use]
-    pub fn rf1n(&mut self) -> RF1N_W<4> {
+    pub fn rf1n(&mut self) -> RF1N_W<IR_SPEC, 4> {
         RF1N_W::new(self)
     }
     #[doc = "Bit 5 - Rx FIFO 1 Watermark Reached"]
     #[inline(always)]
     #[must_use]
-    pub fn rf1w(&mut self) -> RF1W_W<5> {
+    pub fn rf1w(&mut self) -> RF1W_W<IR_SPEC, 5> {
         RF1W_W::new(self)
     }
     #[doc = "Bit 6 - Rx FIFO 1 FIFO Full"]
     #[inline(always)]
     #[must_use]
-    pub fn rf1f(&mut self) -> RF1F_W<6> {
+    pub fn rf1f(&mut self) -> RF1F_W<IR_SPEC, 6> {
         RF1F_W::new(self)
     }
     #[doc = "Bit 7 - Rx FIFO 1 Message Lost"]
     #[inline(always)]
     #[must_use]
-    pub fn rf1l(&mut self) -> RF1L_W<7> {
+    pub fn rf1l(&mut self) -> RF1L_W<IR_SPEC, 7> {
         RF1L_W::new(self)
     }
     #[doc = "Bit 8 - High Priority Message"]
     #[inline(always)]
     #[must_use]
-    pub fn hpm(&mut self) -> HPM_W<8> {
+    pub fn hpm(&mut self) -> HPM_W<IR_SPEC, 8> {
         HPM_W::new(self)
     }
     #[doc = "Bit 9 - Timestamp Completed"]
     #[inline(always)]
     #[must_use]
-    pub fn tc(&mut self) -> TC_W<9> {
+    pub fn tc(&mut self) -> TC_W<IR_SPEC, 9> {
         TC_W::new(self)
     }
     #[doc = "Bit 10 - Transmission Cancellation Finished"]
     #[inline(always)]
     #[must_use]
-    pub fn tcf(&mut self) -> TCF_W<10> {
+    pub fn tcf(&mut self) -> TCF_W<IR_SPEC, 10> {
         TCF_W::new(self)
     }
     #[doc = "Bit 11 - Tx FIFO Empty"]
     #[inline(always)]
     #[must_use]
-    pub fn tfe(&mut self) -> TFE_W<11> {
+    pub fn tfe(&mut self) -> TFE_W<IR_SPEC, 11> {
         TFE_W::new(self)
     }
     #[doc = "Bit 12 - Tx Event FIFO New Entry"]
     #[inline(always)]
     #[must_use]
-    pub fn tefn(&mut self) -> TEFN_W<12> {
+    pub fn tefn(&mut self) -> TEFN_W<IR_SPEC, 12> {
         TEFN_W::new(self)
     }
     #[doc = "Bit 13 - Tx Event FIFO Watermark Reached"]
     #[inline(always)]
     #[must_use]
-    pub fn tefw(&mut self) -> TEFW_W<13> {
+    pub fn tefw(&mut self) -> TEFW_W<IR_SPEC, 13> {
         TEFW_W::new(self)
     }
     #[doc = "Bit 14 - Tx Event FIFO Full"]
     #[inline(always)]
     #[must_use]
-    pub fn teff(&mut self) -> TEFF_W<14> {
+    pub fn teff(&mut self) -> TEFF_W<IR_SPEC, 14> {
         TEFF_W::new(self)
     }
     #[doc = "Bit 15 - Tx Event FIFO Element Lost"]
     #[inline(always)]
     #[must_use]
-    pub fn tefl(&mut self) -> TEFL_W<15> {
+    pub fn tefl(&mut self) -> TEFL_W<IR_SPEC, 15> {
         TEFL_W::new(self)
     }
     #[doc = "Bit 16 - Timestamp Wraparound"]
     #[inline(always)]
     #[must_use]
-    pub fn tsw(&mut self) -> TSW_W<16> {
+    pub fn tsw(&mut self) -> TSW_W<IR_SPEC, 16> {
         TSW_W::new(self)
     }
     #[doc = "Bit 17 - Message RAM Access Failure"]
     #[inline(always)]
     #[must_use]
-    pub fn mraf(&mut self) -> MRAF_W<17> {
+    pub fn mraf(&mut self) -> MRAF_W<IR_SPEC, 17> {
         MRAF_W::new(self)
     }
     #[doc = "Bit 18 - Timeout Occurred"]
     #[inline(always)]
     #[must_use]
-    pub fn too(&mut self) -> TOO_W<18> {
+    pub fn too(&mut self) -> TOO_W<IR_SPEC, 18> {
         TOO_W::new(self)
     }
     #[doc = "Bit 19 - Message stored to Dedicated Rx Buffer"]
     #[inline(always)]
     #[must_use]
-    pub fn drx(&mut self) -> DRX_W<19> {
+    pub fn drx(&mut self) -> DRX_W<IR_SPEC, 19> {
         DRX_W::new(self)
     }
     #[doc = "Bit 20 - Bit Error Corrected"]
     #[inline(always)]
     #[must_use]
-    pub fn bec(&mut self) -> BEC_W<20> {
+    pub fn bec(&mut self) -> BEC_W<IR_SPEC, 20> {
         BEC_W::new(self)
     }
     #[doc = "Bit 21 - Bit Error Uncorrected"]
     #[inline(always)]
     #[must_use]
-    pub fn beu(&mut self) -> BEU_W<21> {
+    pub fn beu(&mut self) -> BEU_W<IR_SPEC, 21> {
         BEU_W::new(self)
     }
     #[doc = "Bit 22 - Error Logging Overflow"]
     #[inline(always)]
     #[must_use]
-    pub fn elo(&mut self) -> ELO_W<22> {
+    pub fn elo(&mut self) -> ELO_W<IR_SPEC, 22> {
         ELO_W::new(self)
     }
     #[doc = "Bit 23 - Error Passive"]
     #[inline(always)]
     #[must_use]
-    pub fn ep(&mut self) -> EP_W<23> {
+    pub fn ep(&mut self) -> EP_W<IR_SPEC, 23> {
         EP_W::new(self)
     }
     #[doc = "Bit 24 - Warning Status"]
     #[inline(always)]
     #[must_use]
-    pub fn ew(&mut self) -> EW_W<24> {
+    pub fn ew(&mut self) -> EW_W<IR_SPEC, 24> {
         EW_W::new(self)
     }
     #[doc = "Bit 25 - Bus_Off Status"]
     #[inline(always)]
     #[must_use]
-    pub fn bo(&mut self) -> BO_W<25> {
+    pub fn bo(&mut self) -> BO_W<IR_SPEC, 25> {
         BO_W::new(self)
     }
     #[doc = "Bit 26 - Watchdog Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn wdi(&mut self) -> WDI_W<26> {
+    pub fn wdi(&mut self) -> WDI_W<IR_SPEC, 26> {
         WDI_W::new(self)
     }
     #[doc = "Bit 27 - Protocol Error in Arbitration Phase"]
     #[inline(always)]
     #[must_use]
-    pub fn pea(&mut self) -> PEA_W<27> {
+    pub fn pea(&mut self) -> PEA_W<IR_SPEC, 27> {
         PEA_W::new(self)
     }
     #[doc = "Bit 28 - Protocol Error in Data Phase"]
     #[inline(always)]
     #[must_use]
-    pub fn ped(&mut self) -> PED_W<28> {
+    pub fn ped(&mut self) -> PED_W<IR_SPEC, 28> {
         PED_W::new(self)
     }
     #[doc = "Bit 29 - Access to Reserved Address"]
     #[inline(always)]
     #[must_use]
-    pub fn ara(&mut self) -> ARA_W<29> {
+    pub fn ara(&mut self) -> ARA_W<IR_SPEC, 29> {
         ARA_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ir](index.html) module"]
+#[doc = "Interrupt\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ir::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ir::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct IR_SPEC;
 impl crate::RegisterSpec for IR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ir::R](R) reader structure"]
-impl crate::Readable for IR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ir::W](W) writer structure"]
+#[doc = "`read()` method returns [`ir::R`](R) reader structure"]
+impl crate::Readable for IR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ir::W`](W) writer structure"]
 impl crate::Writable for IR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

@@ -1,28 +1,15 @@
 #[doc = "Register `CPUID` reader"]
-pub struct R(crate::R<CPUID_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CPUID_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CPUID_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CPUID_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CPUID_SPEC>;
 #[doc = "Field `REVISION` reader - Processor revision number"]
-pub type REVISION_R = crate::FieldReader<u8, u8>;
+pub type REVISION_R = crate::FieldReader;
 #[doc = "Field `PARTNO` reader - Process Part Number, 0xC24=Cortex-M4"]
-pub type PARTNO_R = crate::FieldReader<u16, u16>;
+pub type PARTNO_R = crate::FieldReader<u16>;
 #[doc = "Field `CONSTANT` reader - Constant"]
-pub type CONSTANT_R = crate::FieldReader<u8, u8>;
+pub type CONSTANT_R = crate::FieldReader;
 #[doc = "Field `VARIANT` reader - Variant number"]
-pub type VARIANT_R = crate::FieldReader<u8, u8>;
+pub type VARIANT_R = crate::FieldReader;
 #[doc = "Field `IMPLEMENTER` reader - Implementer code, 0x41=ARM"]
-pub type IMPLEMENTER_R = crate::FieldReader<u8, u8>;
+pub type IMPLEMENTER_R = crate::FieldReader;
 impl R {
     #[doc = "Bits 0:3 - Processor revision number"]
     #[inline(always)]
@@ -50,15 +37,13 @@ impl R {
         IMPLEMENTER_R::new(((self.bits >> 24) & 0xff) as u8)
     }
 }
-#[doc = "CPUID Base Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cpuid](index.html) module"]
+#[doc = "CPUID Base Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cpuid::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CPUID_SPEC;
 impl crate::RegisterSpec for CPUID_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [cpuid::R](R) reader structure"]
-impl crate::Readable for CPUID_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`cpuid::R`](R) reader structure"]
+impl crate::Readable for CPUID_SPEC {}
 #[doc = "`reset()` method sets CPUID to value 0x410f_c240"]
 impl crate::Resettable for CPUID_SPEC {
     const RESET_VALUE: Self::Ux = 0x410f_c240;

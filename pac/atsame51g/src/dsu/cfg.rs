@@ -1,45 +1,13 @@
 #[doc = "Register `CFG` reader"]
-pub struct R(crate::R<CFG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CFG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CFG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CFG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CFG_SPEC>;
 #[doc = "Register `CFG` writer"]
-pub struct W(crate::W<CFG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CFG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CFG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CFG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CFG_SPEC>;
 #[doc = "Field `LQOS` reader - Latency Quality Of Service"]
-pub type LQOS_R = crate::FieldReader<u8, u8>;
+pub type LQOS_R = crate::FieldReader;
 #[doc = "Field `LQOS` writer - Latency Quality Of Service"]
-pub type LQOS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CFG_SPEC, u8, u8, 2, O>;
+pub type LQOS_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `DCCDMALEVEL` reader - DMA Trigger Level"]
-pub type DCCDMALEVEL_R = crate::FieldReader<u8, DCCDMALEVELSELECT_A>;
+pub type DCCDMALEVEL_R = crate::FieldReader<DCCDMALEVELSELECT_A>;
 #[doc = "DMA Trigger Level\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -55,46 +23,53 @@ impl From<DCCDMALEVELSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for DCCDMALEVELSELECT_A {
+    type Ux = u8;
+}
 impl DCCDMALEVEL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<DCCDMALEVELSELECT_A> {
+    pub const fn variant(&self) -> Option<DCCDMALEVELSELECT_A> {
         match self.bits {
             0 => Some(DCCDMALEVELSELECT_A::EMPTY),
             1 => Some(DCCDMALEVELSELECT_A::FULL),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `EMPTY`"]
+    #[doc = "Trigger rises when DCC is empty"]
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         *self == DCCDMALEVELSELECT_A::EMPTY
     }
-    #[doc = "Checks if the value of the field is `FULL`"]
+    #[doc = "Trigger rises when DCC is full"]
     #[inline(always)]
     pub fn is_full(&self) -> bool {
         *self == DCCDMALEVELSELECT_A::FULL
     }
 }
 #[doc = "Field `DCCDMALEVEL` writer - DMA Trigger Level"]
-pub type DCCDMALEVEL_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u32, CFG_SPEC, u8, DCCDMALEVELSELECT_A, 2, O>;
-impl<'a, const O: u8> DCCDMALEVEL_W<'a, O> {
+pub type DCCDMALEVEL_W<'a, REG, const O: u8> =
+    crate::FieldWriter<'a, REG, 2, O, DCCDMALEVELSELECT_A>;
+impl<'a, REG, const O: u8> DCCDMALEVEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Trigger rises when DCC is empty"]
     #[inline(always)]
-    pub fn empty(self) -> &'a mut W {
+    pub fn empty(self) -> &'a mut crate::W<REG> {
         self.variant(DCCDMALEVELSELECT_A::EMPTY)
     }
     #[doc = "Trigger rises when DCC is full"]
     #[inline(always)]
-    pub fn full(self) -> &'a mut W {
+    pub fn full(self) -> &'a mut crate::W<REG> {
         self.variant(DCCDMALEVELSELECT_A::FULL)
     }
 }
 #[doc = "Field `ETBRAMEN` reader - Trace Control"]
-pub type ETBRAMEN_R = crate::BitReader<bool>;
+pub type ETBRAMEN_R = crate::BitReader;
 #[doc = "Field `ETBRAMEN` writer - Trace Control"]
-pub type ETBRAMEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CFG_SPEC, bool, O>;
+pub type ETBRAMEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bits 0:1 - Latency Quality Of Service"]
     #[inline(always)]
@@ -116,40 +91,41 @@ impl W {
     #[doc = "Bits 0:1 - Latency Quality Of Service"]
     #[inline(always)]
     #[must_use]
-    pub fn lqos(&mut self) -> LQOS_W<0> {
+    pub fn lqos(&mut self) -> LQOS_W<CFG_SPEC, 0> {
         LQOS_W::new(self)
     }
     #[doc = "Bits 2:3 - DMA Trigger Level"]
     #[inline(always)]
     #[must_use]
-    pub fn dccdmalevel(&mut self) -> DCCDMALEVEL_W<2> {
+    pub fn dccdmalevel(&mut self) -> DCCDMALEVEL_W<CFG_SPEC, 2> {
         DCCDMALEVEL_W::new(self)
     }
     #[doc = "Bit 4 - Trace Control"]
     #[inline(always)]
     #[must_use]
-    pub fn etbramen(&mut self) -> ETBRAMEN_W<4> {
+    pub fn etbramen(&mut self) -> ETBRAMEN_W<CFG_SPEC, 4> {
         ETBRAMEN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+#[doc = "Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cfg::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cfg::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CFG_SPEC;
 impl crate::RegisterSpec for CFG_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [cfg::R](R) reader structure"]
-impl crate::Readable for CFG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [cfg::W](W) writer structure"]
+#[doc = "`read()` method returns [`cfg::R`](R) reader structure"]
+impl crate::Readable for CFG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`cfg::W`](W) writer structure"]
 impl crate::Writable for CFG_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

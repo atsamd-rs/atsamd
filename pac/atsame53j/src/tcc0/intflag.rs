@@ -1,103 +1,71 @@
 #[doc = "Register `INTFLAG` reader"]
-pub struct R(crate::R<INTFLAG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAG_SPEC>;
 #[doc = "Register `INTFLAG` writer"]
-pub struct W(crate::W<INTFLAG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAG_SPEC>;
 #[doc = "Field `OVF` reader - Overflow"]
-pub type OVF_R = crate::BitReader<bool>;
+pub type OVF_R = crate::BitReader;
 #[doc = "Field `OVF` writer - Overflow"]
-pub type OVF_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TRG` reader - Retrigger"]
-pub type TRG_R = crate::BitReader<bool>;
+pub type TRG_R = crate::BitReader;
 #[doc = "Field `TRG` writer - Retrigger"]
-pub type TRG_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type TRG_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CNT` reader - Counter"]
-pub type CNT_R = crate::BitReader<bool>;
+pub type CNT_R = crate::BitReader;
 #[doc = "Field `CNT` writer - Counter"]
-pub type CNT_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type CNT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ERR` reader - Error"]
-pub type ERR_R = crate::BitReader<bool>;
+pub type ERR_R = crate::BitReader;
 #[doc = "Field `ERR` writer - Error"]
-pub type ERR_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type ERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `UFS` reader - Non-Recoverable Update Fault"]
-pub type UFS_R = crate::BitReader<bool>;
+pub type UFS_R = crate::BitReader;
 #[doc = "Field `UFS` writer - Non-Recoverable Update Fault"]
-pub type UFS_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type UFS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DFS` reader - Non-Recoverable Debug Fault"]
-pub type DFS_R = crate::BitReader<bool>;
+pub type DFS_R = crate::BitReader;
 #[doc = "Field `DFS` writer - Non-Recoverable Debug Fault"]
-pub type DFS_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DFS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FAULTA` reader - Recoverable Fault A"]
-pub type FAULTA_R = crate::BitReader<bool>;
+pub type FAULTA_R = crate::BitReader;
 #[doc = "Field `FAULTA` writer - Recoverable Fault A"]
-pub type FAULTA_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type FAULTA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FAULTB` reader - Recoverable Fault B"]
-pub type FAULTB_R = crate::BitReader<bool>;
+pub type FAULTB_R = crate::BitReader;
 #[doc = "Field `FAULTB` writer - Recoverable Fault B"]
-pub type FAULTB_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type FAULTB_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FAULT0` reader - Non-Recoverable Fault 0"]
-pub type FAULT0_R = crate::BitReader<bool>;
+pub type FAULT0_R = crate::BitReader;
 #[doc = "Field `FAULT0` writer - Non-Recoverable Fault 0"]
-pub type FAULT0_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type FAULT0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FAULT1` reader - Non-Recoverable Fault 1"]
-pub type FAULT1_R = crate::BitReader<bool>;
+pub type FAULT1_R = crate::BitReader;
 #[doc = "Field `FAULT1` writer - Non-Recoverable Fault 1"]
-pub type FAULT1_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type FAULT1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC0` reader - Match or Capture 0"]
-pub type MC0_R = crate::BitReader<bool>;
+pub type MC0_R = crate::BitReader;
 #[doc = "Field `MC0` writer - Match or Capture 0"]
-pub type MC0_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type MC0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC1` reader - Match or Capture 1"]
-pub type MC1_R = crate::BitReader<bool>;
+pub type MC1_R = crate::BitReader;
 #[doc = "Field `MC1` writer - Match or Capture 1"]
-pub type MC1_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type MC1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC2` reader - Match or Capture 2"]
-pub type MC2_R = crate::BitReader<bool>;
+pub type MC2_R = crate::BitReader;
 #[doc = "Field `MC2` writer - Match or Capture 2"]
-pub type MC2_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type MC2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC3` reader - Match or Capture 3"]
-pub type MC3_R = crate::BitReader<bool>;
+pub type MC3_R = crate::BitReader;
 #[doc = "Field `MC3` writer - Match or Capture 3"]
-pub type MC3_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type MC3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC4` reader - Match or Capture 4"]
-pub type MC4_R = crate::BitReader<bool>;
+pub type MC4_R = crate::BitReader;
 #[doc = "Field `MC4` writer - Match or Capture 4"]
-pub type MC4_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type MC4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC5` reader - Match or Capture 5"]
-pub type MC5_R = crate::BitReader<bool>;
+pub type MC5_R = crate::BitReader;
 #[doc = "Field `MC5` writer - Match or Capture 5"]
-pub type MC5_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type MC5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Overflow"]
     #[inline(always)]
@@ -184,118 +152,119 @@ impl W {
     #[doc = "Bit 0 - Overflow"]
     #[inline(always)]
     #[must_use]
-    pub fn ovf(&mut self) -> OVF_W<0> {
+    pub fn ovf(&mut self) -> OVF_W<INTFLAG_SPEC, 0> {
         OVF_W::new(self)
     }
     #[doc = "Bit 1 - Retrigger"]
     #[inline(always)]
     #[must_use]
-    pub fn trg(&mut self) -> TRG_W<1> {
+    pub fn trg(&mut self) -> TRG_W<INTFLAG_SPEC, 1> {
         TRG_W::new(self)
     }
     #[doc = "Bit 2 - Counter"]
     #[inline(always)]
     #[must_use]
-    pub fn cnt(&mut self) -> CNT_W<2> {
+    pub fn cnt(&mut self) -> CNT_W<INTFLAG_SPEC, 2> {
         CNT_W::new(self)
     }
     #[doc = "Bit 3 - Error"]
     #[inline(always)]
     #[must_use]
-    pub fn err(&mut self) -> ERR_W<3> {
+    pub fn err(&mut self) -> ERR_W<INTFLAG_SPEC, 3> {
         ERR_W::new(self)
     }
     #[doc = "Bit 10 - Non-Recoverable Update Fault"]
     #[inline(always)]
     #[must_use]
-    pub fn ufs(&mut self) -> UFS_W<10> {
+    pub fn ufs(&mut self) -> UFS_W<INTFLAG_SPEC, 10> {
         UFS_W::new(self)
     }
     #[doc = "Bit 11 - Non-Recoverable Debug Fault"]
     #[inline(always)]
     #[must_use]
-    pub fn dfs(&mut self) -> DFS_W<11> {
+    pub fn dfs(&mut self) -> DFS_W<INTFLAG_SPEC, 11> {
         DFS_W::new(self)
     }
     #[doc = "Bit 12 - Recoverable Fault A"]
     #[inline(always)]
     #[must_use]
-    pub fn faulta(&mut self) -> FAULTA_W<12> {
+    pub fn faulta(&mut self) -> FAULTA_W<INTFLAG_SPEC, 12> {
         FAULTA_W::new(self)
     }
     #[doc = "Bit 13 - Recoverable Fault B"]
     #[inline(always)]
     #[must_use]
-    pub fn faultb(&mut self) -> FAULTB_W<13> {
+    pub fn faultb(&mut self) -> FAULTB_W<INTFLAG_SPEC, 13> {
         FAULTB_W::new(self)
     }
     #[doc = "Bit 14 - Non-Recoverable Fault 0"]
     #[inline(always)]
     #[must_use]
-    pub fn fault0(&mut self) -> FAULT0_W<14> {
+    pub fn fault0(&mut self) -> FAULT0_W<INTFLAG_SPEC, 14> {
         FAULT0_W::new(self)
     }
     #[doc = "Bit 15 - Non-Recoverable Fault 1"]
     #[inline(always)]
     #[must_use]
-    pub fn fault1(&mut self) -> FAULT1_W<15> {
+    pub fn fault1(&mut self) -> FAULT1_W<INTFLAG_SPEC, 15> {
         FAULT1_W::new(self)
     }
     #[doc = "Bit 16 - Match or Capture 0"]
     #[inline(always)]
     #[must_use]
-    pub fn mc0(&mut self) -> MC0_W<16> {
+    pub fn mc0(&mut self) -> MC0_W<INTFLAG_SPEC, 16> {
         MC0_W::new(self)
     }
     #[doc = "Bit 17 - Match or Capture 1"]
     #[inline(always)]
     #[must_use]
-    pub fn mc1(&mut self) -> MC1_W<17> {
+    pub fn mc1(&mut self) -> MC1_W<INTFLAG_SPEC, 17> {
         MC1_W::new(self)
     }
     #[doc = "Bit 18 - Match or Capture 2"]
     #[inline(always)]
     #[must_use]
-    pub fn mc2(&mut self) -> MC2_W<18> {
+    pub fn mc2(&mut self) -> MC2_W<INTFLAG_SPEC, 18> {
         MC2_W::new(self)
     }
     #[doc = "Bit 19 - Match or Capture 3"]
     #[inline(always)]
     #[must_use]
-    pub fn mc3(&mut self) -> MC3_W<19> {
+    pub fn mc3(&mut self) -> MC3_W<INTFLAG_SPEC, 19> {
         MC3_W::new(self)
     }
     #[doc = "Bit 20 - Match or Capture 4"]
     #[inline(always)]
     #[must_use]
-    pub fn mc4(&mut self) -> MC4_W<20> {
+    pub fn mc4(&mut self) -> MC4_W<INTFLAG_SPEC, 20> {
         MC4_W::new(self)
     }
     #[doc = "Bit 21 - Match or Capture 5"]
     #[inline(always)]
     #[must_use]
-    pub fn mc5(&mut self) -> MC5_W<21> {
+    pub fn mc5(&mut self) -> MC5_W<INTFLAG_SPEC, 21> {
         MC5_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Flag Status and Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflag](index.html) module"]
+#[doc = "Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAG_SPEC;
 impl crate::RegisterSpec for INTFLAG_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [intflag::R](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
+impl crate::Readable for INTFLAG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

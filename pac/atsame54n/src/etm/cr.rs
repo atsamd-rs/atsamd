@@ -1,83 +1,51 @@
 #[doc = "Register `CR` reader"]
-pub struct R(crate::R<CR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CR_SPEC>;
 #[doc = "Register `CR` writer"]
-pub struct W(crate::W<CR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CR_SPEC>;
 #[doc = "Field `ETMPD` reader - ETM Power Down"]
-pub type ETMPD_R = crate::BitReader<bool>;
+pub type ETMPD_R = crate::BitReader;
 #[doc = "Field `ETMPD` writer - ETM Power Down"]
-pub type ETMPD_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type ETMPD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PORTSIZE` reader - Port Size bits 2:0"]
-pub type PORTSIZE_R = crate::FieldReader<u8, u8>;
+pub type PORTSIZE_R = crate::FieldReader;
 #[doc = "Field `PORTSIZE` writer - Port Size bits 2:0"]
-pub type PORTSIZE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CR_SPEC, u8, u8, 3, O>;
+pub type PORTSIZE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O>;
 #[doc = "Field `STALL` reader - Stall Processor"]
-pub type STALL_R = crate::BitReader<bool>;
+pub type STALL_R = crate::BitReader;
 #[doc = "Field `STALL` writer - Stall Processor"]
-pub type STALL_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type STALL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BROUT` reader - Branch Output"]
-pub type BROUT_R = crate::BitReader<bool>;
+pub type BROUT_R = crate::BitReader;
 #[doc = "Field `BROUT` writer - Branch Output"]
-pub type BROUT_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type BROUT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DBGRQ` reader - Debug Request Control"]
-pub type DBGRQ_R = crate::BitReader<bool>;
+pub type DBGRQ_R = crate::BitReader;
 #[doc = "Field `DBGRQ` writer - Debug Request Control"]
-pub type DBGRQ_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type DBGRQ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PROG` reader - ETM Programming"]
-pub type PROG_R = crate::BitReader<bool>;
+pub type PROG_R = crate::BitReader;
 #[doc = "Field `PROG` writer - ETM Programming"]
-pub type PROG_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type PROG_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PORTSEL` reader - ETM Port Select"]
-pub type PORTSEL_R = crate::BitReader<bool>;
+pub type PORTSEL_R = crate::BitReader;
 #[doc = "Field `PORTSEL` writer - ETM Port Select"]
-pub type PORTSEL_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type PORTSEL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PORTMODE2` reader - Port Mode bit 2"]
-pub type PORTMODE2_R = crate::BitReader<bool>;
+pub type PORTMODE2_R = crate::BitReader;
 #[doc = "Field `PORTMODE2` writer - Port Mode bit 2"]
-pub type PORTMODE2_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type PORTMODE2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PORTMODE` reader - Port Mode bits 1:0"]
-pub type PORTMODE_R = crate::FieldReader<u8, u8>;
+pub type PORTMODE_R = crate::FieldReader;
 #[doc = "Field `PORTMODE` writer - Port Mode bits 1:0"]
-pub type PORTMODE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CR_SPEC, u8, u8, 2, O>;
+pub type PORTMODE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `PORTSIZE3` reader - Port Size bit 3"]
-pub type PORTSIZE3_R = crate::BitReader<bool>;
+pub type PORTSIZE3_R = crate::BitReader;
 #[doc = "Field `PORTSIZE3` writer - Port Size bit 3"]
-pub type PORTSIZE3_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type PORTSIZE3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TSEN` reader - TimeStamp Enable"]
-pub type TSEN_R = crate::BitReader<bool>;
+pub type TSEN_R = crate::BitReader;
 #[doc = "Field `TSEN` writer - TimeStamp Enable"]
-pub type TSEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CR_SPEC, bool, O>;
+pub type TSEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - ETM Power Down"]
     #[inline(always)]
@@ -139,88 +107,89 @@ impl W {
     #[doc = "Bit 0 - ETM Power Down"]
     #[inline(always)]
     #[must_use]
-    pub fn etmpd(&mut self) -> ETMPD_W<0> {
+    pub fn etmpd(&mut self) -> ETMPD_W<CR_SPEC, 0> {
         ETMPD_W::new(self)
     }
     #[doc = "Bits 4:6 - Port Size bits 2:0"]
     #[inline(always)]
     #[must_use]
-    pub fn portsize(&mut self) -> PORTSIZE_W<4> {
+    pub fn portsize(&mut self) -> PORTSIZE_W<CR_SPEC, 4> {
         PORTSIZE_W::new(self)
     }
     #[doc = "Bit 7 - Stall Processor"]
     #[inline(always)]
     #[must_use]
-    pub fn stall(&mut self) -> STALL_W<7> {
+    pub fn stall(&mut self) -> STALL_W<CR_SPEC, 7> {
         STALL_W::new(self)
     }
     #[doc = "Bit 8 - Branch Output"]
     #[inline(always)]
     #[must_use]
-    pub fn brout(&mut self) -> BROUT_W<8> {
+    pub fn brout(&mut self) -> BROUT_W<CR_SPEC, 8> {
         BROUT_W::new(self)
     }
     #[doc = "Bit 9 - Debug Request Control"]
     #[inline(always)]
     #[must_use]
-    pub fn dbgrq(&mut self) -> DBGRQ_W<9> {
+    pub fn dbgrq(&mut self) -> DBGRQ_W<CR_SPEC, 9> {
         DBGRQ_W::new(self)
     }
     #[doc = "Bit 10 - ETM Programming"]
     #[inline(always)]
     #[must_use]
-    pub fn prog(&mut self) -> PROG_W<10> {
+    pub fn prog(&mut self) -> PROG_W<CR_SPEC, 10> {
         PROG_W::new(self)
     }
     #[doc = "Bit 11 - ETM Port Select"]
     #[inline(always)]
     #[must_use]
-    pub fn portsel(&mut self) -> PORTSEL_W<11> {
+    pub fn portsel(&mut self) -> PORTSEL_W<CR_SPEC, 11> {
         PORTSEL_W::new(self)
     }
     #[doc = "Bit 13 - Port Mode bit 2"]
     #[inline(always)]
     #[must_use]
-    pub fn portmode2(&mut self) -> PORTMODE2_W<13> {
+    pub fn portmode2(&mut self) -> PORTMODE2_W<CR_SPEC, 13> {
         PORTMODE2_W::new(self)
     }
     #[doc = "Bits 16:17 - Port Mode bits 1:0"]
     #[inline(always)]
     #[must_use]
-    pub fn portmode(&mut self) -> PORTMODE_W<16> {
+    pub fn portmode(&mut self) -> PORTMODE_W<CR_SPEC, 16> {
         PORTMODE_W::new(self)
     }
     #[doc = "Bit 21 - Port Size bit 3"]
     #[inline(always)]
     #[must_use]
-    pub fn portsize3(&mut self) -> PORTSIZE3_W<21> {
+    pub fn portsize3(&mut self) -> PORTSIZE3_W<CR_SPEC, 21> {
         PORTSIZE3_W::new(self)
     }
     #[doc = "Bit 28 - TimeStamp Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn tsen(&mut self) -> TSEN_W<28> {
+    pub fn tsen(&mut self) -> TSEN_W<CR_SPEC, 28> {
         TSEN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "ETM Main Control Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cr](index.html) module"]
+#[doc = "ETM Main Control Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CR_SPEC;
 impl crate::RegisterSpec for CR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [cr::R](R) reader structure"]
-impl crate::Readable for CR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [cr::W](W) writer structure"]
+#[doc = "`read()` method returns [`cr::R`](R) reader structure"]
+impl crate::Readable for CR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`cr::W`](W) writer structure"]
 impl crate::Writable for CR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

@@ -1,30 +1,17 @@
 #[doc = "Register `DID` reader"]
-pub struct R(crate::R<DID_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DID_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DID_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DID_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DID_SPEC>;
 #[doc = "Field `DEVSEL` reader - Device Select"]
-pub type DEVSEL_R = crate::FieldReader<u8, u8>;
+pub type DEVSEL_R = crate::FieldReader;
 #[doc = "Field `REVISION` reader - Revision"]
-pub type REVISION_R = crate::FieldReader<u8, u8>;
+pub type REVISION_R = crate::FieldReader;
 #[doc = "Field `DIE` reader - Die Identification"]
-pub type DIE_R = crate::FieldReader<u8, u8>;
+pub type DIE_R = crate::FieldReader;
 #[doc = "Field `SERIES` reader - Product Series"]
-pub type SERIES_R = crate::FieldReader<u8, u8>;
+pub type SERIES_R = crate::FieldReader;
 #[doc = "Field `FAMILY` reader - Product Family"]
-pub type FAMILY_R = crate::FieldReader<u8, u8>;
+pub type FAMILY_R = crate::FieldReader;
 #[doc = "Field `PROCESSOR` reader - Processor"]
-pub type PROCESSOR_R = crate::FieldReader<u8, u8>;
+pub type PROCESSOR_R = crate::FieldReader;
 impl R {
     #[doc = "Bits 0:7 - Device Select"]
     #[inline(always)]
@@ -57,15 +44,13 @@ impl R {
         PROCESSOR_R::new(((self.bits >> 28) & 0x0f) as u8)
     }
 }
-#[doc = "Device Identification\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [did](index.html) module"]
+#[doc = "Device Identification\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`did::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DID_SPEC;
 impl crate::RegisterSpec for DID_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [did::R](R) reader structure"]
-impl crate::Readable for DID_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`did::R`](R) reader structure"]
+impl crate::Readable for DID_SPEC {}
 #[doc = "`reset()` method sets DID to value 0x1001_030a"]
 impl crate::Resettable for DID_SPEC {
     const RESET_VALUE: Self::Ux = 0x1001_030a;

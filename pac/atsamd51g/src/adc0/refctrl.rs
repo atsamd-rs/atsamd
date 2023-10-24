@@ -1,41 +1,9 @@
 #[doc = "Register `REFCTRL` reader"]
-pub struct R(crate::R<REFCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<REFCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<REFCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<REFCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<REFCTRL_SPEC>;
 #[doc = "Register `REFCTRL` writer"]
-pub struct W(crate::W<REFCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<REFCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<REFCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<REFCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<REFCTRL_SPEC>;
 #[doc = "Field `REFSEL` reader - Reference Selection"]
-pub type REFSEL_R = crate::FieldReader<u8, REFSELSELECT_A>;
+pub type REFSEL_R = crate::FieldReader<REFSELSELECT_A>;
 #[doc = "Reference Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -59,10 +27,13 @@ impl From<REFSELSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for REFSELSELECT_A {
+    type Ux = u8;
+}
 impl REFSEL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<REFSELSELECT_A> {
+    pub const fn variant(&self) -> Option<REFSELSELECT_A> {
         match self.bits {
             0 => Some(REFSELSELECT_A::INTREF),
             2 => Some(REFSELSELECT_A::INTVCC0),
@@ -73,76 +44,79 @@ impl REFSEL_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `INTREF`"]
+    #[doc = "Internal Bandgap Reference"]
     #[inline(always)]
     pub fn is_intref(&self) -> bool {
         *self == REFSELSELECT_A::INTREF
     }
-    #[doc = "Checks if the value of the field is `INTVCC0`"]
+    #[doc = "1/2 VDDANA"]
     #[inline(always)]
     pub fn is_intvcc0(&self) -> bool {
         *self == REFSELSELECT_A::INTVCC0
     }
-    #[doc = "Checks if the value of the field is `INTVCC1`"]
+    #[doc = "VDDANA"]
     #[inline(always)]
     pub fn is_intvcc1(&self) -> bool {
         *self == REFSELSELECT_A::INTVCC1
     }
-    #[doc = "Checks if the value of the field is `AREFA`"]
+    #[doc = "External Reference"]
     #[inline(always)]
     pub fn is_arefa(&self) -> bool {
         *self == REFSELSELECT_A::AREFA
     }
-    #[doc = "Checks if the value of the field is `AREFB`"]
+    #[doc = "External Reference"]
     #[inline(always)]
     pub fn is_arefb(&self) -> bool {
         *self == REFSELSELECT_A::AREFB
     }
-    #[doc = "Checks if the value of the field is `AREFC`"]
+    #[doc = "External Reference (only on ADC1)"]
     #[inline(always)]
     pub fn is_arefc(&self) -> bool {
         *self == REFSELSELECT_A::AREFC
     }
 }
 #[doc = "Field `REFSEL` writer - Reference Selection"]
-pub type REFSEL_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u8, REFCTRL_SPEC, u8, REFSELSELECT_A, 4, O>;
-impl<'a, const O: u8> REFSEL_W<'a, O> {
+pub type REFSEL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O, REFSELSELECT_A>;
+impl<'a, REG, const O: u8> REFSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Internal Bandgap Reference"]
     #[inline(always)]
-    pub fn intref(self) -> &'a mut W {
+    pub fn intref(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::INTREF)
     }
     #[doc = "1/2 VDDANA"]
     #[inline(always)]
-    pub fn intvcc0(self) -> &'a mut W {
+    pub fn intvcc0(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::INTVCC0)
     }
     #[doc = "VDDANA"]
     #[inline(always)]
-    pub fn intvcc1(self) -> &'a mut W {
+    pub fn intvcc1(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::INTVCC1)
     }
     #[doc = "External Reference"]
     #[inline(always)]
-    pub fn arefa(self) -> &'a mut W {
+    pub fn arefa(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::AREFA)
     }
     #[doc = "External Reference"]
     #[inline(always)]
-    pub fn arefb(self) -> &'a mut W {
+    pub fn arefb(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::AREFB)
     }
     #[doc = "External Reference (only on ADC1)"]
     #[inline(always)]
-    pub fn arefc(self) -> &'a mut W {
+    pub fn arefc(self) -> &'a mut crate::W<REG> {
         self.variant(REFSELSELECT_A::AREFC)
     }
 }
 #[doc = "Field `REFCOMP` reader - Reference Buffer Offset Compensation Enable"]
-pub type REFCOMP_R = crate::BitReader<bool>;
+pub type REFCOMP_R = crate::BitReader;
 #[doc = "Field `REFCOMP` writer - Reference Buffer Offset Compensation Enable"]
-pub type REFCOMP_W<'a, const O: u8> = crate::BitWriter<'a, u8, REFCTRL_SPEC, bool, O>;
+pub type REFCOMP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bits 0:3 - Reference Selection"]
     #[inline(always)]
@@ -159,34 +133,35 @@ impl W {
     #[doc = "Bits 0:3 - Reference Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn refsel(&mut self) -> REFSEL_W<0> {
+    pub fn refsel(&mut self) -> REFSEL_W<REFCTRL_SPEC, 0> {
         REFSEL_W::new(self)
     }
     #[doc = "Bit 7 - Reference Buffer Offset Compensation Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn refcomp(&mut self) -> REFCOMP_W<7> {
+    pub fn refcomp(&mut self) -> REFCOMP_W<REFCTRL_SPEC, 7> {
         REFCOMP_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Reference Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [refctrl](index.html) module"]
+#[doc = "Reference Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`refctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`refctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct REFCTRL_SPEC;
 impl crate::RegisterSpec for REFCTRL_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [refctrl::R](R) reader structure"]
-impl crate::Readable for REFCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [refctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`refctrl::R`](R) reader structure"]
+impl crate::Readable for REFCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`refctrl::W`](W) writer structure"]
 impl crate::Writable for REFCTRL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

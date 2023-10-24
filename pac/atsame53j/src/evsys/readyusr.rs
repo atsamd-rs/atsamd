@@ -1,42 +1,29 @@
 #[doc = "Register `READYUSR` reader"]
-pub struct R(crate::R<READYUSR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<READYUSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<READYUSR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<READYUSR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<READYUSR_SPEC>;
 #[doc = "Field `READYUSR0` reader - Ready User for Channel 0"]
-pub type READYUSR0_R = crate::BitReader<bool>;
+pub type READYUSR0_R = crate::BitReader;
 #[doc = "Field `READYUSR1` reader - Ready User for Channel 1"]
-pub type READYUSR1_R = crate::BitReader<bool>;
+pub type READYUSR1_R = crate::BitReader;
 #[doc = "Field `READYUSR2` reader - Ready User for Channel 2"]
-pub type READYUSR2_R = crate::BitReader<bool>;
+pub type READYUSR2_R = crate::BitReader;
 #[doc = "Field `READYUSR3` reader - Ready User for Channel 3"]
-pub type READYUSR3_R = crate::BitReader<bool>;
+pub type READYUSR3_R = crate::BitReader;
 #[doc = "Field `READYUSR4` reader - Ready User for Channel 4"]
-pub type READYUSR4_R = crate::BitReader<bool>;
+pub type READYUSR4_R = crate::BitReader;
 #[doc = "Field `READYUSR5` reader - Ready User for Channel 5"]
-pub type READYUSR5_R = crate::BitReader<bool>;
+pub type READYUSR5_R = crate::BitReader;
 #[doc = "Field `READYUSR6` reader - Ready User for Channel 6"]
-pub type READYUSR6_R = crate::BitReader<bool>;
+pub type READYUSR6_R = crate::BitReader;
 #[doc = "Field `READYUSR7` reader - Ready User for Channel 7"]
-pub type READYUSR7_R = crate::BitReader<bool>;
+pub type READYUSR7_R = crate::BitReader;
 #[doc = "Field `READYUSR8` reader - Ready User for Channel 8"]
-pub type READYUSR8_R = crate::BitReader<bool>;
+pub type READYUSR8_R = crate::BitReader;
 #[doc = "Field `READYUSR9` reader - Ready User for Channel 9"]
-pub type READYUSR9_R = crate::BitReader<bool>;
+pub type READYUSR9_R = crate::BitReader;
 #[doc = "Field `READYUSR10` reader - Ready User for Channel 10"]
-pub type READYUSR10_R = crate::BitReader<bool>;
+pub type READYUSR10_R = crate::BitReader;
 #[doc = "Field `READYUSR11` reader - Ready User for Channel 11"]
-pub type READYUSR11_R = crate::BitReader<bool>;
+pub type READYUSR11_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Ready User for Channel 0"]
     #[inline(always)]
@@ -99,15 +86,13 @@ impl R {
         READYUSR11_R::new(((self.bits >> 11) & 1) != 0)
     }
 }
-#[doc = "Ready Users\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [readyusr](index.html) module"]
+#[doc = "Ready Users\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`readyusr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct READYUSR_SPEC;
 impl crate::RegisterSpec for READYUSR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [readyusr::R](R) reader structure"]
-impl crate::Readable for READYUSR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`readyusr::R`](R) reader structure"]
+impl crate::Readable for READYUSR_SPEC {}
 #[doc = "`reset()` method sets READYUSR to value 0xffff_ffff"]
 impl crate::Resettable for READYUSR_SPEC {
     const RESET_VALUE: Self::Ux = 0xffff_ffff;

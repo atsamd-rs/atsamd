@@ -1,79 +1,47 @@
 #[doc = "Register `INTFLAG` reader"]
-pub struct R(crate::R<INTFLAG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAG_SPEC>;
 #[doc = "Register `INTFLAG` writer"]
-pub struct W(crate::W<INTFLAG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAG_SPEC>;
 #[doc = "Field `SUSPEND` reader - Suspend"]
-pub type SUSPEND_R = crate::BitReader<bool>;
+pub type SUSPEND_R = crate::BitReader;
 #[doc = "Field `SUSPEND` writer - Suspend"]
-pub type SUSPEND_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type SUSPEND_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MSOF` reader - Micro Start of Frame in High Speed Mode"]
-pub type MSOF_R = crate::BitReader<bool>;
+pub type MSOF_R = crate::BitReader;
 #[doc = "Field `MSOF` writer - Micro Start of Frame in High Speed Mode"]
-pub type MSOF_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type MSOF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SOF` reader - Start Of Frame"]
-pub type SOF_R = crate::BitReader<bool>;
+pub type SOF_R = crate::BitReader;
 #[doc = "Field `SOF` writer - Start Of Frame"]
-pub type SOF_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type SOF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EORST` reader - End of Reset"]
-pub type EORST_R = crate::BitReader<bool>;
+pub type EORST_R = crate::BitReader;
 #[doc = "Field `EORST` writer - End of Reset"]
-pub type EORST_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type EORST_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUP` reader - Wake Up"]
-pub type WAKEUP_R = crate::BitReader<bool>;
+pub type WAKEUP_R = crate::BitReader;
 #[doc = "Field `WAKEUP` writer - Wake Up"]
-pub type WAKEUP_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type WAKEUP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EORSM` reader - End Of Resume"]
-pub type EORSM_R = crate::BitReader<bool>;
+pub type EORSM_R = crate::BitReader;
 #[doc = "Field `EORSM` writer - End Of Resume"]
-pub type EORSM_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type EORSM_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `UPRSM` reader - Upstream Resume"]
-pub type UPRSM_R = crate::BitReader<bool>;
+pub type UPRSM_R = crate::BitReader;
 #[doc = "Field `UPRSM` writer - Upstream Resume"]
-pub type UPRSM_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type UPRSM_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RAMACER` reader - Ram Access"]
-pub type RAMACER_R = crate::BitReader<bool>;
+pub type RAMACER_R = crate::BitReader;
 #[doc = "Field `RAMACER` writer - Ram Access"]
-pub type RAMACER_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type RAMACER_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LPMNYET` reader - Link Power Management Not Yet"]
-pub type LPMNYET_R = crate::BitReader<bool>;
+pub type LPMNYET_R = crate::BitReader;
 #[doc = "Field `LPMNYET` writer - Link Power Management Not Yet"]
-pub type LPMNYET_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type LPMNYET_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LPMSUSP` reader - Link Power Management Suspend"]
-pub type LPMSUSP_R = crate::BitReader<bool>;
+pub type LPMSUSP_R = crate::BitReader;
 #[doc = "Field `LPMSUSP` writer - Link Power Management Suspend"]
-pub type LPMSUSP_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type LPMSUSP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Suspend"]
     #[inline(always)]
@@ -130,82 +98,83 @@ impl W {
     #[doc = "Bit 0 - Suspend"]
     #[inline(always)]
     #[must_use]
-    pub fn suspend(&mut self) -> SUSPEND_W<0> {
+    pub fn suspend(&mut self) -> SUSPEND_W<INTFLAG_SPEC, 0> {
         SUSPEND_W::new(self)
     }
     #[doc = "Bit 1 - Micro Start of Frame in High Speed Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn msof(&mut self) -> MSOF_W<1> {
+    pub fn msof(&mut self) -> MSOF_W<INTFLAG_SPEC, 1> {
         MSOF_W::new(self)
     }
     #[doc = "Bit 2 - Start Of Frame"]
     #[inline(always)]
     #[must_use]
-    pub fn sof(&mut self) -> SOF_W<2> {
+    pub fn sof(&mut self) -> SOF_W<INTFLAG_SPEC, 2> {
         SOF_W::new(self)
     }
     #[doc = "Bit 3 - End of Reset"]
     #[inline(always)]
     #[must_use]
-    pub fn eorst(&mut self) -> EORST_W<3> {
+    pub fn eorst(&mut self) -> EORST_W<INTFLAG_SPEC, 3> {
         EORST_W::new(self)
     }
     #[doc = "Bit 4 - Wake Up"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeup(&mut self) -> WAKEUP_W<4> {
+    pub fn wakeup(&mut self) -> WAKEUP_W<INTFLAG_SPEC, 4> {
         WAKEUP_W::new(self)
     }
     #[doc = "Bit 5 - End Of Resume"]
     #[inline(always)]
     #[must_use]
-    pub fn eorsm(&mut self) -> EORSM_W<5> {
+    pub fn eorsm(&mut self) -> EORSM_W<INTFLAG_SPEC, 5> {
         EORSM_W::new(self)
     }
     #[doc = "Bit 6 - Upstream Resume"]
     #[inline(always)]
     #[must_use]
-    pub fn uprsm(&mut self) -> UPRSM_W<6> {
+    pub fn uprsm(&mut self) -> UPRSM_W<INTFLAG_SPEC, 6> {
         UPRSM_W::new(self)
     }
     #[doc = "Bit 7 - Ram Access"]
     #[inline(always)]
     #[must_use]
-    pub fn ramacer(&mut self) -> RAMACER_W<7> {
+    pub fn ramacer(&mut self) -> RAMACER_W<INTFLAG_SPEC, 7> {
         RAMACER_W::new(self)
     }
     #[doc = "Bit 8 - Link Power Management Not Yet"]
     #[inline(always)]
     #[must_use]
-    pub fn lpmnyet(&mut self) -> LPMNYET_W<8> {
+    pub fn lpmnyet(&mut self) -> LPMNYET_W<INTFLAG_SPEC, 8> {
         LPMNYET_W::new(self)
     }
     #[doc = "Bit 9 - Link Power Management Suspend"]
     #[inline(always)]
     #[must_use]
-    pub fn lpmsusp(&mut self) -> LPMSUSP_W<9> {
+    pub fn lpmsusp(&mut self) -> LPMSUSP_W<INTFLAG_SPEC, 9> {
         LPMSUSP_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "DEVICE Device Interrupt Flag\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflag](index.html) module"]
+#[doc = "DEVICE Device Interrupt Flag\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAG_SPEC;
 impl crate::RegisterSpec for INTFLAG_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [intflag::R](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
+impl crate::Readable for INTFLAG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

@@ -1,26 +1,13 @@
 #[doc = "Register `DID` reader"]
-pub struct R(crate::R<DID_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DID_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DID_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DID_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DID_SPEC>;
 #[doc = "Field `DEVSEL` reader - Device Select"]
-pub type DEVSEL_R = crate::FieldReader<u8, u8>;
+pub type DEVSEL_R = crate::FieldReader;
 #[doc = "Field `REVISION` reader - Revision Number"]
-pub type REVISION_R = crate::FieldReader<u8, u8>;
+pub type REVISION_R = crate::FieldReader;
 #[doc = "Field `DIE` reader - Die Number"]
-pub type DIE_R = crate::FieldReader<u8, u8>;
+pub type DIE_R = crate::FieldReader;
 #[doc = "Field `SERIES` reader - Series"]
-pub type SERIES_R = crate::FieldReader<u8, SERIESSELECT_A>;
+pub type SERIES_R = crate::FieldReader<SERIESSELECT_A>;
 #[doc = "Series\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -36,29 +23,32 @@ impl From<SERIESSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for SERIESSELECT_A {
+    type Ux = u8;
+}
 impl SERIES_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<SERIESSELECT_A> {
+    pub const fn variant(&self) -> Option<SERIESSELECT_A> {
         match self.bits {
             0 => Some(SERIESSELECT_A::_0),
             1 => Some(SERIESSELECT_A::_1),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `_0`"]
+    #[doc = "Cortex-M0+ processor, basic feature set"]
     #[inline(always)]
     pub fn is_0(&self) -> bool {
         *self == SERIESSELECT_A::_0
     }
-    #[doc = "Checks if the value of the field is `_1`"]
+    #[doc = "Cortex-M0+ processor, USB"]
     #[inline(always)]
     pub fn is_1(&self) -> bool {
         *self == SERIESSELECT_A::_1
     }
 }
 #[doc = "Field `FAMILY` reader - Family"]
-pub type FAMILY_R = crate::FieldReader<u8, FAMILYSELECT_A>;
+pub type FAMILY_R = crate::FieldReader<FAMILYSELECT_A>;
 #[doc = "Family\n\nValue on reset: 3"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -74,29 +64,32 @@ impl From<FAMILYSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for FAMILYSELECT_A {
+    type Ux = u8;
+}
 impl FAMILY_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<FAMILYSELECT_A> {
+    pub const fn variant(&self) -> Option<FAMILYSELECT_A> {
         match self.bits {
             0 => Some(FAMILYSELECT_A::_0),
             1 => Some(FAMILYSELECT_A::_1),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `_0`"]
+    #[doc = "General purpose microcontroller"]
     #[inline(always)]
     pub fn is_0(&self) -> bool {
         *self == FAMILYSELECT_A::_0
     }
-    #[doc = "Checks if the value of the field is `_1`"]
+    #[doc = "PicoPower"]
     #[inline(always)]
     pub fn is_1(&self) -> bool {
         *self == FAMILYSELECT_A::_1
     }
 }
 #[doc = "Field `PROCESSOR` reader - Processor"]
-pub type PROCESSOR_R = crate::FieldReader<u8, PROCESSORSELECT_A>;
+pub type PROCESSOR_R = crate::FieldReader<PROCESSORSELECT_A>;
 #[doc = "Processor\n\nValue on reset: 6"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -120,10 +113,13 @@ impl From<PROCESSORSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for PROCESSORSELECT_A {
+    type Ux = u8;
+}
 impl PROCESSOR_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<PROCESSORSELECT_A> {
+    pub const fn variant(&self) -> Option<PROCESSORSELECT_A> {
         match self.bits {
             1 => Some(PROCESSORSELECT_A::CM0P),
             2 => Some(PROCESSORSELECT_A::CM23),
@@ -134,32 +130,32 @@ impl PROCESSOR_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `CM0P`"]
+    #[doc = "Cortex-M0+"]
     #[inline(always)]
     pub fn is_cm0p(&self) -> bool {
         *self == PROCESSORSELECT_A::CM0P
     }
-    #[doc = "Checks if the value of the field is `CM23`"]
+    #[doc = "Cortex-M23"]
     #[inline(always)]
     pub fn is_cm23(&self) -> bool {
         *self == PROCESSORSELECT_A::CM23
     }
-    #[doc = "Checks if the value of the field is `CM3`"]
+    #[doc = "Cortex-M3"]
     #[inline(always)]
     pub fn is_cm3(&self) -> bool {
         *self == PROCESSORSELECT_A::CM3
     }
-    #[doc = "Checks if the value of the field is `CM4`"]
+    #[doc = "Cortex-M4"]
     #[inline(always)]
     pub fn is_cm4(&self) -> bool {
         *self == PROCESSORSELECT_A::CM4
     }
-    #[doc = "Checks if the value of the field is `CM4F`"]
+    #[doc = "Cortex-M4 with FPU"]
     #[inline(always)]
     pub fn is_cm4f(&self) -> bool {
         *self == PROCESSORSELECT_A::CM4F
     }
-    #[doc = "Checks if the value of the field is `CM33`"]
+    #[doc = "Cortex-M33"]
     #[inline(always)]
     pub fn is_cm33(&self) -> bool {
         *self == PROCESSORSELECT_A::CM33
@@ -197,15 +193,13 @@ impl R {
         PROCESSOR_R::new(((self.bits >> 28) & 0x0f) as u8)
     }
 }
-#[doc = "Device Identification\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [did](index.html) module"]
+#[doc = "Device Identification\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`did::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DID_SPEC;
 impl crate::RegisterSpec for DID_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [did::R](R) reader structure"]
-impl crate::Readable for DID_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`did::R`](R) reader structure"]
+impl crate::Readable for DID_SPEC {}
 #[doc = "`reset()` method sets DID to value 0x6181_0306"]
 impl crate::Resettable for DID_SPEC {
     const RESET_VALUE: Self::Ux = 0x6181_0306;

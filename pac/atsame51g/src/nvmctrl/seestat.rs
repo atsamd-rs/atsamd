@@ -1,32 +1,19 @@
 #[doc = "Register `SEESTAT` reader"]
-pub struct R(crate::R<SEESTAT_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<SEESTAT_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<SEESTAT_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<SEESTAT_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<SEESTAT_SPEC>;
 #[doc = "Field `ASEES` reader - Active SmartEEPROM Sector"]
-pub type ASEES_R = crate::BitReader<bool>;
+pub type ASEES_R = crate::BitReader;
 #[doc = "Field `LOAD` reader - Page Buffer Loaded"]
-pub type LOAD_R = crate::BitReader<bool>;
+pub type LOAD_R = crate::BitReader;
 #[doc = "Field `BUSY` reader - Busy"]
-pub type BUSY_R = crate::BitReader<bool>;
+pub type BUSY_R = crate::BitReader;
 #[doc = "Field `LOCK` reader - SmartEEPROM Write Access Is Locked"]
-pub type LOCK_R = crate::BitReader<bool>;
+pub type LOCK_R = crate::BitReader;
 #[doc = "Field `RLOCK` reader - SmartEEPROM Write Access To Register Address Space Is Locked"]
-pub type RLOCK_R = crate::BitReader<bool>;
+pub type RLOCK_R = crate::BitReader;
 #[doc = "Field `SBLK` reader - Blocks Number In a Sector"]
-pub type SBLK_R = crate::FieldReader<u8, u8>;
+pub type SBLK_R = crate::FieldReader;
 #[doc = "Field `PSZ` reader - SmartEEPROM Page Size"]
-pub type PSZ_R = crate::FieldReader<u8, u8>;
+pub type PSZ_R = crate::FieldReader;
 impl R {
     #[doc = "Bit 0 - Active SmartEEPROM Sector"]
     #[inline(always)]
@@ -64,15 +51,13 @@ impl R {
         PSZ_R::new(((self.bits >> 16) & 7) as u8)
     }
 }
-#[doc = "SmartEEPROM Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [seestat](index.html) module"]
+#[doc = "SmartEEPROM Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`seestat::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct SEESTAT_SPEC;
 impl crate::RegisterSpec for SEESTAT_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [seestat::R](R) reader structure"]
-impl crate::Readable for SEESTAT_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`seestat::R`](R) reader structure"]
+impl crate::Readable for SEESTAT_SPEC {}
 #[doc = "`reset()` method sets SEESTAT to value 0"]
 impl crate::Resettable for SEESTAT_SPEC {
     const RESET_VALUE: Self::Ux = 0;

@@ -1,73 +1,41 @@
 #[doc = "Register `DHCSR` reader"]
-pub struct R(crate::R<DHCSR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DHCSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DHCSR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DHCSR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DHCSR_SPEC>;
 #[doc = "Register `DHCSR` writer"]
-pub struct W(crate::W<DHCSR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<DHCSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<DHCSR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<DHCSR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<DHCSR_SPEC>;
 #[doc = "Field `C_DEBUGEN` reader - "]
-pub type C_DEBUGEN_R = crate::BitReader<bool>;
+pub type C_DEBUGEN_R = crate::BitReader;
 #[doc = "Field `C_DEBUGEN` writer - "]
-pub type C_DEBUGEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, DHCSR_SPEC, bool, O>;
+pub type C_DEBUGEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `C_HALT` reader - "]
-pub type C_HALT_R = crate::BitReader<bool>;
+pub type C_HALT_R = crate::BitReader;
 #[doc = "Field `C_HALT` writer - "]
-pub type C_HALT_W<'a, const O: u8> = crate::BitWriter<'a, u32, DHCSR_SPEC, bool, O>;
+pub type C_HALT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `C_STEP` reader - "]
-pub type C_STEP_R = crate::BitReader<bool>;
+pub type C_STEP_R = crate::BitReader;
 #[doc = "Field `C_STEP` writer - "]
-pub type C_STEP_W<'a, const O: u8> = crate::BitWriter<'a, u32, DHCSR_SPEC, bool, O>;
+pub type C_STEP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `C_MASKINTS` reader - "]
-pub type C_MASKINTS_R = crate::BitReader<bool>;
+pub type C_MASKINTS_R = crate::BitReader;
 #[doc = "Field `C_MASKINTS` writer - "]
-pub type C_MASKINTS_W<'a, const O: u8> = crate::BitWriter<'a, u32, DHCSR_SPEC, bool, O>;
+pub type C_MASKINTS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `C_SNAPSTALL` reader - "]
-pub type C_SNAPSTALL_R = crate::BitReader<bool>;
+pub type C_SNAPSTALL_R = crate::BitReader;
 #[doc = "Field `C_SNAPSTALL` writer - "]
-pub type C_SNAPSTALL_W<'a, const O: u8> = crate::BitWriter<'a, u32, DHCSR_SPEC, bool, O>;
+pub type C_SNAPSTALL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `S_REGRDY` reader - "]
-pub type S_REGRDY_R = crate::BitReader<bool>;
+pub type S_REGRDY_R = crate::BitReader;
 #[doc = "Field `DBGKEY` writer - "]
-pub type DBGKEY_W<'a, const O: u8> = crate::FieldWriter<'a, u32, DHCSR_SPEC, u16, u16, 16, O>;
+pub type DBGKEY_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 16, O, u16>;
 #[doc = "Field `S_HALT` reader - "]
-pub type S_HALT_R = crate::BitReader<bool>;
+pub type S_HALT_R = crate::BitReader;
 #[doc = "Field `S_SLEEP` reader - "]
-pub type S_SLEEP_R = crate::BitReader<bool>;
+pub type S_SLEEP_R = crate::BitReader;
 #[doc = "Field `S_LOCKUP` reader - "]
-pub type S_LOCKUP_R = crate::BitReader<bool>;
+pub type S_LOCKUP_R = crate::BitReader;
 #[doc = "Field `S_RETIRE_ST` reader - "]
-pub type S_RETIRE_ST_R = crate::BitReader<bool>;
+pub type S_RETIRE_ST_R = crate::BitReader;
 #[doc = "Field `S_RESET_ST` reader - "]
-pub type S_RESET_ST_R = crate::BitReader<bool>;
+pub type S_RESET_ST_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0"]
     #[inline(always)]
@@ -129,58 +97,59 @@ impl W {
     #[doc = "Bit 0"]
     #[inline(always)]
     #[must_use]
-    pub fn c_debugen(&mut self) -> C_DEBUGEN_W<0> {
+    pub fn c_debugen(&mut self) -> C_DEBUGEN_W<DHCSR_SPEC, 0> {
         C_DEBUGEN_W::new(self)
     }
     #[doc = "Bit 1"]
     #[inline(always)]
     #[must_use]
-    pub fn c_halt(&mut self) -> C_HALT_W<1> {
+    pub fn c_halt(&mut self) -> C_HALT_W<DHCSR_SPEC, 1> {
         C_HALT_W::new(self)
     }
     #[doc = "Bit 2"]
     #[inline(always)]
     #[must_use]
-    pub fn c_step(&mut self) -> C_STEP_W<2> {
+    pub fn c_step(&mut self) -> C_STEP_W<DHCSR_SPEC, 2> {
         C_STEP_W::new(self)
     }
     #[doc = "Bit 3"]
     #[inline(always)]
     #[must_use]
-    pub fn c_maskints(&mut self) -> C_MASKINTS_W<3> {
+    pub fn c_maskints(&mut self) -> C_MASKINTS_W<DHCSR_SPEC, 3> {
         C_MASKINTS_W::new(self)
     }
     #[doc = "Bit 5"]
     #[inline(always)]
     #[must_use]
-    pub fn c_snapstall(&mut self) -> C_SNAPSTALL_W<5> {
+    pub fn c_snapstall(&mut self) -> C_SNAPSTALL_W<DHCSR_SPEC, 5> {
         C_SNAPSTALL_W::new(self)
     }
     #[doc = "Bits 16:31"]
     #[inline(always)]
     #[must_use]
-    pub fn dbgkey(&mut self) -> DBGKEY_W<16> {
+    pub fn dbgkey(&mut self) -> DBGKEY_W<DHCSR_SPEC, 16> {
         DBGKEY_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Debug Halting Control and Status Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dhcsr](index.html) module"]
+#[doc = "Debug Halting Control and Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dhcsr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dhcsr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DHCSR_SPEC;
 impl crate::RegisterSpec for DHCSR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [dhcsr::R](R) reader structure"]
-impl crate::Readable for DHCSR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [dhcsr::W](W) writer structure"]
+#[doc = "`read()` method returns [`dhcsr::R`](R) reader structure"]
+impl crate::Readable for DHCSR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`dhcsr::W`](W) writer structure"]
 impl crate::Writable for DHCSR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

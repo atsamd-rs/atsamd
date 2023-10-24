@@ -1,135 +1,103 @@
 #[doc = "Register `INTFLAG` reader"]
-pub struct R(crate::R<INTFLAG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAG_SPEC>;
 #[doc = "Register `INTFLAG` writer"]
-pub struct W(crate::W<INTFLAG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAG_SPEC>;
 #[doc = "Field `OVR0` reader - Channel 0 Overrun"]
-pub type OVR0_R = crate::BitReader<bool>;
+pub type OVR0_R = crate::BitReader;
 #[doc = "Field `OVR0` writer - Channel 0 Overrun"]
-pub type OVR0_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR1` reader - Channel 1 Overrun"]
-pub type OVR1_R = crate::BitReader<bool>;
+pub type OVR1_R = crate::BitReader;
 #[doc = "Field `OVR1` writer - Channel 1 Overrun"]
-pub type OVR1_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR2` reader - Channel 2 Overrun"]
-pub type OVR2_R = crate::BitReader<bool>;
+pub type OVR2_R = crate::BitReader;
 #[doc = "Field `OVR2` writer - Channel 2 Overrun"]
-pub type OVR2_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR3` reader - Channel 3 Overrun"]
-pub type OVR3_R = crate::BitReader<bool>;
+pub type OVR3_R = crate::BitReader;
 #[doc = "Field `OVR3` writer - Channel 3 Overrun"]
-pub type OVR3_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR4` reader - Channel 4 Overrun"]
-pub type OVR4_R = crate::BitReader<bool>;
+pub type OVR4_R = crate::BitReader;
 #[doc = "Field `OVR4` writer - Channel 4 Overrun"]
-pub type OVR4_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR5` reader - Channel 5 Overrun"]
-pub type OVR5_R = crate::BitReader<bool>;
+pub type OVR5_R = crate::BitReader;
 #[doc = "Field `OVR5` writer - Channel 5 Overrun"]
-pub type OVR5_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR6` reader - Channel 6 Overrun"]
-pub type OVR6_R = crate::BitReader<bool>;
+pub type OVR6_R = crate::BitReader;
 #[doc = "Field `OVR6` writer - Channel 6 Overrun"]
-pub type OVR6_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR7` reader - Channel 7 Overrun"]
-pub type OVR7_R = crate::BitReader<bool>;
+pub type OVR7_R = crate::BitReader;
 #[doc = "Field `OVR7` writer - Channel 7 Overrun"]
-pub type OVR7_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD0` reader - Channel 0 Event Detection"]
-pub type EVD0_R = crate::BitReader<bool>;
+pub type EVD0_R = crate::BitReader;
 #[doc = "Field `EVD0` writer - Channel 0 Event Detection"]
-pub type EVD0_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD1` reader - Channel 1 Event Detection"]
-pub type EVD1_R = crate::BitReader<bool>;
+pub type EVD1_R = crate::BitReader;
 #[doc = "Field `EVD1` writer - Channel 1 Event Detection"]
-pub type EVD1_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD2` reader - Channel 2 Event Detection"]
-pub type EVD2_R = crate::BitReader<bool>;
+pub type EVD2_R = crate::BitReader;
 #[doc = "Field `EVD2` writer - Channel 2 Event Detection"]
-pub type EVD2_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD3` reader - Channel 3 Event Detection"]
-pub type EVD3_R = crate::BitReader<bool>;
+pub type EVD3_R = crate::BitReader;
 #[doc = "Field `EVD3` writer - Channel 3 Event Detection"]
-pub type EVD3_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD4` reader - Channel 4 Event Detection"]
-pub type EVD4_R = crate::BitReader<bool>;
+pub type EVD4_R = crate::BitReader;
 #[doc = "Field `EVD4` writer - Channel 4 Event Detection"]
-pub type EVD4_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD5` reader - Channel 5 Event Detection"]
-pub type EVD5_R = crate::BitReader<bool>;
+pub type EVD5_R = crate::BitReader;
 #[doc = "Field `EVD5` writer - Channel 5 Event Detection"]
-pub type EVD5_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD6` reader - Channel 6 Event Detection"]
-pub type EVD6_R = crate::BitReader<bool>;
+pub type EVD6_R = crate::BitReader;
 #[doc = "Field `EVD6` writer - Channel 6 Event Detection"]
-pub type EVD6_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD7` reader - Channel 7 Event Detection"]
-pub type EVD7_R = crate::BitReader<bool>;
+pub type EVD7_R = crate::BitReader;
 #[doc = "Field `EVD7` writer - Channel 7 Event Detection"]
-pub type EVD7_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR8` reader - Channel 8 Overrun"]
-pub type OVR8_R = crate::BitReader<bool>;
+pub type OVR8_R = crate::BitReader;
 #[doc = "Field `OVR8` writer - Channel 8 Overrun"]
-pub type OVR8_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR8_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR9` reader - Channel 9 Overrun"]
-pub type OVR9_R = crate::BitReader<bool>;
+pub type OVR9_R = crate::BitReader;
 #[doc = "Field `OVR9` writer - Channel 9 Overrun"]
-pub type OVR9_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR9_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR10` reader - Channel 10 Overrun"]
-pub type OVR10_R = crate::BitReader<bool>;
+pub type OVR10_R = crate::BitReader;
 #[doc = "Field `OVR10` writer - Channel 10 Overrun"]
-pub type OVR10_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR10_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVR11` reader - Channel 11 Overrun"]
-pub type OVR11_R = crate::BitReader<bool>;
+pub type OVR11_R = crate::BitReader;
 #[doc = "Field `OVR11` writer - Channel 11 Overrun"]
-pub type OVR11_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type OVR11_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD8` reader - Channel 8 Event Detection"]
-pub type EVD8_R = crate::BitReader<bool>;
+pub type EVD8_R = crate::BitReader;
 #[doc = "Field `EVD8` writer - Channel 8 Event Detection"]
-pub type EVD8_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD8_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD9` reader - Channel 9 Event Detection"]
-pub type EVD9_R = crate::BitReader<bool>;
+pub type EVD9_R = crate::BitReader;
 #[doc = "Field `EVD9` writer - Channel 9 Event Detection"]
-pub type EVD9_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD9_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD10` reader - Channel 10 Event Detection"]
-pub type EVD10_R = crate::BitReader<bool>;
+pub type EVD10_R = crate::BitReader;
 #[doc = "Field `EVD10` writer - Channel 10 Event Detection"]
-pub type EVD10_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD10_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVD11` reader - Channel 11 Event Detection"]
-pub type EVD11_R = crate::BitReader<bool>;
+pub type EVD11_R = crate::BitReader;
 #[doc = "Field `EVD11` writer - Channel 11 Event Detection"]
-pub type EVD11_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type EVD11_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Channel 0 Overrun"]
     #[inline(always)]
@@ -256,166 +224,167 @@ impl W {
     #[doc = "Bit 0 - Channel 0 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr0(&mut self) -> OVR0_W<0> {
+    pub fn ovr0(&mut self) -> OVR0_W<INTFLAG_SPEC, 0> {
         OVR0_W::new(self)
     }
     #[doc = "Bit 1 - Channel 1 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr1(&mut self) -> OVR1_W<1> {
+    pub fn ovr1(&mut self) -> OVR1_W<INTFLAG_SPEC, 1> {
         OVR1_W::new(self)
     }
     #[doc = "Bit 2 - Channel 2 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr2(&mut self) -> OVR2_W<2> {
+    pub fn ovr2(&mut self) -> OVR2_W<INTFLAG_SPEC, 2> {
         OVR2_W::new(self)
     }
     #[doc = "Bit 3 - Channel 3 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr3(&mut self) -> OVR3_W<3> {
+    pub fn ovr3(&mut self) -> OVR3_W<INTFLAG_SPEC, 3> {
         OVR3_W::new(self)
     }
     #[doc = "Bit 4 - Channel 4 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr4(&mut self) -> OVR4_W<4> {
+    pub fn ovr4(&mut self) -> OVR4_W<INTFLAG_SPEC, 4> {
         OVR4_W::new(self)
     }
     #[doc = "Bit 5 - Channel 5 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr5(&mut self) -> OVR5_W<5> {
+    pub fn ovr5(&mut self) -> OVR5_W<INTFLAG_SPEC, 5> {
         OVR5_W::new(self)
     }
     #[doc = "Bit 6 - Channel 6 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr6(&mut self) -> OVR6_W<6> {
+    pub fn ovr6(&mut self) -> OVR6_W<INTFLAG_SPEC, 6> {
         OVR6_W::new(self)
     }
     #[doc = "Bit 7 - Channel 7 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr7(&mut self) -> OVR7_W<7> {
+    pub fn ovr7(&mut self) -> OVR7_W<INTFLAG_SPEC, 7> {
         OVR7_W::new(self)
     }
     #[doc = "Bit 8 - Channel 0 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd0(&mut self) -> EVD0_W<8> {
+    pub fn evd0(&mut self) -> EVD0_W<INTFLAG_SPEC, 8> {
         EVD0_W::new(self)
     }
     #[doc = "Bit 9 - Channel 1 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd1(&mut self) -> EVD1_W<9> {
+    pub fn evd1(&mut self) -> EVD1_W<INTFLAG_SPEC, 9> {
         EVD1_W::new(self)
     }
     #[doc = "Bit 10 - Channel 2 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd2(&mut self) -> EVD2_W<10> {
+    pub fn evd2(&mut self) -> EVD2_W<INTFLAG_SPEC, 10> {
         EVD2_W::new(self)
     }
     #[doc = "Bit 11 - Channel 3 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd3(&mut self) -> EVD3_W<11> {
+    pub fn evd3(&mut self) -> EVD3_W<INTFLAG_SPEC, 11> {
         EVD3_W::new(self)
     }
     #[doc = "Bit 12 - Channel 4 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd4(&mut self) -> EVD4_W<12> {
+    pub fn evd4(&mut self) -> EVD4_W<INTFLAG_SPEC, 12> {
         EVD4_W::new(self)
     }
     #[doc = "Bit 13 - Channel 5 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd5(&mut self) -> EVD5_W<13> {
+    pub fn evd5(&mut self) -> EVD5_W<INTFLAG_SPEC, 13> {
         EVD5_W::new(self)
     }
     #[doc = "Bit 14 - Channel 6 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd6(&mut self) -> EVD6_W<14> {
+    pub fn evd6(&mut self) -> EVD6_W<INTFLAG_SPEC, 14> {
         EVD6_W::new(self)
     }
     #[doc = "Bit 15 - Channel 7 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd7(&mut self) -> EVD7_W<15> {
+    pub fn evd7(&mut self) -> EVD7_W<INTFLAG_SPEC, 15> {
         EVD7_W::new(self)
     }
     #[doc = "Bit 16 - Channel 8 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr8(&mut self) -> OVR8_W<16> {
+    pub fn ovr8(&mut self) -> OVR8_W<INTFLAG_SPEC, 16> {
         OVR8_W::new(self)
     }
     #[doc = "Bit 17 - Channel 9 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr9(&mut self) -> OVR9_W<17> {
+    pub fn ovr9(&mut self) -> OVR9_W<INTFLAG_SPEC, 17> {
         OVR9_W::new(self)
     }
     #[doc = "Bit 18 - Channel 10 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr10(&mut self) -> OVR10_W<18> {
+    pub fn ovr10(&mut self) -> OVR10_W<INTFLAG_SPEC, 18> {
         OVR10_W::new(self)
     }
     #[doc = "Bit 19 - Channel 11 Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn ovr11(&mut self) -> OVR11_W<19> {
+    pub fn ovr11(&mut self) -> OVR11_W<INTFLAG_SPEC, 19> {
         OVR11_W::new(self)
     }
     #[doc = "Bit 24 - Channel 8 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd8(&mut self) -> EVD8_W<24> {
+    pub fn evd8(&mut self) -> EVD8_W<INTFLAG_SPEC, 24> {
         EVD8_W::new(self)
     }
     #[doc = "Bit 25 - Channel 9 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd9(&mut self) -> EVD9_W<25> {
+    pub fn evd9(&mut self) -> EVD9_W<INTFLAG_SPEC, 25> {
         EVD9_W::new(self)
     }
     #[doc = "Bit 26 - Channel 10 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd10(&mut self) -> EVD10_W<26> {
+    pub fn evd10(&mut self) -> EVD10_W<INTFLAG_SPEC, 26> {
         EVD10_W::new(self)
     }
     #[doc = "Bit 27 - Channel 11 Event Detection"]
     #[inline(always)]
     #[must_use]
-    pub fn evd11(&mut self) -> EVD11_W<27> {
+    pub fn evd11(&mut self) -> EVD11_W<INTFLAG_SPEC, 27> {
         EVD11_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Flag Status and Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflag](index.html) module"]
+#[doc = "Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAG_SPEC;
 impl crate::RegisterSpec for INTFLAG_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [intflag::R](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
+impl crate::Readable for INTFLAG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

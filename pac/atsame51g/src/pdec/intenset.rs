@@ -1,63 +1,31 @@
 #[doc = "Register `INTENSET` reader"]
-pub struct R(crate::R<INTENSET_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTENSET_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTENSET_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTENSET_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTENSET_SPEC>;
 #[doc = "Register `INTENSET` writer"]
-pub struct W(crate::W<INTENSET_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTENSET_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTENSET_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTENSET_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTENSET_SPEC>;
 #[doc = "Field `OVF` reader - Overflow/Underflow Interrupt Enable"]
-pub type OVF_R = crate::BitReader<bool>;
+pub type OVF_R = crate::BitReader;
 #[doc = "Field `OVF` writer - Overflow/Underflow Interrupt Enable"]
-pub type OVF_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENSET_SPEC, bool, O>;
+pub type OVF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ERR` reader - Error Interrupt Enable"]
-pub type ERR_R = crate::BitReader<bool>;
+pub type ERR_R = crate::BitReader;
 #[doc = "Field `ERR` writer - Error Interrupt Enable"]
-pub type ERR_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENSET_SPEC, bool, O>;
+pub type ERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DIR` reader - Direction Interrupt Enable"]
-pub type DIR_R = crate::BitReader<bool>;
+pub type DIR_R = crate::BitReader;
 #[doc = "Field `DIR` writer - Direction Interrupt Enable"]
-pub type DIR_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENSET_SPEC, bool, O>;
+pub type DIR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `VLC` reader - Velocity Interrupt Enable"]
-pub type VLC_R = crate::BitReader<bool>;
+pub type VLC_R = crate::BitReader;
 #[doc = "Field `VLC` writer - Velocity Interrupt Enable"]
-pub type VLC_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENSET_SPEC, bool, O>;
+pub type VLC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC0` reader - Channel 0 Compare Match Enable"]
-pub type MC0_R = crate::BitReader<bool>;
+pub type MC0_R = crate::BitReader;
 #[doc = "Field `MC0` writer - Channel 0 Compare Match Enable"]
-pub type MC0_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENSET_SPEC, bool, O>;
+pub type MC0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC1` reader - Channel 1 Compare Match Enable"]
-pub type MC1_R = crate::BitReader<bool>;
+pub type MC1_R = crate::BitReader;
 #[doc = "Field `MC1` writer - Channel 1 Compare Match Enable"]
-pub type MC1_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTENSET_SPEC, bool, O>;
+pub type MC1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Overflow/Underflow Interrupt Enable"]
     #[inline(always)]
@@ -94,58 +62,59 @@ impl W {
     #[doc = "Bit 0 - Overflow/Underflow Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ovf(&mut self) -> OVF_W<0> {
+    pub fn ovf(&mut self) -> OVF_W<INTENSET_SPEC, 0> {
         OVF_W::new(self)
     }
     #[doc = "Bit 1 - Error Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn err(&mut self) -> ERR_W<1> {
+    pub fn err(&mut self) -> ERR_W<INTENSET_SPEC, 1> {
         ERR_W::new(self)
     }
     #[doc = "Bit 2 - Direction Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dir(&mut self) -> DIR_W<2> {
+    pub fn dir(&mut self) -> DIR_W<INTENSET_SPEC, 2> {
         DIR_W::new(self)
     }
     #[doc = "Bit 3 - Velocity Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn vlc(&mut self) -> VLC_W<3> {
+    pub fn vlc(&mut self) -> VLC_W<INTENSET_SPEC, 3> {
         VLC_W::new(self)
     }
     #[doc = "Bit 4 - Channel 0 Compare Match Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn mc0(&mut self) -> MC0_W<4> {
+    pub fn mc0(&mut self) -> MC0_W<INTENSET_SPEC, 4> {
         MC0_W::new(self)
     }
     #[doc = "Bit 5 - Channel 1 Compare Match Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn mc1(&mut self) -> MC1_W<5> {
+    pub fn mc1(&mut self) -> MC1_W<INTENSET_SPEC, 5> {
         MC1_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Enable Set\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intenset](index.html) module"]
+#[doc = "Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTENSET_SPEC;
 impl crate::RegisterSpec for INTENSET_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [intenset::R](R) reader structure"]
-impl crate::Readable for INTENSET_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intenset::W](W) writer structure"]
+#[doc = "`read()` method returns [`intenset::R`](R) reader structure"]
+impl crate::Readable for INTENSET_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for INTENSET_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

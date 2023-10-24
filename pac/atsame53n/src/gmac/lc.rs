@@ -1,20 +1,7 @@
 #[doc = "Register `LC` reader"]
-pub struct R(crate::R<LC_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<LC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<LC_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<LC_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<LC_SPEC>;
 #[doc = "Field `LCOL` reader - Late Collisions"]
-pub type LCOL_R = crate::FieldReader<u16, u16>;
+pub type LCOL_R = crate::FieldReader<u16>;
 impl R {
     #[doc = "Bits 0:9 - Late Collisions"]
     #[inline(always)]
@@ -22,15 +9,13 @@ impl R {
         LCOL_R::new((self.bits & 0x03ff) as u16)
     }
 }
-#[doc = "Late Collisions Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [lc](index.html) module"]
+#[doc = "Late Collisions Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`lc::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct LC_SPEC;
 impl crate::RegisterSpec for LC_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [lc::R](R) reader structure"]
-impl crate::Readable for LC_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`lc::R`](R) reader structure"]
+impl crate::Readable for LC_SPEC {}
 #[doc = "`reset()` method sets LC to value 0"]
 impl crate::Resettable for LC_SPEC {
     const RESET_VALUE: Self::Ux = 0;

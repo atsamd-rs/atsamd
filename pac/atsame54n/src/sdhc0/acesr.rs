@@ -1,18 +1,5 @@
 #[doc = "Register `ACESR` reader"]
-pub struct R(crate::R<ACESR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<ACESR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<ACESR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<ACESR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<ACESR_SPEC>;
 #[doc = "Field `ACMD12NE` reader - Auto CMD12 Not Executed"]
 pub type ACMD12NE_R = crate::BitReader<ACMD12NESELECT_A>;
 #[doc = "Auto CMD12 Not Executed\n\nValue on reset: 0"]
@@ -32,18 +19,18 @@ impl From<ACMD12NESELECT_A> for bool {
 impl ACMD12NE_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ACMD12NESELECT_A {
+    pub const fn variant(&self) -> ACMD12NESELECT_A {
         match self.bits {
             false => ACMD12NESELECT_A::EXEC,
             true => ACMD12NESELECT_A::NOT_EXEC,
         }
     }
-    #[doc = "Checks if the value of the field is `EXEC`"]
+    #[doc = "Executed"]
     #[inline(always)]
     pub fn is_exec(&self) -> bool {
         *self == ACMD12NESELECT_A::EXEC
     }
-    #[doc = "Checks if the value of the field is `NOT_EXEC`"]
+    #[doc = "Not executed"]
     #[inline(always)]
     pub fn is_not_exec(&self) -> bool {
         *self == ACMD12NESELECT_A::NOT_EXEC
@@ -68,18 +55,18 @@ impl From<ACMDTEOSELECT_A> for bool {
 impl ACMDTEO_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ACMDTEOSELECT_A {
+    pub const fn variant(&self) -> ACMDTEOSELECT_A {
         match self.bits {
             false => ACMDTEOSELECT_A::NO,
             true => ACMDTEOSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == ACMDTEOSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Timeout"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ACMDTEOSELECT_A::YES
@@ -104,18 +91,18 @@ impl From<ACMDCRCSELECT_A> for bool {
 impl ACMDCRC_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ACMDCRCSELECT_A {
+    pub const fn variant(&self) -> ACMDCRCSELECT_A {
         match self.bits {
             false => ACMDCRCSELECT_A::NO,
             true => ACMDCRCSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == ACMDCRCSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "CRC Error Generated"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ACMDCRCSELECT_A::YES
@@ -140,18 +127,18 @@ impl From<ACMDENDSELECT_A> for bool {
 impl ACMDEND_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ACMDENDSELECT_A {
+    pub const fn variant(&self) -> ACMDENDSELECT_A {
         match self.bits {
             false => ACMDENDSELECT_A::NO,
             true => ACMDENDSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == ACMDENDSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "End Bit Error Generated"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ACMDENDSELECT_A::YES
@@ -176,18 +163,18 @@ impl From<ACMDIDXSELECT_A> for bool {
 impl ACMDIDX_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ACMDIDXSELECT_A {
+    pub const fn variant(&self) -> ACMDIDXSELECT_A {
         match self.bits {
             false => ACMDIDXSELECT_A::NO,
             true => ACMDIDXSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == ACMDIDXSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Error"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ACMDIDXSELECT_A::YES
@@ -212,18 +199,18 @@ impl From<CMDNISELECT_A> for bool {
 impl CMDNI_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CMDNISELECT_A {
+    pub const fn variant(&self) -> CMDNISELECT_A {
         match self.bits {
             false => CMDNISELECT_A::OK,
             true => CMDNISELECT_A::NOT_ISSUED,
         }
     }
-    #[doc = "Checks if the value of the field is `OK`"]
+    #[doc = "No error"]
     #[inline(always)]
     pub fn is_ok(&self) -> bool {
         *self == CMDNISELECT_A::OK
     }
-    #[doc = "Checks if the value of the field is `NOT_ISSUED`"]
+    #[doc = "Not Issued"]
     #[inline(always)]
     pub fn is_not_issued(&self) -> bool {
         *self == CMDNISELECT_A::NOT_ISSUED
@@ -261,15 +248,13 @@ impl R {
         CMDNI_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
-#[doc = "Auto CMD Error Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [acesr](index.html) module"]
+#[doc = "Auto CMD Error Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`acesr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct ACESR_SPEC;
 impl crate::RegisterSpec for ACESR_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [acesr::R](R) reader structure"]
-impl crate::Readable for ACESR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`acesr::R`](R) reader structure"]
+impl crate::Readable for ACESR_SPEC {}
 #[doc = "`reset()` method sets ACESR to value 0"]
 impl crate::Resettable for ACESR_SPEC {
     const RESET_VALUE: Self::Ux = 0;

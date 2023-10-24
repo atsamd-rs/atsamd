@@ -1,83 +1,51 @@
 #[doc = "Register `INTENSET` reader"]
-pub struct R(crate::R<INTENSET_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTENSET_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTENSET_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTENSET_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTENSET_SPEC>;
 #[doc = "Register `INTENSET` writer"]
-pub struct W(crate::W<INTENSET_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTENSET_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTENSET_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTENSET_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTENSET_SPEC>;
 #[doc = "Field `DONE` reader - Command Done Interrupt Enable"]
-pub type DONE_R = crate::BitReader<bool>;
+pub type DONE_R = crate::BitReader;
 #[doc = "Field `DONE` writer - Command Done Interrupt Enable"]
-pub type DONE_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type DONE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ADDRE` reader - Address Error Interrupt Enable"]
-pub type ADDRE_R = crate::BitReader<bool>;
+pub type ADDRE_R = crate::BitReader;
 #[doc = "Field `ADDRE` writer - Address Error Interrupt Enable"]
-pub type ADDRE_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type ADDRE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PROGE` reader - Programming Error Interrupt Enable"]
-pub type PROGE_R = crate::BitReader<bool>;
+pub type PROGE_R = crate::BitReader;
 #[doc = "Field `PROGE` writer - Programming Error Interrupt Enable"]
-pub type PROGE_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type PROGE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LOCKE` reader - Lock Error Interrupt Enable"]
-pub type LOCKE_R = crate::BitReader<bool>;
+pub type LOCKE_R = crate::BitReader;
 #[doc = "Field `LOCKE` writer - Lock Error Interrupt Enable"]
-pub type LOCKE_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type LOCKE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ECCSE` reader - ECC Single Error Interrupt Enable"]
-pub type ECCSE_R = crate::BitReader<bool>;
+pub type ECCSE_R = crate::BitReader;
 #[doc = "Field `ECCSE` writer - ECC Single Error Interrupt Enable"]
-pub type ECCSE_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type ECCSE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ECCDE` reader - ECC Dual Error Interrupt Enable"]
-pub type ECCDE_R = crate::BitReader<bool>;
+pub type ECCDE_R = crate::BitReader;
 #[doc = "Field `ECCDE` writer - ECC Dual Error Interrupt Enable"]
-pub type ECCDE_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type ECCDE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `NVME` reader - NVM Error Interrupt Enable"]
-pub type NVME_R = crate::BitReader<bool>;
+pub type NVME_R = crate::BitReader;
 #[doc = "Field `NVME` writer - NVM Error Interrupt Enable"]
-pub type NVME_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type NVME_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SUSP` reader - Suspended Write Or Erase Interrupt Enable"]
-pub type SUSP_R = crate::BitReader<bool>;
+pub type SUSP_R = crate::BitReader;
 #[doc = "Field `SUSP` writer - Suspended Write Or Erase Interrupt Enable"]
-pub type SUSP_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type SUSP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SEESFULL` reader - Active SEES Full Interrupt Enable"]
-pub type SEESFULL_R = crate::BitReader<bool>;
+pub type SEESFULL_R = crate::BitReader;
 #[doc = "Field `SEESFULL` writer - Active SEES Full Interrupt Enable"]
-pub type SEESFULL_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type SEESFULL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SEESOVF` reader - Active SEES Overflow Interrupt Enable"]
-pub type SEESOVF_R = crate::BitReader<bool>;
+pub type SEESOVF_R = crate::BitReader;
 #[doc = "Field `SEESOVF` writer - Active SEES Overflow Interrupt Enable"]
-pub type SEESOVF_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type SEESOVF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SEEWRC` reader - SEE Write Completed Interrupt Enable"]
-pub type SEEWRC_R = crate::BitReader<bool>;
+pub type SEEWRC_R = crate::BitReader;
 #[doc = "Field `SEEWRC` writer - SEE Write Completed Interrupt Enable"]
-pub type SEEWRC_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENSET_SPEC, bool, O>;
+pub type SEEWRC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Command Done Interrupt Enable"]
     #[inline(always)]
@@ -139,88 +107,89 @@ impl W {
     #[doc = "Bit 0 - Command Done Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn done(&mut self) -> DONE_W<0> {
+    pub fn done(&mut self) -> DONE_W<INTENSET_SPEC, 0> {
         DONE_W::new(self)
     }
     #[doc = "Bit 1 - Address Error Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn addre(&mut self) -> ADDRE_W<1> {
+    pub fn addre(&mut self) -> ADDRE_W<INTENSET_SPEC, 1> {
         ADDRE_W::new(self)
     }
     #[doc = "Bit 2 - Programming Error Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn proge(&mut self) -> PROGE_W<2> {
+    pub fn proge(&mut self) -> PROGE_W<INTENSET_SPEC, 2> {
         PROGE_W::new(self)
     }
     #[doc = "Bit 3 - Lock Error Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn locke(&mut self) -> LOCKE_W<3> {
+    pub fn locke(&mut self) -> LOCKE_W<INTENSET_SPEC, 3> {
         LOCKE_W::new(self)
     }
     #[doc = "Bit 4 - ECC Single Error Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn eccse(&mut self) -> ECCSE_W<4> {
+    pub fn eccse(&mut self) -> ECCSE_W<INTENSET_SPEC, 4> {
         ECCSE_W::new(self)
     }
     #[doc = "Bit 5 - ECC Dual Error Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn eccde(&mut self) -> ECCDE_W<5> {
+    pub fn eccde(&mut self) -> ECCDE_W<INTENSET_SPEC, 5> {
         ECCDE_W::new(self)
     }
     #[doc = "Bit 6 - NVM Error Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn nvme(&mut self) -> NVME_W<6> {
+    pub fn nvme(&mut self) -> NVME_W<INTENSET_SPEC, 6> {
         NVME_W::new(self)
     }
     #[doc = "Bit 7 - Suspended Write Or Erase Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn susp(&mut self) -> SUSP_W<7> {
+    pub fn susp(&mut self) -> SUSP_W<INTENSET_SPEC, 7> {
         SUSP_W::new(self)
     }
     #[doc = "Bit 8 - Active SEES Full Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn seesfull(&mut self) -> SEESFULL_W<8> {
+    pub fn seesfull(&mut self) -> SEESFULL_W<INTENSET_SPEC, 8> {
         SEESFULL_W::new(self)
     }
     #[doc = "Bit 9 - Active SEES Overflow Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn seesovf(&mut self) -> SEESOVF_W<9> {
+    pub fn seesovf(&mut self) -> SEESOVF_W<INTENSET_SPEC, 9> {
         SEESOVF_W::new(self)
     }
     #[doc = "Bit 10 - SEE Write Completed Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn seewrc(&mut self) -> SEEWRC_W<10> {
+    pub fn seewrc(&mut self) -> SEEWRC_W<INTENSET_SPEC, 10> {
         SEEWRC_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Enable Set\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intenset](index.html) module"]
+#[doc = "Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTENSET_SPEC;
 impl crate::RegisterSpec for INTENSET_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [intenset::R](R) reader structure"]
-impl crate::Readable for INTENSET_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intenset::W](W) writer structure"]
+#[doc = "`read()` method returns [`intenset::R`](R) reader structure"]
+impl crate::Readable for INTENSET_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for INTENSET_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
