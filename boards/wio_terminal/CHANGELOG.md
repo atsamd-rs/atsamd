@@ -1,5 +1,8 @@
 # Unreleased
 
+# v0.7.0
+
+- Replace homebrew time library with `fugit` (#672)
 - Fix end-of-line glyph loss in usb_serial_display example
 - Fix display frequency in examples that did not work
 - Fix display offsets in buttons example
@@ -7,6 +10,7 @@
 - Fix various documentation and clippy warnings
 - Fix Wi-Fi by delaying UART init until device reset
 - Demote to tier 2, as there have been difficulties maintaining this board, and no current maintainer owns one
+- Added an example program which is the snake game (`snake.rs`). User can control the direction of the snake using the 5-way-switch.
 
 # v0.6.1
 

@@ -186,6 +186,15 @@ adc_pins! {
     PA15: 7
 }
 
+#[cfg(feature = "pins-d11d")]
+adc_pins! {
+    PA03: 1,
+    PA06: 4,
+    PA07: 5,
+    PA10: 8,
+    PA11: 9
+}
+
 #[cfg(feature = "samd21")]
 adc_pins! {
     PA02: 0,

@@ -1,4 +1,7 @@
 # Unreleased
+
+# v0.9.1
+
 - Fixed the `use_semihosting` feature of the BSP 
 
 # v0.9.0

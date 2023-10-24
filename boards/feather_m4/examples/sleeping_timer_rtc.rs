@@ -38,7 +38,7 @@ fn main() -> ! {
 
     // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
     // main clock
-    let timer = rtc::Rtc::count32_mode(peripherals.RTC, 1024.hz(), &mut peripherals.MCLK);
+    let timer = rtc::Rtc::count32_mode(peripherals.RTC, 1024.Hz(), &mut peripherals.MCLK);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
 
     // We can use the RTC in standby for maximum power savings

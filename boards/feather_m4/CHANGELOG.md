@@ -1,5 +1,8 @@
 # Unreleased
 
+# v0.11.0
+
+- Replace homebrew time library with `fugit` (#672)
 - Use correct alternate for USB (#661)
 
 # v0.10.1

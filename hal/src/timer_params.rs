@@ -10,22 +10,15 @@ pub struct TimerParams {
 
 impl TimerParams {
     /// calculates TimerParams from a given frequency based timeout.
-    pub fn new<T>(timeout: T, src_freq: u32) -> Self
-    where
-        T: Into<Hertz>,
-    {
-        let timeout = timeout.into();
-        let ticks: u32 = src_freq / timeout.0.max(1);
+    pub fn new(timeout: Hertz, src_freq: Hertz) -> Self {
+        let ticks: u32 = src_freq.to_Hz() / timeout.to_Hz().max(1);
         Self::new_from_ticks(ticks)
     }
 
     /// calculates TimerParams from a given period based timeout.
-    pub fn new_us<T>(timeout: T, src_freq: u32) -> Self
-    where
-        T: Into<Nanoseconds>,
-    {
-        let timeout = timeout.into();
-        let ticks: u32 = (timeout.0 as u64 * src_freq as u64 / 1_000_000_000_u64) as u32;
+    pub fn new_us(timeout: Nanoseconds, src_freq: Hertz) -> Self {
+        let ticks: u32 =
+            (timeout.to_nanos() as u64 * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
         Self::new_from_ticks(ticks)
     }
 
@@ -58,13 +51,13 @@ impl TimerParams {
 
 #[cfg(test)]
 mod tests {
-    use crate::time::U32Ext;
+    use crate::prelude::*;
     use crate::timer_params::TimerParams;
 
     #[test]
     fn timer_params_hz_and_us_same_1hz() {
-        let tp_from_hz = TimerParams::new(1_u32.hz(), 48_000_000_u32);
-        let tp_from_us = TimerParams::new_us(1_000_000_u32.us(), 48_000_000_u32);
+        let tp_from_hz = TimerParams::new(1.Hz(), 48.MHz());
+        let tp_from_us = TimerParams::new_us(1_000_000.micros(), 48.MHz());
 
         assert_eq!(tp_from_hz.divider, tp_from_us.divider);
         assert_eq!(tp_from_hz.cycles, tp_from_us.cycles);
@@ -72,8 +65,8 @@ mod tests {
 
     #[test]
     fn timer_params_hz_and_us_same_3hz() {
-        let tp_from_hz = TimerParams::new(3_u32.hz(), 48_000_000_u32);
-        let tp_from_us = TimerParams::new_us(333_333_u32.us(), 48_000_000_u32);
+        let tp_from_hz = TimerParams::new(3.Hz(), 48.MHz());
+        let tp_from_us = TimerParams::new_us(333_333.micros(), 48.MHz());
 
         // There's some rounding error here, but it is extremely small (1 cycle
         // difference)

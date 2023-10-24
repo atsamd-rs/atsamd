@@ -88,3 +88,6 @@ Display Ferris centered on the screen. Maintain the correct orientation of the i
 ### [`usb_serial_display`](usb_serial_display.rs)
 
 Makes the Wio Terminal appear as a USB serial port. The screen can be written to by sending messages down the serial port.
+
+### [`snake`](snake.rs)
+Generic snake game where you use the 5-way-switch to control the snake. 

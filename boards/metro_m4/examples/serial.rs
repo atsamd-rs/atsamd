@@ -36,7 +36,7 @@ fn main() -> ! {
 
     let mut uart = bsp::uart(
         &mut clocks,
-        9600.hz(),
+        9600.Hz(),
         uart_sercom,
         &mut peripherals.MCLK,
         uart_rx,

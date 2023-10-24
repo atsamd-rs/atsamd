@@ -268,7 +268,7 @@ where
     ///
     /// Note that 3x oversampling is not supported.
     #[inline]
-    pub fn baud<B: Into<Hertz>>(mut self, baud: B, mode: BaudMode) -> Self {
+    pub fn baud(mut self, baud: Hertz, mode: BaudMode) -> Self {
         self.set_baud(baud, mode);
         self
     }
@@ -282,7 +282,7 @@ where
     ///
     /// Note that 3x oversampling is not supported.
     #[inline]
-    pub fn set_baud<B: Into<Hertz>>(&mut self, baud: B, mode: BaudMode) {
+    pub fn set_baud(&mut self, baud: Hertz, mode: BaudMode) {
         self.registers.set_baud(self.freq, baud, mode);
     }
 

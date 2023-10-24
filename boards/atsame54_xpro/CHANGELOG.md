@@ -1,4 +1,6 @@
 # Unreleased
+
+# v0.6.0
 - Limit RAM memory to avoid HardFaults when `UROW:ECCRAM` is enabled
 - Remove re-export of `cortex-m-rt::entry`
 

@@ -1,5 +1,7 @@
 # Unreleased
 
+# v0.10.1
+
 - Use correct alternate for USB (#661)
 
 # v0.10.0

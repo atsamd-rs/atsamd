@@ -257,7 +257,8 @@ pub use channel::*;
 pub use dma_controller::*;
 pub use transfer::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 /// Runtime errors that may occur when dealing with DMA transfers.
 pub enum Error {
     /// Supplied buffers both have lengths > 1 beat, but not equal to each other
