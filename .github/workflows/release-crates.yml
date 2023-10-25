@@ -84,7 +84,7 @@ jobs:
         run: |
           set -ex
 
-          # Install random crate to force update of the registry
+          # Force update of the registry
           cargo update || true
 
           sudo apt-get install -y jq
