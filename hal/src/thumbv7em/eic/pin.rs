@@ -249,7 +249,7 @@ crate::paste::item! {
         }
     }
 
-    #[cfg(all(feature = "async", feature = "nightly"))]
+    #[cfg(feature = "async")]
     impl<GPIO, I> embedded_hal_alpha::digital::ErrorType for [<$PadType $num>]<GPIO, I>
     where
         GPIO: AnyPin,
@@ -259,7 +259,7 @@ crate::paste::item! {
         type Error = core::convert::Infallible;
     }
 
-    #[cfg(all(feature = "async", feature = "nightly"))]
+    #[cfg(feature = "async")]
     impl<GPIO, I> embedded_hal_async::digital::Wait for [<$PadType $num>]<GPIO, I>
     where
         GPIO: AnyPin,

@@ -234,7 +234,6 @@ where
     }
 }
 
-#[cfg(feature = "nightly")]
 mod impl_ehal {
     use super::*;
     use embedded_hal_async::i2c::{ErrorType, I2c as I2cTrait, Operation};

@@ -199,6 +199,7 @@ async = [
     "cortex-m-interrupt",
     "unproven",
     "embassy-sync",
+    "embedded-hal-async",
     "futures",
 ]
 

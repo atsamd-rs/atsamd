@@ -470,7 +470,7 @@ pub enum Error {
     Dma(crate::dmac::Error),
 }
 
-#[cfg(all(feature = "async", feature = "nightly"))]
+#[cfg(feature = "async")]
 impl embedded_hal_async::spi::Error for Error {
     // _ pattern reachable when "dma" feature enabled.
     #[allow(unreachable_patterns)]

@@ -164,7 +164,6 @@ where
     }
 }
 
-#[cfg(feature = "nightly")]
 mod impl_ehal {
     use super::*;
     use embedded_hal_async::delay::DelayUs;

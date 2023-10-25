@@ -284,7 +284,6 @@ where
     }
 }
 
-#[cfg(feature = "nightly")]
 mod impl_ehal {
     use super::*;
     use crate::sercom::spi::Error;
