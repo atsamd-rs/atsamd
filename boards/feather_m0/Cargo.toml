@@ -23,7 +23,6 @@ optional = true
 path = "../../hal"
 version = "0.16.0"
 default-features = false
-features = ["critical-section"]
 
 [dependencies.cortex-m]
 version = "0.7"

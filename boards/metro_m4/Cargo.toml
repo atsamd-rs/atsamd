@@ -22,7 +22,6 @@ optional = true
 path = "../../hal"
 version = "0.16.0"
 default-features = false
-features = ["critical-section"]
 
 [dependencies.usb-device]
 version = "0.2"
