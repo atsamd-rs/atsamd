@@ -1,18 +1,5 @@
 #[doc = "Register `CA1R` reader"]
-pub struct R(crate::R<CA1R_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CA1R_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CA1R_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CA1R_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CA1R_SPEC>;
 #[doc = "Field `SDR50SUP` reader - SDR50 Support"]
 pub type SDR50SUP_R = crate::BitReader<SDR50SUPSELECT_A>;
 #[doc = "SDR50 Support\n\nValue on reset: 0"]
@@ -32,18 +19,18 @@ impl From<SDR50SUPSELECT_A> for bool {
 impl SDR50SUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SDR50SUPSELECT_A {
+    pub const fn variant(&self) -> SDR50SUPSELECT_A {
         match self.bits {
             false => SDR50SUPSELECT_A::NO,
             true => SDR50SUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "SDR50 is Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == SDR50SUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "SDR50 is Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == SDR50SUPSELECT_A::YES
@@ -68,18 +55,18 @@ impl From<SDR104SUPSELECT_A> for bool {
 impl SDR104SUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SDR104SUPSELECT_A {
+    pub const fn variant(&self) -> SDR104SUPSELECT_A {
         match self.bits {
             false => SDR104SUPSELECT_A::NO,
             true => SDR104SUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "SDR104 is Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == SDR104SUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "SDR104 is Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == SDR104SUPSELECT_A::YES
@@ -104,18 +91,18 @@ impl From<DDR50SUPSELECT_A> for bool {
 impl DDR50SUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DDR50SUPSELECT_A {
+    pub const fn variant(&self) -> DDR50SUPSELECT_A {
         match self.bits {
             false => DDR50SUPSELECT_A::NO,
             true => DDR50SUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "DDR50 is Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == DDR50SUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "DDR50 is Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == DDR50SUPSELECT_A::YES
@@ -140,18 +127,18 @@ impl From<DRVASUPSELECT_A> for bool {
 impl DRVASUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DRVASUPSELECT_A {
+    pub const fn variant(&self) -> DRVASUPSELECT_A {
         match self.bits {
             false => DRVASUPSELECT_A::NO,
             true => DRVASUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Driver Type A is Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == DRVASUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Driver Type A is Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == DRVASUPSELECT_A::YES
@@ -176,18 +163,18 @@ impl From<DRVCSUPSELECT_A> for bool {
 impl DRVCSUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DRVCSUPSELECT_A {
+    pub const fn variant(&self) -> DRVCSUPSELECT_A {
         match self.bits {
             false => DRVCSUPSELECT_A::NO,
             true => DRVCSUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Driver Type C is Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == DRVCSUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Driver Type C is Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == DRVCSUPSELECT_A::YES
@@ -212,25 +199,25 @@ impl From<DRVDSUPSELECT_A> for bool {
 impl DRVDSUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DRVDSUPSELECT_A {
+    pub const fn variant(&self) -> DRVDSUPSELECT_A {
         match self.bits {
             false => DRVDSUPSELECT_A::NO,
             true => DRVDSUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Driver Type D is Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == DRVDSUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Driver Type D is Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == DRVDSUPSELECT_A::YES
     }
 }
 #[doc = "Field `TCNTRT` reader - Timer Count for Re-Tuning"]
-pub type TCNTRT_R = crate::FieldReader<u8, TCNTRTSELECT_A>;
+pub type TCNTRT_R = crate::FieldReader<TCNTRTSELECT_A>;
 #[doc = "Timer Count for Re-Tuning\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -268,10 +255,13 @@ impl From<TCNTRTSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for TCNTRTSELECT_A {
+    type Ux = u8;
+}
 impl TCNTRT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<TCNTRTSELECT_A> {
+    pub const fn variant(&self) -> Option<TCNTRTSELECT_A> {
         match self.bits {
             0 => Some(TCNTRTSELECT_A::DISABLED),
             1 => Some(TCNTRTSELECT_A::_1S),
@@ -289,67 +279,67 @@ impl TCNTRT_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `DISABLED`"]
+    #[doc = "Re-Tuning Timer disabled"]
     #[inline(always)]
     pub fn is_disabled(&self) -> bool {
         *self == TCNTRTSELECT_A::DISABLED
     }
-    #[doc = "Checks if the value of the field is `_1S`"]
+    #[doc = "1 second"]
     #[inline(always)]
     pub fn is_1s(&self) -> bool {
         *self == TCNTRTSELECT_A::_1S
     }
-    #[doc = "Checks if the value of the field is `_2S`"]
+    #[doc = "2 seconds"]
     #[inline(always)]
     pub fn is_2s(&self) -> bool {
         *self == TCNTRTSELECT_A::_2S
     }
-    #[doc = "Checks if the value of the field is `_4S`"]
+    #[doc = "4 seconds"]
     #[inline(always)]
     pub fn is_4s(&self) -> bool {
         *self == TCNTRTSELECT_A::_4S
     }
-    #[doc = "Checks if the value of the field is `_8S`"]
+    #[doc = "8 seconds"]
     #[inline(always)]
     pub fn is_8s(&self) -> bool {
         *self == TCNTRTSELECT_A::_8S
     }
-    #[doc = "Checks if the value of the field is `_16S`"]
+    #[doc = "16 seconds"]
     #[inline(always)]
     pub fn is_16s(&self) -> bool {
         *self == TCNTRTSELECT_A::_16S
     }
-    #[doc = "Checks if the value of the field is `_32S`"]
+    #[doc = "32 seconds"]
     #[inline(always)]
     pub fn is_32s(&self) -> bool {
         *self == TCNTRTSELECT_A::_32S
     }
-    #[doc = "Checks if the value of the field is `_64S`"]
+    #[doc = "64 seconds"]
     #[inline(always)]
     pub fn is_64s(&self) -> bool {
         *self == TCNTRTSELECT_A::_64S
     }
-    #[doc = "Checks if the value of the field is `_128S`"]
+    #[doc = "128 seconds"]
     #[inline(always)]
     pub fn is_128s(&self) -> bool {
         *self == TCNTRTSELECT_A::_128S
     }
-    #[doc = "Checks if the value of the field is `_256S`"]
+    #[doc = "256 seconds"]
     #[inline(always)]
     pub fn is_256s(&self) -> bool {
         *self == TCNTRTSELECT_A::_256S
     }
-    #[doc = "Checks if the value of the field is `_512S`"]
+    #[doc = "512 seconds"]
     #[inline(always)]
     pub fn is_512s(&self) -> bool {
         *self == TCNTRTSELECT_A::_512S
     }
-    #[doc = "Checks if the value of the field is `_1024S`"]
+    #[doc = "1024 seconds"]
     #[inline(always)]
     pub fn is_1024s(&self) -> bool {
         *self == TCNTRTSELECT_A::_1024S
     }
-    #[doc = "Checks if the value of the field is `OTHER`"]
+    #[doc = "Get information from other source"]
     #[inline(always)]
     pub fn is_other(&self) -> bool {
         *self == TCNTRTSELECT_A::OTHER
@@ -374,25 +364,25 @@ impl From<TSDR50SELECT_A> for bool {
 impl TSDR50_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> TSDR50SELECT_A {
+    pub const fn variant(&self) -> TSDR50SELECT_A {
         match self.bits {
             false => TSDR50SELECT_A::NO,
             true => TSDR50SELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "SDR50 does not require tuning"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == TSDR50SELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "SDR50 requires tuning"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == TSDR50SELECT_A::YES
     }
 }
 #[doc = "Field `CLKMULT` reader - Clock Multiplier"]
-pub type CLKMULT_R = crate::FieldReader<u8, CLKMULTSELECT_A>;
+pub type CLKMULT_R = crate::FieldReader<CLKMULTSELECT_A>;
 #[doc = "Clock Multiplier\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -406,16 +396,19 @@ impl From<CLKMULTSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for CLKMULTSELECT_A {
+    type Ux = u8;
+}
 impl CLKMULT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<CLKMULTSELECT_A> {
+    pub const fn variant(&self) -> Option<CLKMULTSELECT_A> {
         match self.bits {
             0 => Some(CLKMULTSELECT_A::NO),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Clock Multiplier is Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == CLKMULTSELECT_A::NO
@@ -468,15 +461,13 @@ impl R {
         CLKMULT_R::new(((self.bits >> 16) & 0xff) as u8)
     }
 }
-#[doc = "Capabilities 1\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ca1r](index.html) module"]
+#[doc = "Capabilities 1\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ca1r::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CA1R_SPEC;
 impl crate::RegisterSpec for CA1R_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ca1r::R](R) reader structure"]
-impl crate::Readable for CA1R_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`ca1r::R`](R) reader structure"]
+impl crate::Readable for CA1R_SPEC {}
 #[doc = "`reset()` method sets CA1R to value 0x70"]
 impl crate::Resettable for CA1R_SPEC {
     const RESET_VALUE: Self::Ux = 0x70;

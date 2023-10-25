@@ -1,41 +1,9 @@
 #[doc = "Register `DPRESCALER` reader"]
-pub struct R(crate::R<DPRESCALER_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DPRESCALER_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DPRESCALER_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DPRESCALER_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DPRESCALER_SPEC>;
 #[doc = "Register `DPRESCALER` writer"]
-pub struct W(crate::W<DPRESCALER_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<DPRESCALER_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<DPRESCALER_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<DPRESCALER_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<DPRESCALER_SPEC>;
 #[doc = "Field `PRESCALER0` reader - Debouncer Prescaler"]
-pub type PRESCALER0_R = crate::FieldReader<u8, PRESCALER0SELECT_A>;
+pub type PRESCALER0_R = crate::FieldReader<PRESCALER0SELECT_A>;
 #[doc = "Debouncer Prescaler\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -63,10 +31,13 @@ impl From<PRESCALER0SELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for PRESCALER0SELECT_A {
+    type Ux = u8;
+}
 impl PRESCALER0_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> PRESCALER0SELECT_A {
+    pub const fn variant(&self) -> PRESCALER0SELECT_A {
         match self.bits {
             0 => PRESCALER0SELECT_A::DIV2,
             1 => PRESCALER0SELECT_A::DIV4,
@@ -79,89 +50,93 @@ impl PRESCALER0_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `DIV2`"]
+    #[doc = "EIC clock divided by 2"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
         *self == PRESCALER0SELECT_A::DIV2
     }
-    #[doc = "Checks if the value of the field is `DIV4`"]
+    #[doc = "EIC clock divided by 4"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
         *self == PRESCALER0SELECT_A::DIV4
     }
-    #[doc = "Checks if the value of the field is `DIV8`"]
+    #[doc = "EIC clock divided by 8"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
         *self == PRESCALER0SELECT_A::DIV8
     }
-    #[doc = "Checks if the value of the field is `DIV16`"]
+    #[doc = "EIC clock divided by 16"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
         *self == PRESCALER0SELECT_A::DIV16
     }
-    #[doc = "Checks if the value of the field is `DIV32`"]
+    #[doc = "EIC clock divided by 32"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
         *self == PRESCALER0SELECT_A::DIV32
     }
-    #[doc = "Checks if the value of the field is `DIV64`"]
+    #[doc = "EIC clock divided by 64"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
         *self == PRESCALER0SELECT_A::DIV64
     }
-    #[doc = "Checks if the value of the field is `DIV128`"]
+    #[doc = "EIC clock divided by 128"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
         *self == PRESCALER0SELECT_A::DIV128
     }
-    #[doc = "Checks if the value of the field is `DIV256`"]
+    #[doc = "EIC clock divided by 256"]
     #[inline(always)]
     pub fn is_div256(&self) -> bool {
         *self == PRESCALER0SELECT_A::DIV256
     }
 }
 #[doc = "Field `PRESCALER0` writer - Debouncer Prescaler"]
-pub type PRESCALER0_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, DPRESCALER_SPEC, u8, PRESCALER0SELECT_A, 3, O>;
-impl<'a, const O: u8> PRESCALER0_W<'a, O> {
+pub type PRESCALER0_W<'a, REG, const O: u8> =
+    crate::FieldWriterSafe<'a, REG, 3, O, PRESCALER0SELECT_A>;
+impl<'a, REG, const O: u8> PRESCALER0_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "EIC clock divided by 2"]
     #[inline(always)]
-    pub fn div2(self) -> &'a mut W {
+    pub fn div2(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER0SELECT_A::DIV2)
     }
     #[doc = "EIC clock divided by 4"]
     #[inline(always)]
-    pub fn div4(self) -> &'a mut W {
+    pub fn div4(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER0SELECT_A::DIV4)
     }
     #[doc = "EIC clock divided by 8"]
     #[inline(always)]
-    pub fn div8(self) -> &'a mut W {
+    pub fn div8(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER0SELECT_A::DIV8)
     }
     #[doc = "EIC clock divided by 16"]
     #[inline(always)]
-    pub fn div16(self) -> &'a mut W {
+    pub fn div16(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER0SELECT_A::DIV16)
     }
     #[doc = "EIC clock divided by 32"]
     #[inline(always)]
-    pub fn div32(self) -> &'a mut W {
+    pub fn div32(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER0SELECT_A::DIV32)
     }
     #[doc = "EIC clock divided by 64"]
     #[inline(always)]
-    pub fn div64(self) -> &'a mut W {
+    pub fn div64(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER0SELECT_A::DIV64)
     }
     #[doc = "EIC clock divided by 128"]
     #[inline(always)]
-    pub fn div128(self) -> &'a mut W {
+    pub fn div128(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER0SELECT_A::DIV128)
     }
     #[doc = "EIC clock divided by 256"]
     #[inline(always)]
-    pub fn div256(self) -> &'a mut W {
+    pub fn div256(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER0SELECT_A::DIV256)
     }
 }
@@ -184,40 +159,42 @@ impl From<STATES0SELECT_A> for bool {
 impl STATES0_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> STATES0SELECT_A {
+    pub const fn variant(&self) -> STATES0SELECT_A {
         match self.bits {
             false => STATES0SELECT_A::LFREQ3,
             true => STATES0SELECT_A::LFREQ7,
         }
     }
-    #[doc = "Checks if the value of the field is `LFREQ3`"]
+    #[doc = "3 low frequency samples"]
     #[inline(always)]
     pub fn is_lfreq3(&self) -> bool {
         *self == STATES0SELECT_A::LFREQ3
     }
-    #[doc = "Checks if the value of the field is `LFREQ7`"]
+    #[doc = "7 low frequency samples"]
     #[inline(always)]
     pub fn is_lfreq7(&self) -> bool {
         *self == STATES0SELECT_A::LFREQ7
     }
 }
 #[doc = "Field `STATES0` writer - Debouncer number of states"]
-pub type STATES0_W<'a, const O: u8> =
-    crate::BitWriter<'a, u32, DPRESCALER_SPEC, STATES0SELECT_A, O>;
-impl<'a, const O: u8> STATES0_W<'a, O> {
+pub type STATES0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, STATES0SELECT_A>;
+impl<'a, REG, const O: u8> STATES0_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "3 low frequency samples"]
     #[inline(always)]
-    pub fn lfreq3(self) -> &'a mut W {
+    pub fn lfreq3(self) -> &'a mut crate::W<REG> {
         self.variant(STATES0SELECT_A::LFREQ3)
     }
     #[doc = "7 low frequency samples"]
     #[inline(always)]
-    pub fn lfreq7(self) -> &'a mut W {
+    pub fn lfreq7(self) -> &'a mut crate::W<REG> {
         self.variant(STATES0SELECT_A::LFREQ7)
     }
 }
 #[doc = "Field `PRESCALER1` reader - Debouncer Prescaler"]
-pub type PRESCALER1_R = crate::FieldReader<u8, PRESCALER1SELECT_A>;
+pub type PRESCALER1_R = crate::FieldReader<PRESCALER1SELECT_A>;
 #[doc = "Debouncer Prescaler\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -245,10 +222,13 @@ impl From<PRESCALER1SELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for PRESCALER1SELECT_A {
+    type Ux = u8;
+}
 impl PRESCALER1_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> PRESCALER1SELECT_A {
+    pub const fn variant(&self) -> PRESCALER1SELECT_A {
         match self.bits {
             0 => PRESCALER1SELECT_A::DIV2,
             1 => PRESCALER1SELECT_A::DIV4,
@@ -261,89 +241,93 @@ impl PRESCALER1_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `DIV2`"]
+    #[doc = "EIC clock divided by 2"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
         *self == PRESCALER1SELECT_A::DIV2
     }
-    #[doc = "Checks if the value of the field is `DIV4`"]
+    #[doc = "EIC clock divided by 4"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
         *self == PRESCALER1SELECT_A::DIV4
     }
-    #[doc = "Checks if the value of the field is `DIV8`"]
+    #[doc = "EIC clock divided by 8"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
         *self == PRESCALER1SELECT_A::DIV8
     }
-    #[doc = "Checks if the value of the field is `DIV16`"]
+    #[doc = "EIC clock divided by 16"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
         *self == PRESCALER1SELECT_A::DIV16
     }
-    #[doc = "Checks if the value of the field is `DIV32`"]
+    #[doc = "EIC clock divided by 32"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
         *self == PRESCALER1SELECT_A::DIV32
     }
-    #[doc = "Checks if the value of the field is `DIV64`"]
+    #[doc = "EIC clock divided by 64"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
         *self == PRESCALER1SELECT_A::DIV64
     }
-    #[doc = "Checks if the value of the field is `DIV128`"]
+    #[doc = "EIC clock divided by 128"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
         *self == PRESCALER1SELECT_A::DIV128
     }
-    #[doc = "Checks if the value of the field is `DIV256`"]
+    #[doc = "EIC clock divided by 256"]
     #[inline(always)]
     pub fn is_div256(&self) -> bool {
         *self == PRESCALER1SELECT_A::DIV256
     }
 }
 #[doc = "Field `PRESCALER1` writer - Debouncer Prescaler"]
-pub type PRESCALER1_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, DPRESCALER_SPEC, u8, PRESCALER1SELECT_A, 3, O>;
-impl<'a, const O: u8> PRESCALER1_W<'a, O> {
+pub type PRESCALER1_W<'a, REG, const O: u8> =
+    crate::FieldWriterSafe<'a, REG, 3, O, PRESCALER1SELECT_A>;
+impl<'a, REG, const O: u8> PRESCALER1_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "EIC clock divided by 2"]
     #[inline(always)]
-    pub fn div2(self) -> &'a mut W {
+    pub fn div2(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER1SELECT_A::DIV2)
     }
     #[doc = "EIC clock divided by 4"]
     #[inline(always)]
-    pub fn div4(self) -> &'a mut W {
+    pub fn div4(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER1SELECT_A::DIV4)
     }
     #[doc = "EIC clock divided by 8"]
     #[inline(always)]
-    pub fn div8(self) -> &'a mut W {
+    pub fn div8(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER1SELECT_A::DIV8)
     }
     #[doc = "EIC clock divided by 16"]
     #[inline(always)]
-    pub fn div16(self) -> &'a mut W {
+    pub fn div16(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER1SELECT_A::DIV16)
     }
     #[doc = "EIC clock divided by 32"]
     #[inline(always)]
-    pub fn div32(self) -> &'a mut W {
+    pub fn div32(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER1SELECT_A::DIV32)
     }
     #[doc = "EIC clock divided by 64"]
     #[inline(always)]
-    pub fn div64(self) -> &'a mut W {
+    pub fn div64(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER1SELECT_A::DIV64)
     }
     #[doc = "EIC clock divided by 128"]
     #[inline(always)]
-    pub fn div128(self) -> &'a mut W {
+    pub fn div128(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER1SELECT_A::DIV128)
     }
     #[doc = "EIC clock divided by 256"]
     #[inline(always)]
-    pub fn div256(self) -> &'a mut W {
+    pub fn div256(self) -> &'a mut crate::W<REG> {
         self.variant(PRESCALER1SELECT_A::DIV256)
     }
 }
@@ -366,35 +350,37 @@ impl From<STATES1SELECT_A> for bool {
 impl STATES1_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> STATES1SELECT_A {
+    pub const fn variant(&self) -> STATES1SELECT_A {
         match self.bits {
             false => STATES1SELECT_A::LFREQ3,
             true => STATES1SELECT_A::LFREQ7,
         }
     }
-    #[doc = "Checks if the value of the field is `LFREQ3`"]
+    #[doc = "3 low frequency samples"]
     #[inline(always)]
     pub fn is_lfreq3(&self) -> bool {
         *self == STATES1SELECT_A::LFREQ3
     }
-    #[doc = "Checks if the value of the field is `LFREQ7`"]
+    #[doc = "7 low frequency samples"]
     #[inline(always)]
     pub fn is_lfreq7(&self) -> bool {
         *self == STATES1SELECT_A::LFREQ7
     }
 }
 #[doc = "Field `STATES1` writer - Debouncer number of states"]
-pub type STATES1_W<'a, const O: u8> =
-    crate::BitWriter<'a, u32, DPRESCALER_SPEC, STATES1SELECT_A, O>;
-impl<'a, const O: u8> STATES1_W<'a, O> {
+pub type STATES1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, STATES1SELECT_A>;
+impl<'a, REG, const O: u8> STATES1_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "3 low frequency samples"]
     #[inline(always)]
-    pub fn lfreq3(self) -> &'a mut W {
+    pub fn lfreq3(self) -> &'a mut crate::W<REG> {
         self.variant(STATES1SELECT_A::LFREQ3)
     }
     #[doc = "7 low frequency samples"]
     #[inline(always)]
-    pub fn lfreq7(self) -> &'a mut W {
+    pub fn lfreq7(self) -> &'a mut crate::W<REG> {
         self.variant(STATES1SELECT_A::LFREQ7)
     }
 }
@@ -417,34 +403,37 @@ impl From<TICKONSELECT_A> for bool {
 impl TICKON_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> TICKONSELECT_A {
+    pub const fn variant(&self) -> TICKONSELECT_A {
         match self.bits {
             false => TICKONSELECT_A::CLK_GCLK_EIC,
             true => TICKONSELECT_A::CLK_LFREQ,
         }
     }
-    #[doc = "Checks if the value of the field is `CLK_GCLK_EIC`"]
+    #[doc = "Clocked by GCLK"]
     #[inline(always)]
     pub fn is_clk_gclk_eic(&self) -> bool {
         *self == TICKONSELECT_A::CLK_GCLK_EIC
     }
-    #[doc = "Checks if the value of the field is `CLK_LFREQ`"]
+    #[doc = "Clocked by Low Frequency Clock"]
     #[inline(always)]
     pub fn is_clk_lfreq(&self) -> bool {
         *self == TICKONSELECT_A::CLK_LFREQ
     }
 }
 #[doc = "Field `TICKON` writer - Pin Sampler frequency selection"]
-pub type TICKON_W<'a, const O: u8> = crate::BitWriter<'a, u32, DPRESCALER_SPEC, TICKONSELECT_A, O>;
-impl<'a, const O: u8> TICKON_W<'a, O> {
+pub type TICKON_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, TICKONSELECT_A>;
+impl<'a, REG, const O: u8> TICKON_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Clocked by GCLK"]
     #[inline(always)]
-    pub fn clk_gclk_eic(self) -> &'a mut W {
+    pub fn clk_gclk_eic(self) -> &'a mut crate::W<REG> {
         self.variant(TICKONSELECT_A::CLK_GCLK_EIC)
     }
     #[doc = "Clocked by Low Frequency Clock"]
     #[inline(always)]
-    pub fn clk_lfreq(self) -> &'a mut W {
+    pub fn clk_lfreq(self) -> &'a mut crate::W<REG> {
         self.variant(TICKONSELECT_A::CLK_LFREQ)
     }
 }
@@ -479,52 +468,53 @@ impl W {
     #[doc = "Bits 0:2 - Debouncer Prescaler"]
     #[inline(always)]
     #[must_use]
-    pub fn prescaler0(&mut self) -> PRESCALER0_W<0> {
+    pub fn prescaler0(&mut self) -> PRESCALER0_W<DPRESCALER_SPEC, 0> {
         PRESCALER0_W::new(self)
     }
     #[doc = "Bit 3 - Debouncer number of states"]
     #[inline(always)]
     #[must_use]
-    pub fn states0(&mut self) -> STATES0_W<3> {
+    pub fn states0(&mut self) -> STATES0_W<DPRESCALER_SPEC, 3> {
         STATES0_W::new(self)
     }
     #[doc = "Bits 4:6 - Debouncer Prescaler"]
     #[inline(always)]
     #[must_use]
-    pub fn prescaler1(&mut self) -> PRESCALER1_W<4> {
+    pub fn prescaler1(&mut self) -> PRESCALER1_W<DPRESCALER_SPEC, 4> {
         PRESCALER1_W::new(self)
     }
     #[doc = "Bit 7 - Debouncer number of states"]
     #[inline(always)]
     #[must_use]
-    pub fn states1(&mut self) -> STATES1_W<7> {
+    pub fn states1(&mut self) -> STATES1_W<DPRESCALER_SPEC, 7> {
         STATES1_W::new(self)
     }
     #[doc = "Bit 16 - Pin Sampler frequency selection"]
     #[inline(always)]
     #[must_use]
-    pub fn tickon(&mut self) -> TICKON_W<16> {
+    pub fn tickon(&mut self) -> TICKON_W<DPRESCALER_SPEC, 16> {
         TICKON_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Debouncer Prescaler\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dprescaler](index.html) module"]
+#[doc = "Debouncer Prescaler\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dprescaler::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dprescaler::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DPRESCALER_SPEC;
 impl crate::RegisterSpec for DPRESCALER_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [dprescaler::R](R) reader structure"]
-impl crate::Readable for DPRESCALER_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [dprescaler::W](W) writer structure"]
+#[doc = "`read()` method returns [`dprescaler::R`](R) reader structure"]
+impl crate::Readable for DPRESCALER_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`dprescaler::W`](W) writer structure"]
 impl crate::Writable for DPRESCALER_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

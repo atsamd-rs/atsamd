@@ -1,103 +1,71 @@
 #[doc = "Register `WAKEUP` reader"]
-pub struct R(crate::R<WAKEUP_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<WAKEUP_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<WAKEUP_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<WAKEUP_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<WAKEUP_SPEC>;
 #[doc = "Register `WAKEUP` writer"]
-pub struct W(crate::W<WAKEUP_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<WAKEUP_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<WAKEUP_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<WAKEUP_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<WAKEUP_SPEC>;
 #[doc = "Field `WAKEUPEN0` reader - External Interrupt 0 Wake-up Enable"]
-pub type WAKEUPEN0_R = crate::BitReader<bool>;
+pub type WAKEUPEN0_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN0` writer - External Interrupt 0 Wake-up Enable"]
-pub type WAKEUPEN0_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN1` reader - External Interrupt 1 Wake-up Enable"]
-pub type WAKEUPEN1_R = crate::BitReader<bool>;
+pub type WAKEUPEN1_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN1` writer - External Interrupt 1 Wake-up Enable"]
-pub type WAKEUPEN1_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN2` reader - External Interrupt 2 Wake-up Enable"]
-pub type WAKEUPEN2_R = crate::BitReader<bool>;
+pub type WAKEUPEN2_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN2` writer - External Interrupt 2 Wake-up Enable"]
-pub type WAKEUPEN2_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN3` reader - External Interrupt 3 Wake-up Enable"]
-pub type WAKEUPEN3_R = crate::BitReader<bool>;
+pub type WAKEUPEN3_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN3` writer - External Interrupt 3 Wake-up Enable"]
-pub type WAKEUPEN3_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN4` reader - External Interrupt 4 Wake-up Enable"]
-pub type WAKEUPEN4_R = crate::BitReader<bool>;
+pub type WAKEUPEN4_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN4` writer - External Interrupt 4 Wake-up Enable"]
-pub type WAKEUPEN4_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN5` reader - External Interrupt 5 Wake-up Enable"]
-pub type WAKEUPEN5_R = crate::BitReader<bool>;
+pub type WAKEUPEN5_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN5` writer - External Interrupt 5 Wake-up Enable"]
-pub type WAKEUPEN5_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN6` reader - External Interrupt 6 Wake-up Enable"]
-pub type WAKEUPEN6_R = crate::BitReader<bool>;
+pub type WAKEUPEN6_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN6` writer - External Interrupt 6 Wake-up Enable"]
-pub type WAKEUPEN6_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN7` reader - External Interrupt 7 Wake-up Enable"]
-pub type WAKEUPEN7_R = crate::BitReader<bool>;
+pub type WAKEUPEN7_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN7` writer - External Interrupt 7 Wake-up Enable"]
-pub type WAKEUPEN7_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN8` reader - External Interrupt 8 Wake-up Enable"]
-pub type WAKEUPEN8_R = crate::BitReader<bool>;
+pub type WAKEUPEN8_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN8` writer - External Interrupt 8 Wake-up Enable"]
-pub type WAKEUPEN8_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN8_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN9` reader - External Interrupt 9 Wake-up Enable"]
-pub type WAKEUPEN9_R = crate::BitReader<bool>;
+pub type WAKEUPEN9_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN9` writer - External Interrupt 9 Wake-up Enable"]
-pub type WAKEUPEN9_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN9_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN10` reader - External Interrupt 10 Wake-up Enable"]
-pub type WAKEUPEN10_R = crate::BitReader<bool>;
+pub type WAKEUPEN10_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN10` writer - External Interrupt 10 Wake-up Enable"]
-pub type WAKEUPEN10_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN10_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN11` reader - External Interrupt 11 Wake-up Enable"]
-pub type WAKEUPEN11_R = crate::BitReader<bool>;
+pub type WAKEUPEN11_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN11` writer - External Interrupt 11 Wake-up Enable"]
-pub type WAKEUPEN11_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN11_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN12` reader - External Interrupt 12 Wake-up Enable"]
-pub type WAKEUPEN12_R = crate::BitReader<bool>;
+pub type WAKEUPEN12_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN12` writer - External Interrupt 12 Wake-up Enable"]
-pub type WAKEUPEN12_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN12_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN13` reader - External Interrupt 13 Wake-up Enable"]
-pub type WAKEUPEN13_R = crate::BitReader<bool>;
+pub type WAKEUPEN13_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN13` writer - External Interrupt 13 Wake-up Enable"]
-pub type WAKEUPEN13_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN13_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN14` reader - External Interrupt 14 Wake-up Enable"]
-pub type WAKEUPEN14_R = crate::BitReader<bool>;
+pub type WAKEUPEN14_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN14` writer - External Interrupt 14 Wake-up Enable"]
-pub type WAKEUPEN14_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN14_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAKEUPEN15` reader - External Interrupt 15 Wake-up Enable"]
-pub type WAKEUPEN15_R = crate::BitReader<bool>;
+pub type WAKEUPEN15_R = crate::BitReader;
 #[doc = "Field `WAKEUPEN15` writer - External Interrupt 15 Wake-up Enable"]
-pub type WAKEUPEN15_W<'a, const O: u8> = crate::BitWriter<'a, u32, WAKEUP_SPEC, bool, O>;
+pub type WAKEUPEN15_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - External Interrupt 0 Wake-up Enable"]
     #[inline(always)]
@@ -184,118 +152,119 @@ impl W {
     #[doc = "Bit 0 - External Interrupt 0 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen0(&mut self) -> WAKEUPEN0_W<0> {
+    pub fn wakeupen0(&mut self) -> WAKEUPEN0_W<WAKEUP_SPEC, 0> {
         WAKEUPEN0_W::new(self)
     }
     #[doc = "Bit 1 - External Interrupt 1 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen1(&mut self) -> WAKEUPEN1_W<1> {
+    pub fn wakeupen1(&mut self) -> WAKEUPEN1_W<WAKEUP_SPEC, 1> {
         WAKEUPEN1_W::new(self)
     }
     #[doc = "Bit 2 - External Interrupt 2 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen2(&mut self) -> WAKEUPEN2_W<2> {
+    pub fn wakeupen2(&mut self) -> WAKEUPEN2_W<WAKEUP_SPEC, 2> {
         WAKEUPEN2_W::new(self)
     }
     #[doc = "Bit 3 - External Interrupt 3 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen3(&mut self) -> WAKEUPEN3_W<3> {
+    pub fn wakeupen3(&mut self) -> WAKEUPEN3_W<WAKEUP_SPEC, 3> {
         WAKEUPEN3_W::new(self)
     }
     #[doc = "Bit 4 - External Interrupt 4 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen4(&mut self) -> WAKEUPEN4_W<4> {
+    pub fn wakeupen4(&mut self) -> WAKEUPEN4_W<WAKEUP_SPEC, 4> {
         WAKEUPEN4_W::new(self)
     }
     #[doc = "Bit 5 - External Interrupt 5 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen5(&mut self) -> WAKEUPEN5_W<5> {
+    pub fn wakeupen5(&mut self) -> WAKEUPEN5_W<WAKEUP_SPEC, 5> {
         WAKEUPEN5_W::new(self)
     }
     #[doc = "Bit 6 - External Interrupt 6 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen6(&mut self) -> WAKEUPEN6_W<6> {
+    pub fn wakeupen6(&mut self) -> WAKEUPEN6_W<WAKEUP_SPEC, 6> {
         WAKEUPEN6_W::new(self)
     }
     #[doc = "Bit 7 - External Interrupt 7 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen7(&mut self) -> WAKEUPEN7_W<7> {
+    pub fn wakeupen7(&mut self) -> WAKEUPEN7_W<WAKEUP_SPEC, 7> {
         WAKEUPEN7_W::new(self)
     }
     #[doc = "Bit 8 - External Interrupt 8 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen8(&mut self) -> WAKEUPEN8_W<8> {
+    pub fn wakeupen8(&mut self) -> WAKEUPEN8_W<WAKEUP_SPEC, 8> {
         WAKEUPEN8_W::new(self)
     }
     #[doc = "Bit 9 - External Interrupt 9 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen9(&mut self) -> WAKEUPEN9_W<9> {
+    pub fn wakeupen9(&mut self) -> WAKEUPEN9_W<WAKEUP_SPEC, 9> {
         WAKEUPEN9_W::new(self)
     }
     #[doc = "Bit 10 - External Interrupt 10 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen10(&mut self) -> WAKEUPEN10_W<10> {
+    pub fn wakeupen10(&mut self) -> WAKEUPEN10_W<WAKEUP_SPEC, 10> {
         WAKEUPEN10_W::new(self)
     }
     #[doc = "Bit 11 - External Interrupt 11 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen11(&mut self) -> WAKEUPEN11_W<11> {
+    pub fn wakeupen11(&mut self) -> WAKEUPEN11_W<WAKEUP_SPEC, 11> {
         WAKEUPEN11_W::new(self)
     }
     #[doc = "Bit 12 - External Interrupt 12 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen12(&mut self) -> WAKEUPEN12_W<12> {
+    pub fn wakeupen12(&mut self) -> WAKEUPEN12_W<WAKEUP_SPEC, 12> {
         WAKEUPEN12_W::new(self)
     }
     #[doc = "Bit 13 - External Interrupt 13 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen13(&mut self) -> WAKEUPEN13_W<13> {
+    pub fn wakeupen13(&mut self) -> WAKEUPEN13_W<WAKEUP_SPEC, 13> {
         WAKEUPEN13_W::new(self)
     }
     #[doc = "Bit 14 - External Interrupt 14 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen14(&mut self) -> WAKEUPEN14_W<14> {
+    pub fn wakeupen14(&mut self) -> WAKEUPEN14_W<WAKEUP_SPEC, 14> {
         WAKEUPEN14_W::new(self)
     }
     #[doc = "Bit 15 - External Interrupt 15 Wake-up Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wakeupen15(&mut self) -> WAKEUPEN15_W<15> {
+    pub fn wakeupen15(&mut self) -> WAKEUPEN15_W<WAKEUP_SPEC, 15> {
         WAKEUPEN15_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Wake-Up Enable\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [wakeup](index.html) module"]
+#[doc = "Wake-Up Enable\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`wakeup::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`wakeup::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct WAKEUP_SPEC;
 impl crate::RegisterSpec for WAKEUP_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [wakeup::R](R) reader structure"]
-impl crate::Readable for WAKEUP_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [wakeup::W](W) writer structure"]
+#[doc = "`read()` method returns [`wakeup::R`](R) reader structure"]
+impl crate::Readable for WAKEUP_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`wakeup::W`](W) writer structure"]
 impl crate::Writable for WAKEUP_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

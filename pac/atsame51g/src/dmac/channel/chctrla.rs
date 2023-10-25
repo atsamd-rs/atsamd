@@ -1,53 +1,21 @@
 #[doc = "Register `CHCTRLA` reader"]
-pub struct R(crate::R<CHCTRLA_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CHCTRLA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CHCTRLA_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CHCTRLA_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CHCTRLA_SPEC>;
 #[doc = "Register `CHCTRLA` writer"]
-pub struct W(crate::W<CHCTRLA_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CHCTRLA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CHCTRLA_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CHCTRLA_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CHCTRLA_SPEC>;
 #[doc = "Field `SWRST` reader - Channel Software Reset"]
-pub type SWRST_R = crate::BitReader<bool>;
+pub type SWRST_R = crate::BitReader;
 #[doc = "Field `SWRST` writer - Channel Software Reset"]
-pub type SWRST_W<'a, const O: u8> = crate::BitWriter<'a, u32, CHCTRLA_SPEC, bool, O>;
+pub type SWRST_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ENABLE` reader - Channel Enable"]
-pub type ENABLE_R = crate::BitReader<bool>;
+pub type ENABLE_R = crate::BitReader;
 #[doc = "Field `ENABLE` writer - Channel Enable"]
-pub type ENABLE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CHCTRLA_SPEC, bool, O>;
+pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RUNSTDBY` reader - Channel Run in Standby"]
-pub type RUNSTDBY_R = crate::BitReader<bool>;
+pub type RUNSTDBY_R = crate::BitReader;
 #[doc = "Field `RUNSTDBY` writer - Channel Run in Standby"]
-pub type RUNSTDBY_W<'a, const O: u8> = crate::BitWriter<'a, u32, CHCTRLA_SPEC, bool, O>;
+pub type RUNSTDBY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TRIGSRC` reader - Trigger Source"]
-pub type TRIGSRC_R = crate::FieldReader<u8, TRIGSRCSELECT_A>;
+pub type TRIGSRC_R = crate::FieldReader<TRIGSRCSELECT_A>;
 #[doc = "Trigger Source\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -229,10 +197,13 @@ impl From<TRIGSRCSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for TRIGSRCSELECT_A {
+    type Ux = u8;
+}
 impl TRIGSRC_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<TRIGSRCSELECT_A> {
+    pub const fn variant(&self) -> Option<TRIGSRCSELECT_A> {
         match self.bits {
             0 => Some(TRIGSRCSELECT_A::DISABLE),
             1 => Some(TRIGSRCSELECT_A::RTC_TIMESTAMP),
@@ -322,864 +293,867 @@ impl TRIGSRC_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `DISABLE`"]
+    #[doc = "Only software/event triggers"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
         *self == TRIGSRCSELECT_A::DISABLE
     }
-    #[doc = "Checks if the value of the field is `RTC_TIMESTAMP`"]
+    #[doc = "DMA RTC timestamp trigger"]
     #[inline(always)]
     pub fn is_rtc_timestamp(&self) -> bool {
         *self == TRIGSRCSELECT_A::RTC_TIMESTAMP
     }
-    #[doc = "Checks if the value of the field is `DSU_DCC0`"]
+    #[doc = "DMAC ID for DCC0 register"]
     #[inline(always)]
     pub fn is_dsu_dcc0(&self) -> bool {
         *self == TRIGSRCSELECT_A::DSU_DCC0
     }
-    #[doc = "Checks if the value of the field is `DSU_DCC1`"]
+    #[doc = "DMAC ID for DCC1 register"]
     #[inline(always)]
     pub fn is_dsu_dcc1(&self) -> bool {
         *self == TRIGSRCSELECT_A::DSU_DCC1
     }
-    #[doc = "Checks if the value of the field is `SERCOM0_RX`"]
+    #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
     pub fn is_sercom0_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM0_RX
     }
-    #[doc = "Checks if the value of the field is `SERCOM0_TX`"]
+    #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
     pub fn is_sercom0_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM0_TX
     }
-    #[doc = "Checks if the value of the field is `SERCOM1_RX`"]
+    #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
     pub fn is_sercom1_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM1_RX
     }
-    #[doc = "Checks if the value of the field is `SERCOM1_TX`"]
+    #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
     pub fn is_sercom1_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM1_TX
     }
-    #[doc = "Checks if the value of the field is `SERCOM2_RX`"]
+    #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
     pub fn is_sercom2_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM2_RX
     }
-    #[doc = "Checks if the value of the field is `SERCOM2_TX`"]
+    #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
     pub fn is_sercom2_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM2_TX
     }
-    #[doc = "Checks if the value of the field is `SERCOM3_RX`"]
+    #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
     pub fn is_sercom3_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM3_RX
     }
-    #[doc = "Checks if the value of the field is `SERCOM3_TX`"]
+    #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
     pub fn is_sercom3_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM3_TX
     }
-    #[doc = "Checks if the value of the field is `SERCOM4_RX`"]
+    #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
     pub fn is_sercom4_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM4_RX
     }
-    #[doc = "Checks if the value of the field is `SERCOM4_TX`"]
+    #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
     pub fn is_sercom4_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM4_TX
     }
-    #[doc = "Checks if the value of the field is `SERCOM5_RX`"]
+    #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
     pub fn is_sercom5_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM5_RX
     }
-    #[doc = "Checks if the value of the field is `SERCOM5_TX`"]
+    #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
     pub fn is_sercom5_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM5_TX
     }
-    #[doc = "Checks if the value of the field is `SERCOM6_RX`"]
+    #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
     pub fn is_sercom6_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM6_RX
     }
-    #[doc = "Checks if the value of the field is `SERCOM6_TX`"]
+    #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
     pub fn is_sercom6_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM6_TX
     }
-    #[doc = "Checks if the value of the field is `SERCOM7_RX`"]
+    #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
     pub fn is_sercom7_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM7_RX
     }
-    #[doc = "Checks if the value of the field is `SERCOM7_TX`"]
+    #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
     pub fn is_sercom7_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::SERCOM7_TX
     }
-    #[doc = "Checks if the value of the field is `CAN0_DEBUG`"]
+    #[doc = "DMA CAN Debug Req"]
     #[inline(always)]
     pub fn is_can0_debug(&self) -> bool {
         *self == TRIGSRCSELECT_A::CAN0_DEBUG
     }
-    #[doc = "Checks if the value of the field is `CAN1_DEBUG`"]
+    #[doc = "DMA CAN Debug Req"]
     #[inline(always)]
     pub fn is_can1_debug(&self) -> bool {
         *self == TRIGSRCSELECT_A::CAN1_DEBUG
     }
-    #[doc = "Checks if the value of the field is `TCC0_OVF`"]
+    #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
     pub fn is_tcc0_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC0_OVF
     }
-    #[doc = "Checks if the value of the field is `TCC0_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc0_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC0_MC_0
     }
-    #[doc = "Checks if the value of the field is `TCC0_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc0_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC0_MC_1
     }
-    #[doc = "Checks if the value of the field is `TCC0_MC_2`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc0_mc_2(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC0_MC_2
     }
-    #[doc = "Checks if the value of the field is `TCC0_MC_3`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc0_mc_3(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC0_MC_3
     }
-    #[doc = "Checks if the value of the field is `TCC0_MC_4`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc0_mc_4(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC0_MC_4
     }
-    #[doc = "Checks if the value of the field is `TCC0_MC_5`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc0_mc_5(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC0_MC_5
     }
-    #[doc = "Checks if the value of the field is `TCC1_OVF`"]
+    #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
     pub fn is_tcc1_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC1_OVF
     }
-    #[doc = "Checks if the value of the field is `TCC1_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc1_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC1_MC_0
     }
-    #[doc = "Checks if the value of the field is `TCC1_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc1_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC1_MC_1
     }
-    #[doc = "Checks if the value of the field is `TCC1_MC_2`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc1_mc_2(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC1_MC_2
     }
-    #[doc = "Checks if the value of the field is `TCC1_MC_3`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc1_mc_3(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC1_MC_3
     }
-    #[doc = "Checks if the value of the field is `TCC2_OVF`"]
+    #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
     pub fn is_tcc2_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC2_OVF
     }
-    #[doc = "Checks if the value of the field is `TCC2_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc2_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC2_MC_0
     }
-    #[doc = "Checks if the value of the field is `TCC2_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc2_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC2_MC_1
     }
-    #[doc = "Checks if the value of the field is `TCC2_MC_2`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc2_mc_2(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC2_MC_2
     }
-    #[doc = "Checks if the value of the field is `TCC3_OVF`"]
+    #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
     pub fn is_tcc3_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC3_OVF
     }
-    #[doc = "Checks if the value of the field is `TCC3_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc3_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC3_MC_0
     }
-    #[doc = "Checks if the value of the field is `TCC3_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc3_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC3_MC_1
     }
-    #[doc = "Checks if the value of the field is `TCC4_OVF`"]
+    #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
     pub fn is_tcc4_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC4_OVF
     }
-    #[doc = "Checks if the value of the field is `TCC4_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc4_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC4_MC_0
     }
-    #[doc = "Checks if the value of the field is `TCC4_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tcc4_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TCC4_MC_1
     }
-    #[doc = "Checks if the value of the field is `TC0_OVF`"]
+    #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
     pub fn is_tc0_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC0_OVF
     }
-    #[doc = "Checks if the value of the field is `TC0_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc0_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC0_MC_0
     }
-    #[doc = "Checks if the value of the field is `TC0_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc0_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC0_MC_1
     }
-    #[doc = "Checks if the value of the field is `TC1_OVF`"]
+    #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
     pub fn is_tc1_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC1_OVF
     }
-    #[doc = "Checks if the value of the field is `TC1_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc1_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC1_MC_0
     }
-    #[doc = "Checks if the value of the field is `TC1_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc1_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC1_MC_1
     }
-    #[doc = "Checks if the value of the field is `TC2_OVF`"]
+    #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
     pub fn is_tc2_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC2_OVF
     }
-    #[doc = "Checks if the value of the field is `TC2_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc2_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC2_MC_0
     }
-    #[doc = "Checks if the value of the field is `TC2_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc2_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC2_MC_1
     }
-    #[doc = "Checks if the value of the field is `TC3_OVF`"]
+    #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
     pub fn is_tc3_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC3_OVF
     }
-    #[doc = "Checks if the value of the field is `TC3_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc3_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC3_MC_0
     }
-    #[doc = "Checks if the value of the field is `TC3_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc3_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC3_MC_1
     }
-    #[doc = "Checks if the value of the field is `TC4_OVF`"]
+    #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
     pub fn is_tc4_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC4_OVF
     }
-    #[doc = "Checks if the value of the field is `TC4_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc4_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC4_MC_0
     }
-    #[doc = "Checks if the value of the field is `TC4_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc4_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC4_MC_1
     }
-    #[doc = "Checks if the value of the field is `TC5_OVF`"]
+    #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
     pub fn is_tc5_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC5_OVF
     }
-    #[doc = "Checks if the value of the field is `TC5_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc5_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC5_MC_0
     }
-    #[doc = "Checks if the value of the field is `TC5_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc5_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC5_MC_1
     }
-    #[doc = "Checks if the value of the field is `TC6_OVF`"]
+    #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
     pub fn is_tc6_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC6_OVF
     }
-    #[doc = "Checks if the value of the field is `TC6_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc6_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC6_MC_0
     }
-    #[doc = "Checks if the value of the field is `TC6_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc6_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC6_MC_1
     }
-    #[doc = "Checks if the value of the field is `TC7_OVF`"]
+    #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
     pub fn is_tc7_ovf(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC7_OVF
     }
-    #[doc = "Checks if the value of the field is `TC7_MC_0`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc7_mc_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC7_MC_0
     }
-    #[doc = "Checks if the value of the field is `TC7_MC_1`"]
+    #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
     pub fn is_tc7_mc_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::TC7_MC_1
     }
-    #[doc = "Checks if the value of the field is `ADC0_RESRDY`"]
+    #[doc = "index of DMA RESRDY trigger"]
     #[inline(always)]
     pub fn is_adc0_resrdy(&self) -> bool {
         *self == TRIGSRCSELECT_A::ADC0_RESRDY
     }
-    #[doc = "Checks if the value of the field is `ADC0_SEQ`"]
+    #[doc = "Index of DMA SEQ trigger"]
     #[inline(always)]
     pub fn is_adc0_seq(&self) -> bool {
         *self == TRIGSRCSELECT_A::ADC0_SEQ
     }
-    #[doc = "Checks if the value of the field is `ADC1_RESRDY`"]
+    #[doc = "Index of DMA RESRDY trigger"]
     #[inline(always)]
     pub fn is_adc1_resrdy(&self) -> bool {
         *self == TRIGSRCSELECT_A::ADC1_RESRDY
     }
-    #[doc = "Checks if the value of the field is `ADC1_SEQ`"]
+    #[doc = "Index of DMA SEQ trigger"]
     #[inline(always)]
     pub fn is_adc1_seq(&self) -> bool {
         *self == TRIGSRCSELECT_A::ADC1_SEQ
     }
-    #[doc = "Checks if the value of the field is `DAC_EMPTY_0`"]
+    #[doc = "DMA DAC Empty Req"]
     #[inline(always)]
     pub fn is_dac_empty_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::DAC_EMPTY_0
     }
-    #[doc = "Checks if the value of the field is `DAC_EMPTY_1`"]
+    #[doc = "DMA DAC Empty Req"]
     #[inline(always)]
     pub fn is_dac_empty_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::DAC_EMPTY_1
     }
-    #[doc = "Checks if the value of the field is `DAC_RESRDY_0`"]
+    #[doc = "DMA DAC Result Ready Req"]
     #[inline(always)]
     pub fn is_dac_resrdy_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::DAC_RESRDY_0
     }
-    #[doc = "Checks if the value of the field is `DAC_RESRDY_1`"]
+    #[doc = "DMA DAC Result Ready Req"]
     #[inline(always)]
     pub fn is_dac_resrdy_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::DAC_RESRDY_1
     }
-    #[doc = "Checks if the value of the field is `I2S_RX_0`"]
+    #[doc = "Indexes of DMA RX triggers"]
     #[inline(always)]
     pub fn is_i2s_rx_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::I2S_RX_0
     }
-    #[doc = "Checks if the value of the field is `I2S_RX_1`"]
+    #[doc = "Indexes of DMA RX triggers"]
     #[inline(always)]
     pub fn is_i2s_rx_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::I2S_RX_1
     }
-    #[doc = "Checks if the value of the field is `I2S_TX_0`"]
+    #[doc = "Indexes of DMA TX triggers"]
     #[inline(always)]
     pub fn is_i2s_tx_0(&self) -> bool {
         *self == TRIGSRCSELECT_A::I2S_TX_0
     }
-    #[doc = "Checks if the value of the field is `I2S_TX_1`"]
+    #[doc = "Indexes of DMA TX triggers"]
     #[inline(always)]
     pub fn is_i2s_tx_1(&self) -> bool {
         *self == TRIGSRCSELECT_A::I2S_TX_1
     }
-    #[doc = "Checks if the value of the field is `PCC_RX`"]
+    #[doc = "Indexes of PCC RX trigger"]
     #[inline(always)]
     pub fn is_pcc_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::PCC_RX
     }
-    #[doc = "Checks if the value of the field is `AES_WR`"]
+    #[doc = "DMA DATA Write trigger"]
     #[inline(always)]
     pub fn is_aes_wr(&self) -> bool {
         *self == TRIGSRCSELECT_A::AES_WR
     }
-    #[doc = "Checks if the value of the field is `AES_RD`"]
+    #[doc = "DMA DATA Read trigger"]
     #[inline(always)]
     pub fn is_aes_rd(&self) -> bool {
         *self == TRIGSRCSELECT_A::AES_RD
     }
-    #[doc = "Checks if the value of the field is `QSPI_RX`"]
+    #[doc = "Indexes of QSPI RX trigger"]
     #[inline(always)]
     pub fn is_qspi_rx(&self) -> bool {
         *self == TRIGSRCSELECT_A::QSPI_RX
     }
-    #[doc = "Checks if the value of the field is `QSPI_TX`"]
+    #[doc = "Indexes of QSPI TX trigger"]
     #[inline(always)]
     pub fn is_qspi_tx(&self) -> bool {
         *self == TRIGSRCSELECT_A::QSPI_TX
     }
 }
 #[doc = "Field `TRIGSRC` writer - Trigger Source"]
-pub type TRIGSRC_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u32, CHCTRLA_SPEC, u8, TRIGSRCSELECT_A, 7, O>;
-impl<'a, const O: u8> TRIGSRC_W<'a, O> {
+pub type TRIGSRC_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 7, O, TRIGSRCSELECT_A>;
+impl<'a, REG, const O: u8> TRIGSRC_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Only software/event triggers"]
     #[inline(always)]
-    pub fn disable(self) -> &'a mut W {
+    pub fn disable(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::DISABLE)
     }
     #[doc = "DMA RTC timestamp trigger"]
     #[inline(always)]
-    pub fn rtc_timestamp(self) -> &'a mut W {
+    pub fn rtc_timestamp(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::RTC_TIMESTAMP)
     }
     #[doc = "DMAC ID for DCC0 register"]
     #[inline(always)]
-    pub fn dsu_dcc0(self) -> &'a mut W {
+    pub fn dsu_dcc0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::DSU_DCC0)
     }
     #[doc = "DMAC ID for DCC1 register"]
     #[inline(always)]
-    pub fn dsu_dcc1(self) -> &'a mut W {
+    pub fn dsu_dcc1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::DSU_DCC1)
     }
     #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
-    pub fn sercom0_rx(self) -> &'a mut W {
+    pub fn sercom0_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM0_RX)
     }
     #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
-    pub fn sercom0_tx(self) -> &'a mut W {
+    pub fn sercom0_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM0_TX)
     }
     #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
-    pub fn sercom1_rx(self) -> &'a mut W {
+    pub fn sercom1_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM1_RX)
     }
     #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
-    pub fn sercom1_tx(self) -> &'a mut W {
+    pub fn sercom1_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM1_TX)
     }
     #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
-    pub fn sercom2_rx(self) -> &'a mut W {
+    pub fn sercom2_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM2_RX)
     }
     #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
-    pub fn sercom2_tx(self) -> &'a mut W {
+    pub fn sercom2_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM2_TX)
     }
     #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
-    pub fn sercom3_rx(self) -> &'a mut W {
+    pub fn sercom3_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM3_RX)
     }
     #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
-    pub fn sercom3_tx(self) -> &'a mut W {
+    pub fn sercom3_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM3_TX)
     }
     #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
-    pub fn sercom4_rx(self) -> &'a mut W {
+    pub fn sercom4_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM4_RX)
     }
     #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
-    pub fn sercom4_tx(self) -> &'a mut W {
+    pub fn sercom4_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM4_TX)
     }
     #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
-    pub fn sercom5_rx(self) -> &'a mut W {
+    pub fn sercom5_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM5_RX)
     }
     #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
-    pub fn sercom5_tx(self) -> &'a mut W {
+    pub fn sercom5_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM5_TX)
     }
     #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
-    pub fn sercom6_rx(self) -> &'a mut W {
+    pub fn sercom6_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM6_RX)
     }
     #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
-    pub fn sercom6_tx(self) -> &'a mut W {
+    pub fn sercom6_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM6_TX)
     }
     #[doc = "Index of DMA RX trigger"]
     #[inline(always)]
-    pub fn sercom7_rx(self) -> &'a mut W {
+    pub fn sercom7_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM7_RX)
     }
     #[doc = "Index of DMA TX trigger"]
     #[inline(always)]
-    pub fn sercom7_tx(self) -> &'a mut W {
+    pub fn sercom7_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::SERCOM7_TX)
     }
     #[doc = "DMA CAN Debug Req"]
     #[inline(always)]
-    pub fn can0_debug(self) -> &'a mut W {
+    pub fn can0_debug(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::CAN0_DEBUG)
     }
     #[doc = "DMA CAN Debug Req"]
     #[inline(always)]
-    pub fn can1_debug(self) -> &'a mut W {
+    pub fn can1_debug(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::CAN1_DEBUG)
     }
     #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
-    pub fn tcc0_ovf(self) -> &'a mut W {
+    pub fn tcc0_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC0_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc0_mc_0(self) -> &'a mut W {
+    pub fn tcc0_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC0_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc0_mc_1(self) -> &'a mut W {
+    pub fn tcc0_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC0_MC_1)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc0_mc_2(self) -> &'a mut W {
+    pub fn tcc0_mc_2(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC0_MC_2)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc0_mc_3(self) -> &'a mut W {
+    pub fn tcc0_mc_3(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC0_MC_3)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc0_mc_4(self) -> &'a mut W {
+    pub fn tcc0_mc_4(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC0_MC_4)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc0_mc_5(self) -> &'a mut W {
+    pub fn tcc0_mc_5(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC0_MC_5)
     }
     #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
-    pub fn tcc1_ovf(self) -> &'a mut W {
+    pub fn tcc1_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC1_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc1_mc_0(self) -> &'a mut W {
+    pub fn tcc1_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC1_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc1_mc_1(self) -> &'a mut W {
+    pub fn tcc1_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC1_MC_1)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc1_mc_2(self) -> &'a mut W {
+    pub fn tcc1_mc_2(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC1_MC_2)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc1_mc_3(self) -> &'a mut W {
+    pub fn tcc1_mc_3(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC1_MC_3)
     }
     #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
-    pub fn tcc2_ovf(self) -> &'a mut W {
+    pub fn tcc2_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC2_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc2_mc_0(self) -> &'a mut W {
+    pub fn tcc2_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC2_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc2_mc_1(self) -> &'a mut W {
+    pub fn tcc2_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC2_MC_1)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc2_mc_2(self) -> &'a mut W {
+    pub fn tcc2_mc_2(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC2_MC_2)
     }
     #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
-    pub fn tcc3_ovf(self) -> &'a mut W {
+    pub fn tcc3_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC3_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc3_mc_0(self) -> &'a mut W {
+    pub fn tcc3_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC3_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc3_mc_1(self) -> &'a mut W {
+    pub fn tcc3_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC3_MC_1)
     }
     #[doc = "DMA overflow/underflow/retrigger trigger"]
     #[inline(always)]
-    pub fn tcc4_ovf(self) -> &'a mut W {
+    pub fn tcc4_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC4_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc4_mc_0(self) -> &'a mut W {
+    pub fn tcc4_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC4_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tcc4_mc_1(self) -> &'a mut W {
+    pub fn tcc4_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TCC4_MC_1)
     }
     #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
-    pub fn tc0_ovf(self) -> &'a mut W {
+    pub fn tc0_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC0_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc0_mc_0(self) -> &'a mut W {
+    pub fn tc0_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC0_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc0_mc_1(self) -> &'a mut W {
+    pub fn tc0_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC0_MC_1)
     }
     #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
-    pub fn tc1_ovf(self) -> &'a mut W {
+    pub fn tc1_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC1_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc1_mc_0(self) -> &'a mut W {
+    pub fn tc1_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC1_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc1_mc_1(self) -> &'a mut W {
+    pub fn tc1_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC1_MC_1)
     }
     #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
-    pub fn tc2_ovf(self) -> &'a mut W {
+    pub fn tc2_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC2_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc2_mc_0(self) -> &'a mut W {
+    pub fn tc2_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC2_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc2_mc_1(self) -> &'a mut W {
+    pub fn tc2_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC2_MC_1)
     }
     #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
-    pub fn tc3_ovf(self) -> &'a mut W {
+    pub fn tc3_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC3_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc3_mc_0(self) -> &'a mut W {
+    pub fn tc3_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC3_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc3_mc_1(self) -> &'a mut W {
+    pub fn tc3_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC3_MC_1)
     }
     #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
-    pub fn tc4_ovf(self) -> &'a mut W {
+    pub fn tc4_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC4_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc4_mc_0(self) -> &'a mut W {
+    pub fn tc4_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC4_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc4_mc_1(self) -> &'a mut W {
+    pub fn tc4_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC4_MC_1)
     }
     #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
-    pub fn tc5_ovf(self) -> &'a mut W {
+    pub fn tc5_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC5_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc5_mc_0(self) -> &'a mut W {
+    pub fn tc5_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC5_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc5_mc_1(self) -> &'a mut W {
+    pub fn tc5_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC5_MC_1)
     }
     #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
-    pub fn tc6_ovf(self) -> &'a mut W {
+    pub fn tc6_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC6_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc6_mc_0(self) -> &'a mut W {
+    pub fn tc6_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC6_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc6_mc_1(self) -> &'a mut W {
+    pub fn tc6_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC6_MC_1)
     }
     #[doc = "Indexes of DMA Overflow trigger"]
     #[inline(always)]
-    pub fn tc7_ovf(self) -> &'a mut W {
+    pub fn tc7_ovf(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC7_OVF)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc7_mc_0(self) -> &'a mut W {
+    pub fn tc7_mc_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC7_MC_0)
     }
     #[doc = "Indexes of DMA Match/Compare triggers"]
     #[inline(always)]
-    pub fn tc7_mc_1(self) -> &'a mut W {
+    pub fn tc7_mc_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::TC7_MC_1)
     }
     #[doc = "index of DMA RESRDY trigger"]
     #[inline(always)]
-    pub fn adc0_resrdy(self) -> &'a mut W {
+    pub fn adc0_resrdy(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::ADC0_RESRDY)
     }
     #[doc = "Index of DMA SEQ trigger"]
     #[inline(always)]
-    pub fn adc0_seq(self) -> &'a mut W {
+    pub fn adc0_seq(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::ADC0_SEQ)
     }
     #[doc = "Index of DMA RESRDY trigger"]
     #[inline(always)]
-    pub fn adc1_resrdy(self) -> &'a mut W {
+    pub fn adc1_resrdy(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::ADC1_RESRDY)
     }
     #[doc = "Index of DMA SEQ trigger"]
     #[inline(always)]
-    pub fn adc1_seq(self) -> &'a mut W {
+    pub fn adc1_seq(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::ADC1_SEQ)
     }
     #[doc = "DMA DAC Empty Req"]
     #[inline(always)]
-    pub fn dac_empty_0(self) -> &'a mut W {
+    pub fn dac_empty_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::DAC_EMPTY_0)
     }
     #[doc = "DMA DAC Empty Req"]
     #[inline(always)]
-    pub fn dac_empty_1(self) -> &'a mut W {
+    pub fn dac_empty_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::DAC_EMPTY_1)
     }
     #[doc = "DMA DAC Result Ready Req"]
     #[inline(always)]
-    pub fn dac_resrdy_0(self) -> &'a mut W {
+    pub fn dac_resrdy_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::DAC_RESRDY_0)
     }
     #[doc = "DMA DAC Result Ready Req"]
     #[inline(always)]
-    pub fn dac_resrdy_1(self) -> &'a mut W {
+    pub fn dac_resrdy_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::DAC_RESRDY_1)
     }
     #[doc = "Indexes of DMA RX triggers"]
     #[inline(always)]
-    pub fn i2s_rx_0(self) -> &'a mut W {
+    pub fn i2s_rx_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::I2S_RX_0)
     }
     #[doc = "Indexes of DMA RX triggers"]
     #[inline(always)]
-    pub fn i2s_rx_1(self) -> &'a mut W {
+    pub fn i2s_rx_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::I2S_RX_1)
     }
     #[doc = "Indexes of DMA TX triggers"]
     #[inline(always)]
-    pub fn i2s_tx_0(self) -> &'a mut W {
+    pub fn i2s_tx_0(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::I2S_TX_0)
     }
     #[doc = "Indexes of DMA TX triggers"]
     #[inline(always)]
-    pub fn i2s_tx_1(self) -> &'a mut W {
+    pub fn i2s_tx_1(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::I2S_TX_1)
     }
     #[doc = "Indexes of PCC RX trigger"]
     #[inline(always)]
-    pub fn pcc_rx(self) -> &'a mut W {
+    pub fn pcc_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::PCC_RX)
     }
     #[doc = "DMA DATA Write trigger"]
     #[inline(always)]
-    pub fn aes_wr(self) -> &'a mut W {
+    pub fn aes_wr(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::AES_WR)
     }
     #[doc = "DMA DATA Read trigger"]
     #[inline(always)]
-    pub fn aes_rd(self) -> &'a mut W {
+    pub fn aes_rd(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::AES_RD)
     }
     #[doc = "Indexes of QSPI RX trigger"]
     #[inline(always)]
-    pub fn qspi_rx(self) -> &'a mut W {
+    pub fn qspi_rx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::QSPI_RX)
     }
     #[doc = "Indexes of QSPI TX trigger"]
     #[inline(always)]
-    pub fn qspi_tx(self) -> &'a mut W {
+    pub fn qspi_tx(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGSRCSELECT_A::QSPI_TX)
     }
 }
 #[doc = "Field `TRIGACT` reader - Trigger Action"]
-pub type TRIGACT_R = crate::FieldReader<u8, TRIGACTSELECT_A>;
+pub type TRIGACT_R = crate::FieldReader<TRIGACTSELECT_A>;
 #[doc = "Trigger Action\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -1197,10 +1171,13 @@ impl From<TRIGACTSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for TRIGACTSELECT_A {
+    type Ux = u8;
+}
 impl TRIGACT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<TRIGACTSELECT_A> {
+    pub const fn variant(&self) -> Option<TRIGACTSELECT_A> {
         match self.bits {
             0 => Some(TRIGACTSELECT_A::BLOCK),
             2 => Some(TRIGACTSELECT_A::BURST),
@@ -1208,44 +1185,47 @@ impl TRIGACT_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `BLOCK`"]
+    #[doc = "One trigger required for each block transfer"]
     #[inline(always)]
     pub fn is_block(&self) -> bool {
         *self == TRIGACTSELECT_A::BLOCK
     }
-    #[doc = "Checks if the value of the field is `BURST`"]
+    #[doc = "One trigger required for each burst transfer"]
     #[inline(always)]
     pub fn is_burst(&self) -> bool {
         *self == TRIGACTSELECT_A::BURST
     }
-    #[doc = "Checks if the value of the field is `TRANSACTION`"]
+    #[doc = "One trigger required for each transaction"]
     #[inline(always)]
     pub fn is_transaction(&self) -> bool {
         *self == TRIGACTSELECT_A::TRANSACTION
     }
 }
 #[doc = "Field `TRIGACT` writer - Trigger Action"]
-pub type TRIGACT_W<'a, const O: u8> =
-    crate::FieldWriter<'a, u32, CHCTRLA_SPEC, u8, TRIGACTSELECT_A, 2, O>;
-impl<'a, const O: u8> TRIGACT_W<'a, O> {
+pub type TRIGACT_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, TRIGACTSELECT_A>;
+impl<'a, REG, const O: u8> TRIGACT_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "One trigger required for each block transfer"]
     #[inline(always)]
-    pub fn block(self) -> &'a mut W {
+    pub fn block(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGACTSELECT_A::BLOCK)
     }
     #[doc = "One trigger required for each burst transfer"]
     #[inline(always)]
-    pub fn burst(self) -> &'a mut W {
+    pub fn burst(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGACTSELECT_A::BURST)
     }
     #[doc = "One trigger required for each transaction"]
     #[inline(always)]
-    pub fn transaction(self) -> &'a mut W {
+    pub fn transaction(self) -> &'a mut crate::W<REG> {
         self.variant(TRIGACTSELECT_A::TRANSACTION)
     }
 }
 #[doc = "Field `BURSTLEN` reader - Burst Length"]
-pub type BURSTLEN_R = crate::FieldReader<u8, BURSTLENSELECT_A>;
+pub type BURSTLEN_R = crate::FieldReader<BURSTLENSELECT_A>;
 #[doc = "Burst Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -1289,10 +1269,13 @@ impl From<BURSTLENSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for BURSTLENSELECT_A {
+    type Ux = u8;
+}
 impl BURSTLEN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> BURSTLENSELECT_A {
+    pub const fn variant(&self) -> BURSTLENSELECT_A {
         match self.bits {
             0 => BURSTLENSELECT_A::SINGLE,
             1 => BURSTLENSELECT_A::_2BEAT,
@@ -1313,174 +1296,177 @@ impl BURSTLEN_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `SINGLE`"]
+    #[doc = "Single-beat burst length"]
     #[inline(always)]
     pub fn is_single(&self) -> bool {
         *self == BURSTLENSELECT_A::SINGLE
     }
-    #[doc = "Checks if the value of the field is `_2BEAT`"]
+    #[doc = "2-beats burst length"]
     #[inline(always)]
     pub fn is_2beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_2BEAT
     }
-    #[doc = "Checks if the value of the field is `_3BEAT`"]
+    #[doc = "3-beats burst length"]
     #[inline(always)]
     pub fn is_3beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_3BEAT
     }
-    #[doc = "Checks if the value of the field is `_4BEAT`"]
+    #[doc = "4-beats burst length"]
     #[inline(always)]
     pub fn is_4beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_4BEAT
     }
-    #[doc = "Checks if the value of the field is `_5BEAT`"]
+    #[doc = "5-beats burst length"]
     #[inline(always)]
     pub fn is_5beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_5BEAT
     }
-    #[doc = "Checks if the value of the field is `_6BEAT`"]
+    #[doc = "6-beats burst length"]
     #[inline(always)]
     pub fn is_6beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_6BEAT
     }
-    #[doc = "Checks if the value of the field is `_7BEAT`"]
+    #[doc = "7-beats burst length"]
     #[inline(always)]
     pub fn is_7beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_7BEAT
     }
-    #[doc = "Checks if the value of the field is `_8BEAT`"]
+    #[doc = "8-beats burst length"]
     #[inline(always)]
     pub fn is_8beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_8BEAT
     }
-    #[doc = "Checks if the value of the field is `_9BEAT`"]
+    #[doc = "9-beats burst length"]
     #[inline(always)]
     pub fn is_9beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_9BEAT
     }
-    #[doc = "Checks if the value of the field is `_10BEAT`"]
+    #[doc = "10-beats burst length"]
     #[inline(always)]
     pub fn is_10beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_10BEAT
     }
-    #[doc = "Checks if the value of the field is `_11BEAT`"]
+    #[doc = "11-beats burst length"]
     #[inline(always)]
     pub fn is_11beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_11BEAT
     }
-    #[doc = "Checks if the value of the field is `_12BEAT`"]
+    #[doc = "12-beats burst length"]
     #[inline(always)]
     pub fn is_12beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_12BEAT
     }
-    #[doc = "Checks if the value of the field is `_13BEAT`"]
+    #[doc = "13-beats burst length"]
     #[inline(always)]
     pub fn is_13beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_13BEAT
     }
-    #[doc = "Checks if the value of the field is `_14BEAT`"]
+    #[doc = "14-beats burst length"]
     #[inline(always)]
     pub fn is_14beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_14BEAT
     }
-    #[doc = "Checks if the value of the field is `_15BEAT`"]
+    #[doc = "15-beats burst length"]
     #[inline(always)]
     pub fn is_15beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_15BEAT
     }
-    #[doc = "Checks if the value of the field is `_16BEAT`"]
+    #[doc = "16-beats burst length"]
     #[inline(always)]
     pub fn is_16beat(&self) -> bool {
         *self == BURSTLENSELECT_A::_16BEAT
     }
 }
 #[doc = "Field `BURSTLEN` writer - Burst Length"]
-pub type BURSTLEN_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, CHCTRLA_SPEC, u8, BURSTLENSELECT_A, 4, O>;
-impl<'a, const O: u8> BURSTLEN_W<'a, O> {
+pub type BURSTLEN_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 4, O, BURSTLENSELECT_A>;
+impl<'a, REG, const O: u8> BURSTLEN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Single-beat burst length"]
     #[inline(always)]
-    pub fn single(self) -> &'a mut W {
+    pub fn single(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::SINGLE)
     }
     #[doc = "2-beats burst length"]
     #[inline(always)]
-    pub fn _2beat(self) -> &'a mut W {
+    pub fn _2beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_2BEAT)
     }
     #[doc = "3-beats burst length"]
     #[inline(always)]
-    pub fn _3beat(self) -> &'a mut W {
+    pub fn _3beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_3BEAT)
     }
     #[doc = "4-beats burst length"]
     #[inline(always)]
-    pub fn _4beat(self) -> &'a mut W {
+    pub fn _4beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_4BEAT)
     }
     #[doc = "5-beats burst length"]
     #[inline(always)]
-    pub fn _5beat(self) -> &'a mut W {
+    pub fn _5beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_5BEAT)
     }
     #[doc = "6-beats burst length"]
     #[inline(always)]
-    pub fn _6beat(self) -> &'a mut W {
+    pub fn _6beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_6BEAT)
     }
     #[doc = "7-beats burst length"]
     #[inline(always)]
-    pub fn _7beat(self) -> &'a mut W {
+    pub fn _7beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_7BEAT)
     }
     #[doc = "8-beats burst length"]
     #[inline(always)]
-    pub fn _8beat(self) -> &'a mut W {
+    pub fn _8beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_8BEAT)
     }
     #[doc = "9-beats burst length"]
     #[inline(always)]
-    pub fn _9beat(self) -> &'a mut W {
+    pub fn _9beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_9BEAT)
     }
     #[doc = "10-beats burst length"]
     #[inline(always)]
-    pub fn _10beat(self) -> &'a mut W {
+    pub fn _10beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_10BEAT)
     }
     #[doc = "11-beats burst length"]
     #[inline(always)]
-    pub fn _11beat(self) -> &'a mut W {
+    pub fn _11beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_11BEAT)
     }
     #[doc = "12-beats burst length"]
     #[inline(always)]
-    pub fn _12beat(self) -> &'a mut W {
+    pub fn _12beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_12BEAT)
     }
     #[doc = "13-beats burst length"]
     #[inline(always)]
-    pub fn _13beat(self) -> &'a mut W {
+    pub fn _13beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_13BEAT)
     }
     #[doc = "14-beats burst length"]
     #[inline(always)]
-    pub fn _14beat(self) -> &'a mut W {
+    pub fn _14beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_14BEAT)
     }
     #[doc = "15-beats burst length"]
     #[inline(always)]
-    pub fn _15beat(self) -> &'a mut W {
+    pub fn _15beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_15BEAT)
     }
     #[doc = "16-beats burst length"]
     #[inline(always)]
-    pub fn _16beat(self) -> &'a mut W {
+    pub fn _16beat(self) -> &'a mut crate::W<REG> {
         self.variant(BURSTLENSELECT_A::_16BEAT)
     }
 }
 #[doc = "Field `THRESHOLD` reader - FIFO Threshold"]
-pub type THRESHOLD_R = crate::FieldReader<u8, THRESHOLDSELECT_A>;
+pub type THRESHOLD_R = crate::FieldReader<THRESHOLDSELECT_A>;
 #[doc = "FIFO Threshold\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -1500,10 +1486,13 @@ impl From<THRESHOLDSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for THRESHOLDSELECT_A {
+    type Ux = u8;
+}
 impl THRESHOLD_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> THRESHOLDSELECT_A {
+    pub const fn variant(&self) -> THRESHOLDSELECT_A {
         match self.bits {
             0 => THRESHOLDSELECT_A::_1BEAT,
             1 => THRESHOLDSELECT_A::_2BEATS,
@@ -1512,49 +1501,53 @@ impl THRESHOLD_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `_1BEAT`"]
+    #[doc = "Destination write starts after each beat source address read"]
     #[inline(always)]
     pub fn is_1beat(&self) -> bool {
         *self == THRESHOLDSELECT_A::_1BEAT
     }
-    #[doc = "Checks if the value of the field is `_2BEATS`"]
+    #[doc = "Destination write starts after 2-beats source address read"]
     #[inline(always)]
     pub fn is_2beats(&self) -> bool {
         *self == THRESHOLDSELECT_A::_2BEATS
     }
-    #[doc = "Checks if the value of the field is `_4BEATS`"]
+    #[doc = "Destination write starts after 4-beats source address read"]
     #[inline(always)]
     pub fn is_4beats(&self) -> bool {
         *self == THRESHOLDSELECT_A::_4BEATS
     }
-    #[doc = "Checks if the value of the field is `_8BEATS`"]
+    #[doc = "Destination write starts after 8-beats source address read"]
     #[inline(always)]
     pub fn is_8beats(&self) -> bool {
         *self == THRESHOLDSELECT_A::_8BEATS
     }
 }
 #[doc = "Field `THRESHOLD` writer - FIFO Threshold"]
-pub type THRESHOLD_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, CHCTRLA_SPEC, u8, THRESHOLDSELECT_A, 2, O>;
-impl<'a, const O: u8> THRESHOLD_W<'a, O> {
+pub type THRESHOLD_W<'a, REG, const O: u8> =
+    crate::FieldWriterSafe<'a, REG, 2, O, THRESHOLDSELECT_A>;
+impl<'a, REG, const O: u8> THRESHOLD_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Destination write starts after each beat source address read"]
     #[inline(always)]
-    pub fn _1beat(self) -> &'a mut W {
+    pub fn _1beat(self) -> &'a mut crate::W<REG> {
         self.variant(THRESHOLDSELECT_A::_1BEAT)
     }
     #[doc = "Destination write starts after 2-beats source address read"]
     #[inline(always)]
-    pub fn _2beats(self) -> &'a mut W {
+    pub fn _2beats(self) -> &'a mut crate::W<REG> {
         self.variant(THRESHOLDSELECT_A::_2BEATS)
     }
     #[doc = "Destination write starts after 4-beats source address read"]
     #[inline(always)]
-    pub fn _4beats(self) -> &'a mut W {
+    pub fn _4beats(self) -> &'a mut crate::W<REG> {
         self.variant(THRESHOLDSELECT_A::_4BEATS)
     }
     #[doc = "Destination write starts after 8-beats source address read"]
     #[inline(always)]
-    pub fn _8beats(self) -> &'a mut W {
+    pub fn _8beats(self) -> &'a mut crate::W<REG> {
         self.variant(THRESHOLDSELECT_A::_8BEATS)
     }
 }
@@ -1599,64 +1592,65 @@ impl W {
     #[doc = "Bit 0 - Channel Software Reset"]
     #[inline(always)]
     #[must_use]
-    pub fn swrst(&mut self) -> SWRST_W<0> {
+    pub fn swrst(&mut self) -> SWRST_W<CHCTRLA_SPEC, 0> {
         SWRST_W::new(self)
     }
     #[doc = "Bit 1 - Channel Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn enable(&mut self) -> ENABLE_W<1> {
+    pub fn enable(&mut self) -> ENABLE_W<CHCTRLA_SPEC, 1> {
         ENABLE_W::new(self)
     }
     #[doc = "Bit 6 - Channel Run in Standby"]
     #[inline(always)]
     #[must_use]
-    pub fn runstdby(&mut self) -> RUNSTDBY_W<6> {
+    pub fn runstdby(&mut self) -> RUNSTDBY_W<CHCTRLA_SPEC, 6> {
         RUNSTDBY_W::new(self)
     }
     #[doc = "Bits 8:14 - Trigger Source"]
     #[inline(always)]
     #[must_use]
-    pub fn trigsrc(&mut self) -> TRIGSRC_W<8> {
+    pub fn trigsrc(&mut self) -> TRIGSRC_W<CHCTRLA_SPEC, 8> {
         TRIGSRC_W::new(self)
     }
     #[doc = "Bits 20:21 - Trigger Action"]
     #[inline(always)]
     #[must_use]
-    pub fn trigact(&mut self) -> TRIGACT_W<20> {
+    pub fn trigact(&mut self) -> TRIGACT_W<CHCTRLA_SPEC, 20> {
         TRIGACT_W::new(self)
     }
     #[doc = "Bits 24:27 - Burst Length"]
     #[inline(always)]
     #[must_use]
-    pub fn burstlen(&mut self) -> BURSTLEN_W<24> {
+    pub fn burstlen(&mut self) -> BURSTLEN_W<CHCTRLA_SPEC, 24> {
         BURSTLEN_W::new(self)
     }
     #[doc = "Bits 28:29 - FIFO Threshold"]
     #[inline(always)]
     #[must_use]
-    pub fn threshold(&mut self) -> THRESHOLD_W<28> {
+    pub fn threshold(&mut self) -> THRESHOLD_W<CHCTRLA_SPEC, 28> {
         THRESHOLD_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Channel n Control A\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [chctrla](index.html) module"]
+#[doc = "Channel n Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`chctrla::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`chctrla::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CHCTRLA_SPEC;
 impl crate::RegisterSpec for CHCTRLA_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [chctrla::R](R) reader structure"]
-impl crate::Readable for CHCTRLA_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [chctrla::W](W) writer structure"]
+#[doc = "`read()` method returns [`chctrla::R`](R) reader structure"]
+impl crate::Readable for CHCTRLA_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`chctrla::W`](W) writer structure"]
 impl crate::Writable for CHCTRLA_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

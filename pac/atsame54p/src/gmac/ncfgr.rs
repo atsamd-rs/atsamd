@@ -1,131 +1,99 @@
 #[doc = "Register `NCFGR` reader"]
-pub struct R(crate::R<NCFGR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<NCFGR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<NCFGR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<NCFGR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<NCFGR_SPEC>;
 #[doc = "Register `NCFGR` writer"]
-pub struct W(crate::W<NCFGR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<NCFGR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<NCFGR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<NCFGR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<NCFGR_SPEC>;
 #[doc = "Field `SPD` reader - Speed"]
-pub type SPD_R = crate::BitReader<bool>;
+pub type SPD_R = crate::BitReader;
 #[doc = "Field `SPD` writer - Speed"]
-pub type SPD_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type SPD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FD` reader - Full Duplex"]
-pub type FD_R = crate::BitReader<bool>;
+pub type FD_R = crate::BitReader;
 #[doc = "Field `FD` writer - Full Duplex"]
-pub type FD_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type FD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DNVLAN` reader - Discard Non-VLAN FRAMES"]
-pub type DNVLAN_R = crate::BitReader<bool>;
+pub type DNVLAN_R = crate::BitReader;
 #[doc = "Field `DNVLAN` writer - Discard Non-VLAN FRAMES"]
-pub type DNVLAN_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type DNVLAN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `JFRAME` reader - Jumbo Frame Size"]
-pub type JFRAME_R = crate::BitReader<bool>;
+pub type JFRAME_R = crate::BitReader;
 #[doc = "Field `JFRAME` writer - Jumbo Frame Size"]
-pub type JFRAME_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type JFRAME_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CAF` reader - Copy All Frames"]
-pub type CAF_R = crate::BitReader<bool>;
+pub type CAF_R = crate::BitReader;
 #[doc = "Field `CAF` writer - Copy All Frames"]
-pub type CAF_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type CAF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `NBC` reader - No Broadcast"]
-pub type NBC_R = crate::BitReader<bool>;
+pub type NBC_R = crate::BitReader;
 #[doc = "Field `NBC` writer - No Broadcast"]
-pub type NBC_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type NBC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MTIHEN` reader - Multicast Hash Enable"]
-pub type MTIHEN_R = crate::BitReader<bool>;
+pub type MTIHEN_R = crate::BitReader;
 #[doc = "Field `MTIHEN` writer - Multicast Hash Enable"]
-pub type MTIHEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type MTIHEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `UNIHEN` reader - Unicast Hash Enable"]
-pub type UNIHEN_R = crate::BitReader<bool>;
+pub type UNIHEN_R = crate::BitReader;
 #[doc = "Field `UNIHEN` writer - Unicast Hash Enable"]
-pub type UNIHEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type UNIHEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MAXFS` reader - 1536 Maximum Frame Size"]
-pub type MAXFS_R = crate::BitReader<bool>;
+pub type MAXFS_R = crate::BitReader;
 #[doc = "Field `MAXFS` writer - 1536 Maximum Frame Size"]
-pub type MAXFS_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type MAXFS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RTY` reader - Retry Test"]
-pub type RTY_R = crate::BitReader<bool>;
+pub type RTY_R = crate::BitReader;
 #[doc = "Field `RTY` writer - Retry Test"]
-pub type RTY_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type RTY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PEN` reader - Pause Enable"]
-pub type PEN_R = crate::BitReader<bool>;
+pub type PEN_R = crate::BitReader;
 #[doc = "Field `PEN` writer - Pause Enable"]
-pub type PEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type PEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXBUFO` reader - Receive Buffer Offset"]
-pub type RXBUFO_R = crate::FieldReader<u8, u8>;
+pub type RXBUFO_R = crate::FieldReader;
 #[doc = "Field `RXBUFO` writer - Receive Buffer Offset"]
-pub type RXBUFO_W<'a, const O: u8> = crate::FieldWriter<'a, u32, NCFGR_SPEC, u8, u8, 2, O>;
+pub type RXBUFO_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `LFERD` reader - Length Field Error Frame Discard"]
-pub type LFERD_R = crate::BitReader<bool>;
+pub type LFERD_R = crate::BitReader;
 #[doc = "Field `LFERD` writer - Length Field Error Frame Discard"]
-pub type LFERD_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type LFERD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RFCS` reader - Remove FCS"]
-pub type RFCS_R = crate::BitReader<bool>;
+pub type RFCS_R = crate::BitReader;
 #[doc = "Field `RFCS` writer - Remove FCS"]
-pub type RFCS_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type RFCS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CLK` reader - MDC CLock Division"]
-pub type CLK_R = crate::FieldReader<u8, u8>;
+pub type CLK_R = crate::FieldReader;
 #[doc = "Field `CLK` writer - MDC CLock Division"]
-pub type CLK_W<'a, const O: u8> = crate::FieldWriter<'a, u32, NCFGR_SPEC, u8, u8, 3, O>;
+pub type CLK_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O>;
 #[doc = "Field `DBW` reader - Data Bus Width"]
-pub type DBW_R = crate::FieldReader<u8, u8>;
+pub type DBW_R = crate::FieldReader;
 #[doc = "Field `DBW` writer - Data Bus Width"]
-pub type DBW_W<'a, const O: u8> = crate::FieldWriter<'a, u32, NCFGR_SPEC, u8, u8, 2, O>;
+pub type DBW_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `DCPF` reader - Disable Copy of Pause Frames"]
-pub type DCPF_R = crate::BitReader<bool>;
+pub type DCPF_R = crate::BitReader;
 #[doc = "Field `DCPF` writer - Disable Copy of Pause Frames"]
-pub type DCPF_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type DCPF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXCOEN` reader - Receive Checksum Offload Enable"]
-pub type RXCOEN_R = crate::BitReader<bool>;
+pub type RXCOEN_R = crate::BitReader;
 #[doc = "Field `RXCOEN` writer - Receive Checksum Offload Enable"]
-pub type RXCOEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type RXCOEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EFRHD` reader - Enable Frames Received in Half Duplex"]
-pub type EFRHD_R = crate::BitReader<bool>;
+pub type EFRHD_R = crate::BitReader;
 #[doc = "Field `EFRHD` writer - Enable Frames Received in Half Duplex"]
-pub type EFRHD_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type EFRHD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `IRXFCS` reader - Ignore RX FCS"]
-pub type IRXFCS_R = crate::BitReader<bool>;
+pub type IRXFCS_R = crate::BitReader;
 #[doc = "Field `IRXFCS` writer - Ignore RX FCS"]
-pub type IRXFCS_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type IRXFCS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `IPGSEN` reader - IP Stretch Enable"]
-pub type IPGSEN_R = crate::BitReader<bool>;
+pub type IPGSEN_R = crate::BitReader;
 #[doc = "Field `IPGSEN` writer - IP Stretch Enable"]
-pub type IPGSEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type IPGSEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXBP` reader - Receive Bad Preamble"]
-pub type RXBP_R = crate::BitReader<bool>;
+pub type RXBP_R = crate::BitReader;
 #[doc = "Field `RXBP` writer - Receive Bad Preamble"]
-pub type RXBP_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type RXBP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `IRXER` reader - Ignore IPG GRXER"]
-pub type IRXER_R = crate::BitReader<bool>;
+pub type IRXER_R = crate::BitReader;
 #[doc = "Field `IRXER` writer - Ignore IPG GRXER"]
-pub type IRXER_W<'a, const O: u8> = crate::BitWriter<'a, u32, NCFGR_SPEC, bool, O>;
+pub type IRXER_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Speed"]
     #[inline(always)]
@@ -247,160 +215,161 @@ impl W {
     #[doc = "Bit 0 - Speed"]
     #[inline(always)]
     #[must_use]
-    pub fn spd(&mut self) -> SPD_W<0> {
+    pub fn spd(&mut self) -> SPD_W<NCFGR_SPEC, 0> {
         SPD_W::new(self)
     }
     #[doc = "Bit 1 - Full Duplex"]
     #[inline(always)]
     #[must_use]
-    pub fn fd(&mut self) -> FD_W<1> {
+    pub fn fd(&mut self) -> FD_W<NCFGR_SPEC, 1> {
         FD_W::new(self)
     }
     #[doc = "Bit 2 - Discard Non-VLAN FRAMES"]
     #[inline(always)]
     #[must_use]
-    pub fn dnvlan(&mut self) -> DNVLAN_W<2> {
+    pub fn dnvlan(&mut self) -> DNVLAN_W<NCFGR_SPEC, 2> {
         DNVLAN_W::new(self)
     }
     #[doc = "Bit 3 - Jumbo Frame Size"]
     #[inline(always)]
     #[must_use]
-    pub fn jframe(&mut self) -> JFRAME_W<3> {
+    pub fn jframe(&mut self) -> JFRAME_W<NCFGR_SPEC, 3> {
         JFRAME_W::new(self)
     }
     #[doc = "Bit 4 - Copy All Frames"]
     #[inline(always)]
     #[must_use]
-    pub fn caf(&mut self) -> CAF_W<4> {
+    pub fn caf(&mut self) -> CAF_W<NCFGR_SPEC, 4> {
         CAF_W::new(self)
     }
     #[doc = "Bit 5 - No Broadcast"]
     #[inline(always)]
     #[must_use]
-    pub fn nbc(&mut self) -> NBC_W<5> {
+    pub fn nbc(&mut self) -> NBC_W<NCFGR_SPEC, 5> {
         NBC_W::new(self)
     }
     #[doc = "Bit 6 - Multicast Hash Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn mtihen(&mut self) -> MTIHEN_W<6> {
+    pub fn mtihen(&mut self) -> MTIHEN_W<NCFGR_SPEC, 6> {
         MTIHEN_W::new(self)
     }
     #[doc = "Bit 7 - Unicast Hash Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn unihen(&mut self) -> UNIHEN_W<7> {
+    pub fn unihen(&mut self) -> UNIHEN_W<NCFGR_SPEC, 7> {
         UNIHEN_W::new(self)
     }
     #[doc = "Bit 8 - 1536 Maximum Frame Size"]
     #[inline(always)]
     #[must_use]
-    pub fn maxfs(&mut self) -> MAXFS_W<8> {
+    pub fn maxfs(&mut self) -> MAXFS_W<NCFGR_SPEC, 8> {
         MAXFS_W::new(self)
     }
     #[doc = "Bit 12 - Retry Test"]
     #[inline(always)]
     #[must_use]
-    pub fn rty(&mut self) -> RTY_W<12> {
+    pub fn rty(&mut self) -> RTY_W<NCFGR_SPEC, 12> {
         RTY_W::new(self)
     }
     #[doc = "Bit 13 - Pause Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pen(&mut self) -> PEN_W<13> {
+    pub fn pen(&mut self) -> PEN_W<NCFGR_SPEC, 13> {
         PEN_W::new(self)
     }
     #[doc = "Bits 14:15 - Receive Buffer Offset"]
     #[inline(always)]
     #[must_use]
-    pub fn rxbufo(&mut self) -> RXBUFO_W<14> {
+    pub fn rxbufo(&mut self) -> RXBUFO_W<NCFGR_SPEC, 14> {
         RXBUFO_W::new(self)
     }
     #[doc = "Bit 16 - Length Field Error Frame Discard"]
     #[inline(always)]
     #[must_use]
-    pub fn lferd(&mut self) -> LFERD_W<16> {
+    pub fn lferd(&mut self) -> LFERD_W<NCFGR_SPEC, 16> {
         LFERD_W::new(self)
     }
     #[doc = "Bit 17 - Remove FCS"]
     #[inline(always)]
     #[must_use]
-    pub fn rfcs(&mut self) -> RFCS_W<17> {
+    pub fn rfcs(&mut self) -> RFCS_W<NCFGR_SPEC, 17> {
         RFCS_W::new(self)
     }
     #[doc = "Bits 18:20 - MDC CLock Division"]
     #[inline(always)]
     #[must_use]
-    pub fn clk(&mut self) -> CLK_W<18> {
+    pub fn clk(&mut self) -> CLK_W<NCFGR_SPEC, 18> {
         CLK_W::new(self)
     }
     #[doc = "Bits 21:22 - Data Bus Width"]
     #[inline(always)]
     #[must_use]
-    pub fn dbw(&mut self) -> DBW_W<21> {
+    pub fn dbw(&mut self) -> DBW_W<NCFGR_SPEC, 21> {
         DBW_W::new(self)
     }
     #[doc = "Bit 23 - Disable Copy of Pause Frames"]
     #[inline(always)]
     #[must_use]
-    pub fn dcpf(&mut self) -> DCPF_W<23> {
+    pub fn dcpf(&mut self) -> DCPF_W<NCFGR_SPEC, 23> {
         DCPF_W::new(self)
     }
     #[doc = "Bit 24 - Receive Checksum Offload Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn rxcoen(&mut self) -> RXCOEN_W<24> {
+    pub fn rxcoen(&mut self) -> RXCOEN_W<NCFGR_SPEC, 24> {
         RXCOEN_W::new(self)
     }
     #[doc = "Bit 25 - Enable Frames Received in Half Duplex"]
     #[inline(always)]
     #[must_use]
-    pub fn efrhd(&mut self) -> EFRHD_W<25> {
+    pub fn efrhd(&mut self) -> EFRHD_W<NCFGR_SPEC, 25> {
         EFRHD_W::new(self)
     }
     #[doc = "Bit 26 - Ignore RX FCS"]
     #[inline(always)]
     #[must_use]
-    pub fn irxfcs(&mut self) -> IRXFCS_W<26> {
+    pub fn irxfcs(&mut self) -> IRXFCS_W<NCFGR_SPEC, 26> {
         IRXFCS_W::new(self)
     }
     #[doc = "Bit 28 - IP Stretch Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ipgsen(&mut self) -> IPGSEN_W<28> {
+    pub fn ipgsen(&mut self) -> IPGSEN_W<NCFGR_SPEC, 28> {
         IPGSEN_W::new(self)
     }
     #[doc = "Bit 29 - Receive Bad Preamble"]
     #[inline(always)]
     #[must_use]
-    pub fn rxbp(&mut self) -> RXBP_W<29> {
+    pub fn rxbp(&mut self) -> RXBP_W<NCFGR_SPEC, 29> {
         RXBP_W::new(self)
     }
     #[doc = "Bit 30 - Ignore IPG GRXER"]
     #[inline(always)]
     #[must_use]
-    pub fn irxer(&mut self) -> IRXER_W<30> {
+    pub fn irxer(&mut self) -> IRXER_W<NCFGR_SPEC, 30> {
         IRXER_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Network Configuration Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ncfgr](index.html) module"]
+#[doc = "Network Configuration Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ncfgr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ncfgr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct NCFGR_SPEC;
 impl crate::RegisterSpec for NCFGR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ncfgr::R](R) reader structure"]
-impl crate::Readable for NCFGR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ncfgr::W](W) writer structure"]
+#[doc = "`read()` method returns [`ncfgr::R`](R) reader structure"]
+impl crate::Readable for NCFGR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ncfgr::W`](W) writer structure"]
 impl crate::Writable for NCFGR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

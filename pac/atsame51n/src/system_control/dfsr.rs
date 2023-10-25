@@ -1,59 +1,27 @@
 #[doc = "Register `DFSR` reader"]
-pub struct R(crate::R<DFSR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DFSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DFSR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DFSR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DFSR_SPEC>;
 #[doc = "Register `DFSR` writer"]
-pub struct W(crate::W<DFSR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<DFSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<DFSR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<DFSR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<DFSR_SPEC>;
 #[doc = "Field `HALTED` reader - "]
-pub type HALTED_R = crate::BitReader<bool>;
+pub type HALTED_R = crate::BitReader;
 #[doc = "Field `HALTED` writer - "]
-pub type HALTED_W<'a, const O: u8> = crate::BitWriter<'a, u32, DFSR_SPEC, bool, O>;
+pub type HALTED_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BKPT` reader - "]
-pub type BKPT_R = crate::BitReader<bool>;
+pub type BKPT_R = crate::BitReader;
 #[doc = "Field `BKPT` writer - "]
-pub type BKPT_W<'a, const O: u8> = crate::BitWriter<'a, u32, DFSR_SPEC, bool, O>;
+pub type BKPT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DWTTRAP` reader - "]
-pub type DWTTRAP_R = crate::BitReader<bool>;
+pub type DWTTRAP_R = crate::BitReader;
 #[doc = "Field `DWTTRAP` writer - "]
-pub type DWTTRAP_W<'a, const O: u8> = crate::BitWriter<'a, u32, DFSR_SPEC, bool, O>;
+pub type DWTTRAP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `VCATCH` reader - "]
-pub type VCATCH_R = crate::BitReader<bool>;
+pub type VCATCH_R = crate::BitReader;
 #[doc = "Field `VCATCH` writer - "]
-pub type VCATCH_W<'a, const O: u8> = crate::BitWriter<'a, u32, DFSR_SPEC, bool, O>;
+pub type VCATCH_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EXTERNAL` reader - "]
-pub type EXTERNAL_R = crate::BitReader<bool>;
+pub type EXTERNAL_R = crate::BitReader;
 #[doc = "Field `EXTERNAL` writer - "]
-pub type EXTERNAL_W<'a, const O: u8> = crate::BitWriter<'a, u32, DFSR_SPEC, bool, O>;
+pub type EXTERNAL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0"]
     #[inline(always)]
@@ -85,52 +53,53 @@ impl W {
     #[doc = "Bit 0"]
     #[inline(always)]
     #[must_use]
-    pub fn halted(&mut self) -> HALTED_W<0> {
+    pub fn halted(&mut self) -> HALTED_W<DFSR_SPEC, 0> {
         HALTED_W::new(self)
     }
     #[doc = "Bit 1"]
     #[inline(always)]
     #[must_use]
-    pub fn bkpt(&mut self) -> BKPT_W<1> {
+    pub fn bkpt(&mut self) -> BKPT_W<DFSR_SPEC, 1> {
         BKPT_W::new(self)
     }
     #[doc = "Bit 2"]
     #[inline(always)]
     #[must_use]
-    pub fn dwttrap(&mut self) -> DWTTRAP_W<2> {
+    pub fn dwttrap(&mut self) -> DWTTRAP_W<DFSR_SPEC, 2> {
         DWTTRAP_W::new(self)
     }
     #[doc = "Bit 3"]
     #[inline(always)]
     #[must_use]
-    pub fn vcatch(&mut self) -> VCATCH_W<3> {
+    pub fn vcatch(&mut self) -> VCATCH_W<DFSR_SPEC, 3> {
         VCATCH_W::new(self)
     }
     #[doc = "Bit 4"]
     #[inline(always)]
     #[must_use]
-    pub fn external(&mut self) -> EXTERNAL_W<4> {
+    pub fn external(&mut self) -> EXTERNAL_W<DFSR_SPEC, 4> {
         EXTERNAL_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Debug Fault Status Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dfsr](index.html) module"]
+#[doc = "Debug Fault Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dfsr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dfsr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DFSR_SPEC;
 impl crate::RegisterSpec for DFSR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [dfsr::R](R) reader structure"]
-impl crate::Readable for DFSR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [dfsr::W](W) writer structure"]
+#[doc = "`read()` method returns [`dfsr::R`](R) reader structure"]
+impl crate::Readable for DFSR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`dfsr::W`](W) writer structure"]
 impl crate::Writable for DFSR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

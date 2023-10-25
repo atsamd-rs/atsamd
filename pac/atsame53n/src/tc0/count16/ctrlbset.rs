@@ -1,53 +1,21 @@
 #[doc = "Register `CTRLBSET` reader"]
-pub struct R(crate::R<CTRLBSET_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLBSET_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLBSET_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLBSET_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLBSET_SPEC>;
 #[doc = "Register `CTRLBSET` writer"]
-pub struct W(crate::W<CTRLBSET_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLBSET_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLBSET_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLBSET_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLBSET_SPEC>;
 #[doc = "Field `DIR` reader - Counter Direction"]
-pub type DIR_R = crate::BitReader<bool>;
+pub type DIR_R = crate::BitReader;
 #[doc = "Field `DIR` writer - Counter Direction"]
-pub type DIR_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLBSET_SPEC, bool, O>;
+pub type DIR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LUPD` reader - Lock Update"]
-pub type LUPD_R = crate::BitReader<bool>;
+pub type LUPD_R = crate::BitReader;
 #[doc = "Field `LUPD` writer - Lock Update"]
-pub type LUPD_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLBSET_SPEC, bool, O>;
+pub type LUPD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ONESHOT` reader - One-Shot on Counter"]
-pub type ONESHOT_R = crate::BitReader<bool>;
+pub type ONESHOT_R = crate::BitReader;
 #[doc = "Field `ONESHOT` writer - One-Shot on Counter"]
-pub type ONESHOT_W<'a, const O: u8> = crate::BitWriter<'a, u8, CTRLBSET_SPEC, bool, O>;
+pub type ONESHOT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMD` reader - Command"]
-pub type CMD_R = crate::FieldReader<u8, CMDSELECT_A>;
+pub type CMD_R = crate::FieldReader<CMDSELECT_A>;
 #[doc = "Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -71,10 +39,13 @@ impl From<CMDSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for CMDSELECT_A {
+    type Ux = u8;
+}
 impl CMD_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<CMDSELECT_A> {
+    pub const fn variant(&self) -> Option<CMDSELECT_A> {
         match self.bits {
             0 => Some(CMDSELECT_A::NONE),
             1 => Some(CMDSELECT_A::RETRIGGER),
@@ -85,68 +56,72 @@ impl CMD_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No action"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
         *self == CMDSELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `RETRIGGER`"]
+    #[doc = "Force a start, restart or retrigger"]
     #[inline(always)]
     pub fn is_retrigger(&self) -> bool {
         *self == CMDSELECT_A::RETRIGGER
     }
-    #[doc = "Checks if the value of the field is `STOP`"]
+    #[doc = "Force a stop"]
     #[inline(always)]
     pub fn is_stop(&self) -> bool {
         *self == CMDSELECT_A::STOP
     }
-    #[doc = "Checks if the value of the field is `UPDATE`"]
+    #[doc = "Force update of double-buffered register"]
     #[inline(always)]
     pub fn is_update(&self) -> bool {
         *self == CMDSELECT_A::UPDATE
     }
-    #[doc = "Checks if the value of the field is `READSYNC`"]
+    #[doc = "Force a read synchronization of COUNT"]
     #[inline(always)]
     pub fn is_readsync(&self) -> bool {
         *self == CMDSELECT_A::READSYNC
     }
-    #[doc = "Checks if the value of the field is `DMAOS`"]
+    #[doc = "One-shot DMA trigger"]
     #[inline(always)]
     pub fn is_dmaos(&self) -> bool {
         *self == CMDSELECT_A::DMAOS
     }
 }
 #[doc = "Field `CMD` writer - Command"]
-pub type CMD_W<'a, const O: u8> = crate::FieldWriter<'a, u8, CTRLBSET_SPEC, u8, CMDSELECT_A, 3, O>;
-impl<'a, const O: u8> CMD_W<'a, O> {
+pub type CMD_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, CMDSELECT_A>;
+impl<'a, REG, const O: u8> CMD_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "No action"]
     #[inline(always)]
-    pub fn none(self) -> &'a mut W {
+    pub fn none(self) -> &'a mut crate::W<REG> {
         self.variant(CMDSELECT_A::NONE)
     }
     #[doc = "Force a start, restart or retrigger"]
     #[inline(always)]
-    pub fn retrigger(self) -> &'a mut W {
+    pub fn retrigger(self) -> &'a mut crate::W<REG> {
         self.variant(CMDSELECT_A::RETRIGGER)
     }
     #[doc = "Force a stop"]
     #[inline(always)]
-    pub fn stop(self) -> &'a mut W {
+    pub fn stop(self) -> &'a mut crate::W<REG> {
         self.variant(CMDSELECT_A::STOP)
     }
     #[doc = "Force update of double-buffered register"]
     #[inline(always)]
-    pub fn update(self) -> &'a mut W {
+    pub fn update(self) -> &'a mut crate::W<REG> {
         self.variant(CMDSELECT_A::UPDATE)
     }
     #[doc = "Force a read synchronization of COUNT"]
     #[inline(always)]
-    pub fn readsync(self) -> &'a mut W {
+    pub fn readsync(self) -> &'a mut crate::W<REG> {
         self.variant(CMDSELECT_A::READSYNC)
     }
     #[doc = "One-shot DMA trigger"]
     #[inline(always)]
-    pub fn dmaos(self) -> &'a mut W {
+    pub fn dmaos(self) -> &'a mut crate::W<REG> {
         self.variant(CMDSELECT_A::DMAOS)
     }
 }
@@ -176,46 +151,47 @@ impl W {
     #[doc = "Bit 0 - Counter Direction"]
     #[inline(always)]
     #[must_use]
-    pub fn dir(&mut self) -> DIR_W<0> {
+    pub fn dir(&mut self) -> DIR_W<CTRLBSET_SPEC, 0> {
         DIR_W::new(self)
     }
     #[doc = "Bit 1 - Lock Update"]
     #[inline(always)]
     #[must_use]
-    pub fn lupd(&mut self) -> LUPD_W<1> {
+    pub fn lupd(&mut self) -> LUPD_W<CTRLBSET_SPEC, 1> {
         LUPD_W::new(self)
     }
     #[doc = "Bit 2 - One-Shot on Counter"]
     #[inline(always)]
     #[must_use]
-    pub fn oneshot(&mut self) -> ONESHOT_W<2> {
+    pub fn oneshot(&mut self) -> ONESHOT_W<CTRLBSET_SPEC, 2> {
         ONESHOT_W::new(self)
     }
     #[doc = "Bits 5:7 - Command"]
     #[inline(always)]
     #[must_use]
-    pub fn cmd(&mut self) -> CMD_W<5> {
+    pub fn cmd(&mut self) -> CMD_W<CTRLBSET_SPEC, 5> {
         CMD_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Control B Set\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlbset](index.html) module"]
+#[doc = "Control B Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlbset::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlbset::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLBSET_SPEC;
 impl crate::RegisterSpec for CTRLBSET_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [ctrlbset::R](R) reader structure"]
-impl crate::Readable for CTRLBSET_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrlbset::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrlbset::R`](R) reader structure"]
+impl crate::Readable for CTRLBSET_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrlbset::W`](W) writer structure"]
 impl crate::Writable for CTRLBSET_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

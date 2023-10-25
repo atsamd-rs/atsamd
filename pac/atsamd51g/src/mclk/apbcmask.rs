@@ -1,71 +1,39 @@
 #[doc = "Register `APBCMASK` reader"]
-pub struct R(crate::R<APBCMASK_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<APBCMASK_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<APBCMASK_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<APBCMASK_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<APBCMASK_SPEC>;
 #[doc = "Register `APBCMASK` writer"]
-pub struct W(crate::W<APBCMASK_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<APBCMASK_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<APBCMASK_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<APBCMASK_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<APBCMASK_SPEC>;
 #[doc = "Field `TCC2_` reader - TCC2 APB Clock Enable"]
-pub type TCC2__R = crate::BitReader<bool>;
+pub type TCC2__R = crate::BitReader;
 #[doc = "Field `TCC2_` writer - TCC2 APB Clock Enable"]
-pub type TCC2__W<'a, const O: u8> = crate::BitWriter<'a, u32, APBCMASK_SPEC, bool, O>;
+pub type TCC2__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PDEC_` reader - PDEC APB Clock Enable"]
-pub type PDEC__R = crate::BitReader<bool>;
+pub type PDEC__R = crate::BitReader;
 #[doc = "Field `PDEC_` writer - PDEC APB Clock Enable"]
-pub type PDEC__W<'a, const O: u8> = crate::BitWriter<'a, u32, APBCMASK_SPEC, bool, O>;
+pub type PDEC__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `AC_` reader - AC APB Clock Enable"]
-pub type AC__R = crate::BitReader<bool>;
+pub type AC__R = crate::BitReader;
 #[doc = "Field `AC_` writer - AC APB Clock Enable"]
-pub type AC__W<'a, const O: u8> = crate::BitWriter<'a, u32, APBCMASK_SPEC, bool, O>;
+pub type AC__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `AES_` reader - AES APB Clock Enable"]
-pub type AES__R = crate::BitReader<bool>;
+pub type AES__R = crate::BitReader;
 #[doc = "Field `AES_` writer - AES APB Clock Enable"]
-pub type AES__W<'a, const O: u8> = crate::BitWriter<'a, u32, APBCMASK_SPEC, bool, O>;
+pub type AES__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TRNG_` reader - TRNG APB Clock Enable"]
-pub type TRNG__R = crate::BitReader<bool>;
+pub type TRNG__R = crate::BitReader;
 #[doc = "Field `TRNG_` writer - TRNG APB Clock Enable"]
-pub type TRNG__W<'a, const O: u8> = crate::BitWriter<'a, u32, APBCMASK_SPEC, bool, O>;
+pub type TRNG__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ICM_` reader - ICM APB Clock Enable"]
-pub type ICM__R = crate::BitReader<bool>;
+pub type ICM__R = crate::BitReader;
 #[doc = "Field `ICM_` writer - ICM APB Clock Enable"]
-pub type ICM__W<'a, const O: u8> = crate::BitWriter<'a, u32, APBCMASK_SPEC, bool, O>;
+pub type ICM__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `QSPI_` reader - QSPI APB Clock Enable"]
-pub type QSPI__R = crate::BitReader<bool>;
+pub type QSPI__R = crate::BitReader;
 #[doc = "Field `QSPI_` writer - QSPI APB Clock Enable"]
-pub type QSPI__W<'a, const O: u8> = crate::BitWriter<'a, u32, APBCMASK_SPEC, bool, O>;
+pub type QSPI__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CCL_` reader - CCL APB Clock Enable"]
-pub type CCL__R = crate::BitReader<bool>;
+pub type CCL__R = crate::BitReader;
 #[doc = "Field `CCL_` writer - CCL APB Clock Enable"]
-pub type CCL__W<'a, const O: u8> = crate::BitWriter<'a, u32, APBCMASK_SPEC, bool, O>;
+pub type CCL__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 3 - TCC2 APB Clock Enable"]
     #[inline(always)]
@@ -112,70 +80,71 @@ impl W {
     #[doc = "Bit 3 - TCC2 APB Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn tcc2_(&mut self) -> TCC2__W<3> {
+    pub fn tcc2_(&mut self) -> TCC2__W<APBCMASK_SPEC, 3> {
         TCC2__W::new(self)
     }
     #[doc = "Bit 7 - PDEC APB Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pdec_(&mut self) -> PDEC__W<7> {
+    pub fn pdec_(&mut self) -> PDEC__W<APBCMASK_SPEC, 7> {
         PDEC__W::new(self)
     }
     #[doc = "Bit 8 - AC APB Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ac_(&mut self) -> AC__W<8> {
+    pub fn ac_(&mut self) -> AC__W<APBCMASK_SPEC, 8> {
         AC__W::new(self)
     }
     #[doc = "Bit 9 - AES APB Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn aes_(&mut self) -> AES__W<9> {
+    pub fn aes_(&mut self) -> AES__W<APBCMASK_SPEC, 9> {
         AES__W::new(self)
     }
     #[doc = "Bit 10 - TRNG APB Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn trng_(&mut self) -> TRNG__W<10> {
+    pub fn trng_(&mut self) -> TRNG__W<APBCMASK_SPEC, 10> {
         TRNG__W::new(self)
     }
     #[doc = "Bit 11 - ICM APB Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn icm_(&mut self) -> ICM__W<11> {
+    pub fn icm_(&mut self) -> ICM__W<APBCMASK_SPEC, 11> {
         ICM__W::new(self)
     }
     #[doc = "Bit 13 - QSPI APB Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn qspi_(&mut self) -> QSPI__W<13> {
+    pub fn qspi_(&mut self) -> QSPI__W<APBCMASK_SPEC, 13> {
         QSPI__W::new(self)
     }
     #[doc = "Bit 14 - CCL APB Clock Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ccl_(&mut self) -> CCL__W<14> {
+    pub fn ccl_(&mut self) -> CCL__W<APBCMASK_SPEC, 14> {
         CCL__W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "APBC Mask\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [apbcmask](index.html) module"]
+#[doc = "APBC Mask\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`apbcmask::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`apbcmask::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct APBCMASK_SPEC;
 impl crate::RegisterSpec for APBCMASK_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [apbcmask::R](R) reader structure"]
-impl crate::Readable for APBCMASK_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [apbcmask::W](W) writer structure"]
+#[doc = "`read()` method returns [`apbcmask::R`](R) reader structure"]
+impl crate::Readable for APBCMASK_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`apbcmask::W`](W) writer structure"]
 impl crate::Writable for APBCMASK_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

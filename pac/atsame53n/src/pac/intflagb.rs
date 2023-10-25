@@ -1,99 +1,67 @@
 #[doc = "Register `INTFLAGB` reader"]
-pub struct R(crate::R<INTFLAGB_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAGB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAGB_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAGB_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAGB_SPEC>;
 #[doc = "Register `INTFLAGB` writer"]
-pub struct W(crate::W<INTFLAGB_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAGB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAGB_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAGB_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAGB_SPEC>;
 #[doc = "Field `USB_` reader - USB"]
-pub type USB__R = crate::BitReader<bool>;
+pub type USB__R = crate::BitReader;
 #[doc = "Field `USB_` writer - USB"]
-pub type USB__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type USB__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DSU_` reader - DSU"]
-pub type DSU__R = crate::BitReader<bool>;
+pub type DSU__R = crate::BitReader;
 #[doc = "Field `DSU_` writer - DSU"]
-pub type DSU__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type DSU__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `NVMCTRL_` reader - NVMCTRL"]
-pub type NVMCTRL__R = crate::BitReader<bool>;
+pub type NVMCTRL__R = crate::BitReader;
 #[doc = "Field `NVMCTRL_` writer - NVMCTRL"]
-pub type NVMCTRL__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type NVMCTRL__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMCC_` reader - CMCC"]
-pub type CMCC__R = crate::BitReader<bool>;
+pub type CMCC__R = crate::BitReader;
 #[doc = "Field `CMCC_` writer - CMCC"]
-pub type CMCC__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type CMCC__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PORT_` reader - PORT"]
-pub type PORT__R = crate::BitReader<bool>;
+pub type PORT__R = crate::BitReader;
 #[doc = "Field `PORT_` writer - PORT"]
-pub type PORT__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type PORT__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DMAC_` reader - DMAC"]
-pub type DMAC__R = crate::BitReader<bool>;
+pub type DMAC__R = crate::BitReader;
 #[doc = "Field `DMAC_` writer - DMAC"]
-pub type DMAC__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type DMAC__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `HMATRIX_` reader - HMATRIX"]
-pub type HMATRIX__R = crate::BitReader<bool>;
+pub type HMATRIX__R = crate::BitReader;
 #[doc = "Field `HMATRIX_` writer - HMATRIX"]
-pub type HMATRIX__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type HMATRIX__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EVSYS_` reader - EVSYS"]
-pub type EVSYS__R = crate::BitReader<bool>;
+pub type EVSYS__R = crate::BitReader;
 #[doc = "Field `EVSYS_` writer - EVSYS"]
-pub type EVSYS__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type EVSYS__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SERCOM2_` reader - SERCOM2"]
-pub type SERCOM2__R = crate::BitReader<bool>;
+pub type SERCOM2__R = crate::BitReader;
 #[doc = "Field `SERCOM2_` writer - SERCOM2"]
-pub type SERCOM2__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type SERCOM2__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SERCOM3_` reader - SERCOM3"]
-pub type SERCOM3__R = crate::BitReader<bool>;
+pub type SERCOM3__R = crate::BitReader;
 #[doc = "Field `SERCOM3_` writer - SERCOM3"]
-pub type SERCOM3__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type SERCOM3__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TCC0_` reader - TCC0"]
-pub type TCC0__R = crate::BitReader<bool>;
+pub type TCC0__R = crate::BitReader;
 #[doc = "Field `TCC0_` writer - TCC0"]
-pub type TCC0__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type TCC0__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TCC1_` reader - TCC1"]
-pub type TCC1__R = crate::BitReader<bool>;
+pub type TCC1__R = crate::BitReader;
 #[doc = "Field `TCC1_` writer - TCC1"]
-pub type TCC1__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type TCC1__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TC2_` reader - TC2"]
-pub type TC2__R = crate::BitReader<bool>;
+pub type TC2__R = crate::BitReader;
 #[doc = "Field `TC2_` writer - TC2"]
-pub type TC2__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type TC2__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TC3_` reader - TC3"]
-pub type TC3__R = crate::BitReader<bool>;
+pub type TC3__R = crate::BitReader;
 #[doc = "Field `TC3_` writer - TC3"]
-pub type TC3__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type TC3__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RAMECC_` reader - RAMECC"]
-pub type RAMECC__R = crate::BitReader<bool>;
+pub type RAMECC__R = crate::BitReader;
 #[doc = "Field `RAMECC_` writer - RAMECC"]
-pub type RAMECC__W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAGB_SPEC, bool, O>;
+pub type RAMECC__W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - USB"]
     #[inline(always)]
@@ -175,112 +143,113 @@ impl W {
     #[doc = "Bit 0 - USB"]
     #[inline(always)]
     #[must_use]
-    pub fn usb_(&mut self) -> USB__W<0> {
+    pub fn usb_(&mut self) -> USB__W<INTFLAGB_SPEC, 0> {
         USB__W::new(self)
     }
     #[doc = "Bit 1 - DSU"]
     #[inline(always)]
     #[must_use]
-    pub fn dsu_(&mut self) -> DSU__W<1> {
+    pub fn dsu_(&mut self) -> DSU__W<INTFLAGB_SPEC, 1> {
         DSU__W::new(self)
     }
     #[doc = "Bit 2 - NVMCTRL"]
     #[inline(always)]
     #[must_use]
-    pub fn nvmctrl_(&mut self) -> NVMCTRL__W<2> {
+    pub fn nvmctrl_(&mut self) -> NVMCTRL__W<INTFLAGB_SPEC, 2> {
         NVMCTRL__W::new(self)
     }
     #[doc = "Bit 3 - CMCC"]
     #[inline(always)]
     #[must_use]
-    pub fn cmcc_(&mut self) -> CMCC__W<3> {
+    pub fn cmcc_(&mut self) -> CMCC__W<INTFLAGB_SPEC, 3> {
         CMCC__W::new(self)
     }
     #[doc = "Bit 4 - PORT"]
     #[inline(always)]
     #[must_use]
-    pub fn port_(&mut self) -> PORT__W<4> {
+    pub fn port_(&mut self) -> PORT__W<INTFLAGB_SPEC, 4> {
         PORT__W::new(self)
     }
     #[doc = "Bit 5 - DMAC"]
     #[inline(always)]
     #[must_use]
-    pub fn dmac_(&mut self) -> DMAC__W<5> {
+    pub fn dmac_(&mut self) -> DMAC__W<INTFLAGB_SPEC, 5> {
         DMAC__W::new(self)
     }
     #[doc = "Bit 6 - HMATRIX"]
     #[inline(always)]
     #[must_use]
-    pub fn hmatrix_(&mut self) -> HMATRIX__W<6> {
+    pub fn hmatrix_(&mut self) -> HMATRIX__W<INTFLAGB_SPEC, 6> {
         HMATRIX__W::new(self)
     }
     #[doc = "Bit 7 - EVSYS"]
     #[inline(always)]
     #[must_use]
-    pub fn evsys_(&mut self) -> EVSYS__W<7> {
+    pub fn evsys_(&mut self) -> EVSYS__W<INTFLAGB_SPEC, 7> {
         EVSYS__W::new(self)
     }
     #[doc = "Bit 9 - SERCOM2"]
     #[inline(always)]
     #[must_use]
-    pub fn sercom2_(&mut self) -> SERCOM2__W<9> {
+    pub fn sercom2_(&mut self) -> SERCOM2__W<INTFLAGB_SPEC, 9> {
         SERCOM2__W::new(self)
     }
     #[doc = "Bit 10 - SERCOM3"]
     #[inline(always)]
     #[must_use]
-    pub fn sercom3_(&mut self) -> SERCOM3__W<10> {
+    pub fn sercom3_(&mut self) -> SERCOM3__W<INTFLAGB_SPEC, 10> {
         SERCOM3__W::new(self)
     }
     #[doc = "Bit 11 - TCC0"]
     #[inline(always)]
     #[must_use]
-    pub fn tcc0_(&mut self) -> TCC0__W<11> {
+    pub fn tcc0_(&mut self) -> TCC0__W<INTFLAGB_SPEC, 11> {
         TCC0__W::new(self)
     }
     #[doc = "Bit 12 - TCC1"]
     #[inline(always)]
     #[must_use]
-    pub fn tcc1_(&mut self) -> TCC1__W<12> {
+    pub fn tcc1_(&mut self) -> TCC1__W<INTFLAGB_SPEC, 12> {
         TCC1__W::new(self)
     }
     #[doc = "Bit 13 - TC2"]
     #[inline(always)]
     #[must_use]
-    pub fn tc2_(&mut self) -> TC2__W<13> {
+    pub fn tc2_(&mut self) -> TC2__W<INTFLAGB_SPEC, 13> {
         TC2__W::new(self)
     }
     #[doc = "Bit 14 - TC3"]
     #[inline(always)]
     #[must_use]
-    pub fn tc3_(&mut self) -> TC3__W<14> {
+    pub fn tc3_(&mut self) -> TC3__W<INTFLAGB_SPEC, 14> {
         TC3__W::new(self)
     }
     #[doc = "Bit 16 - RAMECC"]
     #[inline(always)]
     #[must_use]
-    pub fn ramecc_(&mut self) -> RAMECC__W<16> {
+    pub fn ramecc_(&mut self) -> RAMECC__W<INTFLAGB_SPEC, 16> {
         RAMECC__W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Peripheral interrupt flag status - Bridge B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflagb](index.html) module"]
+#[doc = "Peripheral interrupt flag status - Bridge B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflagb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflagb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAGB_SPEC;
 impl crate::RegisterSpec for INTFLAGB_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [intflagb::R](R) reader structure"]
-impl crate::Readable for INTFLAGB_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflagb::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflagb::R`](R) reader structure"]
+impl crate::Readable for INTFLAGB_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflagb::W`](W) writer structure"]
 impl crate::Writable for INTFLAGB_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

@@ -1,82 +1,69 @@
 #[doc = "Register `INTSTATUS` reader"]
-pub struct R(crate::R<INTSTATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTSTATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTSTATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTSTATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTSTATUS_SPEC>;
 #[doc = "Field `CHINT0` reader - Channel 0 Pending Interrupt"]
-pub type CHINT0_R = crate::BitReader<bool>;
+pub type CHINT0_R = crate::BitReader;
 #[doc = "Field `CHINT1` reader - Channel 1 Pending Interrupt"]
-pub type CHINT1_R = crate::BitReader<bool>;
+pub type CHINT1_R = crate::BitReader;
 #[doc = "Field `CHINT2` reader - Channel 2 Pending Interrupt"]
-pub type CHINT2_R = crate::BitReader<bool>;
+pub type CHINT2_R = crate::BitReader;
 #[doc = "Field `CHINT3` reader - Channel 3 Pending Interrupt"]
-pub type CHINT3_R = crate::BitReader<bool>;
+pub type CHINT3_R = crate::BitReader;
 #[doc = "Field `CHINT4` reader - Channel 4 Pending Interrupt"]
-pub type CHINT4_R = crate::BitReader<bool>;
+pub type CHINT4_R = crate::BitReader;
 #[doc = "Field `CHINT5` reader - Channel 5 Pending Interrupt"]
-pub type CHINT5_R = crate::BitReader<bool>;
+pub type CHINT5_R = crate::BitReader;
 #[doc = "Field `CHINT6` reader - Channel 6 Pending Interrupt"]
-pub type CHINT6_R = crate::BitReader<bool>;
+pub type CHINT6_R = crate::BitReader;
 #[doc = "Field `CHINT7` reader - Channel 7 Pending Interrupt"]
-pub type CHINT7_R = crate::BitReader<bool>;
+pub type CHINT7_R = crate::BitReader;
 #[doc = "Field `CHINT8` reader - Channel 8 Pending Interrupt"]
-pub type CHINT8_R = crate::BitReader<bool>;
+pub type CHINT8_R = crate::BitReader;
 #[doc = "Field `CHINT9` reader - Channel 9 Pending Interrupt"]
-pub type CHINT9_R = crate::BitReader<bool>;
+pub type CHINT9_R = crate::BitReader;
 #[doc = "Field `CHINT10` reader - Channel 10 Pending Interrupt"]
-pub type CHINT10_R = crate::BitReader<bool>;
+pub type CHINT10_R = crate::BitReader;
 #[doc = "Field `CHINT11` reader - Channel 11 Pending Interrupt"]
-pub type CHINT11_R = crate::BitReader<bool>;
+pub type CHINT11_R = crate::BitReader;
 #[doc = "Field `CHINT12` reader - Channel 12 Pending Interrupt"]
-pub type CHINT12_R = crate::BitReader<bool>;
+pub type CHINT12_R = crate::BitReader;
 #[doc = "Field `CHINT13` reader - Channel 13 Pending Interrupt"]
-pub type CHINT13_R = crate::BitReader<bool>;
+pub type CHINT13_R = crate::BitReader;
 #[doc = "Field `CHINT14` reader - Channel 14 Pending Interrupt"]
-pub type CHINT14_R = crate::BitReader<bool>;
+pub type CHINT14_R = crate::BitReader;
 #[doc = "Field `CHINT15` reader - Channel 15 Pending Interrupt"]
-pub type CHINT15_R = crate::BitReader<bool>;
+pub type CHINT15_R = crate::BitReader;
 #[doc = "Field `CHINT16` reader - Channel 16 Pending Interrupt"]
-pub type CHINT16_R = crate::BitReader<bool>;
+pub type CHINT16_R = crate::BitReader;
 #[doc = "Field `CHINT17` reader - Channel 17 Pending Interrupt"]
-pub type CHINT17_R = crate::BitReader<bool>;
+pub type CHINT17_R = crate::BitReader;
 #[doc = "Field `CHINT18` reader - Channel 18 Pending Interrupt"]
-pub type CHINT18_R = crate::BitReader<bool>;
+pub type CHINT18_R = crate::BitReader;
 #[doc = "Field `CHINT19` reader - Channel 19 Pending Interrupt"]
-pub type CHINT19_R = crate::BitReader<bool>;
+pub type CHINT19_R = crate::BitReader;
 #[doc = "Field `CHINT20` reader - Channel 20 Pending Interrupt"]
-pub type CHINT20_R = crate::BitReader<bool>;
+pub type CHINT20_R = crate::BitReader;
 #[doc = "Field `CHINT21` reader - Channel 21 Pending Interrupt"]
-pub type CHINT21_R = crate::BitReader<bool>;
+pub type CHINT21_R = crate::BitReader;
 #[doc = "Field `CHINT22` reader - Channel 22 Pending Interrupt"]
-pub type CHINT22_R = crate::BitReader<bool>;
+pub type CHINT22_R = crate::BitReader;
 #[doc = "Field `CHINT23` reader - Channel 23 Pending Interrupt"]
-pub type CHINT23_R = crate::BitReader<bool>;
+pub type CHINT23_R = crate::BitReader;
 #[doc = "Field `CHINT24` reader - Channel 24 Pending Interrupt"]
-pub type CHINT24_R = crate::BitReader<bool>;
+pub type CHINT24_R = crate::BitReader;
 #[doc = "Field `CHINT25` reader - Channel 25 Pending Interrupt"]
-pub type CHINT25_R = crate::BitReader<bool>;
+pub type CHINT25_R = crate::BitReader;
 #[doc = "Field `CHINT26` reader - Channel 26 Pending Interrupt"]
-pub type CHINT26_R = crate::BitReader<bool>;
+pub type CHINT26_R = crate::BitReader;
 #[doc = "Field `CHINT27` reader - Channel 27 Pending Interrupt"]
-pub type CHINT27_R = crate::BitReader<bool>;
+pub type CHINT27_R = crate::BitReader;
 #[doc = "Field `CHINT28` reader - Channel 28 Pending Interrupt"]
-pub type CHINT28_R = crate::BitReader<bool>;
+pub type CHINT28_R = crate::BitReader;
 #[doc = "Field `CHINT29` reader - Channel 29 Pending Interrupt"]
-pub type CHINT29_R = crate::BitReader<bool>;
+pub type CHINT29_R = crate::BitReader;
 #[doc = "Field `CHINT30` reader - Channel 30 Pending Interrupt"]
-pub type CHINT30_R = crate::BitReader<bool>;
+pub type CHINT30_R = crate::BitReader;
 #[doc = "Field `CHINT31` reader - Channel 31 Pending Interrupt"]
-pub type CHINT31_R = crate::BitReader<bool>;
+pub type CHINT31_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Channel 0 Pending Interrupt"]
     #[inline(always)]
@@ -239,15 +226,13 @@ impl R {
         CHINT31_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
-#[doc = "Interrupt Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intstatus](index.html) module"]
+#[doc = "Interrupt Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intstatus::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTSTATUS_SPEC;
 impl crate::RegisterSpec for INTSTATUS_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [intstatus::R](R) reader structure"]
-impl crate::Readable for INTSTATUS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`intstatus::R`](R) reader structure"]
+impl crate::Readable for INTSTATUS_SPEC {}
 #[doc = "`reset()` method sets INTSTATUS to value 0"]
 impl crate::Resettable for INTSTATUS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

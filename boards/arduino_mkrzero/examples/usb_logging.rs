@@ -3,8 +3,6 @@
 
 use arduino_mkrzero as bsp;
 use bsp::hal;
-use usb_device;
-use usbd_serial;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
@@ -38,25 +36,28 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut led = pins.led_builtin.into_open_drain_output(&mut pins.port);
+    let pins = bsp::pins::Pins::new(peripherals.PORT);
+    let mut led = bsp::pin_alias!(pins.led).into_push_pull_output();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
+    let usb_n = bsp::pin_alias!(pins.usb_n);
+    let usb_p = bsp::pin_alias!(pins.usb_p);
+
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(bsp::usb_allocator(
+        USB_ALLOCATOR = Some(bsp::usb::usb_allocator(
             peripherals.USB,
             &mut clocks,
             &mut peripherals.PM,
-            pins.usb_n, // PA24, also usb_dm
-            pins.usb_p, // PA24 also usb_dp
+            usb_n.into(),
+            usb_p.into(),
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x2222, 0x3333))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x2222, 0x3333))
                 .manufacturer("Fake company")
                 .product("Serial port")
                 .serial_number("TEST")
@@ -78,27 +79,23 @@ fn main() -> ! {
 
         // Turn off interrupts so we don't fight with the interrupt
         cortex_m::interrupt::free(|_| unsafe {
-            USB_BUS.as_mut().map(|_| {
-                USB_SERIAL.as_mut().map(|serial| {
-                    // Skip errors so we can continue the program
-                    let _ = serial.write("log line\r\n".as_bytes());
-                });
-            })
+            if let Some(serial) = USB_SERIAL.as_mut() {
+                let _ = serial.write("log line\r\n".as_bytes());
+            }
         });
     }
 }
 
 fn poll_usb() {
     unsafe {
-        USB_BUS.as_mut().map(|usb_dev| {
-            USB_SERIAL.as_mut().map(|serial| {
+        if let Some(usb_dev) = USB_BUS.as_mut() {
+            if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
-
                 // Make the other side happy
                 let mut buf = [0u8; 16];
                 let _ = serial.read(&mut buf);
-            });
-        });
+            }
+        }
     };
 }
 

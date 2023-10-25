@@ -149,151 +149,188 @@ impl RegisterBlock {
         unsafe { &*(self as *const Self).cast::<u8>().add(112usize).cast() }
     }
 }
-#[doc = "CTRLA (rw) register accessor: an alias for `Reg<CTRLA_SPEC>`"]
+#[doc = "CTRLA (rw) register accessor: Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrla`]
+module"]
 pub type CTRLA = crate::Reg<ctrla::CTRLA_SPEC>;
 #[doc = "Control A"]
 pub mod ctrla;
-#[doc = "CTRLBCLR (rw) register accessor: an alias for `Reg<CTRLBCLR_SPEC>`"]
+#[doc = "CTRLBCLR (rw) register accessor: Control B Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlbclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlbclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrlbclr`]
+module"]
 pub type CTRLBCLR = crate::Reg<ctrlbclr::CTRLBCLR_SPEC>;
 #[doc = "Control B Clear"]
 pub mod ctrlbclr;
-#[doc = "CTRLBSET (rw) register accessor: an alias for `Reg<CTRLBSET_SPEC>`"]
+#[doc = "CTRLBSET (rw) register accessor: Control B Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlbset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlbset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrlbset`]
+module"]
 pub type CTRLBSET = crate::Reg<ctrlbset::CTRLBSET_SPEC>;
 #[doc = "Control B Set"]
 pub mod ctrlbset;
-#[doc = "SYNCBUSY (r) register accessor: an alias for `Reg<SYNCBUSY_SPEC>`"]
+#[doc = "SYNCBUSY (r) register accessor: Synchronization Busy\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`syncbusy::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@syncbusy`]
+module"]
 pub type SYNCBUSY = crate::Reg<syncbusy::SYNCBUSY_SPEC>;
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
-#[doc = "FCTRLA (rw) register accessor: an alias for `Reg<FCTRLA_SPEC>`"]
+#[doc = "FCTRLA (rw) register accessor: Recoverable Fault A Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`fctrla::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`fctrla::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@fctrla`]
+module"]
 pub type FCTRLA = crate::Reg<fctrla::FCTRLA_SPEC>;
 #[doc = "Recoverable Fault A Configuration"]
 pub mod fctrla;
-#[doc = "FCTRLB (rw) register accessor: an alias for `Reg<FCTRLB_SPEC>`"]
+#[doc = "FCTRLB (rw) register accessor: Recoverable Fault B Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`fctrlb::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`fctrlb::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@fctrlb`]
+module"]
 pub type FCTRLB = crate::Reg<fctrlb::FCTRLB_SPEC>;
 #[doc = "Recoverable Fault B Configuration"]
 pub mod fctrlb;
-#[doc = "WEXCTRL (rw) register accessor: an alias for `Reg<WEXCTRL_SPEC>`"]
+#[doc = "WEXCTRL (rw) register accessor: Waveform Extension Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`wexctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`wexctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wexctrl`]
+module"]
 pub type WEXCTRL = crate::Reg<wexctrl::WEXCTRL_SPEC>;
 #[doc = "Waveform Extension Configuration"]
 pub mod wexctrl;
-#[doc = "DRVCTRL (rw) register accessor: an alias for `Reg<DRVCTRL_SPEC>`"]
+#[doc = "DRVCTRL (rw) register accessor: Driver Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`drvctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`drvctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@drvctrl`]
+module"]
 pub type DRVCTRL = crate::Reg<drvctrl::DRVCTRL_SPEC>;
 #[doc = "Driver Control"]
 pub mod drvctrl;
-#[doc = "DBGCTRL (rw) register accessor: an alias for `Reg<DBGCTRL_SPEC>`"]
+#[doc = "DBGCTRL (rw) register accessor: Debug Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dbgctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dbgctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dbgctrl`]
+module"]
 pub type DBGCTRL = crate::Reg<dbgctrl::DBGCTRL_SPEC>;
 #[doc = "Debug Control"]
 pub mod dbgctrl;
-#[doc = "EVCTRL (rw) register accessor: an alias for `Reg<EVCTRL_SPEC>`"]
+#[doc = "EVCTRL (rw) register accessor: Event Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`evctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`evctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@evctrl`]
+module"]
 pub type EVCTRL = crate::Reg<evctrl::EVCTRL_SPEC>;
 #[doc = "Event Control"]
 pub mod evctrl;
-#[doc = "INTENCLR (rw) register accessor: an alias for `Reg<INTENCLR_SPEC>`"]
+#[doc = "INTENCLR (rw) register accessor: Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`]
+module"]
 pub type INTENCLR = crate::Reg<intenclr::INTENCLR_SPEC>;
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
-#[doc = "INTENSET (rw) register accessor: an alias for `Reg<INTENSET_SPEC>`"]
+#[doc = "INTENSET (rw) register accessor: Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`]
+module"]
 pub type INTENSET = crate::Reg<intenset::INTENSET_SPEC>;
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
-#[doc = "INTFLAG (rw) register accessor: an alias for `Reg<INTFLAG_SPEC>`"]
+#[doc = "INTFLAG (rw) register accessor: Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`]
+module"]
 pub type INTFLAG = crate::Reg<intflag::INTFLAG_SPEC>;
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
-#[doc = "STATUS (rw) register accessor: an alias for `Reg<STATUS_SPEC>`"]
+#[doc = "STATUS (rw) register accessor: Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`status::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@status`]
+module"]
 pub type STATUS = crate::Reg<status::STATUS_SPEC>;
 #[doc = "Status"]
 pub mod status;
-#[doc = "COUNT (rw) register accessor: an alias for `Reg<COUNT_SPEC>`"]
+#[doc = "COUNT (rw) register accessor: Count\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`count::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`count::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@count`]
+module"]
 pub type COUNT = crate::Reg<count::COUNT_SPEC>;
 #[doc = "Count"]
 pub mod count;
-#[doc = "COUNT_DITH4_MODE (rw) register accessor: an alias for `Reg<COUNT_DITH4_MODE_SPEC>`"]
+#[doc = "COUNT_DITH4_MODE (rw) register accessor: Count\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`count_dith4_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`count_dith4_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@count_dith4_mode`]
+module"]
 pub type COUNT_DITH4_MODE = crate::Reg<count_dith4_mode::COUNT_DITH4_MODE_SPEC>;
 #[doc = "Count"]
 pub mod count_dith4_mode;
-#[doc = "COUNT_DITH5_MODE (rw) register accessor: an alias for `Reg<COUNT_DITH5_MODE_SPEC>`"]
+#[doc = "COUNT_DITH5_MODE (rw) register accessor: Count\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`count_dith5_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`count_dith5_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@count_dith5_mode`]
+module"]
 pub type COUNT_DITH5_MODE = crate::Reg<count_dith5_mode::COUNT_DITH5_MODE_SPEC>;
 #[doc = "Count"]
 pub mod count_dith5_mode;
-#[doc = "COUNT_DITH6_MODE (rw) register accessor: an alias for `Reg<COUNT_DITH6_MODE_SPEC>`"]
+#[doc = "COUNT_DITH6_MODE (rw) register accessor: Count\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`count_dith6_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`count_dith6_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@count_dith6_mode`]
+module"]
 pub type COUNT_DITH6_MODE = crate::Reg<count_dith6_mode::COUNT_DITH6_MODE_SPEC>;
 #[doc = "Count"]
 pub mod count_dith6_mode;
-#[doc = "PATT (rw) register accessor: an alias for `Reg<PATT_SPEC>`"]
+#[doc = "PATT (rw) register accessor: Pattern\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`patt::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`patt::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@patt`]
+module"]
 pub type PATT = crate::Reg<patt::PATT_SPEC>;
 #[doc = "Pattern"]
 pub mod patt;
-#[doc = "WAVE (rw) register accessor: an alias for `Reg<WAVE_SPEC>`"]
+#[doc = "WAVE (rw) register accessor: Waveform Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`wave::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`wave::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wave`]
+module"]
 pub type WAVE = crate::Reg<wave::WAVE_SPEC>;
 #[doc = "Waveform Control"]
 pub mod wave;
-#[doc = "PER (rw) register accessor: an alias for `Reg<PER_SPEC>`"]
+#[doc = "PER (rw) register accessor: Period\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`per::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`per::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@per`]
+module"]
 pub type PER = crate::Reg<per::PER_SPEC>;
 #[doc = "Period"]
 pub mod per;
-#[doc = "PER_DITH4_MODE (rw) register accessor: an alias for `Reg<PER_DITH4_MODE_SPEC>`"]
+#[doc = "PER_DITH4_MODE (rw) register accessor: Period\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`per_dith4_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`per_dith4_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@per_dith4_mode`]
+module"]
 pub type PER_DITH4_MODE = crate::Reg<per_dith4_mode::PER_DITH4_MODE_SPEC>;
 #[doc = "Period"]
 pub mod per_dith4_mode;
-#[doc = "PER_DITH5_MODE (rw) register accessor: an alias for `Reg<PER_DITH5_MODE_SPEC>`"]
+#[doc = "PER_DITH5_MODE (rw) register accessor: Period\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`per_dith5_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`per_dith5_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@per_dith5_mode`]
+module"]
 pub type PER_DITH5_MODE = crate::Reg<per_dith5_mode::PER_DITH5_MODE_SPEC>;
 #[doc = "Period"]
 pub mod per_dith5_mode;
-#[doc = "PER_DITH6_MODE (rw) register accessor: an alias for `Reg<PER_DITH6_MODE_SPEC>`"]
+#[doc = "PER_DITH6_MODE (rw) register accessor: Period\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`per_dith6_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`per_dith6_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@per_dith6_mode`]
+module"]
 pub type PER_DITH6_MODE = crate::Reg<per_dith6_mode::PER_DITH6_MODE_SPEC>;
 #[doc = "Period"]
 pub mod per_dith6_mode;
-#[doc = "CC (rw) register accessor: an alias for `Reg<CC_SPEC>`"]
+#[doc = "CC (rw) register accessor: Compare and Capture\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cc::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cc::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cc`]
+module"]
 pub type CC = crate::Reg<cc::CC_SPEC>;
 #[doc = "Compare and Capture"]
 pub mod cc;
-#[doc = "CC_DITH4_MODE (rw) register accessor: an alias for `Reg<CC_DITH4_MODE_SPEC>`"]
+#[doc = "CC_DITH4_MODE (rw) register accessor: Compare and Capture\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cc_dith4_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cc_dith4_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cc_dith4_mode`]
+module"]
 pub type CC_DITH4_MODE = crate::Reg<cc_dith4_mode::CC_DITH4_MODE_SPEC>;
 #[doc = "Compare and Capture"]
 pub mod cc_dith4_mode;
-#[doc = "CC_DITH5_MODE (rw) register accessor: an alias for `Reg<CC_DITH5_MODE_SPEC>`"]
+#[doc = "CC_DITH5_MODE (rw) register accessor: Compare and Capture\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cc_dith5_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cc_dith5_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cc_dith5_mode`]
+module"]
 pub type CC_DITH5_MODE = crate::Reg<cc_dith5_mode::CC_DITH5_MODE_SPEC>;
 #[doc = "Compare and Capture"]
 pub mod cc_dith5_mode;
-#[doc = "CC_DITH6_MODE (rw) register accessor: an alias for `Reg<CC_DITH6_MODE_SPEC>`"]
+#[doc = "CC_DITH6_MODE (rw) register accessor: Compare and Capture\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cc_dith6_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cc_dith6_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cc_dith6_mode`]
+module"]
 pub type CC_DITH6_MODE = crate::Reg<cc_dith6_mode::CC_DITH6_MODE_SPEC>;
 #[doc = "Compare and Capture"]
 pub mod cc_dith6_mode;
-#[doc = "PATTBUF (rw) register accessor: an alias for `Reg<PATTBUF_SPEC>`"]
+#[doc = "PATTBUF (rw) register accessor: Pattern Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pattbuf::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`pattbuf::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pattbuf`]
+module"]
 pub type PATTBUF = crate::Reg<pattbuf::PATTBUF_SPEC>;
 #[doc = "Pattern Buffer"]
 pub mod pattbuf;
-#[doc = "PERBUF (rw) register accessor: an alias for `Reg<PERBUF_SPEC>`"]
+#[doc = "PERBUF (rw) register accessor: Period Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`perbuf::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`perbuf::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@perbuf`]
+module"]
 pub type PERBUF = crate::Reg<perbuf::PERBUF_SPEC>;
 #[doc = "Period Buffer"]
 pub mod perbuf;
-#[doc = "PERBUF_DITH4_MODE (rw) register accessor: an alias for `Reg<PERBUF_DITH4_MODE_SPEC>`"]
+#[doc = "PERBUF_DITH4_MODE (rw) register accessor: Period Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`perbuf_dith4_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`perbuf_dith4_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@perbuf_dith4_mode`]
+module"]
 pub type PERBUF_DITH4_MODE = crate::Reg<perbuf_dith4_mode::PERBUF_DITH4_MODE_SPEC>;
 #[doc = "Period Buffer"]
 pub mod perbuf_dith4_mode;
-#[doc = "PERBUF_DITH5_MODE (rw) register accessor: an alias for `Reg<PERBUF_DITH5_MODE_SPEC>`"]
+#[doc = "PERBUF_DITH5_MODE (rw) register accessor: Period Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`perbuf_dith5_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`perbuf_dith5_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@perbuf_dith5_mode`]
+module"]
 pub type PERBUF_DITH5_MODE = crate::Reg<perbuf_dith5_mode::PERBUF_DITH5_MODE_SPEC>;
 #[doc = "Period Buffer"]
 pub mod perbuf_dith5_mode;
-#[doc = "PERBUF_DITH6_MODE (rw) register accessor: an alias for `Reg<PERBUF_DITH6_MODE_SPEC>`"]
+#[doc = "PERBUF_DITH6_MODE (rw) register accessor: Period Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`perbuf_dith6_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`perbuf_dith6_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@perbuf_dith6_mode`]
+module"]
 pub type PERBUF_DITH6_MODE = crate::Reg<perbuf_dith6_mode::PERBUF_DITH6_MODE_SPEC>;
 #[doc = "Period Buffer"]
 pub mod perbuf_dith6_mode;
-#[doc = "CCBUF (rw) register accessor: an alias for `Reg<CCBUF_SPEC>`"]
+#[doc = "CCBUF (rw) register accessor: Compare and Capture Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ccbuf::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ccbuf::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ccbuf`]
+module"]
 pub type CCBUF = crate::Reg<ccbuf::CCBUF_SPEC>;
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf;
-#[doc = "CCBUF_DITH4_MODE (rw) register accessor: an alias for `Reg<CCBUF_DITH4_MODE_SPEC>`"]
+#[doc = "CCBUF_DITH4_MODE (rw) register accessor: Compare and Capture Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ccbuf_dith4_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ccbuf_dith4_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ccbuf_dith4_mode`]
+module"]
 pub type CCBUF_DITH4_MODE = crate::Reg<ccbuf_dith4_mode::CCBUF_DITH4_MODE_SPEC>;
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf_dith4_mode;
-#[doc = "CCBUF_DITH5_MODE (rw) register accessor: an alias for `Reg<CCBUF_DITH5_MODE_SPEC>`"]
+#[doc = "CCBUF_DITH5_MODE (rw) register accessor: Compare and Capture Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ccbuf_dith5_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ccbuf_dith5_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ccbuf_dith5_mode`]
+module"]
 pub type CCBUF_DITH5_MODE = crate::Reg<ccbuf_dith5_mode::CCBUF_DITH5_MODE_SPEC>;
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf_dith5_mode;
-#[doc = "CCBUF_DITH6_MODE (rw) register accessor: an alias for `Reg<CCBUF_DITH6_MODE_SPEC>`"]
+#[doc = "CCBUF_DITH6_MODE (rw) register accessor: Compare and Capture Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ccbuf_dith6_mode::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ccbuf_dith6_mode::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ccbuf_dith6_mode`]
+module"]
 pub type CCBUF_DITH6_MODE = crate::Reg<ccbuf_dith6_mode::CCBUF_DITH6_MODE_SPEC>;
 #[doc = "Compare and Capture Buffer"]
 pub mod ccbuf_dith6_mode;

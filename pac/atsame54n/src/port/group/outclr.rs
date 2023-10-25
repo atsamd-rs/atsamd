@@ -1,43 +1,11 @@
 #[doc = "Register `OUTCLR` reader"]
-pub struct R(crate::R<OUTCLR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<OUTCLR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<OUTCLR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<OUTCLR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<OUTCLR_SPEC>;
 #[doc = "Register `OUTCLR` writer"]
-pub struct W(crate::W<OUTCLR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<OUTCLR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<OUTCLR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<OUTCLR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<OUTCLR_SPEC>;
 #[doc = "Field `OUTCLR` reader - PORT Data Output Value Clear"]
-pub type OUTCLR_R = crate::FieldReader<u32, u32>;
+pub type OUTCLR_R = crate::FieldReader<u32>;
 #[doc = "Field `OUTCLR` writer - PORT Data Output Value Clear"]
-pub type OUTCLR_W<'a, const O: u8> = crate::FieldWriter<'a, u32, OUTCLR_SPEC, u32, u32, 32, O>;
+pub type OUTCLR_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 32, O, u32>;
 impl R {
     #[doc = "Bits 0:31 - PORT Data Output Value Clear"]
     #[inline(always)]
@@ -49,28 +17,29 @@ impl W {
     #[doc = "Bits 0:31 - PORT Data Output Value Clear"]
     #[inline(always)]
     #[must_use]
-    pub fn outclr(&mut self) -> OUTCLR_W<0> {
+    pub fn outclr(&mut self) -> OUTCLR_W<OUTCLR_SPEC, 0> {
         OUTCLR_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Data Output Value Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [outclr](index.html) module"]
+#[doc = "Data Output Value Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`outclr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`outclr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct OUTCLR_SPEC;
 impl crate::RegisterSpec for OUTCLR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [outclr::R](R) reader structure"]
-impl crate::Readable for OUTCLR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [outclr::W](W) writer structure"]
+#[doc = "`read()` method returns [`outclr::R`](R) reader structure"]
+impl crate::Readable for OUTCLR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`outclr::W`](W) writer structure"]
 impl crate::Writable for OUTCLR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

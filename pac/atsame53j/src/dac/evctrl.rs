@@ -1,71 +1,39 @@
 #[doc = "Register `EVCTRL` reader"]
-pub struct R(crate::R<EVCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<EVCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<EVCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<EVCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<EVCTRL_SPEC>;
 #[doc = "Register `EVCTRL` writer"]
-pub struct W(crate::W<EVCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<EVCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<EVCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<EVCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<EVCTRL_SPEC>;
 #[doc = "Field `STARTEI0` reader - Start Conversion Event Input DAC 0"]
-pub type STARTEI0_R = crate::BitReader<bool>;
+pub type STARTEI0_R = crate::BitReader;
 #[doc = "Field `STARTEI0` writer - Start Conversion Event Input DAC 0"]
-pub type STARTEI0_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
+pub type STARTEI0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `STARTEI1` reader - Start Conversion Event Input DAC 1"]
-pub type STARTEI1_R = crate::BitReader<bool>;
+pub type STARTEI1_R = crate::BitReader;
 #[doc = "Field `STARTEI1` writer - Start Conversion Event Input DAC 1"]
-pub type STARTEI1_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
+pub type STARTEI1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EMPTYEO0` reader - Data Buffer Empty Event Output DAC 0"]
-pub type EMPTYEO0_R = crate::BitReader<bool>;
+pub type EMPTYEO0_R = crate::BitReader;
 #[doc = "Field `EMPTYEO0` writer - Data Buffer Empty Event Output DAC 0"]
-pub type EMPTYEO0_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
+pub type EMPTYEO0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EMPTYEO1` reader - Data Buffer Empty Event Output DAC 1"]
-pub type EMPTYEO1_R = crate::BitReader<bool>;
+pub type EMPTYEO1_R = crate::BitReader;
 #[doc = "Field `EMPTYEO1` writer - Data Buffer Empty Event Output DAC 1"]
-pub type EMPTYEO1_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
+pub type EMPTYEO1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `INVEI0` reader - Enable Invertion of DAC 0 input event"]
-pub type INVEI0_R = crate::BitReader<bool>;
+pub type INVEI0_R = crate::BitReader;
 #[doc = "Field `INVEI0` writer - Enable Invertion of DAC 0 input event"]
-pub type INVEI0_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
+pub type INVEI0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `INVEI1` reader - Enable Invertion of DAC 1 input event"]
-pub type INVEI1_R = crate::BitReader<bool>;
+pub type INVEI1_R = crate::BitReader;
 #[doc = "Field `INVEI1` writer - Enable Invertion of DAC 1 input event"]
-pub type INVEI1_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
+pub type INVEI1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RESRDYEO0` reader - Result Ready Event Output 0"]
-pub type RESRDYEO0_R = crate::BitReader<bool>;
+pub type RESRDYEO0_R = crate::BitReader;
 #[doc = "Field `RESRDYEO0` writer - Result Ready Event Output 0"]
-pub type RESRDYEO0_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
+pub type RESRDYEO0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RESRDYEO1` reader - Result Ready Event Output 1"]
-pub type RESRDYEO1_R = crate::BitReader<bool>;
+pub type RESRDYEO1_R = crate::BitReader;
 #[doc = "Field `RESRDYEO1` writer - Result Ready Event Output 1"]
-pub type RESRDYEO1_W<'a, const O: u8> = crate::BitWriter<'a, u8, EVCTRL_SPEC, bool, O>;
+pub type RESRDYEO1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Start Conversion Event Input DAC 0"]
     #[inline(always)]
@@ -112,70 +80,71 @@ impl W {
     #[doc = "Bit 0 - Start Conversion Event Input DAC 0"]
     #[inline(always)]
     #[must_use]
-    pub fn startei0(&mut self) -> STARTEI0_W<0> {
+    pub fn startei0(&mut self) -> STARTEI0_W<EVCTRL_SPEC, 0> {
         STARTEI0_W::new(self)
     }
     #[doc = "Bit 1 - Start Conversion Event Input DAC 1"]
     #[inline(always)]
     #[must_use]
-    pub fn startei1(&mut self) -> STARTEI1_W<1> {
+    pub fn startei1(&mut self) -> STARTEI1_W<EVCTRL_SPEC, 1> {
         STARTEI1_W::new(self)
     }
     #[doc = "Bit 2 - Data Buffer Empty Event Output DAC 0"]
     #[inline(always)]
     #[must_use]
-    pub fn emptyeo0(&mut self) -> EMPTYEO0_W<2> {
+    pub fn emptyeo0(&mut self) -> EMPTYEO0_W<EVCTRL_SPEC, 2> {
         EMPTYEO0_W::new(self)
     }
     #[doc = "Bit 3 - Data Buffer Empty Event Output DAC 1"]
     #[inline(always)]
     #[must_use]
-    pub fn emptyeo1(&mut self) -> EMPTYEO1_W<3> {
+    pub fn emptyeo1(&mut self) -> EMPTYEO1_W<EVCTRL_SPEC, 3> {
         EMPTYEO1_W::new(self)
     }
     #[doc = "Bit 4 - Enable Invertion of DAC 0 input event"]
     #[inline(always)]
     #[must_use]
-    pub fn invei0(&mut self) -> INVEI0_W<4> {
+    pub fn invei0(&mut self) -> INVEI0_W<EVCTRL_SPEC, 4> {
         INVEI0_W::new(self)
     }
     #[doc = "Bit 5 - Enable Invertion of DAC 1 input event"]
     #[inline(always)]
     #[must_use]
-    pub fn invei1(&mut self) -> INVEI1_W<5> {
+    pub fn invei1(&mut self) -> INVEI1_W<EVCTRL_SPEC, 5> {
         INVEI1_W::new(self)
     }
     #[doc = "Bit 6 - Result Ready Event Output 0"]
     #[inline(always)]
     #[must_use]
-    pub fn resrdyeo0(&mut self) -> RESRDYEO0_W<6> {
+    pub fn resrdyeo0(&mut self) -> RESRDYEO0_W<EVCTRL_SPEC, 6> {
         RESRDYEO0_W::new(self)
     }
     #[doc = "Bit 7 - Result Ready Event Output 1"]
     #[inline(always)]
     #[must_use]
-    pub fn resrdyeo1(&mut self) -> RESRDYEO1_W<7> {
+    pub fn resrdyeo1(&mut self) -> RESRDYEO1_W<EVCTRL_SPEC, 7> {
         RESRDYEO1_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Event Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [evctrl](index.html) module"]
+#[doc = "Event Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`evctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`evctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct EVCTRL_SPEC;
 impl crate::RegisterSpec for EVCTRL_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [evctrl::R](R) reader structure"]
-impl crate::Readable for EVCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`evctrl::R`](R) reader structure"]
+impl crate::Readable for EVCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

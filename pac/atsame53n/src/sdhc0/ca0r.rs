@@ -1,20 +1,7 @@
 #[doc = "Register `CA0R` reader"]
-pub struct R(crate::R<CA0R_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CA0R_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CA0R_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CA0R_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CA0R_SPEC>;
 #[doc = "Field `TEOCLKF` reader - Timeout Clock Frequency"]
-pub type TEOCLKF_R = crate::FieldReader<u8, TEOCLKFSELECT_A>;
+pub type TEOCLKF_R = crate::FieldReader<TEOCLKFSELECT_A>;
 #[doc = "Timeout Clock Frequency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -28,16 +15,19 @@ impl From<TEOCLKFSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for TEOCLKFSELECT_A {
+    type Ux = u8;
+}
 impl TEOCLKF_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<TEOCLKFSELECT_A> {
+    pub const fn variant(&self) -> Option<TEOCLKFSELECT_A> {
         match self.bits {
             0 => Some(TEOCLKFSELECT_A::OTHER),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `OTHER`"]
+    #[doc = "Get information via another method"]
     #[inline(always)]
     pub fn is_other(&self) -> bool {
         *self == TEOCLKFSELECT_A::OTHER
@@ -62,25 +52,25 @@ impl From<TEOCLKUSELECT_A> for bool {
 impl TEOCLKU_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> TEOCLKUSELECT_A {
+    pub const fn variant(&self) -> TEOCLKUSELECT_A {
         match self.bits {
             false => TEOCLKUSELECT_A::KHZ,
             true => TEOCLKUSELECT_A::MHZ,
         }
     }
-    #[doc = "Checks if the value of the field is `KHZ`"]
+    #[doc = "KHz"]
     #[inline(always)]
     pub fn is_khz(&self) -> bool {
         *self == TEOCLKUSELECT_A::KHZ
     }
-    #[doc = "Checks if the value of the field is `MHZ`"]
+    #[doc = "MHz"]
     #[inline(always)]
     pub fn is_mhz(&self) -> bool {
         *self == TEOCLKUSELECT_A::MHZ
     }
 }
 #[doc = "Field `BASECLKF` reader - Base Clock Frequency"]
-pub type BASECLKF_R = crate::FieldReader<u8, BASECLKFSELECT_A>;
+pub type BASECLKF_R = crate::FieldReader<BASECLKFSELECT_A>;
 #[doc = "Base Clock Frequency\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -94,23 +84,26 @@ impl From<BASECLKFSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for BASECLKFSELECT_A {
+    type Ux = u8;
+}
 impl BASECLKF_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<BASECLKFSELECT_A> {
+    pub const fn variant(&self) -> Option<BASECLKFSELECT_A> {
         match self.bits {
             0 => Some(BASECLKFSELECT_A::OTHER),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `OTHER`"]
+    #[doc = "Get information via another method"]
     #[inline(always)]
     pub fn is_other(&self) -> bool {
         *self == BASECLKFSELECT_A::OTHER
     }
 }
 #[doc = "Field `MAXBLKL` reader - Max Block Length"]
-pub type MAXBLKL_R = crate::FieldReader<u8, MAXBLKLSELECT_A>;
+pub type MAXBLKL_R = crate::FieldReader<MAXBLKLSELECT_A>;
 #[doc = "Max Block Length\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -128,10 +121,13 @@ impl From<MAXBLKLSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for MAXBLKLSELECT_A {
+    type Ux = u8;
+}
 impl MAXBLKL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<MAXBLKLSELECT_A> {
+    pub const fn variant(&self) -> Option<MAXBLKLSELECT_A> {
         match self.bits {
             0 => Some(MAXBLKLSELECT_A::_512),
             1 => Some(MAXBLKLSELECT_A::_1024),
@@ -139,17 +135,17 @@ impl MAXBLKL_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `_512`"]
+    #[doc = "512 bytes"]
     #[inline(always)]
     pub fn is_512(&self) -> bool {
         *self == MAXBLKLSELECT_A::_512
     }
-    #[doc = "Checks if the value of the field is `_1024`"]
+    #[doc = "1024 bytes"]
     #[inline(always)]
     pub fn is_1024(&self) -> bool {
         *self == MAXBLKLSELECT_A::_1024
     }
-    #[doc = "Checks if the value of the field is `_2048`"]
+    #[doc = "2048 bytes"]
     #[inline(always)]
     pub fn is_2048(&self) -> bool {
         *self == MAXBLKLSELECT_A::_2048
@@ -174,18 +170,18 @@ impl From<ED8SUPSELECT_A> for bool {
 impl ED8SUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ED8SUPSELECT_A {
+    pub const fn variant(&self) -> ED8SUPSELECT_A {
         match self.bits {
             false => ED8SUPSELECT_A::NO,
             true => ED8SUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "8-bit Bus Width not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == ED8SUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "8-bit Bus Width Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ED8SUPSELECT_A::YES
@@ -210,18 +206,18 @@ impl From<ADMA2SUPSELECT_A> for bool {
 impl ADMA2SUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ADMA2SUPSELECT_A {
+    pub const fn variant(&self) -> ADMA2SUPSELECT_A {
         match self.bits {
             false => ADMA2SUPSELECT_A::NO,
             true => ADMA2SUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "ADMA2 not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == ADMA2SUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "ADMA2 Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ADMA2SUPSELECT_A::YES
@@ -246,18 +242,18 @@ impl From<HSSUPSELECT_A> for bool {
 impl HSSUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> HSSUPSELECT_A {
+    pub const fn variant(&self) -> HSSUPSELECT_A {
         match self.bits {
             false => HSSUPSELECT_A::NO,
             true => HSSUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "High Speed not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == HSSUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "High Speed Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == HSSUPSELECT_A::YES
@@ -282,18 +278,18 @@ impl From<SDMASUPSELECT_A> for bool {
 impl SDMASUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SDMASUPSELECT_A {
+    pub const fn variant(&self) -> SDMASUPSELECT_A {
         match self.bits {
             false => SDMASUPSELECT_A::NO,
             true => SDMASUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "SDMA not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == SDMASUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "SDMA Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == SDMASUPSELECT_A::YES
@@ -318,18 +314,18 @@ impl From<SRSUPSELECT_A> for bool {
 impl SRSUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SRSUPSELECT_A {
+    pub const fn variant(&self) -> SRSUPSELECT_A {
         match self.bits {
             false => SRSUPSELECT_A::NO,
             true => SRSUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Suspend/Resume not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == SRSUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Suspend/Resume Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == SRSUPSELECT_A::YES
@@ -354,18 +350,18 @@ impl From<V33VSUPSELECT_A> for bool {
 impl V33VSUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> V33VSUPSELECT_A {
+    pub const fn variant(&self) -> V33VSUPSELECT_A {
         match self.bits {
             false => V33VSUPSELECT_A::NO,
             true => V33VSUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "3.3V Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == V33VSUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "3.3V Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == V33VSUPSELECT_A::YES
@@ -390,18 +386,18 @@ impl From<V30VSUPSELECT_A> for bool {
 impl V30VSUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> V30VSUPSELECT_A {
+    pub const fn variant(&self) -> V30VSUPSELECT_A {
         match self.bits {
             false => V30VSUPSELECT_A::NO,
             true => V30VSUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "3.0V Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == V30VSUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "3.0V Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == V30VSUPSELECT_A::YES
@@ -426,18 +422,18 @@ impl From<V18VSUPSELECT_A> for bool {
 impl V18VSUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> V18VSUPSELECT_A {
+    pub const fn variant(&self) -> V18VSUPSELECT_A {
         match self.bits {
             false => V18VSUPSELECT_A::NO,
             true => V18VSUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "1.8V Not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == V18VSUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "1.8V Supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == V18VSUPSELECT_A::YES
@@ -462,18 +458,18 @@ impl From<SB64SUPSELECT_A> for bool {
 impl SB64SUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SB64SUPSELECT_A {
+    pub const fn variant(&self) -> SB64SUPSELECT_A {
         match self.bits {
             false => SB64SUPSELECT_A::NO,
             true => SB64SUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "32-bit Address Descriptors and System Bus"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == SB64SUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "64-bit Address Descriptors and System Bus"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == SB64SUPSELECT_A::YES
@@ -498,25 +494,25 @@ impl From<ASINTSUPSELECT_A> for bool {
 impl ASINTSUP_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ASINTSUPSELECT_A {
+    pub const fn variant(&self) -> ASINTSUPSELECT_A {
         match self.bits {
             false => ASINTSUPSELECT_A::NO,
             true => ASINTSUPSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Asynchronous Interrupt not Supported"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == ASINTSUPSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Asynchronous Interrupt supported"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == ASINTSUPSELECT_A::YES
     }
 }
 #[doc = "Field `SLTYPE` reader - Slot Type"]
-pub type SLTYPE_R = crate::FieldReader<u8, SLTYPESELECT_A>;
+pub type SLTYPE_R = crate::FieldReader<SLTYPESELECT_A>;
 #[doc = "Slot Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -532,22 +528,25 @@ impl From<SLTYPESELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for SLTYPESELECT_A {
+    type Ux = u8;
+}
 impl SLTYPE_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<SLTYPESELECT_A> {
+    pub const fn variant(&self) -> Option<SLTYPESELECT_A> {
         match self.bits {
             0 => Some(SLTYPESELECT_A::REMOVABLE),
             1 => Some(SLTYPESELECT_A::EMBEDDED),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `REMOVABLE`"]
+    #[doc = "Removable Card Slot"]
     #[inline(always)]
     pub fn is_removable(&self) -> bool {
         *self == SLTYPESELECT_A::REMOVABLE
     }
-    #[doc = "Checks if the value of the field is `EMBEDDED`"]
+    #[doc = "Embedded Slot for One Device"]
     #[inline(always)]
     pub fn is_embedded(&self) -> bool {
         *self == SLTYPESELECT_A::EMBEDDED
@@ -630,15 +629,13 @@ impl R {
         SLTYPE_R::new(((self.bits >> 30) & 3) as u8)
     }
 }
-#[doc = "Capabilities 0\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ca0r](index.html) module"]
+#[doc = "Capabilities 0\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ca0r::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CA0R_SPEC;
 impl crate::RegisterSpec for CA0R_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ca0r::R](R) reader structure"]
-impl crate::Readable for CA0R_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`ca0r::R`](R) reader structure"]
+impl crate::Readable for CA0R_SPEC {}
 #[doc = "`reset()` method sets CA0R to value 0x27e8_0080"]
 impl crate::Resettable for CA0R_SPEC {
     const RESET_VALUE: Self::Ux = 0x27e8_0080;

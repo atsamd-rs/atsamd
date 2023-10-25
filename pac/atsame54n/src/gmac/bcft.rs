@@ -1,20 +1,7 @@
 #[doc = "Register `BCFT` reader"]
-pub struct R(crate::R<BCFT_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<BCFT_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<BCFT_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<BCFT_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<BCFT_SPEC>;
 #[doc = "Field `BFTX` reader - Broadcast Frames Transmitted without Error"]
-pub type BFTX_R = crate::FieldReader<u32, u32>;
+pub type BFTX_R = crate::FieldReader<u32>;
 impl R {
     #[doc = "Bits 0:31 - Broadcast Frames Transmitted without Error"]
     #[inline(always)]
@@ -22,15 +9,13 @@ impl R {
         BFTX_R::new(self.bits)
     }
 }
-#[doc = "Broadcast Frames Transmitted Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [bcft](index.html) module"]
+#[doc = "Broadcast Frames Transmitted Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bcft::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct BCFT_SPEC;
 impl crate::RegisterSpec for BCFT_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [bcft::R](R) reader structure"]
-impl crate::Readable for BCFT_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`bcft::R`](R) reader structure"]
+impl crate::Readable for BCFT_SPEC {}
 #[doc = "`reset()` method sets BCFT to value 0"]
 impl crate::Resettable for BCFT_SPEC {
     const RESET_VALUE: Self::Ux = 0;

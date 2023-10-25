@@ -1,45 +1,13 @@
 #[doc = "Register `WINCTRL` reader"]
-pub struct R(crate::R<WINCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<WINCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<WINCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<WINCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<WINCTRL_SPEC>;
 #[doc = "Register `WINCTRL` writer"]
-pub struct W(crate::W<WINCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<WINCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<WINCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<WINCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<WINCTRL_SPEC>;
 #[doc = "Field `WEN0` reader - Window 0 Mode Enable"]
-pub type WEN0_R = crate::BitReader<bool>;
+pub type WEN0_R = crate::BitReader;
 #[doc = "Field `WEN0` writer - Window 0 Mode Enable"]
-pub type WEN0_W<'a, const O: u8> = crate::BitWriter<'a, u8, WINCTRL_SPEC, bool, O>;
+pub type WEN0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WINTSEL0` reader - Window 0 Interrupt Selection"]
-pub type WINTSEL0_R = crate::FieldReader<u8, WINTSEL0SELECT_A>;
+pub type WINTSEL0_R = crate::FieldReader<WINTSEL0SELECT_A>;
 #[doc = "Window 0 Interrupt Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -59,10 +27,13 @@ impl From<WINTSEL0SELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for WINTSEL0SELECT_A {
+    type Ux = u8;
+}
 impl WINTSEL0_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> WINTSEL0SELECT_A {
+    pub const fn variant(&self) -> WINTSEL0SELECT_A {
         match self.bits {
             0 => WINTSEL0SELECT_A::ABOVE,
             1 => WINTSEL0SELECT_A::INSIDE,
@@ -71,49 +42,52 @@ impl WINTSEL0_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `ABOVE`"]
+    #[doc = "Interrupt on signal above window"]
     #[inline(always)]
     pub fn is_above(&self) -> bool {
         *self == WINTSEL0SELECT_A::ABOVE
     }
-    #[doc = "Checks if the value of the field is `INSIDE`"]
+    #[doc = "Interrupt on signal inside window"]
     #[inline(always)]
     pub fn is_inside(&self) -> bool {
         *self == WINTSEL0SELECT_A::INSIDE
     }
-    #[doc = "Checks if the value of the field is `BELOW`"]
+    #[doc = "Interrupt on signal below window"]
     #[inline(always)]
     pub fn is_below(&self) -> bool {
         *self == WINTSEL0SELECT_A::BELOW
     }
-    #[doc = "Checks if the value of the field is `OUTSIDE`"]
+    #[doc = "Interrupt on signal outside window"]
     #[inline(always)]
     pub fn is_outside(&self) -> bool {
         *self == WINTSEL0SELECT_A::OUTSIDE
     }
 }
 #[doc = "Field `WINTSEL0` writer - Window 0 Interrupt Selection"]
-pub type WINTSEL0_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u8, WINCTRL_SPEC, u8, WINTSEL0SELECT_A, 2, O>;
-impl<'a, const O: u8> WINTSEL0_W<'a, O> {
+pub type WINTSEL0_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, WINTSEL0SELECT_A>;
+impl<'a, REG, const O: u8> WINTSEL0_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Interrupt on signal above window"]
     #[inline(always)]
-    pub fn above(self) -> &'a mut W {
+    pub fn above(self) -> &'a mut crate::W<REG> {
         self.variant(WINTSEL0SELECT_A::ABOVE)
     }
     #[doc = "Interrupt on signal inside window"]
     #[inline(always)]
-    pub fn inside(self) -> &'a mut W {
+    pub fn inside(self) -> &'a mut crate::W<REG> {
         self.variant(WINTSEL0SELECT_A::INSIDE)
     }
     #[doc = "Interrupt on signal below window"]
     #[inline(always)]
-    pub fn below(self) -> &'a mut W {
+    pub fn below(self) -> &'a mut crate::W<REG> {
         self.variant(WINTSEL0SELECT_A::BELOW)
     }
     #[doc = "Interrupt on signal outside window"]
     #[inline(always)]
-    pub fn outside(self) -> &'a mut W {
+    pub fn outside(self) -> &'a mut crate::W<REG> {
         self.variant(WINTSEL0SELECT_A::OUTSIDE)
     }
 }
@@ -133,34 +107,35 @@ impl W {
     #[doc = "Bit 0 - Window 0 Mode Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wen0(&mut self) -> WEN0_W<0> {
+    pub fn wen0(&mut self) -> WEN0_W<WINCTRL_SPEC, 0> {
         WEN0_W::new(self)
     }
     #[doc = "Bits 1:2 - Window 0 Interrupt Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn wintsel0(&mut self) -> WINTSEL0_W<1> {
+    pub fn wintsel0(&mut self) -> WINTSEL0_W<WINCTRL_SPEC, 1> {
         WINTSEL0_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Window Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [winctrl](index.html) module"]
+#[doc = "Window Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`winctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`winctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct WINCTRL_SPEC;
 impl crate::RegisterSpec for WINCTRL_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [winctrl::R](R) reader structure"]
-impl crate::Readable for WINCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [winctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`winctrl::R`](R) reader structure"]
+impl crate::Readable for WINCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`winctrl::W`](W) writer structure"]
 impl crate::Writable for WINCTRL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

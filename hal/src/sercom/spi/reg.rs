@@ -215,15 +215,14 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn get_baud(&mut self, freq: Hertz) -> Hertz {
         let baud = self.spi().baud.read().baud().bits() as u32 + 1;
-        Hertz(freq.0 / 2 / baud)
+        freq / 2 / baud
     }
 
     /// Set the baud rate
     #[inline]
-    pub fn set_baud(&mut self, freq: Hertz, baud: impl Into<Hertz>) {
-        let baud = baud.into().0;
-        let baud = if baud == 0 { 1 } else { baud };
-        let bits = (freq.0 / 2 / baud).saturating_sub(1);
+    pub fn set_baud(&mut self, freq: Hertz, baud: Hertz) {
+        let baud = baud.to_Hz().max(1);
+        let bits = (freq.to_Hz() / 2 / baud).saturating_sub(1);
         let bits = bits.try_into().unwrap_or(u8::MAX);
         self.spi()
             .baud

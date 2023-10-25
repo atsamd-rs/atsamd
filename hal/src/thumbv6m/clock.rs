@@ -5,11 +5,13 @@
 //! that the peripherals have been correctly configured.
 #![allow(clippy::from_over_into)]
 
+use fugit::RateExtU32;
+
 use crate::pac::gclk::clkctrl::GENSELECT_A::*;
 use crate::pac::gclk::clkctrl::IDSELECT_A::*;
 use crate::pac::gclk::genctrl::SRCSELECT_A::*;
 use crate::pac::{self, GCLK, NVMCTRL, PM, SYSCTRL};
-use crate::time::{Hertz, U32Ext};
+use crate::time::Hertz;
 
 pub type ClockId = pac::gclk::clkctrl::IDSELECT_A;
 pub type ClockGenId = pac::gclk::clkctrl::GENSELECT_A;
@@ -202,12 +204,12 @@ impl GenericClockController {
             gclks: [
                 OSC48M_FREQ,
                 OSC32K_FREQ,
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
             ],
             used_clocks: 1u64 << u8::from(ClockId::DFLL48),
         }
@@ -252,13 +254,13 @@ impl GenericClockController {
             state,
             gclks: [
                 OSC8M_FREQ,
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
-                Hertz(0),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
+                0.Hz(),
             ],
             used_clocks: 0,
         }
@@ -285,7 +287,7 @@ impl GenericClockController {
     /// returns None.
     pub fn get_gclk(&mut self, gclk: ClockGenId) -> Option<GClock> {
         let idx = u8::from(gclk) as usize;
-        if self.gclks[idx].0 == 0 {
+        if self.gclks[idx].to_Hz() == 0 {
             None
         } else {
             Some(GClock {
@@ -312,7 +314,7 @@ impl GenericClockController {
         improve_duty_cycle: bool,
     ) -> Option<GClock> {
         let idx = u8::from(gclk) as usize;
-        if self.gclks[idx].0 != 0 {
+        if self.gclks[idx].to_Hz() != 0 {
             return None;
         }
         self.state
@@ -322,10 +324,10 @@ impl GenericClockController {
             GCLKGEN1 => self.gclks[1],
             OSC8M => OSC8M_FREQ,
             DFLL48M => OSC48M_FREQ,
-            DPLL96M => 96.mhz().into(),
+            DPLL96M => 96.MHz(),
             GCLKIN | XOSC => unimplemented!(),
         };
-        self.gclks[idx] = Hertz(freq.0 / divider as u32);
+        self.gclks[idx] = freq / divider as u32;
         Some(GClock { gclk, freq })
     }
 
@@ -454,11 +456,11 @@ clock_generator!(
 );
 
 /// The frequency of the 48Mhz source.
-pub const OSC48M_FREQ: Hertz = Hertz(48_000_000);
+pub const OSC48M_FREQ: Hertz = Hertz::Hz(48_000_000);
 /// The frequency of the 8 Mhz source.
-pub const OSC8M_FREQ: Hertz = Hertz(8_000_000);
+pub const OSC8M_FREQ: Hertz = Hertz::Hz(8_000_000);
 /// The frequency of the 32Khz source.
-pub const OSC32K_FREQ: Hertz = Hertz(32_768);
+pub const OSC32K_FREQ: Hertz = Hertz::Hz(32_768);
 
 fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
     nvmctrl.ctrlb.modify(|_, w| w.rws().half());

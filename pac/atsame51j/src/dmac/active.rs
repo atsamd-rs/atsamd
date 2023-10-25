@@ -1,32 +1,19 @@
 #[doc = "Register `ACTIVE` reader"]
-pub struct R(crate::R<ACTIVE_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<ACTIVE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<ACTIVE_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<ACTIVE_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<ACTIVE_SPEC>;
 #[doc = "Field `LVLEX0` reader - Level 0 Channel Trigger Request Executing"]
-pub type LVLEX0_R = crate::BitReader<bool>;
+pub type LVLEX0_R = crate::BitReader;
 #[doc = "Field `LVLEX1` reader - Level 1 Channel Trigger Request Executing"]
-pub type LVLEX1_R = crate::BitReader<bool>;
+pub type LVLEX1_R = crate::BitReader;
 #[doc = "Field `LVLEX2` reader - Level 2 Channel Trigger Request Executing"]
-pub type LVLEX2_R = crate::BitReader<bool>;
+pub type LVLEX2_R = crate::BitReader;
 #[doc = "Field `LVLEX3` reader - Level 3 Channel Trigger Request Executing"]
-pub type LVLEX3_R = crate::BitReader<bool>;
+pub type LVLEX3_R = crate::BitReader;
 #[doc = "Field `ID` reader - Active Channel ID"]
-pub type ID_R = crate::FieldReader<u8, u8>;
+pub type ID_R = crate::FieldReader;
 #[doc = "Field `ABUSY` reader - Active Channel Busy"]
-pub type ABUSY_R = crate::BitReader<bool>;
+pub type ABUSY_R = crate::BitReader;
 #[doc = "Field `BTCNT` reader - Active Channel Block Transfer Count"]
-pub type BTCNT_R = crate::FieldReader<u16, u16>;
+pub type BTCNT_R = crate::FieldReader<u16>;
 impl R {
     #[doc = "Bit 0 - Level 0 Channel Trigger Request Executing"]
     #[inline(always)]
@@ -64,15 +51,13 @@ impl R {
         BTCNT_R::new(((self.bits >> 16) & 0xffff) as u16)
     }
 }
-#[doc = "Active Channel and Levels\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [active](index.html) module"]
+#[doc = "Active Channel and Levels\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`active::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct ACTIVE_SPEC;
 impl crate::RegisterSpec for ACTIVE_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [active::R](R) reader structure"]
-impl crate::Readable for ACTIVE_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`active::R`](R) reader structure"]
+impl crate::Readable for ACTIVE_SPEC {}
 #[doc = "`reset()` method sets ACTIVE to value 0"]
 impl crate::Resettable for ACTIVE_SPEC {
     const RESET_VALUE: Self::Ux = 0;

@@ -1,32 +1,19 @@
 #[doc = "Register `STATUS` reader"]
-pub struct R(crate::R<STATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUS_SPEC>;
 #[doc = "Field `READY` reader - Ready to accept a command"]
-pub type READY_R = crate::BitReader<bool>;
+pub type READY_R = crate::BitReader;
 #[doc = "Field `PRM` reader - Power Reduction Mode"]
-pub type PRM_R = crate::BitReader<bool>;
+pub type PRM_R = crate::BitReader;
 #[doc = "Field `LOAD` reader - NVM Page Buffer Active Loading"]
-pub type LOAD_R = crate::BitReader<bool>;
+pub type LOAD_R = crate::BitReader;
 #[doc = "Field `SUSP` reader - NVM Write Or Erase Operation Is Suspended"]
-pub type SUSP_R = crate::BitReader<bool>;
+pub type SUSP_R = crate::BitReader;
 #[doc = "Field `AFIRST` reader - BANKA First"]
-pub type AFIRST_R = crate::BitReader<bool>;
+pub type AFIRST_R = crate::BitReader;
 #[doc = "Field `BPDIS` reader - Boot Loader Protection Disable"]
-pub type BPDIS_R = crate::BitReader<bool>;
+pub type BPDIS_R = crate::BitReader;
 #[doc = "Field `BOOTPROT` reader - Boot Loader Protection Size"]
-pub type BOOTPROT_R = crate::FieldReader<u8, BOOTPROTSELECT_A>;
+pub type BOOTPROT_R = crate::FieldReader<BOOTPROTSELECT_A>;
 #[doc = "Boot Loader Protection Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -70,10 +57,13 @@ impl From<BOOTPROTSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for BOOTPROTSELECT_A {
+    type Ux = u8;
+}
 impl BOOTPROT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> BOOTPROTSELECT_A {
+    pub const fn variant(&self) -> BOOTPROTSELECT_A {
         match self.bits {
             15 => BOOTPROTSELECT_A::_0,
             14 => BOOTPROTSELECT_A::_8,
@@ -94,82 +84,82 @@ impl BOOTPROT_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `_0`"]
+    #[doc = "0 kbytes"]
     #[inline(always)]
     pub fn is_0(&self) -> bool {
         *self == BOOTPROTSELECT_A::_0
     }
-    #[doc = "Checks if the value of the field is `_8`"]
+    #[doc = "8 kbytes"]
     #[inline(always)]
     pub fn is_8(&self) -> bool {
         *self == BOOTPROTSELECT_A::_8
     }
-    #[doc = "Checks if the value of the field is `_16`"]
+    #[doc = "16 kbytes"]
     #[inline(always)]
     pub fn is_16(&self) -> bool {
         *self == BOOTPROTSELECT_A::_16
     }
-    #[doc = "Checks if the value of the field is `_24`"]
+    #[doc = "24 kbytes"]
     #[inline(always)]
     pub fn is_24(&self) -> bool {
         *self == BOOTPROTSELECT_A::_24
     }
-    #[doc = "Checks if the value of the field is `_32`"]
+    #[doc = "32 kbytes"]
     #[inline(always)]
     pub fn is_32(&self) -> bool {
         *self == BOOTPROTSELECT_A::_32
     }
-    #[doc = "Checks if the value of the field is `_40`"]
+    #[doc = "40 kbytes"]
     #[inline(always)]
     pub fn is_40(&self) -> bool {
         *self == BOOTPROTSELECT_A::_40
     }
-    #[doc = "Checks if the value of the field is `_48`"]
+    #[doc = "48 kbytes"]
     #[inline(always)]
     pub fn is_48(&self) -> bool {
         *self == BOOTPROTSELECT_A::_48
     }
-    #[doc = "Checks if the value of the field is `_56`"]
+    #[doc = "56 kbytes"]
     #[inline(always)]
     pub fn is_56(&self) -> bool {
         *self == BOOTPROTSELECT_A::_56
     }
-    #[doc = "Checks if the value of the field is `_64`"]
+    #[doc = "64 kbytes"]
     #[inline(always)]
     pub fn is_64(&self) -> bool {
         *self == BOOTPROTSELECT_A::_64
     }
-    #[doc = "Checks if the value of the field is `_72`"]
+    #[doc = "72 kbytes"]
     #[inline(always)]
     pub fn is_72(&self) -> bool {
         *self == BOOTPROTSELECT_A::_72
     }
-    #[doc = "Checks if the value of the field is `_80`"]
+    #[doc = "80 kbytes"]
     #[inline(always)]
     pub fn is_80(&self) -> bool {
         *self == BOOTPROTSELECT_A::_80
     }
-    #[doc = "Checks if the value of the field is `_88`"]
+    #[doc = "88 kbytes"]
     #[inline(always)]
     pub fn is_88(&self) -> bool {
         *self == BOOTPROTSELECT_A::_88
     }
-    #[doc = "Checks if the value of the field is `_96`"]
+    #[doc = "96 kbytes"]
     #[inline(always)]
     pub fn is_96(&self) -> bool {
         *self == BOOTPROTSELECT_A::_96
     }
-    #[doc = "Checks if the value of the field is `_104`"]
+    #[doc = "104 kbytes"]
     #[inline(always)]
     pub fn is_104(&self) -> bool {
         *self == BOOTPROTSELECT_A::_104
     }
-    #[doc = "Checks if the value of the field is `_112`"]
+    #[doc = "112 kbytes"]
     #[inline(always)]
     pub fn is_112(&self) -> bool {
         *self == BOOTPROTSELECT_A::_112
     }
-    #[doc = "Checks if the value of the field is `_120`"]
+    #[doc = "120 kbytes"]
     #[inline(always)]
     pub fn is_120(&self) -> bool {
         *self == BOOTPROTSELECT_A::_120
@@ -212,15 +202,13 @@ impl R {
         BOOTPROT_R::new(((self.bits >> 8) & 0x0f) as u8)
     }
 }
-#[doc = "Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [status](index.html) module"]
+#[doc = "Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUS_SPEC;
 impl crate::RegisterSpec for STATUS_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [status::R](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`status::R`](R) reader structure"]
+impl crate::Readable for STATUS_SPEC {}
 #[doc = "`reset()` method sets STATUS to value 0"]
 impl crate::Resettable for STATUS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

@@ -18,12 +18,12 @@ use atsamd_hal::{
     ehal::serial::Read as _,
     ehal::serial::Write,
     gpio::{Pins, PA04, PA05},
+    prelude::*,
     rtc::{ClockMode, Rtc},
     sercom::{
         uart::{self, BaudMode, Flags, Oversampling},
         IoSet3, Sercom0,
     },
-    time::U32Ext,
 };
 
 use rtic::app;
@@ -131,7 +131,7 @@ mod app {
         // In the future, the `Uart` will take ownership of the `Pclk` and will
         // take an `ApbClk` instead of `&MCLK`
         let mut uart = uart::Config::new(&mclk, device.SERCOM0, pads, pclk_sercom0.freq())
-            .baud(115_200.hz(), BaudMode::Arithmetic(Oversampling::Bits16))
+            .baud(115_200.Hz(), BaudMode::Arithmetic(Oversampling::Bits16))
             .enable();
         uart.enable_interrupts(Flags::RXC);
 

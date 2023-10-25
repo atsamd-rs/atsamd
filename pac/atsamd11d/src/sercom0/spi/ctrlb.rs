@@ -1,63 +1,31 @@
 #[doc = "Register `CTRLB` reader"]
-pub struct R(crate::R<CTRLB_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLB_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLB_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLB_SPEC>;
 #[doc = "Register `CTRLB` writer"]
-pub struct W(crate::W<CTRLB_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLB_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLB_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLB_SPEC>;
 #[doc = "Field `CHSIZE` reader - Character Size"]
-pub type CHSIZE_R = crate::FieldReader<u8, u8>;
+pub type CHSIZE_R = crate::FieldReader;
 #[doc = "Field `CHSIZE` writer - Character Size"]
-pub type CHSIZE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLB_SPEC, u8, u8, 3, O>;
+pub type CHSIZE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O>;
 #[doc = "Field `PLOADEN` reader - Data Preload Enable"]
-pub type PLOADEN_R = crate::BitReader<bool>;
+pub type PLOADEN_R = crate::BitReader;
 #[doc = "Field `PLOADEN` writer - Data Preload Enable"]
-pub type PLOADEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
+pub type PLOADEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SSDE` reader - Slave Select Low Detect Enable"]
-pub type SSDE_R = crate::BitReader<bool>;
+pub type SSDE_R = crate::BitReader;
 #[doc = "Field `SSDE` writer - Slave Select Low Detect Enable"]
-pub type SSDE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
+pub type SSDE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MSSEN` reader - Master Slave Select Enable"]
-pub type MSSEN_R = crate::BitReader<bool>;
+pub type MSSEN_R = crate::BitReader;
 #[doc = "Field `MSSEN` writer - Master Slave Select Enable"]
-pub type MSSEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
+pub type MSSEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `AMODE` reader - Address Mode"]
-pub type AMODE_R = crate::FieldReader<u8, u8>;
+pub type AMODE_R = crate::FieldReader;
 #[doc = "Field `AMODE` writer - Address Mode"]
-pub type AMODE_W<'a, const O: u8> = crate::FieldWriter<'a, u32, CTRLB_SPEC, u8, u8, 2, O>;
+pub type AMODE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `RXEN` reader - Receiver Enable"]
-pub type RXEN_R = crate::BitReader<bool>;
+pub type RXEN_R = crate::BitReader;
 #[doc = "Field `RXEN` writer - Receiver Enable"]
-pub type RXEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, CTRLB_SPEC, bool, O>;
+pub type RXEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bits 0:2 - Character Size"]
     #[inline(always)]
@@ -94,58 +62,59 @@ impl W {
     #[doc = "Bits 0:2 - Character Size"]
     #[inline(always)]
     #[must_use]
-    pub fn chsize(&mut self) -> CHSIZE_W<0> {
+    pub fn chsize(&mut self) -> CHSIZE_W<CTRLB_SPEC, 0> {
         CHSIZE_W::new(self)
     }
     #[doc = "Bit 6 - Data Preload Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ploaden(&mut self) -> PLOADEN_W<6> {
+    pub fn ploaden(&mut self) -> PLOADEN_W<CTRLB_SPEC, 6> {
         PLOADEN_W::new(self)
     }
     #[doc = "Bit 9 - Slave Select Low Detect Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ssde(&mut self) -> SSDE_W<9> {
+    pub fn ssde(&mut self) -> SSDE_W<CTRLB_SPEC, 9> {
         SSDE_W::new(self)
     }
     #[doc = "Bit 13 - Master Slave Select Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn mssen(&mut self) -> MSSEN_W<13> {
+    pub fn mssen(&mut self) -> MSSEN_W<CTRLB_SPEC, 13> {
         MSSEN_W::new(self)
     }
     #[doc = "Bits 14:15 - Address Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn amode(&mut self) -> AMODE_W<14> {
+    pub fn amode(&mut self) -> AMODE_W<CTRLB_SPEC, 14> {
         AMODE_W::new(self)
     }
     #[doc = "Bit 17 - Receiver Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn rxen(&mut self) -> RXEN_W<17> {
+    pub fn rxen(&mut self) -> RXEN_W<CTRLB_SPEC, 17> {
         RXEN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "SPI Control B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlb](index.html) module"]
+#[doc = "SPI Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLB_SPEC;
 impl crate::RegisterSpec for CTRLB_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ctrlb::R](R) reader structure"]
-impl crate::Readable for CTRLB_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrlb::R`](R) reader structure"]
+impl crate::Readable for CTRLB_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

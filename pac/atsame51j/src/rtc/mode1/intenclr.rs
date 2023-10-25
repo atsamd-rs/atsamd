@@ -1,95 +1,63 @@
 #[doc = "Register `INTENCLR` reader"]
-pub struct R(crate::R<INTENCLR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTENCLR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTENCLR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTENCLR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTENCLR_SPEC>;
 #[doc = "Register `INTENCLR` writer"]
-pub struct W(crate::W<INTENCLR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTENCLR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTENCLR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTENCLR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTENCLR_SPEC>;
 #[doc = "Field `PER0` reader - Periodic Interval 0 Interrupt Enable"]
-pub type PER0_R = crate::BitReader<bool>;
+pub type PER0_R = crate::BitReader;
 #[doc = "Field `PER0` writer - Periodic Interval 0 Interrupt Enable"]
-pub type PER0_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type PER0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PER1` reader - Periodic Interval 1 Interrupt Enable"]
-pub type PER1_R = crate::BitReader<bool>;
+pub type PER1_R = crate::BitReader;
 #[doc = "Field `PER1` writer - Periodic Interval 1 Interrupt Enable"]
-pub type PER1_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type PER1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PER2` reader - Periodic Interval 2 Interrupt Enable"]
-pub type PER2_R = crate::BitReader<bool>;
+pub type PER2_R = crate::BitReader;
 #[doc = "Field `PER2` writer - Periodic Interval 2 Interrupt Enable"]
-pub type PER2_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type PER2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PER3` reader - Periodic Interval 3 Interrupt Enable"]
-pub type PER3_R = crate::BitReader<bool>;
+pub type PER3_R = crate::BitReader;
 #[doc = "Field `PER3` writer - Periodic Interval 3 Interrupt Enable"]
-pub type PER3_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type PER3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PER4` reader - Periodic Interval 4 Interrupt Enable"]
-pub type PER4_R = crate::BitReader<bool>;
+pub type PER4_R = crate::BitReader;
 #[doc = "Field `PER4` writer - Periodic Interval 4 Interrupt Enable"]
-pub type PER4_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type PER4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PER5` reader - Periodic Interval 5 Interrupt Enable"]
-pub type PER5_R = crate::BitReader<bool>;
+pub type PER5_R = crate::BitReader;
 #[doc = "Field `PER5` writer - Periodic Interval 5 Interrupt Enable"]
-pub type PER5_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type PER5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PER6` reader - Periodic Interval 6 Interrupt Enable"]
-pub type PER6_R = crate::BitReader<bool>;
+pub type PER6_R = crate::BitReader;
 #[doc = "Field `PER6` writer - Periodic Interval 6 Interrupt Enable"]
-pub type PER6_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type PER6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PER7` reader - Periodic Interval 7 Interrupt Enable"]
-pub type PER7_R = crate::BitReader<bool>;
+pub type PER7_R = crate::BitReader;
 #[doc = "Field `PER7` writer - Periodic Interval 7 Interrupt Enable"]
-pub type PER7_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type PER7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMP0` reader - Compare 0 Interrupt Enable"]
-pub type CMP0_R = crate::BitReader<bool>;
+pub type CMP0_R = crate::BitReader;
 #[doc = "Field `CMP0` writer - Compare 0 Interrupt Enable"]
-pub type CMP0_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type CMP0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMP1` reader - Compare 1 Interrupt Enable"]
-pub type CMP1_R = crate::BitReader<bool>;
+pub type CMP1_R = crate::BitReader;
 #[doc = "Field `CMP1` writer - Compare 1 Interrupt Enable"]
-pub type CMP1_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type CMP1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMP2` reader - Compare 2 Interrupt Enable"]
-pub type CMP2_R = crate::BitReader<bool>;
+pub type CMP2_R = crate::BitReader;
 #[doc = "Field `CMP2` writer - Compare 2 Interrupt Enable"]
-pub type CMP2_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type CMP2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CMP3` reader - Compare 3 Interrupt Enable"]
-pub type CMP3_R = crate::BitReader<bool>;
+pub type CMP3_R = crate::BitReader;
 #[doc = "Field `CMP3` writer - Compare 3 Interrupt Enable"]
-pub type CMP3_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type CMP3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TAMPER` reader - Tamper Enable"]
-pub type TAMPER_R = crate::BitReader<bool>;
+pub type TAMPER_R = crate::BitReader;
 #[doc = "Field `TAMPER` writer - Tamper Enable"]
-pub type TAMPER_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type TAMPER_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `OVF` reader - Overflow Interrupt Enable"]
-pub type OVF_R = crate::BitReader<bool>;
+pub type OVF_R = crate::BitReader;
 #[doc = "Field `OVF` writer - Overflow Interrupt Enable"]
-pub type OVF_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTENCLR_SPEC, bool, O>;
+pub type OVF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Periodic Interval 0 Interrupt Enable"]
     #[inline(always)]
@@ -166,106 +134,107 @@ impl W {
     #[doc = "Bit 0 - Periodic Interval 0 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn per0(&mut self) -> PER0_W<0> {
+    pub fn per0(&mut self) -> PER0_W<INTENCLR_SPEC, 0> {
         PER0_W::new(self)
     }
     #[doc = "Bit 1 - Periodic Interval 1 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn per1(&mut self) -> PER1_W<1> {
+    pub fn per1(&mut self) -> PER1_W<INTENCLR_SPEC, 1> {
         PER1_W::new(self)
     }
     #[doc = "Bit 2 - Periodic Interval 2 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn per2(&mut self) -> PER2_W<2> {
+    pub fn per2(&mut self) -> PER2_W<INTENCLR_SPEC, 2> {
         PER2_W::new(self)
     }
     #[doc = "Bit 3 - Periodic Interval 3 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn per3(&mut self) -> PER3_W<3> {
+    pub fn per3(&mut self) -> PER3_W<INTENCLR_SPEC, 3> {
         PER3_W::new(self)
     }
     #[doc = "Bit 4 - Periodic Interval 4 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn per4(&mut self) -> PER4_W<4> {
+    pub fn per4(&mut self) -> PER4_W<INTENCLR_SPEC, 4> {
         PER4_W::new(self)
     }
     #[doc = "Bit 5 - Periodic Interval 5 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn per5(&mut self) -> PER5_W<5> {
+    pub fn per5(&mut self) -> PER5_W<INTENCLR_SPEC, 5> {
         PER5_W::new(self)
     }
     #[doc = "Bit 6 - Periodic Interval 6 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn per6(&mut self) -> PER6_W<6> {
+    pub fn per6(&mut self) -> PER6_W<INTENCLR_SPEC, 6> {
         PER6_W::new(self)
     }
     #[doc = "Bit 7 - Periodic Interval 7 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn per7(&mut self) -> PER7_W<7> {
+    pub fn per7(&mut self) -> PER7_W<INTENCLR_SPEC, 7> {
         PER7_W::new(self)
     }
     #[doc = "Bit 8 - Compare 0 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp0(&mut self) -> CMP0_W<8> {
+    pub fn cmp0(&mut self) -> CMP0_W<INTENCLR_SPEC, 8> {
         CMP0_W::new(self)
     }
     #[doc = "Bit 9 - Compare 1 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp1(&mut self) -> CMP1_W<9> {
+    pub fn cmp1(&mut self) -> CMP1_W<INTENCLR_SPEC, 9> {
         CMP1_W::new(self)
     }
     #[doc = "Bit 10 - Compare 2 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp2(&mut self) -> CMP2_W<10> {
+    pub fn cmp2(&mut self) -> CMP2_W<INTENCLR_SPEC, 10> {
         CMP2_W::new(self)
     }
     #[doc = "Bit 11 - Compare 3 Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp3(&mut self) -> CMP3_W<11> {
+    pub fn cmp3(&mut self) -> CMP3_W<INTENCLR_SPEC, 11> {
         CMP3_W::new(self)
     }
     #[doc = "Bit 14 - Tamper Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn tamper(&mut self) -> TAMPER_W<14> {
+    pub fn tamper(&mut self) -> TAMPER_W<INTENCLR_SPEC, 14> {
         TAMPER_W::new(self)
     }
     #[doc = "Bit 15 - Overflow Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ovf(&mut self) -> OVF_W<15> {
+    pub fn ovf(&mut self) -> OVF_W<INTENCLR_SPEC, 15> {
         OVF_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "MODE1 Interrupt Enable Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intenclr](index.html) module"]
+#[doc = "MODE1 Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTENCLR_SPEC;
 impl crate::RegisterSpec for INTENCLR_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [intenclr::R](R) reader structure"]
-impl crate::Readable for INTENCLR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intenclr::W](W) writer structure"]
+#[doc = "`read()` method returns [`intenclr::R`](R) reader structure"]
+impl crate::Readable for INTENCLR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for INTENCLR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

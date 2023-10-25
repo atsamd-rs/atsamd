@@ -191,7 +191,11 @@ impl<Mode: RtcMode> Rtc<Mode> {
     /// clock to be running at 1024 Hz.
     pub fn into_clock_mode(mut self) -> Rtc<ClockMode> {
         // The max divisor is 1024, so to get 1 Hz, we need a 1024 Hz source.
-        assert_eq!(self.rtc_clock_freq.0, 1024_u32, "RTC clk not 1024 Hz!");
+        assert_eq!(
+            self.rtc_clock_freq.to_Hz(),
+            1024_u32,
+            "RTC clk not 1024 Hz!"
+        );
 
         self.sync();
         self.enable(false);
@@ -275,7 +279,7 @@ impl Rtc<Count32Mode> {
         &mut self,
         timeout: T,
     ) -> &Self {
-        let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
+        let params = TimerParams::new_us(timeout, self.rtc_clock_freq);
         let divider = params.divider;
 
         // Disable the timer while we reconfigure it
@@ -345,7 +349,7 @@ impl CountDown for Rtc<Count32Mode> {
     where
         T: Into<Self::Time>,
     {
-        let params = TimerParams::new_us(timeout, self.rtc_clock_freq.0);
+        let params = TimerParams::new_us(timeout, self.rtc_clock_freq);
         let divider = params.divider;
         let cycles = params.cycles;
 
@@ -415,22 +419,19 @@ pub struct TimerParams {
 impl TimerParams {
     /// calculates RTC timer paramters based on the input frequency-based
     /// timeout.
-    pub fn new<T>(timeout: T, src_freq: u32) -> Self
-    where
-        T: Into<Hertz>,
-    {
+    pub fn new(timeout: impl Into<Hertz>, src_freq: impl Into<Hertz>) -> Self {
         let timeout = timeout.into();
-        let ticks: u32 = src_freq / timeout.0.max(1);
+        let src_freq = src_freq.into();
+        let ticks: u32 = src_freq.to_Hz() / timeout.to_Hz().max(1);
         Self::new_from_ticks(ticks)
     }
 
     /// calculates RTC timer paramters based on the input period-based timeout.
-    pub fn new_us<T>(timeout: T, src_freq: u32) -> Self
-    where
-        T: Into<Nanoseconds>,
-    {
+    pub fn new_us(timeout: impl Into<Nanoseconds>, src_freq: impl Into<Hertz>) -> Self {
         let timeout = timeout.into();
-        let ticks: u32 = (timeout.0 as u64 * src_freq as u64 / 1_000_000_000_u64) as u32;
+        let src_freq = src_freq.into();
+        let ticks: u32 =
+            (timeout.to_nanos() as u64 * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
         Self::new_from_ticks(ticks)
     }
 

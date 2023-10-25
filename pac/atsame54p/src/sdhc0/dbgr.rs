@@ -1,39 +1,7 @@
 #[doc = "Register `DBGR` reader"]
-pub struct R(crate::R<DBGR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DBGR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DBGR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DBGR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DBGR_SPEC>;
 #[doc = "Register `DBGR` writer"]
-pub struct W(crate::W<DBGR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<DBGR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<DBGR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<DBGR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<DBGR_SPEC>;
 #[doc = "Field `NIDBG` reader - Non-intrusive debug enable"]
 pub type NIDBG_R = crate::BitReader<NIDBGSELECT_A>;
 #[doc = "Non-intrusive debug enable\n\nValue on reset: 0"]
@@ -53,34 +21,37 @@ impl From<NIDBGSELECT_A> for bool {
 impl NIDBG_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> NIDBGSELECT_A {
+    pub const fn variant(&self) -> NIDBGSELECT_A {
         match self.bits {
             false => NIDBGSELECT_A::IDBG,
             true => NIDBGSELECT_A::NIDBG,
         }
     }
-    #[doc = "Checks if the value of the field is `IDBG`"]
+    #[doc = "Debugging is intrusive (reads of BDPR from debugger are considered and increment the internal buffer pointer)"]
     #[inline(always)]
     pub fn is_idbg(&self) -> bool {
         *self == NIDBGSELECT_A::IDBG
     }
-    #[doc = "Checks if the value of the field is `NIDBG`"]
+    #[doc = "Debugging is not intrusive (reads of BDPR from debugger are discarded and do not increment the internal buffer pointer)"]
     #[inline(always)]
     pub fn is_nidbg(&self) -> bool {
         *self == NIDBGSELECT_A::NIDBG
     }
 }
 #[doc = "Field `NIDBG` writer - Non-intrusive debug enable"]
-pub type NIDBG_W<'a, const O: u8> = crate::BitWriter<'a, u8, DBGR_SPEC, NIDBGSELECT_A, O>;
-impl<'a, const O: u8> NIDBG_W<'a, O> {
+pub type NIDBG_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, NIDBGSELECT_A>;
+impl<'a, REG, const O: u8> NIDBG_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Debugging is intrusive (reads of BDPR from debugger are considered and increment the internal buffer pointer)"]
     #[inline(always)]
-    pub fn idbg(self) -> &'a mut W {
+    pub fn idbg(self) -> &'a mut crate::W<REG> {
         self.variant(NIDBGSELECT_A::IDBG)
     }
     #[doc = "Debugging is not intrusive (reads of BDPR from debugger are discarded and do not increment the internal buffer pointer)"]
     #[inline(always)]
-    pub fn nidbg(self) -> &'a mut W {
+    pub fn nidbg(self) -> &'a mut crate::W<REG> {
         self.variant(NIDBGSELECT_A::NIDBG)
     }
 }
@@ -95,28 +66,29 @@ impl W {
     #[doc = "Bit 0 - Non-intrusive debug enable"]
     #[inline(always)]
     #[must_use]
-    pub fn nidbg(&mut self) -> NIDBG_W<0> {
+    pub fn nidbg(&mut self) -> NIDBG_W<DBGR_SPEC, 0> {
         NIDBG_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Debug\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dbgr](index.html) module"]
+#[doc = "Debug\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dbgr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dbgr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DBGR_SPEC;
 impl crate::RegisterSpec for DBGR_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [dbgr::R](R) reader structure"]
-impl crate::Readable for DBGR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [dbgr::W](W) writer structure"]
+#[doc = "`read()` method returns [`dbgr::R`](R) reader structure"]
+impl crate::Readable for DBGR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`dbgr::W`](W) writer structure"]
 impl crate::Writable for DBGR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

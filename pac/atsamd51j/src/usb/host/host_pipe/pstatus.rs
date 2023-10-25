@@ -1,28 +1,15 @@
 #[doc = "Register `PSTATUS` reader"]
-pub struct R(crate::R<PSTATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PSTATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PSTATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PSTATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PSTATUS_SPEC>;
 #[doc = "Field `DTGL` reader - Data Toggle"]
-pub type DTGL_R = crate::BitReader<bool>;
+pub type DTGL_R = crate::BitReader;
 #[doc = "Field `CURBK` reader - Current Bank"]
-pub type CURBK_R = crate::BitReader<bool>;
+pub type CURBK_R = crate::BitReader;
 #[doc = "Field `PFREEZE` reader - Pipe Freeze"]
-pub type PFREEZE_R = crate::BitReader<bool>;
+pub type PFREEZE_R = crate::BitReader;
 #[doc = "Field `BK0RDY` reader - Bank 0 ready"]
-pub type BK0RDY_R = crate::BitReader<bool>;
+pub type BK0RDY_R = crate::BitReader;
 #[doc = "Field `BK1RDY` reader - Bank 1 ready"]
-pub type BK1RDY_R = crate::BitReader<bool>;
+pub type BK1RDY_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Data Toggle"]
     #[inline(always)]
@@ -50,15 +37,13 @@ impl R {
         BK1RDY_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
-#[doc = "HOST_PIPE End Point Pipe Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pstatus](index.html) module"]
+#[doc = "HOST_PIPE End Point Pipe Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pstatus::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PSTATUS_SPEC;
 impl crate::RegisterSpec for PSTATUS_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [pstatus::R](R) reader structure"]
-impl crate::Readable for PSTATUS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`pstatus::R`](R) reader structure"]
+impl crate::Readable for PSTATUS_SPEC {}
 #[doc = "`reset()` method sets PSTATUS to value 0"]
 impl crate::Resettable for PSTATUS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

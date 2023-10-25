@@ -1,27 +1,22 @@
 #[doc = "Register `DEVID` reader"]
-pub struct R(crate::R<DEVID_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DEVID_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+pub type R = crate::R<DEVID_SPEC>;
+impl core::fmt::Debug for R {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(f, "{}", self.bits())
     }
 }
-impl From<crate::R<DEVID_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DEVID_SPEC>) -> Self {
-        R(reader)
+impl core::fmt::Debug for crate::generic::Reg<DEVID_SPEC> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        self.read().fmt(f)
     }
 }
-#[doc = "MTB Device Configuration\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [devid](index.html) module"]
+#[doc = "MTB Device Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`devid::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DEVID_SPEC;
 impl crate::RegisterSpec for DEVID_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [devid::R](R) reader structure"]
-impl crate::Readable for DEVID_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`devid::R`](R) reader structure"]
+impl crate::Readable for DEVID_SPEC {}
 #[doc = "`reset()` method sets DEVID to value 0"]
 impl crate::Resettable for DEVID_SPEC {
     const RESET_VALUE: Self::Ux = 0;

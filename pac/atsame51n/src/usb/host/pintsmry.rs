@@ -1,34 +1,21 @@
 #[doc = "Register `PINTSMRY` reader"]
-pub struct R(crate::R<PINTSMRY_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PINTSMRY_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PINTSMRY_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PINTSMRY_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PINTSMRY_SPEC>;
 #[doc = "Field `EPINT0` reader - Pipe 0 Interrupt"]
-pub type EPINT0_R = crate::BitReader<bool>;
+pub type EPINT0_R = crate::BitReader;
 #[doc = "Field `EPINT1` reader - Pipe 1 Interrupt"]
-pub type EPINT1_R = crate::BitReader<bool>;
+pub type EPINT1_R = crate::BitReader;
 #[doc = "Field `EPINT2` reader - Pipe 2 Interrupt"]
-pub type EPINT2_R = crate::BitReader<bool>;
+pub type EPINT2_R = crate::BitReader;
 #[doc = "Field `EPINT3` reader - Pipe 3 Interrupt"]
-pub type EPINT3_R = crate::BitReader<bool>;
+pub type EPINT3_R = crate::BitReader;
 #[doc = "Field `EPINT4` reader - Pipe 4 Interrupt"]
-pub type EPINT4_R = crate::BitReader<bool>;
+pub type EPINT4_R = crate::BitReader;
 #[doc = "Field `EPINT5` reader - Pipe 5 Interrupt"]
-pub type EPINT5_R = crate::BitReader<bool>;
+pub type EPINT5_R = crate::BitReader;
 #[doc = "Field `EPINT6` reader - Pipe 6 Interrupt"]
-pub type EPINT6_R = crate::BitReader<bool>;
+pub type EPINT6_R = crate::BitReader;
 #[doc = "Field `EPINT7` reader - Pipe 7 Interrupt"]
-pub type EPINT7_R = crate::BitReader<bool>;
+pub type EPINT7_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Pipe 0 Interrupt"]
     #[inline(always)]
@@ -71,15 +58,13 @@ impl R {
         EPINT7_R::new(((self.bits >> 7) & 1) != 0)
     }
 }
-#[doc = "HOST Pipe Interrupt Summary\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pintsmry](index.html) module"]
+#[doc = "HOST Pipe Interrupt Summary\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pintsmry::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PINTSMRY_SPEC;
 impl crate::RegisterSpec for PINTSMRY_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [pintsmry::R](R) reader structure"]
-impl crate::Readable for PINTSMRY_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`pintsmry::R`](R) reader structure"]
+impl crate::Readable for PINTSMRY_SPEC {}
 #[doc = "`reset()` method sets PINTSMRY to value 0"]
 impl crate::Resettable for PINTSMRY_SPEC {
     const RESET_VALUE: Self::Ux = 0;

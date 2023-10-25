@@ -1,41 +1,9 @@
 #[doc = "Register `HC2R` reader"]
-pub struct R(crate::R<HC2R_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<HC2R_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<HC2R_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<HC2R_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<HC2R_SPEC>;
 #[doc = "Register `HC2R` writer"]
-pub struct W(crate::W<HC2R_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<HC2R_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<HC2R_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<HC2R_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<HC2R_SPEC>;
 #[doc = "Field `UHSMS` reader - UHS Mode Select"]
-pub type UHSMS_R = crate::FieldReader<u8, UHSMSSELECT_A>;
+pub type UHSMS_R = crate::FieldReader<UHSMSSELECT_A>;
 #[doc = "UHS Mode Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -57,10 +25,13 @@ impl From<UHSMSSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for UHSMSSELECT_A {
+    type Ux = u8;
+}
 impl UHSMS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<UHSMSSELECT_A> {
+    pub const fn variant(&self) -> Option<UHSMSSELECT_A> {
         match self.bits {
             0 => Some(UHSMSSELECT_A::SDR12),
             1 => Some(UHSMSSELECT_A::SDR25),
@@ -70,58 +41,62 @@ impl UHSMS_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `SDR12`"]
+    #[doc = "SDR12"]
     #[inline(always)]
     pub fn is_sdr12(&self) -> bool {
         *self == UHSMSSELECT_A::SDR12
     }
-    #[doc = "Checks if the value of the field is `SDR25`"]
+    #[doc = "SDR25"]
     #[inline(always)]
     pub fn is_sdr25(&self) -> bool {
         *self == UHSMSSELECT_A::SDR25
     }
-    #[doc = "Checks if the value of the field is `SDR50`"]
+    #[doc = "SDR50"]
     #[inline(always)]
     pub fn is_sdr50(&self) -> bool {
         *self == UHSMSSELECT_A::SDR50
     }
-    #[doc = "Checks if the value of the field is `SDR104`"]
+    #[doc = "SDR104"]
     #[inline(always)]
     pub fn is_sdr104(&self) -> bool {
         *self == UHSMSSELECT_A::SDR104
     }
-    #[doc = "Checks if the value of the field is `DDR50`"]
+    #[doc = "DDR50"]
     #[inline(always)]
     pub fn is_ddr50(&self) -> bool {
         *self == UHSMSSELECT_A::DDR50
     }
 }
 #[doc = "Field `UHSMS` writer - UHS Mode Select"]
-pub type UHSMS_W<'a, const O: u8> = crate::FieldWriter<'a, u16, HC2R_SPEC, u8, UHSMSSELECT_A, 3, O>;
-impl<'a, const O: u8> UHSMS_W<'a, O> {
+pub type UHSMS_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, UHSMSSELECT_A>;
+impl<'a, REG, const O: u8> UHSMS_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "SDR12"]
     #[inline(always)]
-    pub fn sdr12(self) -> &'a mut W {
+    pub fn sdr12(self) -> &'a mut crate::W<REG> {
         self.variant(UHSMSSELECT_A::SDR12)
     }
     #[doc = "SDR25"]
     #[inline(always)]
-    pub fn sdr25(self) -> &'a mut W {
+    pub fn sdr25(self) -> &'a mut crate::W<REG> {
         self.variant(UHSMSSELECT_A::SDR25)
     }
     #[doc = "SDR50"]
     #[inline(always)]
-    pub fn sdr50(self) -> &'a mut W {
+    pub fn sdr50(self) -> &'a mut crate::W<REG> {
         self.variant(UHSMSSELECT_A::SDR50)
     }
     #[doc = "SDR104"]
     #[inline(always)]
-    pub fn sdr104(self) -> &'a mut W {
+    pub fn sdr104(self) -> &'a mut crate::W<REG> {
         self.variant(UHSMSSELECT_A::SDR104)
     }
     #[doc = "DDR50"]
     #[inline(always)]
-    pub fn ddr50(self) -> &'a mut W {
+    pub fn ddr50(self) -> &'a mut crate::W<REG> {
         self.variant(UHSMSSELECT_A::DDR50)
     }
 }
@@ -144,39 +119,42 @@ impl From<VS18ENSELECT_A> for bool {
 impl VS18EN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> VS18ENSELECT_A {
+    pub const fn variant(&self) -> VS18ENSELECT_A {
         match self.bits {
             false => VS18ENSELECT_A::S33V,
             true => VS18ENSELECT_A::S18V,
         }
     }
-    #[doc = "Checks if the value of the field is `S33V`"]
+    #[doc = "3.3V Signaling"]
     #[inline(always)]
     pub fn is_s33v(&self) -> bool {
         *self == VS18ENSELECT_A::S33V
     }
-    #[doc = "Checks if the value of the field is `S18V`"]
+    #[doc = "1.8V Signaling"]
     #[inline(always)]
     pub fn is_s18v(&self) -> bool {
         *self == VS18ENSELECT_A::S18V
     }
 }
 #[doc = "Field `VS18EN` writer - 1.8V Signaling Enable"]
-pub type VS18EN_W<'a, const O: u8> = crate::BitWriter<'a, u16, HC2R_SPEC, VS18ENSELECT_A, O>;
-impl<'a, const O: u8> VS18EN_W<'a, O> {
+pub type VS18EN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, VS18ENSELECT_A>;
+impl<'a, REG, const O: u8> VS18EN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "3.3V Signaling"]
     #[inline(always)]
-    pub fn s33v(self) -> &'a mut W {
+    pub fn s33v(self) -> &'a mut crate::W<REG> {
         self.variant(VS18ENSELECT_A::S33V)
     }
     #[doc = "1.8V Signaling"]
     #[inline(always)]
-    pub fn s18v(self) -> &'a mut W {
+    pub fn s18v(self) -> &'a mut crate::W<REG> {
         self.variant(VS18ENSELECT_A::S18V)
     }
 }
 #[doc = "Field `DRVSEL` reader - Driver Strength Select"]
-pub type DRVSEL_R = crate::FieldReader<u8, DRVSELSELECT_A>;
+pub type DRVSEL_R = crate::FieldReader<DRVSELSELECT_A>;
 #[doc = "Driver Strength Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -196,10 +174,13 @@ impl From<DRVSELSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for DRVSELSELECT_A {
+    type Ux = u8;
+}
 impl DRVSEL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DRVSELSELECT_A {
+    pub const fn variant(&self) -> DRVSELSELECT_A {
         match self.bits {
             0 => DRVSELSELECT_A::B,
             1 => DRVSELSELECT_A::A,
@@ -208,49 +189,52 @@ impl DRVSEL_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `B`"]
+    #[doc = "Driver Type B is Selected (Default)"]
     #[inline(always)]
     pub fn is_b(&self) -> bool {
         *self == DRVSELSELECT_A::B
     }
-    #[doc = "Checks if the value of the field is `A`"]
+    #[doc = "Driver Type A is Selected"]
     #[inline(always)]
     pub fn is_a(&self) -> bool {
         *self == DRVSELSELECT_A::A
     }
-    #[doc = "Checks if the value of the field is `C`"]
+    #[doc = "Driver Type C is Selected"]
     #[inline(always)]
     pub fn is_c(&self) -> bool {
         *self == DRVSELSELECT_A::C
     }
-    #[doc = "Checks if the value of the field is `D`"]
+    #[doc = "Driver Type D is Selected"]
     #[inline(always)]
     pub fn is_d(&self) -> bool {
         *self == DRVSELSELECT_A::D
     }
 }
 #[doc = "Field `DRVSEL` writer - Driver Strength Select"]
-pub type DRVSEL_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u16, HC2R_SPEC, u8, DRVSELSELECT_A, 2, O>;
-impl<'a, const O: u8> DRVSEL_W<'a, O> {
+pub type DRVSEL_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, DRVSELSELECT_A>;
+impl<'a, REG, const O: u8> DRVSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Driver Type B is Selected (Default)"]
     #[inline(always)]
-    pub fn b(self) -> &'a mut W {
+    pub fn b(self) -> &'a mut crate::W<REG> {
         self.variant(DRVSELSELECT_A::B)
     }
     #[doc = "Driver Type A is Selected"]
     #[inline(always)]
-    pub fn a(self) -> &'a mut W {
+    pub fn a(self) -> &'a mut crate::W<REG> {
         self.variant(DRVSELSELECT_A::A)
     }
     #[doc = "Driver Type C is Selected"]
     #[inline(always)]
-    pub fn c(self) -> &'a mut W {
+    pub fn c(self) -> &'a mut crate::W<REG> {
         self.variant(DRVSELSELECT_A::C)
     }
     #[doc = "Driver Type D is Selected"]
     #[inline(always)]
-    pub fn d(self) -> &'a mut W {
+    pub fn d(self) -> &'a mut crate::W<REG> {
         self.variant(DRVSELSELECT_A::D)
     }
 }
@@ -273,34 +257,37 @@ impl From<EXTUNSELECT_A> for bool {
 impl EXTUN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> EXTUNSELECT_A {
+    pub const fn variant(&self) -> EXTUNSELECT_A {
         match self.bits {
             false => EXTUNSELECT_A::NO,
             true => EXTUNSELECT_A::REQUESTED,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Not Tuned or Tuning Completed"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == EXTUNSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `REQUESTED`"]
+    #[doc = "Execute Tuning"]
     #[inline(always)]
     pub fn is_requested(&self) -> bool {
         *self == EXTUNSELECT_A::REQUESTED
     }
 }
 #[doc = "Field `EXTUN` writer - Execute Tuning"]
-pub type EXTUN_W<'a, const O: u8> = crate::BitWriter<'a, u16, HC2R_SPEC, EXTUNSELECT_A, O>;
-impl<'a, const O: u8> EXTUN_W<'a, O> {
+pub type EXTUN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, EXTUNSELECT_A>;
+impl<'a, REG, const O: u8> EXTUN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Not Tuned or Tuning Completed"]
     #[inline(always)]
-    pub fn no(self) -> &'a mut W {
+    pub fn no(self) -> &'a mut crate::W<REG> {
         self.variant(EXTUNSELECT_A::NO)
     }
     #[doc = "Execute Tuning"]
     #[inline(always)]
-    pub fn requested(self) -> &'a mut W {
+    pub fn requested(self) -> &'a mut crate::W<REG> {
         self.variant(EXTUNSELECT_A::REQUESTED)
     }
 }
@@ -323,34 +310,37 @@ impl From<SLCKSELSELECT_A> for bool {
 impl SLCKSEL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> SLCKSELSELECT_A {
+    pub const fn variant(&self) -> SLCKSELSELECT_A {
         match self.bits {
             false => SLCKSELSELECT_A::FIXED,
             true => SLCKSELSELECT_A::TUNED,
         }
     }
-    #[doc = "Checks if the value of the field is `FIXED`"]
+    #[doc = "Fixed clock is used to sample data"]
     #[inline(always)]
     pub fn is_fixed(&self) -> bool {
         *self == SLCKSELSELECT_A::FIXED
     }
-    #[doc = "Checks if the value of the field is `TUNED`"]
+    #[doc = "Tuned clock is used to sample data"]
     #[inline(always)]
     pub fn is_tuned(&self) -> bool {
         *self == SLCKSELSELECT_A::TUNED
     }
 }
 #[doc = "Field `SLCKSEL` writer - Sampling Clock Select"]
-pub type SLCKSEL_W<'a, const O: u8> = crate::BitWriter<'a, u16, HC2R_SPEC, SLCKSELSELECT_A, O>;
-impl<'a, const O: u8> SLCKSEL_W<'a, O> {
+pub type SLCKSEL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, SLCKSELSELECT_A>;
+impl<'a, REG, const O: u8> SLCKSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Fixed clock is used to sample data"]
     #[inline(always)]
-    pub fn fixed(self) -> &'a mut W {
+    pub fn fixed(self) -> &'a mut crate::W<REG> {
         self.variant(SLCKSELSELECT_A::FIXED)
     }
     #[doc = "Tuned clock is used to sample data"]
     #[inline(always)]
-    pub fn tuned(self) -> &'a mut W {
+    pub fn tuned(self) -> &'a mut crate::W<REG> {
         self.variant(SLCKSELSELECT_A::TUNED)
     }
 }
@@ -373,34 +363,37 @@ impl From<ASINTENSELECT_A> for bool {
 impl ASINTEN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> ASINTENSELECT_A {
+    pub const fn variant(&self) -> ASINTENSELECT_A {
         match self.bits {
             false => ASINTENSELECT_A::DISABLED,
             true => ASINTENSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `DISABLED`"]
+    #[doc = "Disabled"]
     #[inline(always)]
     pub fn is_disabled(&self) -> bool {
         *self == ASINTENSELECT_A::DISABLED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == ASINTENSELECT_A::ENABLED
     }
 }
 #[doc = "Field `ASINTEN` writer - Asynchronous Interrupt Enable"]
-pub type ASINTEN_W<'a, const O: u8> = crate::BitWriter<'a, u16, HC2R_SPEC, ASINTENSELECT_A, O>;
-impl<'a, const O: u8> ASINTEN_W<'a, O> {
+pub type ASINTEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, ASINTENSELECT_A>;
+impl<'a, REG, const O: u8> ASINTEN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "Disabled"]
     #[inline(always)]
-    pub fn disabled(self) -> &'a mut W {
+    pub fn disabled(self) -> &'a mut crate::W<REG> {
         self.variant(ASINTENSELECT_A::DISABLED)
     }
     #[doc = "Enabled"]
     #[inline(always)]
-    pub fn enabled(self) -> &'a mut W {
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
         self.variant(ASINTENSELECT_A::ENABLED)
     }
 }
@@ -423,34 +416,37 @@ impl From<PVALENSELECT_A> for bool {
 impl PVALEN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> PVALENSELECT_A {
+    pub const fn variant(&self) -> PVALENSELECT_A {
         match self.bits {
             false => PVALENSELECT_A::HOST,
             true => PVALENSELECT_A::AUTO,
         }
     }
-    #[doc = "Checks if the value of the field is `HOST`"]
+    #[doc = "SDCLK and Driver Strength are controlled by Host Controller"]
     #[inline(always)]
     pub fn is_host(&self) -> bool {
         *self == PVALENSELECT_A::HOST
     }
-    #[doc = "Checks if the value of the field is `AUTO`"]
+    #[doc = "Automatic Selection by Preset Value is Enabled"]
     #[inline(always)]
     pub fn is_auto(&self) -> bool {
         *self == PVALENSELECT_A::AUTO
     }
 }
 #[doc = "Field `PVALEN` writer - Preset Value Enable"]
-pub type PVALEN_W<'a, const O: u8> = crate::BitWriter<'a, u16, HC2R_SPEC, PVALENSELECT_A, O>;
-impl<'a, const O: u8> PVALEN_W<'a, O> {
+pub type PVALEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, PVALENSELECT_A>;
+impl<'a, REG, const O: u8> PVALEN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
     #[doc = "SDCLK and Driver Strength are controlled by Host Controller"]
     #[inline(always)]
-    pub fn host(self) -> &'a mut W {
+    pub fn host(self) -> &'a mut crate::W<REG> {
         self.variant(PVALENSELECT_A::HOST)
     }
     #[doc = "Automatic Selection by Preset Value is Enabled"]
     #[inline(always)]
-    pub fn auto(self) -> &'a mut W {
+    pub fn auto(self) -> &'a mut crate::W<REG> {
         self.variant(PVALENSELECT_A::AUTO)
     }
 }
@@ -495,64 +491,65 @@ impl W {
     #[doc = "Bits 0:2 - UHS Mode Select"]
     #[inline(always)]
     #[must_use]
-    pub fn uhsms(&mut self) -> UHSMS_W<0> {
+    pub fn uhsms(&mut self) -> UHSMS_W<HC2R_SPEC, 0> {
         UHSMS_W::new(self)
     }
     #[doc = "Bit 3 - 1.8V Signaling Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn vs18en(&mut self) -> VS18EN_W<3> {
+    pub fn vs18en(&mut self) -> VS18EN_W<HC2R_SPEC, 3> {
         VS18EN_W::new(self)
     }
     #[doc = "Bits 4:5 - Driver Strength Select"]
     #[inline(always)]
     #[must_use]
-    pub fn drvsel(&mut self) -> DRVSEL_W<4> {
+    pub fn drvsel(&mut self) -> DRVSEL_W<HC2R_SPEC, 4> {
         DRVSEL_W::new(self)
     }
     #[doc = "Bit 6 - Execute Tuning"]
     #[inline(always)]
     #[must_use]
-    pub fn extun(&mut self) -> EXTUN_W<6> {
+    pub fn extun(&mut self) -> EXTUN_W<HC2R_SPEC, 6> {
         EXTUN_W::new(self)
     }
     #[doc = "Bit 7 - Sampling Clock Select"]
     #[inline(always)]
     #[must_use]
-    pub fn slcksel(&mut self) -> SLCKSEL_W<7> {
+    pub fn slcksel(&mut self) -> SLCKSEL_W<HC2R_SPEC, 7> {
         SLCKSEL_W::new(self)
     }
     #[doc = "Bit 14 - Asynchronous Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn asinten(&mut self) -> ASINTEN_W<14> {
+    pub fn asinten(&mut self) -> ASINTEN_W<HC2R_SPEC, 14> {
         ASINTEN_W::new(self)
     }
     #[doc = "Bit 15 - Preset Value Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pvalen(&mut self) -> PVALEN_W<15> {
+    pub fn pvalen(&mut self) -> PVALEN_W<HC2R_SPEC, 15> {
         PVALEN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Host Control 2\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [hc2r](index.html) module"]
+#[doc = "Host Control 2\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`hc2r::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`hc2r::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct HC2R_SPEC;
 impl crate::RegisterSpec for HC2R_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [hc2r::R](R) reader structure"]
-impl crate::Readable for HC2R_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [hc2r::W](W) writer structure"]
+#[doc = "`read()` method returns [`hc2r::R`](R) reader structure"]
+impl crate::Readable for HC2R_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`hc2r::W`](W) writer structure"]
 impl crate::Writable for HC2R_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

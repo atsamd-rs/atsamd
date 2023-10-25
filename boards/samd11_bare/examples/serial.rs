@@ -52,7 +52,7 @@ fn main() -> ! {
     let pads = uart::Pads::<Sercom0>::default().rx(rx).tx(tx);
 
     let mut uart = uart::Config::new(&peripherals.PM, peripherals.SERCOM0, pads, uart_clk.freq())
-        .baud(9600.hz(), BaudMode::Fractional(Oversampling::Bits16))
+        .baud(9600.Hz(), BaudMode::Fractional(Oversampling::Bits16))
         .enable();
 
     loop {

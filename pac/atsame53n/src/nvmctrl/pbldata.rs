@@ -1,20 +1,7 @@
 #[doc = "Register `PBLDATA[%s]` reader"]
-pub struct R(crate::R<PBLDATA_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PBLDATA_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PBLDATA_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PBLDATA_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PBLDATA_SPEC>;
 #[doc = "Field `DATA` reader - Page Buffer Data"]
-pub type DATA_R = crate::FieldReader<u32, u32>;
+pub type DATA_R = crate::FieldReader<u32>;
 impl R {
     #[doc = "Bits 0:31 - Page Buffer Data"]
     #[inline(always)]
@@ -22,15 +9,13 @@ impl R {
         DATA_R::new(self.bits)
     }
 }
-#[doc = "Page Buffer Load Data x\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pbldata](index.html) module"]
+#[doc = "Page Buffer Load Data x\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pbldata::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PBLDATA_SPEC;
 impl crate::RegisterSpec for PBLDATA_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [pbldata::R](R) reader structure"]
-impl crate::Readable for PBLDATA_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`pbldata::R`](R) reader structure"]
+impl crate::Readable for PBLDATA_SPEC {}
 #[doc = "`reset()` method sets PBLDATA[%s]
 to value 0xffff_ffff"]
 impl crate::Resettable for PBLDATA_SPEC {

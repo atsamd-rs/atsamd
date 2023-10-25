@@ -1,26 +1,13 @@
 #[doc = "Register `FFSR` reader"]
-pub struct R(crate::R<FFSR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<FFSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<FFSR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<FFSR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<FFSR_SPEC>;
 #[doc = "Field `FlInProg` reader - "]
-pub type FL_IN_PROG_R = crate::BitReader<bool>;
+pub type FL_IN_PROG_R = crate::BitReader;
 #[doc = "Field `FtStopped` reader - "]
-pub type FT_STOPPED_R = crate::BitReader<bool>;
+pub type FT_STOPPED_R = crate::BitReader;
 #[doc = "Field `TCPresent` reader - "]
-pub type TCPRESENT_R = crate::BitReader<bool>;
+pub type TCPRESENT_R = crate::BitReader;
 #[doc = "Field `FtNonStop` reader - "]
-pub type FT_NON_STOP_R = crate::BitReader<bool>;
+pub type FT_NON_STOP_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0"]
     #[inline(always)]
@@ -43,15 +30,13 @@ impl R {
         FT_NON_STOP_R::new(((self.bits >> 3) & 1) != 0)
     }
 }
-#[doc = "Formatter and Flush Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ffsr](index.html) module"]
+#[doc = "Formatter and Flush Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ffsr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct FFSR_SPEC;
 impl crate::RegisterSpec for FFSR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ffsr::R](R) reader structure"]
-impl crate::Readable for FFSR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`ffsr::R`](R) reader structure"]
+impl crate::Readable for FFSR_SPEC {}
 #[doc = "`reset()` method sets FFSR to value 0"]
 impl crate::Resettable for FFSR_SPEC {
     const RESET_VALUE: Self::Ux = 0;

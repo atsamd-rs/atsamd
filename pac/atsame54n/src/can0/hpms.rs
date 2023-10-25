@@ -1,22 +1,9 @@
 #[doc = "Register `HPMS` reader"]
-pub struct R(crate::R<HPMS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<HPMS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<HPMS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<HPMS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<HPMS_SPEC>;
 #[doc = "Field `BIDX` reader - Buffer Index"]
-pub type BIDX_R = crate::FieldReader<u8, u8>;
+pub type BIDX_R = crate::FieldReader;
 #[doc = "Field `MSI` reader - Message Storage Indicator"]
-pub type MSI_R = crate::FieldReader<u8, MSISELECT_A>;
+pub type MSI_R = crate::FieldReader<MSISELECT_A>;
 #[doc = "Message Storage Indicator\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -36,10 +23,13 @@ impl From<MSISELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for MSISELECT_A {
+    type Ux = u8;
+}
 impl MSI_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> MSISELECT_A {
+    pub const fn variant(&self) -> MSISELECT_A {
         match self.bits {
             0 => MSISELECT_A::NONE,
             1 => MSISELECT_A::LOST,
@@ -48,31 +38,31 @@ impl MSI_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No FIFO selected"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
         *self == MSISELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `LOST`"]
+    #[doc = "FIFO message lost"]
     #[inline(always)]
     pub fn is_lost(&self) -> bool {
         *self == MSISELECT_A::LOST
     }
-    #[doc = "Checks if the value of the field is `FIFO0`"]
+    #[doc = "Message stored in FIFO 0"]
     #[inline(always)]
     pub fn is_fifo0(&self) -> bool {
         *self == MSISELECT_A::FIFO0
     }
-    #[doc = "Checks if the value of the field is `FIFO1`"]
+    #[doc = "Message stored in FIFO 1"]
     #[inline(always)]
     pub fn is_fifo1(&self) -> bool {
         *self == MSISELECT_A::FIFO1
     }
 }
 #[doc = "Field `FIDX` reader - Filter Index"]
-pub type FIDX_R = crate::FieldReader<u8, u8>;
+pub type FIDX_R = crate::FieldReader;
 #[doc = "Field `FLST` reader - Filter List"]
-pub type FLST_R = crate::BitReader<bool>;
+pub type FLST_R = crate::BitReader;
 impl R {
     #[doc = "Bits 0:5 - Buffer Index"]
     #[inline(always)]
@@ -95,15 +85,13 @@ impl R {
         FLST_R::new(((self.bits >> 15) & 1) != 0)
     }
 }
-#[doc = "High Priority Message Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [hpms](index.html) module"]
+#[doc = "High Priority Message Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`hpms::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct HPMS_SPEC;
 impl crate::RegisterSpec for HPMS_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [hpms::R](R) reader structure"]
-impl crate::Readable for HPMS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`hpms::R`](R) reader structure"]
+impl crate::Readable for HPMS_SPEC {}
 #[doc = "`reset()` method sets HPMS to value 0"]
 impl crate::Resettable for HPMS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

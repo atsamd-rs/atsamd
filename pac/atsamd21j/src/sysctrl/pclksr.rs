@@ -1,48 +1,35 @@
 #[doc = "Register `PCLKSR` reader"]
-pub struct R(crate::R<PCLKSR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PCLKSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PCLKSR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PCLKSR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PCLKSR_SPEC>;
 #[doc = "Field `XOSCRDY` reader - XOSC Ready"]
-pub type XOSCRDY_R = crate::BitReader<bool>;
+pub type XOSCRDY_R = crate::BitReader;
 #[doc = "Field `XOSC32KRDY` reader - XOSC32K Ready"]
-pub type XOSC32KRDY_R = crate::BitReader<bool>;
+pub type XOSC32KRDY_R = crate::BitReader;
 #[doc = "Field `OSC32KRDY` reader - OSC32K Ready"]
-pub type OSC32KRDY_R = crate::BitReader<bool>;
+pub type OSC32KRDY_R = crate::BitReader;
 #[doc = "Field `OSC8MRDY` reader - OSC8M Ready"]
-pub type OSC8MRDY_R = crate::BitReader<bool>;
+pub type OSC8MRDY_R = crate::BitReader;
 #[doc = "Field `DFLLRDY` reader - DFLL Ready"]
-pub type DFLLRDY_R = crate::BitReader<bool>;
+pub type DFLLRDY_R = crate::BitReader;
 #[doc = "Field `DFLLOOB` reader - DFLL Out Of Bounds"]
-pub type DFLLOOB_R = crate::BitReader<bool>;
+pub type DFLLOOB_R = crate::BitReader;
 #[doc = "Field `DFLLLCKF` reader - DFLL Lock Fine"]
-pub type DFLLLCKF_R = crate::BitReader<bool>;
+pub type DFLLLCKF_R = crate::BitReader;
 #[doc = "Field `DFLLLCKC` reader - DFLL Lock Coarse"]
-pub type DFLLLCKC_R = crate::BitReader<bool>;
+pub type DFLLLCKC_R = crate::BitReader;
 #[doc = "Field `DFLLRCS` reader - DFLL Reference Clock Stopped"]
-pub type DFLLRCS_R = crate::BitReader<bool>;
+pub type DFLLRCS_R = crate::BitReader;
 #[doc = "Field `BOD33RDY` reader - BOD33 Ready"]
-pub type BOD33RDY_R = crate::BitReader<bool>;
+pub type BOD33RDY_R = crate::BitReader;
 #[doc = "Field `BOD33DET` reader - BOD33 Detection"]
-pub type BOD33DET_R = crate::BitReader<bool>;
+pub type BOD33DET_R = crate::BitReader;
 #[doc = "Field `B33SRDY` reader - BOD33 Synchronization Ready"]
-pub type B33SRDY_R = crate::BitReader<bool>;
+pub type B33SRDY_R = crate::BitReader;
 #[doc = "Field `DPLLLCKR` reader - DPLL Lock Rise"]
-pub type DPLLLCKR_R = crate::BitReader<bool>;
+pub type DPLLLCKR_R = crate::BitReader;
 #[doc = "Field `DPLLLCKF` reader - DPLL Lock Fall"]
-pub type DPLLLCKF_R = crate::BitReader<bool>;
+pub type DPLLLCKF_R = crate::BitReader;
 #[doc = "Field `DPLLLTO` reader - DPLL Lock Timeout"]
-pub type DPLLLTO_R = crate::BitReader<bool>;
+pub type DPLLLTO_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - XOSC Ready"]
     #[inline(always)]
@@ -120,15 +107,13 @@ impl R {
         DPLLLTO_R::new(((self.bits >> 17) & 1) != 0)
     }
 }
-#[doc = "Power and Clocks Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pclksr](index.html) module"]
+#[doc = "Power and Clocks Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pclksr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PCLKSR_SPEC;
 impl crate::RegisterSpec for PCLKSR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [pclksr::R](R) reader structure"]
-impl crate::Readable for PCLKSR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`pclksr::R`](R) reader structure"]
+impl crate::Readable for PCLKSR_SPEC {}
 #[doc = "`reset()` method sets PCLKSR to value 0"]
 impl crate::Resettable for PCLKSR_SPEC {
     const RESET_VALUE: Self::Ux = 0;

@@ -1,5 +1,9 @@
 # Unreleased
 
+- Update the PACs to svd2rust 0.30.2.
+
+# v0.12.0
+
 - Use correct alternate for USB (#661)
 - Correction to the clock in the usb convenience function
 - Add aliases for A6 and A7.

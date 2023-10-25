@@ -185,95 +185,118 @@ pub struct HOST {
     #[doc = "0x1e9 - HOST Pipe Interrupt Flag Set"]
     pub pintenset7: PINTENSET,
 }
-#[doc = "CTRLA (rw) register accessor: an alias for `Reg<CTRLA_SPEC>`"]
+#[doc = "CTRLA (rw) register accessor: Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrla`]
+module"]
 pub type CTRLA = crate::Reg<ctrla::CTRLA_SPEC>;
 #[doc = "Control A"]
 pub mod ctrla;
-#[doc = "SYNCBUSY (r) register accessor: an alias for `Reg<SYNCBUSY_SPEC>`"]
+#[doc = "SYNCBUSY (r) register accessor: Synchronization Busy\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`syncbusy::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@syncbusy`]
+module"]
 pub type SYNCBUSY = crate::Reg<syncbusy::SYNCBUSY_SPEC>;
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
-#[doc = "QOSCTRL (rw) register accessor: an alias for `Reg<QOSCTRL_SPEC>`"]
+#[doc = "QOSCTRL (rw) register accessor: USB Quality Of Service\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`qosctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`qosctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@qosctrl`]
+module"]
 pub type QOSCTRL = crate::Reg<qosctrl::QOSCTRL_SPEC>;
 #[doc = "USB Quality Of Service"]
 pub mod qosctrl;
-#[doc = "CTRLB (rw) register accessor: an alias for `Reg<CTRLB_SPEC>`"]
+#[doc = "CTRLB (rw) register accessor: HOST Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrlb`]
+module"]
 pub type CTRLB = crate::Reg<ctrlb::CTRLB_SPEC>;
 #[doc = "HOST Control B"]
 pub mod ctrlb;
-#[doc = "HSOFC (rw) register accessor: an alias for `Reg<HSOFC_SPEC>`"]
+#[doc = "HSOFC (rw) register accessor: HOST Host Start Of Frame Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`hsofc::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`hsofc::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@hsofc`]
+module"]
 pub type HSOFC = crate::Reg<hsofc::HSOFC_SPEC>;
 #[doc = "HOST Host Start Of Frame Control"]
 pub mod hsofc;
-#[doc = "STATUS (rw) register accessor: an alias for `Reg<STATUS_SPEC>`"]
+#[doc = "STATUS (rw) register accessor: HOST Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`status::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@status`]
+module"]
 pub type STATUS = crate::Reg<status::STATUS_SPEC>;
 #[doc = "HOST Status"]
 pub mod status;
-#[doc = "FSMSTATUS (r) register accessor: an alias for `Reg<FSMSTATUS_SPEC>`"]
+#[doc = "FSMSTATUS (r) register accessor: Finite State Machine Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`fsmstatus::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@fsmstatus`]
+module"]
 pub type FSMSTATUS = crate::Reg<fsmstatus::FSMSTATUS_SPEC>;
 #[doc = "Finite State Machine Status"]
 pub mod fsmstatus;
-#[doc = "FNUM (rw) register accessor: an alias for `Reg<FNUM_SPEC>`"]
+#[doc = "FNUM (rw) register accessor: HOST Host Frame Number\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`fnum::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`fnum::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@fnum`]
+module"]
 pub type FNUM = crate::Reg<fnum::FNUM_SPEC>;
 #[doc = "HOST Host Frame Number"]
 pub mod fnum;
-#[doc = "FLENHIGH (r) register accessor: an alias for `Reg<FLENHIGH_SPEC>`"]
+#[doc = "FLENHIGH (r) register accessor: HOST Host Frame Length\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`flenhigh::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@flenhigh`]
+module"]
 pub type FLENHIGH = crate::Reg<flenhigh::FLENHIGH_SPEC>;
 #[doc = "HOST Host Frame Length"]
 pub mod flenhigh;
-#[doc = "INTENCLR (rw) register accessor: an alias for `Reg<INTENCLR_SPEC>`"]
+#[doc = "INTENCLR (rw) register accessor: HOST Host Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`]
+module"]
 pub type INTENCLR = crate::Reg<intenclr::INTENCLR_SPEC>;
 #[doc = "HOST Host Interrupt Enable Clear"]
 pub mod intenclr;
-#[doc = "INTENSET (rw) register accessor: an alias for `Reg<INTENSET_SPEC>`"]
+#[doc = "INTENSET (rw) register accessor: HOST Host Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`]
+module"]
 pub type INTENSET = crate::Reg<intenset::INTENSET_SPEC>;
 #[doc = "HOST Host Interrupt Enable Set"]
 pub mod intenset;
-#[doc = "INTFLAG (rw) register accessor: an alias for `Reg<INTFLAG_SPEC>`"]
+#[doc = "INTFLAG (rw) register accessor: HOST Host Interrupt Flag\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`]
+module"]
 pub type INTFLAG = crate::Reg<intflag::INTFLAG_SPEC>;
 #[doc = "HOST Host Interrupt Flag"]
 pub mod intflag;
-#[doc = "PINTSMRY (r) register accessor: an alias for `Reg<PINTSMRY_SPEC>`"]
+#[doc = "PINTSMRY (r) register accessor: HOST Pipe Interrupt Summary\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pintsmry::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pintsmry`]
+module"]
 pub type PINTSMRY = crate::Reg<pintsmry::PINTSMRY_SPEC>;
 #[doc = "HOST Pipe Interrupt Summary"]
 pub mod pintsmry;
-#[doc = "DESCADD (rw) register accessor: an alias for `Reg<DESCADD_SPEC>`"]
+#[doc = "DESCADD (rw) register accessor: Descriptor Address\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`descadd::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`descadd::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@descadd`]
+module"]
 pub type DESCADD = crate::Reg<descadd::DESCADD_SPEC>;
 #[doc = "Descriptor Address"]
 pub mod descadd;
-#[doc = "PADCAL (rw) register accessor: an alias for `Reg<PADCAL_SPEC>`"]
+#[doc = "PADCAL (rw) register accessor: USB PAD Calibration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`padcal::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`padcal::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@padcal`]
+module"]
 pub type PADCAL = crate::Reg<padcal::PADCAL_SPEC>;
 #[doc = "USB PAD Calibration"]
 pub mod padcal;
-#[doc = "PCFG (rw) register accessor: an alias for `Reg<PCFG_SPEC>`"]
+#[doc = "PCFG (rw) register accessor: HOST End Point Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pcfg::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`pcfg::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pcfg`]
+module"]
 pub type PCFG = crate::Reg<pcfg::PCFG_SPEC>;
 #[doc = "HOST End Point Configuration"]
 pub mod pcfg;
-#[doc = "BINTERVAL (rw) register accessor: an alias for `Reg<BINTERVAL_SPEC>`"]
+#[doc = "BINTERVAL (rw) register accessor: HOST Bus Access Period of Pipe\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`binterval::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`binterval::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@binterval`]
+module"]
 pub type BINTERVAL = crate::Reg<binterval::BINTERVAL_SPEC>;
 #[doc = "HOST Bus Access Period of Pipe"]
 pub mod binterval;
-#[doc = "PSTATUSCLR (w) register accessor: an alias for `Reg<PSTATUSCLR_SPEC>`"]
+#[doc = "PSTATUSCLR (w) register accessor: HOST End Point Pipe Status Clear\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`pstatusclr::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pstatusclr`]
+module"]
 pub type PSTATUSCLR = crate::Reg<pstatusclr::PSTATUSCLR_SPEC>;
 #[doc = "HOST End Point Pipe Status Clear"]
 pub mod pstatusclr;
-#[doc = "PSTATUSSET (w) register accessor: an alias for `Reg<PSTATUSSET_SPEC>`"]
+#[doc = "PSTATUSSET (w) register accessor: HOST End Point Pipe Status Set\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`pstatusset::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pstatusset`]
+module"]
 pub type PSTATUSSET = crate::Reg<pstatusset::PSTATUSSET_SPEC>;
 #[doc = "HOST End Point Pipe Status Set"]
 pub mod pstatusset;
-#[doc = "PSTATUS (r) register accessor: an alias for `Reg<PSTATUS_SPEC>`"]
+#[doc = "PSTATUS (r) register accessor: HOST End Point Pipe Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pstatus::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pstatus`]
+module"]
 pub type PSTATUS = crate::Reg<pstatus::PSTATUS_SPEC>;
 #[doc = "HOST End Point Pipe Status"]
 pub mod pstatus;
-#[doc = "PINTFLAG (rw) register accessor: an alias for `Reg<PINTFLAG_SPEC>`"]
+#[doc = "PINTFLAG (rw) register accessor: HOST Pipe Interrupt Flag\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pintflag::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`pintflag::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pintflag`]
+module"]
 pub type PINTFLAG = crate::Reg<pintflag::PINTFLAG_SPEC>;
 #[doc = "HOST Pipe Interrupt Flag"]
 pub mod pintflag;
-#[doc = "PINTENCLR (rw) register accessor: an alias for `Reg<PINTENCLR_SPEC>`"]
+#[doc = "PINTENCLR (rw) register accessor: HOST Pipe Interrupt Flag Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pintenclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`pintenclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pintenclr`]
+module"]
 pub type PINTENCLR = crate::Reg<pintenclr::PINTENCLR_SPEC>;
 #[doc = "HOST Pipe Interrupt Flag Clear"]
 pub mod pintenclr;
-#[doc = "PINTENSET (rw) register accessor: an alias for `Reg<PINTENSET_SPEC>`"]
+#[doc = "PINTENSET (rw) register accessor: HOST Pipe Interrupt Flag Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pintenset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`pintenset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pintenset`]
+module"]
 pub type PINTENSET = crate::Reg<pintenset::PINTENSET_SPEC>;
 #[doc = "HOST Pipe Interrupt Flag Set"]
 pub mod pintenset;

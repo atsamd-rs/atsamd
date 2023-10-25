@@ -1,95 +1,63 @@
 #[doc = "Register `CCCR` reader"]
-pub struct R(crate::R<CCCR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CCCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CCCR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CCCR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CCCR_SPEC>;
 #[doc = "Register `CCCR` writer"]
-pub struct W(crate::W<CCCR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CCCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CCCR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CCCR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CCCR_SPEC>;
 #[doc = "Field `INIT` reader - Initialization"]
-pub type INIT_R = crate::BitReader<bool>;
+pub type INIT_R = crate::BitReader;
 #[doc = "Field `INIT` writer - Initialization"]
-pub type INIT_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type INIT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CCE` reader - Configuration Change Enable"]
-pub type CCE_R = crate::BitReader<bool>;
+pub type CCE_R = crate::BitReader;
 #[doc = "Field `CCE` writer - Configuration Change Enable"]
-pub type CCE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type CCE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ASM` reader - ASM Restricted Operation Mode"]
-pub type ASM_R = crate::BitReader<bool>;
+pub type ASM_R = crate::BitReader;
 #[doc = "Field `ASM` writer - ASM Restricted Operation Mode"]
-pub type ASM_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type ASM_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CSA` reader - Clock Stop Acknowledge"]
-pub type CSA_R = crate::BitReader<bool>;
+pub type CSA_R = crate::BitReader;
 #[doc = "Field `CSA` writer - Clock Stop Acknowledge"]
-pub type CSA_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type CSA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CSR` reader - Clock Stop Request"]
-pub type CSR_R = crate::BitReader<bool>;
+pub type CSR_R = crate::BitReader;
 #[doc = "Field `CSR` writer - Clock Stop Request"]
-pub type CSR_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type CSR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MON` reader - Bus Monitoring Mode"]
-pub type MON_R = crate::BitReader<bool>;
+pub type MON_R = crate::BitReader;
 #[doc = "Field `MON` writer - Bus Monitoring Mode"]
-pub type MON_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type MON_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DAR` reader - Disable Automatic Retransmission"]
-pub type DAR_R = crate::BitReader<bool>;
+pub type DAR_R = crate::BitReader;
 #[doc = "Field `DAR` writer - Disable Automatic Retransmission"]
-pub type DAR_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type DAR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TEST` reader - Test Mode Enable"]
-pub type TEST_R = crate::BitReader<bool>;
+pub type TEST_R = crate::BitReader;
 #[doc = "Field `TEST` writer - Test Mode Enable"]
-pub type TEST_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type TEST_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FDOE` reader - FD Operation Enable"]
-pub type FDOE_R = crate::BitReader<bool>;
+pub type FDOE_R = crate::BitReader;
 #[doc = "Field `FDOE` writer - FD Operation Enable"]
-pub type FDOE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type FDOE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BRSE` reader - Bit Rate Switch Enable"]
-pub type BRSE_R = crate::BitReader<bool>;
+pub type BRSE_R = crate::BitReader;
 #[doc = "Field `BRSE` writer - Bit Rate Switch Enable"]
-pub type BRSE_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type BRSE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PXHD` reader - Protocol Exception Handling Disable"]
-pub type PXHD_R = crate::BitReader<bool>;
+pub type PXHD_R = crate::BitReader;
 #[doc = "Field `PXHD` writer - Protocol Exception Handling Disable"]
-pub type PXHD_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type PXHD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EFBI` reader - Edge Filtering during Bus Integration"]
-pub type EFBI_R = crate::BitReader<bool>;
+pub type EFBI_R = crate::BitReader;
 #[doc = "Field `EFBI` writer - Edge Filtering during Bus Integration"]
-pub type EFBI_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type EFBI_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TXP` reader - Transmit Pause"]
-pub type TXP_R = crate::BitReader<bool>;
+pub type TXP_R = crate::BitReader;
 #[doc = "Field `TXP` writer - Transmit Pause"]
-pub type TXP_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type TXP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `NISO` reader - Non ISO Operation"]
-pub type NISO_R = crate::BitReader<bool>;
+pub type NISO_R = crate::BitReader;
 #[doc = "Field `NISO` writer - Non ISO Operation"]
-pub type NISO_W<'a, const O: u8> = crate::BitWriter<'a, u32, CCCR_SPEC, bool, O>;
+pub type NISO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Initialization"]
     #[inline(always)]
@@ -166,106 +134,107 @@ impl W {
     #[doc = "Bit 0 - Initialization"]
     #[inline(always)]
     #[must_use]
-    pub fn init(&mut self) -> INIT_W<0> {
+    pub fn init(&mut self) -> INIT_W<CCCR_SPEC, 0> {
         INIT_W::new(self)
     }
     #[doc = "Bit 1 - Configuration Change Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cce(&mut self) -> CCE_W<1> {
+    pub fn cce(&mut self) -> CCE_W<CCCR_SPEC, 1> {
         CCE_W::new(self)
     }
     #[doc = "Bit 2 - ASM Restricted Operation Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn asm(&mut self) -> ASM_W<2> {
+    pub fn asm(&mut self) -> ASM_W<CCCR_SPEC, 2> {
         ASM_W::new(self)
     }
     #[doc = "Bit 3 - Clock Stop Acknowledge"]
     #[inline(always)]
     #[must_use]
-    pub fn csa(&mut self) -> CSA_W<3> {
+    pub fn csa(&mut self) -> CSA_W<CCCR_SPEC, 3> {
         CSA_W::new(self)
     }
     #[doc = "Bit 4 - Clock Stop Request"]
     #[inline(always)]
     #[must_use]
-    pub fn csr(&mut self) -> CSR_W<4> {
+    pub fn csr(&mut self) -> CSR_W<CCCR_SPEC, 4> {
         CSR_W::new(self)
     }
     #[doc = "Bit 5 - Bus Monitoring Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn mon(&mut self) -> MON_W<5> {
+    pub fn mon(&mut self) -> MON_W<CCCR_SPEC, 5> {
         MON_W::new(self)
     }
     #[doc = "Bit 6 - Disable Automatic Retransmission"]
     #[inline(always)]
     #[must_use]
-    pub fn dar(&mut self) -> DAR_W<6> {
+    pub fn dar(&mut self) -> DAR_W<CCCR_SPEC, 6> {
         DAR_W::new(self)
     }
     #[doc = "Bit 7 - Test Mode Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn test(&mut self) -> TEST_W<7> {
+    pub fn test(&mut self) -> TEST_W<CCCR_SPEC, 7> {
         TEST_W::new(self)
     }
     #[doc = "Bit 8 - FD Operation Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn fdoe(&mut self) -> FDOE_W<8> {
+    pub fn fdoe(&mut self) -> FDOE_W<CCCR_SPEC, 8> {
         FDOE_W::new(self)
     }
     #[doc = "Bit 9 - Bit Rate Switch Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn brse(&mut self) -> BRSE_W<9> {
+    pub fn brse(&mut self) -> BRSE_W<CCCR_SPEC, 9> {
         BRSE_W::new(self)
     }
     #[doc = "Bit 12 - Protocol Exception Handling Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn pxhd(&mut self) -> PXHD_W<12> {
+    pub fn pxhd(&mut self) -> PXHD_W<CCCR_SPEC, 12> {
         PXHD_W::new(self)
     }
     #[doc = "Bit 13 - Edge Filtering during Bus Integration"]
     #[inline(always)]
     #[must_use]
-    pub fn efbi(&mut self) -> EFBI_W<13> {
+    pub fn efbi(&mut self) -> EFBI_W<CCCR_SPEC, 13> {
         EFBI_W::new(self)
     }
     #[doc = "Bit 14 - Transmit Pause"]
     #[inline(always)]
     #[must_use]
-    pub fn txp(&mut self) -> TXP_W<14> {
+    pub fn txp(&mut self) -> TXP_W<CCCR_SPEC, 14> {
         TXP_W::new(self)
     }
     #[doc = "Bit 15 - Non ISO Operation"]
     #[inline(always)]
     #[must_use]
-    pub fn niso(&mut self) -> NISO_W<15> {
+    pub fn niso(&mut self) -> NISO_W<CCCR_SPEC, 15> {
         NISO_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "CC Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cccr](index.html) module"]
+#[doc = "CC Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cccr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cccr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CCCR_SPEC;
 impl crate::RegisterSpec for CCCR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [cccr::R](R) reader structure"]
-impl crate::Readable for CCCR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [cccr::W](W) writer structure"]
+#[doc = "`read()` method returns [`cccr::R`](R) reader structure"]
+impl crate::Readable for CCCR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`cccr::W`](W) writer structure"]
 impl crate::Writable for CCCR_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

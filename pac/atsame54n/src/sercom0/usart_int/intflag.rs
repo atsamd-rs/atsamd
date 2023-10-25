@@ -1,67 +1,35 @@
 #[doc = "Register `INTFLAG` reader"]
-pub struct R(crate::R<INTFLAG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAG_SPEC>;
 #[doc = "Register `INTFLAG` writer"]
-pub struct W(crate::W<INTFLAG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAG_SPEC>;
 #[doc = "Field `DRE` reader - Data Register Empty Interrupt"]
-pub type DRE_R = crate::BitReader<bool>;
+pub type DRE_R = crate::BitReader;
 #[doc = "Field `DRE` writer - Data Register Empty Interrupt"]
-pub type DRE_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type DRE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TXC` reader - Transmit Complete Interrupt"]
-pub type TXC_R = crate::BitReader<bool>;
+pub type TXC_R = crate::BitReader;
 #[doc = "Field `TXC` writer - Transmit Complete Interrupt"]
-pub type TXC_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type TXC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXC` reader - Receive Complete Interrupt"]
-pub type RXC_R = crate::BitReader<bool>;
+pub type RXC_R = crate::BitReader;
 #[doc = "Field `RXC` writer - Receive Complete Interrupt"]
-pub type RXC_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type RXC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXS` reader - Receive Start Interrupt"]
-pub type RXS_R = crate::BitReader<bool>;
+pub type RXS_R = crate::BitReader;
 #[doc = "Field `RXS` writer - Receive Start Interrupt"]
-pub type RXS_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type RXS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CTSIC` reader - Clear To Send Input Change Interrupt"]
-pub type CTSIC_R = crate::BitReader<bool>;
+pub type CTSIC_R = crate::BitReader;
 #[doc = "Field `CTSIC` writer - Clear To Send Input Change Interrupt"]
-pub type CTSIC_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type CTSIC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXBRK` reader - Break Received Interrupt"]
-pub type RXBRK_R = crate::BitReader<bool>;
+pub type RXBRK_R = crate::BitReader;
 #[doc = "Field `RXBRK` writer - Break Received Interrupt"]
-pub type RXBRK_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type RXBRK_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ERROR` reader - Combined Error Interrupt"]
-pub type ERROR_R = crate::BitReader<bool>;
+pub type ERROR_R = crate::BitReader;
 #[doc = "Field `ERROR` writer - Combined Error Interrupt"]
-pub type ERROR_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type ERROR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Data Register Empty Interrupt"]
     #[inline(always)]
@@ -103,64 +71,65 @@ impl W {
     #[doc = "Bit 0 - Data Register Empty Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn dre(&mut self) -> DRE_W<0> {
+    pub fn dre(&mut self) -> DRE_W<INTFLAG_SPEC, 0> {
         DRE_W::new(self)
     }
     #[doc = "Bit 1 - Transmit Complete Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn txc(&mut self) -> TXC_W<1> {
+    pub fn txc(&mut self) -> TXC_W<INTFLAG_SPEC, 1> {
         TXC_W::new(self)
     }
     #[doc = "Bit 2 - Receive Complete Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn rxc(&mut self) -> RXC_W<2> {
+    pub fn rxc(&mut self) -> RXC_W<INTFLAG_SPEC, 2> {
         RXC_W::new(self)
     }
     #[doc = "Bit 3 - Receive Start Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn rxs(&mut self) -> RXS_W<3> {
+    pub fn rxs(&mut self) -> RXS_W<INTFLAG_SPEC, 3> {
         RXS_W::new(self)
     }
     #[doc = "Bit 4 - Clear To Send Input Change Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn ctsic(&mut self) -> CTSIC_W<4> {
+    pub fn ctsic(&mut self) -> CTSIC_W<INTFLAG_SPEC, 4> {
         CTSIC_W::new(self)
     }
     #[doc = "Bit 5 - Break Received Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn rxbrk(&mut self) -> RXBRK_W<5> {
+    pub fn rxbrk(&mut self) -> RXBRK_W<INTFLAG_SPEC, 5> {
         RXBRK_W::new(self)
     }
     #[doc = "Bit 7 - Combined Error Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn error(&mut self) -> ERROR_W<7> {
+    pub fn error(&mut self) -> ERROR_W<INTFLAG_SPEC, 7> {
         ERROR_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "USART_INT Interrupt Flag Status and Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflag](index.html) module"]
+#[doc = "USART_INT Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAG_SPEC;
 impl crate::RegisterSpec for INTFLAG_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [intflag::R](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
+impl crate::Readable for INTFLAG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

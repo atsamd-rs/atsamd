@@ -1,20 +1,7 @@
 #[doc = "Register `VALUE` reader"]
-pub struct R(crate::R<VALUE_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<VALUE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<VALUE_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<VALUE_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<VALUE_SPEC>;
 #[doc = "Field `VALUE` reader - Measurement Value"]
-pub type VALUE_R = crate::FieldReader<u32, u32>;
+pub type VALUE_R = crate::FieldReader<u32>;
 impl R {
     #[doc = "Bits 0:23 - Measurement Value"]
     #[inline(always)]
@@ -22,15 +9,13 @@ impl R {
         VALUE_R::new(self.bits & 0x00ff_ffff)
     }
 }
-#[doc = "Count Value Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [value](index.html) module"]
+#[doc = "Count Value Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`value::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct VALUE_SPEC;
 impl crate::RegisterSpec for VALUE_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [value::R](R) reader structure"]
-impl crate::Readable for VALUE_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`value::R`](R) reader structure"]
+impl crate::Readable for VALUE_SPEC {}
 #[doc = "`reset()` method sets VALUE to value 0"]
 impl crate::Resettable for VALUE_SPEC {
     const RESET_VALUE: Self::Ux = 0;

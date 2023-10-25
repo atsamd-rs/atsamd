@@ -1,47 +1,15 @@
 #[doc = "Register `PER_DITH6` reader"]
-pub struct R(crate::R<PER_DITH6_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PER_DITH6_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PER_DITH6_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PER_DITH6_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PER_DITH6_SPEC>;
 #[doc = "Register `PER_DITH6` writer"]
-pub struct W(crate::W<PER_DITH6_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<PER_DITH6_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<PER_DITH6_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<PER_DITH6_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<PER_DITH6_SPEC>;
 #[doc = "Field `DITHERCY` reader - Dithering Cycle Number"]
-pub type DITHERCY_R = crate::FieldReader<u8, u8>;
+pub type DITHERCY_R = crate::FieldReader;
 #[doc = "Field `DITHERCY` writer - Dithering Cycle Number"]
-pub type DITHERCY_W<'a, const O: u8> = crate::FieldWriter<'a, u32, PER_DITH6_SPEC, u8, u8, 6, O>;
+pub type DITHERCY_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 6, O>;
 #[doc = "Field `PER` reader - Period Value"]
-pub type PER_R = crate::FieldReader<u32, u32>;
+pub type PER_R = crate::FieldReader<u32>;
 #[doc = "Field `PER` writer - Period Value"]
-pub type PER_W<'a, const O: u8> = crate::FieldWriter<'a, u32, PER_DITH6_SPEC, u32, u32, 18, O>;
+pub type PER_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 18, O, u32>;
 impl R {
     #[doc = "Bits 0:5 - Dithering Cycle Number"]
     #[inline(always)]
@@ -58,34 +26,35 @@ impl W {
     #[doc = "Bits 0:5 - Dithering Cycle Number"]
     #[inline(always)]
     #[must_use]
-    pub fn dithercy(&mut self) -> DITHERCY_W<0> {
+    pub fn dithercy(&mut self) -> DITHERCY_W<PER_DITH6_SPEC, 0> {
         DITHERCY_W::new(self)
     }
     #[doc = "Bits 6:23 - Period Value"]
     #[inline(always)]
     #[must_use]
-    pub fn per(&mut self) -> PER_W<6> {
+    pub fn per(&mut self) -> PER_W<PER_DITH6_SPEC, 6> {
         PER_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Period\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [per_dith6](index.html) module"]
+#[doc = "Period\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`per_dith6::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`per_dith6::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PER_DITH6_SPEC;
 impl crate::RegisterSpec for PER_DITH6_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [per_dith6::R](R) reader structure"]
-impl crate::Readable for PER_DITH6_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [per_dith6::W](W) writer structure"]
+#[doc = "`read()` method returns [`per_dith6::R`](R) reader structure"]
+impl crate::Readable for PER_DITH6_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`per_dith6::W`](W) writer structure"]
 impl crate::Writable for PER_DITH6_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

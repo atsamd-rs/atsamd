@@ -1,5 +1,11 @@
 # Unreleased
 
+- Update the PACs to svd2rust 0.30.2.
+
+# v0.13.0
+
+- Replace homebrew time library with `fugit` (#672)
+
 # v0.12.1
 
 - Update to `atsamd-hal` version `0.15.1`

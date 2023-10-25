@@ -1,71 +1,39 @@
 #[doc = "Register `INTFLAG` reader"]
-pub struct R(crate::R<INTFLAG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAG_SPEC>;
 #[doc = "Register `INTFLAG` writer"]
-pub struct W(crate::W<INTFLAG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAG_SPEC>;
 #[doc = "Field `RXRDY0` reader - Receive Ready 0"]
-pub type RXRDY0_R = crate::BitReader<bool>;
+pub type RXRDY0_R = crate::BitReader;
 #[doc = "Field `RXRDY0` writer - Receive Ready 0"]
-pub type RXRDY0_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type RXRDY0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXRDY1` reader - Receive Ready 1"]
-pub type RXRDY1_R = crate::BitReader<bool>;
+pub type RXRDY1_R = crate::BitReader;
 #[doc = "Field `RXRDY1` writer - Receive Ready 1"]
-pub type RXRDY1_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type RXRDY1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXOR0` reader - Receive Overrun 0"]
-pub type RXOR0_R = crate::BitReader<bool>;
+pub type RXOR0_R = crate::BitReader;
 #[doc = "Field `RXOR0` writer - Receive Overrun 0"]
-pub type RXOR0_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type RXOR0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RXOR1` reader - Receive Overrun 1"]
-pub type RXOR1_R = crate::BitReader<bool>;
+pub type RXOR1_R = crate::BitReader;
 #[doc = "Field `RXOR1` writer - Receive Overrun 1"]
-pub type RXOR1_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type RXOR1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TXRDY0` reader - Transmit Ready 0"]
-pub type TXRDY0_R = crate::BitReader<bool>;
+pub type TXRDY0_R = crate::BitReader;
 #[doc = "Field `TXRDY0` writer - Transmit Ready 0"]
-pub type TXRDY0_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type TXRDY0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TXRDY1` reader - Transmit Ready 1"]
-pub type TXRDY1_R = crate::BitReader<bool>;
+pub type TXRDY1_R = crate::BitReader;
 #[doc = "Field `TXRDY1` writer - Transmit Ready 1"]
-pub type TXRDY1_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type TXRDY1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TXUR0` reader - Transmit Underrun 0"]
-pub type TXUR0_R = crate::BitReader<bool>;
+pub type TXUR0_R = crate::BitReader;
 #[doc = "Field `TXUR0` writer - Transmit Underrun 0"]
-pub type TXUR0_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type TXUR0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TXUR1` reader - Transmit Underrun 1"]
-pub type TXUR1_R = crate::BitReader<bool>;
+pub type TXUR1_R = crate::BitReader;
 #[doc = "Field `TXUR1` writer - Transmit Underrun 1"]
-pub type TXUR1_W<'a, const O: u8> = crate::BitWriter<'a, u16, INTFLAG_SPEC, bool, O>;
+pub type TXUR1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Receive Ready 0"]
     #[inline(always)]
@@ -112,70 +80,71 @@ impl W {
     #[doc = "Bit 0 - Receive Ready 0"]
     #[inline(always)]
     #[must_use]
-    pub fn rxrdy0(&mut self) -> RXRDY0_W<0> {
+    pub fn rxrdy0(&mut self) -> RXRDY0_W<INTFLAG_SPEC, 0> {
         RXRDY0_W::new(self)
     }
     #[doc = "Bit 1 - Receive Ready 1"]
     #[inline(always)]
     #[must_use]
-    pub fn rxrdy1(&mut self) -> RXRDY1_W<1> {
+    pub fn rxrdy1(&mut self) -> RXRDY1_W<INTFLAG_SPEC, 1> {
         RXRDY1_W::new(self)
     }
     #[doc = "Bit 4 - Receive Overrun 0"]
     #[inline(always)]
     #[must_use]
-    pub fn rxor0(&mut self) -> RXOR0_W<4> {
+    pub fn rxor0(&mut self) -> RXOR0_W<INTFLAG_SPEC, 4> {
         RXOR0_W::new(self)
     }
     #[doc = "Bit 5 - Receive Overrun 1"]
     #[inline(always)]
     #[must_use]
-    pub fn rxor1(&mut self) -> RXOR1_W<5> {
+    pub fn rxor1(&mut self) -> RXOR1_W<INTFLAG_SPEC, 5> {
         RXOR1_W::new(self)
     }
     #[doc = "Bit 8 - Transmit Ready 0"]
     #[inline(always)]
     #[must_use]
-    pub fn txrdy0(&mut self) -> TXRDY0_W<8> {
+    pub fn txrdy0(&mut self) -> TXRDY0_W<INTFLAG_SPEC, 8> {
         TXRDY0_W::new(self)
     }
     #[doc = "Bit 9 - Transmit Ready 1"]
     #[inline(always)]
     #[must_use]
-    pub fn txrdy1(&mut self) -> TXRDY1_W<9> {
+    pub fn txrdy1(&mut self) -> TXRDY1_W<INTFLAG_SPEC, 9> {
         TXRDY1_W::new(self)
     }
     #[doc = "Bit 12 - Transmit Underrun 0"]
     #[inline(always)]
     #[must_use]
-    pub fn txur0(&mut self) -> TXUR0_W<12> {
+    pub fn txur0(&mut self) -> TXUR0_W<INTFLAG_SPEC, 12> {
         TXUR0_W::new(self)
     }
     #[doc = "Bit 13 - Transmit Underrun 1"]
     #[inline(always)]
     #[must_use]
-    pub fn txur1(&mut self) -> TXUR1_W<13> {
+    pub fn txur1(&mut self) -> TXUR1_W<INTFLAG_SPEC, 13> {
         TXUR1_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Flag Status and Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflag](index.html) module"]
+#[doc = "Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAG_SPEC;
 impl crate::RegisterSpec for INTFLAG_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [intflag::R](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
+impl crate::Readable for INTFLAG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

@@ -1,51 +1,19 @@
 #[doc = "Register `TI` reader"]
-pub struct R(crate::R<TI_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<TI_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<TI_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<TI_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<TI_SPEC>;
 #[doc = "Register `TI` writer"]
-pub struct W(crate::W<TI_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<TI_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<TI_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<TI_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<TI_SPEC>;
 #[doc = "Field `CNS` reader - Count Nanoseconds"]
-pub type CNS_R = crate::FieldReader<u8, u8>;
+pub type CNS_R = crate::FieldReader;
 #[doc = "Field `CNS` writer - Count Nanoseconds"]
-pub type CNS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TI_SPEC, u8, u8, 8, O>;
+pub type CNS_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 #[doc = "Field `ACNS` reader - Alternative Count Nanoseconds"]
-pub type ACNS_R = crate::FieldReader<u8, u8>;
+pub type ACNS_R = crate::FieldReader;
 #[doc = "Field `ACNS` writer - Alternative Count Nanoseconds"]
-pub type ACNS_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TI_SPEC, u8, u8, 8, O>;
+pub type ACNS_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 #[doc = "Field `NIT` reader - Number of Increments"]
-pub type NIT_R = crate::FieldReader<u8, u8>;
+pub type NIT_R = crate::FieldReader;
 #[doc = "Field `NIT` writer - Number of Increments"]
-pub type NIT_W<'a, const O: u8> = crate::FieldWriter<'a, u32, TI_SPEC, u8, u8, 8, O>;
+pub type NIT_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Count Nanoseconds"]
     #[inline(always)]
@@ -67,40 +35,41 @@ impl W {
     #[doc = "Bits 0:7 - Count Nanoseconds"]
     #[inline(always)]
     #[must_use]
-    pub fn cns(&mut self) -> CNS_W<0> {
+    pub fn cns(&mut self) -> CNS_W<TI_SPEC, 0> {
         CNS_W::new(self)
     }
     #[doc = "Bits 8:15 - Alternative Count Nanoseconds"]
     #[inline(always)]
     #[must_use]
-    pub fn acns(&mut self) -> ACNS_W<8> {
+    pub fn acns(&mut self) -> ACNS_W<TI_SPEC, 8> {
         ACNS_W::new(self)
     }
     #[doc = "Bits 16:23 - Number of Increments"]
     #[inline(always)]
     #[must_use]
-    pub fn nit(&mut self) -> NIT_W<16> {
+    pub fn nit(&mut self) -> NIT_W<TI_SPEC, 16> {
         NIT_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "1588 Timer Increment Register\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ti](index.html) module"]
+#[doc = "1588 Timer Increment Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ti::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ti::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct TI_SPEC;
 impl crate::RegisterSpec for TI_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ti::R](R) reader structure"]
-impl crate::Readable for TI_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ti::W](W) writer structure"]
+#[doc = "`read()` method returns [`ti::R`](R) reader structure"]
+impl crate::Readable for TI_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ti::W`](W) writer structure"]
 impl crate::Writable for TI_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

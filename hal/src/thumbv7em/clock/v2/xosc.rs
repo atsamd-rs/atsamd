@@ -804,7 +804,7 @@ where
 {
     #[inline]
     fn new(token: XoscToken<X>, pins: M::Pins<X>, freq: Hertz) -> Self {
-        let current = match freq.0 {
+        let current = match freq.to_Hz() {
             8_000_000 => CrystalCurrent::Low,
             8_000_001..=16_000_000 => CrystalCurrent::Medium,
             16_000_001..=24_000_000 => CrystalCurrent::High,

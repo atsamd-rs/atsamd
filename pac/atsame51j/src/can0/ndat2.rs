@@ -1,167 +1,135 @@
 #[doc = "Register `NDAT2` reader"]
-pub struct R(crate::R<NDAT2_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<NDAT2_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<NDAT2_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<NDAT2_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<NDAT2_SPEC>;
 #[doc = "Register `NDAT2` writer"]
-pub struct W(crate::W<NDAT2_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<NDAT2_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<NDAT2_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<NDAT2_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<NDAT2_SPEC>;
 #[doc = "Field `ND32` reader - New Data 32"]
-pub type ND32_R = crate::BitReader<bool>;
+pub type ND32_R = crate::BitReader;
 #[doc = "Field `ND32` writer - New Data 32"]
-pub type ND32_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND32_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND33` reader - New Data 33"]
-pub type ND33_R = crate::BitReader<bool>;
+pub type ND33_R = crate::BitReader;
 #[doc = "Field `ND33` writer - New Data 33"]
-pub type ND33_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND33_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND34` reader - New Data 34"]
-pub type ND34_R = crate::BitReader<bool>;
+pub type ND34_R = crate::BitReader;
 #[doc = "Field `ND34` writer - New Data 34"]
-pub type ND34_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND34_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND35` reader - New Data 35"]
-pub type ND35_R = crate::BitReader<bool>;
+pub type ND35_R = crate::BitReader;
 #[doc = "Field `ND35` writer - New Data 35"]
-pub type ND35_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND35_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND36` reader - New Data 36"]
-pub type ND36_R = crate::BitReader<bool>;
+pub type ND36_R = crate::BitReader;
 #[doc = "Field `ND36` writer - New Data 36"]
-pub type ND36_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND36_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND37` reader - New Data 37"]
-pub type ND37_R = crate::BitReader<bool>;
+pub type ND37_R = crate::BitReader;
 #[doc = "Field `ND37` writer - New Data 37"]
-pub type ND37_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND37_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND38` reader - New Data 38"]
-pub type ND38_R = crate::BitReader<bool>;
+pub type ND38_R = crate::BitReader;
 #[doc = "Field `ND38` writer - New Data 38"]
-pub type ND38_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND38_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND39` reader - New Data 39"]
-pub type ND39_R = crate::BitReader<bool>;
+pub type ND39_R = crate::BitReader;
 #[doc = "Field `ND39` writer - New Data 39"]
-pub type ND39_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND39_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND40` reader - New Data 40"]
-pub type ND40_R = crate::BitReader<bool>;
+pub type ND40_R = crate::BitReader;
 #[doc = "Field `ND40` writer - New Data 40"]
-pub type ND40_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND40_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND41` reader - New Data 41"]
-pub type ND41_R = crate::BitReader<bool>;
+pub type ND41_R = crate::BitReader;
 #[doc = "Field `ND41` writer - New Data 41"]
-pub type ND41_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND41_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND42` reader - New Data 42"]
-pub type ND42_R = crate::BitReader<bool>;
+pub type ND42_R = crate::BitReader;
 #[doc = "Field `ND42` writer - New Data 42"]
-pub type ND42_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND42_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND43` reader - New Data 43"]
-pub type ND43_R = crate::BitReader<bool>;
+pub type ND43_R = crate::BitReader;
 #[doc = "Field `ND43` writer - New Data 43"]
-pub type ND43_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND43_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND44` reader - New Data 44"]
-pub type ND44_R = crate::BitReader<bool>;
+pub type ND44_R = crate::BitReader;
 #[doc = "Field `ND44` writer - New Data 44"]
-pub type ND44_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND44_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND45` reader - New Data 45"]
-pub type ND45_R = crate::BitReader<bool>;
+pub type ND45_R = crate::BitReader;
 #[doc = "Field `ND45` writer - New Data 45"]
-pub type ND45_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND45_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND46` reader - New Data 46"]
-pub type ND46_R = crate::BitReader<bool>;
+pub type ND46_R = crate::BitReader;
 #[doc = "Field `ND46` writer - New Data 46"]
-pub type ND46_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND46_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND47` reader - New Data 47"]
-pub type ND47_R = crate::BitReader<bool>;
+pub type ND47_R = crate::BitReader;
 #[doc = "Field `ND47` writer - New Data 47"]
-pub type ND47_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND47_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND48` reader - New Data 48"]
-pub type ND48_R = crate::BitReader<bool>;
+pub type ND48_R = crate::BitReader;
 #[doc = "Field `ND48` writer - New Data 48"]
-pub type ND48_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND48_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND49` reader - New Data 49"]
-pub type ND49_R = crate::BitReader<bool>;
+pub type ND49_R = crate::BitReader;
 #[doc = "Field `ND49` writer - New Data 49"]
-pub type ND49_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND49_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND50` reader - New Data 50"]
-pub type ND50_R = crate::BitReader<bool>;
+pub type ND50_R = crate::BitReader;
 #[doc = "Field `ND50` writer - New Data 50"]
-pub type ND50_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND50_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND51` reader - New Data 51"]
-pub type ND51_R = crate::BitReader<bool>;
+pub type ND51_R = crate::BitReader;
 #[doc = "Field `ND51` writer - New Data 51"]
-pub type ND51_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND51_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND52` reader - New Data 52"]
-pub type ND52_R = crate::BitReader<bool>;
+pub type ND52_R = crate::BitReader;
 #[doc = "Field `ND52` writer - New Data 52"]
-pub type ND52_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND52_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND53` reader - New Data 53"]
-pub type ND53_R = crate::BitReader<bool>;
+pub type ND53_R = crate::BitReader;
 #[doc = "Field `ND53` writer - New Data 53"]
-pub type ND53_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND53_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND54` reader - New Data 54"]
-pub type ND54_R = crate::BitReader<bool>;
+pub type ND54_R = crate::BitReader;
 #[doc = "Field `ND54` writer - New Data 54"]
-pub type ND54_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND54_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND55` reader - New Data 55"]
-pub type ND55_R = crate::BitReader<bool>;
+pub type ND55_R = crate::BitReader;
 #[doc = "Field `ND55` writer - New Data 55"]
-pub type ND55_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND55_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND56` reader - New Data 56"]
-pub type ND56_R = crate::BitReader<bool>;
+pub type ND56_R = crate::BitReader;
 #[doc = "Field `ND56` writer - New Data 56"]
-pub type ND56_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND56_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND57` reader - New Data 57"]
-pub type ND57_R = crate::BitReader<bool>;
+pub type ND57_R = crate::BitReader;
 #[doc = "Field `ND57` writer - New Data 57"]
-pub type ND57_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND57_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND58` reader - New Data 58"]
-pub type ND58_R = crate::BitReader<bool>;
+pub type ND58_R = crate::BitReader;
 #[doc = "Field `ND58` writer - New Data 58"]
-pub type ND58_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND58_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND59` reader - New Data 59"]
-pub type ND59_R = crate::BitReader<bool>;
+pub type ND59_R = crate::BitReader;
 #[doc = "Field `ND59` writer - New Data 59"]
-pub type ND59_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND59_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND60` reader - New Data 60"]
-pub type ND60_R = crate::BitReader<bool>;
+pub type ND60_R = crate::BitReader;
 #[doc = "Field `ND60` writer - New Data 60"]
-pub type ND60_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND60_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND61` reader - New Data 61"]
-pub type ND61_R = crate::BitReader<bool>;
+pub type ND61_R = crate::BitReader;
 #[doc = "Field `ND61` writer - New Data 61"]
-pub type ND61_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND61_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND62` reader - New Data 62"]
-pub type ND62_R = crate::BitReader<bool>;
+pub type ND62_R = crate::BitReader;
 #[doc = "Field `ND62` writer - New Data 62"]
-pub type ND62_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND62_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ND63` reader - New Data 63"]
-pub type ND63_R = crate::BitReader<bool>;
+pub type ND63_R = crate::BitReader;
 #[doc = "Field `ND63` writer - New Data 63"]
-pub type ND63_W<'a, const O: u8> = crate::BitWriter<'a, u32, NDAT2_SPEC, bool, O>;
+pub type ND63_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - New Data 32"]
     #[inline(always)]
@@ -328,214 +296,215 @@ impl W {
     #[doc = "Bit 0 - New Data 32"]
     #[inline(always)]
     #[must_use]
-    pub fn nd32(&mut self) -> ND32_W<0> {
+    pub fn nd32(&mut self) -> ND32_W<NDAT2_SPEC, 0> {
         ND32_W::new(self)
     }
     #[doc = "Bit 1 - New Data 33"]
     #[inline(always)]
     #[must_use]
-    pub fn nd33(&mut self) -> ND33_W<1> {
+    pub fn nd33(&mut self) -> ND33_W<NDAT2_SPEC, 1> {
         ND33_W::new(self)
     }
     #[doc = "Bit 2 - New Data 34"]
     #[inline(always)]
     #[must_use]
-    pub fn nd34(&mut self) -> ND34_W<2> {
+    pub fn nd34(&mut self) -> ND34_W<NDAT2_SPEC, 2> {
         ND34_W::new(self)
     }
     #[doc = "Bit 3 - New Data 35"]
     #[inline(always)]
     #[must_use]
-    pub fn nd35(&mut self) -> ND35_W<3> {
+    pub fn nd35(&mut self) -> ND35_W<NDAT2_SPEC, 3> {
         ND35_W::new(self)
     }
     #[doc = "Bit 4 - New Data 36"]
     #[inline(always)]
     #[must_use]
-    pub fn nd36(&mut self) -> ND36_W<4> {
+    pub fn nd36(&mut self) -> ND36_W<NDAT2_SPEC, 4> {
         ND36_W::new(self)
     }
     #[doc = "Bit 5 - New Data 37"]
     #[inline(always)]
     #[must_use]
-    pub fn nd37(&mut self) -> ND37_W<5> {
+    pub fn nd37(&mut self) -> ND37_W<NDAT2_SPEC, 5> {
         ND37_W::new(self)
     }
     #[doc = "Bit 6 - New Data 38"]
     #[inline(always)]
     #[must_use]
-    pub fn nd38(&mut self) -> ND38_W<6> {
+    pub fn nd38(&mut self) -> ND38_W<NDAT2_SPEC, 6> {
         ND38_W::new(self)
     }
     #[doc = "Bit 7 - New Data 39"]
     #[inline(always)]
     #[must_use]
-    pub fn nd39(&mut self) -> ND39_W<7> {
+    pub fn nd39(&mut self) -> ND39_W<NDAT2_SPEC, 7> {
         ND39_W::new(self)
     }
     #[doc = "Bit 8 - New Data 40"]
     #[inline(always)]
     #[must_use]
-    pub fn nd40(&mut self) -> ND40_W<8> {
+    pub fn nd40(&mut self) -> ND40_W<NDAT2_SPEC, 8> {
         ND40_W::new(self)
     }
     #[doc = "Bit 9 - New Data 41"]
     #[inline(always)]
     #[must_use]
-    pub fn nd41(&mut self) -> ND41_W<9> {
+    pub fn nd41(&mut self) -> ND41_W<NDAT2_SPEC, 9> {
         ND41_W::new(self)
     }
     #[doc = "Bit 10 - New Data 42"]
     #[inline(always)]
     #[must_use]
-    pub fn nd42(&mut self) -> ND42_W<10> {
+    pub fn nd42(&mut self) -> ND42_W<NDAT2_SPEC, 10> {
         ND42_W::new(self)
     }
     #[doc = "Bit 11 - New Data 43"]
     #[inline(always)]
     #[must_use]
-    pub fn nd43(&mut self) -> ND43_W<11> {
+    pub fn nd43(&mut self) -> ND43_W<NDAT2_SPEC, 11> {
         ND43_W::new(self)
     }
     #[doc = "Bit 12 - New Data 44"]
     #[inline(always)]
     #[must_use]
-    pub fn nd44(&mut self) -> ND44_W<12> {
+    pub fn nd44(&mut self) -> ND44_W<NDAT2_SPEC, 12> {
         ND44_W::new(self)
     }
     #[doc = "Bit 13 - New Data 45"]
     #[inline(always)]
     #[must_use]
-    pub fn nd45(&mut self) -> ND45_W<13> {
+    pub fn nd45(&mut self) -> ND45_W<NDAT2_SPEC, 13> {
         ND45_W::new(self)
     }
     #[doc = "Bit 14 - New Data 46"]
     #[inline(always)]
     #[must_use]
-    pub fn nd46(&mut self) -> ND46_W<14> {
+    pub fn nd46(&mut self) -> ND46_W<NDAT2_SPEC, 14> {
         ND46_W::new(self)
     }
     #[doc = "Bit 15 - New Data 47"]
     #[inline(always)]
     #[must_use]
-    pub fn nd47(&mut self) -> ND47_W<15> {
+    pub fn nd47(&mut self) -> ND47_W<NDAT2_SPEC, 15> {
         ND47_W::new(self)
     }
     #[doc = "Bit 16 - New Data 48"]
     #[inline(always)]
     #[must_use]
-    pub fn nd48(&mut self) -> ND48_W<16> {
+    pub fn nd48(&mut self) -> ND48_W<NDAT2_SPEC, 16> {
         ND48_W::new(self)
     }
     #[doc = "Bit 17 - New Data 49"]
     #[inline(always)]
     #[must_use]
-    pub fn nd49(&mut self) -> ND49_W<17> {
+    pub fn nd49(&mut self) -> ND49_W<NDAT2_SPEC, 17> {
         ND49_W::new(self)
     }
     #[doc = "Bit 18 - New Data 50"]
     #[inline(always)]
     #[must_use]
-    pub fn nd50(&mut self) -> ND50_W<18> {
+    pub fn nd50(&mut self) -> ND50_W<NDAT2_SPEC, 18> {
         ND50_W::new(self)
     }
     #[doc = "Bit 19 - New Data 51"]
     #[inline(always)]
     #[must_use]
-    pub fn nd51(&mut self) -> ND51_W<19> {
+    pub fn nd51(&mut self) -> ND51_W<NDAT2_SPEC, 19> {
         ND51_W::new(self)
     }
     #[doc = "Bit 20 - New Data 52"]
     #[inline(always)]
     #[must_use]
-    pub fn nd52(&mut self) -> ND52_W<20> {
+    pub fn nd52(&mut self) -> ND52_W<NDAT2_SPEC, 20> {
         ND52_W::new(self)
     }
     #[doc = "Bit 21 - New Data 53"]
     #[inline(always)]
     #[must_use]
-    pub fn nd53(&mut self) -> ND53_W<21> {
+    pub fn nd53(&mut self) -> ND53_W<NDAT2_SPEC, 21> {
         ND53_W::new(self)
     }
     #[doc = "Bit 22 - New Data 54"]
     #[inline(always)]
     #[must_use]
-    pub fn nd54(&mut self) -> ND54_W<22> {
+    pub fn nd54(&mut self) -> ND54_W<NDAT2_SPEC, 22> {
         ND54_W::new(self)
     }
     #[doc = "Bit 23 - New Data 55"]
     #[inline(always)]
     #[must_use]
-    pub fn nd55(&mut self) -> ND55_W<23> {
+    pub fn nd55(&mut self) -> ND55_W<NDAT2_SPEC, 23> {
         ND55_W::new(self)
     }
     #[doc = "Bit 24 - New Data 56"]
     #[inline(always)]
     #[must_use]
-    pub fn nd56(&mut self) -> ND56_W<24> {
+    pub fn nd56(&mut self) -> ND56_W<NDAT2_SPEC, 24> {
         ND56_W::new(self)
     }
     #[doc = "Bit 25 - New Data 57"]
     #[inline(always)]
     #[must_use]
-    pub fn nd57(&mut self) -> ND57_W<25> {
+    pub fn nd57(&mut self) -> ND57_W<NDAT2_SPEC, 25> {
         ND57_W::new(self)
     }
     #[doc = "Bit 26 - New Data 58"]
     #[inline(always)]
     #[must_use]
-    pub fn nd58(&mut self) -> ND58_W<26> {
+    pub fn nd58(&mut self) -> ND58_W<NDAT2_SPEC, 26> {
         ND58_W::new(self)
     }
     #[doc = "Bit 27 - New Data 59"]
     #[inline(always)]
     #[must_use]
-    pub fn nd59(&mut self) -> ND59_W<27> {
+    pub fn nd59(&mut self) -> ND59_W<NDAT2_SPEC, 27> {
         ND59_W::new(self)
     }
     #[doc = "Bit 28 - New Data 60"]
     #[inline(always)]
     #[must_use]
-    pub fn nd60(&mut self) -> ND60_W<28> {
+    pub fn nd60(&mut self) -> ND60_W<NDAT2_SPEC, 28> {
         ND60_W::new(self)
     }
     #[doc = "Bit 29 - New Data 61"]
     #[inline(always)]
     #[must_use]
-    pub fn nd61(&mut self) -> ND61_W<29> {
+    pub fn nd61(&mut self) -> ND61_W<NDAT2_SPEC, 29> {
         ND61_W::new(self)
     }
     #[doc = "Bit 30 - New Data 62"]
     #[inline(always)]
     #[must_use]
-    pub fn nd62(&mut self) -> ND62_W<30> {
+    pub fn nd62(&mut self) -> ND62_W<NDAT2_SPEC, 30> {
         ND62_W::new(self)
     }
     #[doc = "Bit 31 - New Data 63"]
     #[inline(always)]
     #[must_use]
-    pub fn nd63(&mut self) -> ND63_W<31> {
+    pub fn nd63(&mut self) -> ND63_W<NDAT2_SPEC, 31> {
         ND63_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "New Data 2\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ndat2](index.html) module"]
+#[doc = "New Data 2\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ndat2::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ndat2::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct NDAT2_SPEC;
 impl crate::RegisterSpec for NDAT2_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [ndat2::R](R) reader structure"]
-impl crate::Readable for NDAT2_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ndat2::W](W) writer structure"]
+#[doc = "`read()` method returns [`ndat2::R`](R) reader structure"]
+impl crate::Readable for NDAT2_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ndat2::W`](W) writer structure"]
 impl crate::Writable for NDAT2_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

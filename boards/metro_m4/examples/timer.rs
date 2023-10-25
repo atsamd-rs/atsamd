@@ -14,6 +14,7 @@ use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::pac::Peripherals;
 use hal::prelude::*;
+use hal::time::Hertz;
 use hal::timer::TimerCounter;
 
 use nb::block;
@@ -34,7 +35,7 @@ fn main() -> ! {
     let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
     let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.TC3, &mut peripherals.MCLK);
     // start a 5Hz timer
-    timer.start(5.hz());
+    timer.start(Hertz::Hz(5).into_duration());
     let mut red_led = pins.d13.into_push_pull_output();
 
     // toggle the led at the frequency set by the timer

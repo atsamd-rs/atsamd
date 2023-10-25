@@ -378,6 +378,7 @@ pub mod impl_ehal;
 /// Define the bit order of transactions
 #[repr(u8)]
 #[derive(Copy, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum BitOrder {
     LsbFirst,
     MsbFirst,
@@ -441,7 +442,8 @@ impl TryFrom<Status> for () {
 ///
 /// The SPI peripheral only has two error types, buffer overflow and transaction
 /// length error.
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
 pub enum Error {
     Overflow,
     LengthError,
@@ -878,7 +880,7 @@ where
     /// half the GCLK frequency. The minimum baud rate is the GCLK frequency /
     /// 512. Values outside this range will saturate at the extremes.
     #[inline]
-    pub fn set_baud(&mut self, baud: impl Into<Hertz>) {
+    pub fn set_baud(&mut self, baud: Hertz) {
         self.regs.set_baud(self.freq, baud);
     }
 
@@ -889,7 +891,7 @@ where
     /// half the GCLK frequency. The minimum baud rate is the GCLK frequency /
     /// 512. Values outside this range will saturate at the extremes.
     #[inline]
-    pub fn baud(mut self, baud: impl Into<Hertz>) -> Self {
+    pub fn baud(mut self, baud: Hertz) -> Self {
         self.set_baud(baud);
         self
     }

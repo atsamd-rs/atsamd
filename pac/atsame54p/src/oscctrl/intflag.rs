@@ -1,107 +1,75 @@
 #[doc = "Register `INTFLAG` reader"]
-pub struct R(crate::R<INTFLAG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAG_SPEC>;
 #[doc = "Register `INTFLAG` writer"]
-pub struct W(crate::W<INTFLAG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAG_SPEC>;
 #[doc = "Field `XOSCRDY0` reader - XOSC 0 Ready"]
-pub type XOSCRDY0_R = crate::BitReader<bool>;
+pub type XOSCRDY0_R = crate::BitReader;
 #[doc = "Field `XOSCRDY0` writer - XOSC 0 Ready"]
-pub type XOSCRDY0_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type XOSCRDY0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `XOSCRDY1` reader - XOSC 1 Ready"]
-pub type XOSCRDY1_R = crate::BitReader<bool>;
+pub type XOSCRDY1_R = crate::BitReader;
 #[doc = "Field `XOSCRDY1` writer - XOSC 1 Ready"]
-pub type XOSCRDY1_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type XOSCRDY1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `XOSCFAIL0` reader - XOSC 0 Clock Failure Detector"]
-pub type XOSCFAIL0_R = crate::BitReader<bool>;
+pub type XOSCFAIL0_R = crate::BitReader;
 #[doc = "Field `XOSCFAIL0` writer - XOSC 0 Clock Failure Detector"]
-pub type XOSCFAIL0_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type XOSCFAIL0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `XOSCFAIL1` reader - XOSC 1 Clock Failure Detector"]
-pub type XOSCFAIL1_R = crate::BitReader<bool>;
+pub type XOSCFAIL1_R = crate::BitReader;
 #[doc = "Field `XOSCFAIL1` writer - XOSC 1 Clock Failure Detector"]
-pub type XOSCFAIL1_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type XOSCFAIL1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DFLLRDY` reader - DFLL Ready"]
-pub type DFLLRDY_R = crate::BitReader<bool>;
+pub type DFLLRDY_R = crate::BitReader;
 #[doc = "Field `DFLLRDY` writer - DFLL Ready"]
-pub type DFLLRDY_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DFLLRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DFLLOOB` reader - DFLL Out Of Bounds"]
-pub type DFLLOOB_R = crate::BitReader<bool>;
+pub type DFLLOOB_R = crate::BitReader;
 #[doc = "Field `DFLLOOB` writer - DFLL Out Of Bounds"]
-pub type DFLLOOB_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DFLLOOB_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DFLLLCKF` reader - DFLL Lock Fine"]
-pub type DFLLLCKF_R = crate::BitReader<bool>;
+pub type DFLLLCKF_R = crate::BitReader;
 #[doc = "Field `DFLLLCKF` writer - DFLL Lock Fine"]
-pub type DFLLLCKF_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DFLLLCKF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DFLLLCKC` reader - DFLL Lock Coarse"]
-pub type DFLLLCKC_R = crate::BitReader<bool>;
+pub type DFLLLCKC_R = crate::BitReader;
 #[doc = "Field `DFLLLCKC` writer - DFLL Lock Coarse"]
-pub type DFLLLCKC_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DFLLLCKC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DFLLRCS` reader - DFLL Reference Clock Stopped"]
-pub type DFLLRCS_R = crate::BitReader<bool>;
+pub type DFLLRCS_R = crate::BitReader;
 #[doc = "Field `DFLLRCS` writer - DFLL Reference Clock Stopped"]
-pub type DFLLRCS_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DFLLRCS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DPLL0LCKR` reader - DPLL0 Lock Rise"]
-pub type DPLL0LCKR_R = crate::BitReader<bool>;
+pub type DPLL0LCKR_R = crate::BitReader;
 #[doc = "Field `DPLL0LCKR` writer - DPLL0 Lock Rise"]
-pub type DPLL0LCKR_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DPLL0LCKR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DPLL0LCKF` reader - DPLL0 Lock Fall"]
-pub type DPLL0LCKF_R = crate::BitReader<bool>;
+pub type DPLL0LCKF_R = crate::BitReader;
 #[doc = "Field `DPLL0LCKF` writer - DPLL0 Lock Fall"]
-pub type DPLL0LCKF_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DPLL0LCKF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DPLL0LTO` reader - DPLL0 Lock Timeout"]
-pub type DPLL0LTO_R = crate::BitReader<bool>;
+pub type DPLL0LTO_R = crate::BitReader;
 #[doc = "Field `DPLL0LTO` writer - DPLL0 Lock Timeout"]
-pub type DPLL0LTO_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DPLL0LTO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DPLL0LDRTO` reader - DPLL0 Loop Divider Ratio Update Complete"]
-pub type DPLL0LDRTO_R = crate::BitReader<bool>;
+pub type DPLL0LDRTO_R = crate::BitReader;
 #[doc = "Field `DPLL0LDRTO` writer - DPLL0 Loop Divider Ratio Update Complete"]
-pub type DPLL0LDRTO_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DPLL0LDRTO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DPLL1LCKR` reader - DPLL1 Lock Rise"]
-pub type DPLL1LCKR_R = crate::BitReader<bool>;
+pub type DPLL1LCKR_R = crate::BitReader;
 #[doc = "Field `DPLL1LCKR` writer - DPLL1 Lock Rise"]
-pub type DPLL1LCKR_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DPLL1LCKR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DPLL1LCKF` reader - DPLL1 Lock Fall"]
-pub type DPLL1LCKF_R = crate::BitReader<bool>;
+pub type DPLL1LCKF_R = crate::BitReader;
 #[doc = "Field `DPLL1LCKF` writer - DPLL1 Lock Fall"]
-pub type DPLL1LCKF_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DPLL1LCKF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DPLL1LTO` reader - DPLL1 Lock Timeout"]
-pub type DPLL1LTO_R = crate::BitReader<bool>;
+pub type DPLL1LTO_R = crate::BitReader;
 #[doc = "Field `DPLL1LTO` writer - DPLL1 Lock Timeout"]
-pub type DPLL1LTO_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DPLL1LTO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DPLL1LDRTO` reader - DPLL1 Loop Divider Ratio Update Complete"]
-pub type DPLL1LDRTO_R = crate::BitReader<bool>;
+pub type DPLL1LDRTO_R = crate::BitReader;
 #[doc = "Field `DPLL1LDRTO` writer - DPLL1 Loop Divider Ratio Update Complete"]
-pub type DPLL1LDRTO_W<'a, const O: u8> = crate::BitWriter<'a, u32, INTFLAG_SPEC, bool, O>;
+pub type DPLL1LDRTO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - XOSC 0 Ready"]
     #[inline(always)]
@@ -193,124 +161,125 @@ impl W {
     #[doc = "Bit 0 - XOSC 0 Ready"]
     #[inline(always)]
     #[must_use]
-    pub fn xoscrdy0(&mut self) -> XOSCRDY0_W<0> {
+    pub fn xoscrdy0(&mut self) -> XOSCRDY0_W<INTFLAG_SPEC, 0> {
         XOSCRDY0_W::new(self)
     }
     #[doc = "Bit 1 - XOSC 1 Ready"]
     #[inline(always)]
     #[must_use]
-    pub fn xoscrdy1(&mut self) -> XOSCRDY1_W<1> {
+    pub fn xoscrdy1(&mut self) -> XOSCRDY1_W<INTFLAG_SPEC, 1> {
         XOSCRDY1_W::new(self)
     }
     #[doc = "Bit 2 - XOSC 0 Clock Failure Detector"]
     #[inline(always)]
     #[must_use]
-    pub fn xoscfail0(&mut self) -> XOSCFAIL0_W<2> {
+    pub fn xoscfail0(&mut self) -> XOSCFAIL0_W<INTFLAG_SPEC, 2> {
         XOSCFAIL0_W::new(self)
     }
     #[doc = "Bit 3 - XOSC 1 Clock Failure Detector"]
     #[inline(always)]
     #[must_use]
-    pub fn xoscfail1(&mut self) -> XOSCFAIL1_W<3> {
+    pub fn xoscfail1(&mut self) -> XOSCFAIL1_W<INTFLAG_SPEC, 3> {
         XOSCFAIL1_W::new(self)
     }
     #[doc = "Bit 8 - DFLL Ready"]
     #[inline(always)]
     #[must_use]
-    pub fn dfllrdy(&mut self) -> DFLLRDY_W<8> {
+    pub fn dfllrdy(&mut self) -> DFLLRDY_W<INTFLAG_SPEC, 8> {
         DFLLRDY_W::new(self)
     }
     #[doc = "Bit 9 - DFLL Out Of Bounds"]
     #[inline(always)]
     #[must_use]
-    pub fn dflloob(&mut self) -> DFLLOOB_W<9> {
+    pub fn dflloob(&mut self) -> DFLLOOB_W<INTFLAG_SPEC, 9> {
         DFLLOOB_W::new(self)
     }
     #[doc = "Bit 10 - DFLL Lock Fine"]
     #[inline(always)]
     #[must_use]
-    pub fn dflllckf(&mut self) -> DFLLLCKF_W<10> {
+    pub fn dflllckf(&mut self) -> DFLLLCKF_W<INTFLAG_SPEC, 10> {
         DFLLLCKF_W::new(self)
     }
     #[doc = "Bit 11 - DFLL Lock Coarse"]
     #[inline(always)]
     #[must_use]
-    pub fn dflllckc(&mut self) -> DFLLLCKC_W<11> {
+    pub fn dflllckc(&mut self) -> DFLLLCKC_W<INTFLAG_SPEC, 11> {
         DFLLLCKC_W::new(self)
     }
     #[doc = "Bit 12 - DFLL Reference Clock Stopped"]
     #[inline(always)]
     #[must_use]
-    pub fn dfllrcs(&mut self) -> DFLLRCS_W<12> {
+    pub fn dfllrcs(&mut self) -> DFLLRCS_W<INTFLAG_SPEC, 12> {
         DFLLRCS_W::new(self)
     }
     #[doc = "Bit 16 - DPLL0 Lock Rise"]
     #[inline(always)]
     #[must_use]
-    pub fn dpll0lckr(&mut self) -> DPLL0LCKR_W<16> {
+    pub fn dpll0lckr(&mut self) -> DPLL0LCKR_W<INTFLAG_SPEC, 16> {
         DPLL0LCKR_W::new(self)
     }
     #[doc = "Bit 17 - DPLL0 Lock Fall"]
     #[inline(always)]
     #[must_use]
-    pub fn dpll0lckf(&mut self) -> DPLL0LCKF_W<17> {
+    pub fn dpll0lckf(&mut self) -> DPLL0LCKF_W<INTFLAG_SPEC, 17> {
         DPLL0LCKF_W::new(self)
     }
     #[doc = "Bit 18 - DPLL0 Lock Timeout"]
     #[inline(always)]
     #[must_use]
-    pub fn dpll0lto(&mut self) -> DPLL0LTO_W<18> {
+    pub fn dpll0lto(&mut self) -> DPLL0LTO_W<INTFLAG_SPEC, 18> {
         DPLL0LTO_W::new(self)
     }
     #[doc = "Bit 19 - DPLL0 Loop Divider Ratio Update Complete"]
     #[inline(always)]
     #[must_use]
-    pub fn dpll0ldrto(&mut self) -> DPLL0LDRTO_W<19> {
+    pub fn dpll0ldrto(&mut self) -> DPLL0LDRTO_W<INTFLAG_SPEC, 19> {
         DPLL0LDRTO_W::new(self)
     }
     #[doc = "Bit 24 - DPLL1 Lock Rise"]
     #[inline(always)]
     #[must_use]
-    pub fn dpll1lckr(&mut self) -> DPLL1LCKR_W<24> {
+    pub fn dpll1lckr(&mut self) -> DPLL1LCKR_W<INTFLAG_SPEC, 24> {
         DPLL1LCKR_W::new(self)
     }
     #[doc = "Bit 25 - DPLL1 Lock Fall"]
     #[inline(always)]
     #[must_use]
-    pub fn dpll1lckf(&mut self) -> DPLL1LCKF_W<25> {
+    pub fn dpll1lckf(&mut self) -> DPLL1LCKF_W<INTFLAG_SPEC, 25> {
         DPLL1LCKF_W::new(self)
     }
     #[doc = "Bit 26 - DPLL1 Lock Timeout"]
     #[inline(always)]
     #[must_use]
-    pub fn dpll1lto(&mut self) -> DPLL1LTO_W<26> {
+    pub fn dpll1lto(&mut self) -> DPLL1LTO_W<INTFLAG_SPEC, 26> {
         DPLL1LTO_W::new(self)
     }
     #[doc = "Bit 27 - DPLL1 Loop Divider Ratio Update Complete"]
     #[inline(always)]
     #[must_use]
-    pub fn dpll1ldrto(&mut self) -> DPLL1LDRTO_W<27> {
+    pub fn dpll1ldrto(&mut self) -> DPLL1LDRTO_W<INTFLAG_SPEC, 27> {
         DPLL1LDRTO_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Flag Status and Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflag](index.html) module"]
+#[doc = "Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAG_SPEC;
 impl crate::RegisterSpec for INTFLAG_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [intflag::R](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
+impl crate::Readable for INTFLAG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

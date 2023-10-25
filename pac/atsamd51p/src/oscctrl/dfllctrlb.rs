@@ -1,71 +1,39 @@
 #[doc = "Register `DFLLCTRLB` reader"]
-pub struct R(crate::R<DFLLCTRLB_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DFLLCTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DFLLCTRLB_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DFLLCTRLB_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DFLLCTRLB_SPEC>;
 #[doc = "Register `DFLLCTRLB` writer"]
-pub struct W(crate::W<DFLLCTRLB_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<DFLLCTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<DFLLCTRLB_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<DFLLCTRLB_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<DFLLCTRLB_SPEC>;
 #[doc = "Field `MODE` reader - Operating Mode Selection"]
-pub type MODE_R = crate::BitReader<bool>;
+pub type MODE_R = crate::BitReader;
 #[doc = "Field `MODE` writer - Operating Mode Selection"]
-pub type MODE_W<'a, const O: u8> = crate::BitWriter<'a, u8, DFLLCTRLB_SPEC, bool, O>;
+pub type MODE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `STABLE` reader - Stable DFLL Frequency"]
-pub type STABLE_R = crate::BitReader<bool>;
+pub type STABLE_R = crate::BitReader;
 #[doc = "Field `STABLE` writer - Stable DFLL Frequency"]
-pub type STABLE_W<'a, const O: u8> = crate::BitWriter<'a, u8, DFLLCTRLB_SPEC, bool, O>;
+pub type STABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LLAW` reader - Lose Lock After Wake"]
-pub type LLAW_R = crate::BitReader<bool>;
+pub type LLAW_R = crate::BitReader;
 #[doc = "Field `LLAW` writer - Lose Lock After Wake"]
-pub type LLAW_W<'a, const O: u8> = crate::BitWriter<'a, u8, DFLLCTRLB_SPEC, bool, O>;
+pub type LLAW_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `USBCRM` reader - USB Clock Recovery Mode"]
-pub type USBCRM_R = crate::BitReader<bool>;
+pub type USBCRM_R = crate::BitReader;
 #[doc = "Field `USBCRM` writer - USB Clock Recovery Mode"]
-pub type USBCRM_W<'a, const O: u8> = crate::BitWriter<'a, u8, DFLLCTRLB_SPEC, bool, O>;
+pub type USBCRM_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CCDIS` reader - Chill Cycle Disable"]
-pub type CCDIS_R = crate::BitReader<bool>;
+pub type CCDIS_R = crate::BitReader;
 #[doc = "Field `CCDIS` writer - Chill Cycle Disable"]
-pub type CCDIS_W<'a, const O: u8> = crate::BitWriter<'a, u8, DFLLCTRLB_SPEC, bool, O>;
+pub type CCDIS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `QLDIS` reader - Quick Lock Disable"]
-pub type QLDIS_R = crate::BitReader<bool>;
+pub type QLDIS_R = crate::BitReader;
 #[doc = "Field `QLDIS` writer - Quick Lock Disable"]
-pub type QLDIS_W<'a, const O: u8> = crate::BitWriter<'a, u8, DFLLCTRLB_SPEC, bool, O>;
+pub type QLDIS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BPLCKC` reader - Bypass Coarse Lock"]
-pub type BPLCKC_R = crate::BitReader<bool>;
+pub type BPLCKC_R = crate::BitReader;
 #[doc = "Field `BPLCKC` writer - Bypass Coarse Lock"]
-pub type BPLCKC_W<'a, const O: u8> = crate::BitWriter<'a, u8, DFLLCTRLB_SPEC, bool, O>;
+pub type BPLCKC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `WAITLOCK` reader - Wait Lock"]
-pub type WAITLOCK_R = crate::BitReader<bool>;
+pub type WAITLOCK_R = crate::BitReader;
 #[doc = "Field `WAITLOCK` writer - Wait Lock"]
-pub type WAITLOCK_W<'a, const O: u8> = crate::BitWriter<'a, u8, DFLLCTRLB_SPEC, bool, O>;
+pub type WAITLOCK_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Operating Mode Selection"]
     #[inline(always)]
@@ -112,70 +80,71 @@ impl W {
     #[doc = "Bit 0 - Operating Mode Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn mode(&mut self) -> MODE_W<0> {
+    pub fn mode(&mut self) -> MODE_W<DFLLCTRLB_SPEC, 0> {
         MODE_W::new(self)
     }
     #[doc = "Bit 1 - Stable DFLL Frequency"]
     #[inline(always)]
     #[must_use]
-    pub fn stable(&mut self) -> STABLE_W<1> {
+    pub fn stable(&mut self) -> STABLE_W<DFLLCTRLB_SPEC, 1> {
         STABLE_W::new(self)
     }
     #[doc = "Bit 2 - Lose Lock After Wake"]
     #[inline(always)]
     #[must_use]
-    pub fn llaw(&mut self) -> LLAW_W<2> {
+    pub fn llaw(&mut self) -> LLAW_W<DFLLCTRLB_SPEC, 2> {
         LLAW_W::new(self)
     }
     #[doc = "Bit 3 - USB Clock Recovery Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn usbcrm(&mut self) -> USBCRM_W<3> {
+    pub fn usbcrm(&mut self) -> USBCRM_W<DFLLCTRLB_SPEC, 3> {
         USBCRM_W::new(self)
     }
     #[doc = "Bit 4 - Chill Cycle Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn ccdis(&mut self) -> CCDIS_W<4> {
+    pub fn ccdis(&mut self) -> CCDIS_W<DFLLCTRLB_SPEC, 4> {
         CCDIS_W::new(self)
     }
     #[doc = "Bit 5 - Quick Lock Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn qldis(&mut self) -> QLDIS_W<5> {
+    pub fn qldis(&mut self) -> QLDIS_W<DFLLCTRLB_SPEC, 5> {
         QLDIS_W::new(self)
     }
     #[doc = "Bit 6 - Bypass Coarse Lock"]
     #[inline(always)]
     #[must_use]
-    pub fn bplckc(&mut self) -> BPLCKC_W<6> {
+    pub fn bplckc(&mut self) -> BPLCKC_W<DFLLCTRLB_SPEC, 6> {
         BPLCKC_W::new(self)
     }
     #[doc = "Bit 7 - Wait Lock"]
     #[inline(always)]
     #[must_use]
-    pub fn waitlock(&mut self) -> WAITLOCK_W<7> {
+    pub fn waitlock(&mut self) -> WAITLOCK_W<DFLLCTRLB_SPEC, 7> {
         WAITLOCK_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "DFLL48M Control B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dfllctrlb](index.html) module"]
+#[doc = "DFLL48M Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dfllctrlb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dfllctrlb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DFLLCTRLB_SPEC;
 impl crate::RegisterSpec for DFLLCTRLB_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [dfllctrlb::R](R) reader structure"]
-impl crate::Readable for DFLLCTRLB_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [dfllctrlb::W](W) writer structure"]
+#[doc = "`read()` method returns [`dfllctrlb::R`](R) reader structure"]
+impl crate::Readable for DFLLCTRLB_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`dfllctrlb::W`](W) writer structure"]
 impl crate::Writable for DFLLCTRLB_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

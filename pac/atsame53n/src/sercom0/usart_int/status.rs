@@ -1,71 +1,39 @@
 #[doc = "Register `STATUS` reader"]
-pub struct R(crate::R<STATUS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<STATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<STATUS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<STATUS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<STATUS_SPEC>;
 #[doc = "Register `STATUS` writer"]
-pub struct W(crate::W<STATUS_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<STATUS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<STATUS_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<STATUS_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<STATUS_SPEC>;
 #[doc = "Field `PERR` reader - Parity Error"]
-pub type PERR_R = crate::BitReader<bool>;
+pub type PERR_R = crate::BitReader;
 #[doc = "Field `PERR` writer - Parity Error"]
-pub type PERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type PERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `FERR` reader - Frame Error"]
-pub type FERR_R = crate::BitReader<bool>;
+pub type FERR_R = crate::BitReader;
 #[doc = "Field `FERR` writer - Frame Error"]
-pub type FERR_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type FERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BUFOVF` reader - Buffer Overflow"]
-pub type BUFOVF_R = crate::BitReader<bool>;
+pub type BUFOVF_R = crate::BitReader;
 #[doc = "Field `BUFOVF` writer - Buffer Overflow"]
-pub type BUFOVF_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type BUFOVF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CTS` reader - Clear To Send"]
-pub type CTS_R = crate::BitReader<bool>;
+pub type CTS_R = crate::BitReader;
 #[doc = "Field `CTS` writer - Clear To Send"]
-pub type CTS_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type CTS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ISF` reader - Inconsistent Sync Field"]
-pub type ISF_R = crate::BitReader<bool>;
+pub type ISF_R = crate::BitReader;
 #[doc = "Field `ISF` writer - Inconsistent Sync Field"]
-pub type ISF_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type ISF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `COLL` reader - Collision Detected"]
-pub type COLL_R = crate::BitReader<bool>;
+pub type COLL_R = crate::BitReader;
 #[doc = "Field `COLL` writer - Collision Detected"]
-pub type COLL_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type COLL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TXE` reader - Transmitter Empty"]
-pub type TXE_R = crate::BitReader<bool>;
+pub type TXE_R = crate::BitReader;
 #[doc = "Field `TXE` writer - Transmitter Empty"]
-pub type TXE_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type TXE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ITER` reader - Maximum Number of Repetitions Reached"]
-pub type ITER_R = crate::BitReader<bool>;
+pub type ITER_R = crate::BitReader;
 #[doc = "Field `ITER` writer - Maximum Number of Repetitions Reached"]
-pub type ITER_W<'a, const O: u8> = crate::BitWriter<'a, u16, STATUS_SPEC, bool, O>;
+pub type ITER_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Parity Error"]
     #[inline(always)]
@@ -112,70 +80,71 @@ impl W {
     #[doc = "Bit 0 - Parity Error"]
     #[inline(always)]
     #[must_use]
-    pub fn perr(&mut self) -> PERR_W<0> {
+    pub fn perr(&mut self) -> PERR_W<STATUS_SPEC, 0> {
         PERR_W::new(self)
     }
     #[doc = "Bit 1 - Frame Error"]
     #[inline(always)]
     #[must_use]
-    pub fn ferr(&mut self) -> FERR_W<1> {
+    pub fn ferr(&mut self) -> FERR_W<STATUS_SPEC, 1> {
         FERR_W::new(self)
     }
     #[doc = "Bit 2 - Buffer Overflow"]
     #[inline(always)]
     #[must_use]
-    pub fn bufovf(&mut self) -> BUFOVF_W<2> {
+    pub fn bufovf(&mut self) -> BUFOVF_W<STATUS_SPEC, 2> {
         BUFOVF_W::new(self)
     }
     #[doc = "Bit 3 - Clear To Send"]
     #[inline(always)]
     #[must_use]
-    pub fn cts(&mut self) -> CTS_W<3> {
+    pub fn cts(&mut self) -> CTS_W<STATUS_SPEC, 3> {
         CTS_W::new(self)
     }
     #[doc = "Bit 4 - Inconsistent Sync Field"]
     #[inline(always)]
     #[must_use]
-    pub fn isf(&mut self) -> ISF_W<4> {
+    pub fn isf(&mut self) -> ISF_W<STATUS_SPEC, 4> {
         ISF_W::new(self)
     }
     #[doc = "Bit 5 - Collision Detected"]
     #[inline(always)]
     #[must_use]
-    pub fn coll(&mut self) -> COLL_W<5> {
+    pub fn coll(&mut self) -> COLL_W<STATUS_SPEC, 5> {
         COLL_W::new(self)
     }
     #[doc = "Bit 6 - Transmitter Empty"]
     #[inline(always)]
     #[must_use]
-    pub fn txe(&mut self) -> TXE_W<6> {
+    pub fn txe(&mut self) -> TXE_W<STATUS_SPEC, 6> {
         TXE_W::new(self)
     }
     #[doc = "Bit 7 - Maximum Number of Repetitions Reached"]
     #[inline(always)]
     #[must_use]
-    pub fn iter(&mut self) -> ITER_W<7> {
+    pub fn iter(&mut self) -> ITER_W<STATUS_SPEC, 7> {
         ITER_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "USART_INT Status\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [status](index.html) module"]
+#[doc = "USART_INT Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`status::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct STATUS_SPEC;
 impl crate::RegisterSpec for STATUS_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [status::R](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [status::W](W) writer structure"]
+#[doc = "`read()` method returns [`status::R`](R) reader structure"]
+impl crate::Readable for STATUS_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for STATUS_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

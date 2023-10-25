@@ -1,82 +1,69 @@
 #[doc = "Register `TXBCF` reader"]
-pub struct R(crate::R<TXBCF_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<TXBCF_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<TXBCF_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<TXBCF_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<TXBCF_SPEC>;
 #[doc = "Field `CF0` reader - Tx Buffer Cancellation Finished 0"]
-pub type CF0_R = crate::BitReader<bool>;
+pub type CF0_R = crate::BitReader;
 #[doc = "Field `CF1` reader - Tx Buffer Cancellation Finished 1"]
-pub type CF1_R = crate::BitReader<bool>;
+pub type CF1_R = crate::BitReader;
 #[doc = "Field `CF2` reader - Tx Buffer Cancellation Finished 2"]
-pub type CF2_R = crate::BitReader<bool>;
+pub type CF2_R = crate::BitReader;
 #[doc = "Field `CF3` reader - Tx Buffer Cancellation Finished 3"]
-pub type CF3_R = crate::BitReader<bool>;
+pub type CF3_R = crate::BitReader;
 #[doc = "Field `CF4` reader - Tx Buffer Cancellation Finished 4"]
-pub type CF4_R = crate::BitReader<bool>;
+pub type CF4_R = crate::BitReader;
 #[doc = "Field `CF5` reader - Tx Buffer Cancellation Finished 5"]
-pub type CF5_R = crate::BitReader<bool>;
+pub type CF5_R = crate::BitReader;
 #[doc = "Field `CF6` reader - Tx Buffer Cancellation Finished 6"]
-pub type CF6_R = crate::BitReader<bool>;
+pub type CF6_R = crate::BitReader;
 #[doc = "Field `CF7` reader - Tx Buffer Cancellation Finished 7"]
-pub type CF7_R = crate::BitReader<bool>;
+pub type CF7_R = crate::BitReader;
 #[doc = "Field `CF8` reader - Tx Buffer Cancellation Finished 8"]
-pub type CF8_R = crate::BitReader<bool>;
+pub type CF8_R = crate::BitReader;
 #[doc = "Field `CF9` reader - Tx Buffer Cancellation Finished 9"]
-pub type CF9_R = crate::BitReader<bool>;
+pub type CF9_R = crate::BitReader;
 #[doc = "Field `CF10` reader - Tx Buffer Cancellation Finished 10"]
-pub type CF10_R = crate::BitReader<bool>;
+pub type CF10_R = crate::BitReader;
 #[doc = "Field `CF11` reader - Tx Buffer Cancellation Finished 11"]
-pub type CF11_R = crate::BitReader<bool>;
+pub type CF11_R = crate::BitReader;
 #[doc = "Field `CF12` reader - Tx Buffer Cancellation Finished 12"]
-pub type CF12_R = crate::BitReader<bool>;
+pub type CF12_R = crate::BitReader;
 #[doc = "Field `CF13` reader - Tx Buffer Cancellation Finished 13"]
-pub type CF13_R = crate::BitReader<bool>;
+pub type CF13_R = crate::BitReader;
 #[doc = "Field `CF14` reader - Tx Buffer Cancellation Finished 14"]
-pub type CF14_R = crate::BitReader<bool>;
+pub type CF14_R = crate::BitReader;
 #[doc = "Field `CF15` reader - Tx Buffer Cancellation Finished 15"]
-pub type CF15_R = crate::BitReader<bool>;
+pub type CF15_R = crate::BitReader;
 #[doc = "Field `CF16` reader - Tx Buffer Cancellation Finished 16"]
-pub type CF16_R = crate::BitReader<bool>;
+pub type CF16_R = crate::BitReader;
 #[doc = "Field `CF17` reader - Tx Buffer Cancellation Finished 17"]
-pub type CF17_R = crate::BitReader<bool>;
+pub type CF17_R = crate::BitReader;
 #[doc = "Field `CF18` reader - Tx Buffer Cancellation Finished 18"]
-pub type CF18_R = crate::BitReader<bool>;
+pub type CF18_R = crate::BitReader;
 #[doc = "Field `CF19` reader - Tx Buffer Cancellation Finished 19"]
-pub type CF19_R = crate::BitReader<bool>;
+pub type CF19_R = crate::BitReader;
 #[doc = "Field `CF20` reader - Tx Buffer Cancellation Finished 20"]
-pub type CF20_R = crate::BitReader<bool>;
+pub type CF20_R = crate::BitReader;
 #[doc = "Field `CF21` reader - Tx Buffer Cancellation Finished 21"]
-pub type CF21_R = crate::BitReader<bool>;
+pub type CF21_R = crate::BitReader;
 #[doc = "Field `CF22` reader - Tx Buffer Cancellation Finished 22"]
-pub type CF22_R = crate::BitReader<bool>;
+pub type CF22_R = crate::BitReader;
 #[doc = "Field `CF23` reader - Tx Buffer Cancellation Finished 23"]
-pub type CF23_R = crate::BitReader<bool>;
+pub type CF23_R = crate::BitReader;
 #[doc = "Field `CF24` reader - Tx Buffer Cancellation Finished 24"]
-pub type CF24_R = crate::BitReader<bool>;
+pub type CF24_R = crate::BitReader;
 #[doc = "Field `CF25` reader - Tx Buffer Cancellation Finished 25"]
-pub type CF25_R = crate::BitReader<bool>;
+pub type CF25_R = crate::BitReader;
 #[doc = "Field `CF26` reader - Tx Buffer Cancellation Finished 26"]
-pub type CF26_R = crate::BitReader<bool>;
+pub type CF26_R = crate::BitReader;
 #[doc = "Field `CF27` reader - Tx Buffer Cancellation Finished 27"]
-pub type CF27_R = crate::BitReader<bool>;
+pub type CF27_R = crate::BitReader;
 #[doc = "Field `CF28` reader - Tx Buffer Cancellation Finished 28"]
-pub type CF28_R = crate::BitReader<bool>;
+pub type CF28_R = crate::BitReader;
 #[doc = "Field `CF29` reader - Tx Buffer Cancellation Finished 29"]
-pub type CF29_R = crate::BitReader<bool>;
+pub type CF29_R = crate::BitReader;
 #[doc = "Field `CF30` reader - Tx Buffer Cancellation Finished 30"]
-pub type CF30_R = crate::BitReader<bool>;
+pub type CF30_R = crate::BitReader;
 #[doc = "Field `CF31` reader - Tx Buffer Cancellation Finished 31"]
-pub type CF31_R = crate::BitReader<bool>;
+pub type CF31_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Tx Buffer Cancellation Finished 0"]
     #[inline(always)]
@@ -239,15 +226,13 @@ impl R {
         CF31_R::new(((self.bits >> 31) & 1) != 0)
     }
 }
-#[doc = "Tx Buffer Cancellation Finished\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txbcf](index.html) module"]
+#[doc = "Tx Buffer Cancellation Finished\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`txbcf::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct TXBCF_SPEC;
 impl crate::RegisterSpec for TXBCF_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [txbcf::R](R) reader structure"]
-impl crate::Readable for TXBCF_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`txbcf::R`](R) reader structure"]
+impl crate::Readable for TXBCF_SPEC {}
 #[doc = "`reset()` method sets TXBCF to value 0"]
 impl crate::Resettable for TXBCF_SPEC {
     const RESET_VALUE: Self::Ux = 0;

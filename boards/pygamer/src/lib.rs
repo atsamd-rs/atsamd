@@ -40,7 +40,5 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
     let mut pins = Pins::new(peripherals.PORT);
     let _ = pins.d13.into_open_drain_output(&mut pins.port).set_high();
 
-    loop {
-        cortex_m::asm::udf()
-    }
+    cortex_m::asm::udf()
 }

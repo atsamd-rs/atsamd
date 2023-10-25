@@ -1,63 +1,31 @@
 #[doc = "Register `INTFLAG` reader"]
-pub struct R(crate::R<INTFLAG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAG_SPEC>;
 #[doc = "Register `INTFLAG` writer"]
-pub struct W(crate::W<INTFLAG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAG_SPEC>;
 #[doc = "Field `OVF` reader - Overflow/Underflow"]
-pub type OVF_R = crate::BitReader<bool>;
+pub type OVF_R = crate::BitReader;
 #[doc = "Field `OVF` writer - Overflow/Underflow"]
-pub type OVF_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type OVF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ERR` reader - Error"]
-pub type ERR_R = crate::BitReader<bool>;
+pub type ERR_R = crate::BitReader;
 #[doc = "Field `ERR` writer - Error"]
-pub type ERR_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type ERR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `DIR` reader - Direction Change"]
-pub type DIR_R = crate::BitReader<bool>;
+pub type DIR_R = crate::BitReader;
 #[doc = "Field `DIR` writer - Direction Change"]
-pub type DIR_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type DIR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `VLC` reader - Velocity"]
-pub type VLC_R = crate::BitReader<bool>;
+pub type VLC_R = crate::BitReader;
 #[doc = "Field `VLC` writer - Velocity"]
-pub type VLC_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type VLC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC0` reader - Channel 0 Compare Match"]
-pub type MC0_R = crate::BitReader<bool>;
+pub type MC0_R = crate::BitReader;
 #[doc = "Field `MC0` writer - Channel 0 Compare Match"]
-pub type MC0_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type MC0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `MC1` reader - Channel 1 Compare Match"]
-pub type MC1_R = crate::BitReader<bool>;
+pub type MC1_R = crate::BitReader;
 #[doc = "Field `MC1` writer - Channel 1 Compare Match"]
-pub type MC1_W<'a, const O: u8> = crate::BitWriter<'a, u8, INTFLAG_SPEC, bool, O>;
+pub type MC1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Overflow/Underflow"]
     #[inline(always)]
@@ -94,58 +62,59 @@ impl W {
     #[doc = "Bit 0 - Overflow/Underflow"]
     #[inline(always)]
     #[must_use]
-    pub fn ovf(&mut self) -> OVF_W<0> {
+    pub fn ovf(&mut self) -> OVF_W<INTFLAG_SPEC, 0> {
         OVF_W::new(self)
     }
     #[doc = "Bit 1 - Error"]
     #[inline(always)]
     #[must_use]
-    pub fn err(&mut self) -> ERR_W<1> {
+    pub fn err(&mut self) -> ERR_W<INTFLAG_SPEC, 1> {
         ERR_W::new(self)
     }
     #[doc = "Bit 2 - Direction Change"]
     #[inline(always)]
     #[must_use]
-    pub fn dir(&mut self) -> DIR_W<2> {
+    pub fn dir(&mut self) -> DIR_W<INTFLAG_SPEC, 2> {
         DIR_W::new(self)
     }
     #[doc = "Bit 3 - Velocity"]
     #[inline(always)]
     #[must_use]
-    pub fn vlc(&mut self) -> VLC_W<3> {
+    pub fn vlc(&mut self) -> VLC_W<INTFLAG_SPEC, 3> {
         VLC_W::new(self)
     }
     #[doc = "Bit 4 - Channel 0 Compare Match"]
     #[inline(always)]
     #[must_use]
-    pub fn mc0(&mut self) -> MC0_W<4> {
+    pub fn mc0(&mut self) -> MC0_W<INTFLAG_SPEC, 4> {
         MC0_W::new(self)
     }
     #[doc = "Bit 5 - Channel 1 Compare Match"]
     #[inline(always)]
     #[must_use]
-    pub fn mc1(&mut self) -> MC1_W<5> {
+    pub fn mc1(&mut self) -> MC1_W<INTFLAG_SPEC, 5> {
         MC1_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Flag Status and Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflag](index.html) module"]
+#[doc = "Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAG_SPEC;
 impl crate::RegisterSpec for INTFLAG_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [intflag::R](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
+impl crate::Readable for INTFLAG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

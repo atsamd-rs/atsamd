@@ -1,45 +1,13 @@
 #[doc = "Register `EVCTRL` reader"]
-pub struct R(crate::R<EVCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<EVCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<EVCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<EVCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<EVCTRL_SPEC>;
 #[doc = "Register `EVCTRL` writer"]
-pub struct W(crate::W<EVCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<EVCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<EVCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<EVCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<EVCTRL_SPEC>;
 #[doc = "Field `PID0` reader - PORT Event Pin Identifier 0"]
-pub type PID0_R = crate::FieldReader<u8, u8>;
+pub type PID0_R = crate::FieldReader;
 #[doc = "Field `PID0` writer - PORT Event Pin Identifier 0"]
-pub type PID0_W<'a, const O: u8> = crate::FieldWriter<'a, u32, EVCTRL_SPEC, u8, u8, 5, O>;
+pub type PID0_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 5, O>;
 #[doc = "Field `EVACT0` reader - PORT Event Action 0"]
-pub type EVACT0_R = crate::FieldReader<u8, EVACT0SELECT_A>;
+pub type EVACT0_R = crate::FieldReader<EVACT0SELECT_A>;
 #[doc = "PORT Event Action 0\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -59,10 +27,13 @@ impl From<EVACT0SELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for EVACT0SELECT_A {
+    type Ux = u8;
+}
 impl EVACT0_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> EVACT0SELECT_A {
+    pub const fn variant(&self) -> EVACT0SELECT_A {
         match self.bits {
             0 => EVACT0SELECT_A::OUT,
             1 => EVACT0SELECT_A::SET,
@@ -71,92 +42,95 @@ impl EVACT0_R {
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `OUT`"]
+    #[doc = "Event output to pin"]
     #[inline(always)]
     pub fn is_out(&self) -> bool {
         *self == EVACT0SELECT_A::OUT
     }
-    #[doc = "Checks if the value of the field is `SET`"]
+    #[doc = "Set output register of pin on event"]
     #[inline(always)]
     pub fn is_set(&self) -> bool {
         *self == EVACT0SELECT_A::SET
     }
-    #[doc = "Checks if the value of the field is `CLR`"]
+    #[doc = "Clear output register of pin on event"]
     #[inline(always)]
     pub fn is_clr(&self) -> bool {
         *self == EVACT0SELECT_A::CLR
     }
-    #[doc = "Checks if the value of the field is `TGL`"]
+    #[doc = "Toggle output register of pin on event"]
     #[inline(always)]
     pub fn is_tgl(&self) -> bool {
         *self == EVACT0SELECT_A::TGL
     }
 }
 #[doc = "Field `EVACT0` writer - PORT Event Action 0"]
-pub type EVACT0_W<'a, const O: u8> =
-    crate::FieldWriterSafe<'a, u32, EVCTRL_SPEC, u8, EVACT0SELECT_A, 2, O>;
-impl<'a, const O: u8> EVACT0_W<'a, O> {
+pub type EVACT0_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, EVACT0SELECT_A>;
+impl<'a, REG, const O: u8> EVACT0_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Event output to pin"]
     #[inline(always)]
-    pub fn out(self) -> &'a mut W {
+    pub fn out(self) -> &'a mut crate::W<REG> {
         self.variant(EVACT0SELECT_A::OUT)
     }
     #[doc = "Set output register of pin on event"]
     #[inline(always)]
-    pub fn set(self) -> &'a mut W {
+    pub fn set(self) -> &'a mut crate::W<REG> {
         self.variant(EVACT0SELECT_A::SET)
     }
     #[doc = "Clear output register of pin on event"]
     #[inline(always)]
-    pub fn clr(self) -> &'a mut W {
+    pub fn clr(self) -> &'a mut crate::W<REG> {
         self.variant(EVACT0SELECT_A::CLR)
     }
     #[doc = "Toggle output register of pin on event"]
     #[inline(always)]
-    pub fn tgl(self) -> &'a mut W {
+    pub fn tgl(self) -> &'a mut crate::W<REG> {
         self.variant(EVACT0SELECT_A::TGL)
     }
 }
 #[doc = "Field `PORTEI0` reader - PORT Event Input Enable 0"]
-pub type PORTEI0_R = crate::BitReader<bool>;
+pub type PORTEI0_R = crate::BitReader;
 #[doc = "Field `PORTEI0` writer - PORT Event Input Enable 0"]
-pub type PORTEI0_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PORTEI0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PID1` reader - PORT Event Pin Identifier 1"]
-pub type PID1_R = crate::FieldReader<u8, u8>;
+pub type PID1_R = crate::FieldReader;
 #[doc = "Field `PID1` writer - PORT Event Pin Identifier 1"]
-pub type PID1_W<'a, const O: u8> = crate::FieldWriter<'a, u32, EVCTRL_SPEC, u8, u8, 5, O>;
+pub type PID1_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 5, O>;
 #[doc = "Field `EVACT1` reader - PORT Event Action 1"]
-pub type EVACT1_R = crate::FieldReader<u8, u8>;
+pub type EVACT1_R = crate::FieldReader;
 #[doc = "Field `EVACT1` writer - PORT Event Action 1"]
-pub type EVACT1_W<'a, const O: u8> = crate::FieldWriter<'a, u32, EVCTRL_SPEC, u8, u8, 2, O>;
+pub type EVACT1_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `PORTEI1` reader - PORT Event Input Enable 1"]
-pub type PORTEI1_R = crate::BitReader<bool>;
+pub type PORTEI1_R = crate::BitReader;
 #[doc = "Field `PORTEI1` writer - PORT Event Input Enable 1"]
-pub type PORTEI1_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PORTEI1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PID2` reader - PORT Event Pin Identifier 2"]
-pub type PID2_R = crate::FieldReader<u8, u8>;
+pub type PID2_R = crate::FieldReader;
 #[doc = "Field `PID2` writer - PORT Event Pin Identifier 2"]
-pub type PID2_W<'a, const O: u8> = crate::FieldWriter<'a, u32, EVCTRL_SPEC, u8, u8, 5, O>;
+pub type PID2_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 5, O>;
 #[doc = "Field `EVACT2` reader - PORT Event Action 2"]
-pub type EVACT2_R = crate::FieldReader<u8, u8>;
+pub type EVACT2_R = crate::FieldReader;
 #[doc = "Field `EVACT2` writer - PORT Event Action 2"]
-pub type EVACT2_W<'a, const O: u8> = crate::FieldWriter<'a, u32, EVCTRL_SPEC, u8, u8, 2, O>;
+pub type EVACT2_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `PORTEI2` reader - PORT Event Input Enable 2"]
-pub type PORTEI2_R = crate::BitReader<bool>;
+pub type PORTEI2_R = crate::BitReader;
 #[doc = "Field `PORTEI2` writer - PORT Event Input Enable 2"]
-pub type PORTEI2_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PORTEI2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PID3` reader - PORT Event Pin Identifier 3"]
-pub type PID3_R = crate::FieldReader<u8, u8>;
+pub type PID3_R = crate::FieldReader;
 #[doc = "Field `PID3` writer - PORT Event Pin Identifier 3"]
-pub type PID3_W<'a, const O: u8> = crate::FieldWriter<'a, u32, EVCTRL_SPEC, u8, u8, 5, O>;
+pub type PID3_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 5, O>;
 #[doc = "Field `EVACT3` reader - PORT Event Action 3"]
-pub type EVACT3_R = crate::FieldReader<u8, u8>;
+pub type EVACT3_R = crate::FieldReader;
 #[doc = "Field `EVACT3` writer - PORT Event Action 3"]
-pub type EVACT3_W<'a, const O: u8> = crate::FieldWriter<'a, u32, EVCTRL_SPEC, u8, u8, 2, O>;
+pub type EVACT3_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O>;
 #[doc = "Field `PORTEI3` reader - PORT Event Input Enable 3"]
-pub type PORTEI3_R = crate::BitReader<bool>;
+pub type PORTEI3_R = crate::BitReader;
 #[doc = "Field `PORTEI3` writer - PORT Event Input Enable 3"]
-pub type PORTEI3_W<'a, const O: u8> = crate::BitWriter<'a, u32, EVCTRL_SPEC, bool, O>;
+pub type PORTEI3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bits 0:4 - PORT Event Pin Identifier 0"]
     #[inline(always)]
@@ -223,94 +197,95 @@ impl W {
     #[doc = "Bits 0:4 - PORT Event Pin Identifier 0"]
     #[inline(always)]
     #[must_use]
-    pub fn pid0(&mut self) -> PID0_W<0> {
+    pub fn pid0(&mut self) -> PID0_W<EVCTRL_SPEC, 0> {
         PID0_W::new(self)
     }
     #[doc = "Bits 5:6 - PORT Event Action 0"]
     #[inline(always)]
     #[must_use]
-    pub fn evact0(&mut self) -> EVACT0_W<5> {
+    pub fn evact0(&mut self) -> EVACT0_W<EVCTRL_SPEC, 5> {
         EVACT0_W::new(self)
     }
     #[doc = "Bit 7 - PORT Event Input Enable 0"]
     #[inline(always)]
     #[must_use]
-    pub fn portei0(&mut self) -> PORTEI0_W<7> {
+    pub fn portei0(&mut self) -> PORTEI0_W<EVCTRL_SPEC, 7> {
         PORTEI0_W::new(self)
     }
     #[doc = "Bits 8:12 - PORT Event Pin Identifier 1"]
     #[inline(always)]
     #[must_use]
-    pub fn pid1(&mut self) -> PID1_W<8> {
+    pub fn pid1(&mut self) -> PID1_W<EVCTRL_SPEC, 8> {
         PID1_W::new(self)
     }
     #[doc = "Bits 13:14 - PORT Event Action 1"]
     #[inline(always)]
     #[must_use]
-    pub fn evact1(&mut self) -> EVACT1_W<13> {
+    pub fn evact1(&mut self) -> EVACT1_W<EVCTRL_SPEC, 13> {
         EVACT1_W::new(self)
     }
     #[doc = "Bit 15 - PORT Event Input Enable 1"]
     #[inline(always)]
     #[must_use]
-    pub fn portei1(&mut self) -> PORTEI1_W<15> {
+    pub fn portei1(&mut self) -> PORTEI1_W<EVCTRL_SPEC, 15> {
         PORTEI1_W::new(self)
     }
     #[doc = "Bits 16:20 - PORT Event Pin Identifier 2"]
     #[inline(always)]
     #[must_use]
-    pub fn pid2(&mut self) -> PID2_W<16> {
+    pub fn pid2(&mut self) -> PID2_W<EVCTRL_SPEC, 16> {
         PID2_W::new(self)
     }
     #[doc = "Bits 21:22 - PORT Event Action 2"]
     #[inline(always)]
     #[must_use]
-    pub fn evact2(&mut self) -> EVACT2_W<21> {
+    pub fn evact2(&mut self) -> EVACT2_W<EVCTRL_SPEC, 21> {
         EVACT2_W::new(self)
     }
     #[doc = "Bit 23 - PORT Event Input Enable 2"]
     #[inline(always)]
     #[must_use]
-    pub fn portei2(&mut self) -> PORTEI2_W<23> {
+    pub fn portei2(&mut self) -> PORTEI2_W<EVCTRL_SPEC, 23> {
         PORTEI2_W::new(self)
     }
     #[doc = "Bits 24:28 - PORT Event Pin Identifier 3"]
     #[inline(always)]
     #[must_use]
-    pub fn pid3(&mut self) -> PID3_W<24> {
+    pub fn pid3(&mut self) -> PID3_W<EVCTRL_SPEC, 24> {
         PID3_W::new(self)
     }
     #[doc = "Bits 29:30 - PORT Event Action 3"]
     #[inline(always)]
     #[must_use]
-    pub fn evact3(&mut self) -> EVACT3_W<29> {
+    pub fn evact3(&mut self) -> EVACT3_W<EVCTRL_SPEC, 29> {
         EVACT3_W::new(self)
     }
     #[doc = "Bit 31 - PORT Event Input Enable 3"]
     #[inline(always)]
     #[must_use]
-    pub fn portei3(&mut self) -> PORTEI3_W<31> {
+    pub fn portei3(&mut self) -> PORTEI3_W<EVCTRL_SPEC, 31> {
         PORTEI3_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Event Input Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [evctrl](index.html) module"]
+#[doc = "Event Input Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`evctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`evctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct EVCTRL_SPEC;
 impl crate::RegisterSpec for EVCTRL_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [evctrl::R](R) reader structure"]
-impl crate::Readable for EVCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [evctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`evctrl::R`](R) reader structure"]
+impl crate::Readable for EVCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EVCTRL_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

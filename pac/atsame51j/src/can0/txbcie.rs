@@ -1,167 +1,135 @@
 #[doc = "Register `TXBCIE` reader"]
-pub struct R(crate::R<TXBCIE_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<TXBCIE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<TXBCIE_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<TXBCIE_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<TXBCIE_SPEC>;
 #[doc = "Register `TXBCIE` writer"]
-pub struct W(crate::W<TXBCIE_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<TXBCIE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<TXBCIE_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<TXBCIE_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<TXBCIE_SPEC>;
 #[doc = "Field `CFIE0` reader - Cancellation Finished Interrupt Enable 0"]
-pub type CFIE0_R = crate::BitReader<bool>;
+pub type CFIE0_R = crate::BitReader;
 #[doc = "Field `CFIE0` writer - Cancellation Finished Interrupt Enable 0"]
-pub type CFIE0_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE1` reader - Cancellation Finished Interrupt Enable 1"]
-pub type CFIE1_R = crate::BitReader<bool>;
+pub type CFIE1_R = crate::BitReader;
 #[doc = "Field `CFIE1` writer - Cancellation Finished Interrupt Enable 1"]
-pub type CFIE1_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE2` reader - Cancellation Finished Interrupt Enable 2"]
-pub type CFIE2_R = crate::BitReader<bool>;
+pub type CFIE2_R = crate::BitReader;
 #[doc = "Field `CFIE2` writer - Cancellation Finished Interrupt Enable 2"]
-pub type CFIE2_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE3` reader - Cancellation Finished Interrupt Enable 3"]
-pub type CFIE3_R = crate::BitReader<bool>;
+pub type CFIE3_R = crate::BitReader;
 #[doc = "Field `CFIE3` writer - Cancellation Finished Interrupt Enable 3"]
-pub type CFIE3_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE4` reader - Cancellation Finished Interrupt Enable 4"]
-pub type CFIE4_R = crate::BitReader<bool>;
+pub type CFIE4_R = crate::BitReader;
 #[doc = "Field `CFIE4` writer - Cancellation Finished Interrupt Enable 4"]
-pub type CFIE4_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE5` reader - Cancellation Finished Interrupt Enable 5"]
-pub type CFIE5_R = crate::BitReader<bool>;
+pub type CFIE5_R = crate::BitReader;
 #[doc = "Field `CFIE5` writer - Cancellation Finished Interrupt Enable 5"]
-pub type CFIE5_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE6` reader - Cancellation Finished Interrupt Enable 6"]
-pub type CFIE6_R = crate::BitReader<bool>;
+pub type CFIE6_R = crate::BitReader;
 #[doc = "Field `CFIE6` writer - Cancellation Finished Interrupt Enable 6"]
-pub type CFIE6_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE7` reader - Cancellation Finished Interrupt Enable 7"]
-pub type CFIE7_R = crate::BitReader<bool>;
+pub type CFIE7_R = crate::BitReader;
 #[doc = "Field `CFIE7` writer - Cancellation Finished Interrupt Enable 7"]
-pub type CFIE7_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE8` reader - Cancellation Finished Interrupt Enable 8"]
-pub type CFIE8_R = crate::BitReader<bool>;
+pub type CFIE8_R = crate::BitReader;
 #[doc = "Field `CFIE8` writer - Cancellation Finished Interrupt Enable 8"]
-pub type CFIE8_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE8_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE9` reader - Cancellation Finished Interrupt Enable 9"]
-pub type CFIE9_R = crate::BitReader<bool>;
+pub type CFIE9_R = crate::BitReader;
 #[doc = "Field `CFIE9` writer - Cancellation Finished Interrupt Enable 9"]
-pub type CFIE9_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE9_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE10` reader - Cancellation Finished Interrupt Enable 10"]
-pub type CFIE10_R = crate::BitReader<bool>;
+pub type CFIE10_R = crate::BitReader;
 #[doc = "Field `CFIE10` writer - Cancellation Finished Interrupt Enable 10"]
-pub type CFIE10_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE10_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE11` reader - Cancellation Finished Interrupt Enable 11"]
-pub type CFIE11_R = crate::BitReader<bool>;
+pub type CFIE11_R = crate::BitReader;
 #[doc = "Field `CFIE11` writer - Cancellation Finished Interrupt Enable 11"]
-pub type CFIE11_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE11_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE12` reader - Cancellation Finished Interrupt Enable 12"]
-pub type CFIE12_R = crate::BitReader<bool>;
+pub type CFIE12_R = crate::BitReader;
 #[doc = "Field `CFIE12` writer - Cancellation Finished Interrupt Enable 12"]
-pub type CFIE12_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE12_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE13` reader - Cancellation Finished Interrupt Enable 13"]
-pub type CFIE13_R = crate::BitReader<bool>;
+pub type CFIE13_R = crate::BitReader;
 #[doc = "Field `CFIE13` writer - Cancellation Finished Interrupt Enable 13"]
-pub type CFIE13_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE13_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE14` reader - Cancellation Finished Interrupt Enable 14"]
-pub type CFIE14_R = crate::BitReader<bool>;
+pub type CFIE14_R = crate::BitReader;
 #[doc = "Field `CFIE14` writer - Cancellation Finished Interrupt Enable 14"]
-pub type CFIE14_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE14_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE15` reader - Cancellation Finished Interrupt Enable 15"]
-pub type CFIE15_R = crate::BitReader<bool>;
+pub type CFIE15_R = crate::BitReader;
 #[doc = "Field `CFIE15` writer - Cancellation Finished Interrupt Enable 15"]
-pub type CFIE15_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE15_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE16` reader - Cancellation Finished Interrupt Enable 16"]
-pub type CFIE16_R = crate::BitReader<bool>;
+pub type CFIE16_R = crate::BitReader;
 #[doc = "Field `CFIE16` writer - Cancellation Finished Interrupt Enable 16"]
-pub type CFIE16_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE16_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE17` reader - Cancellation Finished Interrupt Enable 17"]
-pub type CFIE17_R = crate::BitReader<bool>;
+pub type CFIE17_R = crate::BitReader;
 #[doc = "Field `CFIE17` writer - Cancellation Finished Interrupt Enable 17"]
-pub type CFIE17_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE17_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE18` reader - Cancellation Finished Interrupt Enable 18"]
-pub type CFIE18_R = crate::BitReader<bool>;
+pub type CFIE18_R = crate::BitReader;
 #[doc = "Field `CFIE18` writer - Cancellation Finished Interrupt Enable 18"]
-pub type CFIE18_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE18_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE19` reader - Cancellation Finished Interrupt Enable 19"]
-pub type CFIE19_R = crate::BitReader<bool>;
+pub type CFIE19_R = crate::BitReader;
 #[doc = "Field `CFIE19` writer - Cancellation Finished Interrupt Enable 19"]
-pub type CFIE19_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE19_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE20` reader - Cancellation Finished Interrupt Enable 20"]
-pub type CFIE20_R = crate::BitReader<bool>;
+pub type CFIE20_R = crate::BitReader;
 #[doc = "Field `CFIE20` writer - Cancellation Finished Interrupt Enable 20"]
-pub type CFIE20_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE20_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE21` reader - Cancellation Finished Interrupt Enable 21"]
-pub type CFIE21_R = crate::BitReader<bool>;
+pub type CFIE21_R = crate::BitReader;
 #[doc = "Field `CFIE21` writer - Cancellation Finished Interrupt Enable 21"]
-pub type CFIE21_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE21_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE22` reader - Cancellation Finished Interrupt Enable 22"]
-pub type CFIE22_R = crate::BitReader<bool>;
+pub type CFIE22_R = crate::BitReader;
 #[doc = "Field `CFIE22` writer - Cancellation Finished Interrupt Enable 22"]
-pub type CFIE22_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE22_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE23` reader - Cancellation Finished Interrupt Enable 23"]
-pub type CFIE23_R = crate::BitReader<bool>;
+pub type CFIE23_R = crate::BitReader;
 #[doc = "Field `CFIE23` writer - Cancellation Finished Interrupt Enable 23"]
-pub type CFIE23_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE23_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE24` reader - Cancellation Finished Interrupt Enable 24"]
-pub type CFIE24_R = crate::BitReader<bool>;
+pub type CFIE24_R = crate::BitReader;
 #[doc = "Field `CFIE24` writer - Cancellation Finished Interrupt Enable 24"]
-pub type CFIE24_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE24_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE25` reader - Cancellation Finished Interrupt Enable 25"]
-pub type CFIE25_R = crate::BitReader<bool>;
+pub type CFIE25_R = crate::BitReader;
 #[doc = "Field `CFIE25` writer - Cancellation Finished Interrupt Enable 25"]
-pub type CFIE25_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE25_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE26` reader - Cancellation Finished Interrupt Enable 26"]
-pub type CFIE26_R = crate::BitReader<bool>;
+pub type CFIE26_R = crate::BitReader;
 #[doc = "Field `CFIE26` writer - Cancellation Finished Interrupt Enable 26"]
-pub type CFIE26_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE26_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE27` reader - Cancellation Finished Interrupt Enable 27"]
-pub type CFIE27_R = crate::BitReader<bool>;
+pub type CFIE27_R = crate::BitReader;
 #[doc = "Field `CFIE27` writer - Cancellation Finished Interrupt Enable 27"]
-pub type CFIE27_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE27_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE28` reader - Cancellation Finished Interrupt Enable 28"]
-pub type CFIE28_R = crate::BitReader<bool>;
+pub type CFIE28_R = crate::BitReader;
 #[doc = "Field `CFIE28` writer - Cancellation Finished Interrupt Enable 28"]
-pub type CFIE28_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE28_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE29` reader - Cancellation Finished Interrupt Enable 29"]
-pub type CFIE29_R = crate::BitReader<bool>;
+pub type CFIE29_R = crate::BitReader;
 #[doc = "Field `CFIE29` writer - Cancellation Finished Interrupt Enable 29"]
-pub type CFIE29_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE29_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE30` reader - Cancellation Finished Interrupt Enable 30"]
-pub type CFIE30_R = crate::BitReader<bool>;
+pub type CFIE30_R = crate::BitReader;
 #[doc = "Field `CFIE30` writer - Cancellation Finished Interrupt Enable 30"]
-pub type CFIE30_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE30_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `CFIE31` reader - Cancellation Finished Interrupt Enable 31"]
-pub type CFIE31_R = crate::BitReader<bool>;
+pub type CFIE31_R = crate::BitReader;
 #[doc = "Field `CFIE31` writer - Cancellation Finished Interrupt Enable 31"]
-pub type CFIE31_W<'a, const O: u8> = crate::BitWriter<'a, u32, TXBCIE_SPEC, bool, O>;
+pub type CFIE31_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Cancellation Finished Interrupt Enable 0"]
     #[inline(always)]
@@ -328,214 +296,215 @@ impl W {
     #[doc = "Bit 0 - Cancellation Finished Interrupt Enable 0"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie0(&mut self) -> CFIE0_W<0> {
+    pub fn cfie0(&mut self) -> CFIE0_W<TXBCIE_SPEC, 0> {
         CFIE0_W::new(self)
     }
     #[doc = "Bit 1 - Cancellation Finished Interrupt Enable 1"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie1(&mut self) -> CFIE1_W<1> {
+    pub fn cfie1(&mut self) -> CFIE1_W<TXBCIE_SPEC, 1> {
         CFIE1_W::new(self)
     }
     #[doc = "Bit 2 - Cancellation Finished Interrupt Enable 2"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie2(&mut self) -> CFIE2_W<2> {
+    pub fn cfie2(&mut self) -> CFIE2_W<TXBCIE_SPEC, 2> {
         CFIE2_W::new(self)
     }
     #[doc = "Bit 3 - Cancellation Finished Interrupt Enable 3"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie3(&mut self) -> CFIE3_W<3> {
+    pub fn cfie3(&mut self) -> CFIE3_W<TXBCIE_SPEC, 3> {
         CFIE3_W::new(self)
     }
     #[doc = "Bit 4 - Cancellation Finished Interrupt Enable 4"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie4(&mut self) -> CFIE4_W<4> {
+    pub fn cfie4(&mut self) -> CFIE4_W<TXBCIE_SPEC, 4> {
         CFIE4_W::new(self)
     }
     #[doc = "Bit 5 - Cancellation Finished Interrupt Enable 5"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie5(&mut self) -> CFIE5_W<5> {
+    pub fn cfie5(&mut self) -> CFIE5_W<TXBCIE_SPEC, 5> {
         CFIE5_W::new(self)
     }
     #[doc = "Bit 6 - Cancellation Finished Interrupt Enable 6"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie6(&mut self) -> CFIE6_W<6> {
+    pub fn cfie6(&mut self) -> CFIE6_W<TXBCIE_SPEC, 6> {
         CFIE6_W::new(self)
     }
     #[doc = "Bit 7 - Cancellation Finished Interrupt Enable 7"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie7(&mut self) -> CFIE7_W<7> {
+    pub fn cfie7(&mut self) -> CFIE7_W<TXBCIE_SPEC, 7> {
         CFIE7_W::new(self)
     }
     #[doc = "Bit 8 - Cancellation Finished Interrupt Enable 8"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie8(&mut self) -> CFIE8_W<8> {
+    pub fn cfie8(&mut self) -> CFIE8_W<TXBCIE_SPEC, 8> {
         CFIE8_W::new(self)
     }
     #[doc = "Bit 9 - Cancellation Finished Interrupt Enable 9"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie9(&mut self) -> CFIE9_W<9> {
+    pub fn cfie9(&mut self) -> CFIE9_W<TXBCIE_SPEC, 9> {
         CFIE9_W::new(self)
     }
     #[doc = "Bit 10 - Cancellation Finished Interrupt Enable 10"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie10(&mut self) -> CFIE10_W<10> {
+    pub fn cfie10(&mut self) -> CFIE10_W<TXBCIE_SPEC, 10> {
         CFIE10_W::new(self)
     }
     #[doc = "Bit 11 - Cancellation Finished Interrupt Enable 11"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie11(&mut self) -> CFIE11_W<11> {
+    pub fn cfie11(&mut self) -> CFIE11_W<TXBCIE_SPEC, 11> {
         CFIE11_W::new(self)
     }
     #[doc = "Bit 12 - Cancellation Finished Interrupt Enable 12"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie12(&mut self) -> CFIE12_W<12> {
+    pub fn cfie12(&mut self) -> CFIE12_W<TXBCIE_SPEC, 12> {
         CFIE12_W::new(self)
     }
     #[doc = "Bit 13 - Cancellation Finished Interrupt Enable 13"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie13(&mut self) -> CFIE13_W<13> {
+    pub fn cfie13(&mut self) -> CFIE13_W<TXBCIE_SPEC, 13> {
         CFIE13_W::new(self)
     }
     #[doc = "Bit 14 - Cancellation Finished Interrupt Enable 14"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie14(&mut self) -> CFIE14_W<14> {
+    pub fn cfie14(&mut self) -> CFIE14_W<TXBCIE_SPEC, 14> {
         CFIE14_W::new(self)
     }
     #[doc = "Bit 15 - Cancellation Finished Interrupt Enable 15"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie15(&mut self) -> CFIE15_W<15> {
+    pub fn cfie15(&mut self) -> CFIE15_W<TXBCIE_SPEC, 15> {
         CFIE15_W::new(self)
     }
     #[doc = "Bit 16 - Cancellation Finished Interrupt Enable 16"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie16(&mut self) -> CFIE16_W<16> {
+    pub fn cfie16(&mut self) -> CFIE16_W<TXBCIE_SPEC, 16> {
         CFIE16_W::new(self)
     }
     #[doc = "Bit 17 - Cancellation Finished Interrupt Enable 17"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie17(&mut self) -> CFIE17_W<17> {
+    pub fn cfie17(&mut self) -> CFIE17_W<TXBCIE_SPEC, 17> {
         CFIE17_W::new(self)
     }
     #[doc = "Bit 18 - Cancellation Finished Interrupt Enable 18"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie18(&mut self) -> CFIE18_W<18> {
+    pub fn cfie18(&mut self) -> CFIE18_W<TXBCIE_SPEC, 18> {
         CFIE18_W::new(self)
     }
     #[doc = "Bit 19 - Cancellation Finished Interrupt Enable 19"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie19(&mut self) -> CFIE19_W<19> {
+    pub fn cfie19(&mut self) -> CFIE19_W<TXBCIE_SPEC, 19> {
         CFIE19_W::new(self)
     }
     #[doc = "Bit 20 - Cancellation Finished Interrupt Enable 20"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie20(&mut self) -> CFIE20_W<20> {
+    pub fn cfie20(&mut self) -> CFIE20_W<TXBCIE_SPEC, 20> {
         CFIE20_W::new(self)
     }
     #[doc = "Bit 21 - Cancellation Finished Interrupt Enable 21"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie21(&mut self) -> CFIE21_W<21> {
+    pub fn cfie21(&mut self) -> CFIE21_W<TXBCIE_SPEC, 21> {
         CFIE21_W::new(self)
     }
     #[doc = "Bit 22 - Cancellation Finished Interrupt Enable 22"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie22(&mut self) -> CFIE22_W<22> {
+    pub fn cfie22(&mut self) -> CFIE22_W<TXBCIE_SPEC, 22> {
         CFIE22_W::new(self)
     }
     #[doc = "Bit 23 - Cancellation Finished Interrupt Enable 23"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie23(&mut self) -> CFIE23_W<23> {
+    pub fn cfie23(&mut self) -> CFIE23_W<TXBCIE_SPEC, 23> {
         CFIE23_W::new(self)
     }
     #[doc = "Bit 24 - Cancellation Finished Interrupt Enable 24"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie24(&mut self) -> CFIE24_W<24> {
+    pub fn cfie24(&mut self) -> CFIE24_W<TXBCIE_SPEC, 24> {
         CFIE24_W::new(self)
     }
     #[doc = "Bit 25 - Cancellation Finished Interrupt Enable 25"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie25(&mut self) -> CFIE25_W<25> {
+    pub fn cfie25(&mut self) -> CFIE25_W<TXBCIE_SPEC, 25> {
         CFIE25_W::new(self)
     }
     #[doc = "Bit 26 - Cancellation Finished Interrupt Enable 26"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie26(&mut self) -> CFIE26_W<26> {
+    pub fn cfie26(&mut self) -> CFIE26_W<TXBCIE_SPEC, 26> {
         CFIE26_W::new(self)
     }
     #[doc = "Bit 27 - Cancellation Finished Interrupt Enable 27"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie27(&mut self) -> CFIE27_W<27> {
+    pub fn cfie27(&mut self) -> CFIE27_W<TXBCIE_SPEC, 27> {
         CFIE27_W::new(self)
     }
     #[doc = "Bit 28 - Cancellation Finished Interrupt Enable 28"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie28(&mut self) -> CFIE28_W<28> {
+    pub fn cfie28(&mut self) -> CFIE28_W<TXBCIE_SPEC, 28> {
         CFIE28_W::new(self)
     }
     #[doc = "Bit 29 - Cancellation Finished Interrupt Enable 29"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie29(&mut self) -> CFIE29_W<29> {
+    pub fn cfie29(&mut self) -> CFIE29_W<TXBCIE_SPEC, 29> {
         CFIE29_W::new(self)
     }
     #[doc = "Bit 30 - Cancellation Finished Interrupt Enable 30"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie30(&mut self) -> CFIE30_W<30> {
+    pub fn cfie30(&mut self) -> CFIE30_W<TXBCIE_SPEC, 30> {
         CFIE30_W::new(self)
     }
     #[doc = "Bit 31 - Cancellation Finished Interrupt Enable 31"]
     #[inline(always)]
     #[must_use]
-    pub fn cfie31(&mut self) -> CFIE31_W<31> {
+    pub fn cfie31(&mut self) -> CFIE31_W<TXBCIE_SPEC, 31> {
         CFIE31_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Tx Buffer Cancellation Finished Interrupt Enable\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txbcie](index.html) module"]
+#[doc = "Tx Buffer Cancellation Finished Interrupt Enable\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`txbcie::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`txbcie::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct TXBCIE_SPEC;
 impl crate::RegisterSpec for TXBCIE_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [txbcie::R](R) reader structure"]
-impl crate::Readable for TXBCIE_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [txbcie::W](W) writer structure"]
+#[doc = "`read()` method returns [`txbcie::R`](R) reader structure"]
+impl crate::Readable for TXBCIE_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`txbcie::W`](W) writer structure"]
 impl crate::Writable for TXBCIE_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }

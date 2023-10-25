@@ -1,28 +1,15 @@
 #[doc = "Register `TXEFS` reader"]
-pub struct R(crate::R<TXEFS_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<TXEFS_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<TXEFS_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<TXEFS_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<TXEFS_SPEC>;
 #[doc = "Field `EFFL` reader - Event FIFO Fill Level"]
-pub type EFFL_R = crate::FieldReader<u8, u8>;
+pub type EFFL_R = crate::FieldReader;
 #[doc = "Field `EFGI` reader - Event FIFO Get Index"]
-pub type EFGI_R = crate::FieldReader<u8, u8>;
+pub type EFGI_R = crate::FieldReader;
 #[doc = "Field `EFPI` reader - Event FIFO Put Index"]
-pub type EFPI_R = crate::FieldReader<u8, u8>;
+pub type EFPI_R = crate::FieldReader;
 #[doc = "Field `EFF` reader - Event FIFO Full"]
-pub type EFF_R = crate::BitReader<bool>;
+pub type EFF_R = crate::BitReader;
 #[doc = "Field `TEFL` reader - Tx Event FIFO Element Lost"]
-pub type TEFL_R = crate::BitReader<bool>;
+pub type TEFL_R = crate::BitReader;
 impl R {
     #[doc = "Bits 0:5 - Event FIFO Fill Level"]
     #[inline(always)]
@@ -50,15 +37,13 @@ impl R {
         TEFL_R::new(((self.bits >> 25) & 1) != 0)
     }
 }
-#[doc = "Tx Event FIFO Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txefs](index.html) module"]
+#[doc = "Tx Event FIFO Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`txefs::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct TXEFS_SPEC;
 impl crate::RegisterSpec for TXEFS_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [txefs::R](R) reader structure"]
-impl crate::Readable for TXEFS_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`txefs::R`](R) reader structure"]
+impl crate::Readable for TXEFS_SPEC {}
 #[doc = "`reset()` method sets TXEFS to value 0"]
 impl crate::Resettable for TXEFS_SPEC {
     const RESET_VALUE: Self::Ux = 0;

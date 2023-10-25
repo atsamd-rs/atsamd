@@ -1,5 +1,7 @@
 # Unreleased
 
+# v0.6.0
+
 - Use correct alternate for USB (#661)
 - update to `atsamd-hal-0.15` (v2 drivers of peripherals and removal of deprecated things)
 - correction to the USB clock in the bsp convenience function

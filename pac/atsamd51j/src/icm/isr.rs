@@ -1,32 +1,19 @@
 #[doc = "Register `ISR` reader"]
-pub struct R(crate::R<ISR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<ISR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<ISR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<ISR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<ISR_SPEC>;
 #[doc = "Field `RHC` reader - Region Hash Completed"]
-pub type RHC_R = crate::FieldReader<u8, u8>;
+pub type RHC_R = crate::FieldReader;
 #[doc = "Field `RDM` reader - Region Digest Mismatch"]
-pub type RDM_R = crate::FieldReader<u8, u8>;
+pub type RDM_R = crate::FieldReader;
 #[doc = "Field `RBE` reader - Region Bus Error"]
-pub type RBE_R = crate::FieldReader<u8, u8>;
+pub type RBE_R = crate::FieldReader;
 #[doc = "Field `RWC` reader - Region Wrap Condition Detected"]
-pub type RWC_R = crate::FieldReader<u8, u8>;
+pub type RWC_R = crate::FieldReader;
 #[doc = "Field `REC` reader - Region End bit Condition Detected"]
-pub type REC_R = crate::FieldReader<u8, u8>;
+pub type REC_R = crate::FieldReader;
 #[doc = "Field `RSU` reader - Region Status Updated Detected"]
-pub type RSU_R = crate::FieldReader<u8, u8>;
+pub type RSU_R = crate::FieldReader;
 #[doc = "Field `URAD` reader - Undefined Register Access Detection Status"]
-pub type URAD_R = crate::BitReader<bool>;
+pub type URAD_R = crate::BitReader;
 impl R {
     #[doc = "Bits 0:3 - Region Hash Completed"]
     #[inline(always)]
@@ -64,15 +51,13 @@ impl R {
         URAD_R::new(((self.bits >> 24) & 1) != 0)
     }
 }
-#[doc = "Interrupt Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [isr](index.html) module"]
+#[doc = "Interrupt Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`isr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct ISR_SPEC;
 impl crate::RegisterSpec for ISR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [isr::R](R) reader structure"]
-impl crate::Readable for ISR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`isr::R`](R) reader structure"]
+impl crate::Readable for ISR_SPEC {}
 #[doc = "`reset()` method sets ISR to value 0"]
 impl crate::Resettable for ISR_SPEC {
     const RESET_VALUE: Self::Ux = 0;

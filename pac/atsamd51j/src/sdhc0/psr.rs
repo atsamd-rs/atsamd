@@ -1,18 +1,5 @@
 #[doc = "Register `PSR` reader"]
-pub struct R(crate::R<PSR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<PSR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<PSR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<PSR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<PSR_SPEC>;
 #[doc = "Field `CMDINHC` reader - Command Inhibit (CMD)"]
 pub type CMDINHC_R = crate::BitReader<CMDINHCSELECT_A>;
 #[doc = "Command Inhibit (CMD)\n\nValue on reset: 0"]
@@ -32,18 +19,18 @@ impl From<CMDINHCSELECT_A> for bool {
 impl CMDINHC_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CMDINHCSELECT_A {
+    pub const fn variant(&self) -> CMDINHCSELECT_A {
         match self.bits {
             false => CMDINHCSELECT_A::CAN,
             true => CMDINHCSELECT_A::CANNOT,
         }
     }
-    #[doc = "Checks if the value of the field is `CAN`"]
+    #[doc = "Can issue command using only CMD line"]
     #[inline(always)]
     pub fn is_can(&self) -> bool {
         *self == CMDINHCSELECT_A::CAN
     }
-    #[doc = "Checks if the value of the field is `CANNOT`"]
+    #[doc = "Cannot issue command"]
     #[inline(always)]
     pub fn is_cannot(&self) -> bool {
         *self == CMDINHCSELECT_A::CANNOT
@@ -68,18 +55,18 @@ impl From<CMDINHDSELECT_A> for bool {
 impl CMDINHD_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CMDINHDSELECT_A {
+    pub const fn variant(&self) -> CMDINHDSELECT_A {
         match self.bits {
             false => CMDINHDSELECT_A::CAN,
             true => CMDINHDSELECT_A::CANNOT,
         }
     }
-    #[doc = "Checks if the value of the field is `CAN`"]
+    #[doc = "Can issue command which uses the DAT line"]
     #[inline(always)]
     pub fn is_can(&self) -> bool {
         *self == CMDINHDSELECT_A::CAN
     }
-    #[doc = "Checks if the value of the field is `CANNOT`"]
+    #[doc = "Cannot issue command which uses the DAT line"]
     #[inline(always)]
     pub fn is_cannot(&self) -> bool {
         *self == CMDINHDSELECT_A::CANNOT
@@ -104,18 +91,18 @@ impl From<DLACTSELECT_A> for bool {
 impl DLACT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> DLACTSELECT_A {
+    pub const fn variant(&self) -> DLACTSELECT_A {
         match self.bits {
             false => DLACTSELECT_A::INACTIVE,
             true => DLACTSELECT_A::ACTIVE,
         }
     }
-    #[doc = "Checks if the value of the field is `INACTIVE`"]
+    #[doc = "DAT Line Inactive"]
     #[inline(always)]
     pub fn is_inactive(&self) -> bool {
         *self == DLACTSELECT_A::INACTIVE
     }
-    #[doc = "Checks if the value of the field is `ACTIVE`"]
+    #[doc = "DAT Line Active"]
     #[inline(always)]
     pub fn is_active(&self) -> bool {
         *self == DLACTSELECT_A::ACTIVE
@@ -140,18 +127,18 @@ impl From<RTREQSELECT_A> for bool {
 impl RTREQ_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> RTREQSELECT_A {
+    pub const fn variant(&self) -> RTREQSELECT_A {
         match self.bits {
             false => RTREQSELECT_A::OK,
             true => RTREQSELECT_A::REQUIRED,
         }
     }
-    #[doc = "Checks if the value of the field is `OK`"]
+    #[doc = "Fixed or well-tuned sampling clock"]
     #[inline(always)]
     pub fn is_ok(&self) -> bool {
         *self == RTREQSELECT_A::OK
     }
-    #[doc = "Checks if the value of the field is `REQUIRED`"]
+    #[doc = "Sampling clock needs re-tuning"]
     #[inline(always)]
     pub fn is_required(&self) -> bool {
         *self == RTREQSELECT_A::REQUIRED
@@ -176,18 +163,18 @@ impl From<WTACTSELECT_A> for bool {
 impl WTACT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> WTACTSELECT_A {
+    pub const fn variant(&self) -> WTACTSELECT_A {
         match self.bits {
             false => WTACTSELECT_A::NO,
             true => WTACTSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No valid data"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == WTACTSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Transferring data"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == WTACTSELECT_A::YES
@@ -212,18 +199,18 @@ impl From<RTACTSELECT_A> for bool {
 impl RTACT_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> RTACTSELECT_A {
+    pub const fn variant(&self) -> RTACTSELECT_A {
         match self.bits {
             false => RTACTSELECT_A::NO,
             true => RTACTSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No valid data"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == RTACTSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Transferring data"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == RTACTSELECT_A::YES
@@ -248,18 +235,18 @@ impl From<BUFWRENSELECT_A> for bool {
 impl BUFWREN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> BUFWRENSELECT_A {
+    pub const fn variant(&self) -> BUFWRENSELECT_A {
         match self.bits {
             false => BUFWRENSELECT_A::DISABLE,
             true => BUFWRENSELECT_A::ENABLE,
         }
     }
-    #[doc = "Checks if the value of the field is `DISABLE`"]
+    #[doc = "Write disable"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
         *self == BUFWRENSELECT_A::DISABLE
     }
-    #[doc = "Checks if the value of the field is `ENABLE`"]
+    #[doc = "Write enable"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
         *self == BUFWRENSELECT_A::ENABLE
@@ -284,18 +271,18 @@ impl From<BUFRDENSELECT_A> for bool {
 impl BUFRDEN_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> BUFRDENSELECT_A {
+    pub const fn variant(&self) -> BUFRDENSELECT_A {
         match self.bits {
             false => BUFRDENSELECT_A::DISABLE,
             true => BUFRDENSELECT_A::ENABLE,
         }
     }
-    #[doc = "Checks if the value of the field is `DISABLE`"]
+    #[doc = "Read disable"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
         *self == BUFRDENSELECT_A::DISABLE
     }
-    #[doc = "Checks if the value of the field is `ENABLE`"]
+    #[doc = "Read enable"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
         *self == BUFRDENSELECT_A::ENABLE
@@ -320,18 +307,18 @@ impl From<CARDINSSELECT_A> for bool {
 impl CARDINS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CARDINSSELECT_A {
+    pub const fn variant(&self) -> CARDINSSELECT_A {
         match self.bits {
             false => CARDINSSELECT_A::NO,
             true => CARDINSSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Reset or Debouncing or No Card"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == CARDINSSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Card inserted"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == CARDINSSELECT_A::YES
@@ -356,18 +343,18 @@ impl From<CARDSSSELECT_A> for bool {
 impl CARDSS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CARDSSSELECT_A {
+    pub const fn variant(&self) -> CARDSSSELECT_A {
         match self.bits {
             false => CARDSSSELECT_A::NO,
             true => CARDSSSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "Reset or Debouncing"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == CARDSSSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "No Card or Insered"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == CARDSSSELECT_A::YES
@@ -392,18 +379,18 @@ impl From<CARDDPLSELECT_A> for bool {
 impl CARDDPL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> CARDDPLSELECT_A {
+    pub const fn variant(&self) -> CARDDPLSELECT_A {
         match self.bits {
             false => CARDDPLSELECT_A::NO,
             true => CARDDPLSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No card present (SDCD#=1)"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == CARDDPLSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Card present (SDCD#=0)"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == CARDDPLSELECT_A::YES
@@ -428,18 +415,18 @@ impl From<WRPPLSELECT_A> for bool {
 impl WRPPL_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> WRPPLSELECT_A {
+    pub const fn variant(&self) -> WRPPLSELECT_A {
         match self.bits {
             false => WRPPLSELECT_A::PROTECTED,
             true => WRPPLSELECT_A::ENABLED,
         }
     }
-    #[doc = "Checks if the value of the field is `PROTECTED`"]
+    #[doc = "Write protected (SDWP#=0)"]
     #[inline(always)]
     pub fn is_protected(&self) -> bool {
         *self == WRPPLSELECT_A::PROTECTED
     }
-    #[doc = "Checks if the value of the field is `ENABLED`"]
+    #[doc = "Write enabled (SDWP#=1)"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
         *self == WRPPLSELECT_A::ENABLED
@@ -447,9 +434,9 @@ impl WRPPL_R {
 }
 #[doc = "Field `DATLL` reader - DAT\\[3:0\\]
 Line Level"]
-pub type DATLL_R = crate::FieldReader<u8, u8>;
+pub type DATLL_R = crate::FieldReader;
 #[doc = "Field `CMDLL` reader - CMD Line Level"]
-pub type CMDLL_R = crate::BitReader<bool>;
+pub type CMDLL_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Command Inhibit (CMD)"]
     #[inline(always)]
@@ -523,15 +510,13 @@ Line Level"]
         CMDLL_R::new(((self.bits >> 24) & 1) != 0)
     }
 }
-#[doc = "Present State\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [psr](index.html) module"]
+#[doc = "Present State\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`psr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct PSR_SPEC;
 impl crate::RegisterSpec for PSR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [psr::R](R) reader structure"]
-impl crate::Readable for PSR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`psr::R`](R) reader structure"]
+impl crate::Readable for PSR_SPEC {}
 #[doc = "`reset()` method sets PSR to value 0x00f8_0000"]
 impl crate::Resettable for PSR_SPEC {
     const RESET_VALUE: Self::Ux = 0x00f8_0000;

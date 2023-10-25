@@ -1,68 +1,55 @@
 #[doc = "Register `IMR` reader"]
-pub struct R(crate::R<IMR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<IMR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<IMR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<IMR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<IMR_SPEC>;
 #[doc = "Field `MFS` reader - Management Frame Sent"]
-pub type MFS_R = crate::BitReader<bool>;
+pub type MFS_R = crate::BitReader;
 #[doc = "Field `RCOMP` reader - Receive Complete"]
-pub type RCOMP_R = crate::BitReader<bool>;
+pub type RCOMP_R = crate::BitReader;
 #[doc = "Field `RXUBR` reader - RX Used Bit Read"]
-pub type RXUBR_R = crate::BitReader<bool>;
+pub type RXUBR_R = crate::BitReader;
 #[doc = "Field `TXUBR` reader - TX Used Bit Read"]
-pub type TXUBR_R = crate::BitReader<bool>;
+pub type TXUBR_R = crate::BitReader;
 #[doc = "Field `TUR` reader - Transmit Underrun"]
-pub type TUR_R = crate::BitReader<bool>;
+pub type TUR_R = crate::BitReader;
 #[doc = "Field `RLEX` reader - Retry Limit Exceeded"]
-pub type RLEX_R = crate::BitReader<bool>;
+pub type RLEX_R = crate::BitReader;
 #[doc = "Field `TFC` reader - Transmit Frame Corruption Due to AHB Error"]
-pub type TFC_R = crate::BitReader<bool>;
+pub type TFC_R = crate::BitReader;
 #[doc = "Field `TCOMP` reader - Transmit Complete"]
-pub type TCOMP_R = crate::BitReader<bool>;
+pub type TCOMP_R = crate::BitReader;
 #[doc = "Field `ROVR` reader - Receive Overrun"]
-pub type ROVR_R = crate::BitReader<bool>;
+pub type ROVR_R = crate::BitReader;
 #[doc = "Field `HRESP` reader - HRESP Not OK"]
-pub type HRESP_R = crate::BitReader<bool>;
+pub type HRESP_R = crate::BitReader;
 #[doc = "Field `PFNZ` reader - Pause Frame with Non-zero Pause Quantum Received"]
-pub type PFNZ_R = crate::BitReader<bool>;
+pub type PFNZ_R = crate::BitReader;
 #[doc = "Field `PTZ` reader - Pause Time Zero"]
-pub type PTZ_R = crate::BitReader<bool>;
+pub type PTZ_R = crate::BitReader;
 #[doc = "Field `PFTR` reader - Pause Frame Transmitted"]
-pub type PFTR_R = crate::BitReader<bool>;
+pub type PFTR_R = crate::BitReader;
 #[doc = "Field `EXINT` reader - External Interrupt"]
-pub type EXINT_R = crate::BitReader<bool>;
+pub type EXINT_R = crate::BitReader;
 #[doc = "Field `DRQFR` reader - PTP Delay Request Frame Received"]
-pub type DRQFR_R = crate::BitReader<bool>;
+pub type DRQFR_R = crate::BitReader;
 #[doc = "Field `SFR` reader - PTP Sync Frame Received"]
-pub type SFR_R = crate::BitReader<bool>;
+pub type SFR_R = crate::BitReader;
 #[doc = "Field `DRQFT` reader - PTP Delay Request Frame Transmitted"]
-pub type DRQFT_R = crate::BitReader<bool>;
+pub type DRQFT_R = crate::BitReader;
 #[doc = "Field `SFT` reader - PTP Sync Frame Transmitted"]
-pub type SFT_R = crate::BitReader<bool>;
+pub type SFT_R = crate::BitReader;
 #[doc = "Field `PDRQFR` reader - PDelay Request Frame Received"]
-pub type PDRQFR_R = crate::BitReader<bool>;
+pub type PDRQFR_R = crate::BitReader;
 #[doc = "Field `PDRSFR` reader - PDelay Response Frame Received"]
-pub type PDRSFR_R = crate::BitReader<bool>;
+pub type PDRSFR_R = crate::BitReader;
 #[doc = "Field `PDRQFT` reader - PDelay Request Frame Transmitted"]
-pub type PDRQFT_R = crate::BitReader<bool>;
+pub type PDRQFT_R = crate::BitReader;
 #[doc = "Field `PDRSFT` reader - PDelay Response Frame Transmitted"]
-pub type PDRSFT_R = crate::BitReader<bool>;
+pub type PDRSFT_R = crate::BitReader;
 #[doc = "Field `SRI` reader - TSU Seconds Register Increment"]
-pub type SRI_R = crate::BitReader<bool>;
+pub type SRI_R = crate::BitReader;
 #[doc = "Field `WOL` reader - Wake On Lan"]
-pub type WOL_R = crate::BitReader<bool>;
+pub type WOL_R = crate::BitReader;
 #[doc = "Field `TSUCMP` reader - Tsu timer comparison"]
-pub type TSUCMP_R = crate::BitReader<bool>;
+pub type TSUCMP_R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Management Frame Sent"]
     #[inline(always)]
@@ -190,15 +177,13 @@ impl R {
         TSUCMP_R::new(((self.bits >> 29) & 1) != 0)
     }
 }
-#[doc = "Interrupt Mask Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [imr](index.html) module"]
+#[doc = "Interrupt Mask Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`imr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct IMR_SPEC;
 impl crate::RegisterSpec for IMR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [imr::R](R) reader structure"]
-impl crate::Readable for IMR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`imr::R`](R) reader structure"]
+impl crate::Readable for IMR_SPEC {}
 #[doc = "`reset()` method sets IMR to value 0x3fff_ffff"]
 impl crate::Resettable for IMR_SPEC {
     const RESET_VALUE: Self::Ux = 0x3fff_ffff;

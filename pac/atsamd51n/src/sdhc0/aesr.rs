@@ -1,20 +1,7 @@
 #[doc = "Register `AESR` reader"]
-pub struct R(crate::R<AESR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<AESR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<AESR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<AESR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<AESR_SPEC>;
 #[doc = "Field `ERRST` reader - ADMA Error State"]
-pub type ERRST_R = crate::FieldReader<u8, ERRSTSELECT_A>;
+pub type ERRST_R = crate::FieldReader<ERRSTSELECT_A>;
 #[doc = "ADMA Error State\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -32,10 +19,13 @@ impl From<ERRSTSELECT_A> for u8 {
         variant as _
     }
 }
+impl crate::FieldSpec for ERRSTSELECT_A {
+    type Ux = u8;
+}
 impl ERRST_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<ERRSTSELECT_A> {
+    pub const fn variant(&self) -> Option<ERRSTSELECT_A> {
         match self.bits {
             0 => Some(ERRSTSELECT_A::STOP),
             1 => Some(ERRSTSELECT_A::FDS),
@@ -43,17 +33,17 @@ impl ERRST_R {
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `STOP`"]
+    #[doc = "ST_STOP (Stop DMA)"]
     #[inline(always)]
     pub fn is_stop(&self) -> bool {
         *self == ERRSTSELECT_A::STOP
     }
-    #[doc = "Checks if the value of the field is `FDS`"]
+    #[doc = "ST_FDS (Fetch Descriptor)"]
     #[inline(always)]
     pub fn is_fds(&self) -> bool {
         *self == ERRSTSELECT_A::FDS
     }
-    #[doc = "Checks if the value of the field is `TFR`"]
+    #[doc = "ST_TFR (Transfer Data)"]
     #[inline(always)]
     pub fn is_tfr(&self) -> bool {
         *self == ERRSTSELECT_A::TFR
@@ -78,18 +68,18 @@ impl From<LMISSELECT_A> for bool {
 impl LMIS_R {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> LMISSELECT_A {
+    pub const fn variant(&self) -> LMISSELECT_A {
         match self.bits {
             false => LMISSELECT_A::NO,
             true => LMISSELECT_A::YES,
         }
     }
-    #[doc = "Checks if the value of the field is `NO`"]
+    #[doc = "No Error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
         *self == LMISSELECT_A::NO
     }
-    #[doc = "Checks if the value of the field is `YES`"]
+    #[doc = "Error"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
         *self == LMISSELECT_A::YES
@@ -107,15 +97,13 @@ impl R {
         LMIS_R::new(((self.bits >> 2) & 1) != 0)
     }
 }
-#[doc = "ADMA Error Status\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [aesr](index.html) module"]
+#[doc = "ADMA Error Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`aesr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct AESR_SPEC;
 impl crate::RegisterSpec for AESR_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [aesr::R](R) reader structure"]
-impl crate::Readable for AESR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`aesr::R`](R) reader structure"]
+impl crate::Readable for AESR_SPEC {}
 #[doc = "`reset()` method sets AESR to value 0"]
 impl crate::Resettable for AESR_SPEC {
     const RESET_VALUE: Self::Ux = 0;

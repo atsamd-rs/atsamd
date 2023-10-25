@@ -1,67 +1,35 @@
 #[doc = "Register `MASTER` reader"]
-pub struct R(crate::R<MASTER_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<MASTER_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<MASTER_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<MASTER_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<MASTER_SPEC>;
 #[doc = "Register `MASTER` writer"]
-pub struct W(crate::W<MASTER_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<MASTER_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<MASTER_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<MASTER_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<MASTER_SPEC>;
 #[doc = "Field `MASK` reader - Maximum Value of the Trace Buffer in SRAM"]
-pub type MASK_R = crate::FieldReader<u8, u8>;
+pub type MASK_R = crate::FieldReader;
 #[doc = "Field `MASK` writer - Maximum Value of the Trace Buffer in SRAM"]
-pub type MASK_W<'a, const O: u8> = crate::FieldWriter<'a, u32, MASTER_SPEC, u8, u8, 5, O>;
+pub type MASK_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 5, O>;
 #[doc = "Field `TSTARTEN` reader - Trace Start Input Enable"]
-pub type TSTARTEN_R = crate::BitReader<bool>;
+pub type TSTARTEN_R = crate::BitReader;
 #[doc = "Field `TSTARTEN` writer - Trace Start Input Enable"]
-pub type TSTARTEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, MASTER_SPEC, bool, O>;
+pub type TSTARTEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TSTOPEN` reader - Trace Stop Input Enable"]
-pub type TSTOPEN_R = crate::BitReader<bool>;
+pub type TSTOPEN_R = crate::BitReader;
 #[doc = "Field `TSTOPEN` writer - Trace Stop Input Enable"]
-pub type TSTOPEN_W<'a, const O: u8> = crate::BitWriter<'a, u32, MASTER_SPEC, bool, O>;
+pub type TSTOPEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SFRWPRIV` reader - Special Function Register Write Privilege"]
-pub type SFRWPRIV_R = crate::BitReader<bool>;
+pub type SFRWPRIV_R = crate::BitReader;
 #[doc = "Field `SFRWPRIV` writer - Special Function Register Write Privilege"]
-pub type SFRWPRIV_W<'a, const O: u8> = crate::BitWriter<'a, u32, MASTER_SPEC, bool, O>;
+pub type SFRWPRIV_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RAMPRIV` reader - SRAM Privilege"]
-pub type RAMPRIV_R = crate::BitReader<bool>;
+pub type RAMPRIV_R = crate::BitReader;
 #[doc = "Field `RAMPRIV` writer - SRAM Privilege"]
-pub type RAMPRIV_W<'a, const O: u8> = crate::BitWriter<'a, u32, MASTER_SPEC, bool, O>;
+pub type RAMPRIV_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `HALTREQ` reader - Halt Request"]
-pub type HALTREQ_R = crate::BitReader<bool>;
+pub type HALTREQ_R = crate::BitReader;
 #[doc = "Field `HALTREQ` writer - Halt Request"]
-pub type HALTREQ_W<'a, const O: u8> = crate::BitWriter<'a, u32, MASTER_SPEC, bool, O>;
+pub type HALTREQ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `EN` reader - Main Trace Enable"]
-pub type EN_R = crate::BitReader<bool>;
+pub type EN_R = crate::BitReader;
 #[doc = "Field `EN` writer - Main Trace Enable"]
-pub type EN_W<'a, const O: u8> = crate::BitWriter<'a, u32, MASTER_SPEC, bool, O>;
+pub type EN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bits 0:4 - Maximum Value of the Trace Buffer in SRAM"]
     #[inline(always)]
@@ -103,64 +71,65 @@ impl W {
     #[doc = "Bits 0:4 - Maximum Value of the Trace Buffer in SRAM"]
     #[inline(always)]
     #[must_use]
-    pub fn mask(&mut self) -> MASK_W<0> {
+    pub fn mask(&mut self) -> MASK_W<MASTER_SPEC, 0> {
         MASK_W::new(self)
     }
     #[doc = "Bit 5 - Trace Start Input Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn tstarten(&mut self) -> TSTARTEN_W<5> {
+    pub fn tstarten(&mut self) -> TSTARTEN_W<MASTER_SPEC, 5> {
         TSTARTEN_W::new(self)
     }
     #[doc = "Bit 6 - Trace Stop Input Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn tstopen(&mut self) -> TSTOPEN_W<6> {
+    pub fn tstopen(&mut self) -> TSTOPEN_W<MASTER_SPEC, 6> {
         TSTOPEN_W::new(self)
     }
     #[doc = "Bit 7 - Special Function Register Write Privilege"]
     #[inline(always)]
     #[must_use]
-    pub fn sfrwpriv(&mut self) -> SFRWPRIV_W<7> {
+    pub fn sfrwpriv(&mut self) -> SFRWPRIV_W<MASTER_SPEC, 7> {
         SFRWPRIV_W::new(self)
     }
     #[doc = "Bit 8 - SRAM Privilege"]
     #[inline(always)]
     #[must_use]
-    pub fn rampriv(&mut self) -> RAMPRIV_W<8> {
+    pub fn rampriv(&mut self) -> RAMPRIV_W<MASTER_SPEC, 8> {
         RAMPRIV_W::new(self)
     }
     #[doc = "Bit 9 - Halt Request"]
     #[inline(always)]
     #[must_use]
-    pub fn haltreq(&mut self) -> HALTREQ_W<9> {
+    pub fn haltreq(&mut self) -> HALTREQ_W<MASTER_SPEC, 9> {
         HALTREQ_W::new(self)
     }
     #[doc = "Bit 31 - Main Trace Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn en(&mut self) -> EN_W<31> {
+    pub fn en(&mut self) -> EN_W<MASTER_SPEC, 31> {
         EN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "MTB Master\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [master](index.html) module"]
+#[doc = "MTB Master\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`master::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`master::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct MASTER_SPEC;
 impl crate::RegisterSpec for MASTER_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [master::R](R) reader structure"]
-impl crate::Readable for MASTER_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [master::W](W) writer structure"]
+#[doc = "`read()` method returns [`master::R`](R) reader structure"]
+impl crate::Readable for MASTER_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`master::W`](W) writer structure"]
 impl crate::Writable for MASTER_SPEC {
-    type Writer = W;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
     const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
