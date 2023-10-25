@@ -19,7 +19,7 @@ license = "MIT OR Apache-2.0"
 name = "atsamd-hal"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
-rust-version = "1.65"
+rust-version = "1.75"
 version = "0.16.0"
 
 [package.metadata.docs.rs]
@@ -54,8 +54,8 @@ void = {version = "1.0", default-features = false}
 #===============================================================================
 
 cortex-m-interrupt = {version = "0.2.1-git", git = "https://github.com/datdenkikniet/cortex-m-interrupt.git", rev = "9baa936", optional = true}
-embassy-sync = {version = "0.2", optional = true}
-embedded-hal-alpha = {package = "embedded-hal", version = "1.0.0-alpha.10"}
+embassy-sync = {version = "0.3", optional = true}
+embedded-hal-alpha = {package = "embedded-hal", version = "1.0.0-rc.1"}
 embedded-hal-async = {version = "1.0.0-rc.1", optional = true, features = ["defmt-03"]}
 embedded-sdmmc = {version = "0.3", optional = true}
 futures = {version = "0.3", default-features = false, features = ["async-await"], optional = true}
@@ -201,8 +201,6 @@ async = [
     "embassy-sync",
     "futures",
 ]
-
-nightly = ["embedded-hal-async", "embassy-sync/nightly"]
 
 #===============================================================================
 # Implementation-details
