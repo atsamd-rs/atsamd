@@ -39,5 +39,7 @@ for xsl in svd/devices/*\.xsl; do
   # ignore all clippy warnings/errors in auto-generated code
   ${SED} -i "s/#\!\[no_std\]/#\!\[allow\(clippy::all\)\]\n#\!\[no_std\]/g" src/lib.rs
 
+  ${SED} -ri '/#\[cfg\(feature = "critical-section"\)\]/d' src/lib.rs
+
   popd
 done
