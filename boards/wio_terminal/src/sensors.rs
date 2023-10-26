@@ -1,6 +1,6 @@
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::pac::gclk::pchctrl::GENSELECT_A::GCLK11;
+use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
 use atsamd_hal::pac::{ADC1, MCLK, SERCOM4};
 use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::{i2c, IoSet3, Sercom4};

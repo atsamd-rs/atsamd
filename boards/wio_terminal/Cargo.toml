@@ -31,7 +31,7 @@ chip = "ATSAMD51P19A"
 
 [dependencies]
 bitfield = "0.13"
-cortex-m = { version = "0.7.3", features = ["critical-section-single-core"] }
+cortex-m = "0.7.3"
 cortex-m-rt = { version = "0.7", optional = true }
 display-interface-spi = "0.4"
 heapless = "0.5"
