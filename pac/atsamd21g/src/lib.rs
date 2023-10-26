@@ -1801,7 +1801,6 @@ pub struct Peripherals {
 }
 impl Peripherals {
     #[doc = r" Returns all the peripherals *once*."]
-    #[cfg(feature = "critical-section")]
     #[inline]
     pub fn take() -> Option<Self> {
         critical_section::with(|_| {
