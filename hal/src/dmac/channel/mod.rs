@@ -264,6 +264,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     }
 
     /// Stop transfer on channel whether or not the transfer has completed
+    #[inline]
     pub(crate) fn stop(&mut self) {
         self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
     }
@@ -274,10 +275,12 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         !self.regs.chctrla.read().enable().bit_is_set()
     }
 
-    /// Returns whether the transfer's success status.
+    /// Returns the transfer's success status.
+    #[allow(dead_code)]
+    #[inline]
     pub(crate) fn xfer_success(&mut self) -> super::Result<()> {
-        let is_ok = self.regs.chintflag.read().terr().bit_is_clear();
-        is_ok.then_some(()).ok_or(super::Error::TransferError)
+        let success = self.regs.chintflag.read().terr().bit_is_clear();
+        success.then_some(()).ok_or(super::Error::TransferError)
     }
 }
 

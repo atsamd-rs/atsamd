@@ -31,7 +31,6 @@ features = ["samd21g", "samd21g-rt", "unproven", "usb", "dma"]
 
 [dependencies]
 aes = "0.7.5"
-atomic-polyfill = "0.1.8"
 bitfield = "0.13"
 bitflags = "1.2.1"
 cipher = "0.3"
@@ -43,6 +42,7 @@ nb = "1.0"
 num-traits = {version = "0.2.14", default-features = false}
 opaque-debug = "0.3.0"
 paste = "1.0.11"
+portable-atomic = {version = "1.5.0", optional = true, default-features = false}
 rand_core = "0.6"
 seq-macro = "0.3"
 typenum = "1.12.0"
@@ -96,9 +96,6 @@ atsame53n = {version = "0.13.0", path = "../pac/atsame53n", optional = true}
 
 atsame54n = {version = "0.13.0", path = "../pac/atsame54n", optional = true}
 atsame54p = {version = "0.13.0", path = "../pac/atsame54p", optional = true}
-
-
-
 
 #===============================================================================
 # Features
@@ -201,6 +198,7 @@ async = [
     "embassy-sync",
     "embedded-hal-async",
     "futures",
+    "portable-atomic"
 ]
 
 #===============================================================================

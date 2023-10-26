@@ -417,6 +417,7 @@ bitflags! {
     }
 }
 
+#[allow(dead_code)]
 impl Flags {
     pub(super) const RX: Self = unsafe { Self::from_bits_unchecked(RX_FLAG_MASK) };
     pub(super) const TX: Self = unsafe { Self::from_bits_unchecked(TX_FLAG_MASK) };

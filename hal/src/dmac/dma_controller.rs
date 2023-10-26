@@ -335,6 +335,7 @@ impl DmaController {
     with_num_channels!(define_split);
 }
 
+#[cfg(feature = "async")]
 macro_rules! define_split_future {
     ($num_channels:literal) => {
         seq!(N in 0..$num_channels {

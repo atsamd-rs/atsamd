@@ -1,5 +1,4 @@
 use crate::{ehal::timer::CountDown, timer_traits::InterruptDrivenTimer, typelevel::Sealed};
-use atomic_polyfill::AtomicBool;
 use core::{
     future::poll_fn,
     sync::atomic::Ordering,
@@ -9,6 +8,7 @@ use cortex_m::interrupt::InterruptNumber;
 use cortex_m_interrupt::NvicInterruptRegistration;
 use embassy_sync::waitqueue::AtomicWaker;
 use fugit::{MicrosDurationU32, MillisDurationU32, NanosDurationU32};
+use portable_atomic::AtomicBool;
 
 #[cfg(feature = "thumbv6")]
 use crate::thumbv6m::timer;

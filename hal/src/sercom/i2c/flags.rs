@@ -85,6 +85,7 @@ pub enum Error {
     Dma(crate::dmac::Error),
 }
 
+#[cfg(feature = "async")]
 impl embedded_hal_async::i2c::Error for Error {
     // _ pattern reachable when "dma" feature enabled.
     #[allow(unreachable_patterns)]
