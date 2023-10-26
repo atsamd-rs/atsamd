@@ -344,7 +344,7 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::osc32kctrl::xosc32k::{CGM_A, STARTUP_A};
+use crate::pac::osc32kctrl::xosc32k::{CGMSELECT_A, STARTUPSELECT_A};
 use crate::pac::osc32kctrl::{status, CFDCTRL, XOSC32K};
 
 use crate::gpio::{FloatingDisabled, Pin, PA00, PA01};
@@ -644,16 +644,16 @@ pub enum StartUpDelay {
     Delay8s,
 }
 
-impl From<StartUpDelay> for STARTUP_A {
+impl From<StartUpDelay> for STARTUPSELECT_A {
     fn from(delay: StartUpDelay) -> Self {
         match delay {
-            StartUpDelay::Delay63ms => STARTUP_A::CYCLE2048,
-            StartUpDelay::Delay125ms => STARTUP_A::CYCLE4096,
-            StartUpDelay::Delay500ms => STARTUP_A::CYCLE16384,
-            StartUpDelay::Delay1s => STARTUP_A::CYCLE32768,
-            StartUpDelay::Delay2s => STARTUP_A::CYCLE65536,
-            StartUpDelay::Delay4s => STARTUP_A::CYCLE131072,
-            StartUpDelay::Delay8s => STARTUP_A::CYCLE262144,
+            StartUpDelay::Delay63ms => STARTUPSELECT_A::CYCLE2048,
+            StartUpDelay::Delay125ms => STARTUPSELECT_A::CYCLE4096,
+            StartUpDelay::Delay500ms => STARTUPSELECT_A::CYCLE16384,
+            StartUpDelay::Delay1s => STARTUPSELECT_A::CYCLE32768,
+            StartUpDelay::Delay2s => STARTUPSELECT_A::CYCLE65536,
+            StartUpDelay::Delay4s => STARTUPSELECT_A::CYCLE131072,
+            StartUpDelay::Delay8s => STARTUPSELECT_A::CYCLE262144,
         }
     }
 }
@@ -673,11 +673,11 @@ pub enum ControlGainMode {
     HighSpeed,
 }
 
-impl From<ControlGainMode> for CGM_A {
+impl From<ControlGainMode> for CGMSELECT_A {
     fn from(cgm: ControlGainMode) -> Self {
         match cgm {
-            ControlGainMode::Standard => CGM_A::XT,
-            ControlGainMode::HighSpeed => CGM_A::HS,
+            ControlGainMode::Standard => CGMSELECT_A::XT,
+            ControlGainMode::HighSpeed => CGMSELECT_A::HS,
         }
     }
 }

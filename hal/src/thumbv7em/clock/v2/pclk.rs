@@ -68,7 +68,7 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::pac;
-use crate::pac::gclk::pchctrl::GEN_A;
+use crate::pac::gclk::pchctrl::GENSELECT_A;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
@@ -363,12 +363,12 @@ pub trait PclkId: Sealed {
 pub type DynPclkSourceId = DynGclkId;
 
 /// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
-impl From<DynPclkSourceId> for GEN_A {
+impl From<DynPclkSourceId> for GENSELECT_A {
     fn from(source: DynPclkSourceId) -> Self {
         seq!(N in 0..=11 {
             match source {
                 #(
-                    DynGclkId::Gclk~N => GEN_A::GCLK~N,
+                    DynGclkId::Gclk~N => GENSELECT_A::GCLK~N,
                 )*
             }
         })

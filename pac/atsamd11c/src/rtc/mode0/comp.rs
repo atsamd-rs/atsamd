@@ -1,103 +1,49 @@
 #[doc = "Register `COMP%s` reader"]
-pub struct R(crate::R<COMP_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<COMP_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<COMP_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<COMP_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<COMP_SPEC>;
 #[doc = "Register `COMP%s` writer"]
-pub struct W(crate::W<COMP_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<COMP_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<COMP_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<COMP_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<COMP_SPEC>;
 #[doc = "Field `COMP` reader - Compare Value"]
-pub struct COMP_R(crate::FieldReader<u32, u32>);
-impl COMP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        COMP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COMP_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COMP_R = crate::FieldReader<u32>;
 #[doc = "Field `COMP` writer - Compare Value"]
-pub struct COMP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COMP_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = value as u32;
-        self.w
-    }
-}
+pub type COMP_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 32, O, u32>;
 impl R {
     #[doc = "Bits 0:31 - Compare Value"]
     #[inline(always)]
     pub fn comp(&self) -> COMP_R {
-        COMP_R::new(self.bits as u32)
+        COMP_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Compare Value"]
     #[inline(always)]
-    pub fn comp(&mut self) -> COMP_W {
-        COMP_W { w: self }
+    #[must_use]
+    pub fn comp(&mut self) -> COMP_W<COMP_SPEC, 0> {
+        COMP_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "MODE0 Compare n Value\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [comp](index.html) module"]
+#[doc = "MODE0 Compare n Value\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`comp::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`comp::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct COMP_SPEC;
 impl crate::RegisterSpec for COMP_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [comp::R](R) reader structure"]
-impl crate::Readable for COMP_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [comp::W](W) writer structure"]
+#[doc = "`read()` method returns [`comp::R`](R) reader structure"]
+impl crate::Readable for COMP_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`comp::W`](W) writer structure"]
 impl crate::Writable for COMP_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets COMP%s to value 0"]
 impl crate::Resettable for COMP_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

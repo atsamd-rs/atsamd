@@ -16,7 +16,7 @@ use panic_semihosting as _;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
 
-use hal::pac::gclk::{clkctrl::GEN_A, genctrl::SRC_A};
+use hal::pac::gclk::{clkctrl::GENSELECT_A, genctrl::SRCSELECT_A};
 use hal::sercom::{
     uart::{self, BaudMode, Oversampling},
     Sercom0,
@@ -34,9 +34,9 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL48M, false);
+    clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL48M, false);
     let gclk2 = clocks
-        .get_gclk(GEN_A::GCLK2)
+        .get_gclk(GENSELECT_A::GCLK2)
         .expect("Could not get clock 2");
 
     let pins = bsp::Pins::new(peripherals.PORT);

@@ -1,104 +1,50 @@
 #[doc = "Register `CC[%s]` reader"]
-pub struct R(crate::R<CC_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CC_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CC_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CC_SPEC>;
 #[doc = "Register `CC[%s]` writer"]
-pub struct W(crate::W<CC_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CC_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CC_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CC_SPEC>;
 #[doc = "Field `CC` reader - Counter/Compare Value"]
-pub struct CC_R(crate::FieldReader<u16, u16>);
-impl CC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        CC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for CC_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type CC_R = crate::FieldReader<u16>;
 #[doc = "Field `CC` writer - Counter/Compare Value"]
-pub struct CC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> CC_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = value as u16;
-        self.w
-    }
-}
+pub type CC_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 16, O, u16>;
 impl R {
     #[doc = "Bits 0:15 - Counter/Compare Value"]
     #[inline(always)]
     pub fn cc(&self) -> CC_R {
-        CC_R::new(self.bits as u16)
+        CC_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:15 - Counter/Compare Value"]
     #[inline(always)]
-    pub fn cc(&mut self) -> CC_W {
-        CC_W { w: self }
+    #[must_use]
+    pub fn cc(&mut self) -> CC_W<CC_SPEC, 0> {
+        CC_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "COUNT16 Compare and Capture\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [cc](index.html) module"]
+#[doc = "COUNT16 Compare and Capture\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cc::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cc::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CC_SPEC;
 impl crate::RegisterSpec for CC_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [cc::R](R) reader structure"]
-impl crate::Readable for CC_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [cc::W](W) writer structure"]
+#[doc = "`read()` method returns [`cc::R`](R) reader structure"]
+impl crate::Readable for CC_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`cc::W`](W) writer structure"]
 impl crate::Writable for CC_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CC[%s]
 to value 0"]
 impl crate::Resettable for CC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

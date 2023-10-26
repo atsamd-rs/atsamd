@@ -1,37 +1,13 @@
 #[doc = "Register `ECCERR` reader"]
-pub struct R(crate::R<ECCERR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<ECCERR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<ECCERR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<ECCERR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<ECCERR_SPEC>;
 #[doc = "Field `ADDR` reader - Error Address"]
-pub struct ADDR_R(crate::FieldReader<u32, u32>);
-impl ADDR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        ADDR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ADDR_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ADDR_R = crate::FieldReader<u32>;
+#[doc = "Field `TYPEL` reader - Low Double-Word Error Type"]
+pub type TYPEL_R = crate::FieldReader<TYPELSELECT_A>;
 #[doc = "Low Double-Word Error Type\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum TYPEL_A {
+pub enum TYPELSELECT_A {
     #[doc = "0: No Error Detected Since Last Read"]
     NONE = 0,
     #[doc = "1: At Least One Single Error Detected Since last Read"]
@@ -39,139 +15,116 @@ pub enum TYPEL_A {
     #[doc = "2: At Least One Dual Error Detected Since Last Read"]
     DUAL = 2,
 }
-impl From<TYPEL_A> for u8 {
+impl From<TYPELSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: TYPEL_A) -> Self {
+    fn from(variant: TYPELSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `TYPEL` reader - Low Double-Word Error Type"]
-pub struct TYPEL_R(crate::FieldReader<u8, TYPEL_A>);
+impl crate::FieldSpec for TYPELSELECT_A {
+    type Ux = u8;
+}
 impl TYPEL_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TYPEL_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<TYPEL_A> {
+    pub const fn variant(&self) -> Option<TYPELSELECT_A> {
         match self.bits {
-            0 => Some(TYPEL_A::NONE),
-            1 => Some(TYPEL_A::SINGLE),
-            2 => Some(TYPEL_A::DUAL),
+            0 => Some(TYPELSELECT_A::NONE),
+            1 => Some(TYPELSELECT_A::SINGLE),
+            2 => Some(TYPELSELECT_A::DUAL),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No Error Detected Since Last Read"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        **self == TYPEL_A::NONE
+        *self == TYPELSELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `SINGLE`"]
+    #[doc = "At Least One Single Error Detected Since last Read"]
     #[inline(always)]
     pub fn is_single(&self) -> bool {
-        **self == TYPEL_A::SINGLE
+        *self == TYPELSELECT_A::SINGLE
     }
-    #[doc = "Checks if the value of the field is `DUAL`"]
+    #[doc = "At Least One Dual Error Detected Since Last Read"]
     #[inline(always)]
     pub fn is_dual(&self) -> bool {
-        **self == TYPEL_A::DUAL
-    }
-}
-impl core::ops::Deref for TYPEL_R {
-    type Target = crate::FieldReader<u8, TYPEL_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "High Double-Word Error Type\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-#[repr(u8)]
-pub enum TYPEH_A {
-    #[doc = "0: No Error Detected Since Last Read"]
-    NONE = 0,
-    #[doc = "1: At Least One Single Error Detected Since last Read"]
-    SINGLE = 1,
-    #[doc = "2: At Least One Dual Error Detected Since Last Read"]
-    DUAL = 2,
-}
-impl From<TYPEH_A> for u8 {
-    #[inline(always)]
-    fn from(variant: TYPEH_A) -> Self {
-        variant as _
+        *self == TYPELSELECT_A::DUAL
     }
 }
 #[doc = "Field `TYPEH` reader - High Double-Word Error Type"]
-pub struct TYPEH_R(crate::FieldReader<u8, TYPEH_A>);
-impl TYPEH_R {
+pub type TYPEH_R = crate::FieldReader<TYPEHSELECT_A>;
+#[doc = "High Double-Word Error Type\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum TYPEHSELECT_A {
+    #[doc = "0: No Error Detected Since Last Read"]
+    NONE = 0,
+    #[doc = "1: At Least One Single Error Detected Since last Read"]
+    SINGLE = 1,
+    #[doc = "2: At Least One Dual Error Detected Since Last Read"]
+    DUAL = 2,
+}
+impl From<TYPEHSELECT_A> for u8 {
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TYPEH_R(crate::FieldReader::new(bits))
+    fn from(variant: TYPEHSELECT_A) -> Self {
+        variant as _
     }
-    #[doc = r"Get enumerated values variant"]
+}
+impl crate::FieldSpec for TYPEHSELECT_A {
+    type Ux = u8;
+}
+impl TYPEH_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub fn variant(&self) -> Option<TYPEH_A> {
+    pub const fn variant(&self) -> Option<TYPEHSELECT_A> {
         match self.bits {
-            0 => Some(TYPEH_A::NONE),
-            1 => Some(TYPEH_A::SINGLE),
-            2 => Some(TYPEH_A::DUAL),
+            0 => Some(TYPEHSELECT_A::NONE),
+            1 => Some(TYPEHSELECT_A::SINGLE),
+            2 => Some(TYPEHSELECT_A::DUAL),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `NONE`"]
+    #[doc = "No Error Detected Since Last Read"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        **self == TYPEH_A::NONE
+        *self == TYPEHSELECT_A::NONE
     }
-    #[doc = "Checks if the value of the field is `SINGLE`"]
+    #[doc = "At Least One Single Error Detected Since last Read"]
     #[inline(always)]
     pub fn is_single(&self) -> bool {
-        **self == TYPEH_A::SINGLE
+        *self == TYPEHSELECT_A::SINGLE
     }
-    #[doc = "Checks if the value of the field is `DUAL`"]
+    #[doc = "At Least One Dual Error Detected Since Last Read"]
     #[inline(always)]
     pub fn is_dual(&self) -> bool {
-        **self == TYPEH_A::DUAL
-    }
-}
-impl core::ops::Deref for TYPEH_R {
-    type Target = crate::FieldReader<u8, TYPEH_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == TYPEHSELECT_A::DUAL
     }
 }
 impl R {
     #[doc = "Bits 0:23 - Error Address"]
     #[inline(always)]
     pub fn addr(&self) -> ADDR_R {
-        ADDR_R::new((self.bits & 0x00ff_ffff) as u32)
+        ADDR_R::new(self.bits & 0x00ff_ffff)
     }
     #[doc = "Bits 28:29 - Low Double-Word Error Type"]
     #[inline(always)]
     pub fn typel(&self) -> TYPEL_R {
-        TYPEL_R::new(((self.bits >> 28) & 0x03) as u8)
+        TYPEL_R::new(((self.bits >> 28) & 3) as u8)
     }
     #[doc = "Bits 30:31 - High Double-Word Error Type"]
     #[inline(always)]
     pub fn typeh(&self) -> TYPEH_R {
-        TYPEH_R::new(((self.bits >> 30) & 0x03) as u8)
+        TYPEH_R::new(((self.bits >> 30) & 3) as u8)
     }
 }
-#[doc = "ECC Error Status Register\n\nThis register you can [`read`](crate::generic::Reg::read). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [eccerr](index.html) module"]
+#[doc = "ECC Error Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`eccerr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct ECCERR_SPEC;
 impl crate::RegisterSpec for ECCERR_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [eccerr::R](R) reader structure"]
-impl crate::Readable for ECCERR_SPEC {
-    type Reader = R;
-}
+#[doc = "`read()` method returns [`eccerr::R`](R) reader structure"]
+impl crate::Readable for ECCERR_SPEC {}
 #[doc = "`reset()` method sets ECCERR to value 0"]
 impl crate::Resettable for ECCERR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

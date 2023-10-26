@@ -2,42 +2,48 @@
 #[repr(C)]
 pub struct RegisterBlock {
     #[doc = "0x00 - Control A"]
-    pub ctrla: crate::Reg<ctrla::CTRLA_SPEC>,
+    pub ctrla: CTRLA,
     _reserved1: [u8; 0x03],
     #[doc = "0x04 - Event Control"]
-    pub evctrl: crate::Reg<evctrl::EVCTRL_SPEC>,
+    pub evctrl: EVCTRL,
     _reserved2: [u8; 0x03],
     #[doc = "0x08 - Interrupt Enable Clear"]
-    pub intenclr: crate::Reg<intenclr::INTENCLR_SPEC>,
+    pub intenclr: INTENCLR,
     #[doc = "0x09 - Interrupt Enable Set"]
-    pub intenset: crate::Reg<intenset::INTENSET_SPEC>,
+    pub intenset: INTENSET,
     #[doc = "0x0a - Interrupt Flag Status and Clear"]
-    pub intflag: crate::Reg<intflag::INTFLAG_SPEC>,
+    pub intflag: INTFLAG,
     _reserved5: [u8; 0x15],
     #[doc = "0x20 - Output Data"]
-    pub data: crate::Reg<data::DATA_SPEC>,
+    pub data: DATA,
 }
-#[doc = "CTRLA register accessor: an alias for `Reg<CTRLA_SPEC>`"]
+#[doc = "CTRLA (rw) register accessor: Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrla`]
+module"]
 pub type CTRLA = crate::Reg<ctrla::CTRLA_SPEC>;
 #[doc = "Control A"]
 pub mod ctrla;
-#[doc = "EVCTRL register accessor: an alias for `Reg<EVCTRL_SPEC>`"]
+#[doc = "EVCTRL (rw) register accessor: Event Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`evctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`evctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@evctrl`]
+module"]
 pub type EVCTRL = crate::Reg<evctrl::EVCTRL_SPEC>;
 #[doc = "Event Control"]
 pub mod evctrl;
-#[doc = "INTENCLR register accessor: an alias for `Reg<INTENCLR_SPEC>`"]
+#[doc = "INTENCLR (rw) register accessor: Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`]
+module"]
 pub type INTENCLR = crate::Reg<intenclr::INTENCLR_SPEC>;
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
-#[doc = "INTENSET register accessor: an alias for `Reg<INTENSET_SPEC>`"]
+#[doc = "INTENSET (rw) register accessor: Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`]
+module"]
 pub type INTENSET = crate::Reg<intenset::INTENSET_SPEC>;
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
-#[doc = "INTFLAG register accessor: an alias for `Reg<INTFLAG_SPEC>`"]
+#[doc = "INTFLAG (rw) register accessor: Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`]
+module"]
 pub type INTFLAG = crate::Reg<intflag::INTFLAG_SPEC>;
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
-#[doc = "DATA register accessor: an alias for `Reg<DATA_SPEC>`"]
+#[doc = "DATA (r) register accessor: Output Data\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`data::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@data`]
+module"]
 pub type DATA = crate::Reg<data::DATA_SPEC>;
 #[doc = "Output Data"]
 pub mod data;

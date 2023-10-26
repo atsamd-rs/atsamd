@@ -22,8 +22,8 @@
 
 pub mod smart_eeprom;
 
-pub use crate::pac::nvmctrl::ctrla::PRM_A;
-use crate::pac::nvmctrl::ctrlb::CMD_AW;
+pub use crate::pac::nvmctrl::ctrla::PRMSELECT_A;
+use crate::pac::nvmctrl::ctrlb::CMDSELECT_AW;
 use crate::pac::NVMCTRL;
 use core::num::NonZeroU32;
 use core::ops::Range;
@@ -195,7 +195,7 @@ impl Nvm {
     /// bank before calling.
     #[inline]
     pub unsafe fn bank_swap(&mut self) -> ! {
-        let _ = self.command_sync(CMD_AW::BKSWRST);
+        let _ = self.command_sync(CMDSELECT_AW::BKSWRST);
         // The reset will happen atomically with the rest of the command, so getting
         // here is an error.
         unreachable!();
@@ -203,7 +203,7 @@ impl Nvm {
 
     /// Set the power reduction mode
     #[inline]
-    pub fn power_reduction_mode(&mut self, prm: PRM_A) {
+    pub fn power_reduction_mode(&mut self, prm: PRMSELECT_A) {
         self.nvm.ctrla.modify(|_, w| w.prm().variant(prm));
     }
 
@@ -235,7 +235,7 @@ impl Nvm {
 
     /// Execute a command, wait until it is done and check error states
     #[inline]
-    fn command_sync(&mut self, command: CMD_AW) -> Result<()> {
+    fn command_sync(&mut self, command: CMDSELECT_AW) -> Result<()> {
         // Wait until STATUS.READY
         while !self.nvm.status.read().ready().bit() {}
 
@@ -380,7 +380,7 @@ impl Nvm {
     /// debugger.
     #[inline]
     pub fn enable_security_bit(&mut self) -> Result<()> {
-        self.command_sync(CMD_AW::SSB)
+        self.command_sync(CMDSELECT_AW::SSB)
     }
 
     /// Enable the chip erase lock
@@ -396,7 +396,7 @@ impl Nvm {
     /// the debugger access again.
     #[inline]
     pub unsafe fn enable_chip_erase_lock(&mut self) -> Result<()> {
-        self.command_sync(CMD_AW::CELCK)
+        self.command_sync(CMDSELECT_AW::CELCK)
     }
 
     /// Disable the chip erase lock
@@ -404,7 +404,7 @@ impl Nvm {
     /// It enables the chip erase capability through the debugger.
     #[inline]
     pub fn disable_chip_erase_lock(&mut self) -> Result<()> {
-        self.command_sync(CMD_AW::CEULCK)
+        self.command_sync(CMDSELECT_AW::CEULCK)
     }
 
     /// Enable/disable boot protection
@@ -419,10 +419,10 @@ impl Nvm {
             // Requires both command and key so the command is allowed to execute
             if protect {
                 // Issue Clear boot protection disable (enable bootprotection)
-                self.command_sync(CMD_AW::CBPDIS)
+                self.command_sync(CMDSELECT_AW::CBPDIS)
             } else {
                 // Issue Set boot protection disable (disable bootprotection)
-                self.command_sync(CMD_AW::SBPDIS)
+                self.command_sync(CMDSELECT_AW::SBPDIS)
             }
         } else {
             Ok(())
@@ -453,7 +453,11 @@ impl Nvm {
         {
             self.set_address(address);
             let protect = mask & (1 << i) == 0;
-            self.command_sync(if protect { CMD_AW::LR } else { CMD_AW::UR })?;
+            self.command_sync(if protect {
+                CMDSELECT_AW::LR
+            } else {
+                CMDSELECT_AW::UR
+            })?;
         }
         Ok(())
     }
@@ -586,7 +590,7 @@ impl Nvm {
             }
         }
 
-        self.command_sync(CMD_AW::PBC)?;
+        self.command_sync(CMDSELECT_AW::PBC)?;
         // Track whether we have unwritten data in the page buffer
         let mut dirty = false;
         // Zip two iterators, one counter and one with the addr word aligned
@@ -772,10 +776,10 @@ pub enum WriteGranularity {
 
 impl EraseGranularity {
     #[inline]
-    fn command(&self) -> CMD_AW {
+    fn command(&self) -> CMDSELECT_AW {
         match self {
-            Self::Block => CMD_AW::EB,
-            Self::Page => CMD_AW::EP,
+            Self::Block => CMDSELECT_AW::EB,
+            Self::Page => CMDSELECT_AW::EP,
         }
     }
 
@@ -790,10 +794,10 @@ impl EraseGranularity {
 
 impl WriteGranularity {
     #[inline]
-    fn command(&self) -> CMD_AW {
+    fn command(&self) -> CMDSELECT_AW {
         match self {
-            Self::QuadWord => CMD_AW::WQW,
-            Self::Page => CMD_AW::WP,
+            Self::QuadWord => CMDSELECT_AW::WQW,
+            Self::Page => CMDSELECT_AW::WP,
         }
     }
 

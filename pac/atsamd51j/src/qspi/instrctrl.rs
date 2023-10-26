@@ -1,93 +1,15 @@
 #[doc = "Register `INSTRCTRL` reader"]
-pub struct R(crate::R<INSTRCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INSTRCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INSTRCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INSTRCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INSTRCTRL_SPEC>;
 #[doc = "Register `INSTRCTRL` writer"]
-pub struct W(crate::W<INSTRCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INSTRCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INSTRCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INSTRCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INSTRCTRL_SPEC>;
 #[doc = "Field `INSTR` reader - Instruction Code"]
-pub struct INSTR_R(crate::FieldReader<u8, u8>);
-impl INSTR_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        INSTR_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INSTR_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INSTR_R = crate::FieldReader;
 #[doc = "Field `INSTR` writer - Instruction Code"]
-pub struct INSTR_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INSTR_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0xff) | (value as u32 & 0xff);
-        self.w
-    }
-}
+pub type INSTR_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 #[doc = "Field `OPTCODE` reader - Option Code"]
-pub struct OPTCODE_R(crate::FieldReader<u8, u8>);
-impl OPTCODE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        OPTCODE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for OPTCODE_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type OPTCODE_R = crate::FieldReader;
 #[doc = "Field `OPTCODE` writer - Option Code"]
-pub struct OPTCODE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> OPTCODE_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 16)) | ((value as u32 & 0xff) << 16);
-        self.w
-    }
-}
+pub type OPTCODE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Instruction Code"]
     #[inline(always)]
@@ -103,38 +25,40 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Instruction Code"]
     #[inline(always)]
-    pub fn instr(&mut self) -> INSTR_W {
-        INSTR_W { w: self }
+    #[must_use]
+    pub fn instr(&mut self) -> INSTR_W<INSTRCTRL_SPEC, 0> {
+        INSTR_W::new(self)
     }
     #[doc = "Bits 16:23 - Option Code"]
     #[inline(always)]
-    pub fn optcode(&mut self) -> OPTCODE_W {
-        OPTCODE_W { w: self }
+    #[must_use]
+    pub fn optcode(&mut self) -> OPTCODE_W<INSTRCTRL_SPEC, 16> {
+        OPTCODE_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Instruction Code\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [instrctrl](index.html) module"]
+#[doc = "Instruction Code\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`instrctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`instrctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INSTRCTRL_SPEC;
 impl crate::RegisterSpec for INSTRCTRL_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [instrctrl::R](R) reader structure"]
-impl crate::Readable for INSTRCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [instrctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`instrctrl::R`](R) reader structure"]
+impl crate::Readable for INSTRCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`instrctrl::W`](W) writer structure"]
 impl crate::Writable for INSTRCTRL_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INSTRCTRL to value 0"]
 impl crate::Resettable for INSTRCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

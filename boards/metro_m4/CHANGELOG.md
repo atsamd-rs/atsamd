@@ -1,5 +1,7 @@
 # Unreleased
 
+- Update the PACs to svd2rust 0.30.2.
+
 # v0.12.0
 
 - Use correct alternate for USB (#661)

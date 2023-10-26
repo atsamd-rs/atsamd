@@ -379,7 +379,7 @@
 //! message_region3_sha256[6] = 0xDEAD_BEEF;
 //!
 //! icm.enable()
-use crate::pac::icm::uasr::URAT_A;
+use crate::pac::icm::uasr::URATSELECT_A;
 
 use paste::paste;
 use seq_macro::seq;
@@ -391,7 +391,7 @@ use crate::typelevel::Sealed;
 use core::marker::PhantomData;
 
 /// Reexport the User SHA Algorithm
-pub use crate::icm::cfg::UALGO_A as icm_algorithm;
+pub use crate::icm::cfg::UALGOSELECT_A as icm_algorithm;
 
 // Convenient bitflags representing select parts of
 // the status interrupt register `ICM->ISR`
@@ -1173,20 +1173,20 @@ impl Icm {
     /// Get Undefined Register Access Detection interrupt mask
     #[inline]
     pub fn get_urad_int_mask(&self) -> bool {
-        self.imr().read().urad().bits()
+        self.imr().read().urad().bit()
     }
 
     /// Get Undefined Register Access Detection interrupt status
     #[inline]
     pub fn get_urad_int(&self) -> bool {
-        self.isr().read().urad().bits()
+        self.isr().read().urad().bit()
     }
 
     /// Get Undefined Register Access Trace
     ///
     /// This field is only reset by `swrst`
     #[inline]
-    pub fn get_urat(&self) -> URAT_A {
+    pub fn get_urat(&self) -> URATSELECT_A {
         self.uasr().read().urat().variant().unwrap()
     }
 

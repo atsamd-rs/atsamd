@@ -1,5 +1,7 @@
 # Unreleased Changes
 
+- Update the PACs to svd2rust 0.30.2.
+
 # v0.16.0
 
 - Implement `Debug, Clone, Copy, Eq, PartialEq` for all HAL error types (#691).

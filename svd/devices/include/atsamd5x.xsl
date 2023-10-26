@@ -32,6 +32,10 @@
     </fields>
   </xsl:template>
 
+  <xsl:template match="/device/peripherals/peripheral[name='EVSYS']/registers/cluster[name='CHANNEL[%s]']/name">
+    <name>CHANNELS[%s]</name>
+  </xsl:template>
+
   <!-- The GMAC::TIDM::ENIDn fields are all missing. -->
   <xsl:template match="/device/peripherals/peripheral[name='GMAC']/registers/register[name='TIDM[%s]']/fields">
     <fields>
