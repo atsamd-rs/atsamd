@@ -1,4 +1,8 @@
-# Unreleased
+# 0.13.0
+
+- Update PAC generated code to use `svd2rust-0.30.2` and `form-0.10.0`
+
+# 0.12.0
 
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
 - update PAC generated code to use `svd2rust-0.20.0` and `form-0.8.0` and make them 2021 edition

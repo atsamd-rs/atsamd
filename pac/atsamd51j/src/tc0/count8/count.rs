@@ -1,103 +1,49 @@
 #[doc = "Register `COUNT` reader"]
-pub struct R(crate::R<COUNT_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<COUNT_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<COUNT_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<COUNT_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<COUNT_SPEC>;
 #[doc = "Register `COUNT` writer"]
-pub struct W(crate::W<COUNT_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<COUNT_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<COUNT_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<COUNT_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<COUNT_SPEC>;
 #[doc = "Field `COUNT` reader - Counter Value"]
-pub struct COUNT_R(crate::FieldReader<u8, u8>);
-impl COUNT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        COUNT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for COUNT_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type COUNT_R = crate::FieldReader;
 #[doc = "Field `COUNT` writer - Counter Value"]
-pub struct COUNT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> COUNT_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = value as u8;
-        self.w
-    }
-}
+pub type COUNT_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 impl R {
     #[doc = "Bits 0:7 - Counter Value"]
     #[inline(always)]
     pub fn count(&self) -> COUNT_R {
-        COUNT_R::new(self.bits as u8)
+        COUNT_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Counter Value"]
     #[inline(always)]
-    pub fn count(&mut self) -> COUNT_W {
-        COUNT_W { w: self }
+    #[must_use]
+    pub fn count(&mut self) -> COUNT_W<COUNT_SPEC, 0> {
+        COUNT_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "COUNT8 Count\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [count](index.html) module"]
+#[doc = "COUNT8 Count\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`count::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`count::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct COUNT_SPEC;
 impl crate::RegisterSpec for COUNT_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [count::R](R) reader structure"]
-impl crate::Readable for COUNT_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [count::W](W) writer structure"]
+#[doc = "`read()` method returns [`count::R`](R) reader structure"]
+impl crate::Readable for COUNT_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`count::W`](W) writer structure"]
 impl crate::Writable for COUNT_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets COUNT to value 0"]
 impl crate::Resettable for COUNT_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

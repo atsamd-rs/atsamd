@@ -331,9 +331,9 @@ use reg::Registers;
 //=============================================================================
 
 #[cfg(feature = "thumbv6")]
-use crate::pac::sercom0::spi::ctrla::MODE_A;
+use crate::pac::sercom0::spi::ctrla::MODESELECT_A;
 #[cfg(feature = "thumbv7")]
-use crate::pac::sercom0::spim::ctrla::MODE_A;
+use crate::pac::sercom0::spim::ctrla::MODESELECT_A;
 
 #[cfg(feature = "thumbv6")]
 #[path = "spi/pads_thumbv6m.rs"]
@@ -466,7 +466,7 @@ pub enum Error {
 /// [type-level enums]: crate::typelevel#type-level-enums
 pub trait OpMode: Sealed {
     /// Corresponding variant from the PAC enum
-    const MODE: MODE_A;
+    const MODE: MODESELECT_A;
     /// Bit indicating whether hardware `SS` control is enabled
     const MSSEN: bool;
 }
@@ -485,17 +485,17 @@ impl Sealed for MasterHWSS {}
 impl Sealed for Slave {}
 
 impl OpMode for Master {
-    const MODE: MODE_A = MODE_A::SPI_MASTER;
+    const MODE: MODESELECT_A = MODESELECT_A::SPI_MASTER;
     const MSSEN: bool = false;
 }
 
 impl OpMode for MasterHWSS {
-    const MODE: MODE_A = MODE_A::SPI_MASTER;
+    const MODE: MODESELECT_A = MODESELECT_A::SPI_MASTER;
     const MSSEN: bool = true;
 }
 
 impl OpMode for Slave {
-    const MODE: MODE_A = MODE_A::SPI_SLAVE;
+    const MODE: MODESELECT_A = MODESELECT_A::SPI_SLAVE;
     const MSSEN: bool = false;
 }
 

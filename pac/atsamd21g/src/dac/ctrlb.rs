@@ -1,228 +1,33 @@
 #[doc = "Register `CTRLB` reader"]
-pub struct R(crate::R<CTRLB_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<CTRLB_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<CTRLB_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<CTRLB_SPEC>;
 #[doc = "Register `CTRLB` writer"]
-pub struct W(crate::W<CTRLB_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<CTRLB_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<CTRLB_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<CTRLB_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<CTRLB_SPEC>;
 #[doc = "Field `EOEN` reader - External Output Enable"]
-pub struct EOEN_R(crate::FieldReader<bool, bool>);
-impl EOEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EOEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EOEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EOEN_R = crate::BitReader;
 #[doc = "Field `EOEN` writer - External Output Enable"]
-pub struct EOEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EOEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u8 & 0x01);
-        self.w
-    }
-}
+pub type EOEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `IOEN` reader - Internal Output Enable"]
-pub struct IOEN_R(crate::FieldReader<bool, bool>);
-impl IOEN_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        IOEN_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for IOEN_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type IOEN_R = crate::BitReader;
 #[doc = "Field `IOEN` writer - Internal Output Enable"]
-pub struct IOEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> IOEN_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u8 & 0x01) << 1);
-        self.w
-    }
-}
+pub type IOEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LEFTADJ` reader - Left Adjusted Data"]
-pub struct LEFTADJ_R(crate::FieldReader<bool, bool>);
-impl LEFTADJ_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        LEFTADJ_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LEFTADJ_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LEFTADJ_R = crate::BitReader;
 #[doc = "Field `LEFTADJ` writer - Left Adjusted Data"]
-pub struct LEFTADJ_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LEFTADJ_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u8 & 0x01) << 2);
-        self.w
-    }
-}
+pub type LEFTADJ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `VPD` reader - Voltage Pump Disable"]
-pub struct VPD_R(crate::FieldReader<bool, bool>);
-impl VPD_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        VPD_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for VPD_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type VPD_R = crate::BitReader;
 #[doc = "Field `VPD` writer - Voltage Pump Disable"]
-pub struct VPD_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> VPD_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u8 & 0x01) << 3);
-        self.w
-    }
-}
+pub type VPD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `BDWP` reader - Bypass DATABUF Write Protection"]
-pub struct BDWP_R(crate::FieldReader<bool, bool>);
-impl BDWP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        BDWP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BDWP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BDWP_R = crate::BitReader;
 #[doc = "Field `BDWP` writer - Bypass DATABUF Write Protection"]
-pub struct BDWP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BDWP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u8 & 0x01) << 4);
-        self.w
-    }
-}
+pub type BDWP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+#[doc = "Field `REFSEL` reader - Reference Selection"]
+pub type REFSEL_R = crate::FieldReader<REFSELSELECT_A>;
 #[doc = "Reference Selection\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum REFSEL_A {
+pub enum REFSELSELECT_A {
     #[doc = "0: Internal 1.0V reference"]
     INT1V = 0,
     #[doc = "1: AVCC"]
@@ -230,171 +35,158 @@ pub enum REFSEL_A {
     #[doc = "2: External reference"]
     VREFP = 2,
 }
-impl From<REFSEL_A> for u8 {
+impl From<REFSELSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: REFSEL_A) -> Self {
+    fn from(variant: REFSELSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `REFSEL` reader - Reference Selection"]
-pub struct REFSEL_R(crate::FieldReader<u8, REFSEL_A>);
+impl crate::FieldSpec for REFSELSELECT_A {
+    type Ux = u8;
+}
 impl REFSEL_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        REFSEL_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<REFSEL_A> {
+    pub const fn variant(&self) -> Option<REFSELSELECT_A> {
         match self.bits {
-            0 => Some(REFSEL_A::INT1V),
-            1 => Some(REFSEL_A::AVCC),
-            2 => Some(REFSEL_A::VREFP),
+            0 => Some(REFSELSELECT_A::INT1V),
+            1 => Some(REFSELSELECT_A::AVCC),
+            2 => Some(REFSELSELECT_A::VREFP),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `INT1V`"]
-    #[inline(always)]
-    pub fn is_int1v(&self) -> bool {
-        **self == REFSEL_A::INT1V
-    }
-    #[doc = "Checks if the value of the field is `AVCC`"]
-    #[inline(always)]
-    pub fn is_avcc(&self) -> bool {
-        **self == REFSEL_A::AVCC
-    }
-    #[doc = "Checks if the value of the field is `VREFP`"]
-    #[inline(always)]
-    pub fn is_vrefp(&self) -> bool {
-        **self == REFSEL_A::VREFP
-    }
-}
-impl core::ops::Deref for REFSEL_R {
-    type Target = crate::FieldReader<u8, REFSEL_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `REFSEL` writer - Reference Selection"]
-pub struct REFSEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> REFSEL_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: REFSEL_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
     #[doc = "Internal 1.0V reference"]
     #[inline(always)]
-    pub fn int1v(self) -> &'a mut W {
-        self.variant(REFSEL_A::INT1V)
+    pub fn is_int1v(&self) -> bool {
+        *self == REFSELSELECT_A::INT1V
     }
     #[doc = "AVCC"]
     #[inline(always)]
-    pub fn avcc(self) -> &'a mut W {
-        self.variant(REFSEL_A::AVCC)
+    pub fn is_avcc(&self) -> bool {
+        *self == REFSELSELECT_A::AVCC
     }
     #[doc = "External reference"]
     #[inline(always)]
-    pub fn vrefp(self) -> &'a mut W {
-        self.variant(REFSEL_A::VREFP)
+    pub fn is_vrefp(&self) -> bool {
+        *self == REFSELSELECT_A::VREFP
     }
-    #[doc = r"Writes raw bits to the field"]
+}
+#[doc = "Field `REFSEL` writer - Reference Selection"]
+pub type REFSEL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, REFSELSELECT_A>;
+impl<'a, REG, const O: u8> REFSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Internal 1.0V reference"]
     #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 6)) | ((value as u8 & 0x03) << 6);
-        self.w
+    pub fn int1v(self) -> &'a mut crate::W<REG> {
+        self.variant(REFSELSELECT_A::INT1V)
+    }
+    #[doc = "AVCC"]
+    #[inline(always)]
+    pub fn avcc(self) -> &'a mut crate::W<REG> {
+        self.variant(REFSELSELECT_A::AVCC)
+    }
+    #[doc = "External reference"]
+    #[inline(always)]
+    pub fn vrefp(self) -> &'a mut crate::W<REG> {
+        self.variant(REFSELSELECT_A::VREFP)
     }
 }
 impl R {
     #[doc = "Bit 0 - External Output Enable"]
     #[inline(always)]
     pub fn eoen(&self) -> EOEN_R {
-        EOEN_R::new((self.bits & 0x01) != 0)
+        EOEN_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Internal Output Enable"]
     #[inline(always)]
     pub fn ioen(&self) -> IOEN_R {
-        IOEN_R::new(((self.bits >> 1) & 0x01) != 0)
+        IOEN_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Left Adjusted Data"]
     #[inline(always)]
     pub fn leftadj(&self) -> LEFTADJ_R {
-        LEFTADJ_R::new(((self.bits >> 2) & 0x01) != 0)
+        LEFTADJ_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Voltage Pump Disable"]
     #[inline(always)]
     pub fn vpd(&self) -> VPD_R {
-        VPD_R::new(((self.bits >> 3) & 0x01) != 0)
+        VPD_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Bypass DATABUF Write Protection"]
     #[inline(always)]
     pub fn bdwp(&self) -> BDWP_R {
-        BDWP_R::new(((self.bits >> 4) & 0x01) != 0)
+        BDWP_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bits 6:7 - Reference Selection"]
     #[inline(always)]
     pub fn refsel(&self) -> REFSEL_R {
-        REFSEL_R::new(((self.bits >> 6) & 0x03) as u8)
+        REFSEL_R::new((self.bits >> 6) & 3)
     }
 }
 impl W {
     #[doc = "Bit 0 - External Output Enable"]
     #[inline(always)]
-    pub fn eoen(&mut self) -> EOEN_W {
-        EOEN_W { w: self }
+    #[must_use]
+    pub fn eoen(&mut self) -> EOEN_W<CTRLB_SPEC, 0> {
+        EOEN_W::new(self)
     }
     #[doc = "Bit 1 - Internal Output Enable"]
     #[inline(always)]
-    pub fn ioen(&mut self) -> IOEN_W {
-        IOEN_W { w: self }
+    #[must_use]
+    pub fn ioen(&mut self) -> IOEN_W<CTRLB_SPEC, 1> {
+        IOEN_W::new(self)
     }
     #[doc = "Bit 2 - Left Adjusted Data"]
     #[inline(always)]
-    pub fn leftadj(&mut self) -> LEFTADJ_W {
-        LEFTADJ_W { w: self }
+    #[must_use]
+    pub fn leftadj(&mut self) -> LEFTADJ_W<CTRLB_SPEC, 2> {
+        LEFTADJ_W::new(self)
     }
     #[doc = "Bit 3 - Voltage Pump Disable"]
     #[inline(always)]
-    pub fn vpd(&mut self) -> VPD_W {
-        VPD_W { w: self }
+    #[must_use]
+    pub fn vpd(&mut self) -> VPD_W<CTRLB_SPEC, 3> {
+        VPD_W::new(self)
     }
     #[doc = "Bit 4 - Bypass DATABUF Write Protection"]
     #[inline(always)]
-    pub fn bdwp(&mut self) -> BDWP_W {
-        BDWP_W { w: self }
+    #[must_use]
+    pub fn bdwp(&mut self) -> BDWP_W<CTRLB_SPEC, 4> {
+        BDWP_W::new(self)
     }
     #[doc = "Bits 6:7 - Reference Selection"]
     #[inline(always)]
-    pub fn refsel(&mut self) -> REFSEL_W {
-        REFSEL_W { w: self }
+    #[must_use]
+    pub fn refsel(&mut self) -> REFSEL_W<CTRLB_SPEC, 6> {
+        REFSEL_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Control B\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [ctrlb](index.html) module"]
+#[doc = "Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CTRLB_SPEC;
 impl crate::RegisterSpec for CTRLB_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [ctrlb::R](R) reader structure"]
-impl crate::Readable for CTRLB_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [ctrlb::W](W) writer structure"]
+#[doc = "`read()` method returns [`ctrlb::R`](R) reader structure"]
+impl crate::Readable for CTRLB_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CTRLB_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
 impl crate::Resettable for CTRLB_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -25,7 +25,7 @@ pub trait EicPin {
     fn into_pull_down_ei(self) -> Self::PullDown;
 }
 
-pub type Sense = pac::eic::config::SENSE0_A;
+pub type Sense = pac::eic::config::SENSE0SELECT_A;
 
 pub type ExternalInterruptID = usize;
 

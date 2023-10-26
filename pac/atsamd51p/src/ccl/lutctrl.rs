@@ -1,80 +1,17 @@
 #[doc = "Register `LUTCTRL[%s]` reader"]
-pub struct R(crate::R<LUTCTRL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<LUTCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<LUTCTRL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<LUTCTRL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<LUTCTRL_SPEC>;
 #[doc = "Register `LUTCTRL[%s]` writer"]
-pub struct W(crate::W<LUTCTRL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<LUTCTRL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<LUTCTRL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<LUTCTRL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<LUTCTRL_SPEC>;
 #[doc = "Field `ENABLE` reader - LUT Enable"]
-pub struct ENABLE_R(crate::FieldReader<bool, bool>);
-impl ENABLE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ENABLE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ENABLE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ENABLE_R = crate::BitReader;
 #[doc = "Field `ENABLE` writer - LUT Enable"]
-pub struct ENABLE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ENABLE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+#[doc = "Field `FILTSEL` reader - Filter Selection"]
+pub type FILTSEL_R = crate::FieldReader<FILTSELSELECT_A>;
 #[doc = "Filter Selection\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum FILTSEL_A {
+pub enum FILTSELSELECT_A {
     #[doc = "0: Filter disabled"]
     DISABLE = 0,
     #[doc = "1: Synchronizer enabled"]
@@ -82,125 +19,75 @@ pub enum FILTSEL_A {
     #[doc = "2: Filter enabled"]
     FILTER = 2,
 }
-impl From<FILTSEL_A> for u8 {
+impl From<FILTSELSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: FILTSEL_A) -> Self {
+    fn from(variant: FILTSELSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `FILTSEL` reader - Filter Selection"]
-pub struct FILTSEL_R(crate::FieldReader<u8, FILTSEL_A>);
+impl crate::FieldSpec for FILTSELSELECT_A {
+    type Ux = u8;
+}
 impl FILTSEL_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        FILTSEL_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<FILTSEL_A> {
+    pub const fn variant(&self) -> Option<FILTSELSELECT_A> {
         match self.bits {
-            0 => Some(FILTSEL_A::DISABLE),
-            1 => Some(FILTSEL_A::SYNCH),
-            2 => Some(FILTSEL_A::FILTER),
+            0 => Some(FILTSELSELECT_A::DISABLE),
+            1 => Some(FILTSELSELECT_A::SYNCH),
+            2 => Some(FILTSELSELECT_A::FILTER),
             _ => None,
         }
-    }
-    #[doc = "Checks if the value of the field is `DISABLE`"]
-    #[inline(always)]
-    pub fn is_disable(&self) -> bool {
-        **self == FILTSEL_A::DISABLE
-    }
-    #[doc = "Checks if the value of the field is `SYNCH`"]
-    #[inline(always)]
-    pub fn is_synch(&self) -> bool {
-        **self == FILTSEL_A::SYNCH
-    }
-    #[doc = "Checks if the value of the field is `FILTER`"]
-    #[inline(always)]
-    pub fn is_filter(&self) -> bool {
-        **self == FILTSEL_A::FILTER
-    }
-}
-impl core::ops::Deref for FILTSEL_R {
-    type Target = crate::FieldReader<u8, FILTSEL_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `FILTSEL` writer - Filter Selection"]
-pub struct FILTSEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> FILTSEL_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: FILTSEL_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
     }
     #[doc = "Filter disabled"]
     #[inline(always)]
-    pub fn disable(self) -> &'a mut W {
-        self.variant(FILTSEL_A::DISABLE)
+    pub fn is_disable(&self) -> bool {
+        *self == FILTSELSELECT_A::DISABLE
     }
     #[doc = "Synchronizer enabled"]
     #[inline(always)]
-    pub fn synch(self) -> &'a mut W {
-        self.variant(FILTSEL_A::SYNCH)
+    pub fn is_synch(&self) -> bool {
+        *self == FILTSELSELECT_A::SYNCH
     }
     #[doc = "Filter enabled"]
     #[inline(always)]
-    pub fn filter(self) -> &'a mut W {
-        self.variant(FILTSEL_A::FILTER)
+    pub fn is_filter(&self) -> bool {
+        *self == FILTSELSELECT_A::FILTER
     }
-    #[doc = r"Writes raw bits to the field"]
+}
+#[doc = "Field `FILTSEL` writer - Filter Selection"]
+pub type FILTSEL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, FILTSELSELECT_A>;
+impl<'a, REG, const O: u8> FILTSEL_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Filter disabled"]
     #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 4)) | ((value as u32 & 0x03) << 4);
-        self.w
+    pub fn disable(self) -> &'a mut crate::W<REG> {
+        self.variant(FILTSELSELECT_A::DISABLE)
+    }
+    #[doc = "Synchronizer enabled"]
+    #[inline(always)]
+    pub fn synch(self) -> &'a mut crate::W<REG> {
+        self.variant(FILTSELSELECT_A::SYNCH)
+    }
+    #[doc = "Filter enabled"]
+    #[inline(always)]
+    pub fn filter(self) -> &'a mut crate::W<REG> {
+        self.variant(FILTSELSELECT_A::FILTER)
     }
 }
 #[doc = "Field `EDGESEL` reader - Edge Selection"]
-pub struct EDGESEL_R(crate::FieldReader<bool, bool>);
-impl EDGESEL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        EDGESEL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for EDGESEL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type EDGESEL_R = crate::BitReader;
 #[doc = "Field `EDGESEL` writer - Edge Selection"]
-pub struct EDGESEL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> EDGESEL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u32 & 0x01) << 7);
-        self.w
-    }
-}
+pub type EDGESEL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+#[doc = "Field `INSEL0` reader - Input Selection 0"]
+pub type INSEL0_R = crate::FieldReader<INSEL0SELECT_A>;
 #[doc = "Input Selection 0\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum INSEL0_A {
+pub enum INSEL0SELECT_A {
     #[doc = "0: Masked input"]
     MASK = 0,
     #[doc = "1: Feedback input source"]
@@ -222,345 +109,148 @@ pub enum INSEL0_A {
     #[doc = "9: SERCOM input source"]
     SERCOM = 9,
 }
-impl From<INSEL0_A> for u8 {
+impl From<INSEL0SELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: INSEL0_A) -> Self {
+    fn from(variant: INSEL0SELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `INSEL0` reader - Input Selection 0"]
-pub struct INSEL0_R(crate::FieldReader<u8, INSEL0_A>);
+impl crate::FieldSpec for INSEL0SELECT_A {
+    type Ux = u8;
+}
 impl INSEL0_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        INSEL0_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<INSEL0_A> {
+    pub const fn variant(&self) -> Option<INSEL0SELECT_A> {
         match self.bits {
-            0 => Some(INSEL0_A::MASK),
-            1 => Some(INSEL0_A::FEEDBACK),
-            2 => Some(INSEL0_A::LINK),
-            3 => Some(INSEL0_A::EVENT),
-            4 => Some(INSEL0_A::IO),
-            5 => Some(INSEL0_A::AC),
-            6 => Some(INSEL0_A::TC),
-            7 => Some(INSEL0_A::ALTTC),
-            8 => Some(INSEL0_A::TCC),
-            9 => Some(INSEL0_A::SERCOM),
+            0 => Some(INSEL0SELECT_A::MASK),
+            1 => Some(INSEL0SELECT_A::FEEDBACK),
+            2 => Some(INSEL0SELECT_A::LINK),
+            3 => Some(INSEL0SELECT_A::EVENT),
+            4 => Some(INSEL0SELECT_A::IO),
+            5 => Some(INSEL0SELECT_A::AC),
+            6 => Some(INSEL0SELECT_A::TC),
+            7 => Some(INSEL0SELECT_A::ALTTC),
+            8 => Some(INSEL0SELECT_A::TCC),
+            9 => Some(INSEL0SELECT_A::SERCOM),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `MASK`"]
+    #[doc = "Masked input"]
     #[inline(always)]
     pub fn is_mask(&self) -> bool {
-        **self == INSEL0_A::MASK
+        *self == INSEL0SELECT_A::MASK
     }
-    #[doc = "Checks if the value of the field is `FEEDBACK`"]
+    #[doc = "Feedback input source"]
     #[inline(always)]
     pub fn is_feedback(&self) -> bool {
-        **self == INSEL0_A::FEEDBACK
+        *self == INSEL0SELECT_A::FEEDBACK
     }
-    #[doc = "Checks if the value of the field is `LINK`"]
+    #[doc = "Linked LUT input source"]
     #[inline(always)]
     pub fn is_link(&self) -> bool {
-        **self == INSEL0_A::LINK
+        *self == INSEL0SELECT_A::LINK
     }
-    #[doc = "Checks if the value of the field is `EVENT`"]
+    #[doc = "Event input source"]
     #[inline(always)]
     pub fn is_event(&self) -> bool {
-        **self == INSEL0_A::EVENT
+        *self == INSEL0SELECT_A::EVENT
     }
-    #[doc = "Checks if the value of the field is `IO`"]
+    #[doc = "I/O pin input source"]
     #[inline(always)]
     pub fn is_io(&self) -> bool {
-        **self == INSEL0_A::IO
+        *self == INSEL0SELECT_A::IO
     }
-    #[doc = "Checks if the value of the field is `AC`"]
+    #[doc = "AC input source"]
     #[inline(always)]
     pub fn is_ac(&self) -> bool {
-        **self == INSEL0_A::AC
+        *self == INSEL0SELECT_A::AC
     }
-    #[doc = "Checks if the value of the field is `TC`"]
+    #[doc = "TC input source"]
     #[inline(always)]
     pub fn is_tc(&self) -> bool {
-        **self == INSEL0_A::TC
+        *self == INSEL0SELECT_A::TC
     }
-    #[doc = "Checks if the value of the field is `ALTTC`"]
+    #[doc = "Alternate TC input source"]
     #[inline(always)]
     pub fn is_alttc(&self) -> bool {
-        **self == INSEL0_A::ALTTC
+        *self == INSEL0SELECT_A::ALTTC
     }
-    #[doc = "Checks if the value of the field is `TCC`"]
+    #[doc = "TCC input source"]
     #[inline(always)]
     pub fn is_tcc(&self) -> bool {
-        **self == INSEL0_A::TCC
+        *self == INSEL0SELECT_A::TCC
     }
-    #[doc = "Checks if the value of the field is `SERCOM`"]
+    #[doc = "SERCOM input source"]
     #[inline(always)]
     pub fn is_sercom(&self) -> bool {
-        **self == INSEL0_A::SERCOM
-    }
-}
-impl core::ops::Deref for INSEL0_R {
-    type Target = crate::FieldReader<u8, INSEL0_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == INSEL0SELECT_A::SERCOM
     }
 }
 #[doc = "Field `INSEL0` writer - Input Selection 0"]
-pub struct INSEL0_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INSEL0_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: INSEL0_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type INSEL0_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O, INSEL0SELECT_A>;
+impl<'a, REG, const O: u8> INSEL0_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Masked input"]
     #[inline(always)]
-    pub fn mask(self) -> &'a mut W {
-        self.variant(INSEL0_A::MASK)
+    pub fn mask(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::MASK)
     }
     #[doc = "Feedback input source"]
     #[inline(always)]
-    pub fn feedback(self) -> &'a mut W {
-        self.variant(INSEL0_A::FEEDBACK)
+    pub fn feedback(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::FEEDBACK)
     }
     #[doc = "Linked LUT input source"]
     #[inline(always)]
-    pub fn link(self) -> &'a mut W {
-        self.variant(INSEL0_A::LINK)
+    pub fn link(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::LINK)
     }
     #[doc = "Event input source"]
     #[inline(always)]
-    pub fn event(self) -> &'a mut W {
-        self.variant(INSEL0_A::EVENT)
+    pub fn event(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::EVENT)
     }
     #[doc = "I/O pin input source"]
     #[inline(always)]
-    pub fn io(self) -> &'a mut W {
-        self.variant(INSEL0_A::IO)
+    pub fn io(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::IO)
     }
     #[doc = "AC input source"]
     #[inline(always)]
-    pub fn ac(self) -> &'a mut W {
-        self.variant(INSEL0_A::AC)
+    pub fn ac(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::AC)
     }
     #[doc = "TC input source"]
     #[inline(always)]
-    pub fn tc(self) -> &'a mut W {
-        self.variant(INSEL0_A::TC)
+    pub fn tc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::TC)
     }
     #[doc = "Alternate TC input source"]
     #[inline(always)]
-    pub fn alttc(self) -> &'a mut W {
-        self.variant(INSEL0_A::ALTTC)
+    pub fn alttc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::ALTTC)
     }
     #[doc = "TCC input source"]
     #[inline(always)]
-    pub fn tcc(self) -> &'a mut W {
-        self.variant(INSEL0_A::TCC)
+    pub fn tcc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::TCC)
     }
     #[doc = "SERCOM input source"]
     #[inline(always)]
-    pub fn sercom(self) -> &'a mut W {
-        self.variant(INSEL0_A::SERCOM)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 8)) | ((value as u32 & 0x0f) << 8);
-        self.w
-    }
-}
-#[doc = "Input Selection 1\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
-#[repr(u8)]
-pub enum INSEL1_A {
-    #[doc = "0: Masked input"]
-    MASK = 0,
-    #[doc = "1: Feedback input source"]
-    FEEDBACK = 1,
-    #[doc = "2: Linked LUT input source"]
-    LINK = 2,
-    #[doc = "3: Event input source"]
-    EVENT = 3,
-    #[doc = "4: I/O pin input source"]
-    IO = 4,
-    #[doc = "5: AC input source"]
-    AC = 5,
-    #[doc = "6: TC input source"]
-    TC = 6,
-    #[doc = "7: Alternate TC input source"]
-    ALTTC = 7,
-    #[doc = "8: TCC input source"]
-    TCC = 8,
-    #[doc = "9: SERCOM input source"]
-    SERCOM = 9,
-}
-impl From<INSEL1_A> for u8 {
-    #[inline(always)]
-    fn from(variant: INSEL1_A) -> Self {
-        variant as _
+    pub fn sercom(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL0SELECT_A::SERCOM)
     }
 }
 #[doc = "Field `INSEL1` reader - Input Selection 1"]
-pub struct INSEL1_R(crate::FieldReader<u8, INSEL1_A>);
-impl INSEL1_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        INSEL1_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<INSEL1_A> {
-        match self.bits {
-            0 => Some(INSEL1_A::MASK),
-            1 => Some(INSEL1_A::FEEDBACK),
-            2 => Some(INSEL1_A::LINK),
-            3 => Some(INSEL1_A::EVENT),
-            4 => Some(INSEL1_A::IO),
-            5 => Some(INSEL1_A::AC),
-            6 => Some(INSEL1_A::TC),
-            7 => Some(INSEL1_A::ALTTC),
-            8 => Some(INSEL1_A::TCC),
-            9 => Some(INSEL1_A::SERCOM),
-            _ => None,
-        }
-    }
-    #[doc = "Checks if the value of the field is `MASK`"]
-    #[inline(always)]
-    pub fn is_mask(&self) -> bool {
-        **self == INSEL1_A::MASK
-    }
-    #[doc = "Checks if the value of the field is `FEEDBACK`"]
-    #[inline(always)]
-    pub fn is_feedback(&self) -> bool {
-        **self == INSEL1_A::FEEDBACK
-    }
-    #[doc = "Checks if the value of the field is `LINK`"]
-    #[inline(always)]
-    pub fn is_link(&self) -> bool {
-        **self == INSEL1_A::LINK
-    }
-    #[doc = "Checks if the value of the field is `EVENT`"]
-    #[inline(always)]
-    pub fn is_event(&self) -> bool {
-        **self == INSEL1_A::EVENT
-    }
-    #[doc = "Checks if the value of the field is `IO`"]
-    #[inline(always)]
-    pub fn is_io(&self) -> bool {
-        **self == INSEL1_A::IO
-    }
-    #[doc = "Checks if the value of the field is `AC`"]
-    #[inline(always)]
-    pub fn is_ac(&self) -> bool {
-        **self == INSEL1_A::AC
-    }
-    #[doc = "Checks if the value of the field is `TC`"]
-    #[inline(always)]
-    pub fn is_tc(&self) -> bool {
-        **self == INSEL1_A::TC
-    }
-    #[doc = "Checks if the value of the field is `ALTTC`"]
-    #[inline(always)]
-    pub fn is_alttc(&self) -> bool {
-        **self == INSEL1_A::ALTTC
-    }
-    #[doc = "Checks if the value of the field is `TCC`"]
-    #[inline(always)]
-    pub fn is_tcc(&self) -> bool {
-        **self == INSEL1_A::TCC
-    }
-    #[doc = "Checks if the value of the field is `SERCOM`"]
-    #[inline(always)]
-    pub fn is_sercom(&self) -> bool {
-        **self == INSEL1_A::SERCOM
-    }
-}
-impl core::ops::Deref for INSEL1_R {
-    type Target = crate::FieldReader<u8, INSEL1_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `INSEL1` writer - Input Selection 1"]
-pub struct INSEL1_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INSEL1_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: INSEL1_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
-    #[doc = "Masked input"]
-    #[inline(always)]
-    pub fn mask(self) -> &'a mut W {
-        self.variant(INSEL1_A::MASK)
-    }
-    #[doc = "Feedback input source"]
-    #[inline(always)]
-    pub fn feedback(self) -> &'a mut W {
-        self.variant(INSEL1_A::FEEDBACK)
-    }
-    #[doc = "Linked LUT input source"]
-    #[inline(always)]
-    pub fn link(self) -> &'a mut W {
-        self.variant(INSEL1_A::LINK)
-    }
-    #[doc = "Event input source"]
-    #[inline(always)]
-    pub fn event(self) -> &'a mut W {
-        self.variant(INSEL1_A::EVENT)
-    }
-    #[doc = "I/O pin input source"]
-    #[inline(always)]
-    pub fn io(self) -> &'a mut W {
-        self.variant(INSEL1_A::IO)
-    }
-    #[doc = "AC input source"]
-    #[inline(always)]
-    pub fn ac(self) -> &'a mut W {
-        self.variant(INSEL1_A::AC)
-    }
-    #[doc = "TC input source"]
-    #[inline(always)]
-    pub fn tc(self) -> &'a mut W {
-        self.variant(INSEL1_A::TC)
-    }
-    #[doc = "Alternate TC input source"]
-    #[inline(always)]
-    pub fn alttc(self) -> &'a mut W {
-        self.variant(INSEL1_A::ALTTC)
-    }
-    #[doc = "TCC input source"]
-    #[inline(always)]
-    pub fn tcc(self) -> &'a mut W {
-        self.variant(INSEL1_A::TCC)
-    }
-    #[doc = "SERCOM input source"]
-    #[inline(always)]
-    pub fn sercom(self) -> &'a mut W {
-        self.variant(INSEL1_A::SERCOM)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 12)) | ((value as u32 & 0x0f) << 12);
-        self.w
-    }
-}
-#[doc = "Input Selection 2\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+pub type INSEL1_R = crate::FieldReader<INSEL1SELECT_A>;
+#[doc = "Input Selection 1\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum INSEL2_A {
+pub enum INSEL1SELECT_A {
     #[doc = "0: Masked input"]
     MASK = 0,
     #[doc = "1: Feedback input source"]
@@ -582,314 +272,336 @@ pub enum INSEL2_A {
     #[doc = "9: SERCOM input source"]
     SERCOM = 9,
 }
-impl From<INSEL2_A> for u8 {
+impl From<INSEL1SELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: INSEL2_A) -> Self {
+    fn from(variant: INSEL1SELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `INSEL2` reader - Input Selection 2"]
-pub struct INSEL2_R(crate::FieldReader<u8, INSEL2_A>);
-impl INSEL2_R {
+impl crate::FieldSpec for INSEL1SELECT_A {
+    type Ux = u8;
+}
+impl INSEL1_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        INSEL2_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<INSEL2_A> {
+    pub const fn variant(&self) -> Option<INSEL1SELECT_A> {
         match self.bits {
-            0 => Some(INSEL2_A::MASK),
-            1 => Some(INSEL2_A::FEEDBACK),
-            2 => Some(INSEL2_A::LINK),
-            3 => Some(INSEL2_A::EVENT),
-            4 => Some(INSEL2_A::IO),
-            5 => Some(INSEL2_A::AC),
-            6 => Some(INSEL2_A::TC),
-            7 => Some(INSEL2_A::ALTTC),
-            8 => Some(INSEL2_A::TCC),
-            9 => Some(INSEL2_A::SERCOM),
+            0 => Some(INSEL1SELECT_A::MASK),
+            1 => Some(INSEL1SELECT_A::FEEDBACK),
+            2 => Some(INSEL1SELECT_A::LINK),
+            3 => Some(INSEL1SELECT_A::EVENT),
+            4 => Some(INSEL1SELECT_A::IO),
+            5 => Some(INSEL1SELECT_A::AC),
+            6 => Some(INSEL1SELECT_A::TC),
+            7 => Some(INSEL1SELECT_A::ALTTC),
+            8 => Some(INSEL1SELECT_A::TCC),
+            9 => Some(INSEL1SELECT_A::SERCOM),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `MASK`"]
-    #[inline(always)]
-    pub fn is_mask(&self) -> bool {
-        **self == INSEL2_A::MASK
-    }
-    #[doc = "Checks if the value of the field is `FEEDBACK`"]
-    #[inline(always)]
-    pub fn is_feedback(&self) -> bool {
-        **self == INSEL2_A::FEEDBACK
-    }
-    #[doc = "Checks if the value of the field is `LINK`"]
-    #[inline(always)]
-    pub fn is_link(&self) -> bool {
-        **self == INSEL2_A::LINK
-    }
-    #[doc = "Checks if the value of the field is `EVENT`"]
-    #[inline(always)]
-    pub fn is_event(&self) -> bool {
-        **self == INSEL2_A::EVENT
-    }
-    #[doc = "Checks if the value of the field is `IO`"]
-    #[inline(always)]
-    pub fn is_io(&self) -> bool {
-        **self == INSEL2_A::IO
-    }
-    #[doc = "Checks if the value of the field is `AC`"]
-    #[inline(always)]
-    pub fn is_ac(&self) -> bool {
-        **self == INSEL2_A::AC
-    }
-    #[doc = "Checks if the value of the field is `TC`"]
-    #[inline(always)]
-    pub fn is_tc(&self) -> bool {
-        **self == INSEL2_A::TC
-    }
-    #[doc = "Checks if the value of the field is `ALTTC`"]
-    #[inline(always)]
-    pub fn is_alttc(&self) -> bool {
-        **self == INSEL2_A::ALTTC
-    }
-    #[doc = "Checks if the value of the field is `TCC`"]
-    #[inline(always)]
-    pub fn is_tcc(&self) -> bool {
-        **self == INSEL2_A::TCC
-    }
-    #[doc = "Checks if the value of the field is `SERCOM`"]
-    #[inline(always)]
-    pub fn is_sercom(&self) -> bool {
-        **self == INSEL2_A::SERCOM
-    }
-}
-impl core::ops::Deref for INSEL2_R {
-    type Target = crate::FieldReader<u8, INSEL2_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `INSEL2` writer - Input Selection 2"]
-pub struct INSEL2_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INSEL2_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: INSEL2_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
     #[doc = "Masked input"]
     #[inline(always)]
-    pub fn mask(self) -> &'a mut W {
-        self.variant(INSEL2_A::MASK)
+    pub fn is_mask(&self) -> bool {
+        *self == INSEL1SELECT_A::MASK
     }
     #[doc = "Feedback input source"]
     #[inline(always)]
-    pub fn feedback(self) -> &'a mut W {
-        self.variant(INSEL2_A::FEEDBACK)
+    pub fn is_feedback(&self) -> bool {
+        *self == INSEL1SELECT_A::FEEDBACK
     }
     #[doc = "Linked LUT input source"]
     #[inline(always)]
-    pub fn link(self) -> &'a mut W {
-        self.variant(INSEL2_A::LINK)
+    pub fn is_link(&self) -> bool {
+        *self == INSEL1SELECT_A::LINK
     }
     #[doc = "Event input source"]
     #[inline(always)]
-    pub fn event(self) -> &'a mut W {
-        self.variant(INSEL2_A::EVENT)
+    pub fn is_event(&self) -> bool {
+        *self == INSEL1SELECT_A::EVENT
     }
     #[doc = "I/O pin input source"]
     #[inline(always)]
-    pub fn io(self) -> &'a mut W {
-        self.variant(INSEL2_A::IO)
+    pub fn is_io(&self) -> bool {
+        *self == INSEL1SELECT_A::IO
     }
     #[doc = "AC input source"]
     #[inline(always)]
-    pub fn ac(self) -> &'a mut W {
-        self.variant(INSEL2_A::AC)
+    pub fn is_ac(&self) -> bool {
+        *self == INSEL1SELECT_A::AC
     }
     #[doc = "TC input source"]
     #[inline(always)]
-    pub fn tc(self) -> &'a mut W {
-        self.variant(INSEL2_A::TC)
+    pub fn is_tc(&self) -> bool {
+        *self == INSEL1SELECT_A::TC
     }
     #[doc = "Alternate TC input source"]
     #[inline(always)]
-    pub fn alttc(self) -> &'a mut W {
-        self.variant(INSEL2_A::ALTTC)
+    pub fn is_alttc(&self) -> bool {
+        *self == INSEL1SELECT_A::ALTTC
     }
     #[doc = "TCC input source"]
     #[inline(always)]
-    pub fn tcc(self) -> &'a mut W {
-        self.variant(INSEL2_A::TCC)
+    pub fn is_tcc(&self) -> bool {
+        *self == INSEL1SELECT_A::TCC
     }
     #[doc = "SERCOM input source"]
     #[inline(always)]
-    pub fn sercom(self) -> &'a mut W {
-        self.variant(INSEL2_A::SERCOM)
+    pub fn is_sercom(&self) -> bool {
+        *self == INSEL1SELECT_A::SERCOM
     }
-    #[doc = r"Writes raw bits to the field"]
+}
+#[doc = "Field `INSEL1` writer - Input Selection 1"]
+pub type INSEL1_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O, INSEL1SELECT_A>;
+impl<'a, REG, const O: u8> INSEL1_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Masked input"]
     #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x0f << 16)) | ((value as u32 & 0x0f) << 16);
-        self.w
+    pub fn mask(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::MASK)
+    }
+    #[doc = "Feedback input source"]
+    #[inline(always)]
+    pub fn feedback(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::FEEDBACK)
+    }
+    #[doc = "Linked LUT input source"]
+    #[inline(always)]
+    pub fn link(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::LINK)
+    }
+    #[doc = "Event input source"]
+    #[inline(always)]
+    pub fn event(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::EVENT)
+    }
+    #[doc = "I/O pin input source"]
+    #[inline(always)]
+    pub fn io(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::IO)
+    }
+    #[doc = "AC input source"]
+    #[inline(always)]
+    pub fn ac(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::AC)
+    }
+    #[doc = "TC input source"]
+    #[inline(always)]
+    pub fn tc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::TC)
+    }
+    #[doc = "Alternate TC input source"]
+    #[inline(always)]
+    pub fn alttc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::ALTTC)
+    }
+    #[doc = "TCC input source"]
+    #[inline(always)]
+    pub fn tcc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::TCC)
+    }
+    #[doc = "SERCOM input source"]
+    #[inline(always)]
+    pub fn sercom(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL1SELECT_A::SERCOM)
+    }
+}
+#[doc = "Field `INSEL2` reader - Input Selection 2"]
+pub type INSEL2_R = crate::FieldReader<INSEL2SELECT_A>;
+#[doc = "Input Selection 2\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum INSEL2SELECT_A {
+    #[doc = "0: Masked input"]
+    MASK = 0,
+    #[doc = "1: Feedback input source"]
+    FEEDBACK = 1,
+    #[doc = "2: Linked LUT input source"]
+    LINK = 2,
+    #[doc = "3: Event input source"]
+    EVENT = 3,
+    #[doc = "4: I/O pin input source"]
+    IO = 4,
+    #[doc = "5: AC input source"]
+    AC = 5,
+    #[doc = "6: TC input source"]
+    TC = 6,
+    #[doc = "7: Alternate TC input source"]
+    ALTTC = 7,
+    #[doc = "8: TCC input source"]
+    TCC = 8,
+    #[doc = "9: SERCOM input source"]
+    SERCOM = 9,
+}
+impl From<INSEL2SELECT_A> for u8 {
+    #[inline(always)]
+    fn from(variant: INSEL2SELECT_A) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for INSEL2SELECT_A {
+    type Ux = u8;
+}
+impl INSEL2_R {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<INSEL2SELECT_A> {
+        match self.bits {
+            0 => Some(INSEL2SELECT_A::MASK),
+            1 => Some(INSEL2SELECT_A::FEEDBACK),
+            2 => Some(INSEL2SELECT_A::LINK),
+            3 => Some(INSEL2SELECT_A::EVENT),
+            4 => Some(INSEL2SELECT_A::IO),
+            5 => Some(INSEL2SELECT_A::AC),
+            6 => Some(INSEL2SELECT_A::TC),
+            7 => Some(INSEL2SELECT_A::ALTTC),
+            8 => Some(INSEL2SELECT_A::TCC),
+            9 => Some(INSEL2SELECT_A::SERCOM),
+            _ => None,
+        }
+    }
+    #[doc = "Masked input"]
+    #[inline(always)]
+    pub fn is_mask(&self) -> bool {
+        *self == INSEL2SELECT_A::MASK
+    }
+    #[doc = "Feedback input source"]
+    #[inline(always)]
+    pub fn is_feedback(&self) -> bool {
+        *self == INSEL2SELECT_A::FEEDBACK
+    }
+    #[doc = "Linked LUT input source"]
+    #[inline(always)]
+    pub fn is_link(&self) -> bool {
+        *self == INSEL2SELECT_A::LINK
+    }
+    #[doc = "Event input source"]
+    #[inline(always)]
+    pub fn is_event(&self) -> bool {
+        *self == INSEL2SELECT_A::EVENT
+    }
+    #[doc = "I/O pin input source"]
+    #[inline(always)]
+    pub fn is_io(&self) -> bool {
+        *self == INSEL2SELECT_A::IO
+    }
+    #[doc = "AC input source"]
+    #[inline(always)]
+    pub fn is_ac(&self) -> bool {
+        *self == INSEL2SELECT_A::AC
+    }
+    #[doc = "TC input source"]
+    #[inline(always)]
+    pub fn is_tc(&self) -> bool {
+        *self == INSEL2SELECT_A::TC
+    }
+    #[doc = "Alternate TC input source"]
+    #[inline(always)]
+    pub fn is_alttc(&self) -> bool {
+        *self == INSEL2SELECT_A::ALTTC
+    }
+    #[doc = "TCC input source"]
+    #[inline(always)]
+    pub fn is_tcc(&self) -> bool {
+        *self == INSEL2SELECT_A::TCC
+    }
+    #[doc = "SERCOM input source"]
+    #[inline(always)]
+    pub fn is_sercom(&self) -> bool {
+        *self == INSEL2SELECT_A::SERCOM
+    }
+}
+#[doc = "Field `INSEL2` writer - Input Selection 2"]
+pub type INSEL2_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O, INSEL2SELECT_A>;
+impl<'a, REG, const O: u8> INSEL2_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Masked input"]
+    #[inline(always)]
+    pub fn mask(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::MASK)
+    }
+    #[doc = "Feedback input source"]
+    #[inline(always)]
+    pub fn feedback(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::FEEDBACK)
+    }
+    #[doc = "Linked LUT input source"]
+    #[inline(always)]
+    pub fn link(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::LINK)
+    }
+    #[doc = "Event input source"]
+    #[inline(always)]
+    pub fn event(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::EVENT)
+    }
+    #[doc = "I/O pin input source"]
+    #[inline(always)]
+    pub fn io(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::IO)
+    }
+    #[doc = "AC input source"]
+    #[inline(always)]
+    pub fn ac(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::AC)
+    }
+    #[doc = "TC input source"]
+    #[inline(always)]
+    pub fn tc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::TC)
+    }
+    #[doc = "Alternate TC input source"]
+    #[inline(always)]
+    pub fn alttc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::ALTTC)
+    }
+    #[doc = "TCC input source"]
+    #[inline(always)]
+    pub fn tcc(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::TCC)
+    }
+    #[doc = "SERCOM input source"]
+    #[inline(always)]
+    pub fn sercom(self) -> &'a mut crate::W<REG> {
+        self.variant(INSEL2SELECT_A::SERCOM)
     }
 }
 #[doc = "Field `INVEI` reader - Inverted Event Input Enable"]
-pub struct INVEI_R(crate::FieldReader<bool, bool>);
-impl INVEI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        INVEI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for INVEI_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type INVEI_R = crate::BitReader;
 #[doc = "Field `INVEI` writer - Inverted Event Input Enable"]
-pub struct INVEI_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> INVEI_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 20)) | ((value as u32 & 0x01) << 20);
-        self.w
-    }
-}
+pub type INVEI_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LUTEI` reader - LUT Event Input Enable"]
-pub struct LUTEI_R(crate::FieldReader<bool, bool>);
-impl LUTEI_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        LUTEI_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LUTEI_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LUTEI_R = crate::BitReader;
 #[doc = "Field `LUTEI` writer - LUT Event Input Enable"]
-pub struct LUTEI_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LUTEI_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 21)) | ((value as u32 & 0x01) << 21);
-        self.w
-    }
-}
+pub type LUTEI_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LUTEO` reader - LUT Event Output Enable"]
-pub struct LUTEO_R(crate::FieldReader<bool, bool>);
-impl LUTEO_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        LUTEO_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LUTEO_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LUTEO_R = crate::BitReader;
 #[doc = "Field `LUTEO` writer - LUT Event Output Enable"]
-pub struct LUTEO_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LUTEO_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 22)) | ((value as u32 & 0x01) << 22);
-        self.w
-    }
-}
+pub type LUTEO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `TRUTH` reader - Truth Value"]
-pub struct TRUTH_R(crate::FieldReader<u8, u8>);
-impl TRUTH_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        TRUTH_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for TRUTH_R {
-    type Target = crate::FieldReader<u8, u8>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type TRUTH_R = crate::FieldReader;
 #[doc = "Field `TRUTH` writer - Truth Value"]
-pub struct TRUTH_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> TRUTH_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0xff << 24)) | ((value as u32 & 0xff) << 24);
-        self.w
-    }
-}
+pub type TRUTH_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
 impl R {
     #[doc = "Bit 1 - LUT Enable"]
     #[inline(always)]
     pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 0x01) != 0)
+        ENABLE_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bits 4:5 - Filter Selection"]
     #[inline(always)]
     pub fn filtsel(&self) -> FILTSEL_R {
-        FILTSEL_R::new(((self.bits >> 4) & 0x03) as u8)
+        FILTSEL_R::new(((self.bits >> 4) & 3) as u8)
     }
     #[doc = "Bit 7 - Edge Selection"]
     #[inline(always)]
     pub fn edgesel(&self) -> EDGESEL_R {
-        EDGESEL_R::new(((self.bits >> 7) & 0x01) != 0)
+        EDGESEL_R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bits 8:11 - Input Selection 0"]
     #[inline(always)]
@@ -909,17 +621,17 @@ impl R {
     #[doc = "Bit 20 - Inverted Event Input Enable"]
     #[inline(always)]
     pub fn invei(&self) -> INVEI_R {
-        INVEI_R::new(((self.bits >> 20) & 0x01) != 0)
+        INVEI_R::new(((self.bits >> 20) & 1) != 0)
     }
     #[doc = "Bit 21 - LUT Event Input Enable"]
     #[inline(always)]
     pub fn lutei(&self) -> LUTEI_R {
-        LUTEI_R::new(((self.bits >> 21) & 0x01) != 0)
+        LUTEI_R::new(((self.bits >> 21) & 1) != 0)
     }
     #[doc = "Bit 22 - LUT Event Output Enable"]
     #[inline(always)]
     pub fn luteo(&self) -> LUTEO_R {
-        LUTEO_R::new(((self.bits >> 22) & 0x01) != 0)
+        LUTEO_R::new(((self.bits >> 22) & 1) != 0)
     }
     #[doc = "Bits 24:31 - Truth Value"]
     #[inline(always)]
@@ -930,79 +642,89 @@ impl R {
 impl W {
     #[doc = "Bit 1 - LUT Enable"]
     #[inline(always)]
-    pub fn enable(&mut self) -> ENABLE_W {
-        ENABLE_W { w: self }
+    #[must_use]
+    pub fn enable(&mut self) -> ENABLE_W<LUTCTRL_SPEC, 1> {
+        ENABLE_W::new(self)
     }
     #[doc = "Bits 4:5 - Filter Selection"]
     #[inline(always)]
-    pub fn filtsel(&mut self) -> FILTSEL_W {
-        FILTSEL_W { w: self }
+    #[must_use]
+    pub fn filtsel(&mut self) -> FILTSEL_W<LUTCTRL_SPEC, 4> {
+        FILTSEL_W::new(self)
     }
     #[doc = "Bit 7 - Edge Selection"]
     #[inline(always)]
-    pub fn edgesel(&mut self) -> EDGESEL_W {
-        EDGESEL_W { w: self }
+    #[must_use]
+    pub fn edgesel(&mut self) -> EDGESEL_W<LUTCTRL_SPEC, 7> {
+        EDGESEL_W::new(self)
     }
     #[doc = "Bits 8:11 - Input Selection 0"]
     #[inline(always)]
-    pub fn insel0(&mut self) -> INSEL0_W {
-        INSEL0_W { w: self }
+    #[must_use]
+    pub fn insel0(&mut self) -> INSEL0_W<LUTCTRL_SPEC, 8> {
+        INSEL0_W::new(self)
     }
     #[doc = "Bits 12:15 - Input Selection 1"]
     #[inline(always)]
-    pub fn insel1(&mut self) -> INSEL1_W {
-        INSEL1_W { w: self }
+    #[must_use]
+    pub fn insel1(&mut self) -> INSEL1_W<LUTCTRL_SPEC, 12> {
+        INSEL1_W::new(self)
     }
     #[doc = "Bits 16:19 - Input Selection 2"]
     #[inline(always)]
-    pub fn insel2(&mut self) -> INSEL2_W {
-        INSEL2_W { w: self }
+    #[must_use]
+    pub fn insel2(&mut self) -> INSEL2_W<LUTCTRL_SPEC, 16> {
+        INSEL2_W::new(self)
     }
     #[doc = "Bit 20 - Inverted Event Input Enable"]
     #[inline(always)]
-    pub fn invei(&mut self) -> INVEI_W {
-        INVEI_W { w: self }
+    #[must_use]
+    pub fn invei(&mut self) -> INVEI_W<LUTCTRL_SPEC, 20> {
+        INVEI_W::new(self)
     }
     #[doc = "Bit 21 - LUT Event Input Enable"]
     #[inline(always)]
-    pub fn lutei(&mut self) -> LUTEI_W {
-        LUTEI_W { w: self }
+    #[must_use]
+    pub fn lutei(&mut self) -> LUTEI_W<LUTCTRL_SPEC, 21> {
+        LUTEI_W::new(self)
     }
     #[doc = "Bit 22 - LUT Event Output Enable"]
     #[inline(always)]
-    pub fn luteo(&mut self) -> LUTEO_W {
-        LUTEO_W { w: self }
+    #[must_use]
+    pub fn luteo(&mut self) -> LUTEO_W<LUTCTRL_SPEC, 22> {
+        LUTEO_W::new(self)
     }
     #[doc = "Bits 24:31 - Truth Value"]
     #[inline(always)]
-    pub fn truth(&mut self) -> TRUTH_W {
-        TRUTH_W { w: self }
+    #[must_use]
+    pub fn truth(&mut self) -> TRUTH_W<LUTCTRL_SPEC, 24> {
+        TRUTH_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "LUT Control x\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [lutctrl](index.html) module"]
+#[doc = "LUT Control x\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`lutctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`lutctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct LUTCTRL_SPEC;
 impl crate::RegisterSpec for LUTCTRL_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [lutctrl::R](R) reader structure"]
-impl crate::Readable for LUTCTRL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [lutctrl::W](W) writer structure"]
+#[doc = "`read()` method returns [`lutctrl::R`](R) reader structure"]
+impl crate::Readable for LUTCTRL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`lutctrl::W`](W) writer structure"]
 impl crate::Writable for LUTCTRL_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets LUTCTRL[%s]
 to value 0"]
 impl crate::Resettable for LUTCTRL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

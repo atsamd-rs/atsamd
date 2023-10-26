@@ -5,18 +5,18 @@ use crate::gpio::*;
 use crate::pac::{adc, ADC, PM};
 
 /// Samples per reading
-pub use adc::avgctrl::SAMPLENUM_A as SampleRate;
+pub use adc::avgctrl::SAMPLENUMSELECT_A as SampleRate;
 /// Clock frequency relative to the system clock
-pub use adc::ctrlb::PRESCALER_A as Prescaler;
+pub use adc::ctrlb::PRESCALERSELECT_A as Prescaler;
 /// Reading resolution in bits
 ///
 /// For the resolution of Arduino boards,
 /// see the [analogueRead](https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/) docs.
-pub use adc::ctrlb::RESSEL_A as Resolution;
+pub use adc::ctrlb::RESSELSELECT_A as Resolution;
 /// The gain level
-pub use adc::inputctrl::GAIN_A as Gain;
+pub use adc::inputctrl::GAINSELECT_A as Gain;
 /// Reference voltage (or its source)
-pub use adc::refctrl::REFSEL_A as Reference;
+pub use adc::refctrl::REFSELSELECT_A as Reference;
 
 /// `Adc` encapsulates the device ADC
 pub struct Adc<ADC> {
@@ -55,26 +55,26 @@ impl Adc<ADC> {
         while adc.status.read().syncbusy().bit_is_set() {}
 
         let mut newadc = Self { adc };
-        newadc.samples(adc::avgctrl::SAMPLENUM_A::_1);
-        newadc.gain(adc::inputctrl::GAIN_A::DIV2);
-        newadc.reference(adc::refctrl::REFSEL_A::INTVCC1);
+        newadc.samples(adc::avgctrl::SAMPLENUMSELECT_A::_1);
+        newadc.gain(adc::inputctrl::GAINSELECT_A::DIV2);
+        newadc.reference(adc::refctrl::REFSELSELECT_A::INTVCC1);
 
         newadc
     }
 
     /// Set the sample rate
     pub fn samples(&mut self, samples: SampleRate) {
-        use adc::avgctrl::SAMPLENUM_A;
+        use adc::avgctrl::SAMPLENUMSELECT_A;
         self.adc.avgctrl.modify(|_, w| {
             w.samplenum().variant(samples);
             unsafe {
                 // Table 32-3 (32.6.7) specifies the adjres
                 // values necessary for each SAMPLENUM value.
                 w.adjres().bits(match samples {
-                    SAMPLENUM_A::_1 => 0,
-                    SAMPLENUM_A::_2 => 1,
-                    SAMPLENUM_A::_4 => 2,
-                    SAMPLENUM_A::_8 => 3,
+                    SAMPLENUMSELECT_A::_1 => 0,
+                    SAMPLENUMSELECT_A::_2 => 1,
+                    SAMPLENUMSELECT_A::_4 => 2,
+                    SAMPLENUMSELECT_A::_8 => 3,
                     _ => 4,
                 })
             }

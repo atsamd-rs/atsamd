@@ -2,151 +2,175 @@
 #[repr(C)]
 pub struct RegisterBlock {
     #[doc = "0x00 - Control A"]
-    pub ctrla: crate::Reg<ctrla::CTRLA_SPEC>,
+    pub ctrla: CTRLA,
     #[doc = "0x02 - Event Control"]
-    pub evctrl: crate::Reg<evctrl::EVCTRL_SPEC>,
+    pub evctrl: EVCTRL,
     #[doc = "0x03 - Debug Control"]
-    pub dbgctrl: crate::Reg<dbgctrl::DBGCTRL_SPEC>,
+    pub dbgctrl: DBGCTRL,
     #[doc = "0x04 - Input Control"]
-    pub inputctrl: crate::Reg<inputctrl::INPUTCTRL_SPEC>,
+    pub inputctrl: INPUTCTRL,
     #[doc = "0x06 - Control B"]
-    pub ctrlb: crate::Reg<ctrlb::CTRLB_SPEC>,
+    pub ctrlb: CTRLB,
     #[doc = "0x08 - Reference Control"]
-    pub refctrl: crate::Reg<refctrl::REFCTRL_SPEC>,
+    pub refctrl: REFCTRL,
     _reserved6: [u8; 0x01],
     #[doc = "0x0a - Average Control"]
-    pub avgctrl: crate::Reg<avgctrl::AVGCTRL_SPEC>,
+    pub avgctrl: AVGCTRL,
     #[doc = "0x0b - Sample Time Control"]
-    pub sampctrl: crate::Reg<sampctrl::SAMPCTRL_SPEC>,
+    pub sampctrl: SAMPCTRL,
     #[doc = "0x0c - Window Monitor Lower Threshold"]
-    pub winlt: crate::Reg<winlt::WINLT_SPEC>,
+    pub winlt: WINLT,
     #[doc = "0x0e - Window Monitor Upper Threshold"]
-    pub winut: crate::Reg<winut::WINUT_SPEC>,
+    pub winut: WINUT,
     #[doc = "0x10 - Gain Correction"]
-    pub gaincorr: crate::Reg<gaincorr::GAINCORR_SPEC>,
+    pub gaincorr: GAINCORR,
     #[doc = "0x12 - Offset Correction"]
-    pub offsetcorr: crate::Reg<offsetcorr::OFFSETCORR_SPEC>,
+    pub offsetcorr: OFFSETCORR,
     #[doc = "0x14 - Software Trigger"]
-    pub swtrig: crate::Reg<swtrig::SWTRIG_SPEC>,
+    pub swtrig: SWTRIG,
     _reserved13: [u8; 0x17],
     #[doc = "0x2c - Interrupt Enable Clear"]
-    pub intenclr: crate::Reg<intenclr::INTENCLR_SPEC>,
+    pub intenclr: INTENCLR,
     #[doc = "0x2d - Interrupt Enable Set"]
-    pub intenset: crate::Reg<intenset::INTENSET_SPEC>,
+    pub intenset: INTENSET,
     #[doc = "0x2e - Interrupt Flag Status and Clear"]
-    pub intflag: crate::Reg<intflag::INTFLAG_SPEC>,
+    pub intflag: INTFLAG,
     #[doc = "0x2f - Status"]
-    pub status: crate::Reg<status::STATUS_SPEC>,
+    pub status: STATUS,
     #[doc = "0x30 - Synchronization Busy"]
-    pub syncbusy: crate::Reg<syncbusy::SYNCBUSY_SPEC>,
+    pub syncbusy: SYNCBUSY,
     #[doc = "0x34 - DMA Sequencial Data"]
-    pub dseqdata: crate::Reg<dseqdata::DSEQDATA_SPEC>,
+    pub dseqdata: DSEQDATA,
     #[doc = "0x38 - DMA Sequential Control"]
-    pub dseqctrl: crate::Reg<dseqctrl::DSEQCTRL_SPEC>,
+    pub dseqctrl: DSEQCTRL,
     #[doc = "0x3c - DMA Sequencial Status"]
-    pub dseqstat: crate::Reg<dseqstat::DSEQSTAT_SPEC>,
+    pub dseqstat: DSEQSTAT,
     #[doc = "0x40 - Result Conversion Value"]
-    pub result: crate::Reg<result::RESULT_SPEC>,
+    pub result: RESULT,
     _reserved22: [u8; 0x02],
     #[doc = "0x44 - Last Sample Result"]
-    pub ress: crate::Reg<ress::RESS_SPEC>,
+    pub ress: RESS,
     _reserved23: [u8; 0x02],
     #[doc = "0x48 - Calibration"]
-    pub calib: crate::Reg<calib::CALIB_SPEC>,
+    pub calib: CALIB,
 }
-#[doc = "CTRLA register accessor: an alias for `Reg<CTRLA_SPEC>`"]
+#[doc = "CTRLA (rw) register accessor: Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrla`]
+module"]
 pub type CTRLA = crate::Reg<ctrla::CTRLA_SPEC>;
 #[doc = "Control A"]
 pub mod ctrla;
-#[doc = "EVCTRL register accessor: an alias for `Reg<EVCTRL_SPEC>`"]
+#[doc = "EVCTRL (rw) register accessor: Event Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`evctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`evctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@evctrl`]
+module"]
 pub type EVCTRL = crate::Reg<evctrl::EVCTRL_SPEC>;
 #[doc = "Event Control"]
 pub mod evctrl;
-#[doc = "DBGCTRL register accessor: an alias for `Reg<DBGCTRL_SPEC>`"]
+#[doc = "DBGCTRL (rw) register accessor: Debug Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dbgctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dbgctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dbgctrl`]
+module"]
 pub type DBGCTRL = crate::Reg<dbgctrl::DBGCTRL_SPEC>;
 #[doc = "Debug Control"]
 pub mod dbgctrl;
-#[doc = "INPUTCTRL register accessor: an alias for `Reg<INPUTCTRL_SPEC>`"]
+#[doc = "INPUTCTRL (rw) register accessor: Input Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`inputctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`inputctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@inputctrl`]
+module"]
 pub type INPUTCTRL = crate::Reg<inputctrl::INPUTCTRL_SPEC>;
 #[doc = "Input Control"]
 pub mod inputctrl;
-#[doc = "CTRLB register accessor: an alias for `Reg<CTRLB_SPEC>`"]
+#[doc = "CTRLB (rw) register accessor: Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrlb`]
+module"]
 pub type CTRLB = crate::Reg<ctrlb::CTRLB_SPEC>;
 #[doc = "Control B"]
 pub mod ctrlb;
-#[doc = "REFCTRL register accessor: an alias for `Reg<REFCTRL_SPEC>`"]
+#[doc = "REFCTRL (rw) register accessor: Reference Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`refctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`refctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@refctrl`]
+module"]
 pub type REFCTRL = crate::Reg<refctrl::REFCTRL_SPEC>;
 #[doc = "Reference Control"]
 pub mod refctrl;
-#[doc = "AVGCTRL register accessor: an alias for `Reg<AVGCTRL_SPEC>`"]
+#[doc = "AVGCTRL (rw) register accessor: Average Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`avgctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`avgctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@avgctrl`]
+module"]
 pub type AVGCTRL = crate::Reg<avgctrl::AVGCTRL_SPEC>;
 #[doc = "Average Control"]
 pub mod avgctrl;
-#[doc = "SAMPCTRL register accessor: an alias for `Reg<SAMPCTRL_SPEC>`"]
+#[doc = "SAMPCTRL (rw) register accessor: Sample Time Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`sampctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`sampctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@sampctrl`]
+module"]
 pub type SAMPCTRL = crate::Reg<sampctrl::SAMPCTRL_SPEC>;
 #[doc = "Sample Time Control"]
 pub mod sampctrl;
-#[doc = "WINLT register accessor: an alias for `Reg<WINLT_SPEC>`"]
+#[doc = "WINLT (rw) register accessor: Window Monitor Lower Threshold\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`winlt::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`winlt::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@winlt`]
+module"]
 pub type WINLT = crate::Reg<winlt::WINLT_SPEC>;
 #[doc = "Window Monitor Lower Threshold"]
 pub mod winlt;
-#[doc = "WINUT register accessor: an alias for `Reg<WINUT_SPEC>`"]
+#[doc = "WINUT (rw) register accessor: Window Monitor Upper Threshold\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`winut::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`winut::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@winut`]
+module"]
 pub type WINUT = crate::Reg<winut::WINUT_SPEC>;
 #[doc = "Window Monitor Upper Threshold"]
 pub mod winut;
-#[doc = "GAINCORR register accessor: an alias for `Reg<GAINCORR_SPEC>`"]
+#[doc = "GAINCORR (rw) register accessor: Gain Correction\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`gaincorr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`gaincorr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@gaincorr`]
+module"]
 pub type GAINCORR = crate::Reg<gaincorr::GAINCORR_SPEC>;
 #[doc = "Gain Correction"]
 pub mod gaincorr;
-#[doc = "OFFSETCORR register accessor: an alias for `Reg<OFFSETCORR_SPEC>`"]
+#[doc = "OFFSETCORR (rw) register accessor: Offset Correction\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`offsetcorr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`offsetcorr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@offsetcorr`]
+module"]
 pub type OFFSETCORR = crate::Reg<offsetcorr::OFFSETCORR_SPEC>;
 #[doc = "Offset Correction"]
 pub mod offsetcorr;
-#[doc = "SWTRIG register accessor: an alias for `Reg<SWTRIG_SPEC>`"]
+#[doc = "SWTRIG (rw) register accessor: Software Trigger\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`swtrig::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`swtrig::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@swtrig`]
+module"]
 pub type SWTRIG = crate::Reg<swtrig::SWTRIG_SPEC>;
 #[doc = "Software Trigger"]
 pub mod swtrig;
-#[doc = "INTENCLR register accessor: an alias for `Reg<INTENCLR_SPEC>`"]
+#[doc = "INTENCLR (rw) register accessor: Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`]
+module"]
 pub type INTENCLR = crate::Reg<intenclr::INTENCLR_SPEC>;
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
-#[doc = "INTENSET register accessor: an alias for `Reg<INTENSET_SPEC>`"]
+#[doc = "INTENSET (rw) register accessor: Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`]
+module"]
 pub type INTENSET = crate::Reg<intenset::INTENSET_SPEC>;
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
-#[doc = "INTFLAG register accessor: an alias for `Reg<INTFLAG_SPEC>`"]
+#[doc = "INTFLAG (rw) register accessor: Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`]
+module"]
 pub type INTFLAG = crate::Reg<intflag::INTFLAG_SPEC>;
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
-#[doc = "STATUS register accessor: an alias for `Reg<STATUS_SPEC>`"]
+#[doc = "STATUS (r) register accessor: Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@status`]
+module"]
 pub type STATUS = crate::Reg<status::STATUS_SPEC>;
 #[doc = "Status"]
 pub mod status;
-#[doc = "SYNCBUSY register accessor: an alias for `Reg<SYNCBUSY_SPEC>`"]
+#[doc = "SYNCBUSY (r) register accessor: Synchronization Busy\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`syncbusy::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@syncbusy`]
+module"]
 pub type SYNCBUSY = crate::Reg<syncbusy::SYNCBUSY_SPEC>;
 #[doc = "Synchronization Busy"]
 pub mod syncbusy;
-#[doc = "DSEQDATA register accessor: an alias for `Reg<DSEQDATA_SPEC>`"]
+#[doc = "DSEQDATA (w) register accessor: DMA Sequencial Data\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dseqdata::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dseqdata`]
+module"]
 pub type DSEQDATA = crate::Reg<dseqdata::DSEQDATA_SPEC>;
 #[doc = "DMA Sequencial Data"]
 pub mod dseqdata;
-#[doc = "DSEQCTRL register accessor: an alias for `Reg<DSEQCTRL_SPEC>`"]
+#[doc = "DSEQCTRL (rw) register accessor: DMA Sequential Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dseqctrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dseqctrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dseqctrl`]
+module"]
 pub type DSEQCTRL = crate::Reg<dseqctrl::DSEQCTRL_SPEC>;
 #[doc = "DMA Sequential Control"]
 pub mod dseqctrl;
-#[doc = "DSEQSTAT register accessor: an alias for `Reg<DSEQSTAT_SPEC>`"]
+#[doc = "DSEQSTAT (r) register accessor: DMA Sequencial Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dseqstat::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dseqstat`]
+module"]
 pub type DSEQSTAT = crate::Reg<dseqstat::DSEQSTAT_SPEC>;
 #[doc = "DMA Sequencial Status"]
 pub mod dseqstat;
-#[doc = "RESULT register accessor: an alias for `Reg<RESULT_SPEC>`"]
+#[doc = "RESULT (r) register accessor: Result Conversion Value\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`result::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@result`]
+module"]
 pub type RESULT = crate::Reg<result::RESULT_SPEC>;
 #[doc = "Result Conversion Value"]
 pub mod result;
-#[doc = "RESS register accessor: an alias for `Reg<RESS_SPEC>`"]
+#[doc = "RESS (r) register accessor: Last Sample Result\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ress::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ress`]
+module"]
 pub type RESS = crate::Reg<ress::RESS_SPEC>;
 #[doc = "Last Sample Result"]
 pub mod ress;
-#[doc = "CALIB register accessor: an alias for `Reg<CALIB_SPEC>`"]
+#[doc = "CALIB (rw) register accessor: Calibration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`calib::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`calib::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@calib`]
+module"]
 pub type CALIB = crate::Reg<calib::CALIB_SPEC>;
 #[doc = "Calibration"]
 pub mod calib;

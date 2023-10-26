@@ -1,5 +1,7 @@
 # Unreleased
 
+- Update the PACs to svd2rust 0.30.2.
+
 # v0.9.0
 - Update to `atsamd-hal` version `0.16.0`
 

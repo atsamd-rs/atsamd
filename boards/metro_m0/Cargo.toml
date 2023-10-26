@@ -18,6 +18,10 @@ chip = "ATSAMD21G18A"
 version = "0.7"
 optional = true
 
+[dependencies.cortex-m]
+version = "0.7"
+features = ["critical-section-single-core"]
+
 [dependencies.atsamd-hal]
 path = "../../hal"
 version = "0.16.0"

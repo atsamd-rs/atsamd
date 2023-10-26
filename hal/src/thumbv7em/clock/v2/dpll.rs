@@ -245,7 +245,7 @@ use typenum::U0;
 use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
 use crate::pac::oscctrl::DPLL;
 
-use crate::pac::oscctrl::dpll::dpllctrlb::REFCLK_A;
+use crate::pac::oscctrl::dpll::dpllctrlb::REFCLKSELECT_A;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
@@ -479,13 +479,13 @@ pub enum DynDpllSourceId {
     Xosc32k,
 }
 
-impl From<DynDpllSourceId> for REFCLK_A {
+impl From<DynDpllSourceId> for REFCLKSELECT_A {
     fn from(source: DynDpllSourceId) -> Self {
         match source {
-            DynDpllSourceId::Pclk => REFCLK_A::GCLK,
-            DynDpllSourceId::Xosc0 => REFCLK_A::XOSC0,
-            DynDpllSourceId::Xosc1 => REFCLK_A::XOSC1,
-            DynDpllSourceId::Xosc32k => REFCLK_A::XOSC32,
+            DynDpllSourceId::Pclk => REFCLKSELECT_A::GCLK,
+            DynDpllSourceId::Xosc0 => REFCLKSELECT_A::XOSC0,
+            DynDpllSourceId::Xosc1 => REFCLKSELECT_A::XOSC1,
+            DynDpllSourceId::Xosc32k => REFCLKSELECT_A::XOSC32,
         }
     }
 }

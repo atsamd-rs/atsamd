@@ -1,43 +1,13 @@
 #[doc = "Register `WAVE` reader"]
-pub struct R(crate::R<WAVE_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<WAVE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<WAVE_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<WAVE_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<WAVE_SPEC>;
 #[doc = "Register `WAVE` writer"]
-pub struct W(crate::W<WAVE_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<WAVE_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<WAVE_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<WAVE_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<WAVE_SPEC>;
+#[doc = "Field `WAVEGEN` reader - Waveform Generation Mode"]
+pub type WAVEGEN_R = crate::FieldReader<WAVEGENSELECT_A>;
 #[doc = "Waveform Generation Mode\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum WAVEGEN_A {
+pub enum WAVEGENSELECT_A {
     #[doc = "0: Normal frequency"]
     NFRQ = 0,
     #[doc = "1: Match frequency"]
@@ -47,132 +17,114 @@ pub enum WAVEGEN_A {
     #[doc = "3: Match PWM"]
     MPWM = 3,
 }
-impl From<WAVEGEN_A> for u8 {
+impl From<WAVEGENSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: WAVEGEN_A) -> Self {
+    fn from(variant: WAVEGENSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `WAVEGEN` reader - Waveform Generation Mode"]
-pub struct WAVEGEN_R(crate::FieldReader<u8, WAVEGEN_A>);
+impl crate::FieldSpec for WAVEGENSELECT_A {
+    type Ux = u8;
+}
 impl WAVEGEN_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        WAVEGEN_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> WAVEGEN_A {
+    pub const fn variant(&self) -> WAVEGENSELECT_A {
         match self.bits {
-            0 => WAVEGEN_A::NFRQ,
-            1 => WAVEGEN_A::MFRQ,
-            2 => WAVEGEN_A::NPWM,
-            3 => WAVEGEN_A::MPWM,
+            0 => WAVEGENSELECT_A::NFRQ,
+            1 => WAVEGENSELECT_A::MFRQ,
+            2 => WAVEGENSELECT_A::NPWM,
+            3 => WAVEGENSELECT_A::MPWM,
             _ => unreachable!(),
         }
     }
-    #[doc = "Checks if the value of the field is `NFRQ`"]
-    #[inline(always)]
-    pub fn is_nfrq(&self) -> bool {
-        **self == WAVEGEN_A::NFRQ
-    }
-    #[doc = "Checks if the value of the field is `MFRQ`"]
-    #[inline(always)]
-    pub fn is_mfrq(&self) -> bool {
-        **self == WAVEGEN_A::MFRQ
-    }
-    #[doc = "Checks if the value of the field is `NPWM`"]
-    #[inline(always)]
-    pub fn is_npwm(&self) -> bool {
-        **self == WAVEGEN_A::NPWM
-    }
-    #[doc = "Checks if the value of the field is `MPWM`"]
-    #[inline(always)]
-    pub fn is_mpwm(&self) -> bool {
-        **self == WAVEGEN_A::MPWM
-    }
-}
-impl core::ops::Deref for WAVEGEN_R {
-    type Target = crate::FieldReader<u8, WAVEGEN_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `WAVEGEN` writer - Waveform Generation Mode"]
-pub struct WAVEGEN_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> WAVEGEN_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: WAVEGEN_A) -> &'a mut W {
-        self.bits(variant.into())
-    }
     #[doc = "Normal frequency"]
     #[inline(always)]
-    pub fn nfrq(self) -> &'a mut W {
-        self.variant(WAVEGEN_A::NFRQ)
+    pub fn is_nfrq(&self) -> bool {
+        *self == WAVEGENSELECT_A::NFRQ
     }
     #[doc = "Match frequency"]
     #[inline(always)]
-    pub fn mfrq(self) -> &'a mut W {
-        self.variant(WAVEGEN_A::MFRQ)
+    pub fn is_mfrq(&self) -> bool {
+        *self == WAVEGENSELECT_A::MFRQ
     }
     #[doc = "Normal PWM"]
     #[inline(always)]
-    pub fn npwm(self) -> &'a mut W {
-        self.variant(WAVEGEN_A::NPWM)
+    pub fn is_npwm(&self) -> bool {
+        *self == WAVEGENSELECT_A::NPWM
     }
     #[doc = "Match PWM"]
     #[inline(always)]
-    pub fn mpwm(self) -> &'a mut W {
-        self.variant(WAVEGEN_A::MPWM)
+    pub fn is_mpwm(&self) -> bool {
+        *self == WAVEGENSELECT_A::MPWM
     }
-    #[doc = r"Writes raw bits to the field"]
+}
+#[doc = "Field `WAVEGEN` writer - Waveform Generation Mode"]
+pub type WAVEGEN_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, WAVEGENSELECT_A>;
+impl<'a, REG, const O: u8> WAVEGEN_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Normal frequency"]
     #[inline(always)]
-    pub fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u8 & 0x03);
-        self.w
+    pub fn nfrq(self) -> &'a mut crate::W<REG> {
+        self.variant(WAVEGENSELECT_A::NFRQ)
+    }
+    #[doc = "Match frequency"]
+    #[inline(always)]
+    pub fn mfrq(self) -> &'a mut crate::W<REG> {
+        self.variant(WAVEGENSELECT_A::MFRQ)
+    }
+    #[doc = "Normal PWM"]
+    #[inline(always)]
+    pub fn npwm(self) -> &'a mut crate::W<REG> {
+        self.variant(WAVEGENSELECT_A::NPWM)
+    }
+    #[doc = "Match PWM"]
+    #[inline(always)]
+    pub fn mpwm(self) -> &'a mut crate::W<REG> {
+        self.variant(WAVEGENSELECT_A::MPWM)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - Waveform Generation Mode"]
     #[inline(always)]
     pub fn wavegen(&self) -> WAVEGEN_R {
-        WAVEGEN_R::new((self.bits & 0x03) as u8)
+        WAVEGEN_R::new(self.bits & 3)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Waveform Generation Mode"]
     #[inline(always)]
-    pub fn wavegen(&mut self) -> WAVEGEN_W {
-        WAVEGEN_W { w: self }
+    #[must_use]
+    pub fn wavegen(&mut self) -> WAVEGEN_W<WAVE_SPEC, 0> {
+        WAVEGEN_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Waveform Generation Control\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [wave](index.html) module"]
+#[doc = "Waveform Generation Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`wave::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`wave::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct WAVE_SPEC;
 impl crate::RegisterSpec for WAVE_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [wave::R](R) reader structure"]
-impl crate::Readable for WAVE_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [wave::W](W) writer structure"]
+#[doc = "`read()` method returns [`wave::R`](R) reader structure"]
+impl crate::Readable for WAVE_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`wave::W`](W) writer structure"]
 impl crate::Writable for WAVE_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets WAVE to value 0"]
 impl crate::Resettable for WAVE_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -6,10 +6,10 @@ use crate::pac;
 use crate::sercom::*;
 
 #[cfg(feature = "thumbv6")]
-use pac::sercom0::usart::ctrla::MODE_A;
+use pac::sercom0::usart::ctrla::MODESELECT_A;
 
 #[cfg(feature = "thumbv7")]
-use pac::sercom0::usart_int::ctrla::MODE_A;
+use pac::sercom0::usart_int::ctrla::MODESELECT_A;
 
 use crate::time::Hertz;
 
@@ -67,7 +67,7 @@ impl<S: Sercom> Registers<S> {
     pub(super) fn configure_mode(&mut self) {
         self.usart()
             .ctrla
-            .modify(|_, w| w.mode().variant(MODE_A::USART_INT_CLK));
+            .modify(|_, w| w.mode().variant(MODESELECT_A::USART_INT_CLK));
     }
 
     /// Configure the `SERCOM`'s Pads according to RXPO and TXPO

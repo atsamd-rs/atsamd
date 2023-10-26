@@ -1,583 +1,199 @@
 #[doc = "Register `INTFLAG` reader"]
-pub struct R(crate::R<INTFLAG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<INTFLAG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<INTFLAG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<INTFLAG_SPEC>;
 #[doc = "Register `INTFLAG` writer"]
-pub struct W(crate::W<INTFLAG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<INTFLAG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<INTFLAG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<INTFLAG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<INTFLAG_SPEC>;
 #[doc = "Field `DONE` reader - Command Done"]
-pub struct DONE_R(crate::FieldReader<bool, bool>);
-impl DONE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        DONE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DONE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DONE_R = crate::BitReader;
 #[doc = "Field `DONE` writer - Command Done"]
-pub struct DONE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DONE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u16 & 0x01);
-        self.w
-    }
-}
+pub type DONE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ADDRE` reader - Address Error"]
-pub struct ADDRE_R(crate::FieldReader<bool, bool>);
-impl ADDRE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ADDRE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ADDRE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ADDRE_R = crate::BitReader;
 #[doc = "Field `ADDRE` writer - Address Error"]
-pub struct ADDRE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ADDRE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u16 & 0x01) << 1);
-        self.w
-    }
-}
+pub type ADDRE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `PROGE` reader - Programming Error"]
-pub struct PROGE_R(crate::FieldReader<bool, bool>);
-impl PROGE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        PROGE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for PROGE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type PROGE_R = crate::BitReader;
 #[doc = "Field `PROGE` writer - Programming Error"]
-pub struct PROGE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> PROGE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 2)) | ((value as u16 & 0x01) << 2);
-        self.w
-    }
-}
+pub type PROGE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `LOCKE` reader - Lock Error"]
-pub struct LOCKE_R(crate::FieldReader<bool, bool>);
-impl LOCKE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        LOCKE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for LOCKE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type LOCKE_R = crate::BitReader;
 #[doc = "Field `LOCKE` writer - Lock Error"]
-pub struct LOCKE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> LOCKE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 3)) | ((value as u16 & 0x01) << 3);
-        self.w
-    }
-}
+pub type LOCKE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ECCSE` reader - ECC Single Error"]
-pub struct ECCSE_R(crate::FieldReader<bool, bool>);
-impl ECCSE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ECCSE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ECCSE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ECCSE_R = crate::BitReader;
 #[doc = "Field `ECCSE` writer - ECC Single Error"]
-pub struct ECCSE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ECCSE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 4)) | ((value as u16 & 0x01) << 4);
-        self.w
-    }
-}
+pub type ECCSE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `ECCDE` reader - ECC Dual Error"]
-pub struct ECCDE_R(crate::FieldReader<bool, bool>);
-impl ECCDE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        ECCDE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for ECCDE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type ECCDE_R = crate::BitReader;
 #[doc = "Field `ECCDE` writer - ECC Dual Error"]
-pub struct ECCDE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ECCDE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 5)) | ((value as u16 & 0x01) << 5);
-        self.w
-    }
-}
+pub type ECCDE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `NVME` reader - NVM Error"]
-pub struct NVME_R(crate::FieldReader<bool, bool>);
-impl NVME_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        NVME_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for NVME_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type NVME_R = crate::BitReader;
 #[doc = "Field `NVME` writer - NVM Error"]
-pub struct NVME_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> NVME_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 6)) | ((value as u16 & 0x01) << 6);
-        self.w
-    }
-}
+pub type NVME_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SUSP` reader - Suspended Write Or Erase Operation"]
-pub struct SUSP_R(crate::FieldReader<bool, bool>);
-impl SUSP_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SUSP_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SUSP_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SUSP_R = crate::BitReader;
 #[doc = "Field `SUSP` writer - Suspended Write Or Erase Operation"]
-pub struct SUSP_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SUSP_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 7)) | ((value as u16 & 0x01) << 7);
-        self.w
-    }
-}
+pub type SUSP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SEESFULL` reader - Active SEES Full"]
-pub struct SEESFULL_R(crate::FieldReader<bool, bool>);
-impl SEESFULL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SEESFULL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SEESFULL_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SEESFULL_R = crate::BitReader;
 #[doc = "Field `SEESFULL` writer - Active SEES Full"]
-pub struct SEESFULL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SEESFULL_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 8)) | ((value as u16 & 0x01) << 8);
-        self.w
-    }
-}
+pub type SEESFULL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SEESOVF` reader - Active SEES Overflow"]
-pub struct SEESOVF_R(crate::FieldReader<bool, bool>);
-impl SEESOVF_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SEESOVF_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SEESOVF_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SEESOVF_R = crate::BitReader;
 #[doc = "Field `SEESOVF` writer - Active SEES Overflow"]
-pub struct SEESOVF_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SEESOVF_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 9)) | ((value as u16 & 0x01) << 9);
-        self.w
-    }
-}
+pub type SEESOVF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `SEEWRC` reader - SEE Write Completed"]
-pub struct SEEWRC_R(crate::FieldReader<bool, bool>);
-impl SEEWRC_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        SEEWRC_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for SEEWRC_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type SEEWRC_R = crate::BitReader;
 #[doc = "Field `SEEWRC` writer - SEE Write Completed"]
-pub struct SEEWRC_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> SEEWRC_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 10)) | ((value as u16 & 0x01) << 10);
-        self.w
-    }
-}
+pub type SEEWRC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 impl R {
     #[doc = "Bit 0 - Command Done"]
     #[inline(always)]
     pub fn done(&self) -> DONE_R {
-        DONE_R::new((self.bits & 0x01) != 0)
+        DONE_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Address Error"]
     #[inline(always)]
     pub fn addre(&self) -> ADDRE_R {
-        ADDRE_R::new(((self.bits >> 1) & 0x01) != 0)
+        ADDRE_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Programming Error"]
     #[inline(always)]
     pub fn proge(&self) -> PROGE_R {
-        PROGE_R::new(((self.bits >> 2) & 0x01) != 0)
+        PROGE_R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Lock Error"]
     #[inline(always)]
     pub fn locke(&self) -> LOCKE_R {
-        LOCKE_R::new(((self.bits >> 3) & 0x01) != 0)
+        LOCKE_R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - ECC Single Error"]
     #[inline(always)]
     pub fn eccse(&self) -> ECCSE_R {
-        ECCSE_R::new(((self.bits >> 4) & 0x01) != 0)
+        ECCSE_R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - ECC Dual Error"]
     #[inline(always)]
     pub fn eccde(&self) -> ECCDE_R {
-        ECCDE_R::new(((self.bits >> 5) & 0x01) != 0)
+        ECCDE_R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - NVM Error"]
     #[inline(always)]
     pub fn nvme(&self) -> NVME_R {
-        NVME_R::new(((self.bits >> 6) & 0x01) != 0)
+        NVME_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Suspended Write Or Erase Operation"]
     #[inline(always)]
     pub fn susp(&self) -> SUSP_R {
-        SUSP_R::new(((self.bits >> 7) & 0x01) != 0)
+        SUSP_R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - Active SEES Full"]
     #[inline(always)]
     pub fn seesfull(&self) -> SEESFULL_R {
-        SEESFULL_R::new(((self.bits >> 8) & 0x01) != 0)
+        SEESFULL_R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Active SEES Overflow"]
     #[inline(always)]
     pub fn seesovf(&self) -> SEESOVF_R {
-        SEESOVF_R::new(((self.bits >> 9) & 0x01) != 0)
+        SEESOVF_R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - SEE Write Completed"]
     #[inline(always)]
     pub fn seewrc(&self) -> SEEWRC_R {
-        SEEWRC_R::new(((self.bits >> 10) & 0x01) != 0)
+        SEEWRC_R::new(((self.bits >> 10) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Command Done"]
     #[inline(always)]
-    pub fn done(&mut self) -> DONE_W {
-        DONE_W { w: self }
+    #[must_use]
+    pub fn done(&mut self) -> DONE_W<INTFLAG_SPEC, 0> {
+        DONE_W::new(self)
     }
     #[doc = "Bit 1 - Address Error"]
     #[inline(always)]
-    pub fn addre(&mut self) -> ADDRE_W {
-        ADDRE_W { w: self }
+    #[must_use]
+    pub fn addre(&mut self) -> ADDRE_W<INTFLAG_SPEC, 1> {
+        ADDRE_W::new(self)
     }
     #[doc = "Bit 2 - Programming Error"]
     #[inline(always)]
-    pub fn proge(&mut self) -> PROGE_W {
-        PROGE_W { w: self }
+    #[must_use]
+    pub fn proge(&mut self) -> PROGE_W<INTFLAG_SPEC, 2> {
+        PROGE_W::new(self)
     }
     #[doc = "Bit 3 - Lock Error"]
     #[inline(always)]
-    pub fn locke(&mut self) -> LOCKE_W {
-        LOCKE_W { w: self }
+    #[must_use]
+    pub fn locke(&mut self) -> LOCKE_W<INTFLAG_SPEC, 3> {
+        LOCKE_W::new(self)
     }
     #[doc = "Bit 4 - ECC Single Error"]
     #[inline(always)]
-    pub fn eccse(&mut self) -> ECCSE_W {
-        ECCSE_W { w: self }
+    #[must_use]
+    pub fn eccse(&mut self) -> ECCSE_W<INTFLAG_SPEC, 4> {
+        ECCSE_W::new(self)
     }
     #[doc = "Bit 5 - ECC Dual Error"]
     #[inline(always)]
-    pub fn eccde(&mut self) -> ECCDE_W {
-        ECCDE_W { w: self }
+    #[must_use]
+    pub fn eccde(&mut self) -> ECCDE_W<INTFLAG_SPEC, 5> {
+        ECCDE_W::new(self)
     }
     #[doc = "Bit 6 - NVM Error"]
     #[inline(always)]
-    pub fn nvme(&mut self) -> NVME_W {
-        NVME_W { w: self }
+    #[must_use]
+    pub fn nvme(&mut self) -> NVME_W<INTFLAG_SPEC, 6> {
+        NVME_W::new(self)
     }
     #[doc = "Bit 7 - Suspended Write Or Erase Operation"]
     #[inline(always)]
-    pub fn susp(&mut self) -> SUSP_W {
-        SUSP_W { w: self }
+    #[must_use]
+    pub fn susp(&mut self) -> SUSP_W<INTFLAG_SPEC, 7> {
+        SUSP_W::new(self)
     }
     #[doc = "Bit 8 - Active SEES Full"]
     #[inline(always)]
-    pub fn seesfull(&mut self) -> SEESFULL_W {
-        SEESFULL_W { w: self }
+    #[must_use]
+    pub fn seesfull(&mut self) -> SEESFULL_W<INTFLAG_SPEC, 8> {
+        SEESFULL_W::new(self)
     }
     #[doc = "Bit 9 - Active SEES Overflow"]
     #[inline(always)]
-    pub fn seesovf(&mut self) -> SEESOVF_W {
-        SEESOVF_W { w: self }
+    #[must_use]
+    pub fn seesovf(&mut self) -> SEESOVF_W<INTFLAG_SPEC, 9> {
+        SEESOVF_W::new(self)
     }
     #[doc = "Bit 10 - SEE Write Completed"]
     #[inline(always)]
-    pub fn seewrc(&mut self) -> SEEWRC_W {
-        SEEWRC_W { w: self }
+    #[must_use]
+    pub fn seewrc(&mut self) -> SEEWRC_W<INTFLAG_SPEC, 10> {
+        SEEWRC_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Interrupt Flag Status and Clear\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [intflag](index.html) module"]
+#[doc = "Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct INTFLAG_SPEC;
 impl crate::RegisterSpec for INTFLAG_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [intflag::R](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [intflag::W](W) writer structure"]
+#[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
+impl crate::Readable for INTFLAG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for INTFLAG_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for INTFLAG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

@@ -343,11 +343,11 @@ use seq_macro::seq;
 use typenum::{U0, U1};
 
 use crate::pac;
-use crate::pac::gclk::genctrl::DIVSEL_A;
+use crate::pac::gclk::genctrl::DIVSELSELECT_A;
 use crate::pac::NVMCTRL;
 
 use crate::gpio::{self, AlternateM, AnyPin, Pin, PinId};
-use crate::pac::gclk::genctrl::SRC_A;
+use crate::pac::gclk::genctrl::SRCSELECT_A;
 use crate::pac::gclk::GENCTRL;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
@@ -629,7 +629,7 @@ pub trait GclkDivider: Sealed + Default + Copy {
     /// Returns the actual clock divider value as a `u32`
     fn divider(&self) -> u32;
     /// Return the corresponding `DIVSEL` and and `DIV` register fields
-    fn divsel_div(&self) -> (DIVSEL_A, u16);
+    fn divsel_div(&self) -> (DIVSELSELECT_A, u16);
 }
 
 //==============================================================================
@@ -676,11 +676,11 @@ impl GclkDivider for GclkDiv8 {
     }
 
     #[inline]
-    fn divsel_div(&self) -> (DIVSEL_A, u16) {
+    fn divsel_div(&self) -> (DIVSELSELECT_A, u16) {
         match self {
-            GclkDiv8::Div(div) => (DIVSEL_A::DIV1, (*div).into()),
-            GclkDiv8::Div2Pow8 => (DIVSEL_A::DIV2, 7),
-            GclkDiv8::Div2Pow9 => (DIVSEL_A::DIV2, 8),
+            GclkDiv8::Div(div) => (DIVSELSELECT_A::DIV1, (*div).into()),
+            GclkDiv8::Div2Pow8 => (DIVSELSELECT_A::DIV2, 7),
+            GclkDiv8::Div2Pow9 => (DIVSELSELECT_A::DIV2, 8),
         }
     }
 }
@@ -728,11 +728,11 @@ impl GclkDivider for GclkDiv16 {
     }
 
     #[inline]
-    fn divsel_div(&self) -> (DIVSEL_A, u16) {
+    fn divsel_div(&self) -> (DIVSELSELECT_A, u16) {
         match self {
-            GclkDiv16::Div(div) => (DIVSEL_A::DIV1, *div),
-            GclkDiv16::Div2Pow16 => (DIVSEL_A::DIV2, 15),
-            GclkDiv16::Div2Pow17 => (DIVSEL_A::DIV2, 16),
+            GclkDiv16::Div(div) => (DIVSELSELECT_A::DIV1, *div),
+            GclkDiv16::Div2Pow16 => (DIVSELSELECT_A::DIV2, 15),
+            GclkDiv16::Div2Pow17 => (DIVSELSELECT_A::DIV2, 16),
         }
     }
 }
@@ -837,10 +837,10 @@ pub enum DynGclkSourceId {
     Xosc32k,
 }
 
-impl From<DynGclkSourceId> for SRC_A {
+impl From<DynGclkSourceId> for SRCSELECT_A {
     fn from(source: DynGclkSourceId) -> Self {
         use DynGclkSourceId::*;
-        use SRC_A::*;
+        use SRCSELECT_A::*;
         match source {
             Dfll => DFLL,
             Dpll0 => DPLL0,

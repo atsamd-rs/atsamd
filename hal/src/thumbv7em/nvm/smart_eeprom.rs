@@ -32,7 +32,7 @@
 use core::marker::PhantomData;
 
 use super::Nvm;
-use crate::pac::{nvmctrl::ctrlb::CMD_AW, NVMCTRL};
+use crate::pac::{nvmctrl::ctrlb::CMDSELECT_AW, NVMCTRL};
 use crate::typelevel::Sealed;
 
 /// Struct representing a SmartEEPROM instance.
@@ -250,7 +250,7 @@ impl<'a> SmartEeprom<'a, Unlocked> {
     pub fn lock(self) -> SmartEeprom<'a, Locked> {
         // Panic case should never happen as we wait for STATUS.READY
         self.nvm
-            .command_sync(CMD_AW::LSEE)
+            .command_sync(CMDSELECT_AW::LSEE)
             .expect("SmartEEPROM locking failed");
         let Self {
             nvm, virtual_size, ..
@@ -268,7 +268,7 @@ impl<'a> SmartEeprom<'a, Locked> {
     pub fn unlock(self) -> SmartEeprom<'a, Unlocked> {
         // Panic case should never happen as we wait for STATUS.READY
         self.nvm
-            .command_sync(CMD_AW::USEE)
+            .command_sync(CMDSELECT_AW::USEE)
             .expect("SmartEEPROM unlocking failed");
         let Self {
             nvm, virtual_size, ..

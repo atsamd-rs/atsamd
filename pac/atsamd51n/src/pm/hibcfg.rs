@@ -1,43 +1,13 @@
 #[doc = "Register `HIBCFG` reader"]
-pub struct R(crate::R<HIBCFG_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<HIBCFG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<HIBCFG_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<HIBCFG_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<HIBCFG_SPEC>;
 #[doc = "Register `HIBCFG` writer"]
-pub struct W(crate::W<HIBCFG_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<HIBCFG_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<HIBCFG_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<HIBCFG_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<HIBCFG_SPEC>;
+#[doc = "Field `RAMCFG` reader - Ram Configuration"]
+pub type RAMCFG_R = crate::FieldReader<RAMCFGSELECT_A>;
 #[doc = "Ram Configuration\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum RAMCFG_A {
+pub enum RAMCFGSELECT_A {
     #[doc = "0: All the system RAM is retained"]
     RET = 0,
     #[doc = "1: Only the first 32Kbytes of the system RAM is retained"]
@@ -45,88 +15,71 @@ pub enum RAMCFG_A {
     #[doc = "2: All the system RAM is turned OFF"]
     OFF = 2,
 }
-impl From<RAMCFG_A> for u8 {
+impl From<RAMCFGSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: RAMCFG_A) -> Self {
+    fn from(variant: RAMCFGSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `RAMCFG` reader - Ram Configuration"]
-pub struct RAMCFG_R(crate::FieldReader<u8, RAMCFG_A>);
+impl crate::FieldSpec for RAMCFGSELECT_A {
+    type Ux = u8;
+}
 impl RAMCFG_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        RAMCFG_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<RAMCFG_A> {
+    pub const fn variant(&self) -> Option<RAMCFGSELECT_A> {
         match self.bits {
-            0 => Some(RAMCFG_A::RET),
-            1 => Some(RAMCFG_A::PARTIAL),
-            2 => Some(RAMCFG_A::OFF),
+            0 => Some(RAMCFGSELECT_A::RET),
+            1 => Some(RAMCFGSELECT_A::PARTIAL),
+            2 => Some(RAMCFGSELECT_A::OFF),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `RET`"]
-    #[inline(always)]
-    pub fn is_ret(&self) -> bool {
-        **self == RAMCFG_A::RET
-    }
-    #[doc = "Checks if the value of the field is `PARTIAL`"]
-    #[inline(always)]
-    pub fn is_partial(&self) -> bool {
-        **self == RAMCFG_A::PARTIAL
-    }
-    #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline(always)]
-    pub fn is_off(&self) -> bool {
-        **self == RAMCFG_A::OFF
-    }
-}
-impl core::ops::Deref for RAMCFG_R {
-    type Target = crate::FieldReader<u8, RAMCFG_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `RAMCFG` writer - Ram Configuration"]
-pub struct RAMCFG_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RAMCFG_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: RAMCFG_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
     #[doc = "All the system RAM is retained"]
     #[inline(always)]
-    pub fn ret(self) -> &'a mut W {
-        self.variant(RAMCFG_A::RET)
+    pub fn is_ret(&self) -> bool {
+        *self == RAMCFGSELECT_A::RET
     }
     #[doc = "Only the first 32Kbytes of the system RAM is retained"]
     #[inline(always)]
-    pub fn partial(self) -> &'a mut W {
-        self.variant(RAMCFG_A::PARTIAL)
+    pub fn is_partial(&self) -> bool {
+        *self == RAMCFGSELECT_A::PARTIAL
     }
     #[doc = "All the system RAM is turned OFF"]
     #[inline(always)]
-    pub fn off(self) -> &'a mut W {
-        self.variant(RAMCFG_A::OFF)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x03) | (value as u8 & 0x03);
-        self.w
+    pub fn is_off(&self) -> bool {
+        *self == RAMCFGSELECT_A::OFF
     }
 }
+#[doc = "Field `RAMCFG` writer - Ram Configuration"]
+pub type RAMCFG_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, RAMCFGSELECT_A>;
+impl<'a, REG, const O: u8> RAMCFG_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "All the system RAM is retained"]
+    #[inline(always)]
+    pub fn ret(self) -> &'a mut crate::W<REG> {
+        self.variant(RAMCFGSELECT_A::RET)
+    }
+    #[doc = "Only the first 32Kbytes of the system RAM is retained"]
+    #[inline(always)]
+    pub fn partial(self) -> &'a mut crate::W<REG> {
+        self.variant(RAMCFGSELECT_A::PARTIAL)
+    }
+    #[doc = "All the system RAM is turned OFF"]
+    #[inline(always)]
+    pub fn off(self) -> &'a mut crate::W<REG> {
+        self.variant(RAMCFGSELECT_A::OFF)
+    }
+}
+#[doc = "Field `BRAMCFG` reader - Backup Ram Configuration"]
+pub type BRAMCFG_R = crate::FieldReader<BRAMCFGSELECT_A>;
 #[doc = "Backup Ram Configuration\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum BRAMCFG_A {
+pub enum BRAMCFGSELECT_A {
     #[doc = "0: All the backup RAM is retained"]
     RET = 0,
     #[doc = "1: Only the first 4Kbytes of the backup RAM is retained"]
@@ -134,131 +87,114 @@ pub enum BRAMCFG_A {
     #[doc = "2: All the backup RAM is turned OFF"]
     OFF = 2,
 }
-impl From<BRAMCFG_A> for u8 {
+impl From<BRAMCFGSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: BRAMCFG_A) -> Self {
+    fn from(variant: BRAMCFGSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `BRAMCFG` reader - Backup Ram Configuration"]
-pub struct BRAMCFG_R(crate::FieldReader<u8, BRAMCFG_A>);
+impl crate::FieldSpec for BRAMCFGSELECT_A {
+    type Ux = u8;
+}
 impl BRAMCFG_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        BRAMCFG_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<BRAMCFG_A> {
+    pub const fn variant(&self) -> Option<BRAMCFGSELECT_A> {
         match self.bits {
-            0 => Some(BRAMCFG_A::RET),
-            1 => Some(BRAMCFG_A::PARTIAL),
-            2 => Some(BRAMCFG_A::OFF),
+            0 => Some(BRAMCFGSELECT_A::RET),
+            1 => Some(BRAMCFGSELECT_A::PARTIAL),
+            2 => Some(BRAMCFGSELECT_A::OFF),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `RET`"]
-    #[inline(always)]
-    pub fn is_ret(&self) -> bool {
-        **self == BRAMCFG_A::RET
-    }
-    #[doc = "Checks if the value of the field is `PARTIAL`"]
-    #[inline(always)]
-    pub fn is_partial(&self) -> bool {
-        **self == BRAMCFG_A::PARTIAL
-    }
-    #[doc = "Checks if the value of the field is `OFF`"]
-    #[inline(always)]
-    pub fn is_off(&self) -> bool {
-        **self == BRAMCFG_A::OFF
-    }
-}
-impl core::ops::Deref for BRAMCFG_R {
-    type Target = crate::FieldReader<u8, BRAMCFG_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `BRAMCFG` writer - Backup Ram Configuration"]
-pub struct BRAMCFG_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BRAMCFG_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: BRAMCFG_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
     #[doc = "All the backup RAM is retained"]
     #[inline(always)]
-    pub fn ret(self) -> &'a mut W {
-        self.variant(BRAMCFG_A::RET)
+    pub fn is_ret(&self) -> bool {
+        *self == BRAMCFGSELECT_A::RET
     }
     #[doc = "Only the first 4Kbytes of the backup RAM is retained"]
     #[inline(always)]
-    pub fn partial(self) -> &'a mut W {
-        self.variant(BRAMCFG_A::PARTIAL)
+    pub fn is_partial(&self) -> bool {
+        *self == BRAMCFGSELECT_A::PARTIAL
     }
     #[doc = "All the backup RAM is turned OFF"]
     #[inline(always)]
-    pub fn off(self) -> &'a mut W {
-        self.variant(BRAMCFG_A::OFF)
+    pub fn is_off(&self) -> bool {
+        *self == BRAMCFGSELECT_A::OFF
     }
-    #[doc = r"Writes raw bits to the field"]
+}
+#[doc = "Field `BRAMCFG` writer - Backup Ram Configuration"]
+pub type BRAMCFG_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, BRAMCFGSELECT_A>;
+impl<'a, REG, const O: u8> BRAMCFG_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "All the backup RAM is retained"]
     #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 2)) | ((value as u8 & 0x03) << 2);
-        self.w
+    pub fn ret(self) -> &'a mut crate::W<REG> {
+        self.variant(BRAMCFGSELECT_A::RET)
+    }
+    #[doc = "Only the first 4Kbytes of the backup RAM is retained"]
+    #[inline(always)]
+    pub fn partial(self) -> &'a mut crate::W<REG> {
+        self.variant(BRAMCFGSELECT_A::PARTIAL)
+    }
+    #[doc = "All the backup RAM is turned OFF"]
+    #[inline(always)]
+    pub fn off(self) -> &'a mut crate::W<REG> {
+        self.variant(BRAMCFGSELECT_A::OFF)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - Ram Configuration"]
     #[inline(always)]
     pub fn ramcfg(&self) -> RAMCFG_R {
-        RAMCFG_R::new((self.bits & 0x03) as u8)
+        RAMCFG_R::new(self.bits & 3)
     }
     #[doc = "Bits 2:3 - Backup Ram Configuration"]
     #[inline(always)]
     pub fn bramcfg(&self) -> BRAMCFG_R {
-        BRAMCFG_R::new(((self.bits >> 2) & 0x03) as u8)
+        BRAMCFG_R::new((self.bits >> 2) & 3)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Ram Configuration"]
     #[inline(always)]
-    pub fn ramcfg(&mut self) -> RAMCFG_W {
-        RAMCFG_W { w: self }
+    #[must_use]
+    pub fn ramcfg(&mut self) -> RAMCFG_W<HIBCFG_SPEC, 0> {
+        RAMCFG_W::new(self)
     }
     #[doc = "Bits 2:3 - Backup Ram Configuration"]
     #[inline(always)]
-    pub fn bramcfg(&mut self) -> BRAMCFG_W {
-        BRAMCFG_W { w: self }
+    #[must_use]
+    pub fn bramcfg(&mut self) -> BRAMCFG_W<HIBCFG_SPEC, 2> {
+        BRAMCFG_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Hibernate Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [hibcfg](index.html) module"]
+#[doc = "Hibernate Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`hibcfg::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`hibcfg::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct HIBCFG_SPEC;
 impl crate::RegisterSpec for HIBCFG_SPEC {
     type Ux = u8;
 }
-#[doc = "`read()` method returns [hibcfg::R](R) reader structure"]
-impl crate::Readable for HIBCFG_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [hibcfg::W](W) writer structure"]
+#[doc = "`read()` method returns [`hibcfg::R`](R) reader structure"]
+impl crate::Readable for HIBCFG_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`hibcfg::W`](W) writer structure"]
 impl crate::Writable for HIBCFG_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets HIBCFG to value 0"]
 impl crate::Resettable for HIBCFG_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

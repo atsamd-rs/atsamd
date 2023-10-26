@@ -69,27 +69,27 @@ defmt = {version = "0.3.4", optional = true}
 # users should specify a corresponding variant (see below). The variant features
 # will select the correct PAC, as well as other configuration features.
 
-atsamd11c = {version = "0.12.0", path = "../pac/atsamd11c", optional = true}
-atsamd11d = {version = "0.12.0", path = "../pac/atsamd11d", optional = true}
+atsamd11c = {version = "0.13.0", path = "../pac/atsamd11c", optional = true}
+atsamd11d = {version = "0.13.0", path = "../pac/atsamd11d", optional = true}
 
-atsamd21e = {version = "0.12.0", path = "../pac/atsamd21e", optional = true}
-atsamd21g = {version = "0.12.0", path = "../pac/atsamd21g", optional = true}
-atsamd21j = {version = "0.12.0", path = "../pac/atsamd21j", optional = true}
+atsamd21e = {version = "0.13.0", path = "../pac/atsamd21e", optional = true}
+atsamd21g = {version = "0.13.0", path = "../pac/atsamd21g", optional = true}
+atsamd21j = {version = "0.13.0", path = "../pac/atsamd21j", optional = true}
 
-atsamd51g = {version = "0.12.0", path = "../pac/atsamd51g", optional = true}
-atsamd51j = {version = "0.12.0", path = "../pac/atsamd51j", optional = true}
-atsamd51n = {version = "0.12.0", path = "../pac/atsamd51n", optional = true}
-atsamd51p = {version = "0.12.0", path = "../pac/atsamd51p", optional = true}
+atsamd51g = {version = "0.13.0", path = "../pac/atsamd51g", optional = true}
+atsamd51j = {version = "0.13.0", path = "../pac/atsamd51j", optional = true}
+atsamd51n = {version = "0.13.0", path = "../pac/atsamd51n", optional = true}
+atsamd51p = {version = "0.13.0", path = "../pac/atsamd51p", optional = true}
 
-atsame51g = {version = "0.12.0", path = "../pac/atsame51g", optional = true}
-atsame51j = {version = "0.12.0", path = "../pac/atsame51j", optional = true}
-atsame51n = {version = "0.12.0", path = "../pac/atsame51n", optional = true}
+atsame51g = {version = "0.13.0", path = "../pac/atsame51g", optional = true}
+atsame51j = {version = "0.13.0", path = "../pac/atsame51j", optional = true}
+atsame51n = {version = "0.13.0", path = "../pac/atsame51n", optional = true}
 
-atsame53j = {version = "0.12.0", path = "../pac/atsame53j", optional = true}
-atsame53n = {version = "0.12.0", path = "../pac/atsame53n", optional = true}
+atsame53j = {version = "0.13.0", path = "../pac/atsame53j", optional = true}
+atsame53n = {version = "0.13.0", path = "../pac/atsame53n", optional = true}
 
-atsame54n = {version = "0.12.0", path = "../pac/atsame54n", optional = true}
-atsame54p = {version = "0.12.0", path = "../pac/atsame54p", optional = true}
+atsame54n = {version = "0.13.0", path = "../pac/atsame54n", optional = true}
+atsame54p = {version = "0.13.0", path = "../pac/atsame54p", optional = true}
 
 #===============================================================================
 # Features
@@ -178,6 +178,7 @@ default = ["unproven"]
 
 can = ["mcan-core"]
 dma = ["unproven"]
+defmt = ["dep:defmt"]
 enable_unsafe_aes_newblock_cipher = []
 max-channels = ["dma"]
 rtic = ["rtic-monotonic"]
@@ -185,7 +186,6 @@ sdmmc = ["embedded-sdmmc"]
 unproven = ["embedded-hal/unproven"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
-defmt = ["dep:defmt"]
 
 #===============================================================================
 # Implementation-details

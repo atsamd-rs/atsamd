@@ -1,7 +1,7 @@
 [package]
 name = "atsamd21g"
 description = "Peripheral access API for ATSAMD21G microcontrollers (generated using svd2rust)"
-version = "0.12.0"
+version = "0.13.0"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "Blake Johnson <johnsonblake1@gmail.com>"]
 keywords = ["no-std", "arm", "cortex-m"]
 categories = ["embedded", "hardware-support", "no-std"]
@@ -13,6 +13,7 @@ edition = "2021"
 [dependencies]
 cortex-m = "0.7"
 vcell = "0.1"
+critical-section = "1.1"
 
 [dependencies.cortex-m-rt]
 version = "0.7"

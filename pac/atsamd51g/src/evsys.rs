@@ -2,73 +2,69 @@
 #[repr(C)]
 pub struct RegisterBlock {
     #[doc = "0x00 - Control"]
-    pub ctrla: crate::Reg<ctrla::CTRLA_SPEC>,
+    pub ctrla: CTRLA,
     _reserved1: [u8; 0x03],
     #[doc = "0x04 - Software Event"]
-    pub swevt: crate::Reg<swevt::SWEVT_SPEC>,
+    pub swevt: SWEVT,
     #[doc = "0x08 - Priority Control"]
-    pub prictrl: crate::Reg<prictrl::PRICTRL_SPEC>,
+    pub prictrl: PRICTRL,
     _reserved3: [u8; 0x07],
     #[doc = "0x10 - Channel Pending Interrupt"]
-    pub intpend: crate::Reg<intpend::INTPEND_SPEC>,
+    pub intpend: INTPEND,
     _reserved4: [u8; 0x02],
     #[doc = "0x14 - Interrupt Status"]
-    pub intstatus: crate::Reg<intstatus::INTSTATUS_SPEC>,
+    pub intstatus: INTSTATUS,
     #[doc = "0x18 - Busy Channels"]
-    pub busych: crate::Reg<busych::BUSYCH_SPEC>,
+    pub busych: BUSYCH,
     #[doc = "0x1c - Ready Users"]
-    pub readyusr: crate::Reg<readyusr::READYUSR_SPEC>,
-    #[doc = "0x20..0x120 - CHANNEL\\[%s\\]"]
-    pub channel: [CHANNEL; 32],
+    pub readyusr: READYUSR,
+    #[doc = "0x20..0x120 - CHANNELS\\[%s\\]"]
+    pub channels: [CHANNELS; 32],
     #[doc = "0x120..0x22c - User Multiplexer n"]
-    pub user: [crate::Reg<user::USER_SPEC>; 67],
+    pub user: [USER; 67],
 }
-#[doc = r"Register block"]
-#[repr(C)]
-pub struct CHANNEL {
-    #[doc = "0x00 - Channel n Control"]
-    pub channel: crate::Reg<self::channel::channel::CHANNEL_SPEC>,
-    #[doc = "0x04 - Channel n Interrupt Enable Clear"]
-    pub chintenclr: crate::Reg<self::channel::chintenclr::CHINTENCLR_SPEC>,
-    #[doc = "0x05 - Channel n Interrupt Enable Set"]
-    pub chintenset: crate::Reg<self::channel::chintenset::CHINTENSET_SPEC>,
-    #[doc = "0x06 - Channel n Interrupt Flag Status and Clear"]
-    pub chintflag: crate::Reg<self::channel::chintflag::CHINTFLAG_SPEC>,
-    #[doc = "0x07 - Channel n Status"]
-    pub chstatus: crate::Reg<self::channel::chstatus::CHSTATUS_SPEC>,
-}
-#[doc = r"Register block"]
-#[doc = "CHANNEL\\[%s\\]"]
-pub mod channel;
-#[doc = "CTRLA register accessor: an alias for `Reg<CTRLA_SPEC>`"]
+#[doc = "CTRLA (rw) register accessor: Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrla`]
+module"]
 pub type CTRLA = crate::Reg<ctrla::CTRLA_SPEC>;
 #[doc = "Control"]
 pub mod ctrla;
-#[doc = "SWEVT register accessor: an alias for `Reg<SWEVT_SPEC>`"]
+#[doc = "SWEVT (w) register accessor: Software Event\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`swevt::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@swevt`]
+module"]
 pub type SWEVT = crate::Reg<swevt::SWEVT_SPEC>;
 #[doc = "Software Event"]
 pub mod swevt;
-#[doc = "PRICTRL register accessor: an alias for `Reg<PRICTRL_SPEC>`"]
+#[doc = "PRICTRL (rw) register accessor: Priority Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`prictrl::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`prictrl::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@prictrl`]
+module"]
 pub type PRICTRL = crate::Reg<prictrl::PRICTRL_SPEC>;
 #[doc = "Priority Control"]
 pub mod prictrl;
-#[doc = "INTPEND register accessor: an alias for `Reg<INTPEND_SPEC>`"]
+#[doc = "INTPEND (rw) register accessor: Channel Pending Interrupt\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intpend::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intpend::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intpend`]
+module"]
 pub type INTPEND = crate::Reg<intpend::INTPEND_SPEC>;
 #[doc = "Channel Pending Interrupt"]
 pub mod intpend;
-#[doc = "INTSTATUS register accessor: an alias for `Reg<INTSTATUS_SPEC>`"]
+#[doc = "INTSTATUS (r) register accessor: Interrupt Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intstatus::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intstatus`]
+module"]
 pub type INTSTATUS = crate::Reg<intstatus::INTSTATUS_SPEC>;
 #[doc = "Interrupt Status"]
 pub mod intstatus;
-#[doc = "BUSYCH register accessor: an alias for `Reg<BUSYCH_SPEC>`"]
+#[doc = "BUSYCH (r) register accessor: Busy Channels\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`busych::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@busych`]
+module"]
 pub type BUSYCH = crate::Reg<busych::BUSYCH_SPEC>;
 #[doc = "Busy Channels"]
 pub mod busych;
-#[doc = "READYUSR register accessor: an alias for `Reg<READYUSR_SPEC>`"]
+#[doc = "READYUSR (r) register accessor: Ready Users\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`readyusr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@readyusr`]
+module"]
 pub type READYUSR = crate::Reg<readyusr::READYUSR_SPEC>;
 #[doc = "Ready Users"]
 pub mod readyusr;
-#[doc = "USER register accessor: an alias for `Reg<USER_SPEC>`"]
+#[doc = "CHANNELS\\[%s\\]"]
+pub use self::channels::CHANNELS;
+#[doc = r"Cluster"]
+#[doc = "CHANNELS\\[%s\\]"]
+pub mod channels;
+#[doc = "USER (rw) register accessor: User Multiplexer n\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`user::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`user::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@user`]
+module"]
 pub type USER = crate::Reg<user::USER_SPEC>;
 #[doc = "User Multiplexer n"]
 pub mod user;

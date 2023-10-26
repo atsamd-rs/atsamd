@@ -3,20 +3,20 @@ use crate::clock::GenericClockController;
 #[rustfmt::skip]
 use crate::gpio::*;
 use crate::ehal::adc::{Channel, OneShot};
-use crate::pac::gclk::genctrl::SRC_A::DFLL;
-use crate::pac::gclk::pchctrl::GEN_A;
+use crate::pac::gclk::genctrl::SRCSELECT_A::DFLL;
+use crate::pac::gclk::pchctrl::GENSELECT_A;
 use crate::pac::{adc0, ADC0, ADC1, MCLK};
 
 use crate::calibration;
 
 /// Samples per reading
-pub use adc0::avgctrl::SAMPLENUM_A as SampleRate;
+pub use adc0::avgctrl::SAMPLENUMSELECT_A as SampleRate;
 /// Clock frequency relative to the system clock
-pub use adc0::ctrla::PRESCALER_A as Prescaler;
+pub use adc0::ctrla::PRESCALERSELECT_A as Prescaler;
 /// Reading resolution in bits
-pub use adc0::ctrlb::RESSEL_A as Resolution;
+pub use adc0::ctrlb::RESSELSELECT_A as Resolution;
 /// Reference voltage (or its source)
-pub use adc0::refctrl::REFSEL_A as Reference;
+pub use adc0::refctrl::REFSELSELECT_A as Reference;
 
 /// An ADC where results are accessible via interrupt servicing.
 pub struct InterruptAdc<ADC, C>
@@ -47,7 +47,7 @@ macro_rules! adc_hal {
     ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident, $compcal:ident, $refcal:ident, $r2rcal:ident),)+) => {
         $(
 impl Adc<$ADC> {
-    pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController, gclk:GEN_A) -> Self {
+    pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController, gclk:GENSELECT_A) -> Self {
         mclk.$mclk.modify(|_, w| w.$apmask().set_bit());
         // set to 1/(1/(48000000/32) * 6) = 250000 SPS
         let adc_clock = clocks.configure_gclk_divider_and_source(gclk, 1, DFLL, false)
@@ -68,25 +68,25 @@ impl Adc<$ADC> {
         });
 
         let mut newadc = Self { adc };
-        newadc.samples(adc0::avgctrl::SAMPLENUM_A::_1);
-        newadc.reference(adc0::refctrl::REFSEL_A::INTVCC1);
+        newadc.samples(adc0::avgctrl::SAMPLENUMSELECT_A::_1);
+        newadc.reference(adc0::refctrl::REFSELSELECT_A::INTVCC1);
 
         newadc
     }
 
     /// Set the sample rate
     pub fn samples(&mut self, samples: SampleRate) {
-        use adc0::avgctrl::SAMPLENUM_A;
+        use adc0::avgctrl::SAMPLENUMSELECT_A;
         self.adc.avgctrl.modify(|_, w| {
             w.samplenum().variant(samples);
             unsafe {
                 // Table 45-3 (45.6.2.10) specifies the adjres
                 // values necessary for each SAMPLENUM value.
                 w.adjres().bits(match samples {
-                    SAMPLENUM_A::_1 => 0,
-                    SAMPLENUM_A::_2 => 1,
-                    SAMPLENUM_A::_4 => 2,
-                    SAMPLENUM_A::_8 => 3,
+                    SAMPLENUMSELECT_A::_1 => 0,
+                    SAMPLENUMSELECT_A::_2 => 1,
+                    SAMPLENUMSELECT_A::_4 => 2,
+                    SAMPLENUMSELECT_A::_8 => 3,
                     _ => 4,
                 })
             }

@@ -1,103 +1,49 @@
 #[doc = "Register `BCR` reader"]
-pub struct R(crate::R<BCR_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<BCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<BCR_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<BCR_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<BCR_SPEC>;
 #[doc = "Register `BCR` writer"]
-pub struct W(crate::W<BCR_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<BCR_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<BCR_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<BCR_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<BCR_SPEC>;
 #[doc = "Field `BCNT` reader - Blocks Count for Current Transfer"]
-pub struct BCNT_R(crate::FieldReader<u16, u16>);
-impl BCNT_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u16) -> Self {
-        BCNT_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for BCNT_R {
-    type Target = crate::FieldReader<u16, u16>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type BCNT_R = crate::FieldReader<u16>;
 #[doc = "Field `BCNT` writer - Blocks Count for Current Transfer"]
-pub struct BCNT_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> BCNT_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u16) -> &'a mut W {
-        self.w.bits = value as u16;
-        self.w
-    }
-}
+pub type BCNT_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 16, O, u16>;
 impl R {
     #[doc = "Bits 0:15 - Blocks Count for Current Transfer"]
     #[inline(always)]
     pub fn bcnt(&self) -> BCNT_R {
-        BCNT_R::new(self.bits as u16)
+        BCNT_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:15 - Blocks Count for Current Transfer"]
     #[inline(always)]
-    pub fn bcnt(&mut self) -> BCNT_W {
-        BCNT_W { w: self }
+    #[must_use]
+    pub fn bcnt(&mut self) -> BCNT_W<BCR_SPEC, 0> {
+        BCNT_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Block Count\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [bcr](index.html) module"]
+#[doc = "Block Count\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bcr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`bcr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct BCR_SPEC;
 impl crate::RegisterSpec for BCR_SPEC {
     type Ux = u16;
 }
-#[doc = "`read()` method returns [bcr::R](R) reader structure"]
-impl crate::Readable for BCR_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [bcr::W](W) writer structure"]
+#[doc = "`read()` method returns [`bcr::R`](R) reader structure"]
+impl crate::Readable for BCR_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`bcr::W`](W) writer structure"]
 impl crate::Writable for BCR_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets BCR to value 0"]
 impl crate::Resettable for BCR_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

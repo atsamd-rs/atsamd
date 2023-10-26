@@ -1,103 +1,49 @@
 #[doc = "Register `DIRTGL` reader"]
-pub struct R(crate::R<DIRTGL_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<DIRTGL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<DIRTGL_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<DIRTGL_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<DIRTGL_SPEC>;
 #[doc = "Register `DIRTGL` writer"]
-pub struct W(crate::W<DIRTGL_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<DIRTGL_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<DIRTGL_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<DIRTGL_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<DIRTGL_SPEC>;
 #[doc = "Field `DIRTGL` reader - Port Data Direction Toggle"]
-pub struct DIRTGL_R(crate::FieldReader<u32, u32>);
-impl DIRTGL_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: u32) -> Self {
-        DIRTGL_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for DIRTGL_R {
-    type Target = crate::FieldReader<u32, u32>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type DIRTGL_R = crate::FieldReader<u32>;
 #[doc = "Field `DIRTGL` writer - Port Data Direction Toggle"]
-pub struct DIRTGL_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> DIRTGL_W<'a> {
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u32) -> &'a mut W {
-        self.w.bits = value as u32;
-        self.w
-    }
-}
+pub type DIRTGL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 32, O, u32>;
 impl R {
     #[doc = "Bits 0:31 - Port Data Direction Toggle"]
     #[inline(always)]
     pub fn dirtgl(&self) -> DIRTGL_R {
-        DIRTGL_R::new(self.bits as u32)
+        DIRTGL_R::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Port Data Direction Toggle"]
     #[inline(always)]
-    pub fn dirtgl(&mut self) -> DIRTGL_W {
-        DIRTGL_W { w: self }
+    #[must_use]
+    pub fn dirtgl(&mut self) -> DIRTGL_W<DIRTGL_SPEC, 0> {
+        DIRTGL_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Data Direction Toggle\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dirtgl](index.html) module"]
+#[doc = "Data Direction Toggle\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dirtgl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dirtgl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct DIRTGL_SPEC;
 impl crate::RegisterSpec for DIRTGL_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [dirtgl::R](R) reader structure"]
-impl crate::Readable for DIRTGL_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [dirtgl::W](W) writer structure"]
+#[doc = "`read()` method returns [`dirtgl::R`](R) reader structure"]
+impl crate::Readable for DIRTGL_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`dirtgl::W`](W) writer structure"]
 impl crate::Writable for DIRTGL_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets DIRTGL to value 0"]
 impl crate::Resettable for DIRTGL_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }

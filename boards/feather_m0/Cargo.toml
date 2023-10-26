@@ -24,6 +24,10 @@ path = "../../hal"
 version = "0.16.0"
 default-features = false
 
+[dependencies.cortex-m]
+version = "0.7"
+features = ["critical-section-single-core"]
+
 [dependencies.usb-device]
 version = "0.2"
 optional = true

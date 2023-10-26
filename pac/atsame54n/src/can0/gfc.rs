@@ -1,117 +1,21 @@
 #[doc = "Register `GFC` reader"]
-pub struct R(crate::R<GFC_SPEC>);
-impl core::ops::Deref for R {
-    type Target = crate::R<GFC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl From<crate::R<GFC_SPEC>> for R {
-    #[inline(always)]
-    fn from(reader: crate::R<GFC_SPEC>) -> Self {
-        R(reader)
-    }
-}
+pub type R = crate::R<GFC_SPEC>;
 #[doc = "Register `GFC` writer"]
-pub struct W(crate::W<GFC_SPEC>);
-impl core::ops::Deref for W {
-    type Target = crate::W<GFC_SPEC>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl core::ops::DerefMut for W {
-    #[inline(always)]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-impl From<crate::W<GFC_SPEC>> for W {
-    #[inline(always)]
-    fn from(writer: crate::W<GFC_SPEC>) -> Self {
-        W(writer)
-    }
-}
+pub type W = crate::W<GFC_SPEC>;
 #[doc = "Field `RRFE` reader - Reject Remote Frames Extended"]
-pub struct RRFE_R(crate::FieldReader<bool, bool>);
-impl RRFE_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RRFE_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RRFE_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RRFE_R = crate::BitReader;
 #[doc = "Field `RRFE` writer - Reject Remote Frames Extended"]
-pub struct RRFE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RRFE_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !0x01) | (value as u32 & 0x01);
-        self.w
-    }
-}
+pub type RRFE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
 #[doc = "Field `RRFS` reader - Reject Remote Frames Standard"]
-pub struct RRFS_R(crate::FieldReader<bool, bool>);
-impl RRFS_R {
-    #[inline(always)]
-    pub(crate) fn new(bits: bool) -> Self {
-        RRFS_R(crate::FieldReader::new(bits))
-    }
-}
-impl core::ops::Deref for RRFS_R {
-    type Target = crate::FieldReader<bool, bool>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
+pub type RRFS_R = crate::BitReader;
 #[doc = "Field `RRFS` writer - Reject Remote Frames Standard"]
-pub struct RRFS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> RRFS_W<'a> {
-    #[doc = r"Sets the field bit"]
-    #[inline(always)]
-    pub fn set_bit(self) -> &'a mut W {
-        self.bit(true)
-    }
-    #[doc = r"Clears the field bit"]
-    #[inline(always)]
-    pub fn clear_bit(self) -> &'a mut W {
-        self.bit(false)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub fn bit(self, value: bool) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x01 << 1)) | ((value as u32 & 0x01) << 1);
-        self.w
-    }
-}
+pub type RRFS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+#[doc = "Field `ANFE` reader - Accept Non-matching Frames Extended"]
+pub type ANFE_R = crate::FieldReader<ANFESELECT_A>;
 #[doc = "Accept Non-matching Frames Extended\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum ANFE_A {
+pub enum ANFESELECT_A {
     #[doc = "0: Accept in Rx FIFO 0"]
     RXF0 = 0,
     #[doc = "1: Accept in Rx FIFO 1"]
@@ -119,88 +23,71 @@ pub enum ANFE_A {
     #[doc = "2: Reject"]
     REJECT = 2,
 }
-impl From<ANFE_A> for u8 {
+impl From<ANFESELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: ANFE_A) -> Self {
+    fn from(variant: ANFESELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `ANFE` reader - Accept Non-matching Frames Extended"]
-pub struct ANFE_R(crate::FieldReader<u8, ANFE_A>);
+impl crate::FieldSpec for ANFESELECT_A {
+    type Ux = u8;
+}
 impl ANFE_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        ANFE_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<ANFE_A> {
+    pub const fn variant(&self) -> Option<ANFESELECT_A> {
         match self.bits {
-            0 => Some(ANFE_A::RXF0),
-            1 => Some(ANFE_A::RXF1),
-            2 => Some(ANFE_A::REJECT),
+            0 => Some(ANFESELECT_A::RXF0),
+            1 => Some(ANFESELECT_A::RXF1),
+            2 => Some(ANFESELECT_A::REJECT),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `RXF0`"]
+    #[doc = "Accept in Rx FIFO 0"]
     #[inline(always)]
     pub fn is_rxf0(&self) -> bool {
-        **self == ANFE_A::RXF0
+        *self == ANFESELECT_A::RXF0
     }
-    #[doc = "Checks if the value of the field is `RXF1`"]
+    #[doc = "Accept in Rx FIFO 1"]
     #[inline(always)]
     pub fn is_rxf1(&self) -> bool {
-        **self == ANFE_A::RXF1
+        *self == ANFESELECT_A::RXF1
     }
-    #[doc = "Checks if the value of the field is `REJECT`"]
+    #[doc = "Reject"]
     #[inline(always)]
     pub fn is_reject(&self) -> bool {
-        **self == ANFE_A::REJECT
-    }
-}
-impl core::ops::Deref for ANFE_R {
-    type Target = crate::FieldReader<u8, ANFE_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        *self == ANFESELECT_A::REJECT
     }
 }
 #[doc = "Field `ANFE` writer - Accept Non-matching Frames Extended"]
-pub struct ANFE_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ANFE_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: ANFE_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
+pub type ANFE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, ANFESELECT_A>;
+impl<'a, REG, const O: u8> ANFE_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
     #[doc = "Accept in Rx FIFO 0"]
     #[inline(always)]
-    pub fn rxf0(self) -> &'a mut W {
-        self.variant(ANFE_A::RXF0)
+    pub fn rxf0(self) -> &'a mut crate::W<REG> {
+        self.variant(ANFESELECT_A::RXF0)
     }
     #[doc = "Accept in Rx FIFO 1"]
     #[inline(always)]
-    pub fn rxf1(self) -> &'a mut W {
-        self.variant(ANFE_A::RXF1)
+    pub fn rxf1(self) -> &'a mut crate::W<REG> {
+        self.variant(ANFESELECT_A::RXF1)
     }
     #[doc = "Reject"]
     #[inline(always)]
-    pub fn reject(self) -> &'a mut W {
-        self.variant(ANFE_A::REJECT)
-    }
-    #[doc = r"Writes raw bits to the field"]
-    #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 2)) | ((value as u32 & 0x03) << 2);
-        self.w
+    pub fn reject(self) -> &'a mut crate::W<REG> {
+        self.variant(ANFESELECT_A::REJECT)
     }
 }
+#[doc = "Field `ANFS` reader - Accept Non-matching Frames Standard"]
+pub type ANFS_R = crate::FieldReader<ANFSSELECT_A>;
 #[doc = "Accept Non-matching Frames Standard\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum ANFS_A {
+pub enum ANFSSELECT_A {
     #[doc = "0: Accept in Rx FIFO 0"]
     RXF0 = 0,
     #[doc = "1: Accept in Rx FIFO 1"]
@@ -208,151 +95,136 @@ pub enum ANFS_A {
     #[doc = "2: Reject"]
     REJECT = 2,
 }
-impl From<ANFS_A> for u8 {
+impl From<ANFSSELECT_A> for u8 {
     #[inline(always)]
-    fn from(variant: ANFS_A) -> Self {
+    fn from(variant: ANFSSELECT_A) -> Self {
         variant as _
     }
 }
-#[doc = "Field `ANFS` reader - Accept Non-matching Frames Standard"]
-pub struct ANFS_R(crate::FieldReader<u8, ANFS_A>);
+impl crate::FieldSpec for ANFSSELECT_A {
+    type Ux = u8;
+}
 impl ANFS_R {
+    #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub(crate) fn new(bits: u8) -> Self {
-        ANFS_R(crate::FieldReader::new(bits))
-    }
-    #[doc = r"Get enumerated values variant"]
-    #[inline(always)]
-    pub fn variant(&self) -> Option<ANFS_A> {
+    pub const fn variant(&self) -> Option<ANFSSELECT_A> {
         match self.bits {
-            0 => Some(ANFS_A::RXF0),
-            1 => Some(ANFS_A::RXF1),
-            2 => Some(ANFS_A::REJECT),
+            0 => Some(ANFSSELECT_A::RXF0),
+            1 => Some(ANFSSELECT_A::RXF1),
+            2 => Some(ANFSSELECT_A::REJECT),
             _ => None,
         }
     }
-    #[doc = "Checks if the value of the field is `RXF0`"]
-    #[inline(always)]
-    pub fn is_rxf0(&self) -> bool {
-        **self == ANFS_A::RXF0
-    }
-    #[doc = "Checks if the value of the field is `RXF1`"]
-    #[inline(always)]
-    pub fn is_rxf1(&self) -> bool {
-        **self == ANFS_A::RXF1
-    }
-    #[doc = "Checks if the value of the field is `REJECT`"]
-    #[inline(always)]
-    pub fn is_reject(&self) -> bool {
-        **self == ANFS_A::REJECT
-    }
-}
-impl core::ops::Deref for ANFS_R {
-    type Target = crate::FieldReader<u8, ANFS_A>;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-#[doc = "Field `ANFS` writer - Accept Non-matching Frames Standard"]
-pub struct ANFS_W<'a> {
-    w: &'a mut W,
-}
-impl<'a> ANFS_W<'a> {
-    #[doc = r"Writes `variant` to the field"]
-    #[inline(always)]
-    pub fn variant(self, variant: ANFS_A) -> &'a mut W {
-        unsafe { self.bits(variant.into()) }
-    }
     #[doc = "Accept in Rx FIFO 0"]
     #[inline(always)]
-    pub fn rxf0(self) -> &'a mut W {
-        self.variant(ANFS_A::RXF0)
+    pub fn is_rxf0(&self) -> bool {
+        *self == ANFSSELECT_A::RXF0
     }
     #[doc = "Accept in Rx FIFO 1"]
     #[inline(always)]
-    pub fn rxf1(self) -> &'a mut W {
-        self.variant(ANFS_A::RXF1)
+    pub fn is_rxf1(&self) -> bool {
+        *self == ANFSSELECT_A::RXF1
     }
     #[doc = "Reject"]
     #[inline(always)]
-    pub fn reject(self) -> &'a mut W {
-        self.variant(ANFS_A::REJECT)
+    pub fn is_reject(&self) -> bool {
+        *self == ANFSSELECT_A::REJECT
     }
-    #[doc = r"Writes raw bits to the field"]
+}
+#[doc = "Field `ANFS` writer - Accept Non-matching Frames Standard"]
+pub type ANFS_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, ANFSSELECT_A>;
+impl<'a, REG, const O: u8> ANFS_W<'a, REG, O>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Accept in Rx FIFO 0"]
     #[inline(always)]
-    pub unsafe fn bits(self, value: u8) -> &'a mut W {
-        self.w.bits = (self.w.bits & !(0x03 << 4)) | ((value as u32 & 0x03) << 4);
-        self.w
+    pub fn rxf0(self) -> &'a mut crate::W<REG> {
+        self.variant(ANFSSELECT_A::RXF0)
+    }
+    #[doc = "Accept in Rx FIFO 1"]
+    #[inline(always)]
+    pub fn rxf1(self) -> &'a mut crate::W<REG> {
+        self.variant(ANFSSELECT_A::RXF1)
+    }
+    #[doc = "Reject"]
+    #[inline(always)]
+    pub fn reject(self) -> &'a mut crate::W<REG> {
+        self.variant(ANFSSELECT_A::REJECT)
     }
 }
 impl R {
     #[doc = "Bit 0 - Reject Remote Frames Extended"]
     #[inline(always)]
     pub fn rrfe(&self) -> RRFE_R {
-        RRFE_R::new((self.bits & 0x01) != 0)
+        RRFE_R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Reject Remote Frames Standard"]
     #[inline(always)]
     pub fn rrfs(&self) -> RRFS_R {
-        RRFS_R::new(((self.bits >> 1) & 0x01) != 0)
+        RRFS_R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bits 2:3 - Accept Non-matching Frames Extended"]
     #[inline(always)]
     pub fn anfe(&self) -> ANFE_R {
-        ANFE_R::new(((self.bits >> 2) & 0x03) as u8)
+        ANFE_R::new(((self.bits >> 2) & 3) as u8)
     }
     #[doc = "Bits 4:5 - Accept Non-matching Frames Standard"]
     #[inline(always)]
     pub fn anfs(&self) -> ANFS_R {
-        ANFS_R::new(((self.bits >> 4) & 0x03) as u8)
+        ANFS_R::new(((self.bits >> 4) & 3) as u8)
     }
 }
 impl W {
     #[doc = "Bit 0 - Reject Remote Frames Extended"]
     #[inline(always)]
-    pub fn rrfe(&mut self) -> RRFE_W {
-        RRFE_W { w: self }
+    #[must_use]
+    pub fn rrfe(&mut self) -> RRFE_W<GFC_SPEC, 0> {
+        RRFE_W::new(self)
     }
     #[doc = "Bit 1 - Reject Remote Frames Standard"]
     #[inline(always)]
-    pub fn rrfs(&mut self) -> RRFS_W {
-        RRFS_W { w: self }
+    #[must_use]
+    pub fn rrfs(&mut self) -> RRFS_W<GFC_SPEC, 1> {
+        RRFS_W::new(self)
     }
     #[doc = "Bits 2:3 - Accept Non-matching Frames Extended"]
     #[inline(always)]
-    pub fn anfe(&mut self) -> ANFE_W {
-        ANFE_W { w: self }
+    #[must_use]
+    pub fn anfe(&mut self) -> ANFE_W<GFC_SPEC, 2> {
+        ANFE_W::new(self)
     }
     #[doc = "Bits 4:5 - Accept Non-matching Frames Standard"]
     #[inline(always)]
-    pub fn anfs(&mut self) -> ANFS_W {
-        ANFS_W { w: self }
+    #[must_use]
+    pub fn anfs(&mut self) -> ANFS_W<GFC_SPEC, 4> {
+        ANFS_W::new(self)
     }
-    #[doc = "Writes raw bits to the register."]
+    #[doc = r" Writes raw bits to the register."]
+    #[doc = r""]
+    #[doc = r" # Safety"]
+    #[doc = r""]
+    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
     #[inline(always)]
     pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.0.bits(bits);
+        self.bits = bits;
         self
     }
 }
-#[doc = "Global Filter Configuration\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [gfc](index.html) module"]
+#[doc = "Global Filter Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`gfc::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`gfc::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct GFC_SPEC;
 impl crate::RegisterSpec for GFC_SPEC {
     type Ux = u32;
 }
-#[doc = "`read()` method returns [gfc::R](R) reader structure"]
-impl crate::Readable for GFC_SPEC {
-    type Reader = R;
-}
-#[doc = "`write(|w| ..)` method takes [gfc::W](W) writer structure"]
+#[doc = "`read()` method returns [`gfc::R`](R) reader structure"]
+impl crate::Readable for GFC_SPEC {}
+#[doc = "`write(|w| ..)` method takes [`gfc::W`](W) writer structure"]
 impl crate::Writable for GFC_SPEC {
-    type Writer = W;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
 }
 #[doc = "`reset()` method sets GFC to value 0"]
 impl crate::Resettable for GFC_SPEC {
-    #[inline(always)]
-    fn reset_value() -> Self::Ux {
-        0
-    }
+    const RESET_VALUE: Self::Ux = 0;
 }
