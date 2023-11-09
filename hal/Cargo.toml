@@ -23,7 +23,7 @@ rust-version = "1.65"
 version = "0.16.0"
 
 [package.metadata.docs.rs]
-features = ["samd21g", "samd21g-rt", "unproven", "usb"]
+features = ["samd21g", "samd21g-rt", "unproven", "usb", "dma"]
 
 #===============================================================================
 # Required depdendencies
