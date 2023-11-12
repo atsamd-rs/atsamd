@@ -15,6 +15,9 @@ compile_error!(
 #[cfg(all(feature = "library", feature = "device"))]
 compile_error!("Cannot combine `library` and `device` features");
 
+#[cfg(all(feature = "library", feature = "dma"))]
+compile_error!("Cannot combine `library` and `dma` features");
+
 macro_rules! define_pac {
     ( $( ($pac:ident, $feat:literal)),+ ) => {
         $(
