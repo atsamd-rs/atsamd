@@ -37,7 +37,7 @@ mod impls {
         // it was before this function ran.
         let dmac = unsafe { crate::pac::Peripherals::steal().DMAC };
 
-        cortex_m::interrupt::free(|_| {
+        critical_section::with(|_| {
             let old_id = dmac.chid.read().id().bits();
             let pending_interrupts = BitIter(dmac.intstatus.read().bits());
 

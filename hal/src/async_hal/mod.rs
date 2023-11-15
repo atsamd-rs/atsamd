@@ -14,7 +14,7 @@
 //
 // pub mod interrupt {
 //     pub use super::irqs::*;
-//     pub use cortex_m::interrupt::{CriticalSection, Mutex};
+//     pub use critical_section::{CriticalSection, Mutex};
 //     pub use embassy::interrupt::{declare, take, Interrupt};
 //
 //     #[cfg(any(feature = "samd11", feature = "samd21"))]

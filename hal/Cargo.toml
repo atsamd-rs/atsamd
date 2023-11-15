@@ -34,6 +34,7 @@ aes = "0.7.5"
 bitfield = "0.13"
 bitflags = "1.2.1"
 cipher = "0.3"
+critical-section = "1.1.2"
 cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
 embedded-hal = "0.2"
 fugit = "0.3"
@@ -54,7 +55,7 @@ void = {version = "1.0", default-features = false}
 #===============================================================================
 
 cortex-m-interrupt = {version = "0.2.1-git", git = "https://github.com/datdenkikniet/cortex-m-interrupt.git", rev = "9baa936", optional = true}
-embassy-sync = {version = "0.3", optional = true}
+embassy-sync = {version = "0.4", optional = true}
 embedded-hal-alpha = {package = "embedded-hal", version = "1.0.0-rc.1"}
 embedded-hal-async = {version = "1.0.0-rc.1", optional = true, features = ["defmt-03"]}
 embedded-sdmmc = {version = "0.3", optional = true}
