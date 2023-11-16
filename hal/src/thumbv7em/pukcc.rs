@@ -294,7 +294,7 @@ impl Pukcc {
         };
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
-            let mut service_params = &mut pukcl_params.params.ZpEcDsaGenerateFast;
+            let service_params = &mut pukcl_params.params.ZpEcDsaGenerateFast;
             service_params.nu1ModBase = modulo_p.pukcc_base();
             service_params.nu1CnsBase = cns.pukcc_base();
             service_params.u2ModLength = C::MOD_LENGTH as u16;
@@ -452,7 +452,7 @@ impl Pukcc {
         };
         let mut pukcl_params = c_abi::PukclParams::default();
         unsafe {
-            let mut service_params = &mut pukcl_params.params.ZpEcDsaVerifyFast;
+            let service_params = &mut pukcl_params.params.ZpEcDsaVerifyFast;
             service_params.nu1ModBase = modulo_p.pukcc_base();
             service_params.nu1CnsBase = cns.pukcc_base();
             service_params.u2ModLength = C::MOD_LENGTH;
@@ -664,7 +664,7 @@ impl Pukcc {
             pukcl_params.header.u2Option = PUKCL_EXPMOD_EXPINPUKCCRAM
                 | window_size.get_windows_size_mask()
                 | mode.get_mode_mask();
-            let mut service_params = &mut pukcl_params.params.ExpMod;
+            let service_params = &mut pukcl_params.params.ExpMod;
             service_params.nu1XBase = output.pukcc_base();
             service_params.nu1ModBase = modulus_cr.pukcc_base();
             service_params.nu1CnsBase = cns_cr.pukcc_base();
@@ -731,7 +731,7 @@ impl Pukcc {
         unsafe {
             // Flag that switches behaviour of `RedMod` service into CNS generator
             pukcl_params.header.u2Option = PUKCL_REDMOD_SETUP;
-            let mut service_params = &mut pukcl_params.params.RedMod;
+            let service_params = &mut pukcl_params.params.RedMod;
             service_params.nu1ModBase = modulus_cr.pukcc_base();
             service_params.nu1CnsBase = cns_cr.pukcc_base();
             service_params.u2ModLength = modulus.len() as _;

@@ -3,6 +3,7 @@
 - Add compile error for combined `library` and `dma` features
 - Add `dma` feature to docs metadata
 - Update the PACs to svd2rust 0.30.2.
+- Fix warnings for thumbv7 targets
 
 # v0.16.0
 
