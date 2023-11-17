@@ -12,9 +12,9 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 
 | Crate | Version | Board Support Packages |
 |:------|:--------|:-----------------------|
-| [atsamd11c](https://docs.rs/atsamd11c/) | [![Crates.io](https://img.shields.io/crates/v/atsamd11c.svg)](https://crates.io/crates/atsamd11c) |  |
-| [atsamd21e](https://docs.rs/atsamd21e/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21e.svg)](https://crates.io/crates/atsamd21e) | [Gemma M0][gemma_m0], [Serpente][serpente], [Trinket M0][trinket_m0] |
-| [atsamd21g](https://docs.rs/atsamd21g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g.svg)](https://crates.io/crates/atsamd21g) | [Arduino Nano 33 IOT][arduino_nano33_iot], [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [ItsyBitsy M0][itsybitsy_m0], [Metro M0][metro_m0], [MKR1000][arduino_mkr1000], [MKR Vidor 4000][arduino_mkr_vidor_4000], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one], [Wio Lite MG126][wio_lite_mg126], [Xiao M0][xiao_m0] |
+| [atsamd11c](https://docs.rs/atsamd11c/) | [![Crates.io](https://img.shields.io/crates/v/atsamd11c.svg)](https://crates.io/crates/atsamd11c) | [Bare atsamd11][samd11_bare] |
+| [atsamd21e](https://docs.rs/atsamd21e/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21e.svg)](https://crates.io/crates/atsamd21e) | [Gemma M0][gemma_m0], [Serpente][serpente], [Trinket M0][trinket_m0], [Neo Trinkey][neo_trinkey], [NeoKey Trinkey][neokey_trinkey], [QT Py][qt_py_m0] |
+| [atsamd21g](https://docs.rs/atsamd21g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g.svg)](https://crates.io/crates/atsamd21g) | [Arduino Nano 33 IOT][arduino_nano33_iot], [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [ItsyBitsy M0][itsybitsy_m0], [Metro M0][metro_m0], [MKR1000][arduino_mkr1000], [MKR Vidor 4000][arduino_mkr_vidor_4000], [MKR ZERO][arduino_mkrzero], [P1AM-100][p1am_100], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one], [Wio Lite MG126][wio_lite_mg126], [Wio Lite W600][wio_lite_w600], [Xiao M0][xiao_m0] |
 | [atsamd21j](https://docs.rs/atsamd21j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21j.svg)](https://crates.io/crates/atsamd21j) | [SODAQ SARA AFF][sodaq_sara_aff] |
 | [atsamd51g](https://docs.rs/atsamd51g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g.svg)](https://crates.io/crates/atsamd51g) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
 | [atsamd51j](https://docs.rs/atsamd51j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j.svg)](https://crates.io/crates/atsamd51j) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4], [PyPortal][pyportal] |
@@ -23,7 +23,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 | [atsame51g](https://docs.rs/atsame51g/) | [![Crates.io](https://img.shields.io/crates/v/atsame51g.svg)](https://crates.io/crates/atsame51g) |  |
 | [atsame51j](https://docs.rs/atsame51j/) | [![Crates.io](https://img.shields.io/crates/v/atsame51j.svg)](https://crates.io/crates/atsame51j) |  |
 | [atsame51n](https://docs.rs/atsame51n/) | [![Crates.io](https://img.shields.io/crates/v/atsame51n.svg)](https://crates.io/crates/atsame51n) |  |
-| [atsame53j](https://docs.rs/atsame53j/) | [![Crates.io](https://img.shields.io/crates/v/atsame53j.svg)](https://crates.io/crates/atsame53j) |  |
+| [atsame53j](https://docs.rs/atsame53j/) | [![Crates.io](https://img.shields.io/crates/v/atsame53j.svg)](https://crates.io/crates/atsame53j) | [pygamer][PyGamer] |
 | [atsame53n](https://docs.rs/atsame53n/) | [![Crates.io](https://img.shields.io/crates/v/atsame53n.svg)](https://crates.io/crates/atsame53n) |  |
 | [atsame54n](https://docs.rs/atsame54n/) | [![Crates.io](https://img.shields.io/crates/v/atsame54n.svg)](https://crates.io/crates/atsame54n) |  |
 | [atsame54p](https://docs.rs/atsame54p/) | [![Crates.io](https://img.shields.io/crates/v/atsame54p.svg)](https://crates.io/crates/atsame54p) | [PathfinderZA Proto1][pfza_proto1], [SAM E54 Xplained Pro Evaluation Kit][atsame54_xpro] |
@@ -44,9 +44,14 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 [itsybitsy_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/itsybitsy_m4/
 [metro_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/metro_m0/
 [metro_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/metro_m4/
+[neo_trinkey]: https://github.com/atsamd-rs/atsamd/tree/master/boards/neo_trinkey
+[neokey_trinkey]: https://github.com/atsamd-rs/atsamd/tree/master/boards/neokey_trinkey
+[p1am_100]: https://github.com/atsamd-rs/atsamd/tree/master/boards/p1am_100
 [pfza_proto1]: https://github.com/atsamd-rs/atsamd/tree/master/boards/pfza_proto1/
 [pygamer]: https://github.com/atsamd-rs/atsamd/tree/master/boards/pygamer/
 [pyportal]: https://github.com/atsamd-rs/atsamd/tree/master/boards/pyportal/
+[qt_py_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/qt_py_m0
+[samd11_bare]: https://github.com/atsamd-rs/atsamd/tree/master/boards/samd11_bare
 [samd21_mini]: https://github.com/atsamd-rs/atsamd/tree/master/boards/samd21_mini/
 [serpente]: https://github.com/atsamd-rs/atsamd/tree/master/boards/serpente/
 [sodaq_one]: https://github.com/atsamd-rs/atsamd/tree/master/boards/sodaq_one/
@@ -54,6 +59,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 [trellis_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/trellis_m4/
 [trinket_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/trinket_m0/
 [wio_lite_mg126]: https://github.com/atsamd-rs/atsamd/tree/master/boards/wio_lite_mg126
+[wio_lite_w600]: https://github.com/atsamd-rs/atsamd/tree/master/boards/wio_lite_w600
 [wio_terminal]: https://github.com/atsamd-rs/atsamd/tree/master/boards/wio_terminal
 [xiao_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/xiao_m0
 
