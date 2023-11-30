@@ -3,14 +3,13 @@
 
 #![no_std]
 #![no_main]
-#![feature(type_alias_impl_trait)]
 
 use defmt_rtt as _;
 use panic_probe as _;
 
-use atsamd_hal::bind_interrupts;
-
-
+atsamd_hal::bind_interrupts!(struct Irqs {
+    DMAC => atsamd_hal::dmac::async_api::InterruptHandler;
+});
 
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
@@ -66,7 +65,7 @@ mod app {
             2
         ));
         // Turn dmac into an async controller
-        let mut dmac = dmac.into_future(dmac_irq);
+        let mut dmac = dmac.into_future(crate::Irqs);
         // Get individual handles to DMA channels
         let channels = dmac.split();
 
