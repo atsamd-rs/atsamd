@@ -8,6 +8,10 @@
 use defmt_rtt as _;
 use panic_probe as _;
 
+use atsamd_hal::bind_interrupts;
+
+
+
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
     use bsp::{hal, pac};
