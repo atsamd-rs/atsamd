@@ -5,13 +5,16 @@ use cortex_m::peripheral::NVIC;
 use critical_section::CriticalSection;
 
 macro_rules! declare_interrupts {
-    ($($irqs:ident),* $(,)?) => {
+    ($($(#[$m:meta])* $irqs:ident),* $(,)?) => {
         $(
+            $(#[$m])*
             #[allow(non_camel_case_types)]
             #[doc=stringify!($irqs)]
             #[doc=" typelevel interrupt."]
             pub enum $irqs {}
+            $(#[$m])*
             impl $crate::typelevel::Sealed for $irqs{}
+            $(#[$m])*
             impl $crate::async_hal::interrupts::Interrupt for $irqs {
                 const IRQ: crate::pac::Interrupt = crate::pac::Interrupt::$irqs;
             }
@@ -19,8 +22,20 @@ macro_rules! declare_interrupts {
     }
 }
 
-#[cfg(feature = "dma")]
-declare_interrupts!(DMAC);
+declare_interrupts! {
+    #[cfg(all(feature = "dma", feature = "thumbv6"))]
+    DMAC,
+    #[cfg(all(feature = "dma", feature = "thumbv7"))]
+    DMAC_0,
+    #[cfg(all(feature = "dma", feature = "thumbv7"))]
+    DMAC_1,
+    #[cfg(all(feature = "dma", feature = "thumbv7"))]
+    DMAC_2,
+    #[cfg(all(feature = "dma", feature = "thumbv7"))]
+    DMAC_3,
+    #[cfg(all(feature = "dma", feature = "thumbv7"))]
+    DMAC_OTHER,
+}
 
 /// Type-level interrupt.
 ///
@@ -34,6 +49,10 @@ pub trait Interrupt: crate::typelevel::Sealed {
     const IRQ: crate::pac::Interrupt;
 
     /// Enable the interrupt.
+    ///
+    /// # Safety
+    ///
+    /// Do not enable any interrupt inside a critical section.
     #[inline]
     unsafe fn enable() {
         Self::IRQ.enable()
@@ -123,6 +142,10 @@ pub unsafe trait Binding<I: Interrupt, H: Handler<I>> {}
 /// interrupts.
 pub unsafe trait InterruptExt: InterruptNumber + Copy {
     /// Enable the interrupt.
+    ///
+    /// # Safety
+    ///
+    /// Do not enable any interrupt inside a critical section.
     #[inline]
     unsafe fn enable(self) {
         compiler_fence(Ordering::SeqCst);
@@ -216,18 +239,32 @@ impl From<Priority> for u8 {
     }
 }
 
-// TODO: Change Priority and PrioMask depending on core used!
-
-fn warning_look_at_todo() {
-    todo!()
-}
-
+#[cfg(feature = "thumbv6")]
+const PRIO_MASK: u8 = 0x60;
+#[cfg(feature = "thumbv7")]
 const PRIO_MASK: u8 = 0xe0;
 
 /// The interrupt priority level.
 ///
-/// NOTE: The contents of this enum differ according to the set `prio-bits-*`
-/// Cargo feature.
+/// P0 represents the most urgent prioriry, whereas P7 represents the least
+/// urgent.
+#[cfg(feature = "thumbv6")]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[repr(u8)]
+#[allow(missing_docs)]
+pub enum Priority {
+    P0 = 0x0,
+    P1 = 0x20,
+    P2 = 0x40,
+    P3 = 0x60,
+}
+
+/// The interrupt priority level.
+///
+/// P0 represents the most urgent prioriry, whereas P7 represents the least
+/// urgent.
+#[cfg(feature = "thumbv7")]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]

@@ -1,87 +1,25 @@
+//! APIs for async DMAC operations.
+
 use crate::{
-    async_hal::interrupts::{Handler, DMAC},
+    async_hal::interrupts::Handler,
     dmac::{waker::WAKERS, TriggerSource},
     util::BitIter,
 };
-use cortex_m::interrupt::InterruptNumber;
-use cortex_m_interrupt::NvicInterruptRegistration;
 
 #[cfg(feature = "thumbv6")]
-mod impls {
-    use super::*;
+use crate::async_hal::interrupts::DMAC;
 
-    // Interrupt handler.
-    pub struct InterruptHandler {
-        _private: (),
-    }
+#[cfg(feature = "thumbv7")]
+use crate::async_hal::interrupts::{DMAC_0, DMAC_1, DMAC_2, DMAC_3, DMAC_OTHER};
 
-    impl Handler<DMAC> for InterruptHandler {
-        unsafe fn on_interrupt() {
-            // SAFETY: Here we can't go through the `with_chid` method to safely access
-            // the different channel interrupt flags. Instead, we read the ID in a short
-            // critical section, and make sure to RESET the CHID field to whatever
-            // it was before this function ran.
-            let dmac = unsafe { crate::pac::Peripherals::steal().DMAC };
+// Interrupt handler for the DMAC peripheral.
+pub struct InterruptHandler {
+    _private: (),
+}
 
-            critical_section::with(|_| {
-                let old_id = dmac.chid.read().id().bits();
-                let pending_interrupts = BitIter(dmac.intstatus.read().bits());
-
-                // Iterate over channels and check their interrupt status
-                for pend_channel in pending_interrupts {
-                    unsafe { dmac.chid.modify(|_, w| w.id().bits(pend_channel as u8)) };
-
-                    let wake = if dmac.chintflag.read().tcmpl().bit_is_set() {
-                        // Transfer complete. Don't clear the flag, but
-                        // disable the interrupt. Flag will be cleared when polled
-                        dmac.chintenclr.modify(|_, w| w.tcmpl().set_bit());
-                        true
-                    } else if dmac.chintflag.read().terr().bit_is_set() {
-                        // Transfer error
-                        dmac.chintenclr.modify(|_, w| w.terr().set_bit());
-                        true
-                    } else {
-                        false
-                    };
-
-                    if wake {
-                        dmac.chctrla.modify(|_, w| w.enable().clear_bit());
-                        dmac.chctrlb
-                            .modify(|_, w| w.trigsrc().variant(TriggerSource::DISABLE));
-                        WAKERS[pend_channel as usize].wake();
-                    }
-                }
-
-                // Reset the CHID.ID register
-                unsafe {
-                    dmac.chid.write(|w| w.id().bits(old_id));
-                }
-            });
-        }
-    }
-
-    pub struct Interrupts<N>
-    where
-        N: InterruptNumber,
-    {
-        _interrupt_number: N,
-    }
-
-    impl<N> Interrupts<N>
-    where
-        N: InterruptNumber,
-    {
-        pub fn new<I: NvicInterruptRegistration<N>>(interrupt: I) -> Self {
-            let interrupt_number = interrupt.number();
-            interrupt.occupy(on_interrupt);
-            unsafe { cortex_m::peripheral::NVIC::unmask(interrupt_number) };
-            Self {
-                _interrupt_number: interrupt_number,
-            }
-        }
-    }
-
-    fn on_interrupt() {
+#[cfg(feature = "thumbv6")]
+impl Handler<DMAC> for InterruptHandler {
+    unsafe fn on_interrupt() {
         // SAFETY: Here we can't go through the `with_chid` method to safely access
         // the different channel interrupt flags. Instead, we read the ID in a short
         // critical section, and make sure to RESET the CHID field to whatever
@@ -126,114 +64,66 @@ mod impls {
 }
 
 #[cfg(feature = "thumbv7")]
-mod impls {
-    use super::*;
+fn on_interrupt(channel: usize) {
+    let dmac = unsafe { crate::pac::Peripherals::steal().DMAC };
 
-    pub struct Interrupts<N>
-    where
-        N: InterruptNumber,
-    {
-        _interrupt_0: N,
-        _interrupt_1: N,
-        _interrupt_2: N,
-        _interrupt_3: N,
-        _interrupt_other: N,
+    let wake = if dmac.channel[channel].chintflag.read().tcmpl().bit_is_set() {
+        // Transfer complete. Don't clear the flag, but
+        // disable the interrupt. Flag will be cleared when polled
+        dmac.channel[channel]
+            .chintenclr
+            .modify(|_, w| w.tcmpl().set_bit());
+        true
+    } else if dmac.channel[channel].chintflag.read().terr().bit_is_set() {
+        // Transfer error
+        dmac.channel[channel]
+            .chintenclr
+            .modify(|_, w| w.terr().set_bit());
+        true
+    } else {
+        false
+    };
+
+    if wake {
+        dmac.channel[channel].chctrla.modify(|_, w| {
+            w.enable().clear_bit();
+            w.trigsrc().variant(TriggerSource::DISABLE)
+        });
+        WAKERS[channel].wake();
     }
+}
 
-    impl<N> Interrupts<N>
-    where
-        N: InterruptNumber,
-    {
-        pub fn new<N0, N1, N2, N3, NOther>(
-            dmac_0: N0,
-            dmac_1: N1,
-            dmac_2: N2,
-            dmac_3: N3,
-            dmac_other: NOther,
-        ) -> Self
-        where
-            N0: NvicInterruptRegistration<N>,
-            N1: NvicInterruptRegistration<N>,
-            N2: NvicInterruptRegistration<N>,
-            N3: NvicInterruptRegistration<N>,
-            NOther: NvicInterruptRegistration<N>,
-        {
-            let n_0 = dmac_0.number();
-            dmac_0.occupy(on_interrupt_0);
-            unsafe { cortex_m::peripheral::NVIC::unmask(n_0) };
-
-            let n_1 = dmac_1.number();
-            dmac_1.occupy(on_interrupt_1);
-            unsafe { cortex_m::peripheral::NVIC::unmask(n_1) };
-
-            let n_2 = dmac_2.number();
-            dmac_2.occupy(on_interrupt_2);
-            unsafe { cortex_m::peripheral::NVIC::unmask(n_2) };
-
-            let n_3 = dmac_3.number();
-            dmac_3.occupy(on_interrupt_3);
-            unsafe { cortex_m::peripheral::NVIC::unmask(n_3) };
-
-            let n_other = dmac_other.number();
-            dmac_other.occupy(on_interrupt_other);
-            unsafe { cortex_m::peripheral::NVIC::unmask(n_other) };
-
-            Self {
-                _interrupt_0: n_0,
-                _interrupt_1: n_1,
-                _interrupt_2: n_2,
-                _interrupt_3: n_3,
-                _interrupt_other: n_other,
-            }
-        }
-    }
-
-    fn on_interrupt(channel: usize) {
-        let dmac = unsafe { crate::pac::Peripherals::steal().DMAC };
-
-        let wake = if dmac.channel[channel].chintflag.read().tcmpl().bit_is_set() {
-            // Transfer complete. Don't clear the flag, but
-            // disable the interrupt. Flag will be cleared when polled
-            dmac.channel[channel]
-                .chintenclr
-                .modify(|_, w| w.tcmpl().set_bit());
-            true
-        } else if dmac.channel[channel].chintflag.read().terr().bit_is_set() {
-            // Transfer error
-            dmac.channel[channel]
-                .chintenclr
-                .modify(|_, w| w.terr().set_bit());
-            true
-        } else {
-            false
-        };
-
-        if wake {
-            dmac.channel[channel].chctrla.modify(|_, w| {
-                w.enable().clear_bit();
-                w.trigsrc().variant(TriggerSource::DISABLE)
-            });
-            WAKERS[channel].wake();
-        }
-    }
-
-    fn on_interrupt_0() {
+#[cfg(feature = "thumbv7")]
+impl Handler<DMAC_0> for InterruptHandler {
+    unsafe fn on_interrupt() {
         on_interrupt(0);
     }
+}
 
-    fn on_interrupt_1() {
+#[cfg(feature = "thumbv7")]
+impl Handler<DMAC_1> for InterruptHandler {
+    unsafe fn on_interrupt() {
         on_interrupt(1);
     }
+}
 
-    fn on_interrupt_2() {
+#[cfg(feature = "thumbv7")]
+impl Handler<DMAC_2> for InterruptHandler {
+    unsafe fn on_interrupt() {
         on_interrupt(2);
     }
+}
 
-    fn on_interrupt_3() {
+#[cfg(feature = "thumbv7")]
+impl Handler<DMAC_3> for InterruptHandler {
+    unsafe fn on_interrupt() {
         on_interrupt(3);
     }
+}
 
-    fn on_interrupt_other() {
+#[cfg(feature = "thumbv7")]
+impl Handler<DMAC_OTHER> for InterruptHandler {
+    unsafe fn on_interrupt() {
         let dmac = unsafe { crate::pac::Peripherals::steal().DMAC };
 
         // Get pending channels, but ignore first 4 since they're handled by other
@@ -244,5 +134,3 @@ mod impls {
         }
     }
 }
-
-pub use impls::*;
