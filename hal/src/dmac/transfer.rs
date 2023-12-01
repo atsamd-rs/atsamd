@@ -109,7 +109,7 @@ pub enum BeatSize {
 }
 
 /// Convert 8, 16 and 32 bit types
-/// into [`BeatSize`](BeatSize)
+/// into [`BeatSize`]
 ///
 /// # Safety
 ///
@@ -331,7 +331,7 @@ where
     ///
     /// # Errors
     ///
-    /// Returns [`Error::LengthMismatch`](super::Error::LengthMismatch) if both
+    /// Returns [`Error::LengthMismatch`] if both
     /// buffers have a length > 1 and are not of equal length.
     #[allow(clippy::new_ret_no_self)]
     #[inline]
@@ -478,7 +478,7 @@ where
     C: AnyChannel<Status = Ready>,
 {
     /// Begin DMA transfer in blocking mode. If
-    /// [TriggerSource::DISABLE](TriggerSource::DISABLE) is used, a software
+    /// [TriggerSource::DISABLE] is used, a software
     /// trigger will be issued to the DMA channel to launch the transfer. Is
     /// is therefore not necessary, in most cases, to manually issue a
     /// software trigger to the channel.

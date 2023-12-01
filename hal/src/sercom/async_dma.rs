@@ -18,7 +18,7 @@ use super::Sercom;
 /// [`ImmutableSlice`]s should only ever be used as **source** buffers for DMA
 /// transfers, and never as destination buffers.
 #[doc(hidden)]
-pub struct ImmutableSlice<T: Beat>(Range<*mut T>);
+pub(crate) struct ImmutableSlice<T: Beat>(Range<*mut T>);
 
 impl<T: Beat> ImmutableSlice<T> {
     #[inline]
@@ -58,11 +58,10 @@ unsafe impl<T: Beat> Buffer for ImmutableSlice<T> {
 
 /// Wrapper type over Sercom instances to get around lifetime issues when using
 /// one as a DMA source/destination buffer. This is an implementation detail to
-/// make async SERCOM-DMA transfers work. Should not be used outside of this
-/// crate.
+/// make async SERCOM-DMA transfers work.
 #[doc(hidden)]
 #[derive(Clone)]
-pub struct SercomPtr<T: Beat>(pub(in super::super) *mut T);
+pub(crate) struct SercomPtr<T: Beat>(pub(in super::super) *mut T);
 
 unsafe impl<T: Beat> Buffer for SercomPtr<T> {
     type Beat = T;

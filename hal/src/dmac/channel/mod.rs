@@ -418,8 +418,8 @@ impl<Id: ChId> From<Channel<Id, Ready>> for Channel<Id, Uninitialized> {
 impl<Id: ChId> Channel<Id, ReadyFuture> {
     /// Begin DMA transfer using `async` operation.
     ///
-    /// If [TriggerSource::DISABLE](TriggerSource::DISABLE) is used, a software
-    /// trigger will be issued to the DMA channel to launch the transfer. Is
+    /// If [TriggerSource::DISABLE] is used, a software
+    /// trigger will be issued to the DMA channel to launch the transfer. It
     /// is therefore not necessary, in most cases, to manually issue a
     /// software trigger to the channel.
     ///
@@ -432,14 +432,12 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
     ///
     /// This means that, as an user, you **must** ensure that the [`Future`]
     /// returned by this function may never be forgotten through [`forget`].
-    /// [`Channel`]s implement [`Drop`] and will automatically s
-    ///top any ongoing transfers to guarantee that the memor
-    ///y occupied by the now-dropped buffers may
-    /// not be corrupted by running transfers. This also means
-    /// memory, memory, memory, memory, that should you [`forget`] this
-    /// [`Future`] after it is first [`poll`] call, the transfer will keep
-    /// running, ruining the now-reclaimed memory, as well as the rest of
-    /// your day.
+    /// [`Channel`]s implement [`Drop`] and will automatically stop any ongoing
+    /// transfers to guarantee that the memory occupied by the now-dropped
+    /// buffers may not be corrupted by running transfers. This also means that
+    /// should you [`forget`] this [`Future`] after its first [`poll`]
+    /// call, the transfer will keep running, ruining the now-reclaimed
+    /// memory, as well as the rest of your day.
     ///
     /// * `await`ing is fine: the [`Future`] will run to completion.
     /// * Dropping an incomplete transfer is also fine. Dropping can happen,

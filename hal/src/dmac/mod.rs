@@ -117,7 +117,7 @@
 //! `Drop` implementation is offered for `Transfer`s.
 //!
 //! Additionally, you can (unsafely) implement your own buffer types through the
-//! unsafe [`Buffer`](transfer::Buffer) trait.
+//! unsafe [`Buffer`] trait.
 //!
 //! # Example
 //! ```
