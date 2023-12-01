@@ -7,7 +7,7 @@ use core::{
 use cortex_m::interrupt::InterruptNumber;
 use cortex_m_interrupt::NvicInterruptRegistration;
 use embassy_sync::waitqueue::AtomicWaker;
-use fugit::{MicrosDurationU32, MillisDurationU32, NanosDurationU32};
+use fugit::NanosDurationU32;
 use portable_atomic::AtomicBool;
 
 #[cfg(feature = "thumbv6")]
@@ -164,24 +164,13 @@ where
     }
 }
 
-mod impl_ehal {
-    use super::*;
-    use embedded_hal_async::delay::DelayUs;
-
-    impl<T, I> DelayUs for TimerFuture<T, I>
-    where
-        T: AsyncCount16,
-        I: InterruptNumber,
-    {
-        async fn delay_ms(&mut self, ms: u32) {
-            self.delay(MillisDurationU32::from_ticks(ms).convert())
-                .await;
-        }
-
-        async fn delay_us(&mut self, us: u32) {
-            self.delay(MicrosDurationU32::from_ticks(us).convert())
-                .await;
-        }
+impl<T, I> embedded_hal_async::delay::DelayNs for TimerFuture<T, I>
+where
+    T: AsyncCount16,
+    I: InterruptNumber,
+{
+    async fn delay_ns(&mut self, ns: u32) {
+        self.delay(NanosDurationU32::from_ticks(ns).convert()).await;
     }
 }
 
