@@ -1,5 +1,7 @@
 # Unreleased
 
+- Update atsamd-hal to 0.16
+
 # v0.12.1
 
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)

@@ -8,7 +8,7 @@ use embedded_graphics::{
     prelude::*,
     primitives::{Circle, PrimitiveStyleBuilder},
 };
-use hal::{clock::GenericClockController, delay::Delay, prelude::*, time::KiloHertz};
+use hal::{clock::GenericClockController, delay::Delay, prelude::*, time::Hertz};
 use pac::{CorePeripherals, Peripherals};
 use ssd1306::{prelude::*, I2CDisplayInterface, Ssd1306};
 
@@ -29,7 +29,7 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let i2c = bsp::i2c_master(
         &mut clocks,
-        KiloHertz(400),
+        Hertz::kHz(400),
         peripherals.SERCOM0,
         &mut peripherals.PM,
         pins.a4,

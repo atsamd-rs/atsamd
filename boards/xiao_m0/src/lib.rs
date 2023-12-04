@@ -6,17 +6,14 @@ pub use cortex_m_rt::entry;
 use hal::clock::GenericClockController;
 pub use hal::ehal;
 pub use hal::pac;
-use hal::sercom::{
-    v2::{uart, Sercom0, Sercom4},
-    I2CMaster0,
-};
+use hal::sercom::{i2c, uart, Sercom0, Sercom4};
 use hal::time::Hertz;
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 use spi::Pads;
 
-use crate::hal::sercom::v2::spi;
-use crate::hal::sercom::v2::uart::{BaudMode, Oversampling};
+use crate::hal::sercom::spi;
+use crate::hal::sercom::uart::{BaudMode, Oversampling};
 pub use pins::*;
 
 /// Definitions related to pins and pin aliases
@@ -154,25 +151,32 @@ pub fn uart(
         .enable()
 }
 
-/// I2C master for the labelled SDA & SCL pins
-pub type I2C = I2CMaster0<Sda, Scl>;
+pub type I2cPads = i2c::Pads<Sercom0, Sda, Scl>;
+
+/// I2C master for the labelled I2C peripheral
+///
+/// This type implements [`Read`](ehal::blocking::i2c::Read),
+/// [`Write`](ehal::blocking::i2c::Write) and
+/// [`WriteRead`](ehal::blocking::i2c::WriteRead).
+pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom0: pac::SERCOM0,
+    sercom: Sercom0,
     pm: &mut pac::PM,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
-) -> I2C {
+) -> I2c {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom0_core(&gclk0).unwrap();
+    let freq = clock.freq();
     let baud = baud.into();
-    let sda = sda.into();
-    let scl = scl.into();
-    I2CMaster0::new(clock, baud, sercom0, pm, sda, scl)
+    let pads = i2c::Pads::new(sda.into(), scl.into());
+
+    i2c::Config::new(pm, sercom, pads, freq).baud(baud).enable()
 }
 
 /// SPI pads for the labelled SPI peripheral
@@ -198,6 +202,7 @@ pub fn spi_master(
     let gclk0 = clocks.gclk0();
     let clock = clocks.sercom4_core(&gclk0).unwrap();
     let freq = clock.freq();
+    let baud = baud.into();
     let (miso, mosi, sclk) = (miso.into(), mosi.into(), sclk.into());
     let pads = Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
     spi::Config::new(pm, sercom0, pads, freq)
