@@ -20,7 +20,7 @@ use hal::{
         pin::{ExtInt5, Sense},
         EIC,
     },
-    gpio::v2::{Pin, PullUpInterrupt},
+    gpio::{Pin, PullUpInterrupt},
     pac::{self, interrupt, CorePeripherals, Peripherals},
     prelude::*,
 };
