@@ -14,7 +14,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 |:------|:--------|:-----------------------|
 | [atsamd11c](https://docs.rs/atsamd11c/) | [![Crates.io](https://img.shields.io/crates/v/atsamd11c.svg)](https://crates.io/crates/atsamd11c) |  |
 | [atsamd21e](https://docs.rs/atsamd21e/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21e.svg)](https://crates.io/crates/atsamd21e) | [Gemma M0][gemma_m0], [Serpente][serpente], [Trinket M0][trinket_m0] |
-| [atsamd21g](https://docs.rs/atsamd21g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g.svg)](https://crates.io/crates/atsamd21g) | [Arduino Nano 33 IOT][arduino_nano33_iot], [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [ItsyBitsy M0][itsybitsy_m0], [Metro M0][metro_m0], [MKR1000][arduino_mkr1000], [MKR Vidor 4000][arduino_mkr_vidor_4000], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one], [Wio Lite MG126][wio_lite_mg126], [Xiao M0][xiao_m0] |
+| [atsamd21g](https://docs.rs/atsamd21g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g.svg)](https://crates.io/crates/atsamd21g) | [Arduino Nano 33 IOT][arduino_nano33_iot], [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0], [ItsyBitsy M0][itsybitsy_m0], [Metro M0][metro_m0], [MKR1000][arduino_mkr1000], [MKR Vidor 4000][arduino_mkr_vidor_4000], [MKR WiFi 1010][arduino_mkrwifi1010], [MKR ZERO][arduino_mkrzero], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one], [Wio Lite MG126][wio_lite_mg126], [Xiao M0][xiao_m0] |
 | [atsamd21j](https://docs.rs/atsamd21j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21j.svg)](https://crates.io/crates/atsamd21j) | [SODAQ SARA AFF][sodaq_sara_aff] |
 | [atsamd51g](https://docs.rs/atsamd51g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g.svg)](https://crates.io/crates/atsamd51g) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
 | [atsamd51j](https://docs.rs/atsamd51j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j.svg)](https://crates.io/crates/atsamd51j) | [EdgeBadge][edgebadge], [Feather M4][feather_m4], [Metro M4][metro_m4], [PyPortal][pyportal] |
@@ -31,6 +31,7 @@ In addition to the PACs and HAL, there numerous **B**oard **S**upport **P**ackag
 
 [arduino_mkr1000]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkr1000
 [arduino_mkr_vidor_4000]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkrvidor4000
+[arduino_mkrwifi1010]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkrwifi1010
 [arduino_mkrzero]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_mkrzero/
 [arduino_nano33_iot]: https://github.com/atsamd-rs/atsamd/tree/master/boards/arduino_nano33iot
 [atsame54_xpro]: https://github.com/atsamd-rs/atsamd/tree/master/boards/atsame54_xpro/

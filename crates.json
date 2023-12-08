@@ -10,6 +10,10 @@
       "build": "cargo build --examples --all-features",
       "target": "thumbv6m-none-eabi"
     },
+    "arduino_mkrwifi1010": {
+      "tier": 2,
+      "build": "cargo build --examples --features=unproven,usb"
+    },
     "arduino_mkrzero": {
       "tier": 2,
       "build": "cargo build --examples --all-features",
