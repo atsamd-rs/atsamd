@@ -1,11 +1,16 @@
-use crate::{ehal::timer::CountDown, timer_traits::InterruptDrivenTimer, typelevel::Sealed};
+use crate::{
+    async_hal::interrupts::{Binding, Handler, Interrupt},
+    ehal::timer::CountDown,
+    pac,
+    timer_traits::InterruptDrivenTimer,
+    typelevel::Sealed,
+};
 use core::{
     future::poll_fn,
+    marker::PhantomData,
     sync::atomic::Ordering,
     task::{Poll, Waker},
 };
-use cortex_m::interrupt::InterruptNumber;
-use cortex_m_interrupt::NvicInterruptRegistration;
 use embassy_sync::waitqueue::AtomicWaker;
 use fugit::NanosDurationU32;
 use portable_atomic::AtomicBool;
@@ -33,6 +38,15 @@ use crate::pac::TC5;
 
 use timer::{Count16, TimerCounter};
 
+#[cfg(feature = "periph-d11c")]
+type RegBlock = pac::tc1::RegisterBlock;
+
+#[cfg(feature = "periph-d21")]
+type RegBlock = pac::tc3::RegisterBlock;
+
+#[cfg(feature = "periph-d51")]
+type RegBlock = pac::tc0::RegisterBlock;
+
 /// Trait enabling the use of a Timer/Counter in async mode. Specifically, this
 /// trait enables us to register a `TC*` interrupt as a waker for timer futures.
 ///
@@ -41,6 +55,18 @@ pub trait AsyncCount16: Count16 + Sealed {
     /// Index of this TC in the `STATE` tracker
     const STATE_ID: usize;
 
+    fn reg_block(peripherals: &pac::Peripherals) -> &RegBlock;
+
+    type Interrupt: Interrupt;
+}
+
+/// Interrupt handler for async SPI operarions
+pub struct InterruptHandler<T: AsyncCount16> {
+    _private: (),
+    _tc: PhantomData<T>,
+}
+
+impl<A: AsyncCount16> Handler<A::Interrupt> for InterruptHandler<A> {
     /// Callback function when the corresponding TC interrupt is fired
     ///
     /// # Safety
@@ -51,7 +77,17 @@ pub trait AsyncCount16: Count16 + Sealed {
     /// the interrupt flag (to prevent re-firing). This method should ONLY be
     /// able to be called while a [`TimerFuture`] holds an unique reference
     /// to the underlying `TC` peripheral.
-    fn on_interrupt();
+    unsafe fn on_interrupt() {
+        let periph = unsafe { crate::pac::Peripherals::steal() };
+        let tc = A::reg_block(&periph);
+        let intflag = &tc.count16().intflag;
+
+        if intflag.read().ovf().bit_is_set() {
+            // Clear the flag
+            intflag.modify(|_, w| w.ovf().set_bit());
+            STATE[A::STATE_ID].wake();
+        }
+    }
 }
 
 macro_rules! impl_async_count16 {
@@ -60,15 +96,11 @@ macro_rules! impl_async_count16 {
                 impl AsyncCount16 for $TC {
                     const STATE_ID: usize = $id;
 
-                    fn on_interrupt() {
-                        let tc = unsafe{ crate::pac::Peripherals::steal().$TC};
-                        let intflag = &tc.count_16().intflag;
+                    type Interrupt = crate::async_hal::interrupts::$TC;
 
-                        if intflag.read().ovf().bit_is_set() {
-                            // Clear the flag
-                            intflag.modify(|_, w| w.ovf().set_bit());
-                            STATE[Self::STATE_ID].wake();
-                        }
+
+                    fn reg_block(peripherals: &pac::Peripherals) -> &crate::async_hal::timer::RegBlock {
+                        &*peripherals.$TC
                     }
                 }
 
@@ -103,37 +135,29 @@ where
 {
     /// Transform a [`TimerCounter`] into an [`TimerFuture`]
     #[inline]
-    pub fn into_future<I, N>(mut self, irq: I) -> TimerFuture<T, N>
+    pub fn into_future<I>(mut self, _irq: I) -> TimerFuture<T>
     where
-        I: NvicInterruptRegistration<N>,
-        N: InterruptNumber,
+        I: Binding<T::Interrupt, InterruptHandler<T>>,
     {
-        let irq_number = irq.number();
-        irq.occupy(T::on_interrupt);
-        unsafe { cortex_m::peripheral::NVIC::unmask(irq_number) };
+        T::Interrupt::unpend();
+        unsafe { T::Interrupt::enable() };
         self.enable_interrupt();
 
-        TimerFuture {
-            timer: self,
-            irq_number,
-        }
+        TimerFuture { timer: self }
     }
 }
 
 /// Wrapper around a [`TimerCounter`] with an `async` interface
-pub struct TimerFuture<T, I>
+pub struct TimerFuture<T>
 where
     T: AsyncCount16,
-    I: InterruptNumber,
 {
     timer: TimerCounter<T>,
-    irq_number: I,
 }
 
-impl<T, I> TimerFuture<T, I>
+impl<T> TimerFuture<T>
 where
     T: AsyncCount16,
-    I: InterruptNumber,
 {
     /// Delay asynchronously
     #[inline]
@@ -153,21 +177,19 @@ where
     }
 }
 
-impl<T, I> Drop for TimerFuture<T, I>
+impl<T> Drop for TimerFuture<T>
 where
     T: AsyncCount16,
-    I: InterruptNumber,
 {
     #[inline]
     fn drop(&mut self) {
-        cortex_m::peripheral::NVIC::mask(self.irq_number);
+        T::Interrupt::disable();
     }
 }
 
-impl<T, I> embedded_hal_async::delay::DelayNs for TimerFuture<T, I>
+impl<T> embedded_hal_async::delay::DelayNs for TimerFuture<T>
 where
     T: AsyncCount16,
-    I: InterruptNumber,
 {
     async fn delay_ns(&mut self, ns: u32) {
         self.delay(NanosDurationU32::from_ticks(ns).convert()).await;

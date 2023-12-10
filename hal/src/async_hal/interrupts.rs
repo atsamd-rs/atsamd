@@ -3,6 +3,8 @@ use core::sync::atomic::{compiler_fence, Ordering};
 use cortex_m::interrupt::InterruptNumber;
 use cortex_m::peripheral::NVIC;
 use critical_section::CriticalSection;
+use paste::paste;
+use seq_macro::seq;
 
 macro_rules! declare_interrupts {
     ($($(#[$m:meta])* $irqs:ident),* $(,)?) => {
@@ -22,19 +24,102 @@ macro_rules! declare_interrupts {
     }
 }
 
-declare_interrupts! {
-    #[cfg(all(feature = "dma", feature = "thumbv6"))]
-    DMAC,
-    #[cfg(all(feature = "dma", feature = "thumbv7"))]
-    DMAC_0,
-    #[cfg(all(feature = "dma", feature = "thumbv7"))]
-    DMAC_1,
-    #[cfg(all(feature = "dma", feature = "thumbv7"))]
-    DMAC_2,
-    #[cfg(all(feature = "dma", feature = "thumbv7"))]
-    DMAC_3,
-    #[cfg(all(feature = "dma", feature = "thumbv7"))]
-    DMAC_OTHER,
+// Useful when we need to bind multiple interrupt sources to the same handler
+#[allow(unused_macros)]
+macro_rules! declare_multiple_interrupts {
+    ($(#[$m:meta])* $name:ident, $($irq:ident),+ $(,)?) => {
+        paste! {
+            $(#[$m])*
+            pub enum $name {}
+
+            $(#[$m])*
+            impl $crate::typelevel::Sealed for $name {}
+
+            $(#[$m])*
+            impl $crate::async_hal::interrupts::InterruptSource for $name {
+                unsafe fn enable() {
+                    $($crate::pac::Interrupt::$irq.enable();)+
+                }
+
+                fn disable() {
+                    $($crate::pac::Interrupt::$irq.disable();)+
+                }
+
+                fn unpend() {
+                    $($crate::pac::Interrupt::$irq.unpend();)+
+                }
+            }
+        }
+    };
+}
+
+// ---------- DMAC Interrupts ---------- //
+#[cfg(all(feature = "dma", feature = "thumbv7"))]
+seq!(N in 0..=3{
+    paste! {
+        declare_interrupts!{DMAC_ ~N}
+    }
+});
+#[cfg(all(feature = "dma", feature = "thumbv7"))]
+declare_interrupts!(DMAC_OTHER);
+
+#[cfg(all(feature = "dma", feature = "thumbv6"))]
+declare_interrupts!(DMAC);
+
+// ----------  SERCOM Interrupts ---------- //
+seq!(N in 0..=7 {
+    paste! {
+        #[cfg(all(feature = "has-" sercom~N, feature = "thumbv6"))]
+        declare_interrupts!(SERCOM~N);
+        #[cfg(all(feature = "has-" sercom~N, feature = "thumbv7"))]
+        declare_multiple_interrupts!([<Sercom ~N Irqs>], [<SERCOM ~N _0>], [<SERCOM ~N _1>], [<SERCOM ~N _2>], [<SERCOM ~N _OTHER>]);
+    }
+});
+
+// ----------  TC Interrupts ---------- //
+seq!(N in 0..=5{
+    paste! {
+        declare_interrupts! {
+            #[cfg(feature = "has-" tc~N)]
+            TC~N
+        }
+    }
+});
+
+// ----------  EIC Interrupt ---------- //
+#[cfg(feature = "thumbv6")]
+declare_interrupts!(EIC);
+
+#[cfg(feature = "thumbv7")]
+seq!(N in 0..= 15 {
+    paste! {
+        declare_interrupts! {
+            EIC_EXTINT_~N
+        }
+
+    }
+});
+
+pub trait InterruptSource: crate::typelevel::Sealed {
+    unsafe fn enable();
+
+    fn disable();
+
+    fn unpend();
+}
+
+impl<T: Interrupt> InterruptSource for T {
+    unsafe fn enable() {
+        Self::enable();
+    }
+
+    fn disable() {
+        Self::disable();
+    }
+
+    fn unpend() {
+        Self::unpend();
+    }
 }
 
 /// Type-level interrupt.
@@ -113,7 +198,7 @@ pub trait Interrupt: crate::typelevel::Sealed {
 /// The user must ensure `on_interrupt()` is called every time the interrupt
 /// fires. Drivers must use use [`Binding`] to assert at compile time that the
 /// user has done so.
-pub trait Handler<I: Interrupt> {
+pub trait Handler<I: InterruptSource> {
     /// Interrupt handler function.
     ///
     /// Must be called every time the `I` interrupt fires, synchronously from
@@ -136,7 +221,7 @@ pub trait Handler<I: Interrupt> {
 /// `H::on_interrupt()` to be called every time the `I` interrupt fires.
 ///
 /// This allows drivers to check bindings at compile-time.
-pub unsafe trait Binding<I: Interrupt, H: Handler<I>> {}
+pub unsafe trait Binding<I: InterruptSource, H: Handler<I>> {}
 
 /// Represents an interrupt type that can be configured by the HAL to handle
 /// interrupts.

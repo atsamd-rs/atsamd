@@ -1,10 +1,9 @@
-use crate::{clock::EicClock, pac, typelevel::NoneT};
+use crate::{clock::EicClock, pac};
 
 pub mod pin;
 
-pub struct EIC<N = NoneT> {
+pub struct EIC {
     eic: pac::EIC,
-    _irq_number: N,
 }
 
 impl EIC {
@@ -16,10 +15,7 @@ impl EIC {
             cortex_m::asm::nop();
         }
 
-        EIC {
-            eic,
-            _irq_number: NoneT,
-        }
+        EIC { eic }
     }
 }
 
@@ -27,38 +23,38 @@ impl EIC {
 mod async_api {
     use super::pin::NUM_CHANNELS;
     use super::*;
+    use crate::async_hal::interrupts::{Binding, Handler, Interrupt, EIC as EicInterrupt};
     use crate::util::BitIter;
     use embassy_sync::waitqueue::AtomicWaker;
 
-    impl EIC {
-        pub fn into_future<I, Q>(self, irq: I) -> EIC<Q>
-        where
-            I: cortex_m_interrupt::NvicInterruptRegistration<Q>,
-            Q: cortex_m::interrupt::InterruptNumber,
-        {
-            let irq_number = irq.number();
-            irq.occupy(async_api::on_interrupt);
-            unsafe {
-                cortex_m::peripheral::NVIC::unmask(irq_number);
-            }
+    pub struct InterruptHandler {
+        _private: (),
+    }
 
-            EIC {
-                eic: self.eic,
-                _irq_number: irq_number,
+    impl Handler<EicInterrupt> for InterruptHandler {
+        unsafe fn on_interrupt() {
+            let eic = pac::Peripherals::steal().EIC;
+
+            let pending_interrupts = BitIter(eic.intflag.read().bits());
+            for channel in pending_interrupts {
+                let mask = 1 << channel;
+                // Disable the interrupt but don't clear; will be cleared
+                // when future is next polled.
+                eic.intenclr.write(|w| w.bits(mask));
+                WAKERS[channel as usize].wake();
             }
         }
     }
 
-    pub(super) fn on_interrupt() {
-        let eic = unsafe { pac::Peripherals::steal().EIC };
+    impl EIC {
+        pub fn into_future<I>(self, _irq: I) -> EIC
+        where
+            I: Binding<EicInterrupt, InterruptHandler>,
+        {
+            EicInterrupt::unpend();
+            unsafe { EicInterrupt::enable() };
 
-        let pending_interrupts = BitIter(eic.intflag.read().bits());
-        for channel in pending_interrupts {
-            let mask = 1 << channel;
-            // Disable the interrupt but don't clear; will be cleared
-            // when future is next polled.
-            unsafe { eic.intenclr.write(|w| w.bits(mask)) };
-            WAKERS[channel as usize].wake();
+            EIC { eic: self.eic }
         }
     }
 
@@ -66,3 +62,5 @@ mod async_api {
     const NEW_WAKER: AtomicWaker = AtomicWaker::new();
     pub(super) static WAKERS: [AtomicWaker; NUM_CHANNELS] = [NEW_WAKER; NUM_CHANNELS];
 }
+
+pub use async_api::*;

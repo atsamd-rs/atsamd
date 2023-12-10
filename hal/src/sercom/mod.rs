@@ -79,24 +79,14 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     #[cfg(feature = "dma")]
     const DMA_TX_TRIGGER: TriggerSource;
 
+    type Interrupt: crate::async_hal::interrupts::InterruptSource;
+
     /// Enable the corresponding APB clock
     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL);
 
     /// Get a reference to the sercom from a
     /// [`Peripherals`](crate::pac::Peripherals) block
     fn reg_block(peripherals: &mut Peripherals) -> &crate::pac::sercom0::RegisterBlock;
-
-    /// Interrupt handler for async I2C operarions
-    #[cfg(feature = "async")]
-    fn on_interrupt_i2c();
-
-    /// Interrupt handler for async UART operarions
-    #[cfg(feature = "async")]
-    fn on_interrupt_uart();
-
-    /// Interrupt handler for async SPI operarions
-    #[cfg(feature = "async")]
-    fn on_interrupt_spi();
 
     /// Get a reference to this [`Sercom`]'s associated RX Waker
     #[cfg(feature = "async")]
@@ -134,6 +124,12 @@ macro_rules! sercom {
                     #[cfg(feature = "dma")]
                     const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _TX>];
 
+                    #[cfg(all(feature = "async", feature = "thumbv6"))]
+                    type Interrupt = crate::async_hal::interrupts::SERCOM~N;
+
+                    #[cfg(all(feature = "async", feature = "thumbv7"))]
+                    type Interrupt = crate::async_hal::interrupts::[<Sercom ~N Irqs>];
+
                     #[inline]
                     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
                         ctrl.$apbmask.modify(|_, w| w.[<sercom~N _>]().set_bit());
@@ -144,80 +140,6 @@ macro_rules! sercom {
                         &*peripherals.SERCOM~N
                     }
 
-                    // TODO the ISR gets called twice on every MB request???
-                    #[cfg(feature = "async")]
-                    #[inline]
-                    fn on_interrupt_i2c(){
-                        use self::i2c::Flags;
-                        let mut peripherals = unsafe { crate::pac::Peripherals::steal() };
-                        let i2cm = Self::reg_block(&mut peripherals).i2cm();
-                        let flags_to_check = Flags::all();
-                        let flags_pending = Flags::from_bits_truncate(i2cm.intflag.read().bits());
-
-                        // Disable interrupts, but don't clear the flags. The future will take care of
-                        // clearing flags and re-enabling interrupts when woken.
-                        if flags_to_check.contains(flags_pending) {
-                            i2cm.intenclr.write(|w| unsafe { w.bits(flags_pending.bits()) } );
-                            Self::rx_waker().wake();
-                        }
-                    }
-
-                    #[cfg(feature = "async")]
-                    #[inline]
-                    fn on_interrupt_uart(){
-                        use self::uart::Flags;
-                        unsafe {
-                            let mut peripherals = crate::pac::Peripherals::steal();
-
-                            #[cfg(feature = "thumbv6")]
-                            let uart = Self::reg_block(&mut peripherals).usart();
-                            #[cfg(feature = "thumbv7")]
-                            let uart = Self::reg_block(&mut peripherals).usart_int();
-
-                            let flags_pending = Flags::from_bits_unchecked(uart.intflag.read().bits());
-                            let enabled_flags = Flags::from_bits_unchecked(uart.intenset.read().bits());
-                            uart.intenclr.write(|w| w.bits(flags_pending.bits()));
-
-                            // Disable interrupts, but don't clear the flags. The future will take care of
-                            // clearing flags and re-enabling interrupts when woken.
-                            if (Flags::RX & enabled_flags).intersects(flags_pending) {
-                                Self::rx_waker().wake();
-                            }
-
-                            if (Flags::TX & enabled_flags).intersects(flags_pending) {
-                                Self::tx_waker().wake();
-                            }
-                        }
-                    }
-
-                    #[cfg(feature = "async")]
-                    #[inline]
-                    fn on_interrupt_spi(){
-                        use self::spi::{Flags};
-                        unsafe {
-                            let mut peripherals = crate::pac::Peripherals::steal();
-
-							#[cfg(feature = "thumbv6")]
-                            let spi = Self::reg_block(&mut peripherals).spi();
-                            #[cfg(feature = "thumbv7")]
-                            let spi = Self::reg_block(&mut peripherals).spim();
-
-                            let flags_pending = Flags::from_bits_truncate(spi.intflag.read().bits());
-                            let enabled_flags = Flags::from_bits_truncate(spi.intenset.read().bits());
-
-                            // Disable interrupts, but don't clear the flags. The future will take care of
-                            // clearing flags and re-enabling interrupts when woken.
-                            if (Flags::RX & enabled_flags).contains(flags_pending) {
-                                spi.intenclr.write(|w| w.bits(flags_pending.bits()));
-                                Self::rx_waker().wake();
-                            }
-
-                            if (Flags::TX & enabled_flags).contains(flags_pending) {
-                                spi.intenclr.write(|w| w.bits(flags_pending.bits()));
-                                Self::tx_waker().wake();
-                            }
-                        }
-                    }
                 }
             }
         });
@@ -252,11 +174,8 @@ const NUM_SERCOM: usize = 8;
 
 #[cfg(feature = "async")]
 pub(super) mod async_api {
-    use core::marker::PhantomData;
-    use cortex_m::interrupt::InterruptNumber;
-    use cortex_m_interrupt::NvicInterruptRegistration;
-
     use embassy_sync::waitqueue::AtomicWaker;
+
     #[allow(clippy::declare_interior_mutable_const)]
     const NEW_WAKER: AtomicWaker = AtomicWaker::new();
     /// Waker for a RX event. By convention, if a SERCOM has only one type of
@@ -264,124 +183,4 @@ pub(super) mod async_api {
     pub(super) static RX_WAKERS: [AtomicWaker; super::NUM_SERCOM] = [NEW_WAKER; super::NUM_SERCOM];
     /// Waker for a TX event.
     pub(super) static TX_WAKERS: [AtomicWaker; super::NUM_SERCOM] = [NEW_WAKER; super::NUM_SERCOM];
-
-    #[cfg(feature = "thumbv6")]
-    mod impls {
-
-        use super::*;
-
-        pub struct Interrupts<N, I>
-        where
-            N: InterruptNumber,
-            I: NvicInterruptRegistration<N>,
-        {
-            sercom: I,
-            _num: PhantomData<N>,
-        }
-
-        impl<N, I> Interrupts<N, I>
-        where
-            N: InterruptNumber,
-            I: NvicInterruptRegistration<N>,
-        {
-            pub fn new(sercom: I) -> Self {
-                Self {
-                    sercom,
-                    _num: PhantomData,
-                }
-            }
-
-            /// Occupy all IRQs with the same handler function
-            pub(in super::super) fn occupy(self, handler: fn()) -> InterruptNumbers<N> {
-                let num = self.sercom.number();
-                self.sercom.occupy(handler);
-                unsafe { cortex_m::peripheral::NVIC::unmask(num) };
-
-                InterruptNumbers { _irq: num }
-            }
-        }
-
-        #[derive(Clone)]
-        pub(in super::super) struct InterruptNumbers<N: InterruptNumber> {
-            _irq: N,
-        }
-    }
-
-    #[cfg(feature = "thumbv7")]
-    mod impls {
-        use super::*;
-
-        pub struct Interrupts<N, N0, N1, N2, NOther>
-        where
-            N: InterruptNumber,
-            N0: NvicInterruptRegistration<N>,
-            N1: NvicInterruptRegistration<N>,
-            N2: NvicInterruptRegistration<N>,
-            NOther: NvicInterruptRegistration<N>,
-        {
-            sercom_0: N0,
-            sercom_1: N1,
-            sercom_2: N2,
-            sercom_other: NOther,
-            _num: PhantomData<N>,
-        }
-
-        impl<N, N0, N1, N2, NOther> Interrupts<N, N0, N1, N2, NOther>
-        where
-            N: InterruptNumber,
-            N0: NvicInterruptRegistration<N>,
-            N1: NvicInterruptRegistration<N>,
-            N2: NvicInterruptRegistration<N>,
-            NOther: NvicInterruptRegistration<N>,
-        {
-            pub fn new(sercom_0: N0, sercom_1: N1, sercom_2: N2, sercom_other: NOther) -> Self {
-                Self {
-                    sercom_0,
-                    sercom_1,
-                    sercom_2,
-                    sercom_other,
-                    _num: PhantomData,
-                }
-            }
-
-            /// Occupy all IRQs with the same handler function
-            pub(in super::super) fn occupy(self, handler: fn()) -> InterruptNumbers<N> {
-                let n_0 = self.sercom_0.number();
-                self.sercom_0.occupy(handler);
-                unsafe { cortex_m::peripheral::NVIC::unmask(n_0) };
-
-                let n_1 = self.sercom_1.number();
-                self.sercom_1.occupy(handler);
-                unsafe { cortex_m::peripheral::NVIC::unmask(n_1) };
-
-                let n_2 = self.sercom_2.number();
-                self.sercom_2.occupy(handler);
-                unsafe { cortex_m::peripheral::NVIC::unmask(n_2) };
-
-                let n_other = self.sercom_other.number();
-                self.sercom_other.occupy(handler);
-                unsafe { cortex_m::peripheral::NVIC::unmask(n_other) };
-
-                InterruptNumbers {
-                    _irq_0: n_0,
-                    _irq_1: n_1,
-                    _irq_2: n_2,
-                    _irq_other: n_other,
-                }
-            }
-        }
-
-        #[derive(Clone)]
-        pub(in super::super) struct InterruptNumbers<N: InterruptNumber> {
-            _irq_0: N,
-            _irq_1: N,
-            _irq_2: N,
-            _irq_other: N,
-        }
-    }
-
-    pub use impls::*;
 }
-
-#[cfg(feature = "async")]
-pub use async_api::*;

@@ -1,13 +1,38 @@
 use crate::{
+    async_hal::interrupts::{Binding, Handler, InterruptSource},
     sercom::{
         i2c::{self, AnyConfig, Flags, I2c},
-        InterruptNumbers, Interrupts, Sercom,
+        Sercom,
     },
     typelevel::NoneT,
 };
-use core::task::Poll;
+use core::{marker::PhantomData, task::Poll};
 use cortex_m::interrupt::InterruptNumber;
-use cortex_m_interrupt::NvicInterruptRegistration;
+
+/// Interrupt handler for async I2C operarions
+pub struct InterruptHandler<S: Sercom> {
+    _private: (),
+    _sercom: PhantomData<S>,
+}
+
+impl<S: Sercom> Handler<S::Interrupt> for InterruptHandler<S> {
+    // TODO the ISR gets called twice on every MB request???
+    #[inline]
+    unsafe fn on_interrupt() {
+        let mut peripherals = unsafe { crate::pac::Peripherals::steal() };
+        let i2cm = S::reg_block(&mut peripherals).i2cm();
+        let flags_to_check = Flags::all();
+        let flags_pending = Flags::from_bits_truncate(i2cm.intflag.read().bits());
+
+        // Disable interrupts, but don't clear the flags. The future will take care of
+        // clearing flags and re-enabling interrupts when woken.
+        if flags_to_check.contains(flags_pending) {
+            i2cm.intenclr
+                .write(|w| unsafe { w.bits(flags_pending.bits()) });
+            S::rx_waker().wake();
+        }
+    }
+}
 
 impl<C, S> I2c<C>
 where
@@ -15,41 +40,16 @@ where
     S: Sercom,
 {
     /// Turn an [`I2c`] into an [`I2cFuture`]
-    #[cfg(feature = "thumbv6")]
     #[inline]
-    pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> I2cFuture<C, N>
+    pub fn into_future<I>(self, _interrupts: I) -> I2cFuture<C>
     where
-        I: NvicInterruptRegistration<N>,
-        N: InterruptNumber,
+        I: Binding<S::Interrupt, InterruptHandler<S>>,
     {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
+        S::Interrupt::unpend();
+        unsafe { S::Interrupt::enable() };
 
         I2cFuture {
             i2c: self,
-            _irqs: irq_numbers,
-            _dma_channel: NoneT,
-        }
-    }
-
-    // Turn an [`I2c`] into an [`I2cFuture`]
-    #[cfg(feature = "thumbv7")]
-    #[inline]
-    pub fn into_future<N, N0, N1, N2, NOther>(
-        self,
-        interrupts: Interrupts<N, N0, N1, N2, NOther>,
-    ) -> I2cFuture<C, N>
-    where
-        N: InterruptNumber,
-        N0: NvicInterruptRegistration<N>,
-        N1: NvicInterruptRegistration<N>,
-        N2: NvicInterruptRegistration<N>,
-        NOther: NvicInterruptRegistration<N>,
-    {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_i2c);
-
-        I2cFuture {
-            i2c: self,
-            _irqs: irq_numbers,
             _dma_channel: NoneT,
         }
     }
@@ -58,27 +58,23 @@ where
 /// `async` version of [`I2c`].
 ///
 /// Create this struct by calling [`I2c::into_future`](I2c::into_future).
-pub struct I2cFuture<C, N, D = NoneT>
+pub struct I2cFuture<C, D = NoneT>
 where
     C: AnyConfig,
-    N: InterruptNumber,
 {
     pub(in super::super) i2c: I2c<C>,
-    _irqs: InterruptNumbers<N>,
     _dma_channel: D,
 }
 
 #[cfg(feature = "dma")]
 /// Convenience type for a [`I2cFuture`] in DMA
 /// mode. The type parameter `I` represents the DMA channel ID (`ChX`).
-pub type I2cFutureDma<C, I> =
-    I2cFuture<C, crate::pac::Interrupt, crate::dmac::Channel<I, crate::dmac::ReadyFuture>>;
+pub type I2cFutureDma<C, I> = I2cFuture<C, crate::dmac::Channel<I, crate::dmac::ReadyFuture>>;
 
-impl<C, N, S, D> I2cFuture<C, N, D>
+impl<C, S, D> I2cFuture<C, D>
 where
     C: AnyConfig<Sercom = S>,
     S: Sercom,
-    N: InterruptNumber,
 {
     async fn wait_flags(&mut self, flags_to_wait: Flags) {
         core::future::poll_fn(|cx| {
@@ -106,21 +102,19 @@ where
     }
 }
 
-impl<C, N, S> I2cFuture<C, N, NoneT>
+impl<C, S> I2cFuture<C, NoneT>
 where
     C: AnyConfig<Sercom = S>,
     S: Sercom,
-    N: InterruptNumber,
 {
     /// Use a DMA channel for reads/writes
     #[cfg(feature = "dma")]
     pub fn with_dma_channel<D: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
         self,
         dma_channel: D,
-    ) -> I2cFuture<C, N, D> {
+    ) -> I2cFuture<C, D> {
         I2cFuture {
             i2c: self.i2c,
-            _irqs: self._irqs,
             _dma_channel: dma_channel,
         }
     }
@@ -238,18 +232,16 @@ mod impl_ehal {
     use super::*;
     use embedded_hal_async::i2c::{ErrorType, I2c as I2cTrait, Operation};
 
-    impl<C, N, D> ErrorType for I2cFuture<C, N, D>
+    impl<C, D> ErrorType for I2cFuture<C, D>
     where
         C: AnyConfig,
-        N: InterruptNumber,
     {
         type Error = i2c::Error;
     }
 
-    impl<C, N> I2cTrait for I2cFuture<C, N>
+    impl<C> I2cTrait for I2cFuture<C>
     where
         C: AnyConfig,
-        N: InterruptNumber,
     {
         #[inline]
         async fn read(&mut self, address: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
@@ -292,10 +284,9 @@ mod impl_ehal {
     }
 
     #[cfg(feature = "dma")]
-    impl<C, N, D> I2cTrait for I2cFuture<C, N, D>
+    impl<C, D> I2cTrait for I2cFuture<C, D>
     where
         C: AnyConfig,
-        N: InterruptNumber,
         D: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
     {
         #[inline]
@@ -345,11 +336,10 @@ mod dma {
     use crate::dmac::{AnyChannel, ReadyFuture};
     use crate::sercom::async_dma::{read_dma, write_dma, SercomPtr};
 
-    impl<C, N, S, D> I2cFuture<C, N, D>
+    impl<C, S, D> I2cFuture<C, D>
     where
         C: AnyConfig<Sercom = S>,
         S: Sercom,
-        N: InterruptNumber,
         D: AnyChannel<Status = ReadyFuture>,
     {
         fn sercom_ptr(&self) -> SercomPtr<i2c::Word> {

@@ -1,15 +1,49 @@
 use crate::{
-    pac::Interrupt,
+    async_hal::interrupts::{Binding, Handler, InterruptSource},
     sercom::{
         spi::{Capability, DataWidth, Duplex, Error, Flags, Rx, Spi, Tx, ValidConfig},
-        InterruptNumbers, Interrupts, Sercom,
+        Sercom,
     },
     typelevel::NoneT,
 };
-use core::task::Poll;
+use core::{marker::PhantomData, task::Poll};
 use cortex_m::interrupt::InterruptNumber;
-use cortex_m_interrupt::NvicInterruptRegistration;
 use num_traits::{AsPrimitive, PrimInt};
+
+/// Interrupt handler for async SPI operarions
+pub struct InterruptHandler<S: Sercom> {
+    _private: (),
+    _sercom: PhantomData<S>,
+}
+
+impl<S: Sercom> Handler<S::Interrupt> for InterruptHandler<S> {
+    #[inline]
+    unsafe fn on_interrupt() {
+        unsafe {
+            let mut peripherals = crate::pac::Peripherals::steal();
+
+            #[cfg(feature = "thumbv6")]
+            let spi = S::reg_block(&mut peripherals).spi();
+            #[cfg(feature = "thumbv7")]
+            let spi = S::reg_block(&mut peripherals).spim();
+
+            let flags_pending = Flags::from_bits_truncate(spi.intflag.read().bits());
+            let enabled_flags = Flags::from_bits_truncate(spi.intenset.read().bits());
+
+            // Disable interrupts, but don't clear the flags. The future will take care of
+            // clearing flags and re-enabling interrupts when woken.
+            if (Flags::RX & enabled_flags).contains(flags_pending) {
+                spi.intenclr.write(|w| w.bits(flags_pending.bits()));
+                S::rx_waker().wake();
+            }
+
+            if (Flags::TX & enabled_flags).contains(flags_pending) {
+                spi.intenclr.write(|w| w.bits(flags_pending.bits()));
+                S::tx_waker().wake();
+            }
+        }
+    }
+}
 
 impl<C, A, S> Spi<C, A>
 where
@@ -21,51 +55,19 @@ where
     /// [`Spi`] is [`Duplex`], reading words need to be accompanied with sending
     /// a no-op word. By default it is set to 0x00, but you can configure it
     /// by using the [`nop_word`](SpiFuture::nop_word) method.
-    #[cfg(feature = "thumbv6")]
     #[inline]
-    pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> SpiFuture<C, A, N>
+    pub fn into_future<I>(self, _interrupts: I) -> SpiFuture<C, A>
     where
         C::Word: Copy,
         u8: AsPrimitive<C::Word>,
-        I: NvicInterruptRegistration<N>,
-        N: InterruptNumber,
+        I: Binding<S::Interrupt, InterruptHandler<S>>,
     {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_spi);
+        S::Interrupt::unpend();
+        unsafe { S::Interrupt::enable() };
 
         SpiFuture {
             spi: self,
             nop_word: 0x00_u8.as_(),
-            _irqs: irq_numbers,
-            _rx_channel: NoneT,
-            _tx_channel: NoneT,
-        }
-    }
-
-    /// Turn an [`Spi`] into an [`SpiFuture`]. In cases where the underlying
-    /// [`Spi`] is [`Duplex`], reading words need to be accompanied with sending
-    /// a no-op word. By default it is set to 0x00, but you can configure it
-    /// by using the [`nop_word`](SpiFuture::nop_word) method.
-    #[cfg(feature = "thumbv7")]
-    #[inline]
-    pub fn into_future<N, N0, N1, N2, NOther>(
-        self,
-        interrupts: Interrupts<N, N0, N1, N2, NOther>,
-    ) -> SpiFuture<C, A, N>
-    where
-        C::Word: Copy,
-        u8: AsPrimitive<C::Word>,
-        N: InterruptNumber,
-        N0: NvicInterruptRegistration<N>,
-        N1: NvicInterruptRegistration<N>,
-        N2: NvicInterruptRegistration<N>,
-        NOther: NvicInterruptRegistration<N>,
-    {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_spi);
-
-        SpiFuture {
-            spi: self,
-            nop_word: 0x00_u8.as_(),
-            _irqs: irq_numbers,
             _rx_channel: NoneT,
             _tx_channel: NoneT,
         }
@@ -75,15 +77,13 @@ where
 /// `async` version of [`Spi`].
 ///
 /// Create this struct by calling [`I2c::into_future`](I2c::into_future).
-pub struct SpiFuture<C, A, N, R = NoneT, T = NoneT>
+pub struct SpiFuture<C, A, R = NoneT, T = NoneT>
 where
     C: ValidConfig,
     A: Capability,
-    N: InterruptNumber,
 {
     spi: Spi<C, A>,
     nop_word: C::Word,
-    _irqs: InterruptNumbers<N>,
     _rx_channel: R,
     _tx_channel: T,
 }
@@ -101,13 +101,13 @@ where
 }
 
 /// Convenience type for a [`SpiFuture`] with RX and TX capabilities
-pub type SpiFutureDuplex<C> = SpiFuture<C, Duplex, Interrupt>;
+pub type SpiFutureDuplex<C> = SpiFuture<C, Duplex>;
 
 /// Convenience type for a [`SpiFuture`] with RX capabilities
-pub type SpiFutureRx<C> = SpiFuture<C, Rx, Interrupt>;
+pub type SpiFutureRx<C> = SpiFuture<C, Rx>;
 
 /// Convenience type for a [`SpiFuture`] with TX capabilities
-pub type SpiFutureTx<C> = SpiFuture<C, Tx, Interrupt>;
+pub type SpiFutureTx<C> = SpiFuture<C, Tx>;
 
 #[cfg(feature = "dma")]
 /// Convenience type for a [`SpiFuture`] with RX and TX capabilities in DMA
@@ -116,7 +116,6 @@ pub type SpiFutureTx<C> = SpiFuture<C, Tx, Interrupt>;
 pub type SpiFutureDuplexDma<C, R, T> = SpiFuture<
     C,
     Duplex,
-    Interrupt,
     crate::dmac::Channel<R, crate::dmac::ReadyFuture>,
     crate::dmac::Channel<T, crate::dmac::ReadyFuture>,
 >;
@@ -125,19 +124,18 @@ pub type SpiFutureDuplexDma<C, R, T> = SpiFuture<
 /// Convenience type for a [`SpiFuture`] with RX capabilities in DMA mode. The
 /// type parameter `R` represents the RX DMA channel ID (`ChX`).
 pub type SpiFutureRxDma<C, R> =
-    SpiFuture<C, Rx, Interrupt, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
+    SpiFuture<C, Rx, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
 
 #[cfg(feature = "dma")]
 /// Convenience type for a [`SpiFuture`] with TX capabilities in DMA mode. The
 /// type parameter `T` represents the TX DMA channel ID (`ChX`).
 pub type SpiFutureTxDma<C, T> =
-    SpiFuture<C, Tx, Interrupt, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
+    SpiFuture<C, Tx, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
 
-impl<C, A, N, S, R, T> SpiFuture<C, A, N, R, T>
+impl<C, A, S, R, T> SpiFuture<C, A, R, T>
 where
     C: ValidConfig<Sercom = S>,
     A: Capability,
-    N: InterruptNumber,
     S: Sercom,
 {
     /// Return the underlying [`Spi`].
@@ -183,12 +181,11 @@ where
     }
 }
 
-impl<C, N, S> SpiFuture<C, Duplex, N>
+impl<C, S> SpiFuture<C, Duplex>
 where
     C: ValidConfig<Sercom = S>,
     C::Word: PrimInt + AsPrimitive<DataWidth>,
     DataWidth: AsPrimitive<C::Word>,
-    N: InterruptNumber,
     S: Sercom,
 {
     /// Read words into a buffer asynchronously, word by word. Since we are
@@ -216,12 +213,11 @@ where
     }
 }
 
-impl<C, N, S, R, T> SpiFuture<C, Duplex, N, R, T>
+impl<C, S, R, T> SpiFuture<C, Duplex, R, T>
 where
     C: ValidConfig<Sercom = S>,
     C::Word: PrimInt + AsPrimitive<DataWidth>,
     DataWidth: AsPrimitive<C::Word>,
-    N: InterruptNumber,
     S: Sercom,
 {
     /// Read and write a single word to the bus simultaneously.
@@ -260,11 +256,10 @@ where
     }
 }
 
-impl<C, A, N> AsRef<Spi<C, A>> for SpiFuture<C, A, N>
+impl<C, A> AsRef<Spi<C, A>> for SpiFuture<C, A>
 where
     C: ValidConfig,
     A: Capability,
-    N: InterruptNumber,
 {
     #[inline]
     fn as_ref(&self) -> &Spi<C, A> {
@@ -289,24 +284,22 @@ mod impl_ehal {
     use crate::sercom::spi::Error;
     use embedded_hal_async::spi::{ErrorType, SpiBus};
 
-    impl<C, A, N, S, R, T> ErrorType for SpiFuture<C, A, N, R, T>
+    impl<C, A, S, R, T> ErrorType for SpiFuture<C, A, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
         DataWidth: AsPrimitive<C::Word>,
         A: Capability,
-        N: InterruptNumber,
         S: Sercom,
     {
         type Error = Error;
     }
 
-    impl<C, N, S> SpiBus<C::Word> for SpiFuture<C, Duplex, N>
+    impl<C, S> SpiBus<C::Word> for SpiFuture<C, Duplex>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
         DataWidth: AsPrimitive<C::Word>,
-        N: InterruptNumber,
         S: Sercom,
     {
         async fn flush(&mut self) -> Result<(), Self::Error> {
@@ -343,13 +336,12 @@ mod impl_ehal {
     }
 
     #[cfg(feature = "dma")]
-    impl<C, N, S, W, R, T> SpiBus<W> for SpiFuture<C, Duplex, N, R, T>
+    impl<C, S, W, R, T> SpiBus<W> for SpiFuture<C, Duplex, R, T>
     where
         C: ValidConfig<Sercom = S, Word = W>,
         C::Word: PrimInt + AsPrimitive<DataWidth> + crate::dmac::Beat,
         C::Size: crate::sercom::spi::Size<Word = C::Word>,
         DataWidth: AsPrimitive<C::Word>,
-        N: InterruptNumber,
         S: Sercom + 'static,
         R: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
         T: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>,
@@ -431,12 +423,11 @@ mod dma {
         }
     }
 
-    impl<C, N, S, R> SpiFuture<C, Rx, N, R, NoneT>
+    impl<C, S, R> SpiFuture<C, Rx, R, NoneT>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
         DataWidth: AsPrimitive<C::Word>,
-        N: InterruptNumber,
         S: Sercom,
     {
         /// Add a DMA channel for receiving transactions
@@ -444,23 +435,21 @@ mod dma {
         pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
             self,
             rx_channel: Chan,
-        ) -> SpiFuture<C, Rx, N, Chan, NoneT> {
+        ) -> SpiFuture<C, Rx, Chan, NoneT> {
             SpiFuture {
                 spi: self.spi,
                 nop_word: self.nop_word,
-                _irqs: self._irqs,
                 _tx_channel: self._tx_channel,
                 _rx_channel: rx_channel,
             }
         }
     }
 
-    impl<C, N, S, T> SpiFuture<C, Tx, N, NoneT, T>
+    impl<C, S, T> SpiFuture<C, Tx, NoneT, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
         DataWidth: AsPrimitive<C::Word>,
-        N: InterruptNumber,
         S: Sercom,
     {
         /// Add a DMA channel for receiving transactions
@@ -468,23 +457,21 @@ mod dma {
         pub fn with_tx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
             self,
             tx_channel: Chan,
-        ) -> SpiFuture<C, Tx, N, NoneT, Chan> {
+        ) -> SpiFuture<C, Tx, NoneT, Chan> {
             SpiFuture {
                 spi: self.spi,
                 nop_word: self.nop_word,
-                _irqs: self._irqs,
                 _rx_channel: self._rx_channel,
                 _tx_channel: tx_channel,
             }
         }
     }
 
-    impl<C, N, S, R, T> SpiFuture<C, Duplex, N, R, T>
+    impl<C, S, R, T> SpiFuture<C, Duplex, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth>,
         DataWidth: AsPrimitive<C::Word>,
-        N: InterruptNumber,
         S: Sercom,
     {
         /// Add a DMA channel for receiving transactions
@@ -493,7 +480,7 @@ mod dma {
             self,
             rx_channel: ChanRx,
             tx_channel: ChanTx,
-        ) -> SpiFuture<C, Duplex, N, ChanRx, ChanTx>
+        ) -> SpiFuture<C, Duplex, ChanRx, ChanTx>
         where
             ChanRx: AnyChannel<Status = ReadyFuture>,
             ChanTx: AnyChannel<Status = ReadyFuture>,
@@ -501,20 +488,18 @@ mod dma {
             SpiFuture {
                 spi: self.spi,
                 nop_word: self.nop_word,
-                _irqs: self._irqs,
                 _rx_channel: rx_channel,
                 _tx_channel: tx_channel,
             }
         }
     }
 
-    impl<C, N, S, R, T> SpiFuture<C, Duplex, N, R, T>
+    impl<C, S, R, T> SpiFuture<C, Duplex, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
         C::Size: Size<Word = C::Word>,
         DataWidth: AsPrimitive<C::Word>,
-        N: InterruptNumber,
         R: AnyChannel<Status = ReadyFuture>,
         T: AnyChannel<Status = ReadyFuture>,
         S: Sercom + 'static,

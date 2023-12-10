@@ -99,21 +99,32 @@ impl From<ConfigurableEIC> for EIC {
 mod async_api {
     use super::pin::NUM_CHANNELS;
     use super::*;
+    use crate::async_hal::interrupts::Handler;
     use crate::util::BitIter;
     use embassy_sync::waitqueue::AtomicWaker;
 
-    pub(super) fn on_interrupt() {
-        let eic = unsafe { pac::Peripherals::steal().EIC };
-
-        let pending_interrupts = BitIter(eic.intflag.read().bits());
-        for channel in pending_interrupts {
-            let mask = 1 << channel;
-            // Disable the interrupt but don't clear; will be cleared
-            // when future is next polled.
-            unsafe { eic.intenclr.write(|w| w.bits(mask)) };
-            WAKERS[channel as usize].wake();
-        }
+    pub struct InterruptHandler {
+        _private: (),
     }
+
+    seq_macro::seq!(N in 0..=15 {
+        paste::paste! {
+            impl Handler<crate::async_hal::interrupts::[<EIC_EXTINT_ ~N>]> for InterruptHandler {
+                unsafe fn on_interrupt() {
+                    let eic = unsafe { pac::Peripherals::steal().EIC };
+
+                    let pending_interrupts = BitIter(eic.intflag.read().bits());
+                    for channel in pending_interrupts {
+                        let mask = 1 << channel;
+                        // Disable the interrupt but don't clear; will be cleared
+                        // when future is next polled.
+                        unsafe { eic.intenclr.write(|w| w.bits(mask)) };
+                        WAKERS[channel as usize].wake();
+                    }
+                }
+            }
+        }
+    });
 
     #[allow(clippy::declare_interior_mutable_const)]
     const NEW_WAKER: AtomicWaker = AtomicWaker::new();

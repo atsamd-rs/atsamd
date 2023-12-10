@@ -5,19 +5,26 @@
 use defmt_rtt as _;
 use panic_probe as _;
 
+use atsamd_hal::sercom::Sercom0;
+
+atsamd_hal::bind_interrupts!(struct Irqs {
+    SERCOM0 => atsamd_hal::sercom::uart::InterruptHandler<Sercom0>;
+    DMAC => atsamd_hal::dmac::InterruptHandler;
+});
+
 #[rtic::app(device = bsp::pac, dispatchers = [I2S, AC])]
 mod app {
-    use bsp::{hal, pac, periph_alias, pin_alias};
+    use super::*;
+    use bsp::{hal, periph_alias, pin_alias};
     use feather_m0 as bsp;
     use fugit::MillisDuration;
     use hal::{
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
-        dmac::{self, Ch0, Ch1, DmaController, PriorityLevel},
+        dmac::{Ch0, Ch1, DmaController, PriorityLevel},
         prelude::*,
         rtc::{Count32Mode, Rtc},
         sercom::{
             uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},
-            Interrupts,
         },
     };
 
@@ -50,11 +57,6 @@ mod app {
         let (uart_rx, uart_tx) = (pin_alias!(pins.uart_rx), pin_alias!(pins.uart_tx));
         let uart_sercom = periph_alias!(peripherals.uart_sercom);
 
-        let sercom0_irq = Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(
-            pac::Interrupt::SERCOM0,
-            4
-        ));
-
         enable_internal_32kosc(&mut peripherals.SYSCTRL);
         let timer_clock = clocks
             .configure_gclk_divider_and_source(ClockGenId::GCLK2, 1, ClockSource::OSC32K, false)
@@ -63,13 +65,8 @@ mod app {
 
         // Initialize DMA Controller
         let dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
-        // Get handle to IRQ
-        let dmac_irq = dmac::Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(
-            pac::Interrupt::DMAC,
-            3
-        ));
         // Turn dmac into an async controller
-        let mut dmac = dmac.into_future(dmac_irq);
+        let mut dmac = dmac.into_future(Irqs);
         // Get individual handles to DMA channels
         let channels = dmac.split();
 
@@ -83,13 +80,13 @@ mod app {
 
         let (uart_rx, uart_tx) = bsp::uart(
             &mut clocks,
-            9600.hz(),
+            9600.Hz(),
             uart_sercom,
             &mut peripherals.PM,
             uart_rx,
             uart_tx,
         )
-        .into_future(sercom0_irq)
+        .into_future(Irqs)
         .with_rx_dma_channel(channel0)
         .with_tx_dma_channel(channel1)
         .split();

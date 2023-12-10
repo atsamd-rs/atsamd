@@ -54,7 +54,6 @@ void = {version = "1.0", default-features = false}
 # Optional depdendencies
 #===============================================================================
 
-cortex-m-interrupt = {version = "0.2.1-git", git = "https://github.com/datdenkikniet/cortex-m-interrupt.git", rev = "9baa936", optional = true}
 embassy-sync = {version = "0.4", optional = true}
 embedded-hal-alpha = {package = "embedded-hal", version = "1.0.0-rc.1"}
 embedded-hal-async = {version = "1.0.0-rc.2", optional = true, features = ["defmt-03"]}
@@ -194,7 +193,6 @@ unproven = ["embedded-hal/unproven"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
 async = [
-    "cortex-m-interrupt",
     "unproven",
     "embassy-sync",
     "embedded-hal-async",

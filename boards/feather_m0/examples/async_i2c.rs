@@ -5,20 +5,25 @@
 use defmt_rtt as _;
 use panic_probe as _;
 
+use atsamd_hal::sercom::Sercom3;
+
+atsamd_hal::bind_interrupts!(struct Irqs {
+    SERCOM3 => atsamd_hal::sercom::i2c::InterruptHandler<Sercom3>;
+    DMAC => atsamd_hal::dmac::InterruptHandler;
+});
+
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
-    use bsp::{hal, pac};
+    use super::*;
+    use bsp::hal;
     use feather_m0 as bsp;
     use fugit::MillisDuration;
     use hal::{
         clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
-        dmac::{self, Ch0, DmaController, PriorityLevel},
+        dmac::{Ch0, DmaController, PriorityLevel},
         prelude::*,
         rtc::{Count32Mode, Rtc},
-        sercom::{
-            i2c::{self, Config, I2cFutureDma},
-            Interrupts,
-        },
+        sercom::i2c::{self, Config, I2cFutureDma},
     };
 
     #[monotonic(binds = RTC, default = true)]
@@ -49,12 +54,6 @@ mod app {
         // Take SDA and SCL
         let (sda, scl) = (pins.sda, pins.scl);
 
-        let sercom3_irq = Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(
-            pac::Interrupt::SERCOM3,
-            2
-        ));
-        // tc4_irq.set_priority(2);
-
         enable_internal_32kosc(&mut peripherals.SYSCTRL);
         let timer_clock = clocks
             .configure_gclk_divider_and_source(ClockGenId::GCLK2, 1, ClockSource::OSC32K, false)
@@ -67,13 +66,9 @@ mod app {
 
         // Initialize DMA Controller
         let dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
-        // Get handle to IRQ
-        let dmac_irq = dmac::Interrupts::new(cortex_m_interrupt::take_nvic_interrupt!(
-            pac::Interrupt::DMAC,
-            2
-        ));
+
         // Turn dmac into an async controller
-        let mut dmac = dmac.into_future(dmac_irq);
+        let mut dmac = dmac.into_future(Irqs);
         // Get individual handles to DMA channels
         let channels = dmac.split();
 
@@ -89,9 +84,9 @@ mod app {
             pads,
             sercom3_clock.freq(),
         )
-        .baud(100.khz())
+        .baud(100.kHz())
         .enable()
-        .into_future(sercom3_irq)
+        .into_future(Irqs)
         .with_dma_channel(channel0);
 
         async_task::spawn().ok();

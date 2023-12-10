@@ -1,18 +1,51 @@
 use crate::{
-    pac::Interrupt,
+    async_hal::interrupts::{Binding, Handler, InterruptSource},
     sercom::{
         uart::{
             Capability, DataReg, Duplex, Error, Flags, Receive, Rx, RxDuplex, SingleOwner,
             Transmit, Tx, TxDuplex, Uart, ValidConfig,
         },
-        InterruptNumbers, Interrupts, Sercom,
+        Sercom,
     },
     typelevel::NoneT,
 };
 use core::{marker::PhantomData, task::Poll};
 use cortex_m::interrupt::InterruptNumber;
-use cortex_m_interrupt::NvicInterruptRegistration;
 use num_traits::AsPrimitive;
+
+/// Interrupt handler for async UART operarions
+pub struct InterruptHandler<S: Sercom> {
+    _private: (),
+    _sercom: PhantomData<S>,
+}
+
+impl<S: Sercom> Handler<S::Interrupt> for InterruptHandler<S> {
+    #[inline]
+    unsafe fn on_interrupt() {
+        unsafe {
+            let mut peripherals = crate::pac::Peripherals::steal();
+
+            #[cfg(feature = "thumbv6")]
+            let uart = S::reg_block(&mut peripherals).usart();
+            #[cfg(feature = "thumbv7")]
+            let uart = S::reg_block(&mut peripherals).usart_int();
+
+            let flags_pending = Flags::from_bits_unchecked(uart.intflag.read().bits());
+            let enabled_flags = Flags::from_bits_unchecked(uart.intenset.read().bits());
+            uart.intenclr.write(|w| w.bits(flags_pending.bits()));
+
+            // Disable interrupts, but don't clear the flags. The future will take care of
+            // clearing flags and re-enabling interrupts when woken.
+            if (Flags::RX & enabled_flags).intersects(flags_pending) {
+                S::rx_waker().wake();
+            }
+
+            if (Flags::TX & enabled_flags).intersects(flags_pending) {
+                S::tx_waker().wake();
+            }
+        }
+    }
+}
 
 impl<C, D, S> Uart<C, D>
 where
@@ -23,44 +56,16 @@ where
     /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available for
     /// [`Uart`]s which have a [`Tx`](crate::sercom::uart::Tx),
     /// [`Rx`](crate::sercom::uart::Rx) or [`Duplex`] [`Capability`].
-    #[cfg(feature = "thumbv6")]
     #[inline]
-    pub fn into_future<N, I>(self, interrupts: Interrupts<N, I>) -> UartFuture<C, D, N>
+    pub fn into_future<I>(self, _interrupts: I) -> UartFuture<C, D>
     where
-        I: NvicInterruptRegistration<N>,
-        N: InterruptNumber,
+        I: Binding<S::Interrupt, InterruptHandler<S>>,
     {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_uart);
+        S::Interrupt::unpend();
+        unsafe { S::Interrupt::enable() };
 
         UartFuture {
             uart: self,
-            _irqs: irq_numbers,
-            rx_channel: NoneT,
-            tx_channel: NoneT,
-        }
-    }
-
-    /// Turn a [`Uart`] into a [`UartFuture`]. This method is only available for
-    /// [`Uart`]s which have a [`Tx`](crate::sercom::uart::Tx),
-    /// [`Rx`](crate::sercom::uart::Rx) or [`Duplex`] [`Capability`].
-    #[cfg(feature = "thumbv7")]
-    #[inline]
-    pub fn into_future<N, N0, N1, N2, NOther>(
-        self,
-        interrupts: Interrupts<N, N0, N1, N2, NOther>,
-    ) -> UartFuture<C, D, N>
-    where
-        N: InterruptNumber,
-        N0: NvicInterruptRegistration<N>,
-        N1: NvicInterruptRegistration<N>,
-        N2: NvicInterruptRegistration<N>,
-        NOther: NvicInterruptRegistration<N>,
-    {
-        let irq_numbers = interrupts.occupy(S::on_interrupt_uart);
-
-        UartFuture {
-            uart: self,
-            _irqs: irq_numbers,
             rx_channel: NoneT,
             tx_channel: NoneT,
         }
@@ -82,32 +87,30 @@ where
 /// `async` version of [`Uart`].
 ///
 /// Create this struct by calling [`I2c::into_future`](I2c::into_future).
-pub struct UartFuture<C, D, N, R = NoneT, T = NoneT>
+pub struct UartFuture<C, D, R = NoneT, T = NoneT>
 where
     C: ValidConfig,
     D: Capability,
-    N: InterruptNumber,
 {
     uart: Uart<C, D>,
-    _irqs: InterruptNumbers<N>,
     rx_channel: R,
     tx_channel: T,
 }
 
 /// Convenience type for a [`UartFuture`] with RX and TX capabilities
-pub type UartFutureDuplex<C> = UartFuture<C, Duplex, Interrupt>;
+pub type UartFutureDuplex<C> = UartFuture<C, Duplex>;
 
 /// Convenience type for a RX-only [`UartFuture`].
-pub type UartFutureHalfRx<C> = UartFuture<C, Rx, Interrupt>;
+pub type UartFutureHalfRx<C> = UartFuture<C, Rx>;
 
 /// Convenience type for the RX half of a [`Duplex`] [`UartFuture`].
-pub type UartFutureRx<C> = UartFuture<C, RxDuplex, Interrupt>;
+pub type UartFutureRx<C> = UartFuture<C, RxDuplex>;
 
 /// Convenience type for a TX-only [`UartFuture`].
-pub type UartFutureTx<C> = UartFuture<C, Tx, Interrupt>;
+pub type UartFutureTx<C> = UartFuture<C, Tx>;
 
 /// Convenience type for the TX half of a [`Duplex`] [`UartFuture`].
-pub type UartFutureTxDuplex<C> = UartFuture<C, TxDuplex, Interrupt>;
+pub type UartFutureTxDuplex<C> = UartFuture<C, TxDuplex>;
 
 #[cfg(feature = "dma")]
 /// Convenience type for a [`UartFuture`] with RX and TX capabilities in DMA
@@ -116,7 +119,6 @@ pub type UartFutureTxDuplex<C> = UartFuture<C, TxDuplex, Interrupt>;
 pub type UartFutureDuplexDma<C, R, T> = UartFuture<
     C,
     Duplex,
-    Interrupt,
     crate::dmac::Channel<R, crate::dmac::ReadyFuture>,
     crate::dmac::Channel<T, crate::dmac::ReadyFuture>,
 >;
@@ -125,30 +127,29 @@ pub type UartFutureDuplexDma<C, R, T> = UartFuture<
 /// Convenience type for a RX-only [`UartFuture`] in DMA mode.
 /// The type parameter `R` represents the RX DMA channel ID (`ChX`).
 pub type UartFutureRxDma<C, R> =
-    UartFuture<C, Rx, Interrupt, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
+    UartFuture<C, Rx, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
 
 #[cfg(feature = "dma")]
 /// Convenience type for the RX half of a [`Duplex`] [`UartFuture`] in DMA mode.
 /// The type parameter `R` represents the RX DMA channel ID (`ChX`).
 pub type UartFutureRxDuplexDma<C, R> =
-    UartFuture<C, RxDuplex, Interrupt, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
+    UartFuture<C, RxDuplex, crate::dmac::Channel<R, crate::dmac::ReadyFuture>, NoneT>;
 
 #[cfg(feature = "dma")]
 /// Convenience type for a TX-only [`UartFuture`] in DMA mode.
 /// The type parameter `T` represents the TX DMA channel ID (`ChX`).
 pub type UartFutureTxDma<C, T> =
-    UartFuture<C, Tx, Interrupt, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
+    UartFuture<C, Tx, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
 
 #[cfg(feature = "dma")]
 /// Convenience type for the TX half of a [`Duplex`] [`UartFuture`] in DMA mode.
 /// The type parameter `T` represents the TX DMA channel ID (`ChX`).
 pub type UartFutureTxDuplexDma<C, T> =
-    UartFuture<C, TxDuplex, Interrupt, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
+    UartFuture<C, TxDuplex, NoneT, crate::dmac::Channel<T, crate::dmac::ReadyFuture>>;
 
-impl<C, N, R, T> UartFuture<C, Duplex, N, R, T>
+impl<C, R, T> UartFuture<C, Duplex, R, T>
 where
     C: ValidConfig,
-    N: InterruptNumber,
 {
     /// Split the [`UartFuture`] into [`RxDuplex`]and [`TxDuplex`] halves.
     #[inline]
@@ -156,8 +157,8 @@ where
     pub fn split(
         self,
     ) -> (
-        UartFuture<C, RxDuplex, N, R, NoneT>,
-        UartFuture<C, TxDuplex, N, NoneT, T>,
+        UartFuture<C, RxDuplex, R, NoneT>,
+        UartFuture<C, TxDuplex, NoneT, T>,
     ) {
         let config = unsafe { core::ptr::read(&self.uart.config) };
         (
@@ -166,7 +167,6 @@ where
                     config: self.uart.config,
                     capability: PhantomData,
                 },
-                _irqs: self._irqs.clone(),
                 rx_channel: self.rx_channel,
                 tx_channel: NoneT,
             },
@@ -175,7 +175,6 @@ where
                     config,
                     capability: PhantomData,
                 },
-                _irqs: self._irqs,
                 tx_channel: self.tx_channel,
                 rx_channel: NoneT,
             },
@@ -186,26 +185,24 @@ where
     /// `UartFuture<C, Duplex>`
     #[inline]
     pub fn join(
-        rx: UartFuture<C, RxDuplex, N, R, NoneT>,
-        tx: UartFuture<C, TxDuplex, N, NoneT, T>,
+        rx: UartFuture<C, RxDuplex, R, NoneT>,
+        tx: UartFuture<C, TxDuplex, NoneT, T>,
     ) -> Self {
         Self {
             uart: Uart {
                 config: rx.uart.config,
                 capability: PhantomData,
             },
-            _irqs: rx._irqs,
             rx_channel: rx.rx_channel,
             tx_channel: tx.tx_channel,
         }
     }
 }
 
-impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
+impl<C, D, S, R, T> UartFuture<C, D, R, T>
 where
     C: ValidConfig<Sercom = S>,
     D: Capability,
-    N: InterruptNumber,
     S: Sercom,
 {
     #[inline]
@@ -242,11 +239,10 @@ where
     }
 }
 
-impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
+impl<C, D, S, R, T> UartFuture<C, D, R, T>
 where
     C: ValidConfig<Sercom = S>,
     D: Receive,
-    N: InterruptNumber,
     S: Sercom,
     DataReg: AsPrimitive<C::Word>,
 {
@@ -256,10 +252,9 @@ where
     pub fn with_rx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
         self,
         rx_channel: Chan,
-    ) -> UartFuture<C, D, N, Chan, T> {
+    ) -> UartFuture<C, D, Chan, T> {
         UartFuture {
             uart: self.uart,
-            _irqs: self._irqs,
             tx_channel: self.tx_channel,
             rx_channel,
         }
@@ -274,11 +269,10 @@ where
     }
 }
 
-impl<C, D, N, S, T> UartFuture<C, D, N, NoneT, T>
+impl<C, D, S, T> UartFuture<C, D, NoneT, T>
 where
     C: ValidConfig<Sercom = S>,
     D: Receive,
-    N: InterruptNumber,
     S: Sercom,
     DataReg: AsPrimitive<C::Word>,
 {
@@ -302,11 +296,10 @@ where
     }
 }
 
-impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
+impl<C, D, S, R, T> UartFuture<C, D, R, T>
 where
     C: ValidConfig<Sercom = S>,
     D: Transmit,
-    N: InterruptNumber,
     S: Sercom,
 {
     /// Add a DMA channel for sending words
@@ -315,10 +308,9 @@ where
     pub fn with_tx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
         self,
         tx_channel: Chan,
-    ) -> UartFuture<C, D, N, R, Chan> {
+    ) -> UartFuture<C, D, R, Chan> {
         UartFuture {
             uart: self.uart,
-            _irqs: self._irqs,
             rx_channel: self.rx_channel,
             tx_channel,
         }
@@ -332,11 +324,10 @@ where
     }
 }
 
-impl<C, D, N, S, R> UartFuture<C, D, N, R, NoneT>
+impl<C, D, S, R> UartFuture<C, D, R, NoneT>
 where
     C: ValidConfig<Sercom = S>,
     D: Transmit,
-    N: InterruptNumber,
     S: Sercom,
 {
     /// Write the specified number of [`Word`](crate::sercom::uart::Word)s from
@@ -349,22 +340,20 @@ where
     }
 }
 
-impl<C, D, N, R, T> AsRef<Uart<C, D>> for UartFuture<C, D, N, R, T>
+impl<C, D, R, T> AsRef<Uart<C, D>> for UartFuture<C, D, R, T>
 where
     C: ValidConfig,
     D: Capability,
-    N: InterruptNumber,
 {
     fn as_ref(&self) -> &Uart<C, D> {
         &self.uart
     }
 }
 
-impl<C, D, N, R, T> AsMut<Uart<C, D>> for UartFuture<C, D, N, R, T>
+impl<C, D, R, T> AsMut<Uart<C, D>> for UartFuture<C, D, R, T>
 where
     C: ValidConfig,
     D: Capability,
-    N: InterruptNumber,
 {
     fn as_mut(&mut self) -> &mut Uart<C, D> {
         &mut self.uart
@@ -382,12 +371,11 @@ mod dma {
         },
     };
 
-    impl<C, A, N, S, R, T> UartFuture<C, A, N, R, T>
+    impl<C, A, S, R, T> UartFuture<C, A, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: Beat,
         A: Capability,
-        N: InterruptNumber,
         S: Sercom + 'static,
     {
         fn sercom_ptr(&self) -> SercomPtr<C::Word> {
@@ -395,12 +383,11 @@ mod dma {
         }
     }
 
-    impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
+    impl<C, D, S, R, T> UartFuture<C, D, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: Beat,
         D: Receive,
-        N: InterruptNumber,
         S: Sercom + 'static,
         DataReg: AsPrimitive<C::Word>,
         R: AnyChannel<Status = ReadyFuture>,
@@ -421,12 +408,11 @@ mod dma {
         }
     }
 
-    impl<C, D, N, S, R, T> UartFuture<C, D, N, R, T>
+    impl<C, D, S, R, T> UartFuture<C, D, R, T>
     where
         C: ValidConfig<Sercom = S>,
         C::Word: Beat,
         D: Transmit,
-        N: InterruptNumber,
         S: Sercom + 'static,
         T: AnyChannel<Status = ReadyFuture>,
     {

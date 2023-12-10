@@ -15,9 +15,9 @@ atsamd_hal::bind_interrupts!(struct Irqs {
 use bsp::hal;
 use feather_m0 as bsp;
 use hal::{
+    async_hal::interrupts::{Interrupt, Priority, DMAC},
     clock::GenericClockController,
     dmac::{DmaController, PriorityLevel, TriggerAction, TriggerSource},
-    async_hal::interrupts::{Interrupt, Priority, DMAC},
 };
 
 #[embassy_executor::main]

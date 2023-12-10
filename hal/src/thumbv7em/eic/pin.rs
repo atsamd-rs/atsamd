@@ -4,7 +4,6 @@ use crate::ehal::digital::v2::InputPin;
 use crate::{
     gpio::{self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt},
     pac,
-    typelevel::NoneT,
 };
 use core::mem::ManuallyDrop;
 
@@ -54,19 +53,18 @@ macro_rules! ei {
 crate::paste::item! {
     /// Represents a numbered external interrupt. The external interrupt is generic
     /// over any pin, only the EicPin implementations in this module make sense.
-    pub struct [<$PadType $num>]<GPIO, I = NoneT>
+    pub struct [<$PadType $num>]<GPIO>
     where
         GPIO: AnyPin,
     {
         eic: ManuallyDrop<EIC>,
         _pin: Pin<GPIO::Id, GPIO::Mode>,
-        _irq_number: I,
     }
 
     // impl !Send for [<$PadType $num>]<GPIO> {};
     // impl !Sync for [<$PadType $num>]<GPIO> {}}
 
-    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO, NoneT>{
+    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO>{
         /// Construct pad from the appropriate pin in any mode.
         /// You may find it more convenient to use the `into_pad` trait
         /// and avoid referencing the pad type.
@@ -78,12 +76,11 @@ crate::paste::item! {
             [<$PadType $num>]{
                 _pin: pin.into(),
                 eic,
-                _irq_number: crate::typelevel::NoneT,
             }
         }
     }
 
-    impl<GPIO: AnyPin, I> [<$PadType $num>]<GPIO, I> {
+    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO> {
 
         pub fn enable_event(&mut self) {
             self.eic.eic.evctrl.modify(|_, w| unsafe {
@@ -170,31 +167,28 @@ crate::paste::item! {
         /// Turn an EIC pin into a pin usable as a [`Future`](core::future::Future).
         /// The correct interrupt source is needed.
         #[cfg(feature = "async")]
-        pub fn into_future<Q, N>(self, irq: Q) -> [<$PadType $num>]<GPIO, N>
+        pub fn into_future<I>(self, _irq: I) -> [<$PadType $num>]<GPIO>
         where
-            Q: cortex_m_interrupt::NvicInterruptRegistration<N>,
-            N: cortex_m::interrupt::InterruptNumber,
+            I: crate::async_hal::interrupts::Binding<crate::async_hal::interrupts::[<EIC_EXTINT_ $num>], super::async_api::InterruptHandler>
         {
-            let irq_number = irq.number();
-            irq.occupy(super::async_api::on_interrupt);
-            unsafe {
-                cortex_m::peripheral::NVIC::unmask(irq_number);
-            }
+            use crate::async_hal::interrupts;
+            use interrupts::Interrupt;
+
+            interrupts::[<EIC_EXTINT_ $num>]::unpend();
+            unsafe { interrupts::[<EIC_EXTINT_ $num>]::enable() };
 
             [<$PadType $num>] {
                 _pin: self._pin,
                 eic: self.eic,
-                _irq_number: irq_number,
             }
         }
     }
 
     #[cfg(feature = "async")]
-    impl<GPIO, I> [<$PadType $num>]<GPIO, I>
+    impl<GPIO> [<$PadType $num>]<GPIO>
     where
         GPIO: AnyPin,
         Self: InputPin<Error = core::convert::Infallible>,
-        I: cortex_m::interrupt::InterruptNumber,
     {
         pub async fn wait(&mut self, sense: Sense)
         {
@@ -233,7 +227,7 @@ crate::paste::item! {
     }
 
     #[cfg(feature = "unproven")]
-    impl<GPIO, C, I> InputPin for [<$PadType $num>]<GPIO, I>
+    impl<GPIO, C> InputPin for [<$PadType $num>]<GPIO>
     where
         GPIO: AnyPin<Mode = Interrupt<C>>,
         C: InterruptConfig,
@@ -250,21 +244,19 @@ crate::paste::item! {
     }
 
     #[cfg(feature = "async")]
-    impl<GPIO, I> embedded_hal_alpha::digital::ErrorType for [<$PadType $num>]<GPIO, I>
+    impl<GPIO> embedded_hal_alpha::digital::ErrorType for [<$PadType $num>]<GPIO>
     where
         GPIO: AnyPin,
         Self: InputPin<Error = core::convert::Infallible>,
-        I: cortex_m::interrupt::InterruptNumber,
     {
         type Error = core::convert::Infallible;
     }
 
     #[cfg(feature = "async")]
-    impl<GPIO, I> embedded_hal_async::digital::Wait for [<$PadType $num>]<GPIO, I>
+    impl<GPIO> embedded_hal_async::digital::Wait for [<$PadType $num>]<GPIO>
     where
         GPIO: AnyPin,
         Self: InputPin<Error = core::convert::Infallible>,
-        I: cortex_m::interrupt::InterruptNumber,
     {
         async fn wait_for_high(& mut self) -> Result<(), Self::Error> {
             self.wait(Sense::HIGH).await;

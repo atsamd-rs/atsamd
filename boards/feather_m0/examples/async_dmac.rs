@@ -8,7 +8,7 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 atsamd_hal::bind_interrupts!(struct Irqs {
-    DMAC => atsamd_hal::dmac::async_api::InterruptHandler;
+    DMAC => atsamd_hal::dmac::InterruptHandler;
 });
 
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
