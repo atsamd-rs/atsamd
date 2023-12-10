@@ -7,16 +7,16 @@ use paste::paste;
 use seq_macro::seq;
 
 macro_rules! declare_interrupts {
-    ($($(#[$m:meta])* $irqs:ident),* $(,)?) => {
+    ($($(#[$cfg:meta])* $irqs:ident),* $(,)?) => {
         $(
-            $(#[$m])*
+            $(#[$cfg])*
             #[allow(non_camel_case_types)]
             #[doc=stringify!($irqs)]
             #[doc=" typelevel interrupt."]
             pub enum $irqs {}
-            $(#[$m])*
+            $(#[$cfg])*
             impl $crate::typelevel::Sealed for $irqs{}
-            $(#[$m])*
+            $(#[$cfg])*
             impl $crate::async_hal::interrupts::Interrupt for $irqs {
                 const IRQ: crate::pac::Interrupt = crate::pac::Interrupt::$irqs;
             }
@@ -24,18 +24,20 @@ macro_rules! declare_interrupts {
     }
 }
 
-// Useful when we need to bind multiple interrupt sources to the same handler
+// Useful when we need to bind multiple interrupt sources to the same handler.
+// Calling the `InterruptSource` methods on the created struct will act on all
+// interrupt sources at once.
 #[allow(unused_macros)]
 macro_rules! declare_multiple_interrupts {
-    ($(#[$m:meta])* $name:ident, $($irq:ident),+ $(,)?) => {
+    ($(#[$cfg:meta])* $name:ident: [ $($irq:ident),+ $(,)? ]) => {
         paste! {
-            $(#[$m])*
+            $(#[$cfg])*
             pub enum $name {}
 
-            $(#[$m])*
+            $(#[$cfg])*
             impl $crate::typelevel::Sealed for $name {}
 
-            $(#[$m])*
+            $(#[$cfg])*
             impl $crate::async_hal::interrupts::InterruptSource for $name {
                 unsafe fn enable() {
                     $($crate::pac::Interrupt::$irq.enable();)+
@@ -48,6 +50,10 @@ macro_rules! declare_multiple_interrupts {
                 fn unpend() {
                     $($crate::pac::Interrupt::$irq.unpend();)+
                 }
+
+                fn set_priority(prio: $crate::async_hal::interrupts::Priority){
+                    $($crate::pac::Interrupt::$irq.set_priority(prio);)+
+                }
             }
         }
     };
@@ -55,11 +61,8 @@ macro_rules! declare_multiple_interrupts {
 
 // ---------- DMAC Interrupts ---------- //
 #[cfg(all(feature = "dma", feature = "thumbv7"))]
-seq!(N in 0..=3{
-    paste! {
-        declare_interrupts!{DMAC_ ~N}
-    }
-});
+declare_multiple_interrupts!(DMAC: [DMAC_0, DMAC_1, DMAC_2, DMAC_OTHER]);
+
 #[cfg(all(feature = "dma", feature = "thumbv7"))]
 declare_interrupts!(DMAC_OTHER);
 
@@ -72,7 +75,7 @@ seq!(N in 0..=7 {
         #[cfg(all(feature = "has-" sercom~N, feature = "thumbv6"))]
         declare_interrupts!(SERCOM~N);
         #[cfg(all(feature = "has-" sercom~N, feature = "thumbv7"))]
-        declare_multiple_interrupts!([<Sercom ~N Irqs>], [<SERCOM ~N _0>], [<SERCOM ~N _1>], [<SERCOM ~N _2>], [<SERCOM ~N _OTHER>]);
+        declare_multiple_interrupts!([<SERCOM ~N>]: [ [<SERCOM ~N _0>], [<SERCOM ~N _1>], [<SERCOM ~N _2>], [<SERCOM ~N _OTHER>] ]);
     }
 });
 
@@ -100,12 +103,28 @@ seq!(N in 0..= 15 {
     }
 });
 
+/// Interrupt source. This trait may implemented directly when multiple
+/// interrupt sources are needed to operate a single peripheral (eg, SERCOM and
+/// DMAC for thumbv7 devices). If using one interrupt source per peripheral,
+/// implement [`Interrupt`] instead. When implemented on a type that handles
+/// multiple interrupt sources, the methods will act on all interrupt sources at
+/// once.
 pub trait InterruptSource: crate::typelevel::Sealed {
+    /// Enable the interrupt.
+    ///
+    /// # Safety
+    ///
+    /// Do not enable any interrupt inside a critical section.
     unsafe fn enable();
 
+    /// Disable the interrupt.
     fn disable();
 
+    /// Unset interrupt pending.
     fn unpend();
+
+    /// Set the interrupt priority.
+    fn set_priority(prio: Priority);
 }
 
 impl<T: Interrupt> InterruptSource for T {
@@ -120,11 +139,16 @@ impl<T: Interrupt> InterruptSource for T {
     fn unpend() {
         Self::unpend();
     }
+
+    fn set_priority(prio: Priority) {
+        Self::set_priority(prio);
+    }
 }
 
 /// Type-level interrupt.
 ///
-/// This trait is implemented for all typelevel interrupt types in this module.
+/// This trait is implemented for all typelevel single interrupt types in this
+/// module.
 pub trait Interrupt: crate::typelevel::Sealed {
     /// Interrupt enum variant.
     ///

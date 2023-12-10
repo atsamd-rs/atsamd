@@ -5,7 +5,19 @@
 use defmt_rtt as _;
 use panic_probe as _;
 
-use atsamd_hal::sercom::Sercom0;
+use bsp::{hal, periph_alias, pin_alias};
+use feather_m0 as bsp;
+use fugit::MillisDuration;
+use hal::{
+    clock::GenericClockController,
+    dmac::{Ch0, Ch1, DmaController, PriorityLevel},
+    prelude::*,
+    sercom::{
+        uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},
+        Sercom0,
+    },
+};
+use rtic_monotonics::systick::Systick;
 
 atsamd_hal::bind_interrupts!(struct Irqs {
     SERCOM0 => atsamd_hal::sercom::uart::InterruptHandler<Sercom0>;
@@ -15,21 +27,6 @@ atsamd_hal::bind_interrupts!(struct Irqs {
 #[rtic::app(device = bsp::pac, dispatchers = [I2S, AC])]
 mod app {
     use super::*;
-    use bsp::{hal, periph_alias, pin_alias};
-    use feather_m0 as bsp;
-    use fugit::MillisDuration;
-    use hal::{
-        clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
-        dmac::{Ch0, Ch1, DmaController, PriorityLevel},
-        prelude::*,
-        rtc::{Count32Mode, Rtc},
-        sercom::{
-            uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},
-        },
-    };
-
-    #[monotonic(binds = RTC, default = true)]
-    type Monotonic = Rtc<Count32Mode>;
 
     #[shared]
     struct Shared {}
@@ -41,7 +38,7 @@ mod app {
     }
 
     #[init]
-    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(cx: init::Context) -> (Shared, Local) {
         let mut peripherals = cx.device;
         let _core = cx.core;
 
@@ -57,12 +54,6 @@ mod app {
         let (uart_rx, uart_tx) = (pin_alias!(pins.uart_rx), pin_alias!(pins.uart_tx));
         let uart_sercom = periph_alias!(peripherals.uart_sercom);
 
-        enable_internal_32kosc(&mut peripherals.SYSCTRL);
-        let timer_clock = clocks
-            .configure_gclk_divider_and_source(ClockGenId::GCLK2, 1, ClockSource::OSC32K, false)
-            .unwrap();
-        clocks.configure_standby(ClockGenId::GCLK2, true);
-
         // Initialize DMA Controller
         let dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
         // Turn dmac into an async controller
@@ -73,10 +64,6 @@ mod app {
         // Initialize DMA Channels 0 and 1
         let channel0 = channels.0.init(PriorityLevel::LVL0);
         let channel1 = channels.1.init(PriorityLevel::LVL0);
-
-        // Setup RTC monotonic
-        let rtc_clock = clocks.rtc(&timer_clock).unwrap();
-        let rtc = Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
 
         let (uart_rx, uart_tx) = bsp::uart(
             &mut clocks,
@@ -94,7 +81,7 @@ mod app {
         send_bytes::spawn().ok();
         receive_bytes::spawn().ok();
 
-        (Shared {}, Local { uart_rx, uart_tx }, init::Monotonics(rtc))
+        (Shared {}, Local { uart_rx, uart_tx })
     }
 
     #[task(local = [uart_tx], priority = 1)]
@@ -104,7 +91,7 @@ mod app {
         loop {
             uart.write(&[0x00; 10]).await;
             defmt::info!("Sent 10 bytes");
-            crate::app::monotonics::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
+            Systick::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
         }
     }
 

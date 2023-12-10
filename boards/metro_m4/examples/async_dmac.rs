@@ -9,13 +9,13 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 atsamd_hal::bind_interrupts!(struct Irqs {
-    DMAC => atsamd_hal::dmac::InterruptHandler;
+    DMAC: [DMAC_0, DMAC_1, DMAC_2, DMAC_OTHER] => atsamd_hal::dmac::InterruptHandler;
 });
 
 #[rtic::app(device = bsp::pac, dispatchers = [I2S])]
 mod app {
     use bsp::hal;
-    use feather_m0 as bsp;
+    use metro_m4 as bsp;
     use hal::{
         clock::GenericClockController,
         dmac::{
@@ -38,8 +38,9 @@ mod app {
 
         let _clocks = GenericClockController::with_external_32kosc(
             peripherals.GCLK,
-            &mut peripherals.PM,
-            &mut peripherals.SYSCTRL,
+            &mut peripherals.MCLK,
+            &mut peripherals.OSC32KCTRL,
+            &mut peripherals.OSCCTRL,
             &mut peripherals.NVMCTRL,
         );
 
@@ -62,8 +63,8 @@ mod app {
     async fn async_task(cx: async_task::Context) {
         let channel = cx.local.channel;
 
-        let mut source = [0xff; 500];
-        let mut dest = [0x0; 500];
+        let mut source = [0xff; 1000];
+        let mut dest = [0x0; 1000];
 
         defmt::info!(
             "Launching a DMA transfer.\n\tSource: {}\n\tDestination: {}",

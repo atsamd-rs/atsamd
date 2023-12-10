@@ -1,16 +1,10 @@
 //! APIs for async DMAC operations.
 
 use crate::{
-    async_hal::interrupts::Handler,
+    async_hal::interrupts::{Handler, DMAC},
     dmac::{waker::WAKERS, TriggerSource},
     util::BitIter,
 };
-
-#[cfg(feature = "thumbv6")]
-use crate::async_hal::interrupts::DMAC;
-
-#[cfg(feature = "thumbv7")]
-use crate::async_hal::interrupts::{DMAC_0, DMAC_1, DMAC_2, DMAC_3, DMAC_OTHER};
 
 // Interrupt handler for the DMAC peripheral.
 pub struct InterruptHandler {
@@ -64,73 +58,36 @@ impl Handler<DMAC> for InterruptHandler {
 }
 
 #[cfg(feature = "thumbv7")]
-fn on_interrupt(channel: usize) {
-    let dmac = unsafe { crate::pac::Peripherals::steal().DMAC };
-
-    let wake = if dmac.channel[channel].chintflag.read().tcmpl().bit_is_set() {
-        // Transfer complete. Don't clear the flag, but
-        // disable the interrupt. Flag will be cleared when polled
-        dmac.channel[channel]
-            .chintenclr
-            .modify(|_, w| w.tcmpl().set_bit());
-        true
-    } else if dmac.channel[channel].chintflag.read().terr().bit_is_set() {
-        // Transfer error
-        dmac.channel[channel]
-            .chintenclr
-            .modify(|_, w| w.terr().set_bit());
-        true
-    } else {
-        false
-    };
-
-    if wake {
-        dmac.channel[channel].chctrla.modify(|_, w| {
-            w.enable().clear_bit();
-            w.trigsrc().variant(TriggerSource::DISABLE)
-        });
-        WAKERS[channel].wake();
-    }
-}
-
-#[cfg(feature = "thumbv7")]
-impl Handler<DMAC_0> for InterruptHandler {
-    unsafe fn on_interrupt() {
-        on_interrupt(0);
-    }
-}
-
-#[cfg(feature = "thumbv7")]
-impl Handler<DMAC_1> for InterruptHandler {
-    unsafe fn on_interrupt() {
-        on_interrupt(1);
-    }
-}
-
-#[cfg(feature = "thumbv7")]
-impl Handler<DMAC_2> for InterruptHandler {
-    unsafe fn on_interrupt() {
-        on_interrupt(2);
-    }
-}
-
-#[cfg(feature = "thumbv7")]
-impl Handler<DMAC_3> for InterruptHandler {
-    unsafe fn on_interrupt() {
-        on_interrupt(3);
-    }
-}
-
-#[cfg(feature = "thumbv7")]
-impl Handler<DMAC_OTHER> for InterruptHandler {
+impl Handler<DMAC> for InterruptHandler {
     unsafe fn on_interrupt() {
         let dmac = unsafe { crate::pac::Peripherals::steal().DMAC };
 
-        // Get pending channels, but ignore first 4 since they're handled by other
-        // interrupts.
-        let pending_channels = BitIter(dmac.intstatus.read().bits() & !0b1111);
-        for pend_chan in pending_channels {
-            on_interrupt(pend_chan as usize);
+        let pending_channels = BitIter(dmac.intstatus.read().bits());
+        for channel in pending_channels.map(|c| c as usize) {
+            let wake = if dmac.channel[channel].chintflag.read().tcmpl().bit_is_set() {
+                // Transfer complete. Don't clear the flag, but
+                // disable the interrupt. Flag will be cleared when polled
+                dmac.channel[channel]
+                    .chintenclr
+                    .modify(|_, w| w.tcmpl().set_bit());
+                true
+            } else if dmac.channel[channel].chintflag.read().terr().bit_is_set() {
+                // Transfer error
+                dmac.channel[channel]
+                    .chintenclr
+                    .modify(|_, w| w.terr().set_bit());
+                true
+            } else {
+                false
+            };
+
+            if wake {
+                dmac.channel[channel].chctrla.modify(|_, w| {
+                    w.enable().clear_bit();
+                    w.trigsrc().variant(TriggerSource::DISABLE)
+                });
+                WAKERS[channel].wake();
+            }
         }
     }
 }

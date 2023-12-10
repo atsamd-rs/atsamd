@@ -39,15 +39,6 @@ pub use crate::pac::dmac::channel::{
     chprilvl::PRILVLSELECT_A as PriorityLevel,
 };
 
-#[cfg(all(feature = "async", feature = "thumbv6"))]
-type Irq = crate::async_hal::interrupts::DMAC;
-
-/// On thumbv7 targets, we can only check that one interrupt is correctly bound,
-/// lest we dive into typelevel insanity once more. We just have to trust the
-/// user has bound all relevant interrupts sources.
-#[cfg(all(feature = "async", feature = "thumbv7"))]
-type Irq = crate::async_hal::interrupts::DMAC_0;
-
 use super::{
     channel::{Channel, Uninitialized},
     DESCRIPTOR_SECTION, WRITEBACK,
@@ -218,49 +209,20 @@ impl<T> DmaController<T> {
     /// you are required to configure the desired interrupt priorities prior to
     /// calling this method. Consult [`crate::async_hal::interrupts`]
     /// module-level documentation for more information.
-    ///
-    /// # Note for SAMx5x users
-    ///
-    /// The DMAC on SAMD51/SAMD53/SAME53/SAME54 has 5 NVIC interrupt sources:
-    /// * DMAC_0 (channel 0)
-    /// * DMAC_1 (channel 1)
-    /// * DMAC_2 (channel 2)
-    /// * DMAC_3 (channel 3)
-    /// * DMAC_OTHER (all other channels).
-    ///
-    /// You **must** bind all 5 sources using
     /// [`bind_interrupts`](crate::bind_interrupts).
     #[cfg(feature = "async")]
     #[inline]
     pub fn into_future<I>(self, _interrupts: I) -> DmaController<I>
     where
-        I: crate::async_hal::interrupts::Binding<Irq, super::async_api::InterruptHandler>,
+        I: crate::async_hal::interrupts::Binding<
+            crate::async_hal::interrupts::DMAC,
+            super::async_api::InterruptHandler,
+        >,
     {
-        use crate::async_hal::interrupts::Interrupt;
+        use crate::async_hal::interrupts::{InterruptSource, DMAC};
 
-        #[cfg(feature = "thumbv6")]
-        {
-            use crate::async_hal::interrupts::DMAC;
-            DMAC::unpend();
-            unsafe { DMAC::enable() };
-        }
-
-        #[cfg(feature = "thumbv7")]
-        {
-            use crate::async_hal::interrupts::{DMAC_0, DMAC_1, DMAC_2, DMAC_3, DMAC_OTHER};
-            DMAC_0::unpend();
-            DMAC_1::unpend();
-            DMAC_2::unpend();
-            DMAC_3::unpend();
-            DMAC_OTHER::unpend();
-            unsafe {
-                DMAC_0::enable();
-                DMAC_1::enable();
-                DMAC_2::enable();
-                DMAC_3::enable();
-                DMAC_OTHER::enable();
-            }
-        }
+        DMAC::unpend();
+        unsafe { DMAC::enable() };
 
         DmaController {
             dmac: self.dmac,
@@ -347,7 +309,10 @@ impl DmaController {
 #[cfg(feature = "async")]
 impl<I> DmaController<I>
 where
-    I: crate::async_hal::interrupts::Binding<Irq, super::async_api::InterruptHandler>,
+    I: crate::async_hal::interrupts::Binding<
+        crate::async_hal::interrupts::DMAC,
+        super::async_api::InterruptHandler,
+    >,
 {
     /// Release the DMAC and return the register block.
     ///
@@ -413,7 +378,10 @@ macro_rules! define_split_future {
 #[cfg(feature = "async")]
 impl<I> DmaController<I>
 where
-    I: crate::async_hal::interrupts::Binding<Irq, super::async_api::InterruptHandler>,
+    I: crate::async_hal::interrupts::Binding<
+        crate::async_hal::interrupts::DMAC,
+        super::async_api::InterruptHandler,
+    >,
 {
     with_num_channels!(define_split_future);
 }

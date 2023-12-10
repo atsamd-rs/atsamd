@@ -89,11 +89,10 @@ where
 }
 
 #[cfg(feature = "defmt")]
-impl<C, A, N, R, T> defmt::Format for SpiFuture<C, A, N, R, T>
+impl<C, A, R, T> defmt::Format for SpiFuture<C, A, R, T>
 where
     C: ValidConfig,
     A: Capability,
-    N: InterruptNumber,
 {
     fn format(&self, f: defmt::Formatter) {
         defmt::write!(f, "SpiFuture defmt shim\n");

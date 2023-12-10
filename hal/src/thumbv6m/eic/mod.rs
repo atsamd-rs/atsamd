@@ -63,4 +63,5 @@ mod async_api {
     pub(super) static WAKERS: [AtomicWaker; NUM_CHANNELS] = [NEW_WAKER; NUM_CHANNELS];
 }
 
+#[cfg(feature = "async")]
 pub use async_api::*;

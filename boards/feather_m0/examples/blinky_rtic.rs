@@ -1,9 +1,7 @@
-//! Uses RTIC with the RTC as time source to blink an LED.
-//!
-//! The idle task is sleeping the CPU, so in practice this gives similar power
-//! figure as the "sleeping_timer_rtc" example.
+//! Uses RTIC with systick to blink a led in an asynchronous fashion.
 #![no_std]
 #![no_main]
+#![feature(type_alias_impl_trait)]
 
 use feather_m0 as bsp;
 
@@ -11,35 +9,31 @@ use feather_m0 as bsp;
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
-use rtic;
+
+use bsp::{hal, pin_alias};
+use fugit::MillisDurationU32;
+use hal::clock::GenericClockController;
+use hal::pac::Peripherals;
+use hal::prelude::*;
+use rtic_monotonics::systick::Systick;
 
 #[rtic::app(device = bsp::pac, peripherals = true, dispatchers = [EVSYS])]
 mod app {
     use super::*;
-    use bsp::{hal, pin_alias};
-    use hal::clock::{ClockGenId, ClockSource, GenericClockController};
-    use hal::pac::Peripherals;
-    use hal::prelude::*;
-    use hal::rtc::{Count32Mode, Duration, Rtc};
 
     #[local]
-    struct Local {}
-
-    #[shared]
-    struct Shared {
-        // The LED could be a local resource, since it is only used in one task
-        // But we want to showcase shared resources and locking
+    struct Local {
         red_led: bsp::RedLed,
     }
 
-    #[monotonic(binds = RTC, default = true)]
-    type RtcMonotonic = Rtc<Count32Mode>;
+    #[shared]
+    struct Shared {}
 
     #[init]
-    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(cx: init::Context) -> (Shared, Local) {
         let mut peripherals: Peripherals = cx.device;
         let pins = bsp::Pins::new(peripherals.PORT);
-        let mut core: rtic::export::Peripherals = cx.core;
+        let _core: rtic::export::Peripherals = cx.core;
         let mut clocks = GenericClockController::with_external_32kosc(
             peripherals.GCLK,
             &mut peripherals.PM,
@@ -47,27 +41,20 @@ mod app {
             &mut peripherals.NVMCTRL,
         );
         let _gclk = clocks.gclk0();
-        let rtc_clock_src = clocks
-            .configure_gclk_divider_and_source(ClockGenId::GCLK2, 1, ClockSource::XOSC32K, false)
-            .unwrap();
-        clocks.configure_standby(ClockGenId::GCLK2, true);
-        let rtc_clock = clocks.rtc(&rtc_clock_src).unwrap();
-        let rtc = Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
-        let red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
-        // We can use the RTC in standby for maximum power savings
-        core.SCB.set_sleepdeep();
+        let red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
         // Start the blink task
         blink::spawn().unwrap();
 
-        (Shared { red_led }, Local {}, init::Monotonics(rtc))
+        (Shared {}, Local { red_led })
     }
 
-    #[task(shared = [red_led])]
-    fn blink(mut cx: blink::Context) {
-        // If the LED were a local resource, the lock would not be necessary
-        cx.shared.red_led.lock(|led| led.toggle().unwrap());
-        blink::spawn_after(Duration::secs(1)).ok();
+    #[task(local = [red_led])]
+    async fn blink(cx: blink::Context) {
+        loop {
+            let _ = cx.local.red_led.toggle();
+            Systick::delay(MillisDurationU32::from_ticks(1000).convert()).await;
+        }
     }
 }

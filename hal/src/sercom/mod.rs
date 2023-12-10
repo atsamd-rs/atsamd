@@ -79,6 +79,7 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     #[cfg(feature = "dma")]
     const DMA_TX_TRIGGER: TriggerSource;
 
+    #[cfg(feature = "async")]
     type Interrupt: crate::async_hal::interrupts::InterruptSource;
 
     /// Enable the corresponding APB clock
@@ -128,7 +129,7 @@ macro_rules! sercom {
                     type Interrupt = crate::async_hal::interrupts::SERCOM~N;
 
                     #[cfg(all(feature = "async", feature = "thumbv7"))]
-                    type Interrupt = crate::async_hal::interrupts::[<Sercom ~N Irqs>];
+                    type Interrupt = crate::async_hal::interrupts::[<SERCOM ~N>];
 
                     #[inline]
                     fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {

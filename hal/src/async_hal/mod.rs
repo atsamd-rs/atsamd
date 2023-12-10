@@ -20,22 +20,37 @@ pub mod timer;
 /// ```
 #[macro_export]
 macro_rules! bind_interrupts {
-	($vis:vis struct $name:ident { $($irq:ident => $($handler:ty),*;)* }) => {
-		#[derive(Copy, Clone)]
-		$vis struct $name;
+    ($vis:vis struct $name:ident { $($irq:ident => $($handler:ty),*;)* }) => {
+        #[derive(Copy, Clone)]
+        $vis struct $name;
 
-		$(
-			#[allow(non_snake_case)]
-			#[no_mangle]
-			unsafe extern "C" fn $irq() {
-				$(
-					<$handler as $crate::async_hal::interrupts::Handler<$crate::async_hal::interrupts::$irq>>::on_interrupt();
-				)*
-			}
+        $(
+            #[allow(non_snake_case)]
+            #[no_mangle]
+            unsafe extern "C" fn $irq() {
+                $(
+                    <$handler as $crate::async_hal::interrupts::Handler<$crate::async_hal::interrupts::$irq>>::on_interrupt();
+                )*
+            }
 
-			$(
-				unsafe impl $crate::async_hal::interrupts::Binding<$crate::async_hal::interrupts::$irq, $handler> for $name {}
-			)*
-		)*
-	};
+            $(
+                unsafe impl $crate::async_hal::interrupts::Binding<$crate::async_hal::interrupts::$irq, $handler> for $name {}
+            )*
+        )*
+    };
+
+    ($vis:vis struct $name:ident { $int_source:ident: [ $($irq:ident),+ ] => $handler:ty; }) => {
+        #[derive(Copy, Clone)]
+        $vis struct $name;
+
+        $(
+            #[allow(non_snake_case)]
+            #[no_mangle]
+            unsafe extern "C" fn $irq() {
+                <$handler as $crate::async_hal::interrupts::Handler<$crate::async_hal::interrupts::$int_source>>::on_interrupt();
+            }
+        )+
+
+        unsafe impl $crate::async_hal::interrupts::Binding<$crate::async_hal::interrupts::$int_source, $handler> for $name {}
+    };
 }
