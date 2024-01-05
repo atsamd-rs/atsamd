@@ -1,9 +1,9 @@
 #![no_std]
 #![no_main]
 
+use matrix_portal_m4::{entry, hal, pac, Pins};
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use matrix_portal_m4::{entry, hal, pac, Pins};
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;

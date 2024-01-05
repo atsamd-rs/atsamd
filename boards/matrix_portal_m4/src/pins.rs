@@ -21,7 +21,7 @@ hal::bsp_pins!(
         }
     }
     PA07 {
-        // ADC (A4) 
+        // ADC (A4)
         name: a4,
         aliases: {
             Reset: A4Reset,
@@ -29,7 +29,7 @@ hal::bsp_pins!(
     }
     PA04 {
         // ADC (A2)
-        // SPI SDO 
+        // SPI SDO
         name: a2,
         aliases: {
             AlternateC: Sdo,
@@ -46,7 +46,7 @@ hal::bsp_pins!(
         }
     }
     PB23 {
-        // Button "Down" 
+        // Button "Down"
         name: button_down,
         aliases: {
             PushPullOutput: Button,
@@ -88,7 +88,7 @@ hal::bsp_pins!(
     }
     PB06 {
         // MTX CLK
-        // HUB75 CLK 
+        // HUB75 CLK
         name: mtx_clk,
         aliases: {
             Reset: MtxClkReset,
@@ -156,7 +156,7 @@ hal::bsp_pins!(
     }
     PA20 {
         // ESP GPIO0
-        // ESP32 GPIO0 
+        // ESP32 GPIO0
         name: esp_gpio0,
         aliases: {
             Reset: EspGpio0Reset
@@ -164,7 +164,7 @@ hal::bsp_pins!(
     }
     PA21 {
         // ESP RESET
-        // ESP32 Reset 
+        // ESP32 Reset
         name: esp_reset,
         aliases: {
             Reset: EspResetReset,
@@ -179,7 +179,7 @@ hal::bsp_pins!(
         }
     }
     PA23 {
-        /// Neopixel status LED 
+        /// Neopixel status LED
         name: neopixel,
         aliases: {
             Reset: NeopixelReset,
@@ -234,7 +234,7 @@ hal::bsp_pins!(
     }
     PB15 {
         // MTX ADDRD
-        // HUB75 ADDR D 
+        // HUB75 ADDR D
         name: mtx_addrd,
         aliases: {
             Reset: MtxAddrdReset,
@@ -270,7 +270,7 @@ hal::bsp_pins!(
 
     PA12 {
         // ESP RX
-        // ESP32 UART RX 
+        // ESP32 UART RX
         name: esp_rx,
         aliases: {
             AlternateC: EspUartRx,
@@ -287,7 +287,7 @@ hal::bsp_pins!(
         }
     }
     PA14 {
-        // D13 LED 
+        // D13 LED
         name: led,
         aliases: {
             PushPullOutput: RedLed,
@@ -297,7 +297,7 @@ hal::bsp_pins!(
 
     PB02 {
         // MTX B1
-        // HUB75 B1 
+        // HUB75 B1
         name: mtx_b1,
         aliases: {
             AlternateD: MtxB1,
@@ -325,7 +325,7 @@ hal::bsp_pins!(
     }
     PA01 {
         // RX
-        // UART RX 
+        // UART RX
         name: uart_rx,
         aliases: {
             AlternateC: UartRx,
@@ -354,10 +354,7 @@ hal::bsp_pins!(
 impl Pins {
     /// Split the device pins into subsets
     pub fn split(self) -> Sets {
-
-        let stemma = Stemma {
-            a0: self.a0,
-        };
+        let stemma = Stemma { a0: self.a0 };
 
         let mtx = Matrix {
             r1: self.mtx_r1,
@@ -376,7 +373,6 @@ impl Pins {
             addre: self.mtx_addre,
         };
 
-
         let esp = Esp {
             cs: self.esp_cs,
             gpio0: self.esp_gpio0,
@@ -391,7 +387,7 @@ impl Pins {
         };
 
         let spi = Spi {
-            mosi: self.mosi, 
+            mosi: self.mosi,
             sck: self.esp_sck,
             miso: self.miso,
         };
