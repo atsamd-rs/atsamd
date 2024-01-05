@@ -65,6 +65,11 @@
       "build": "cargo build --examples --all-features",
       "target": "thumbv7em-none-eabihf"
     },
+    "matrix_portal_m4": {
+      "tier": 2,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv7em-none-eabihf"
+    },
     "metro_m0": {
       "tier": 1,
       "build": "cargo build --examples --all-features",
