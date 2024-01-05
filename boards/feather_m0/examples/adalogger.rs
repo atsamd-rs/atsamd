@@ -25,7 +25,6 @@ use hal::delay::Delay;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::rtc;
-use hal::time::U32Ext;
 use hal::usb::UsbBus;
 
 use heapless::String;

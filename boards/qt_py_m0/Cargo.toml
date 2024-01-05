@@ -31,3 +31,7 @@ rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 usb = ["atsamd-hal/usb", "usb-device"]
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb"]
