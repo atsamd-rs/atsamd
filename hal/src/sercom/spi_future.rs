@@ -489,6 +489,8 @@ where
         if self.rcvd < self.sent {
             let buf = unsafe { buf.get_unchecked_mut(self.rcvd..) };
             let mut data = buf.iter_mut();
+            // Allow this lint as it will put out a warning on thumbv7em but not thumbv6m
+            #[allow(clippy::unnecessary_cast)]
             let word = unsafe { self.spi.as_mut().read_data() as u32 };
             let bytes = word.to_le_bytes();
             let mut iter = bytes.iter();
@@ -543,6 +545,8 @@ where
 
     /// Consume the [`SpiFuture`] and free its components without checking for
     /// completion
+    ///
+    /// # Safety
     ///
     /// Ending the transaction prematurely could leave the [`Spi`] in an
     /// inconsistent state. It is not safe to call this function unless the

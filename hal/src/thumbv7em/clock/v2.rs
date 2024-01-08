@@ -853,6 +853,8 @@
 //!
 //! [interior mutability]: https://doc.rust-lang.org/reference/interior-mutability.html
 
+#![allow(clippy::manual_range_contains)]
+
 use typenum::U0;
 
 use crate::time::Hertz;

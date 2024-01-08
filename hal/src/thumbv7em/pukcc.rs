@@ -297,7 +297,7 @@ impl Pukcc {
             let service_params = &mut pukcl_params.params.ZpEcDsaGenerateFast;
             service_params.nu1ModBase = modulo_p.pukcc_base();
             service_params.nu1CnsBase = cns.pukcc_base();
-            service_params.u2ModLength = C::MOD_LENGTH as u16;
+            service_params.u2ModLength = C::MOD_LENGTH;
             service_params.nu1ScalarNumber = k_cr.pukcc_base();
             service_params.nu1OrderPointBase = order_point.pukcc_base();
             service_params.nu1PrivateKey = private_key_cr.pukcc_base();

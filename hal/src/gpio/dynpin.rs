@@ -57,6 +57,8 @@
 //! operation, the trait functions will return
 //! [`InvalidPinType`](Error::InvalidPinType).
 
+#![allow(clippy::bool_comparison)]
+
 use core::convert::TryFrom;
 
 use paste::paste;

@@ -38,12 +38,4 @@ jobs:
         set -ex
         features=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].features | join(",")')
         target=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].target')
-        cargo build --features=${features} --target=${target} --manifest-path=./hal/Cargo.toml
-
-    - name: Clippy HAL for ${{ matrix.pac }}
-      if: ${{ matrix.toolchain == 'nightly' }}
-      run: |
-        set -ex
-        features=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].features | join(",")')
-        target=$(cat ./crates.json | jq -Mr --arg pac "${{matrix.pac}}" -c '.hal_build_variants["${{matrix.pac}}"].target')
-        cargo clippy --features=${features} --target=${target} --manifest-path=./hal/Cargo.toml
+        cargo clippy --features=${features} --target=${target} --manifest-path=./hal/Cargo.toml -- -D warnings
