@@ -19,7 +19,6 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-path = "../../hal"
 version = "0.16.0"
 default-features = false
 
@@ -29,7 +28,6 @@ optional = true
 
 [dependencies.cortex-m]
 version = "0.7"
-features = ["critical-section-single-core"]
 
 [dev-dependencies]
 panic-halt = "0.2"

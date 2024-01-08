@@ -4,7 +4,7 @@ This crate provides a type-safe API for working with the [Adafruit Matrix Portal
 board](https://www.adafruit.com/product/4745).
 
 ## Prerequisites
-* Install the cross compile toolchain `rustup target add thumbv6m-none-eabi`
+* Install the cross compile toolchain `rustup target add thumbv7em-none-eabihf`
 * Install [cargo-hf2 the hf2 bootloader flasher tool](https://crates.io/crates/cargo-hf2) however your platform requires
 
 ## Uploading an example
