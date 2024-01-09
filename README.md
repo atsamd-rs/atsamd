@@ -43,7 +43,7 @@ The Peripheral Access Crates (PACs) are automatically generated from Microchip S
 | [atsamd21g](https://docs.rs/atsamd21g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21g.svg)](https://crates.io/crates/atsamd21g) | [Arduino Nano 33 IOT][arduino_nano33_iot], [Circuit Playground Express][circuit_playground_express], [Feather M0][feather_m0]\*, [ItsyBitsy M0][itsybitsy_m0], [Metro M0][metro_m0]\*, [MKR1000][arduino_mkr1000], [MKR Vidor 4000][arduino_mkr_vidor_4000], [MKR ZERO][arduino_mkrzero], [P1AM-100][p1am_100], [SAMD21 Mini][samd21_mini], [SODAQ ONE][sodaq_one], [Wio Lite MG126][wio_lite_mg126], [Wio Lite W600][wio_lite_w600], [Xiao M0][xiao_m0] |
 | [atsamd21j](https://docs.rs/atsamd21j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd21j.svg)](https://crates.io/crates/atsamd21j) | [SODAQ SARA AFF][sodaq_sara_aff] |
 | [atsamd51g](https://docs.rs/atsamd51g/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51g.svg)](https://crates.io/crates/atsamd51g) | [ItsyBitsy M4][itsybitsy_m4], [Trellis M4][trellis_m4] |
-| [atsamd51j](https://docs.rs/atsamd51j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j.svg)](https://crates.io/crates/atsamd51j) | [EdgeBadge][edgebadge], [Feather M4][feather_m4]\*, [Metro M4][metro_m4]\*, [PyPortal][pyportal] |
+| [atsamd51j](https://docs.rs/atsamd51j/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51j.svg)](https://crates.io/crates/atsamd51j) | [EdgeBadge][edgebadge], [Feather M4][feather_m4]\*, [Metro M4][metro_m4]\*, [PyPortal][pyportal], [Matrix Portal M4][matrix_portal_m4] |
 | [atsame51n](https://docs.rs/atsame51n/) | [![Crates.io](https://img.shields.io/crates/v/atsame51n.svg)](https://crates.io/crates/atsame51n) |  |
 | [atsamd51p](https://docs.rs/atsamd51p/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p.svg)](https://crates.io/crates/atsamd51p) | [Grand Central M4 Express][grand_central_m4], [Wio Terminal][wio_terminal] |
 | [atsame51g](https://docs.rs/atsame51g/) | [![Crates.io](https://img.shields.io/crates/v/atsame51g.svg)](https://crates.io/crates/atsame51g) |  |
@@ -69,6 +69,7 @@ The Peripheral Access Crates (PACs) are automatically generated from Microchip S
 [grand_central_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/grand_central_m4/
 [itsybitsy_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/itsybitsy_m0/
 [itsybitsy_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/itsybitsy_m4/
+[matrix_portal_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/matrix_portal_m4/
 [metro_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/metro_m0/
 [metro_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/metro_m4/
 [neo_trinkey]: https://github.com/atsamd-rs/atsamd/tree/master/boards/neo_trinkey
