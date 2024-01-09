@@ -28,6 +28,7 @@ optional = true
 
 [dependencies.cortex-m]
 version = "0.7"
+features = ["critical-section-single-core"]
 
 [dev-dependencies]
 panic-halt = "0.2"
