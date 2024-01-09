@@ -1,0 +1,45 @@
+[package]
+name = "matrix_portal_m4"
+version = "0.1.0"
+authors = ["Salsa Steve <elmanstevelaguna@gmail.com>"]
+description = "Board Support crate for the Matrix Portal M4"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+edition = "2021"
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD51J19A"
+
+[dependencies.cortex-m-rt]
+version = "0.7"
+optional = true
+
+[dependencies.atsamd-hal]
+version = "0.16.0"
+default-features = false
+
+[dependencies.usb-device]
+version = "0.3.1"
+optional = true
+
+[dependencies.cortex-m]
+version = "0.7"
+features = ["critical-section-single-core"]
+
+[dev-dependencies]
+panic-halt = "0.2"
+
+[features]
+# ask the HAL to enable atsamd51j support
+default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51"]
+rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
+unproven = ["atsamd-hal/unproven"]
+usb = ["atsamd-hal/usb", "usb-device"]
+
+
+[[example]]
+name = "blinky_basic"
