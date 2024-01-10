@@ -4,7 +4,7 @@
 # Checklist
   - [ ] `CHANGELOG.md` for the BSP or HAL updated
   - [ ] All new or modified code is well documented, especially public items
-  - [ ] No new warnings or clippy suggestions have been introduced (see CI or check locally)
+  - [ ] No new warnings or clippy suggestions have been introduced - CI will **deny** clippy warnings by default! You may `#[allow]` certain lints where reasonable, but ideally justify those with a short comment. 
 
 ## If Adding a new Board
   - [ ] Board CI added to `crates.json`
