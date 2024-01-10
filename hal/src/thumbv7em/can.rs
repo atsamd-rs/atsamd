@@ -73,6 +73,7 @@ impl<ID: PclkId + AhbId, PS: PclkSourceId, RX, TX, CAN> Dependencies<ID, PS, RX,
     /// Destroy an instance of `Dependencies` struct.
     ///
     /// Releases all enclosed objects back to the user.
+    #[allow(clippy::type_complexity)]
     pub fn free<S>(self, gclk0: S) -> (Pclk<ID, PS>, HertzU32, AhbClk<ID>, RX, TX, CAN, S::Dec)
     where
         S: Source<Id = Gclk0Id> + Decrement,

@@ -754,6 +754,7 @@ impl Pukcc {
 
 /// An error type representing failure modes a [`Pukcc::self_test`] service
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct SelfTestFailure(c_abi::SelfTest);
 
 /// An error type representing failure modes for a
