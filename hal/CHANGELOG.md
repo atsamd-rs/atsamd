@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- CI/CD pipeline now uses `cargo clippy` instead of `cargo build` and denies clippy warnings by default
 - Fix HAL clippy lints
 - Add compile error for combined `library` and `dma` features
 - Add `dma` feature to docs metadata
