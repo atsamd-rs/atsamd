@@ -36,3 +36,4 @@ name = "blinky_basic"
 
 [[example]]
 name = "usb_ack"
+required-features = ["usb"]
