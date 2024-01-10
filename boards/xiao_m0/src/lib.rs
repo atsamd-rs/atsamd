@@ -200,7 +200,7 @@ pub fn spi_master(
     miso: impl Into<Miso>,
 ) -> Spi {
     let gclk0 = clocks.gclk0();
-    let clock = clocks.sercom4_core(&gclk0).unwrap();
+    let clock = clocks.sercom0_core(&gclk0).unwrap();
     let freq = clock.freq();
     let baud = baud.into();
     let (miso, mosi, sclk) = (miso.into(), mosi.into(), sclk.into());
