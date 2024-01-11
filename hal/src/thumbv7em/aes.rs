@@ -304,7 +304,7 @@ impl Aes {
     /// Enable-protected register
     #[inline]
     fn ctrla(&self) -> &CTRLA {
-        &(*self.aes()).ctrla
+        &self.aes().ctrla
     }
 
     /// Control B

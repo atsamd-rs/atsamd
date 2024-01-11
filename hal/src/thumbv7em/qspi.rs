@@ -244,6 +244,7 @@ impl Qspi<OneShot> {
     /// Return the consumed pins and the QSPI peripheral
     ///
     /// Order: `(qspi, sck, cs, io0, io1, io2, io3)`
+    #[allow(clippy::type_complexity)]
     pub fn free(
         self,
     ) -> (

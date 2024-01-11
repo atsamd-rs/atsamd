@@ -24,8 +24,9 @@ use usb_device::{Result as UsbResult, UsbDirection, UsbError};
 
 /// EndpointTypeBits represents valid values for the EPTYPE fields in
 /// the EPCFGn registers.
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy)]
 pub enum EndpointTypeBits {
+    #[default]
     Disabled = 0,
     Control = 1,
     Isochronous = 2,
@@ -33,12 +34,6 @@ pub enum EndpointTypeBits {
     Interrupt = 4,
     #[allow(unused)]
     DualBank = 5,
-}
-
-impl Default for EndpointTypeBits {
-    fn default() -> Self {
-        EndpointTypeBits::Disabled
-    }
 }
 
 impl From<EndpointType> for EndpointTypeBits {

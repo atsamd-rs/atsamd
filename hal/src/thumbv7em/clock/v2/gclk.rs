@@ -1166,6 +1166,7 @@ where
     /// factors to only the valid ones for the given [`Gclk`]. See the
     /// [`GclkDivider`] trait for more details.
     #[inline]
+    #[allow(clippy::should_implement_trait)]
     pub fn div(mut self, div: G::Divider) -> Self {
         self.settings.div = div;
         self
@@ -1320,6 +1321,7 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     ///
     /// `Gclk0` will remain fully enabled during the swap.
     #[inline]
+    #[allow(clippy::type_complexity)]
     pub fn swap_pin_for_source<S>(
         self,
         source: S,

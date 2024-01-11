@@ -88,7 +88,7 @@ impl<P: ValidPads> Config<P> {
 
         // Enable internal clock mode
         registers.configure_mode();
-        registers.configure_pads(P::RXPO as u8, P::TXPO as u8);
+        registers.configure_pads(P::RXPO, P::TXPO);
         registers.set_char_size(EightBit::SIZE);
 
         Self {

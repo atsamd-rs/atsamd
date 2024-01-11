@@ -721,6 +721,8 @@ where
 
     /// Obtain a reference to the PAC `SERCOM` struct
     ///
+    /// # Safety
+    ///
     /// Directly accessing the `SERCOM` could break the invariants of the
     /// type-level tracking in this module, so it is unsafe.
     #[inline]
@@ -1241,6 +1243,8 @@ where
 
     /// Read from the DATA register
     ///
+    /// # Safety
+    ///
     /// Reading from the data register directly is `unsafe`, because it will
     /// clear the RXC flag, which could break assumptions made elsewhere in
     /// this module.
@@ -1250,6 +1254,8 @@ where
     }
 
     /// Write to the DATA register
+    ///
+    /// # Safety
     ///
     /// Writing to the data register directly is `unsafe`, because it will clear
     /// the DRE flag, which could break assumptions made elsewhere in this

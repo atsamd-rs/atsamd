@@ -36,7 +36,7 @@ impl TimerParams {
             _ => 1024,
         };
 
-        let cycles: u32 = ticks / divider as u32;
+        let cycles: u32 = ticks / divider;
 
         if cycles > u16::max_value() as u32 {
             panic!("cycles {} is out of range for a 16 bit counter", cycles);

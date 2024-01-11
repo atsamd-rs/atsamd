@@ -94,6 +94,7 @@
 //! [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 
 #![allow(clippy::zero_prefixed_literal)]
+#![allow(clippy::bool_comparison)]
 
 use core::convert::Infallible;
 use core::marker::PhantomData;

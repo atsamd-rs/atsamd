@@ -455,7 +455,7 @@ impl TimerParams {
                                               * (rust-lang/rust#51999) */
         };
 
-        let cycles: u32 = ticks / divider_value as u32;
+        let cycles: u32 = ticks / divider_value;
 
         TimerParams { divider, cycles }
     }
