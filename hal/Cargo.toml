@@ -36,6 +36,7 @@ bitflags = "1.2.1"
 cipher = "0.3"
 cortex-m = "0.7"
 embedded-hal = "0.2"
+embedded-hal-1 = { package = "embedded-hal", version = "1.0.0-rc.1",  optional = true }
 fugit = "0.3"
 modular-bitfield = "0.11"
 nb = "1.0"
@@ -371,3 +372,5 @@ periph-e53n = ["periph-d51n", "has-ethernet"]
 
 periph-e54n = ["periph-d51n", "has-ethernet", "has-can0", "has-can1"]
 periph-e54p = ["periph-d51p", "has-ethernet", "has-can0", "has-can1"]
+
+embedded-hal-1 = ["dep:embedded-hal-1"]

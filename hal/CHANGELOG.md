@@ -7,6 +7,7 @@
 - Update the PACs to svd2rust 0.30.2.
 - Fix warnings for thumbv7 targets
 - Update README.md - moves some content to wiki
+- Add basic support for `embedded-hal` version 1.0 under the feature `embedded-hal-1`.
 
 # v0.16.0
 
