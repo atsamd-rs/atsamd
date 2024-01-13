@@ -1,6 +1,8 @@
 #![no_std]
 
 pub use embedded_hal as ehal;
+#[cfg(feature = "embedded-hal-1")]
+pub use embedded_hal_1 as ehal1;
 pub use fugit;
 pub use paste;
 pub mod typelevel;
