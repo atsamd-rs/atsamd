@@ -212,12 +212,12 @@ thumbv6 = ["device"]
 thumbv7 = ["device"]
 
 # Map each series of chips to its instruction set
-samd11 = ["thumbv6"]
-samd21 = ["thumbv6"]
-samd51 = ["thumbv7"]
-same51 = ["thumbv7"]
-same53 = ["thumbv7"]
-same54 = ["thumbv7"]
+samd11 = ["thumbv6", "has-adc-variant1", "has-serial-numbers-variant1a"]
+samd21 = ["thumbv6", "has-adc-variant1", "has-serial-numbers-variant1a"]
+samd51 = ["thumbv7", "has-adc-variant2", "has-serial-numbers-variant1b"]
+same51 = ["thumbv7", "has-adc-variant2", "has-serial-numbers-variant1b"]
+same53 = ["thumbv7", "has-adc-variant2", "has-serial-numbers-variant1b"]
+same54 = ["thumbv7", "has-adc-variant2", "has-serial-numbers-variant1b"]
 
 #-------------------------------------------------------------------------------
 # Pins
@@ -315,6 +315,12 @@ has-tcc1 = []
 has-tcc2 = []
 has-tcc3 = []
 has-usb = []
+
+has-adc-variant1 = []
+has-adc-variant2 = []
+
+has-serial-numbers-variant1a = []
+has-serial-numbers-variant1b = []
 
 # Map each variant to its collection of peripherals
 periph-d11c = ["has-sercom0", "has-sercom1", "has-tc1", "has-tc2", "has-tcc0"]

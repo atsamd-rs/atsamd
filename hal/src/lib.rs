@@ -102,6 +102,11 @@ pub mod thumbv7em;
 #[doc(inline)]
 pub use crate::thumbv7em::*;
 
+#[doc(hidden)]
+pub mod peripherals;
+#[doc(inline)]
+pub use crate::peripherals::*;
+
 #[macro_use]
 mod bsp_peripherals_macro;
 pub use bsp_peripherals_macro::*;

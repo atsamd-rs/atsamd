@@ -1,22 +1,35 @@
 //! Serial number
-// See 9.6 Memories --> Serial Number, page 60
 
 use core::ptr;
 
-const SN_1: u32 = 0x008061FC;
-const SN_2: u32 = 0x00806010;
-const SN_3: u32 = 0x00806014;
-const SN_4: u32 = 0x00806018;
+#[cfg(feature = "has-serial-numbers-variant1a")]
+mod constants {
+    // See  9.6   Memories --> Serial Number, page 24 for samd11
+    // See 10.3.3 Memories --> Serial Number, page 45 for samd21
+    pub(super) const SN_1: u32 = 0x0080A00C;
+    pub(super) const SN_2: u32 = 0x0080A040;
+    pub(super) const SN_3: u32 = 0x0080A044;
+    pub(super) const SN_4: u32 = 0x0080A048;
+}
+
+#[cfg(feature = "has-serial-numbers-variant1b")]
+mod constants {
+    // See 9.6 Memories --> Serial Number, page 60
+    pub(super) const SN_1: u32 = 0x008061FC;
+    pub(super) const SN_2: u32 = 0x00806010;
+    pub(super) const SN_3: u32 = 0x00806014;
+    pub(super) const SN_4: u32 = 0x00806018;
+}
 
 /// Returns the serial number of the chip as 4 32-bit integers. The serial
 /// number is only guaranteed to be unique if all 128 bits are used.
 pub fn split_serial_number() -> (u32, u32, u32, u32) {
     unsafe {
         (
-            ptr::read(SN_1 as *const u32),
-            ptr::read(SN_2 as *const u32),
-            ptr::read(SN_3 as *const u32),
-            ptr::read(SN_4 as *const u32),
+            ptr::read(constants::SN_1 as *const u32),
+            ptr::read(constants::SN_2 as *const u32),
+            ptr::read(constants::SN_3 as *const u32),
+            ptr::read(constants::SN_4 as *const u32),
         )
     }
 }
