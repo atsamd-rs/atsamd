@@ -7,6 +7,7 @@
 - Update the PACs to svd2rust 0.30.2.
 - Fix warnings for thumbv7 targets
 - Update README.md - moves some content to wiki
+- Remove pin `pa28` from the `d21el` target (#717)
 
 # v0.16.0
 
