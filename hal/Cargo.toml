@@ -265,7 +265,7 @@ pins-d21e = ["pins-32a", "has-pa28"]
 pins-d21g = ["pins-48a", "has-pa28"]
 pins-d21j = ["pins-64", "has-pa28"]
 
-pins-d21el = ["pins-32l", "has-pa28"]
+pins-d21el = ["pins-32l"]
 pins-d21gl = ["pins-48l", "has-pa28"]
 
 pins-d51g = ["pins-48a"]
