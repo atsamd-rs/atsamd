@@ -141,27 +141,35 @@ fn main() -> std::io::Result<()> {
     let manifest_dir: PathBuf = std::env::var("CARGO_MANIFEST_DIR").unwrap().into();
 
     let peripheral_mapping = load_peripheral_mapping(manifest_dir)?;
-    let out = generate_output_file(peripheral_mapping);
+    let map = generate_phf_map(&peripheral_mapping);
 
-    std::fs::write(out_dir.join("generated.rs"), out)?;
+    let file = std::fs::File::create(out_dir.join("generated.rs"))?;
+    let mut file = std::io::BufWriter::new(file);
+    use std::io::Write;
+    write!(
+        file,
+        "static PERIPHERALS: phf::Map<&'static str, &'static [&'static str]> = {};",
+        map.build()
+    )?;
 
     Ok(())
 }
 
-fn generate_output_file(peripheral_mapping: BTreeMap<String, BTreeSet<String>>) -> String {
-    let mut out =
-        "fn match_peripheral(s: &str) -> Option<&'static [&'static str]> { match s {\n".to_string();
+fn generate_phf_map(
+    peripheral_mapping: &BTreeMap<String, BTreeSet<String>>,
+) -> phf_codegen::Map<&str> {
+    let mut map = phf_codegen::Map::new();
 
     for (peripheral, devices) in peripheral_mapping {
-        use std::fmt::Write;
-        write!(out, "{peripheral:?} => Some(&[").unwrap();
+        let mut value = String::from("&[");
         for device in devices {
-            write!(out, "{device:?},").unwrap();
+            use std::fmt::Write;
+            write!(value, "{device:?},").unwrap();
         }
-        out += "]),\n";
+        value.push(']');
+        map.entry(peripheral.as_str(), &value);
     }
-    out += "_ => None }}";
-    out
+    map
 }
 
 fn load_peripheral_mapping(

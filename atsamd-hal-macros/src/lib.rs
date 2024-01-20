@@ -7,7 +7,7 @@ include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 fn gen_cfgs(peripherals: &str) -> Option<TokenStream> {
     let mut devices: BTreeSet<&'static str> = BTreeSet::new();
     for peripheral in peripherals.split_ascii_whitespace() {
-        devices.extend(match_peripheral(&peripheral)?);
+        devices.extend(PERIPHERALS.get(&peripheral)?.iter());
     }
 
     let mut s = "#[cfg(any(".to_string();
@@ -23,12 +23,11 @@ fn gen_cfgs(peripherals: &str) -> Option<TokenStream> {
 
 #[proc_macro_attribute]
 pub fn hal_cfgs(args: TokenStream, input: TokenStream) -> TokenStream {
-    match hal_cfgs_impl(&mut args.into_iter(), input) {
-        Some(stream) => stream,
-        None => {
-            let s = r#"compile_error!("hal_cfgs accepts a attribute takes exactly one argument, which must be a string");"#;
-            s.parse().unwrap()
-        }
+    if let Some(stream) = hal_cfgs_impl(&mut args.into_iter(), input) {
+        stream
+    } else {
+        let s = r#"compile_error!("hal_cfgs accepts a attribute takes exactly one argument, which must be a string");"#;
+        s.parse().unwrap()
     }
 }
 
@@ -46,12 +45,11 @@ fn hal_cfgs_impl(
 
 #[proc_macro]
 pub fn hal_module_mapping(args: TokenStream) -> TokenStream {
-    match hal_module_mapping_impl(args) {
-        Some(stream) => stream,
-        None => {
-            let s = r#"compile_error!("hal_module_mapping was unable to parse its input");"#;
-            s.parse().unwrap()
-        }
+    if let Some(stream) = hal_module_mapping_impl(args) {
+        stream
+    } else {
+        let s = r#"compile_error!("hal_module_mapping was unable to parse its input");"#;
+        s.parse().unwrap()
     }
 }
 

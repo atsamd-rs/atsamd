@@ -8,7 +8,10 @@ proc-macro = true
 
 [dependencies]
 litrs = "0.4.1"
+phf = { version = "0.11.1", default-features = false }
 
 [build-dependencies]
+phf = { version = "0.11.1", default-features = false }
+phf_codegen = "0.11.1"
 serde = { version = "1.0.195", features = ["derive"] }
 serde_yaml = "0.9.30"
