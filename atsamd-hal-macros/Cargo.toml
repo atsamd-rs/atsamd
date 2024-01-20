@@ -1,0 +1,14 @@
+[package]
+name = "atsamd-hal-macros"
+version = "0.16.0"
+edition = "2021"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+litrs = "0.4.1"
+
+[build-dependencies]
+serde = { version = "1.0.195", features = ["derive"] }
+serde_yaml = "0.9.30"

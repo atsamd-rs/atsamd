@@ -1,0 +1,134 @@
+pin-groups:
+  pins-14: ["pa02", "pa04", "pa05", "pa08", "pa09", "pa14", "pa15", "pa24", "pa25", "pa30", "pa31"]
+  pins-24: ["pins-14", "pa03", "pa06", "pa07", "pa10", "pa11", "pa16", "pa17", "pa22", "pa23"]
+  pins-32: ["pins-24", "pa18", "pa19"]
+  pins-32a: ["pins-32", "pa00", "pa01", "pa27"]
+  pins-32l: ["pins-32", "pb02", "pb03", "pb04", "pb05"]
+  pins-48: ["pins-32", "pa12", "pa13", "pa20", "pa21", "pa27", "pb02", "pb03", "pb08", "pb09", "pb10", "pb11"]
+  pins-48a: ["pins-48", "pa00", "pa01", "pb22", "pb23"]
+  pins-48l: ["pins-48", "pb00", "pb01", "pb04", "pb05"]
+  pins-64: ["pins-48a", "pins-48l", "pb06", "pb07", "pb12", "pb13", "pb14", "pb15", "pb16", "pb17", "pb30", "pb31"]
+  pins-100: ["pins-64", "pb18", "pb19", "pb20", "pb21", "pb24", "pb25", "pc00", "pc01", "pc02", "pc03", "pc05", "pc06", "pc07", "pc10", "pc11", "pc12", "pc13", "pc14", "pc15", "pc16", "pc17", "pc18", "pc19", "pc20", "pc21", "pc24", "pc25", "pc26", "pc27", "pc28"]
+  pins-128: ["pins-100", "pb26", "pb27", "pb28", "pb29", "pc04", "pc22", "pc23", "pc30", "pc31", "pd00", "pd01", "pd08", "pd09", "pd10", "pd11", "pd12", "pd20", "pd21"]
+
+families:
+  d11:
+    pins:
+      samd11c: ["pins-14", "pa28"]
+      samd11d: ["pins-24", "pa27", "pa28"]
+    peripherals:
+      - serial-numbers
+      - dsu
+      - clock
+      - gclk
+      - pm
+      - sysctrl
+      - wdt
+      - rtc
+      - dmac
+      - eic
+      - nvmctrl
+      - port
+      - evsys
+      - sercom: { count: 2, only: ["samd11c"] }
+      - sercom: { count: 3, only: ["samd11d"] }
+      - tc0
+      - tc1
+      - tcc0
+      - usb
+      - adc
+      - ac
+      - dac
+      - ptc
+
+  d21:
+    pins:
+      samd21e: ["pins-32a", "pa28"]
+      samd21g: ["pins-48a", "pa28"]
+      samd21j: ["pins-64", "pa28"]
+      samd21el: ["pins-32l"]
+      samd21gl: ["pins-48l", "pa28"]
+    peripherals:
+      - serial-numbers
+      - dsu
+      - clock
+      - gclk
+      - pm
+      - sysctrl
+      - wdt
+      - rtc
+      - dmac
+      - eic
+      - nvmctrl
+      - port
+      - evsys
+      - sercom: { count: 4, only: ["samd21e", "samd21el"] }
+      - sercom: { count: 6, only: ["samd21g", "samd21j", "samd21gl"] }
+      - i2s: { only: ["samd21e", "samd21g", "samd21j"] }
+      - tc
+      - tcc
+      - usb: { only: ["samd21e", "samd21g", "samd21j"] }
+      - adc
+      - ac
+      - dac
+      - ptc
+
+  d5x:
+    pins:
+      samd51g: ["pins-48a"]
+      samd51j: ["pins-64"]
+      samd51n: ["pins-100"]
+      samd51p: ["pins-128"]
+      same51g: ["pins-48a"]
+      same51j: ["pins-64"]
+      same51n: ["pins-100"]
+      same53j: ["pins-64"]
+      same53n: ["pins-100"]
+      same54n: ["pins-100"]
+      same54p: ["pins-128"]
+    peripherals:
+      - serial-numbers
+      - cmcc
+      - dsu
+      - clock
+      - gclk
+      - mclk
+      - rstc
+      - ramecc
+      - pm
+      - supc
+      - wdt
+      - rtc
+      - dmac
+      - eic
+      - gmac: { only: ["same53j", "same53n", "same54n", "same54p"] }
+      - nvmctrl
+      - icm
+      - pac
+      - oscctrl
+      - osc32kctrl
+      - freqm
+      - evsys
+      - port
+      - sercom: { count: 6, only: ["samd51g", "samd51j", "same51g", "same51j", "same53j"] }
+      - sercom: { count: 8, only: ["samd51n", "samd51p", "same51n", "same53n", "same54n", "same54p"] }
+      - qspi
+      - usb
+      - can: { count: 1, only: ["same51g"]}
+      - can: { count: 2, only: ["same51j", "same51n", "same54n", "same54p"] }
+      - sdhc: { count: 1, only: ["samd51g", "samd51j", "same51g", "same51n", "same51j", "same53j"] }
+      - sdhc: { count: 2, only: ["samd51n", "samd51p", "same53n", "same54n", "same54p"] }
+      - ccl
+      - aes
+      - pukcc
+      - pukcl
+      - trng
+      - adc
+      - ac
+      - dac
+      - tc
+      - tcc
+      - ptc
+      - i2s: { only: ["samd51g", "samd51n", "samd51p", "same51g", "same51j", "same51n", "same53j", "same53n", "same54n", "same54p"] }
+      - pcc
+      - pdec
