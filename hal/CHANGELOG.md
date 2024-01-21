@@ -8,6 +8,7 @@
 - Fix warnings for thumbv7 targets
 - Update README.md - moves some content to wiki
 - Remove pin `pa28` from the `d21el` target (#717)
+- Fix a pwm configuration for the `tc4` on `D5x` targets (#720)
 
 # v0.16.0
 

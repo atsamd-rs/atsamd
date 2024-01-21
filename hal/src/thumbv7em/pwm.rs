@@ -100,8 +100,8 @@ impl_tc_pinout!(TC3Pinout: [
 #[cfg(feature = "has-tc4")]
 impl_tc_pinout!(TC4Pinout: [
     (Pa23, PA23),
-    #[cfg(feature = "has-pb00")]
-    (Pb0, PB09),
+    #[cfg(feature = "pins-48")]
+    (Pb9, PB09),
     #[cfg(feature = "pins-64")]
     (Pb13, PB13)
 ]);
