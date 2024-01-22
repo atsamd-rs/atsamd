@@ -8,14 +8,12 @@
 use matrix_portal_m4::{entry, hal, Pins, RedLedPwm};
 use panic_halt as _;
 
-use core::f32::consts::FRAC_PI_2;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::fugit::RateExtU32;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::pwm::{Channel, TCC1Pinout, Tcc1Pwm};
-use micromath::F32Ext;
 
 #[entry]
 fn main() -> ! {
@@ -43,12 +41,15 @@ fn main() -> ! {
         &mut peripherals.MCLK,
     );
     let max_duty = tcc1pwm.get_max_duty();
-    let min_duty = 0;
+    let min_duty = max_duty / 8;
 
     loop {
+        // board led is on channel 2 of tcc1
+        // Verfied by looking at adafrult pinout
+        // https://cdn-learn.adafruit.com/assets/assets/000/111/881/original/led_matrices_Adafruit_MatrixPortal_M4_Pinout.png?1653078587
         tcc1pwm.set_duty(Channel::_2, max_duty);
         delay.delay_ms(1000u16);
-        tcc1pwm.set_duty(Channel::_2, max_duty / 8);
+        tcc1pwm.set_duty(Channel::_2, min_duty);
         delay.delay_ms(1000u16);
     }
 }

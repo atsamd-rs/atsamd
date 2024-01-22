@@ -292,6 +292,7 @@ hal::bsp_pins!(
         aliases: {
             PushPullOutput: RedLed,
             Reset: RedLedReset,
+            AlternateG: RedLedPwm,
         }
     }
 

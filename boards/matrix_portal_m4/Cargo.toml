@@ -32,7 +32,6 @@ features = ["critical-section-single-core"]
 
 [dev-dependencies]
 panic-halt = "0.2"
-micromath = "0.5.1"
 
 [features]
 # ask the HAL to enable atsamd51j support

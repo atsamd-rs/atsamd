@@ -24,3 +24,6 @@ $ cargo hf2 --release --example blinky_basic --vid 0x239a --pid 0x00c9
     Finished in 0.051s
 $
 ```
+
+## Matrix Portal M4
+[PCB DOCs](https://github.com/adafruit/Adafruit-MatrixPortal-M4-PCB/tree/main)
