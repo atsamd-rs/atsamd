@@ -1,10 +1,6 @@
 #![no_std]
 #![no_main]
 
-// Pulse Width Modulation
-//
-// cargo hf2 --release --example pwm  --vid 0x239a --pid 0x00c9 --features="unproven"
-
 use matrix_portal_m4::{entry, hal, Pins, RedLedPwm};
 use panic_halt as _;
 
@@ -22,7 +18,6 @@ use hal::pwm::{Channel, TCC1Pinout, Tcc1Pwm};
 /// The LED brightness alternates between maximum and minimum (1/8th of max) every second.
 ///
 /// Note: The LED is connected to channel 2 of TCC1 as per the Adafruit Matrix Portal M4 pinout.
-/// (https://cdn-learn.adafruit.com/assets/assets/000/111/881/original/led_matrices_Adafruit_MatrixPortal_M4_Pinout.png?1653078587)
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();

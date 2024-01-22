@@ -47,4 +47,3 @@ name = "blinky_basic"
 [[example]]
 name = "pwm"
 required-features = ["unproven"]
-# cargo hf2 --release --example pwm  --vid 0x239a --pid 0x00c9 --features="unproven"
