@@ -1,6 +1,6 @@
 [package]
 name = "matrix_portal_m4"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Salsa Steve <elmanstevelaguna@gmail.com>"]
 description = "Board Support crate for the Matrix Portal M4"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
