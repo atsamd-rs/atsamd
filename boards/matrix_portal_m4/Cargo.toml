@@ -32,6 +32,7 @@ features = ["critical-section-single-core"]
 
 [dev-dependencies]
 panic-halt = "0.2"
+micromath = "0.5.1"
 
 [features]
 # ask the HAL to enable atsamd51j support
@@ -43,3 +44,8 @@ usb = ["atsamd-hal/usb", "usb-device"]
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "pwm"
+required-features = ["unproven"]
+# cargo hf2 --release --example pwm  --vid 0x239a --pid 0x00c9 --features="unproven"
