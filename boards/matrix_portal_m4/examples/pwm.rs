@@ -15,6 +15,14 @@ use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::pwm::{Channel, TCC1Pinout, Tcc1Pwm};
 
+/// Entry point for the PWM example on Matrix Portal M4.
+///
+/// This function sets up the necessary peripherals for PWM control of the onboard LED.
+/// It uses TCC1 for PWM, setting different duty cycles to vary the brightness of the LED.
+/// The LED brightness alternates between maximum and minimum (1/8th of max) every second.
+///
+/// Note: The LED is connected to channel 2 of TCC1 as per the Adafruit Matrix Portal M4 pinout.
+/// (https://cdn-learn.adafruit.com/assets/assets/000/111/881/original/led_matrices_Adafruit_MatrixPortal_M4_Pinout.png?1653078587)
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
@@ -44,9 +52,6 @@ fn main() -> ! {
     let min_duty = max_duty / 8;
 
     loop {
-        // board led is on channel 2 of tcc1
-        // Verfied by looking at adafrult pinout
-        // https://cdn-learn.adafruit.com/assets/assets/000/111/881/original/led_matrices_Adafruit_MatrixPortal_M4_Pinout.png?1653078587
         tcc1pwm.set_duty(Channel::_2, max_duty);
         delay.delay_ms(1000u16);
         tcc1pwm.set_duty(Channel::_2, min_duty);
