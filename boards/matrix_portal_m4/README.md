@@ -24,11 +24,13 @@ $ cargo hf2 --release --example blinky_basic --vid 0x239a --pid 0x00c9
     Finished in 0.051s
 $
 ```
+```
 $ cargo hf2 --release --example pwm  --vid 0x239a --pid 0x00c9 --features="unproven"
     Finished release [optimized] target(s) in 0.67s
     Trying  Ok(Some("Adafruit Industries")) Ok(Some("Matrix Portal M4"))
     Flashing "/Users/User/atsamd/boards/matrix_portal_m4/target/thumbv7em-none-eabihf/release/examples/pwm"
     Finished in 0.146s
+```
 
 ## Matrix Portal M4
 [PCB DOCs](https://github.com/adafruit/Adafruit-MatrixPortal-M4-PCB/tree/main)
