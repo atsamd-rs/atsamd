@@ -43,3 +43,7 @@ usb = ["atsamd-hal/usb", "usb-device"]
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "pwm"
+required-features = ["unproven"]
