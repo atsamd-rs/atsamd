@@ -90,7 +90,7 @@
 //! These traits are implemented following all of the rules outlined above for
 //! the different [`Size`] and [`Capability`] options.
 
-use embedded_hal::{blocking, serial, spi};
+use crate::ehal_02::{blocking, serial, spi};
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
 use typenum::{U1, U2, U3, U4};

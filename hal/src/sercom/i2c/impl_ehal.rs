@@ -1,7 +1,7 @@
 //! `embedded-hal` trait implementations for [`I2c`]s
 
 use super::{config::AnyConfig, flags::Error, I2c};
-use embedded_hal::blocking::i2c::{Read, Write, WriteRead};
+use crate::ehal_02::blocking::i2c::{Read, Write, WriteRead};
 
 impl<C: AnyConfig> Write for I2c<C> {
     type Error = Error;

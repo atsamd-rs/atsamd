@@ -255,16 +255,16 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //!
 //! Only `Spi` structs can actually perform transactions. To do so, use the
 //! various embedded HAL traits, like
-//! [`spi::FullDuplex`](embedded_hal::spi::FullDuplex),
-//! [`serial::Read`](embedded_hal::serial::Read) or
-//! [`serial::Write`](embedded_hal::serial::Write).
+//! [`spi::FullDuplex`](crate::ehal_02::spi::FullDuplex),
+//! [`serial::Read`](crate::ehal_02::serial::Read) or
+//! [`serial::Write`](crate::ehal_02::serial::Write).
 //! See the [`impl_ehal`] module documentation for more details about the
 //! specific trait implementations, which vary based on [`Size`] and
 //! [`Capability`].
 //!
 //! ```
 //! use nb::block;
-//! use embedded_hal::spi::FullDuplex;
+//! use crate::ehal_02::spi::FullDuplex;
 //!
 //! block!(spi.send(0xAA55));
 //! let rcvd: u16 = block!(spi.read());
@@ -315,9 +315,9 @@ let (chan0, _, spi, _) = dma_transfer.wait();
 use core::convert::TryFrom;
 use core::marker::PhantomData;
 
+use crate::ehal_02::spi;
+pub use crate::ehal_02::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 use bitflags::bitflags;
-use embedded_hal::spi;
-pub use embedded_hal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 
 use crate::sercom::*;
 use crate::time::Hertz;
