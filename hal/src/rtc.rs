@@ -1,7 +1,7 @@
 //! Real-time clock/counter
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
-use crate::ehal::timer::{CountDown, Periodic};
+use crate::ehal_02::timer::{CountDown, Periodic};
 use crate::pac::rtc::{MODE0, MODE2};
 use crate::pac::RTC;
 use crate::time::{Hertz, Nanoseconds};

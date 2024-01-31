@@ -1,6 +1,7 @@
 #![no_std]
 
-pub use embedded_hal as ehal;
+use embedded_hal_02 as ehal_02;
+pub use embedded_hal_1 as ehal;
 pub use fugit;
 pub use paste;
 pub mod typelevel;

@@ -63,9 +63,9 @@ use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use paste::paste;
 
-use crate::ehal::digital::v2::OutputPin;
+use crate::ehal_02::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
-use crate::ehal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal_02::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 
 use super::pin::*;
 use super::reg::RegisterInterface;

@@ -3,7 +3,7 @@ use core::sync::atomic;
 use cortex_m::asm;
 use fugit::ExtU32;
 
-use crate::ehal::blocking::delay::{DelayMs, DelayUs};
+use crate::ehal_02::blocking::delay::{DelayMs, DelayUs};
 use crate::timer_traits::InterruptDrivenTimer;
 
 const NUM_US_IN_S: u32 = 1_000_000;

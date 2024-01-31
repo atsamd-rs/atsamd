@@ -36,7 +36,8 @@ bitfield = "0.13"
 bitflags = "1.2.1"
 cipher = "0.3"
 cortex-m = "0.7"
-embedded-hal = "0.2"
+embedded-hal-02 = {package = "embedded-hal", version = "0.2"}
+embedded-hal-1 = {package = "embedded-hal", version = "1.0.0"}
 fugit = "0.3"
 modular-bitfield = "0.11"
 nb = "1.0"
@@ -184,7 +185,7 @@ enable_unsafe_aes_newblock_cipher = []
 max-channels = ["dma"]
 rtic = ["rtic-monotonic"]
 sdmmc = ["embedded-sdmmc"]
-unproven = ["embedded-hal/unproven"]
+unproven = ["embedded-hal-02/unproven"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
 

@@ -71,7 +71,7 @@
 //! ```
 //! use atsamd_hal::pac::Peripherals;
 //! use atsamd_hal::gpio::Pins;
-//! use embedded_hal::digital::v2::OutputPin;
+//! use crate::ehal_02::digital::v2::OutputPin;
 //!
 //! let mut peripherals = Peripherals::take().unwrap();
 //! let mut pins = Pins::new(peripherals.PORT);
@@ -102,9 +102,9 @@ use core::convert::Infallible;
 use core::marker::PhantomData;
 use core::mem::transmute;
 
-use crate::ehal::digital::v2::OutputPin;
+use crate::ehal_02::digital::v2::OutputPin;
 #[cfg(feature = "unproven")]
-use crate::ehal::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal_02::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
 use paste::paste;
 
 use crate::pac::PORT;

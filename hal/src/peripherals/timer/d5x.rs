@@ -1,7 +1,7 @@
 //! Working with timer counter hardware
 use atsamd_hal_macros::hal_cfg;
 
-use crate::ehal::timer::{CountDown, Periodic};
+use crate::ehal_02::timer::{CountDown, Periodic};
 use crate::pac::tc0::COUNT16;
 use crate::pac::{MCLK, TC2, TC3};
 #[hal_cfg(all("tc4", "tc5"))]

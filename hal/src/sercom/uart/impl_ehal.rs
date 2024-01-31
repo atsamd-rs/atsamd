@@ -1,7 +1,7 @@
 //! `embedded-hal` trait implementations for [`Uart`]s
 
 use super::{DataReg, Error, Flags, Receive, Transmit, Uart, ValidConfig};
-use embedded_hal::{
+use crate::ehal_02::{
     blocking,
     serial::{Read, Write},
 };

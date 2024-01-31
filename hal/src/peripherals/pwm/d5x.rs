@@ -3,7 +3,7 @@
 use atsamd_hal_macros::hal_cfg;
 
 use crate::clock;
-use crate::ehal::{Pwm, PwmPin};
+use crate::ehal_02::{Pwm, PwmPin};
 use crate::gpio::*;
 use crate::gpio::{AlternateE, AnyPin, Pin};
 use crate::pac::MCLK;

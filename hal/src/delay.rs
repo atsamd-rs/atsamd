@@ -4,7 +4,7 @@ use cortex_m::peripheral::syst::SystClkSource;
 use cortex_m::peripheral::SYST;
 
 use crate::clock::GenericClockController;
-use crate::ehal::blocking::delay::{DelayMs, DelayUs};
+use crate::ehal_02::blocking::delay::{DelayMs, DelayUs};
 use crate::time::Hertz;
 
 /// System timer (SysTick) as a delay provider

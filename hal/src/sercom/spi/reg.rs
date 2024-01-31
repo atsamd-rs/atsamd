@@ -1,6 +1,6 @@
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
-use embedded_hal::spi;
+use crate::ehal_02::spi;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use crate::pac::sercom0::SPI;

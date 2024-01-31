@@ -3,7 +3,7 @@ use crate::pac::{MCLK, TRNG};
 use rand_core::{CryptoRng, RngCore};
 
 #[cfg(feature = "unproven")]
-use embedded_hal::blocking::rng::Read;
+use crate::ehal_02::blocking::rng::Read;
 
 pub struct Trng(TRNG);
 
