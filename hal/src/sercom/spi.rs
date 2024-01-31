@@ -306,6 +306,7 @@ use core::marker::PhantomData;
 use crate::ehal_02::spi;
 pub use crate::ehal_02::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 use bitflags::bitflags;
+use num_traits::AsPrimitive;
 
 use crate::sercom::{pad::SomePad, Sercom, APB_CLK_CTRL};
 use crate::time::Hertz;
@@ -628,6 +629,7 @@ where
     mode: PhantomData<M>,
     size: PhantomData<Z>,
     freq: Hertz,
+    nop_word: DataWidth,
 }
 
 impl<P: ValidPads> Config<P> {
@@ -649,6 +651,7 @@ impl<P: ValidPads> Config<P> {
             mode: PhantomData,
             size: PhantomData,
             freq: freq.into(),
+            nop_word: 0x00.as_(),
         }
     }
 
@@ -715,6 +718,7 @@ where
             mode: PhantomData,
             size: PhantomData,
             freq: self.freq,
+            nop_word: self.nop_word,
         }
     }
 
@@ -863,6 +867,31 @@ where
     #[inline]
     pub fn bit_order(mut self, order: BitOrder) -> Self {
         self.set_bit_order(order);
+        self
+    }
+
+    /// Get the NOP word
+    ///
+    /// This word is used when reading in Duplex mode, since an equal number of
+    /// words must be sent in order to avoid overflow errors.
+    pub fn get_nop_word(&self) -> DataWidth {
+        self.nop_word
+    }
+
+    /// Set the NOP word
+    ///
+    /// This word is used when reading in Duplex mode, since an equal number of
+    /// words must be sent in order to avoid overflow errors.
+    pub fn set_nop_word(&mut self, nop_word: DataWidth) {
+        self.nop_word = nop_word;
+    }
+
+    /// Set the NOP word using the builder pattern
+    ///
+    /// This word is used when reading in Duplex mode, since an equal number of
+    /// words must be sent in order to avoid overflow errors.
+    pub fn nop_word(mut self, nop_word: DataWidth) -> Self {
+        self.nop_word = nop_word;
         self
     }
 
