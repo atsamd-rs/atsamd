@@ -102,9 +102,7 @@ use core::convert::Infallible;
 use core::marker::PhantomData;
 use core::mem::transmute;
 
-use crate::ehal_02::digital::v2::OutputPin;
-#[cfg(feature = "unproven")]
-use crate::ehal_02::digital::v2::{InputPin, StatefulOutputPin, ToggleableOutputPin};
+use crate::ehal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
 use paste::paste;
 
 use crate::pac::PORT;
@@ -882,10 +880,101 @@ pub trait SomePin: AnyPin {}
 impl<P: AnyPin> SomePin for P {}
 
 //==============================================================================
-//  Embedded HAL traits
+//  Embedded HAL v1 traits
 //==============================================================================
 
+impl<I, M> ErrorType for Pin<I, M>
+where
+    I: PinId,
+    M: PinMode,
+{
+    type Error = Infallible;
+}
+
 impl<I, C> OutputPin for Pin<I, Output<C>>
+where
+    I: PinId,
+    C: OutputConfig,
+{
+    #[inline]
+    fn set_low(&mut self) -> Result<(), Self::Error> {
+        self._set_low();
+        Ok(())
+    }
+
+    #[inline]
+    fn set_high(&mut self) -> Result<(), Self::Error> {
+        self._set_high();
+        Ok(())
+    }
+}
+
+impl<I> InputPin for Pin<I, ReadableOutput>
+where
+    I: PinId,
+{
+    #[inline]
+    fn is_high(&mut self) -> Result<bool, Self::Error> {
+        Ok(self._is_high())
+    }
+    #[inline]
+    fn is_low(&mut self) -> Result<bool, Self::Error> {
+        Ok(self._is_low())
+    }
+}
+
+#[cfg(feature = "unproven")]
+impl<I, C> InputPin for Pin<I, Input<C>>
+where
+    I: PinId,
+    C: InputConfig,
+{
+    #[inline]
+    fn is_high(&mut self) -> Result<bool, Self::Error> {
+        Ok(self._is_high())
+    }
+    #[inline]
+    fn is_low(&mut self) -> Result<bool, Self::Error> {
+        Ok(self._is_low())
+    }
+}
+
+#[cfg(feature = "unproven")]
+impl<I, C> InputPin for Pin<I, Interrupt<C>>
+where
+    I: PinId,
+    C: InterruptConfig,
+{
+    #[inline]
+    fn is_high(&mut self) -> Result<bool, Self::Error> {
+        Ok(self._is_high())
+    }
+    #[inline]
+    fn is_low(&mut self) -> Result<bool, Self::Error> {
+        Ok(self._is_low())
+    }
+}
+
+impl<I, C> StatefulOutputPin for Pin<I, Output<C>>
+where
+    I: PinId,
+    C: OutputConfig,
+{
+    #[inline]
+    fn is_set_high(&mut self) -> Result<bool, Self::Error> {
+        Ok(self._is_set_high())
+    }
+    #[inline]
+    fn is_set_low(&mut self) -> Result<bool, Self::Error> {
+        Ok(self._is_set_low())
+    }
+}
+
+//==============================================================================
+//  Embedded HAL v0.2 traits
+//==============================================================================
+
+impl<I, C> crate::ehal_02::digital::v2::OutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
@@ -904,7 +993,7 @@ where
 }
 
 #[cfg(feature = "unproven")]
-impl<I> InputPin for Pin<I, ReadableOutput>
+impl<I> crate::ehal_02::digital::v2::InputPin for Pin<I, ReadableOutput>
 where
     I: PinId,
 {
@@ -920,7 +1009,7 @@ where
 }
 
 #[cfg(feature = "unproven")]
-impl<I, C> InputPin for Pin<I, Input<C>>
+impl<I, C> crate::ehal_02::digital::v2::InputPin for Pin<I, Input<C>>
 where
     I: PinId,
     C: InputConfig,
@@ -937,7 +1026,7 @@ where
 }
 
 #[cfg(feature = "unproven")]
-impl<I, C> InputPin for Pin<I, Interrupt<C>>
+impl<I, C> crate::ehal_02::digital::v2::InputPin for Pin<I, Interrupt<C>>
 where
     I: PinId,
     C: InterruptConfig,
@@ -954,7 +1043,7 @@ where
 }
 
 #[cfg(feature = "unproven")]
-impl<I, C> ToggleableOutputPin for Pin<I, Output<C>>
+impl<I, C> crate::ehal_02::digital::v2::ToggleableOutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
@@ -968,7 +1057,7 @@ where
 }
 
 #[cfg(feature = "unproven")]
-impl<I, C> StatefulOutputPin for Pin<I, Output<C>>
+impl<I, C> crate::ehal_02::digital::v2::StatefulOutputPin for Pin<I, Output<C>>
 where
     I: PinId,
     C: OutputConfig,
