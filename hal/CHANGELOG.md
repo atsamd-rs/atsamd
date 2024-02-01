@@ -9,6 +9,7 @@
 - Update README.md - moves some content to wiki
 - Remove pin `pa28` from the `d21el` target (#717)
 - Fix a pwm configuration for the `tc4` on `D5x` targets (#720)
+- Update to usb-device 0.3.1
 
 # v0.16.0
 

@@ -24,7 +24,7 @@ version = "0.16.0"
 default-features = false
 
 [dependencies.usb-device]
-version = "0.2"
+version = "0.3.1"
 optional = true
 
 [dependencies.cortex-m]
@@ -33,7 +33,7 @@ features = ["critical-section-single-core"]
 
 [dev-dependencies]
 cortex-m = "0.7"
-usbd-serial = "0.1"
+usbd-serial = "0.2"
 panic-probe = "0.3"
 panic-halt = "0.2"
 panic-semihosting = "0.5"

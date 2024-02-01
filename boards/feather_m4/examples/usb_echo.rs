@@ -51,9 +51,11 @@ fn main() -> ! {
         USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
             UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
-                .manufacturer("Fake company")
-                .product("Serial port")
-                .serial_number("TEST")
+                .strings(&[StringDescriptors::new(LangID::EN)
+                    .manufacturer("Fake company")
+                    .product("Serial port")
+                    .serial_number("TEST")])
+                .expect("Failed to set strings")
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
@@ -70,7 +72,9 @@ fn main() -> ! {
 
     loop {
         cycle_delay(5 * 1024 * 1024);
-        red_led.toggle().unwrap();
+        red_led.set_high().unwrap();
+        cycle_delay(5 * 1024 * 1024);
+        red_led.set_low().unwrap();
     }
 }
 
