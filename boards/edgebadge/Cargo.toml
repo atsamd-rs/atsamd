@@ -35,7 +35,7 @@ optional = true
 [dev-dependencies]
 usbd-serial = "0.1"
 panic-halt = "0.2"
-embedded-graphics = "0.7.1"
+embedded-graphics = "0.8.1"
 smart-leds = "0.3"
 lis3dh = "0.1.0"
 cortex-m-rtic = "1.0"
@@ -53,7 +53,7 @@ math = ["micromath"]
 # opt-level = 2 # uncomment for neopixel functionality during debug
 incremental = false
 debug = true
-lto = "thin" # thin for debug speed
+lto = "thin"        # thin for debug speed
 
 [profile.release]
 debug = true
