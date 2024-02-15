@@ -1,7 +1,5 @@
 # Unreleased
 
-
-# v0.10.0
 - update `embedded-graphics` to 0.8.1 (#726)
 - update `st7735-lcd` to 0.9.0 (#726)
 - update `tinybmp` to 0.5.0 (#726)
