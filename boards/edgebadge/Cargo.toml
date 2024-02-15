@@ -13,7 +13,7 @@ exclude = ["assets"]
 
 [dependencies]
 cortex-m = "0.7"
-st7735-lcd = "0.8.1"
+st7735-lcd = "0.9.0"
 ws2812-timer-delay = "0.3"
 
 [dependencies.cortex-m-rt]
@@ -35,11 +35,11 @@ optional = true
 [dev-dependencies]
 usbd-serial = "0.1"
 panic-halt = "0.2"
-embedded-graphics = "0.7.1"
+embedded-graphics = "0.8.1"
 smart-leds = "0.3"
 lis3dh = "0.1.0"
 cortex-m-rtic = "1.0"
-tinybmp = "0.3.1"
+tinybmp = "0.5.0"
 
 [features]
 # ask the HAL to enable atsamd51j support
