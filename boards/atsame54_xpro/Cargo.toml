@@ -43,6 +43,7 @@ rt = ["cortex-m-rt", "atsamd-hal/same54p-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
 can = ["atsamd-hal/can"]
+rtic = ["atsamd-hal/rtic"]
 
 [profile.dev]
 incremental = false
@@ -57,3 +58,7 @@ opt-level = "s"
 [[example]]
 name = "mcan"
 required-features = ["can"]
+
+[[example]]
+name = "timer_v2"
+required-features = ["rtic"]

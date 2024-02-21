@@ -472,7 +472,7 @@ impl<A: ApbId> ApbToken<A> {
     /// instances with the same [`ApbId`]. See the notes on `Token` types and
     /// memory safety in the root of the `clock` module for more details.
     #[inline]
-    unsafe fn new() -> Self {
+    pub(crate) unsafe fn new() -> Self {
         ApbToken { id: PhantomData }
     }
 }
@@ -492,7 +492,7 @@ pub struct ApbClk<A: ApbId> {
 
 impl<A: ApbId> ApbClk<A> {
     #[inline]
-    fn new(token: ApbToken<A>) -> Self {
+    pub(crate) fn new(token: ApbToken<A>) -> Self {
         ApbClk { token }
     }
 

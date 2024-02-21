@@ -105,7 +105,7 @@ impl<P: PclkId> PclkToken<P> {
     /// instances with the same [`PclkId`]. See the notes on `Token` types and
     /// memory safety in the root of the `clock` module for more details.
     #[inline]
-    pub(super) unsafe fn new() -> Self {
+    pub(crate) unsafe fn new() -> Self {
         PclkToken { pclk: PhantomData }
     }
 
@@ -443,7 +443,7 @@ where
     P: PclkId,
     I: PclkSourceId,
 {
-    pub(super) fn new(token: PclkToken<P>, freq: Hertz) -> Self {
+    pub(crate) fn new(token: PclkToken<P>, freq: Hertz) -> Self {
         Self {
             token,
             src: PhantomData,
