@@ -47,7 +47,7 @@ The Peripheral Access Crates (PACs) are automatically generated from Microchip S
 | [atsame51n](https://docs.rs/atsame51n/) | [![Crates.io](https://img.shields.io/crates/v/atsame51n.svg)](https://crates.io/crates/atsame51n) |  |
 | [atsamd51p](https://docs.rs/atsamd51p/) | [![Crates.io](https://img.shields.io/crates/v/atsamd51p.svg)](https://crates.io/crates/atsamd51p) | [Grand Central M4 Express][grand_central_m4], [Wio Terminal][wio_terminal] |
 | [atsame51g](https://docs.rs/atsame51g/) | [![Crates.io](https://img.shields.io/crates/v/atsame51g.svg)](https://crates.io/crates/atsame51g) |  |
-| [atsame51j](https://docs.rs/atsame51j/) | [![Crates.io](https://img.shields.io/crates/v/atsame51j.svg)](https://crates.io/crates/atsame51j) |  |
+| [atsame51j](https://docs.rs/atsame51j/) | [![Crates.io](https://img.shields.io/crates/v/atsame51j.svg)](https://crates.io/crates/atsame51j) | [Feather M4 CAN][feather_m4_can] |
 | [atsame51n](https://docs.rs/atsame51n/) | [![Crates.io](https://img.shields.io/crates/v/atsame51n.svg)](https://crates.io/crates/atsame51n) |  |
 | [atsame53j](https://docs.rs/atsame53j/) | [![Crates.io](https://img.shields.io/crates/v/atsame53j.svg)](https://crates.io/crates/atsame53j) | [pygamer][PyGamer] |
 | [atsame53n](https://docs.rs/atsame53n/) | [![Crates.io](https://img.shields.io/crates/v/atsame53n.svg)](https://crates.io/crates/atsame53n) |  |
@@ -65,6 +65,7 @@ The Peripheral Access Crates (PACs) are automatically generated from Microchip S
 [edgebadge]: https://github.com/atsamd-rs/atsamd/tree/master/boards/edgebadge
 [feather_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/feather_m0/
 [feather_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/feather_m4/
+[feather_m4_can]: https://github.com/atsamd-rs/atsamd/tree/master/boards/feather_m4_can/
 [gemma_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/gemma_m0/
 [grand_central_m4]: https://github.com/atsamd-rs/atsamd/tree/master/boards/grand_central_m4/
 [itsybitsy_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/itsybitsy_m0/
