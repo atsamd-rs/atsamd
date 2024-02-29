@@ -15,6 +15,9 @@
       "build": "cargo build --examples --all-features",
       "target": "thumbv6m-none-eabi"
     },
+    "arduino_zero": {
+      "build": "cargo build --examples --features=unproven,usb"
+    },
     "arduino_nano33iot": {
       "tier": 2,
       "build": "cargo build --examples --all-features",
