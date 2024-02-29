@@ -1,0 +1,59 @@
+[package]
+name = "feather_m4_can"
+version = "0.10.1"
+edition = "2021"
+authors = ["Theodore DeRego <tderego94@gmail.com>"]
+description = "Board Support crate for the Adafruit Feather M4 CAN"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+categories = ["embedded", "hardware-support", "no-std"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j/feather_m4/"
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD51J19A"
+
+[dependencies.cortex-m-rt]
+version = "0.7"
+optional = true
+
+[dependencies.atsamd-hal]
+path = "../../hal"
+version = "0.15.1"
+default-features = false
+
+[dependencies.usb-device]
+version = "0.2"
+optional = true
+
+[dev-dependencies]
+cortex-m = "0.7"
+usbd-serial = "0.1"
+panic-halt = "0.2"
+panic-semihosting = "0.5"
+smart-leds = "0.3"
+ws2812-timer-delay = "0.3"
+heapless = "0.7"
+
+[features]
+# ask the HAL to enable atsamd51j support
+default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51"]
+rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
+unproven = ["atsamd-hal/unproven"]
+usb = ["atsamd-hal/usb", "usb-device"]
+dma = ["atsamd-hal/dma", "unproven"]
+max-channels = ["dma", "atsamd-hal/dma"]
+
+
+[profile.dev]
+incremental = false
+codegen-units = 1
+debug = true
+lto = true
+
+[profile.release]
+debug = true
+lto = true
+opt-level = "s"
