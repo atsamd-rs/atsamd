@@ -61,8 +61,6 @@
 
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
-use core::convert::TryFrom;
-
 use paste::paste;
 
 use crate::ehal::digital::v2::OutputPin;

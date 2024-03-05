@@ -5,7 +5,7 @@ use atsamd_hal_macros::hal_cfg;
 use super::{BaudMode, BitOrder, CharSizeEnum, Flags, Oversampling, Parity, Status, StopBits};
 
 use crate::pac;
-use crate::sercom::*;
+use crate::sercom::Sercom;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use pac::sercom0::usart::ctrla::MODESELECT_A;

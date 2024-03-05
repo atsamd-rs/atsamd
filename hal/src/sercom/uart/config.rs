@@ -8,7 +8,7 @@ use super::{
 };
 use crate::{
     pac,
-    sercom::*,
+    sercom::Sercom,
     time::Hertz,
     typelevel::{Is, Sealed},
 };

@@ -343,6 +343,12 @@ macro_rules! get {
 pub const NUM_CHANNELS: usize = with_num_channels!(get);
 
 // ----- DMAC SRAM registers ----- //
+impl Default for BlockTransferControl {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Bitfield representing the BTCTRL SRAM DMAC register
 #[bitfield]
 #[derive(Clone, Copy)]

@@ -1,7 +1,5 @@
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
-use core::convert::TryInto;
-
 use embedded_hal::spi;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]

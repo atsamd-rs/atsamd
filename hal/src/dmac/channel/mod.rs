@@ -358,6 +358,12 @@ pub enum CallbackStatus {
     TransferSuspended,
 }
 
+impl Default for InterruptFlags {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Interrupt sources available to a DMA channel
 #[bitfield]
 #[repr(u8)]

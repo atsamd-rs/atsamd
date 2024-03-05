@@ -301,14 +301,13 @@ let (chan0, _, spi, _) = dma_transfer.wait();
 
 use atsamd_hal_macros::{hal_cfg, hal_docs, hal_macro_helper, hal_module};
 
-use core::convert::TryFrom;
 use core::marker::PhantomData;
 
 use bitflags::bitflags;
 use embedded_hal::spi;
 pub use embedded_hal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 
-use crate::sercom::*;
+use crate::sercom::{pad::SomePad, Sercom, APB_CLK_CTRL};
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
 

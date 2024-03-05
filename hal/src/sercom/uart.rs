@@ -406,8 +406,8 @@ pub use config::*;
 
 pub mod impl_ehal;
 
-use crate::{sercom::*, typelevel::Sealed};
-use core::{convert::TryInto, marker::PhantomData};
+use crate::{sercom::pad::SomePad, typelevel::Sealed};
+use core::marker::PhantomData;
 use num_traits::AsPrimitive;
 
 /// Size of the SERCOM's `DATA` register

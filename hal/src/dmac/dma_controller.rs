@@ -81,6 +81,12 @@ pub struct DmaController {
     dmac: DMAC,
 }
 
+impl Default for PriorityLevelMask {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Mask representing which priority levels should be enabled/disabled
 #[bitfield]
 #[repr(u16)]
@@ -101,6 +107,12 @@ pub struct PriorityLevelMask {
     level3: bool,
     #[skip]
     _reserved: B4,
+}
+
+impl Default for RoundRobinMask {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 /// Mask representing which priority levels should be configured as round-robin

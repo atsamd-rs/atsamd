@@ -14,8 +14,6 @@ use void::Void;
 use embedded_sdmmc::{TimeSource, Timestamp};
 
 #[cfg(feature = "rtic")]
-use fugit;
-#[cfg(feature = "rtic")]
 pub type Instant = fugit::Instant<u32, 1, 32_768>;
 #[cfg(feature = "rtic")]
 pub type Duration = fugit::Duration<u32, 1, 32_768>;
