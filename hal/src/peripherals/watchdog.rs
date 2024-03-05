@@ -1,5 +1,6 @@
 use crate::ehal::watchdog;
 use crate::pac::WDT;
+use atsamd_hal_macros::hal_macro_helper;
 
 /// WatchdogTimeout enumerates usable values for configuring
 /// the timeout of the watchdog peripheral.
@@ -40,11 +41,22 @@ impl watchdog::Watchdog for Watchdog {
 
 /// Disables a running watchdog timer so the processor won't be reset.
 impl watchdog::WatchdogDisable for Watchdog {
+    #[hal_macro_helper]
     fn disable(&mut self) {
-        // Disable the watchdog timer.
-        self.wdt.ctrl.write(|w| w.enable().clear_bit());
-        // Wait for watchdog timer to be disabled.
-        while self.wdt.status.read().syncbusy().bit_is_set() {}
+        #[hal_cfg(any("wdt-d11", "wdt-d21"))]
+        {
+            // Disable the watchdog timer.
+            self.wdt.ctrl.write(|w| w.enable().clear_bit());
+            // Wait for watchdog timer to be disabled.
+            while self.wdt.status.read().syncbusy().bit_is_set() {}
+        }
+        #[hal_cfg("wdt-d5x")]
+        {
+            // Disable the watchdog timer.
+            self.wdt.ctrla.write(|w| w.enable().clear_bit());
+            // Wait for watchdog timer to be disabled.
+            while self.wdt.syncbusy.read().enable().bit_is_set() {}
+        }
     }
 }
 
@@ -53,6 +65,7 @@ impl watchdog::WatchdogEnable for Watchdog {
 
     /// Enables a watchdog timer to reset the processor if software is frozen
     /// or stalled.
+    #[hal_macro_helper]
     fn start<T>(&mut self, period: T)
     where
         T: Into<Self::Time>,
@@ -61,9 +74,20 @@ impl watchdog::WatchdogEnable for Watchdog {
         self.wdt
             .config
             .write(|w| unsafe { w.per().bits(period.into()) });
-        // Enable the watchdog timer.
-        self.wdt.ctrl.write(|w| w.enable().set_bit());
-        // Wait for watchdog timer to be enabled.
-        while self.wdt.status.read().syncbusy().bit_is_set() {}
+        #[hal_cfg(any("wdt-d11", "wdt-d21"))]
+        {
+            // Enable the watchdog timer.
+            self.wdt.ctrl.write(|w| w.enable().set_bit());
+            // Wait for watchdog timer to be enabled.
+            while self.wdt.status.read().syncbusy().bit_is_set() {}
+        }
+
+        #[hal_cfg("wdt-d5x")]
+        {
+            // Enable the watchdog timer.
+            self.wdt.ctrla.write(|w| w.enable().set_bit());
+            // Wait for watchdog timer to be enabled.
+            while self.wdt.syncbusy.read().enable().bit_is_set() {}
+        }
     }
 }

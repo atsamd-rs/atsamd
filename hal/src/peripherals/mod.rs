@@ -72,18 +72,17 @@ pub mod nvm {}
 pub mod can {}
 
 #[cfg(feature = "unproven")]
-#[cfg_attr(feature = "thumbv6", path = "watchdog/d11.rs")]
-#[cfg_attr(feature = "thumbv7", path = "watchdog/d5x.rs")]
-pub mod watchdog;
+#[hal_module("wdt")]
+pub mod watchdog {}
 
-#[cfg_attr(feature = "thumbv6", path = "reset_cause/d11.rs")]
-#[cfg_attr(feature = "thumbv7", path = "reset_cause/d5x.rs")]
-mod reset_cause;
+#[hal_module(any("pm-d11", "pm-d21", "rstc-d5x"))]
+mod reset_cause {}
 
+#[hal_cfg(any("pm-d11", "pm-d21", "rstc-d5x"))]
 pub use reset_cause::*;
 
-#[cfg_attr(feature = "thumbv6", path = "serial_number/d11.rs")]
-#[cfg_attr(feature = "thumbv7", path = "serial_number/d5x.rs")]
-mod serial_number;
+#[hal_module("serial-numbers")]
+mod serial_number {}
 
+#[hal_cfg("serial-numbers")]
 pub use serial_number::*;

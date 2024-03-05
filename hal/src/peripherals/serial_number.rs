@@ -1,11 +1,27 @@
 //! Serial number
-// See 9.6 Memories --> Serial Number, page 60
 
+use atsamd_hal_macros::hal_cfg;
 use core::ptr;
 
+// See  9.6   Memories --> Serial Number, page 24 for samd11
+// See 10.3.3 Memories --> Serial Number, page 45 for samd21
+#[hal_cfg(any("serial-numbers-d11", "serial-numbers-d21"))]
+const SN_1: u32 = 0x0080A00C;
+#[hal_cfg(any("serial-numbers-d11", "serial-numbers-d21"))]
+const SN_2: u32 = 0x0080A040;
+#[hal_cfg(any("serial-numbers-d11", "serial-numbers-d21"))]
+const SN_3: u32 = 0x0080A044;
+#[hal_cfg(any("serial-numbers-d11", "serial-numbers-d21"))]
+const SN_4: u32 = 0x0080A048;
+
+// See 9.6 Memories --> Serial Number, page 60
+#[hal_cfg("serial-numbers-d5x")]
 const SN_1: u32 = 0x008061FC;
+#[hal_cfg("serial-numbers-d5x")]
 const SN_2: u32 = 0x00806010;
+#[hal_cfg("serial-numbers-d5x")]
 const SN_3: u32 = 0x00806014;
+#[hal_cfg("serial-numbers-d5x")]
 const SN_4: u32 = 0x00806018;
 
 /// Returns the serial number of the chip as 4 32-bit integers. The serial
