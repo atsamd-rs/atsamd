@@ -64,9 +64,10 @@ families:
       - sercom: { count: 4, only: ["samd21e", "samd21el"] }
       - sercom: { count: 6, only: ["samd21g", "samd21j", "samd21gl"] }
       - i2s: { only: ["samd21e", "samd21g", "samd21j"] }
-      - tc: { start: 3, count: 3, only: ["samd21e", "samd21g", "samd21el"] }
-      - tc: { start: 3, count: 5, only: ["samd21j", "samd21gl"] }
-      # TODO: Some of the devices actually has 4, figure out how to support that
+      # TODO: The datasheet says that the samd21gl devices actually has 5 TCs, but that does not compile
+      - tc: { start: 3, count: 3, only: ["samd21e", "samd21g", "samd21el", "samd21gl"] }
+      - tc: { start: 3, count: 5, only: ["samd21j"] }
+      # TODO: Some of the devices actually has 4 TCCs, figure out how to support that
       - tcc: { count: 3 }
       - usb: { only: ["samd21e", "samd21g", "samd21j"] }
       - adc
