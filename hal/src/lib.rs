@@ -28,22 +28,24 @@ macro_rules! define_pac {
 }
 
 define_pac!(
-    (atsamd11c, "atsamd11c"),
-    (atsamd11d, "atsamd11d"),
-    (atsamd21e, "atsamd21e"),
-    (atsamd21g, "atsamd21g"),
-    (atsamd21j, "atsamd21j"),
-    (atsamd51g, "atsamd51g"),
-    (atsamd51j, "atsamd51j"),
-    (atsamd51n, "atsamd51n"),
-    (atsamd51p, "atsamd51p"),
-    (atsame51g, "atsame51g"),
-    (atsame51j, "atsame51j"),
-    (atsame51n, "atsame51n"),
-    (atsame53j, "atsame53j"),
-    (atsame53n, "atsame53n"),
-    (atsame54n, "atsame54n"),
-    (atsame54p, "atsame54p")
+    (atsamd11c, "samd11c"),
+    (atsamd11d, "samd11d"),
+    (atsamd21e, "samd21e"),
+    (atsamd21g, "samd21g"),
+    (atsamd21j, "samd21j"),
+    (atsamd21e, "samd21el"),
+    (atsamd21g, "samd21gl"),
+    (atsamd51g, "samd51g"),
+    (atsamd51j, "samd51j"),
+    (atsamd51n, "samd51n"),
+    (atsamd51p, "samd51p"),
+    (atsame51g, "same51g"),
+    (atsame51j, "same51j"),
+    (atsame51n, "same51n"),
+    (atsame53j, "same53j"),
+    (atsame53n, "same53n"),
+    (atsame54n, "same54n"),
+    (atsame54p, "same54p")
 );
 
 #[cfg(feature = "use_rtt")]
