@@ -212,11 +212,11 @@ implements the DMAC [`Buffer`]
 trait. The provided [`send_with_dma`] and
 [`receive_with_dma`] build and begin a
 [`dmac::Transfer`], thus starting the I2C
-in a non-blocking way. 
+in a non-blocking way.
 
 Note that the [`init_dma_transfer`] method should be called immediately before
 starting a DMA transfer with I2C. This will check that the bus is in a correct
-state before starting the transfer, and providing a token type to pass to the 
+state before starting the transfer, and providing a token type to pass to the
 [`send_with_dma`] and [`receive_with_dma`] methods.
 
 Optionally, interrupts can be enabled on the provided

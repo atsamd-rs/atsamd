@@ -34,22 +34,17 @@
 //! type Tx = Pin<PA09, AlternateC>;
 //! type Pads = uart::Pads<Sercom0, Rx, Tx>;
 //! ```
-#![cfg_attr(
-    not(feature = "samd11"),
-    doc = "
-Alternatively, you can use the [`PadsFromIds`] alias to define a set of
-`Pads` in terms of [`PinId`]s instead of `Pin`s. This is useful when you
-don't have [`Pin`] aliases pre-defined.
-
-```
-use atsamd_hal::gpio::{PA08, PA09};
-use atsamd_hal::sercom::{Sercom0, uart};
-
-type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
-```
-
-"
-)]
+//!
+//! Alternatively, you can use the [`PadsFromIds`] alias to define a set of
+//! `Pads` in terms of [`PinId`]s instead of `Pin`s. This is useful when you
+//! don't have [`Pin`] aliases pre-defined.
+//!
+//! ```
+//! use atsamd_hal::gpio::{PA08, PA09};
+//! use atsamd_hal::sercom::{Sercom0, uart};
+//!
+//! type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
+//! ```
 //!
 //! Instances of [`Pads`] are created using the builder pattern. Start by
 //! creating an empty set of [`Pads`] using [`Default`]. Then pass each

@@ -25,19 +25,13 @@
 //! [`AlternateD`]: crate::gpio::AlternateD
 //! [type class]: crate::typelevel#type-classes
 //! [type-level function]: crate::typelevel#type-level-functions
-#![cfg_attr(
-    feature = "thumbv7",
-    doc = "
-# IOSET\n
-\n
-SAMx5x chips do not allow arbitrary combinations of `PinId` for a given
-SERCOM. Instead, all `PinId`s must belong to the same IOSET. This module
-defines a [type-level enum], [`IoSet`], to enforce this restriction, and the
-[`InIoSet`] [type class] is responsible for labeling each `IsPad` type with
-its corresponding, valid `IoSet`\\(s).\n
-\n
-"
-)]
+//! # IOSET (SAMD51/SAME5x only)
+//!
+//! SAMx5x chips do not allow arbitrary combinations of `PinId` for a given
+//! SERCOM. Instead, all `PinId`s must belong to the same IOSET. This module
+//! defines a [type-level enum], [`IoSet`], to enforce this restriction, and the
+//! [`InIoSet`] [type class] is responsible for labeling each `IsPad` type with
+//! its corresponding, valid `IoSet`\(s).
 
 use paste::paste;
 use seq_macro::seq;

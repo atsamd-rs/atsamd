@@ -14,8 +14,7 @@
 //! An SPI peripheral can use up to four [`Pin`]s as [`Sercom`] pads. However,
 //! only certain `Pin` combinations are acceptable. All `Pin`s must be mapped to
 //! the same `Sercom`, and for SAMx5x chips, they must also belong to the same
-#![cfg_attr(feature = "thumbv6", doc = "`IoSet`.")]
-#![cfg_attr(feature = "thumbv7", doc = "[`IoSet`].")]
+//! `IoSet`.
 //! This HAL makes it impossible to use invalid `Pin` combinations, and the
 //! [`Pads`] struct is responsible for enforcing these constraints.
 //!
@@ -50,28 +49,25 @@
 //! [`Pin`]: crate::gpio::pin::Pin
 //! [`PinId`]: crate::gpio::pin::PinId
 //! [`PinMode`]: crate::gpio::pin::PinMode
-#![cfg_attr(
-    not(feature = "samd11"),
-    doc = "
-Alternatively, you can use the `PadsFromIds` alias to define a set of
-`Pads` in terms of [`PinId`]s instead of [`Pin`]s. This is useful when you
-don't have [`Pin`] aliases pre-defined.
-
-```
-use atsamd_hal::gpio::{PA08, PA09};
-use atsamd_hal::sercom::{Sercom0, spi};
-use atsamd_hal::typelevel::NoneT;
-
-// SAMx5x-specific imports
-use atsamd_hal::sercom::pad::IoSet1;
-
-// SAMD21 version
-type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
-// SAMx5x version
-type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
-```
-"
-)]
+//!
+//!
+//! Alternatively, you can use the `PadsFromIds` alias to define a set of
+//! `Pads` in terms of [`PinId`]s instead of [`Pin`]s. This is useful when you
+//! don't have [`Pin`] aliases pre-defined.
+//!
+//! ```
+//! use atsamd_hal::gpio::{PA08, PA09};
+//! use atsamd_hal::sercom::{Sercom0, spi};
+//! use atsamd_hal::typelevel::NoneT;
+//!
+//! // SAMx5x-specific imports
+//! use atsamd_hal::sercom::pad::IoSet1;
+//!
+//! // SAMD21 version
+//! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
+//! // SAMx5x version
+//! type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
+//! ```
 //!
 //! Instances of `Pads` are created using the builder pattern. Start by creating
 //! an empty set of `Pads` using [`Default`]. Then pass each respective `Pin`
@@ -115,21 +111,12 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! [`Pads`] type; an [`OpMode`], which defaults to [`Master`]; and a
 //! [`Size`] type that varies by chip. [`Size`] essentially acts as a trait
 //! alias. On SAMD11 and SAMD21 chips, it represents the
-#![cfg_attr(
-    feature = "thumbv6",
-    doc = "[`CharSize`], which can either be [`EightBit`] or [`NineBit`]. "
-)]
-#![cfg_attr(
-    feature = "thumbv7",
-    doc = "`CharSize`, which can either be `EightBit` or `NineBit`. "
-)]
+//! `CharSize`, which can either be `EightBit` or `NineBit`.
 //! While on SAMx5x chips, it represents the transaction
-#![cfg_attr(feature = "thumbv6", doc = "`Length`")]
-#![cfg_attr(feature = "thumbv7", doc = "[`Length`]")]
+//! `Length`
 //! in bytes, using type-level numbers provided by the [`typenum`] crate. Valid
 //! transaction lengths, from `U1` to `U255`, are re-exported in the
-#![cfg_attr(feature = "thumbv6", doc = "`lengths`")]
-#![cfg_attr(feature = "thumbv7", doc = "[`lengths`]")]
+//! `lengths`
 //! sub-module.
 //!
 //! ```
