@@ -1,25 +1,10 @@
-use paste::paste;
-use seq_macro::seq;
+use atsamd_hal_macros::hal_cfg;
 
 use crate::clock;
 use crate::ehal::{Pwm, PwmPin};
 use crate::pac::PM;
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
-
-seq!(N in 1..=7 {
-    paste! {
-        #[cfg(feature = "has-" tc~N)]
-        use crate::pac::TC~N;
-    }
-});
-
-seq!(N in 0..=2 {
-    paste! {
-        #[cfg(feature = "has-" tcc~N)]
-        use crate::pac::TCC~N;
-    }
-});
 
 // Timer/Counter (TCx)
 
@@ -31,14 +16,14 @@ pub struct $TYPE {
     /// The frequency of the attached clock, not the period of the pwm.
     /// Used to calculate the period of the pwm.
     clock_freq: Hertz,
-    tc: $TC,
+    tc: crate::pac::$TC,
 }
 
 impl $TYPE {
     pub fn new(
         clock: &clock::$clock,
         freq: Hertz,
-        tc: $TC,
+        tc: crate::pac::$TC,
         pm: &mut PM,
     ) -> Self {
         let count = tc.count16();
@@ -134,20 +119,20 @@ impl PwmPin for $TYPE {
 
 )+}}
 
-#[cfg(feature = "has-tc1")]
+#[hal_cfg("tc1")]
 pwm! { Pwm1: (TC1, Tc1Tc2Clock, apbcmask, tc1_, Pwm1Wrapper) }
-#[cfg(feature = "has-tc2")]
+#[hal_cfg("tc2")]
 pwm! { Pwm2: (TC2, Tc1Tc2Clock, apbcmask, tc2_, Pwm2Wrapper) }
-#[cfg(feature = "has-tc3")]
+#[hal_cfg("tc3")]
 pwm! { Pwm3: (TC3, Tcc2Tc3Clock, apbcmask, tc3_, Pwm3Wrapper) }
-#[cfg(feature = "has-tc4")]
+#[hal_cfg("tc4")]
 pwm! { Pwm4: (TC4, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper) }
-#[cfg(feature = "has-tc5")]
+#[hal_cfg("tc5")]
 pwm! { Pwm5: (TC5, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper) }
 
-#[cfg(feature = "has-tc6")]
+#[hal_cfg("tc6")]
 pwm! { Pwm6: (TC6, Tc6Tc7Clock, apbcmask, tc6_, Pwm6Wrapper) }
-#[cfg(feature = "has-tc7")]
+#[hal_cfg("tc7")]
 pwm! { Pwm7: (TC7, Tc6Tc7Clock, apbcmask, tc7_, Pwm7Wrapper) }
 
 // Timer/Counter for Control Applications (TCCx)
@@ -168,14 +153,14 @@ pub struct $TYPE {
     /// The frequency of the attached clock, not the period of the pwm.
     /// Used to calculate the period of the pwm.
     clock_freq: Hertz,
-    tcc: $TCC,
+    tcc: crate::pac::$TCC,
 }
 
 impl $TYPE {
     pub fn new<F: Into<Hertz>> (
         clock: &clock::$clock,
         freq: F,
-        tcc: $TCC,
+        tcc: crate::pac::$TCC,
         pm: &mut PM,
     ) -> Self {
         let freq = freq.into();
@@ -277,11 +262,11 @@ impl Pwm for $TYPE {
 
 )+}}
 
-#[cfg(all(feature = "samd11", feature = "has-tcc0"))]
+#[hal_cfg("tcc0-d11")]
 pwm_tcc! { Pwm0: (TCC0, Tcc0Clock, apbcmask, tcc0_, Pwm0Wrapper) }
-#[cfg(all(feature = "samd21", feature = "has-tcc0"))]
+#[hal_cfg("tcc0-d21")]
 pwm_tcc! { Pwm0: (TCC0, Tcc0Tcc1Clock, apbcmask, tcc0_, Pwm0Wrapper) }
-#[cfg(feature = "has-tcc1")]
+#[hal_cfg("tcc1")]
 pwm_tcc! { Pwm1: (TCC1, Tcc0Tcc1Clock, apbcmask, tcc1_, Pwm1Wrapper) }
-#[cfg(feature = "has-tcc1")]
+#[hal_cfg("tcc1")]
 pwm_tcc! { Pwm2: (TCC2, Tcc2Tc3Clock, apbcmask, tcc2_, Pwm2Wrapper) }

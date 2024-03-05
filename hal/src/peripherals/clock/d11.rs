@@ -5,6 +5,8 @@
 //! that the peripherals have been correctly configured.
 #![allow(clippy::from_over_into)]
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
 use fugit::RateExtU32;
 
 use crate::pac::gclk::clkctrl::GENSELECT_A::*;
@@ -153,6 +155,7 @@ impl GenericClockController {
         Self::new_48mhz_from_32khz(gclk, pm, sysctrl, nvmctrl, true)
     }
 
+    #[hal_macro_helper]
     fn new_48mhz_from_32khz(
         gclk: GCLK,
         pm: &mut PM,
@@ -163,7 +166,7 @@ impl GenericClockController {
         let mut state = State { gclk };
 
         set_flash_to_half_auto_wait_state(nvmctrl);
-        #[cfg(feature = "samd21")]
+        #[hal_cfg("clock-d21")]
         set_flash_manual_write(nvmctrl);
         enable_gclk_apb(pm);
         if use_external_crystal {
@@ -217,6 +220,7 @@ impl GenericClockController {
 
     /// Reset the clock controller, configure the system to run at 8Mhz from
     /// internal 8 MHz RC clock (no PLL) and reset various clock dividers.
+    #[hal_macro_helper]
     pub fn with_internal_8mhz(
         gclk: GCLK,
         pm: &mut PM,
@@ -226,11 +230,11 @@ impl GenericClockController {
         let mut state = State { gclk };
 
         // No wait states needed <= 24 MHz @ 3.3v (ref. 37.12 NVM characteristics)
-        #[cfg(feature = "samd21")]
+        #[hal_cfg("clock-d21")]
         set_flash_manual_write(nvmctrl);
 
         // Get rid of unused warning
-        #[cfg(not(feature = "samd21"))]
+        #[hal_cfg("clock-d11")]
         let _ = nvmctrl;
 
         enable_gclk_apb(pm);
@@ -397,7 +401,7 @@ impl GenericClockController {
 }
 
 // samd11
-#[cfg(feature = "samd11")]
+#[hal_cfg("clock-d11")]
 clock_generator!(
     (tcc0, Tcc0Clock, TCC0),
     (tc1_tc2, Tc1Tc2Clock, TC1_TC2),
@@ -419,7 +423,7 @@ clock_generator!(
     (dac, DacClock, DAC),
 );
 // samd21
-#[cfg(feature = "samd21")]
+#[hal_cfg("clock-d21")]
 clock_generator!(
     (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1),
     (tcc2_tc3, Tcc2Tc3Clock, TCC2_TC3),
@@ -467,7 +471,7 @@ fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
 }
 
 /// Prevent automatic writes to flash by pointers to flash area
-#[cfg(feature = "samd21")]
+#[hal_cfg("clock-d21")]
 fn set_flash_manual_write(nvmctrl: &mut NVMCTRL) {
     nvmctrl.ctrlb.modify(|_, w| w.manw().set_bit());
 }
@@ -520,6 +524,7 @@ fn wait_for_dfllrdy(sysctrl: &mut SYSCTRL) {
 }
 
 /// Configure the dfll48m to operate at 48Mhz
+#[hal_macro_helper]
 fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: bool) {
     // Turn it off while we configure it.
     // Note that we need to turn off on-demand mode and
@@ -590,7 +595,7 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
     // and finally enable it!
     sysctrl.dfllctrl.modify(|_, w| w.enable().set_bit());
 
-    #[cfg(feature = "samd21")]
+    #[hal_cfg("clock-d21")]
     if use_external_crystal {
         // wait for lock
         while sysctrl.pclksr.read().dflllckc().bit_is_clear()

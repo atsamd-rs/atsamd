@@ -4,6 +4,7 @@ use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
 use crate::pac;
+use atsamd_hal_macros::hal_cfg;
 
 use super::EIC;
 
@@ -211,173 +212,203 @@ crate::paste::item! {
 
 // SAMD11
 
-#[cfg(feature = "samd11")]
+#[hal_cfg("eic-d11")]
 mod impls {
     use super::*;
 
     ei!(ExtInt[1] {
+        #[hal_cfg("pa15")]
         PA15,
     });
 
     ei!(ExtInt[2] {
+        #[hal_cfg("pa02")]
         PA02,
     });
 
     ei!(ExtInt[3] {
+        #[hal_cfg("pa31")]
         PA31,
     });
 
     ei!(ExtInt[4] {
+        #[hal_cfg("pa04")]
         PA04,
+        #[hal_cfg("pa24")]
         PA24,
     });
 
     ei!(ExtInt[5] {
+        #[hal_cfg("pa05")]
         PA05,
+        #[hal_cfg("pa25")]
         PA25,
     });
 
     ei!(ExtInt[6] {
+        #[hal_cfg("pa08")]
         PA08,
     });
 
     ei!(ExtInt[7] {
+        #[hal_cfg("pa09")]
         PA09,
     });
 }
 
 // SAMD21
 
-#[cfg(feature = "samd21")]
+#[hal_cfg("eic-d21")]
 mod impls {
     use super::*;
 
     ei!(ExtInt[0] {
-        #[cfg(feature = "has-pa00")]
+        #[hal_cfg("pa00")]
         PA00,
+        #[hal_cfg("pa16")]
         PA16,
-        #[cfg(feature = "has-pb00")]
+        #[hal_cfg("pb00")]
         PB00,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb16")]
         PB16,
     });
 
     ei!(ExtInt[1] {
-        #[cfg(feature = "has-pa01")]
+        #[hal_cfg("pa01")]
         PA01,
+        #[hal_cfg("pa17")]
         PA17,
-        #[cfg(feature = "has-pb01")]
+        #[hal_cfg("pb01")]
         PB01,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb17")]
         PB17,
     });
 
     ei!(ExtInt[2] {
+        #[hal_cfg("pa02")]
         PA02,
+        #[hal_cfg("pa18")]
         PA18,
-        #[cfg(feature = "has-pb02")]
+        #[hal_cfg("pb02")]
         PB02,
     });
 
     ei!(ExtInt[3] {
+        #[hal_cfg("pa03")]
         PA03,
+        #[hal_cfg("pa19")]
         PA19,
-        #[cfg(feature = "has-pb03")]
+        #[hal_cfg("pb03")]
         PB03,
     });
 
     ei!(ExtInt[4] {
+        #[hal_cfg("pa04")]
         PA04,
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pa20")]
         PA20,
-        #[cfg(feature = "has-pb04")]
+        #[hal_cfg("pb04")]
         PB04,
     });
 
     ei!(ExtInt[5] {
+        #[hal_cfg("pa05")]
         PA05,
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pa21")]
         PA21,
-        #[cfg(feature = "has-pb05")]
+        #[hal_cfg("pb05")]
         PB05,
     });
 
     ei!(ExtInt[6] {
+        #[hal_cfg("pa06")]
         PA06,
+        #[hal_cfg("pa22")]
         PA22,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb06")]
         PB06,
-        #[cfg(feature = "has-pb22")]
+        #[hal_cfg("pb22")]
         PB22,
     });
 
     ei!(ExtInt[7] {
+        #[hal_cfg("pa07")]
         PA07,
+        #[hal_cfg("pa23")]
         PA23,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb07")]
         PB07,
-        #[cfg(feature = "has-pb23")]
+        #[hal_cfg("pb23")]
         PB23,
     });
 
     ei!(ExtInt[8] {
-        #[cfg(feature = "has-pa28")]
+        #[hal_cfg("pa28")]
         PA28,
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pb08")]
         PB08,
     });
 
     ei!(ExtInt[9] {
+        #[hal_cfg("pa09")]
         PA09,
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pb09")]
         PB09,
     });
 
     ei!(ExtInt[10] {
+        #[hal_cfg("pa10")]
         PA10,
+        #[hal_cfg("pa30")]
         PA30,
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pb10")]
         PB10,
     });
 
     ei!(ExtInt[11] {
-       PA11,
-       PA31,
-       #[cfg(feature = "pins-48")]
-       PB11,
+        #[hal_cfg("pa11")]
+        PA11,
+        #[hal_cfg("pa31")]
+        PA31,
+        #[hal_cfg("pb11")]
+        PB11,
     });
 
     ei!(ExtInt[12] {
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pa12")]
         PA12,
+        #[hal_cfg("pa24")]
         PA24,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb12")]
         PB12,
     });
 
     ei!(ExtInt[13] {
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pa13")]
         PA13,
+        #[hal_cfg("pa25")]
         PA25,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb13")]
         PB13,
     });
 
     ei!(ExtInt[14] {
+        #[hal_cfg("pa14")]
         PA14,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb14")]
         PB14,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb30")]
         PB30,
     });
 
     ei!(ExtInt[15] {
+        #[hal_cfg("pa15")]
         PA15,
-        #[cfg(feature = "has-pa27")]
+        #[hal_cfg("pa27")]
         PA27,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb15")]
         PB15,
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb31")]
         PB31,
     });
 }

@@ -1,14 +1,16 @@
 //! Register-level access to UART configuration
 
+use atsamd_hal_macros::hal_cfg;
+
 use super::{BaudMode, BitOrder, CharSizeEnum, Flags, Oversampling, Parity, Status, StopBits};
 
 use crate::pac;
 use crate::sercom::*;
 
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use pac::sercom0::usart::ctrla::MODESELECT_A;
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 use pac::sercom0::usart_int::ctrla::MODESELECT_A;
 
 use crate::time::Hertz;
@@ -29,7 +31,7 @@ impl<S: Sercom> Registers<S> {
     }
 
     /// Helper function to access the underlying `USART` from the given `SERCOM`
-    #[cfg(feature = "thumbv6")]
+    #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
     #[inline]
     fn usart(&self) -> &pac::sercom0::USART {
         self.sercom.usart()
@@ -37,7 +39,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Helper function to access the underlying `USART_INT` from the given
     /// `SERCOM`
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("sercom0-d5x")]
     #[inline]
     fn usart(&self) -> &pac::sercom0::USART_INT {
         self.sercom.usart_int()

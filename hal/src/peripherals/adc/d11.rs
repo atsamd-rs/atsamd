@@ -1,4 +1,6 @@
 //! Analogue-to-Digital Conversion
+use atsamd_hal_macros::hal_cfg;
+
 use crate::clock::GenericClockController;
 use crate::ehal::adc::{Channel, OneShot};
 use crate::gpio::*;
@@ -165,10 +167,13 @@ where
 macro_rules! adc_pins {
     (
         $(
+            $( #[$cfg:meta] )?
             $PinId:ident: $CHAN:literal
         ),+
+        $(,)?
     ) => {
         $(
+            $( #[$cfg] )?
             impl Channel<ADC> for Pin<$PinId, AlternateB> {
                type ID = u8;
                fn channel() -> u8 { $CHAN }
@@ -177,64 +182,70 @@ macro_rules! adc_pins {
     }
 }
 
-#[cfg(feature = "samd11")]
+#[hal_cfg("adc-d11")]
 adc_pins! {
+    #[hal_cfg("pa02")]
     PA02: 0,
+    #[hal_cfg("pa03")]
+    PA03: 1,
+    #[hal_cfg("pa04")]
     PA04: 2,
+    #[hal_cfg("pa05")]
     PA05: 3,
-    PA14: 6,
-    PA15: 7
-}
-
-#[cfg(feature = "pins-d11d")]
-adc_pins! {
-    PA03: 1,
+    #[hal_cfg("pa06")]
     PA06: 4,
+    #[hal_cfg("pa07")]
     PA07: 5,
+    #[hal_cfg("pa14")]
+    PA14: 6,
+    #[hal_cfg("pa15")]
+    PA15: 7,
+    #[hal_cfg("pa10")]
     PA10: 8,
-    PA11: 9
+    #[hal_cfg("pa11")]
+    PA11: 9,
 }
 
-#[cfg(feature = "samd21")]
+#[hal_cfg("adc-d21")]
 adc_pins! {
+    #[hal_cfg("pa02")]
     PA02: 0,
+    #[hal_cfg("pa03")]
     PA03: 1,
-    PA04: 4,
-    PA05: 5,
-    PA06: 6,
-    PA07: 7,
-    PA08: 16,
-    PA09: 17,
-    PA10: 18,
-    PA11: 19
-}
-
-#[cfg(feature = "has-pb00")]
-adc_pins! { PB00: 8 }
-
-#[cfg(feature = "has-pb01")]
-adc_pins! { PB01: 9 }
-
-#[cfg(feature = "has-pb02")]
-adc_pins! { PB02: 10 }
-
-#[cfg(feature = "has-pb03")]
-adc_pins! { PB03: 11 }
-
-#[cfg(feature = "has-pb04")]
-adc_pins! { PB04: 12 }
-
-#[cfg(feature = "has-pb05")]
-adc_pins! { PB05: 13 }
-
-#[cfg(feature = "pins-48")]
-adc_pins! {
+    #[hal_cfg("pb08")]
     PB08: 2,
-    PB09: 3
-}
-
-#[cfg(feature = "pins-64")]
-adc_pins! {
+    #[hal_cfg("pb09")]
+    PB09: 3,
+    #[hal_cfg("pa04")]
+    PA04: 4,
+    #[hal_cfg("pa05")]
+    PA05: 5,
+    #[hal_cfg("pa06")]
+    PA06: 6,
+    #[hal_cfg("pa07")]
+    PA07: 7,
+    #[hal_cfg("pb00")]
+    PB00: 8,
+    #[hal_cfg("pb01")]
+    PB01: 9,
+    #[hal_cfg("pb02")]
+    PB02: 10,
+    #[hal_cfg("pb03")]
+    PB03: 11,
+    #[hal_cfg("pb04")]
+    PB04: 12,
+    #[hal_cfg("pb05")]
+    PB05: 13,
+    #[hal_cfg("pb06")]
     PB06: 14,
-    PB07: 15
+    #[hal_cfg("pb07")]
+    PB07: 15,
+    #[hal_cfg("pa08")]
+    PA08: 16,
+    #[hal_cfg("pa09")]
+    PA09: 17,
+    #[hal_cfg("pa10")]
+    PA10: 18,
+    #[hal_cfg("pa11")]
+    PA11: 19,
 }

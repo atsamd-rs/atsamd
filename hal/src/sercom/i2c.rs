@@ -255,13 +255,13 @@ fn i2c_send_with_dma<A: AnyConfig, C: AnyChannel<Status = Ready>>(i2c: I2c<A>, c
 "
 )]
 
-#[cfg(feature = "thumbv6")]
-#[path = "i2c/pads_thumbv6m.rs"]
-mod pads;
+use atsamd_hal_macros::hal_module;
 
-#[cfg(feature = "thumbv7")]
-#[path = "i2c/pads_thumbv7em.rs"]
-mod pads;
+#[hal_module(
+    any("sercom0-d11", "sercom0-d21") => "i2c/pads_thumbv6m.rs",
+    "sercom0-d5x" => "i2c/pads_thumbv7em.rs",
+)]
+mod pads {}
 
 pub use pads::*;
 

@@ -299,6 +299,8 @@ let (chan0, _, spi, _) = dma_transfer.wait();
 "
 )]
 
+use atsamd_hal_macros::{hal_cfg, hal_docs, hal_macro_helper, hal_module};
+
 use core::convert::TryFrom;
 use core::marker::PhantomData;
 
@@ -317,46 +319,40 @@ use reg::Registers;
 // Chip-specific imports
 //=============================================================================
 
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use crate::pac::sercom0::spi::ctrla::MODESELECT_A;
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 use crate::pac::sercom0::spim::ctrla::MODESELECT_A;
 
-#[cfg(feature = "thumbv6")]
-#[path = "spi/pads_thumbv6m.rs"]
-mod pads;
-
-#[cfg(feature = "thumbv7")]
-#[path = "spi/pads_thumbv7em.rs"]
-mod pads;
+#[hal_module(
+    any("sercom0-d11", "sercom0-d21") => "spi/pads_thumbv6m.rs",
+    "sercom0-d5x" => "spi/pads_thumbv7em.rs",
+)]
+pub mod pads {}
 
 pub use pads::*;
 
-#[cfg(feature = "thumbv6")]
-#[path = "spi/char_size.rs"]
-mod size;
-
-#[cfg(feature = "thumbv7")]
-#[path = "spi/length.rs"]
-mod size;
+#[hal_module(
+    any("sercom0-d11", "sercom0-d21") => "spi/char_size.rs",
+    "sercom0-d5x" => "spi/length.rs",
+)]
+pub mod size {}
 
 pub use size::*;
 
 /// Valid transaction [`Length`]s from the [`typenum`] crate
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 pub mod lengths {
     seq_macro::seq!(N in 1..=255 {
         pub use typenum::U~N;
     });
 }
 
-#[cfg(feature = "thumbv6")]
-#[path = "spi/impl_ehal_thumbv6m.rs"]
-pub mod impl_ehal;
-
-#[cfg(feature = "thumbv7")]
-#[path = "spi/impl_ehal_thumbv7em.rs"]
-pub mod impl_ehal;
+#[hal_module(
+    any("sercom0-d11", "sercom0-d21") => "spi/impl_ehal_thumbv6m.rs",
+    "sercom0-d5x" => "spi/impl_ehal_thumbv7em.rs",
+)]
+pub mod impl_ehal {}
 
 //=============================================================================
 // BitOrder
@@ -500,37 +496,37 @@ impl MasterMode for MasterHWSS {}
 //=============================================================================
 
 /// Type alias for the width of the `DATA` register
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 pub type DataWidth = u16;
 
 /// Type alias for the width of the `DATA` register
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 pub type DataWidth = u32;
 
 /// Trait alias whose definition varies by chip
 ///
 /// On SAMD11 and SAMD21 chips, this represents the [`CharSize`].
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 pub trait Size: CharSize {}
 
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 impl<C: CharSize> Size for C {}
 
 /// Type alias for the default [`Size`] type, which varies by chip
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 pub type DefaultSize = EightBit;
 
 /// Trait alias whose definition varies by chip
 ///
 /// On SAMx5x chips, this represents the transaction [`Length`].
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 pub trait Size: Length {}
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 impl<L: Length> Size for L {}
 
 /// Type alias for the default [`Size`] type, which varies by chip
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 pub type DefaultSize = typenum::U1;
 
 //==============================================================================
@@ -541,11 +537,11 @@ pub type DefaultSize = typenum::U1;
 /// read or write of the `DATA` register
 pub trait AtomicSize: Size {}
 
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 impl<C: CharSize> AtomicSize for C {}
 
-#[cfg(feature = "thumbv7")]
-seq!(N in 1..=4 {
+#[hal_cfg("sercom0-d5x")]
+seq_macro::seq!(N in 1..=4 {
     impl AtomicSize for lengths::U~N {}
 });
 
@@ -638,14 +634,15 @@ where
 impl<P: ValidPads> Config<P> {
     /// Create a new [`Config`] in the default configuration.
     #[inline]
+    #[hal_macro_helper]
     fn default(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
         let mut regs = Registers { sercom };
         regs.reset();
         regs.set_op_mode(Master::MODE, Master::MSSEN);
         regs.set_dipo_dopo(P::DIPO_DOPO);
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
         regs.set_char_size(EightBit::BITS);
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("sercom0-d5x")]
         regs.set_length(1);
         Self {
             regs,
@@ -656,22 +653,38 @@ impl<P: ValidPads> Config<P> {
         }
     }
 
-    /// Create a new [`Config`] in the default configuration
-    ///
-    /// This function will enable the corresponding APB clock, reset the
-    /// [`Sercom`] peripheral, and return a [`Config`] in the default
-    /// configuration. The default [`OpMode`] is [`Master`], while the default
-    /// [`Size`] is an
-    #[cfg_attr(feature = "thumbv6", doc = "[`EightBit`] [`CharSize`]")]
-    #[cfg_attr(feature = "thumbv7", doc = "`EightBit` `CharSize`")]
-    /// for SAMD11 and SAMD21 chips or a
-    #[cfg_attr(feature = "thumbv6", doc = "`Length` of `U1`")]
-    #[cfg_attr(feature = "thumbv7", doc = "[`Length`] of `U1`")]
-    /// for SAMx5x chips. Note that [`Config`] takes ownership of both the
-    /// PAC [`Sercom`] struct as well as the [`Pads`].
-    ///
-    /// Users must configure GCLK manually. The `freq` parameter represents the
-    /// GCLK frequency for this [`Sercom`] instance.
+    #[hal_docs(
+        {
+            /// Create a new [`Config`] in the default configuration
+            ///
+            /// This function will enable the corresponding APB clock, reset the
+            /// [`Sercom`] peripheral, and return a [`Config`] in the default
+            /// configuration. The default [`OpMode`] is [`Master`], while the default
+            /// [`Size`] is an
+        }
+        any("sercom0-d11", "sercom0-d21") => {
+            /// [`EightBit`] [`CharSize`]
+        }
+        "sercom0-d5x" => {
+            /// `EightBit` `CharSize`
+        }
+        {
+            /// for SAMD11 and SAMD21 chips or a
+        }
+        any("sercom0-d11", "sercom0-d21") => {
+            /// `Length` of `U1`
+        }
+        "sercom0-d5x" => {
+            /// [`Length`] of `U1`
+        }
+        {
+            /// for SAMx5x chips. Note that [`Config`] takes ownership of both the
+            /// PAC [`Sercom`] struct as well as the [`Pads`].
+            ///
+            /// Users must configure GCLK manually. The `freq` parameter represents the
+            /// GCLK frequency for this [`Sercom`] instance.
+        }
+    )]
     #[inline]
     pub fn new(
         apb_clk_ctrl: &APB_CLK_CTRL,
@@ -747,7 +760,7 @@ where
     }
 
     /// Change the [`CharSize`] using the builder pattern
-    #[cfg(feature = "thumbv6")]
+    #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
     #[inline]
     pub fn char_size<C2: CharSize>(mut self) -> Config<P, M, C2> {
         self.regs.set_char_size(C2::BITS);
@@ -760,7 +773,7 @@ where
     /// [`DynLength`] and then use the [`dyn_length`] method.
     ///
     /// [`dyn_length`]: Config::dyn_length
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("sercom0-d5x")]
     #[inline]
     pub fn length<L2: Length>(mut self) -> Config<P, M, L2> {
         self.regs.set_length(L2::U8);
@@ -954,7 +967,7 @@ where
     }
 }
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 impl<P, M> Config<P, M, DynLength>
 where
     P: ValidPads,
@@ -1155,7 +1168,7 @@ where
     /// [`Length`], you **must** wait for a TXC flag before changing to a new
     /// [`Length`].
     #[inline]
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("sercom0-d5x")]
     pub fn length<L: Length>(self) -> Spi<Config<C::Pads, C::OpMode, L>, A>
     where
         Config<C::Pads, C::OpMode, L>: ValidConfig,
@@ -1261,7 +1274,7 @@ where
     }
 }
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 impl<P, M, A> Spi<Config<P, M, DynLength>, A>
 where
     P: ValidPads,

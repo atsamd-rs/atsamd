@@ -19,16 +19,18 @@
 //! Using the [`DmaController::free`] method will
 //! deinitialize the DMAC and return the underlying PAC object.
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
 use modular_bitfield::prelude::*;
 use seq_macro::seq;
 
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("dmac-d11", "dmac-d21"))]
 pub use crate::pac::dmac::chctrlb::{
     LVLSELECT_A as PriorityLevel, TRIGACTSELECT_A as TriggerAction,
     TRIGSRCSELECT_A as TriggerSource,
 };
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("dmac-d5x")]
 pub use crate::pac::dmac::channel::{
     chctrla::{
         BURSTLENSELECT_A as BurstLength, THRESHOLDSELECT_A as FifoThreshold,
@@ -133,9 +135,10 @@ impl DmaController {
     /// priority levels are enabled unless subsequently disabled using the
     /// `level_x_enabled` methods.
     #[inline]
+    #[hal_macro_helper]
     pub fn init(mut dmac: DMAC, _pm: &mut PM) -> Self {
         // ----- Initialize clocking ----- //
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("dmac-d11", "dmac-d21"))]
         {
             // Enable clocking
             _pm.ahbmask.modify(|_, w| w.dmac_().set_bit());
@@ -226,12 +229,13 @@ impl DmaController {
     /// moved back into the [`Channels`] struct before being able to pass it
     /// into [`free`](DmaController::free).
     #[inline]
+    #[hal_macro_helper]
     pub fn free(mut self, _channels: Channels, _pm: &mut PM) -> DMAC {
         self.dmac.ctrl.modify(|_, w| w.dmaenable().clear_bit());
 
         Self::swreset(&mut self.dmac);
 
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("dmac-d11", "dmac-d21"))]
         {
             // Disable the DMAC clocking
             _pm.apbbmask.modify(|_, w| w.dmac_().clear_bit());

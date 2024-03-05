@@ -382,13 +382,13 @@ let (chan1, rx, rx_buffer) = rx_dma.wait();
 "
 )]
 
-#[cfg(feature = "thumbv6")]
-#[path = "uart/pads_thumbv6m.rs"]
-mod pads;
+use atsamd_hal_macros::{hal_cfg, hal_module};
 
-#[cfg(feature = "thumbv7")]
-#[path = "uart/pads_thumbv7em.rs"]
-mod pads;
+#[hal_module(
+    any("sercom0-d11", "sercom0-d21") => "uart/pads_thumbv6m.rs",
+    "sercom0-d5x" => "uart/pads_thumbv7em.rs",
+)]
+mod pads {}
 
 pub use pads::*;
 
@@ -411,11 +411,11 @@ use core::{convert::TryInto, marker::PhantomData};
 use num_traits::AsPrimitive;
 
 /// Size of the SERCOM's `DATA` register
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 pub type DataReg = u16;
 
 /// Size of the SERCOM's `DATA` register
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 pub type DataReg = u32;
 
 //=============================================================================

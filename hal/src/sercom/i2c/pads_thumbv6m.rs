@@ -3,6 +3,8 @@
 //! See the [i2c module](super) documentation for more details on declaring and
 //! instantiating a [`Pads`] type.
 
+use atsamd_hal_macros::hal_cfg;
+
 use crate::{gpio::AnyPin, sercom::*, typelevel::Sealed};
 use core::marker::PhantomData;
 
@@ -21,7 +23,7 @@ where
     scl: SCL,
 }
 
-#[cfg(feature = "samd11")]
+#[hal_cfg("sercom0-d11")]
 impl<S, DI, CI> PadsFromIds<S, DI, CI>
 where
     S: Sercom,
@@ -42,7 +44,7 @@ where
     }
 }
 
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg("sercom0-d21")]
 impl<S, DI, CI> PadsFromIds<S, DI, CI>
 where
     S: Sercom,
@@ -107,7 +109,7 @@ where
 ///
 /// [`Pin`]: crate::gpio::Pin
 /// [`PinId`]: crate::gpio::PinId
-#[cfg(feature = "samd11")]
+#[hal_cfg("sercom0-d11")]
 pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, Pad0, SDA>, Pad<S, Pad1, SCL>>;
 
 /// Define a set of [`Pads`] using [`PinId`]s instead of [`Pin`]s
@@ -136,7 +138,7 @@ pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, Pad0, SDA>, Pad<S, Pad1, SCL>
 ///
 /// [`Pin`]: crate::gpio::Pin
 /// [`PinId`]: crate::gpio::PinId
-#[cfg(feature = "samd21")]
+#[hal_cfg("sercom0-d21")]
 pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, SDA>, Pad<S, SCL>>;
 
 //=============================================================================

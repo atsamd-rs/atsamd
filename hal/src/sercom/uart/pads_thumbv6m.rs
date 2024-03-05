@@ -1,5 +1,7 @@
 //! UART pad definitions for thumbv6m targets
 
+use atsamd_hal_macros::hal_cfg;
+
 use super::{AnyConfig, Capability, CharSize, Config, Duplex, Rx, Tx};
 use crate::{
     sercom::*,
@@ -7,7 +9,7 @@ use crate::{
 };
 use core::marker::PhantomData;
 
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg("sercom0-d21")]
 use crate::gpio::AnyPin;
 
 //=============================================================================
@@ -209,7 +211,7 @@ where
     }
 }
 
-#[cfg(feature = "samd11")]
+#[hal_cfg("sercom0-d11")]
 impl<S, RX, TX, RTS, CTS> Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
@@ -267,7 +269,7 @@ where
     }
 }
 
-#[cfg(feature = "samd21")]
+#[hal_cfg("sercom0-d21")]
 impl<S, RX, TX, RTS, CTS> Pads<S, RX, TX, RTS, CTS>
 where
     S: Sercom,
@@ -370,7 +372,7 @@ where
 /// [`PinId`]: crate::gpio::PinId
 /// [`OptionalPinId`]: crate::gpio::OptionalPinId
 
-#[cfg(feature = "samd21")]
+#[hal_cfg("sercom0-d21")]
 pub type PadsFromIds<S, RX = NoneT, TX = NoneT, RTS = NoneT, CTS = NoneT> = Pads<
     S,
     <RX as GetOptionalPad<S>>::Pad,

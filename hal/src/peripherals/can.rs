@@ -21,8 +21,9 @@ use crate::{
     gpio::*,
     typelevel::{Decrement, Increment},
 };
+use atsamd_hal_macros::hal_cfg;
 
-#[cfg(feature = "has-can1")]
+#[hal_cfg("can1")]
 use crate::clock::v2::types::Can1;
 
 use mcan_core::fugit::HertzU32;
@@ -115,7 +116,7 @@ unsafe impl CanId for Can0 {
     const ADDRESS: *const () = crate::pac::CAN0::PTR as *const _;
 }
 
-#[cfg(feature = "has-can1")]
+#[hal_cfg("can1")]
 unsafe impl CanId for Can1 {
     const ADDRESS: *const () = crate::pac::CAN1::PTR as *const _;
 }
@@ -128,7 +129,7 @@ impl OwnedPeripheral for crate::pac::CAN0 {
     type Represents = Can0;
 }
 
-#[cfg(feature = "has-can1")]
+#[hal_cfg("can1")]
 impl OwnedPeripheral for crate::pac::CAN1 {
     type Represents = Can1;
 }
@@ -157,22 +158,22 @@ impl TxPin for Pin<PA24, AlternateI> {
     type ValidFor = Can0;
 }
 
-#[cfg(feature = "has-can1")]
+#[hal_cfg("can1")]
 impl RxPin for Pin<PB13, AlternateH> {
     type ValidFor = Can1;
 }
 
-#[cfg(feature = "has-can1")]
+#[hal_cfg("can1")]
 impl RxPin for Pin<PB15, AlternateH> {
     type ValidFor = Can1;
 }
 
-#[cfg(feature = "has-can1")]
+#[hal_cfg("can1")]
 impl TxPin for Pin<PB12, AlternateH> {
     type ValidFor = Can1;
 }
 
-#[cfg(feature = "has-can1")]
+#[hal_cfg("can1")]
 impl TxPin for Pin<PB14, AlternateH> {
     type ValidFor = Can1;
 }

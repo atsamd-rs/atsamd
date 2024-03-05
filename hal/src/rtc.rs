@@ -1,4 +1,6 @@
 //! Real-time clock/counter
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
 use crate::ehal::timer::{CountDown, Periodic};
 use crate::pac::rtc::{MODE0, MODE2};
 use crate::pac::RTC;
@@ -21,14 +23,14 @@ pub type Duration = fugit::Duration<u32, 1, 32_768>;
 use rtic_monotonic::Monotonic;
 
 // SAMx5x imports
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("rtc-d5x")]
 use crate::pac::{
     rtc::mode0::ctrla::PRESCALERSELECT_A, rtc::mode0::CTRLA as MODE0_CTRLA,
     rtc::mode2::CTRLA as MODE2_CTRLA, MCLK as PM,
 };
 
 // SAMD11/SAMD21 imports
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("rtc-d11", "rtc-d21"))]
 use crate::pac::{
     rtc::mode0::ctrl::PRESCALERSELECT_A, rtc::mode0::CTRL as MODE0_CTRLA,
     rtc::mode2::CTRL as MODE2_CTRLA, PM,
@@ -98,6 +100,7 @@ pub struct Rtc<Mode: RtcMode> {
     _mode: PhantomData<Mode>,
 }
 
+#[hal_macro_helper]
 impl<Mode: RtcMode> Rtc<Mode> {
     // --- Helper Functions for M0 vs M4 targets
     #[inline]
@@ -112,25 +115,25 @@ impl<Mode: RtcMode> Rtc<Mode> {
 
     #[inline]
     fn mode0_ctrla(&self) -> &MODE0_CTRLA {
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("rtc-d5x")]
         return &self.mode0().ctrla;
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         return &self.mode0().ctrl;
     }
 
     #[inline]
     fn mode2_ctrla(&self) -> &MODE2_CTRLA {
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("rtc-d5x")]
         return &self.mode2().ctrla;
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         return &self.mode2().ctrl;
     }
 
     #[inline]
     fn sync(&self) {
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("rtc-d5x")]
         while self.mode2().syncbusy.read().bits() != 0 {}
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         while self.mode2().status.read().syncbusy().bit_is_set() {}
     }
 
@@ -174,7 +177,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
         self.sync();
 
         // enable clock sync on SAMx5x
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("rtc-d5x")]
         {
             self.mode2_ctrla().modify(|_, w| {
                 w.clocksync().set_bit() // synchronize the CLOCK register
@@ -208,7 +211,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
         });
 
         // enable clock sync on SAMx5x
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("rtc-d5x")]
         {
             self.mode2_ctrla().modify(|_, w| {
                 w.clocksync().set_bit() // synchronize the CLOCK register
@@ -247,9 +250,10 @@ impl Rtc<Count32Mode> {
 
     /// Returns the internal counter value.
     #[inline]
+    #[hal_macro_helper]
     pub fn count32(&self) -> u32 {
         // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         {
             self.mode0().readreq.modify(|_, w| w.rcont().set_bit());
             self.sync();
@@ -309,9 +313,10 @@ impl Rtc<ClockMode> {
     }
 
     /// Returns the current clock/calendar value.
+    #[hal_macro_helper]
     pub fn current_time(&self) -> Datetime {
         // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         {
             self.mode2().readreq.modify(|_, w| w.rcont().set_bit());
             self.sync();

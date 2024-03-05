@@ -1,5 +1,7 @@
 //! UART [`Config`] definition and implementation\
 
+use atsamd_hal_macros::hal_cfg;
+
 use super::{
     BaudMode, BitOrder, Capability, CharSize, CharSizeEnum, DataReg, DynCharSize, EightBit,
     FixedCharSize, Parity, Registers, StopBits, Uart, ValidConfig, ValidPads,
@@ -50,12 +52,12 @@ where
 
 /// Clock type needed to create a new [`Config`]. [`PM`](pac::PM) for thumbv6m
 /// targets.
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 pub type Clock = pac::PM;
 
 /// Clock type needed to create a new [`Config`]. [`MCLK`](pac::MCLK) for
 /// thumbv7em targets.
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 pub type Clock = pac::MCLK;
 
 impl<P: ValidPads> Config<P> {

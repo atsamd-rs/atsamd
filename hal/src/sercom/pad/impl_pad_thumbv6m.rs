@@ -1,5 +1,7 @@
 //! Implementations of the [`IsPad`], [`IsI2cPad`], [`GetPad`] traits
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
 use crate::gpio::*;
 use crate::sercom::*;
 
@@ -37,12 +39,12 @@ macro_rules! pad_info {
         $Sercom:ident,
         $PadNum:ident
     ) => {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom0-d11")]
         impl GetPad<$Sercom, $PadNum> for $PinId {
             type PinMode = Alternate<$Cfg>;
         }
 
-        #[cfg(feature = "samd21")]
+        #[hal_cfg("sercom0-d21")]
         impl GetPad<$Sercom> for $PinId {
             type PadNum = $PadNum;
             type PinMode = Alternate<$Cfg>;

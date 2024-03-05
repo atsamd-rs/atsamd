@@ -1,8 +1,10 @@
 //! Working with timer counter hardware
+use atsamd_hal_macros::hal_cfg;
+
 use crate::ehal::timer::{CountDown, Periodic};
 use crate::pac::tc0::COUNT16;
 use crate::pac::{MCLK, TC2, TC3};
-#[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
+#[hal_cfg(all("tc4", "tc5"))]
 use crate::pac::{TC4, TC5};
 use crate::timer_params::TimerParams;
 use crate::timer_traits::InterruptDrivenTimer;
@@ -173,7 +175,7 @@ tc! {
     TimerCounter3: (TC3, tc3_, Tc2Tc3Clock, apbbmask),
 }
 
-#[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
+#[hal_cfg(all("tc4", "tc5"))]
 tc! {
     TimerCounter4: (TC4, tc4_, Tc4Tc5Clock, apbcmask),
     TimerCounter5: (TC5, tc5_, Tc4Tc5Clock, apbcmask),

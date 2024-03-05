@@ -7,6 +7,8 @@
 //! configured.
 #![allow(clippy::from_over_into)]
 
+use atsamd_hal_macros::hal_macro_helper;
+
 use fugit::RateExtU32;
 
 use crate::clock::v2::pclk::{ids::*, Pclk, PclkSourceId};
@@ -422,16 +424,17 @@ impl GenericClockController {
     }
 }
 
+#[hal_macro_helper]
 clock_generator!(
     (tc0_tc1, Tc0Tc1Clock, TC0_TC1, Tc0Tc1),
     (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1, Tcc0Tcc1),
     (tc2_tc3, Tc2Tc3Clock, TC2_TC3, Tc2Tc3),
     (tcc2_tcc3, Tcc2Tcc3Clock, TCC2_TCC3, Tcc2Tcc3),
-    #[cfg(all(feature = "has-tc4", feature = "has-tc5"))]
+    #[hal_cfg(all("tc4", "tc5"))]
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5, Tc4Tc5),
-    #[cfg(feature = "has-tcc4")]
+    #[hal_cfg("tcc4")]
     (tcc4, Tcc4Clock, TCC4, Tcc4),
-    #[cfg(all(feature = "has-tc6", feature = "has-tc7"))]
+    #[hal_cfg(all("tc6", "tc7"))]
     (tc6_tc7, Tc6Tc7Clock, TC6_TC7, Tc6Tc7),
     (sercom0_core, Sercom0CoreClock, SERCOM0_CORE, Sercom0),
     (sercom1_core, Sercom1CoreClock, SERCOM1_CORE, Sercom1),
@@ -439,9 +442,9 @@ clock_generator!(
     (sercom3_core, Sercom3CoreClock, SERCOM3_CORE, Sercom3),
     (sercom4_core, Sercom4CoreClock, SERCOM4_CORE, Sercom4),
     (sercom5_core, Sercom5CoreClock, SERCOM5_CORE, Sercom5),
-    #[cfg(feature = "has-sercom6")]
+    #[hal_cfg("sercom6")]
     (sercom6_core, Sercom6CoreClock, SERCOM6_CORE, Sercom6),
-    #[cfg(feature = "has-sercom7")]
+    #[hal_cfg("sercom7")]
     (sercom7_core, Sercom7CoreClock, SERCOM7_CORE, Sercom7),
     (usb, UsbClock, USB, Usb),
     (adc0, Adc0Clock, ADC0, Adc0),
@@ -461,20 +464,20 @@ clock_generator!(
     (evsys9, Evsys9Clock, EVSYS9, EvSys9),
     (evsys10, Evsys10Clock, EVSYS10, EvSys10),
     (evsys11, Evsys11Clock, EVSYS11, EvSys11),
-    #[cfg(feature = "has-can0")]
+    #[hal_cfg("can0")]
     (can0, Can0Clock, CAN0, Can0),
-    #[cfg(feature = "has-can1")]
+    #[hal_cfg("can1")]
     (can1, Can1Clock, CAN1, Can1),
     (pdec, PdecClock, PDEC, PDec),
     (ac, AcClock, AC, Ac),
     (ccl, CclClock, CCL, Ccl),
     (dac, DacClock, DAC, Dac),
-    #[cfg(feature = "has-i2s")]
+    #[hal_cfg("i2s")]
     (i2s0, I2S0Clock, I2S0, I2S0),
-    #[cfg(feature = "has-i2s")]
+    #[hal_cfg("i2s")]
     (i2s1, I2S1Clock, I2S1, I2S1),
     (sdhc0, Sdhc0Clock, SDHC0, Sdhc0),
-    #[cfg(feature = "has-sdhc1")]
+    #[hal_cfg("sdhc1")]
     (sdhc1, Sdhc1Clock, SDHC1, Sdhc1),
     (cm4_trace, Cm4TraceClock, CM4_TRACE, CM4Trace),
 );

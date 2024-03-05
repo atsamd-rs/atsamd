@@ -755,42 +755,53 @@ pub trait GclkIo: PinId {
 // These implementations are much easier to read with `#[rustfmt::skip]`
 #[rustfmt::skip]
 mod gclkio_impl {
+    use atsamd_hal_macros::hal_cfg;
 
     use super::*;
 
+    #[hal_cfg("pa10")]
     impl GclkIo for gpio::PA10 { type GclkId = Gclk4Id; }
+    #[hal_cfg("pa11")]
     impl GclkIo for gpio::PA11 { type GclkId = Gclk5Id; }
+    #[hal_cfg("pa14")]
     impl GclkIo for gpio::PA14 { type GclkId = Gclk0Id; }
+    #[hal_cfg("pa15")]
     impl GclkIo for gpio::PA15 { type GclkId = Gclk1Id; }
+    #[hal_cfg("pa16")]
     impl GclkIo for gpio::PA16 { type GclkId = Gclk2Id; }
+    #[hal_cfg("pa17")]
     impl GclkIo for gpio::PA17 { type GclkId = Gclk3Id; }
+    #[hal_cfg("pa27")]
     impl GclkIo for gpio::PA27 { type GclkId = Gclk1Id; }
+    #[hal_cfg("pa30")]
     impl GclkIo for gpio::PA30 { type GclkId = Gclk0Id; }
+    #[hal_cfg("pb10")]
     impl GclkIo for gpio::PB10 { type GclkId = Gclk4Id; }
+    #[hal_cfg("pb11")]
     impl GclkIo for gpio::PB11 { type GclkId = Gclk5Id; }
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb12")]
     impl GclkIo for gpio::PB12 { type GclkId = Gclk6Id; }
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb13")]
     impl GclkIo for gpio::PB13 { type GclkId = Gclk7Id; }
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb14")]
     impl GclkIo for gpio::PB14 { type GclkId = Gclk0Id; }
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb15")]
     impl GclkIo for gpio::PB15 { type GclkId = Gclk1Id; }
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb16")]
     impl GclkIo for gpio::PB16 { type GclkId = Gclk2Id; }
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb17")]
     impl GclkIo for gpio::PB17 { type GclkId = Gclk3Id; }
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb18")]
     impl GclkIo for gpio::PB18 { type GclkId = Gclk4Id; }
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb19")]
     impl GclkIo for gpio::PB19 { type GclkId = Gclk5Id; }
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb20")]
     impl GclkIo for gpio::PB20 { type GclkId = Gclk6Id; }
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb21")]
     impl GclkIo for gpio::PB21 { type GclkId = Gclk7Id; }
-    #[cfg(feature = "has-pb22")]
+    #[hal_cfg("pb22")]
     impl GclkIo for gpio::PB22 { type GclkId = Gclk0Id; }
-    #[cfg(feature = "has-pb23")]
+    #[hal_cfg("pb23")]
     impl GclkIo for gpio::PB23 { type GclkId = Gclk1Id; }
 }
 

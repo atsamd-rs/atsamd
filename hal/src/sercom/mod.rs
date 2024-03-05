@@ -29,17 +29,16 @@
 //! [`PB03`]: crate::gpio::pin::PB03
 //! [`IsI2cPad`]: pad::IsI2cPad
 
-use core::ops::Deref;
+use atsamd_hal_macros::hal_cfg;
 
-use paste::paste;
-use seq_macro::seq;
+use core::ops::Deref;
 
 use crate::pac;
 use pac::sercom0;
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 use pac::MCLK as APB_CLK_CTRL;
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use pac::PM as APB_CLK_CTRL;
 
 #[cfg(feature = "dma")]
@@ -77,39 +76,65 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
 }
 
 macro_rules! sercom {
-    ( $apbmask:ident: ($start:literal, $end:literal) ) => {
-        seq!(N in $start..=$end {
-            paste! {
-                #[cfg(feature = "has-" sercom~N)]
-                use pac::SERCOM~N;
-                /// Type alias for the corresponding SERCOM instance
-                #[cfg(feature = "has-" sercom~N)]
-                pub type Sercom~N = SERCOM~N;
-                #[cfg(feature = "has-" sercom~N)]
-                impl Sealed for Sercom~N {}
-                #[cfg(feature = "has-" sercom~N)]
-                impl Sercom for Sercom~N {
-                    const NUM: usize = N;
-                    #[cfg(feature = "dma")]
-                    const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _RX>];
-                    #[cfg(feature = "dma")]
-                    const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[<SERCOM~N _TX>];
-                    #[inline]
-                    fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
-                        ctrl.$apbmask.modify(|_, w| w.[<sercom~N _>]().set_bit());
-                    }
-                }
+    ( $apbmask:ident, $N:expr, $alias:ident, $pac_type:ident, $pac_rx:ident, $pac_tx:ident, $pac_modify:ident) => {
+        use pac::$pac_type;
+        /// Type alias for the corresponding SERCOM instance
+        pub type $alias = $pac_type;
+        impl Sealed for $alias {}
+        impl Sercom for $alias {
+            const NUM: usize = $N;
+            #[cfg(feature = "dma")]
+            const DMA_RX_TRIGGER: TriggerSource = TriggerSource::$pac_rx;
+            #[cfg(feature = "dma")]
+            const DMA_TX_TRIGGER: TriggerSource = TriggerSource::$pac_tx;
+            #[inline]
+            fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
+                ctrl.$apbmask.modify(|_, w| w.$pac_modify().set_bit());
             }
-        });
+        }
     };
 }
 
-#[cfg(feature = "thumbv6")]
-sercom!(apbcmask: (0, 5));
+// d11 and d21 families
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
+sercom!(apbcmask, 0, Sercom0, SERCOM0, SERCOM0_RX, SERCOM0_TX, sercom0_);
 
-#[cfg(feature = "thumbv7")]
-sercom!(apbamask: (0, 1));
-#[cfg(feature = "thumbv7")]
-sercom!(apbbmask: (2, 3));
-#[cfg(feature = "thumbv7")]
-sercom!(apbdmask: (4, 7));
+#[hal_cfg(any("sercom1-d11", "sercom1-d21"))]
+sercom!(apbcmask, 1, Sercom1, SERCOM1, SERCOM1_RX, SERCOM1_TX, sercom1_);
+
+#[hal_cfg(any("sercom2-d11", "sercom2-d21"))]
+sercom!(apbcmask, 2, Sercom2, SERCOM2, SERCOM2_RX, SERCOM2_TX, sercom2_);
+
+#[hal_cfg("sercom3-d21")]
+sercom!(apbcmask, 3, Sercom3, SERCOM3, SERCOM3_RX, SERCOM3_TX, sercom3_);
+
+#[hal_cfg("sercom4-d21")]
+sercom!(apbcmask, 4, Sercom4, SERCOM4, SERCOM4_RX, SERCOM4_TX, sercom4_);
+
+#[hal_cfg("sercom5-d21")]
+sercom!(apbcmask, 5, Sercom5, SERCOM5, SERCOM5_RX, SERCOM5_TX, sercom5_);
+
+// d5x family
+#[hal_cfg("sercom0-d5x")]
+sercom!(apbamask, 0, Sercom0, SERCOM0, SERCOM0_RX, SERCOM0_TX, sercom0_);
+
+#[hal_cfg("sercom1-d5x")]
+sercom!(apbamask, 1, Sercom1, SERCOM1, SERCOM1_RX, SERCOM1_TX, sercom1_);
+
+#[hal_cfg("sercom2-d5x")]
+sercom!(apbbmask, 2, Sercom2, SERCOM2, SERCOM2_RX, SERCOM2_TX, sercom2_);
+
+#[hal_cfg("sercom3-d5x")]
+sercom!(apbbmask, 3, Sercom3, SERCOM3, SERCOM3_RX, SERCOM3_TX, sercom3_);
+
+#[hal_cfg("sercom4-d5x")]
+sercom!(apbdmask, 4, Sercom4, SERCOM4, SERCOM4_RX, SERCOM4_TX, sercom4_);
+
+#[hal_cfg("sercom5-d5x")]
+sercom!(apbdmask, 5, Sercom5, SERCOM5, SERCOM5_RX, SERCOM5_TX, sercom5_);
+
+#[hal_cfg("sercom6-d5x")]
+sercom!(apbdmask, 6, Sercom6, SERCOM6, SERCOM6_RX, SERCOM6_TX, sercom6_);
+
+#[hal_cfg("sercom7-d5x")]
+sercom!(apbdmask, 7, Sercom7, SERCOM7, SERCOM7_RX, SERCOM7_TX, sercom7_);

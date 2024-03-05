@@ -4,6 +4,7 @@ use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
 use crate::pac;
+use atsamd_hal_macros::hal_cfg;
 
 /// The EicPin trait makes it more ergonomic to convert a gpio pin into an EIC
 /// pin. You should not implement this trait for yourself; only the
@@ -205,209 +206,245 @@ crate::paste::item! {
 }
 
 ei!(ExtInt[0] {
+    #[hal_cfg("pa00")]
     PA00,
+    #[hal_cfg("pa16")]
     PA16,
-    #[cfg(feature = "has-pb00")]
+    #[hal_cfg("pb00")]
     PB00,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb16")]
     PB16,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc00")]
     PC00,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc16")]
     PC16,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd00")]
     PD00,
 });
 
 ei!(ExtInt[1] {
+    #[hal_cfg("pa01")]
     PA01,
+    #[hal_cfg("pa17")]
     PA17,
-    #[cfg(feature = "has-pb01")]
+    #[hal_cfg("pb01")]
     PB01,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb17")]
     PB17,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc01")]
     PC01,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc17")]
     PC17,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd01")]
     PD01,
 });
 
 ei!(ExtInt[2] {
+    #[hal_cfg("pa02")]
     PA02,
+    #[hal_cfg("pa18")]
     PA18,
+    #[hal_cfg("pb02")]
     PB02,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb18")]
     PB18,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc02")]
     PC02,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc18")]
     PC18,
 });
 
 ei!(ExtInt[3] {
+    #[hal_cfg("pa03")]
     PA03,
+    #[hal_cfg("pa19")]
     PA19,
+    #[hal_cfg("pb03")]
     PB03,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb19")]
     PB19,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc03")]
     PC03,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc19")]
     PC19,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd08")]
     PD08,
 });
 
 ei!(ExtInt[4] {
+    #[hal_cfg("pa04")]
     PA04,
+    #[hal_cfg("pa20")]
     PA20,
-    #[cfg(feature = "has-pb04")]
+    #[hal_cfg("pb04")]
     PB04,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb20")]
     PB20,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc04")]
     PC04,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc20")]
     PC20,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd09")]
     PD09,
 });
 
 ei!(ExtInt[5] {
+    #[hal_cfg("pa05")]
     PA05,
+    #[hal_cfg("pa21")]
     PA21,
-    #[cfg(feature = "has-pb05")]
+    #[hal_cfg("pb05")]
     PB05,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb21")]
     PB21,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc05")]
     PC05,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc21")]
     PC21,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd10")]
     PD10,
 });
 
 ei!(ExtInt[6] {
+    #[hal_cfg("pa06")]
     PA06,
+    #[hal_cfg("pa22")]
     PA22,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb06")]
     PB06,
+    #[hal_cfg("pb22")]
     PB22,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc06")]
     PC06,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc22")]
     PC22,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd11")]
     PD11,
 });
 
 ei!(ExtInt[7] {
+    #[hal_cfg("pa07")]
     PA07,
+    #[hal_cfg("pa23")]
     PA23,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb07")]
     PB07,
+    #[hal_cfg("pb23")]
     PB23,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc23")]
     PC23,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd12")]
     PD12,
 });
 
 ei!(ExtInt[8] {
+    #[hal_cfg("pa24")]
     PA24,
+    #[hal_cfg("pb08")]
     PB08,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb24")]
     PB24,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc24")]
     PC24,
 });
 
 ei!(ExtInt[9] {
+    #[hal_cfg("pa09")]
     PA09,
+    #[hal_cfg("pa25")]
     PA25,
+    #[hal_cfg("pb09")]
     PB09,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb25")]
     PB25,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc07")]
     PC07,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc25")]
     PC25,
 });
 
 ei!(ExtInt[10] {
+    #[hal_cfg("pa10")]
     PA10,
+    #[hal_cfg("pb10")]
     PB10,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc10")]
     PC10,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc26")]
     PC26,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd20")]
     PD20,
 });
 
 ei!(ExtInt[11] {
+    #[hal_cfg("pa11")]
     PA11,
+    #[hal_cfg("pa27")]
     PA27,
+    #[hal_cfg("pb11")]
     PB11,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc11")]
     PC11,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc27")]
     PC27,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd21")]
     PD21,
 });
 
 ei!(ExtInt[12] {
+    #[hal_cfg("pa12")]
     PA12,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb12")]
     PB12,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pb26")]
     PB26,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc12")]
     PC12,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc28")]
     PC28,
 });
 
 ei!(ExtInt[13] {
+    #[hal_cfg("pa13")]
     PA13,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb13")]
     PB13,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pb27")]
     PB27,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc13")]
     PC13,
 });
 
 ei!(ExtInt[14] {
+    #[hal_cfg("pa14")]
     PA14,
+    #[hal_cfg("pa30")]
     PA30,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb14")]
     PB14,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pb28")]
     PB28,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb30")]
     PB30,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc14")]
     PC14,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc30")]
     PC30,
 });
 
 ei!(ExtInt[15] {
+    #[hal_cfg("pa15")]
     PA15,
+    #[hal_cfg("pa31")]
     PA31,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb15")]
     PB15,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pb29")]
     PB29,
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb31")]
     PB31,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc15")]
     PC15,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc31")]
     PC31,
 });

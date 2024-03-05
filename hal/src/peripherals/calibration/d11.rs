@@ -2,6 +2,7 @@
 // For samd11, see 9.5 NVM Software Calibration Area Mapping, page 24
 // For samd21, see 10.3.2 NVM Software Calibration Area Mapping, page 46
 
+use atsamd_hal_macros::hal_cfg;
 use core::ptr;
 
 const ADDR: u32 = 0x806020u32;
@@ -53,9 +54,13 @@ pub fn usb_transp_cal() -> u8 {
 }
 
 /// USB TRIM calibration value. Should be written to USB PADCAL register.
+#[hal_cfg("nvmctrl-d11")]
 pub fn usb_trim_cal() -> u8 {
-    #[cfg(feature = "samd11")]
-    return cal_with_errata(4, 23, 7, 7, 5) as u8;
-    #[cfg(feature = "samd21")]
-    return cal_with_errata(4, 23, 7, 7, 3) as u8;
+    cal_with_errata(4, 23, 7, 7, 5) as u8
+}
+
+/// USB TRIM calibration value. Should be written to USB PADCAL register.
+#[hal_cfg("nvmctrl-d21")]
+pub fn usb_trim_cal() -> u8 {
+    cal_with_errata(4, 23, 7, 7, 3) as u8
 }

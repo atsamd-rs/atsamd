@@ -1,62 +1,75 @@
-#[cfg(feature = "unproven")]
-#[cfg_attr(feature = "thumbv6", path = "adc/d11.rs")]
-#[cfg_attr(feature = "thumbv7", path = "adc/d5x.rs")]
-pub mod adc;
-
-#[cfg_attr(feature = "thumbv6", path = "calibration/d11.rs")]
-#[cfg_attr(feature = "thumbv7", path = "calibration/d5x.rs")]
-pub mod calibration;
-
-#[cfg_attr(feature = "thumbv6", path = "timer/d11.rs")]
-#[cfg_attr(feature = "thumbv7", path = "timer/d5x.rs")]
-pub mod timer;
-
-#[cfg_attr(feature = "thumbv6", path = "eic/d11/mod.rs")]
-#[cfg_attr(feature = "thumbv7", path = "eic/d5x/mod.rs")]
-pub mod eic;
-
-#[cfg(all(feature = "usb", feature = "has-usb"))]
-#[cfg_attr(feature = "thumbv6", path = "usb/d11/mod.rs")]
-#[cfg_attr(feature = "thumbv7", path = "usb/d5x/mod.rs")]
-pub mod usb;
+use atsamd_hal_macros::{hal_cfg, hal_module};
 
 #[cfg(feature = "unproven")]
-#[cfg_attr(feature = "thumbv6", path = "pwm/d11.rs")]
-#[cfg_attr(feature = "thumbv7", path = "pwm/d5x.rs")]
-pub mod pwm;
+#[hal_module(
+    any("adc-d11", "adc-d21") => "adc/d11.rs",
+    "adc-d5x" => "adc/d5x.rs",
+)]
+pub mod adc {}
 
-#[cfg_attr(feature = "thumbv6", path = "clock/d11.rs")]
-#[cfg_attr(feature = "thumbv7", path = "clock/d5x/mod.rs")]
-pub mod clock;
+#[hal_module(
+    any("nvmctrl-d11", "nvmctrl-d21") => "calibration/d11.rs",
+    "nvmctrl-d5x" => "calibration/d5x.rs",
+)]
+pub mod calibration {}
 
-#[cfg(feature = "thumbv7")]
-pub mod aes;
+#[hal_module(
+    any("clock-d11", "clock-d21") => "timer/d11.rs",
+    "clock-d5x" => "timer/d5x.rs",
+)]
+pub mod timer {}
 
-#[cfg(feature = "thumbv7")]
-pub mod dsu;
+#[hal_module(
+    any("eic-d11", "eic-d21") => "eic/d11/mod.rs",
+    "eic-d5x" => "eic/d5x/mod.rs",
+)]
+pub mod eic {}
 
-#[cfg(feature = "thumbv7")]
-pub mod pukcc;
-
-#[cfg(feature = "thumbv7")]
-pub mod qspi;
-
-#[cfg(feature = "thumbv7")]
-pub mod trng;
+#[cfg(feature = "usb")]
+#[hal_module(
+    any("usb-d11", "usb-d21") => "usb/d11/mod.rs",
+    "usb-d5x" => "usb/d5x/mod.rs",
+)]
+pub mod usb {}
 
 #[cfg(feature = "unproven")]
-#[cfg(feature = "thumbv7")]
-pub mod icm;
+#[hal_module(
+    any("clock-d11", "clock-d21") => "pwm/d11.rs",
+    "clock-d5x" => "pwm/d5x.rs",
+)]
+pub mod pwm {}
 
-#[cfg(feature = "thumbv7")]
-pub mod nvm;
+#[hal_module(
+    any("clock-d11", "clock-d21") => "clock/d11.rs",
+    "clock-d5x" => "clock/d5x/mod.rs",
+)]
+pub mod clock {}
 
-#[cfg(all(
-    any(feature = "has-can0", feature = "has-can1"),
-    feature = "can",
-    feature = "thumbv7"
-))]
-pub mod can;
+#[hal_module("aes")]
+pub mod aes {}
+
+#[hal_module("dsu-d5x")]
+pub mod dsu {}
+
+#[hal_module("pukcc")]
+pub mod pukcc {}
+
+#[hal_module("qspi")]
+pub mod qspi {}
+
+#[hal_module("trng")]
+pub mod trng {}
+
+#[cfg(feature = "unproven")]
+#[hal_module("icm")]
+pub mod icm {}
+
+#[hal_module("nvmctrl-d5x")]
+pub mod nvm {}
+
+#[cfg(feature = "can")]
+#[hal_module(any("can0", "can1"))]
+pub mod can {}
 
 #[cfg(feature = "unproven")]
 #[cfg_attr(feature = "thumbv6", path = "watchdog/d11.rs")]

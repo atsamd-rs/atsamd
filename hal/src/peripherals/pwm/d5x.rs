@@ -1,7 +1,6 @@
 #![allow(non_snake_case)]
 
-use paste::paste;
-use seq_macro::seq;
+use atsamd_hal_macros::hal_cfg;
 
 use crate::clock;
 use crate::ehal::{Pwm, PwmPin};
@@ -10,20 +9,6 @@ use crate::gpio::{AlternateE, AnyPin, Pin};
 use crate::pac::MCLK;
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
-
-seq!(N in 0..=7 {
-    paste! {
-        #[cfg(feature = "has-" tc~N)]
-        use crate::pac::TC~N;
-    }
-});
-
-seq!(N in 0..=4 {
-    paste! {
-        #[cfg(feature = "has-" tcc~N)]
-        use crate::pac::TCC~N;
-    }
-});
 
 // Timer/Counter (TCx)
 
@@ -69,67 +54,79 @@ macro_rules! impl_tc_pinout {
     };
 }
 
-#[cfg(feature = "has-tc0")]
+#[hal_cfg("tc0")]
 impl_tc_pinout!(TC0Pinout: [
+    #[hal_cfg("pa05")]
     (Pa5, PA05),
+    #[hal_cfg("pa09")]
     (Pa9, PA09),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb31")]
     (Pb31, PB31)
 ]);
 
-#[cfg(feature = "has-tc1")]
+#[hal_cfg("tc1")]
 impl_tc_pinout!(TC1Pinout: [
+    #[hal_cfg("pa07")]
     (Pa7, PA07),
+    #[hal_cfg("pa11")]
     (Pa11, PA11)
 ]);
 
-#[cfg(feature = "has-tc2")]
+#[hal_cfg("tc2")]
 impl_tc_pinout!(TC2Pinout: [
-    #[cfg(feature = "has-pa01")]
+    #[hal_cfg("pa01")]
     (Pa1, PA01),
+    #[hal_cfg("pa13")]
     (Pa13, PA13),
+    #[hal_cfg("pa17")]
     (Pa17, PA17)
 ]);
 
-#[cfg(feature = "has-tc3")]
+#[hal_cfg("tc3")]
 impl_tc_pinout!(TC3Pinout: [
+    #[hal_cfg("pa15")]
     (Pa15, PA15),
+    #[hal_cfg("pa19")]
     (Pa19, PA19)
 ]);
 
-#[cfg(feature = "has-tc4")]
+#[hal_cfg("tc4")]
 impl_tc_pinout!(TC4Pinout: [
+    #[hal_cfg("pa23")]
     (Pa23, PA23),
-    #[cfg(feature = "pins-48")]
+    #[hal_cfg("pb09")]
     (Pb9, PB09),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb13")]
     (Pb13, PB13)
 ]);
 
-#[cfg(feature = "has-tc5")]
+#[hal_cfg("tc5")]
 impl_tc_pinout!(TC5Pinout: [
+    #[hal_cfg("pa25")]
     (Pa25, PA25),
+    #[hal_cfg("pb11")]
     (Pb11, PB11),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb15")]
     (Pb15, PB15)
 ]);
 
-#[cfg(feature = "has-tc6")]
+#[hal_cfg("tc6")]
 impl_tc_pinout!(TC6Pinout: [
-    #[cfg(feature = "has-pb03")]
+    #[hal_cfg("pb03")]
     (Pb3, PB03),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb17")]
     (Pb17, PB17),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pa31")]
     (Pa31, PA31)
 ]);
 
-#[cfg(feature = "has-tc7")]
+#[hal_cfg("tc7")]
 impl_tc_pinout!(TC7Pinout: [
+    #[hal_cfg("pa21")]
     (Pa21, PA21),
-    #[cfg(feature = "has-pb23")]
+    #[hal_cfg("pb23")]
     (Pb23, PB23),
-    #[cfg(feature = "has-pb01")]
+    #[hal_cfg("pb01")]
     (Pb1, PB01)
 ]);
 
@@ -141,7 +138,7 @@ pub struct $TYPE<I: PinId> {
     /// The frequency of the attached clock, not the period of the pwm.
     /// Used to calculate the period of the pwm.
     clock_freq: Hertz,
-    tc: $TC,
+    tc: crate::pac::$TC,
     #[allow(dead_code)]
     pinout: $pinout<I>,
 }
@@ -150,7 +147,7 @@ impl<I: PinId> $TYPE<I> {
     pub fn new(
         clock: &clock::$clock,
         freq: Hertz,
-        tc: $TC,
+        tc: crate::pac::$TC,
         pinout: $pinout<I>,
         mclk: &mut MCLK,
     ) -> Self {
@@ -253,21 +250,21 @@ impl<I: PinId> PwmPin for $TYPE<I> {
 
 )+}}
 
-#[cfg(feature = "has-tc0")]
+#[hal_cfg("tc0")]
 pwm! { Pwm0: (TC0, TC0Pinout, Tc0Tc1Clock, apbamask, tc0_, Pwm0Wrapper) }
-#[cfg(feature = "has-tc1")]
+#[hal_cfg("tc1")]
 pwm! { Pwm1: (TC1, TC1Pinout, Tc0Tc1Clock, apbamask, tc1_, Pwm1Wrapper) }
-#[cfg(feature = "has-tc2")]
+#[hal_cfg("tc2")]
 pwm! { Pwm2: (TC2, TC2Pinout, Tc2Tc3Clock, apbbmask, tc2_, Pwm2Wrapper) }
-#[cfg(feature = "has-tc3")]
+#[hal_cfg("tc3")]
 pwm! { Pwm3: (TC3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_, Pwm3Wrapper) }
-#[cfg(feature = "has-tc4")]
+#[hal_cfg("tc4")]
 pwm! { Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper) }
-#[cfg(feature = "has-tc5")]
+#[hal_cfg("tc5")]
 pwm! { Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper) }
-#[cfg(feature = "has-tc6")]
+#[hal_cfg("tc6")]
 pwm! { Pwm6: (TC6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper) }
-#[cfg(feature = "has-tc7")]
+#[hal_cfg("tc7")]
 pwm! { Pwm7: (TC7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper) }
 
 // Timer/Counter for Control Applications (TCCx)
@@ -326,168 +323,207 @@ macro_rules! impl_tcc_pinout {
     };
 }
 
-#[cfg(feature = "has-tcc0")]
+#[hal_cfg("tcc0")]
 impl_tcc_pinout!(TCC0Pinout: [
+    #[hal_cfg("pa08")]
     (Pa8, PA08, AlternateF),
+    #[hal_cfg("pa09")]
     (Pa9, PA09, AlternateF),
+    #[hal_cfg("pa10")]
     (Pa10, PA10, AlternateF),
+    #[hal_cfg("pa11")]
     (Pa11, PA11, AlternateF),
+    #[hal_cfg("pa12")]
     (Pa12, PA12, AlternateF),
+    #[hal_cfg("pa13")]
     (Pa13, PA13, AlternateF),
+    #[hal_cfg("pa16")]
     (Pa16, PA16, AlternateG),
+    #[hal_cfg("pa17")]
     (Pa17, PA17, AlternateG),
+    #[hal_cfg("pa18")]
     (Pa18, PA18, AlternateG),
+    #[hal_cfg("pa19")]
     (Pa19, PA19, AlternateG),
+    #[hal_cfg("pa20")]
     (Pa20, PA20, AlternateG),
+    #[hal_cfg("pa21")]
     (Pa21, PA21, AlternateG),
+    #[hal_cfg("pa22")]
     (Pa22, PA22, AlternateG),
+    #[hal_cfg("pa23")]
     (Pa23, PA23, AlternateG),
+    #[hal_cfg("pb10")]
     (Pb10, PB10, AlternateF),
+    #[hal_cfg("pb11")]
     (Pb11, PB11, AlternateF),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb12")]
     (Pb12, PB12, AlternateG),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb13")]
     (Pb13, PB13, AlternateG),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb14")]
     (Pb14, PB14, AlternateG),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb15")]
     (Pb15, PB15, AlternateG),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb16")]
     (Pb16, PB16, AlternateG),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb17")]
     (Pb17, PB17, AlternateG),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb30")]
     (Pb30, PB30, AlternateG),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb31")]
     (Pb31, PB31, AlternateG),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc10")]
     (Pc10, PC10, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc11")]
     (Pc11, PC11, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc12")]
     (Pc12, PC12, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc13")]
     (Pc13, PC13, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc14")]
     (Pc14, PC14, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc15")]
     (Pc15, PC15, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc16")]
     (Pc16, PC16, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc17")]
     (Pc17, PC17, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc18")]
     (Pc18, PC18, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc19")]
     (Pc19, PC19, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc20")]
     (Pc20, PC20, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc21")]
     (Pc21, PC21, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc04")]
     (Pc4, PC04, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc22")]
     (Pc22, PC22, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pc23")]
     (Pc23, PC23, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd08")]
     (Pd8, PD08, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd09")]
     (Pd9, PD09, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd10")]
     (Pd10, PD10, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd11")]
     (Pd11, PD11, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd12")]
     (Pd12, PD12, AlternateF)
 ]);
 
-#[cfg(feature = "has-tcc1")]
+#[hal_cfg("tcc1")]
 impl_tcc_pinout!(TCC1Pinout: [
+    #[hal_cfg("pa08")]
     (Pa8, PA08, AlternateG),
+    #[hal_cfg("pa09")]
     (Pa9, PA09, AlternateG),
+    #[hal_cfg("pa10")]
     (Pa10, PA10, AlternateG),
+    #[hal_cfg("pa11")]
     (Pa11, PA11, AlternateG),
+    #[hal_cfg("pa12")]
     (Pa12, PA12, AlternateG),
+    #[hal_cfg("pa13")]
     (Pa13, PA13, AlternateG),
+    #[hal_cfg("pa14")]
     (Pa14, PA14, AlternateG),
+    #[hal_cfg("pa15")]
     (Pa15, PA15, AlternateG),
+    #[hal_cfg("pa16")]
     (Pa16, PA16, AlternateF),
+    #[hal_cfg("pa17")]
     (Pa17, PA17, AlternateF),
+    #[hal_cfg("pa18")]
     (Pa18, PA18, AlternateF),
+    #[hal_cfg("pa19")]
     (Pa19, PA19, AlternateF),
+    #[hal_cfg("pa20")]
     (Pa20, PA20, AlternateF),
+    #[hal_cfg("pa21")]
     (Pa21, PA21, AlternateF),
+    #[hal_cfg("pa22")]
     (Pa22, PA22, AlternateF),
+    #[hal_cfg("pa23")]
     (Pa23, PA23, AlternateF),
+    #[hal_cfg("pb10")]
     (Pb10, PB10, AlternateG),
+    #[hal_cfg("pb11")]
     (Pb11, PB11, AlternateG),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb18")]
     (Pb18, PB18, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb19")]
     (Pb19, PB19, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb20")]
     (Pb20, PB20, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pb21")]
     (Pb21, PB21, AlternateF),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc10")]
     (Pc10, PC10, AlternateG),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc11")]
     (Pc11, PC11, AlternateG),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc12")]
     (Pc12, PC12, AlternateG),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc13")]
     (Pc13, PC13, AlternateG),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc14")]
     (Pc14, PC14, AlternateG),
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pc15")]
     (Pc15, PC15, AlternateG),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pb26")]
     (Pb26, PB26, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pb27")]
     (Pb27, PB27, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pb28")]
     (Pb28, PB28, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pb29")]
     (Pb29, PB29, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd20")]
     (Pd20, PD20, AlternateF),
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pd21")]
     (Pd21, PD21, AlternateF)
 ]);
 
-#[cfg(feature = "has-tcc2")]
+#[hal_cfg("tcc2")]
 impl_tcc_pinout!(TCC2Pinout: [
+    #[hal_cfg("pa14")]
     (Pa14, PA14, AlternateF),
+    #[hal_cfg("pa15")]
     (Pa15, PA15, AlternateF),
+    #[hal_cfg("pa24")]
     (Pa24, PA24, AlternateF),
+    #[hal_cfg("pa30")]
     (Pa30, PA30, AlternateF),
+    #[hal_cfg("pa31")]
     (Pa31, PA31, AlternateF),
-    #[cfg(feature = "has-pb02")]
+    #[hal_cfg("pb02")]
     (Pb2,  PB02, AlternateF)
 ]);
 
-#[cfg(feature = "has-tcc3")]
+#[hal_cfg("tcc3")]
 impl_tcc_pinout!(TCC3Pinout: [
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb12")]
     (Pb12, PB12, AlternateF),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb13")]
     (Pb13, PB13, AlternateF),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb16")]
     (Pb16, PB16, AlternateF),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb17")]
     (Pb17, PB17, AlternateF)
 ]);
 
-#[cfg(feature = "has-tcc4")]
+#[hal_cfg("tcc4")]
 impl_tcc_pinout!(TCC4Pinout: [
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb14")]
     (Pb14, PB14, AlternateF),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb15")]
     (Pb15, PB15, AlternateF),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb30")]
     (Pb30, PB30, AlternateF),
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pb31")]
     (Pb31, PB31, AlternateF)
 ]);
 
@@ -499,7 +535,7 @@ pub struct $TYPE<I: PinId, M: PinMode> {
     /// The frequency of the attached clock, not the period of the pwm.
     /// Used to calculate the period of the pwm.
     clock_freq: Hertz,
-    tcc: $TCC,
+    tcc: crate::pac::$TCC,
     #[allow(dead_code)]
     pinout: $pinout<I, M>,
 }
@@ -508,7 +544,7 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
     pub fn new(
         clock: &clock::$clock,
         freq: Hertz,
-        tcc: $TCC,
+        tcc: crate::pac::$TCC,
         pinout: $pinout<I, M>,
         mclk: &mut MCLK,
     ) -> Self {
@@ -614,13 +650,13 @@ impl<I: PinId, M: PinMode> Pwm for $TYPE<I, M> {
     };
 }
 
-#[cfg(feature = "has-tcc0")]
+#[hal_cfg("tcc0")]
 pwm_tcc! { Tcc0Pwm: (TCC0, TCC0Pinout, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper) }
-#[cfg(feature = "has-tcc1")]
+#[hal_cfg("tcc1")]
 pwm_tcc! { Tcc1Pwm: (TCC1, TCC1Pinout, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper) }
-#[cfg(feature = "has-tcc2")]
+#[hal_cfg("tcc2")]
 pwm_tcc! { Tcc2Pwm: (TCC2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper) }
-#[cfg(feature = "has-tcc3")]
+#[hal_cfg("tcc3")]
 pwm_tcc! { Tcc3Pwm: (TCC3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper) }
-#[cfg(feature = "has-tcc4")]
+#[hal_cfg("tcc4")]
 pwm_tcc! { Tcc4Pwm: (TCC4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper) }

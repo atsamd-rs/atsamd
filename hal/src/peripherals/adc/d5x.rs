@@ -1,4 +1,6 @@
 //! Analogue-to-Digital Conversion
+use atsamd_hal_macros::hal_cfg;
+
 use crate::clock::GenericClockController;
 #[rustfmt::skip]
 use crate::gpio::*;
@@ -273,10 +275,13 @@ adc_hal! {
 macro_rules! adc_pins {
     (
         $(
-            $PinId:ident: ($ADC:ident, $CHAN:literal),
-        )+
+            $( #[$cfg:meta] )?
+            $PinId:ident: ($ADC:ident, $CHAN:literal)
+        ),+
+        $(,)?
     ) => {
         $(
+            $( #[$cfg] )?
             impl Channel<$ADC> for Pin<$PinId, AlternateB> {
                type ID = u8;
                fn channel() -> u8 { $CHAN }
@@ -286,49 +291,69 @@ macro_rules! adc_pins {
 }
 
 adc_pins! {
+    #[hal_cfg("pa02")]
     PA02: (ADC0, 0),
+    #[hal_cfg("pa03")]
     PA03: (ADC0, 1),
+    #[hal_cfg("pb08")]
     PB08: (ADC0, 2),
+    #[hal_cfg("pb09")]
     PB09: (ADC0, 3),
+    #[hal_cfg("pa04")]
     PA04: (ADC0, 4),
+    #[hal_cfg("pa05")]
     PA05: (ADC0, 5),
+    #[hal_cfg("pa06")]
     PA06: (ADC0, 6),
+    #[hal_cfg("pa07")]
     PA07: (ADC0, 7),
+    #[hal_cfg("pa08")]
     PA08: (ADC0, 8),
+    #[hal_cfg("pa09")]
     PA09: (ADC0, 9),
+    #[hal_cfg("pa10")]
     PA10: (ADC0, 10),
+    #[hal_cfg("pa11")]
     PA11: (ADC0, 11),
+    #[hal_cfg("pb00")]
+    PB00: (ADC0, 12),
+    #[hal_cfg("pb01")]
+    PB01: (ADC0, 13),
+    #[hal_cfg("pb02")]
     PB02: (ADC0, 14),
+    #[hal_cfg("pb03")]
     PB03: (ADC0, 15),
 
+    #[hal_cfg("pb08")]
     PB08: (ADC1, 0),
+    #[hal_cfg("pb09")]
     PB09: (ADC1, 1),
+    #[hal_cfg("pa08")]
     PA08: (ADC1, 2),
+    #[hal_cfg("pa09")]
     PA09: (ADC1, 3),
-}
-
-#[cfg(feature = "pins-64")]
-adc_pins! {
-    PB00: (ADC0, 12),
-    PB01: (ADC0, 13),
-    PB04: (ADC1, 6),
-    PB05: (ADC1, 7),
-    PB06: (ADC1, 8),
-    PB07: (ADC1, 9),
-}
-
-#[cfg(feature = "pins-100")]
-adc_pins! {
+    #[hal_cfg("pc02")]
     PC02: (ADC1, 4),
+    #[hal_cfg("pc03")]
     PC03: (ADC1, 5),
+    #[hal_cfg("pb04")]
+    PB04: (ADC1, 6),
+    #[hal_cfg("pb05")]
+    PB05: (ADC1, 7),
+    #[hal_cfg("pb06")]
+    PB06: (ADC1, 8),
+    #[hal_cfg("pb07")]
+    PB07: (ADC1, 9),
+    #[hal_cfg("pc00")]
     PC00: (ADC1, 10),
+    #[hal_cfg("pc01")]
     PC01: (ADC1, 11),
-}
-
-#[cfg(feature = "pins-128")]
-adc_pins! {
+    #[hal_cfg("pc30")]
     PC30: (ADC1, 12),
+    #[hal_cfg("pc31")]
     PC31: (ADC1, 13),
+    #[hal_cfg("pd00")]
     PD00: (ADC1, 14),
+    #[hal_cfg("pd01")]
     PD01: (ADC1, 15),
 }

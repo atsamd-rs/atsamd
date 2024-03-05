@@ -121,6 +121,7 @@
 //! [`Clocks`]: super::Clocks
 //! [`Buses`]: super::Buses
 
+use atsamd_hal_macros::hal_macro_helper;
 use core::marker::PhantomData;
 
 use bitflags;
@@ -351,6 +352,7 @@ macro_rules! define_apb_types {
     };
 }
 
+#[hal_macro_helper]
 define_apb_types!(
     A {
         Pac = 0,
@@ -385,14 +387,14 @@ define_apb_types!(
         RamEcc = 16,
     }
     C {
-        #[cfg(feature = "has-gmac")]
+        #[hal_cfg("gmac")]
         Gmac = 2,
         Tcc2 = 3,
-        #[cfg(feature = "has-tcc3")]
+        #[hal_cfg("tcc3")]
         Tcc3 = 4,
-        #[cfg(feature = "has-tc4")]
+        #[hal_cfg("tc4")]
         Tc4 = 5,
-        #[cfg(feature = "has-tc5")]
+        #[hal_cfg("tc5")]
         Tc5 = 6,
         PDec = 7,
         Ac = 8,
@@ -405,20 +407,20 @@ define_apb_types!(
     D {
         Sercom4 = 0,
         Sercom5 = 1,
-        #[cfg(feature = "has-sercom6")]
+        #[hal_cfg("sercom6")]
         Sercom6 = 2,
-        #[cfg(feature = "has-sercom7")]
+        #[hal_cfg("sercom7")]
         Sercom7 = 3,
-        #[cfg(feature = "has-tcc4")]
+        #[hal_cfg("tcc4")]
         Tcc4 = 4,
-        #[cfg(feature = "has-tc6")]
+        #[hal_cfg("tc6")]
         Tc6 = 5,
-        #[cfg(feature = "has-tc7")]
+        #[hal_cfg("tc7")]
         Tc7 = 6,
         Adc0 = 7,
         Adc1 = 8,
         Dac = 9,
-        #[cfg(feature = "has-i2s")]
+        #[hal_cfg("i2s")]
         I2S = 10,
         Pcc = 11,
     }
@@ -507,6 +509,7 @@ impl<A: ApbId> ApbClk<A> {
 //==============================================================================
 
 /// Set of [`ApbToken`]s for APB clocks that are disabled at power-on reset
+#[hal_macro_helper]
 pub struct ApbTokens {
     pub freq_m: ApbToken<FreqM>,
     pub sercom0: ApbToken<Sercom0>,
@@ -521,12 +524,12 @@ pub struct ApbTokens {
     pub tcc1: ApbToken<Tcc1>,
     pub tc2: ApbToken<Tc2>,
     pub tc3: ApbToken<Tc3>,
-    #[cfg(feature = "has-tc4")]
+    #[hal_cfg("tc4")]
     pub tc4: ApbToken<Tc4>,
     pub tcc2: ApbToken<Tcc2>,
-    #[cfg(feature = "has-tcc3")]
+    #[hal_cfg("tcc3")]
     pub tcc3: ApbToken<Tcc3>,
-    #[cfg(feature = "has-tc5")]
+    #[hal_cfg("tc5")]
     pub tc5: ApbToken<Tc5>,
     pub p_dec: ApbToken<PDec>,
     pub ac: ApbToken<Ac>,
@@ -536,20 +539,20 @@ pub struct ApbTokens {
     pub ccl: ApbToken<Ccl>,
     pub sercom4: ApbToken<Sercom4>,
     pub sercom5: ApbToken<Sercom5>,
-    #[cfg(feature = "has-sercom6")]
+    #[hal_cfg("sercom6")]
     pub sercom6: ApbToken<Sercom6>,
-    #[cfg(feature = "has-sercom7")]
+    #[hal_cfg("sercom7")]
     pub sercom7: ApbToken<Sercom7>,
-    #[cfg(feature = "has-tcc4")]
+    #[hal_cfg("tcc4")]
     pub tcc4: ApbToken<Tcc4>,
-    #[cfg(feature = "has-tc6")]
+    #[hal_cfg("tc6")]
     pub tc6: ApbToken<Tc6>,
-    #[cfg(feature = "has-tc7")]
+    #[hal_cfg("tc7")]
     pub tc7: ApbToken<Tc7>,
     pub adc0: ApbToken<Adc0>,
     pub adc1: ApbToken<Adc1>,
     pub dac: ApbToken<Dac>,
-    #[cfg(feature = "has-i2s")]
+    #[hal_cfg("i2s")]
     pub i2s: ApbToken<I2S>,
     pub pcc: ApbToken<Pcc>,
 }
@@ -561,6 +564,7 @@ impl ApbTokens {
     ///
     /// All invariants required by `ApbToken::new` must be upheld here as well.
     #[inline]
+    #[hal_macro_helper]
     pub(super) unsafe fn new() -> Self {
         Self {
             freq_m: ApbToken::new(),
@@ -576,12 +580,12 @@ impl ApbTokens {
             tcc1: ApbToken::new(),
             tc2: ApbToken::new(),
             tc3: ApbToken::new(),
-            #[cfg(feature = "has-tc4")]
+            #[hal_cfg("tc4")]
             tc4: ApbToken::new(),
             tcc2: ApbToken::new(),
-            #[cfg(feature = "has-tcc3")]
+            #[hal_cfg("tcc3")]
             tcc3: ApbToken::new(),
-            #[cfg(feature = "has-tc5")]
+            #[hal_cfg("tc5")]
             tc5: ApbToken::new(),
             p_dec: ApbToken::new(),
             ac: ApbToken::new(),
@@ -591,20 +595,20 @@ impl ApbTokens {
             ccl: ApbToken::new(),
             sercom4: ApbToken::new(),
             sercom5: ApbToken::new(),
-            #[cfg(feature = "has-sercom6")]
+            #[hal_cfg("sercom6")]
             sercom6: ApbToken::new(),
-            #[cfg(feature = "has-sercom7")]
+            #[hal_cfg("sercom7")]
             sercom7: ApbToken::new(),
-            #[cfg(feature = "has-tcc4")]
+            #[hal_cfg("tcc4")]
             tcc4: ApbToken::new(),
-            #[cfg(feature = "has-tc6")]
+            #[hal_cfg("tc6")]
             tc6: ApbToken::new(),
-            #[cfg(feature = "has-tc7")]
+            #[hal_cfg("tc7")]
             tc7: ApbToken::new(),
             adc0: ApbToken::new(),
             adc1: ApbToken::new(),
             dac: ApbToken::new(),
-            #[cfg(feature = "has-i2s")]
+            #[hal_cfg("i2s")]
             i2s: ApbToken::new(),
             pcc: ApbToken::new(),
         }
@@ -616,6 +620,7 @@ impl ApbTokens {
 //==============================================================================
 
 /// Set of [`ApbClk`]s for APB clocks that are enabled at power-on reset
+#[hal_macro_helper]
 pub struct ApbClks {
     pub pac: ApbClk<Pac>,
     pub pm: ApbClk<Pm>,
@@ -632,7 +637,7 @@ pub struct ApbClks {
     pub nvm_ctrl: ApbClk<NvmCtrl>,
     pub port: ApbClk<Port>,
     pub ram_ecc: ApbClk<RamEcc>,
-    #[cfg(feature = "has-gmac")]
+    #[hal_cfg("gmac")]
     pub gmac: ApbClk<Gmac>,
     pub qspi: ApbClk<Qspi>,
 }
@@ -644,6 +649,7 @@ impl ApbClks {
     ///
     /// All invariants required by `ApbToken::new` must be upheld here as well.
     #[inline]
+    #[hal_macro_helper]
     pub(super) unsafe fn new() -> Self {
         ApbClks {
             pac: ApbClk::new(ApbToken::new()),
@@ -661,7 +667,7 @@ impl ApbClks {
             nvm_ctrl: ApbClk::new(ApbToken::new()),
             port: ApbClk::new(ApbToken::new()),
             ram_ecc: ApbClk::new(ApbToken::new()),
-            #[cfg(feature = "has-gmac")]
+            #[hal_cfg("gmac")]
             gmac: ApbClk::new(ApbToken::new()),
             qspi: ApbClk::new(ApbToken::new()),
         }

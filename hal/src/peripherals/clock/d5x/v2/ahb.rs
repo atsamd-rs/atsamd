@@ -122,6 +122,8 @@
 //! [`Clocks`]: super::Clocks
 //! [`Buses`]: super::Buses
 
+use atsamd_hal_macros::hal_macro_helper;
+
 use core::marker::PhantomData;
 
 use bitflags;
@@ -368,6 +370,7 @@ macro_rules! define_ahb_types {
     };
 }
 
+#[hal_macro_helper]
 define_ahb_types!(
     Hpb0 = 0,
     Hpb1 = 1,
@@ -380,14 +383,14 @@ define_ahb_types!(
     Usb = 10,
     Pac = 12,
     Qspi = 13,
-    #[cfg(feature = "has-gmac")]
+    #[hal_cfg("gmac")]
     Gmac = 14,
     Sdhc0 = 15,
-    #[cfg(feature = "has-sdhc1")]
+    #[hal_cfg("sdhc1")]
     Sdhc1 = 16,
-    #[cfg(feature = "has-can0")]
+    #[hal_cfg("can0")]
     Can0 = 17,
-    #[cfg(feature = "has-can1")]
+    #[hal_cfg("can1")]
     Can1 = 18,
     Icm = 19,
     Pukcc = 20,
