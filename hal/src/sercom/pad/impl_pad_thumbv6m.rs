@@ -60,15 +60,17 @@ macro_rules! pad_info {
 // Feature gates can be placed on individual configurations or on the entire pin
 macro_rules! pad_table {
     (
-        #[$cfg:meta]
+        #[$id_cfg:meta]
         $PinId:ident {
             $(
+                $( #[$sercom_cfg:meta] )?
                 $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
             )+
         }
     ) => {
         $(
-            #[$cfg]
+            #[$id_cfg]
+            $( #[$sercom_cfg] )?
             pad_info!( $PinId, $Cfg, $Sercom, $PadNum $( + $I2C )? );
         )+
     };
@@ -76,13 +78,13 @@ macro_rules! pad_table {
     (
         $PinId:ident {
             $(
-                $( #[$cfg:meta] )?
+                $( #[$sercom_cfg:meta] )?
                 $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
             )+
         }
     ) => {
         $(
-            $( #[$cfg] )?
+            $( #[$sercom_cfg] )?
             pad_info!( $PinId, $Cfg, $Sercom, $PadNum $( + $I2C )?  );
         )+
     };
@@ -112,230 +114,394 @@ macro_rules! pad_table {
     };
 }
 
-// Because we presume to be #[cfg(feature = "thumbv6")], we can also presume a
-// minimum of #[cfg(feature = "pins-14")], which cuts down on the number of
-// required features below.
+#[hal_macro_helper]
+#[hal_cfg("sercom0-d11")]
 pad_table!(
-    #[cfg(feature = "has-pa00")]
-    PA00 {
-        D: (Sercom1, Pad0),
-    }
-    #[cfg(feature = "has-pa01")]
-    PA01 {
-        D: (Sercom1, Pad1),
-    }
+    #[hal_cfg("pa04")]
     PA04 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom0")]
         C: (Sercom0, Pad2),
+        #[hal_cfg("sercom0")]
         D: (Sercom0, Pad0),
     }
+    #[hal_cfg("pa05")]
     PA05 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom0")]
         C: (Sercom0, Pad3),
+        #[hal_cfg("sercom0")]
         D: (Sercom0, Pad1),
     }
-    #[cfg(feature = "samd21")]
+    #[hal_cfg("pa06")]
     PA06 {
+        #[hal_cfg("sercom0")]
+        C: (Sercom0, Pad0),
+        #[hal_cfg("sercom0")]
         D: (Sercom0, Pad2),
     }
-    #[cfg(feature = "samd21")]
+    #[hal_cfg("pa07")]
     PA07 {
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad1),
+        #[hal_cfg("sercom0")]
         D: (Sercom0, Pad3),
     }
+    #[hal_cfg("pa08")]
     PA08 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom1")]
         C: (Sercom1, Pad2),
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom0")]
         D: (Sercom0, Pad2),
-        #[cfg(feature = "samd21")]
-        C: (Sercom0, Pad0) + I2C,
-        #[cfg(feature = "samd21")]
-        D: (Sercom2, Pad0) + I2C,
     }
+    #[hal_cfg("pa09")]
     PA09 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom1")]
         C: (Sercom1, Pad3),
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom0")]
         D: (Sercom0, Pad3),
-        #[cfg(feature = "samd21")]
-        C: (Sercom0, Pad1) + I2C,
-        #[cfg(feature = "samd21")]
-        D: (Sercom2, Pad1) + I2C,
     }
-    #[cfg(feature = "samd21")]
+    #[hal_cfg("pa10")]
     PA10 {
+        #[hal_cfg("sercom0")]
         C: (Sercom0, Pad2),
+        #[hal_cfg("sercom2")]
         D: (Sercom2, Pad2),
     }
-    #[cfg(feature = "samd21")]
+    #[hal_cfg("pa11")]
     PA11 {
+        #[hal_cfg("sercom0")]
         C: (Sercom0, Pad3),
+        #[hal_cfg("sercom2")]
         D: (Sercom2, Pad3),
     }
-    #[cfg(feature = "pins-48")]
-    PA12 {
-        C: (Sercom2, Pad0) + I2C,
-        D: (Sercom4, Pad0) + I2C,
-    }
-    #[cfg(feature = "pins-48")]
-    PA13 {
-        C: (Sercom2, Pad1) + I2C,
-        D: (Sercom4, Pad1) + I2C,
-    }
+    #[hal_cfg("pa14")]
     PA14 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom0")]
         C: (Sercom0, Pad0) + I2C,
-        #[cfg(feature = "samd21")]
-        C: (Sercom2, Pad2),
-        #[cfg(feature = "has-sercom4")]
-        D: (Sercom4, Pad2),
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad0) + I2C,
     }
+    #[hal_cfg("pa15")]
     PA15 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom0")]
         C: (Sercom0, Pad1) + I2C,
-        #[cfg(feature = "samd21")]
-        C: (Sercom2, Pad3),
-        #[cfg(feature = "has-sercom4")]
-        D: (Sercom4, Pad3),
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad1) + I2C,
     }
-    #[cfg(feature = "samd21")]
+    #[hal_cfg("pa16")]
     PA16 {
-        C: (Sercom1, Pad0) + I2C,
-        D: (Sercom3, Pad0) + I2C,
+        #[hal_cfg("sercom2")]
+        C: (Sercom1, Pad2),
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad2),
     }
-    #[cfg(feature = "samd21")]
+    #[hal_cfg("pa17")]
     PA17 {
-        C: (Sercom1, Pad1) + I2C,
-        D: (Sercom3, Pad1) + I2C,
-    }
-    #[cfg(feature = "samd21")]
-    PA18 {
-        C: (Sercom1, Pad2),
-        D: (Sercom3, Pad2),
-    }
-    #[cfg(feature = "samd21")]
-    PA19 {
+        #[hal_cfg("sercom1")]
         C: (Sercom1, Pad3),
-        D: (Sercom3, Pad3),
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad3),
     }
-    #[cfg(feature = "pins-48")]
-    PA20 {
-        C: (Sercom5, Pad2),
-        D: (Sercom3, Pad2),
-    }
-    #[cfg(feature = "pins-48")]
-    PA21 {
-        C: (Sercom5, Pad3),
-        D: (Sercom3, Pad3),
-    }
+    #[hal_cfg("pa22")]
     PA22 {
-        #[cfg(feature = "samd21")]
-        C: (Sercom3, Pad0) + I2C,
-        #[cfg(feature = "has-sercom5")]
-        D: (Sercom5, Pad0) + I2C,
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad0) + I2C,
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad0) + I2C,
     }
+    #[hal_cfg("pa23")]
     PA23 {
-        #[cfg(feature = "samd21")]
-        C: (Sercom3, Pad1) + I2C,
-        #[cfg(feature = "has-sercom5")]
-        D: (Sercom5, Pad1) + I2C,
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad1) + I2C,
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad1) + I2C,
     }
+    #[hal_cfg("pa24")]
     PA24 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom1")]
         C: (Sercom1, Pad2),
-        #[cfg(feature = "samd21")]
-        C: (Sercom3, Pad2),
-        #[cfg(feature = "has-sercom5")]
-        D: (Sercom5, Pad2),
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad2),
     }
+    #[hal_cfg("pa25")]
     PA25 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom1")]
         C: (Sercom1, Pad3),
-        #[cfg(feature = "samd21")]
-        C: (Sercom3, Pad3),
-        #[cfg(feature = "has-sercom5")]
-        D: (Sercom5, Pad3),
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad3),
     }
+    #[hal_cfg("pa30")]
     PA30 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom1")]
         C: (Sercom1, Pad0),
+        #[hal_cfg("sercom1")]
         D: (Sercom1, Pad2),
     }
+    #[hal_cfg("pa31")]
     PA31 {
-        #[cfg(feature = "samd11")]
+        #[hal_cfg("sercom1")]
         C: (Sercom1, Pad1),
+        #[hal_cfg("sercom1")]
         D: (Sercom1, Pad3),
     }
-    #[cfg(feature = "has-pb00")]
-    PB00 {
-        D: (Sercom5, Pad2),
+);
+
+#[hal_macro_helper]
+#[hal_cfg("sercom0-d21")]
+pad_table!(
+    #[hal_cfg("pa00")]
+    PA00 {
+        #[hal_cfg("sercom1")]
+        D: (Sercom1, Pad0),
     }
-    #[cfg(feature = "has-pb01")]
-    PB01 {
-        D: (Sercom5, Pad3),
+    #[hal_cfg("pa01")]
+    PA01 {
+        #[hal_cfg("sercom1")]
+        D: (Sercom1, Pad1),
     }
-    #[cfg(feature = "has-sercom5")]
-    PB02 {
-        D: (Sercom5, Pad0),
+    #[hal_cfg("pa04")]
+    PA04 {
+        #[hal_cfg("sercom0")]
+        D: (Sercom0, Pad0),
     }
-    #[cfg(feature = "has-sercom5")]
-    PB03 {
-        D: (Sercom5, Pad1),
+    #[hal_cfg("pa05")]
+    PA05 {
+        #[hal_cfg("sercom0")]
+        D: (Sercom0, Pad1),
     }
-    #[cfg(feature = "pins-48")]
-    PB08 {
-        D: (Sercom4, Pad0),
+    #[hal_cfg("pa06")]
+    PA06 {
+        #[hal_cfg("sercom0")]
+        D: (Sercom0, Pad2),
     }
-    #[cfg(feature = "pins-48")]
-    PB09 {
-        D: (Sercom4, Pad1),
+    #[hal_cfg("pa07")]
+    PA07 {
+        #[hal_cfg("sercom0")]
+        D: (Sercom0, Pad3),
     }
-    #[cfg(feature = "pins-48")]
-    PB10 {
+    #[hal_cfg("pa08")]
+    PA08 {
+        #[hal_cfg("sercom0")]
+        C: (Sercom0, Pad0) + I2C,
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad0) + I2C,
+    }
+    #[hal_cfg("pa09")]
+    PA09 {
+        #[hal_cfg("sercom0")]
+        C: (Sercom0, Pad1) + I2C,
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad1) + I2C,
+    }
+    #[hal_cfg("pa10")]
+    PA10 {
+        #[hal_cfg("sercom0")]
+        C: (Sercom0, Pad2),
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad2),
+    }
+    #[hal_cfg("pa11")]
+    PA11 {
+        #[hal_cfg("sercom0")]
+        C: (Sercom0, Pad3),
+        #[hal_cfg("sercom2")]
+        D: (Sercom2, Pad3),
+    }
+    #[hal_cfg("pa12")]
+    PA12 {
+        #[hal_cfg("sercom2")]
+        C: (Sercom2, Pad0) + I2C,
+        #[hal_cfg("sercom4")]
+        D: (Sercom4, Pad0) + I2C,
+    }
+    #[hal_cfg("pa13")]
+    PA13 {
+        #[hal_cfg("sercom2")]
+        C: (Sercom2, Pad1) + I2C,
+        #[hal_cfg("sercom4")]
+        D: (Sercom4, Pad1) + I2C,
+    }
+    #[hal_cfg("pa14")]
+    PA14 {
+        #[hal_cfg("sercom2")]
+        C: (Sercom2, Pad2),
+        #[hal_cfg("sercom4")]
         D: (Sercom4, Pad2),
     }
-    #[cfg(feature = "pins-48")]
-    PB11 {
+    #[hal_cfg("pa15")]
+    PA15 {
+        #[hal_cfg("sercom2")]
+        C: (Sercom2, Pad3),
+        #[hal_cfg("sercom4")]
         D: (Sercom4, Pad3),
     }
-    #[cfg(feature = "pins-64")]
-    PB12 {
-        C: (Sercom4, Pad0) + I2C,
+    #[hal_cfg("pa16")]
+    PA16 {
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad0) + I2C,
+        #[hal_cfg("sercom3")]
+        D: (Sercom3, Pad0) + I2C,
     }
-    #[cfg(feature = "pins-64")]
-    PB13 {
-        C: (Sercom4, Pad1) + I2C,
+    #[hal_cfg("pa17")]
+    PA17 {
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad1) + I2C,
+        #[hal_cfg("sercom3")]
+        D: (Sercom3, Pad1) + I2C,
     }
-    #[cfg(feature = "pins-64")]
-    PB14 {
-        C: (Sercom4, Pad2),
+    #[hal_cfg("pa18")]
+    PA18 {
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad2),
+        #[hal_cfg("sercom3")]
+        D: (Sercom3, Pad2),
     }
-    #[cfg(feature = "pins-64")]
-    PB15 {
-        C: (Sercom4, Pad3),
+    #[hal_cfg("pa19")]
+    PA19 {
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad3),
+        #[hal_cfg("sercom3")]
+        D: (Sercom3, Pad3),
     }
-    #[cfg(feature = "pins-64")]
-    PB16 {
-        C: (Sercom5, Pad0) + I2C,
+    #[hal_cfg("pa20")]
+    PA20 {
+        #[hal_cfg("sercom5")]
+        C: (Sercom5, Pad2),
+        #[hal_cfg("sercom3")]
+        D: (Sercom3, Pad2),
     }
-    #[cfg(feature = "pins-64")]
-    PB17 {
-        C: (Sercom5, Pad1) + I2C,
+    #[hal_cfg("pa21")]
+    PA21 {
+        #[hal_cfg("sercom5")]
+        C: (Sercom5, Pad3),
+        #[hal_cfg("sercom3")]
+        D: (Sercom3, Pad3),
     }
-    #[cfg(feature = "has-pb22")]
-    PB22 {
-        D: (Sercom5, Pad2),
-    }
-    #[cfg(feature = "has-pb23")]
-    PB23 {
-        D: (Sercom5, Pad3),
-    }
-    #[cfg(feature = "pins-64")]
-    PB30 {
+    #[hal_cfg("pa22")]
+    PA22 {
+        #[hal_cfg("sercom3")]
+        C: (Sercom3, Pad0) + I2C,
+        #[hal_cfg("sercom5")]
         D: (Sercom5, Pad0) + I2C,
     }
-    #[cfg(feature = "pins-64")]
+    #[hal_cfg("pa23")]
+    PA23 {
+        #[hal_cfg("sercom3")]
+        C: (Sercom3, Pad1) + I2C,
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad1) + I2C,
+    }
+    #[hal_cfg("pa24")]
+    PA24 {
+        #[hal_cfg("sercom3")]
+        C: (Sercom3, Pad2),
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad2),
+    }
+    #[hal_cfg("pa25")]
+    PA25 {
+        #[hal_cfg("sercom3")]
+        C: (Sercom3, Pad3),
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad3),
+    }
+    #[hal_cfg("pa30")]
+    PA30 {
+        #[hal_cfg("sercom1")]
+        D: (Sercom1, Pad2),
+    }
+    #[hal_cfg("pa31")]
+    PA31 {
+        #[hal_cfg("sercom1")]
+        D: (Sercom1, Pad3),
+    }
+    #[hal_cfg("pb00")]
+    PB00 {
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad2),
+    }
+    #[hal_cfg("pb01")]
+    PB01 {
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad3),
+    }
+    #[hal_cfg("pb02")]
+    PB02 {
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad0),
+    }
+    #[hal_cfg("pb03")]
+    PB03 {
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad1),
+    }
+    #[hal_cfg("pb08")]
+    PB08 {
+        #[hal_cfg("sercom4")]
+        D: (Sercom4, Pad0),
+    }
+    #[hal_cfg("pb09")]
+    PB09 {
+        #[hal_cfg("sercom4")]
+        D: (Sercom4, Pad1),
+    }
+    #[hal_cfg("pb10")]
+    PB10 {
+        #[hal_cfg("sercom4")]
+        D: (Sercom4, Pad2),
+    }
+    #[hal_cfg("pb11")]
+    PB11 {
+        #[hal_cfg("sercom4")]
+        D: (Sercom4, Pad3),
+    }
+    #[hal_cfg("pb12")]
+    PB12 {
+        #[hal_cfg("sercom4")]
+        C: (Sercom4, Pad0) + I2C,
+    }
+    #[hal_cfg("pb13")]
+    PB13 {
+        #[hal_cfg("sercom4")]
+        C: (Sercom4, Pad1) + I2C,
+    }
+    #[hal_cfg("pb14")]
+    PB14 {
+        #[hal_cfg("sercom4")]
+        C: (Sercom4, Pad2),
+    }
+    #[hal_cfg("pb15")]
+    PB15 {
+        #[hal_cfg("sercom4")]
+        C: (Sercom4, Pad3),
+    }
+    #[hal_cfg("pb16")]
+    PB16 {
+        #[hal_cfg("sercom5")]
+        C: (Sercom5, Pad0) + I2C,
+    }
+    #[hal_cfg("pb17")]
+    PB17 {
+        #[hal_cfg("sercom5")]
+        C: (Sercom5, Pad1) + I2C,
+    }
+    #[hal_cfg("pb22")]
+    PB22 {
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad2),
+    }
+    #[hal_cfg("pb23")]
+    PB23 {
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad3),
+    }
+    #[hal_cfg("pb30")]
+    PB30 {
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad0) + I2C,
+    }
+    #[hal_cfg("pb31")]
     PB31 {
+        #[hal_cfg("sercom5")]
         D: (Sercom5, Pad1) + I2C,
     }
 );
