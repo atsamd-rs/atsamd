@@ -90,19 +90,10 @@ pub mod dmac;
 #[cfg(all(feature = "usb", feature = "device", not(feature = "has-usb")))]
 compile_error!("The 'usb' feature is enabled, but this chip does not support USB");
 
-#[cfg(feature = "thumbv6")]
 #[doc(hidden)]
-pub mod thumbv6m;
-#[cfg(feature = "thumbv6")]
+mod peripherals;
 #[doc(inline)]
-pub use crate::thumbv6m::*;
-
-#[cfg(feature = "thumbv7")]
-#[doc(hidden)]
-pub mod thumbv7em;
-#[cfg(feature = "thumbv7")]
-#[doc(inline)]
-pub use crate::thumbv7em::*;
+pub use crate::peripherals::*;
 
 #[macro_use]
 mod bsp_peripherals_macro;
