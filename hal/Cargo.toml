@@ -108,30 +108,30 @@ atsame54p = {version = "0.13.0", path = "../pac/atsame54p", optional = true}
 # to change. But all implied features are considered implementation details and
 # subject to change without notice.
 
-samd11c = ["samd11", "atsamd11c", "periph-d11c", "pins-d11c"]
-samd11d = ["samd11", "atsamd11d", "periph-d11d", "pins-d11d"]
+samd11c = ["device", "dep:atsamd11c"]
+samd11d = ["device", "dep:atsamd11d"]
 
-samd21e = ["samd21", "atsamd21e", "periph-d21e", "pins-d21e"]
-samd21g = ["samd21", "atsamd21g", "periph-d21g", "pins-d21g"]
-samd21j = ["samd21", "atsamd21j", "periph-d21j", "pins-d21j"]
+samd21e = ["device", "dep:atsamd21e"]
+samd21g = ["device", "dep:atsamd21g"]
+samd21j = ["device", "dep:atsamd21j"]
 
-samd21el = ["samd21", "atsamd21e", "periph-d21el", "pins-d21el"]
-samd21gl = ["samd21", "atsamd21g", "periph-d21gl", "pins-d21gl"]
+samd21el = ["device", "dep:atsamd21e"]
+samd21gl = ["device", "dep:atsamd21g"]
 
-samd51g = ["samd51", "atsamd51g", "periph-d51g", "pins-d51g"]
-samd51j = ["samd51", "atsamd51j", "periph-d51j", "pins-d51j"]
-samd51n = ["samd51", "atsamd51n", "periph-d51n", "pins-d51n"]
-samd51p = ["samd51", "atsamd51p", "periph-d51p", "pins-d51p"]
+samd51g = ["device", "dep:atsamd51g"]
+samd51j = ["device", "dep:atsamd51j"]
+samd51n = ["device", "dep:atsamd51n"]
+samd51p = ["device", "dep:atsamd51p"]
 
-same51g = ["same51", "atsame51g", "periph-e51g", "pins-e51g"]
-same51j = ["same51", "atsame51j", "periph-e51j", "pins-e51j"]
-same51n = ["same51", "atsame51n", "periph-e51n", "pins-e51n"]
+same51g = ["device", "dep:atsame51g"]
+same51j = ["device", "dep:atsame51j"]
+same51n = ["device", "dep:atsame51n"]
 
-same53j = ["same53", "atsame53j", "periph-e53j", "pins-e53j"]
-same53n = ["same53", "atsame53n", "periph-e53n", "pins-e53n"]
+same53j = ["device", "dep:atsame53j"]
+same53n = ["device", "dep:atsame53n"]
 
-same54n = ["same54", "atsame54n", "periph-e54n", "pins-e54n"]
-same54p = ["same54", "atsame54p", "periph-e54p", "pins-e54p"]
+same54n = ["device", "dep:atsame54n"]
+same54p = ["device", "dep:atsame54p"]
 
 #-------------------------------------------------------------------------------
 # RT features
@@ -196,179 +196,6 @@ use_rtt = ["jlink_rtt"]
 # change without notice. Users should not specify any of these features
 # manually.
 
-#-------------------------------------------------------------------------------
-# Chip
-#-------------------------------------------------------------------------------
-
 # The `device` feature tells the HAL that a device has been selected from the
 # feature list. It exists mostly to provide better error messages.
 device = []
-
-# The `library` feature exists to allow building the HAL without specifying a
-# device. It should be mutually exclusive with the `device` feature.
-library = []
-
-# Define a feature for each instruction set
-thumbv6 = ["device"]
-thumbv7 = ["device"]
-
-# Map each series of chips to its instruction set
-samd11 = ["thumbv6"]
-samd21 = ["thumbv6"]
-samd51 = ["thumbv7"]
-same51 = ["thumbv7"]
-same53 = ["thumbv7"]
-same54 = ["thumbv7"]
-
-#-------------------------------------------------------------------------------
-# Pins
-#-------------------------------------------------------------------------------
-
-# Define features for specific pins
-#
-# Cargo features are purely additive. This mostly works well for GPIO pins,
-# because the pins in a larger package are typically a strict super set of the
-# pins in a smaller package. However, there are a few exceptions to this rule.
-# For these pins, we create dedicated features.
-has-pa00 = []
-has-pa01 = []
-has-pa27 = []
-has-pa28 = []
-has-pb00 = []
-has-pb01 = []
-has-pb02 = []
-has-pb03 = []
-has-pb04 = []
-has-pb05 = []
-has-pb22 = []
-has-pb23 = []
-
-# Define features for various sets of pins, each corresponding to a particular
-# device package
-pins-14 = []
-pins-24 = ["pins-14"]
-pins-32 = ["pins-24"]
-pins-32a = ["pins-32", "has-pa00", "has-pa01", "has-pa27"]
-pins-32l = ["pins-32", "has-pb02", "has-pb03", "has-pb04", "has-pb05"]
-pins-48 = ["pins-32", "has-pa27", "has-pb02", "has-pb03"]
-pins-48a = ["pins-48", "has-pa00", "has-pa01", "has-pb22", "has-pb23"]
-pins-48l = ["pins-48", "has-pb00", "has-pb01", "has-pb04", "has-pb05"]
-pins-64 = ["pins-48a", "pins-48l"]
-
-pins-100 = ["pins-64"]
-pins-128 = ["pins-100"]
-
-# Map each variant to its corresponding set of pins
-pins-d11c = ["pins-14", "has-pa28"]
-pins-d11d = ["pins-24", "has-pa28", "has-pa27"]
-
-pins-d21e = ["pins-32a", "has-pa28"]
-pins-d21g = ["pins-48a", "has-pa28"]
-pins-d21j = ["pins-64", "has-pa28"]
-
-pins-d21el = ["pins-32l"]
-pins-d21gl = ["pins-48l", "has-pa28"]
-
-pins-d51g = ["pins-48a"]
-pins-d51j = ["pins-64"]
-pins-d51n = ["pins-100"]
-pins-d51p = ["pins-128"]
-
-pins-e51g = ["pins-48a"]
-pins-e51j = ["pins-64"]
-pins-e51n = ["pins-100"]
-
-pins-e53j = ["pins-64"]
-pins-e53n = ["pins-100"]
-
-pins-e54n = ["pins-100"]
-pins-e54p = ["pins-128"]
-
-#-------------------------------------------------------------------------------
-# Peripherals
-#-------------------------------------------------------------------------------
-
-# Define a feature for each optional peripheral
-has-can0 = []
-has-can1 = []
-has-ethernet = []
-has-gmac = []
-has-i2s = []
-has-sdhc1 = []
-has-sercom0 = []
-has-sercom1 = []
-has-sercom2 = []
-has-sercom3 = []
-has-sercom4 = []
-has-sercom5 = []
-has-sercom6 = []
-has-sercom7 = []
-has-tc0 = []
-has-tc1 = []
-has-tc2 = []
-has-tc3 = []
-has-tc4 = []
-has-tc5 = []
-has-tc6 = []
-has-tc7 = []
-has-tcc0 = []
-has-tcc1 = []
-has-tcc2 = []
-has-tcc3 = []
-has-usb = []
-
-# Map each variant to its collection of peripherals
-periph-d11c = ["has-sercom0", "has-sercom1", "has-tc1", "has-tc2", "has-tcc0"]
-periph-d11d = ["periph-d11c", "has-sercom2"]
-
-periph-d21 = [
-  "has-i2s",
-  "has-sercom0",
-  "has-sercom1",
-  "has-sercom2",
-  "has-sercom3",
-  "has-tc3",
-  "has-tc4",
-  "has-tc5",
-  "has-tcc0",
-  "has-tcc1",
-  "has-tcc2",
-]
-
-periph-d21e = ["periph-d21", "has-usb"]
-periph-d21g = ["periph-d21e", "has-sercom4", "has-sercom5"]
-periph-d21j = ["periph-d21g", "has-tc6", "has-tc7"]
-
-periph-d21el = ["periph-d21"]
-periph-d21gl = ["periph-d21el", "has-sercom4", "has-sercom5"]
-
-periph-d51 = [
-  "has-sercom0",
-  "has-sercom1",
-  "has-sercom2",
-  "has-sercom3",
-  "has-sercom4",
-  "has-sercom5",
-  "has-tc0",
-  "has-tc1",
-  "has-tc2",
-  "has-tc3",
-  "has-tcc0",
-  "has-tcc1",
-  "has-usb",
-]
-
-periph-d51g = ["periph-d51"]
-periph-d51j = ["periph-d51g", "has-i2s", "has-tcc2", "has-tcc3", "has-tc4", "has-tc5"]
-periph-d51n = ["periph-d51j", "has-tc6", "has-tc7", "has-sdhc1", "has-sercom6", "has-sercom7"]
-periph-d51p = ["periph-d51n"]
-
-periph-e51g = ["periph-d51g", "has-can0"]
-periph-e51j = ["periph-d51j", "has-can0", "has-can1"]
-periph-e51n = ["periph-d51j", "has-can0", "has-can1", "has-tc6", "has-tc7", "has-sercom6", "has-sercom7"]
-
-periph-e53j = ["periph-d51j", "has-ethernet"]
-periph-e53n = ["periph-d51n", "has-ethernet"]
-
-periph-e54n = ["periph-d51n", "has-ethernet", "has-can0", "has-can1"]
-periph-e54p = ["periph-d51p", "has-ethernet", "has-can0", "has-can1"]

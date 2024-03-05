@@ -35,7 +35,7 @@ panic-semihosting = "0.5"
 smart-leds = "0.3"
 
 [features]
-default = ["rt", "atsamd-hal/samd51p", "atsamd-hal/samd51", "atsamd-hal/unproven"]
+default = ["rt", "atsamd-hal/samd51p", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51p-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]

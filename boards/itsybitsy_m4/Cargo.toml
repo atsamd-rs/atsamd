@@ -38,7 +38,7 @@ panic-semihosting = "0.6"
 
 [features]
 # ask the HAL to enable atsamd51g support
-default = ["rt", "atsamd-hal/samd51g", "atsamd-hal/samd51", "atsamd-hal/unproven"]
+default = ["rt", "atsamd-hal/samd51g", "atsamd-hal/unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]

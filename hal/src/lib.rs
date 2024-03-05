@@ -5,19 +5,6 @@ pub use fugit;
 pub use paste;
 pub mod typelevel;
 
-#[cfg(not(any(feature = "library", feature = "device")))]
-compile_error!(
-    "The HAL is usually built for a specific target device, selected using a \
-    feature.  If atsamd-hal is being built as a library, bypass this check by \
-    specifying the `library` feature"
-);
-
-#[cfg(all(feature = "library", feature = "device"))]
-compile_error!("Cannot combine `library` and `device` features");
-
-#[cfg(all(feature = "library", feature = "dma"))]
-compile_error!("Cannot combine `library` and `dma` features");
-
 macro_rules! define_pac {
     ( $( ($pac:ident, $feat:literal)),+ ) => {
         $(
@@ -86,9 +73,6 @@ pub mod timer_traits;
 
 #[cfg(feature = "dma")]
 pub mod dmac;
-
-#[cfg(all(feature = "usb", feature = "device", not(feature = "has-usb")))]
-compile_error!("The 'usb' feature is enabled, but this chip does not support USB");
 
 #[doc(hidden)]
 mod peripherals;
