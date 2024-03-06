@@ -277,6 +277,9 @@ reg_proxy!(swtrigctrl, bit, rw);
 /// Acts as a proxy to the PAC DMAC object. Only registers and bits
 /// within registers that should be readable/writable by specific
 /// [`Channel`]s are exposed.
+///
+/// This struct implements [`Drop`]. Dropping this struct will stop
+/// any ongoing transfers for the channel which it represents.
 #[allow(dead_code)]
 pub(super) struct RegisterBlock<Id: ChId> {
     pub chctrla: ChctrlaProxy<Id, CHCTRLA>,
@@ -309,5 +312,12 @@ impl<Id: ChId> RegisterBlock<Id> {
             #[cfg(feature = "thumbv7")]
             chprilvl: ChprilvlProxy::new(),
         }
+    }
+}
+
+impl<Id: ChId> Drop for RegisterBlock<Id> {
+    fn drop(&mut self) {
+        // Stop any potentially ongoing transfers
+        self.chctrla.modify(|_, w| w.enable().clear_bit());
     }
 }

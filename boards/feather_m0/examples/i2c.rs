@@ -57,7 +57,7 @@ fn main() -> ! {
     let sercom3_clock = &clocks.sercom3_core(&gclk0).unwrap();
     let pads = i2c::Pads::new(sda, scl);
     let mut i2c = i2c::Config::new(&pm, peripherals.SERCOM3, pads, sercom3_clock.freq())
-        .baud(100.khz())
+        .baud(100.kHz())
         .enable();
 
     let mut buffer = [0x00; 1];
@@ -67,11 +67,11 @@ fn main() -> ! {
 
     // Test writing then reading using DMA
     let init_token = i2c.init_dma_transfer().unwrap();
-    let xfer = i2c.send_with_dma(ADDRESS, init_token, buf_src, chan0, |_| {});
+    let xfer = i2c.send_with_dma(ADDRESS, init_token, buf_src, chan0);
     let (chan0, _buf_src, mut i2c) = xfer.wait();
 
     let init_token = i2c.init_dma_transfer().unwrap();
-    let xfer = i2c.receive_with_dma(ADDRESS, init_token, buf_dest, chan0, |_| {});
+    let xfer = i2c.receive_with_dma(ADDRESS, init_token, buf_dest, chan0);
     let (_chan0, _i2c, _buf_dest) = xfer.wait();
 
     loop {

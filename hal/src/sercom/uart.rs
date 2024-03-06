@@ -386,6 +386,30 @@ let (chan1, rx, rx_buffer) = rx_dma.wait();
 
 "
 )]
+//! # `async` operation
+//!
+//! When the `async` Cargo feature is enabled, a [`Uart`] can be used for
+//! `async` operations. Configuring a [`Uart`] in async mode is relatively
+//! simple:
+//!
+//! * Bind the corresponding `SERCOM` interrupt source to the UART
+//!   [`InterruptHandler`] (refer to the module-level [`async_hal`]
+//!   documentation for more information).
+//! * Turn a previously configured [`Uart`] into a [`UartFuture`] by calling
+//!   [`Uart::into_future`]
+//! * Optionally, add DMA channels to RX, TX or both using
+//!   [`UartFuture::with_rx_dma_channel`] and
+//!   [`UartFuture::with_tx_dma_channel`]. The API is exactly the same whether
+//!   DMA channels are used or not.
+//! * Use the provided async methods for reading or writing to the UART
+//!   peripheral.
+//!
+//! `UartFuture` implements `AsRef<Uart>` and `AsMut<Uart>` so
+//! that it can be reconfigured using the regular [`Uart`] methods. It also
+//! exposes a [`split`](UartFuture::split) method to split it into its RX and TX
+//! parts.
+//!
+//! [`async_hal`]: crate::async_hal
 
 #[cfg(feature = "thumbv6")]
 #[path = "uart/pads_thumbv6m.rs"]
@@ -410,6 +434,11 @@ mod config;
 pub use config::*;
 
 pub mod impl_ehal;
+
+#[cfg(feature = "async")]
+mod async_api;
+#[cfg(feature = "async")]
+pub use async_api::*;
 
 use crate::{sercom::*, typelevel::Sealed};
 use core::{convert::TryInto, marker::PhantomData};
@@ -507,6 +536,10 @@ pub trait Receive: Capability {}
 /// capability, but not both
 pub trait Simplex: Capability {}
 
+/// Type-level enum representing a UART that is *not* half of a split
+/// [`Duplex`]
+pub trait SingleOwner: Capability {}
+
 /// Marker type representing a UART that has both transmit and receive
 /// capability
 pub enum Duplex {}
@@ -523,6 +556,7 @@ impl Capability for Duplex {
 }
 impl Receive for Duplex {}
 impl Transmit for Duplex {}
+impl SingleOwner for Duplex {}
 
 /// Marker type representing a UART that can only receive
 pub enum Rx {}
@@ -539,6 +573,7 @@ impl Capability for Rx {
 }
 impl Receive for Rx {}
 impl Simplex for Rx {}
+impl SingleOwner for Rx {}
 
 /// Marker type representing a UART that can only transmit
 pub enum Tx {}
@@ -555,6 +590,7 @@ impl Capability for Tx {
 }
 impl Transmit for Tx {}
 impl Simplex for Tx {}
+impl SingleOwner for Tx {}
 
 /// Marker type representing the Rx half of a  [`Duplex`] UART
 pub enum RxDuplex {}
@@ -931,13 +967,14 @@ where
     #[inline]
     pub fn flush_rx_buffer(&mut self) {
         // TODO Is this a hardware bug???
-        /*
-        usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
-        while usart.syncbusy.read().ctrlb().bit() || usart.ctrlb.read().rxen().bit_is_set() {}
 
-        usart.ctrlb.modify(|_, w| w.rxen().set_bit());
-        while usart.syncbusy.read().ctrlb().bit() || usart.ctrlb.read().rxen().bit_is_clear() {}
-        */
+        // usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
+        // while usart.syncbusy.read().ctrlb().bit() ||
+        // usart.ctrlb.read().rxen().bit_is_set() {}
+
+        // usart.ctrlb.modify(|_, w| w.rxen().set_bit());
+        // while usart.syncbusy.read().ctrlb().bit() ||
+        // usart.ctrlb.read().rxen().bit_is_clear() {}
 
         for _ in 0..=2 {
             let _data = unsafe { self.config.as_mut().registers.read_data() };

@@ -1,5 +1,6 @@
 # Unreleased
 
+- Add async examples and update examples to match new HAL APIs
 - Update the PACs to svd2rust 0.30.2.
 
 # v0.6.0

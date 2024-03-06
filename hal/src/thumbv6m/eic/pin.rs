@@ -1,11 +1,11 @@
+use super::EIC;
 #[cfg(feature = "unproven")]
 use crate::ehal::digital::v2::InputPin;
-use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
+use crate::{
+    gpio::{self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt},
+    pac,
 };
-use crate::pac;
-
-use super::EIC;
+use core::mem::ManuallyDrop;
 
 /// The EicPin trait makes it more ergonomic to convert a gpio pin into an EIC
 /// pin. You should not implement this trait for yourself; only the
@@ -18,13 +18,13 @@ pub trait EicPin {
     type PullDown;
 
     /// Configure a pin as a floating external interrupt
-    fn into_floating_ei(self) -> Self::Floating;
+    fn into_floating_ei(self, eic: &mut EIC) -> Self::Floating;
 
     /// Configure a pin as pulled-up external interrupt
-    fn into_pull_up_ei(self) -> Self::PullUp;
+    fn into_pull_up_ei(self, eic: &mut EIC) -> Self::PullUp;
 
     /// Configure a pin as pulled-down external interrupt
-    fn into_pull_down_ei(self) -> Self::PullDown;
+    fn into_pull_down_ei(self, eic: &mut EIC) -> Self::PullDown;
 }
 
 pub type Sense = pac::eic::config::SENSE0SELECT_A;
@@ -56,6 +56,7 @@ crate::paste::item! {
     where
         GPIO: AnyPin,
     {
+        eic: ManuallyDrop<EIC>,
         _pin: Pin<GPIO::Id, GPIO::Mode>,
     }
 
@@ -66,33 +67,38 @@ crate::paste::item! {
         /// Construct pad from the appropriate pin in any mode.
         /// You may find it more convenient to use the `into_pad` trait
         /// and avoid referencing the pad type.
-        pub fn new(pin: GPIO) -> Self {
+        pub fn new(pin: GPIO, eic: &mut super::EIC) -> [<$PadType $num>]<GPIO> {
+            let eic = unsafe {
+                ManuallyDrop::new(core::ptr::read(eic as *const _))
+            };
+
             [<$PadType $num>]{
-                _pin:pin.into()
+                _pin:pin.into(),
+                eic,
             }
         }
 
         /// Configure the eic with options for this external interrupt
-        pub fn enable_event(&mut self, eic: &mut EIC) {
-            eic.eic.evctrl.modify(|_, w| {
+        pub fn enable_event(&mut self) {
+            self.eic.eic.evctrl.modify(|_, w| {
                 w.[<extinteo $num>]().set_bit()
             });
         }
 
-        pub fn enable_interrupt(&mut self, eic: &mut EIC) {
-            eic.eic.intenset.modify(|_, w| {
+        pub fn enable_interrupt(&mut self) {
+            self.eic.eic.intenset.modify(|_, w| {
                 w.[<extint $num>]().set_bit()
             });
         }
 
-        pub fn enable_interrupt_wake(&mut self, eic: &mut EIC) {
-            eic.eic.wakeup.modify(|_, w| {
+        pub fn enable_interrupt_wake(&mut self) {
+            self.eic.eic.wakeup.modify(|_, w| {
                 w.[<wakeupen $num>]().set_bit()
             })
         }
 
-        pub fn disable_interrupt(&mut self, eic: &mut EIC) {
-            eic.eic.intenclr.modify(|_, w| {
+        pub fn disable_interrupt(&mut self) {
+            self.eic.eic.intenclr.modify(|_, w| {
                 w.[<extint $num>]().set_bit()
             });
         }
@@ -107,10 +113,10 @@ crate::paste::item! {
             });
         }
 
-        pub fn sense(&mut self, _eic: &mut EIC, sense: Sense) {
+        pub fn sense(&mut self, sense: Sense) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::EIC::ptr()).config[offset] };
+            let config = &self.eic.eic.config[offset];
 
             config.modify(|_, w| unsafe {
                 // Which of the eight eic configs in this config block
@@ -128,10 +134,10 @@ crate::paste::item! {
             });
         }
 
-        pub fn filter(&mut self, _eic: &mut EIC, filter: bool) {
+        pub fn filter(&mut self, filter: bool) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::EIC::ptr()).config[offset] };
+            let config = &self.eic.eic.config[offset];
 
             config.modify(|_, w| {
                 // Which of the eight eic configs in this config block
@@ -150,9 +156,85 @@ crate::paste::item! {
         }
     }
 
-    impl<GPIO: AnyPin> ExternalInterrupt for [<$PadType $num>]<GPIO> {
-        fn id(&self) -> ExternalInterruptID {
-            $num
+    #[cfg(feature = "async")]
+    impl<GPIO> [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        pub async fn wait(&mut self, sense: Sense)
+        {
+            use core::{task::Poll, future::poll_fn};
+            self.disable_interrupt();
+
+            match sense {
+                Sense::HIGH => if self.is_high().unwrap() { return; },
+                Sense::LOW => if self.is_low().unwrap() { return; },
+                _ => (),
+            }
+
+            self.sense(sense);
+            poll_fn(|cx| {
+                if self.is_interrupt() {
+                    self.clear_interrupt();
+                    self.disable_interrupt();
+                    self.sense(Sense::NONE);
+                    return Poll::Ready(());
+                }
+
+                super::super::async_api::WAKERS[$num].register(cx.waker());
+                self.enable_interrupt();
+
+                if self.is_interrupt(){
+                    self.clear_interrupt();
+                    self.disable_interrupt();
+                    self.sense(Sense::NONE);
+                    return Poll::Ready(());
+                }
+
+                Poll::Pending
+            }).await;
+        }
+    }
+
+    #[cfg(feature = "async")]
+    impl<GPIO> embedded_hal_1::digital::ErrorType for [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        type Error = core::convert::Infallible;
+    }
+
+    #[cfg(feature = "async")]
+    impl<GPIO> embedded_hal_async::digital::Wait for [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        async fn wait_for_high(&mut self) -> Result<(), Self::Error>{
+                self.wait(Sense::HIGH).await;
+                Ok(())
+        }
+
+        async fn wait_for_low(&mut self) ->  Result<(), Self::Error> {
+                self.wait(Sense::LOW).await;
+                Ok(())
+        }
+
+        async fn wait_for_rising_edge(&mut self) -> Result<(), Self::Error> {
+                self.wait(Sense::RISE).await;
+                Ok(())
+        }
+
+        async fn wait_for_falling_edge(&mut self) -> Result<(), Self::Error>{
+                self.wait(Sense::FALL).await;
+                Ok(())
+        }
+
+        async fn wait_for_any_edge(&mut self) -> Result<(), Self::Error> {
+                self.wait(Sense::BOTH).await;
+                Ok(())
         }
     }
 
@@ -180,16 +262,16 @@ crate::paste::item! {
             type PullUp = [<$PadType $num>]<Pin<gpio::$PinType, PullUpInterrupt>>;
             type PullDown = [<$PadType $num>]<Pin<gpio::$PinType, PullDownInterrupt>>;
 
-            fn into_floating_ei(self) -> Self::Floating {
-                [<$PadType $num>]::new(self.into_floating_interrupt())
+            fn into_floating_ei(self, eic: &mut super::EIC) -> Self::Floating {
+                [<$PadType $num>]::new(self.into_floating_interrupt(), eic)
             }
 
-            fn into_pull_up_ei(self) -> Self::PullUp {
-                [<$PadType $num>]::new(self.into_pull_up_interrupt())
+            fn into_pull_up_ei(self, eic: &mut super::EIC) -> Self::PullUp {
+                [<$PadType $num>]::new(self.into_pull_up_interrupt(), eic)
             }
 
-            fn into_pull_down_ei(self) -> Self::PullDown {
-                [<$PadType $num>]::new(self.into_pull_down_interrupt())
+            fn into_pull_down_ei(self, eic: &mut super::EIC) -> Self::PullDown {
+                [<$PadType $num>]::new(self.into_pull_down_interrupt(), eic)
             }
         }
 
@@ -210,6 +292,9 @@ crate::paste::item! {
 // and SAMD21-specific declarations.
 
 // SAMD11
+
+#[cfg(feature = "samd11")]
+pub const NUM_CHANNELS: usize = 8;
 
 #[cfg(feature = "samd11")]
 mod impls {
@@ -247,6 +332,9 @@ mod impls {
 }
 
 // SAMD21
+
+#[cfg(feature = "samd21")]
+pub const NUM_CHANNELS: usize = 16;
 
 #[cfg(feature = "samd21")]
 mod impls {

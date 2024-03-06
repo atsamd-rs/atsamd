@@ -91,6 +91,11 @@ The Peripheral Access Crates (PACs) are automatically generated from Microchip S
 [wio_terminal]: https://github.com/atsamd-rs/atsamd/tree/master/boards/wio_terminal
 [xiao_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/xiao_m0
 
+
+### `async` APIs
+
+[`atsamd_hal`](https://crates.io/crate/atsamd-hal) provides APIs for using `async`/`await` constructs with some of its peripherals. To enable `async` support, use the `async` Cargo feature. Detailed documentation is provided in the `atsamd_hal::async_hal` module.
+
 ### Examples
 
 The BSPs include examples to quickly get up and running with the board. Building the examples

@@ -4,6 +4,7 @@ pub use embedded_hal as ehal;
 pub use fugit;
 pub use paste;
 pub mod typelevel;
+mod util;
 
 #[cfg(not(any(feature = "library", feature = "device")))]
 compile_error!(
@@ -81,6 +82,9 @@ pub mod sleeping_delay;
 pub mod time;
 pub mod timer_params;
 pub mod timer_traits;
+
+#[cfg(feature = "async")]
+pub mod async_hal;
 
 #[cfg(feature = "dma")]
 pub mod dmac;
