@@ -2,7 +2,7 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::clock;
-use crate::ehal::{Pwm, PwmPin};
+use crate::ehal_02::{Pwm, PwmPin};
 use crate::pac::PM;
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;

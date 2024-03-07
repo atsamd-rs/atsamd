@@ -1,4 +1,4 @@
-use crate::ehal::watchdog;
+use crate::ehal_02::watchdog;
 use crate::pac::WDT;
 
 /// WatchdogTimeout enumerates usable values for configuring

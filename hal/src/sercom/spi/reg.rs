@@ -1,6 +1,6 @@
 use core::convert::TryInto;
 
-use embedded_hal::spi;
+use crate::ehal_02::spi;
 
 #[cfg(feature = "thumbv6")]
 use crate::pac::sercom0::SPI;

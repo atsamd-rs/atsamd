@@ -4,7 +4,7 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::clock;
-use crate::ehal::{Pwm, PwmPin};
+use crate::ehal_02::{Pwm, PwmPin};
 use crate::gpio::*;
 use crate::gpio::{AlternateE, AnyPin, Pin};
 use crate::pac::MCLK;

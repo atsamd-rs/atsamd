@@ -1,5 +1,5 @@
 //! Working with timer counter hardware
-use crate::ehal::timer::{CountDown, Periodic};
+use crate::ehal_02::timer::{CountDown, Periodic};
 use crate::pac::PM;
 #[cfg(feature = "samd11")]
 use crate::pac::{tc1::COUNT16, TC1};

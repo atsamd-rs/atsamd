@@ -255,16 +255,16 @@ type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //!
 //! Only `Spi` structs can actually perform transactions. To do so, use the
 //! various embedded HAL traits, like
-//! [`spi::FullDuplex`](embedded_hal::spi::FullDuplex),
-//! [`serial::Read`](embedded_hal::serial::Read) or
-//! [`serial::Write`](embedded_hal::serial::Write).
+//! [`spi::FullDuplex`](crate::ehal_02::spi::FullDuplex),
+//! [`serial::Read`](crate::ehal_02::serial::Read) or
+//! [`serial::Write`](crate::ehal_02::serial::Write).
 //! See the [`impl_ehal`] module documentation for more details about the
 //! specific trait implementations, which vary based on [`Size`] and
 //! [`Capability`].
 //!
 //! ```
 //! use nb::block;
-//! use embedded_hal::spi::FullDuplex;
+//! use crate::ehal_02::spi::FullDuplex;
 //!
 //! block!(spi.send(0xAA55));
 //! let rcvd: u16 = block!(spi.read());
@@ -315,9 +315,10 @@ let (chan0, _, spi, _) = dma_transfer.wait();
 use core::convert::TryFrom;
 use core::marker::PhantomData;
 
+use crate::ehal_02::spi;
+pub use crate::ehal_02::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 use bitflags::bitflags;
-use embedded_hal::spi;
-pub use embedded_hal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
+use num_traits::AsPrimitive;
 
 use crate::sercom::*;
 use crate::time::Hertz;
@@ -363,12 +364,6 @@ pub mod lengths {
     });
 }
 
-#[cfg(feature = "thumbv6")]
-#[path = "spi/impl_ehal_thumbv6m.rs"]
-pub mod impl_ehal;
-
-#[cfg(feature = "thumbv7")]
-#[path = "spi/impl_ehal_thumbv7em.rs"]
 pub mod impl_ehal;
 
 //=============================================================================
@@ -646,6 +641,7 @@ where
     mode: PhantomData<M>,
     size: PhantomData<Z>,
     freq: Hertz,
+    nop_word: DataWidth,
 }
 
 impl<P: ValidPads> Config<P> {
@@ -666,6 +662,7 @@ impl<P: ValidPads> Config<P> {
             mode: PhantomData,
             size: PhantomData,
             freq: freq.into(),
+            nop_word: 0x00.as_(),
         }
     }
 
@@ -716,6 +713,7 @@ where
             mode: PhantomData,
             size: PhantomData,
             freq: self.freq,
+            nop_word: self.nop_word,
         }
     }
 
@@ -864,6 +862,31 @@ where
     #[inline]
     pub fn bit_order(mut self, order: BitOrder) -> Self {
         self.set_bit_order(order);
+        self
+    }
+
+    /// Get the NOP word
+    ///
+    /// This word is used when reading in Duplex mode, since an equal number of
+    /// words must be sent in order to avoid overflow errors.
+    pub fn get_nop_word(&self) -> DataWidth {
+        self.nop_word
+    }
+
+    /// Set the NOP word
+    ///
+    /// This word is used when reading in Duplex mode, since an equal number of
+    /// words must be sent in order to avoid overflow errors.
+    pub fn set_nop_word(&mut self, nop_word: DataWidth) {
+        self.nop_word = nop_word;
+    }
+
+    /// Set the NOP word using the builder pattern
+    ///
+    /// This word is used when reading in Duplex mode, since an equal number of
+    /// words must be sent in order to avoid overflow errors.
+    pub fn nop_word(mut self, nop_word: DataWidth) -> Self {
+        self.nop_word = nop_word;
         self
     }
 

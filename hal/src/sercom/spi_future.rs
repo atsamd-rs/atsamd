@@ -175,7 +175,7 @@
 use core::convert::Infallible;
 use core::task::Poll;
 
-use embedded_hal::digital::v2::OutputPin;
+use crate::ehal_02::digital::v2::OutputPin;
 
 use crate::gpio::pin::{OptionalPin, SomePin};
 use crate::typelevel::NoneT;
