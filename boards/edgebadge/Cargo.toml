@@ -43,7 +43,7 @@ tinybmp = "0.5.0"
 
 [features]
 # ask the HAL to enable atsamd51j support
-default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51", "unproven"]
+default = ["rt", "atsamd-hal/samd51j", "unproven"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]

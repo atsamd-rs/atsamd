@@ -1,10 +1,12 @@
-#[cfg(feature = "thumbv6")]
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
+#[hal_cfg(any("port-d11", "port-d21"))]
 use crate::pac::port::{
     CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG0_ as PINCFG,
     PMUX0_ as PMUX, WRCONFIG,
 };
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("port-d5x")]
 use crate::pac::port::group::{
     CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG, PMUX, WRCONFIG,
 };
@@ -30,6 +32,7 @@ struct ModeFields {
 
 impl From<DynPinMode> for ModeFields {
     #[inline]
+    #[hal_macro_helper]
     fn from(mode: DynPinMode) -> Self {
         let mut fields = Self::default();
         use DynPinMode::*;
@@ -122,31 +125,31 @@ impl From<DynPinMode> for ModeFields {
                     G => {
                         fields.pmux = 6;
                     }
-                    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
+                    #[hal_cfg(any("port-d21", "port-d5x"))]
                     H => {
                         fields.pmux = 7;
                     }
-                    #[cfg(feature = "thumbv7")]
+                    #[hal_cfg("port-d5x")]
                     I => {
                         fields.pmux = 8;
                     }
-                    #[cfg(feature = "thumbv7")]
+                    #[hal_cfg("port-d5x")]
                     J => {
                         fields.pmux = 9;
                     }
-                    #[cfg(feature = "thumbv7")]
+                    #[hal_cfg("port-d5x")]
                     K => {
                         fields.pmux = 10;
                     }
-                    #[cfg(feature = "thumbv7")]
+                    #[hal_cfg("port-d5x")]
                     L => {
                         fields.pmux = 11;
                     }
-                    #[cfg(feature = "thumbv7")]
+                    #[hal_cfg("port-d5x")]
                     M => {
                         fields.pmux = 12;
                     }
-                    #[cfg(feature = "thumbv7")]
+                    #[hal_cfg("port-d5x")]
                     N => {
                         fields.pmux = 13;
                     }
@@ -228,14 +231,15 @@ pub(super) unsafe trait RegisterInterface {
     const GROUPS: *const GROUP = PORT::ptr() as *const _;
 
     #[inline]
+    #[hal_macro_helper]
     fn group(&self) -> &GROUP {
         let offset = match self.id().group {
             DynGroup::A => 0,
-            #[cfg(any(feature = "samd21", feature = "thumbv7"))]
+            #[hal_cfg("pin-group-b")]
             DynGroup::B => 1,
-            #[cfg(feature = "pins-100")]
+            #[hal_cfg("pin-group-c")]
             DynGroup::C => 2,
-            #[cfg(feature = "pins-128")]
+            #[hal_cfg("pin-group-d")]
             DynGroup::D => 3,
         };
         // Safety: It is safe to create shared references to each PAC register

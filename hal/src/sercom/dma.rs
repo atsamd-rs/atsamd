@@ -3,6 +3,8 @@
 //! See the [`mod@uart`], [`mod@i2c`] and [`mod@spi`] modules for the
 //! corresponding DMA transfer implementations.
 
+use atsamd_hal_macros::hal_macro_helper;
+
 use crate::{
     dmac::{
         self,
@@ -77,6 +79,7 @@ impl<C: i2c::AnyConfig> I2c<C> {
     ///
     /// It is recommended that you check for errors after the transfer is
     /// complete by calling [`read_status`](I2c::read_status).
+    #[hal_macro_helper]
     pub fn receive_with_dma<Ch, B, W>(
         self,
         address: u8,
@@ -97,10 +100,10 @@ impl<C: i2c::AnyConfig> I2c<C> {
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("sercom0-d5x")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -125,6 +128,7 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// It is recommended that you check for errors after the transfer is
     /// complete by calling [`read_status`](I2c::read_status).
     #[inline]
+    #[hal_macro_helper]
     pub fn send_with_dma<Ch, B, W>(
         self,
         address: u8,
@@ -145,10 +149,10 @@ impl<C: i2c::AnyConfig> I2c<C> {
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("sercom0-d5x")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -206,6 +210,7 @@ where
     /// Transform an [`Uart`] into a DMA [`Transfer`]) and
     /// start receiving into the provided buffer.
     #[inline]
+    #[hal_macro_helper]
     pub fn receive_with_dma<Ch, B, W>(
         self,
         buf: B,
@@ -221,10 +226,10 @@ where
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("sercom0-d5x")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -244,6 +249,7 @@ where
     /// Transform an [`Uart`] into a DMA [`Transfer`]) and
     /// start sending the provided buffer.
     #[inline]
+    #[hal_macro_helper]
     pub fn send_with_dma<Ch, B, W>(
         self,
         buf: B,
@@ -259,10 +265,10 @@ where
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("sercom0-d5x")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -312,6 +318,7 @@ where
     /// Transform an [`Spi`] into a DMA [`Transfer`]) and
     /// start a send transaction.
     #[inline]
+    #[hal_macro_helper]
     pub fn send_with_dma<Ch, B, W>(
         self,
         buf: B,
@@ -327,10 +334,10 @@ where
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("sercom0-d5x")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check
@@ -350,6 +357,7 @@ where
     /// Transform an [`Spi`] into a DMA [`Transfer`]) and
     /// start a receive transaction.
     #[inline]
+    #[hal_macro_helper]
     pub fn receive_with_dma<Ch, B, W>(
         self,
         buf: B,
@@ -365,10 +373,10 @@ where
             .as_mut()
             .enable_interrupts(InterruptFlags::new().with_tcmpl(true));
 
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("sercom0-d5x")]
         let trigger_action = TriggerAction::BURST;
 
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
         let trigger_action = TriggerAction::BEAT;
 
         // SAFETY: This is safe because the of the `'static` bound check

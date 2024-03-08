@@ -35,7 +35,7 @@ panic-halt = "0.2"
 
 [features]
 # ask the HAL to enable atsamd51j support
-default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/samd51"]
+default = ["rt", "atsamd-hal/samd51j"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]

@@ -7,19 +7,17 @@
 //! use by a [`Transfer`](super::transfer::Transfer). Initializing a channel
 //! requires setting a priority level, as well as enabling or disabling
 //! interrupt requests (only for the specific channel being initialized).
-#![cfg_attr(
-    feature = "thumbv7",
-    doc = "# Burst Length and FIFO Threshold (SAMD51/SAME5x only)
-
-The transfer burst length can be configured through the
-[`Channel::burst_length`] method. A burst is an atomic,
-uninterruptible transfer which length corresponds to a number of beats. See
-SAMD5x/E5x datasheet section 22.6.1.1 for more information. The FIFO
-threshold can be configured through the
-[`Channel::fifo_threshold`] method. This enables the channel
-to wait for multiple Beats before sending a Burst. See SAMD5x/E5x datasheet
-section 22.6.2.8 for more information."
-)]
+//!
+//! # Burst Length and FIFO Threshold (SAMD51/SAME5x only)
+//!
+//! The transfer burst length can be configured through the
+//! [`Channel::burst_length`] method. A burst is an atomic,
+//! uninterruptible transfer which length corresponds to a number of beats. See
+//! SAMD5x/E5x datasheet section 22.6.1.1 for more information. The FIFO
+//! threshold can be configured through the
+//! [`Channel::fifo_threshold`] method. This enables the channel
+//! to wait for multiple Beats before sending a Burst. See SAMD5x/E5x datasheet
+//! section 22.6.2.8 for more information.
 //!
 //! # Channel status
 //!
@@ -33,6 +31,8 @@ section 22.6.2.8 for more information."
 //! `Uninitialized` state. You will be required to call [`Channel::init`]
 //! again before being able to use it with a `Transfer`.
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
 use super::dma_controller::{ChId, PriorityLevel, TriggerAction, TriggerSource};
 use crate::typelevel::{Is, Sealed};
 use core::marker::PhantomData;
@@ -42,7 +42,7 @@ mod reg;
 
 use reg::RegisterBlock;
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("dmac-d5x")]
 use super::dma_controller::{BurstLength, FifoThreshold};
 
 //==============================================================================
@@ -141,15 +141,16 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     ///
     /// A `Channel` with a `Ready` status
     #[inline]
+    #[hal_macro_helper]
     pub fn init(mut self, lvl: PriorityLevel) -> Channel<Id, Ready> {
         // Software reset the channel for good measure
         self._reset_private();
 
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("dmac-d11", "dmac-d21"))]
         // Setup priority level
         self.regs.chctrlb.modify(|_, w| w.lvl().bits(lvl as u8));
 
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("dmac-d5x")]
         self.regs.chprilvl.modify(|_, w| w.prilvl().bits(lvl as u8));
 
         Channel {
@@ -220,7 +221,7 @@ impl<Id: ChId> Channel<Id, Ready> {
     /// Set the FIFO threshold length. The channel will wait until it has
     /// received the selected number of Beats before triggering the Burst
     /// transfer, reducing the DMA transfer latency.
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("dmac-d5x")]
     #[inline]
     pub fn fifo_threshold(&mut self, threshold: FifoThreshold) {
         self.regs
@@ -230,7 +231,7 @@ impl<Id: ChId> Channel<Id, Ready> {
 
     /// Set burst length for the channel, in number of beats. A burst transfer
     /// is an atomic, uninterruptible operation.
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("dmac-d5x")]
     #[inline]
     pub fn burst_length(&mut self, burst_length: BurstLength) {
         self.regs
@@ -244,19 +245,20 @@ impl<Id: ChId> Channel<Id, Ready> {
     ///
     /// A `Channel` with a `Busy` status.
     #[inline]
+    #[hal_macro_helper]
     pub(crate) fn start(
         mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
     ) -> Channel<Id, Busy> {
         // Configure the trigger source and trigger action
-        #[cfg(feature = "thumbv6")]
+        #[hal_cfg(any("dmac-d11", "dmac-d21"))]
         self.regs.chctrlb.modify(|_, w| {
             w.trigsrc().variant(trig_src);
             w.trigact().variant(trig_act)
         });
 
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("dmac-d5x")]
         self.regs.chctrla.modify(|_, w| {
             w.trigsrc().variant(trig_src);
             w.trigact().variant(trig_act)
@@ -354,6 +356,12 @@ pub enum CallbackStatus {
     TransferError,
     /// Transfer Suspended
     TransferSuspended,
+}
+
+impl Default for InterruptFlags {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 /// Interrupt sources available to a DMA channel

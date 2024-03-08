@@ -1,7 +1,6 @@
 //! Flag definitions
 
 use bitflags::bitflags;
-use core::convert::TryFrom;
 
 //=============================================================================
 // Interrupt flags

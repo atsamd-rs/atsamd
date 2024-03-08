@@ -25,36 +25,29 @@
 //! [`AlternateD`]: crate::gpio::AlternateD
 //! [type class]: crate::typelevel#type-classes
 //! [type-level function]: crate::typelevel#type-level-functions
-#![cfg_attr(
-    feature = "thumbv7",
-    doc = "
-# IOSET\n
-\n
-SAMx5x chips do not allow arbitrary combinations of `PinId` for a given
-SERCOM. Instead, all `PinId`s must belong to the same IOSET. This module
-defines a [type-level enum], [`IoSet`], to enforce this restriction, and the
-[`InIoSet`] [type class] is responsible for labeling each `IsPad` type with
-its corresponding, valid `IoSet`\\(s).\n
-\n
-"
-)]
+//! # IOSET (SAMD51/SAME5x only)
+//!
+//! SAMx5x chips do not allow arbitrary combinations of `PinId` for a given
+//! SERCOM. Instead, all `PinId`s must belong to the same IOSET. This module
+//! defines a [type-level enum], [`IoSet`], to enforce this restriction, and the
+//! [`InIoSet`] [type class] is responsible for labeling each `IsPad` type with
+//! its corresponding, valid `IoSet`\(s).
 
+use atsamd_hal_macros::{hal_cfg, hal_module};
 use paste::paste;
 use seq_macro::seq;
 
 use super::Sercom;
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
 use crate::gpio::OptionalPinId;
 use crate::gpio::{AnyPin, OptionalPin, Pin, PinId, PinMode};
 use crate::typelevel::{NoneT, Sealed};
 
-#[cfg(feature = "thumbv6")]
-#[path = "pad/impl_pad_thumbv6m.rs"]
-mod impl_pad;
-
-#[cfg(feature = "thumbv7")]
-#[path = "pad/impl_pad_thumbv7em.rs"]
-mod impl_pad;
+#[hal_module(
+    any("sercom0-d11", "sercom0-d21") => "pad/impl_pad_thumbv6m.rs",
+    "sercom0-d5x" => "pad/impl_pad_thumbv7em.rs",
+)]
+mod impl_pad {}
 
 //==============================================================================
 // PadNum
@@ -173,7 +166,7 @@ impl<P: IsPad> SomePad for P {}
 /// See the documentation on [type-level functions] for more details.
 ///
 /// [type-level functions]: crate::typelevel#type-level-functions
-#[cfg(feature = "samd11")]
+#[hal_cfg("sercom0-d11")]
 pub trait GetPad<S, N>
 where
     S: Sercom,
@@ -197,7 +190,7 @@ where
 /// See the documentation on [type-level functions] for more details.
 ///
 /// [type-level functions]: crate::typelevel#type-level-functions
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
 pub trait GetPad<S>
 where
     S: Sercom,
@@ -213,22 +206,22 @@ where
 
 /// Type alias using [`GetPad`] to recover the [`PinMode`] for a given SERCOM
 /// pad
-#[cfg(feature = "samd11")]
+#[hal_cfg("sercom0-d11")]
 pub type PadMode<S, N, I> = <I as GetPad<S, N>>::PinMode;
 
 /// Type alias using [`GetPad`] to recover the [`PinMode`] for a given SERCOM
 /// pad
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
 pub type PadMode<S, I> = <I as GetPad<S>>::PinMode;
 
 /// Type alias to recover a [`Pin`] configured as a SERCOM pad in the correct
 /// [`PadMode`]
-#[cfg(feature = "samd11")]
+#[hal_cfg("sercom0-d11")]
 pub type Pad<S, N, I> = Pin<I, PadMode<S, N, I>>;
 
 /// Type alias to recover a [`Pin`] configured as a SERCOM pad in the correct
 /// [`PadMode`]
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
 pub type Pad<S, I> = Pin<I, PadMode<S, I>>;
 
 //==============================================================================
@@ -244,19 +237,19 @@ pub type Pad<S, I> = Pin<I, PadMode<S, I>>;
 /// `Option<Pad>`.
 ///
 /// [type-level functions]: crate::typelevel#type-level-functions
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
 pub trait GetOptionalPad<S: Sercom>: OptionalPinId {
     type PadNum: OptionalPadNum;
     type Pad: OptionalPad;
 }
 
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
 impl<S: Sercom> GetOptionalPad<S> for NoneT {
     type PadNum = NoneT;
     type Pad = NoneT;
 }
 
-#[cfg(not(feature = "samd11"))]
+#[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
 impl<S, I> GetOptionalPad<S> for I
 where
     S: Sercom,
@@ -271,7 +264,7 @@ where
 // IoSet
 //==============================================================================
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 mod ioset {
 
     use super::*;
@@ -363,5 +356,5 @@ mod ioset {
     }
 }
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 pub use ioset::*;

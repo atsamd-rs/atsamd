@@ -3,9 +3,11 @@
 //! See the [spi module](super) documentation for more details on declaring and
 //! instantiating a [`Pads`] type.
 
+use atsamd_hal_macros::hal_cfg;
+
 use core::marker::PhantomData;
 
-#[cfg(feature = "samd21")]
+#[hal_cfg("sercom0-d21")]
 use crate::gpio::AnyPin;
 use crate::sercom::*;
 use crate::typelevel::{NoneT, Sealed};
@@ -212,7 +214,7 @@ where
     }
 }
 
-#[cfg(feature = "samd11")]
+#[hal_cfg("sercom0-d11")]
 impl<S, DI, DO, CK, SS> Pads<S, DI, DO, CK, SS>
 where
     S: Sercom,
@@ -284,7 +286,7 @@ where
     }
 }
 
-#[cfg(feature = "samd21")]
+#[hal_cfg("sercom0-d21")]
 impl<S, DI, DO, CK, SS> Pads<S, DI, DO, CK, SS>
 where
     S: Sercom,
@@ -404,7 +406,7 @@ where
 /// [`Pin`]: crate::gpio::Pin
 /// [`PinId`]: crate::gpio::PinId
 /// [`OptionalPinId`]: crate::gpio::OptionalPinId
-#[cfg(feature = "samd21")]
+#[hal_cfg("sercom0-d21")]
 pub type PadsFromIds<S, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pads<
     S,
     <DI as GetOptionalPad<S>>::Pad,

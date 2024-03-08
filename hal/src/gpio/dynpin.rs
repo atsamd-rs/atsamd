@@ -59,7 +59,7 @@
 
 #![allow(clippy::bool_comparison)]
 
-use core::convert::TryFrom;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use paste::paste;
 
@@ -106,6 +106,7 @@ pub enum DynOutput {
 }
 
 /// Value-level `enum` for alternate peripheral function configurations
+#[hal_macro_helper]
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum DynAlternate {
     B,
@@ -114,19 +115,19 @@ pub enum DynAlternate {
     E,
     F,
     G,
-    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
+    #[hal_cfg(any("port-d21", "port-d5x"))]
     H,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     I,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     J,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     K,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     L,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     M,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     N,
 }
 
@@ -186,9 +187,9 @@ macro_rules! dyn_alternate {
 }
 
 dyn_alternate!(B, C, D, E, F, G);
-#[cfg(any(feature = "samd21", feature = "thumbv7"))]
+#[hal_cfg(any("port-d21", "port-d5x"))]
 dyn_alternate!(H);
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("port-d5x")]
 dyn_alternate!(I, J, K, L, M, N);
 
 //==============================================================================
@@ -197,13 +198,14 @@ dyn_alternate!(I, J, K, L, M, N);
 
 /// Value-level `enum` for pin groups
 #[derive(PartialEq, Clone, Copy)]
+#[hal_macro_helper]
 pub enum DynGroup {
     A,
-    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
+    #[hal_cfg("pin-group-b")]
     B,
-    #[cfg(feature = "pins-100")]
+    #[hal_cfg("pin-group-c")]
     C,
-    #[cfg(feature = "pins-128")]
+    #[hal_cfg("pin-group-d")]
     D,
 }
 

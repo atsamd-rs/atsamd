@@ -34,22 +34,17 @@
 //! type Tx = Pin<PA09, AlternateC>;
 //! type Pads = uart::Pads<Sercom0, Rx, Tx>;
 //! ```
-#![cfg_attr(
-    not(feature = "samd11"),
-    doc = "
-Alternatively, you can use the [`PadsFromIds`] alias to define a set of
-`Pads` in terms of [`PinId`]s instead of `Pin`s. This is useful when you
-don't have [`Pin`] aliases pre-defined.
-
-```
-use atsamd_hal::gpio::{PA08, PA09};
-use atsamd_hal::sercom::{Sercom0, uart};
-
-type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
-```
-
-"
-)]
+//!
+//! Alternatively, you can use the [`PadsFromIds`] alias to define a set of
+//! `Pads` in terms of [`PinId`]s instead of `Pin`s. This is useful when you
+//! don't have [`Pin`] aliases pre-defined.
+//!
+//! ```
+//! use atsamd_hal::gpio::{PA08, PA09};
+//! use atsamd_hal::sercom::{Sercom0, uart};
+//!
+//! type Pads = uart::PadsFromIds<Sercom0, PA08, PA09>;
+//! ```
 //!
 //! Instances of [`Pads`] are created using the builder pattern. Start by
 //! creating an empty set of [`Pads`] using [`Default`]. Then pass each
@@ -387,13 +382,13 @@ let (chan1, rx, rx_buffer) = rx_dma.wait();
 "
 )]
 
-#[cfg(feature = "thumbv6")]
-#[path = "uart/pads_thumbv6m.rs"]
-mod pads;
+use atsamd_hal_macros::{hal_cfg, hal_module};
 
-#[cfg(feature = "thumbv7")]
-#[path = "uart/pads_thumbv7em.rs"]
-mod pads;
+#[hal_module(
+    any("sercom0-d11", "sercom0-d21") => "uart/pads_thumbv6m.rs",
+    "sercom0-d5x" => "uart/pads_thumbv7em.rs",
+)]
+mod pads {}
 
 pub use pads::*;
 
@@ -411,16 +406,16 @@ pub use config::*;
 
 pub mod impl_ehal;
 
-use crate::{sercom::*, typelevel::Sealed};
-use core::{convert::TryInto, marker::PhantomData};
+use crate::{sercom::pad::SomePad, typelevel::Sealed};
+use core::marker::PhantomData;
 use num_traits::AsPrimitive;
 
 /// Size of the SERCOM's `DATA` register
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 pub type DataReg = u16;
 
 /// Size of the SERCOM's `DATA` register
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 pub type DataReg = u32;
 
 //=============================================================================

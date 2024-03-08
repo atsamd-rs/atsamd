@@ -10,6 +10,8 @@
 //! way. For SAMD51+, `with_chid` returns the register block which contains the
 //! registers owned by a specific channel.
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
 use super::super::dma_controller::ChId;
 use core::marker::PhantomData;
 use paste::paste;
@@ -24,10 +26,10 @@ use crate::pac::{
     Peripherals, DMAC,
 };
 
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("dmac-d11", "dmac-d21"))]
 use pac::dmac as channel_regs;
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("dmac-d5x")]
 use pac::dmac::channel as channel_regs;
 
 use channel_regs::{
@@ -36,7 +38,7 @@ use channel_regs::{
 };
 use channel_regs::{CHCTRLA, CHCTRLB, CHINTENCLR, CHINTENSET, CHINTFLAG, CHSTATUS};
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("dmac-d5x")]
 use pac::dmac::{
     channel::{chprilvl::CHPRILVL_SPEC, CHPRILVL},
     CHANNEL,
@@ -56,7 +58,7 @@ pub(super) trait Register<Id: ChId> {
     /// the CHID register, then access the channel control registers.
     /// If an interrupt were to change the CHID register and not reset it
     /// to the expected value, we would be faced with undefined behaviour.
-    #[cfg(feature = "thumbv6")]
+    #[hal_cfg(any("dmac-d11", "dmac-d21"))]
     #[inline]
     fn with_chid<F: FnOnce(&DMAC) -> R, R>(&mut self, fun: F) -> R {
         // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
@@ -92,7 +94,7 @@ pub(super) trait Register<Id: ChId> {
     /// the registers are accessed in an interrupt-safe way, as the SAMD21
     /// DMAC is a little funky. For the SAMD51/SAMEx, we simply take a reference
     /// to the correct channel number and run the closure on that.
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("dmac-d5x")]
     #[inline]
     fn with_chid<F: FnOnce(&CHANNEL) -> R, R>(&mut self, fun: F) -> R {
         // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
@@ -266,7 +268,7 @@ reg_proxy!(chintenclr, register, rw);
 reg_proxy!(chintenset, register, rw);
 reg_proxy!(chintflag, register, rw);
 reg_proxy!(chstatus, register, r);
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("dmac-d5x")]
 reg_proxy!(chprilvl, register, rw);
 
 reg_proxy!(intstatus, bit, r);
@@ -278,6 +280,7 @@ reg_proxy!(swtrigctrl, bit, rw);
 /// within registers that should be readable/writable by specific
 /// [`Channel`]s are exposed.
 #[allow(dead_code)]
+#[hal_macro_helper]
 pub(super) struct RegisterBlock<Id: ChId> {
     pub chctrla: ChctrlaProxy<Id, CHCTRLA>,
     pub chctrlb: ChctrlbProxy<Id, CHCTRLB>,
@@ -289,11 +292,12 @@ pub(super) struct RegisterBlock<Id: ChId> {
     pub busych: BusychProxy<Id, BUSYCH>,
     pub pendch: PendchProxy<Id, PENDCH>,
     pub swtrigctrl: SwtrigctrlProxy<Id, SWTRIGCTRL>,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("dmac-d5x")]
     pub chprilvl: ChprilvlProxy<Id, CHPRILVL>,
 }
 
 impl<Id: ChId> RegisterBlock<Id> {
+    #[hal_macro_helper]
     pub(super) fn new(_id: PhantomData<Id>) -> Self {
         Self {
             chctrla: ChctrlaProxy::new(),
@@ -306,7 +310,7 @@ impl<Id: ChId> RegisterBlock<Id> {
             busych: BusychProxy::new(),
             pendch: PendchProxy::new(),
             swtrigctrl: SwtrigctrlProxy::new(),
-            #[cfg(feature = "thumbv7")]
+            #[hal_cfg("dmac-d5x")]
             chprilvl: ChprilvlProxy::new(),
         }
     }

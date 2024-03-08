@@ -96,6 +96,8 @@
 #![allow(clippy::zero_prefixed_literal)]
 #![allow(clippy::bool_comparison)]
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
 use core::convert::Infallible;
 use core::marker::PhantomData;
 use core::mem::transmute;
@@ -342,10 +344,10 @@ macro_rules! alternate {
 
 alternate!(B, C, D, E, F, G);
 
-#[cfg(any(feature = "samd21", feature = "thumbv7"))]
+#[hal_cfg(any("port-d21", "port-d5x"))]
 alternate!(H);
 
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("port-d5x")]
 alternate!(I, J, K, L, M, N);
 
 /// Type-level variant of [`PinMode`] for alternate peripheral functions
@@ -732,6 +734,7 @@ macro_rules! impl_core_convert_from {
     };
 }
 
+#[hal_macro_helper]
 impl_core_convert_from!(
     FloatingDisabled,
     PullDownDisabled,
@@ -750,19 +753,19 @@ impl_core_convert_from!(
     AlternateE,
     AlternateF,
     AlternateG,
-    #[cfg(any(feature = "samd21", feature = "thumbv7"))]
+    #[hal_cfg(any("port-d21", "port-d5x"))]
     AlternateH,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     AlternateI,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     AlternateJ,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     AlternateK,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     AlternateL,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     AlternateM,
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("port-d5x")]
     AlternateN,
 );
 
@@ -1064,213 +1067,214 @@ macro_rules! declare_pins {
     };
 }
 
+#[hal_macro_helper]
 declare_pins!(
     A {
-        #[cfg(feature = "has-pa00")]
+        #[hal_cfg("pa00")]
         (PA00, 00),
-        #[cfg(feature = "has-pa01")]
+        #[hal_cfg("pa01")]
         (PA01, 01),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa02")]
         (PA02, 02),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa03")]
         (PA03, 03),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa04")]
         (PA04, 04),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa05")]
         (PA05, 05),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa06")]
         (PA06, 06),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa07")]
         (PA07, 07),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa08")]
         (PA08, 08),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa09")]
         (PA09, 09),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa10")]
         (PA10, 10),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa11")]
         (PA11, 11),
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pa12")]
         (PA12, 12),
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pa13")]
         (PA13, 13),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa14")]
         (PA14, 14),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa15")]
         (PA15, 15),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa16")]
         (PA16, 16),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa17")]
         (PA17, 17),
-        #[cfg(feature = "pins-32")]
+        #[hal_cfg("pa18")]
         (PA18, 18),
-        #[cfg(feature = "pins-32")]
+        #[hal_cfg("pa19")]
         (PA19, 19),
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pa20")]
         (PA20, 20),
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pa21")]
         (PA21, 21),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa22")]
         (PA22, 22),
-        #[cfg(feature = "pins-24")]
+        #[hal_cfg("pa23")]
         (PA23, 23),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa24")]
         (PA24, 24),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa25")]
         (PA25, 25),
-        #[cfg(feature = "has-pa27")]
+        #[hal_cfg("pa27")]
         (PA27, 27),
-        #[cfg(feature = "has-pa28")]
+        #[hal_cfg("pa28")]
         (PA28, 28),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa30")]
         (PA30, 30),
-        #[cfg(feature = "pins-14")]
+        #[hal_cfg("pa31")]
         (PA31, 31),
     }
     B {
-        #[cfg(feature = "has-pb00")]
+        #[hal_cfg("pb00")]
         (PB00, 00),
-        #[cfg(feature = "has-pb01")]
+        #[hal_cfg("pb01")]
         (PB01, 01),
-        #[cfg(feature = "has-pb02")]
+        #[hal_cfg("pb02")]
         (PB02, 02),
-        #[cfg(feature = "has-pb03")]
+        #[hal_cfg("pb03")]
         (PB03, 03),
-        #[cfg(feature = "has-pb04")]
+        #[hal_cfg("pb04")]
         (PB04, 04),
-        #[cfg(feature = "has-pb05")]
+        #[hal_cfg("pb05")]
         (PB05, 05),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb06")]
         (PB06, 06),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb07")]
         (PB07, 07),
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pb08")]
         (PB08, 08),
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pb09")]
         (PB09, 09),
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pb10")]
         (PB10, 10),
-        #[cfg(feature = "pins-48")]
+        #[hal_cfg("pb11")]
         (PB11, 11),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb12")]
         (PB12, 12),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb13")]
         (PB13, 13),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb14")]
         (PB14, 14),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb15")]
         (PB15, 15),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb16")]
         (PB16, 16),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb17")]
         (PB17, 17),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pb18")]
         (PB18, 18),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pb19")]
         (PB19, 19),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pb20")]
         (PB20, 20),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pb21")]
         (PB21, 21),
-        #[cfg(feature = "has-pb22")]
+        #[hal_cfg("pb22")]
         (PB22, 22),
-        #[cfg(feature = "has-pb23")]
+        #[hal_cfg("pb23")]
         (PB23, 23),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pb24")]
         (PB24, 24),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pb25")]
         (PB25, 25),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pb26")]
         (PB26, 26),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pb27")]
         (PB27, 27),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pb28")]
         (PB28, 28),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pb29")]
         (PB29, 29),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb30")]
         (PB30, 30),
-        #[cfg(feature = "pins-64")]
+        #[hal_cfg("pb31")]
         (PB31, 31),
     }
     C {
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc00")]
         (PC00, 00),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc01")]
         (PC01, 01),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc02")]
         (PC02, 02),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc03")]
         (PC03, 03),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pc04")]
         (PC04, 04),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc05")]
         (PC05, 05),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc06")]
         (PC06, 06),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc07")]
         (PC07, 07),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc10")]
         (PC10, 10),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc11")]
         (PC11, 11),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc12")]
         (PC12, 12),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc13")]
         (PC13, 13),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc14")]
         (PC14, 14),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc15")]
         (PC15, 15),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc16")]
         (PC16, 16),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc17")]
         (PC17, 17),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc18")]
         (PC18, 18),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc19")]
         (PC19, 19),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc20")]
         (PC20, 20),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc21")]
         (PC21, 21),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pc22")]
         (PC22, 22),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pc23")]
         (PC23, 23),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc24")]
         (PC24, 24),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc25")]
         (PC25, 25),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc26")]
         (PC26, 26),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc27")]
         (PC27, 27),
-        #[cfg(feature = "pins-100")]
+        #[hal_cfg("pc28")]
         (PC28, 28),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pc30")]
         (PC30, 30),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pc31")]
         (PC31, 31),
     }
     D {
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd00")]
         (PD00, 00),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd01")]
         (PD01, 01),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd08")]
         (PD08, 08),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd09")]
         (PD09, 09),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd10")]
         (PD10, 10),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd11")]
         (PD11, 11),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd12")]
         (PD12, 12),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd20")]
         (PD20, 20),
-        #[cfg(feature = "pins-128")]
+        #[hal_cfg("pd21")]
         (PD21, 21),
     }
 );

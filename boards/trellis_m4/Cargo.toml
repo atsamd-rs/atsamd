@@ -43,7 +43,7 @@ version = "0.3"
 
 [features]
 # ask the HAL to enable atsamd51g support
-default = ["rt", "atsamd-hal/samd51g", "atsamd-hal/samd51"]
+default = ["rt", "atsamd-hal/samd51g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g-rt"]
 unproven = ["atsamd-hal/unproven"]
 keypad-unproven = ["keypad", "unproven"]

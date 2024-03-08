@@ -30,6 +30,12 @@ pub enum BusState {
     Busy = 0x03,
 }
 
+impl Default for Status {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Status flags for I2C transactions
 ///
 /// The available status flags are `BUSERR`, `ARBLOST`, `RXNACK`,

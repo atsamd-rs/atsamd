@@ -1,15 +1,15 @@
-use core::convert::TryInto;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use embedded_hal::spi;
 
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use crate::pac::sercom0::SPI;
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 use crate::pac::sercom0::SPIM;
 
-#[cfg(feature = "thumbv6")]
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use crate::pac::sercom0::spi::ctrla::MODESELECT_A;
-#[cfg(feature = "thumbv7")]
+#[hal_cfg("sercom0-d5x")]
 use crate::pac::sercom0::spim::ctrla::MODESELECT_A;
 
 use crate::sercom::Sercom;
@@ -36,13 +36,13 @@ pub(super) struct Registers<S: Sercom> {
 unsafe impl<S: Sercom> Sync for Registers<S> {}
 
 impl<S: Sercom> Registers<S> {
-    #[cfg(feature = "thumbv6")]
+    #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
     #[inline]
     pub fn spi(&self) -> &SPI {
         self.sercom.spi()
     }
 
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("sercom0-d5x")]
     #[inline]
     pub fn spi(&self) -> &SPIM {
         self.sercom.spim()
@@ -78,10 +78,11 @@ impl<S: Sercom> Registers<S> {
     /// in each SPI transaction. Due to a hardware bug, ICSPACE must be at least
     /// one. See the silicon errata for more details.
     #[inline]
+    #[hal_macro_helper]
     pub fn set_op_mode(&mut self, mode: MODESELECT_A, mssen: bool) {
         self.spi().ctrla.modify(|_, w| w.mode().variant(mode));
         self.spi().ctrlb.modify(|_, w| w.mssen().bit(mssen));
-        #[cfg(feature = "thumbv7")]
+        #[hal_cfg("sercom0-d5x")]
         self.spi().ctrlc.write(|w| unsafe {
             w.data32b().data_trans_32bit();
             w.icspace().bits(1)
@@ -90,14 +91,14 @@ impl<S: Sercom> Registers<S> {
     }
 
     /// Return the current transaction length
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("sercom0-d5x")]
     #[inline]
     pub fn get_length(&self) -> u8 {
         self.spi().length.read().len().bits()
     }
 
     /// Set the transaction length
-    #[cfg(feature = "thumbv7")]
+    #[hal_cfg("sercom0-d5x")]
     #[inline]
     pub fn set_length(&mut self, length: u8) {
         let length = if length == 0 { 1 } else { length };
@@ -109,7 +110,7 @@ impl<S: Sercom> Registers<S> {
     }
 
     /// Set the character size
-    #[cfg(feature = "thumbv6")]
+    #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
     #[inline]
     pub fn set_char_size(&mut self, bits: u8) {
         self.spi()
