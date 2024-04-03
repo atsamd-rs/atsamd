@@ -116,7 +116,7 @@ where
     M: MasterMode,
     L: Length,
     L::Word: PrimInt,
-    u32: AsPrimitive<L::Word>,
+    DataWidth: AsPrimitive<L::Word>,
 {
     type Error = Error;
 
@@ -150,7 +150,7 @@ where
     P: ValidPads,
     L: Length,
     L::Word: PrimInt,
-    u32: AsPrimitive<L::Word>,
+    DataWidth: AsPrimitive<L::Word>,
 {
     type Error = Error;
 
@@ -178,7 +178,7 @@ impl<C> serial::Write<C::Word> for Spi<C, Tx>
 where
     C: ValidConfig,
     C::Size: AtomicSize,
-    C::Word: PrimInt + AsPrimitive<u32>,
+    C::Word: PrimInt + AsPrimitive<DataWidth>,
 {
     type Error = Error;
 
@@ -233,8 +233,8 @@ impl<C> spi::FullDuplex<C::Word> for Spi<C, Duplex>
 where
     C: ValidConfig,
     C::Size: AtomicSize,
-    C::Word: PrimInt + AsPrimitive<u32>,
-    u32: AsPrimitive<C::Word>,
+    C::Word: PrimInt + AsPrimitive<DataWidth>,
+    DataWidth: AsPrimitive<C::Word>,
 {
     type Error = Error;
 
@@ -297,7 +297,7 @@ macro_rules! impl_blocking_spi_transfer {
                                 Some(cell) => cell.get(),
                                 None => unreachable!(),
                             };
-                            self.config.as_mut().regs.write_data(word as u32);
+                            self.config.as_mut().regs.write_data(word as DataWidth);
                         }
                         if to_recv.len() > to_send.len() && flags.contains(Flags::RXC) {
                             let word = self.config.as_mut().regs.read_data() as Word<$Length>;
@@ -404,7 +404,7 @@ macro_rules! impl_blocking_spi_write {
                                 Some(word) => *word,
                                 None => unreachable!(),
                             };
-                            self.config.as_mut().regs.write_data(word as u32);
+                            self.config.as_mut().regs.write_data(word as DataWidth);
                         }
                         if to_recv > to_send.len() && flags.contains(Flags::RXC) {
                             self.config.as_mut().regs.read_data() as Word<$Length>;
@@ -443,7 +443,7 @@ macro_rules! impl_blocking_spi_write {
                             if self.read_status().contains(Status::LENERR) {
                                 return Err(Error::LengthError)
                             } else if self.read_flags().contains(Flags::DRE) {
-                                self.config.as_mut().regs.write_data(*word as u32);
+                                self.config.as_mut().regs.write_data(*word as DataWidth);
                                 break
                             }
                         }
@@ -607,7 +607,7 @@ macro_rules! impl_blocking_spi_write_iter {
                         loop {
                             let flags = self.read_flags_errors()?;
                             if flags.contains(Flags::DRE) {
-                                unsafe { self.write_data(word as u32) };
+                                unsafe { self.write_data(word as DataWidth) };
                                 break
                             }
                         }
@@ -654,7 +654,7 @@ macro_rules! impl_blocking_spi_write_iter {
                             if self.read_status().contains(Status::LENERR) {
                                 return Err(Error::LengthError)
                             } else if self.read_flags().contains(Flags::DRE) {
-                                unsafe { self.write_data(word as u32) };
+                                unsafe { self.write_data(word as DataWidth) };
                                 break
                             }
                         }

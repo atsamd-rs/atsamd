@@ -1,20 +1,20 @@
 use super::*;
-use crate::ehal::spi::{self, ErrorKind, ErrorType, SpiBus};
+use crate::ehal::spi::{self, ErrorType, SpiBus};
+#[allow(unused_imports)]
+use crate::ehal_02::{blocking, serial};
 use num_traits::{AsPrimitive, PrimInt};
 
-#[cfg(feature = "thumbv6")]
-#[path = "impl_ehal_thumbv6m.rs"]
-pub mod impl_ehal_02;
-
-#[cfg(feature = "thumbv7")]
-#[path = "impl_ehal_thumbv7em.rs"]
-pub mod impl_ehal_02;
+#[hal_module(
+    any("sercom0-d11", "sercom0-d21") => "impl_ehal_thumbv6m.rs",
+    "sercom0-d5x" => "impl_ehal_thumbv7em.rs"
+)]
+pub mod impl_ehal_02 {}
 
 impl spi::Error for Error {
-    fn kind(&self) -> ErrorKind {
+    fn kind(&self) -> crate::ehal::spi::ErrorKind {
         match self {
-            Error::Overflow => ErrorKind::Overrun,
-            Error::LengthError => ErrorKind::Other,
+            Error::Overflow => crate::ehal::spi::ErrorKind::Overrun,
+            Error::LengthError => crate::ehal::spi::ErrorKind::Other,
         }
     }
 }
@@ -40,17 +40,13 @@ where
 {
     /// Read and write a single word to the bus simultaneously.
     fn transfer_word_in_place(&mut self, word: C::Word) -> Result<C::Word, Error> {
-        while self.read_flags().contains(Flags::DRE) {
-            core::hint::spin_loop();
-        }
-        self.read_flags_errors()?;
+        self.block_on_flags(Flags::DRE)?;
+
         unsafe {
             self.write_data(word.as_());
         }
 
-        while self.read_flags().contains(Flags::TXC | Flags::RXC) {
-            core::hint::spin_loop();
-        }
+        self.block_on_flags(Flags::TXC | Flags::RXC)?;
         let word = unsafe { self.read_data().as_() };
         Ok(word)
     }
@@ -123,10 +119,7 @@ where
     #[inline]
     fn flush(&mut self) -> Result<(), Error> {
         // Ignore buffer overflow errors
-        while !self.read_flags().contains(Flags::TXC) {
-            core::hint::spin_loop();
-        }
-
+        let _ = self.block_on_flags(Flags::TXC);
         Ok(())
     }
 }

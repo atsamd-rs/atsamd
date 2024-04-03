@@ -348,11 +348,7 @@ pub mod lengths {
     });
 }
 
-#[hal_module(
-    any("sercom0-d11", "sercom0-d21") => "spi/impl_ehal_thumbv6m.rs",
-    "sercom0-d5x" => "spi/impl_ehal_thumbv7em.rs",
-)]
-pub mod impl_ehal {}
+pub mod impl_ehal;
 
 //=============================================================================
 // BitOrder
@@ -1299,6 +1295,18 @@ where
         self.config.as_mut().regs.rx_disable();
         self.config.as_mut().regs.disable();
         self.config
+    }
+
+    /// Block until at least one of the flags specified in `flags`, plus `ERROR`, is set.
+    ///
+    /// # Returns `Err(Error)` if an error is detected.
+    fn block_on_flags(&mut self, flags: Flags) -> Result<(), Error> {
+        while !self.read_flags().intersects(flags | Flags::ERROR) {
+            core::hint::spin_loop();
+        }
+
+        self.read_flags_errors()?;
+        Ok(())
     }
 }
 

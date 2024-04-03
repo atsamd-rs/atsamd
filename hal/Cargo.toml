@@ -38,6 +38,8 @@ cipher = "0.3"
 cortex-m = "0.7"
 embedded-hal-02 = {package = "embedded-hal", version = "0.2"}
 embedded-hal-1 = {package = "embedded-hal", version = "1.0.0"}
+embedded-hal-nb = "1.0.0"
+embedded-io = "0.6"
 fugit = "0.3"
 modular-bitfield = "0.11"
 nb = "1.0"
