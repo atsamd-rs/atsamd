@@ -34,7 +34,7 @@ where
     Config<P, M, C>: ValidConfig,
     P: ValidPads,
     M: MasterMode,
-    C: Size + Copy + 'static,
+    C: Size + 'static,
     C::Word: PrimInt + AsPrimitive<DataWidth>,
     DataWidth: AsPrimitive<C::Word>,
 {
@@ -77,8 +77,8 @@ where
     Config<P, M, C>: ValidConfig,
     P: ValidPads,
     M: MasterMode,
-    C: Size + Copy + 'static,
-    C::Word: PrimInt + AsPrimitive<DataWidth>,
+    C: Size + 'static,
+    C::Word: PrimInt + AsPrimitive<DataWidth> + Copy,
     DataWidth: AsPrimitive<C::Word>,
 {
     fn read(&mut self, words: &mut [Word<C>]) -> Result<(), Self::Error> {
