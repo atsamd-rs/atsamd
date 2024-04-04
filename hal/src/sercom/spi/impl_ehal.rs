@@ -2,7 +2,7 @@ use super::*;
 use crate::ehal::spi::{self, ErrorType, SpiBus};
 #[allow(unused_imports)]
 use crate::ehal_02::{blocking, serial};
-use num_traits::{AsPrimitive, PrimInt};
+use num_traits::PrimInt;
 
 #[hal_module(
     any("sercom0-d11", "sercom0-d21") => "impl_ehal_thumbv6m.rs",
