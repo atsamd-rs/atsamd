@@ -11,7 +11,7 @@ use num_traits::{AsPrimitive, PrimInt};
 /// use a `u16` word.
 pub trait CharSize: Sealed {
     /// Word size for the character size
-    type Word: 'static + PrimInt + AsPrimitive<DataReg>;
+    type Word: 'static + PrimInt + AsPrimitive<DataReg> + Copy;
 }
 
 /// Type-level `enum` indicating a [`CharSize`] that is not dynamic
