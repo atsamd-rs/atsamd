@@ -250,6 +250,10 @@ where
     P: ValidPads,
 {
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
+        if buf.is_empty() {
+            return Ok(0);
+        };
+
         for byte in buf.iter_mut() {
             let w = nb::block!(<Self as embedded_hal_nb::serial::Read>::read(self))?;
             *byte = w;

@@ -303,11 +303,11 @@ use atsamd_hal_macros::{hal_cfg, hal_docs, hal_macro_helper, hal_module};
 
 use core::marker::PhantomData;
 
-use crate::ehal_02::spi;
-pub use crate::ehal_02::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 use bitflags::bitflags;
 use num_traits::AsPrimitive;
 
+use crate::ehal;
+pub use crate::ehal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
 use crate::sercom::{pad::SomePad, Sercom, APB_CLK_CTRL};
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
@@ -819,19 +819,19 @@ where
 
     /// Get the SPI mode (clock polarity & phase)
     #[inline]
-    pub fn get_spi_mode(&self) -> spi::Mode {
+    pub fn get_spi_mode(&self) -> ehal::spi::Mode {
         self.regs.get_spi_mode()
     }
 
     /// Set the SPI mode (clock polarity & phase)
     #[inline]
-    pub fn set_spi_mode(&mut self, mode: spi::Mode) {
+    pub fn set_spi_mode(&mut self, mode: ehal::spi::Mode) {
         self.regs.set_spi_mode(mode);
     }
 
     /// Set the SPI mode (clock polarity & phase) using the builder pattern
     #[inline]
-    pub fn spi_mode(mut self, mode: spi::Mode) -> Self {
+    pub fn spi_mode(mut self, mode: ehal::spi::Mode) -> Self {
         self.set_spi_mode(mode);
         self
     }
@@ -1297,7 +1297,7 @@ where
         self.config
     }
 
-    /// Block until at least one of the flags specified in `flags`, plus `ERROR`, is set.
+    /// Block until at least one of the flags specified in `flags`, or `ERROR`, is set.
     ///
     /// # Returns `Err(Error)` if an error is detected.
     fn block_on_flags(&mut self, flags: Flags) -> Result<(), Error> {
