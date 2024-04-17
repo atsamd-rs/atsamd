@@ -76,9 +76,10 @@ where
 {
     #[inline]
     fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
-        for byte in buf {
-            self.block_on_flags(Flags::DRE);
-            unsafe { self.write_data(byte.as_()) };
+        for word in buf {
+            nb::block!(<Self as embedded_hal_nb::serial::Write<u8>>::write(
+                self, *word
+            ))?;
         }
 
         Ok(buf.len())
@@ -87,8 +88,7 @@ where
     /// Wait for a `TXC` flag
     #[inline]
     fn flush(&mut self) -> Result<(), Self::Error> {
-        self.block_on_flags(Flags::TXC);
-        self.clear_flags(Flags::TXC);
+        nb::block!(<Self as embedded_hal_nb::serial::Write<u8>>::flush(self))?;
         Ok(())
     }
 }
@@ -98,7 +98,6 @@ where
     P: ValidPads,
     D: Receive,
 {
-    /// Wait for an `RXC` flag, then read the word
     #[inline]
     fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
         if buf.is_empty() {
@@ -106,9 +105,8 @@ where
         }
 
         for byte in buf.iter_mut() {
-            self.read_flags_errors()?;
-            self.block_on_flags(Flags::RXC);
-            *byte = unsafe { self.read_data().as_() };
+            let w = nb::block!(<Self as embedded_hal_nb::serial::Read<u8>>::read(self))?;
+            *byte = w;
         }
 
         Ok(buf.len())

@@ -83,7 +83,6 @@ where
 {
     fn read(&mut self, words: &mut [Word<C>]) -> Result<(), Self::Error> {
         for word in words.iter_mut() {
-            // Should replace todo with nop_word
             *word = self.transfer_word_in_place(self.config.nop_word.as_())?;
         }
 
@@ -107,7 +106,6 @@ where
 
     #[inline]
     fn transfer_in_place<'w>(&mut self, words: &mut [Word<C>]) -> Result<(), Self::Error> {
-        // Can only ever do word-by-word to avoid DMA race conditions
         for word in words {
             let read = self.transfer_word_in_place(*word)?;
             *word = read;

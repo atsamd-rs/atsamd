@@ -736,13 +736,6 @@ where
         update(self.config.as_mut());
         self.config.as_mut().registers.enable_peripheral(true);
     }
-
-    /// Block until all the specified flags are set
-    fn block_on_flags(&mut self, flags: Flags) {
-        while !self.read_flags().contains(flags) {
-            core::hint::spin_loop();
-        }
-    }
 }
 
 impl<C, D> Uart<C, D>
