@@ -77,10 +77,7 @@ where
     #[inline]
     fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
         for byte in buf {
-            while !self.read_flags().contains(Flags::DRE) {
-                core::hint::spin_loop();
-            }
-
+            self.block_on_flags(Flags::DRE);
             unsafe { self.write_data(byte.as_()) };
         }
 
@@ -90,10 +87,7 @@ where
     /// Wait for a `TXC` flag
     #[inline]
     fn flush(&mut self) -> Result<(), Self::Error> {
-        while !self.read_flags().contains(Flags::TXC) {
-            core::hint::spin_loop();
-        }
-
+        self.block_on_flags(Flags::TXC);
         self.clear_flags(Flags::TXC);
         Ok(())
     }
@@ -112,10 +106,8 @@ where
         }
 
         for byte in buf.iter_mut() {
-            let flags = self.read_flags_errors()?;
-            while !flags.contains(Flags::RXC) {
-                core::hint::spin_loop();
-            }
+            self.read_flags_errors()?;
+            self.block_on_flags(Flags::RXC);
             *byte = unsafe { self.read_data().as_() };
         }
 
