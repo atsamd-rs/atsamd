@@ -1,6 +1,9 @@
 //! `embedded-hal` trait implementations for [`Uart`]s
 
-use super::{DataReg, Error, Flags, Receive, Transmit, Uart, ValidConfig};
+use super::{
+    Capability, Config, DataReg, EightBit, Error, Error as UartError, Flags, Receive, Transmit,
+    Uart, ValidConfig, ValidPads,
+};
 use crate::ehal_02::{
     blocking,
     serial::{Read, Write},
@@ -64,4 +67,72 @@ where
     D: Transmit,
     Uart<C, D>: Write<C::Word>,
 {
+}
+
+impl embedded_io::Error for UartError {
+    fn kind(&self) -> embedded_io::ErrorKind {
+        embedded_io::ErrorKind::Other
+    }
+}
+
+impl<C, D> embedded_io::ErrorType for Uart<C, D>
+where
+    C: ValidConfig,
+    D: Capability,
+{
+    type Error = UartError;
+}
+
+impl<P, D> embedded_io::Write for Uart<Config<P, EightBit>, D>
+where
+    P: ValidPads,
+    D: Transmit,
+{
+    #[inline]
+    fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
+        for byte in buf {
+            while !self.read_flags().contains(Flags::DRE) {
+                core::hint::spin_loop();
+            }
+
+            unsafe { self.write_data(byte.as_()) };
+        }
+
+        Ok(buf.len())
+    }
+
+    /// Wait for a `TXC` flag
+    #[inline]
+    fn flush(&mut self) -> Result<(), Self::Error> {
+        while !self.read_flags().contains(Flags::TXC) {
+            core::hint::spin_loop();
+        }
+
+        self.clear_flags(Flags::TXC);
+        Ok(())
+    }
+}
+
+impl<P, D> embedded_io::Read for Uart<Config<P, EightBit>, D>
+where
+    P: ValidPads,
+    D: Receive,
+{
+    /// Wait for an `RXC` flag, then read the word
+    #[inline]
+    fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
+        if buf.is_empty() {
+            return Ok(0);
+        }
+
+        for byte in buf.iter_mut() {
+            let flags = self.read_flags_errors()?;
+            while !flags.contains(Flags::RXC) {
+                core::hint::spin_loop();
+            }
+            *byte = unsafe { self.read_data().as_() };
+        }
+
+        Ok(buf.len())
+    }
 }
