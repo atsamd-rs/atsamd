@@ -675,7 +675,7 @@ pub trait Service: crate::typelevel::Sealed {
         pukcl_params.header.u2Status =
             super::PukclReturnCode::Severe(super::PukclReturnCodeSevere::ComputationNotStarted)
                 .into();
-        core::mem::transmute::<_, extern "C" fn(*mut PukclParams)>(Self::FUNCTION_ADDRESS)(
+        core::mem::transmute::<usize, extern "C" fn(*mut PukclParams)>(Self::FUNCTION_ADDRESS)(
             pukcl_params,
         )
     }
