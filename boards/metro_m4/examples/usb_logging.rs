@@ -9,7 +9,7 @@ use bsp::pac;
 
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
-use ehal::digital::v2::ToggleableOutputPin;
+use ehal::digital::StatefulOutputPin;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};

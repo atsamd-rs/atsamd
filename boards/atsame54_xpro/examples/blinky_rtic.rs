@@ -5,10 +5,9 @@ use atsame54_xpro as bsp;
 use bsp::hal;
 use bsp::hal::clock::v2 as clock;
 use dwt_systick_monotonic::DwtSystick;
-use dwt_systick_monotonic::ExtU32 as _;
+use dwt_systick_monotonic::{fugit::RateExtU32, ExtU32};
 // TODO: Any reason this cannot be in a HAL's prelude?
-use hal::ehal::digital::v2::StatefulOutputPin as _;
-use hal::prelude::*;
+use hal::ehal::digital::StatefulOutputPin;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
 
@@ -45,7 +44,7 @@ mod app {
             bsp::pin_alias!(pins.xosc1_x_in),
             bsp::pin_alias!(pins.xosc1_x_out),
             // Xosc1 on Same54Xpro is 12 MHz
-            12.MHz(),
+            12_u32.MHz(),
         )
         .enable();
 

@@ -19,8 +19,8 @@ use pac::Peripherals;
 
 use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel};
-use hal::ehal::blocking::i2c::WriteRead;
-use hal::prelude::*;
+use hal::ehal::i2c::I2c;
+use hal::fugit::RateExtU32;
 use hal::sercom::i2c;
 
 const LENGTH: usize = 1;
@@ -57,7 +57,7 @@ fn main() -> ! {
     let sercom3_clock = &clocks.sercom3_core(&gclk0).unwrap();
     let pads = i2c::Pads::new(sda, scl);
     let mut i2c = i2c::Config::new(&pm, peripherals.SERCOM3, pads, sercom3_clock.freq())
-        .baud(100.khz())
+        .baud(100.kHz())
         .enable();
 
     let mut buffer = [0x00; 1];

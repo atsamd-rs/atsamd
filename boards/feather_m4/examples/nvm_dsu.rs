@@ -12,7 +12,7 @@ use panic_halt as _;
 use panic_semihosting as _;
 
 use bsp::entry;
-use ehal::digital::v2::ToggleableOutputPin;
+use ehal::digital::StatefulOutputPin;
 use hal::clock::GenericClockController;
 use hal::dsu::Dsu;
 use hal::nvm::{retrieve_bank_size, Bank, Nvm, WriteGranularity, BLOCKSIZE};
