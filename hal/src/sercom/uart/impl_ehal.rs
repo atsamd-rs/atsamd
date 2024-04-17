@@ -22,12 +22,7 @@ where
     /// Wait for an `RXC` flag, then read the word
     #[inline]
     fn read(&mut self) -> nb::Result<C::Word, Error> {
-        let flags = self.read_flags_errors()?;
-        if flags.contains(Flags::RXC) {
-            unsafe { Ok(self.read_data().as_()) }
-        } else {
-            Err(WouldBlock)
-        }
+        <Self as embedded_hal_nb::serial::Read<C::Word>>::read(self)
     }
 }
 
@@ -36,28 +31,18 @@ where
     C: ValidConfig,
     D: Transmit,
 {
-    type Error = core::convert::Infallible;
+    type Error = UartError;
 
     /// Wait for a `DRE` flag, then write a word
     #[inline]
     fn write(&mut self, word: C::Word) -> nb::Result<(), Self::Error> {
-        if self.read_flags().contains(Flags::DRE) {
-            unsafe { self.write_data(word.as_()) };
-            Ok(())
-        } else {
-            Err(WouldBlock)
-        }
+        <Self as embedded_hal_nb::serial::Write<C::Word>>::write(self, word)
     }
 
     /// Wait for a `TXC` flag
     #[inline]
     fn flush(&mut self) -> nb::Result<(), Self::Error> {
-        if self.read_flags().contains(Flags::TXC) {
-            self.clear_flags(Flags::TXC);
-            Ok(())
-        } else {
-            Err(WouldBlock)
-        }
+        <Self as embedded_hal_nb::serial::Write<C::Word>>::flush(self)
     }
 }
 
@@ -70,6 +55,7 @@ where
 }
 
 impl embedded_io::Error for UartError {
+    #[inline]
     fn kind(&self) -> embedded_io::ErrorKind {
         embedded_io::ErrorKind::Other
     }
@@ -134,5 +120,74 @@ where
         }
 
         Ok(buf.len())
+    }
+}
+
+impl embedded_hal_nb::serial::Error for UartError {
+    #[inline]
+    fn kind(&self) -> embedded_hal_nb::serial::ErrorKind {
+        use embedded_hal_nb::serial::ErrorKind;
+
+        match self {
+            Self::ParityError => ErrorKind::Parity,
+            Self::FrameError => ErrorKind::FrameFormat,
+            Self::Overflow => ErrorKind::Overrun,
+            _ => ErrorKind::Other,
+        }
+    }
+}
+
+impl<C, D, W> embedded_hal_nb::serial::ErrorType for Uart<C, D>
+where
+    C: ValidConfig<Word = W>,
+    W: Copy,
+    D: Capability,
+{
+    type Error = UartError;
+}
+
+impl<C, D> embedded_hal_nb::serial::Read<C::Word> for Uart<C, D>
+where
+    C: ValidConfig,
+    D: Receive,
+    DataReg: AsPrimitive<C::Word>,
+{
+    #[inline]
+    fn read(&mut self) -> nb::Result<C::Word, Self::Error> {
+        // Wait for an `RXC` flag, then read the word
+        let flags = self.read_flags_errors()?;
+        if flags.contains(Flags::RXC) {
+            unsafe { Ok(self.read_data().as_()) }
+        } else {
+            Err(WouldBlock)
+        }
+    }
+}
+
+impl<C, D> embedded_hal_nb::serial::Write<C::Word> for Uart<C, D>
+where
+    C: ValidConfig,
+    D: Transmit,
+{
+    /// Wait for a `DRE` flag, then write a word
+    #[inline]
+    fn write(&mut self, word: C::Word) -> nb::Result<(), Self::Error> {
+        if self.read_flags().contains(Flags::DRE) {
+            unsafe { self.write_data(word.as_()) };
+            Ok(())
+        } else {
+            Err(WouldBlock)
+        }
+    }
+
+    /// Wait for a `TXC` flag
+    #[inline]
+    fn flush(&mut self) -> nb::Result<(), Self::Error> {
+        if self.read_flags().contains(Flags::TXC) {
+            self.clear_flags(Flags::TXC);
+            Ok(())
+        } else {
+            Err(WouldBlock)
+        }
     }
 }
