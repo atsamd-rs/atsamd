@@ -45,6 +45,11 @@
       "build": "cargo build --examples --all-features",
       "target": "thumbv7em-none-eabihf"
     },
+    "feather_m4_can": {
+      "tier": 2,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv7em-none-eabihf"
+    },
     "gemma_m0": {
       "tier": 2,
       "build": "cargo build --examples --all-features",
