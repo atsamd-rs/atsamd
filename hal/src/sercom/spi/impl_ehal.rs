@@ -19,12 +19,10 @@ impl spi::Error for Error {
     }
 }
 
-impl<P, M, C> ErrorType for Spi<Config<P, M, C>, Duplex>
+impl<C, D> ErrorType for Spi<C, D>
 where
-    Config<P, M, C>: ValidConfig,
-    P: ValidPads,
-    M: MasterMode,
-    C: Size,
+    C: ValidConfig,
+    D: Capability,
 {
     type Error = Error;
 }

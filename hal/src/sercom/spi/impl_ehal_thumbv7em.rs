@@ -91,6 +91,7 @@
 //! the different [`Size`] and [`Capability`] options.
 
 use crate::ehal_02;
+use crate::ehal_nb;
 use crate::sercom::spi::{
     AtomicSize, Capability, Config, DataWidth, Duplex, DynLength, Error, Flags, GreaterThan4,
     Length, MasterMode, OpMode, Receive, Rx, Slave, Spi, Status, Tx, ValidConfig, ValidPads, Word,
@@ -101,16 +102,16 @@ use typenum::{U1, U2, U3, U4};
 
 use crate::pac::sercom0::RegisterBlock;
 
-impl embedded_hal_nb::serial::Error for Error {
-    fn kind(&self) -> embedded_hal_nb::serial::ErrorKind {
+impl ehal_nb::serial::Error for Error {
+    fn kind(&self) -> ehal_nb::serial::ErrorKind {
         match self {
-            Error::Overflow => embedded_hal_nb::serial::ErrorKind::Overrun,
-            Error::LengthError => embedded_hal_nb::serial::ErrorKind::Other,
+            Error::Overflow => ehal_nb::serial::ErrorKind::Overrun,
+            Error::LengthError => ehal_nb::serial::ErrorKind::Other,
         }
     }
 }
 
-impl<C, D> embedded_hal_nb::serial::ErrorType for Spi<C, D>
+impl<C, D> ehal_nb::serial::ErrorType for Spi<C, D>
 where
     C: ValidConfig,
     D: Capability,
@@ -136,13 +137,13 @@ where
 // serial::Read
 //=============================================================================
 
-/// Implement [`embedded_hal_nb::serial::Read`] for [`Rx`] [`Spi`] structs in a [`MasterMode`]
+/// Implement [`ehal_nb::serial::Read`] for [`Rx`] [`Spi`] structs in a [`MasterMode`]
 ///
 /// `serial::Read` is only implemented for `Spi` structs with `Rx`
 /// [`Capability`]. In a `MasterMode`, `Read` has to initiate transactions, so
 /// it keeps track of the transaction state. If a transaction is in progress,
 /// it will wait on `RXC`. If not, it will wait on `DRE`, and then send `0`.
-impl<P, M, L> embedded_hal_nb::serial::Read<L::Word> for Spi<Config<P, M, L>, Rx>
+impl<P, M, L> ehal_nb::serial::Read<L::Word> for Spi<Config<P, M, L>, Rx>
 where
     Config<P, M, L>: ValidConfig,
     P: ValidPads,
@@ -169,7 +170,7 @@ where
 
 /// Implement [`serial::Read`] for [`Rx`] [`Spi`] structs in a [`MasterMode`]
 ///
-/// Refer to the [`embedded_hal_nb::serial::Read`] implementation of [`Spi`] for more details.
+/// Refer to the [`ehal_nb::serial::Read`] implementation of [`Spi`] for more details.
 impl<P, M, L> ehal_02::serial::Read<L::Word> for Spi<Config<P, M, L>, Rx>
 where
     Config<P, M, L>: ValidConfig,
@@ -183,7 +184,7 @@ where
 
     #[inline]
     fn read(&mut self) -> nb::Result<L::Word, Error> {
-        <Self as embedded_hal_nb::serial::Read<L::Word>>::read(self)
+        <Self as ehal_nb::serial::Read<L::Word>>::read(self)
     }
 }
 
@@ -194,7 +195,7 @@ where
 /// [`Capability`]. In `Slave` `OpMode`, `Read` does not have to initiate
 /// transactions, so it does not have to store any internal state. It only has
 /// to wait on `RXC`.
-impl<P, L> embedded_hal_nb::serial::Read<L::Word> for Spi<Config<P, Slave, L>, Rx>
+impl<P, L> ehal_nb::serial::Read<L::Word> for Spi<Config<P, Slave, L>, Rx>
 where
     Config<P, Slave, L>: ValidConfig,
     P: ValidPads,
@@ -216,7 +217,7 @@ where
 /// Implement [`serial::Read`] for [`Rx`] [`Spi`] structs in [`Slave`]
 /// [`OpMode`]
 ///
-/// Refer to the [`embedded_hal_nb::serial::Read`] implementation of [`Spi`] for more details.
+/// Refer to the [`ehal_nb::serial::Read`] implementation of [`Spi`] for more details.
 impl<P, L> ehal_02::serial::Read<L::Word> for Spi<Config<P, Slave, L>, Rx>
 where
     Config<P, Slave, L>: ValidConfig,
@@ -229,7 +230,7 @@ where
 
     #[inline]
     fn read(&mut self) -> nb::Result<L::Word, Error> {
-        <Self as embedded_hal_nb::serial::Read<L::Word>>::read(self)
+        <Self as ehal_nb::serial::Read<L::Word>>::read(self)
     }
 }
 
@@ -237,12 +238,12 @@ where
 // serial::Write
 //=============================================================================
 
-/// Implement [`embedded_hal_nb::serial::Write`] for [`Tx`] [`Spi`] structs
+/// Implement [`ehal_nb::serial::Write`] for [`Tx`] [`Spi`] structs
 ///
 /// `serial::Write` is only implemented for `Spi` structs with `Tx`
 /// [`Capability`]. Because the `Capability` is `Tx`, this implementation never
 /// reads the DATA register and ignores all buffer overflow errors.
-impl<C> embedded_hal_nb::serial::Write<C::Word> for Spi<C, Tx>
+impl<C> ehal_nb::serial::Write<C::Word> for Spi<C, Tx>
 where
     C: ValidConfig,
     C::Size: AtomicSize,
@@ -285,12 +286,12 @@ where
 
     #[inline]
     fn write(&mut self, word: C::Word) -> nb::Result<(), Error> {
-        <Self as embedded_hal_nb::serial::Write<C::Word>>::write(self, word)
+        <Self as ehal_nb::serial::Write<C::Word>>::write(self, word)
     }
 
     #[inline]
     fn flush(&mut self) -> nb::Result<(), Error> {
-        <Self as embedded_hal_nb::serial::Write<C::Word>>::flush(self)
+        <Self as ehal_nb::serial::Write<C::Word>>::flush(self)
     }
 }
 
@@ -308,6 +309,41 @@ where
 //=============================================================================
 // spi::FullDuplex
 //=============================================================================
+
+// Implement [`spi::FullDuplex`] for [`Spi`] structs with [`AtomicSize`]
+///
+/// `spi::FullDuplex` is only implemented when the `Spi` struct has [`Duplex`]
+/// [`Capability`] and the transaction [`Length`] is `<= 4` bytes. When the
+/// [`Length`] is `<= 4`, the [`Word`] is a primitive integer, with a size that
+/// depends on the [`Length`] (`u8`, `u16` or `u32`).
+impl<C> ehal_nb::spi::FullDuplex<C::Word> for Spi<C, Duplex>
+where
+    C: ValidConfig,
+    C::Size: AtomicSize,
+    C::Word: PrimInt + AsPrimitive<DataWidth>,
+    DataWidth: AsPrimitive<C::Word>,
+{
+    #[inline]
+    fn read(&mut self) -> nb::Result<C::Word, Error> {
+        let flags = self.read_flags_errors()?;
+        if flags.contains(Flags::RXC) {
+            Ok(self.config.as_mut().regs.read_data().as_())
+        } else {
+            Err(WouldBlock)
+        }
+    }
+
+    #[inline]
+    fn write(&mut self, word: C::Word) -> nb::Result<(), Error> {
+        let flags = self.read_flags_errors()?;
+        if flags.contains(Flags::DRE) {
+            self.config.as_mut().regs.write_data(word.as_());
+            Ok(())
+        } else {
+            Err(WouldBlock)
+        }
+    }
+}
 
 /// Implement [`spi::FullDuplex`] for [`Spi`] structs with [`AtomicSize`]
 ///
