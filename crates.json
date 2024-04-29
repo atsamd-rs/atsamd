@@ -1,5 +1,35 @@
 {
   "boards": {
+    "atsame54_xpro": {
+      "tier": 1,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv7em-none-eabihf"
+    },
+    "feather_m0": {
+      "tier": 1,
+      "build": "cargo build --examples",
+      "target": "thumbv6m-none-eabi"
+    },
+    "feather_m4": {
+      "tier": 1,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv7em-none-eabihf"
+    },
+    "metro_m0": {
+      "tier": 1,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv6m-none-eabi"
+    },
+    "metro_m4": {
+      "tier": 1,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv7em-none-eabihf"
+    },
+    "samd11_bare": {
+      "tier": 1,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv6m-none-eabi"
+    },
     "arduino_mkr1000": {
       "tier": 2,
       "build": "cargo build --examples --all-features",
@@ -20,11 +50,6 @@
       "build": "cargo build --examples --all-features",
       "target": "thumbv6m-none-eabi"
     },
-    "atsame54_xpro": {
-      "tier": 1,
-      "build": "cargo build --examples --all-features",
-      "target": "thumbv7em-none-eabihf"
-    },
     "circuit_playground_express": {
       "tier": 2,
       "build": "cargo build --examples --all-features",
@@ -32,16 +57,6 @@
     },
     "edgebadge": {
       "tier": 2,
-      "build": "cargo build --examples --all-features",
-      "target": "thumbv7em-none-eabihf"
-    },
-    "feather_m0": {
-      "tier": 1,
-      "build": "cargo build --examples",
-      "target": "thumbv6m-none-eabi"
-    },
-    "feather_m4": {
-      "tier": 1,
       "build": "cargo build --examples --all-features",
       "target": "thumbv7em-none-eabihf"
     },
@@ -67,16 +82,6 @@
     },
     "matrix_portal_m4": {
       "tier": 2,
-      "build": "cargo build --examples --all-features",
-      "target": "thumbv7em-none-eabihf"
-    },
-    "metro_m0": {
-      "tier": 1,
-      "build": "cargo build --examples --all-features",
-      "target": "thumbv6m-none-eabi"
-    },
-    "metro_m4": {
-      "tier": 1,
       "build": "cargo build --examples --all-features",
       "target": "thumbv7em-none-eabihf"
     },
@@ -109,11 +114,6 @@
       "tier": 2,
       "build": "cargo build --examples --all-features",
       "target": "thumbv7em-none-eabihf"
-    },
-    "samd11_bare": {
-      "tier": 1,
-      "build": "cargo build --examples --all-features",
-      "target": "thumbv6m-none-eabi"
     },
     "samd21_mini": {
       "tier": 2,
@@ -175,7 +175,6 @@
     "samd11c": {
       "features": [
         "samd11c",
-        "unproven",
         "dma",
         "defmt"
       ],
@@ -184,7 +183,6 @@
     "samd11d": {
       "features": [
         "samd11d",
-        "unproven",
         "dma",
         "defmt"
       ],
@@ -193,7 +191,6 @@
     "samd21g": {
       "features": [
         "samd21g",
-        "unproven",
         "usb",
         "dma",
         "defmt"
@@ -203,7 +200,6 @@
     "samd21j": {
       "features": [
         "samd21j",
-        "unproven",
         "usb",
         "dma",
         "defmt"
@@ -213,7 +209,6 @@
     "samd51g": {
       "features": [
         "samd51g",
-        "unproven",
         "usb",
         "sdmmc",
         "dma",
@@ -224,7 +219,6 @@
     "samd51j": {
       "features": [
         "samd51j",
-        "unproven",
         "usb",
         "sdmmc",
         "dma",
@@ -235,7 +229,6 @@
     "samd51n": {
       "features": [
         "samd51n",
-        "unproven",
         "usb",
         "sdmmc",
         "dma",
@@ -246,7 +239,6 @@
     "samd51p": {
       "features": [
         "samd51p",
-        "unproven",
         "usb",
         "sdmmc",
         "dma",
@@ -257,75 +249,75 @@
   },
   "hal_build_variants": {
     "samd11c":  {
-      "features": [ "samd11c", "unproven", "dma", "rtic", "defmt" ],
+      "features": [ "samd11c", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd11d":  {
-      "features": [ "samd11d", "unproven", "dma", "rtic", "defmt" ],
+      "features": [ "samd11d", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21e":  {
-      "features": [ "samd21e", "unproven", "usb", "dma", "rtic", "defmt" ],
+      "features": [ "samd21e", "usb", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21el":  {
-      "features": [ "samd21el", "unproven", "dma", "rtic", "defmt" ],
+      "features": [ "samd21el", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21g":  {
-      "features": [ "samd21g", "unproven", "usb", "dma", "rtic", "defmt" ],
+      "features": [ "samd21g", "usb", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21gl":  {
-      "features": [ "samd21gl", "unproven", "dma", "rtic", "defmt" ],
+      "features": [ "samd21gl", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21j":  {
-      "features": [ "samd21j", "unproven", "usb", "dma", "rtic", "defmt" ],
+      "features": [ "samd21j", "usb", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd51g":  {
-      "features": [ "samd51g", "unproven", "usb", "dma", "sdmmc", "rtic", "defmt" ],
+      "features": [ "samd51g", "usb", "dma", "sdmmc", "rtic", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51j": {
-      "features": [ "samd51j", "unproven", "usb", "dma", "sdmmc", "rtic", "defmt" ],
+      "features": [ "samd51j", "usb", "dma", "sdmmc", "rtic", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51n": {
-      "features": [ "samd51n", "unproven", "usb", "dma", "sdmmc", "rtic", "defmt" ],
+      "features": [ "samd51n", "usb", "dma", "sdmmc", "rtic", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51p": {
-      "features": [ "samd51p", "unproven", "usb", "dma", "sdmmc", "rtic", "defmt" ],
+      "features": [ "samd51p", "usb", "dma", "sdmmc", "rtic", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same51g": {
-      "features": [ "same51g", "unproven", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
+      "features": [ "same51g", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same51j": {
-      "features": [ "same51j", "unproven", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
+      "features": [ "same51j", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same51n": {
-      "features": [ "same51n", "unproven", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
+      "features": [ "same51n", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same53j": {
-      "features": [ "same53j", "unproven", "usb", "dma", "sdmmc", "rtic", "defmt" ],
+      "features": [ "same53j", "usb", "dma", "sdmmc", "rtic", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same53n": {
-      "features": [ "same53n", "unproven", "usb", "dma", "sdmmc", "rtic", "defmt" ],
+      "features": [ "same53n", "usb", "dma", "sdmmc", "rtic", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same54n": {
-      "features": [ "same54n", "unproven", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
+      "features": [ "same54n", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same54p": {
-      "features": [ "same54p", "unproven", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
+      "features": [ "same54p", "usb", "dma", "sdmmc", "rtic", "can", "defmt" ],
       "target": "thumbv7em-none-eabihf"
     }
   }

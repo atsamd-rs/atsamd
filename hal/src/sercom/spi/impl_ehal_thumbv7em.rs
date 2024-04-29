@@ -671,7 +671,6 @@ macro_rules! impl_blocking_spi_write_iter {
             /// (`u8`, `u16` or `u32`).
             ///
             /// [`WriteIter`]: blocking::spi::WriteIter
-            #[cfg(feature = "unproven")]
             impl<P, M> $crate::ehal_02::blocking::spi::WriteIter<Word<$Length>> for Spi<Config<P, M, $Length>, Duplex>
             where
                 Config<P, M, $Length>: ValidConfig,
@@ -719,7 +718,6 @@ macro_rules! impl_blocking_spi_write_iter {
             /// reads the DATA register and ignores all buffer overflow errors.
             ///
             /// [`WriteIter`]: blocking::spi::WriteIter
-            #[cfg(feature = "unproven")]
             impl<P, M> $crate::ehal_02::blocking::spi::WriteIter<Word<$Length>> for Spi<Config<P, M, $Length>, Tx>
             where
                 Config<P, M, $Length>: ValidConfig,

@@ -923,7 +923,6 @@ where
     }
 }
 
-#[cfg(feature = "unproven")]
 impl<I, C> InputPin for Pin<I, Input<C>>
 where
     I: PinId,
@@ -939,7 +938,6 @@ where
     }
 }
 
-#[cfg(feature = "unproven")]
 impl<I, C> InputPin for Pin<I, Interrupt<C>>
 where
     I: PinId,
@@ -992,7 +990,6 @@ where
     }
 }
 
-#[cfg(feature = "unproven")]
 impl<I> crate::ehal_02::digital::v2::InputPin for Pin<I, ReadableOutput>
 where
     I: PinId,
@@ -1008,7 +1005,6 @@ where
     }
 }
 
-#[cfg(feature = "unproven")]
 impl<I, C> crate::ehal_02::digital::v2::InputPin for Pin<I, Input<C>>
 where
     I: PinId,
@@ -1025,7 +1021,6 @@ where
     }
 }
 
-#[cfg(feature = "unproven")]
 impl<I, C> crate::ehal_02::digital::v2::InputPin for Pin<I, Interrupt<C>>
 where
     I: PinId,
@@ -1042,7 +1037,6 @@ where
     }
 }
 
-#[cfg(feature = "unproven")]
 impl<I, C> crate::ehal_02::digital::v2::ToggleableOutputPin for Pin<I, Output<C>>
 where
     I: PinId,
@@ -1056,7 +1050,6 @@ where
     }
 }
 
-#[cfg(feature = "unproven")]
 impl<I, C> crate::ehal_02::digital::v2::StatefulOutputPin for Pin<I, Output<C>>
 where
     I: PinId,

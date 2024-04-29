@@ -1,4 +1,3 @@
-#[cfg(feature = "unproven")]
 use crate::ehal_02::digital::v2::InputPin;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
@@ -157,7 +156,6 @@ crate::paste::item! {
         }
     }
 
-    #[cfg(feature = "unproven")]
     impl<GPIO, C> InputPin for [<$PadType $num>]<GPIO>
     where
         GPIO: AnyPin<Mode = Interrupt<C>>,

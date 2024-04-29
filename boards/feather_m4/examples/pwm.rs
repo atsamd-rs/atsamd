@@ -2,8 +2,6 @@
 #![no_main]
 
 // Pulse Width Modulation
-//
-// cargo build --features="unproven"
 
 use bsp::hal;
 use feather_m4 as bsp;

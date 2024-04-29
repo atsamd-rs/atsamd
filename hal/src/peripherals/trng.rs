@@ -2,7 +2,6 @@ use crate::pac::{MCLK, TRNG};
 
 use rand_core::{CryptoRng, RngCore};
 
-#[cfg(feature = "unproven")]
 use crate::ehal_02::blocking::rng::Read;
 
 pub struct Trng(TRNG);
@@ -63,7 +62,6 @@ impl RngCore for Trng {
 
 impl CryptoRng for Trng {}
 
-#[cfg(feature = "unproven")]
 impl Read for Trng {
     type Error = ();
     fn read(&mut self, buffer: &mut [u8]) -> Result<(), Self::Error> {

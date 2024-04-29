@@ -530,7 +530,6 @@ impl OutputPin for DynPin {
     }
 }
 
-#[cfg(feature = "unproven")]
 impl InputPin for DynPin {
     #[inline]
     fn is_high(&mut self) -> Result<bool, Self::Error> {
@@ -542,7 +541,6 @@ impl InputPin for DynPin {
     }
 }
 
-#[cfg(feature = "unproven")]
 impl StatefulOutputPin for DynPin {
     #[inline]
     fn is_set_high(&mut self) -> Result<bool, Self::Error> {
@@ -570,7 +568,6 @@ impl crate::ehal_02::digital::v2::OutputPin for DynPin {
     }
 }
 
-#[cfg(feature = "unproven")]
 impl crate::ehal_02::digital::v2::InputPin for DynPin {
     type Error = Error;
     #[inline]
@@ -583,7 +580,6 @@ impl crate::ehal_02::digital::v2::InputPin for DynPin {
     }
 }
 
-#[cfg(feature = "unproven")]
 impl crate::ehal_02::digital::v2::ToggleableOutputPin for DynPin {
     type Error = Error;
     #[inline]
@@ -592,7 +588,6 @@ impl crate::ehal_02::digital::v2::ToggleableOutputPin for DynPin {
     }
 }
 
-#[cfg(feature = "unproven")]
 impl crate::ehal_02::digital::v2::StatefulOutputPin for DynPin {
     #[inline]
     fn is_set_high(&self) -> Result<bool, Self::Error> {

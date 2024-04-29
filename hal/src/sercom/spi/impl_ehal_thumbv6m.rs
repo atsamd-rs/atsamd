@@ -592,7 +592,6 @@ impl_blocking_spi_write!(EightBit, NineBit);
 // blocking::spi::WriteIter
 //=============================================================================
 
-#[cfg(feature = "unproven")]
 macro_rules! impl_blocking_spi_write_iter {
     ( $($CharSize:ident),+ ) => {
         $(
@@ -682,5 +681,4 @@ macro_rules! impl_blocking_spi_write_iter {
     };
 }
 
-#[cfg(feature = "unproven")]
 impl_blocking_spi_write_iter!(EightBit, NineBit);
