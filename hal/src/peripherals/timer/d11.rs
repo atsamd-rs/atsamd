@@ -78,7 +78,7 @@ where
     }
 
     fn start<T: Into<NanosDurationU32>>(&mut self, timeout: T) {
-        let params = TimerParams::new_us(timeout.into(), self.freq);
+        let params = TimerParams::new_ns(timeout.into(), self.freq);
         let divider = params.divider;
         let cycles = params.cycles;
 
