@@ -14,7 +14,7 @@ use bsp::{entry, periph_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::ehal::delay::DelayNs;
-use hal::ehal_nb::serial::Write;
+use hal::ehal_nb::spi::FullDuplex;
 use hal::fugit::RateExtU32;
 use hal::nb;
 use hal::pac::{CorePeripherals, Peripherals};
