@@ -2,8 +2,6 @@
 
 use embedded_hal_02 as ehal_02;
 pub use embedded_hal_1 as ehal;
-#[cfg(feature = "async")]
-pub use embedded_hal_async;
 pub use embedded_io;
 pub use fugit;
 pub use paste;
@@ -81,6 +79,7 @@ pub mod dmac;
 #[doc(hidden)]
 mod peripherals;
 #[doc(inline)]
+#[allow(unused_imports)]
 pub use crate::peripherals::*;
 
 #[macro_use]

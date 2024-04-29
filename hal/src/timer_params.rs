@@ -16,7 +16,7 @@ impl TimerParams {
     }
 
     /// calculates TimerParams from a given period based timeout.
-    pub fn new_us(timeout: Nanoseconds, src_freq: Hertz) -> Self {
+    pub fn new_ns(timeout: Nanoseconds, src_freq: Hertz) -> Self {
         let ticks: u32 =
             (timeout.to_nanos() as u64 * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
         Self::new_from_ticks(ticks)
@@ -51,13 +51,13 @@ impl TimerParams {
 
 #[cfg(test)]
 mod tests {
-    use crate::prelude::*;
+    use crate::fugit::{ExtU32, RateExtU32};
     use crate::timer_params::TimerParams;
 
     #[test]
     fn timer_params_hz_and_us_same_1hz() {
         let tp_from_hz = TimerParams::new(1.Hz(), 48.MHz());
-        let tp_from_us = TimerParams::new_us(1_000_000.micros(), 48.MHz());
+        let tp_from_us = TimerParams::new_ns(1_000_000.micros(), 48.MHz());
 
         assert_eq!(tp_from_hz.divider, tp_from_us.divider);
         assert_eq!(tp_from_hz.cycles, tp_from_us.cycles);
@@ -66,7 +66,7 @@ mod tests {
     #[test]
     fn timer_params_hz_and_us_same_3hz() {
         let tp_from_hz = TimerParams::new(3.Hz(), 48.MHz());
-        let tp_from_us = TimerParams::new_us(333_333.micros(), 48.MHz());
+        let tp_from_us = TimerParams::new_ns(333_333.micros(), 48.MHz());
 
         // There's some rounding error here, but it is extremely small (1 cycle
         // difference)

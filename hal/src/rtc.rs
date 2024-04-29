@@ -1,14 +1,15 @@
 //! Real-time clock/counter
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+use fugit::NanosDurationU32;
 
-use crate::ehal_02::timer::{CountDown, Periodic};
+use crate::ehal_02;
 use crate::pac::rtc::{MODE0, MODE2};
 use crate::pac::RTC;
 use crate::time::{Hertz, Nanoseconds};
 use crate::timer_traits::InterruptDrivenTimer;
 use crate::typelevel::Sealed;
+use core::convert::Infallible;
 use core::marker::PhantomData;
-use void::Void;
 
 #[cfg(feature = "sdmmc")]
 use embedded_sdmmc::{TimeSource, Timestamp};
@@ -277,7 +278,7 @@ impl Rtc<Count32Mode> {
     /// This resets the internal counter and sets the prescaler to match the
     /// provided timeout. You should configure the prescaler using the longest
     /// timeout you plan to measure.
-    pub fn reset_and_compute_prescaler<T: Into<<Self as CountDown>::Time>>(
+    pub fn reset_and_compute_prescaler<T: Into<<Self as ehal_02::timer::CountDown>::Time>>(
         &mut self,
         timeout: T,
     ) -> &Self {
@@ -344,13 +345,36 @@ impl Rtc<ClockMode> {
 
 // --- Timer / Counter Functionality
 
-impl Periodic for Rtc<Count32Mode> {}
-impl CountDown for Rtc<Count32Mode> {
+impl ehal_02::timer::Periodic for Rtc<Count32Mode> {}
+impl ehal_02::timer::CountDown for Rtc<Count32Mode> {
     type Time = Nanoseconds;
 
     fn start<T>(&mut self, timeout: T)
     where
         T: Into<Self::Time>,
+    {
+        <Self as InterruptDrivenTimer>::start(self, timeout);
+    }
+
+    fn wait(&mut self) -> nb::Result<(), void::Void> {
+        // Unwrapping an unreacheable error is totally OK
+        <Self as InterruptDrivenTimer>::wait(self).unwrap();
+        Ok(())
+    }
+}
+
+impl InterruptDrivenTimer for Rtc<Count32Mode> {
+    /// Enable the interrupt generation for this hardware timer.
+    /// This method only sets the clock configuration to trigger
+    /// the interrupt; it does not configure the interrupt controller
+    /// or define an interrupt handler.
+    fn enable_interrupt(&mut self) {
+        self.mode0().intenset.write(|w| w.cmp0().set_bit());
+    }
+
+    fn start<T>(&mut self, timeout: T)
+    where
+        T: Into<NanosDurationU32>,
     {
         let params = TimerParams::new_us(timeout, self.rtc_clock_freq);
         let divider = params.divider;
@@ -376,7 +400,7 @@ impl CountDown for Rtc<Count32Mode> {
         });
     }
 
-    fn wait(&mut self) -> nb::Result<(), Void> {
+    fn wait(&mut self) -> nb::Result<(), Infallible> {
         if self.mode0().intflag.read().cmp0().bit_is_set() {
             // Writing a 1 clears the flag
             self.mode0().intflag.modify(|_, w| w.cmp0().set_bit());
@@ -384,16 +408,6 @@ impl CountDown for Rtc<Count32Mode> {
         } else {
             Err(nb::Error::WouldBlock)
         }
-    }
-}
-
-impl InterruptDrivenTimer for Rtc<Count32Mode> {
-    /// Enable the interrupt generation for this hardware timer.
-    /// This method only sets the clock configuration to trigger
-    /// the interrupt; it does not configure the interrupt controller
-    /// or define an interrupt handler.
-    fn enable_interrupt(&mut self) {
-        self.mode0().intenset.write(|w| w.cmp0().set_bit());
     }
 
     /// Disables interrupt generation for this hardware timer.
