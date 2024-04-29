@@ -1,6 +1,6 @@
 # Unreleased Changes
 
-- Implement `embedded-hal` `1.0` for GPIO, SPI, I2C, UART 
+- Implement `embedded-hal` `1.0` for GPIO, SPI, I2C, UART, delay and PWM 
 - CI/CD pipeline now uses `cargo clippy` instead of `cargo build` and denies clippy warnings by default
 - Fix HAL clippy lints
 - Add compile error for combined `library` and `dma` features
