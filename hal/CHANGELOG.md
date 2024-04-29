@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Remove `unproven` Cargo feature
 - Implement `embedded-hal` `1.0` for GPIO, SPI, I2C, UART, delay and PWM 
 - CI/CD pipeline now uses `cargo clippy` instead of `cargo build` and denies clippy warnings by default
 - Fix HAL clippy lints
