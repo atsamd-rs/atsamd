@@ -32,8 +32,9 @@ impl Delay {
 }
 
 impl DelayNs for Delay {
-    // The default method is delay_ns. If we don't provide implementations for delay_us and delay_ms, the trait impl
-    // will use delay_ns to implement the other two methods. As the delay implementation is actually defined in terms
+    // The default method is delay_ns. If we don't provide implementations for
+    // delay_us and delay_ms, the trait impl will use delay_ns to implement the
+    // other two methods. As the delay implementation is actually defined in terms
     // of microseconds, we need to provide implementations for all three methods.
     fn delay_ns(&mut self, ns: u32) {
         self.delay_us(ns / 1000);

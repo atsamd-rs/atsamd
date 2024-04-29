@@ -1297,7 +1297,8 @@ where
         self.config
     }
 
-    /// Block until at least one of the flags specified in `flags`, or `ERROR`, is set.
+    /// Block until at least one of the flags specified in `flags`, or `ERROR`,
+    /// is set.
     ///
     /// # Returns `Err(Error)` if an error is detected.
     fn block_on_flags(&mut self, flags: Flags) -> Result<(), Error> {
