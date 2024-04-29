@@ -13,8 +13,11 @@ use panic_semihosting as _;
 use bsp::{entry, periph_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
+use hal::ehal::delay::DelayNs;
+use hal::ehal_nb::serial::Write;
+use hal::fugit::RateExtU32;
+use hal::nb;
 use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {
@@ -41,8 +44,8 @@ fn main() -> ! {
 
     loop {
         for byte in b"Hello, world!" {
-            nb::block!(spi.send(*byte)).unwrap();
+            nb::block!(spi.write(*byte)).unwrap();
         }
-        delay.delay_ms(1000u16);
+        delay.delay_ms(1000);
     }
 }

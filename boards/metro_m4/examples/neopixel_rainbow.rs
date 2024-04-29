@@ -14,9 +14,10 @@ use panic_semihosting as _;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
+use hal::ehal::delay::DelayNs;
 use hal::time::Hertz;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 use pac::{CorePeripherals, Peripherals};
 
 use smart_leds::{
@@ -54,7 +55,7 @@ fn main() -> ! {
                 val: 32,
             })];
             neopixel.write(colors.iter().cloned()).unwrap();
-            delay.delay_ms(5u8);
+            delay.delay_ms(5);
         }
     }
 }

@@ -2,8 +2,10 @@
 
 use embedded_hal_02 as ehal_02;
 pub use embedded_hal_1 as ehal;
+pub use embedded_hal_nb as ehal_nb;
 pub use embedded_io;
 pub use fugit;
+pub use nb;
 pub use paste;
 pub mod typelevel;
 

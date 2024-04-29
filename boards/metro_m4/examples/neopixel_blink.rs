@@ -14,9 +14,10 @@ use panic_semihosting as _;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
+use hal::ehal::delay::DelayNs;
 use hal::time::Hertz;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 use pac::{CorePeripherals, Peripherals};
 
 use ws2812_timer_delay as ws2812;
@@ -49,11 +50,11 @@ fn main() -> ! {
         neopixel
             .write(brightness(data.iter().cloned(), 32))
             .unwrap();
-        delay.delay_ms(250u8);
+        delay.delay_ms(250);
         let data2 = [RGB8::default(); 1];
         neopixel
             .write(brightness(data2.iter().cloned(), 32))
             .unwrap();
-        delay.delay_ms(250u8);
+        delay.delay_ms(250);
     }
 }

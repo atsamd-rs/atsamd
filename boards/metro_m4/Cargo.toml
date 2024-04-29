@@ -33,6 +33,8 @@ features = ["critical-section-single-core"]
 
 [dev-dependencies]
 cortex-m = "0.7"
+embedded-hal = "1.0"
+embedded-hal-nb = "1.0"
 usbd-serial = "0.2"
 panic-probe = "0.3"
 panic-halt = "0.2"
