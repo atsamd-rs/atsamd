@@ -21,7 +21,7 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::ehal::delay::DelayNs;
 use hal::ehal::digital::OutputPin;
-use hal::embedded_hal_nb::serial::{Read, Write};
+use hal::ehal_nb::serial::{Read, Write};
 use hal::fugit::RateExtU32;
 use hal::nb;
 use hal::pac::gclk::genctrl::SRCSELECT_A;

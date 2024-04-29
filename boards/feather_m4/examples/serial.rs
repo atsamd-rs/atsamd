@@ -13,7 +13,7 @@ use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::ehal::delay::DelayNs;
-use hal::embedded_hal_nb::serial::Write;
+use hal::ehal_nb::serial::Write;
 use hal::fugit::RateExtU32;
 use hal::nb;
 use hal::pac::gclk::genctrl::SRCSELECT_A;
