@@ -1,7 +1,6 @@
 use atsamd_hal_macros::hal_cfg;
 
 use crate::clock;
-use crate::ehal_02::{Pwm, PwmPin};
 use crate::pac::PM;
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
@@ -86,7 +85,25 @@ impl $TYPE {
     }
 }
 
-impl PwmPin for $TYPE {
+impl $crate::ehal::pwm::ErrorType for$TYPE {
+    type Error = ::core::convert::Infallible;
+}
+
+impl $crate::ehal::pwm::SetDutyCycle for $TYPE {
+    fn max_duty_cycle(&self) -> u16 {
+        let count = self.tc.count16();
+        let top = count.cc[0].read().cc().bits();
+        top
+    }
+
+    fn set_duty_cycle(&mut self, duty: u16) -> Result<(), Self::Error> {
+        let count = self.tc.count16();
+        unsafe { count.cc[1].write(|w| w.cc().bits(duty)); }
+        Ok(())
+    }
+}
+
+impl $crate::ehal_02::PwmPin for $TYPE {
     type Duty = u16;
 
     fn disable(&mut self) {
@@ -106,14 +123,13 @@ impl PwmPin for $TYPE {
     }
 
     fn get_max_duty(&self) -> Self::Duty {
-        let count = self.tc.count16();
-        let top = count.cc[0].read().cc().bits();
-        top
+        use $crate::ehal::pwm::SetDutyCycle;
+        self.max_duty_cycle()
     }
 
     fn set_duty(&mut self, duty: Self::Duty) {
-        let count = self.tc.count16();
-        count.cc[1].write(|w| unsafe { w.cc().bits(duty) });
+        use $crate::ehal::pwm::SetDutyCycle;
+        let _ignore_infaillible = self.set_duty_cycle(duty);
     }
 }
 
@@ -199,7 +215,7 @@ impl $TYPE {
     }
 }
 
-impl Pwm for $TYPE {
+impl $crate::ehal_02::Pwm for $TYPE {
     type Channel = Channel;
     type Time = Hertz;
     type Duty = u32;
