@@ -13,9 +13,11 @@ use bsp::pac;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::prelude::*;
+use hal::ehal::digital::OutputPin;
+use hal::nb;
 use hal::time::Hertz;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 use pac::Peripherals;
 
 #[entry]

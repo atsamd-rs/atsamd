@@ -23,7 +23,7 @@ Cargo flash needs to know the specific id of your chip, but its included in the 
 
 Then cargo flash simply replaces your cargo build command!
 ```bash
-$ cargo flash --example blinky_basic --features unproven --release
+$ cargo flash --example blinky_basic --release
 ```
 
 ## Debugging: probe-run
@@ -42,7 +42,7 @@ $ cargo install probe-run
 
 Then simply use your ide's run or play button, or run:
 ```bash
-$ cargo run --release --example adc --features=unproven
+$ cargo run --release --example adc 
     Finished release [optimized + debuginfo] target(s) in 0.99s
      Running `probe-run --chip ATSAMD11C14A target\thumbv6m-none-eabi\release\examples\adc`
   (HOST) INFO  flashing program (7.18 KiB)

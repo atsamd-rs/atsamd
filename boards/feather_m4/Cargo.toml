@@ -45,9 +45,8 @@ heapless = "0.7"
 # ask the HAL to enable atsamd51j support
 default = ["rt", "atsamd-hal/samd51j"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
-unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
-dma = ["atsamd-hal/dma", "unproven"]
+dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/dma"]
 
 
@@ -64,7 +63,6 @@ opt-level = "s"
 
 [[example]]
 name = "pwm"
-required-features = ["unproven"]
 
 [[example]]
 name = "usb_echo"
@@ -80,15 +78,15 @@ required-features = ["dma"]
 
 [[example]]
 name = "pukcc_test"
-required-features = ["unproven", "usb"]
+required-features = ["usb"]
 
 [[example]]
 name = "nvm_dsu"
-required-features = ["unproven", "usb"]
+required-features = ["usb"]
 
 [[example]]
 name = "smart_eeprom"
-required-features = ["unproven", "usb"]
+required-features = [ "usb"]
 
 [[example]]
 name = "i2c"

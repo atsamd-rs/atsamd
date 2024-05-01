@@ -1,7 +1,10 @@
 //! `embedded-hal` trait implementations for [`Uart`]s
 
-use super::{DataReg, Error, Flags, Receive, Transmit, Uart, ValidConfig};
-use embedded_hal::{
+use super::{
+    Capability, Config, DataReg, EightBit, Error, Error as UartError, Flags, Receive, Transmit,
+    Uart, ValidConfig, ValidPads,
+};
+use crate::ehal_02::{
     blocking,
     serial::{Read, Write},
 };
@@ -19,6 +22,129 @@ where
     /// Wait for an `RXC` flag, then read the word
     #[inline]
     fn read(&mut self) -> nb::Result<C::Word, Error> {
+        <Self as embedded_hal_nb::serial::Read<C::Word>>::read(self)
+    }
+}
+
+impl<C, D> Write<C::Word> for Uart<C, D>
+where
+    C: ValidConfig,
+    D: Transmit,
+{
+    type Error = UartError;
+
+    /// Wait for a `DRE` flag, then write a word
+    #[inline]
+    fn write(&mut self, word: C::Word) -> nb::Result<(), Self::Error> {
+        <Self as embedded_hal_nb::serial::Write<C::Word>>::write(self, word)
+    }
+
+    /// Wait for a `TXC` flag
+    #[inline]
+    fn flush(&mut self) -> nb::Result<(), Self::Error> {
+        <Self as embedded_hal_nb::serial::Write<C::Word>>::flush(self)
+    }
+}
+
+impl<C, D> blocking::serial::write::Default<C::Word> for Uart<C, D>
+where
+    C: ValidConfig,
+    D: Transmit,
+    Uart<C, D>: Write<C::Word>,
+{
+}
+
+impl embedded_io::Error for UartError {
+    #[inline]
+    fn kind(&self) -> embedded_io::ErrorKind {
+        embedded_io::ErrorKind::Other
+    }
+}
+
+impl<C, D> embedded_io::ErrorType for Uart<C, D>
+where
+    C: ValidConfig,
+    D: Capability,
+{
+    type Error = UartError;
+}
+
+impl<P, D> embedded_io::Write for Uart<Config<P, EightBit>, D>
+where
+    P: ValidPads,
+    D: Transmit,
+{
+    #[inline]
+    fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
+        for word in buf {
+            nb::block!(<Self as embedded_hal_nb::serial::Write<u8>>::write(
+                self, *word
+            ))?;
+        }
+
+        Ok(buf.len())
+    }
+
+    /// Wait for a `TXC` flag
+    #[inline]
+    fn flush(&mut self) -> Result<(), Self::Error> {
+        nb::block!(<Self as embedded_hal_nb::serial::Write<u8>>::flush(self))?;
+        Ok(())
+    }
+}
+
+impl<P, D> embedded_io::Read for Uart<Config<P, EightBit>, D>
+where
+    P: ValidPads,
+    D: Receive,
+{
+    #[inline]
+    fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
+        if buf.is_empty() {
+            return Ok(0);
+        }
+
+        for byte in buf.iter_mut() {
+            let w = nb::block!(<Self as embedded_hal_nb::serial::Read<u8>>::read(self))?;
+            *byte = w;
+        }
+
+        Ok(buf.len())
+    }
+}
+
+impl embedded_hal_nb::serial::Error for UartError {
+    #[inline]
+    fn kind(&self) -> embedded_hal_nb::serial::ErrorKind {
+        use embedded_hal_nb::serial::ErrorKind;
+
+        match self {
+            Self::ParityError => ErrorKind::Parity,
+            Self::FrameError => ErrorKind::FrameFormat,
+            Self::Overflow => ErrorKind::Overrun,
+            _ => ErrorKind::Other,
+        }
+    }
+}
+
+impl<C, D, W> embedded_hal_nb::serial::ErrorType for Uart<C, D>
+where
+    C: ValidConfig<Word = W>,
+    W: Copy,
+    D: Capability,
+{
+    type Error = UartError;
+}
+
+impl<C, D> embedded_hal_nb::serial::Read<C::Word> for Uart<C, D>
+where
+    C: ValidConfig,
+    D: Receive,
+    DataReg: AsPrimitive<C::Word>,
+{
+    #[inline]
+    fn read(&mut self) -> nb::Result<C::Word, Self::Error> {
+        // Wait for an `RXC` flag, then read the word
         let flags = self.read_flags_errors()?;
         if flags.contains(Flags::RXC) {
             unsafe { Ok(self.read_data().as_()) }
@@ -28,13 +154,11 @@ where
     }
 }
 
-impl<C, D> Write<C::Word> for Uart<C, D>
+impl<C, D> embedded_hal_nb::serial::Write<C::Word> for Uart<C, D>
 where
     C: ValidConfig,
     D: Transmit,
 {
-    type Error = core::convert::Infallible;
-
     /// Wait for a `DRE` flag, then write a word
     #[inline]
     fn write(&mut self, word: C::Word) -> nb::Result<(), Self::Error> {
@@ -56,12 +180,4 @@ where
             Err(WouldBlock)
         }
     }
-}
-
-impl<C, D> blocking::serial::write::Default<C::Word> for Uart<C, D>
-where
-    C: ValidConfig,
-    D: Transmit,
-    Uart<C, D>: Write<C::Word>,
-{
 }

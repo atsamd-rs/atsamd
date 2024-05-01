@@ -6,7 +6,10 @@ use samd11_bare as bsp;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::prelude::*;
+use hal::ehal::delay::DelayNs;
+use hal::ehal_nb::serial::Write;
+use hal::fugit::RateExtU32;
+use hal::nb;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
@@ -61,6 +64,6 @@ fn main() -> ! {
             // `Result<(), Error>`
             nb::block!(uart.write(*byte)).unwrap();
         }
-        delay.delay_ms(1000u16);
+        delay.delay_ms(1000);
     }
 }

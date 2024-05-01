@@ -1,6 +1,5 @@
 use atsamd_hal_macros::{hal_cfg, hal_module};
 
-#[cfg(feature = "unproven")]
 #[hal_module(
     any("adc-d11", "adc-d21") => "adc/d11.rs",
     "adc-d5x" => "adc/d5x.rs",
@@ -32,7 +31,6 @@ pub mod eic {}
 )]
 pub mod usb {}
 
-#[cfg(feature = "unproven")]
 #[hal_module(
     any("clock-d11", "clock-d21") => "pwm/d11.rs",
     "clock-d5x" => "pwm/d5x.rs",
@@ -60,7 +58,6 @@ pub mod qspi {}
 #[hal_module("trng")]
 pub mod trng {}
 
-#[cfg(feature = "unproven")]
 #[hal_module("icm")]
 pub mod icm {}
 
@@ -71,7 +68,6 @@ pub mod nvm {}
 #[hal_module(any("can0", "can1"))]
 pub mod can {}
 
-#[cfg(feature = "unproven")]
 #[hal_module("wdt")]
 pub mod watchdog {}
 

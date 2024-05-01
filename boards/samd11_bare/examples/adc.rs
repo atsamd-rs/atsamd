@@ -9,7 +9,7 @@
 //! on your command line. You can also force an exit with a
 //! cortex_m::asm::bkpt()
 //!
-//! `cargo run --release --example adc --features=unproven`
+//! `cargo run --release --example adc`
 
 #![no_std]
 #![no_main]

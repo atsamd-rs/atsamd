@@ -24,7 +24,7 @@ use crate::typelevel::Sealed;
 /// [type-level function]: crate::typelevel#type-level-functions
 pub trait CharSize: Sealed {
     /// Word size for the character size
-    type Word: 'static;
+    type Word: 'static + Copy;
 
     /// Register bit pattern for the corresponding `CharSize`
     const BITS: u8;

@@ -23,7 +23,7 @@ rust-version = "1.65"
 version = "0.16.0"
 
 [package.metadata.docs.rs]
-features = ["samd21g", "samd21g-rt", "unproven", "usb", "dma"]
+features = ["samd21g", "samd21g-rt", "usb", "dma"]
 
 #===============================================================================
 # Required depdendencies
@@ -36,7 +36,10 @@ bitfield = "0.13"
 bitflags = "1.2.1"
 cipher = "0.3"
 cortex-m = "0.7"
-embedded-hal = "0.2"
+embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
+embedded-hal-1 = {package = "embedded-hal", version = "1.0.0"}
+embedded-hal-nb = "1.0.0"
+embedded-io = "0.6"
 fugit = "0.3"
 modular-bitfield = "0.11"
 nb = "1.0"
@@ -171,20 +174,13 @@ same54p-rt = ["same54p", "atsame54p/rt"]
 
 # These features are user-selectable and enable additional features within the
 # HAL, like USB or DMA support.
-
-# Many essential traits within embedded-hal are locked behind the `unproven`
-# feature. This is unfortunate, but it should be resolved with embedded-hal 1.0.
-# Until then, we make `unproven` a default feature.
-default = ["unproven"]
-
 can = ["mcan-core"]
-dma = ["unproven"]
+dma = []
 defmt = ["dep:defmt"]
 enable_unsafe_aes_newblock_cipher = []
 max-channels = ["dma"]
 rtic = ["rtic-monotonic"]
 sdmmc = ["embedded-sdmmc"]
-unproven = ["embedded-hal/unproven"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
 

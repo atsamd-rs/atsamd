@@ -3,8 +3,6 @@
 
 use panic_halt as _;
 
-use core::fmt::Write as _;
-
 use atsamd_hal::{
     clock::v2::{
         self as clock,
@@ -15,10 +13,9 @@ use atsamd_hal::{
         rtcosc::RtcOsc,
         xosc32k::{ControlGainMode, Xosc1k, Xosc32k, Xosc32kBase},
     },
-    ehal::serial::Read as _,
-    ehal::serial::Write,
+    embedded_io::{Read, Write},
+    fugit::RateExtU32,
     gpio::{Pins, PA04, PA05},
-    prelude::*,
     rtc::{ClockMode, Rtc},
     sercom::{
         uart::{self, BaudMode, Flags, Oversampling},
@@ -142,7 +139,7 @@ mod app {
         // In the future, the `Rtc` will take ownership of the `RtcOsc`
         let rtc = Rtc::clock_mode(device.RTC, rtc_osc.freq(), &mut mclk);
 
-        writeln!(&mut uart as &mut dyn Write<_, Error = _>, "RTIC booted!").unwrap();
+        writeln!(&mut uart as &mut dyn Write<Error = _>, "RTIC booted!").unwrap();
 
         (
             SharedResources { uart, rtc },
@@ -156,12 +153,13 @@ mod app {
         let mut uart = cx.shared.uart;
         let mut rtc = cx.shared.rtc;
         // Read from `Uart` to clean interrupt flag
-        let _ = uart.lock(|u| u.read().unwrap());
+        let mut buf = [0];
+        let _ = uart.lock(|u| u.read(&mut buf).unwrap());
 
         // Print out `DateTime` coming from `Rtc`
         uart.lock(|u| {
             writeln!(
-                u as &mut dyn Write<_, Error = _>,
+                u as &mut dyn Write<Error = _>,
                 "{:#?}",
                 rtc.lock(|r| r.current_time())
             )

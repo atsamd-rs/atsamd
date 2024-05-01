@@ -19,8 +19,8 @@ use pac::Peripherals;
 
 use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel};
-use hal::ehal::blocking::i2c::WriteRead;
-use hal::prelude::*;
+use hal::ehal::i2c::I2c;
+use hal::fugit::RateExtU32;
 use hal::sercom::i2c;
 
 const LENGTH: usize = 1;

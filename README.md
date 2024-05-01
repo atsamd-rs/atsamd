@@ -12,14 +12,14 @@ The Hardware Abstraction Layer (HAL - [![Crates.io](https://img.shields.io/crate
 
 | Chip family | Documented features   |
 |:------------|:----------------------|
-| [samd11c]   | samd11c unproven      |
-| [samd11d]   | samd11d unproven      |
-| [samd21g]   | samd21g unproven usb  |
-| [samd21j]   | samd21j unproven usb  |
-| [samd51g]   | samd51g unproven usb  |
-| [samd51j]   | samd51j unproven usb  |
-| [samd51n]   | samd51n unproven usb  |
-| [samd51p]   | samd51p unproven usb  |
+| [samd11c]   | samd11c               |
+| [samd11d]   | samd11d               |
+| [samd21g]   | samd21g usb           |
+| [samd21j]   | samd21j usb           |
+| [samd51g]   | samd51g usb           |
+| [samd51j]   | samd51j usb           |
+| [samd51n]   | samd51n usb           |
+| [samd51p]   | samd51p usb           |
 
 [samd11c]: https://atsamd-rs.github.io/docs/samd11c/thumbv6m-none-eabi/doc/atsamd_hal/index.html
 [samd11d]: https://atsamd-rs.github.io/docs/samd11d/thumbv6m-none-eabi/doc/atsamd_hal/index.html

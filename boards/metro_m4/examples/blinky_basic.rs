@@ -3,7 +3,6 @@
 
 use metro_m4 as bsp;
 
-use bsp::ehal;
 use bsp::hal;
 use bsp::pac;
 
@@ -17,7 +16,6 @@ use hal::clock::GenericClockController;
 use hal::prelude::*;
 use pac::{CorePeripherals, Peripherals};
 
-use ehal::blocking::delay::DelayMs;
 use hal::delay::Delay;
 
 #[entry]

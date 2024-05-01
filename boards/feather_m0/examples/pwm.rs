@@ -15,7 +15,8 @@ use feather_m0 as bsp;
 use bsp::pin_alias;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
+use hal::ehal::{delay::DelayNs, pwm::SetDutyCycle};
+use hal::fugit::RateExtU32;
 use hal::pwm::Pwm3;
 use pac::{CorePeripherals, Peripherals};
 
@@ -38,16 +39,18 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let mut pwm3 = Pwm3::new(
         &clocks.tcc2_tc3(&gclk0).unwrap(),
-        1.khz(),
+        1.kHz(),
         peripherals.TC3,
         &mut peripherals.PM,
     );
-    let max_duty = pwm3.get_max_duty();
+    let max_duty = pwm3.max_duty_cycle();
 
     loop {
-        pwm3.set_duty(max_duty / 2);
-        delay.delay_ms(1000u16);
-        pwm3.set_duty(max_duty / 8);
-        delay.delay_ms(1000u16);
+        // The embedded-hal spec requires that set_duty_cycle returns a Result.
+        // In our case, the function is infaillible so we can safely ignore the result.
+        let _ = pwm3.set_duty_cycle(max_duty / 2);
+        delay.delay_ms(1000);
+        let _ = pwm3.set_duty_cycle(max_duty / 8);
+        delay.delay_ms(1000);
     }
 }

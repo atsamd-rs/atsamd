@@ -4,7 +4,8 @@ use cortex_m::peripheral::syst::SystClkSource;
 use cortex_m::peripheral::SYST;
 
 use crate::clock::GenericClockController;
-use crate::ehal::blocking::delay::{DelayMs, DelayUs};
+use crate::ehal::delay::DelayNs;
+use crate::ehal_02;
 use crate::time::Hertz;
 
 /// System timer (SysTick) as a delay provider
@@ -30,25 +31,15 @@ impl Delay {
     }
 }
 
-impl DelayMs<u32> for Delay {
-    fn delay_ms(&mut self, ms: u32) {
-        self.delay_us(ms * 1_000);
+impl DelayNs for Delay {
+    // The default method is delay_ns. If we don't provide implementations for
+    // delay_us and delay_ms, the trait impl will use delay_ns to implement the
+    // other two methods. As the delay implementation is actually defined in terms
+    // of microseconds, we need to provide implementations for all three methods.
+    fn delay_ns(&mut self, ns: u32) {
+        self.delay_us(ns / 1000);
     }
-}
 
-impl DelayMs<u16> for Delay {
-    fn delay_ms(&mut self, ms: u16) {
-        self.delay_ms(ms as u32);
-    }
-}
-
-impl DelayMs<u8> for Delay {
-    fn delay_ms(&mut self, ms: u8) {
-        self.delay_ms(ms as u32);
-    }
-}
-
-impl DelayUs<u32> for Delay {
     fn delay_us(&mut self, us: u32) {
         // The SysTick Reload Value register supports values between 1 and 0x00FFFFFF.
         const MAX_RVR: u32 = 0x00FF_FFFF;
@@ -74,16 +65,44 @@ impl DelayUs<u32> for Delay {
             self.syst.disable_counter();
         }
     }
-}
 
-impl DelayUs<u16> for Delay {
-    fn delay_us(&mut self, us: u16) {
-        self.delay_us(us as u32)
+    fn delay_ms(&mut self, ms: u32) {
+        self.delay_us(ms * 1000);
     }
 }
 
-impl DelayUs<u8> for Delay {
+impl ehal_02::blocking::delay::DelayMs<u32> for Delay {
+    fn delay_ms(&mut self, ms: u32) {
+        <Self as DelayNs>::delay_us(self, ms * 1_000);
+    }
+}
+
+impl ehal_02::blocking::delay::DelayMs<u16> for Delay {
+    fn delay_ms(&mut self, ms: u16) {
+        <Self as ehal_02::blocking::delay::DelayMs<u32>>::delay_ms(self, ms as u32);
+    }
+}
+
+impl ehal_02::blocking::delay::DelayMs<u8> for Delay {
+    fn delay_ms(&mut self, ms: u8) {
+        <Self as ehal_02::blocking::delay::DelayMs<u32>>::delay_ms(self, ms as u32);
+    }
+}
+
+impl ehal_02::blocking::delay::DelayUs<u32> for Delay {
+    fn delay_us(&mut self, us: u32) {
+        <Self as DelayNs>::delay_us(self, us);
+    }
+}
+
+impl ehal_02::blocking::delay::DelayUs<u16> for Delay {
+    fn delay_us(&mut self, us: u16) {
+        <Self as ehal_02::blocking::delay::DelayUs<u32>>::delay_us(self, us as u32);
+    }
+}
+
+impl ehal_02::blocking::delay::DelayUs<u8> for Delay {
     fn delay_us(&mut self, us: u8) {
-        self.delay_us(us as u32)
+        <Self as ehal_02::blocking::delay::DelayUs<u32>>::delay_us(self, us as u32);
     }
 }

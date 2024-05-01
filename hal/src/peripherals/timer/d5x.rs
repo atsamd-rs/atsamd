@@ -1,7 +1,10 @@
 //! Working with timer counter hardware
-use atsamd_hal_macros::hal_cfg;
+use core::convert::Infallible;
 
-use crate::ehal::timer::{CountDown, Periodic};
+use atsamd_hal_macros::hal_cfg;
+use fugit::NanosDurationU32;
+
+use crate::ehal_02::timer::{CountDown, Periodic};
 use crate::pac::tc0::COUNT16;
 use crate::pac::{MCLK, TC2, TC3};
 #[hal_cfg(all("tc4", "tc5"))]
@@ -11,7 +14,6 @@ use crate::timer_traits::InterruptDrivenTimer;
 
 use crate::clock;
 use crate::time::{Hertz, Nanoseconds};
-use void::Void;
 
 // Note:
 // TC3 + TC4 can be paired to make a 32-bit counter
@@ -50,7 +52,33 @@ where
     where
         T: Into<Self::Time>,
     {
-        let params = TimerParams::new_us(timeout.into(), self.freq);
+        <Self as InterruptDrivenTimer>::start(self, timeout);
+    }
+
+    fn wait(&mut self) -> nb::Result<(), void::Void> {
+        // Unwrapping an unreacheable error is totally OK
+        <Self as InterruptDrivenTimer>::wait(self).unwrap();
+        Ok(())
+    }
+}
+
+impl<TC> InterruptDrivenTimer for TimerCounter<TC>
+where
+    TC: Count16,
+{
+    /// Enable the interrupt generation for this hardware timer.
+    /// This method only sets the clock configuration to trigger
+    /// the interrupt; it does not configure the interrupt controller
+    /// or define an interrupt handler.
+    fn enable_interrupt(&mut self) {
+        self.tc.count_16().intenset.write(|w| w.ovf().set_bit());
+    }
+
+    fn start<T>(&mut self, timeout: T)
+    where
+        T: Into<NanosDurationU32>,
+    {
+        let params = TimerParams::new_ns(timeout.into(), self.freq);
         let divider = params.divider;
         let cycles = params.cycles;
         let count = self.tc.count_16();
@@ -98,7 +126,7 @@ where
         });
     }
 
-    fn wait(&mut self) -> nb::Result<(), Void> {
+    fn wait(&mut self) -> nb::Result<(), Infallible> {
         let count = self.tc.count_16();
         if count.intflag.read().ovf().bit_is_set() {
             // Writing a 1 clears the flag
@@ -107,19 +135,6 @@ where
         } else {
             Err(nb::Error::WouldBlock)
         }
-    }
-}
-
-impl<TC> InterruptDrivenTimer for TimerCounter<TC>
-where
-    TC: Count16,
-{
-    /// Enable the interrupt generation for this hardware timer.
-    /// This method only sets the clock configuration to trigger
-    /// the interrupt; it does not configure the interrupt controller
-    /// or define an interrupt handler.
-    fn enable_interrupt(&mut self) {
-        self.tc.count_16().intenset.write(|w| w.ovf().set_bit());
     }
 
     /// Disables interrupt generation for this hardware timer.

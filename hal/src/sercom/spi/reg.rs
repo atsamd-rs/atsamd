@@ -1,6 +1,6 @@
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
-use embedded_hal::spi;
+use crate::ehal;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use crate::pac::sercom0::SPI;
@@ -160,7 +160,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Get the SPI mode (clock polarity & phase)
     #[inline]
-    pub fn get_spi_mode(&self) -> spi::Mode {
+    pub fn get_spi_mode(&self) -> ehal::spi::Mode {
         let reg = self.spi().ctrla.read();
         let cpol = reg.cpol().bit();
         let cpha = reg.cpha().bit();
@@ -172,12 +172,12 @@ impl<S: Sercom> Registers<S> {
             false => Phase::CaptureOnFirstTransition,
             true => Phase::CaptureOnSecondTransition,
         };
-        spi::Mode { polarity, phase }
+        ehal::spi::Mode { polarity, phase }
     }
 
     /// Set the SPI mode (clock polarity & phase)
     #[inline]
-    pub fn set_spi_mode(&mut self, mode: spi::Mode) {
+    pub fn set_spi_mode(&mut self, mode: ehal::spi::Mode) {
         let cpol = match mode.polarity {
             Polarity::IdleLow => false,
             Polarity::IdleHigh => true,

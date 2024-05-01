@@ -12,10 +12,12 @@ use panic_semihosting as _;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
+use hal::ehal::digital::OutputPin;
+use hal::nb;
 use hal::pac::Peripherals;
-use hal::prelude::*;
 use hal::time::Hertz;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 
 use nb::block;
 

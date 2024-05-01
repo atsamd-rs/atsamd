@@ -38,9 +38,8 @@ panic-rtt-target = { version = "0.1", features = ["cortex-m"] }
 rtt-target = { version = "0.3", features = ["cortex-m"] }
 
 [features]
-default = ["rt", "atsamd-hal/same54p", "atsamd-hal/unproven"]
+default = ["rt", "atsamd-hal/same54p"]
 rt = ["cortex-m-rt", "atsamd-hal/same54p-rt"]
-unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
 can = ["atsamd-hal/can"]
 

@@ -33,6 +33,8 @@ features = ["critical-section-single-core"]
 
 [dev-dependencies]
 cortex-m = "0.7"
+embedded-hal = "1.0"
+embedded-hal-nb = "1.0"
 usbd-serial = "0.2"
 panic-probe = "0.3"
 panic-halt = "0.2"
@@ -48,8 +50,9 @@ version = "0.3"
 [features]
 # ask the HAL to enable atsamd51j support
 default = ["rt", "atsamd-hal/samd51j"]
+dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
-unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
 
 [profile.dev]
@@ -76,7 +79,6 @@ name = "neopixel_rainbow"
 
 [[example]]
 name = "pwm"
-required-features = ["unproven"]
 
 [[example]]
 name = "serial"
@@ -89,15 +91,14 @@ name = "timer"
 
 [[example]]
 name = "adc"
-required-features = ["unproven"]
 
 [[example]]
 name = "trng"
 
 [[example]]
 name = "usb_logging"
-required-features = ["usb", "unproven"]
+required-features = ["usb"]
 
 [[example]]
 name = "i2c"
-required-features = ["atsamd-hal/dma"]
+required-features = ["dma"]

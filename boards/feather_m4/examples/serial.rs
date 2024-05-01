@@ -12,10 +12,13 @@ use panic_semihosting as _;
 use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
+use hal::ehal::delay::DelayNs;
+use hal::ehal_nb::serial::Write;
+use hal::fugit::RateExtU32;
+use hal::nb;
 use hal::pac::gclk::genctrl::SRCSELECT_A;
 use hal::pac::gclk::pchctrl::GENSELECT_A;
 use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {
@@ -49,6 +52,6 @@ fn main() -> ! {
         for byte in b"Hello, world!" {
             nb::block!(uart.write(*byte)).unwrap();
         }
-        delay.delay_ms(1000u16);
+        delay.delay_ms(1000);
     }
 }
