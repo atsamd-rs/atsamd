@@ -36,6 +36,8 @@ rtt-target = { version = "0.3.0", features = ["cortex-m"] }
 [features]
 # ask the HAL to enable atsamd11c support
 default = ["rt", "atsamd-hal/samd11c"]
+dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd11c-rt"]
 use_semihosting = []
 
@@ -63,4 +65,4 @@ name = "timer"
 
 [[example]]
 name = "i2c"
-required-features = ["atsamd-hal/dma"]
+required-features = ["dma"]

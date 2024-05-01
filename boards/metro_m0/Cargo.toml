@@ -41,6 +41,8 @@ cortex-m-rtic = "1.0"
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g"]
+dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 rtic = ["atsamd-hal/rtic"]
 use_rtt = ["atsamd-hal/use_rtt"]
@@ -71,4 +73,4 @@ name = "blinky_basic"
 
 [[example]]
 name = "i2c"
-required-features = ["atsamd-hal/dma"]
+required-features = ["dma"]
