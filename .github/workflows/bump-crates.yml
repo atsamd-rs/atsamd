@@ -31,7 +31,9 @@ jobs:
         run: |
           rustup set profile minimal
           rustup override set stable
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.ATSAMD_BOT_SSH_PRIVKEY }}
       - name: Setup
         shell: bash
         run: |
@@ -107,8 +109,6 @@ jobs:
       - name: Generate patch
         shell: bash
         run: |
-          git config user.name atsamd-bot
-          git config user.email atsamd-bot@users.noreply.github.com
           git diff > bump.patch
 
       - name: Upload diff
@@ -127,7 +127,6 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.ATSAMD_BOT }}
           commit-message: ${{ github.event.inputs.bump }} bump of crate versions
           committer: GitHub <noreply@github.com>
           author: atsamd-bot <atsamd-bot@users.noreply.github.com>
