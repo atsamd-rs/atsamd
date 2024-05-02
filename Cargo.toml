@@ -1,4 +1,0 @@
-[workspace]
-resolver = "2"
-members = ["hal", "atsamd-hal-macros"]
-exclude = ["pac", "boards"]
