@@ -59,7 +59,7 @@ jobs:
 
           echo "y" | cargo ws2 [ "${pacs}" ] publish ${{ github.event.inputs.pac_bump }}
 
-          rm Cargo.toml
+          git checkout Cargo.toml
 
       - name: Update HAL deps
         if: github.event.inputs.sync_hal == 'yes'
@@ -80,7 +80,7 @@ jobs:
 
           echo "y" | cargo ws2 [ "atsamd-hal" ] publish ${{ github.event.inputs.hal_bump }}
 
-          rm Cargo.toml
+          git checkout Cargo.toml
 
       - name: Update BSP deps
         if: github.event.inputs.sync_bsp == 'yes'
@@ -103,7 +103,7 @@ jobs:
 
           echo "y" | cargo ws2 [ "${T1_BOARDS}" ] publish ${{ github.event.inputs.bsp_bump }}
 
-          rm Cargo.toml
+          git checkout Cargo.toml
 
 
       - name: Generate patch
