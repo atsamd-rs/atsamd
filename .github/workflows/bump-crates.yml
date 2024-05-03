@@ -31,7 +31,9 @@ jobs:
         run: |
           rustup set profile minimal
           rustup override set stable
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.ATSAMD_BOT_SSH_PRIVKEY }}
       - name: Setup
         shell: bash
         run: |
@@ -57,7 +59,7 @@ jobs:
 
           echo "y" | cargo ws2 [ "${pacs}" ] publish ${{ github.event.inputs.pac_bump }}
 
-          rm Cargo.toml
+          git checkout Cargo.toml
 
       - name: Update HAL deps
         if: github.event.inputs.sync_hal == 'yes'
@@ -78,7 +80,7 @@ jobs:
 
           echo "y" | cargo ws2 [ "atsamd-hal" ] publish ${{ github.event.inputs.hal_bump }}
 
-          rm Cargo.toml
+          git checkout Cargo.toml
 
       - name: Update BSP deps
         if: github.event.inputs.sync_bsp == 'yes'
@@ -101,7 +103,7 @@ jobs:
 
           echo "y" | cargo ws2 [ "${T1_BOARDS}" ] publish ${{ github.event.inputs.bsp_bump }}
 
-          rm Cargo.toml
+          git checkout Cargo.toml
 
 
       - name: Generate patch
@@ -110,7 +112,7 @@ jobs:
           git diff > bump.patch
 
       - name: Upload diff
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bump.patch
           path: bump.patch
@@ -123,9 +125,8 @@ jobs:
 
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.ATSAMD_BOT }}
           commit-message: ${{ github.event.inputs.bump }} bump of crate versions
           committer: GitHub <noreply@github.com>
           author: atsamd-bot <atsamd-bot@users.noreply.github.com>
