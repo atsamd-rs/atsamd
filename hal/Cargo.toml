@@ -20,7 +20,7 @@ name = "atsamd-hal"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
 rust-version = "1.65"
-version = "0.16.0"
+version = "0.17.0"
 
 [package.metadata.docs.rs]
 features = ["samd21g", "samd21g-rt", "usb", "dma"]
