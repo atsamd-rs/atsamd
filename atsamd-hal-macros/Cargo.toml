@@ -1,7 +1,12 @@
 [package]
 name = "atsamd-hal-macros"
-version = "0.16.0"
+version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+categories = ["embedded", "hardware-support", "no-std"]
+description = "Procedural macros for the atsamd-hal library"
+documentation = "https://docs.rs/crate/atsamd-hal-macros/"
+repository = "https://github.com/atsamd-rs/atsamd"
 
 [lib]
 proc-macro = true
