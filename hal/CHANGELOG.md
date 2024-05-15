@@ -1,5 +1,7 @@
 # Unreleased Changes
 
+- Allow configuring USB clock with `GenericClockController` on atsamd11
+
 # v0.17.0
 
 - Remove `unproven` Cargo feature
