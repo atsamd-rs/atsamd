@@ -1,5 +1,7 @@
 # Unreleased Changes
 
+- fix samd51j not having i2s support
+
 # v0.17.0
 
 - Remove `unproven` Cargo feature
