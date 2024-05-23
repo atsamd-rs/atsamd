@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Allow configuring USB clock with `GenericClockController` on atsamd11
 - fix samd51j not having i2s support
 - remove i2s functionality for samd51g since it does not have it
 
