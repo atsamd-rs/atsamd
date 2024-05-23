@@ -134,6 +134,6 @@ families:
       - tcc: { count: 3, only: ["samd51g", "same51g"] }
       - tcc: { count: 5, only: ["samd51j", "samd51n", "samd51p", "same51j", "same51n", "same53j", "same53n", "same54n", "same54p"] }
       - ptc
-      - i2s: { except: ["samd51j"] }
+      - i2s: { except: ["samd51g"] }
       - pcc
       - pdec
