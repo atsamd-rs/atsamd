@@ -63,6 +63,8 @@ dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable pins for the adalogger SD card reader
 adalogger = []
+# Enable pins for Feather with WINC1500 wifi
+winc = []
 sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
 rtic = ["atsamd-hal/rtic"]
 use_semihosting = []

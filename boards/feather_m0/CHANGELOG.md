@@ -1,4 +1,5 @@
 # Unreleased
+- Added 'winc' feature for Feather with a WINC1500 Wifi chip
 
 # v0.14.0
 
