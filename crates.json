@@ -248,10 +248,6 @@
     }
   },
   "hal_build_variants": {
-    "feather_m0": {
-      "features" : [ "feather_m0", "usb", "dma", "sdmmc", "rtic", "defmt", "express","adalogger","rfm", "winc"],
-      "target": "thumbv6m-none-eabi"
-    },
     "samd11c":  {
       "features": [ "samd11c", "dma", "rtic", "defmt" ],
       "target": "thumbv6m-none-eabi"
