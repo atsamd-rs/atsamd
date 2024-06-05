@@ -412,6 +412,7 @@ clock_generator!(
     (adc, AdcClock, ADC),
     (wdt, WdtClock, WDT),
     (eic, EicClock, EIC),
+    (usb, UsbClock, USB),
     (evsys0, Evsys0Clock, EVSYS_0),
     (evsys1, Evsys1Clock, EVSYS_1),
     (evsys2, Evsys2Clock, EVSYS_2),
