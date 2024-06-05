@@ -80,7 +80,7 @@ crate::paste::item! {
         }
 
         pub fn enable_interrupt(&mut self, eic: &mut EIC) {
-            eic.eic.intenset.modify(|_, w| {
+            eic.eic.intenset.write(|w| {
                 w.[<extint $num>]().set_bit()
             });
         }
@@ -92,7 +92,7 @@ crate::paste::item! {
         }
 
         pub fn disable_interrupt(&mut self, eic: &mut EIC) {
-            eic.eic.intenclr.modify(|_, w| {
+            eic.eic.intenclr.write(|w| {
                 w.[<extint $num>]().set_bit()
             });
         }
@@ -102,7 +102,7 @@ crate::paste::item! {
         }
 
         pub fn clear_interrupt(&mut self) {
-            unsafe { &(*pac::EIC::ptr()) }.intflag.modify(|_, w| {
+            unsafe { &(*pac::EIC::ptr()) }.intflag.write(|w| {
                 w.[<extint $num>]().set_bit()
             });
         }
