@@ -4,17 +4,17 @@
 //!
 //! Four basic transfer types are supported:
 //!
-//! * Incrementing-source to incrementing-destination
-//! (normally used for memory-to-memory transfers)
+//! * Incrementing-source to incrementing-destination (normally used for
+//!   memory-to-memory transfers)
 //!
-//! * Incrementing-source to fixed-destination (normally used
-//! for memory-to-peripheral transfers)
+//! * Incrementing-source to fixed-destination (normally used for
+//!   memory-to-peripheral transfers)
 //!
 //! * Fixed-source to incrementing-destination (normally used for
-//! peripheral-to-memory transfers)
+//!   peripheral-to-memory transfers)
 //!
 //! * Fixed-source to fixed-destination (normally used for
-//! peripheral-to-peripheral transfers)
+//!   peripheral-to-peripheral transfers)
 //!
 //! # Beat sizes
 //!
@@ -71,17 +71,16 @@
 //! Three trigger actions are available:
 //!
 //! * BLOCK: One trigger required for each block transfer. In the context of
-//!   this driver,
-//! one Transfer is equivalent to one Block transfer.
+//!   this driver, one Transfer is equivalent to one Block transfer.
 //!
 //! * BEAT: One trigger required for each beat transfer. In the context of this
-//!   driver, the beat
-//! size will depend on the type of buffer used (8, 16 or 32 bits).
+//!   driver, the beat size will depend on the type of buffer used (8, 16 or 32
+//!   bits).
 //!
 //! * TRANSACTION: One trigger required for a full DMA transaction. this is
-//!   useful for circular
-//! transfers in the context of this driver. One trigger will set off the
-//! transaction, that will now run uninterrupted until it is stopped.
+//!   useful for circular transfers in the context of this driver. One trigger
+//!   will set off the transaction, that will now run uninterrupted until it is
+//!   stopped.
 
 use super::{
     channel::{AnyChannel, Busy, CallbackStatus, Channel, ChannelId, InterruptFlags, Ready},
