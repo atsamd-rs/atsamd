@@ -1,4 +1,5 @@
 # Unreleased
+- Added 'winc' feature for Feather with a WINC1500 Wifi chip
 
 - Add async examples and update examples to match new HAL APIs
 

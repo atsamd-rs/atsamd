@@ -302,8 +302,7 @@ mod ioset {
     /// As of writing this documentation, only two undocumented IOSETs have been
     /// discovered:
     /// - [`UndocIoSet1`]: PA16, PA17, PB22 & PB23 configured for `Sercom1`.
-    ///   Both the
-    /// pygamer & feather_m4 uses this combination.
+    ///   Both the pygamer & feather_m4 uses this combination.
     /// - [`UndocIoSet2`]: PA00, PA01, PB22 & PB23 configured for `Sercom1`. The
     ///   itsybitsy_m4 uses this combination.
     ///
@@ -327,8 +326,7 @@ mod ioset {
     /// As of writing this documentation, only two undocumented IOSETs have been
     /// discovered:
     /// - [`UndocIoSet1`]: PA16, PA17, PB22 & PB23 configured for `Sercom1`.
-    ///   Both the
-    /// pygamer & feather_m4 uses this combination.
+    ///   Both the pygamer & feather_m4 uses this combination.
     /// - [`UndocIoSet2`]: PA00, PA01, PB22 & PB23 configured for `Sercom1`. The
     ///   itsybitsy_m4 uses this combination.
     ///
