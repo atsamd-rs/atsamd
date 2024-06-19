@@ -841,7 +841,7 @@ impl Inner {
         let rxstp = bank.received_setup_interrupt();
 
         if bank.is_ready() || rxstp {
-            let size = bank.read(buf);
+            let size = bank.read(buf)?;
 
             if rxstp {
                 bank.clear_received_setup_interrupt();
@@ -850,7 +850,7 @@ impl Inner {
             bank.clear_transfer_complete();
             bank.set_ready(false);
 
-            size
+            Ok(size)
         } else {
             Err(UsbError::WouldBlock)
         }
