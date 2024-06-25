@@ -370,9 +370,25 @@ impl<C: AnyConfig> I2c<C> {
         self.config.as_mut().registers.do_write(addr, bytes)
     }
 
+    /// Continue a write operation that was issued before with
+    /// [`do_write`](Self::do_write) or [`continue_write`](Self::continue_write)
+    /// without a repeated start condition in between
+    #[inline]
+    fn continue_write(&mut self, bytes: &[u8]) -> Result<(), Error> {
+        self.config.as_mut().registers.continue_write(bytes)
+    }
+
     #[inline]
     fn do_read(&mut self, addr: u8, bytes: &mut [u8]) -> Result<(), Error> {
         self.config.as_mut().registers.do_read(addr, bytes)
+    }
+
+    /// Continue a read operation that was issued before with
+    /// [`do_read`](Self::do_read) or [`continue_read`](Self::continue_read)
+    /// without a repeated start condition in between
+    #[inline]
+    fn continue_read(&mut self, bytes: &mut [u8]) -> Result<(), Error> {
+        self.config.as_mut().registers.continue_read(bytes)
     }
 
     #[inline]

@@ -25,19 +25,40 @@ impl<C: AnyConfig> i2c::I2c for I2c<C> {
         address: u8,
         operations: &mut [i2c::Operation<'_>],
     ) -> Result<(), Self::Error> {
+        /// Helper type for keeping track of the type of operation that was
+        /// executed last
+        #[derive(Clone, Copy)]
+        enum Operation {
+            Read,
+            Write,
+        }
+
+        // Keep track of the last executed operation type. The method
+        // specification demands, that no repeated start condition is sent
+        // between adjacent operations of the same type.
+        let mut last_op = None;
         for op in operations {
             match op {
                 i2c::Operation::Read(buf) => {
-                    self.do_read(address, buf)?;
-                    self.cmd_stop();
+                    if let Some(Operation::Read) = last_op {
+                        self.continue_read(buf)?;
+                    } else {
+                        self.do_read(address, buf)?;
+                        last_op = Some(Operation::Read);
+                    }
                 }
                 i2c::Operation::Write(bytes) => {
-                    self.do_write(address, bytes)?;
-                    self.cmd_stop();
+                    if let Some(Operation::Write) = last_op {
+                        self.continue_write(bytes)?;
+                    } else {
+                        self.do_write(address, bytes)?;
+                        last_op = Some(Operation::Write);
+                    }
                 }
             }
         }
 
+        self.cmd_stop();
         Ok(())
     }
 

@@ -401,9 +401,25 @@ impl<S: Sercom> Registers<S> {
         self.send_bytes(bytes)
     }
 
+    /// Continue a write operation that was issued before with
+    /// [`do_write`](Self::do_write) or [`continue_write`](Self::continue_write)
+    /// without a repeated start condition in between
+    #[inline]
+    pub(super) fn continue_write(&mut self, bytes: &[u8]) -> Result<(), Error> {
+        self.send_bytes(bytes)
+    }
+
     #[inline]
     pub(super) fn do_read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Error> {
         self.start_read_blocking(addr)?;
+        self.fill_buffer(buffer)
+    }
+
+    /// Continue a read operation that was issued before with
+    /// [`do_read`](Self::do_read) or [`continue_read`](Self::continue_read)
+    /// without a repeated start condition in between
+    #[inline]
+    pub(super) fn continue_read(&mut self, buffer: &mut [u8]) -> Result<(), Error> {
         self.fill_buffer(buffer)
     }
 
