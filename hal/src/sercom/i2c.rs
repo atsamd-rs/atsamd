@@ -254,6 +254,26 @@ fn i2c_send_with_dma<A: AnyConfig, C: AnyChannel<Status = Ready>>(i2c: I2c<A>, c
 
 "
 )]
+//! # `async` operation
+//!
+//! When the `async` Cargo feature is enabled, an [`I2c`] can be used for
+//! `async` operations. Configuring an [`I2c`] in async mode is relatively
+//! simple:
+//!
+//! * Bind the corresponding `SERCOM` interrupt source to the SPI
+//!   [`InterruptHandler`] (refer to the module-level [`async_hal`]
+//!   documentation for more information).
+//! * Turn a previously configured [`I2c`] into an [`I2cFuture`] by calling
+//!   [`I2c::into_future`]
+//! * Optionally, add a DMA channel by using [`I2cFuture::with_dma_channel`].
+//!   The API is exactly the same whether a DMA channel is used or not.
+//! * Use the provided async methods for reading or writing to the I2C
+//!   peripheral. [`I2cFuture`] implements [`embedded_hal_async::i2c::I2c`].
+//!
+//! `I2cFuture` implements `AsRef<I2c>` and `AsMut<I2c>` so
+//! that it can be reconfigured using the regular [`I2c`] methods.
+//!
+//! [`async_hal`]: crate::async_hal
 
 use atsamd_hal_macros::hal_module;
 
@@ -276,6 +296,12 @@ pub use config::*;
 
 mod impl_ehal;
 
+#[cfg(feature = "async")]
+mod async_api;
+
+#[cfg(feature = "async")]
+pub use async_api::*;
+
 /// Word size for an I2C message
 pub type Word = u8;
 
@@ -295,7 +321,7 @@ pub enum InactiveTimeout {
 
 /// Abstraction over a I2C peripheral, allowing to perform I2C transactions.
 pub struct I2c<C: AnyConfig> {
-    config: C,
+    pub(super) config: C,
 }
 
 impl<C: AnyConfig> I2c<C> {

@@ -76,6 +76,10 @@ impl Status {
             Ok(())
         }
     }
+
+    pub fn is_idle(self) -> bool {
+        self.busstate() == BusState::Idle
+    }
 }
 
 /// Errors available for I2C transactions
@@ -87,4 +91,6 @@ pub enum Error {
     LengthError,
     Nack,
     Timeout,
+    #[cfg(feature = "dma")]
+    Dma(crate::dmac::Error),
 }

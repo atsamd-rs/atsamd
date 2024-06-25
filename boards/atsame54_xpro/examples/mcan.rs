@@ -139,12 +139,12 @@ mod app {
 
         let (pclk_eic, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.eic, clocks.gclk0);
 
-        let mut eic = hal::eic::init_with_ulp32k(&mut mclk, pclk_eic.into(), ctx.device.EIC);
-        let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei();
-        eic.button_debounce_pins(&[button.id()]);
-        button.sense(&mut eic, Sense::FALL);
-        button.enable_interrupt(&mut eic);
-        eic.finalize();
+        let mut eic =
+            hal::eic::init_with_ulp32k(&mut mclk, pclk_eic.into(), ctx.device.EIC).finalize();
+        let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei(&mut eic);
+        button.sense(Sense::FALL);
+        button.debounce();
+        button.enable_interrupt();
 
         let can1_rx = bsp::pin_alias!(pins.ata6561_rx).into_mode();
         let can1_tx = bsp::pin_alias!(pins.ata6561_tx).into_mode();

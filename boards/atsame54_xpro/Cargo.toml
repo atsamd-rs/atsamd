@@ -56,3 +56,9 @@ opt-level = "s"
 [[example]]
 name = "mcan"
 required-features = ["can"]
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "blinky_rtic"

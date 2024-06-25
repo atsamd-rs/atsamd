@@ -1,5 +1,7 @@
 # Unreleased
 
+- Add async examples and update examples to match new HAL APIs
+
 # v0.14.0
 
 - Implement `embedded-hal` `1.0` for GPIO, SPI, I2C, UART and fix examples
