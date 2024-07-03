@@ -68,8 +68,6 @@ async fn main(_s: embassy_executor::Spawner) {
 
     loop {
         defmt::info!("Sending 0x00 to SPI device...");
-        // This test is based on the BMP388 barometer. Feel free to use any I2C
-        // peripheral you have on hand.
         spi.write(&[0x00]).await.unwrap();
 
         defmt::info!("Sent 0x00.");
