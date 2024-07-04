@@ -14,7 +14,10 @@ use hal::{
     sercom::{i2c, Sercom5},
 };
 use metro_m4 as bsp;
-use rtic_monotonics::systick::Systick;
+use rtic_monotonics::Monotonic;
+use hal::fugit::Hertz;
+
+rtic_monotonics::systick_monotonic!(Mono, 10000);
 
 atsamd_hal::bind_multiple_interrupts!(struct DmacIrqs {
     DMAC: [DMAC_0, DMAC_1, DMAC_2, DMAC_OTHER] => atsamd_hal::dmac::InterruptHandler;
@@ -37,6 +40,10 @@ async fn main(_s: embassy_executor::Spawner) {
         &mut peripherals.NVMCTRL,
     );
 
+    let freq: Hertz<u32> = clocks.gclk0().into();
+    Mono::start(_core.SYST, freq.to_Hz());
+
+
     let pins = bsp::Pins::new(peripherals.PORT);
 
     // Take SDA and SCL
@@ -53,14 +60,15 @@ async fn main(_s: embassy_executor::Spawner) {
     // Initialize DMA Channel 0
     let channel0 = channels.0.init(PriorityLevel::LVL0);
 
+
     let gclk0 = clocks.gclk0();
-    let sercom3_clock = &clocks.sercom3_core(&gclk0).unwrap();
+    let sercom5_clock = &clocks.sercom5_core(&gclk0).unwrap();
     let pads = i2c::Pads::new(sda, scl);
     let mut i2c = i2c::Config::new(
         &peripherals.MCLK,
         peripherals.SERCOM5,
         pads,
-        sercom3_clock.freq(),
+        sercom5_clock.freq(),
     )
     .baud(100.kHz())
     .enable()
@@ -76,6 +84,6 @@ async fn main(_s: embassy_executor::Spawner) {
         let mut buffer = [0xff; 4];
         i2c.read(0x76, &mut buffer).await.unwrap();
         defmt::info!("Read buffer: {:#x}", buffer);
-        Systick::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
+        Mono::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
     }
 }

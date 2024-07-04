@@ -16,7 +16,10 @@ use hal::{
     },
 };
 use metro_m4 as bsp;
-use rtic_monotonics::systick::Systick;
+use rtic_monotonics::Monotonic;
+use hal::fugit::Hertz;
+
+rtic_monotonics::systick_monotonic!(Mono, 10000);
 
 atsamd_hal::bind_multiple_interrupts!(struct DmacIrqs {
     DMAC: [DMAC_0, DMAC_1, DMAC_2, DMAC_OTHER] => atsamd_hal::dmac::InterruptHandler;
@@ -38,6 +41,9 @@ async fn main(spawner: embassy_executor::Spawner) {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
+    let freq: Hertz<u32> = clocks.gclk0().into();
+    Mono::start(_core.SYST, freq.to_Hz());
+    
     let pins = bsp::Pins::new(peripherals.PORT);
 
     // Take rx and tx pins
@@ -83,7 +89,7 @@ async fn send_bytes(mut uart_tx: UartFutureTxDuplexDma<Config<bsp::UartPads>, Ch
     loop {
         uart_tx.write(&[0x00; 10]).await;
         defmt::info!("Sent 10 bytes");
-        Systick::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
+        Mono::delay(MillisDuration::<u32>::from_ticks(500).convert()).await;
     }
 }
 
