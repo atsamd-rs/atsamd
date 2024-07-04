@@ -408,6 +408,7 @@ bitflags! {
     /// The available interrupt flags are `DRE`, `RXC`, `TXC`, `SSL` and
     /// `ERROR`. The binary format of the underlying bits exactly matches the
     /// `INTFLAG` register.
+    #[derive(Clone, Copy)]
     pub struct Flags: u8 {
         const DRE = DRE;
         const TXC = TXC;
@@ -419,8 +420,8 @@ bitflags! {
 
 #[allow(dead_code)]
 impl Flags {
-    pub(super) const RX: Self = unsafe { Self::from_bits_unchecked(RX_FLAG_MASK) };
-    pub(super) const TX: Self = unsafe { Self::from_bits_unchecked(TX_FLAG_MASK) };
+    pub(super) const RX: Self = Self::from_bits_retain(RX_FLAG_MASK);
+    pub(super) const TX: Self = Self::from_bits_retain(TX_FLAG_MASK);
 }
 
 //=============================================================================
@@ -438,15 +439,17 @@ bitflags! {
     }
 }
 
-/// Convert [`Status`] flags into the corresponding [`Error`] variants
-impl TryFrom<Status> for () {
-    type Error = Error;
-    #[inline]
-    fn try_from(status: Status) -> Result<(), Error> {
+impl Status {
+    /// Check whether [`Self`] originates from an error.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if `STATUS` contains `BUFOVF` or `LENERR`
+    pub fn check_bus_error(self) -> Result<(), Error> {
         // Buffer overflow has priority
-        if status.contains(Status::BUFOVF) {
+        if self.contains(Status::BUFOVF) {
             Err(Error::Overflow)
-        } else if status.contains(Status::LENERR) {
+        } else if self.contains(Status::LENERR) {
             Err(Error::LengthError)
         } else {
             Ok(())

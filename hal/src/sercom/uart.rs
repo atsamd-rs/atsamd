@@ -655,14 +655,14 @@ where
     /// `Capability`
     #[inline]
     fn capability_flags(flags: Flags) -> Flags {
-        flags & unsafe { Flags::from_bits_unchecked(D::FLAG_MASK) }
+        flags & Flags::from_bits_retain(D::FLAG_MASK)
     }
 
     /// Helper method to remove the status flags not pertinent to `Self`'s
     /// `Capability`
     #[inline]
     fn capability_status(status: Status) -> Status {
-        status & unsafe { Status::from_bits_unchecked(D::STATUS_MASK) }
+        status & Status::from_bits_retain(D::STATUS_MASK)
     }
 
     /// Read the interrupt flags
@@ -787,7 +787,7 @@ where
         self.config
             .as_mut()
             .registers
-            .clear_flags(unsafe { Flags::from_bits_unchecked(bit) });
+            .clear_flags(Flags::from_bits_retain(bit));
     }
 
     /// Enable the `CTSIC` interrupt
@@ -797,7 +797,7 @@ where
         self.config
             .as_mut()
             .registers
-            .enable_interrupts(unsafe { Flags::from_bits_unchecked(bit) });
+            .enable_interrupts(Flags::from_bits_retain(bit));
     }
 
     /// Disable the `CTSIC` interrupt
@@ -807,7 +807,7 @@ where
         self.config
             .as_mut()
             .registers
-            .disable_interrupts(unsafe { Flags::from_bits_unchecked(bit) });
+            .disable_interrupts(Flags::from_bits_retain(bit));
     }
 }
 
@@ -946,7 +946,7 @@ where
     /// containing the corresponding [`Flags`] or [`Error`]
     #[inline]
     fn read_flags_errors(&self) -> Result<Flags, Error> {
-        self.read_status().try_into()?;
+        self.read_status().check_bus_error()?;
         Ok(self.read_flags())
     }
 

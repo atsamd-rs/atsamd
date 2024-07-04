@@ -26,6 +26,7 @@ bitflags! {
     /// The available interrupt flags are `DRE`, `TXC`, `RXC`, `RXS`, `CTSIC`, `RXBRK` and
     /// `ERROR`. The binary format of the underlying bits exactly matches the
     /// INTFLAG bits.
+    #[derive(Clone, Copy)]
     pub struct Flags: u8 {
         const DRE = DRE;
         const TXC = TXC;
@@ -39,10 +40,10 @@ bitflags! {
 
 impl Flags {
     /// [`Flags`] which can be used for receiving
-    pub const RX: Self = unsafe { Self::from_bits_unchecked(RX_FLAG_MASK) };
+    pub const RX: Self = Self::from_bits_retain(RX_FLAG_MASK);
 
     /// [`Flags`] which can be used for transmitting
-    pub const TX: Self = unsafe { Self::from_bits_unchecked(TX_FLAG_MASK) };
+    pub const TX: Self = Self::from_bits_retain(TX_FLAG_MASK);
 }
 
 //=============================================================================
@@ -78,6 +79,37 @@ bitflags! {
     }
 }
 
+impl Status {
+    /// Check whether [`Self`] originates from an error.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if `STATUS` contains:
+    ///
+    /// * `PERR`
+    /// * `FERR`
+    /// * `BUFOVF`
+    /// * `ISF`
+    /// * `COLL`
+    #[inline]
+    pub fn check_bus_error(self) -> Result<(), Error> {
+        use Error::*;
+        if self.contains(Status::PERR) {
+            Err(ParityError)
+        } else if self.contains(Status::FERR) {
+            Err(FrameError)
+        } else if self.contains(Status::BUFOVF) {
+            Err(Overflow)
+        } else if self.contains(Status::ISF) {
+            Err(InconsistentSyncField)
+        } else if self.contains(Status::COLL) {
+            Err(CollisionDetected)
+        } else {
+            Ok(())
+        }
+    }
+}
+
 //=============================================================================
 // Error
 //=============================================================================
@@ -99,28 +131,6 @@ pub enum Error {
     /// DMA error
     #[cfg(feature = "dma")]
     Dma(crate::dmac::Error),
-}
-
-impl TryFrom<Status> for () {
-    type Error = Error;
-
-    #[inline]
-    fn try_from(errors: Status) -> Result<(), Error> {
-        use Error::*;
-        if errors.contains(Status::PERR) {
-            Err(ParityError)
-        } else if errors.contains(Status::FERR) {
-            Err(FrameError)
-        } else if errors.contains(Status::BUFOVF) {
-            Err(Overflow)
-        } else if errors.contains(Status::ISF) {
-            Err(InconsistentSyncField)
-        } else if errors.contains(Status::COLL) {
-            Err(CollisionDetected)
-        } else {
-            Ok(())
-        }
-    }
 }
 
 impl From<Error> for Status {

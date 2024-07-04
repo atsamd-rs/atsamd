@@ -33,7 +33,7 @@ features = ["samd21g", "samd21g-rt", "usb", "dma", "async"]
 aes = "0.7.5"
 atsamd-hal-macros = { version = "0.1.0", path = "../atsamd-hal-macros" }
 bitfield = "0.13"
-bitflags = "1.2.1"
+bitflags = "2.6.0"
 cipher = "0.3"
 critical-section = "1.1.2"
 cortex-m = "0.7"

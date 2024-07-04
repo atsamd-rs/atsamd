@@ -34,8 +34,8 @@ impl<S: Sercom> Handler<S::Interrupt> for InterruptHandler<S> {
             #[hal_cfg("sercom0-d5x")]
             let uart = S::reg_block(&mut peripherals).usart_int();
 
-            let flags_pending = Flags::from_bits_unchecked(uart.intflag.read().bits());
-            let enabled_flags = Flags::from_bits_unchecked(uart.intenset.read().bits());
+            let flags_pending = Flags::from_bits_retain(uart.intflag.read().bits());
+            let enabled_flags = Flags::from_bits_retain(uart.intenset.read().bits());
             uart.intenclr.write(|w| w.bits(flags_pending.bits()));
 
             // Disable interrupts, but don't clear the flags. The future will take care of
@@ -217,7 +217,7 @@ where
 {
     #[inline]
     async fn wait_flags(&mut self, flags_to_wait: Flags) {
-        let flags_to_wait = flags_to_wait & unsafe { Flags::from_bits_unchecked(D::FLAG_MASK) };
+        let flags_to_wait = flags_to_wait & Flags::from_bits_retain(D::FLAG_MASK);
 
         core::future::poll_fn(|cx| {
             // Scope maybe_pending so we don't forget to re-poll the register later down.
@@ -274,7 +274,7 @@ where
     #[inline]
     pub async fn read_word(&mut self) -> Result<C::Word, Error> {
         self.wait_flags(Flags::RXC).await;
-        self.uart.read_status().try_into()?;
+        self.uart.read_status().check_bus_error()?;
         Ok(unsafe { self.uart.read_data().as_() })
     }
 }
