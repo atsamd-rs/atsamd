@@ -443,8 +443,8 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
     /// memory, as well as the rest of your day.
     ///
     /// * `await`ing is fine: the [`Future`] will run to completion.
-    /// * Dropping an incomplete transfer is also fine. Dropping can happen,
-    ///   for example, if the transfer doesn't complete before a timeout expires.
+    /// * Dropping an incomplete transfer is also fine. Dropping can happen, for
+    ///   example, if the transfer doesn't complete before a timeout expires.
     ///
     /// [`forget`]: core::mem::forget
     /// [`Future`]: core::future::Future
