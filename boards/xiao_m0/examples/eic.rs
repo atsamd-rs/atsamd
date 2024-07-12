@@ -51,7 +51,7 @@ fn main() -> ! {
         .configure_gclk_divider_and_source(
             ClockGenId::GCLK2,
             1,
-            pac::gclk::genctrl::SRC_A::OSC8M,
+            pac::gclk::genctrl::SRCSELECT_A::OSC8M,
             false,
         )
         .unwrap();

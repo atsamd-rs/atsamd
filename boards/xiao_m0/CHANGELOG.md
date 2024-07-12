@@ -1,6 +1,13 @@
 # Unreleased
 
-- Update atsamd-hal to 0.16
+- Add cortex-m critical section feature
+- Update usbd-serial to 0.2
+- Update ssd1306 to 0.8.4
+- Update embedded-graphics to 0.8.1
+- Update shared-bus to 0.3.1
+- Remove unproven feature
+- Update examples with new package updates
+- Update atsamd-hal to 0.17
 
 # v0.12.1
 

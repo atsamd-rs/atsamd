@@ -15,35 +15,32 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.16"
+version = "0.17"
 default-features = false
 
 [dependencies.usb-device]
-version = "0.2"
+version = "0.3.2"
 optional = true
 
 [dev-dependencies]
-cortex-m = "0.7"
-usbd-serial = "0.1"
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
+usbd-serial = "0.2"
 panic-halt = "0.2"
-ssd1306 = "0.7"
-embedded-graphics = "0.7.1"
+ssd1306 = "0.8"
+embedded-graphics = "0.8"
 mpu6050 = "0.1.4"
-shared-bus = "0.2.2"
+shared-bus = "0.3.1"
 
 [features]
-default = ["rt", "atsamd-hal/samd21g", "atsamd-hal/unproven"]
+default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
-unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
 
 [[example]]
 name = "blink"
-required-features = ["unproven"]
 
 [[example]]
 name = "eic"
-required-features = ["unproven"]
 
 [[example]]
 name = "shared_i2c"
@@ -53,7 +50,7 @@ name = "ssd1306_i2c"
 
 [[example]]
 name = "usb_echo"
-required-features = ["usb", "unproven"]
+required-features = ["usb"]
 
 [profile.release]
 debug = false

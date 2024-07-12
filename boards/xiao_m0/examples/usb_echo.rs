@@ -10,6 +10,7 @@ use usb_device::{bus::UsbBusAllocator, prelude::*};
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
 use bsp::{entry, hal, pac, Led0, Led1};
+use usb_device::prelude::UsbDeviceBuilder;
 use xiao_m0 as bsp;
 
 #[entry]
@@ -38,9 +39,11 @@ fn main() -> ! {
         USB_SERIAL = Some(SerialPort::new(&bus_allocator));
         USB_BUS = Some(
             UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0xdead, 0xbeef))
-                .manufacturer("Hackers University")
-                .product("xiao_usb_echo")
-                .serial_number("42")
+                .strings(&[usb_device::device::StringDescriptors::default()
+                    .manufacturer("Hackers University")
+                    .product("xiao_usb_echo")
+                    .serial_number("42")])
+                .unwrap()
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
