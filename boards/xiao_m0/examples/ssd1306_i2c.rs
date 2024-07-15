@@ -53,7 +53,7 @@ fn main() -> ! {
         .map(|p| State::new(width * p, height / 2. * (1. + p), 0., 0., 0., -5.));
 
     loop {
-        display.clear();
+        display.clear(BinaryColor::Off).unwrap();
         states.iter_mut().for_each(|state| {
             Circle::new(state.into(), 8)
                 .into_styled(style)

@@ -30,8 +30,9 @@ use cortex_m::{interrupt::Mutex, peripheral::NVIC};
 use bsp::hal::{
     clock::GenericClockController,
     delay::Delay,
-    ehal::blocking::delay::DelayMs,
+    ehal::delay::DelayNs,
     gpio::{Pin, PushPullOutput, PA17},
+    nb,
     pac::{self, interrupt, CorePeripherals, Peripherals},
     prelude::*,
     sercom::{
@@ -118,7 +119,7 @@ fn main() -> ! {
         NVIC::unmask(interrupt::SERCOM4);
     }
     loop {
-        delay.delay_ms(1000u16);
+        <Delay as DelayNs>::delay_ms(&mut delay, 1000);
         let _ = nb::block!(serial_sercom0.write(b'A'));
     }
 }
