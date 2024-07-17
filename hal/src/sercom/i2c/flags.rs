@@ -11,6 +11,7 @@ bitflags! {
     ///
     /// The available interrupt flags are `MB`, `SB`, and `ERROR`. The binary format of the underlying bits exactly matches the
     /// INTFLAG bits.
+    #[derive(Clone, Copy)]
     pub struct Flags: u8 {
         /// Master on bus interrupt
         const MB = 0x01;
@@ -63,6 +64,16 @@ pub struct Status {
 }
 
 impl Status {
+    /// Check whether [`Self`] originates from an error.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if `STATUS` contains:
+    ///
+    /// * `BUSERR`
+    /// * `ARBLOST`
+    /// * `LENERR`
+    /// * `RXNACK`
     pub fn check_bus_error(self) -> Result<(), Error> {
         if self.buserr() {
             Err(Error::BusError)
@@ -76,6 +87,10 @@ impl Status {
             Ok(())
         }
     }
+
+    pub fn is_idle(self) -> bool {
+        self.busstate() == BusState::Idle
+    }
 }
 
 /// Errors available for I2C transactions
@@ -87,4 +102,6 @@ pub enum Error {
     LengthError,
     Nack,
     Timeout,
+    #[cfg(feature = "dma")]
+    Dma(crate::dmac::Error),
 }
