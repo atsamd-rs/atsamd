@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Fix blocking behaviour for `embedded-hal` 0.2 SPI writes
 - Fix I2C transaction to be as continuous as possible according to `embedded-hal` specification
 - Allow configuring USB clock with `GenericClockController` on atsamd11
 - fix samd51j not having i2s support
