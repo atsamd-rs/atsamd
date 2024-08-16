@@ -22,7 +22,6 @@ use pygamer as bsp;
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
 use hal::clock::GenericClockController;
-use hal::timer::SpinTimer;
 use hal::usb::UsbBus;
 use pac::{interrupt, CorePeripherals, Peripherals};
 use smart_leds::{colors, hsv::RGB8, SmartLedsWrite};
@@ -43,8 +42,9 @@ fn main() -> ! {
     );
     let pins = Pins::new(peripherals.PORT).split();
 
-    let timer = SpinTimer::new(4);
-    let mut neopixel = pins.neopixel.init(timer);
+    let mut neopixel = pins
+        .neopixel
+        .init(&mut clocks, peripherals.TC4, &mut peripherals.MCLK);
 
     let _ = neopixel.write((0..5).map(|_| RGB8::default()));
 
@@ -60,9 +60,11 @@ fn main() -> ! {
         USB_SERIAL = Some(SerialPort::new(&bus_allocator));
         USB_BUS = Some(
             UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
-                .manufacturer("Fake company")
-                .product("Serial port")
-                .serial_number("TEST")
+                .strings(&[StringDescriptors::new(LangID::EN)
+                    .manufacturer("Fake company")
+                    .product("Serial port")
+                    .serial_number("TEST")])
+                .expect("Failed to set strings")
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );

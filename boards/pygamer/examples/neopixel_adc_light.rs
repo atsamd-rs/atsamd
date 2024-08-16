@@ -6,17 +6,20 @@
 #![no_std]
 #![no_main]
 
-use bsp::{entry, hal, pac, Pins};
+use bsp::{entry, hal, pac, LightSensor, Pins};
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
 use pygamer as bsp;
 
+use embedded_hal_02::adc::OneShot;
 use hal::adc::Adc;
-use hal::gpio::v2::AlternateB;
-use hal::prelude::*;
-use hal::timer::SpinTimer;
-use hal::{clock::GenericClockController, delay::Delay};
-use pac::gclk::pchctrl::GEN_A::GCLK11;
+use hal::clock::GenericClockController;
+use hal::delay::Delay;
+use hal::ehal::delay::DelayNs;
+use hal::time::Hertz;
+use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
+use pac::gclk::pchctrl::GENSELECT_A::GCLK11;
 use pac::{CorePeripherals, Peripherals};
 use smart_leds::hsv::{hsv2rgb, Hsv, RGB8};
 use smart_leds::SmartLedsWrite;
@@ -36,10 +39,14 @@ fn main() -> ! {
     let pins = Pins::new(peripherals.PORT);
 
     let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
-    let mut light = pins.light.into_mode::<AlternateB>();
+    let mut light: LightSensor = pins.light.into();
 
-    let timer = SpinTimer::new(4);
-    let neopixel_pin: OldOutputPin<_> = pins.neopixel.into_push_pull_output().into();
+    let gclk0 = clocks.gclk0();
+    let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.TC3, &mut peripherals.MCLK);
+    timer.start(Hertz::MHz(3).into_duration());
+
+    let neopixel_pin = pins.neopixel.into_push_pull_output();
     let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
@@ -78,6 +85,6 @@ fn main() -> ! {
         //incremement the hue easing
         j = j.wrapping_add(1);
 
-        delay.delay_ms(10u8);
+        delay.delay_ms(10);
     }
 }

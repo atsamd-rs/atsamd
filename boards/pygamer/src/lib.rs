@@ -7,7 +7,6 @@ pub use cortex_m_rt::entry;
 pub use atsamd_hal as hal;
 pub use hal::pac;
 
-#[cfg(feature = "unproven")]
 pub mod buttons;
 pub mod pins;
 
@@ -32,10 +31,10 @@ pub mod util {
 #[inline(never)]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
-    use hal::ehal::digital::v2::OutputPin;
+    use hal::ehal::digital::OutputPin;
 
     let peripherals = unsafe { crate::pac::Peripherals::steal() };
-    let mut pins = Pins::new(peripherals.PORT);
+    let pins = Pins::new(peripherals.PORT);
     pins.d13.into_push_pull_output().set_high().ok();
 
     cortex_m::asm::udf()

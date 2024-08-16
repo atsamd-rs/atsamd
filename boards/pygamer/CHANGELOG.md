@@ -1,5 +1,6 @@
 # Unreleased
 
+- update HAL v0.14 -> v0.17 and other dependencies, fix examples
 - update path of Cargo config
 
 # v0.9.0

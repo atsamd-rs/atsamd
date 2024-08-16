@@ -12,9 +12,8 @@ use panic_halt as _;
 use pygamer as bsp;
 
 use hal::adc::Adc;
-use hal::pac::gclk::pchctrl::GEN_A::GCLK11;
+use hal::pac::gclk::pchctrl::GENSELECT_A::GCLK11;
 use hal::prelude::*;
-use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
 use pac::{CorePeripherals, Peripherals};
 use smart_leds::{brightness, hsv::RGB8, SmartLedsWrite};
@@ -35,9 +34,9 @@ fn main() -> ! {
     let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
     let mut battery = pins.battery.init();
 
-    // neopixels
-    let timer = SpinTimer::new(4);
-    let mut neopixel = pins.neopixel.init(timer);
+    let mut neopixel = pins
+        .neopixel
+        .init(&mut clocks, peripherals.TC4, &mut peripherals.MCLK);
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
 

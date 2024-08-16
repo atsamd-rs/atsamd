@@ -13,7 +13,7 @@ use panic_halt as _;
 use pygamer as bsp;
 
 use hal::prelude::*;
-use hal::sercom::v2::spi;
+use hal::sercom::spi;
 use hal::{clock::GenericClockController, delay::Delay};
 use pac::{CorePeripherals, Peripherals};
 use smart_leds::hsv::{hsv2rgb, Hsv};
@@ -41,7 +41,7 @@ fn main() -> ! {
         .data_out(pins.neopixel)
         .sclk(pins.scl);
     let spi = spi::Config::new(mclk, sercom2, pads, clock.freq())
-        .baud(3.mhz())
+        .baud(3.MHz())
         .enable();
     let mut neopixel = ws2812::Ws2812::new(spi);
     let mut delay = Delay::new(core.SYST, &mut clocks);

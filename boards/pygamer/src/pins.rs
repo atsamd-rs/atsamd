@@ -2,18 +2,19 @@
 
 use super::{hal, pac};
 
-use pac::{MCLK, QSPI};
+use pac::{MCLK, QSPI, TC4};
 
 use hal::prelude::*;
 
 use hal::clock::GenericClockController;
-use hal::ehal::{digital::v1_compat::OldOutputPin, timer::CountDown, timer::Periodic};
-use hal::gpio::v2::PA01;
+use hal::gpio::PA01;
 use hal::pwm;
 use hal::qspi;
-use hal::sercom::v2::{spi, IoSet1, Sercom1, Sercom4, UndocIoSet1};
-use hal::sercom::{I2CMaster2, UART5};
+use hal::sercom::uart::{self, BaudMode, Oversampling};
+use hal::sercom::{i2c, spi, IoSet1, Sercom1, Sercom4, UndocIoSet1};
 use hal::time::Hertz;
+use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 use hal::typelevel::NoneT;
 
 use st7735_lcd::{Orientation, ST7735};
@@ -24,15 +25,16 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
-use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+use pac::gclk::{genctrl::SRCSELECT_A, pchctrl::GENSELECT_A};
 
-#[cfg(feature = "unproven")]
+hal::bsp_peripherals!(
+    SERCOM2 { I2cSercom }
+    SERCOM5 { UartSercom }
+);
+
 pub use crate::buttons::ButtonReader;
-#[cfg(feature = "unproven")]
 pub use crate::buttons::Keys;
-#[cfg(feature = "unproven")]
 use hal::pwm::Pwm2;
-#[cfg(feature = "unproven")]
 use pac::{ADC0, ADC1};
 
 /// Pin constants and type aliases
@@ -107,7 +109,8 @@ pub mod aliases {
         PB04 {
             name: light
             aliases: {
-                Reset: LightReset
+                Reset: LightReset,
+                AlternateB: LightSensor
             }
         },
         /// Digital pin 2 (also Analog pin 8)
@@ -128,7 +131,8 @@ pub mod aliases {
         PA16 {
             name: d5
             aliases: {
-                Reset: D5Reset
+                Reset: D5Reset,
+                AlternateM: GclkOut
             }
         },
         /// Digital pin 6
@@ -186,7 +190,9 @@ pub mod aliases {
             name: d13
             aliases: {
                 PushPullOutput: RedLed,
-                Reset: D13Reset
+                Reset: D13Reset,
+                AlternateE: Tc4Pwm,
+                AlternateG: RedLedTcc0
             }
         },
 
@@ -583,7 +589,6 @@ pub struct Display {
 pub type TftPads = spi::Pads<Sercom4, IoSet1, NoneT, TftMosi, TftSclk>;
 pub type TftSpi = spi::Spi<spi::Config<TftPads>, spi::Tx>;
 
-#[cfg(feature = "unproven")]
 impl Display {
     /// Convenience for setting up the on board display.
     pub fn init(
@@ -601,7 +606,7 @@ impl Display {
             .data_out(self.tft_mosi);
         let tft_spi = spi::Config::new(mclk, sercom4, pads, clock.freq())
             .spi_mode(spi::MODE_0)
-            .baud(16.mhz())
+            .baud(16.MHz())
             .enable();
         let mut tft_cs: TftCs = self.tft_cs.into();
         tft_cs.set_low().ok();
@@ -618,7 +623,7 @@ impl Display {
         display.set_orientation(&Orientation::LandscapeSwapped)?;
         let pwm_clock = &clocks.tc2_tc3(&gclk0).ok_or(())?;
         let pwm_pinout = pwm::TC2Pinout::Pa1(self.tft_backlight);
-        let mut pwm2 = Pwm2::new(pwm_clock, 1.khz(), timer2, pwm_pinout, mclk);
+        let mut pwm2 = Pwm2::new(pwm_clock, 1.kHz(), timer2, pwm_pinout, mclk);
         pwm2.set_duty(pwm2.get_max_duty());
         Ok((display, pwm2))
     }
@@ -630,15 +635,19 @@ pub struct Neopixel {
 }
 
 impl Neopixel {
-    /// Convenience for setting up the onboard neopixels using the provided
-    /// Timer preconfigured to 3mhz.
-    pub fn init<T>(self, timer: T) -> ws2812::Ws2812<T, OldOutputPin<NeopixelPin>>
-    where
-        T: CountDown + Periodic,
-    {
-        let neopixel_pin: NeopixelPin = self.neopixel.into();
-        let neopixel_pin: OldOutputPin<_> = neopixel_pin.into();
-        ws2812::Ws2812::new(timer, neopixel_pin)
+    /// Convenience for setting up the onboard neopixels
+    pub fn init(
+        self,
+        clocks: &mut GenericClockController,
+        timer4: TC4,
+        mclk: &mut MCLK,
+    ) -> ws2812::Ws2812<TimerCounter<TC4>, NeopixelPin> {
+        let gclk0 = clocks.gclk0();
+        let timer_clock = clocks.tc4_tc5(&gclk0).unwrap();
+        let mut timer = TimerCounter::tc4_(&timer_clock, timer4, mclk);
+        InterruptDrivenTimer::start(&mut timer, Hertz::MHz(3).into_duration());
+
+        ws2812::Ws2812::new(timer, self.neopixel.into())
     }
 }
 
@@ -677,7 +686,7 @@ impl SPI {
             .sclk(self.sclk);
         spi::Config::new(mclk, sercom1, pads, clock.freq())
             .spi_mode(spi::MODE_0)
-            .baud(baud)
+            .baud(baud.into())
             .enable()
     }
 }
@@ -688,21 +697,36 @@ pub struct I2C {
     pub scl: SclReset,
 }
 
-impl I2C {
-    /// Convenience for setting up the labelled SDA, SCL pins to
-    /// operate as an I2C master running at the specified frequency.
-    pub fn init(
-        self,
-        clocks: &mut GenericClockController,
-        baud: impl Into<Hertz>,
-        sercom2: pac::SERCOM2,
-        mclk: &mut MCLK,
-    ) -> I2CMaster2<Sda, Scl> {
-        let gclk0 = clocks.gclk0();
-        let clock = &clocks.sercom2_core(&gclk0).unwrap();
-        let baud = baud.into();
-        I2CMaster2::new(clock, baud, sercom2, mclk, self.sda.into(), self.scl.into())
-    }
+/// I2C pads for the labelled I2C peripheral
+///
+/// You can use these pads with other, user-defined [`i2c::Config`]urations.
+pub type I2cPads = i2c::Pads<I2cSercom, IoSet1, Sda, Scl>;
+
+/// I2C master for the labelled I2C peripheral
+///
+/// This type implements [`Read`](ehal::blocking::i2c::Read),
+/// [`Write`](ehal::blocking::i2c::Write) and
+/// [`WriteRead`](ehal::blocking::i2c::WriteRead).
+pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
+
+/// Convenience for setting up the labelled SDA, SCL pins to
+/// operate as an I2C master running at the specified frequency.
+pub fn i2c_master(
+    clocks: &mut GenericClockController,
+    baud: impl Into<Hertz>,
+    sercom: I2cSercom,
+    mclk: &mut pac::MCLK,
+    sda: impl Into<Sda>,
+    scl: impl Into<Scl>,
+) -> I2c {
+    let gclk0 = clocks.gclk0();
+    let clock = &clocks.sercom2_core(&gclk0).unwrap();
+    let freq = clock.freq();
+    let baud = baud.into();
+    let pads = i2c::Pads::new(sda.into(), scl.into());
+    i2c::Config::new(mclk, sercom, pads, freq)
+        .baud(baud)
+        .enable()
 }
 
 /// Speaker pins
@@ -727,8 +751,8 @@ impl USB {
         clocks: &mut GenericClockController,
         mclk: &mut MCLK,
     ) -> UsbBusAllocator<UsbBus> {
-        clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
-        let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+        clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
+        let usb_gclk = clocks.get_gclk(GENSELECT_A::GCLK2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
         let (dm, dp): (UsbDm, UsbDp) = (self.dm.into(), self.dp.into());
         UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
@@ -741,6 +765,12 @@ pub struct UART {
     pub rx: UartRxReset,
 }
 
+/// UART Pads for the labelled UART peripheral
+pub type UartPads = uart::Pads<UartSercom, IoSet1, UartRx, UartTx>;
+
+/// UART device for the labelled RX & TX pins
+pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
+
 impl UART {
     /// Convenience for setting up the labelled TX, RX pins
     /// to operate as a UART device at the specified baud rate.
@@ -748,13 +778,18 @@ impl UART {
         self,
         clocks: &mut GenericClockController,
         baud: impl Into<Hertz>,
-        sercom5: pac::SERCOM5,
+        sercom: UartSercom,
         mclk: &mut MCLK,
-    ) -> UART5<UartRx, UartTx, (), ()> {
+    ) -> Uart {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom5_core(&gclk0).unwrap();
         let baud = baud.into();
-        UART5::new(clock, baud, sercom5, mclk, (self.rx.into(), self.tx.into()))
+        let rx: UartRx = self.rx.into();
+        let tx: UartTx = self.tx.into();
+        let pads = uart::Pads::default().rx(rx).tx(tx);
+        uart::Config::new(mclk, sercom, pads, clock.freq())
+            .baud(baud, BaudMode::Fractional(Oversampling::Bits16))
+            .enable()
     }
 }
 
@@ -809,7 +844,6 @@ pub struct Buttons {
     pub clock: ButtonClockReset,
 }
 
-#[cfg(feature = "unproven")]
 impl Buttons {
     /// Convenience for setting up the button latch pins
     /// Returns ButtonReader iterator which can be polled for Key events
@@ -835,7 +869,6 @@ pub struct JoystickReader {
     pub joy_y: JoyY,
 }
 
-#[cfg(feature = "unproven")]
 impl JoystickReader {
     /// returns a tuple (x,y) where values are 12 bit, between 0-4095
     /// values are NOT centered, but could be by subtracting 2048
@@ -859,7 +892,6 @@ pub struct Joystick {
     pub joy_y: JoyYReset,
 }
 
-#[cfg(feature = "unproven")]
 impl Joystick {
     /// Convenience for setting up the joystick. Returns JoystickReader instance
     /// which can be polled for joystick (x,y) tuple
@@ -872,13 +904,11 @@ impl Joystick {
 }
 
 /// Battery Reader
-#[cfg(feature = "unproven")]
 pub struct BatteryReader {
     /// Battery pin
     pub battery: BatteryPin,
 }
 
-#[cfg(feature = "unproven")]
 impl BatteryReader {
     /// Returns a float for voltage of battery
     pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC0>) -> f32 {
@@ -893,7 +923,6 @@ pub struct Battery {
     pub battery: BatteryReset,
 }
 
-#[cfg(feature = "unproven")]
 impl Battery {
     /// Convenience for reading Battery Volage. Returns BatteryReader instance
     /// which can be polled for battery voltage

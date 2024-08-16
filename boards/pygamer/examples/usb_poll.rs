@@ -37,11 +37,16 @@ fn main() -> ! {
     let mut led: RedLed = pins.led_pin.into();
 
     let mut usb_dev = UsbDeviceBuilder::new(&usb_bus, UsbVidPid(0x16c0, 0x27dd))
-        .manufacturer("Fake company")
-        .product("Serial port")
-        .serial_number("TEST")
+        .strings(&[StringDescriptors::new(LangID::EN)
+            .manufacturer("Fake company")
+            .product("Serial port")
+            .serial_number("TEST")])
+        .expect("Failed to set strings")
         .device_class(USB_CLASS_CDC)
         .build();
+
+    let mut led_state = false;
+    let _ = led.set_low(); // Turn off
 
     loop {
         if !usb_dev.poll(&mut [&mut serial]) {
@@ -52,10 +57,16 @@ fn main() -> ! {
 
         match serial.read(&mut buf) {
             Ok(count) if count > 0 => {
-                let _ = led.set_high(); // Turn on
-
                 // Echo back in upper case
                 for c in buf[0..count].iter_mut() {
+                    led_state = if led_state {
+                        let _ = led.set_low(); // Turn off
+                        false
+                    } else {
+                        let _ = led.set_high(); // Turn on
+                        true
+                    };
+
                     if 0x61 <= *c && *c <= 0x7a {
                         *c &= !0x20;
                     }
@@ -73,7 +84,5 @@ fn main() -> ! {
             }
             _ => {}
         }
-
-        let _ = led.set_low(); // Turn off
     }
 }

@@ -18,9 +18,8 @@ use pygamer as bsp;
 use bsp::util::map_from;
 use hal::adc::Adc;
 use hal::prelude::*;
-use hal::timer::SpinTimer;
 use hal::{clock::GenericClockController, delay::Delay};
-use pac::gclk::pchctrl::GEN_A::GCLK11;
+use pac::gclk::pchctrl::GENSELECT_A::GCLK11;
 use pac::{CorePeripherals, Peripherals};
 use smart_leds::hsv::{hsv2rgb, Hsv, RGB8};
 use smart_leds::SmartLedsWrite;
@@ -46,10 +45,9 @@ fn main() -> ! {
     let mut adc1 = Adc::adc1(peripherals.ADC1, &mut peripherals.MCLK, &mut clocks, GCLK11);
     let mut joystick = pins.joystick.init();
 
-    // neopixels
-    let timer = SpinTimer::new(4);
-
-    let mut neopixel = pins.neopixel.init(timer);
+    let mut neopixel = pins
+        .neopixel
+        .init(&mut clocks, peripherals.TC4, &mut peripherals.MCLK);
 
     const NUM_LEDS: usize = 5;
     let mut pos_button: usize = 2;

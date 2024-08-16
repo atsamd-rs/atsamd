@@ -7,14 +7,15 @@
 #![no_std]
 #![no_main]
 
-use bsp::{entry, hal, pac, Pins};
+use bsp::{entry, hal, i2c_master, pac, Pins};
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
 use pygamer as bsp;
 
-use hal::prelude::*;
-use hal::time::KiloHertz;
-use hal::timer::SpinTimer;
+// use hal::prelude::*;
+use hal::ehal::delay::DelayNs;
+
+use hal::time::Hertz;
 use hal::{clock::GenericClockController, delay::Delay};
 use lis3dh::{accelerometer::Accelerometer, Lis3dh};
 use pac::{CorePeripherals, Peripherals};
@@ -37,16 +38,17 @@ fn main() -> ! {
     let mut delay = Delay::new(core_peripherals.SYST, &mut clocks);
     let pins = Pins::new(peripherals.PORT).split();
 
-    // neopixels
-    let timer = SpinTimer::new(4);
-    let mut neopixel = pins.neopixel.init(timer);
+    let mut neopixel = pins
+        .neopixel
+        .init(&mut clocks, peripherals.TC4, &mut peripherals.MCLK);
 
-    // i2c
-    let i2c = pins.i2c.init(
+    let i2c = i2c_master(
         &mut clocks,
-        KiloHertz(400),
+        Hertz::kHz(400),
         peripherals.SERCOM2,
         &mut peripherals.MCLK,
+        pins.i2c.sda,
+        pins.i2c.scl,
     );
 
     let mut lis3dh = Lis3dh::new(i2c, 0x19).unwrap();
@@ -74,7 +76,7 @@ fn main() -> ! {
         }));
 
         //don't update faster than the accell is reading
-        delay.delay_ms(10u8);
+        delay.delay_ms(10);
     }
 }
 

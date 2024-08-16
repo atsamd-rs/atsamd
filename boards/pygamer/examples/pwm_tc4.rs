@@ -11,7 +11,6 @@ use pygamer as bsp;
 use core::f32::consts::FRAC_PI_2;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::gpio::v2::AlternateE;
 use hal::prelude::*;
 use hal::pwm::{Pwm4, TC4Pinout};
 use micromath::F32Ext;
@@ -38,9 +37,9 @@ fn main() -> ! {
 
     let mut pwm0 = Pwm4::new(
         &clocks.tc4_tc5(&gclk).unwrap(),
-        1.khz(),
+        1.kHz(),
         peripherals.TC4,
-        TC4Pinout::Pa23(pins.d13.into_mode::<AlternateE>()),
+        TC4Pinout::Pa23(pins.d13),
         &mut peripherals.MCLK,
     );
     let max_duty = pwm0.get_max_duty();

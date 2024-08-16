@@ -15,7 +15,6 @@ use core::f32::consts::FRAC_PI_2;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::timer::SpinTimer;
 use hal::trng::Trng;
 use micromath::F32Ext;
 use pac::{CorePeripherals, Peripherals};
@@ -35,9 +34,10 @@ fn main() -> ! {
     );
 
     let pins = Pins::new(peripherals.PORT).split();
-    let timer = SpinTimer::new(4);
 
-    let mut neopixel = pins.neopixel.init(timer);
+    let mut neopixel = pins
+        .neopixel
+        .init(&mut clocks, peripherals.TC4, &mut peripherals.MCLK);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let trng = Trng::new(&mut peripherals.MCLK, peripherals.TRNG);

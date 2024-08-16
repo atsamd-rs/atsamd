@@ -8,10 +8,15 @@ use pygamer as bsp;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
+use hal::time::Hertz;
+use hal::timer::TimerCounter;
 use rtic::app;
 
 #[app(device = crate::hal::pac, peripherals = true)]
-const APP: () = {
+mod app {
+    use super::*;
+
+    #[local]
     struct Resources {
         red_led: RedLed,
         timer: hal::timer::TimerCounter3,
@@ -27,7 +32,7 @@ const APP: () = {
     /// period.
     #[task(binds = TC3, local = [timer, red_led, buttons])]
     fn tc3(c: tc3::Context) {
-        if c.local.timer.wait().is_ok() {
+        if InterruptDrivenTimer::wait(c.local.timer).is_ok() {
             for event in c.local.buttons.events() {
                 match event {
                     Keys::SelectDown => {
@@ -43,7 +48,7 @@ const APP: () = {
     }
 
     #[init]
-    fn init(c: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(c: init::Context) -> (Shared, Resources, init::Monotonics) {
         let mut device = c.device;
         let mut clocks = GenericClockController::with_internal_32kosc(
             device.GCLK,
@@ -58,15 +63,20 @@ const APP: () = {
         let gclk0 = clocks.gclk0();
         let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
 
-        let mut tc3 = bsp::timer::TimerCounter::tc3_(&timer_clock, device.TC3, &mut device.MCLK);
+        let mut tc3 = TimerCounter::tc3_(&timer_clock, device.TC3, &mut device.MCLK);
 
-        tc3.start(200.hz());
+        InterruptDrivenTimer::start(&mut tc3, Hertz::Hz(200).into_duration());
+
         tc3.enable_interrupt();
 
-        init::LateResources {
-            buttons: pins.buttons.init(),
-            red_led: pins.led_pin.into(),
-            timer: tc3,
-        }
+        (
+            Shared {},
+            Resources {
+                buttons: pins.buttons.init(),
+                red_led: pins.led_pin.into(),
+                timer: tc3,
+            },
+            init::Monotonics(),
+        )
     }
 }
