@@ -570,6 +570,8 @@ macro_rules! impl_blocking_spi_write {
                             }
                         }
                     }
+                    // Wait until all data is shifted out
+                    while !self.read_flags().contains(Flags::TXC) {}
                     Ok(())
                 }
             }
@@ -632,7 +634,10 @@ where
             panic!("Slice length does not equal SPI transfer length");
         }
         let sercom = unsafe { self.config.as_ref().sercom() };
-        write_slice(sercom, buf, false)
+        write_slice(sercom, buf, false)?;
+        // Wait until all data is shifted out
+        while !self.read_flags().contains(Flags::TXC) {}
+        Ok(())
     }
 }
 
@@ -687,7 +692,10 @@ where
             panic!("Slice length does not equal SPI transfer length");
         }
         let sercom = unsafe { self.config.as_ref().sercom() };
-        write_slice(sercom, buf, false)
+        write_slice(sercom, buf, false)?;
+        // Wait until all data is shifted out
+        while !self.read_flags().contains(Flags::TXC) {}
+        Ok(())
     }
 }
 
@@ -779,6 +787,8 @@ macro_rules! impl_blocking_spi_write_iter {
                             }
                         }
                     }
+                    // Wait until all data is shifted out
+                    while !self.read_flags().contains(Flags::TXC) {}
                     Ok(())
                 }
             }
