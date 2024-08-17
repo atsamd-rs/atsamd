@@ -1,5 +1,6 @@
 # Unreleased
 
+- fix missing `use_semihosting` Cargo feature
 - update path of Cargo config
 
 # v0.13.0
