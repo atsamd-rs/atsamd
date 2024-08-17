@@ -1,5 +1,7 @@
 # Unreleased
 
+- update path of Cargo config
+
 # v0.11.0
 
 - added the `neopixel_rainbow` example

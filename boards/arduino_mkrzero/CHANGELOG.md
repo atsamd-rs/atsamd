@@ -1,5 +1,7 @@
 # Unreleased
 
+- update path of Cargo config
+
 # v0.12.1
 
 - update to `atsamd-hal-0.16`, along with redefining pins using the bsp_pins! macro

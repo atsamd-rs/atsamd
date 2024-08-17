@@ -1,5 +1,7 @@
 # Unreleased
 
+- update path of Cargo config
+
 # v0.7.0
 
 - Replace homebrew time library with `fugit` (#672)
