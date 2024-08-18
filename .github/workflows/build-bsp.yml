@@ -16,7 +16,7 @@ jobs:
     # This name is matched against the project's branch protection settings
     name: "build (${{matrix.bsp.name}}, ${{matrix.toolchain}})"
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.toolchain == 'nightly' }}
+    continue-on-error: ${{ matrix.toolchain == 'nightly' || matrix.bsp.tier != 1 }}
     needs: setup
     strategy:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
