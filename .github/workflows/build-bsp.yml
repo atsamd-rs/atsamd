@@ -13,6 +13,8 @@ jobs:
       uses: ./.github/actions/list-BSPs
 
   build:
+    # This name is matched against the project's branch protection settings
+    name: "build (${{matrix.bsp.name}}, ${{matrix.toolchain}})"
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.toolchain == 'nightly' }}
     needs: setup
@@ -26,25 +28,25 @@ jobs:
       run: |
         rustup set profile minimal
         rustup override set ${{ matrix.toolchain }}
-        target=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .target')
+        target=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .target')
         rustup target add ${target}
         rustup component add clippy
 
     - name: Setup cache
       uses: Swatinem/rust-cache@v2
 
-    - name: Build ${{ matrix.bsp }}
+    - name: Build ${{ matrix.bsp.name }}
       run: |
-        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
+        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .build')
         set -ex
-        cd boards/${{ matrix.bsp }}
+        cd boards/${{ matrix.bsp.name }}
         $(${build_invocation})
 
-    - name: Clippy ${{ matrix.bsp }}
+    - name: Clippy ${{ matrix.bsp.name }}
       if: ${{ matrix.toolchain == 'nightly' }}
       run: |
         set -ex
-        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
+        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .build')
         clippy_invocation=$(echo ${build_invocation} | sed 's/cargo build/cargo clippy/g')
-        cd boards/${{ matrix.bsp }}
+        cd boards/${{ matrix.bsp.name }}
         $(${clippy_invocation})
