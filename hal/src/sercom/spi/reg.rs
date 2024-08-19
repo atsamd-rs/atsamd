@@ -340,7 +340,7 @@ impl<S: Sercom> Registers<S> {
     /// Try to read the interrupt flags, but first check the error status flags.
     #[inline]
     pub fn read_flags_errors(&self) -> Result<Flags, Error> {
-        self.read_status().try_into()?;
+        self.read_status().check_bus_error()?;
         Ok(self.read_flags())
     }
 }
