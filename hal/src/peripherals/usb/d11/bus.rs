@@ -13,6 +13,7 @@ use crate::pac;
 use crate::pac::usb::DEVICE;
 use crate::pac::{PM, USB};
 use crate::usb::devicedesc::DeviceDescBank;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
 use core::mem;
@@ -593,6 +594,12 @@ impl UsbBus {
 }
 
 impl Inner {
+    #[hal_cfg("usb-d11")]
+    fn usb(&self) -> &DEVICE {
+        unsafe { &(*USB::ptr()).device }
+    }
+
+    #[hal_cfg("usb-d21")]
     fn usb(&self) -> &DEVICE {
         unsafe { (*USB::ptr()).device() }
     }
@@ -618,6 +625,7 @@ enum FlushConfigMode {
 }
 
 impl Inner {
+    #[hal_macro_helper]
     fn enable(&mut self) {
         let usb = self.usb();
         usb.ctrla.modify(|_, w| w.swrst().set_bit());
@@ -630,10 +638,18 @@ impl Inner {
             w.transp().bits(usb_transp_cal());
             w.trim().bits(usb_trim_cal())
         });
+
+        #[hal_cfg("usb-d11")]
+        usb.qosctrl.modify(|_, w| unsafe {
+            w.dqos().bits(0b11);
+            w.cqos().bits(0b11)
+        });
+        #[hal_cfg("usb-d21")]
         usb.qosctrl.modify(|_, w| {
             w.dqos().bits(0b11);
             w.cqos().bits(0b11)
         });
+
         usb.ctrla.modify(|_, w| {
             w.mode().device();
             w.runstdby().set_bit()
