@@ -78,11 +78,11 @@ impl Status {
     ///
     /// Returns an error if `STATUS` contains:
     ///
-    /// * `PERR`
-    /// * `FERR`
-    /// * `BUFOVF`
-    /// * `ISF`
-    /// * `COLL`
+    /// * `PERR` - Parity error
+    /// * `FERR` - Frame error
+    /// * `BUFOVF` - Buffer overflow
+    /// * `ISF` - Inconsistent SYNC field
+    /// * `COLL` - Collision
     #[inline]
     pub fn check_bus_error(self) -> Result<(), Error> {
         use Error::*;

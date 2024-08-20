@@ -70,10 +70,10 @@ impl Status {
     ///
     /// Returns an error if `STATUS` contains:
     ///
-    /// * `BUSERR`
-    /// * `ARBLOST`
-    /// * `LENERR`
-    /// * `RXNACK`
+    /// * `BUSERR` - Bus Error
+    /// * `ARBLOST` - Arbitration lost
+    /// * `LENERR` - Length error
+    /// * `RXNACK` - Receive not acknowledged
     pub fn check_bus_error(self) -> Result<(), Error> {
         if self.buserr() {
             Err(Error::BusError)
