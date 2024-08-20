@@ -8,43 +8,89 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - id: set-matrix
       uses: ./.github/actions/list-BSPs
 
   build:
+    name: "${{matrix.bsp.name}} (Tier ${{matrix.bsp.tier}}, ${{matrix.toolchain}})"
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.toolchain == 'nightly' }}
+    # There is a subtle difference between continue-on-error and setting
+    # strategy.fail-fast=false.  Both will allow all jobs to run to completion,
+    # however continue-on-error lets the next workflow stage run regardless of
+    # failed jobs, strategy.fail-fast=false will skip subsequent stages if any
+    # job fails.
+    continue-on-error: true
     needs: setup
     strategy:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install Rust
       run: |
         rustup set profile minimal
         rustup override set ${{ matrix.toolchain }}
-        target=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .target')
+        target=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .target')
         rustup target add ${target}
         rustup component add clippy
 
     - name: Setup cache
       uses: Swatinem/rust-cache@v2
 
-    - name: Build ${{ matrix.bsp }}
+    - name: Build ${{ matrix.bsp.name }}
       run: |
-        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
+        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .build')
         set -ex
-        cd boards/${{ matrix.bsp }}
+        pushd boards/${{ matrix.bsp.name }}
         $(${build_invocation})
+        popd
+        mkdir -p output
+        touch "output/build"
 
-    - name: Clippy ${{ matrix.bsp }}
+    - name: Clippy ${{ matrix.bsp.name }}
       if: ${{ matrix.toolchain == 'nightly' }}
       run: |
         set -ex
-        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp }}' -c '.boards | .[$board] | .build')
+        build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .build')
         clippy_invocation=$(echo ${build_invocation} | sed 's/cargo build/cargo clippy/g')
-        cd boards/${{ matrix.bsp }}
+        cd boards/${{ matrix.bsp.name }}
         $(${clippy_invocation})
+
+    - name: Done
+      uses: actions/upload-artifact@v4
+      with:
+        # name needs to be unique in the workspace
+        name: "${{ matrix.bsp.name }}-${{ matrix.toolchain }}"
+        path: output
+
+  check:
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: successful-jobs
+      - name: Tier 1 BSPs built on stable
+        env:
+          MATRIX: ${{ needs.setup.outputs.matrix }}
+        run: |
+          tier_1_bsps=$(jq -Mr -c '.bsp[] | select(.tier == 1) | .name' <<< ${MATRIX})
+
+          success="true"
+          for bsp in ${tier_1_bsps}; do
+            if [ -f successful-jobs/"${bsp}"-stable/build ]; then
+              echo "${bsp}" built on stable toolchain
+            else
+              echo "${bsp}" failed to build on stable toolchain
+              success="false"
+            fi
+          done
+
+          if [ ${success} = "true" ]; then
+            echo "Tier 1 BSPs all built on stable"
+          else
+            false
+          fi
