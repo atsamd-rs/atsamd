@@ -1,6 +1,6 @@
 # Unreleased
 
-- 
+- update path of Cargo config
 
 # v0.1.0
 

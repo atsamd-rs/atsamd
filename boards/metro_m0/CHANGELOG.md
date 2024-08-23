@@ -1,5 +1,7 @@
 # Unreleased
 
+- update path of Cargo config
+
 # v0.14.0
 
 - Implement `embedded-hal` `1.0` for GPIO, SPI, I2C, UART and fix examples

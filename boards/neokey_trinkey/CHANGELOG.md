@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 # Unreleased
 
+- update path of Cargo config
+
 # v0.2.1
 - Fixed the `use_semihosting` feature of the BSP
 

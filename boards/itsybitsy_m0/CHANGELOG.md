@@ -1,5 +1,7 @@
 # Unreleased
 
+- update path of Cargo config
+
 # v0.13.1
 - Fix issue with twitching_usb_mouse example not working on MacOS
 

@@ -1,5 +1,7 @@
 # Unreleased
 
+- update path of Cargo config
+
 # v0.7.1
 
 - Fixed the `use_semihosting` feature of the BSP

@@ -53,6 +53,7 @@ default = ["rt", "atsamd-hal/samd51j"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
+use_semihosting = []
 usb = ["atsamd-hal/usb", "usb-device"]
 
 [profile.dev]

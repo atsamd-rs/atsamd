@@ -1,5 +1,7 @@
 # Unreleased
 
+- update path of Cargo config
+
 # v0.10.0
 
 - fix `cortex-m` dev-dependency (#563)

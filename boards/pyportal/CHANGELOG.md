@@ -1,5 +1,7 @@
 # Unreleased
 
+- update path of Cargo config
+
 # v0.10.1
 
 - Use correct alternate for USB (#661)
