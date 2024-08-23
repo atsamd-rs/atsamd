@@ -56,8 +56,9 @@ where
     }
 
     fn wait(&mut self) -> nb::Result<(), void::Void> {
-        // Unwrapping an unreacheable error is totally OK
-        <Self as InterruptDrivenTimer>::wait(self).unwrap();
+        nb::block!{
+            <Self as InterruptDrivenTimer>::wait(self)
+        }.unwrap(); // wait() is Infallible
         Ok(())
     }
 }

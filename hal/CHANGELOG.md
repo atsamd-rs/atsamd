@@ -1,5 +1,6 @@
 # Unreleased Changes
 
+- Fix `embedded-hal` 0.2 CountDown timer implementation
 - Fix Clippy docstring warnings
 - Fix blocking behaviour for `embedded-hal` 0.2 SPI writes
 - Fix I2C transaction to be as continuous as possible according to `embedded-hal` specification
