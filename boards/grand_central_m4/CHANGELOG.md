@@ -1,6 +1,7 @@
 # Unreleased
 
 - update path of Cargo config
+- bumped usb-device version to 0.3
 
 # v0.6.0
 
