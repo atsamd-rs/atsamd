@@ -24,7 +24,7 @@ version = "0.15"
 default-features = false
 
 [dependencies.usb-device]
-version = "0.2"
+version = "0.3"
 optional = true
 
 [dev-dependencies]
