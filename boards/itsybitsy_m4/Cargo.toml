@@ -16,6 +16,7 @@ readme = "README.md"
 [dependencies]
 bitbang-hal = "0.3"
 apa102-spi = "0.3"
+embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
 smart-leds = "0.3"
 
 [dependencies.cortex-m-rt]
@@ -23,26 +24,26 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.15"
+version = "0.17"
 default-features = false
 
 [dependencies.usb-device]
-version = "0.2"
+version = "0.3.1"
 optional = true
 
 [dev-dependencies]
-cortex-m = "0.7"
-usbd-serial = "0.1"
+cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
+usbd-serial = "0.2.2"
 panic-halt = "0.2"
 panic-semihosting = "0.6"
 
 [features]
 # ask the HAL to enable atsamd51g support
-default = ["rt", "atsamd-hal/samd51g", "atsamd-hal/unproven"]
+default = ["rt", "atsamd-hal/samd51g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51g-rt"]
-unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
 use_rtt = ["atsamd-hal/use_rtt"]
+use_semihosting = []
 
 [profile.dev]
 incremental = false

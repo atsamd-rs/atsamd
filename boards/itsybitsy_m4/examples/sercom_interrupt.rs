@@ -4,6 +4,7 @@
 //! The idea of this example is to show two different things
 //! - How to manually configure SERCOM for a desired mode (UART in this case)
 //! - How to enable an use SERCOM interrupts
+//!
 //! The second one is particularly handy because some drivers will give
 //! you a `poll()` or `update()` function, and you are expected to call it  
 //! on the receive interrupt of the peripheral i.e. SERCOM UART RXC
@@ -17,9 +18,9 @@
 //! - RX - A4
 //! - TX - A5
 //!
-//! > In the ATSAMX5x MCUs SERCOM UART configuration requires at least
+//! In the ATSAMX5x MCUs SERCOM UART configuration requires at least
 //! two pins from the same IOSET. You can find more info about this in
-//! the hal documentation or in the MCU datasheet at:
+//! the HAL documentation or in the MCU datasheet at:
 //! <https://www.microchip.com/en-us/product/ATSAMD51G19A>
 
 use itsybitsy_m4 as bsp;
@@ -35,8 +36,8 @@ use cortex_m::{interrupt::Mutex, peripheral::NVIC};
 use bsp::hal::{
     clock::GenericClockController,
     delay::Delay,
-    ehal::blocking::delay::DelayMs,
     gpio::{Pin, PushPullOutput, PA22},
+    nb,
     pac::{self, interrupt, CorePeripherals, Peripherals},
     prelude::*,
     sercom::{
@@ -92,7 +93,7 @@ fn main() -> ! {
     // custom sercom uart configuration
     let mut serial_sercom0 = uart0(
         &mut clocks,
-        Hertz(115200),
+        115200.Hz(),
         dp.SERCOM0,
         &mut dp.MCLK,
         pins.a5,
@@ -102,7 +103,7 @@ fn main() -> ! {
     // labeled "default" uart
     let mut serial_sercom3 = bsp::uart(
         &mut clocks,
-        Hertz(115200),
+        115200.Hz(),
         dp.SERCOM3,
         &mut dp.MCLK,
         pins.d0_rx,
