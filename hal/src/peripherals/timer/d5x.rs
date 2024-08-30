@@ -20,6 +20,7 @@ use crate::time::{Hertz, Nanoseconds};
 // TC5 + TC6 can be paired to make a 32-bit counter
 
 /// A generic hardware timer counter.
+///
 /// The counters are exposed in 16-bit mode only.
 /// The hardware allows configuring the 8-bit mode
 /// and pairing up some instances to run in 32-bit
@@ -56,9 +57,10 @@ where
     }
 
     fn wait(&mut self) -> nb::Result<(), void::Void> {
-        nb::block!{
+        nb::block! {
             <Self as InterruptDrivenTimer>::wait(self)
-        }.unwrap(); // wait() is Infallible
+        }
+        .unwrap(); // wait() is Infallible
         Ok(())
     }
 }
