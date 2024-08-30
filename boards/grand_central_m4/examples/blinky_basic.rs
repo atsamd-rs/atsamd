@@ -3,7 +3,6 @@
 
 use grand_central_m4 as bsp;
 
-use bsp::ehal;
 use bsp::hal;
 use bsp::pac;
 
@@ -17,7 +16,6 @@ use hal::clock::GenericClockController;
 use hal::prelude::*;
 use pac::{CorePeripherals, Peripherals};
 
-use ehal::blocking::delay::DelayMs;
 use hal::delay::Delay;
 
 #[entry]
@@ -35,9 +33,9 @@ fn main() -> ! {
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
     loop {
-        delay.delay_ms(200u16);
+        delay.delay_ms(200u8);
         red_led.set_high().unwrap();
-        delay.delay_ms(200u16);
+        delay.delay_ms(200u8);
         red_led.set_low().unwrap();
     }
 }

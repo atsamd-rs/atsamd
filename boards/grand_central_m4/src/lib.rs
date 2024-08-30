@@ -493,7 +493,7 @@ pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 /// SPI Master in SPI Mode 0.
 pub fn spi_master(
     clocks: &mut GenericClockController,
-    baud: impl Into<Hertz>,
+    baud: Hertz,
     sercom7: SpiSercom,
     mclk: &mut pac::MCLK,
     sclk: impl Into<Sclk>,
@@ -603,10 +603,10 @@ pub fn usb_allocator(
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
-    use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+    use pac::gclk::{genctrl::SRCSELECT_A, pchctrl::GENSELECT_A};
 
-    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
-    let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+    clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
+    let usb_gclk = clocks.get_gclk(GENSELECT_A::GCLK2).unwrap();
     let usb_clock = &clocks.usb(&usb_gclk).unwrap();
     let (dm, dp) = (dm.into(), dp.into());
     UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
