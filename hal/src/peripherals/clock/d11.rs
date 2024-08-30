@@ -1,4 +1,5 @@
 //! Configuring the system clock sources.
+//!
 //! You will typically need to create an instance of `GenericClockController`
 //! before you can set up most of the peripherals on the atsamd21 device.
 //! The other types in this module are used to enforce at compile time
@@ -20,6 +21,7 @@ pub type ClockGenId = pac::gclk::clkctrl::GENSELECT_A;
 pub type ClockSource = pac::gclk::genctrl::SRCSELECT_A;
 
 /// Represents a configured clock generator.
+///
 /// Can be converted into the effective clock frequency.
 /// Its primary purpose is to be passed in to methods
 /// such as `GenericClockController::tcc2_tc3` to configure
@@ -121,6 +123,7 @@ impl State {
 }
 
 /// `GenericClockController` encapsulates the GCLK hardware.
+///
 /// It provides a type safe way to configure the system clocks.
 /// Initializing the `GenericClockController` instance configures
 /// the system to run at 48Mhz by setting gclk1 as a 32khz source
@@ -347,6 +350,7 @@ macro_rules! clock_generator {
 $(
 /// A typed token that indicates that the clock for the peripheral(s)
 /// with the matching name has been configured.
+///
 /// The effective clock frequency is available via the `freq` method,
 /// or by converting the object into a `Hertz` instance.
 /// The peripheral initialization code will typically require passing
@@ -374,6 +378,7 @@ impl GenericClockController {
     $(
     /// Configure the clock for peripheral(s) that match the name
     /// of this function to use the specific clock generator.
+    ///
     /// The `GClock` parameter may be one of default clocks
     /// return from `gclk0()`, `gclk1()` or a clock configured
     /// by the host application using the `configure_gclk_divider_and_source`

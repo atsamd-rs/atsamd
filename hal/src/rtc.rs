@@ -70,7 +70,9 @@ pub enum ClockMode {}
 impl RtcMode for ClockMode {}
 impl Sealed for ClockMode {}
 
-/// Count32Mode represents the 32-bit counter mode. This is a free running
+/// Count32Mode represents the 32-bit counter mode.
+///
+/// This is a free running
 /// count-up timer. When used in Periodic/CountDown mode with the embedded-hal
 /// trait(s), it resets to zero on compare and starts counting up again.
 pub enum Count32Mode {}
