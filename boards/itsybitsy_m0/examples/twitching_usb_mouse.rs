@@ -54,9 +54,11 @@ fn main() -> ! {
         USB_HID = Some(HIDClass::new(bus_allocator, MouseReport::desc(), 60));
         USB_BUS = Some(
             UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
-                .manufacturer("Fake company")
-                .product("Twitchy Mousey")
-                .serial_number("TEST")
+                .strings(&[StringDescriptors::new(LangID::EN)
+                    .manufacturer("Fake company")
+                    .product("Twitchy Mousey")
+                    .serial_number("TEST")])
+                .expect("Failed to set strings")
                 .build(),
         );
     }
@@ -72,6 +74,8 @@ fn main() -> ! {
             x: 0,
             y: 4,
             buttons: 0,
+            pan: 0,
+            wheel: 0,
         })
         .ok()
         .unwrap_or(0);
@@ -80,6 +84,8 @@ fn main() -> ! {
             x: 0,
             y: -4,
             buttons: 0,
+            pan: 0,
+            wheel: 0,
         })
         .ok()
         .unwrap_or(0);

@@ -19,7 +19,7 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::eic::pin::{ExtInt2, Sense};
 use hal::eic::EIC;
-use hal::gpio::v2::{Pin, PullUpInterrupt};
+use hal::gpio::{Pin, PullUpInterrupt};
 use hal::prelude::*;
 use pac::{interrupt, CorePeripherals, Peripherals};
 

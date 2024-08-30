@@ -11,7 +11,6 @@ use itsybitsy_m0 as bsp;
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
-use rtic;
 
 #[rtic::app(device = bsp::pac, peripherals = true, dispatchers = [EVSYS])]
 mod app {
