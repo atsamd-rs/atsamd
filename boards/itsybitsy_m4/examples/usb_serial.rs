@@ -24,10 +24,10 @@ use cortex_m::peripheral::NVIC;
 use hal::{
     clock::GenericClockController,
     dbgprint,
-    ehal::timer::CountDown,
     pac::{interrupt, CorePeripherals, Peripherals},
-    time::MegaHertz,
+    time::Hertz,
     timer::TimerCounter,
+    timer_traits::InterruptDrivenTimer,
     usb::UsbBus,
 };
 use smart_leds::{hsv::RGB8, SmartLedsWrite};
@@ -49,7 +49,7 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
     let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.TC3, &mut peripherals.MCLK);
-    timer.start(MegaHertz(4));
+    timer.start(Hertz::MHz(4).into_duration());
     let mut rgb = bsp::dotstar_bitbang(
         pins.dotstar_miso.into(),
         pins.dotstar_mosi.into(),
@@ -83,9 +83,11 @@ fn main() -> ! {
         USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
             UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
-                .manufacturer("Fake company")
-                .product("Serial port")
-                .serial_number("TEST")
+                .strings(&[StringDescriptors::new(LangID::EN)
+                    .manufacturer("Fake company")
+                    .product("Serial port")
+                    .serial_number("TEST")])
+                .expect("Failed to set strings")
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );

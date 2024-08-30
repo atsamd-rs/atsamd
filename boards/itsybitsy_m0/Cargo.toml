@@ -13,6 +13,7 @@ edition = "2021"
 [dependencies]
 bitbang-hal = "0.3"
 apa102-spi = "0.3"
+embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
 smart-leds = "0.3"
 
 [dependencies.cortex-m-rt]
@@ -20,11 +21,11 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.17"
 default-features = false
 
 [dependencies.usb-device]
-version = "0.2"
+version = "0.3.1"
 optional = true
 
 [dependencies.embedded-sdmmc]
@@ -32,10 +33,10 @@ version = "0.3"
 optional = true
 
 [dev-dependencies]
-cortex-m-rtic = "0.6.0-rc.4"
-cortex-m = "0.7"
-usbd-serial = "0.1"
-usbd-hid = "0.4"
+cortex-m-rtic = "1.0"
+cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
+usbd-serial = "0.2.2"
+usbd-hid = "0.8.2"
 cortex-m-semihosting = "0.3"
 ssd1306 = "0.7"
 embedded-graphics = "0.7.1"
@@ -47,9 +48,8 @@ panic-semihosting = "0.5"
 
 [features]
 # ask the HAL to enable atsamd21g support
-default = ["rt", "atsamd-hal/samd21g", "atsamd-hal/unproven"]
+default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
-unproven = ["atsamd-hal/unproven"]
 use_rtt = ["atsamd-hal/use_rtt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 dma = ["atsamd-hal/dma"]

@@ -16,7 +16,7 @@ use hal::{
     delay::Delay,
     pac::{CorePeripherals, Peripherals},
     prelude::*,
-    time::MegaHertz,
+    time::Hertz,
     timer::TimerCounter,
 };
 
@@ -43,7 +43,7 @@ fn main() -> ! {
     // instantiate a timer objec for the TC4 peripheral
     let mut timer = TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
     // start a 4 MHz timer
-    timer.start(MegaHertz(4));
+    InterruptDrivenTimer::start(&mut timer, Hertz::MHz(4).into_duration());
     let mut rgb = bsp::dotstar_bitbang(
         pins.dotstar_miso.into(),
         pins.dotstar_mosi.into(),

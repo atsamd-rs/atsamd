@@ -4,15 +4,13 @@
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
-use crate::ehal::timer::CountDown;
 pub use atsamd_hal as hal;
+use embedded_hal_02::timer::{CountDown, Periodic};
 pub use hal::ehal;
 
 pub use hal::{
     clock::GenericClockController,
-    dbgprint,
-    ehal::timer::Periodic,
-    pac,
+    dbgprint, pac,
     qspi::{OneShot, Qspi},
     sercom::{
         i2c, spi,
@@ -354,10 +352,10 @@ pub fn usb_allocator(
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
-    use pac::gclk::{genctrl::SRC_A, pchctrl::GEN_A};
+    use pac::gclk::{genctrl::SRCSELECT_A, pchctrl::GENSELECT_A};
 
-    clocks.configure_gclk_divider_and_source(GEN_A::GCLK2, 1, SRC_A::DFLL, false);
-    let usb_gclk = clocks.get_gclk(GEN_A::GCLK2).unwrap();
+    clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
+    let usb_gclk = clocks.get_gclk(GENSELECT_A::GCLK2).unwrap();
     let usb_clock = &clocks.usb(&usb_gclk).unwrap();
     let (dm, dp) = (dm.into(), dp.into());
     UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
@@ -404,7 +402,7 @@ pub fn spi_master(
     let (miso, mosi, sck) = (miso.into(), mosi.into(), sck.into());
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sck);
     spi::Config::new(mclk, sercom1, pads, freq)
-        .baud(baud)
+        .baud(baud.into())
         .spi_mode(spi::MODE_0)
         .enable()
 }

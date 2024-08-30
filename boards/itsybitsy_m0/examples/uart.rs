@@ -16,6 +16,7 @@ use itsybitsy_m0 as bsp;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel};
+use hal::nb;
 use hal::prelude::*;
 
 use pac::Peripherals;
@@ -49,7 +50,7 @@ fn main() -> ! {
     // Setup UART peripheral
     let uart = bsp::uart(
         &mut clocks,
-        9600.hz(),
+        9600.Hz(),
         uart_sercom,
         &mut pm,
         uart_rx,

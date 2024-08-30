@@ -19,13 +19,9 @@ use bsp::{
     hal::{
         clock::GenericClockController,
         delay::Delay,
-        ehal::{
-            blocking::{delay::DelayMs, spi::Transfer},
-            serial::Write,
-        },
+        nb,
         pac::{CorePeripherals, Peripherals},
         prelude::*,
-        time::{Hertz, MegaHertz},
     },
     spi_master,
 };
@@ -45,7 +41,7 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let mut serial = bsp::uart(
         &mut clocks,
-        Hertz(115200),
+        115200.Hz(),
         peripherals.SERCOM3,
         &mut peripherals.MCLK,
         pins.d0_rx,
@@ -53,7 +49,7 @@ fn main() -> ! {
     );
     let mut spi1 = spi_master(
         &mut clocks,
-        MegaHertz(4),
+        4.MHz(),
         peripherals.SERCOM1,
         &mut peripherals.MCLK,
         pins.sck,

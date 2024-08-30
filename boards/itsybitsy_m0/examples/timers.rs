@@ -12,8 +12,11 @@ use itsybitsy_m0 as bsp;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::prelude::*;
+use hal::ehal::digital::OutputPin;
+use hal::nb;
+use hal::time::Hertz;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 use pac::Peripherals;
 
 #[entry]
@@ -35,7 +38,7 @@ fn main() -> ! {
     // instantiate a timer objec for the TC4 peripheral
     let mut timer = TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
     // start a 5Hz timer
-    timer.start(5.hz());
+    timer.start(Hertz::Hz(5).into_duration());
 
     // toggle the red LED at the frequency set by the timer
     loop {

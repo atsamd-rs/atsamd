@@ -61,7 +61,6 @@ use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::time::MegaHertz;
 use pac::{CorePeripherals, Peripherals};
 
 use ssd1306::{prelude::*, Ssd1306};
@@ -84,7 +83,7 @@ fn main() -> ! {
     let spi_sercom: bsp::SpiSercom = peripherals.SERCOM4;
     let spi = bsp::spi_master(
         &mut clocks,
-        MegaHertz(10),
+        10.MHz(),
         spi_sercom,
         &mut peripherals.PM,
         pins.sclk,
