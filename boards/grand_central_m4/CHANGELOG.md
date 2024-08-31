@@ -1,7 +1,7 @@
 # Unreleased
 
 - update path of Cargo config
-- bumped usb-device version to 0.3
+- update to `atsamd-hal-0.17` and other dependencies (#753)
 
 # v0.6.0
 
