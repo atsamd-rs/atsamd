@@ -78,7 +78,6 @@ use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
-use hal::time::KiloHertz;
 use pac::{CorePeripherals, Peripherals};
 
 #[entry]
@@ -98,7 +97,7 @@ fn main() -> ! {
     let i2c_sercom: bsp::I2cSercom = peripherals.SERCOM3;
     let i2c = bsp::i2c_master(
         &mut clocks,
-        KiloHertz(400),
+        400.kHz(),
         i2c_sercom,
         &mut peripherals.PM,
         pins.sda,

@@ -25,8 +25,9 @@ use crate::{
 //=============================================================================
 
 /// Token type representing an [`I2c`](super::i2c::I2c) for which the bus is
-/// ready to start a transaction. For use with
-/// [`send_with_dma`](super::i2c::I2c::send_with_dma) and
+/// ready to start a transaction.
+///
+/// For use with [`send_with_dma`](super::i2c::I2c::send_with_dma) and
 /// [`receive_with_dma`](super::i2c::I2c::send_with_dma).
 pub struct I2cBusReady;
 

@@ -80,6 +80,7 @@ impl From<ClockId> for u8 {
 }
 
 /// Represents a configured clock generator.
+///
 /// Can be converted into the effective clock frequency.
 /// Its primary purpose is to be passed in to methods
 /// such as `GenericClockController::tcc2_tc3` to configure
@@ -159,6 +160,7 @@ impl State {
 }
 
 /// `GenericClockController` encapsulates the GCLK hardware.
+///
 /// It provides a type safe way to configure the system clocks.
 /// Initializing the `GenericClockController` instance configures
 /// the system to run at 120MHz by taking the DFLL48
@@ -353,6 +355,7 @@ $(
 
 /// A typed token that indicates that the clock for the peripheral(s)
 /// with the matching name has been configured.
+///
 /// The effective clock frequency is available via the `freq` method,
 /// or by converting the object into a `Hertz` instance.
 /// The peripheral initialization code will typically require passing
