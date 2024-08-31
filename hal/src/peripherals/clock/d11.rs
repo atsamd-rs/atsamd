@@ -10,15 +10,15 @@ use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use fugit::RateExtU32;
 
-use crate::pac::gclk::clkctrl::GENSELECT_A::*;
-use crate::pac::gclk::clkctrl::IDSELECT_A::*;
-use crate::pac::gclk::genctrl::SRCSELECT_A::*;
-use crate::pac::{self, GCLK, NVMCTRL, PM, SYSCTRL};
+use crate::pac::gclk::clkctrl::Genselect::*;
+use crate::pac::gclk::clkctrl::Idselect::*;
+use crate::pac::gclk::genctrl::Srcselect::*;
+use crate::pac::{self, Gclk, Nvmctrl, Pm, Sysctrl};
 use crate::time::Hertz;
 
-pub type ClockId = pac::gclk::clkctrl::IDSELECT_A;
-pub type ClockGenId = pac::gclk::clkctrl::GENSELECT_A;
-pub type ClockSource = pac::gclk::genctrl::SRCSELECT_A;
+pub type ClockId = pac::gclk::clkctrl::Idselect;
+pub type ClockGenId = pac::gclk::clkctrl::Genselect;
+pub type ClockSource = pac::gclk::genctrl::Srcselect;
 
 /// Represents a configured clock generator.
 ///
@@ -39,19 +39,19 @@ impl Into<Hertz> for GClock {
 }
 
 struct State {
-    gclk: GCLK,
+    gclk: Gclk,
 }
 
 impl State {
     fn reset_gclk(&mut self) {
-        self.gclk.ctrl.write(|w| w.swrst().set_bit());
-        while self.gclk.ctrl.read().swrst().bit_is_set()
-            || self.gclk.status.read().syncbusy().bit_is_set()
+        self.gclk.ctrl().write(|w| w.swrst().set_bit());
+        while self.gclk.ctrl().read().swrst().bit_is_set()
+            || self.gclk.status().read().syncbusy().bit_is_set()
         {}
     }
 
     fn wait_for_sync(&mut self) {
-        while self.gclk.status.read().syncbusy().bit_is_set() {}
+        while self.gclk.status().read().syncbusy().bit_is_set() {}
     }
 
     fn set_gclk_divider_and_source(
@@ -64,11 +64,11 @@ impl State {
         // validate the divisor factor based on gclk ID (samd21 see 15.8.5, for samd11
         // see 14.8.5)
         let mut divisor_invalid = false;
-        if gclk == GCLK1 {
+        if gclk == Gclk1 {
             if divider as u32 >= 2_u32.pow(16) {
                 divisor_invalid = true;
             }
-        } else if gclk == GCLK2 {
+        } else if gclk == Gclk2 {
             if divider >= 2_u16.pow(5) {
                 divisor_invalid = true;
             }
@@ -76,16 +76,16 @@ impl State {
             divisor_invalid = true;
         }
         if divisor_invalid {
-            panic!("invalid divisor {} for GCLK {}", divider, gclk as u8);
+            panic!("invalid divisor {} for Gclk {}", divider, gclk as u8);
         }
 
-        self.gclk.gendiv.write(|w| unsafe {
+        self.gclk.gendiv().write(|w| unsafe {
             w.id().bits(u8::from(gclk));
             w.div().bits(divider)
         });
         self.wait_for_sync();
 
-        self.gclk.genctrl.write(|w| unsafe {
+        self.gclk.genctrl().write(|w| unsafe {
             w.id().bits(u8::from(gclk));
             w.src().bits(u8::from(src));
             // divide directly by divider, rather than exponential
@@ -98,7 +98,7 @@ impl State {
     }
 
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
-        self.gclk.clkctrl.write(|w| unsafe {
+        self.gclk.clkctrl().write(|w| unsafe {
             w.id().bits(u8::from(clock));
             w.gen().bits(u8::from(generator));
             w.clken().set_bit()
@@ -111,23 +111,23 @@ impl State {
         //   To do so, we must do an 8-bit write to GENCTRL.ID (ref 15.6.4.1 Indirect
         //   Access). 32-bit write did not work.
         unsafe {
-            let genctrl_ptr_u8: *mut u8 = self.gclk.genctrl.as_ptr() as *mut u8;
+            let genctrl_ptr_u8: *mut u8 = self.gclk.genctrl().as_ptr() as *mut u8;
             *genctrl_ptr_u8 = u8::from(gclk);
         }
         self.wait_for_sync();
 
         // Now that the configuration is loaded, modify it
-        self.gclk.genctrl.modify(|_, w| w.runstdby().bit(enable));
+        self.gclk.genctrl().modify(|_, w| w.runstdby().bit(enable));
         self.wait_for_sync();
     }
 }
 
-/// `GenericClockController` encapsulates the GCLK hardware.
+/// `GenericClockController` encapsulates the Gclk hardware.
 ///
 /// It provides a type safe way to configure the system clocks.
 /// Initializing the `GenericClockController` instance configures
 /// the system to run at 48Mhz by setting gclk1 as a 32khz source
-/// and feeding it into the DFLL48 hardware which in turn drives
+/// and feeding it into the Dfll48 hardware which in turn drives
 /// gclk0 at 48Mhz.
 pub struct GenericClockController {
     state: State,
@@ -139,10 +139,10 @@ impl GenericClockController {
     /// Reset the clock controller, configure the system to run
     /// at 48Mhz and reset various clock dividers.
     pub fn with_internal_32kosc(
-        gclk: GCLK,
-        pm: &mut PM,
-        sysctrl: &mut SYSCTRL,
-        nvmctrl: &mut NVMCTRL,
+        gclk: Gclk,
+        pm: &mut Pm,
+        sysctrl: &mut Sysctrl,
+        nvmctrl: &mut Nvmctrl,
     ) -> Self {
         Self::new_48mhz_from_32khz(gclk, pm, sysctrl, nvmctrl, false)
     }
@@ -150,20 +150,20 @@ impl GenericClockController {
     /// Reset the clock controller, configure the system to run
     /// at 48Mhz and reset various clock dividers.
     pub fn with_external_32kosc(
-        gclk: GCLK,
-        pm: &mut PM,
-        sysctrl: &mut SYSCTRL,
-        nvmctrl: &mut NVMCTRL,
+        gclk: Gclk,
+        pm: &mut Pm,
+        sysctrl: &mut Sysctrl,
+        nvmctrl: &mut Nvmctrl,
     ) -> Self {
         Self::new_48mhz_from_32khz(gclk, pm, sysctrl, nvmctrl, true)
     }
 
     #[hal_macro_helper]
     fn new_48mhz_from_32khz(
-        gclk: GCLK,
-        pm: &mut PM,
-        sysctrl: &mut SYSCTRL,
-        nvmctrl: &mut NVMCTRL,
+        gclk: Gclk,
+        pm: &mut Pm,
+        sysctrl: &mut Sysctrl,
+        nvmctrl: &mut Nvmctrl,
         use_external_crystal: bool,
     ) -> Self {
         let mut state = State { gclk };
@@ -180,30 +180,30 @@ impl GenericClockController {
 
         state.reset_gclk();
 
-        // Enable a 32khz source -> GCLK1
+        // Enable a 32khz source -> Gclk1
         if use_external_crystal {
-            state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false);
+            state.set_gclk_divider_and_source(Gclk1, 1, Xosc32k, false);
         } else {
-            state.set_gclk_divider_and_source(GCLK1, 1, OSC32K, false);
+            state.set_gclk_divider_and_source(Gclk1, 1, Osc32k, false);
         }
 
-        // Feed 32khz into the DFLL48
-        state.enable_clock_generator(DFLL48, GCLK1);
-        // Enable the DFLL48
+        // Feed 32khz into the Dfll48
+        state.enable_clock_generator(Dfll48, Gclk1);
+        // Enable the Dfll48
         configure_and_enable_dfll48m(sysctrl, use_external_crystal);
-        // Feed DFLL48 into the main clock
-        state.set_gclk_divider_and_source(GCLK0, 1, DFLL48M, true);
+        // Feed Dfll48 into the main clock
+        state.set_gclk_divider_and_source(Gclk0, 1, Dfll48m, true);
         // We are now running at 48Mhz
 
         // Reset various dividers back to 1
-        sysctrl.osc8m.modify(|_, w| {
+        sysctrl.osc8m().modify(|_, w| {
             w.presc()._0();
             w.ondemand().clear_bit()
         });
-        pm.cpusel.write(|w| w.cpudiv().div1());
-        pm.apbasel.write(|w| w.apbadiv().div1());
-        pm.apbbsel.write(|w| w.apbbdiv().div1());
-        pm.apbcsel.write(|w| w.apbcdiv().div1());
+        pm.cpusel().write(|w| w.cpudiv().div1());
+        pm.apbasel().write(|w| w.apbadiv().div1());
+        pm.apbbsel().write(|w| w.apbbdiv().div1());
+        pm.apbcsel().write(|w| w.apbcdiv().div1());
 
         Self {
             state,
@@ -217,7 +217,7 @@ impl GenericClockController {
                 0.Hz(),
                 0.Hz(),
             ],
-            used_clocks: 1u64 << u8::from(ClockId::DFLL48),
+            used_clocks: 1u64 << u8::from(ClockId::Dfll48),
         }
     }
 
@@ -225,10 +225,10 @@ impl GenericClockController {
     /// internal 8 MHz RC clock (no PLL) and reset various clock dividers.
     #[hal_macro_helper]
     pub fn with_internal_8mhz(
-        gclk: GCLK,
-        pm: &mut PM,
-        sysctrl: &mut SYSCTRL,
-        nvmctrl: &mut NVMCTRL,
+        gclk: Gclk,
+        pm: &mut Pm,
+        sysctrl: &mut Sysctrl,
+        nvmctrl: &mut Nvmctrl,
     ) -> Self {
         let mut state = State { gclk };
 
@@ -244,18 +244,18 @@ impl GenericClockController {
 
         state.reset_gclk();
 
-        // Enable 8 MHz source -> GCLK0
-        state.set_gclk_divider_and_source(GCLK0, 1, OSC8M, false);
+        // Enable 8 MHz source -> Gclk0
+        state.set_gclk_divider_and_source(Gclk0, 1, Osc8m, false);
 
         // Reset various dividers back to 1
-        sysctrl.osc8m.modify(|_, w| {
+        sysctrl.osc8m().modify(|_, w| {
             w.presc()._0();
             w.ondemand().clear_bit()
         });
-        pm.cpusel.write(|w| w.cpudiv().div1());
-        pm.apbasel.write(|w| w.apbadiv().div1());
-        pm.apbbsel.write(|w| w.apbbdiv().div1());
-        pm.apbcsel.write(|w| w.apbcdiv().div1());
+        pm.cpusel().write(|w| w.cpudiv().div1());
+        pm.apbasel().write(|w| w.apbadiv().div1());
+        pm.apbbsel().write(|w| w.apbbdiv().div1());
+        pm.apbcsel().write(|w| w.apbcdiv().div1());
 
         Self {
             state,
@@ -276,7 +276,7 @@ impl GenericClockController {
     /// Returns a `GClock` for gclk0, the system clock generator at 48Mhz
     pub fn gclk0(&mut self) -> GClock {
         GClock {
-            gclk: GCLK0,
+            gclk: Gclk0,
             freq: self.gclks[0],
         }
     }
@@ -284,7 +284,7 @@ impl GenericClockController {
     /// Returns a `GClock` for gclk1, the 32Khz oscillator.
     pub fn gclk1(&mut self) -> GClock {
         GClock {
-            gclk: GCLK1,
+            gclk: Gclk1,
             freq: self.gclks[1],
         }
     }
@@ -327,12 +327,12 @@ impl GenericClockController {
         self.state
             .set_gclk_divider_and_source(gclk, divider, src, improve_duty_cycle);
         let freq: Hertz = match src {
-            XOSC32K | OSC32K | OSCULP32K => OSC32K_FREQ,
-            GCLKGEN1 => self.gclks[1],
-            OSC8M => OSC8M_FREQ,
-            DFLL48M => OSC48M_FREQ,
-            DPLL96M => 96.MHz(),
-            GCLKIN | XOSC => unimplemented!(),
+            Xosc32k | Osc32k | Osculp32k => OSC32K_FREQ,
+            Gclkgen1 => self.gclks[1],
+            Osc8m => OSC8M_FREQ,
+            Dfll48m => OSC48M_FREQ,
+            Dpll96m => 96.MHz(),
+            Gclkin | Xosc => unimplemented!(),
         };
         self.gclks[idx] = freq / divider as u32;
         Some(GClock { gclk, freq })
@@ -408,59 +408,59 @@ impl GenericClockController {
 // samd11
 #[hal_cfg("clock-d11")]
 clock_generator!(
-    (tcc0, Tcc0Clock, TCC0),
-    (tc1_tc2, Tc1Tc2Clock, TC1_TC2),
-    (sercom0_core, Sercom0CoreClock, SERCOM0_CORE),
-    (sercom1_core, Sercom1CoreClock, SERCOM1_CORE),
-    (sercom2_core, Sercom2CoreClock, SERCOM2_CORE),
-    (rtc, RtcClock, RTC),
-    (adc, AdcClock, ADC),
-    (wdt, WdtClock, WDT),
-    (eic, EicClock, EIC),
-    (usb, UsbClock, USB),
-    (evsys0, Evsys0Clock, EVSYS_0),
-    (evsys1, Evsys1Clock, EVSYS_1),
-    (evsys2, Evsys2Clock, EVSYS_2),
-    (evsys3, Evsys3Clock, EVSYS_3),
-    (evsys4, Evsys4Clock, EVSYS_4),
-    (evsys5, Evsys5Clock, EVSYS_5),
-    (ac_ana, AcAnaClock, AC_ANA),
-    (ac_dig, AcDigClock, AC_DIG),
-    (dac, DacClock, DAC),
+    (tcc0, Tcc0Clock, Tcc0),
+    (tc1_tc2, Tc1Tc2Clock, Tc1Tc2),
+    (sercom0_core, Sercom0CoreClock, Sercom0Core),
+    (sercom1_core, Sercom1CoreClock, Sercom1Core),
+    (sercom2_core, Sercom2CoreClock, Sercom2Core),
+    (rtc, RtcClock, Rtc),
+    (adc, AdcClock, Adc),
+    (wdt, WdtClock, Wdt),
+    (eic, EicClock, Eic),
+    (usb, UsbClock, Usb),
+    (evsys0, Evsys0Clock, Evsys0),
+    (evsys1, Evsys1Clock, Evsys1),
+    (evsys2, Evsys2Clock, Evsys2),
+    (evsys3, Evsys3Clock, Evsys3),
+    (evsys4, Evsys4Clock, Evsys4),
+    (evsys5, Evsys5Clock, Evsys5),
+    (ac_ana, AcAnaClock, AcAna),
+    (ac_dig, AcDigClock, AcDig),
+    (dac, DacClock, Dac),
 );
 // samd21
 #[hal_cfg("clock-d21")]
 clock_generator!(
-    (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1),
-    (tcc2_tc3, Tcc2Tc3Clock, TCC2_TC3),
-    (tc4_tc5, Tc4Tc5Clock, TC4_TC5),
-    (tc6_tc7, Tc6Tc7Clock, TC6_TC7),
-    (sercom0_core, Sercom0CoreClock, SERCOM0_CORE),
-    (sercom1_core, Sercom1CoreClock, SERCOM1_CORE),
-    (sercom2_core, Sercom2CoreClock, SERCOM2_CORE),
-    (sercom3_core, Sercom3CoreClock, SERCOM3_CORE),
-    (sercom4_core, Sercom4CoreClock, SERCOM4_CORE),
-    (sercom5_core, Sercom5CoreClock, SERCOM5_CORE),
-    (usb, UsbClock, USB),
-    (rtc, RtcClock, RTC),
-    (adc, AdcClock, ADC),
-    (wdt, WdtClock, WDT),
-    (eic, EicClock, EIC),
-    (evsys0, Evsys0Clock, EVSYS_0),
-    (evsys1, Evsys1Clock, EVSYS_1),
-    (evsys2, Evsys2Clock, EVSYS_2),
-    (evsys3, Evsys3Clock, EVSYS_3),
-    (evsys4, Evsys4Clock, EVSYS_4),
-    (evsys5, Evsys5Clock, EVSYS_5),
-    (evsys6, Evsys6Clock, EVSYS_6),
-    (evsys7, Evsys7Clock, EVSYS_7),
-    (evsys8, Evsys8Clock, EVSYS_8),
-    (evsys9, Evsys9Clock, EVSYS_9),
-    (evsys10, Evsys10Clock, EVSYS_10),
+    (tcc0_tcc1, Tcc0Tcc1Clock, Tcc0Tcc1),
+    (tcc2_tc3, Tcc2Tc3Clock, Tcc2Tcc3),
+    (tc4_tc5, Tc4Tc5Clock, Tc4Tcc5),
+    (tc6_tc7, Tc6Tc7Clock, Tc6Tcc7),
+    (sercom0_core, Sercom0CoreClock, Sercom0Core),
+    (sercom1_core, Sercom1CoreClock, Sercom1Core),
+    (sercom2_core, Sercom2CoreClock, Sercom2Core),
+    (sercom3_core, Sercom3CoreClock, Sercoom3Core),
+    (sercom4_core, Sercom4CoreClock, Sercoom4Core),
+    (sercom5_core, Sercom5CoreClock, Sercoom5Core),
+    (usb, UsbClock, Usb),
+    (rtc, RtcClock, Rtc),
+    (adc, AdcClock, Adc),
+    (wdt, WdtClock, Wdt),
+    (eic, EicClock, Eic),
+    (evsys0, Evsys0Clock, Evsys0),
+    (evsys1, Evsys1Clock, Evsys1),
+    (evsys2, Evsys2Clock, Evsys2),
+    (evsys3, Evsys3Clock, Evsys3),
+    (evsys4, Evsys4Clock, Evsys4),
+    (evsys5, Evsys5Clock, Evsys5),
+    (evsys6, Evsys6Clock, Evsys6),
+    (evsys7, Evsys7Clock, Evsys7),
+    (evsys8, Evsys8Clock, Evsys8),
+    (evsys9, Evsys9Clock, Evsys9),
+    (evsys10, Evsys10Clock, Evsys10),
     (evsys11, Evsys11Clock, EVSYS_11),
-    (ac_ana, AcAnaClock, AC_ANA),
-    (ac_dig, AcDigClock, AC_DIG),
-    (dac, DacClock, DAC),
+    (ac_ana, AcAnaClock, AcAna),
+    (ac_dig, AcDigClock, AcDig),
+    (dac, DacClock, Dac),
     (i2s0, I2S0Clock, I2S_0),
     (i2s1, I2S1Clock, I2S_1),
 );
@@ -472,24 +472,24 @@ pub const OSC8M_FREQ: Hertz = Hertz::Hz(8_000_000);
 /// The frequency of the 32Khz source.
 pub const OSC32K_FREQ: Hertz = Hertz::Hz(32_768);
 
-fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
-    nvmctrl.ctrlb.modify(|_, w| w.rws().half());
+fn set_flash_to_half_auto_wait_state(nvmctrl: &mut Nvmctrl) {
+    nvmctrl.ctrlb().modify(|_, w| w.rws().half());
 }
 
 /// Prevent automatic writes to flash by pointers to flash area
 #[hal_cfg("clock-d21")]
-fn set_flash_manual_write(nvmctrl: &mut NVMCTRL) {
+fn set_flash_manual_write(nvmctrl: &mut Nvmctrl) {
     nvmctrl.ctrlb.modify(|_, w| w.manw().set_bit());
 }
 
-fn enable_gclk_apb(pm: &mut PM) {
-    pm.apbamask.modify(|_, w| w.gclk_().set_bit());
+fn enable_gclk_apb(pm: &mut Pm) {
+    pm.apbamask().modify(|_, w| w.gclk_().set_bit());
 }
 
 /// Turn on the internal 32hkz oscillator
-pub fn enable_internal_32kosc(sysctrl: &mut SYSCTRL) {
+pub fn enable_internal_32kosc(sysctrl: &mut Sysctrl) {
     let calibration = super::calibration::osc32k_cal();
-    sysctrl.osc32k.write(|w| {
+    sysctrl.osc32k().write(|w| {
         unsafe {
             w.ondemand().clear_bit();
             w.calib().bits(calibration);
@@ -500,14 +500,14 @@ pub fn enable_internal_32kosc(sysctrl: &mut SYSCTRL) {
         w.enable().set_bit();
         w.runstdby().set_bit()
     });
-    while sysctrl.pclksr.read().osc32krdy().bit_is_clear() {
+    while sysctrl.pclksr().read().osc32krdy().bit_is_clear() {
         // Wait for the oscillator to stabilize
     }
 }
 
 /// Turn on the external 32hkz oscillator
-pub fn enable_external_32kosc(sysctrl: &mut SYSCTRL) {
-    sysctrl.xosc32k.modify(|_, w| {
+pub fn enable_external_32kosc(sysctrl: &mut Sysctrl) {
+    sysctrl.xosc32k().modify(|_, w| {
         unsafe {
             // 6 here means: use 64k cycles of OSCULP32k to start up this oscillator
             w.startup().bits(6);
@@ -519,28 +519,28 @@ pub fn enable_external_32kosc(sysctrl: &mut SYSCTRL) {
         w.xtalen().set_bit();
         w.runstdby().set_bit()
     });
-    sysctrl.xosc32k.modify(|_, w| w.enable().set_bit());
-    while sysctrl.pclksr.read().xosc32krdy().bit_is_clear() {
+    sysctrl.xosc32k().modify(|_, w| w.enable().set_bit());
+    while sysctrl.pclksr().read().xosc32krdy().bit_is_clear() {
         // Wait for the oscillator to stabilize
     }
 }
 
-fn wait_for_dfllrdy(sysctrl: &mut SYSCTRL) {
-    while sysctrl.pclksr.read().dfllrdy().bit_is_clear() {}
+fn wait_for_dfllrdy(sysctrl: &mut Sysctrl) {
+    while sysctrl.pclksr().read().dfllrdy().bit_is_clear() {}
 }
 
 /// Configure the dfll48m to operate at 48Mhz
 #[hal_macro_helper]
-fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: bool) {
+fn configure_and_enable_dfll48m(sysctrl: &mut Sysctrl, use_external_crystal: bool) {
     // Turn it off while we configure it.
     // Note that we need to turn off on-demand mode and
     // disable it here, rather than just reseting the ctrl
     // register, otherwise our configuration attempt fails.
-    sysctrl.dfllctrl.write(|w| w.ondemand().clear_bit());
+    sysctrl.dfllctrl().write(|w| w.ondemand().clear_bit());
     wait_for_dfllrdy(sysctrl);
 
     if use_external_crystal {
-        sysctrl.dfllmul.write(|w| unsafe {
+        sysctrl.dfllmul().write(|w| unsafe {
             w.cstep().bits(31);
             w.fstep().bits(511);
             // scaling factor between the clocks
@@ -548,7 +548,7 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
         });
 
         // Turn it on
-        sysctrl.dfllctrl.write(|w| {
+        sysctrl.dfllctrl().write(|w| {
             // always on
             w.ondemand().clear_bit();
 
@@ -565,20 +565,20 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
         let coarse = super::calibration::dfll48m_coarse_cal();
         let fine = 0x1ff;
 
-        sysctrl.dfllval.write(|w| unsafe {
+        sysctrl.dfllval().write(|w| unsafe {
             w.coarse().bits(coarse);
             w.fine().bits(fine)
         });
 
-        sysctrl.dfllmul.write(|w| unsafe {
+        sysctrl.dfllmul().write(|w| unsafe {
             w.cstep().bits(coarse / 4);
             w.fstep().bits(10);
-            // scaling factor for 1 kHz USB SOF signal
+            // scaling factor for 1 kHz Usb SOF signal
             w.mul().bits((48_000_000u32 / 1000) as u16)
         });
 
         // Turn it on
-        sysctrl.dfllctrl.write(|w| {
+        sysctrl.dfllctrl().write(|w| {
             // always on
             w.ondemand().clear_bit();
 
@@ -599,7 +599,7 @@ fn configure_and_enable_dfll48m(sysctrl: &mut SYSCTRL, use_external_crystal: boo
     wait_for_dfllrdy(sysctrl);
 
     // and finally enable it!
-    sysctrl.dfllctrl.modify(|_, w| w.enable().set_bit());
+    sysctrl.dfllctrl().modify(|_, w| w.enable().set_bit());
 
     #[hal_cfg("clock-d21")]
     if use_external_crystal {

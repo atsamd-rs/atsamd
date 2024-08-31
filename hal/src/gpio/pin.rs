@@ -39,14 +39,14 @@
 //! struct.
 //!
 //! To create the [`Pins`] struct, users must supply the PAC
-//! [`PORT`](crate::pac::PORT) peripheral. The [`Pins`] struct takes
-//! ownership of the [`PORT`] and provides the corresponding pins. Each [`Pin`]
+//! [`Port`](crate::pac::Port) peripheral. The [`Pins`] struct takes
+//! ownership of the [`Port`] and provides the corresponding pins. Each [`Pin`]
 //! within the [`Pins`] struct can be moved out and used individually.
 //!
 //!
 //! ```
 //! let mut peripherals = Peripherals::take().unwrap();
-//! let pins = Pins::new(peripherals.PORT);
+//! let pins = Pins::new(peripherals.Port);
 //! ```
 //!
 //! Pins can be converted between modes using several different methods.
@@ -74,7 +74,7 @@
 //! use crate::ehal_02::digital::v2::OutputPin;
 //!
 //! let mut peripherals = Peripherals::take().unwrap();
-//! let mut pins = Pins::new(peripherals.PORT);
+//! let mut pins = Pins::new(peripherals.Port);
 //! pins.pa27.set_high();
 //! ```
 //!
@@ -105,7 +105,7 @@ use core::mem::transmute;
 use crate::ehal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
 use paste::paste;
 
-use crate::pac::PORT;
+use crate::pac::Port;
 
 use crate::typelevel::{NoneT, Sealed};
 
@@ -1079,7 +1079,7 @@ macro_rules! pins{
         paste! {
             /// Collection of all the individual [`Pin`]s
             pub struct Pins {
-                port: Option<PORT>,
+                port: Option<Port>,
                 $(
                     #[doc = "Pin " $Id]
                     #[$cfg]
@@ -1088,10 +1088,10 @@ macro_rules! pins{
             }
             impl Pins {
                 /// Take ownership of the PAC
-                /// [`PORT`](crate::pac::PORT) and split it into
+                /// [`Port`](crate::pac::Port) and split it into
                 /// discrete [`Pin`]s
                 #[inline]
-                pub fn new(port: PORT) -> Pins {
+                pub fn new(port: Port) -> Pins {
                     Pins {
                         port: Some(port),
                         // Safe because we only create one `Pin` per `PinId`
@@ -1101,19 +1101,19 @@ macro_rules! pins{
                         )+
                     }
                 }
-                /// Take the PAC [`PORT`]
+                /// Take the PAC [`Port`]
                 ///
-                /// The [`PORT`] can only be taken once. Subsequent calls to
+                /// The [`Port`] can only be taken once. Subsequent calls to
                 /// this function will panic.
                 ///
                 /// # Safety
                 ///
-                /// Direct access to the [`PORT`] could allow you to invalidate
+                /// Direct access to the [`Port`] could allow you to invalidate
                 /// the compiler's type-level tracking, so it is unsafe.
                 ///
-                /// [`PORT`](crate::pac::PORT)
+                /// [`Port`](crate::pac::Port)
                 #[inline]
-                pub unsafe fn port(&mut self) -> PORT {
+                pub unsafe fn port(&mut self) -> Port {
                     self.port.take().unwrap()
                 }
             }
@@ -1420,7 +1420,7 @@ declare_pins!(
 ///
 /// ```
 /// let mut peripherals = pac::Peripherals::take().unwrap();
-/// let pins = bsp::Pins::new(peripherals.PORT);
+/// let pins = bsp::Pins::new(peripherals.Port);
 /// let out = pins.serial_out;
 /// ```
 ///
@@ -1436,7 +1436,7 @@ declare_pins!(
 ///
 /// ```
 /// let mut peripherals = pac::Peripherals::take().unwrap();
-/// let pins = bsp::Pins::new(peripherals.PORT);
+/// let pins = bsp::Pins::new(peripherals.Port);
 /// let mosi = pin_alias!(pins.spi_mosi);
 /// ```
 ///
@@ -1445,7 +1445,7 @@ declare_pins!(
 ///
 /// ```
 /// let mut peripherals = pac::Peripherals::take().unwrap();
-/// let pins = bsp::Pins::new(peripherals.PORT);
+/// let pins = bsp::Pins::new(peripherals.Port);
 /// let tx = pin_alias!(pins.uart_tx);
 /// ```
 ///
@@ -1611,7 +1611,7 @@ macro_rules! __declare_pins_type {
         /// This type is intended to provide more meaningful names for the
         /// given pins.
         pub struct Pins {
-            port: Option<$crate::pac::PORT>,
+            port: Option<$crate::pac::Port>,
             $(
                 $( #[$id_cfg] )*
                 $( #[$name_doc] )*
@@ -1624,7 +1624,7 @@ macro_rules! __declare_pins_type {
 
         impl Pins {
 
-            /// Take ownership of the PAC [`PORT`] and split it into
+            /// Take ownership of the PAC [`Port`] and split it into
             /// discrete [`Pin`]s.
             ///
             /// This struct serves as a replacement for the HAL [`Pins`]
@@ -1632,11 +1632,11 @@ macro_rules! __declare_pins_type {
             /// each [`Pin`] in a BSP. Any [`Pin`] not defined by the BSP is
             /// dropped.
             ///
-            /// [`PORT`](atsamd_hal::pac::PORT)
+            /// [`Port`](atsamd_hal::pac::Port)
             /// [`Pin`](atsamd_hal::gpio::Pin)
             /// [`Pins`](atsamd_hal::gpio::Pins)
             #[inline]
-            pub fn new(port: $crate::pac::PORT) -> Self {
+            pub fn new(port: $crate::pac::Port) -> Self {
                 let mut pins = $crate::gpio::Pins::new(port);
                 Self {
                     port: Some(unsafe{ pins.port() }),
@@ -1647,19 +1647,19 @@ macro_rules! __declare_pins_type {
                 }
             }
 
-            /// Take the PAC [`PORT`]
+            /// Take the PAC [`Port`]
             ///
-            /// The [`PORT`] can only be taken once. Subsequent calls to
+            /// The [`Port`] can only be taken once. Subsequent calls to
             /// this function will panic.
             ///
             /// # Safety
             ///
-            /// Direct access to the [`PORT`] could allow you to invalidate
+            /// Direct access to the [`Port`] could allow you to invalidate
             /// the compiler's type-level tracking, so it is unsafe.
             ///
-            /// [`PORT`](atsamd_hal::pac::PORT)
+            /// [`Port`](atsamd_hal::pac::Port)
             #[inline]
-            pub unsafe fn port(&mut self) -> $crate::pac::PORT {
+            pub unsafe fn port(&mut self) -> $crate::pac::Port {
                 self.port.take().unwrap()
             }
         }
@@ -1739,7 +1739,7 @@ macro_rules! __define_pin_alias_macro {
             ///
             /// ```
             /// let mut peripherals = pac::Peripherals::take().unwrap();
-            /// let pins = bsp::Pins::new(peripherals.PORT);
+            /// let pins = bsp::Pins::new(peripherals.Port);
             /// // Replace this
             /// let mosi = pins.serial_out;
             /// // With this

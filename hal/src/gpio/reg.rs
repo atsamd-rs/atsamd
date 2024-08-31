@@ -2,16 +2,16 @@ use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 #[hal_cfg(any("port-d11", "port-d21"))]
 use crate::pac::port::{
-    CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG0_ as PINCFG,
-    PMUX0_ as PMUX, WRCONFIG,
+    Ctrl, Dir, Dirclr, Dirset, Dirtgl, In, Out, Outclr, Outset, Outtgl, Pincfg0_ as Pincfg,
+    Pmux0_ as Pmux, Wrconfig,
 };
 
 #[hal_cfg("port-d5x")]
 use crate::pac::port::group::{
-    CTRL, DIR, DIRCLR, DIRSET, DIRTGL, IN, OUT, OUTCLR, OUTSET, OUTTGL, PINCFG, PMUX, WRCONFIG,
+    Ctrl, Dir, Dirclr, Dirset, Dirtgl, In, Out, Outclr, Outset, Outtgl, Pincfg, Pmux, Wrconfig,
 };
 
-use crate::pac::PORT;
+use crate::pac::Port;
 
 use super::dynpin::*;
 
@@ -164,27 +164,27 @@ impl From<DynPinMode> for ModeFields {
 //  GROUP
 //==============================================================================
 
-/// Represent the [`PORT`] register block
+/// Represent the [`Port`] register block
 ///
-/// The SAMx5x PACs have a GROUP type to represent each [`PORT`] group, but the
+/// The SAMx5x PACs have a GROUP type to represent each [`Port`] group, but the
 /// SAMD11 and SAMD21 PACs do not. Manually re-implement it here.
 #[repr(C)]
 #[allow(clippy::upper_case_acronyms)]
 pub(super) struct GROUP {
-    dir: DIR,
-    dirclr: DIRCLR,
-    dirset: DIRSET,
-    dirtgl: DIRTGL,
-    out: OUT,
-    outclr: OUTCLR,
-    outset: OUTSET,
-    outtgl: OUTTGL,
-    in_: IN,
-    ctrl: CTRL,
-    wrconfig: WRCONFIG,
+    dir: Dir,
+    dirclr: Dirclr,
+    dirset: Dirset,
+    dirtgl: Dirtgl,
+    out: Out,
+    outclr: Outclr,
+    outset: Outset,
+    outtgl: Outtgl,
+    in_: In,
+    ctrl: Ctrl,
+    wrconfig: Wrconfig,
     _padding1: [u8; 4],
-    pmux: [PMUX; 16],
-    pincfg: [PINCFG; 32],
+    pmux: [Pmux; 16],
+    pincfg: [Pincfg; 32],
     _padding2: [u8; 32],
 }
 
@@ -194,13 +194,13 @@ pub(super) struct GROUP {
 
 /// Provide a safe register interface for pin objects
 ///
-/// [`PORT`], like every PAC `struct`, is [`Send`] but not [`Sync`], because it
+/// [`Port`], like every PAC `struct`, is [`Send`] but not [`Sync`], because it
 /// points to a `RegisterBlock` of `VolatileCell`s. Unfortunately, such an
 /// interface is quite restrictive. Instead, it would be ideal if we could split
-/// the [`PORT`] into independent pins that are both [`Send`] and [`Sync`].
+/// the [`Port`] into independent pins that are both [`Send`] and [`Sync`].
 ///
-/// [`PORT`] is a single, zero-sized marker `struct` that provides access to
-/// every [`PORT`] register. Instead, we would like to create zero-sized marker
+/// [`Port`] is a single, zero-sized marker `struct` that provides access to
+/// every [`Port`] register. Instead, we would like to create zero-sized marker
 /// `struct`s for every pin, where each pin is only allowed to control its own
 /// registers. Furthermore, each pin `struct` should be a singleton, so that
 /// exclusive access to the `struct` also guarantees exclusive access to the
@@ -228,7 +228,7 @@ pub(super) unsafe trait RegisterInterface {
     fn id(&self) -> DynPinId;
 
     /// Pointer to the array of [`GROUP`] register blocks
-    const GROUPS: *const GROUP = PORT::ptr() as *const _;
+    const GROUPS: *const GROUP = Port::ptr() as *const _;
 
     #[inline]
     #[hal_macro_helper]
@@ -265,17 +265,17 @@ pub(super) unsafe trait RegisterInterface {
     }
 
     #[inline]
-    fn pincfg(&self) -> &PINCFG {
+    fn pincfg(&self) -> &Pincfg {
         &self.group().pincfg[self.id().num as usize]
     }
 
     /// Change the pin mode
     ///
-    /// We use the WRCONFIG register to avoid using the PMUX register. Each PMUX
-    /// register stores the PMUX values for two different pins.  Changing the
-    /// PMUX value for one pin would require a read/modify/write operation that
+    /// We use the Wrconfig register to avoid using the Pmux register. Each Pmux
+    /// register stores the Pmux values for two different pins.  Changing the
+    /// Pmux value for one pin would require a read/modify/write operation that
     /// could be preempted by the other pin. This is fundamentally unsound. The
-    /// WRCONFIG register lets us modify *only* the fields corresponding to this
+    /// Wrconfig register lets us modify *only* the fields corresponding to this
     /// particular PinId/DynPinId.
     #[inline]
     fn change_mode(&mut self, mode: DynPinMode) {
@@ -310,7 +310,7 @@ pub(super) unsafe trait RegisterInterface {
     #[inline]
     fn set_dir(&mut self, bit: bool) {
         let mask = self.mask_32();
-        // Safety: DIRSET & DIRCLR are "mask" registers, and we only write the
+        // Safety: Dirset & Dirclr are "mask" registers, and we only write the
         // bit for this pin ID
         unsafe {
             if bit {
@@ -333,7 +333,7 @@ pub(super) unsafe trait RegisterInterface {
     #[inline]
     fn write_pin(&mut self, bit: bool) {
         let mask = self.mask_32();
-        // Safety: OUTSET & OUTCLR are "mask" registers, and we only write the
+        // Safety: Outset & Outclr are "mask" registers, and we only write the
         // bit for this pin ID
         unsafe {
             if bit {
@@ -348,7 +348,7 @@ pub(super) unsafe trait RegisterInterface {
     #[inline]
     fn toggle_pin(&mut self) {
         let mask = self.mask_32();
-        // Safety: OUTTGL is a "mask" register, and we only write the bit for
+        // Safety: Outtgl is a "mask" register, and we only write the bit for
         // this pin ID
         unsafe { self.group().outtgl.write(|w| w.bits(mask)) };
     }
