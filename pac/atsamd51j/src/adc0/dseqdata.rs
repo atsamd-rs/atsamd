@@ -1,36 +1,27 @@
 #[doc = "Register `DSEQDATA` writer"]
-pub type W = crate::W<DSEQDATA_SPEC>;
+pub type W = crate::W<DseqdataSpec>;
 #[doc = "Field `DATA` writer - DMA Sequential Data"]
-pub type DATA_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 32, O, u32>;
+pub type DataW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
 impl W {
     #[doc = "Bits 0:31 - DMA Sequential Data"]
     #[inline(always)]
     #[must_use]
-    pub fn data(&mut self) -> DATA_W<DSEQDATA_SPEC, 0> {
-        DATA_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn data(&mut self) -> DataW<DseqdataSpec> {
+        DataW::new(self, 0)
     }
 }
-#[doc = "DMA Sequencial Data\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dseqdata::W`](W). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct DSEQDATA_SPEC;
-impl crate::RegisterSpec for DSEQDATA_SPEC {
+#[doc = "DMA Sequencial Data\n\nYou can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dseqdata::W`](W). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct DseqdataSpec;
+impl crate::RegisterSpec for DseqdataSpec {
     type Ux = u32;
 }
 #[doc = "`write(|w| ..)` method takes [`dseqdata::W`](W) writer structure"]
-impl crate::Writable for DSEQDATA_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for DseqdataSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DSEQDATA to value 0"]
-impl crate::Resettable for DSEQDATA_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for DseqdataSpec {
+    const RESET_VALUE: u32 = 0;
 }

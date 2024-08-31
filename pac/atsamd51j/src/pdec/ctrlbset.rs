@@ -1,87 +1,88 @@
 #[doc = "Register `CTRLBSET` reader"]
-pub type R = crate::R<CTRLBSET_SPEC>;
+pub type R = crate::R<CtrlbsetSpec>;
 #[doc = "Register `CTRLBSET` writer"]
-pub type W = crate::W<CTRLBSET_SPEC>;
+pub type W = crate::W<CtrlbsetSpec>;
 #[doc = "Field `LUPD` reader - Lock Update"]
-pub type LUPD_R = crate::BitReader;
+pub type LupdR = crate::BitReader;
 #[doc = "Field `LUPD` writer - Lock Update"]
-pub type LUPD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `CMD` reader - Command"]
-pub type CMD_R = crate::FieldReader<CMDSELECT_A>;
+pub type LupdW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CMDSELECT_A {
+pub enum Cmdselect {
     #[doc = "0: No action"]
-    NONE = 0,
+    None = 0,
     #[doc = "1: Force a counter restart or retrigger"]
-    RETRIGGER = 1,
+    Retrigger = 1,
     #[doc = "2: Force update of double buffered registers"]
-    UPDATE = 2,
+    Update = 2,
     #[doc = "3: Force a read synchronization of COUNT"]
-    READSYNC = 3,
+    Readsync = 3,
     #[doc = "4: Start QDEC/HALL"]
-    START = 4,
+    Start = 4,
     #[doc = "5: Stop QDEC/HALL"]
-    STOP = 5,
+    Stop = 5,
 }
-impl From<CMDSELECT_A> for u8 {
+impl From<Cmdselect> for u8 {
     #[inline(always)]
-    fn from(variant: CMDSELECT_A) -> Self {
+    fn from(variant: Cmdselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for CMDSELECT_A {
+impl crate::FieldSpec for Cmdselect {
     type Ux = u8;
 }
-impl CMD_R {
+impl crate::IsEnum for Cmdselect {}
+#[doc = "Field `CMD` reader - Command"]
+pub type CmdR = crate::FieldReader<Cmdselect>;
+impl CmdR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<CMDSELECT_A> {
+    pub const fn variant(&self) -> Option<Cmdselect> {
         match self.bits {
-            0 => Some(CMDSELECT_A::NONE),
-            1 => Some(CMDSELECT_A::RETRIGGER),
-            2 => Some(CMDSELECT_A::UPDATE),
-            3 => Some(CMDSELECT_A::READSYNC),
-            4 => Some(CMDSELECT_A::START),
-            5 => Some(CMDSELECT_A::STOP),
+            0 => Some(Cmdselect::None),
+            1 => Some(Cmdselect::Retrigger),
+            2 => Some(Cmdselect::Update),
+            3 => Some(Cmdselect::Readsync),
+            4 => Some(Cmdselect::Start),
+            5 => Some(Cmdselect::Stop),
             _ => None,
         }
     }
     #[doc = "No action"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == CMDSELECT_A::NONE
+        *self == Cmdselect::None
     }
     #[doc = "Force a counter restart or retrigger"]
     #[inline(always)]
     pub fn is_retrigger(&self) -> bool {
-        *self == CMDSELECT_A::RETRIGGER
+        *self == Cmdselect::Retrigger
     }
     #[doc = "Force update of double buffered registers"]
     #[inline(always)]
     pub fn is_update(&self) -> bool {
-        *self == CMDSELECT_A::UPDATE
+        *self == Cmdselect::Update
     }
     #[doc = "Force a read synchronization of COUNT"]
     #[inline(always)]
     pub fn is_readsync(&self) -> bool {
-        *self == CMDSELECT_A::READSYNC
+        *self == Cmdselect::Readsync
     }
     #[doc = "Start QDEC/HALL"]
     #[inline(always)]
     pub fn is_start(&self) -> bool {
-        *self == CMDSELECT_A::START
+        *self == Cmdselect::Start
     }
     #[doc = "Stop QDEC/HALL"]
     #[inline(always)]
     pub fn is_stop(&self) -> bool {
-        *self == CMDSELECT_A::STOP
+        *self == Cmdselect::Stop
     }
 }
 #[doc = "Field `CMD` writer - Command"]
-pub type CMD_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, CMDSELECT_A>;
-impl<'a, REG, const O: u8> CMD_W<'a, REG, O>
+pub type CmdW<'a, REG> = crate::FieldWriter<'a, REG, 3, Cmdselect>;
+impl<'a, REG> CmdW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -89,83 +90,74 @@ where
     #[doc = "No action"]
     #[inline(always)]
     pub fn none(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::NONE)
+        self.variant(Cmdselect::None)
     }
     #[doc = "Force a counter restart or retrigger"]
     #[inline(always)]
     pub fn retrigger(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::RETRIGGER)
+        self.variant(Cmdselect::Retrigger)
     }
     #[doc = "Force update of double buffered registers"]
     #[inline(always)]
     pub fn update(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::UPDATE)
+        self.variant(Cmdselect::Update)
     }
     #[doc = "Force a read synchronization of COUNT"]
     #[inline(always)]
     pub fn readsync(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::READSYNC)
+        self.variant(Cmdselect::Readsync)
     }
     #[doc = "Start QDEC/HALL"]
     #[inline(always)]
     pub fn start(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::START)
+        self.variant(Cmdselect::Start)
     }
     #[doc = "Stop QDEC/HALL"]
     #[inline(always)]
     pub fn stop(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::STOP)
+        self.variant(Cmdselect::Stop)
     }
 }
 impl R {
     #[doc = "Bit 1 - Lock Update"]
     #[inline(always)]
-    pub fn lupd(&self) -> LUPD_R {
-        LUPD_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn lupd(&self) -> LupdR {
+        LupdR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bits 5:7 - Command"]
     #[inline(always)]
-    pub fn cmd(&self) -> CMD_R {
-        CMD_R::new((self.bits >> 5) & 7)
+    pub fn cmd(&self) -> CmdR {
+        CmdR::new((self.bits >> 5) & 7)
     }
 }
 impl W {
     #[doc = "Bit 1 - Lock Update"]
     #[inline(always)]
     #[must_use]
-    pub fn lupd(&mut self) -> LUPD_W<CTRLBSET_SPEC, 1> {
-        LUPD_W::new(self)
+    pub fn lupd(&mut self) -> LupdW<CtrlbsetSpec> {
+        LupdW::new(self, 1)
     }
     #[doc = "Bits 5:7 - Command"]
     #[inline(always)]
     #[must_use]
-    pub fn cmd(&mut self) -> CMD_W<CTRLBSET_SPEC, 5> {
-        CMD_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn cmd(&mut self) -> CmdW<CtrlbsetSpec> {
+        CmdW::new(self, 5)
     }
 }
-#[doc = "Control B Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlbset::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlbset::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CTRLBSET_SPEC;
-impl crate::RegisterSpec for CTRLBSET_SPEC {
+#[doc = "Control B Set\n\nYou can [`read`](crate::Reg::read) this register and get [`ctrlbset::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrlbset::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CtrlbsetSpec;
+impl crate::RegisterSpec for CtrlbsetSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`ctrlbset::R`](R) reader structure"]
-impl crate::Readable for CTRLBSET_SPEC {}
+impl crate::Readable for CtrlbsetSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlbset::W`](W) writer structure"]
-impl crate::Writable for CTRLBSET_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CtrlbsetSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLBSET to value 0"]
-impl crate::Resettable for CTRLBSET_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CtrlbsetSpec {
+    const RESET_VALUE: u8 = 0;
 }

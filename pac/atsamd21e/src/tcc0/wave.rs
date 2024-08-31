@@ -1,91 +1,92 @@
 #[doc = "Register `WAVE` reader"]
-pub type R = crate::R<WAVE_SPEC>;
+pub type R = crate::R<WaveSpec>;
 #[doc = "Register `WAVE` writer"]
-pub type W = crate::W<WAVE_SPEC>;
-#[doc = "Field `WAVEGEN` reader - Waveform Generation"]
-pub type WAVEGEN_R = crate::FieldReader<WAVEGENSELECT_A>;
+pub type W = crate::W<WaveSpec>;
 #[doc = "Waveform Generation\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum WAVEGENSELECT_A {
+pub enum Wavegenselect {
     #[doc = "0: Normal frequency"]
-    NFRQ = 0,
+    Nfrq = 0,
     #[doc = "1: Match frequency"]
-    MFRQ = 1,
+    Mfrq = 1,
     #[doc = "2: Normal PWM"]
-    NPWM = 2,
+    Npwm = 2,
     #[doc = "4: Dual-slope critical"]
-    DSCRITICAL = 4,
+    Dscritical = 4,
     #[doc = "5: Dual-slope with interrupt/event condition when COUNT reaches ZERO"]
-    DSBOTTOM = 5,
+    Dsbottom = 5,
     #[doc = "6: Dual-slope with interrupt/event condition when COUNT reaches ZERO or TOP"]
-    DSBOTH = 6,
+    Dsboth = 6,
     #[doc = "7: Dual-slope with interrupt/event condition when COUNT reaches TOP"]
-    DSTOP = 7,
+    Dstop = 7,
 }
-impl From<WAVEGENSELECT_A> for u8 {
+impl From<Wavegenselect> for u8 {
     #[inline(always)]
-    fn from(variant: WAVEGENSELECT_A) -> Self {
+    fn from(variant: Wavegenselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for WAVEGENSELECT_A {
+impl crate::FieldSpec for Wavegenselect {
     type Ux = u8;
 }
-impl WAVEGEN_R {
+impl crate::IsEnum for Wavegenselect {}
+#[doc = "Field `WAVEGEN` reader - Waveform Generation"]
+pub type WavegenR = crate::FieldReader<Wavegenselect>;
+impl WavegenR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<WAVEGENSELECT_A> {
+    pub const fn variant(&self) -> Option<Wavegenselect> {
         match self.bits {
-            0 => Some(WAVEGENSELECT_A::NFRQ),
-            1 => Some(WAVEGENSELECT_A::MFRQ),
-            2 => Some(WAVEGENSELECT_A::NPWM),
-            4 => Some(WAVEGENSELECT_A::DSCRITICAL),
-            5 => Some(WAVEGENSELECT_A::DSBOTTOM),
-            6 => Some(WAVEGENSELECT_A::DSBOTH),
-            7 => Some(WAVEGENSELECT_A::DSTOP),
+            0 => Some(Wavegenselect::Nfrq),
+            1 => Some(Wavegenselect::Mfrq),
+            2 => Some(Wavegenselect::Npwm),
+            4 => Some(Wavegenselect::Dscritical),
+            5 => Some(Wavegenselect::Dsbottom),
+            6 => Some(Wavegenselect::Dsboth),
+            7 => Some(Wavegenselect::Dstop),
             _ => None,
         }
     }
     #[doc = "Normal frequency"]
     #[inline(always)]
     pub fn is_nfrq(&self) -> bool {
-        *self == WAVEGENSELECT_A::NFRQ
+        *self == Wavegenselect::Nfrq
     }
     #[doc = "Match frequency"]
     #[inline(always)]
     pub fn is_mfrq(&self) -> bool {
-        *self == WAVEGENSELECT_A::MFRQ
+        *self == Wavegenselect::Mfrq
     }
     #[doc = "Normal PWM"]
     #[inline(always)]
     pub fn is_npwm(&self) -> bool {
-        *self == WAVEGENSELECT_A::NPWM
+        *self == Wavegenselect::Npwm
     }
     #[doc = "Dual-slope critical"]
     #[inline(always)]
     pub fn is_dscritical(&self) -> bool {
-        *self == WAVEGENSELECT_A::DSCRITICAL
+        *self == Wavegenselect::Dscritical
     }
     #[doc = "Dual-slope with interrupt/event condition when COUNT reaches ZERO"]
     #[inline(always)]
     pub fn is_dsbottom(&self) -> bool {
-        *self == WAVEGENSELECT_A::DSBOTTOM
+        *self == Wavegenselect::Dsbottom
     }
     #[doc = "Dual-slope with interrupt/event condition when COUNT reaches ZERO or TOP"]
     #[inline(always)]
     pub fn is_dsboth(&self) -> bool {
-        *self == WAVEGENSELECT_A::DSBOTH
+        *self == Wavegenselect::Dsboth
     }
     #[doc = "Dual-slope with interrupt/event condition when COUNT reaches TOP"]
     #[inline(always)]
     pub fn is_dstop(&self) -> bool {
-        *self == WAVEGENSELECT_A::DSTOP
+        *self == Wavegenselect::Dstop
     }
 }
 #[doc = "Field `WAVEGEN` writer - Waveform Generation"]
-pub type WAVEGEN_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, WAVEGENSELECT_A>;
-impl<'a, REG, const O: u8> WAVEGEN_W<'a, REG, O>
+pub type WavegenW<'a, REG> = crate::FieldWriter<'a, REG, 3, Wavegenselect>;
+impl<'a, REG> WavegenW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -93,91 +94,92 @@ where
     #[doc = "Normal frequency"]
     #[inline(always)]
     pub fn nfrq(self) -> &'a mut crate::W<REG> {
-        self.variant(WAVEGENSELECT_A::NFRQ)
+        self.variant(Wavegenselect::Nfrq)
     }
     #[doc = "Match frequency"]
     #[inline(always)]
     pub fn mfrq(self) -> &'a mut crate::W<REG> {
-        self.variant(WAVEGENSELECT_A::MFRQ)
+        self.variant(Wavegenselect::Mfrq)
     }
     #[doc = "Normal PWM"]
     #[inline(always)]
     pub fn npwm(self) -> &'a mut crate::W<REG> {
-        self.variant(WAVEGENSELECT_A::NPWM)
+        self.variant(Wavegenselect::Npwm)
     }
     #[doc = "Dual-slope critical"]
     #[inline(always)]
     pub fn dscritical(self) -> &'a mut crate::W<REG> {
-        self.variant(WAVEGENSELECT_A::DSCRITICAL)
+        self.variant(Wavegenselect::Dscritical)
     }
     #[doc = "Dual-slope with interrupt/event condition when COUNT reaches ZERO"]
     #[inline(always)]
     pub fn dsbottom(self) -> &'a mut crate::W<REG> {
-        self.variant(WAVEGENSELECT_A::DSBOTTOM)
+        self.variant(Wavegenselect::Dsbottom)
     }
     #[doc = "Dual-slope with interrupt/event condition when COUNT reaches ZERO or TOP"]
     #[inline(always)]
     pub fn dsboth(self) -> &'a mut crate::W<REG> {
-        self.variant(WAVEGENSELECT_A::DSBOTH)
+        self.variant(Wavegenselect::Dsboth)
     }
     #[doc = "Dual-slope with interrupt/event condition when COUNT reaches TOP"]
     #[inline(always)]
     pub fn dstop(self) -> &'a mut crate::W<REG> {
-        self.variant(WAVEGENSELECT_A::DSTOP)
+        self.variant(Wavegenselect::Dstop)
     }
 }
-#[doc = "Field `RAMP` reader - Ramp Mode"]
-pub type RAMP_R = crate::FieldReader<RAMPSELECT_A>;
 #[doc = "Ramp Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum RAMPSELECT_A {
+pub enum Rampselect {
     #[doc = "0: RAMP1 operation"]
-    RAMP1 = 0,
+    Ramp1 = 0,
     #[doc = "1: Alternative RAMP2 operation"]
-    RAMP2A = 1,
+    Ramp2a = 1,
     #[doc = "2: RAMP2 operation"]
-    RAMP2 = 2,
+    Ramp2 = 2,
 }
-impl From<RAMPSELECT_A> for u8 {
+impl From<Rampselect> for u8 {
     #[inline(always)]
-    fn from(variant: RAMPSELECT_A) -> Self {
+    fn from(variant: Rampselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for RAMPSELECT_A {
+impl crate::FieldSpec for Rampselect {
     type Ux = u8;
 }
-impl RAMP_R {
+impl crate::IsEnum for Rampselect {}
+#[doc = "Field `RAMP` reader - Ramp Mode"]
+pub type RampR = crate::FieldReader<Rampselect>;
+impl RampR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<RAMPSELECT_A> {
+    pub const fn variant(&self) -> Option<Rampselect> {
         match self.bits {
-            0 => Some(RAMPSELECT_A::RAMP1),
-            1 => Some(RAMPSELECT_A::RAMP2A),
-            2 => Some(RAMPSELECT_A::RAMP2),
+            0 => Some(Rampselect::Ramp1),
+            1 => Some(Rampselect::Ramp2a),
+            2 => Some(Rampselect::Ramp2),
             _ => None,
         }
     }
     #[doc = "RAMP1 operation"]
     #[inline(always)]
     pub fn is_ramp1(&self) -> bool {
-        *self == RAMPSELECT_A::RAMP1
+        *self == Rampselect::Ramp1
     }
     #[doc = "Alternative RAMP2 operation"]
     #[inline(always)]
     pub fn is_ramp2a(&self) -> bool {
-        *self == RAMPSELECT_A::RAMP2A
+        *self == Rampselect::Ramp2a
     }
     #[doc = "RAMP2 operation"]
     #[inline(always)]
     pub fn is_ramp2(&self) -> bool {
-        *self == RAMPSELECT_A::RAMP2
+        *self == Rampselect::Ramp2
     }
 }
 #[doc = "Field `RAMP` writer - Ramp Mode"]
-pub type RAMP_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, RAMPSELECT_A>;
-impl<'a, REG, const O: u8> RAMP_W<'a, REG, O>
+pub type RampW<'a, REG> = crate::FieldWriter<'a, REG, 2, Rampselect>;
+impl<'a, REG> RampW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -185,263 +187,254 @@ where
     #[doc = "RAMP1 operation"]
     #[inline(always)]
     pub fn ramp1(self) -> &'a mut crate::W<REG> {
-        self.variant(RAMPSELECT_A::RAMP1)
+        self.variant(Rampselect::Ramp1)
     }
     #[doc = "Alternative RAMP2 operation"]
     #[inline(always)]
     pub fn ramp2a(self) -> &'a mut crate::W<REG> {
-        self.variant(RAMPSELECT_A::RAMP2A)
+        self.variant(Rampselect::Ramp2a)
     }
     #[doc = "RAMP2 operation"]
     #[inline(always)]
     pub fn ramp2(self) -> &'a mut crate::W<REG> {
-        self.variant(RAMPSELECT_A::RAMP2)
+        self.variant(Rampselect::Ramp2)
     }
 }
 #[doc = "Field `CIPEREN` reader - Circular period Enable"]
-pub type CIPEREN_R = crate::BitReader;
+pub type CiperenR = crate::BitReader;
 #[doc = "Field `CIPEREN` writer - Circular period Enable"]
-pub type CIPEREN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type CiperenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CICCEN0` reader - Circular Channel 0 Enable"]
-pub type CICCEN0_R = crate::BitReader;
+pub type Ciccen0R = crate::BitReader;
 #[doc = "Field `CICCEN0` writer - Circular Channel 0 Enable"]
-pub type CICCEN0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ciccen0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CICCEN1` reader - Circular Channel 1 Enable"]
-pub type CICCEN1_R = crate::BitReader;
+pub type Ciccen1R = crate::BitReader;
 #[doc = "Field `CICCEN1` writer - Circular Channel 1 Enable"]
-pub type CICCEN1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ciccen1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CICCEN2` reader - Circular Channel 2 Enable"]
-pub type CICCEN2_R = crate::BitReader;
+pub type Ciccen2R = crate::BitReader;
 #[doc = "Field `CICCEN2` writer - Circular Channel 2 Enable"]
-pub type CICCEN2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ciccen2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CICCEN3` reader - Circular Channel 3 Enable"]
-pub type CICCEN3_R = crate::BitReader;
+pub type Ciccen3R = crate::BitReader;
 #[doc = "Field `CICCEN3` writer - Circular Channel 3 Enable"]
-pub type CICCEN3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ciccen3W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `POL0` reader - Channel 0 Polarity"]
-pub type POL0_R = crate::BitReader;
+pub type Pol0R = crate::BitReader;
 #[doc = "Field `POL0` writer - Channel 0 Polarity"]
-pub type POL0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pol0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `POL1` reader - Channel 1 Polarity"]
-pub type POL1_R = crate::BitReader;
+pub type Pol1R = crate::BitReader;
 #[doc = "Field `POL1` writer - Channel 1 Polarity"]
-pub type POL1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pol1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `POL2` reader - Channel 2 Polarity"]
-pub type POL2_R = crate::BitReader;
+pub type Pol2R = crate::BitReader;
 #[doc = "Field `POL2` writer - Channel 2 Polarity"]
-pub type POL2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pol2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `POL3` reader - Channel 3 Polarity"]
-pub type POL3_R = crate::BitReader;
+pub type Pol3R = crate::BitReader;
 #[doc = "Field `POL3` writer - Channel 3 Polarity"]
-pub type POL3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pol3W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SWAP0` reader - Swap DTI Output Pair 0"]
-pub type SWAP0_R = crate::BitReader;
+pub type Swap0R = crate::BitReader;
 #[doc = "Field `SWAP0` writer - Swap DTI Output Pair 0"]
-pub type SWAP0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Swap0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SWAP1` reader - Swap DTI Output Pair 1"]
-pub type SWAP1_R = crate::BitReader;
+pub type Swap1R = crate::BitReader;
 #[doc = "Field `SWAP1` writer - Swap DTI Output Pair 1"]
-pub type SWAP1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Swap1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SWAP2` reader - Swap DTI Output Pair 2"]
-pub type SWAP2_R = crate::BitReader;
+pub type Swap2R = crate::BitReader;
 #[doc = "Field `SWAP2` writer - Swap DTI Output Pair 2"]
-pub type SWAP2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Swap2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SWAP3` reader - Swap DTI Output Pair 3"]
-pub type SWAP3_R = crate::BitReader;
+pub type Swap3R = crate::BitReader;
 #[doc = "Field `SWAP3` writer - Swap DTI Output Pair 3"]
-pub type SWAP3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Swap3W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bits 0:2 - Waveform Generation"]
     #[inline(always)]
-    pub fn wavegen(&self) -> WAVEGEN_R {
-        WAVEGEN_R::new((self.bits & 7) as u8)
+    pub fn wavegen(&self) -> WavegenR {
+        WavegenR::new((self.bits & 7) as u8)
     }
     #[doc = "Bits 4:5 - Ramp Mode"]
     #[inline(always)]
-    pub fn ramp(&self) -> RAMP_R {
-        RAMP_R::new(((self.bits >> 4) & 3) as u8)
+    pub fn ramp(&self) -> RampR {
+        RampR::new(((self.bits >> 4) & 3) as u8)
     }
     #[doc = "Bit 7 - Circular period Enable"]
     #[inline(always)]
-    pub fn ciperen(&self) -> CIPEREN_R {
-        CIPEREN_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn ciperen(&self) -> CiperenR {
+        CiperenR::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - Circular Channel 0 Enable"]
     #[inline(always)]
-    pub fn ciccen0(&self) -> CICCEN0_R {
-        CICCEN0_R::new(((self.bits >> 8) & 1) != 0)
+    pub fn ciccen0(&self) -> Ciccen0R {
+        Ciccen0R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Circular Channel 1 Enable"]
     #[inline(always)]
-    pub fn ciccen1(&self) -> CICCEN1_R {
-        CICCEN1_R::new(((self.bits >> 9) & 1) != 0)
+    pub fn ciccen1(&self) -> Ciccen1R {
+        Ciccen1R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - Circular Channel 2 Enable"]
     #[inline(always)]
-    pub fn ciccen2(&self) -> CICCEN2_R {
-        CICCEN2_R::new(((self.bits >> 10) & 1) != 0)
+    pub fn ciccen2(&self) -> Ciccen2R {
+        Ciccen2R::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bit 11 - Circular Channel 3 Enable"]
     #[inline(always)]
-    pub fn ciccen3(&self) -> CICCEN3_R {
-        CICCEN3_R::new(((self.bits >> 11) & 1) != 0)
+    pub fn ciccen3(&self) -> Ciccen3R {
+        Ciccen3R::new(((self.bits >> 11) & 1) != 0)
     }
     #[doc = "Bit 16 - Channel 0 Polarity"]
     #[inline(always)]
-    pub fn pol0(&self) -> POL0_R {
-        POL0_R::new(((self.bits >> 16) & 1) != 0)
+    pub fn pol0(&self) -> Pol0R {
+        Pol0R::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - Channel 1 Polarity"]
     #[inline(always)]
-    pub fn pol1(&self) -> POL1_R {
-        POL1_R::new(((self.bits >> 17) & 1) != 0)
+    pub fn pol1(&self) -> Pol1R {
+        Pol1R::new(((self.bits >> 17) & 1) != 0)
     }
     #[doc = "Bit 18 - Channel 2 Polarity"]
     #[inline(always)]
-    pub fn pol2(&self) -> POL2_R {
-        POL2_R::new(((self.bits >> 18) & 1) != 0)
+    pub fn pol2(&self) -> Pol2R {
+        Pol2R::new(((self.bits >> 18) & 1) != 0)
     }
     #[doc = "Bit 19 - Channel 3 Polarity"]
     #[inline(always)]
-    pub fn pol3(&self) -> POL3_R {
-        POL3_R::new(((self.bits >> 19) & 1) != 0)
+    pub fn pol3(&self) -> Pol3R {
+        Pol3R::new(((self.bits >> 19) & 1) != 0)
     }
     #[doc = "Bit 24 - Swap DTI Output Pair 0"]
     #[inline(always)]
-    pub fn swap0(&self) -> SWAP0_R {
-        SWAP0_R::new(((self.bits >> 24) & 1) != 0)
+    pub fn swap0(&self) -> Swap0R {
+        Swap0R::new(((self.bits >> 24) & 1) != 0)
     }
     #[doc = "Bit 25 - Swap DTI Output Pair 1"]
     #[inline(always)]
-    pub fn swap1(&self) -> SWAP1_R {
-        SWAP1_R::new(((self.bits >> 25) & 1) != 0)
+    pub fn swap1(&self) -> Swap1R {
+        Swap1R::new(((self.bits >> 25) & 1) != 0)
     }
     #[doc = "Bit 26 - Swap DTI Output Pair 2"]
     #[inline(always)]
-    pub fn swap2(&self) -> SWAP2_R {
-        SWAP2_R::new(((self.bits >> 26) & 1) != 0)
+    pub fn swap2(&self) -> Swap2R {
+        Swap2R::new(((self.bits >> 26) & 1) != 0)
     }
     #[doc = "Bit 27 - Swap DTI Output Pair 3"]
     #[inline(always)]
-    pub fn swap3(&self) -> SWAP3_R {
-        SWAP3_R::new(((self.bits >> 27) & 1) != 0)
+    pub fn swap3(&self) -> Swap3R {
+        Swap3R::new(((self.bits >> 27) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:2 - Waveform Generation"]
     #[inline(always)]
     #[must_use]
-    pub fn wavegen(&mut self) -> WAVEGEN_W<WAVE_SPEC, 0> {
-        WAVEGEN_W::new(self)
+    pub fn wavegen(&mut self) -> WavegenW<WaveSpec> {
+        WavegenW::new(self, 0)
     }
     #[doc = "Bits 4:5 - Ramp Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn ramp(&mut self) -> RAMP_W<WAVE_SPEC, 4> {
-        RAMP_W::new(self)
+    pub fn ramp(&mut self) -> RampW<WaveSpec> {
+        RampW::new(self, 4)
     }
     #[doc = "Bit 7 - Circular period Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ciperen(&mut self) -> CIPEREN_W<WAVE_SPEC, 7> {
-        CIPEREN_W::new(self)
+    pub fn ciperen(&mut self) -> CiperenW<WaveSpec> {
+        CiperenW::new(self, 7)
     }
     #[doc = "Bit 8 - Circular Channel 0 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ciccen0(&mut self) -> CICCEN0_W<WAVE_SPEC, 8> {
-        CICCEN0_W::new(self)
+    pub fn ciccen0(&mut self) -> Ciccen0W<WaveSpec> {
+        Ciccen0W::new(self, 8)
     }
     #[doc = "Bit 9 - Circular Channel 1 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ciccen1(&mut self) -> CICCEN1_W<WAVE_SPEC, 9> {
-        CICCEN1_W::new(self)
+    pub fn ciccen1(&mut self) -> Ciccen1W<WaveSpec> {
+        Ciccen1W::new(self, 9)
     }
     #[doc = "Bit 10 - Circular Channel 2 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ciccen2(&mut self) -> CICCEN2_W<WAVE_SPEC, 10> {
-        CICCEN2_W::new(self)
+    pub fn ciccen2(&mut self) -> Ciccen2W<WaveSpec> {
+        Ciccen2W::new(self, 10)
     }
     #[doc = "Bit 11 - Circular Channel 3 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ciccen3(&mut self) -> CICCEN3_W<WAVE_SPEC, 11> {
-        CICCEN3_W::new(self)
+    pub fn ciccen3(&mut self) -> Ciccen3W<WaveSpec> {
+        Ciccen3W::new(self, 11)
     }
     #[doc = "Bit 16 - Channel 0 Polarity"]
     #[inline(always)]
     #[must_use]
-    pub fn pol0(&mut self) -> POL0_W<WAVE_SPEC, 16> {
-        POL0_W::new(self)
+    pub fn pol0(&mut self) -> Pol0W<WaveSpec> {
+        Pol0W::new(self, 16)
     }
     #[doc = "Bit 17 - Channel 1 Polarity"]
     #[inline(always)]
     #[must_use]
-    pub fn pol1(&mut self) -> POL1_W<WAVE_SPEC, 17> {
-        POL1_W::new(self)
+    pub fn pol1(&mut self) -> Pol1W<WaveSpec> {
+        Pol1W::new(self, 17)
     }
     #[doc = "Bit 18 - Channel 2 Polarity"]
     #[inline(always)]
     #[must_use]
-    pub fn pol2(&mut self) -> POL2_W<WAVE_SPEC, 18> {
-        POL2_W::new(self)
+    pub fn pol2(&mut self) -> Pol2W<WaveSpec> {
+        Pol2W::new(self, 18)
     }
     #[doc = "Bit 19 - Channel 3 Polarity"]
     #[inline(always)]
     #[must_use]
-    pub fn pol3(&mut self) -> POL3_W<WAVE_SPEC, 19> {
-        POL3_W::new(self)
+    pub fn pol3(&mut self) -> Pol3W<WaveSpec> {
+        Pol3W::new(self, 19)
     }
     #[doc = "Bit 24 - Swap DTI Output Pair 0"]
     #[inline(always)]
     #[must_use]
-    pub fn swap0(&mut self) -> SWAP0_W<WAVE_SPEC, 24> {
-        SWAP0_W::new(self)
+    pub fn swap0(&mut self) -> Swap0W<WaveSpec> {
+        Swap0W::new(self, 24)
     }
     #[doc = "Bit 25 - Swap DTI Output Pair 1"]
     #[inline(always)]
     #[must_use]
-    pub fn swap1(&mut self) -> SWAP1_W<WAVE_SPEC, 25> {
-        SWAP1_W::new(self)
+    pub fn swap1(&mut self) -> Swap1W<WaveSpec> {
+        Swap1W::new(self, 25)
     }
     #[doc = "Bit 26 - Swap DTI Output Pair 2"]
     #[inline(always)]
     #[must_use]
-    pub fn swap2(&mut self) -> SWAP2_W<WAVE_SPEC, 26> {
-        SWAP2_W::new(self)
+    pub fn swap2(&mut self) -> Swap2W<WaveSpec> {
+        Swap2W::new(self, 26)
     }
     #[doc = "Bit 27 - Swap DTI Output Pair 3"]
     #[inline(always)]
     #[must_use]
-    pub fn swap3(&mut self) -> SWAP3_W<WAVE_SPEC, 27> {
-        SWAP3_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn swap3(&mut self) -> Swap3W<WaveSpec> {
+        Swap3W::new(self, 27)
     }
 }
-#[doc = "Waveform Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`wave::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`wave::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct WAVE_SPEC;
-impl crate::RegisterSpec for WAVE_SPEC {
+#[doc = "Waveform Control\n\nYou can [`read`](crate::Reg::read) this register and get [`wave::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`wave::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct WaveSpec;
+impl crate::RegisterSpec for WaveSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`wave::R`](R) reader structure"]
-impl crate::Readable for WAVE_SPEC {}
+impl crate::Readable for WaveSpec {}
 #[doc = "`write(|w| ..)` method takes [`wave::W`](W) writer structure"]
-impl crate::Writable for WAVE_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for WaveSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WAVE to value 0"]
-impl crate::Resettable for WAVE_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for WaveSpec {
+    const RESET_VALUE: u32 = 0;
 }

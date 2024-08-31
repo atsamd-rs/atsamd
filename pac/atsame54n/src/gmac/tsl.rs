@@ -1,50 +1,41 @@
 #[doc = "Register `TSL` reader"]
-pub type R = crate::R<TSL_SPEC>;
+pub type R = crate::R<TslSpec>;
 #[doc = "Register `TSL` writer"]
-pub type W = crate::W<TSL_SPEC>;
+pub type W = crate::W<TslSpec>;
 #[doc = "Field `TCS` reader - Timer Count in Seconds"]
-pub type TCS_R = crate::FieldReader<u32>;
+pub type TcsR = crate::FieldReader<u32>;
 #[doc = "Field `TCS` writer - Timer Count in Seconds"]
-pub type TCS_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 32, O, u32>;
+pub type TcsW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
 impl R {
     #[doc = "Bits 0:31 - Timer Count in Seconds"]
     #[inline(always)]
-    pub fn tcs(&self) -> TCS_R {
-        TCS_R::new(self.bits)
+    pub fn tcs(&self) -> TcsR {
+        TcsR::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Timer Count in Seconds"]
     #[inline(always)]
     #[must_use]
-    pub fn tcs(&mut self) -> TCS_W<TSL_SPEC, 0> {
-        TCS_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn tcs(&mut self) -> TcsW<TslSpec> {
+        TcsW::new(self, 0)
     }
 }
 #[doc = "1588 Timer Seconds \\[31:0\\]
-Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`tsl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`tsl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct TSL_SPEC;
-impl crate::RegisterSpec for TSL_SPEC {
+Register\n\nYou can [`read`](crate::Reg::read) this register and get [`tsl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`tsl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct TslSpec;
+impl crate::RegisterSpec for TslSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`tsl::R`](R) reader structure"]
-impl crate::Readable for TSL_SPEC {}
+impl crate::Readable for TslSpec {}
 #[doc = "`write(|w| ..)` method takes [`tsl::W`](W) writer structure"]
-impl crate::Writable for TSL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for TslSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TSL to value 0"]
-impl crate::Resettable for TSL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for TslSpec {
+    const RESET_VALUE: u32 = 0;
 }

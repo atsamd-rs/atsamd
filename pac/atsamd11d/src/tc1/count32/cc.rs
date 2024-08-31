@@ -1,49 +1,40 @@
 #[doc = "Register `CC%s` reader"]
-pub type R = crate::R<CC_SPEC>;
+pub type R = crate::R<CcSpec>;
 #[doc = "Register `CC%s` writer"]
-pub type W = crate::W<CC_SPEC>;
+pub type W = crate::W<CcSpec>;
 #[doc = "Field `CC` reader - Compare/Capture Value"]
-pub type CC_R = crate::FieldReader<u32>;
+pub type CcR = crate::FieldReader<u32>;
 #[doc = "Field `CC` writer - Compare/Capture Value"]
-pub type CC_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 32, O, u32>;
+pub type CcW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
 impl R {
     #[doc = "Bits 0:31 - Compare/Capture Value"]
     #[inline(always)]
-    pub fn cc(&self) -> CC_R {
-        CC_R::new(self.bits)
+    pub fn cc(&self) -> CcR {
+        CcR::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:31 - Compare/Capture Value"]
     #[inline(always)]
     #[must_use]
-    pub fn cc(&mut self) -> CC_W<CC_SPEC, 0> {
-        CC_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn cc(&mut self) -> CcW<CcSpec> {
+        CcW::new(self, 0)
     }
 }
-#[doc = "COUNT32 Compare/Capture\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cc::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cc::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CC_SPEC;
-impl crate::RegisterSpec for CC_SPEC {
+#[doc = "COUNT32 Compare/Capture\n\nYou can [`read`](crate::Reg::read) this register and get [`cc::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cc::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CcSpec;
+impl crate::RegisterSpec for CcSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`cc::R`](R) reader structure"]
-impl crate::Readable for CC_SPEC {}
+impl crate::Readable for CcSpec {}
 #[doc = "`write(|w| ..)` method takes [`cc::W`](W) writer structure"]
-impl crate::Writable for CC_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CcSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CC%s to value 0"]
-impl crate::Resettable for CC_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CcSpec {
+    const RESET_VALUE: u32 = 0;
 }

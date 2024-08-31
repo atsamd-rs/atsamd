@@ -1,75 +1,76 @@
 #[doc = "Register `CTRLA` reader"]
-pub type R = crate::R<CTRLA_SPEC>;
+pub type R = crate::R<CtrlaSpec>;
 #[doc = "Register `CTRLA` writer"]
-pub type W = crate::W<CTRLA_SPEC>;
+pub type W = crate::W<CtrlaSpec>;
 #[doc = "Field `AUTOWS` reader - Auto Wait State Enable"]
-pub type AUTOWS_R = crate::BitReader;
+pub type AutowsR = crate::BitReader;
 #[doc = "Field `AUTOWS` writer - Auto Wait State Enable"]
-pub type AUTOWS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type AutowsW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SUSPEN` reader - Suspend Enable"]
-pub type SUSPEN_R = crate::BitReader;
+pub type SuspenR = crate::BitReader;
 #[doc = "Field `SUSPEN` writer - Suspend Enable"]
-pub type SUSPEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `WMODE` reader - Write Mode"]
-pub type WMODE_R = crate::FieldReader<WMODESELECT_A>;
+pub type SuspenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Write Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum WMODESELECT_A {
+pub enum Wmodeselect {
     #[doc = "0: Manual Write"]
-    MAN = 0,
+    Man = 0,
     #[doc = "1: Automatic Double Word Write"]
-    ADW = 1,
+    Adw = 1,
     #[doc = "2: Automatic Quad Word"]
-    AQW = 2,
+    Aqw = 2,
     #[doc = "3: Automatic Page Write"]
-    AP = 3,
+    Ap = 3,
 }
-impl From<WMODESELECT_A> for u8 {
+impl From<Wmodeselect> for u8 {
     #[inline(always)]
-    fn from(variant: WMODESELECT_A) -> Self {
+    fn from(variant: Wmodeselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for WMODESELECT_A {
+impl crate::FieldSpec for Wmodeselect {
     type Ux = u8;
 }
-impl WMODE_R {
+impl crate::IsEnum for Wmodeselect {}
+#[doc = "Field `WMODE` reader - Write Mode"]
+pub type WmodeR = crate::FieldReader<Wmodeselect>;
+impl WmodeR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> WMODESELECT_A {
+    pub const fn variant(&self) -> Wmodeselect {
         match self.bits {
-            0 => WMODESELECT_A::MAN,
-            1 => WMODESELECT_A::ADW,
-            2 => WMODESELECT_A::AQW,
-            3 => WMODESELECT_A::AP,
+            0 => Wmodeselect::Man,
+            1 => Wmodeselect::Adw,
+            2 => Wmodeselect::Aqw,
+            3 => Wmodeselect::Ap,
             _ => unreachable!(),
         }
     }
     #[doc = "Manual Write"]
     #[inline(always)]
     pub fn is_man(&self) -> bool {
-        *self == WMODESELECT_A::MAN
+        *self == Wmodeselect::Man
     }
     #[doc = "Automatic Double Word Write"]
     #[inline(always)]
     pub fn is_adw(&self) -> bool {
-        *self == WMODESELECT_A::ADW
+        *self == Wmodeselect::Adw
     }
     #[doc = "Automatic Quad Word"]
     #[inline(always)]
     pub fn is_aqw(&self) -> bool {
-        *self == WMODESELECT_A::AQW
+        *self == Wmodeselect::Aqw
     }
     #[doc = "Automatic Page Write"]
     #[inline(always)]
     pub fn is_ap(&self) -> bool {
-        *self == WMODESELECT_A::AP
+        *self == Wmodeselect::Ap
     }
 }
 #[doc = "Field `WMODE` writer - Write Mode"]
-pub type WMODE_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, WMODESELECT_A>;
-impl<'a, REG, const O: u8> WMODE_W<'a, REG, O>
+pub type WmodeW<'a, REG> = crate::FieldWriter<'a, REG, 2, Wmodeselect, crate::Safe>;
+impl<'a, REG> WmodeW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -77,76 +78,77 @@ where
     #[doc = "Manual Write"]
     #[inline(always)]
     pub fn man(self) -> &'a mut crate::W<REG> {
-        self.variant(WMODESELECT_A::MAN)
+        self.variant(Wmodeselect::Man)
     }
     #[doc = "Automatic Double Word Write"]
     #[inline(always)]
     pub fn adw(self) -> &'a mut crate::W<REG> {
-        self.variant(WMODESELECT_A::ADW)
+        self.variant(Wmodeselect::Adw)
     }
     #[doc = "Automatic Quad Word"]
     #[inline(always)]
     pub fn aqw(self) -> &'a mut crate::W<REG> {
-        self.variant(WMODESELECT_A::AQW)
+        self.variant(Wmodeselect::Aqw)
     }
     #[doc = "Automatic Page Write"]
     #[inline(always)]
     pub fn ap(self) -> &'a mut crate::W<REG> {
-        self.variant(WMODESELECT_A::AP)
+        self.variant(Wmodeselect::Ap)
     }
 }
-#[doc = "Field `PRM` reader - Power Reduction Mode during Sleep"]
-pub type PRM_R = crate::FieldReader<PRMSELECT_A>;
 #[doc = "Power Reduction Mode during Sleep\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum PRMSELECT_A {
+pub enum Prmselect {
     #[doc = "0: NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    SEMIAUTO = 0,
+    Semiauto = 0,
     #[doc = "1: NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
-    FULLAUTO = 1,
+    Fullauto = 1,
     #[doc = "3: NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
-    MANUAL = 3,
+    Manual = 3,
 }
-impl From<PRMSELECT_A> for u8 {
+impl From<Prmselect> for u8 {
     #[inline(always)]
-    fn from(variant: PRMSELECT_A) -> Self {
+    fn from(variant: Prmselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for PRMSELECT_A {
+impl crate::FieldSpec for Prmselect {
     type Ux = u8;
 }
-impl PRM_R {
+impl crate::IsEnum for Prmselect {}
+#[doc = "Field `PRM` reader - Power Reduction Mode during Sleep"]
+pub type PrmR = crate::FieldReader<Prmselect>;
+impl PrmR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<PRMSELECT_A> {
+    pub const fn variant(&self) -> Option<Prmselect> {
         match self.bits {
-            0 => Some(PRMSELECT_A::SEMIAUTO),
-            1 => Some(PRMSELECT_A::FULLAUTO),
-            3 => Some(PRMSELECT_A::MANUAL),
+            0 => Some(Prmselect::Semiauto),
+            1 => Some(Prmselect::Fullauto),
+            3 => Some(Prmselect::Manual),
             _ => None,
         }
     }
     #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
     #[inline(always)]
     pub fn is_semiauto(&self) -> bool {
-        *self == PRMSELECT_A::SEMIAUTO
+        *self == Prmselect::Semiauto
     }
     #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
     #[inline(always)]
     pub fn is_fullauto(&self) -> bool {
-        *self == PRMSELECT_A::FULLAUTO
+        *self == Prmselect::Fullauto
     }
     #[doc = "NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
     #[inline(always)]
     pub fn is_manual(&self) -> bool {
-        *self == PRMSELECT_A::MANUAL
+        *self == Prmselect::Manual
     }
 }
 #[doc = "Field `PRM` writer - Power Reduction Mode during Sleep"]
-pub type PRM_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, PRMSELECT_A>;
-impl<'a, REG, const O: u8> PRM_W<'a, REG, O>
+pub type PrmW<'a, REG> = crate::FieldWriter<'a, REG, 2, Prmselect>;
+impl<'a, REG> PrmW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -154,165 +156,156 @@ where
     #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
     #[inline(always)]
     pub fn semiauto(self) -> &'a mut crate::W<REG> {
-        self.variant(PRMSELECT_A::SEMIAUTO)
+        self.variant(Prmselect::Semiauto)
     }
     #[doc = "NVM block enters low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode when system is not in standby mode."]
     #[inline(always)]
     pub fn fullauto(self) -> &'a mut crate::W<REG> {
-        self.variant(PRMSELECT_A::FULLAUTO)
+        self.variant(Prmselect::Fullauto)
     }
     #[doc = "NVM block does not enter low-power mode when entering standby mode. NVM block enters low-power mode when SPRM command is issued. NVM block exits low-power mode upon first access."]
     #[inline(always)]
     pub fn manual(self) -> &'a mut crate::W<REG> {
-        self.variant(PRMSELECT_A::MANUAL)
+        self.variant(Prmselect::Manual)
     }
 }
 #[doc = "Field `RWS` reader - NVM Read Wait States"]
-pub type RWS_R = crate::FieldReader;
+pub type RwsR = crate::FieldReader;
 #[doc = "Field `RWS` writer - NVM Read Wait States"]
-pub type RWS_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O>;
+pub type RwsW<'a, REG> = crate::FieldWriter<'a, REG, 4>;
 #[doc = "Field `AHBNS0` reader - Force AHB0 access to NONSEQ, burst transfers are continuously rearbitrated"]
-pub type AHBNS0_R = crate::BitReader;
+pub type Ahbns0R = crate::BitReader;
 #[doc = "Field `AHBNS0` writer - Force AHB0 access to NONSEQ, burst transfers are continuously rearbitrated"]
-pub type AHBNS0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ahbns0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `AHBNS1` reader - Force AHB1 access to NONSEQ, burst transfers are continuously rearbitrated"]
-pub type AHBNS1_R = crate::BitReader;
+pub type Ahbns1R = crate::BitReader;
 #[doc = "Field `AHBNS1` writer - Force AHB1 access to NONSEQ, burst transfers are continuously rearbitrated"]
-pub type AHBNS1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ahbns1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CACHEDIS0` reader - AHB0 Cache Disable"]
-pub type CACHEDIS0_R = crate::BitReader;
+pub type Cachedis0R = crate::BitReader;
 #[doc = "Field `CACHEDIS0` writer - AHB0 Cache Disable"]
-pub type CACHEDIS0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cachedis0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CACHEDIS1` reader - AHB1 Cache Disable"]
-pub type CACHEDIS1_R = crate::BitReader;
+pub type Cachedis1R = crate::BitReader;
 #[doc = "Field `CACHEDIS1` writer - AHB1 Cache Disable"]
-pub type CACHEDIS1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cachedis1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 2 - Auto Wait State Enable"]
     #[inline(always)]
-    pub fn autows(&self) -> AUTOWS_R {
-        AUTOWS_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn autows(&self) -> AutowsR {
+        AutowsR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Suspend Enable"]
     #[inline(always)]
-    pub fn suspen(&self) -> SUSPEN_R {
-        SUSPEN_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn suspen(&self) -> SuspenR {
+        SuspenR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bits 4:5 - Write Mode"]
     #[inline(always)]
-    pub fn wmode(&self) -> WMODE_R {
-        WMODE_R::new(((self.bits >> 4) & 3) as u8)
+    pub fn wmode(&self) -> WmodeR {
+        WmodeR::new(((self.bits >> 4) & 3) as u8)
     }
     #[doc = "Bits 6:7 - Power Reduction Mode during Sleep"]
     #[inline(always)]
-    pub fn prm(&self) -> PRM_R {
-        PRM_R::new(((self.bits >> 6) & 3) as u8)
+    pub fn prm(&self) -> PrmR {
+        PrmR::new(((self.bits >> 6) & 3) as u8)
     }
     #[doc = "Bits 8:11 - NVM Read Wait States"]
     #[inline(always)]
-    pub fn rws(&self) -> RWS_R {
-        RWS_R::new(((self.bits >> 8) & 0x0f) as u8)
+    pub fn rws(&self) -> RwsR {
+        RwsR::new(((self.bits >> 8) & 0x0f) as u8)
     }
     #[doc = "Bit 12 - Force AHB0 access to NONSEQ, burst transfers are continuously rearbitrated"]
     #[inline(always)]
-    pub fn ahbns0(&self) -> AHBNS0_R {
-        AHBNS0_R::new(((self.bits >> 12) & 1) != 0)
+    pub fn ahbns0(&self) -> Ahbns0R {
+        Ahbns0R::new(((self.bits >> 12) & 1) != 0)
     }
     #[doc = "Bit 13 - Force AHB1 access to NONSEQ, burst transfers are continuously rearbitrated"]
     #[inline(always)]
-    pub fn ahbns1(&self) -> AHBNS1_R {
-        AHBNS1_R::new(((self.bits >> 13) & 1) != 0)
+    pub fn ahbns1(&self) -> Ahbns1R {
+        Ahbns1R::new(((self.bits >> 13) & 1) != 0)
     }
     #[doc = "Bit 14 - AHB0 Cache Disable"]
     #[inline(always)]
-    pub fn cachedis0(&self) -> CACHEDIS0_R {
-        CACHEDIS0_R::new(((self.bits >> 14) & 1) != 0)
+    pub fn cachedis0(&self) -> Cachedis0R {
+        Cachedis0R::new(((self.bits >> 14) & 1) != 0)
     }
     #[doc = "Bit 15 - AHB1 Cache Disable"]
     #[inline(always)]
-    pub fn cachedis1(&self) -> CACHEDIS1_R {
-        CACHEDIS1_R::new(((self.bits >> 15) & 1) != 0)
+    pub fn cachedis1(&self) -> Cachedis1R {
+        Cachedis1R::new(((self.bits >> 15) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 2 - Auto Wait State Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn autows(&mut self) -> AUTOWS_W<CTRLA_SPEC, 2> {
-        AUTOWS_W::new(self)
+    pub fn autows(&mut self) -> AutowsW<CtrlaSpec> {
+        AutowsW::new(self, 2)
     }
     #[doc = "Bit 3 - Suspend Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn suspen(&mut self) -> SUSPEN_W<CTRLA_SPEC, 3> {
-        SUSPEN_W::new(self)
+    pub fn suspen(&mut self) -> SuspenW<CtrlaSpec> {
+        SuspenW::new(self, 3)
     }
     #[doc = "Bits 4:5 - Write Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn wmode(&mut self) -> WMODE_W<CTRLA_SPEC, 4> {
-        WMODE_W::new(self)
+    pub fn wmode(&mut self) -> WmodeW<CtrlaSpec> {
+        WmodeW::new(self, 4)
     }
     #[doc = "Bits 6:7 - Power Reduction Mode during Sleep"]
     #[inline(always)]
     #[must_use]
-    pub fn prm(&mut self) -> PRM_W<CTRLA_SPEC, 6> {
-        PRM_W::new(self)
+    pub fn prm(&mut self) -> PrmW<CtrlaSpec> {
+        PrmW::new(self, 6)
     }
     #[doc = "Bits 8:11 - NVM Read Wait States"]
     #[inline(always)]
     #[must_use]
-    pub fn rws(&mut self) -> RWS_W<CTRLA_SPEC, 8> {
-        RWS_W::new(self)
+    pub fn rws(&mut self) -> RwsW<CtrlaSpec> {
+        RwsW::new(self, 8)
     }
     #[doc = "Bit 12 - Force AHB0 access to NONSEQ, burst transfers are continuously rearbitrated"]
     #[inline(always)]
     #[must_use]
-    pub fn ahbns0(&mut self) -> AHBNS0_W<CTRLA_SPEC, 12> {
-        AHBNS0_W::new(self)
+    pub fn ahbns0(&mut self) -> Ahbns0W<CtrlaSpec> {
+        Ahbns0W::new(self, 12)
     }
     #[doc = "Bit 13 - Force AHB1 access to NONSEQ, burst transfers are continuously rearbitrated"]
     #[inline(always)]
     #[must_use]
-    pub fn ahbns1(&mut self) -> AHBNS1_W<CTRLA_SPEC, 13> {
-        AHBNS1_W::new(self)
+    pub fn ahbns1(&mut self) -> Ahbns1W<CtrlaSpec> {
+        Ahbns1W::new(self, 13)
     }
     #[doc = "Bit 14 - AHB0 Cache Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn cachedis0(&mut self) -> CACHEDIS0_W<CTRLA_SPEC, 14> {
-        CACHEDIS0_W::new(self)
+    pub fn cachedis0(&mut self) -> Cachedis0W<CtrlaSpec> {
+        Cachedis0W::new(self, 14)
     }
     #[doc = "Bit 15 - AHB1 Cache Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn cachedis1(&mut self) -> CACHEDIS1_W<CTRLA_SPEC, 15> {
-        CACHEDIS1_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn cachedis1(&mut self) -> Cachedis1W<CtrlaSpec> {
+        Cachedis1W::new(self, 15)
     }
 }
-#[doc = "Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CTRLA_SPEC;
-impl crate::RegisterSpec for CTRLA_SPEC {
+#[doc = "Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`ctrla::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CtrlaSpec;
+impl crate::RegisterSpec for CtrlaSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`ctrla::R`](R) reader structure"]
-impl crate::Readable for CTRLA_SPEC {}
+impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
-impl crate::Writable for CTRLA_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CtrlaSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0x04"]
-impl crate::Resettable for CTRLA_SPEC {
-    const RESET_VALUE: Self::Ux = 0x04;
+impl crate::Resettable for CtrlaSpec {
+    const RESET_VALUE: u16 = 0x04;
 }

@@ -1,290 +1,281 @@
 #[doc = "Register `BGCR` reader"]
-pub type R = crate::R<BGCR_SPEC>;
+pub type R = crate::R<BgcrSpec>;
 #[doc = "Register `BGCR` writer"]
-pub type W = crate::W<BGCR_SPEC>;
-#[doc = "Field `STPBGR` reader - Stop at Block Gap Request"]
-pub type STPBGR_R = crate::BitReader<STPBGRSELECT_A>;
+pub type W = crate::W<BgcrSpec>;
 #[doc = "Stop at Block Gap Request\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum STPBGRSELECT_A {
+pub enum Stpbgrselect {
     #[doc = "0: Transfer"]
-    TRANSFER = 0,
+    Transfer = 0,
     #[doc = "1: Stop"]
-    STOP = 1,
+    Stop = 1,
 }
-impl From<STPBGRSELECT_A> for bool {
+impl From<Stpbgrselect> for bool {
     #[inline(always)]
-    fn from(variant: STPBGRSELECT_A) -> Self {
+    fn from(variant: Stpbgrselect) -> Self {
         variant as u8 != 0
     }
 }
-impl STPBGR_R {
+#[doc = "Field `STPBGR` reader - Stop at Block Gap Request"]
+pub type StpbgrR = crate::BitReader<Stpbgrselect>;
+impl StpbgrR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> STPBGRSELECT_A {
+    pub const fn variant(&self) -> Stpbgrselect {
         match self.bits {
-            false => STPBGRSELECT_A::TRANSFER,
-            true => STPBGRSELECT_A::STOP,
+            false => Stpbgrselect::Transfer,
+            true => Stpbgrselect::Stop,
         }
     }
     #[doc = "Transfer"]
     #[inline(always)]
     pub fn is_transfer(&self) -> bool {
-        *self == STPBGRSELECT_A::TRANSFER
+        *self == Stpbgrselect::Transfer
     }
     #[doc = "Stop"]
     #[inline(always)]
     pub fn is_stop(&self) -> bool {
-        *self == STPBGRSELECT_A::STOP
+        *self == Stpbgrselect::Stop
     }
 }
 #[doc = "Field `STPBGR` writer - Stop at Block Gap Request"]
-pub type STPBGR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, STPBGRSELECT_A>;
-impl<'a, REG, const O: u8> STPBGR_W<'a, REG, O>
+pub type StpbgrW<'a, REG> = crate::BitWriter<'a, REG, Stpbgrselect>;
+impl<'a, REG> StpbgrW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "Transfer"]
     #[inline(always)]
     pub fn transfer(self) -> &'a mut crate::W<REG> {
-        self.variant(STPBGRSELECT_A::TRANSFER)
+        self.variant(Stpbgrselect::Transfer)
     }
     #[doc = "Stop"]
     #[inline(always)]
     pub fn stop(self) -> &'a mut crate::W<REG> {
-        self.variant(STPBGRSELECT_A::STOP)
+        self.variant(Stpbgrselect::Stop)
     }
 }
-#[doc = "Field `CONTR` reader - Continue Request"]
-pub type CONTR_R = crate::BitReader<CONTRSELECT_A>;
 #[doc = "Continue Request\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CONTRSELECT_A {
+pub enum Contrselect {
     #[doc = "0: Not affected"]
-    GO_ON = 0,
+    GoOn = 0,
     #[doc = "1: Restart"]
-    RESTART = 1,
+    Restart = 1,
 }
-impl From<CONTRSELECT_A> for bool {
+impl From<Contrselect> for bool {
     #[inline(always)]
-    fn from(variant: CONTRSELECT_A) -> Self {
+    fn from(variant: Contrselect) -> Self {
         variant as u8 != 0
     }
 }
-impl CONTR_R {
+#[doc = "Field `CONTR` reader - Continue Request"]
+pub type ContrR = crate::BitReader<Contrselect>;
+impl ContrR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> CONTRSELECT_A {
+    pub const fn variant(&self) -> Contrselect {
         match self.bits {
-            false => CONTRSELECT_A::GO_ON,
-            true => CONTRSELECT_A::RESTART,
+            false => Contrselect::GoOn,
+            true => Contrselect::Restart,
         }
     }
     #[doc = "Not affected"]
     #[inline(always)]
     pub fn is_go_on(&self) -> bool {
-        *self == CONTRSELECT_A::GO_ON
+        *self == Contrselect::GoOn
     }
     #[doc = "Restart"]
     #[inline(always)]
     pub fn is_restart(&self) -> bool {
-        *self == CONTRSELECT_A::RESTART
+        *self == Contrselect::Restart
     }
 }
 #[doc = "Field `CONTR` writer - Continue Request"]
-pub type CONTR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, CONTRSELECT_A>;
-impl<'a, REG, const O: u8> CONTR_W<'a, REG, O>
+pub type ContrW<'a, REG> = crate::BitWriter<'a, REG, Contrselect>;
+impl<'a, REG> ContrW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "Not affected"]
     #[inline(always)]
     pub fn go_on(self) -> &'a mut crate::W<REG> {
-        self.variant(CONTRSELECT_A::GO_ON)
+        self.variant(Contrselect::GoOn)
     }
     #[doc = "Restart"]
     #[inline(always)]
     pub fn restart(self) -> &'a mut crate::W<REG> {
-        self.variant(CONTRSELECT_A::RESTART)
+        self.variant(Contrselect::Restart)
     }
 }
-#[doc = "Field `RWCTRL` reader - Read Wait Control"]
-pub type RWCTRL_R = crate::BitReader<RWCTRLSELECT_A>;
 #[doc = "Read Wait Control\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum RWCTRLSELECT_A {
+pub enum Rwctrlselect {
     #[doc = "0: Disable Read Wait Control"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: Enable Read Wait Control"]
-    ENABLE = 1,
+    Enable = 1,
 }
-impl From<RWCTRLSELECT_A> for bool {
+impl From<Rwctrlselect> for bool {
     #[inline(always)]
-    fn from(variant: RWCTRLSELECT_A) -> Self {
+    fn from(variant: Rwctrlselect) -> Self {
         variant as u8 != 0
     }
 }
-impl RWCTRL_R {
+#[doc = "Field `RWCTRL` reader - Read Wait Control"]
+pub type RwctrlR = crate::BitReader<Rwctrlselect>;
+impl RwctrlR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> RWCTRLSELECT_A {
+    pub const fn variant(&self) -> Rwctrlselect {
         match self.bits {
-            false => RWCTRLSELECT_A::DISABLE,
-            true => RWCTRLSELECT_A::ENABLE,
+            false => Rwctrlselect::Disable,
+            true => Rwctrlselect::Enable,
         }
     }
     #[doc = "Disable Read Wait Control"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == RWCTRLSELECT_A::DISABLE
+        *self == Rwctrlselect::Disable
     }
     #[doc = "Enable Read Wait Control"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == RWCTRLSELECT_A::ENABLE
+        *self == Rwctrlselect::Enable
     }
 }
 #[doc = "Field `RWCTRL` writer - Read Wait Control"]
-pub type RWCTRL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, RWCTRLSELECT_A>;
-impl<'a, REG, const O: u8> RWCTRL_W<'a, REG, O>
+pub type RwctrlW<'a, REG> = crate::BitWriter<'a, REG, Rwctrlselect>;
+impl<'a, REG> RwctrlW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "Disable Read Wait Control"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut crate::W<REG> {
-        self.variant(RWCTRLSELECT_A::DISABLE)
+        self.variant(Rwctrlselect::Disable)
     }
     #[doc = "Enable Read Wait Control"]
     #[inline(always)]
     pub fn enable(self) -> &'a mut crate::W<REG> {
-        self.variant(RWCTRLSELECT_A::ENABLE)
+        self.variant(Rwctrlselect::Enable)
     }
 }
-#[doc = "Field `INTBG` reader - Interrupt at Block Gap"]
-pub type INTBG_R = crate::BitReader<INTBGSELECT_A>;
 #[doc = "Interrupt at Block Gap\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum INTBGSELECT_A {
+pub enum Intbgselect {
     #[doc = "0: Disabled"]
-    DISABLED = 0,
+    Disabled = 0,
     #[doc = "1: Enabled"]
-    ENABLED = 1,
+    Enabled = 1,
 }
-impl From<INTBGSELECT_A> for bool {
+impl From<Intbgselect> for bool {
     #[inline(always)]
-    fn from(variant: INTBGSELECT_A) -> Self {
+    fn from(variant: Intbgselect) -> Self {
         variant as u8 != 0
     }
 }
-impl INTBG_R {
+#[doc = "Field `INTBG` reader - Interrupt at Block Gap"]
+pub type IntbgR = crate::BitReader<Intbgselect>;
+impl IntbgR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> INTBGSELECT_A {
+    pub const fn variant(&self) -> Intbgselect {
         match self.bits {
-            false => INTBGSELECT_A::DISABLED,
-            true => INTBGSELECT_A::ENABLED,
+            false => Intbgselect::Disabled,
+            true => Intbgselect::Enabled,
         }
     }
     #[doc = "Disabled"]
     #[inline(always)]
     pub fn is_disabled(&self) -> bool {
-        *self == INTBGSELECT_A::DISABLED
+        *self == Intbgselect::Disabled
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        *self == INTBGSELECT_A::ENABLED
+        *self == Intbgselect::Enabled
     }
 }
 #[doc = "Field `INTBG` writer - Interrupt at Block Gap"]
-pub type INTBG_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, INTBGSELECT_A>;
-impl<'a, REG, const O: u8> INTBG_W<'a, REG, O>
+pub type IntbgW<'a, REG> = crate::BitWriter<'a, REG, Intbgselect>;
+impl<'a, REG> IntbgW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "Disabled"]
     #[inline(always)]
     pub fn disabled(self) -> &'a mut crate::W<REG> {
-        self.variant(INTBGSELECT_A::DISABLED)
+        self.variant(Intbgselect::Disabled)
     }
     #[doc = "Enabled"]
     #[inline(always)]
     pub fn enabled(self) -> &'a mut crate::W<REG> {
-        self.variant(INTBGSELECT_A::ENABLED)
+        self.variant(Intbgselect::Enabled)
     }
 }
 impl R {
     #[doc = "Bit 0 - Stop at Block Gap Request"]
     #[inline(always)]
-    pub fn stpbgr(&self) -> STPBGR_R {
-        STPBGR_R::new((self.bits & 1) != 0)
+    pub fn stpbgr(&self) -> StpbgrR {
+        StpbgrR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Continue Request"]
     #[inline(always)]
-    pub fn contr(&self) -> CONTR_R {
-        CONTR_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn contr(&self) -> ContrR {
+        ContrR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Read Wait Control"]
     #[inline(always)]
-    pub fn rwctrl(&self) -> RWCTRL_R {
-        RWCTRL_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn rwctrl(&self) -> RwctrlR {
+        RwctrlR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Interrupt at Block Gap"]
     #[inline(always)]
-    pub fn intbg(&self) -> INTBG_R {
-        INTBG_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn intbg(&self) -> IntbgR {
+        IntbgR::new(((self.bits >> 3) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Stop at Block Gap Request"]
     #[inline(always)]
     #[must_use]
-    pub fn stpbgr(&mut self) -> STPBGR_W<BGCR_SPEC, 0> {
-        STPBGR_W::new(self)
+    pub fn stpbgr(&mut self) -> StpbgrW<BgcrSpec> {
+        StpbgrW::new(self, 0)
     }
     #[doc = "Bit 1 - Continue Request"]
     #[inline(always)]
     #[must_use]
-    pub fn contr(&mut self) -> CONTR_W<BGCR_SPEC, 1> {
-        CONTR_W::new(self)
+    pub fn contr(&mut self) -> ContrW<BgcrSpec> {
+        ContrW::new(self, 1)
     }
     #[doc = "Bit 2 - Read Wait Control"]
     #[inline(always)]
     #[must_use]
-    pub fn rwctrl(&mut self) -> RWCTRL_W<BGCR_SPEC, 2> {
-        RWCTRL_W::new(self)
+    pub fn rwctrl(&mut self) -> RwctrlW<BgcrSpec> {
+        RwctrlW::new(self, 2)
     }
     #[doc = "Bit 3 - Interrupt at Block Gap"]
     #[inline(always)]
     #[must_use]
-    pub fn intbg(&mut self) -> INTBG_W<BGCR_SPEC, 3> {
-        INTBG_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn intbg(&mut self) -> IntbgW<BgcrSpec> {
+        IntbgW::new(self, 3)
     }
 }
-#[doc = "Block Gap Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bgcr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`bgcr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct BGCR_SPEC;
-impl crate::RegisterSpec for BGCR_SPEC {
+#[doc = "Block Gap Control\n\nYou can [`read`](crate::Reg::read) this register and get [`bgcr::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`bgcr::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct BgcrSpec;
+impl crate::RegisterSpec for BgcrSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`bgcr::R`](R) reader structure"]
-impl crate::Readable for BGCR_SPEC {}
+impl crate::Readable for BgcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`bgcr::W`](W) writer structure"]
-impl crate::Writable for BGCR_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for BgcrSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets BGCR to value 0"]
-impl crate::Resettable for BGCR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for BgcrSpec {
+    const RESET_VALUE: u8 = 0;
 }

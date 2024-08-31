@@ -1,64 +1,55 @@
 #[doc = "Register `LENGTH` reader"]
-pub type R = crate::R<LENGTH_SPEC>;
+pub type R = crate::R<LengthSpec>;
 #[doc = "Register `LENGTH` writer"]
-pub type W = crate::W<LENGTH_SPEC>;
+pub type W = crate::W<LengthSpec>;
 #[doc = "Field `LEN` reader - Data Length"]
-pub type LEN_R = crate::FieldReader;
+pub type LenR = crate::FieldReader;
 #[doc = "Field `LEN` writer - Data Length"]
-pub type LEN_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
+pub type LenW<'a, REG> = crate::FieldWriter<'a, REG, 8>;
 #[doc = "Field `LENEN` reader - Data Length Enable"]
-pub type LENEN_R = crate::BitReader;
+pub type LenenR = crate::BitReader;
 #[doc = "Field `LENEN` writer - Data Length Enable"]
-pub type LENEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type LenenW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bits 0:7 - Data Length"]
     #[inline(always)]
-    pub fn len(&self) -> LEN_R {
-        LEN_R::new((self.bits & 0xff) as u8)
+    pub fn len(&self) -> LenR {
+        LenR::new((self.bits & 0xff) as u8)
     }
     #[doc = "Bit 8 - Data Length Enable"]
     #[inline(always)]
-    pub fn lenen(&self) -> LENEN_R {
-        LENEN_R::new(((self.bits >> 8) & 1) != 0)
+    pub fn lenen(&self) -> LenenR {
+        LenenR::new(((self.bits >> 8) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Data Length"]
     #[inline(always)]
     #[must_use]
-    pub fn len(&mut self) -> LEN_W<LENGTH_SPEC, 0> {
-        LEN_W::new(self)
+    pub fn len(&mut self) -> LenW<LengthSpec> {
+        LenW::new(self, 0)
     }
     #[doc = "Bit 8 - Data Length Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn lenen(&mut self) -> LENEN_W<LENGTH_SPEC, 8> {
-        LENEN_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn lenen(&mut self) -> LenenW<LengthSpec> {
+        LenenW::new(self, 8)
     }
 }
-#[doc = "I2CS Length\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`length::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`length::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct LENGTH_SPEC;
-impl crate::RegisterSpec for LENGTH_SPEC {
+#[doc = "I2CS Length\n\nYou can [`read`](crate::Reg::read) this register and get [`length::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`length::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct LengthSpec;
+impl crate::RegisterSpec for LengthSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`length::R`](R) reader structure"]
-impl crate::Readable for LENGTH_SPEC {}
+impl crate::Readable for LengthSpec {}
 #[doc = "`write(|w| ..)` method takes [`length::W`](W) writer structure"]
-impl crate::Writable for LENGTH_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for LengthSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets LENGTH to value 0"]
-impl crate::Resettable for LENGTH_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for LengthSpec {
+    const RESET_VALUE: u16 = 0;
 }

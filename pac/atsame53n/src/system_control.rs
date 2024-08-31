@@ -1,175 +1,315 @@
-#[doc = r"Register block"]
 #[repr(C)]
+#[doc = "Register block"]
 pub struct RegisterBlock {
     _reserved0: [u8; 0x04],
-    #[doc = "0x04 - Interrupt Controller Type Register"]
-    pub ictr: ICTR,
-    #[doc = "0x08 - Auxiliary Control Register"]
-    pub actlr: ACTLR,
+    ictr: Ictr,
+    actlr: Actlr,
     _reserved2: [u8; 0x0cf4],
-    #[doc = "0xd00 - CPUID Base Register"]
-    pub cpuid: CPUID,
-    #[doc = "0xd04 - Interrupt Control and State Register"]
-    pub icsr: ICSR,
-    #[doc = "0xd08 - Vector Table Offset Register"]
-    pub vtor: VTOR,
-    #[doc = "0xd0c - Application Interrupt and Reset Control Register"]
-    pub aircr: AIRCR,
-    #[doc = "0xd10 - System Control Register"]
-    pub scr: SCR,
-    #[doc = "0xd14 - Configuration and Control Register"]
-    pub ccr: CCR,
-    #[doc = "0xd18 - System Handler Priority Register 1"]
-    pub shpr1: SHPR1,
-    #[doc = "0xd1c - System Handler Priority Register 2"]
-    pub shpr2: SHPR2,
-    #[doc = "0xd20 - System Handler Priority Register 3"]
-    pub shpr3: SHPR3,
-    #[doc = "0xd24 - System Handler Control and State Register"]
-    pub shcsr: SHCSR,
-    #[doc = "0xd28 - Configurable Fault Status Register"]
-    pub cfsr: CFSR,
-    #[doc = "0xd2c - HardFault Status Register"]
-    pub hfsr: HFSR,
-    #[doc = "0xd30 - Debug Fault Status Register"]
-    pub dfsr: DFSR,
-    #[doc = "0xd34 - MemManage Fault Address Register"]
-    pub mmfar: MMFAR,
-    #[doc = "0xd38 - BusFault Address Register"]
-    pub bfar: BFAR,
-    #[doc = "0xd3c - Auxiliary Fault Status Register"]
-    pub afsr: AFSR,
-    #[doc = "0xd40..0xd48 - Processor Feature Register"]
-    pub pfr: [PFR; 2],
-    #[doc = "0xd48 - Debug Feature Register"]
-    pub dfr: DFR,
-    #[doc = "0xd4c - Auxiliary Feature Register"]
-    pub adr: ADR,
-    #[doc = "0xd50..0xd60 - Memory Model Feature Register"]
-    pub mmfr: [MMFR; 4],
-    #[doc = "0xd60..0xd74 - Instruction Set Attributes Register"]
-    pub isar: [ISAR; 5],
+    cpuid: Cpuid,
+    icsr: Icsr,
+    vtor: Vtor,
+    aircr: Aircr,
+    scr: Scr,
+    ccr: Ccr,
+    shpr1: Shpr1,
+    shpr2: Shpr2,
+    shpr3: Shpr3,
+    shcsr: Shcsr,
+    cfsr: Cfsr,
+    hfsr: Hfsr,
+    dfsr: Dfsr,
+    mmfar: Mmfar,
+    bfar: Bfar,
+    afsr: Afsr,
+    pfr: [Pfr; 2],
+    dfr: Dfr,
+    adr: Adr,
+    mmfr: [Mmfr; 4],
+    isar: [Isar; 5],
     _reserved23: [u8; 0x14],
-    #[doc = "0xd88 - Coprocessor Access Control Register"]
-    pub cpacr: CPACR,
+    cpacr: Cpacr,
 }
-#[doc = "ICTR (r) register accessor: Interrupt Controller Type Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ictr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ictr`]
+impl RegisterBlock {
+    #[doc = "0x04 - Interrupt Controller Type Register"]
+    #[inline(always)]
+    pub const fn ictr(&self) -> &Ictr {
+        &self.ictr
+    }
+    #[doc = "0x08 - Auxiliary Control Register"]
+    #[inline(always)]
+    pub const fn actlr(&self) -> &Actlr {
+        &self.actlr
+    }
+    #[doc = "0xd00 - CPUID Base Register"]
+    #[inline(always)]
+    pub const fn cpuid(&self) -> &Cpuid {
+        &self.cpuid
+    }
+    #[doc = "0xd04 - Interrupt Control and State Register"]
+    #[inline(always)]
+    pub const fn icsr(&self) -> &Icsr {
+        &self.icsr
+    }
+    #[doc = "0xd08 - Vector Table Offset Register"]
+    #[inline(always)]
+    pub const fn vtor(&self) -> &Vtor {
+        &self.vtor
+    }
+    #[doc = "0xd0c - Application Interrupt and Reset Control Register"]
+    #[inline(always)]
+    pub const fn aircr(&self) -> &Aircr {
+        &self.aircr
+    }
+    #[doc = "0xd10 - System Control Register"]
+    #[inline(always)]
+    pub const fn scr(&self) -> &Scr {
+        &self.scr
+    }
+    #[doc = "0xd14 - Configuration and Control Register"]
+    #[inline(always)]
+    pub const fn ccr(&self) -> &Ccr {
+        &self.ccr
+    }
+    #[doc = "0xd18 - System Handler Priority Register 1"]
+    #[inline(always)]
+    pub const fn shpr1(&self) -> &Shpr1 {
+        &self.shpr1
+    }
+    #[doc = "0xd1c - System Handler Priority Register 2"]
+    #[inline(always)]
+    pub const fn shpr2(&self) -> &Shpr2 {
+        &self.shpr2
+    }
+    #[doc = "0xd20 - System Handler Priority Register 3"]
+    #[inline(always)]
+    pub const fn shpr3(&self) -> &Shpr3 {
+        &self.shpr3
+    }
+    #[doc = "0xd24 - System Handler Control and State Register"]
+    #[inline(always)]
+    pub const fn shcsr(&self) -> &Shcsr {
+        &self.shcsr
+    }
+    #[doc = "0xd28 - Configurable Fault Status Register"]
+    #[inline(always)]
+    pub const fn cfsr(&self) -> &Cfsr {
+        &self.cfsr
+    }
+    #[doc = "0xd2c - HardFault Status Register"]
+    #[inline(always)]
+    pub const fn hfsr(&self) -> &Hfsr {
+        &self.hfsr
+    }
+    #[doc = "0xd30 - Debug Fault Status Register"]
+    #[inline(always)]
+    pub const fn dfsr(&self) -> &Dfsr {
+        &self.dfsr
+    }
+    #[doc = "0xd34 - MemManage Fault Address Register"]
+    #[inline(always)]
+    pub const fn mmfar(&self) -> &Mmfar {
+        &self.mmfar
+    }
+    #[doc = "0xd38 - BusFault Address Register"]
+    #[inline(always)]
+    pub const fn bfar(&self) -> &Bfar {
+        &self.bfar
+    }
+    #[doc = "0xd3c - Auxiliary Fault Status Register"]
+    #[inline(always)]
+    pub const fn afsr(&self) -> &Afsr {
+        &self.afsr
+    }
+    #[doc = "0xd40..0xd48 - Processor Feature Register"]
+    #[inline(always)]
+    pub const fn pfr(&self, n: usize) -> &Pfr {
+        &self.pfr[n]
+    }
+    #[doc = "Iterator for array of:"]
+    #[doc = "0xd40..0xd48 - Processor Feature Register"]
+    #[inline(always)]
+    pub fn pfr_iter(&self) -> impl Iterator<Item = &Pfr> {
+        self.pfr.iter()
+    }
+    #[doc = "0xd48 - Debug Feature Register"]
+    #[inline(always)]
+    pub const fn dfr(&self) -> &Dfr {
+        &self.dfr
+    }
+    #[doc = "0xd4c - Auxiliary Feature Register"]
+    #[inline(always)]
+    pub const fn adr(&self) -> &Adr {
+        &self.adr
+    }
+    #[doc = "0xd50..0xd60 - Memory Model Feature Register"]
+    #[inline(always)]
+    pub const fn mmfr(&self, n: usize) -> &Mmfr {
+        &self.mmfr[n]
+    }
+    #[doc = "Iterator for array of:"]
+    #[doc = "0xd50..0xd60 - Memory Model Feature Register"]
+    #[inline(always)]
+    pub fn mmfr_iter(&self) -> impl Iterator<Item = &Mmfr> {
+        self.mmfr.iter()
+    }
+    #[doc = "0xd60..0xd74 - Instruction Set Attributes Register"]
+    #[inline(always)]
+    pub const fn isar(&self, n: usize) -> &Isar {
+        &self.isar[n]
+    }
+    #[doc = "Iterator for array of:"]
+    #[doc = "0xd60..0xd74 - Instruction Set Attributes Register"]
+    #[inline(always)]
+    pub fn isar_iter(&self) -> impl Iterator<Item = &Isar> {
+        self.isar.iter()
+    }
+    #[doc = "0xd88 - Coprocessor Access Control Register"]
+    #[inline(always)]
+    pub const fn cpacr(&self) -> &Cpacr {
+        &self.cpacr
+    }
+}
+#[doc = "ICTR (r) register accessor: Interrupt Controller Type Register\n\nYou can [`read`](crate::Reg::read) this register and get [`ictr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ictr`]
 module"]
-pub type ICTR = crate::Reg<ictr::ICTR_SPEC>;
+#[doc(alias = "ICTR")]
+pub type Ictr = crate::Reg<ictr::IctrSpec>;
 #[doc = "Interrupt Controller Type Register"]
 pub mod ictr;
-#[doc = "ACTLR (rw) register accessor: Auxiliary Control Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`actlr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`actlr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@actlr`]
+#[doc = "ACTLR (rw) register accessor: Auxiliary Control Register\n\nYou can [`read`](crate::Reg::read) this register and get [`actlr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`actlr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@actlr`]
 module"]
-pub type ACTLR = crate::Reg<actlr::ACTLR_SPEC>;
+#[doc(alias = "ACTLR")]
+pub type Actlr = crate::Reg<actlr::ActlrSpec>;
 #[doc = "Auxiliary Control Register"]
 pub mod actlr;
-#[doc = "CPUID (r) register accessor: CPUID Base Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cpuid::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cpuid`]
+#[doc = "CPUID (r) register accessor: CPUID Base Register\n\nYou can [`read`](crate::Reg::read) this register and get [`cpuid::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cpuid`]
 module"]
-pub type CPUID = crate::Reg<cpuid::CPUID_SPEC>;
+#[doc(alias = "CPUID")]
+pub type Cpuid = crate::Reg<cpuid::CpuidSpec>;
 #[doc = "CPUID Base Register"]
 pub mod cpuid;
-#[doc = "ICSR (rw) register accessor: Interrupt Control and State Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`icsr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`icsr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@icsr`]
+#[doc = "ICSR (rw) register accessor: Interrupt Control and State Register\n\nYou can [`read`](crate::Reg::read) this register and get [`icsr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`icsr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@icsr`]
 module"]
-pub type ICSR = crate::Reg<icsr::ICSR_SPEC>;
+#[doc(alias = "ICSR")]
+pub type Icsr = crate::Reg<icsr::IcsrSpec>;
 #[doc = "Interrupt Control and State Register"]
 pub mod icsr;
-#[doc = "VTOR (rw) register accessor: Vector Table Offset Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`vtor::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`vtor::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@vtor`]
+#[doc = "VTOR (rw) register accessor: Vector Table Offset Register\n\nYou can [`read`](crate::Reg::read) this register and get [`vtor::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`vtor::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@vtor`]
 module"]
-pub type VTOR = crate::Reg<vtor::VTOR_SPEC>;
+#[doc(alias = "VTOR")]
+pub type Vtor = crate::Reg<vtor::VtorSpec>;
 #[doc = "Vector Table Offset Register"]
 pub mod vtor;
-#[doc = "AIRCR (rw) register accessor: Application Interrupt and Reset Control Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`aircr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`aircr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@aircr`]
+#[doc = "AIRCR (rw) register accessor: Application Interrupt and Reset Control Register\n\nYou can [`read`](crate::Reg::read) this register and get [`aircr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`aircr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@aircr`]
 module"]
-pub type AIRCR = crate::Reg<aircr::AIRCR_SPEC>;
+#[doc(alias = "AIRCR")]
+pub type Aircr = crate::Reg<aircr::AircrSpec>;
 #[doc = "Application Interrupt and Reset Control Register"]
 pub mod aircr;
-#[doc = "SCR (rw) register accessor: System Control Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`scr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`scr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@scr`]
+#[doc = "SCR (rw) register accessor: System Control Register\n\nYou can [`read`](crate::Reg::read) this register and get [`scr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`scr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@scr`]
 module"]
-pub type SCR = crate::Reg<scr::SCR_SPEC>;
+#[doc(alias = "SCR")]
+pub type Scr = crate::Reg<scr::ScrSpec>;
 #[doc = "System Control Register"]
 pub mod scr;
-#[doc = "CCR (rw) register accessor: Configuration and Control Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ccr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ccr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ccr`]
+#[doc = "CCR (rw) register accessor: Configuration and Control Register\n\nYou can [`read`](crate::Reg::read) this register and get [`ccr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ccr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ccr`]
 module"]
-pub type CCR = crate::Reg<ccr::CCR_SPEC>;
+#[doc(alias = "CCR")]
+pub type Ccr = crate::Reg<ccr::CcrSpec>;
 #[doc = "Configuration and Control Register"]
 pub mod ccr;
-#[doc = "SHPR1 (rw) register accessor: System Handler Priority Register 1\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`shpr1::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`shpr1::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@shpr1`]
+#[doc = "SHPR1 (rw) register accessor: System Handler Priority Register 1\n\nYou can [`read`](crate::Reg::read) this register and get [`shpr1::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`shpr1::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@shpr1`]
 module"]
-pub type SHPR1 = crate::Reg<shpr1::SHPR1_SPEC>;
+#[doc(alias = "SHPR1")]
+pub type Shpr1 = crate::Reg<shpr1::Shpr1Spec>;
 #[doc = "System Handler Priority Register 1"]
 pub mod shpr1;
-#[doc = "SHPR2 (rw) register accessor: System Handler Priority Register 2\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`shpr2::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`shpr2::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@shpr2`]
+#[doc = "SHPR2 (rw) register accessor: System Handler Priority Register 2\n\nYou can [`read`](crate::Reg::read) this register and get [`shpr2::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`shpr2::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@shpr2`]
 module"]
-pub type SHPR2 = crate::Reg<shpr2::SHPR2_SPEC>;
+#[doc(alias = "SHPR2")]
+pub type Shpr2 = crate::Reg<shpr2::Shpr2Spec>;
 #[doc = "System Handler Priority Register 2"]
 pub mod shpr2;
-#[doc = "SHPR3 (rw) register accessor: System Handler Priority Register 3\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`shpr3::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`shpr3::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@shpr3`]
+#[doc = "SHPR3 (rw) register accessor: System Handler Priority Register 3\n\nYou can [`read`](crate::Reg::read) this register and get [`shpr3::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`shpr3::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@shpr3`]
 module"]
-pub type SHPR3 = crate::Reg<shpr3::SHPR3_SPEC>;
+#[doc(alias = "SHPR3")]
+pub type Shpr3 = crate::Reg<shpr3::Shpr3Spec>;
 #[doc = "System Handler Priority Register 3"]
 pub mod shpr3;
-#[doc = "SHCSR (rw) register accessor: System Handler Control and State Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`shcsr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`shcsr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@shcsr`]
+#[doc = "SHCSR (rw) register accessor: System Handler Control and State Register\n\nYou can [`read`](crate::Reg::read) this register and get [`shcsr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`shcsr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@shcsr`]
 module"]
-pub type SHCSR = crate::Reg<shcsr::SHCSR_SPEC>;
+#[doc(alias = "SHCSR")]
+pub type Shcsr = crate::Reg<shcsr::ShcsrSpec>;
 #[doc = "System Handler Control and State Register"]
 pub mod shcsr;
-#[doc = "CFSR (rw) register accessor: Configurable Fault Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cfsr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cfsr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cfsr`]
+#[doc = "CFSR (rw) register accessor: Configurable Fault Status Register\n\nYou can [`read`](crate::Reg::read) this register and get [`cfsr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cfsr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cfsr`]
 module"]
-pub type CFSR = crate::Reg<cfsr::CFSR_SPEC>;
+#[doc(alias = "CFSR")]
+pub type Cfsr = crate::Reg<cfsr::CfsrSpec>;
 #[doc = "Configurable Fault Status Register"]
 pub mod cfsr;
-#[doc = "HFSR (rw) register accessor: HardFault Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`hfsr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`hfsr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@hfsr`]
+#[doc = "HFSR (rw) register accessor: HardFault Status Register\n\nYou can [`read`](crate::Reg::read) this register and get [`hfsr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`hfsr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@hfsr`]
 module"]
-pub type HFSR = crate::Reg<hfsr::HFSR_SPEC>;
+#[doc(alias = "HFSR")]
+pub type Hfsr = crate::Reg<hfsr::HfsrSpec>;
 #[doc = "HardFault Status Register"]
 pub mod hfsr;
-#[doc = "DFSR (rw) register accessor: Debug Fault Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dfsr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dfsr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dfsr`]
+#[doc = "DFSR (rw) register accessor: Debug Fault Status Register\n\nYou can [`read`](crate::Reg::read) this register and get [`dfsr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dfsr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dfsr`]
 module"]
-pub type DFSR = crate::Reg<dfsr::DFSR_SPEC>;
+#[doc(alias = "DFSR")]
+pub type Dfsr = crate::Reg<dfsr::DfsrSpec>;
 #[doc = "Debug Fault Status Register"]
 pub mod dfsr;
-#[doc = "MMFAR (rw) register accessor: MemManage Fault Address Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`mmfar::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`mmfar::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@mmfar`]
+#[doc = "MMFAR (rw) register accessor: MemManage Fault Address Register\n\nYou can [`read`](crate::Reg::read) this register and get [`mmfar::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`mmfar::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@mmfar`]
 module"]
-pub type MMFAR = crate::Reg<mmfar::MMFAR_SPEC>;
+#[doc(alias = "MMFAR")]
+pub type Mmfar = crate::Reg<mmfar::MmfarSpec>;
 #[doc = "MemManage Fault Address Register"]
 pub mod mmfar;
-#[doc = "BFAR (rw) register accessor: BusFault Address Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bfar::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`bfar::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bfar`]
+#[doc = "BFAR (rw) register accessor: BusFault Address Register\n\nYou can [`read`](crate::Reg::read) this register and get [`bfar::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`bfar::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bfar`]
 module"]
-pub type BFAR = crate::Reg<bfar::BFAR_SPEC>;
+#[doc(alias = "BFAR")]
+pub type Bfar = crate::Reg<bfar::BfarSpec>;
 #[doc = "BusFault Address Register"]
 pub mod bfar;
-#[doc = "AFSR (rw) register accessor: Auxiliary Fault Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`afsr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`afsr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@afsr`]
+#[doc = "AFSR (rw) register accessor: Auxiliary Fault Status Register\n\nYou can [`read`](crate::Reg::read) this register and get [`afsr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`afsr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@afsr`]
 module"]
-pub type AFSR = crate::Reg<afsr::AFSR_SPEC>;
+#[doc(alias = "AFSR")]
+pub type Afsr = crate::Reg<afsr::AfsrSpec>;
 #[doc = "Auxiliary Fault Status Register"]
 pub mod afsr;
-#[doc = "PFR (rw) register accessor: Processor Feature Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`pfr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`pfr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pfr`]
+#[doc = "PFR (rw) register accessor: Processor Feature Register\n\nYou can [`read`](crate::Reg::read) this register and get [`pfr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`pfr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pfr`]
 module"]
-pub type PFR = crate::Reg<pfr::PFR_SPEC>;
+#[doc(alias = "PFR")]
+pub type Pfr = crate::Reg<pfr::PfrSpec>;
 #[doc = "Processor Feature Register"]
 pub mod pfr;
-#[doc = "DFR (r) register accessor: Debug Feature Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dfr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dfr`]
+#[doc = "DFR (r) register accessor: Debug Feature Register\n\nYou can [`read`](crate::Reg::read) this register and get [`dfr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dfr`]
 module"]
-pub type DFR = crate::Reg<dfr::DFR_SPEC>;
+#[doc(alias = "DFR")]
+pub type Dfr = crate::Reg<dfr::DfrSpec>;
 #[doc = "Debug Feature Register"]
 pub mod dfr;
-#[doc = "ADR (r) register accessor: Auxiliary Feature Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`adr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@adr`]
+#[doc = "ADR (r) register accessor: Auxiliary Feature Register\n\nYou can [`read`](crate::Reg::read) this register and get [`adr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@adr`]
 module"]
-pub type ADR = crate::Reg<adr::ADR_SPEC>;
+#[doc(alias = "ADR")]
+pub type Adr = crate::Reg<adr::AdrSpec>;
 #[doc = "Auxiliary Feature Register"]
 pub mod adr;
-#[doc = "MMFR (r) register accessor: Memory Model Feature Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`mmfr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@mmfr`]
+#[doc = "MMFR (r) register accessor: Memory Model Feature Register\n\nYou can [`read`](crate::Reg::read) this register and get [`mmfr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@mmfr`]
 module"]
-pub type MMFR = crate::Reg<mmfr::MMFR_SPEC>;
+#[doc(alias = "MMFR")]
+pub type Mmfr = crate::Reg<mmfr::MmfrSpec>;
 #[doc = "Memory Model Feature Register"]
 pub mod mmfr;
-#[doc = "ISAR (r) register accessor: Instruction Set Attributes Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`isar::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@isar`]
+#[doc = "ISAR (r) register accessor: Instruction Set Attributes Register\n\nYou can [`read`](crate::Reg::read) this register and get [`isar::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@isar`]
 module"]
-pub type ISAR = crate::Reg<isar::ISAR_SPEC>;
+#[doc(alias = "ISAR")]
+pub type Isar = crate::Reg<isar::IsarSpec>;
 #[doc = "Instruction Set Attributes Register"]
 pub mod isar;
-#[doc = "CPACR (rw) register accessor: Coprocessor Access Control Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cpacr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cpacr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cpacr`]
+#[doc = "CPACR (rw) register accessor: Coprocessor Access Control Register\n\nYou can [`read`](crate::Reg::read) this register and get [`cpacr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cpacr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cpacr`]
 module"]
-pub type CPACR = crate::Reg<cpacr::CPACR_SPEC>;
+#[doc(alias = "CPACR")]
+pub type Cpacr = crate::Reg<cpacr::CpacrSpec>;
 #[doc = "Coprocessor Access Control Register"]
 pub mod cpacr;

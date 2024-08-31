@@ -1,274 +1,265 @@
 #[doc = "Register `PATT` reader"]
-pub type R = crate::R<PATT_SPEC>;
+pub type R = crate::R<PattSpec>;
 #[doc = "Register `PATT` writer"]
-pub type W = crate::W<PATT_SPEC>;
+pub type W = crate::W<PattSpec>;
 #[doc = "Field `PGE0` reader - Pattern Generator 0 Output Enable"]
-pub type PGE0_R = crate::BitReader;
+pub type Pge0R = crate::BitReader;
 #[doc = "Field `PGE0` writer - Pattern Generator 0 Output Enable"]
-pub type PGE0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pge0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGE1` reader - Pattern Generator 1 Output Enable"]
-pub type PGE1_R = crate::BitReader;
+pub type Pge1R = crate::BitReader;
 #[doc = "Field `PGE1` writer - Pattern Generator 1 Output Enable"]
-pub type PGE1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pge1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGE2` reader - Pattern Generator 2 Output Enable"]
-pub type PGE2_R = crate::BitReader;
+pub type Pge2R = crate::BitReader;
 #[doc = "Field `PGE2` writer - Pattern Generator 2 Output Enable"]
-pub type PGE2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pge2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGE3` reader - Pattern Generator 3 Output Enable"]
-pub type PGE3_R = crate::BitReader;
+pub type Pge3R = crate::BitReader;
 #[doc = "Field `PGE3` writer - Pattern Generator 3 Output Enable"]
-pub type PGE3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pge3W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGE4` reader - Pattern Generator 4 Output Enable"]
-pub type PGE4_R = crate::BitReader;
+pub type Pge4R = crate::BitReader;
 #[doc = "Field `PGE4` writer - Pattern Generator 4 Output Enable"]
-pub type PGE4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pge4W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGE5` reader - Pattern Generator 5 Output Enable"]
-pub type PGE5_R = crate::BitReader;
+pub type Pge5R = crate::BitReader;
 #[doc = "Field `PGE5` writer - Pattern Generator 5 Output Enable"]
-pub type PGE5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pge5W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGE6` reader - Pattern Generator 6 Output Enable"]
-pub type PGE6_R = crate::BitReader;
+pub type Pge6R = crate::BitReader;
 #[doc = "Field `PGE6` writer - Pattern Generator 6 Output Enable"]
-pub type PGE6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pge6W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGE7` reader - Pattern Generator 7 Output Enable"]
-pub type PGE7_R = crate::BitReader;
+pub type Pge7R = crate::BitReader;
 #[doc = "Field `PGE7` writer - Pattern Generator 7 Output Enable"]
-pub type PGE7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pge7W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGV0` reader - Pattern Generator 0 Output Value"]
-pub type PGV0_R = crate::BitReader;
+pub type Pgv0R = crate::BitReader;
 #[doc = "Field `PGV0` writer - Pattern Generator 0 Output Value"]
-pub type PGV0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pgv0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGV1` reader - Pattern Generator 1 Output Value"]
-pub type PGV1_R = crate::BitReader;
+pub type Pgv1R = crate::BitReader;
 #[doc = "Field `PGV1` writer - Pattern Generator 1 Output Value"]
-pub type PGV1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pgv1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGV2` reader - Pattern Generator 2 Output Value"]
-pub type PGV2_R = crate::BitReader;
+pub type Pgv2R = crate::BitReader;
 #[doc = "Field `PGV2` writer - Pattern Generator 2 Output Value"]
-pub type PGV2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pgv2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGV3` reader - Pattern Generator 3 Output Value"]
-pub type PGV3_R = crate::BitReader;
+pub type Pgv3R = crate::BitReader;
 #[doc = "Field `PGV3` writer - Pattern Generator 3 Output Value"]
-pub type PGV3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pgv3W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGV4` reader - Pattern Generator 4 Output Value"]
-pub type PGV4_R = crate::BitReader;
+pub type Pgv4R = crate::BitReader;
 #[doc = "Field `PGV4` writer - Pattern Generator 4 Output Value"]
-pub type PGV4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pgv4W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGV5` reader - Pattern Generator 5 Output Value"]
-pub type PGV5_R = crate::BitReader;
+pub type Pgv5R = crate::BitReader;
 #[doc = "Field `PGV5` writer - Pattern Generator 5 Output Value"]
-pub type PGV5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pgv5W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGV6` reader - Pattern Generator 6 Output Value"]
-pub type PGV6_R = crate::BitReader;
+pub type Pgv6R = crate::BitReader;
 #[doc = "Field `PGV6` writer - Pattern Generator 6 Output Value"]
-pub type PGV6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pgv6W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PGV7` reader - Pattern Generator 7 Output Value"]
-pub type PGV7_R = crate::BitReader;
+pub type Pgv7R = crate::BitReader;
 #[doc = "Field `PGV7` writer - Pattern Generator 7 Output Value"]
-pub type PGV7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Pgv7W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Pattern Generator 0 Output Enable"]
     #[inline(always)]
-    pub fn pge0(&self) -> PGE0_R {
-        PGE0_R::new((self.bits & 1) != 0)
+    pub fn pge0(&self) -> Pge0R {
+        Pge0R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Pattern Generator 1 Output Enable"]
     #[inline(always)]
-    pub fn pge1(&self) -> PGE1_R {
-        PGE1_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn pge1(&self) -> Pge1R {
+        Pge1R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Pattern Generator 2 Output Enable"]
     #[inline(always)]
-    pub fn pge2(&self) -> PGE2_R {
-        PGE2_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn pge2(&self) -> Pge2R {
+        Pge2R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Pattern Generator 3 Output Enable"]
     #[inline(always)]
-    pub fn pge3(&self) -> PGE3_R {
-        PGE3_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn pge3(&self) -> Pge3R {
+        Pge3R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Pattern Generator 4 Output Enable"]
     #[inline(always)]
-    pub fn pge4(&self) -> PGE4_R {
-        PGE4_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn pge4(&self) -> Pge4R {
+        Pge4R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Pattern Generator 5 Output Enable"]
     #[inline(always)]
-    pub fn pge5(&self) -> PGE5_R {
-        PGE5_R::new(((self.bits >> 5) & 1) != 0)
+    pub fn pge5(&self) -> Pge5R {
+        Pge5R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - Pattern Generator 6 Output Enable"]
     #[inline(always)]
-    pub fn pge6(&self) -> PGE6_R {
-        PGE6_R::new(((self.bits >> 6) & 1) != 0)
+    pub fn pge6(&self) -> Pge6R {
+        Pge6R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Pattern Generator 7 Output Enable"]
     #[inline(always)]
-    pub fn pge7(&self) -> PGE7_R {
-        PGE7_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn pge7(&self) -> Pge7R {
+        Pge7R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - Pattern Generator 0 Output Value"]
     #[inline(always)]
-    pub fn pgv0(&self) -> PGV0_R {
-        PGV0_R::new(((self.bits >> 8) & 1) != 0)
+    pub fn pgv0(&self) -> Pgv0R {
+        Pgv0R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Pattern Generator 1 Output Value"]
     #[inline(always)]
-    pub fn pgv1(&self) -> PGV1_R {
-        PGV1_R::new(((self.bits >> 9) & 1) != 0)
+    pub fn pgv1(&self) -> Pgv1R {
+        Pgv1R::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - Pattern Generator 2 Output Value"]
     #[inline(always)]
-    pub fn pgv2(&self) -> PGV2_R {
-        PGV2_R::new(((self.bits >> 10) & 1) != 0)
+    pub fn pgv2(&self) -> Pgv2R {
+        Pgv2R::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bit 11 - Pattern Generator 3 Output Value"]
     #[inline(always)]
-    pub fn pgv3(&self) -> PGV3_R {
-        PGV3_R::new(((self.bits >> 11) & 1) != 0)
+    pub fn pgv3(&self) -> Pgv3R {
+        Pgv3R::new(((self.bits >> 11) & 1) != 0)
     }
     #[doc = "Bit 12 - Pattern Generator 4 Output Value"]
     #[inline(always)]
-    pub fn pgv4(&self) -> PGV4_R {
-        PGV4_R::new(((self.bits >> 12) & 1) != 0)
+    pub fn pgv4(&self) -> Pgv4R {
+        Pgv4R::new(((self.bits >> 12) & 1) != 0)
     }
     #[doc = "Bit 13 - Pattern Generator 5 Output Value"]
     #[inline(always)]
-    pub fn pgv5(&self) -> PGV5_R {
-        PGV5_R::new(((self.bits >> 13) & 1) != 0)
+    pub fn pgv5(&self) -> Pgv5R {
+        Pgv5R::new(((self.bits >> 13) & 1) != 0)
     }
     #[doc = "Bit 14 - Pattern Generator 6 Output Value"]
     #[inline(always)]
-    pub fn pgv6(&self) -> PGV6_R {
-        PGV6_R::new(((self.bits >> 14) & 1) != 0)
+    pub fn pgv6(&self) -> Pgv6R {
+        Pgv6R::new(((self.bits >> 14) & 1) != 0)
     }
     #[doc = "Bit 15 - Pattern Generator 7 Output Value"]
     #[inline(always)]
-    pub fn pgv7(&self) -> PGV7_R {
-        PGV7_R::new(((self.bits >> 15) & 1) != 0)
+    pub fn pgv7(&self) -> Pgv7R {
+        Pgv7R::new(((self.bits >> 15) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Pattern Generator 0 Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pge0(&mut self) -> PGE0_W<PATT_SPEC, 0> {
-        PGE0_W::new(self)
+    pub fn pge0(&mut self) -> Pge0W<PattSpec> {
+        Pge0W::new(self, 0)
     }
     #[doc = "Bit 1 - Pattern Generator 1 Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pge1(&mut self) -> PGE1_W<PATT_SPEC, 1> {
-        PGE1_W::new(self)
+    pub fn pge1(&mut self) -> Pge1W<PattSpec> {
+        Pge1W::new(self, 1)
     }
     #[doc = "Bit 2 - Pattern Generator 2 Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pge2(&mut self) -> PGE2_W<PATT_SPEC, 2> {
-        PGE2_W::new(self)
+    pub fn pge2(&mut self) -> Pge2W<PattSpec> {
+        Pge2W::new(self, 2)
     }
     #[doc = "Bit 3 - Pattern Generator 3 Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pge3(&mut self) -> PGE3_W<PATT_SPEC, 3> {
-        PGE3_W::new(self)
+    pub fn pge3(&mut self) -> Pge3W<PattSpec> {
+        Pge3W::new(self, 3)
     }
     #[doc = "Bit 4 - Pattern Generator 4 Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pge4(&mut self) -> PGE4_W<PATT_SPEC, 4> {
-        PGE4_W::new(self)
+    pub fn pge4(&mut self) -> Pge4W<PattSpec> {
+        Pge4W::new(self, 4)
     }
     #[doc = "Bit 5 - Pattern Generator 5 Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pge5(&mut self) -> PGE5_W<PATT_SPEC, 5> {
-        PGE5_W::new(self)
+    pub fn pge5(&mut self) -> Pge5W<PattSpec> {
+        Pge5W::new(self, 5)
     }
     #[doc = "Bit 6 - Pattern Generator 6 Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pge6(&mut self) -> PGE6_W<PATT_SPEC, 6> {
-        PGE6_W::new(self)
+    pub fn pge6(&mut self) -> Pge6W<PattSpec> {
+        Pge6W::new(self, 6)
     }
     #[doc = "Bit 7 - Pattern Generator 7 Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn pge7(&mut self) -> PGE7_W<PATT_SPEC, 7> {
-        PGE7_W::new(self)
+    pub fn pge7(&mut self) -> Pge7W<PattSpec> {
+        Pge7W::new(self, 7)
     }
     #[doc = "Bit 8 - Pattern Generator 0 Output Value"]
     #[inline(always)]
     #[must_use]
-    pub fn pgv0(&mut self) -> PGV0_W<PATT_SPEC, 8> {
-        PGV0_W::new(self)
+    pub fn pgv0(&mut self) -> Pgv0W<PattSpec> {
+        Pgv0W::new(self, 8)
     }
     #[doc = "Bit 9 - Pattern Generator 1 Output Value"]
     #[inline(always)]
     #[must_use]
-    pub fn pgv1(&mut self) -> PGV1_W<PATT_SPEC, 9> {
-        PGV1_W::new(self)
+    pub fn pgv1(&mut self) -> Pgv1W<PattSpec> {
+        Pgv1W::new(self, 9)
     }
     #[doc = "Bit 10 - Pattern Generator 2 Output Value"]
     #[inline(always)]
     #[must_use]
-    pub fn pgv2(&mut self) -> PGV2_W<PATT_SPEC, 10> {
-        PGV2_W::new(self)
+    pub fn pgv2(&mut self) -> Pgv2W<PattSpec> {
+        Pgv2W::new(self, 10)
     }
     #[doc = "Bit 11 - Pattern Generator 3 Output Value"]
     #[inline(always)]
     #[must_use]
-    pub fn pgv3(&mut self) -> PGV3_W<PATT_SPEC, 11> {
-        PGV3_W::new(self)
+    pub fn pgv3(&mut self) -> Pgv3W<PattSpec> {
+        Pgv3W::new(self, 11)
     }
     #[doc = "Bit 12 - Pattern Generator 4 Output Value"]
     #[inline(always)]
     #[must_use]
-    pub fn pgv4(&mut self) -> PGV4_W<PATT_SPEC, 12> {
-        PGV4_W::new(self)
+    pub fn pgv4(&mut self) -> Pgv4W<PattSpec> {
+        Pgv4W::new(self, 12)
     }
     #[doc = "Bit 13 - Pattern Generator 5 Output Value"]
     #[inline(always)]
     #[must_use]
-    pub fn pgv5(&mut self) -> PGV5_W<PATT_SPEC, 13> {
-        PGV5_W::new(self)
+    pub fn pgv5(&mut self) -> Pgv5W<PattSpec> {
+        Pgv5W::new(self, 13)
     }
     #[doc = "Bit 14 - Pattern Generator 6 Output Value"]
     #[inline(always)]
     #[must_use]
-    pub fn pgv6(&mut self) -> PGV6_W<PATT_SPEC, 14> {
-        PGV6_W::new(self)
+    pub fn pgv6(&mut self) -> Pgv6W<PattSpec> {
+        Pgv6W::new(self, 14)
     }
     #[doc = "Bit 15 - Pattern Generator 7 Output Value"]
     #[inline(always)]
     #[must_use]
-    pub fn pgv7(&mut self) -> PGV7_W<PATT_SPEC, 15> {
-        PGV7_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn pgv7(&mut self) -> Pgv7W<PattSpec> {
+        Pgv7W::new(self, 15)
     }
 }
-#[doc = "Pattern\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`patt::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`patt::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct PATT_SPEC;
-impl crate::RegisterSpec for PATT_SPEC {
+#[doc = "Pattern\n\nYou can [`read`](crate::Reg::read) this register and get [`patt::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`patt::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct PattSpec;
+impl crate::RegisterSpec for PattSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`patt::R`](R) reader structure"]
-impl crate::Readable for PATT_SPEC {}
+impl crate::Readable for PattSpec {}
 #[doc = "`write(|w| ..)` method takes [`patt::W`](W) writer structure"]
-impl crate::Writable for PATT_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for PattSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets PATT to value 0"]
-impl crate::Resettable for PATT_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for PattSpec {
+    const RESET_VALUE: u16 = 0;
 }

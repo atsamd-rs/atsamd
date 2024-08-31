@@ -1,23 +1,18 @@
 #[doc = "Register `ENTRY1` reader"]
-pub type R = crate::R<ENTRY1_SPEC>;
+pub type R = crate::R<Entry1Spec>;
 impl core::fmt::Debug for R {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(f, "{}", self.bits())
     }
 }
-impl core::fmt::Debug for crate::generic::Reg<ENTRY1_SPEC> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        self.read().fmt(f)
-    }
-}
-#[doc = "CoreSight ROM Table Entry 1\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`entry1::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct ENTRY1_SPEC;
-impl crate::RegisterSpec for ENTRY1_SPEC {
+#[doc = "CoreSight ROM Table Entry 1\n\nYou can [`read`](crate::Reg::read) this register and get [`entry1::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct Entry1Spec;
+impl crate::RegisterSpec for Entry1Spec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`entry1::R`](R) reader structure"]
-impl crate::Readable for ENTRY1_SPEC {}
+impl crate::Readable for Entry1Spec {}
 #[doc = "`reset()` method sets ENTRY1 to value 0"]
-impl crate::Resettable for ENTRY1_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for Entry1Spec {
+    const RESET_VALUE: u32 = 0;
 }

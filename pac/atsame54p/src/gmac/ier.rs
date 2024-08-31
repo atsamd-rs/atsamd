@@ -1,228 +1,219 @@
 #[doc = "Register `IER` writer"]
-pub type W = crate::W<IER_SPEC>;
+pub type W = crate::W<IerSpec>;
 #[doc = "Field `MFS` writer - Management Frame Sent"]
-pub type MFS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type MfsW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RCOMP` writer - Receive Complete"]
-pub type RCOMP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RcompW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXUBR` writer - RX Used Bit Read"]
-pub type RXUBR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RxubrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXUBR` writer - TX Used Bit Read"]
-pub type TXUBR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type TxubrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TUR` writer - Transmit Underrun"]
-pub type TUR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type TurW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RLEX` writer - Retry Limit Exceeded or Late Collision"]
-pub type RLEX_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RlexW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TFC` writer - Transmit Frame Corruption Due to AHB Error"]
-pub type TFC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type TfcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TCOMP` writer - Transmit Complete"]
-pub type TCOMP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type TcompW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ROVR` writer - Receive Overrun"]
-pub type ROVR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RovrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `HRESP` writer - HRESP Not OK"]
-pub type HRESP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type HrespW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PFNZ` writer - Pause Frame with Non-zero Pause Quantum Received"]
-pub type PFNZ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PfnzW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PTZ` writer - Pause Time Zero"]
-pub type PTZ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PtzW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PFTR` writer - Pause Frame Transmitted"]
-pub type PFTR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PftrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EXINT` writer - External Interrupt"]
-pub type EXINT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type ExintW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DRQFR` writer - PTP Delay Request Frame Received"]
-pub type DRQFR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DrqfrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SFR` writer - PTP Sync Frame Received"]
-pub type SFR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SfrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DRQFT` writer - PTP Delay Request Frame Transmitted"]
-pub type DRQFT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DrqftW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SFT` writer - PTP Sync Frame Transmitted"]
-pub type SFT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SftW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PDRQFR` writer - PDelay Request Frame Received"]
-pub type PDRQFR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PdrqfrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PDRSFR` writer - PDelay Response Frame Received"]
-pub type PDRSFR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PdrsfrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PDRQFT` writer - PDelay Request Frame Transmitted"]
-pub type PDRQFT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PdrqftW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PDRSFT` writer - PDelay Response Frame Transmitted"]
-pub type PDRSFT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PdrsftW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SRI` writer - TSU Seconds Register Increment"]
-pub type SRI_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SriW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WOL` writer - Wake On LAN"]
-pub type WOL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type WolW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TSUCMP` writer - Tsu timer comparison"]
-pub type TSUCMP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type TsucmpW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - Management Frame Sent"]
     #[inline(always)]
     #[must_use]
-    pub fn mfs(&mut self) -> MFS_W<IER_SPEC, 0> {
-        MFS_W::new(self)
+    pub fn mfs(&mut self) -> MfsW<IerSpec> {
+        MfsW::new(self, 0)
     }
     #[doc = "Bit 1 - Receive Complete"]
     #[inline(always)]
     #[must_use]
-    pub fn rcomp(&mut self) -> RCOMP_W<IER_SPEC, 1> {
-        RCOMP_W::new(self)
+    pub fn rcomp(&mut self) -> RcompW<IerSpec> {
+        RcompW::new(self, 1)
     }
     #[doc = "Bit 2 - RX Used Bit Read"]
     #[inline(always)]
     #[must_use]
-    pub fn rxubr(&mut self) -> RXUBR_W<IER_SPEC, 2> {
-        RXUBR_W::new(self)
+    pub fn rxubr(&mut self) -> RxubrW<IerSpec> {
+        RxubrW::new(self, 2)
     }
     #[doc = "Bit 3 - TX Used Bit Read"]
     #[inline(always)]
     #[must_use]
-    pub fn txubr(&mut self) -> TXUBR_W<IER_SPEC, 3> {
-        TXUBR_W::new(self)
+    pub fn txubr(&mut self) -> TxubrW<IerSpec> {
+        TxubrW::new(self, 3)
     }
     #[doc = "Bit 4 - Transmit Underrun"]
     #[inline(always)]
     #[must_use]
-    pub fn tur(&mut self) -> TUR_W<IER_SPEC, 4> {
-        TUR_W::new(self)
+    pub fn tur(&mut self) -> TurW<IerSpec> {
+        TurW::new(self, 4)
     }
     #[doc = "Bit 5 - Retry Limit Exceeded or Late Collision"]
     #[inline(always)]
     #[must_use]
-    pub fn rlex(&mut self) -> RLEX_W<IER_SPEC, 5> {
-        RLEX_W::new(self)
+    pub fn rlex(&mut self) -> RlexW<IerSpec> {
+        RlexW::new(self, 5)
     }
     #[doc = "Bit 6 - Transmit Frame Corruption Due to AHB Error"]
     #[inline(always)]
     #[must_use]
-    pub fn tfc(&mut self) -> TFC_W<IER_SPEC, 6> {
-        TFC_W::new(self)
+    pub fn tfc(&mut self) -> TfcW<IerSpec> {
+        TfcW::new(self, 6)
     }
     #[doc = "Bit 7 - Transmit Complete"]
     #[inline(always)]
     #[must_use]
-    pub fn tcomp(&mut self) -> TCOMP_W<IER_SPEC, 7> {
-        TCOMP_W::new(self)
+    pub fn tcomp(&mut self) -> TcompW<IerSpec> {
+        TcompW::new(self, 7)
     }
     #[doc = "Bit 10 - Receive Overrun"]
     #[inline(always)]
     #[must_use]
-    pub fn rovr(&mut self) -> ROVR_W<IER_SPEC, 10> {
-        ROVR_W::new(self)
+    pub fn rovr(&mut self) -> RovrW<IerSpec> {
+        RovrW::new(self, 10)
     }
     #[doc = "Bit 11 - HRESP Not OK"]
     #[inline(always)]
     #[must_use]
-    pub fn hresp(&mut self) -> HRESP_W<IER_SPEC, 11> {
-        HRESP_W::new(self)
+    pub fn hresp(&mut self) -> HrespW<IerSpec> {
+        HrespW::new(self, 11)
     }
     #[doc = "Bit 12 - Pause Frame with Non-zero Pause Quantum Received"]
     #[inline(always)]
     #[must_use]
-    pub fn pfnz(&mut self) -> PFNZ_W<IER_SPEC, 12> {
-        PFNZ_W::new(self)
+    pub fn pfnz(&mut self) -> PfnzW<IerSpec> {
+        PfnzW::new(self, 12)
     }
     #[doc = "Bit 13 - Pause Time Zero"]
     #[inline(always)]
     #[must_use]
-    pub fn ptz(&mut self) -> PTZ_W<IER_SPEC, 13> {
-        PTZ_W::new(self)
+    pub fn ptz(&mut self) -> PtzW<IerSpec> {
+        PtzW::new(self, 13)
     }
     #[doc = "Bit 14 - Pause Frame Transmitted"]
     #[inline(always)]
     #[must_use]
-    pub fn pftr(&mut self) -> PFTR_W<IER_SPEC, 14> {
-        PFTR_W::new(self)
+    pub fn pftr(&mut self) -> PftrW<IerSpec> {
+        PftrW::new(self, 14)
     }
     #[doc = "Bit 15 - External Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn exint(&mut self) -> EXINT_W<IER_SPEC, 15> {
-        EXINT_W::new(self)
+    pub fn exint(&mut self) -> ExintW<IerSpec> {
+        ExintW::new(self, 15)
     }
     #[doc = "Bit 18 - PTP Delay Request Frame Received"]
     #[inline(always)]
     #[must_use]
-    pub fn drqfr(&mut self) -> DRQFR_W<IER_SPEC, 18> {
-        DRQFR_W::new(self)
+    pub fn drqfr(&mut self) -> DrqfrW<IerSpec> {
+        DrqfrW::new(self, 18)
     }
     #[doc = "Bit 19 - PTP Sync Frame Received"]
     #[inline(always)]
     #[must_use]
-    pub fn sfr(&mut self) -> SFR_W<IER_SPEC, 19> {
-        SFR_W::new(self)
+    pub fn sfr(&mut self) -> SfrW<IerSpec> {
+        SfrW::new(self, 19)
     }
     #[doc = "Bit 20 - PTP Delay Request Frame Transmitted"]
     #[inline(always)]
     #[must_use]
-    pub fn drqft(&mut self) -> DRQFT_W<IER_SPEC, 20> {
-        DRQFT_W::new(self)
+    pub fn drqft(&mut self) -> DrqftW<IerSpec> {
+        DrqftW::new(self, 20)
     }
     #[doc = "Bit 21 - PTP Sync Frame Transmitted"]
     #[inline(always)]
     #[must_use]
-    pub fn sft(&mut self) -> SFT_W<IER_SPEC, 21> {
-        SFT_W::new(self)
+    pub fn sft(&mut self) -> SftW<IerSpec> {
+        SftW::new(self, 21)
     }
     #[doc = "Bit 22 - PDelay Request Frame Received"]
     #[inline(always)]
     #[must_use]
-    pub fn pdrqfr(&mut self) -> PDRQFR_W<IER_SPEC, 22> {
-        PDRQFR_W::new(self)
+    pub fn pdrqfr(&mut self) -> PdrqfrW<IerSpec> {
+        PdrqfrW::new(self, 22)
     }
     #[doc = "Bit 23 - PDelay Response Frame Received"]
     #[inline(always)]
     #[must_use]
-    pub fn pdrsfr(&mut self) -> PDRSFR_W<IER_SPEC, 23> {
-        PDRSFR_W::new(self)
+    pub fn pdrsfr(&mut self) -> PdrsfrW<IerSpec> {
+        PdrsfrW::new(self, 23)
     }
     #[doc = "Bit 24 - PDelay Request Frame Transmitted"]
     #[inline(always)]
     #[must_use]
-    pub fn pdrqft(&mut self) -> PDRQFT_W<IER_SPEC, 24> {
-        PDRQFT_W::new(self)
+    pub fn pdrqft(&mut self) -> PdrqftW<IerSpec> {
+        PdrqftW::new(self, 24)
     }
     #[doc = "Bit 25 - PDelay Response Frame Transmitted"]
     #[inline(always)]
     #[must_use]
-    pub fn pdrsft(&mut self) -> PDRSFT_W<IER_SPEC, 25> {
-        PDRSFT_W::new(self)
+    pub fn pdrsft(&mut self) -> PdrsftW<IerSpec> {
+        PdrsftW::new(self, 25)
     }
     #[doc = "Bit 26 - TSU Seconds Register Increment"]
     #[inline(always)]
     #[must_use]
-    pub fn sri(&mut self) -> SRI_W<IER_SPEC, 26> {
-        SRI_W::new(self)
+    pub fn sri(&mut self) -> SriW<IerSpec> {
+        SriW::new(self, 26)
     }
     #[doc = "Bit 28 - Wake On LAN"]
     #[inline(always)]
     #[must_use]
-    pub fn wol(&mut self) -> WOL_W<IER_SPEC, 28> {
-        WOL_W::new(self)
+    pub fn wol(&mut self) -> WolW<IerSpec> {
+        WolW::new(self, 28)
     }
     #[doc = "Bit 29 - Tsu timer comparison"]
     #[inline(always)]
     #[must_use]
-    pub fn tsucmp(&mut self) -> TSUCMP_W<IER_SPEC, 29> {
-        TSUCMP_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn tsucmp(&mut self) -> TsucmpW<IerSpec> {
+        TsucmpW::new(self, 29)
     }
 }
-#[doc = "Interrupt Enable Register\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ier::W`](W). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct IER_SPEC;
-impl crate::RegisterSpec for IER_SPEC {
+#[doc = "Interrupt Enable Register\n\nYou can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ier::W`](W). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct IerSpec;
+impl crate::RegisterSpec for IerSpec {
     type Ux = u32;
 }
 #[doc = "`write(|w| ..)` method takes [`ier::W`](W) writer structure"]
-impl crate::Writable for IER_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for IerSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets IER to value 0"]
-impl crate::Resettable for IER_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for IerSpec {
+    const RESET_VALUE: u32 = 0;
 }

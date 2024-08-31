@@ -1,61 +1,103 @@
-#[doc = r"Register block"]
 #[repr(C)]
+#[doc = "Register block"]
 pub struct RegisterBlock {
-    #[doc = "0x00 - Mode Register"]
-    pub mr: MR,
-    #[doc = "0x04 - Interrupt Enable Register"]
-    pub ier: IER,
-    #[doc = "0x08 - Interrupt Disable Register"]
-    pub idr: IDR,
-    #[doc = "0x0c - Interrupt Mask Register"]
-    pub imr: IMR,
-    #[doc = "0x10 - Interrupt Status Register"]
-    pub isr: ISR,
-    #[doc = "0x14 - Reception Holding Register"]
-    pub rhr: RHR,
+    mr: Mr,
+    ier: Ier,
+    idr: Idr,
+    imr: Imr,
+    isr: Isr,
+    rhr: Rhr,
     _reserved6: [u8; 0xc8],
-    #[doc = "0xe0 - Write Protection Mode Register"]
-    pub wpmr: WPMR,
-    #[doc = "0xe4 - Write Protection Status Register"]
-    pub wpsr: WPSR,
+    wpmr: Wpmr,
+    wpsr: Wpsr,
 }
-#[doc = "MR (rw) register accessor: Mode Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`mr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`mr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@mr`]
+impl RegisterBlock {
+    #[doc = "0x00 - Mode Register"]
+    #[inline(always)]
+    pub const fn mr(&self) -> &Mr {
+        &self.mr
+    }
+    #[doc = "0x04 - Interrupt Enable Register"]
+    #[inline(always)]
+    pub const fn ier(&self) -> &Ier {
+        &self.ier
+    }
+    #[doc = "0x08 - Interrupt Disable Register"]
+    #[inline(always)]
+    pub const fn idr(&self) -> &Idr {
+        &self.idr
+    }
+    #[doc = "0x0c - Interrupt Mask Register"]
+    #[inline(always)]
+    pub const fn imr(&self) -> &Imr {
+        &self.imr
+    }
+    #[doc = "0x10 - Interrupt Status Register"]
+    #[inline(always)]
+    pub const fn isr(&self) -> &Isr {
+        &self.isr
+    }
+    #[doc = "0x14 - Reception Holding Register"]
+    #[inline(always)]
+    pub const fn rhr(&self) -> &Rhr {
+        &self.rhr
+    }
+    #[doc = "0xe0 - Write Protection Mode Register"]
+    #[inline(always)]
+    pub const fn wpmr(&self) -> &Wpmr {
+        &self.wpmr
+    }
+    #[doc = "0xe4 - Write Protection Status Register"]
+    #[inline(always)]
+    pub const fn wpsr(&self) -> &Wpsr {
+        &self.wpsr
+    }
+}
+#[doc = "MR (rw) register accessor: Mode Register\n\nYou can [`read`](crate::Reg::read) this register and get [`mr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`mr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@mr`]
 module"]
-pub type MR = crate::Reg<mr::MR_SPEC>;
+#[doc(alias = "MR")]
+pub type Mr = crate::Reg<mr::MrSpec>;
 #[doc = "Mode Register"]
 pub mod mr;
-#[doc = "IER (w) register accessor: Interrupt Enable Register\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ier::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ier`]
+#[doc = "IER (w) register accessor: Interrupt Enable Register\n\nYou can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ier::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ier`]
 module"]
-pub type IER = crate::Reg<ier::IER_SPEC>;
+#[doc(alias = "IER")]
+pub type Ier = crate::Reg<ier::IerSpec>;
 #[doc = "Interrupt Enable Register"]
 pub mod ier;
-#[doc = "IDR (w) register accessor: Interrupt Disable Register\n\nYou can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`idr::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@idr`]
+#[doc = "IDR (w) register accessor: Interrupt Disable Register\n\nYou can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`idr::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@idr`]
 module"]
-pub type IDR = crate::Reg<idr::IDR_SPEC>;
+#[doc(alias = "IDR")]
+pub type Idr = crate::Reg<idr::IdrSpec>;
 #[doc = "Interrupt Disable Register"]
 pub mod idr;
-#[doc = "IMR (r) register accessor: Interrupt Mask Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`imr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@imr`]
+#[doc = "IMR (r) register accessor: Interrupt Mask Register\n\nYou can [`read`](crate::Reg::read) this register and get [`imr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@imr`]
 module"]
-pub type IMR = crate::Reg<imr::IMR_SPEC>;
+#[doc(alias = "IMR")]
+pub type Imr = crate::Reg<imr::ImrSpec>;
 #[doc = "Interrupt Mask Register"]
 pub mod imr;
-#[doc = "ISR (r) register accessor: Interrupt Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`isr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@isr`]
+#[doc = "ISR (r) register accessor: Interrupt Status Register\n\nYou can [`read`](crate::Reg::read) this register and get [`isr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@isr`]
 module"]
-pub type ISR = crate::Reg<isr::ISR_SPEC>;
+#[doc(alias = "ISR")]
+pub type Isr = crate::Reg<isr::IsrSpec>;
 #[doc = "Interrupt Status Register"]
 pub mod isr;
-#[doc = "RHR (r) register accessor: Reception Holding Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`rhr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@rhr`]
+#[doc = "RHR (r) register accessor: Reception Holding Register\n\nYou can [`read`](crate::Reg::read) this register and get [`rhr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@rhr`]
 module"]
-pub type RHR = crate::Reg<rhr::RHR_SPEC>;
+#[doc(alias = "RHR")]
+pub type Rhr = crate::Reg<rhr::RhrSpec>;
 #[doc = "Reception Holding Register"]
 pub mod rhr;
-#[doc = "WPMR (rw) register accessor: Write Protection Mode Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`wpmr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`wpmr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wpmr`]
+#[doc = "WPMR (rw) register accessor: Write Protection Mode Register\n\nYou can [`read`](crate::Reg::read) this register and get [`wpmr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`wpmr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wpmr`]
 module"]
-pub type WPMR = crate::Reg<wpmr::WPMR_SPEC>;
+#[doc(alias = "WPMR")]
+pub type Wpmr = crate::Reg<wpmr::WpmrSpec>;
 #[doc = "Write Protection Mode Register"]
 pub mod wpmr;
-#[doc = "WPSR (r) register accessor: Write Protection Status Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`wpsr::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wpsr`]
+#[doc = "WPSR (r) register accessor: Write Protection Status Register\n\nYou can [`read`](crate::Reg::read) this register and get [`wpsr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wpsr`]
 module"]
-pub type WPSR = crate::Reg<wpsr::WPSR_SPEC>;
+#[doc(alias = "WPSR")]
+pub type Wpsr = crate::Reg<wpsr::WpsrSpec>;
 #[doc = "Write Protection Status Register"]
 pub mod wpsr;

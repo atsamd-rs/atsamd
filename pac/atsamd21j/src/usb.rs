@@ -1,27 +1,27 @@
-#[doc = r"Register block"]
 #[repr(C)]
+#[doc = "Register block"]
 pub struct RegisterBlock {
-    _reserved_0_host: [u8; 0x0111],
+    _reserved_0_host: [u8; 0x0109],
 }
 impl RegisterBlock {
-    #[doc = "0x00..0x111 - USB is Host"]
+    #[doc = "0x00..0x109 - USB is Host"]
     #[inline(always)]
-    pub const fn host(&self) -> &HOST {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0usize).cast() }
+    pub const fn host(&self) -> &Host {
+        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
     }
-    #[doc = "0x00..0x111 - USB is Device"]
+    #[doc = "0x00..0x109 - USB is Device"]
     #[inline(always)]
-    pub const fn device(&self) -> &DEVICE {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0usize).cast() }
+    pub const fn device(&self) -> &Device {
+        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
     }
 }
 #[doc = "USB is Device"]
-pub use self::device::DEVICE;
+pub use self::device::Device;
 #[doc = r"Cluster"]
 #[doc = "USB is Device"]
 pub mod device;
 #[doc = "USB is Host"]
-pub use self::host::HOST;
+pub use self::host::Host;
 #[doc = r"Cluster"]
 #[doc = "USB is Host"]
 pub mod host;

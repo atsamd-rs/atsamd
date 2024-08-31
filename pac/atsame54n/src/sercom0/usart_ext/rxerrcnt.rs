@@ -1,23 +1,18 @@
 #[doc = "Register `RXERRCNT` reader"]
-pub type R = crate::R<RXERRCNT_SPEC>;
+pub type R = crate::R<RxerrcntSpec>;
 impl core::fmt::Debug for R {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(f, "{}", self.bits())
     }
 }
-impl core::fmt::Debug for crate::generic::Reg<RXERRCNT_SPEC> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        self.read().fmt(f)
-    }
-}
-#[doc = "USART_EXT Receive Error Count\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`rxerrcnt::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct RXERRCNT_SPEC;
-impl crate::RegisterSpec for RXERRCNT_SPEC {
+#[doc = "USART_EXT Receive Error Count\n\nYou can [`read`](crate::Reg::read) this register and get [`rxerrcnt::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct RxerrcntSpec;
+impl crate::RegisterSpec for RxerrcntSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`rxerrcnt::R`](R) reader structure"]
-impl crate::Readable for RXERRCNT_SPEC {}
+impl crate::Readable for RxerrcntSpec {}
 #[doc = "`reset()` method sets RXERRCNT to value 0"]
-impl crate::Resettable for RXERRCNT_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for RxerrcntSpec {
+    const RESET_VALUE: u8 = 0;
 }

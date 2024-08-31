@@ -259,4 +259,11 @@
   <xsl:template match="/device/peripherals/peripheral[name='PORT']/registers/register[name='PINCFG0_%s']/fields/field[name='DRVSTR']/access" />
   <xsl:template match="/device/peripherals/peripheral[name='RTC']/registers/cluster/register[name='CTRL']/fields/field[name='SWRST']/access" />
 
+  <xsl:template match="/device/peripherals/peripheral[name='USB']/registers/cluster[name='HOST']/register[name='PSTATUSCLR%s']/access" />
+  <xsl:template match="/device/peripherals/peripheral[name='USB']/registers/cluster[name='HOST']/register[name='PSTATUSCLR%s']/fields/field[name='DTGL']/access" />
+  <xsl:template match="/device/peripherals/peripheral[name='USB']/registers/cluster[name='HOST']/register[name='PSTATUSCLR%s']/fields/field[name='CURBK']/access" />
+  <xsl:template match="/device/peripherals/peripheral[name='USB']/registers/cluster[name='HOST']/register[name='PSTATUSCLR%s']/fields/field[name='PFREEZE']/access" />
+  <xsl:template match="/device/peripherals/peripheral[name='USB']/registers/cluster[name='HOST']/register[name='PSTATUSCLR%s']/fields/field[name='BK0RDY']/access" />
+  <xsl:template match="/device/peripherals/peripheral[name='USB']/registers/cluster[name='HOST']/register[name='PSTATUSCLR%s']/fields/field[name='BK1RDY']/access" />
+
 </xsl:stylesheet>

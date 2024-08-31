@@ -1,261 +1,261 @@
 #[doc = "Register `ACESR` reader"]
-pub type R = crate::R<ACESR_SPEC>;
-#[doc = "Field `ACMD12NE` reader - Auto CMD12 Not Executed"]
-pub type ACMD12NE_R = crate::BitReader<ACMD12NESELECT_A>;
+pub type R = crate::R<AcesrSpec>;
 #[doc = "Auto CMD12 Not Executed\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum ACMD12NESELECT_A {
+pub enum Acmd12neselect {
     #[doc = "0: Executed"]
-    EXEC = 0,
+    Exec = 0,
     #[doc = "1: Not executed"]
-    NOT_EXEC = 1,
+    NotExec = 1,
 }
-impl From<ACMD12NESELECT_A> for bool {
+impl From<Acmd12neselect> for bool {
     #[inline(always)]
-    fn from(variant: ACMD12NESELECT_A) -> Self {
+    fn from(variant: Acmd12neselect) -> Self {
         variant as u8 != 0
     }
 }
-impl ACMD12NE_R {
+#[doc = "Field `ACMD12NE` reader - Auto CMD12 Not Executed"]
+pub type Acmd12neR = crate::BitReader<Acmd12neselect>;
+impl Acmd12neR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> ACMD12NESELECT_A {
+    pub const fn variant(&self) -> Acmd12neselect {
         match self.bits {
-            false => ACMD12NESELECT_A::EXEC,
-            true => ACMD12NESELECT_A::NOT_EXEC,
+            false => Acmd12neselect::Exec,
+            true => Acmd12neselect::NotExec,
         }
     }
     #[doc = "Executed"]
     #[inline(always)]
     pub fn is_exec(&self) -> bool {
-        *self == ACMD12NESELECT_A::EXEC
+        *self == Acmd12neselect::Exec
     }
     #[doc = "Not executed"]
     #[inline(always)]
     pub fn is_not_exec(&self) -> bool {
-        *self == ACMD12NESELECT_A::NOT_EXEC
+        *self == Acmd12neselect::NotExec
     }
 }
-#[doc = "Field `ACMDTEO` reader - Auto CMD Timeout Error"]
-pub type ACMDTEO_R = crate::BitReader<ACMDTEOSELECT_A>;
 #[doc = "Auto CMD Timeout Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum ACMDTEOSELECT_A {
+pub enum Acmdteoselect {
     #[doc = "0: No error"]
-    NO = 0,
+    No = 0,
     #[doc = "1: Timeout"]
-    YES = 1,
+    Yes = 1,
 }
-impl From<ACMDTEOSELECT_A> for bool {
+impl From<Acmdteoselect> for bool {
     #[inline(always)]
-    fn from(variant: ACMDTEOSELECT_A) -> Self {
+    fn from(variant: Acmdteoselect) -> Self {
         variant as u8 != 0
     }
 }
-impl ACMDTEO_R {
+#[doc = "Field `ACMDTEO` reader - Auto CMD Timeout Error"]
+pub type AcmdteoR = crate::BitReader<Acmdteoselect>;
+impl AcmdteoR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> ACMDTEOSELECT_A {
+    pub const fn variant(&self) -> Acmdteoselect {
         match self.bits {
-            false => ACMDTEOSELECT_A::NO,
-            true => ACMDTEOSELECT_A::YES,
+            false => Acmdteoselect::No,
+            true => Acmdteoselect::Yes,
         }
     }
     #[doc = "No error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ACMDTEOSELECT_A::NO
+        *self == Acmdteoselect::No
     }
     #[doc = "Timeout"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ACMDTEOSELECT_A::YES
+        *self == Acmdteoselect::Yes
     }
 }
-#[doc = "Field `ACMDCRC` reader - Auto CMD CRC Error"]
-pub type ACMDCRC_R = crate::BitReader<ACMDCRCSELECT_A>;
 #[doc = "Auto CMD CRC Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum ACMDCRCSELECT_A {
+pub enum Acmdcrcselect {
     #[doc = "0: No error"]
-    NO = 0,
+    No = 0,
     #[doc = "1: CRC Error Generated"]
-    YES = 1,
+    Yes = 1,
 }
-impl From<ACMDCRCSELECT_A> for bool {
+impl From<Acmdcrcselect> for bool {
     #[inline(always)]
-    fn from(variant: ACMDCRCSELECT_A) -> Self {
+    fn from(variant: Acmdcrcselect) -> Self {
         variant as u8 != 0
     }
 }
-impl ACMDCRC_R {
+#[doc = "Field `ACMDCRC` reader - Auto CMD CRC Error"]
+pub type AcmdcrcR = crate::BitReader<Acmdcrcselect>;
+impl AcmdcrcR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> ACMDCRCSELECT_A {
+    pub const fn variant(&self) -> Acmdcrcselect {
         match self.bits {
-            false => ACMDCRCSELECT_A::NO,
-            true => ACMDCRCSELECT_A::YES,
+            false => Acmdcrcselect::No,
+            true => Acmdcrcselect::Yes,
         }
     }
     #[doc = "No error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ACMDCRCSELECT_A::NO
+        *self == Acmdcrcselect::No
     }
     #[doc = "CRC Error Generated"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ACMDCRCSELECT_A::YES
+        *self == Acmdcrcselect::Yes
     }
 }
-#[doc = "Field `ACMDEND` reader - Auto CMD End Bit Error"]
-pub type ACMDEND_R = crate::BitReader<ACMDENDSELECT_A>;
 #[doc = "Auto CMD End Bit Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum ACMDENDSELECT_A {
+pub enum Acmdendselect {
     #[doc = "0: No error"]
-    NO = 0,
+    No = 0,
     #[doc = "1: End Bit Error Generated"]
-    YES = 1,
+    Yes = 1,
 }
-impl From<ACMDENDSELECT_A> for bool {
+impl From<Acmdendselect> for bool {
     #[inline(always)]
-    fn from(variant: ACMDENDSELECT_A) -> Self {
+    fn from(variant: Acmdendselect) -> Self {
         variant as u8 != 0
     }
 }
-impl ACMDEND_R {
+#[doc = "Field `ACMDEND` reader - Auto CMD End Bit Error"]
+pub type AcmdendR = crate::BitReader<Acmdendselect>;
+impl AcmdendR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> ACMDENDSELECT_A {
+    pub const fn variant(&self) -> Acmdendselect {
         match self.bits {
-            false => ACMDENDSELECT_A::NO,
-            true => ACMDENDSELECT_A::YES,
+            false => Acmdendselect::No,
+            true => Acmdendselect::Yes,
         }
     }
     #[doc = "No error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ACMDENDSELECT_A::NO
+        *self == Acmdendselect::No
     }
     #[doc = "End Bit Error Generated"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ACMDENDSELECT_A::YES
+        *self == Acmdendselect::Yes
     }
 }
-#[doc = "Field `ACMDIDX` reader - Auto CMD Index Error"]
-pub type ACMDIDX_R = crate::BitReader<ACMDIDXSELECT_A>;
 #[doc = "Auto CMD Index Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum ACMDIDXSELECT_A {
+pub enum Acmdidxselect {
     #[doc = "0: No error"]
-    NO = 0,
+    No = 0,
     #[doc = "1: Error"]
-    YES = 1,
+    Yes = 1,
 }
-impl From<ACMDIDXSELECT_A> for bool {
+impl From<Acmdidxselect> for bool {
     #[inline(always)]
-    fn from(variant: ACMDIDXSELECT_A) -> Self {
+    fn from(variant: Acmdidxselect) -> Self {
         variant as u8 != 0
     }
 }
-impl ACMDIDX_R {
+#[doc = "Field `ACMDIDX` reader - Auto CMD Index Error"]
+pub type AcmdidxR = crate::BitReader<Acmdidxselect>;
+impl AcmdidxR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> ACMDIDXSELECT_A {
+    pub const fn variant(&self) -> Acmdidxselect {
         match self.bits {
-            false => ACMDIDXSELECT_A::NO,
-            true => ACMDIDXSELECT_A::YES,
+            false => Acmdidxselect::No,
+            true => Acmdidxselect::Yes,
         }
     }
     #[doc = "No error"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == ACMDIDXSELECT_A::NO
+        *self == Acmdidxselect::No
     }
     #[doc = "Error"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == ACMDIDXSELECT_A::YES
+        *self == Acmdidxselect::Yes
     }
 }
-#[doc = "Field `CMDNI` reader - Command not Issued By Auto CMD12 Error"]
-pub type CMDNI_R = crate::BitReader<CMDNISELECT_A>;
 #[doc = "Command not Issued By Auto CMD12 Error\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CMDNISELECT_A {
+pub enum Cmdniselect {
     #[doc = "0: No error"]
-    OK = 0,
+    Ok = 0,
     #[doc = "1: Not Issued"]
-    NOT_ISSUED = 1,
+    NotIssued = 1,
 }
-impl From<CMDNISELECT_A> for bool {
+impl From<Cmdniselect> for bool {
     #[inline(always)]
-    fn from(variant: CMDNISELECT_A) -> Self {
+    fn from(variant: Cmdniselect) -> Self {
         variant as u8 != 0
     }
 }
-impl CMDNI_R {
+#[doc = "Field `CMDNI` reader - Command not Issued By Auto CMD12 Error"]
+pub type CmdniR = crate::BitReader<Cmdniselect>;
+impl CmdniR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> CMDNISELECT_A {
+    pub const fn variant(&self) -> Cmdniselect {
         match self.bits {
-            false => CMDNISELECT_A::OK,
-            true => CMDNISELECT_A::NOT_ISSUED,
+            false => Cmdniselect::Ok,
+            true => Cmdniselect::NotIssued,
         }
     }
     #[doc = "No error"]
     #[inline(always)]
     pub fn is_ok(&self) -> bool {
-        *self == CMDNISELECT_A::OK
+        *self == Cmdniselect::Ok
     }
     #[doc = "Not Issued"]
     #[inline(always)]
     pub fn is_not_issued(&self) -> bool {
-        *self == CMDNISELECT_A::NOT_ISSUED
+        *self == Cmdniselect::NotIssued
     }
 }
 impl R {
     #[doc = "Bit 0 - Auto CMD12 Not Executed"]
     #[inline(always)]
-    pub fn acmd12ne(&self) -> ACMD12NE_R {
-        ACMD12NE_R::new((self.bits & 1) != 0)
+    pub fn acmd12ne(&self) -> Acmd12neR {
+        Acmd12neR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Auto CMD Timeout Error"]
     #[inline(always)]
-    pub fn acmdteo(&self) -> ACMDTEO_R {
-        ACMDTEO_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn acmdteo(&self) -> AcmdteoR {
+        AcmdteoR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Auto CMD CRC Error"]
     #[inline(always)]
-    pub fn acmdcrc(&self) -> ACMDCRC_R {
-        ACMDCRC_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn acmdcrc(&self) -> AcmdcrcR {
+        AcmdcrcR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Auto CMD End Bit Error"]
     #[inline(always)]
-    pub fn acmdend(&self) -> ACMDEND_R {
-        ACMDEND_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn acmdend(&self) -> AcmdendR {
+        AcmdendR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Auto CMD Index Error"]
     #[inline(always)]
-    pub fn acmdidx(&self) -> ACMDIDX_R {
-        ACMDIDX_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn acmdidx(&self) -> AcmdidxR {
+        AcmdidxR::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 7 - Command not Issued By Auto CMD12 Error"]
     #[inline(always)]
-    pub fn cmdni(&self) -> CMDNI_R {
-        CMDNI_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn cmdni(&self) -> CmdniR {
+        CmdniR::new(((self.bits >> 7) & 1) != 0)
     }
 }
-#[doc = "Auto CMD Error Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`acesr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct ACESR_SPEC;
-impl crate::RegisterSpec for ACESR_SPEC {
+#[doc = "Auto CMD Error Status\n\nYou can [`read`](crate::Reg::read) this register and get [`acesr::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct AcesrSpec;
+impl crate::RegisterSpec for AcesrSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`acesr::R`](R) reader structure"]
-impl crate::Readable for ACESR_SPEC {}
+impl crate::Readable for AcesrSpec {}
 #[doc = "`reset()` method sets ACESR to value 0"]
-impl crate::Resettable for ACESR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for AcesrSpec {
+    const RESET_VALUE: u16 = 0;
 }

@@ -1,49 +1,40 @@
 #[doc = "Register `CFGA` reader"]
-pub type R = crate::R<CFGA_SPEC>;
+pub type R = crate::R<CfgaSpec>;
 #[doc = "Register `CFGA` writer"]
-pub type W = crate::W<CFGA_SPEC>;
+pub type W = crate::W<CfgaSpec>;
 #[doc = "Field `REFNUM` reader - Number of Reference Clock Cycles"]
-pub type REFNUM_R = crate::FieldReader;
+pub type RefnumR = crate::FieldReader;
 #[doc = "Field `REFNUM` writer - Number of Reference Clock Cycles"]
-pub type REFNUM_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
+pub type RefnumW<'a, REG> = crate::FieldWriter<'a, REG, 8>;
 impl R {
     #[doc = "Bits 0:7 - Number of Reference Clock Cycles"]
     #[inline(always)]
-    pub fn refnum(&self) -> REFNUM_R {
-        REFNUM_R::new((self.bits & 0xff) as u8)
+    pub fn refnum(&self) -> RefnumR {
+        RefnumR::new((self.bits & 0xff) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Number of Reference Clock Cycles"]
     #[inline(always)]
     #[must_use]
-    pub fn refnum(&mut self) -> REFNUM_W<CFGA_SPEC, 0> {
-        REFNUM_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn refnum(&mut self) -> RefnumW<CfgaSpec> {
+        RefnumW::new(self, 0)
     }
 }
-#[doc = "Config A register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cfga::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cfga::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CFGA_SPEC;
-impl crate::RegisterSpec for CFGA_SPEC {
+#[doc = "Config A register\n\nYou can [`read`](crate::Reg::read) this register and get [`cfga::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cfga::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CfgaSpec;
+impl crate::RegisterSpec for CfgaSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`cfga::R`](R) reader structure"]
-impl crate::Readable for CFGA_SPEC {}
+impl crate::Readable for CfgaSpec {}
 #[doc = "`write(|w| ..)` method takes [`cfga::W`](W) writer structure"]
-impl crate::Writable for CFGA_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CfgaSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CFGA to value 0"]
-impl crate::Resettable for CFGA_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CfgaSpec {
+    const RESET_VALUE: u16 = 0;
 }

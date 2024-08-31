@@ -1,259 +1,250 @@
 #[doc = "Register `INTENCLR` reader"]
-pub type R = crate::R<INTENCLR_SPEC>;
+pub type R = crate::R<IntenclrSpec>;
 #[doc = "Register `INTENCLR` writer"]
-pub type W = crate::W<INTENCLR_SPEC>;
+pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `XOSCRDY` reader - XOSC Ready Interrupt Enable"]
-pub type XOSCRDY_R = crate::BitReader;
+pub type XoscrdyR = crate::BitReader;
 #[doc = "Field `XOSCRDY` writer - XOSC Ready Interrupt Enable"]
-pub type XOSCRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type XoscrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `XOSC32KRDY` reader - XOSC32K Ready Interrupt Enable"]
-pub type XOSC32KRDY_R = crate::BitReader;
+pub type Xosc32krdyR = crate::BitReader;
 #[doc = "Field `XOSC32KRDY` writer - XOSC32K Ready Interrupt Enable"]
-pub type XOSC32KRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Xosc32krdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `OSC32KRDY` reader - OSC32K Ready Interrupt Enable"]
-pub type OSC32KRDY_R = crate::BitReader;
+pub type Osc32krdyR = crate::BitReader;
 #[doc = "Field `OSC32KRDY` writer - OSC32K Ready Interrupt Enable"]
-pub type OSC32KRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Osc32krdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `OSC8MRDY` reader - OSC8M Ready Interrupt Enable"]
-pub type OSC8MRDY_R = crate::BitReader;
+pub type Osc8mrdyR = crate::BitReader;
 #[doc = "Field `OSC8MRDY` writer - OSC8M Ready Interrupt Enable"]
-pub type OSC8MRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Osc8mrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DFLLRDY` reader - DFLL Ready Interrupt Enable"]
-pub type DFLLRDY_R = crate::BitReader;
+pub type DfllrdyR = crate::BitReader;
 #[doc = "Field `DFLLRDY` writer - DFLL Ready Interrupt Enable"]
-pub type DFLLRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DfllrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DFLLOOB` reader - DFLL Out Of Bounds Interrupt Enable"]
-pub type DFLLOOB_R = crate::BitReader;
+pub type DflloobR = crate::BitReader;
 #[doc = "Field `DFLLOOB` writer - DFLL Out Of Bounds Interrupt Enable"]
-pub type DFLLOOB_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DflloobW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DFLLLCKF` reader - DFLL Lock Fine Interrupt Enable"]
-pub type DFLLLCKF_R = crate::BitReader;
+pub type DflllckfR = crate::BitReader;
 #[doc = "Field `DFLLLCKF` writer - DFLL Lock Fine Interrupt Enable"]
-pub type DFLLLCKF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DflllckfW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DFLLLCKC` reader - DFLL Lock Coarse Interrupt Enable"]
-pub type DFLLLCKC_R = crate::BitReader;
+pub type DflllckcR = crate::BitReader;
 #[doc = "Field `DFLLLCKC` writer - DFLL Lock Coarse Interrupt Enable"]
-pub type DFLLLCKC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DflllckcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DFLLRCS` reader - DFLL Reference Clock Stopped Interrupt Enable"]
-pub type DFLLRCS_R = crate::BitReader;
+pub type DfllrcsR = crate::BitReader;
 #[doc = "Field `DFLLRCS` writer - DFLL Reference Clock Stopped Interrupt Enable"]
-pub type DFLLRCS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DfllrcsW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `BOD33RDY` reader - BOD33 Ready Interrupt Enable"]
-pub type BOD33RDY_R = crate::BitReader;
+pub type Bod33rdyR = crate::BitReader;
 #[doc = "Field `BOD33RDY` writer - BOD33 Ready Interrupt Enable"]
-pub type BOD33RDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Bod33rdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `BOD33DET` reader - BOD33 Detection Interrupt Enable"]
-pub type BOD33DET_R = crate::BitReader;
+pub type Bod33detR = crate::BitReader;
 #[doc = "Field `BOD33DET` writer - BOD33 Detection Interrupt Enable"]
-pub type BOD33DET_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Bod33detW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `B33SRDY` reader - BOD33 Synchronization Ready Interrupt Enable"]
-pub type B33SRDY_R = crate::BitReader;
+pub type B33srdyR = crate::BitReader;
 #[doc = "Field `B33SRDY` writer - BOD33 Synchronization Ready Interrupt Enable"]
-pub type B33SRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type B33srdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DPLLLCKR` reader - DPLL Lock Rise Interrupt Enable"]
-pub type DPLLLCKR_R = crate::BitReader;
+pub type DplllckrR = crate::BitReader;
 #[doc = "Field `DPLLLCKR` writer - DPLL Lock Rise Interrupt Enable"]
-pub type DPLLLCKR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DplllckrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DPLLLCKF` reader - DPLL Lock Fall Interrupt Enable"]
-pub type DPLLLCKF_R = crate::BitReader;
+pub type DplllckfR = crate::BitReader;
 #[doc = "Field `DPLLLCKF` writer - DPLL Lock Fall Interrupt Enable"]
-pub type DPLLLCKF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DplllckfW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DPLLLTO` reader - DPLL Lock Timeout Interrupt Enable"]
-pub type DPLLLTO_R = crate::BitReader;
+pub type DpllltoR = crate::BitReader;
 #[doc = "Field `DPLLLTO` writer - DPLL Lock Timeout Interrupt Enable"]
-pub type DPLLLTO_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DpllltoW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - XOSC Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn xoscrdy(&self) -> XOSCRDY_R {
-        XOSCRDY_R::new((self.bits & 1) != 0)
+    pub fn xoscrdy(&self) -> XoscrdyR {
+        XoscrdyR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - XOSC32K Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn xosc32krdy(&self) -> XOSC32KRDY_R {
-        XOSC32KRDY_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn xosc32krdy(&self) -> Xosc32krdyR {
+        Xosc32krdyR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - OSC32K Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn osc32krdy(&self) -> OSC32KRDY_R {
-        OSC32KRDY_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn osc32krdy(&self) -> Osc32krdyR {
+        Osc32krdyR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - OSC8M Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn osc8mrdy(&self) -> OSC8MRDY_R {
-        OSC8MRDY_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn osc8mrdy(&self) -> Osc8mrdyR {
+        Osc8mrdyR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - DFLL Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn dfllrdy(&self) -> DFLLRDY_R {
-        DFLLRDY_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn dfllrdy(&self) -> DfllrdyR {
+        DfllrdyR::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - DFLL Out Of Bounds Interrupt Enable"]
     #[inline(always)]
-    pub fn dflloob(&self) -> DFLLOOB_R {
-        DFLLOOB_R::new(((self.bits >> 5) & 1) != 0)
+    pub fn dflloob(&self) -> DflloobR {
+        DflloobR::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - DFLL Lock Fine Interrupt Enable"]
     #[inline(always)]
-    pub fn dflllckf(&self) -> DFLLLCKF_R {
-        DFLLLCKF_R::new(((self.bits >> 6) & 1) != 0)
+    pub fn dflllckf(&self) -> DflllckfR {
+        DflllckfR::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - DFLL Lock Coarse Interrupt Enable"]
     #[inline(always)]
-    pub fn dflllckc(&self) -> DFLLLCKC_R {
-        DFLLLCKC_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn dflllckc(&self) -> DflllckcR {
+        DflllckcR::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - DFLL Reference Clock Stopped Interrupt Enable"]
     #[inline(always)]
-    pub fn dfllrcs(&self) -> DFLLRCS_R {
-        DFLLRCS_R::new(((self.bits >> 8) & 1) != 0)
+    pub fn dfllrcs(&self) -> DfllrcsR {
+        DfllrcsR::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - BOD33 Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn bod33rdy(&self) -> BOD33RDY_R {
-        BOD33RDY_R::new(((self.bits >> 9) & 1) != 0)
+    pub fn bod33rdy(&self) -> Bod33rdyR {
+        Bod33rdyR::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - BOD33 Detection Interrupt Enable"]
     #[inline(always)]
-    pub fn bod33det(&self) -> BOD33DET_R {
-        BOD33DET_R::new(((self.bits >> 10) & 1) != 0)
+    pub fn bod33det(&self) -> Bod33detR {
+        Bod33detR::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bit 11 - BOD33 Synchronization Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn b33srdy(&self) -> B33SRDY_R {
-        B33SRDY_R::new(((self.bits >> 11) & 1) != 0)
+    pub fn b33srdy(&self) -> B33srdyR {
+        B33srdyR::new(((self.bits >> 11) & 1) != 0)
     }
     #[doc = "Bit 15 - DPLL Lock Rise Interrupt Enable"]
     #[inline(always)]
-    pub fn dplllckr(&self) -> DPLLLCKR_R {
-        DPLLLCKR_R::new(((self.bits >> 15) & 1) != 0)
+    pub fn dplllckr(&self) -> DplllckrR {
+        DplllckrR::new(((self.bits >> 15) & 1) != 0)
     }
     #[doc = "Bit 16 - DPLL Lock Fall Interrupt Enable"]
     #[inline(always)]
-    pub fn dplllckf(&self) -> DPLLLCKF_R {
-        DPLLLCKF_R::new(((self.bits >> 16) & 1) != 0)
+    pub fn dplllckf(&self) -> DplllckfR {
+        DplllckfR::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - DPLL Lock Timeout Interrupt Enable"]
     #[inline(always)]
-    pub fn dplllto(&self) -> DPLLLTO_R {
-        DPLLLTO_R::new(((self.bits >> 17) & 1) != 0)
+    pub fn dplllto(&self) -> DpllltoR {
+        DpllltoR::new(((self.bits >> 17) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - XOSC Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn xoscrdy(&mut self) -> XOSCRDY_W<INTENCLR_SPEC, 0> {
-        XOSCRDY_W::new(self)
+    pub fn xoscrdy(&mut self) -> XoscrdyW<IntenclrSpec> {
+        XoscrdyW::new(self, 0)
     }
     #[doc = "Bit 1 - XOSC32K Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn xosc32krdy(&mut self) -> XOSC32KRDY_W<INTENCLR_SPEC, 1> {
-        XOSC32KRDY_W::new(self)
+    pub fn xosc32krdy(&mut self) -> Xosc32krdyW<IntenclrSpec> {
+        Xosc32krdyW::new(self, 1)
     }
     #[doc = "Bit 2 - OSC32K Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn osc32krdy(&mut self) -> OSC32KRDY_W<INTENCLR_SPEC, 2> {
-        OSC32KRDY_W::new(self)
+    pub fn osc32krdy(&mut self) -> Osc32krdyW<IntenclrSpec> {
+        Osc32krdyW::new(self, 2)
     }
     #[doc = "Bit 3 - OSC8M Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn osc8mrdy(&mut self) -> OSC8MRDY_W<INTENCLR_SPEC, 3> {
-        OSC8MRDY_W::new(self)
+    pub fn osc8mrdy(&mut self) -> Osc8mrdyW<IntenclrSpec> {
+        Osc8mrdyW::new(self, 3)
     }
     #[doc = "Bit 4 - DFLL Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dfllrdy(&mut self) -> DFLLRDY_W<INTENCLR_SPEC, 4> {
-        DFLLRDY_W::new(self)
+    pub fn dfllrdy(&mut self) -> DfllrdyW<IntenclrSpec> {
+        DfllrdyW::new(self, 4)
     }
     #[doc = "Bit 5 - DFLL Out Of Bounds Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dflloob(&mut self) -> DFLLOOB_W<INTENCLR_SPEC, 5> {
-        DFLLOOB_W::new(self)
+    pub fn dflloob(&mut self) -> DflloobW<IntenclrSpec> {
+        DflloobW::new(self, 5)
     }
     #[doc = "Bit 6 - DFLL Lock Fine Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dflllckf(&mut self) -> DFLLLCKF_W<INTENCLR_SPEC, 6> {
-        DFLLLCKF_W::new(self)
+    pub fn dflllckf(&mut self) -> DflllckfW<IntenclrSpec> {
+        DflllckfW::new(self, 6)
     }
     #[doc = "Bit 7 - DFLL Lock Coarse Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dflllckc(&mut self) -> DFLLLCKC_W<INTENCLR_SPEC, 7> {
-        DFLLLCKC_W::new(self)
+    pub fn dflllckc(&mut self) -> DflllckcW<IntenclrSpec> {
+        DflllckcW::new(self, 7)
     }
     #[doc = "Bit 8 - DFLL Reference Clock Stopped Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dfllrcs(&mut self) -> DFLLRCS_W<INTENCLR_SPEC, 8> {
-        DFLLRCS_W::new(self)
+    pub fn dfllrcs(&mut self) -> DfllrcsW<IntenclrSpec> {
+        DfllrcsW::new(self, 8)
     }
     #[doc = "Bit 9 - BOD33 Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn bod33rdy(&mut self) -> BOD33RDY_W<INTENCLR_SPEC, 9> {
-        BOD33RDY_W::new(self)
+    pub fn bod33rdy(&mut self) -> Bod33rdyW<IntenclrSpec> {
+        Bod33rdyW::new(self, 9)
     }
     #[doc = "Bit 10 - BOD33 Detection Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn bod33det(&mut self) -> BOD33DET_W<INTENCLR_SPEC, 10> {
-        BOD33DET_W::new(self)
+    pub fn bod33det(&mut self) -> Bod33detW<IntenclrSpec> {
+        Bod33detW::new(self, 10)
     }
     #[doc = "Bit 11 - BOD33 Synchronization Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn b33srdy(&mut self) -> B33SRDY_W<INTENCLR_SPEC, 11> {
-        B33SRDY_W::new(self)
+    pub fn b33srdy(&mut self) -> B33srdyW<IntenclrSpec> {
+        B33srdyW::new(self, 11)
     }
     #[doc = "Bit 15 - DPLL Lock Rise Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dplllckr(&mut self) -> DPLLLCKR_W<INTENCLR_SPEC, 15> {
-        DPLLLCKR_W::new(self)
+    pub fn dplllckr(&mut self) -> DplllckrW<IntenclrSpec> {
+        DplllckrW::new(self, 15)
     }
     #[doc = "Bit 16 - DPLL Lock Fall Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dplllckf(&mut self) -> DPLLLCKF_W<INTENCLR_SPEC, 16> {
-        DPLLLCKF_W::new(self)
+    pub fn dplllckf(&mut self) -> DplllckfW<IntenclrSpec> {
+        DplllckfW::new(self, 16)
     }
     #[doc = "Bit 17 - DPLL Lock Timeout Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dplllto(&mut self) -> DPLLLTO_W<INTENCLR_SPEC, 17> {
-        DPLLLTO_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn dplllto(&mut self) -> DpllltoW<IntenclrSpec> {
+        DpllltoW::new(self, 17)
     }
 }
-#[doc = "Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct INTENCLR_SPEC;
-impl crate::RegisterSpec for INTENCLR_SPEC {
+#[doc = "Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intenclr::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenclr::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct IntenclrSpec;
+impl crate::RegisterSpec for IntenclrSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`intenclr::R`](R) reader structure"]
-impl crate::Readable for INTENCLR_SPEC {}
+impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
-impl crate::Writable for INTENCLR_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for IntenclrSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for INTENCLR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for IntenclrSpec {
+    const RESET_VALUE: u32 = 0;
 }

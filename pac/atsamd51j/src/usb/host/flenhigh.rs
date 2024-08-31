@@ -1,22 +1,22 @@
 #[doc = "Register `FLENHIGH` reader"]
-pub type R = crate::R<FLENHIGH_SPEC>;
+pub type R = crate::R<FlenhighSpec>;
 #[doc = "Field `FLENHIGH` reader - Frame Length"]
-pub type FLENHIGH_R = crate::FieldReader;
+pub type FlenhighR = crate::FieldReader;
 impl R {
     #[doc = "Bits 0:7 - Frame Length"]
     #[inline(always)]
-    pub fn flenhigh(&self) -> FLENHIGH_R {
-        FLENHIGH_R::new(self.bits)
+    pub fn flenhigh(&self) -> FlenhighR {
+        FlenhighR::new(self.bits)
     }
 }
-#[doc = "HOST Host Frame Length\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`flenhigh::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct FLENHIGH_SPEC;
-impl crate::RegisterSpec for FLENHIGH_SPEC {
+#[doc = "HOST Host Frame Length\n\nYou can [`read`](crate::Reg::read) this register and get [`flenhigh::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct FlenhighSpec;
+impl crate::RegisterSpec for FlenhighSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`flenhigh::R`](R) reader structure"]
-impl crate::Readable for FLENHIGH_SPEC {}
+impl crate::Readable for FlenhighSpec {}
 #[doc = "`reset()` method sets FLENHIGH to value 0"]
-impl crate::Resettable for FLENHIGH_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for FlenhighSpec {
+    const RESET_VALUE: u8 = 0;
 }

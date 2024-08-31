@@ -1,91 +1,92 @@
 #[doc = "Register `CTRLA` reader"]
-pub type R = crate::R<CTRLA_SPEC>;
+pub type R = crate::R<CtrlaSpec>;
 #[doc = "Register `CTRLA` writer"]
-pub type W = crate::W<CTRLA_SPEC>;
+pub type W = crate::W<CtrlaSpec>;
 #[doc = "Field `SWRST` reader - Software Reset"]
-pub type SWRST_R = crate::BitReader;
+pub type SwrstR = crate::BitReader;
 #[doc = "Field `SWRST` writer - Software Reset"]
-pub type SWRST_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SwrstW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ENABLE` reader - Enable"]
-pub type ENABLE_R = crate::BitReader;
+pub type EnableR = crate::BitReader;
 #[doc = "Field `ENABLE` writer - Enable"]
-pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `MODE` reader - Operating Mode"]
-pub type MODE_R = crate::FieldReader<MODESELECT_A>;
+pub type EnableW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Operating Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum MODESELECT_A {
+pub enum Modeselect {
     #[doc = "0: USART with external clock"]
-    USART_EXT_CLK = 0,
+    UsartExtClk = 0,
     #[doc = "1: USART with internal clock"]
-    USART_INT_CLK = 1,
+    UsartIntClk = 1,
     #[doc = "2: SPI in slave operation"]
-    SPI_SLAVE = 2,
+    SpiSlave = 2,
     #[doc = "3: SPI in master operation"]
-    SPI_MASTER = 3,
+    SpiMaster = 3,
     #[doc = "4: I2C slave operation"]
-    I2C_SLAVE = 4,
+    I2cSlave = 4,
     #[doc = "5: I2C master operation"]
-    I2C_MASTER = 5,
+    I2cMaster = 5,
 }
-impl From<MODESELECT_A> for u8 {
+impl From<Modeselect> for u8 {
     #[inline(always)]
-    fn from(variant: MODESELECT_A) -> Self {
+    fn from(variant: Modeselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for MODESELECT_A {
+impl crate::FieldSpec for Modeselect {
     type Ux = u8;
 }
-impl MODE_R {
+impl crate::IsEnum for Modeselect {}
+#[doc = "Field `MODE` reader - Operating Mode"]
+pub type ModeR = crate::FieldReader<Modeselect>;
+impl ModeR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<MODESELECT_A> {
+    pub const fn variant(&self) -> Option<Modeselect> {
         match self.bits {
-            0 => Some(MODESELECT_A::USART_EXT_CLK),
-            1 => Some(MODESELECT_A::USART_INT_CLK),
-            2 => Some(MODESELECT_A::SPI_SLAVE),
-            3 => Some(MODESELECT_A::SPI_MASTER),
-            4 => Some(MODESELECT_A::I2C_SLAVE),
-            5 => Some(MODESELECT_A::I2C_MASTER),
+            0 => Some(Modeselect::UsartExtClk),
+            1 => Some(Modeselect::UsartIntClk),
+            2 => Some(Modeselect::SpiSlave),
+            3 => Some(Modeselect::SpiMaster),
+            4 => Some(Modeselect::I2cSlave),
+            5 => Some(Modeselect::I2cMaster),
             _ => None,
         }
     }
     #[doc = "USART with external clock"]
     #[inline(always)]
     pub fn is_usart_ext_clk(&self) -> bool {
-        *self == MODESELECT_A::USART_EXT_CLK
+        *self == Modeselect::UsartExtClk
     }
     #[doc = "USART with internal clock"]
     #[inline(always)]
     pub fn is_usart_int_clk(&self) -> bool {
-        *self == MODESELECT_A::USART_INT_CLK
+        *self == Modeselect::UsartIntClk
     }
     #[doc = "SPI in slave operation"]
     #[inline(always)]
     pub fn is_spi_slave(&self) -> bool {
-        *self == MODESELECT_A::SPI_SLAVE
+        *self == Modeselect::SpiSlave
     }
     #[doc = "SPI in master operation"]
     #[inline(always)]
     pub fn is_spi_master(&self) -> bool {
-        *self == MODESELECT_A::SPI_MASTER
+        *self == Modeselect::SpiMaster
     }
     #[doc = "I2C slave operation"]
     #[inline(always)]
     pub fn is_i2c_slave(&self) -> bool {
-        *self == MODESELECT_A::I2C_SLAVE
+        *self == Modeselect::I2cSlave
     }
     #[doc = "I2C master operation"]
     #[inline(always)]
     pub fn is_i2c_master(&self) -> bool {
-        *self == MODESELECT_A::I2C_MASTER
+        *self == Modeselect::I2cMaster
     }
 }
 #[doc = "Field `MODE` writer - Operating Mode"]
-pub type MODE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 3, O, MODESELECT_A>;
-impl<'a, REG, const O: u8> MODE_W<'a, REG, O>
+pub type ModeW<'a, REG> = crate::FieldWriter<'a, REG, 3, Modeselect>;
+impl<'a, REG> ModeW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -93,102 +94,103 @@ where
     #[doc = "USART with external clock"]
     #[inline(always)]
     pub fn usart_ext_clk(self) -> &'a mut crate::W<REG> {
-        self.variant(MODESELECT_A::USART_EXT_CLK)
+        self.variant(Modeselect::UsartExtClk)
     }
     #[doc = "USART with internal clock"]
     #[inline(always)]
     pub fn usart_int_clk(self) -> &'a mut crate::W<REG> {
-        self.variant(MODESELECT_A::USART_INT_CLK)
+        self.variant(Modeselect::UsartIntClk)
     }
     #[doc = "SPI in slave operation"]
     #[inline(always)]
     pub fn spi_slave(self) -> &'a mut crate::W<REG> {
-        self.variant(MODESELECT_A::SPI_SLAVE)
+        self.variant(Modeselect::SpiSlave)
     }
     #[doc = "SPI in master operation"]
     #[inline(always)]
     pub fn spi_master(self) -> &'a mut crate::W<REG> {
-        self.variant(MODESELECT_A::SPI_MASTER)
+        self.variant(Modeselect::SpiMaster)
     }
     #[doc = "I2C slave operation"]
     #[inline(always)]
     pub fn i2c_slave(self) -> &'a mut crate::W<REG> {
-        self.variant(MODESELECT_A::I2C_SLAVE)
+        self.variant(Modeselect::I2cSlave)
     }
     #[doc = "I2C master operation"]
     #[inline(always)]
     pub fn i2c_master(self) -> &'a mut crate::W<REG> {
-        self.variant(MODESELECT_A::I2C_MASTER)
+        self.variant(Modeselect::I2cMaster)
     }
 }
 #[doc = "Field `RUNSTDBY` reader - Run in Standby"]
-pub type RUNSTDBY_R = crate::BitReader;
+pub type RunstdbyR = crate::BitReader;
 #[doc = "Field `RUNSTDBY` writer - Run in Standby"]
-pub type RUNSTDBY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RunstdbyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PINOUT` reader - Pin Usage"]
-pub type PINOUT_R = crate::BitReader;
+pub type PinoutR = crate::BitReader;
 #[doc = "Field `PINOUT` writer - Pin Usage"]
-pub type PINOUT_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `SDAHOLD` reader - SDA Hold Time"]
-pub type SDAHOLD_R = crate::FieldReader<SDAHOLDSELECT_A>;
+pub type PinoutW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "SDA Hold Time\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum SDAHOLDSELECT_A {
+pub enum Sdaholdselect {
     #[doc = "0: Disabled"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: 50-100ns hold time"]
-    _75NS = 1,
+    _75ns = 1,
     #[doc = "2: 300-600ns hold time"]
-    _450NS = 2,
+    _450ns = 2,
     #[doc = "3: 400-800ns hold time"]
-    _600NS = 3,
+    _600ns = 3,
 }
-impl From<SDAHOLDSELECT_A> for u8 {
+impl From<Sdaholdselect> for u8 {
     #[inline(always)]
-    fn from(variant: SDAHOLDSELECT_A) -> Self {
+    fn from(variant: Sdaholdselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for SDAHOLDSELECT_A {
+impl crate::FieldSpec for Sdaholdselect {
     type Ux = u8;
 }
-impl SDAHOLD_R {
+impl crate::IsEnum for Sdaholdselect {}
+#[doc = "Field `SDAHOLD` reader - SDA Hold Time"]
+pub type SdaholdR = crate::FieldReader<Sdaholdselect>;
+impl SdaholdR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> SDAHOLDSELECT_A {
+    pub const fn variant(&self) -> Sdaholdselect {
         match self.bits {
-            0 => SDAHOLDSELECT_A::DISABLE,
-            1 => SDAHOLDSELECT_A::_75NS,
-            2 => SDAHOLDSELECT_A::_450NS,
-            3 => SDAHOLDSELECT_A::_600NS,
+            0 => Sdaholdselect::Disable,
+            1 => Sdaholdselect::_75ns,
+            2 => Sdaholdselect::_450ns,
+            3 => Sdaholdselect::_600ns,
             _ => unreachable!(),
         }
     }
     #[doc = "Disabled"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == SDAHOLDSELECT_A::DISABLE
+        *self == Sdaholdselect::Disable
     }
     #[doc = "50-100ns hold time"]
     #[inline(always)]
     pub fn is_75ns(&self) -> bool {
-        *self == SDAHOLDSELECT_A::_75NS
+        *self == Sdaholdselect::_75ns
     }
     #[doc = "300-600ns hold time"]
     #[inline(always)]
     pub fn is_450ns(&self) -> bool {
-        *self == SDAHOLDSELECT_A::_450NS
+        *self == Sdaholdselect::_450ns
     }
     #[doc = "400-800ns hold time"]
     #[inline(always)]
     pub fn is_600ns(&self) -> bool {
-        *self == SDAHOLDSELECT_A::_600NS
+        *self == Sdaholdselect::_600ns
     }
 }
 #[doc = "Field `SDAHOLD` writer - SDA Hold Time"]
-pub type SDAHOLD_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, SDAHOLDSELECT_A>;
-impl<'a, REG, const O: u8> SDAHOLD_W<'a, REG, O>
+pub type SdaholdW<'a, REG> = crate::FieldWriter<'a, REG, 2, Sdaholdselect, crate::Safe>;
+impl<'a, REG> SdaholdW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -196,84 +198,85 @@ where
     #[doc = "Disabled"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut crate::W<REG> {
-        self.variant(SDAHOLDSELECT_A::DISABLE)
+        self.variant(Sdaholdselect::Disable)
     }
     #[doc = "50-100ns hold time"]
     #[inline(always)]
     pub fn _75ns(self) -> &'a mut crate::W<REG> {
-        self.variant(SDAHOLDSELECT_A::_75NS)
+        self.variant(Sdaholdselect::_75ns)
     }
     #[doc = "300-600ns hold time"]
     #[inline(always)]
     pub fn _450ns(self) -> &'a mut crate::W<REG> {
-        self.variant(SDAHOLDSELECT_A::_450NS)
+        self.variant(Sdaholdselect::_450ns)
     }
     #[doc = "400-800ns hold time"]
     #[inline(always)]
     pub fn _600ns(self) -> &'a mut crate::W<REG> {
-        self.variant(SDAHOLDSELECT_A::_600NS)
+        self.variant(Sdaholdselect::_600ns)
     }
 }
 #[doc = "Field `MEXTTOEN` reader - Master SCL Low Extend Timeout"]
-pub type MEXTTOEN_R = crate::BitReader;
+pub type MexttoenR = crate::BitReader;
 #[doc = "Field `MEXTTOEN` writer - Master SCL Low Extend Timeout"]
-pub type MEXTTOEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type MexttoenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SEXTTOEN` reader - Slave SCL Low Extend Timeout"]
-pub type SEXTTOEN_R = crate::BitReader;
+pub type SexttoenR = crate::BitReader;
 #[doc = "Field `SEXTTOEN` writer - Slave SCL Low Extend Timeout"]
-pub type SEXTTOEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `SPEED` reader - Transfer Speed"]
-pub type SPEED_R = crate::FieldReader<SPEEDSELECT_A>;
+pub type SexttoenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Transfer Speed\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum SPEEDSELECT_A {
+pub enum Speedselect {
     #[doc = "0: Standard Mode(Sm) Upto 100kHz and Fast Mode(Fm) Upto 400kHz"]
-    STANDARD_AND_FAST_MODE = 0,
+    StandardAndFastMode = 0,
     #[doc = "1: Fast-mode Plus Upto 1MHz"]
-    FASTPLUS_MODE = 1,
+    FastplusMode = 1,
     #[doc = "2: High-speed mode Upto 3.4MHz"]
-    HIGH_SPEED_MODE = 2,
+    HighSpeedMode = 2,
 }
-impl From<SPEEDSELECT_A> for u8 {
+impl From<Speedselect> for u8 {
     #[inline(always)]
-    fn from(variant: SPEEDSELECT_A) -> Self {
+    fn from(variant: Speedselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for SPEEDSELECT_A {
+impl crate::FieldSpec for Speedselect {
     type Ux = u8;
 }
-impl SPEED_R {
+impl crate::IsEnum for Speedselect {}
+#[doc = "Field `SPEED` reader - Transfer Speed"]
+pub type SpeedR = crate::FieldReader<Speedselect>;
+impl SpeedR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<SPEEDSELECT_A> {
+    pub const fn variant(&self) -> Option<Speedselect> {
         match self.bits {
-            0 => Some(SPEEDSELECT_A::STANDARD_AND_FAST_MODE),
-            1 => Some(SPEEDSELECT_A::FASTPLUS_MODE),
-            2 => Some(SPEEDSELECT_A::HIGH_SPEED_MODE),
+            0 => Some(Speedselect::StandardAndFastMode),
+            1 => Some(Speedselect::FastplusMode),
+            2 => Some(Speedselect::HighSpeedMode),
             _ => None,
         }
     }
     #[doc = "Standard Mode(Sm) Upto 100kHz and Fast Mode(Fm) Upto 400kHz"]
     #[inline(always)]
     pub fn is_standard_and_fast_mode(&self) -> bool {
-        *self == SPEEDSELECT_A::STANDARD_AND_FAST_MODE
+        *self == Speedselect::StandardAndFastMode
     }
     #[doc = "Fast-mode Plus Upto 1MHz"]
     #[inline(always)]
     pub fn is_fastplus_mode(&self) -> bool {
-        *self == SPEEDSELECT_A::FASTPLUS_MODE
+        *self == Speedselect::FastplusMode
     }
     #[doc = "High-speed mode Upto 3.4MHz"]
     #[inline(always)]
     pub fn is_high_speed_mode(&self) -> bool {
-        *self == SPEEDSELECT_A::HIGH_SPEED_MODE
+        *self == Speedselect::HighSpeedMode
     }
 }
 #[doc = "Field `SPEED` writer - Transfer Speed"]
-pub type SPEED_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, SPEEDSELECT_A>;
-impl<'a, REG, const O: u8> SPEED_W<'a, REG, O>
+pub type SpeedW<'a, REG> = crate::FieldWriter<'a, REG, 2, Speedselect>;
+impl<'a, REG> SpeedW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -281,83 +284,84 @@ where
     #[doc = "Standard Mode(Sm) Upto 100kHz and Fast Mode(Fm) Upto 400kHz"]
     #[inline(always)]
     pub fn standard_and_fast_mode(self) -> &'a mut crate::W<REG> {
-        self.variant(SPEEDSELECT_A::STANDARD_AND_FAST_MODE)
+        self.variant(Speedselect::StandardAndFastMode)
     }
     #[doc = "Fast-mode Plus Upto 1MHz"]
     #[inline(always)]
     pub fn fastplus_mode(self) -> &'a mut crate::W<REG> {
-        self.variant(SPEEDSELECT_A::FASTPLUS_MODE)
+        self.variant(Speedselect::FastplusMode)
     }
     #[doc = "High-speed mode Upto 3.4MHz"]
     #[inline(always)]
     pub fn high_speed_mode(self) -> &'a mut crate::W<REG> {
-        self.variant(SPEEDSELECT_A::HIGH_SPEED_MODE)
+        self.variant(Speedselect::HighSpeedMode)
     }
 }
 #[doc = "Field `SCLSM` reader - SCL Clock Stretch Mode"]
-pub type SCLSM_R = crate::BitReader;
+pub type SclsmR = crate::BitReader;
 #[doc = "Field `SCLSM` writer - SCL Clock Stretch Mode"]
-pub type SCLSM_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `INACTOUT` reader - Inactive Time-Out"]
-pub type INACTOUT_R = crate::FieldReader<INACTOUTSELECT_A>;
+pub type SclsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Inactive Time-Out\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum INACTOUTSELECT_A {
+pub enum Inactoutselect {
     #[doc = "0: Disabled"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: 5-6 SCL Time-Out(50-60us)"]
-    _55US = 1,
+    _55us = 1,
     #[doc = "2: 10-11 SCL Time-Out(100-110us)"]
-    _105US = 2,
+    _105us = 2,
     #[doc = "3: 20-21 SCL Time-Out(200-210us)"]
-    _205US = 3,
+    _205us = 3,
 }
-impl From<INACTOUTSELECT_A> for u8 {
+impl From<Inactoutselect> for u8 {
     #[inline(always)]
-    fn from(variant: INACTOUTSELECT_A) -> Self {
+    fn from(variant: Inactoutselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for INACTOUTSELECT_A {
+impl crate::FieldSpec for Inactoutselect {
     type Ux = u8;
 }
-impl INACTOUT_R {
+impl crate::IsEnum for Inactoutselect {}
+#[doc = "Field `INACTOUT` reader - Inactive Time-Out"]
+pub type InactoutR = crate::FieldReader<Inactoutselect>;
+impl InactoutR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> INACTOUTSELECT_A {
+    pub const fn variant(&self) -> Inactoutselect {
         match self.bits {
-            0 => INACTOUTSELECT_A::DISABLE,
-            1 => INACTOUTSELECT_A::_55US,
-            2 => INACTOUTSELECT_A::_105US,
-            3 => INACTOUTSELECT_A::_205US,
+            0 => Inactoutselect::Disable,
+            1 => Inactoutselect::_55us,
+            2 => Inactoutselect::_105us,
+            3 => Inactoutselect::_205us,
             _ => unreachable!(),
         }
     }
     #[doc = "Disabled"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == INACTOUTSELECT_A::DISABLE
+        *self == Inactoutselect::Disable
     }
     #[doc = "5-6 SCL Time-Out(50-60us)"]
     #[inline(always)]
     pub fn is_55us(&self) -> bool {
-        *self == INACTOUTSELECT_A::_55US
+        *self == Inactoutselect::_55us
     }
     #[doc = "10-11 SCL Time-Out(100-110us)"]
     #[inline(always)]
     pub fn is_105us(&self) -> bool {
-        *self == INACTOUTSELECT_A::_105US
+        *self == Inactoutselect::_105us
     }
     #[doc = "20-21 SCL Time-Out(200-210us)"]
     #[inline(always)]
     pub fn is_205us(&self) -> bool {
-        *self == INACTOUTSELECT_A::_205US
+        *self == Inactoutselect::_205us
     }
 }
 #[doc = "Field `INACTOUT` writer - Inactive Time-Out"]
-pub type INACTOUT_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, INACTOUTSELECT_A>;
-impl<'a, REG, const O: u8> INACTOUT_W<'a, REG, O>
+pub type InactoutW<'a, REG> = crate::FieldWriter<'a, REG, 2, Inactoutselect, crate::Safe>;
+impl<'a, REG> InactoutW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -365,187 +369,178 @@ where
     #[doc = "Disabled"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut crate::W<REG> {
-        self.variant(INACTOUTSELECT_A::DISABLE)
+        self.variant(Inactoutselect::Disable)
     }
     #[doc = "5-6 SCL Time-Out(50-60us)"]
     #[inline(always)]
     pub fn _55us(self) -> &'a mut crate::W<REG> {
-        self.variant(INACTOUTSELECT_A::_55US)
+        self.variant(Inactoutselect::_55us)
     }
     #[doc = "10-11 SCL Time-Out(100-110us)"]
     #[inline(always)]
     pub fn _105us(self) -> &'a mut crate::W<REG> {
-        self.variant(INACTOUTSELECT_A::_105US)
+        self.variant(Inactoutselect::_105us)
     }
     #[doc = "20-21 SCL Time-Out(200-210us)"]
     #[inline(always)]
     pub fn _205us(self) -> &'a mut crate::W<REG> {
-        self.variant(INACTOUTSELECT_A::_205US)
+        self.variant(Inactoutselect::_205us)
     }
 }
 #[doc = "Field `LOWTOUTEN` reader - SCL Low Timeout Enable"]
-pub type LOWTOUTEN_R = crate::BitReader;
+pub type LowtoutenR = crate::BitReader;
 #[doc = "Field `LOWTOUTEN` writer - SCL Low Timeout Enable"]
-pub type LOWTOUTEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type LowtoutenW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    pub fn swrst(&self) -> SWRST_R {
-        SWRST_R::new((self.bits & 1) != 0)
+    pub fn swrst(&self) -> SwrstR {
+        SwrstR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn enable(&self) -> EnableR {
+        EnableR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bits 2:4 - Operating Mode"]
     #[inline(always)]
-    pub fn mode(&self) -> MODE_R {
-        MODE_R::new(((self.bits >> 2) & 7) as u8)
+    pub fn mode(&self) -> ModeR {
+        ModeR::new(((self.bits >> 2) & 7) as u8)
     }
     #[doc = "Bit 7 - Run in Standby"]
     #[inline(always)]
-    pub fn runstdby(&self) -> RUNSTDBY_R {
-        RUNSTDBY_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn runstdby(&self) -> RunstdbyR {
+        RunstdbyR::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 16 - Pin Usage"]
     #[inline(always)]
-    pub fn pinout(&self) -> PINOUT_R {
-        PINOUT_R::new(((self.bits >> 16) & 1) != 0)
+    pub fn pinout(&self) -> PinoutR {
+        PinoutR::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bits 20:21 - SDA Hold Time"]
     #[inline(always)]
-    pub fn sdahold(&self) -> SDAHOLD_R {
-        SDAHOLD_R::new(((self.bits >> 20) & 3) as u8)
+    pub fn sdahold(&self) -> SdaholdR {
+        SdaholdR::new(((self.bits >> 20) & 3) as u8)
     }
     #[doc = "Bit 22 - Master SCL Low Extend Timeout"]
     #[inline(always)]
-    pub fn mexttoen(&self) -> MEXTTOEN_R {
-        MEXTTOEN_R::new(((self.bits >> 22) & 1) != 0)
+    pub fn mexttoen(&self) -> MexttoenR {
+        MexttoenR::new(((self.bits >> 22) & 1) != 0)
     }
     #[doc = "Bit 23 - Slave SCL Low Extend Timeout"]
     #[inline(always)]
-    pub fn sexttoen(&self) -> SEXTTOEN_R {
-        SEXTTOEN_R::new(((self.bits >> 23) & 1) != 0)
+    pub fn sexttoen(&self) -> SexttoenR {
+        SexttoenR::new(((self.bits >> 23) & 1) != 0)
     }
     #[doc = "Bits 24:25 - Transfer Speed"]
     #[inline(always)]
-    pub fn speed(&self) -> SPEED_R {
-        SPEED_R::new(((self.bits >> 24) & 3) as u8)
+    pub fn speed(&self) -> SpeedR {
+        SpeedR::new(((self.bits >> 24) & 3) as u8)
     }
     #[doc = "Bit 27 - SCL Clock Stretch Mode"]
     #[inline(always)]
-    pub fn sclsm(&self) -> SCLSM_R {
-        SCLSM_R::new(((self.bits >> 27) & 1) != 0)
+    pub fn sclsm(&self) -> SclsmR {
+        SclsmR::new(((self.bits >> 27) & 1) != 0)
     }
     #[doc = "Bits 28:29 - Inactive Time-Out"]
     #[inline(always)]
-    pub fn inactout(&self) -> INACTOUT_R {
-        INACTOUT_R::new(((self.bits >> 28) & 3) as u8)
+    pub fn inactout(&self) -> InactoutR {
+        InactoutR::new(((self.bits >> 28) & 3) as u8)
     }
     #[doc = "Bit 30 - SCL Low Timeout Enable"]
     #[inline(always)]
-    pub fn lowtouten(&self) -> LOWTOUTEN_R {
-        LOWTOUTEN_R::new(((self.bits >> 30) & 1) != 0)
+    pub fn lowtouten(&self) -> LowtoutenR {
+        LowtoutenR::new(((self.bits >> 30) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
     #[must_use]
-    pub fn swrst(&mut self) -> SWRST_W<CTRLA_SPEC, 0> {
-        SWRST_W::new(self)
+    pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
+        SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn enable(&mut self) -> ENABLE_W<CTRLA_SPEC, 1> {
-        ENABLE_W::new(self)
+    pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
+        EnableW::new(self, 1)
     }
     #[doc = "Bits 2:4 - Operating Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn mode(&mut self) -> MODE_W<CTRLA_SPEC, 2> {
-        MODE_W::new(self)
+    pub fn mode(&mut self) -> ModeW<CtrlaSpec> {
+        ModeW::new(self, 2)
     }
     #[doc = "Bit 7 - Run in Standby"]
     #[inline(always)]
     #[must_use]
-    pub fn runstdby(&mut self) -> RUNSTDBY_W<CTRLA_SPEC, 7> {
-        RUNSTDBY_W::new(self)
+    pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
+        RunstdbyW::new(self, 7)
     }
     #[doc = "Bit 16 - Pin Usage"]
     #[inline(always)]
     #[must_use]
-    pub fn pinout(&mut self) -> PINOUT_W<CTRLA_SPEC, 16> {
-        PINOUT_W::new(self)
+    pub fn pinout(&mut self) -> PinoutW<CtrlaSpec> {
+        PinoutW::new(self, 16)
     }
     #[doc = "Bits 20:21 - SDA Hold Time"]
     #[inline(always)]
     #[must_use]
-    pub fn sdahold(&mut self) -> SDAHOLD_W<CTRLA_SPEC, 20> {
-        SDAHOLD_W::new(self)
+    pub fn sdahold(&mut self) -> SdaholdW<CtrlaSpec> {
+        SdaholdW::new(self, 20)
     }
     #[doc = "Bit 22 - Master SCL Low Extend Timeout"]
     #[inline(always)]
     #[must_use]
-    pub fn mexttoen(&mut self) -> MEXTTOEN_W<CTRLA_SPEC, 22> {
-        MEXTTOEN_W::new(self)
+    pub fn mexttoen(&mut self) -> MexttoenW<CtrlaSpec> {
+        MexttoenW::new(self, 22)
     }
     #[doc = "Bit 23 - Slave SCL Low Extend Timeout"]
     #[inline(always)]
     #[must_use]
-    pub fn sexttoen(&mut self) -> SEXTTOEN_W<CTRLA_SPEC, 23> {
-        SEXTTOEN_W::new(self)
+    pub fn sexttoen(&mut self) -> SexttoenW<CtrlaSpec> {
+        SexttoenW::new(self, 23)
     }
     #[doc = "Bits 24:25 - Transfer Speed"]
     #[inline(always)]
     #[must_use]
-    pub fn speed(&mut self) -> SPEED_W<CTRLA_SPEC, 24> {
-        SPEED_W::new(self)
+    pub fn speed(&mut self) -> SpeedW<CtrlaSpec> {
+        SpeedW::new(self, 24)
     }
     #[doc = "Bit 27 - SCL Clock Stretch Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn sclsm(&mut self) -> SCLSM_W<CTRLA_SPEC, 27> {
-        SCLSM_W::new(self)
+    pub fn sclsm(&mut self) -> SclsmW<CtrlaSpec> {
+        SclsmW::new(self, 27)
     }
     #[doc = "Bits 28:29 - Inactive Time-Out"]
     #[inline(always)]
     #[must_use]
-    pub fn inactout(&mut self) -> INACTOUT_W<CTRLA_SPEC, 28> {
-        INACTOUT_W::new(self)
+    pub fn inactout(&mut self) -> InactoutW<CtrlaSpec> {
+        InactoutW::new(self, 28)
     }
     #[doc = "Bit 30 - SCL Low Timeout Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn lowtouten(&mut self) -> LOWTOUTEN_W<CTRLA_SPEC, 30> {
-        LOWTOUTEN_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn lowtouten(&mut self) -> LowtoutenW<CtrlaSpec> {
+        LowtoutenW::new(self, 30)
     }
 }
-#[doc = "I2CM Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CTRLA_SPEC;
-impl crate::RegisterSpec for CTRLA_SPEC {
+#[doc = "I2CM Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`ctrla::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CtrlaSpec;
+impl crate::RegisterSpec for CtrlaSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`ctrla::R`](R) reader structure"]
-impl crate::Readable for CTRLA_SPEC {}
+impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
-impl crate::Writable for CTRLA_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CtrlaSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CTRLA_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CtrlaSpec {
+    const RESET_VALUE: u32 = 0;
 }

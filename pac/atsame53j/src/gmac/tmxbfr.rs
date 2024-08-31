@@ -1,22 +1,22 @@
 #[doc = "Register `TMXBFR` reader"]
-pub type R = crate::R<TMXBFR_SPEC>;
+pub type R = crate::R<TmxbfrSpec>;
 #[doc = "Field `NFRX` reader - 1519 to Maximum Byte Frames Received without Error"]
-pub type NFRX_R = crate::FieldReader<u32>;
+pub type NfrxR = crate::FieldReader<u32>;
 impl R {
     #[doc = "Bits 0:31 - 1519 to Maximum Byte Frames Received without Error"]
     #[inline(always)]
-    pub fn nfrx(&self) -> NFRX_R {
-        NFRX_R::new(self.bits)
+    pub fn nfrx(&self) -> NfrxR {
+        NfrxR::new(self.bits)
     }
 }
-#[doc = "1519 to Maximum Byte Frames Received Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`tmxbfr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct TMXBFR_SPEC;
-impl crate::RegisterSpec for TMXBFR_SPEC {
+#[doc = "1519 to Maximum Byte Frames Received Register\n\nYou can [`read`](crate::Reg::read) this register and get [`tmxbfr::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct TmxbfrSpec;
+impl crate::RegisterSpec for TmxbfrSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`tmxbfr::R`](R) reader structure"]
-impl crate::Readable for TMXBFR_SPEC {}
+impl crate::Readable for TmxbfrSpec {}
 #[doc = "`reset()` method sets TMXBFR to value 0"]
-impl crate::Resettable for TMXBFR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for TmxbfrSpec {
+    const RESET_VALUE: u32 = 0;
 }

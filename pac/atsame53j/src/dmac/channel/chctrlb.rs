@@ -1,59 +1,60 @@
 #[doc = "Register `CHCTRLB` reader"]
-pub type R = crate::R<CHCTRLB_SPEC>;
+pub type R = crate::R<ChctrlbSpec>;
 #[doc = "Register `CHCTRLB` writer"]
-pub type W = crate::W<CHCTRLB_SPEC>;
-#[doc = "Field `CMD` reader - Software Command"]
-pub type CMD_R = crate::FieldReader<CMDSELECT_A>;
+pub type W = crate::W<ChctrlbSpec>;
 #[doc = "Software Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CMDSELECT_A {
+pub enum Cmdselect {
     #[doc = "0: No action"]
-    NOACT = 0,
+    Noact = 0,
     #[doc = "1: Channel suspend operation"]
-    SUSPEND = 1,
+    Suspend = 1,
     #[doc = "2: Channel resume operation"]
-    RESUME = 2,
+    Resume = 2,
 }
-impl From<CMDSELECT_A> for u8 {
+impl From<Cmdselect> for u8 {
     #[inline(always)]
-    fn from(variant: CMDSELECT_A) -> Self {
+    fn from(variant: Cmdselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for CMDSELECT_A {
+impl crate::FieldSpec for Cmdselect {
     type Ux = u8;
 }
-impl CMD_R {
+impl crate::IsEnum for Cmdselect {}
+#[doc = "Field `CMD` reader - Software Command"]
+pub type CmdR = crate::FieldReader<Cmdselect>;
+impl CmdR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<CMDSELECT_A> {
+    pub const fn variant(&self) -> Option<Cmdselect> {
         match self.bits {
-            0 => Some(CMDSELECT_A::NOACT),
-            1 => Some(CMDSELECT_A::SUSPEND),
-            2 => Some(CMDSELECT_A::RESUME),
+            0 => Some(Cmdselect::Noact),
+            1 => Some(Cmdselect::Suspend),
+            2 => Some(Cmdselect::Resume),
             _ => None,
         }
     }
     #[doc = "No action"]
     #[inline(always)]
     pub fn is_noact(&self) -> bool {
-        *self == CMDSELECT_A::NOACT
+        *self == Cmdselect::Noact
     }
     #[doc = "Channel suspend operation"]
     #[inline(always)]
     pub fn is_suspend(&self) -> bool {
-        *self == CMDSELECT_A::SUSPEND
+        *self == Cmdselect::Suspend
     }
     #[doc = "Channel resume operation"]
     #[inline(always)]
     pub fn is_resume(&self) -> bool {
-        *self == CMDSELECT_A::RESUME
+        *self == Cmdselect::Resume
     }
 }
 #[doc = "Field `CMD` writer - Software Command"]
-pub type CMD_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, CMDSELECT_A>;
-impl<'a, REG, const O: u8> CMD_W<'a, REG, O>
+pub type CmdW<'a, REG> = crate::FieldWriter<'a, REG, 2, Cmdselect>;
+impl<'a, REG> CmdW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -61,57 +62,48 @@ where
     #[doc = "No action"]
     #[inline(always)]
     pub fn noact(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::NOACT)
+        self.variant(Cmdselect::Noact)
     }
     #[doc = "Channel suspend operation"]
     #[inline(always)]
     pub fn suspend(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::SUSPEND)
+        self.variant(Cmdselect::Suspend)
     }
     #[doc = "Channel resume operation"]
     #[inline(always)]
     pub fn resume(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDSELECT_A::RESUME)
+        self.variant(Cmdselect::Resume)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - Software Command"]
     #[inline(always)]
-    pub fn cmd(&self) -> CMD_R {
-        CMD_R::new(self.bits & 3)
+    pub fn cmd(&self) -> CmdR {
+        CmdR::new(self.bits & 3)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Software Command"]
     #[inline(always)]
     #[must_use]
-    pub fn cmd(&mut self) -> CMD_W<CHCTRLB_SPEC, 0> {
-        CMD_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn cmd(&mut self) -> CmdW<ChctrlbSpec> {
+        CmdW::new(self, 0)
     }
 }
-#[doc = "Channel n Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`chctrlb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`chctrlb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CHCTRLB_SPEC;
-impl crate::RegisterSpec for CHCTRLB_SPEC {
+#[doc = "Channel n Control B\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrlb::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrlb::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct ChctrlbSpec;
+impl crate::RegisterSpec for ChctrlbSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`chctrlb::R`](R) reader structure"]
-impl crate::Readable for CHCTRLB_SPEC {}
+impl crate::Readable for ChctrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`chctrlb::W`](W) writer structure"]
-impl crate::Writable for CHCTRLB_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for ChctrlbSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHCTRLB to value 0"]
-impl crate::Resettable for CHCTRLB_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for ChctrlbSpec {
+    const RESET_VALUE: u8 = 0;
 }

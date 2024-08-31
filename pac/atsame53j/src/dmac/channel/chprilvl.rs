@@ -1,67 +1,68 @@
 #[doc = "Register `CHPRILVL` reader"]
-pub type R = crate::R<CHPRILVL_SPEC>;
+pub type R = crate::R<ChprilvlSpec>;
 #[doc = "Register `CHPRILVL` writer"]
-pub type W = crate::W<CHPRILVL_SPEC>;
-#[doc = "Field `PRILVL` reader - Channel Priority Level"]
-pub type PRILVL_R = crate::FieldReader<PRILVLSELECT_A>;
+pub type W = crate::W<ChprilvlSpec>;
 #[doc = "Channel Priority Level\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum PRILVLSELECT_A {
+pub enum Prilvlselect {
     #[doc = "0: Channel Priority Level 0 (Lowest Level)"]
-    LVL0 = 0,
+    Lvl0 = 0,
     #[doc = "1: Channel Priority Level 1"]
-    LVL1 = 1,
+    Lvl1 = 1,
     #[doc = "2: Channel Priority Level 2"]
-    LVL2 = 2,
+    Lvl2 = 2,
     #[doc = "3: Channel Priority Level 3 (Highest Level)"]
-    LVL3 = 3,
+    Lvl3 = 3,
 }
-impl From<PRILVLSELECT_A> for u8 {
+impl From<Prilvlselect> for u8 {
     #[inline(always)]
-    fn from(variant: PRILVLSELECT_A) -> Self {
+    fn from(variant: Prilvlselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for PRILVLSELECT_A {
+impl crate::FieldSpec for Prilvlselect {
     type Ux = u8;
 }
-impl PRILVL_R {
+impl crate::IsEnum for Prilvlselect {}
+#[doc = "Field `PRILVL` reader - Channel Priority Level"]
+pub type PrilvlR = crate::FieldReader<Prilvlselect>;
+impl PrilvlR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> PRILVLSELECT_A {
+    pub const fn variant(&self) -> Prilvlselect {
         match self.bits {
-            0 => PRILVLSELECT_A::LVL0,
-            1 => PRILVLSELECT_A::LVL1,
-            2 => PRILVLSELECT_A::LVL2,
-            3 => PRILVLSELECT_A::LVL3,
+            0 => Prilvlselect::Lvl0,
+            1 => Prilvlselect::Lvl1,
+            2 => Prilvlselect::Lvl2,
+            3 => Prilvlselect::Lvl3,
             _ => unreachable!(),
         }
     }
     #[doc = "Channel Priority Level 0 (Lowest Level)"]
     #[inline(always)]
     pub fn is_lvl0(&self) -> bool {
-        *self == PRILVLSELECT_A::LVL0
+        *self == Prilvlselect::Lvl0
     }
     #[doc = "Channel Priority Level 1"]
     #[inline(always)]
     pub fn is_lvl1(&self) -> bool {
-        *self == PRILVLSELECT_A::LVL1
+        *self == Prilvlselect::Lvl1
     }
     #[doc = "Channel Priority Level 2"]
     #[inline(always)]
     pub fn is_lvl2(&self) -> bool {
-        *self == PRILVLSELECT_A::LVL2
+        *self == Prilvlselect::Lvl2
     }
     #[doc = "Channel Priority Level 3 (Highest Level)"]
     #[inline(always)]
     pub fn is_lvl3(&self) -> bool {
-        *self == PRILVLSELECT_A::LVL3
+        *self == Prilvlselect::Lvl3
     }
 }
 #[doc = "Field `PRILVL` writer - Channel Priority Level"]
-pub type PRILVL_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, PRILVLSELECT_A>;
-impl<'a, REG, const O: u8> PRILVL_W<'a, REG, O>
+pub type PrilvlW<'a, REG> = crate::FieldWriter<'a, REG, 2, Prilvlselect, crate::Safe>;
+impl<'a, REG> PrilvlW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -69,62 +70,53 @@ where
     #[doc = "Channel Priority Level 0 (Lowest Level)"]
     #[inline(always)]
     pub fn lvl0(self) -> &'a mut crate::W<REG> {
-        self.variant(PRILVLSELECT_A::LVL0)
+        self.variant(Prilvlselect::Lvl0)
     }
     #[doc = "Channel Priority Level 1"]
     #[inline(always)]
     pub fn lvl1(self) -> &'a mut crate::W<REG> {
-        self.variant(PRILVLSELECT_A::LVL1)
+        self.variant(Prilvlselect::Lvl1)
     }
     #[doc = "Channel Priority Level 2"]
     #[inline(always)]
     pub fn lvl2(self) -> &'a mut crate::W<REG> {
-        self.variant(PRILVLSELECT_A::LVL2)
+        self.variant(Prilvlselect::Lvl2)
     }
     #[doc = "Channel Priority Level 3 (Highest Level)"]
     #[inline(always)]
     pub fn lvl3(self) -> &'a mut crate::W<REG> {
-        self.variant(PRILVLSELECT_A::LVL3)
+        self.variant(Prilvlselect::Lvl3)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - Channel Priority Level"]
     #[inline(always)]
-    pub fn prilvl(&self) -> PRILVL_R {
-        PRILVL_R::new(self.bits & 3)
+    pub fn prilvl(&self) -> PrilvlR {
+        PrilvlR::new(self.bits & 3)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Channel Priority Level"]
     #[inline(always)]
     #[must_use]
-    pub fn prilvl(&mut self) -> PRILVL_W<CHPRILVL_SPEC, 0> {
-        PRILVL_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn prilvl(&mut self) -> PrilvlW<ChprilvlSpec> {
+        PrilvlW::new(self, 0)
     }
 }
-#[doc = "Channel n Priority Level\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`chprilvl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`chprilvl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CHPRILVL_SPEC;
-impl crate::RegisterSpec for CHPRILVL_SPEC {
+#[doc = "Channel n Priority Level\n\nYou can [`read`](crate::Reg::read) this register and get [`chprilvl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chprilvl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct ChprilvlSpec;
+impl crate::RegisterSpec for ChprilvlSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`chprilvl::R`](R) reader structure"]
-impl crate::Readable for CHPRILVL_SPEC {}
+impl crate::Readable for ChprilvlSpec {}
 #[doc = "`write(|w| ..)` method takes [`chprilvl::W`](W) writer structure"]
-impl crate::Writable for CHPRILVL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for ChprilvlSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHPRILVL to value 0"]
-impl crate::Resettable for CHPRILVL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for ChprilvlSpec {
+    const RESET_VALUE: u8 = 0;
 }

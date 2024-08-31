@@ -1,64 +1,55 @@
 #[doc = "Register `INTENCLR` reader"]
-pub type R = crate::R<INTENCLR_SPEC>;
+pub type R = crate::R<IntenclrSpec>;
 #[doc = "Register `INTENCLR` writer"]
-pub type W = crate::W<INTENCLR_SPEC>;
+pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `READY` reader - NVM Ready Interrupt Enable"]
-pub type READY_R = crate::BitReader;
+pub type ReadyR = crate::BitReader;
 #[doc = "Field `READY` writer - NVM Ready Interrupt Enable"]
-pub type READY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type ReadyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERROR` reader - Error Interrupt Enable"]
-pub type ERROR_R = crate::BitReader;
+pub type ErrorR = crate::BitReader;
 #[doc = "Field `ERROR` writer - Error Interrupt Enable"]
-pub type ERROR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type ErrorW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - NVM Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn ready(&self) -> READY_R {
-        READY_R::new((self.bits & 1) != 0)
+    pub fn ready(&self) -> ReadyR {
+        ReadyR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Error Interrupt Enable"]
     #[inline(always)]
-    pub fn error(&self) -> ERROR_R {
-        ERROR_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn error(&self) -> ErrorR {
+        ErrorR::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - NVM Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn ready(&mut self) -> READY_W<INTENCLR_SPEC, 0> {
-        READY_W::new(self)
+    pub fn ready(&mut self) -> ReadyW<IntenclrSpec> {
+        ReadyW::new(self, 0)
     }
     #[doc = "Bit 1 - Error Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn error(&mut self) -> ERROR_W<INTENCLR_SPEC, 1> {
-        ERROR_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn error(&mut self) -> ErrorW<IntenclrSpec> {
+        ErrorW::new(self, 1)
     }
 }
-#[doc = "Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct INTENCLR_SPEC;
-impl crate::RegisterSpec for INTENCLR_SPEC {
+#[doc = "Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intenclr::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenclr::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct IntenclrSpec;
+impl crate::RegisterSpec for IntenclrSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`intenclr::R`](R) reader structure"]
-impl crate::Readable for INTENCLR_SPEC {}
+impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
-impl crate::Writable for INTENCLR_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for IntenclrSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for INTENCLR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for IntenclrSpec {
+    const RESET_VALUE: u8 = 0;
 }

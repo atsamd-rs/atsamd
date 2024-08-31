@@ -1,67 +1,68 @@
 #[doc = "Register `MRCFG` reader"]
-pub type R = crate::R<MRCFG_SPEC>;
+pub type R = crate::R<MrcfgSpec>;
 #[doc = "Register `MRCFG` writer"]
-pub type W = crate::W<MRCFG_SPEC>;
-#[doc = "Field `QOS` reader - Quality of Service"]
-pub type QOS_R = crate::FieldReader<QOSSELECT_A>;
+pub type W = crate::W<MrcfgSpec>;
 #[doc = "Quality of Service\n\nValue on reset: 2"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum QOSSELECT_A {
+pub enum Qosselect {
     #[doc = "0: Background (no sensitive operation)"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: Sensitive Bandwidth"]
-    LOW = 1,
+    Low = 1,
     #[doc = "2: Sensitive Latency"]
-    MEDIUM = 2,
+    Medium = 2,
     #[doc = "3: Critical Latency"]
-    HIGH = 3,
+    High = 3,
 }
-impl From<QOSSELECT_A> for u8 {
+impl From<Qosselect> for u8 {
     #[inline(always)]
-    fn from(variant: QOSSELECT_A) -> Self {
+    fn from(variant: Qosselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for QOSSELECT_A {
+impl crate::FieldSpec for Qosselect {
     type Ux = u8;
 }
-impl QOS_R {
+impl crate::IsEnum for Qosselect {}
+#[doc = "Field `QOS` reader - Quality of Service"]
+pub type QosR = crate::FieldReader<Qosselect>;
+impl QosR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> QOSSELECT_A {
+    pub const fn variant(&self) -> Qosselect {
         match self.bits {
-            0 => QOSSELECT_A::DISABLE,
-            1 => QOSSELECT_A::LOW,
-            2 => QOSSELECT_A::MEDIUM,
-            3 => QOSSELECT_A::HIGH,
+            0 => Qosselect::Disable,
+            1 => Qosselect::Low,
+            2 => Qosselect::Medium,
+            3 => Qosselect::High,
             _ => unreachable!(),
         }
     }
     #[doc = "Background (no sensitive operation)"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == QOSSELECT_A::DISABLE
+        *self == Qosselect::Disable
     }
     #[doc = "Sensitive Bandwidth"]
     #[inline(always)]
     pub fn is_low(&self) -> bool {
-        *self == QOSSELECT_A::LOW
+        *self == Qosselect::Low
     }
     #[doc = "Sensitive Latency"]
     #[inline(always)]
     pub fn is_medium(&self) -> bool {
-        *self == QOSSELECT_A::MEDIUM
+        *self == Qosselect::Medium
     }
     #[doc = "Critical Latency"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == QOSSELECT_A::HIGH
+        *self == Qosselect::High
     }
 }
 #[doc = "Field `QOS` writer - Quality of Service"]
-pub type QOS_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, QOSSELECT_A>;
-impl<'a, REG, const O: u8> QOS_W<'a, REG, O>
+pub type QosW<'a, REG> = crate::FieldWriter<'a, REG, 2, Qosselect, crate::Safe>;
+impl<'a, REG> QosW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -69,62 +70,53 @@ where
     #[doc = "Background (no sensitive operation)"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut crate::W<REG> {
-        self.variant(QOSSELECT_A::DISABLE)
+        self.variant(Qosselect::Disable)
     }
     #[doc = "Sensitive Bandwidth"]
     #[inline(always)]
     pub fn low(self) -> &'a mut crate::W<REG> {
-        self.variant(QOSSELECT_A::LOW)
+        self.variant(Qosselect::Low)
     }
     #[doc = "Sensitive Latency"]
     #[inline(always)]
     pub fn medium(self) -> &'a mut crate::W<REG> {
-        self.variant(QOSSELECT_A::MEDIUM)
+        self.variant(Qosselect::Medium)
     }
     #[doc = "Critical Latency"]
     #[inline(always)]
     pub fn high(self) -> &'a mut crate::W<REG> {
-        self.variant(QOSSELECT_A::HIGH)
+        self.variant(Qosselect::High)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - Quality of Service"]
     #[inline(always)]
-    pub fn qos(&self) -> QOS_R {
-        QOS_R::new((self.bits & 3) as u8)
+    pub fn qos(&self) -> QosR {
+        QosR::new((self.bits & 3) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - Quality of Service"]
     #[inline(always)]
     #[must_use]
-    pub fn qos(&mut self) -> QOS_W<MRCFG_SPEC, 0> {
-        QOS_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn qos(&mut self) -> QosW<MrcfgSpec> {
+        QosW::new(self, 0)
     }
 }
-#[doc = "Message RAM Configuration\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`mrcfg::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`mrcfg::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct MRCFG_SPEC;
-impl crate::RegisterSpec for MRCFG_SPEC {
+#[doc = "Message RAM Configuration\n\nYou can [`read`](crate::Reg::read) this register and get [`mrcfg::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`mrcfg::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct MrcfgSpec;
+impl crate::RegisterSpec for MrcfgSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`mrcfg::R`](R) reader structure"]
-impl crate::Readable for MRCFG_SPEC {}
+impl crate::Readable for MrcfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`mrcfg::W`](W) writer structure"]
-impl crate::Writable for MRCFG_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for MrcfgSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MRCFG to value 0x02"]
-impl crate::Resettable for MRCFG_SPEC {
-    const RESET_VALUE: Self::Ux = 0x02;
+impl crate::Resettable for MrcfgSpec {
+    const RESET_VALUE: u32 = 0x02;
 }

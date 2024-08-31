@@ -1,22 +1,22 @@
 #[doc = "Register `UFR` reader"]
-pub type R = crate::R<UFR_SPEC>;
+pub type R = crate::R<UfrSpec>;
 #[doc = "Field `UFRX` reader - Undersize Frames Received"]
-pub type UFRX_R = crate::FieldReader<u16>;
+pub type UfrxR = crate::FieldReader<u16>;
 impl R {
     #[doc = "Bits 0:9 - Undersize Frames Received"]
     #[inline(always)]
-    pub fn ufrx(&self) -> UFRX_R {
-        UFRX_R::new((self.bits & 0x03ff) as u16)
+    pub fn ufrx(&self) -> UfrxR {
+        UfrxR::new((self.bits & 0x03ff) as u16)
     }
 }
-#[doc = "Undersize Frames Received Register\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ufr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct UFR_SPEC;
-impl crate::RegisterSpec for UFR_SPEC {
+#[doc = "Undersize Frames Received Register\n\nYou can [`read`](crate::Reg::read) this register and get [`ufr::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct UfrSpec;
+impl crate::RegisterSpec for UfrSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`ufr::R`](R) reader structure"]
-impl crate::Readable for UFR_SPEC {}
+impl crate::Readable for UfrSpec {}
 #[doc = "`reset()` method sets UFR to value 0"]
-impl crate::Resettable for UFR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for UfrSpec {
+    const RESET_VALUE: u32 = 0;
 }

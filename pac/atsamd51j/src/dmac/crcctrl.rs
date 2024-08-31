@@ -1,60 +1,60 @@
 #[doc = "Register `CRCCTRL` reader"]
-pub type R = crate::R<CRCCTRL_SPEC>;
+pub type R = crate::R<CrcctrlSpec>;
 #[doc = "Register `CRCCTRL` writer"]
-pub type W = crate::W<CRCCTRL_SPEC>;
-#[doc = "Field `CRCBEATSIZE` reader - CRC Beat Size"]
-pub type CRCBEATSIZE_R = crate::FieldReader<CRCBEATSIZESELECT_A>;
+pub type W = crate::W<CrcctrlSpec>;
 #[doc = "CRC Beat Size\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CRCBEATSIZESELECT_A {
+pub enum Crcbeatsizeselect {
     #[doc = "0: 8-bit bus transfer"]
-    BYTE = 0,
+    Byte = 0,
     #[doc = "1: 16-bit bus transfer"]
-    HWORD = 1,
+    Hword = 1,
     #[doc = "2: 32-bit bus transfer"]
-    WORD = 2,
+    Word = 2,
 }
-impl From<CRCBEATSIZESELECT_A> for u8 {
+impl From<Crcbeatsizeselect> for u8 {
     #[inline(always)]
-    fn from(variant: CRCBEATSIZESELECT_A) -> Self {
+    fn from(variant: Crcbeatsizeselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for CRCBEATSIZESELECT_A {
+impl crate::FieldSpec for Crcbeatsizeselect {
     type Ux = u8;
 }
-impl CRCBEATSIZE_R {
+impl crate::IsEnum for Crcbeatsizeselect {}
+#[doc = "Field `CRCBEATSIZE` reader - CRC Beat Size"]
+pub type CrcbeatsizeR = crate::FieldReader<Crcbeatsizeselect>;
+impl CrcbeatsizeR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<CRCBEATSIZESELECT_A> {
+    pub const fn variant(&self) -> Option<Crcbeatsizeselect> {
         match self.bits {
-            0 => Some(CRCBEATSIZESELECT_A::BYTE),
-            1 => Some(CRCBEATSIZESELECT_A::HWORD),
-            2 => Some(CRCBEATSIZESELECT_A::WORD),
+            0 => Some(Crcbeatsizeselect::Byte),
+            1 => Some(Crcbeatsizeselect::Hword),
+            2 => Some(Crcbeatsizeselect::Word),
             _ => None,
         }
     }
     #[doc = "8-bit bus transfer"]
     #[inline(always)]
     pub fn is_byte(&self) -> bool {
-        *self == CRCBEATSIZESELECT_A::BYTE
+        *self == Crcbeatsizeselect::Byte
     }
     #[doc = "16-bit bus transfer"]
     #[inline(always)]
     pub fn is_hword(&self) -> bool {
-        *self == CRCBEATSIZESELECT_A::HWORD
+        *self == Crcbeatsizeselect::Hword
     }
     #[doc = "32-bit bus transfer"]
     #[inline(always)]
     pub fn is_word(&self) -> bool {
-        *self == CRCBEATSIZESELECT_A::WORD
+        *self == Crcbeatsizeselect::Word
     }
 }
 #[doc = "Field `CRCBEATSIZE` writer - CRC Beat Size"]
-pub type CRCBEATSIZE_W<'a, REG, const O: u8> =
-    crate::FieldWriter<'a, REG, 2, O, CRCBEATSIZESELECT_A>;
-impl<'a, REG, const O: u8> CRCBEATSIZE_W<'a, REG, O>
+pub type CrcbeatsizeW<'a, REG> = crate::FieldWriter<'a, REG, 2, Crcbeatsizeselect>;
+impl<'a, REG> CrcbeatsizeW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -62,63 +62,64 @@ where
     #[doc = "8-bit bus transfer"]
     #[inline(always)]
     pub fn byte(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCBEATSIZESELECT_A::BYTE)
+        self.variant(Crcbeatsizeselect::Byte)
     }
     #[doc = "16-bit bus transfer"]
     #[inline(always)]
     pub fn hword(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCBEATSIZESELECT_A::HWORD)
+        self.variant(Crcbeatsizeselect::Hword)
     }
     #[doc = "32-bit bus transfer"]
     #[inline(always)]
     pub fn word(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCBEATSIZESELECT_A::WORD)
+        self.variant(Crcbeatsizeselect::Word)
     }
 }
-#[doc = "Field `CRCPOLY` reader - CRC Polynomial Type"]
-pub type CRCPOLY_R = crate::FieldReader<CRCPOLYSELECT_A>;
 #[doc = "CRC Polynomial Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CRCPOLYSELECT_A {
+pub enum Crcpolyselect {
     #[doc = "0: CRC-16 (CRC-CCITT)"]
-    CRC16 = 0,
+    Crc16 = 0,
     #[doc = "1: CRC32 (IEEE 802.3)"]
-    CRC32 = 1,
+    Crc32 = 1,
 }
-impl From<CRCPOLYSELECT_A> for u8 {
+impl From<Crcpolyselect> for u8 {
     #[inline(always)]
-    fn from(variant: CRCPOLYSELECT_A) -> Self {
+    fn from(variant: Crcpolyselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for CRCPOLYSELECT_A {
+impl crate::FieldSpec for Crcpolyselect {
     type Ux = u8;
 }
-impl CRCPOLY_R {
+impl crate::IsEnum for Crcpolyselect {}
+#[doc = "Field `CRCPOLY` reader - CRC Polynomial Type"]
+pub type CrcpolyR = crate::FieldReader<Crcpolyselect>;
+impl CrcpolyR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<CRCPOLYSELECT_A> {
+    pub const fn variant(&self) -> Option<Crcpolyselect> {
         match self.bits {
-            0 => Some(CRCPOLYSELECT_A::CRC16),
-            1 => Some(CRCPOLYSELECT_A::CRC32),
+            0 => Some(Crcpolyselect::Crc16),
+            1 => Some(Crcpolyselect::Crc32),
             _ => None,
         }
     }
     #[doc = "CRC-16 (CRC-CCITT)"]
     #[inline(always)]
     pub fn is_crc16(&self) -> bool {
-        *self == CRCPOLYSELECT_A::CRC16
+        *self == Crcpolyselect::Crc16
     }
     #[doc = "CRC32 (IEEE 802.3)"]
     #[inline(always)]
     pub fn is_crc32(&self) -> bool {
-        *self == CRCPOLYSELECT_A::CRC32
+        *self == Crcpolyselect::Crc32
     }
 }
 #[doc = "Field `CRCPOLY` writer - CRC Polynomial Type"]
-pub type CRCPOLY_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, CRCPOLYSELECT_A>;
-impl<'a, REG, const O: u8> CRCPOLY_W<'a, REG, O>
+pub type CrcpolyW<'a, REG> = crate::FieldWriter<'a, REG, 2, Crcpolyselect>;
+impl<'a, REG> CrcpolyW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -126,58 +127,59 @@ where
     #[doc = "CRC-16 (CRC-CCITT)"]
     #[inline(always)]
     pub fn crc16(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCPOLYSELECT_A::CRC16)
+        self.variant(Crcpolyselect::Crc16)
     }
     #[doc = "CRC32 (IEEE 802.3)"]
     #[inline(always)]
     pub fn crc32(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCPOLYSELECT_A::CRC32)
+        self.variant(Crcpolyselect::Crc32)
     }
 }
-#[doc = "Field `CRCSRC` reader - CRC Input Source"]
-pub type CRCSRC_R = crate::FieldReader<CRCSRCSELECT_A>;
 #[doc = "CRC Input Source\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CRCSRCSELECT_A {
+pub enum Crcsrcselect {
     #[doc = "0: CRC Disabled"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: I/O interface"]
-    IO = 1,
+    Io = 1,
 }
-impl From<CRCSRCSELECT_A> for u8 {
+impl From<Crcsrcselect> for u8 {
     #[inline(always)]
-    fn from(variant: CRCSRCSELECT_A) -> Self {
+    fn from(variant: Crcsrcselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for CRCSRCSELECT_A {
+impl crate::FieldSpec for Crcsrcselect {
     type Ux = u8;
 }
-impl CRCSRC_R {
+impl crate::IsEnum for Crcsrcselect {}
+#[doc = "Field `CRCSRC` reader - CRC Input Source"]
+pub type CrcsrcR = crate::FieldReader<Crcsrcselect>;
+impl CrcsrcR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<CRCSRCSELECT_A> {
+    pub const fn variant(&self) -> Option<Crcsrcselect> {
         match self.bits {
-            0 => Some(CRCSRCSELECT_A::DISABLE),
-            1 => Some(CRCSRCSELECT_A::IO),
+            0 => Some(Crcsrcselect::Disable),
+            1 => Some(Crcsrcselect::Io),
             _ => None,
         }
     }
     #[doc = "CRC Disabled"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == CRCSRCSELECT_A::DISABLE
+        *self == Crcsrcselect::Disable
     }
     #[doc = "I/O interface"]
     #[inline(always)]
     pub fn is_io(&self) -> bool {
-        *self == CRCSRCSELECT_A::IO
+        *self == Crcsrcselect::Io
     }
 }
 #[doc = "Field `CRCSRC` writer - CRC Input Source"]
-pub type CRCSRC_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 6, O, CRCSRCSELECT_A>;
-impl<'a, REG, const O: u8> CRCSRC_W<'a, REG, O>
+pub type CrcsrcW<'a, REG> = crate::FieldWriter<'a, REG, 6, Crcsrcselect>;
+impl<'a, REG> CrcsrcW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -185,66 +187,67 @@ where
     #[doc = "CRC Disabled"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCSRCSELECT_A::DISABLE)
+        self.variant(Crcsrcselect::Disable)
     }
     #[doc = "I/O interface"]
     #[inline(always)]
     pub fn io(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCSRCSELECT_A::IO)
+        self.variant(Crcsrcselect::Io)
     }
 }
-#[doc = "Field `CRCMODE` reader - CRC Operating Mode"]
-pub type CRCMODE_R = crate::FieldReader<CRCMODESELECT_A>;
 #[doc = "CRC Operating Mode\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CRCMODESELECT_A {
+pub enum Crcmodeselect {
     #[doc = "0: Default operating mode"]
-    DEFAULT = 0,
+    Default = 0,
     #[doc = "2: Memory CRC monitor operating mode"]
-    CRCMON = 2,
+    Crcmon = 2,
     #[doc = "3: Memory CRC generation operating mode"]
-    CRCGEN = 3,
+    Crcgen = 3,
 }
-impl From<CRCMODESELECT_A> for u8 {
+impl From<Crcmodeselect> for u8 {
     #[inline(always)]
-    fn from(variant: CRCMODESELECT_A) -> Self {
+    fn from(variant: Crcmodeselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for CRCMODESELECT_A {
+impl crate::FieldSpec for Crcmodeselect {
     type Ux = u8;
 }
-impl CRCMODE_R {
+impl crate::IsEnum for Crcmodeselect {}
+#[doc = "Field `CRCMODE` reader - CRC Operating Mode"]
+pub type CrcmodeR = crate::FieldReader<Crcmodeselect>;
+impl CrcmodeR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<CRCMODESELECT_A> {
+    pub const fn variant(&self) -> Option<Crcmodeselect> {
         match self.bits {
-            0 => Some(CRCMODESELECT_A::DEFAULT),
-            2 => Some(CRCMODESELECT_A::CRCMON),
-            3 => Some(CRCMODESELECT_A::CRCGEN),
+            0 => Some(Crcmodeselect::Default),
+            2 => Some(Crcmodeselect::Crcmon),
+            3 => Some(Crcmodeselect::Crcgen),
             _ => None,
         }
     }
     #[doc = "Default operating mode"]
     #[inline(always)]
     pub fn is_default(&self) -> bool {
-        *self == CRCMODESELECT_A::DEFAULT
+        *self == Crcmodeselect::Default
     }
     #[doc = "Memory CRC monitor operating mode"]
     #[inline(always)]
     pub fn is_crcmon(&self) -> bool {
-        *self == CRCMODESELECT_A::CRCMON
+        *self == Crcmodeselect::Crcmon
     }
     #[doc = "Memory CRC generation operating mode"]
     #[inline(always)]
     pub fn is_crcgen(&self) -> bool {
-        *self == CRCMODESELECT_A::CRCGEN
+        *self == Crcmodeselect::Crcgen
     }
 }
 #[doc = "Field `CRCMODE` writer - CRC Operating Mode"]
-pub type CRCMODE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, CRCMODESELECT_A>;
-impl<'a, REG, const O: u8> CRCMODE_W<'a, REG, O>
+pub type CrcmodeW<'a, REG> = crate::FieldWriter<'a, REG, 2, Crcmodeselect>;
+impl<'a, REG> CrcmodeW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -252,90 +255,81 @@ where
     #[doc = "Default operating mode"]
     #[inline(always)]
     pub fn default(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCMODESELECT_A::DEFAULT)
+        self.variant(Crcmodeselect::Default)
     }
     #[doc = "Memory CRC monitor operating mode"]
     #[inline(always)]
     pub fn crcmon(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCMODESELECT_A::CRCMON)
+        self.variant(Crcmodeselect::Crcmon)
     }
     #[doc = "Memory CRC generation operating mode"]
     #[inline(always)]
     pub fn crcgen(self) -> &'a mut crate::W<REG> {
-        self.variant(CRCMODESELECT_A::CRCGEN)
+        self.variant(Crcmodeselect::Crcgen)
     }
 }
 impl R {
     #[doc = "Bits 0:1 - CRC Beat Size"]
     #[inline(always)]
-    pub fn crcbeatsize(&self) -> CRCBEATSIZE_R {
-        CRCBEATSIZE_R::new((self.bits & 3) as u8)
+    pub fn crcbeatsize(&self) -> CrcbeatsizeR {
+        CrcbeatsizeR::new((self.bits & 3) as u8)
     }
     #[doc = "Bits 2:3 - CRC Polynomial Type"]
     #[inline(always)]
-    pub fn crcpoly(&self) -> CRCPOLY_R {
-        CRCPOLY_R::new(((self.bits >> 2) & 3) as u8)
+    pub fn crcpoly(&self) -> CrcpolyR {
+        CrcpolyR::new(((self.bits >> 2) & 3) as u8)
     }
     #[doc = "Bits 8:13 - CRC Input Source"]
     #[inline(always)]
-    pub fn crcsrc(&self) -> CRCSRC_R {
-        CRCSRC_R::new(((self.bits >> 8) & 0x3f) as u8)
+    pub fn crcsrc(&self) -> CrcsrcR {
+        CrcsrcR::new(((self.bits >> 8) & 0x3f) as u8)
     }
     #[doc = "Bits 14:15 - CRC Operating Mode"]
     #[inline(always)]
-    pub fn crcmode(&self) -> CRCMODE_R {
-        CRCMODE_R::new(((self.bits >> 14) & 3) as u8)
+    pub fn crcmode(&self) -> CrcmodeR {
+        CrcmodeR::new(((self.bits >> 14) & 3) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - CRC Beat Size"]
     #[inline(always)]
     #[must_use]
-    pub fn crcbeatsize(&mut self) -> CRCBEATSIZE_W<CRCCTRL_SPEC, 0> {
-        CRCBEATSIZE_W::new(self)
+    pub fn crcbeatsize(&mut self) -> CrcbeatsizeW<CrcctrlSpec> {
+        CrcbeatsizeW::new(self, 0)
     }
     #[doc = "Bits 2:3 - CRC Polynomial Type"]
     #[inline(always)]
     #[must_use]
-    pub fn crcpoly(&mut self) -> CRCPOLY_W<CRCCTRL_SPEC, 2> {
-        CRCPOLY_W::new(self)
+    pub fn crcpoly(&mut self) -> CrcpolyW<CrcctrlSpec> {
+        CrcpolyW::new(self, 2)
     }
     #[doc = "Bits 8:13 - CRC Input Source"]
     #[inline(always)]
     #[must_use]
-    pub fn crcsrc(&mut self) -> CRCSRC_W<CRCCTRL_SPEC, 8> {
-        CRCSRC_W::new(self)
+    pub fn crcsrc(&mut self) -> CrcsrcW<CrcctrlSpec> {
+        CrcsrcW::new(self, 8)
     }
     #[doc = "Bits 14:15 - CRC Operating Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn crcmode(&mut self) -> CRCMODE_W<CRCCTRL_SPEC, 14> {
-        CRCMODE_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn crcmode(&mut self) -> CrcmodeW<CrcctrlSpec> {
+        CrcmodeW::new(self, 14)
     }
 }
-#[doc = "CRC Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`crcctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`crcctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CRCCTRL_SPEC;
-impl crate::RegisterSpec for CRCCTRL_SPEC {
+#[doc = "CRC Control\n\nYou can [`read`](crate::Reg::read) this register and get [`crcctrl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`crcctrl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CrcctrlSpec;
+impl crate::RegisterSpec for CrcctrlSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`crcctrl::R`](R) reader structure"]
-impl crate::Readable for CRCCTRL_SPEC {}
+impl crate::Readable for CrcctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`crcctrl::W`](W) writer structure"]
-impl crate::Writable for CRCCTRL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CrcctrlSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CRCCTRL to value 0"]
-impl crate::Resettable for CRCCTRL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CrcctrlSpec {
+    const RESET_VALUE: u16 = 0;
 }

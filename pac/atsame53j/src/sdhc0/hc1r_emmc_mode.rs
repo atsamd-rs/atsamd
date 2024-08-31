@@ -1,157 +1,158 @@
 #[doc = "Register `HC1R_EMMC_MODE` reader"]
-pub type R = crate::R<HC1R_EMMC_MODE_SPEC>;
+pub type R = crate::R<Hc1rEmmcModeSpec>;
 #[doc = "Register `HC1R_EMMC_MODE` writer"]
-pub type W = crate::W<HC1R_EMMC_MODE_SPEC>;
-#[doc = "Field `DW` reader - Data Width"]
-pub type DW_R = crate::BitReader<DWSELECT_A>;
+pub type W = crate::W<Hc1rEmmcModeSpec>;
 #[doc = "Data Width\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum DWSELECT_A {
+pub enum Dwselect {
     #[doc = "0: 1-bit mode"]
-    _1BIT = 0,
+    _1bit = 0,
     #[doc = "1: 4-bit mode"]
-    _4BIT = 1,
+    _4bit = 1,
 }
-impl From<DWSELECT_A> for bool {
+impl From<Dwselect> for bool {
     #[inline(always)]
-    fn from(variant: DWSELECT_A) -> Self {
+    fn from(variant: Dwselect) -> Self {
         variant as u8 != 0
     }
 }
-impl DW_R {
+#[doc = "Field `DW` reader - Data Width"]
+pub type DwR = crate::BitReader<Dwselect>;
+impl DwR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> DWSELECT_A {
+    pub const fn variant(&self) -> Dwselect {
         match self.bits {
-            false => DWSELECT_A::_1BIT,
-            true => DWSELECT_A::_4BIT,
+            false => Dwselect::_1bit,
+            true => Dwselect::_4bit,
         }
     }
     #[doc = "1-bit mode"]
     #[inline(always)]
     pub fn is_1bit(&self) -> bool {
-        *self == DWSELECT_A::_1BIT
+        *self == Dwselect::_1bit
     }
     #[doc = "4-bit mode"]
     #[inline(always)]
     pub fn is_4bit(&self) -> bool {
-        *self == DWSELECT_A::_4BIT
+        *self == Dwselect::_4bit
     }
 }
 #[doc = "Field `DW` writer - Data Width"]
-pub type DW_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, DWSELECT_A>;
-impl<'a, REG, const O: u8> DW_W<'a, REG, O>
+pub type DwW<'a, REG> = crate::BitWriter<'a, REG, Dwselect>;
+impl<'a, REG> DwW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "1-bit mode"]
     #[inline(always)]
     pub fn _1bit(self) -> &'a mut crate::W<REG> {
-        self.variant(DWSELECT_A::_1BIT)
+        self.variant(Dwselect::_1bit)
     }
     #[doc = "4-bit mode"]
     #[inline(always)]
     pub fn _4bit(self) -> &'a mut crate::W<REG> {
-        self.variant(DWSELECT_A::_4BIT)
+        self.variant(Dwselect::_4bit)
     }
 }
-#[doc = "Field `HSEN` reader - High Speed Enable"]
-pub type HSEN_R = crate::BitReader<HSENSELECT_A>;
 #[doc = "High Speed Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum HSENSELECT_A {
+pub enum Hsenselect {
     #[doc = "0: Normal Speed mode"]
-    NORMAL = 0,
+    Normal = 0,
     #[doc = "1: High Speed mode"]
-    HIGH = 1,
+    High = 1,
 }
-impl From<HSENSELECT_A> for bool {
+impl From<Hsenselect> for bool {
     #[inline(always)]
-    fn from(variant: HSENSELECT_A) -> Self {
+    fn from(variant: Hsenselect) -> Self {
         variant as u8 != 0
     }
 }
-impl HSEN_R {
+#[doc = "Field `HSEN` reader - High Speed Enable"]
+pub type HsenR = crate::BitReader<Hsenselect>;
+impl HsenR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> HSENSELECT_A {
+    pub const fn variant(&self) -> Hsenselect {
         match self.bits {
-            false => HSENSELECT_A::NORMAL,
-            true => HSENSELECT_A::HIGH,
+            false => Hsenselect::Normal,
+            true => Hsenselect::High,
         }
     }
     #[doc = "Normal Speed mode"]
     #[inline(always)]
     pub fn is_normal(&self) -> bool {
-        *self == HSENSELECT_A::NORMAL
+        *self == Hsenselect::Normal
     }
     #[doc = "High Speed mode"]
     #[inline(always)]
     pub fn is_high(&self) -> bool {
-        *self == HSENSELECT_A::HIGH
+        *self == Hsenselect::High
     }
 }
 #[doc = "Field `HSEN` writer - High Speed Enable"]
-pub type HSEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, HSENSELECT_A>;
-impl<'a, REG, const O: u8> HSEN_W<'a, REG, O>
+pub type HsenW<'a, REG> = crate::BitWriter<'a, REG, Hsenselect>;
+impl<'a, REG> HsenW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "Normal Speed mode"]
     #[inline(always)]
     pub fn normal(self) -> &'a mut crate::W<REG> {
-        self.variant(HSENSELECT_A::NORMAL)
+        self.variant(Hsenselect::Normal)
     }
     #[doc = "High Speed mode"]
     #[inline(always)]
     pub fn high(self) -> &'a mut crate::W<REG> {
-        self.variant(HSENSELECT_A::HIGH)
+        self.variant(Hsenselect::High)
     }
 }
-#[doc = "Field `DMASEL` reader - DMA Select"]
-pub type DMASEL_R = crate::FieldReader<DMASELSELECT_A>;
 #[doc = "DMA Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum DMASELSELECT_A {
+pub enum Dmaselselect {
     #[doc = "0: SDMA is selected"]
-    SDMA = 0,
+    Sdma = 0,
     #[doc = "2: 32-bit Address ADMA2 is selected"]
-    _32BIT = 2,
+    _32bit = 2,
 }
-impl From<DMASELSELECT_A> for u8 {
+impl From<Dmaselselect> for u8 {
     #[inline(always)]
-    fn from(variant: DMASELSELECT_A) -> Self {
+    fn from(variant: Dmaselselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for DMASELSELECT_A {
+impl crate::FieldSpec for Dmaselselect {
     type Ux = u8;
 }
-impl DMASEL_R {
+impl crate::IsEnum for Dmaselselect {}
+#[doc = "Field `DMASEL` reader - DMA Select"]
+pub type DmaselR = crate::FieldReader<Dmaselselect>;
+impl DmaselR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<DMASELSELECT_A> {
+    pub const fn variant(&self) -> Option<Dmaselselect> {
         match self.bits {
-            0 => Some(DMASELSELECT_A::SDMA),
-            2 => Some(DMASELSELECT_A::_32BIT),
+            0 => Some(Dmaselselect::Sdma),
+            2 => Some(Dmaselselect::_32bit),
             _ => None,
         }
     }
     #[doc = "SDMA is selected"]
     #[inline(always)]
     pub fn is_sdma(&self) -> bool {
-        *self == DMASELSELECT_A::SDMA
+        *self == Dmaselselect::Sdma
     }
     #[doc = "32-bit Address ADMA2 is selected"]
     #[inline(always)]
     pub fn is_32bit(&self) -> bool {
-        *self == DMASELSELECT_A::_32BIT
+        *self == Dmaselselect::_32bit
     }
 }
 #[doc = "Field `DMASEL` writer - DMA Select"]
-pub type DMASEL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, DMASELSELECT_A>;
-impl<'a, REG, const O: u8> DMASEL_W<'a, REG, O>
+pub type DmaselW<'a, REG> = crate::FieldWriter<'a, REG, 2, Dmaselselect>;
+impl<'a, REG> DmaselW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -159,74 +160,65 @@ where
     #[doc = "SDMA is selected"]
     #[inline(always)]
     pub fn sdma(self) -> &'a mut crate::W<REG> {
-        self.variant(DMASELSELECT_A::SDMA)
+        self.variant(Dmaselselect::Sdma)
     }
     #[doc = "32-bit Address ADMA2 is selected"]
     #[inline(always)]
     pub fn _32bit(self) -> &'a mut crate::W<REG> {
-        self.variant(DMASELSELECT_A::_32BIT)
+        self.variant(Dmaselselect::_32bit)
     }
 }
 impl R {
     #[doc = "Bit 1 - Data Width"]
     #[inline(always)]
-    pub fn dw(&self) -> DW_R {
-        DW_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn dw(&self) -> DwR {
+        DwR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - High Speed Enable"]
     #[inline(always)]
-    pub fn hsen(&self) -> HSEN_R {
-        HSEN_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn hsen(&self) -> HsenR {
+        HsenR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bits 3:4 - DMA Select"]
     #[inline(always)]
-    pub fn dmasel(&self) -> DMASEL_R {
-        DMASEL_R::new((self.bits >> 3) & 3)
+    pub fn dmasel(&self) -> DmaselR {
+        DmaselR::new((self.bits >> 3) & 3)
     }
 }
 impl W {
     #[doc = "Bit 1 - Data Width"]
     #[inline(always)]
     #[must_use]
-    pub fn dw(&mut self) -> DW_W<HC1R_EMMC_MODE_SPEC, 1> {
-        DW_W::new(self)
+    pub fn dw(&mut self) -> DwW<Hc1rEmmcModeSpec> {
+        DwW::new(self, 1)
     }
     #[doc = "Bit 2 - High Speed Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn hsen(&mut self) -> HSEN_W<HC1R_EMMC_MODE_SPEC, 2> {
-        HSEN_W::new(self)
+    pub fn hsen(&mut self) -> HsenW<Hc1rEmmcModeSpec> {
+        HsenW::new(self, 2)
     }
     #[doc = "Bits 3:4 - DMA Select"]
     #[inline(always)]
     #[must_use]
-    pub fn dmasel(&mut self) -> DMASEL_W<HC1R_EMMC_MODE_SPEC, 3> {
-        DMASEL_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn dmasel(&mut self) -> DmaselW<Hc1rEmmcModeSpec> {
+        DmaselW::new(self, 3)
     }
 }
-#[doc = "Host Control 1\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`hc1r_emmc_mode::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`hc1r_emmc_mode::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct HC1R_EMMC_MODE_SPEC;
-impl crate::RegisterSpec for HC1R_EMMC_MODE_SPEC {
+#[doc = "Host Control 1\n\nYou can [`read`](crate::Reg::read) this register and get [`hc1r_emmc_mode::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`hc1r_emmc_mode::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct Hc1rEmmcModeSpec;
+impl crate::RegisterSpec for Hc1rEmmcModeSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`hc1r_emmc_mode::R`](R) reader structure"]
-impl crate::Readable for HC1R_EMMC_MODE_SPEC {}
+impl crate::Readable for Hc1rEmmcModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`hc1r_emmc_mode::W`](W) writer structure"]
-impl crate::Writable for HC1R_EMMC_MODE_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for Hc1rEmmcModeSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets HC1R_EMMC_MODE to value 0"]
-impl crate::Resettable for HC1R_EMMC_MODE_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for Hc1rEmmcModeSpec {
+    const RESET_VALUE: u8 = 0;
 }

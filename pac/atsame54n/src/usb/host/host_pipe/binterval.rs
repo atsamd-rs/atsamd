@@ -1,49 +1,40 @@
 #[doc = "Register `BINTERVAL` reader"]
-pub type R = crate::R<BINTERVAL_SPEC>;
+pub type R = crate::R<BintervalSpec>;
 #[doc = "Register `BINTERVAL` writer"]
-pub type W = crate::W<BINTERVAL_SPEC>;
+pub type W = crate::W<BintervalSpec>;
 #[doc = "Field `BITINTERVAL` reader - Bit Interval"]
-pub type BITINTERVAL_R = crate::FieldReader;
+pub type BitintervalR = crate::FieldReader;
 #[doc = "Field `BITINTERVAL` writer - Bit Interval"]
-pub type BITINTERVAL_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
+pub type BitintervalW<'a, REG> = crate::FieldWriter<'a, REG, 8>;
 impl R {
     #[doc = "Bits 0:7 - Bit Interval"]
     #[inline(always)]
-    pub fn bitinterval(&self) -> BITINTERVAL_R {
-        BITINTERVAL_R::new(self.bits)
+    pub fn bitinterval(&self) -> BitintervalR {
+        BitintervalR::new(self.bits)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Bit Interval"]
     #[inline(always)]
     #[must_use]
-    pub fn bitinterval(&mut self) -> BITINTERVAL_W<BINTERVAL_SPEC, 0> {
-        BITINTERVAL_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn bitinterval(&mut self) -> BitintervalW<BintervalSpec> {
+        BitintervalW::new(self, 0)
     }
 }
-#[doc = "HOST_PIPE Bus Access Period of Pipe\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`binterval::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`binterval::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct BINTERVAL_SPEC;
-impl crate::RegisterSpec for BINTERVAL_SPEC {
+#[doc = "HOST_PIPE Bus Access Period of Pipe\n\nYou can [`read`](crate::Reg::read) this register and get [`binterval::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`binterval::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct BintervalSpec;
+impl crate::RegisterSpec for BintervalSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`binterval::R`](R) reader structure"]
-impl crate::Readable for BINTERVAL_SPEC {}
+impl crate::Readable for BintervalSpec {}
 #[doc = "`write(|w| ..)` method takes [`binterval::W`](W) writer structure"]
-impl crate::Writable for BINTERVAL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for BintervalSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets BINTERVAL to value 0"]
-impl crate::Resettable for BINTERVAL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for BintervalSpec {
+    const RESET_VALUE: u8 = 0;
 }

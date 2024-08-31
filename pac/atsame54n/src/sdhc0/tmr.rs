@@ -1,165 +1,166 @@
 #[doc = "Register `TMR` reader"]
-pub type R = crate::R<TMR_SPEC>;
+pub type R = crate::R<TmrSpec>;
 #[doc = "Register `TMR` writer"]
-pub type W = crate::W<TMR_SPEC>;
-#[doc = "Field `DMAEN` reader - DMA Enable"]
-pub type DMAEN_R = crate::BitReader<DMAENSELECT_A>;
+pub type W = crate::W<TmrSpec>;
 #[doc = "DMA Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum DMAENSELECT_A {
+pub enum Dmaenselect {
     #[doc = "0: No data transfer or Non DMA data transfer"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: DMA data transfer"]
-    ENABLE = 1,
+    Enable = 1,
 }
-impl From<DMAENSELECT_A> for bool {
+impl From<Dmaenselect> for bool {
     #[inline(always)]
-    fn from(variant: DMAENSELECT_A) -> Self {
+    fn from(variant: Dmaenselect) -> Self {
         variant as u8 != 0
     }
 }
-impl DMAEN_R {
+#[doc = "Field `DMAEN` reader - DMA Enable"]
+pub type DmaenR = crate::BitReader<Dmaenselect>;
+impl DmaenR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> DMAENSELECT_A {
+    pub const fn variant(&self) -> Dmaenselect {
         match self.bits {
-            false => DMAENSELECT_A::DISABLE,
-            true => DMAENSELECT_A::ENABLE,
+            false => Dmaenselect::Disable,
+            true => Dmaenselect::Enable,
         }
     }
     #[doc = "No data transfer or Non DMA data transfer"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == DMAENSELECT_A::DISABLE
+        *self == Dmaenselect::Disable
     }
     #[doc = "DMA data transfer"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == DMAENSELECT_A::ENABLE
+        *self == Dmaenselect::Enable
     }
 }
 #[doc = "Field `DMAEN` writer - DMA Enable"]
-pub type DMAEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, DMAENSELECT_A>;
-impl<'a, REG, const O: u8> DMAEN_W<'a, REG, O>
+pub type DmaenW<'a, REG> = crate::BitWriter<'a, REG, Dmaenselect>;
+impl<'a, REG> DmaenW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "No data transfer or Non DMA data transfer"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut crate::W<REG> {
-        self.variant(DMAENSELECT_A::DISABLE)
+        self.variant(Dmaenselect::Disable)
     }
     #[doc = "DMA data transfer"]
     #[inline(always)]
     pub fn enable(self) -> &'a mut crate::W<REG> {
-        self.variant(DMAENSELECT_A::ENABLE)
+        self.variant(Dmaenselect::Enable)
     }
 }
-#[doc = "Field `BCEN` reader - Block Count Enable"]
-pub type BCEN_R = crate::BitReader<BCENSELECT_A>;
 #[doc = "Block Count Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum BCENSELECT_A {
+pub enum Bcenselect {
     #[doc = "0: Disable"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: Enable"]
-    ENABLE = 1,
+    Enable = 1,
 }
-impl From<BCENSELECT_A> for bool {
+impl From<Bcenselect> for bool {
     #[inline(always)]
-    fn from(variant: BCENSELECT_A) -> Self {
+    fn from(variant: Bcenselect) -> Self {
         variant as u8 != 0
     }
 }
-impl BCEN_R {
+#[doc = "Field `BCEN` reader - Block Count Enable"]
+pub type BcenR = crate::BitReader<Bcenselect>;
+impl BcenR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> BCENSELECT_A {
+    pub const fn variant(&self) -> Bcenselect {
         match self.bits {
-            false => BCENSELECT_A::DISABLE,
-            true => BCENSELECT_A::ENABLE,
+            false => Bcenselect::Disable,
+            true => Bcenselect::Enable,
         }
     }
     #[doc = "Disable"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == BCENSELECT_A::DISABLE
+        *self == Bcenselect::Disable
     }
     #[doc = "Enable"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == BCENSELECT_A::ENABLE
+        *self == Bcenselect::Enable
     }
 }
 #[doc = "Field `BCEN` writer - Block Count Enable"]
-pub type BCEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, BCENSELECT_A>;
-impl<'a, REG, const O: u8> BCEN_W<'a, REG, O>
+pub type BcenW<'a, REG> = crate::BitWriter<'a, REG, Bcenselect>;
+impl<'a, REG> BcenW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "Disable"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut crate::W<REG> {
-        self.variant(BCENSELECT_A::DISABLE)
+        self.variant(Bcenselect::Disable)
     }
     #[doc = "Enable"]
     #[inline(always)]
     pub fn enable(self) -> &'a mut crate::W<REG> {
-        self.variant(BCENSELECT_A::ENABLE)
+        self.variant(Bcenselect::Enable)
     }
 }
-#[doc = "Field `ACMDEN` reader - Auto Command Enable"]
-pub type ACMDEN_R = crate::FieldReader<ACMDENSELECT_A>;
 #[doc = "Auto Command Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum ACMDENSELECT_A {
+pub enum Acmdenselect {
     #[doc = "0: Auto Command Disabled"]
-    DISABLED = 0,
+    Disabled = 0,
     #[doc = "1: Auto CMD12 Enable"]
-    CMD12 = 1,
+    Cmd12 = 1,
     #[doc = "2: Auto CMD23 Enable"]
-    CMD23 = 2,
+    Cmd23 = 2,
 }
-impl From<ACMDENSELECT_A> for u8 {
+impl From<Acmdenselect> for u8 {
     #[inline(always)]
-    fn from(variant: ACMDENSELECT_A) -> Self {
+    fn from(variant: Acmdenselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for ACMDENSELECT_A {
+impl crate::FieldSpec for Acmdenselect {
     type Ux = u8;
 }
-impl ACMDEN_R {
+impl crate::IsEnum for Acmdenselect {}
+#[doc = "Field `ACMDEN` reader - Auto Command Enable"]
+pub type AcmdenR = crate::FieldReader<Acmdenselect>;
+impl AcmdenR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<ACMDENSELECT_A> {
+    pub const fn variant(&self) -> Option<Acmdenselect> {
         match self.bits {
-            0 => Some(ACMDENSELECT_A::DISABLED),
-            1 => Some(ACMDENSELECT_A::CMD12),
-            2 => Some(ACMDENSELECT_A::CMD23),
+            0 => Some(Acmdenselect::Disabled),
+            1 => Some(Acmdenselect::Cmd12),
+            2 => Some(Acmdenselect::Cmd23),
             _ => None,
         }
     }
     #[doc = "Auto Command Disabled"]
     #[inline(always)]
     pub fn is_disabled(&self) -> bool {
-        *self == ACMDENSELECT_A::DISABLED
+        *self == Acmdenselect::Disabled
     }
     #[doc = "Auto CMD12 Enable"]
     #[inline(always)]
     pub fn is_cmd12(&self) -> bool {
-        *self == ACMDENSELECT_A::CMD12
+        *self == Acmdenselect::Cmd12
     }
     #[doc = "Auto CMD23 Enable"]
     #[inline(always)]
     pub fn is_cmd23(&self) -> bool {
-        *self == ACMDENSELECT_A::CMD23
+        *self == Acmdenselect::Cmd23
     }
 }
 #[doc = "Field `ACMDEN` writer - Auto Command Enable"]
-pub type ACMDEN_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, ACMDENSELECT_A>;
-impl<'a, REG, const O: u8> ACMDEN_W<'a, REG, O>
+pub type AcmdenW<'a, REG> = crate::FieldWriter<'a, REG, 2, Acmdenselect>;
+impl<'a, REG> AcmdenW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -167,207 +168,198 @@ where
     #[doc = "Auto Command Disabled"]
     #[inline(always)]
     pub fn disabled(self) -> &'a mut crate::W<REG> {
-        self.variant(ACMDENSELECT_A::DISABLED)
+        self.variant(Acmdenselect::Disabled)
     }
     #[doc = "Auto CMD12 Enable"]
     #[inline(always)]
     pub fn cmd12(self) -> &'a mut crate::W<REG> {
-        self.variant(ACMDENSELECT_A::CMD12)
+        self.variant(Acmdenselect::Cmd12)
     }
     #[doc = "Auto CMD23 Enable"]
     #[inline(always)]
     pub fn cmd23(self) -> &'a mut crate::W<REG> {
-        self.variant(ACMDENSELECT_A::CMD23)
+        self.variant(Acmdenselect::Cmd23)
     }
 }
-#[doc = "Field `DTDSEL` reader - Data Transfer Direction Selection"]
-pub type DTDSEL_R = crate::BitReader<DTDSELSELECT_A>;
 #[doc = "Data Transfer Direction Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum DTDSELSELECT_A {
+pub enum Dtdselselect {
     #[doc = "0: Write (Host to Card)"]
-    WRITE = 0,
+    Write = 0,
     #[doc = "1: Read (Card to Host)"]
-    READ = 1,
+    Read = 1,
 }
-impl From<DTDSELSELECT_A> for bool {
+impl From<Dtdselselect> for bool {
     #[inline(always)]
-    fn from(variant: DTDSELSELECT_A) -> Self {
+    fn from(variant: Dtdselselect) -> Self {
         variant as u8 != 0
     }
 }
-impl DTDSEL_R {
+#[doc = "Field `DTDSEL` reader - Data Transfer Direction Selection"]
+pub type DtdselR = crate::BitReader<Dtdselselect>;
+impl DtdselR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> DTDSELSELECT_A {
+    pub const fn variant(&self) -> Dtdselselect {
         match self.bits {
-            false => DTDSELSELECT_A::WRITE,
-            true => DTDSELSELECT_A::READ,
+            false => Dtdselselect::Write,
+            true => Dtdselselect::Read,
         }
     }
     #[doc = "Write (Host to Card)"]
     #[inline(always)]
     pub fn is_write(&self) -> bool {
-        *self == DTDSELSELECT_A::WRITE
+        *self == Dtdselselect::Write
     }
     #[doc = "Read (Card to Host)"]
     #[inline(always)]
     pub fn is_read(&self) -> bool {
-        *self == DTDSELSELECT_A::READ
+        *self == Dtdselselect::Read
     }
 }
 #[doc = "Field `DTDSEL` writer - Data Transfer Direction Selection"]
-pub type DTDSEL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, DTDSELSELECT_A>;
-impl<'a, REG, const O: u8> DTDSEL_W<'a, REG, O>
+pub type DtdselW<'a, REG> = crate::BitWriter<'a, REG, Dtdselselect>;
+impl<'a, REG> DtdselW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "Write (Host to Card)"]
     #[inline(always)]
     pub fn write(self) -> &'a mut crate::W<REG> {
-        self.variant(DTDSELSELECT_A::WRITE)
+        self.variant(Dtdselselect::Write)
     }
     #[doc = "Read (Card to Host)"]
     #[inline(always)]
     pub fn read(self) -> &'a mut crate::W<REG> {
-        self.variant(DTDSELSELECT_A::READ)
+        self.variant(Dtdselselect::Read)
     }
 }
-#[doc = "Field `MSBSEL` reader - Multi/Single Block Selection"]
-pub type MSBSEL_R = crate::BitReader<MSBSELSELECT_A>;
 #[doc = "Multi/Single Block Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum MSBSELSELECT_A {
+pub enum Msbselselect {
     #[doc = "0: Single Block"]
-    SINGLE = 0,
+    Single = 0,
     #[doc = "1: Multiple Block"]
-    MULTIPLE = 1,
+    Multiple = 1,
 }
-impl From<MSBSELSELECT_A> for bool {
+impl From<Msbselselect> for bool {
     #[inline(always)]
-    fn from(variant: MSBSELSELECT_A) -> Self {
+    fn from(variant: Msbselselect) -> Self {
         variant as u8 != 0
     }
 }
-impl MSBSEL_R {
+#[doc = "Field `MSBSEL` reader - Multi/Single Block Selection"]
+pub type MsbselR = crate::BitReader<Msbselselect>;
+impl MsbselR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> MSBSELSELECT_A {
+    pub const fn variant(&self) -> Msbselselect {
         match self.bits {
-            false => MSBSELSELECT_A::SINGLE,
-            true => MSBSELSELECT_A::MULTIPLE,
+            false => Msbselselect::Single,
+            true => Msbselselect::Multiple,
         }
     }
     #[doc = "Single Block"]
     #[inline(always)]
     pub fn is_single(&self) -> bool {
-        *self == MSBSELSELECT_A::SINGLE
+        *self == Msbselselect::Single
     }
     #[doc = "Multiple Block"]
     #[inline(always)]
     pub fn is_multiple(&self) -> bool {
-        *self == MSBSELSELECT_A::MULTIPLE
+        *self == Msbselselect::Multiple
     }
 }
 #[doc = "Field `MSBSEL` writer - Multi/Single Block Selection"]
-pub type MSBSEL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, MSBSELSELECT_A>;
-impl<'a, REG, const O: u8> MSBSEL_W<'a, REG, O>
+pub type MsbselW<'a, REG> = crate::BitWriter<'a, REG, Msbselselect>;
+impl<'a, REG> MsbselW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "Single Block"]
     #[inline(always)]
     pub fn single(self) -> &'a mut crate::W<REG> {
-        self.variant(MSBSELSELECT_A::SINGLE)
+        self.variant(Msbselselect::Single)
     }
     #[doc = "Multiple Block"]
     #[inline(always)]
     pub fn multiple(self) -> &'a mut crate::W<REG> {
-        self.variant(MSBSELSELECT_A::MULTIPLE)
+        self.variant(Msbselselect::Multiple)
     }
 }
 impl R {
     #[doc = "Bit 0 - DMA Enable"]
     #[inline(always)]
-    pub fn dmaen(&self) -> DMAEN_R {
-        DMAEN_R::new((self.bits & 1) != 0)
+    pub fn dmaen(&self) -> DmaenR {
+        DmaenR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Block Count Enable"]
     #[inline(always)]
-    pub fn bcen(&self) -> BCEN_R {
-        BCEN_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn bcen(&self) -> BcenR {
+        BcenR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bits 2:3 - Auto Command Enable"]
     #[inline(always)]
-    pub fn acmden(&self) -> ACMDEN_R {
-        ACMDEN_R::new(((self.bits >> 2) & 3) as u8)
+    pub fn acmden(&self) -> AcmdenR {
+        AcmdenR::new(((self.bits >> 2) & 3) as u8)
     }
     #[doc = "Bit 4 - Data Transfer Direction Selection"]
     #[inline(always)]
-    pub fn dtdsel(&self) -> DTDSEL_R {
-        DTDSEL_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn dtdsel(&self) -> DtdselR {
+        DtdselR::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Multi/Single Block Selection"]
     #[inline(always)]
-    pub fn msbsel(&self) -> MSBSEL_R {
-        MSBSEL_R::new(((self.bits >> 5) & 1) != 0)
+    pub fn msbsel(&self) -> MsbselR {
+        MsbselR::new(((self.bits >> 5) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - DMA Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn dmaen(&mut self) -> DMAEN_W<TMR_SPEC, 0> {
-        DMAEN_W::new(self)
+    pub fn dmaen(&mut self) -> DmaenW<TmrSpec> {
+        DmaenW::new(self, 0)
     }
     #[doc = "Bit 1 - Block Count Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn bcen(&mut self) -> BCEN_W<TMR_SPEC, 1> {
-        BCEN_W::new(self)
+    pub fn bcen(&mut self) -> BcenW<TmrSpec> {
+        BcenW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Auto Command Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn acmden(&mut self) -> ACMDEN_W<TMR_SPEC, 2> {
-        ACMDEN_W::new(self)
+    pub fn acmden(&mut self) -> AcmdenW<TmrSpec> {
+        AcmdenW::new(self, 2)
     }
     #[doc = "Bit 4 - Data Transfer Direction Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn dtdsel(&mut self) -> DTDSEL_W<TMR_SPEC, 4> {
-        DTDSEL_W::new(self)
+    pub fn dtdsel(&mut self) -> DtdselW<TmrSpec> {
+        DtdselW::new(self, 4)
     }
     #[doc = "Bit 5 - Multi/Single Block Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn msbsel(&mut self) -> MSBSEL_W<TMR_SPEC, 5> {
-        MSBSEL_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn msbsel(&mut self) -> MsbselW<TmrSpec> {
+        MsbselW::new(self, 5)
     }
 }
-#[doc = "Transfer Mode\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`tmr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`tmr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct TMR_SPEC;
-impl crate::RegisterSpec for TMR_SPEC {
+#[doc = "Transfer Mode\n\nYou can [`read`](crate::Reg::read) this register and get [`tmr::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`tmr::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct TmrSpec;
+impl crate::RegisterSpec for TmrSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`tmr::R`](R) reader structure"]
-impl crate::Readable for TMR_SPEC {}
+impl crate::Readable for TmrSpec {}
 #[doc = "`write(|w| ..)` method takes [`tmr::W`](W) writer structure"]
-impl crate::Writable for TMR_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for TmrSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets TMR to value 0"]
-impl crate::Resettable for TMR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for TmrSpec {
+    const RESET_VALUE: u16 = 0;
 }

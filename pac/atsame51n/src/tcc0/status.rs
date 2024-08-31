@@ -1,439 +1,430 @@
 #[doc = "Register `STATUS` reader"]
-pub type R = crate::R<STATUS_SPEC>;
+pub type R = crate::R<StatusSpec>;
 #[doc = "Register `STATUS` writer"]
-pub type W = crate::W<STATUS_SPEC>;
+pub type W = crate::W<StatusSpec>;
 #[doc = "Field `STOP` reader - Stop"]
-pub type STOP_R = crate::BitReader;
+pub type StopR = crate::BitReader;
 #[doc = "Field `STOP` writer - Stop"]
-pub type STOP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type StopW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `IDX` reader - Ramp"]
-pub type IDX_R = crate::BitReader;
+pub type IdxR = crate::BitReader;
 #[doc = "Field `IDX` writer - Ramp"]
-pub type IDX_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type IdxW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `UFS` reader - Non-recoverable Update Fault State"]
-pub type UFS_R = crate::BitReader;
+pub type UfsR = crate::BitReader;
 #[doc = "Field `UFS` writer - Non-recoverable Update Fault State"]
-pub type UFS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type UfsW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DFS` reader - Non-Recoverable Debug Fault State"]
-pub type DFS_R = crate::BitReader;
+pub type DfsR = crate::BitReader;
 #[doc = "Field `DFS` writer - Non-Recoverable Debug Fault State"]
-pub type DFS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DfsW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SLAVE` reader - Slave"]
-pub type SLAVE_R = crate::BitReader;
+pub type SlaveR = crate::BitReader;
 #[doc = "Field `SLAVE` writer - Slave"]
-pub type SLAVE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SlaveW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PATTBUFV` reader - Pattern Buffer Valid"]
-pub type PATTBUFV_R = crate::BitReader;
+pub type PattbufvR = crate::BitReader;
 #[doc = "Field `PATTBUFV` writer - Pattern Buffer Valid"]
-pub type PATTBUFV_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PattbufvW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PERBUFV` reader - Period Buffer Valid"]
-pub type PERBUFV_R = crate::BitReader;
+pub type PerbufvR = crate::BitReader;
 #[doc = "Field `PERBUFV` writer - Period Buffer Valid"]
-pub type PERBUFV_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type PerbufvW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FAULTAIN` reader - Recoverable Fault A Input"]
-pub type FAULTAIN_R = crate::BitReader;
+pub type FaultainR = crate::BitReader;
 #[doc = "Field `FAULTAIN` writer - Recoverable Fault A Input"]
-pub type FAULTAIN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type FaultainW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FAULTBIN` reader - Recoverable Fault B Input"]
-pub type FAULTBIN_R = crate::BitReader;
+pub type FaultbinR = crate::BitReader;
 #[doc = "Field `FAULTBIN` writer - Recoverable Fault B Input"]
-pub type FAULTBIN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type FaultbinW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FAULT0IN` reader - Non-Recoverable Fault0 Input"]
-pub type FAULT0IN_R = crate::BitReader;
+pub type Fault0inR = crate::BitReader;
 #[doc = "Field `FAULT0IN` writer - Non-Recoverable Fault0 Input"]
-pub type FAULT0IN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Fault0inW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FAULT1IN` reader - Non-Recoverable Fault1 Input"]
-pub type FAULT1IN_R = crate::BitReader;
+pub type Fault1inR = crate::BitReader;
 #[doc = "Field `FAULT1IN` writer - Non-Recoverable Fault1 Input"]
-pub type FAULT1IN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Fault1inW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FAULTA` reader - Recoverable Fault A State"]
-pub type FAULTA_R = crate::BitReader;
+pub type FaultaR = crate::BitReader;
 #[doc = "Field `FAULTA` writer - Recoverable Fault A State"]
-pub type FAULTA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type FaultaW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FAULTB` reader - Recoverable Fault B State"]
-pub type FAULTB_R = crate::BitReader;
+pub type FaultbR = crate::BitReader;
 #[doc = "Field `FAULTB` writer - Recoverable Fault B State"]
-pub type FAULTB_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type FaultbW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FAULT0` reader - Non-Recoverable Fault 0 State"]
-pub type FAULT0_R = crate::BitReader;
+pub type Fault0R = crate::BitReader;
 #[doc = "Field `FAULT0` writer - Non-Recoverable Fault 0 State"]
-pub type FAULT0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Fault0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FAULT1` reader - Non-Recoverable Fault 1 State"]
-pub type FAULT1_R = crate::BitReader;
+pub type Fault1R = crate::BitReader;
 #[doc = "Field `FAULT1` writer - Non-Recoverable Fault 1 State"]
-pub type FAULT1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Fault1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CCBUFV0` reader - Compare Channel 0 Buffer Valid"]
-pub type CCBUFV0_R = crate::BitReader;
+pub type Ccbufv0R = crate::BitReader;
 #[doc = "Field `CCBUFV0` writer - Compare Channel 0 Buffer Valid"]
-pub type CCBUFV0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ccbufv0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CCBUFV1` reader - Compare Channel 1 Buffer Valid"]
-pub type CCBUFV1_R = crate::BitReader;
+pub type Ccbufv1R = crate::BitReader;
 #[doc = "Field `CCBUFV1` writer - Compare Channel 1 Buffer Valid"]
-pub type CCBUFV1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ccbufv1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CCBUFV2` reader - Compare Channel 2 Buffer Valid"]
-pub type CCBUFV2_R = crate::BitReader;
+pub type Ccbufv2R = crate::BitReader;
 #[doc = "Field `CCBUFV2` writer - Compare Channel 2 Buffer Valid"]
-pub type CCBUFV2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ccbufv2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CCBUFV3` reader - Compare Channel 3 Buffer Valid"]
-pub type CCBUFV3_R = crate::BitReader;
+pub type Ccbufv3R = crate::BitReader;
 #[doc = "Field `CCBUFV3` writer - Compare Channel 3 Buffer Valid"]
-pub type CCBUFV3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ccbufv3W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CCBUFV4` reader - Compare Channel 4 Buffer Valid"]
-pub type CCBUFV4_R = crate::BitReader;
+pub type Ccbufv4R = crate::BitReader;
 #[doc = "Field `CCBUFV4` writer - Compare Channel 4 Buffer Valid"]
-pub type CCBUFV4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ccbufv4W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CCBUFV5` reader - Compare Channel 5 Buffer Valid"]
-pub type CCBUFV5_R = crate::BitReader;
+pub type Ccbufv5R = crate::BitReader;
 #[doc = "Field `CCBUFV5` writer - Compare Channel 5 Buffer Valid"]
-pub type CCBUFV5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Ccbufv5W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CMP0` reader - Compare Channel 0 Value"]
-pub type CMP0_R = crate::BitReader;
+pub type Cmp0R = crate::BitReader;
 #[doc = "Field `CMP0` writer - Compare Channel 0 Value"]
-pub type CMP0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cmp0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CMP1` reader - Compare Channel 1 Value"]
-pub type CMP1_R = crate::BitReader;
+pub type Cmp1R = crate::BitReader;
 #[doc = "Field `CMP1` writer - Compare Channel 1 Value"]
-pub type CMP1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cmp1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CMP2` reader - Compare Channel 2 Value"]
-pub type CMP2_R = crate::BitReader;
+pub type Cmp2R = crate::BitReader;
 #[doc = "Field `CMP2` writer - Compare Channel 2 Value"]
-pub type CMP2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cmp2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CMP3` reader - Compare Channel 3 Value"]
-pub type CMP3_R = crate::BitReader;
+pub type Cmp3R = crate::BitReader;
 #[doc = "Field `CMP3` writer - Compare Channel 3 Value"]
-pub type CMP3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cmp3W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CMP4` reader - Compare Channel 4 Value"]
-pub type CMP4_R = crate::BitReader;
+pub type Cmp4R = crate::BitReader;
 #[doc = "Field `CMP4` writer - Compare Channel 4 Value"]
-pub type CMP4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cmp4W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CMP5` reader - Compare Channel 5 Value"]
-pub type CMP5_R = crate::BitReader;
+pub type Cmp5R = crate::BitReader;
 #[doc = "Field `CMP5` writer - Compare Channel 5 Value"]
-pub type CMP5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cmp5W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Stop"]
     #[inline(always)]
-    pub fn stop(&self) -> STOP_R {
-        STOP_R::new((self.bits & 1) != 0)
+    pub fn stop(&self) -> StopR {
+        StopR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Ramp"]
     #[inline(always)]
-    pub fn idx(&self) -> IDX_R {
-        IDX_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn idx(&self) -> IdxR {
+        IdxR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Non-recoverable Update Fault State"]
     #[inline(always)]
-    pub fn ufs(&self) -> UFS_R {
-        UFS_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn ufs(&self) -> UfsR {
+        UfsR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Non-Recoverable Debug Fault State"]
     #[inline(always)]
-    pub fn dfs(&self) -> DFS_R {
-        DFS_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn dfs(&self) -> DfsR {
+        DfsR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Slave"]
     #[inline(always)]
-    pub fn slave(&self) -> SLAVE_R {
-        SLAVE_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn slave(&self) -> SlaveR {
+        SlaveR::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Pattern Buffer Valid"]
     #[inline(always)]
-    pub fn pattbufv(&self) -> PATTBUFV_R {
-        PATTBUFV_R::new(((self.bits >> 5) & 1) != 0)
+    pub fn pattbufv(&self) -> PattbufvR {
+        PattbufvR::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 7 - Period Buffer Valid"]
     #[inline(always)]
-    pub fn perbufv(&self) -> PERBUFV_R {
-        PERBUFV_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn perbufv(&self) -> PerbufvR {
+        PerbufvR::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - Recoverable Fault A Input"]
     #[inline(always)]
-    pub fn faultain(&self) -> FAULTAIN_R {
-        FAULTAIN_R::new(((self.bits >> 8) & 1) != 0)
+    pub fn faultain(&self) -> FaultainR {
+        FaultainR::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Recoverable Fault B Input"]
     #[inline(always)]
-    pub fn faultbin(&self) -> FAULTBIN_R {
-        FAULTBIN_R::new(((self.bits >> 9) & 1) != 0)
+    pub fn faultbin(&self) -> FaultbinR {
+        FaultbinR::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - Non-Recoverable Fault0 Input"]
     #[inline(always)]
-    pub fn fault0in(&self) -> FAULT0IN_R {
-        FAULT0IN_R::new(((self.bits >> 10) & 1) != 0)
+    pub fn fault0in(&self) -> Fault0inR {
+        Fault0inR::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bit 11 - Non-Recoverable Fault1 Input"]
     #[inline(always)]
-    pub fn fault1in(&self) -> FAULT1IN_R {
-        FAULT1IN_R::new(((self.bits >> 11) & 1) != 0)
+    pub fn fault1in(&self) -> Fault1inR {
+        Fault1inR::new(((self.bits >> 11) & 1) != 0)
     }
     #[doc = "Bit 12 - Recoverable Fault A State"]
     #[inline(always)]
-    pub fn faulta(&self) -> FAULTA_R {
-        FAULTA_R::new(((self.bits >> 12) & 1) != 0)
+    pub fn faulta(&self) -> FaultaR {
+        FaultaR::new(((self.bits >> 12) & 1) != 0)
     }
     #[doc = "Bit 13 - Recoverable Fault B State"]
     #[inline(always)]
-    pub fn faultb(&self) -> FAULTB_R {
-        FAULTB_R::new(((self.bits >> 13) & 1) != 0)
+    pub fn faultb(&self) -> FaultbR {
+        FaultbR::new(((self.bits >> 13) & 1) != 0)
     }
     #[doc = "Bit 14 - Non-Recoverable Fault 0 State"]
     #[inline(always)]
-    pub fn fault0(&self) -> FAULT0_R {
-        FAULT0_R::new(((self.bits >> 14) & 1) != 0)
+    pub fn fault0(&self) -> Fault0R {
+        Fault0R::new(((self.bits >> 14) & 1) != 0)
     }
     #[doc = "Bit 15 - Non-Recoverable Fault 1 State"]
     #[inline(always)]
-    pub fn fault1(&self) -> FAULT1_R {
-        FAULT1_R::new(((self.bits >> 15) & 1) != 0)
+    pub fn fault1(&self) -> Fault1R {
+        Fault1R::new(((self.bits >> 15) & 1) != 0)
     }
     #[doc = "Bit 16 - Compare Channel 0 Buffer Valid"]
     #[inline(always)]
-    pub fn ccbufv0(&self) -> CCBUFV0_R {
-        CCBUFV0_R::new(((self.bits >> 16) & 1) != 0)
+    pub fn ccbufv0(&self) -> Ccbufv0R {
+        Ccbufv0R::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - Compare Channel 1 Buffer Valid"]
     #[inline(always)]
-    pub fn ccbufv1(&self) -> CCBUFV1_R {
-        CCBUFV1_R::new(((self.bits >> 17) & 1) != 0)
+    pub fn ccbufv1(&self) -> Ccbufv1R {
+        Ccbufv1R::new(((self.bits >> 17) & 1) != 0)
     }
     #[doc = "Bit 18 - Compare Channel 2 Buffer Valid"]
     #[inline(always)]
-    pub fn ccbufv2(&self) -> CCBUFV2_R {
-        CCBUFV2_R::new(((self.bits >> 18) & 1) != 0)
+    pub fn ccbufv2(&self) -> Ccbufv2R {
+        Ccbufv2R::new(((self.bits >> 18) & 1) != 0)
     }
     #[doc = "Bit 19 - Compare Channel 3 Buffer Valid"]
     #[inline(always)]
-    pub fn ccbufv3(&self) -> CCBUFV3_R {
-        CCBUFV3_R::new(((self.bits >> 19) & 1) != 0)
+    pub fn ccbufv3(&self) -> Ccbufv3R {
+        Ccbufv3R::new(((self.bits >> 19) & 1) != 0)
     }
     #[doc = "Bit 20 - Compare Channel 4 Buffer Valid"]
     #[inline(always)]
-    pub fn ccbufv4(&self) -> CCBUFV4_R {
-        CCBUFV4_R::new(((self.bits >> 20) & 1) != 0)
+    pub fn ccbufv4(&self) -> Ccbufv4R {
+        Ccbufv4R::new(((self.bits >> 20) & 1) != 0)
     }
     #[doc = "Bit 21 - Compare Channel 5 Buffer Valid"]
     #[inline(always)]
-    pub fn ccbufv5(&self) -> CCBUFV5_R {
-        CCBUFV5_R::new(((self.bits >> 21) & 1) != 0)
+    pub fn ccbufv5(&self) -> Ccbufv5R {
+        Ccbufv5R::new(((self.bits >> 21) & 1) != 0)
     }
     #[doc = "Bit 24 - Compare Channel 0 Value"]
     #[inline(always)]
-    pub fn cmp0(&self) -> CMP0_R {
-        CMP0_R::new(((self.bits >> 24) & 1) != 0)
+    pub fn cmp0(&self) -> Cmp0R {
+        Cmp0R::new(((self.bits >> 24) & 1) != 0)
     }
     #[doc = "Bit 25 - Compare Channel 1 Value"]
     #[inline(always)]
-    pub fn cmp1(&self) -> CMP1_R {
-        CMP1_R::new(((self.bits >> 25) & 1) != 0)
+    pub fn cmp1(&self) -> Cmp1R {
+        Cmp1R::new(((self.bits >> 25) & 1) != 0)
     }
     #[doc = "Bit 26 - Compare Channel 2 Value"]
     #[inline(always)]
-    pub fn cmp2(&self) -> CMP2_R {
-        CMP2_R::new(((self.bits >> 26) & 1) != 0)
+    pub fn cmp2(&self) -> Cmp2R {
+        Cmp2R::new(((self.bits >> 26) & 1) != 0)
     }
     #[doc = "Bit 27 - Compare Channel 3 Value"]
     #[inline(always)]
-    pub fn cmp3(&self) -> CMP3_R {
-        CMP3_R::new(((self.bits >> 27) & 1) != 0)
+    pub fn cmp3(&self) -> Cmp3R {
+        Cmp3R::new(((self.bits >> 27) & 1) != 0)
     }
     #[doc = "Bit 28 - Compare Channel 4 Value"]
     #[inline(always)]
-    pub fn cmp4(&self) -> CMP4_R {
-        CMP4_R::new(((self.bits >> 28) & 1) != 0)
+    pub fn cmp4(&self) -> Cmp4R {
+        Cmp4R::new(((self.bits >> 28) & 1) != 0)
     }
     #[doc = "Bit 29 - Compare Channel 5 Value"]
     #[inline(always)]
-    pub fn cmp5(&self) -> CMP5_R {
-        CMP5_R::new(((self.bits >> 29) & 1) != 0)
+    pub fn cmp5(&self) -> Cmp5R {
+        Cmp5R::new(((self.bits >> 29) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Stop"]
     #[inline(always)]
     #[must_use]
-    pub fn stop(&mut self) -> STOP_W<STATUS_SPEC, 0> {
-        STOP_W::new(self)
+    pub fn stop(&mut self) -> StopW<StatusSpec> {
+        StopW::new(self, 0)
     }
     #[doc = "Bit 1 - Ramp"]
     #[inline(always)]
     #[must_use]
-    pub fn idx(&mut self) -> IDX_W<STATUS_SPEC, 1> {
-        IDX_W::new(self)
+    pub fn idx(&mut self) -> IdxW<StatusSpec> {
+        IdxW::new(self, 1)
     }
     #[doc = "Bit 2 - Non-recoverable Update Fault State"]
     #[inline(always)]
     #[must_use]
-    pub fn ufs(&mut self) -> UFS_W<STATUS_SPEC, 2> {
-        UFS_W::new(self)
+    pub fn ufs(&mut self) -> UfsW<StatusSpec> {
+        UfsW::new(self, 2)
     }
     #[doc = "Bit 3 - Non-Recoverable Debug Fault State"]
     #[inline(always)]
     #[must_use]
-    pub fn dfs(&mut self) -> DFS_W<STATUS_SPEC, 3> {
-        DFS_W::new(self)
+    pub fn dfs(&mut self) -> DfsW<StatusSpec> {
+        DfsW::new(self, 3)
     }
     #[doc = "Bit 4 - Slave"]
     #[inline(always)]
     #[must_use]
-    pub fn slave(&mut self) -> SLAVE_W<STATUS_SPEC, 4> {
-        SLAVE_W::new(self)
+    pub fn slave(&mut self) -> SlaveW<StatusSpec> {
+        SlaveW::new(self, 4)
     }
     #[doc = "Bit 5 - Pattern Buffer Valid"]
     #[inline(always)]
     #[must_use]
-    pub fn pattbufv(&mut self) -> PATTBUFV_W<STATUS_SPEC, 5> {
-        PATTBUFV_W::new(self)
+    pub fn pattbufv(&mut self) -> PattbufvW<StatusSpec> {
+        PattbufvW::new(self, 5)
     }
     #[doc = "Bit 7 - Period Buffer Valid"]
     #[inline(always)]
     #[must_use]
-    pub fn perbufv(&mut self) -> PERBUFV_W<STATUS_SPEC, 7> {
-        PERBUFV_W::new(self)
+    pub fn perbufv(&mut self) -> PerbufvW<StatusSpec> {
+        PerbufvW::new(self, 7)
     }
     #[doc = "Bit 8 - Recoverable Fault A Input"]
     #[inline(always)]
     #[must_use]
-    pub fn faultain(&mut self) -> FAULTAIN_W<STATUS_SPEC, 8> {
-        FAULTAIN_W::new(self)
+    pub fn faultain(&mut self) -> FaultainW<StatusSpec> {
+        FaultainW::new(self, 8)
     }
     #[doc = "Bit 9 - Recoverable Fault B Input"]
     #[inline(always)]
     #[must_use]
-    pub fn faultbin(&mut self) -> FAULTBIN_W<STATUS_SPEC, 9> {
-        FAULTBIN_W::new(self)
+    pub fn faultbin(&mut self) -> FaultbinW<StatusSpec> {
+        FaultbinW::new(self, 9)
     }
     #[doc = "Bit 10 - Non-Recoverable Fault0 Input"]
     #[inline(always)]
     #[must_use]
-    pub fn fault0in(&mut self) -> FAULT0IN_W<STATUS_SPEC, 10> {
-        FAULT0IN_W::new(self)
+    pub fn fault0in(&mut self) -> Fault0inW<StatusSpec> {
+        Fault0inW::new(self, 10)
     }
     #[doc = "Bit 11 - Non-Recoverable Fault1 Input"]
     #[inline(always)]
     #[must_use]
-    pub fn fault1in(&mut self) -> FAULT1IN_W<STATUS_SPEC, 11> {
-        FAULT1IN_W::new(self)
+    pub fn fault1in(&mut self) -> Fault1inW<StatusSpec> {
+        Fault1inW::new(self, 11)
     }
     #[doc = "Bit 12 - Recoverable Fault A State"]
     #[inline(always)]
     #[must_use]
-    pub fn faulta(&mut self) -> FAULTA_W<STATUS_SPEC, 12> {
-        FAULTA_W::new(self)
+    pub fn faulta(&mut self) -> FaultaW<StatusSpec> {
+        FaultaW::new(self, 12)
     }
     #[doc = "Bit 13 - Recoverable Fault B State"]
     #[inline(always)]
     #[must_use]
-    pub fn faultb(&mut self) -> FAULTB_W<STATUS_SPEC, 13> {
-        FAULTB_W::new(self)
+    pub fn faultb(&mut self) -> FaultbW<StatusSpec> {
+        FaultbW::new(self, 13)
     }
     #[doc = "Bit 14 - Non-Recoverable Fault 0 State"]
     #[inline(always)]
     #[must_use]
-    pub fn fault0(&mut self) -> FAULT0_W<STATUS_SPEC, 14> {
-        FAULT0_W::new(self)
+    pub fn fault0(&mut self) -> Fault0W<StatusSpec> {
+        Fault0W::new(self, 14)
     }
     #[doc = "Bit 15 - Non-Recoverable Fault 1 State"]
     #[inline(always)]
     #[must_use]
-    pub fn fault1(&mut self) -> FAULT1_W<STATUS_SPEC, 15> {
-        FAULT1_W::new(self)
+    pub fn fault1(&mut self) -> Fault1W<StatusSpec> {
+        Fault1W::new(self, 15)
     }
     #[doc = "Bit 16 - Compare Channel 0 Buffer Valid"]
     #[inline(always)]
     #[must_use]
-    pub fn ccbufv0(&mut self) -> CCBUFV0_W<STATUS_SPEC, 16> {
-        CCBUFV0_W::new(self)
+    pub fn ccbufv0(&mut self) -> Ccbufv0W<StatusSpec> {
+        Ccbufv0W::new(self, 16)
     }
     #[doc = "Bit 17 - Compare Channel 1 Buffer Valid"]
     #[inline(always)]
     #[must_use]
-    pub fn ccbufv1(&mut self) -> CCBUFV1_W<STATUS_SPEC, 17> {
-        CCBUFV1_W::new(self)
+    pub fn ccbufv1(&mut self) -> Ccbufv1W<StatusSpec> {
+        Ccbufv1W::new(self, 17)
     }
     #[doc = "Bit 18 - Compare Channel 2 Buffer Valid"]
     #[inline(always)]
     #[must_use]
-    pub fn ccbufv2(&mut self) -> CCBUFV2_W<STATUS_SPEC, 18> {
-        CCBUFV2_W::new(self)
+    pub fn ccbufv2(&mut self) -> Ccbufv2W<StatusSpec> {
+        Ccbufv2W::new(self, 18)
     }
     #[doc = "Bit 19 - Compare Channel 3 Buffer Valid"]
     #[inline(always)]
     #[must_use]
-    pub fn ccbufv3(&mut self) -> CCBUFV3_W<STATUS_SPEC, 19> {
-        CCBUFV3_W::new(self)
+    pub fn ccbufv3(&mut self) -> Ccbufv3W<StatusSpec> {
+        Ccbufv3W::new(self, 19)
     }
     #[doc = "Bit 20 - Compare Channel 4 Buffer Valid"]
     #[inline(always)]
     #[must_use]
-    pub fn ccbufv4(&mut self) -> CCBUFV4_W<STATUS_SPEC, 20> {
-        CCBUFV4_W::new(self)
+    pub fn ccbufv4(&mut self) -> Ccbufv4W<StatusSpec> {
+        Ccbufv4W::new(self, 20)
     }
     #[doc = "Bit 21 - Compare Channel 5 Buffer Valid"]
     #[inline(always)]
     #[must_use]
-    pub fn ccbufv5(&mut self) -> CCBUFV5_W<STATUS_SPEC, 21> {
-        CCBUFV5_W::new(self)
+    pub fn ccbufv5(&mut self) -> Ccbufv5W<StatusSpec> {
+        Ccbufv5W::new(self, 21)
     }
     #[doc = "Bit 24 - Compare Channel 0 Value"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp0(&mut self) -> CMP0_W<STATUS_SPEC, 24> {
-        CMP0_W::new(self)
+    pub fn cmp0(&mut self) -> Cmp0W<StatusSpec> {
+        Cmp0W::new(self, 24)
     }
     #[doc = "Bit 25 - Compare Channel 1 Value"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp1(&mut self) -> CMP1_W<STATUS_SPEC, 25> {
-        CMP1_W::new(self)
+    pub fn cmp1(&mut self) -> Cmp1W<StatusSpec> {
+        Cmp1W::new(self, 25)
     }
     #[doc = "Bit 26 - Compare Channel 2 Value"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp2(&mut self) -> CMP2_W<STATUS_SPEC, 26> {
-        CMP2_W::new(self)
+    pub fn cmp2(&mut self) -> Cmp2W<StatusSpec> {
+        Cmp2W::new(self, 26)
     }
     #[doc = "Bit 27 - Compare Channel 3 Value"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp3(&mut self) -> CMP3_W<STATUS_SPEC, 27> {
-        CMP3_W::new(self)
+    pub fn cmp3(&mut self) -> Cmp3W<StatusSpec> {
+        Cmp3W::new(self, 27)
     }
     #[doc = "Bit 28 - Compare Channel 4 Value"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp4(&mut self) -> CMP4_W<STATUS_SPEC, 28> {
-        CMP4_W::new(self)
+    pub fn cmp4(&mut self) -> Cmp4W<StatusSpec> {
+        Cmp4W::new(self, 28)
     }
     #[doc = "Bit 29 - Compare Channel 5 Value"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp5(&mut self) -> CMP5_W<STATUS_SPEC, 29> {
-        CMP5_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn cmp5(&mut self) -> Cmp5W<StatusSpec> {
+        Cmp5W::new(self, 29)
     }
 }
-#[doc = "Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`status::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct STATUS_SPEC;
-impl crate::RegisterSpec for STATUS_SPEC {
+#[doc = "Status\n\nYou can [`read`](crate::Reg::read) this register and get [`status::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`status::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct StatusSpec;
+impl crate::RegisterSpec for StatusSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`status::R`](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {}
+impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
-impl crate::Writable for STATUS_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for StatusSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0x01"]
-impl crate::Resettable for STATUS_SPEC {
-    const RESET_VALUE: Self::Ux = 0x01;
+impl crate::Resettable for StatusSpec {
+    const RESET_VALUE: u32 = 0x01;
 }

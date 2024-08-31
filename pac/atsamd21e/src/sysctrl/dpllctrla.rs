@@ -1,79 +1,70 @@
 #[doc = "Register `DPLLCTRLA` reader"]
-pub type R = crate::R<DPLLCTRLA_SPEC>;
+pub type R = crate::R<DpllctrlaSpec>;
 #[doc = "Register `DPLLCTRLA` writer"]
-pub type W = crate::W<DPLLCTRLA_SPEC>;
+pub type W = crate::W<DpllctrlaSpec>;
 #[doc = "Field `ENABLE` reader - DPLL Enable"]
-pub type ENABLE_R = crate::BitReader;
+pub type EnableR = crate::BitReader;
 #[doc = "Field `ENABLE` writer - DPLL Enable"]
-pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type EnableW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RUNSTDBY` reader - Run in Standby"]
-pub type RUNSTDBY_R = crate::BitReader;
+pub type RunstdbyR = crate::BitReader;
 #[doc = "Field `RUNSTDBY` writer - Run in Standby"]
-pub type RUNSTDBY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RunstdbyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ONDEMAND` reader - On Demand Clock Activation"]
-pub type ONDEMAND_R = crate::BitReader;
+pub type OndemandR = crate::BitReader;
 #[doc = "Field `ONDEMAND` writer - On Demand Clock Activation"]
-pub type ONDEMAND_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type OndemandW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 1 - DPLL Enable"]
     #[inline(always)]
-    pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn enable(&self) -> EnableR {
+        EnableR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    pub fn runstdby(&self) -> RUNSTDBY_R {
-        RUNSTDBY_R::new(((self.bits >> 6) & 1) != 0)
+    pub fn runstdby(&self) -> RunstdbyR {
+        RunstdbyR::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - On Demand Clock Activation"]
     #[inline(always)]
-    pub fn ondemand(&self) -> ONDEMAND_R {
-        ONDEMAND_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn ondemand(&self) -> OndemandR {
+        OndemandR::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 1 - DPLL Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn enable(&mut self) -> ENABLE_W<DPLLCTRLA_SPEC, 1> {
-        ENABLE_W::new(self)
+    pub fn enable(&mut self) -> EnableW<DpllctrlaSpec> {
+        EnableW::new(self, 1)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
     #[must_use]
-    pub fn runstdby(&mut self) -> RUNSTDBY_W<DPLLCTRLA_SPEC, 6> {
-        RUNSTDBY_W::new(self)
+    pub fn runstdby(&mut self) -> RunstdbyW<DpllctrlaSpec> {
+        RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Clock Activation"]
     #[inline(always)]
     #[must_use]
-    pub fn ondemand(&mut self) -> ONDEMAND_W<DPLLCTRLA_SPEC, 7> {
-        ONDEMAND_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn ondemand(&mut self) -> OndemandW<DpllctrlaSpec> {
+        OndemandW::new(self, 7)
     }
 }
-#[doc = "DPLL Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dpllctrla::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dpllctrla::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct DPLLCTRLA_SPEC;
-impl crate::RegisterSpec for DPLLCTRLA_SPEC {
+#[doc = "DPLL Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllctrla::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dpllctrla::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct DpllctrlaSpec;
+impl crate::RegisterSpec for DpllctrlaSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`dpllctrla::R`](R) reader structure"]
-impl crate::Readable for DPLLCTRLA_SPEC {}
+impl crate::Readable for DpllctrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`dpllctrla::W`](W) writer structure"]
-impl crate::Writable for DPLLCTRLA_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for DpllctrlaSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DPLLCTRLA to value 0x80"]
-impl crate::Resettable for DPLLCTRLA_SPEC {
-    const RESET_VALUE: Self::Ux = 0x80;
+impl crate::Resettable for DpllctrlaSpec {
+    const RESET_VALUE: u8 = 0x80;
 }

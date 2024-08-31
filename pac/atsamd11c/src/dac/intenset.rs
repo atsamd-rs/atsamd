@@ -1,79 +1,70 @@
 #[doc = "Register `INTENSET` reader"]
-pub type R = crate::R<INTENSET_SPEC>;
+pub type R = crate::R<IntensetSpec>;
 #[doc = "Register `INTENSET` writer"]
-pub type W = crate::W<INTENSET_SPEC>;
+pub type W = crate::W<IntensetSpec>;
 #[doc = "Field `UNDERRUN` reader - Underrun Interrupt Enable"]
-pub type UNDERRUN_R = crate::BitReader;
+pub type UnderrunR = crate::BitReader;
 #[doc = "Field `UNDERRUN` writer - Underrun Interrupt Enable"]
-pub type UNDERRUN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type UnderrunW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EMPTY` reader - Data Buffer Empty Interrupt Enable"]
-pub type EMPTY_R = crate::BitReader;
+pub type EmptyR = crate::BitReader;
 #[doc = "Field `EMPTY` writer - Data Buffer Empty Interrupt Enable"]
-pub type EMPTY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type EmptyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SYNCRDY` reader - Synchronization Ready Interrupt Enable"]
-pub type SYNCRDY_R = crate::BitReader;
+pub type SyncrdyR = crate::BitReader;
 #[doc = "Field `SYNCRDY` writer - Synchronization Ready Interrupt Enable"]
-pub type SYNCRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SyncrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Underrun Interrupt Enable"]
     #[inline(always)]
-    pub fn underrun(&self) -> UNDERRUN_R {
-        UNDERRUN_R::new((self.bits & 1) != 0)
+    pub fn underrun(&self) -> UnderrunR {
+        UnderrunR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Data Buffer Empty Interrupt Enable"]
     #[inline(always)]
-    pub fn empty(&self) -> EMPTY_R {
-        EMPTY_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn empty(&self) -> EmptyR {
+        EmptyR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Synchronization Ready Interrupt Enable"]
     #[inline(always)]
-    pub fn syncrdy(&self) -> SYNCRDY_R {
-        SYNCRDY_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn syncrdy(&self) -> SyncrdyR {
+        SyncrdyR::new(((self.bits >> 2) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Underrun Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn underrun(&mut self) -> UNDERRUN_W<INTENSET_SPEC, 0> {
-        UNDERRUN_W::new(self)
+    pub fn underrun(&mut self) -> UnderrunW<IntensetSpec> {
+        UnderrunW::new(self, 0)
     }
     #[doc = "Bit 1 - Data Buffer Empty Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn empty(&mut self) -> EMPTY_W<INTENSET_SPEC, 1> {
-        EMPTY_W::new(self)
+    pub fn empty(&mut self) -> EmptyW<IntensetSpec> {
+        EmptyW::new(self, 1)
     }
     #[doc = "Bit 2 - Synchronization Ready Interrupt Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn syncrdy(&mut self) -> SYNCRDY_W<INTENSET_SPEC, 2> {
-        SYNCRDY_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn syncrdy(&mut self) -> SyncrdyW<IntensetSpec> {
+        SyncrdyW::new(self, 2)
     }
 }
-#[doc = "Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct INTENSET_SPEC;
-impl crate::RegisterSpec for INTENSET_SPEC {
+#[doc = "Interrupt Enable Set\n\nYou can [`read`](crate::Reg::read) this register and get [`intenset::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenset::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct IntensetSpec;
+impl crate::RegisterSpec for IntensetSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`intenset::R`](R) reader structure"]
-impl crate::Readable for INTENSET_SPEC {}
+impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
-impl crate::Writable for INTENSET_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for IntensetSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for INTENSET_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for IntensetSpec {
+    const RESET_VALUE: u8 = 0;
 }

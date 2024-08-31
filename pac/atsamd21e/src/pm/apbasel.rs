@@ -1,99 +1,100 @@
 #[doc = "Register `APBASEL` reader"]
-pub type R = crate::R<APBASEL_SPEC>;
+pub type R = crate::R<ApbaselSpec>;
 #[doc = "Register `APBASEL` writer"]
-pub type W = crate::W<APBASEL_SPEC>;
-#[doc = "Field `APBADIV` reader - APBA Prescaler Selection"]
-pub type APBADIV_R = crate::FieldReader<APBADIVSELECT_A>;
+pub type W = crate::W<ApbaselSpec>;
 #[doc = "APBA Prescaler Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum APBADIVSELECT_A {
+pub enum Apbadivselect {
     #[doc = "0: Divide by 1"]
-    DIV1 = 0,
+    Div1 = 0,
     #[doc = "1: Divide by 2"]
-    DIV2 = 1,
+    Div2 = 1,
     #[doc = "2: Divide by 4"]
-    DIV4 = 2,
+    Div4 = 2,
     #[doc = "3: Divide by 8"]
-    DIV8 = 3,
+    Div8 = 3,
     #[doc = "4: Divide by 16"]
-    DIV16 = 4,
+    Div16 = 4,
     #[doc = "5: Divide by 32"]
-    DIV32 = 5,
+    Div32 = 5,
     #[doc = "6: Divide by 64"]
-    DIV64 = 6,
+    Div64 = 6,
     #[doc = "7: Divide by 128"]
-    DIV128 = 7,
+    Div128 = 7,
 }
-impl From<APBADIVSELECT_A> for u8 {
+impl From<Apbadivselect> for u8 {
     #[inline(always)]
-    fn from(variant: APBADIVSELECT_A) -> Self {
+    fn from(variant: Apbadivselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for APBADIVSELECT_A {
+impl crate::FieldSpec for Apbadivselect {
     type Ux = u8;
 }
-impl APBADIV_R {
+impl crate::IsEnum for Apbadivselect {}
+#[doc = "Field `APBADIV` reader - APBA Prescaler Selection"]
+pub type ApbadivR = crate::FieldReader<Apbadivselect>;
+impl ApbadivR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> APBADIVSELECT_A {
+    pub const fn variant(&self) -> Apbadivselect {
         match self.bits {
-            0 => APBADIVSELECT_A::DIV1,
-            1 => APBADIVSELECT_A::DIV2,
-            2 => APBADIVSELECT_A::DIV4,
-            3 => APBADIVSELECT_A::DIV8,
-            4 => APBADIVSELECT_A::DIV16,
-            5 => APBADIVSELECT_A::DIV32,
-            6 => APBADIVSELECT_A::DIV64,
-            7 => APBADIVSELECT_A::DIV128,
+            0 => Apbadivselect::Div1,
+            1 => Apbadivselect::Div2,
+            2 => Apbadivselect::Div4,
+            3 => Apbadivselect::Div8,
+            4 => Apbadivselect::Div16,
+            5 => Apbadivselect::Div32,
+            6 => Apbadivselect::Div64,
+            7 => Apbadivselect::Div128,
             _ => unreachable!(),
         }
     }
     #[doc = "Divide by 1"]
     #[inline(always)]
     pub fn is_div1(&self) -> bool {
-        *self == APBADIVSELECT_A::DIV1
+        *self == Apbadivselect::Div1
     }
     #[doc = "Divide by 2"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == APBADIVSELECT_A::DIV2
+        *self == Apbadivselect::Div2
     }
     #[doc = "Divide by 4"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == APBADIVSELECT_A::DIV4
+        *self == Apbadivselect::Div4
     }
     #[doc = "Divide by 8"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == APBADIVSELECT_A::DIV8
+        *self == Apbadivselect::Div8
     }
     #[doc = "Divide by 16"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == APBADIVSELECT_A::DIV16
+        *self == Apbadivselect::Div16
     }
     #[doc = "Divide by 32"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == APBADIVSELECT_A::DIV32
+        *self == Apbadivselect::Div32
     }
     #[doc = "Divide by 64"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == APBADIVSELECT_A::DIV64
+        *self == Apbadivselect::Div64
     }
     #[doc = "Divide by 128"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == APBADIVSELECT_A::DIV128
+        *self == Apbadivselect::Div128
     }
 }
 #[doc = "Field `APBADIV` writer - APBA Prescaler Selection"]
-pub type APBADIV_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 3, O, APBADIVSELECT_A>;
-impl<'a, REG, const O: u8> APBADIV_W<'a, REG, O>
+pub type ApbadivW<'a, REG> = crate::FieldWriter<'a, REG, 3, Apbadivselect, crate::Safe>;
+impl<'a, REG> ApbadivW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -101,82 +102,73 @@ where
     #[doc = "Divide by 1"]
     #[inline(always)]
     pub fn div1(self) -> &'a mut crate::W<REG> {
-        self.variant(APBADIVSELECT_A::DIV1)
+        self.variant(Apbadivselect::Div1)
     }
     #[doc = "Divide by 2"]
     #[inline(always)]
     pub fn div2(self) -> &'a mut crate::W<REG> {
-        self.variant(APBADIVSELECT_A::DIV2)
+        self.variant(Apbadivselect::Div2)
     }
     #[doc = "Divide by 4"]
     #[inline(always)]
     pub fn div4(self) -> &'a mut crate::W<REG> {
-        self.variant(APBADIVSELECT_A::DIV4)
+        self.variant(Apbadivselect::Div4)
     }
     #[doc = "Divide by 8"]
     #[inline(always)]
     pub fn div8(self) -> &'a mut crate::W<REG> {
-        self.variant(APBADIVSELECT_A::DIV8)
+        self.variant(Apbadivselect::Div8)
     }
     #[doc = "Divide by 16"]
     #[inline(always)]
     pub fn div16(self) -> &'a mut crate::W<REG> {
-        self.variant(APBADIVSELECT_A::DIV16)
+        self.variant(Apbadivselect::Div16)
     }
     #[doc = "Divide by 32"]
     #[inline(always)]
     pub fn div32(self) -> &'a mut crate::W<REG> {
-        self.variant(APBADIVSELECT_A::DIV32)
+        self.variant(Apbadivselect::Div32)
     }
     #[doc = "Divide by 64"]
     #[inline(always)]
     pub fn div64(self) -> &'a mut crate::W<REG> {
-        self.variant(APBADIVSELECT_A::DIV64)
+        self.variant(Apbadivselect::Div64)
     }
     #[doc = "Divide by 128"]
     #[inline(always)]
     pub fn div128(self) -> &'a mut crate::W<REG> {
-        self.variant(APBADIVSELECT_A::DIV128)
+        self.variant(Apbadivselect::Div128)
     }
 }
 impl R {
     #[doc = "Bits 0:2 - APBA Prescaler Selection"]
     #[inline(always)]
-    pub fn apbadiv(&self) -> APBADIV_R {
-        APBADIV_R::new(self.bits & 7)
+    pub fn apbadiv(&self) -> ApbadivR {
+        ApbadivR::new(self.bits & 7)
     }
 }
 impl W {
     #[doc = "Bits 0:2 - APBA Prescaler Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn apbadiv(&mut self) -> APBADIV_W<APBASEL_SPEC, 0> {
-        APBADIV_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn apbadiv(&mut self) -> ApbadivW<ApbaselSpec> {
+        ApbadivW::new(self, 0)
     }
 }
-#[doc = "APBA Clock Select\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`apbasel::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`apbasel::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct APBASEL_SPEC;
-impl crate::RegisterSpec for APBASEL_SPEC {
+#[doc = "APBA Clock Select\n\nYou can [`read`](crate::Reg::read) this register and get [`apbasel::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbasel::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct ApbaselSpec;
+impl crate::RegisterSpec for ApbaselSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`apbasel::R`](R) reader structure"]
-impl crate::Readable for APBASEL_SPEC {}
+impl crate::Readable for ApbaselSpec {}
 #[doc = "`write(|w| ..)` method takes [`apbasel::W`](W) writer structure"]
-impl crate::Writable for APBASEL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for ApbaselSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets APBASEL to value 0"]
-impl crate::Resettable for APBASEL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for ApbaselSpec {
+    const RESET_VALUE: u8 = 0;
 }

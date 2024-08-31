@@ -1,23 +1,23 @@
 #[doc = "Register `RR[%s]` reader"]
-pub type R = crate::R<RR_SPEC>;
+pub type R = crate::R<RrSpec>;
 #[doc = "Field `CMDRESP` reader - Command Response"]
-pub type CMDRESP_R = crate::FieldReader<u32>;
+pub type CmdrespR = crate::FieldReader<u32>;
 impl R {
     #[doc = "Bits 0:31 - Command Response"]
     #[inline(always)]
-    pub fn cmdresp(&self) -> CMDRESP_R {
-        CMDRESP_R::new(self.bits)
+    pub fn cmdresp(&self) -> CmdrespR {
+        CmdrespR::new(self.bits)
     }
 }
-#[doc = "Response\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`rr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct RR_SPEC;
-impl crate::RegisterSpec for RR_SPEC {
+#[doc = "Response\n\nYou can [`read`](crate::Reg::read) this register and get [`rr::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct RrSpec;
+impl crate::RegisterSpec for RrSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`rr::R`](R) reader structure"]
-impl crate::Readable for RR_SPEC {}
+impl crate::Readable for RrSpec {}
 #[doc = "`reset()` method sets RR[%s]
 to value 0"]
-impl crate::Resettable for RR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for RrSpec {
+    const RESET_VALUE: u32 = 0;
 }
