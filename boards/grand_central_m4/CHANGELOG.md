@@ -1,6 +1,7 @@
 # Unreleased
 
 - update path of Cargo config
+- update to `atsamd-hal-0.17` and other dependencies (#753)
 
 # v0.6.0
 
