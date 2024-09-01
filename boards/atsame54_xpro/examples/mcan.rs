@@ -5,8 +5,8 @@
 //!   switching
 //!
 //! 1. Sends a message over CAN on SW0 button press and prints out transmit
-//!     event queue content, protocol status register and error counter register in
-//!     RTT terminal.
+//!    event queue content, protocol status register and error counter register
+//!    in RTT terminal.
 //!
 //! 2. Sets up an interrupt line and message filters:
 //!
