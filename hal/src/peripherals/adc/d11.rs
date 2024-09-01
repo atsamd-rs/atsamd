@@ -25,7 +25,7 @@ pub struct Adc<ADC> {
     adc: ADC,
 }
 
-impl Adc<ADC> {
+impl Adc<pac::Adc> {
     /// Create a new `Adc` instance. The default configuration is:
     /// * 1/32 prescaler
     /// * 12 bit resolution
@@ -67,7 +67,7 @@ impl Adc<ADC> {
     /// Set the sample rate
     pub fn samples(&mut self, samples: SampleRate) {
         use adc::avgctrl::Samplenumselect;
-        self.adc.avgctrl.modify(|_, w| {
+        self.adc.avgctrl().modify(|_, w| {
             w.samplenum().variant(samples);
             unsafe {
                 // Table 32-3 (32.6.7) specifies the adjres
@@ -81,68 +81,70 @@ impl Adc<ADC> {
                 })
             }
         });
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        while self.adc.status().read().syncbusy().bit_is_set() {}
     }
 
     /// Set the gain factor
     pub fn gain(&mut self, gain: Gain) {
-        self.adc.inputctrl.modify(|_, w| w.gain().variant(gain));
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        self.adc.inputctrl().modify(|_, w| w.gain().variant(gain));
+        while self.adc.status().read().syncbusy().bit_is_set() {}
     }
 
     /// Set the voltage reference
     pub fn reference(&mut self, reference: Reference) {
         self.adc
-            .refctrl
+            .refctrl()
             .modify(|_, w| w.refsel().variant(reference));
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        while self.adc.status().read().syncbusy().bit_is_set() {}
     }
 
     /// Set the prescaler for adjusting the clock relative to the system clock
     pub fn prescaler(&mut self, prescaler: Prescaler) {
         self.adc
-            .ctrlb
+            .ctrlb()
             .modify(|_, w| w.prescaler().variant(prescaler));
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        while self.adc.status().read().syncbusy().bit_is_set() {}
     }
 
     /// Set the input resolution.
     pub fn resolution(&mut self, resolution: Resolution) {
-        self.adc.ctrlb.modify(|_, w| w.ressel().variant(resolution));
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        self.adc
+            .ctrlb()
+            .modify(|_, w| w.ressel().variant(resolution));
+        while self.adc.status().read().syncbusy().bit_is_set() {}
     }
 
     fn power_up(&mut self) {
-        while self.adc.status.read().syncbusy().bit_is_set() {}
-        self.adc.ctrla.modify(|_, w| w.enable().set_bit());
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        while self.adc.status().read().syncbusy().bit_is_set() {}
+        self.adc.ctrla().modify(|_, w| w.enable().set_bit());
+        while self.adc.status().read().syncbusy().bit_is_set() {}
     }
 
     fn power_down(&mut self) {
-        while self.adc.status.read().syncbusy().bit_is_set() {}
-        self.adc.ctrla.modify(|_, w| w.enable().clear_bit());
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        while self.adc.status().read().syncbusy().bit_is_set() {}
+        self.adc.ctrla().modify(|_, w| w.enable().clear_bit());
+        while self.adc.status().read().syncbusy().bit_is_set() {}
     }
 
     fn convert(&mut self) -> u16 {
-        self.adc.swtrig.modify(|_, w| w.start().set_bit());
-        while self.adc.intflag.read().resrdy().bit_is_clear() {}
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        self.adc.swtrig().modify(|_, w| w.start().set_bit());
+        while self.adc.intflag().read().resrdy().bit_is_clear() {}
+        while self.adc.status().read().syncbusy().bit_is_set() {}
 
         // Clear the interrupt flag
-        self.adc.intflag.modify(|_, w| w.resrdy().set_bit());
+        self.adc.intflag().modify(|_, w| w.resrdy().set_bit());
 
         // Start conversion again, since The first conversion after the reference is
         // changed must not be used.
-        self.adc.swtrig.modify(|_, w| w.start().set_bit());
-        while self.adc.intflag.read().resrdy().bit_is_clear() {}
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        self.adc.swtrig().modify(|_, w| w.start().set_bit());
+        while self.adc.intflag().read().resrdy().bit_is_clear() {}
+        while self.adc.status().read().syncbusy().bit_is_set() {}
 
-        self.adc.result.read().result().bits()
+        self.adc.result().read().result().bits()
     }
 }
 
-impl<WORD, PIN> OneShot<ADC, WORD, PIN> for Adc<ADC>
+impl<WORD, PIN> OneShot<pac::Adc, WORD, PIN> for Adc<pac::Adc>
 where
     WORD: From<u16>,
     PIN: Channel<pac::Adc, ID = u8>,
@@ -151,10 +153,10 @@ where
 
     fn read(&mut self, _pin: &mut PIN) -> nb::Result<WORD, Self::Error> {
         let chan = PIN::channel();
-        while self.adc.status.read().syncbusy().bit_is_set() {}
+        while self.adc.status().read().syncbusy().bit_is_set() {}
 
         self.adc
-            .inputctrl
+            .inputctrl()
             .modify(|_, w| unsafe { w.muxpos().bits(chan) });
         self.power_up();
         let result = self.convert();
@@ -174,7 +176,7 @@ macro_rules! adc_pins {
     ) => {
         $(
             $( #[$cfg] )?
-            impl Channel<ADC> for Pin<$PinId, AlternateB> {
+            impl Channel<$crate::pac::Adc> for Pin<$PinId, AlternateB> {
                type ID = u8;
                fn channel() -> u8 { $CHAN }
             }

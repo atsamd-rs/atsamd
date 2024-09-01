@@ -8,10 +8,10 @@ use crate::pac;
 use crate::sercom::Sercom;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-use pac::sercom0::usart::ctrla::MODESELECT_A;
+use pac::sercom0::usart::ctrla::Modeselect;
 
 #[hal_cfg("sercom0-d5x")]
-use pac::sercom0::usart_int::ctrla::MODESELECT_A;
+use pac::sercom0::usart_int::ctrla::Modeselect;
 
 use crate::time::Hertz;
 
@@ -33,7 +33,7 @@ impl<S: Sercom> Registers<S> {
     /// Helper function to access the underlying `USART` from the given `SERCOM`
     #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
     #[inline]
-    fn usart(&self) -> &pac::sercom0::USART {
+    fn usart(&self) -> &pac::sercom0::Usart {
         self.sercom.usart()
     }
 
@@ -48,7 +48,7 @@ impl<S: Sercom> Registers<S> {
     #[cfg(feature = "dma")]
     /// Get a pointer to the `DATA` register
     pub(super) fn data_ptr<T>(&self) -> *mut T {
-        self.usart().data.as_ptr() as *mut _
+        self.usart().data().as_ptr() as *mut _
     }
 
     /// Free the `Registers` struct and return the underlying `Sercom` instance
@@ -60,22 +60,22 @@ impl<S: Sercom> Registers<S> {
     /// Reset the SERCOM peripheral
     #[inline]
     pub(super) fn swrst(&mut self) {
-        self.usart().ctrla.write(|w| w.swrst().set_bit());
-        while self.usart().syncbusy.read().swrst().bit_is_set() {}
+        self.usart().ctrla().write(|w| w.swrst().set_bit());
+        while self.usart().syncbusy().read().swrst().bit_is_set() {}
     }
 
     /// Configure the SERCOM to use internal clock mode
     #[inline]
     pub(super) fn configure_mode(&mut self) {
         self.usart()
-            .ctrla
-            .modify(|_, w| w.mode().variant(MODESELECT_A::USART_INT_CLK));
+            .ctrla()
+            .modify(|_, w| w.mode().variant(Modeselect::UsartIntClk));
     }
 
     /// Configure the `SERCOM`'s Pads according to RXPO and TXPO
     #[inline]
     pub(super) fn configure_pads(&mut self, rxpo: u8, txpo: u8) {
-        self.usart().ctrla.modify(|_, w| unsafe {
+        self.usart().ctrla().modify(|_, w| unsafe {
             w.rxpo().bits(rxpo);
             w.txpo().bits(txpo)
         });
@@ -85,14 +85,14 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn set_char_size(&mut self, size: CharSizeEnum) {
         self.usart()
-            .ctrlb
+            .ctrlb()
             .modify(|_, w| unsafe { w.chsize().bits(size as u8) });
     }
 
     /// Get the current character size setting
     #[inline]
     pub(super) fn get_char_size(&self) -> CharSizeEnum {
-        let size = self.usart().ctrlb.read().chsize().bits();
+        let size = self.usart().ctrlb().read().chsize().bits();
         match size {
             0x5 => CharSizeEnum::FiveBit,
             0x6 => CharSizeEnum::SixBit,
@@ -111,13 +111,13 @@ impl<S: Sercom> Registers<S> {
             BitOrder::LsbFirst => true,
         };
 
-        self.usart().ctrla.modify(|_, w| w.dord().bit(bits));
+        self.usart().ctrla().modify(|_, w| w.dord().bit(bits));
     }
 
     /// Get the current bit order
     #[inline]
     pub(super) fn get_bit_order(&self) -> BitOrder {
-        let bits = self.usart().ctrla.read().dord().bit();
+        let bits = self.usart().ctrla().read().dord().bit();
 
         match bits {
             false => BitOrder::MsbFirst,
@@ -133,31 +133,31 @@ impl<S: Sercom> Registers<S> {
         let enabled = match parity {
             Parity::None => false,
             Parity::Odd => {
-                self.usart().ctrlb.modify(|_, w| w.pmode().bit(true));
+                self.usart().ctrlb().modify(|_, w| w.pmode().bit(true));
                 true
             }
             Parity::Even => {
-                self.usart().ctrlb.modify(|_, w| w.pmode().bit(false));
+                self.usart().ctrlb().modify(|_, w| w.pmode().bit(false));
                 true
             }
         };
 
         self.usart()
-            .ctrla
+            .ctrla()
             .modify(|_, w| unsafe { w.form().bits(enabled as u8) });
     }
 
     /// Get the current parity setting
     #[inline]
     pub(super) fn get_parity(&self) -> Parity {
-        let form = self.usart().ctrla.read().form().bits();
+        let form = self.usart().ctrla().read().form().bits();
         let enabled = form == 0x1 || form == 0x5;
 
         if !enabled {
             return Parity::None;
         }
 
-        let pmode = self.usart().ctrlb.read().pmode().bit();
+        let pmode = self.usart().ctrlb().read().pmode().bit();
 
         match pmode {
             false => Parity::Even,
@@ -173,13 +173,13 @@ impl<S: Sercom> Registers<S> {
             StopBits::TwoBits => true,
         };
 
-        self.usart().ctrlb.modify(|_, w| w.sbmode().bit(bits));
+        self.usart().ctrlb().modify(|_, w| w.sbmode().bit(bits));
     }
 
     /// Get the current stop bit setting
     #[inline]
     pub(super) fn get_stop_bits(&self) -> StopBits {
-        let bits = self.usart().ctrlb.read().sbmode().bit();
+        let bits = self.usart().ctrlb().read().sbmode().bit();
         match bits {
             false => StopBits::OneBit,
             true => StopBits::TwoBits,
@@ -192,13 +192,13 @@ impl<S: Sercom> Registers<S> {
     /// RXC and/or RXS if these interrupt flags have been enabled.
     #[inline]
     pub(super) fn set_start_of_frame_detection(&mut self, enabled: bool) {
-        self.usart().ctrlb.modify(|_, w| w.sfde().bit(enabled));
+        self.usart().ctrlb().modify(|_, w| w.sfde().bit(enabled));
     }
 
     /// Get the current SOF detector setting
     #[inline]
     pub(super) fn get_start_of_frame_detection(&self) -> bool {
-        self.usart().ctrlb.read().sfde().bit()
+        self.usart().ctrlb().read().sfde().bit()
     }
 
     /// Enable or disable the collision detector.
@@ -207,13 +207,13 @@ impl<S: Sercom> Registers<S> {
     /// corresponding flag in the STATUS register.
     #[inline]
     pub(super) fn set_collision_detection(&mut self, enabled: bool) {
-        self.usart().ctrlb.modify(|_, w| w.colden().bit(enabled));
+        self.usart().ctrlb().modify(|_, w| w.colden().bit(enabled));
     }
 
     /// Get the current collision detector setting
     #[inline]
     pub(super) fn get_collision_detection(&self) -> bool {
-        self.usart().ctrlb.read().colden().bit()
+        self.usart().ctrlb().read().colden().bit()
     }
 
     /// Set the baud rate
@@ -243,7 +243,9 @@ impl<S: Sercom> Registers<S> {
             },
         };
 
-        usart.ctrla.modify(|_, w| unsafe { w.sampr().bits(sampr) });
+        usart
+            .ctrla()
+            .modify(|_, w| unsafe { w.sampr().bits(sampr) });
 
         match mode {
             BaudMode::Arithmetic(n) => {
@@ -274,7 +276,7 @@ impl<S: Sercom> Registers<S> {
         use Oversampling::*;
 
         let baud = self.usart().baud_usartfp_mode().read().bits();
-        let sampr = self.usart().ctrla.read().sampr().bits();
+        let sampr = self.usart().ctrla().read().sampr().bits();
         let mode = match sampr {
             0 => Arithmetic(Bits16),
             1 => Fractional(Bits16),
@@ -293,13 +295,13 @@ impl<S: Sercom> Registers<S> {
     /// the data stream.
     #[inline]
     pub(super) fn set_immediate_overflow_notification(&mut self, set: bool) {
-        self.usart().ctrla.modify(|_, w| w.ibon().bit(set));
+        self.usart().ctrla().modify(|_, w| w.ibon().bit(set));
     }
 
     /// Get the current immediate overflow notification setting
     #[inline]
     pub(super) fn get_immediate_overflow_notification(&self) -> bool {
-        self.usart().ctrla.read().ibon().bit()
+        self.usart().ctrla().read().ibon().bit()
     }
 
     /// Run in standby mode
@@ -308,13 +310,13 @@ impl<S: Sercom> Registers<S> {
     /// datasheet for more details.
     #[inline]
     pub(super) fn set_run_in_standby(&mut self, set: bool) {
-        self.usart().ctrla.modify(|_, w| w.runstdby().bit(set));
+        self.usart().ctrla().modify(|_, w| w.runstdby().bit(set));
     }
 
     /// Get the current run in standby mode
     #[inline]
     pub(super) fn get_run_in_standby(&self) -> bool {
-        self.usart().ctrla.read().runstdby().bit()
+        self.usart().ctrla().read().runstdby().bit()
     }
 
     /// Enable or disable IrDA encoding. The pulse length controls the minimum
@@ -325,11 +327,11 @@ impl<S: Sercom> Registers<S> {
     pub(super) fn set_irda_encoding(&mut self, pulse_length: Option<u8>) {
         match pulse_length {
             Some(l) => {
-                self.usart().rxpl.write(|w| unsafe { w.rxpl().bits(l) });
-                self.usart().ctrlb.modify(|_, w| w.enc().bit(true));
+                self.usart().rxpl().write(|w| unsafe { w.rxpl().bits(l) });
+                self.usart().ctrlb().modify(|_, w| w.enc().bit(true));
             }
             None => {
-                self.usart().ctrlb.modify(|_, w| w.enc().bit(false));
+                self.usart().ctrlb().modify(|_, w| w.enc().bit(false));
             }
         }
     }
@@ -338,8 +340,8 @@ impl<S: Sercom> Registers<S> {
     /// length wrapped in an [`Option`].
     #[inline]
     pub(super) fn get_irda_encoding(&self) -> Option<u8> {
-        if self.usart().ctrlb.read().enc().bit() {
-            Some(self.usart().rxpl.read().bits())
+        if self.usart().ctrlb().read().enc().bit() {
+            Some(self.usart().rxpl().read().bits())
         } else {
             None
         }
@@ -349,21 +351,21 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn clear_flags(&mut self, flags: Flags) {
         self.usart()
-            .intflag
+            .intflag()
             .modify(|_, w| unsafe { w.bits(flags.bits()) });
     }
 
     /// Read interrupt flags
     #[inline]
     pub(super) fn read_flags(&self) -> Flags {
-        Flags::from_bits_truncate(self.usart().intflag.read().bits())
+        Flags::from_bits_truncate(self.usart().intflag().read().bits())
     }
 
     /// Enable specified interrupts
     #[inline]
     pub(super) fn enable_interrupts(&mut self, flags: Flags) {
         self.usart()
-            .intenset
+            .intenset()
             .write(|w| unsafe { w.bits(flags.bits()) });
     }
 
@@ -371,7 +373,7 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn disable_interrupts(&mut self, flags: Flags) {
         self.usart()
-            .intenclr
+            .intenclr()
             .write(|w| unsafe { w.bits(flags.bits()) });
     }
 
@@ -379,26 +381,26 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn clear_status(&mut self, status: Status) {
         self.usart()
-            .status
+            .status()
             .modify(|_, w| unsafe { w.bits(status.bits()) });
     }
 
     /// Read status flags
     #[inline]
     pub(super) fn read_status(&self) -> Status {
-        Status::from_bits_truncate(self.usart().status.read().bits())
+        Status::from_bits_truncate(self.usart().status().read().bits())
     }
 
     /// Read from the `DATA` register
     #[inline]
     pub(super) unsafe fn read_data(&mut self) -> super::DataReg {
-        self.usart().data.read().data().bits()
+        self.usart().data().read().data().bits()
     }
 
     /// Write to the `DATA` register
     #[inline]
     pub(super) unsafe fn write_data(&mut self, data: super::DataReg) {
-        self.usart().data.write(|w| w.data().bits(data))
+        self.usart().data().write(|w| w.data().bits(data))
     }
 
     /// Enable the UART peripheral
@@ -410,14 +412,14 @@ impl<S: Sercom> Registers<S> {
 
         // Enable RX
         if rxen {
-            usart.ctrlb.modify(|_, w| w.rxen().set_bit());
-            while usart.syncbusy.read().ctrlb().bit_is_set() {}
+            usart.ctrlb().modify(|_, w| w.rxen().set_bit());
+            while usart.syncbusy().read().ctrlb().bit_is_set() {}
         }
 
         // Enable TX
         if txen {
-            usart.ctrlb.modify(|_, w| w.txen().set_bit());
-            while usart.syncbusy.read().ctrlb().bit_is_set() {}
+            usart.ctrlb().modify(|_, w| w.txen().set_bit());
+            while usart.syncbusy().read().ctrlb().bit_is_set() {}
         }
 
         // Globally enable peripheral
@@ -429,12 +431,12 @@ impl<S: Sercom> Registers<S> {
         let usart = self.usart();
 
         // Disable RX
-        usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
-        while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        usart.ctrlb().modify(|_, w| w.rxen().clear_bit());
+        while usart.syncbusy().read().ctrlb().bit_is_set() {}
 
         // Disable TX
-        usart.ctrlb.modify(|_, w| w.txen().clear_bit());
-        while usart.syncbusy.read().ctrlb().bit_is_set() {}
+        usart.ctrlb().modify(|_, w| w.txen().clear_bit());
+        while usart.syncbusy().read().ctrlb().bit_is_set() {}
 
         self.enable_peripheral(false);
     }
@@ -442,8 +444,8 @@ impl<S: Sercom> Registers<S> {
     /// Enable or disable the SERCOM peripheral, and wait for the ENABLE bit to
     /// synchronize.
     pub(super) fn enable_peripheral(&mut self, enable: bool) {
-        self.usart().ctrla.modify(|_, w| w.enable().bit(enable));
-        while self.usart().syncbusy.read().enable().bit_is_set() {}
+        self.usart().ctrla().modify(|_, w| w.enable().bit(enable));
+        while self.usart().syncbusy().read().enable().bit_is_set() {}
     }
 }
 

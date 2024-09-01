@@ -20,10 +20,11 @@ use bsp::hal;
 use samd11_bare as bsp;
 
 use bsp::entry;
+use cortex_m::peripheral::Peripherals as CorePeripherals;
 use hal::adc::Adc;
 use hal::clock::GenericClockController;
 use hal::gpio::*;
-use hal::pac::{CorePeripherals, Peripherals};
+use hal::pac::Peripherals;
 use hal::prelude::*;
 use rtt_target::{rprintln, rtt_init_print};
 
@@ -35,15 +36,15 @@ fn main() -> ! {
     let core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
 
-    let mut adc = Adc::adc(peripherals.ADC, &mut peripherals.PM, &mut clocks);
+    let mut adc = Adc::adc(peripherals.adc, &mut peripherals.pm, &mut clocks);
     let mut a0: Pin<_, AlternateB> = pins.d1.into_mode();
 
     loop {

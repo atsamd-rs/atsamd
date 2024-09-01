@@ -30,15 +30,15 @@ const ADDRESS: u8 = 0x77;
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let mut pm = peripherals.PM;
-    let dmac = peripherals.DMAC;
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut pm = peripherals.pm;
+    let dmac = peripherals.dmac;
+    let pins = bsp::Pins::new(peripherals.port);
 
     // Take SDA and SCL
     let (sda, scl) = (pins.d4, pins.d5);
@@ -46,7 +46,7 @@ fn main() -> ! {
     // Setup DMA channels for later use
     let mut dmac = DmaController::init(dmac, &mut pm);
     let channels = dmac.split();
-    let chan0 = channels.0.init(PriorityLevel::LVL0);
+    let chan0 = channels.0.init(PriorityLevel::Lvl0);
 
     let buf_src: &'static mut [u8; LENGTH] =
         cortex_m::singleton!(: [u8; LENGTH] = [0x00; LENGTH]).unwrap();
@@ -56,7 +56,7 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let sercom0_clock = &clocks.sercom0_core(&gclk0).unwrap();
     let pads = i2c::Pads::new(sda, scl);
-    let mut i2c = i2c::Config::new(&pm, peripherals.SERCOM0, pads, sercom0_clock.freq())
+    let mut i2c = i2c::Config::new(&pm, peripherals.sercom0, pads, sercom0_clock.freq())
         .baud(100.kHz())
         .enable();
 
