@@ -11,11 +11,10 @@ use samd11_bare as bsp;
 use bsp::hal;
 
 use bsp::entry;
-use cortex_m::peripheral::Peripherals as CorePeripherals;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::gpio::*;
-use hal::pac::Peripherals;
+use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::pwm::{Channel, Pwm0};
 

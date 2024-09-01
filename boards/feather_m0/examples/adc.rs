@@ -23,14 +23,14 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let mut adc = Adc::adc(peripherals.ADC, &mut peripherals.PM, &mut clocks);
+    let mut adc = Adc::adc(peripherals.adc, &mut peripherals.pm, &mut clocks);
     let mut a0: bsp::A0 = pins.a0.into();
 
     loop {

@@ -560,7 +560,7 @@ impl Inner {
             w.cqos().bits(0b11)
         });
         #[hal_cfg("usb-d21")]
-        usb.qosctrl().modify(|_, w| {
+        usb.qosctrl().modify(|_, w| unsafe {
             w.dqos().bits(0b11);
             w.cqos().bits(0b11)
         });

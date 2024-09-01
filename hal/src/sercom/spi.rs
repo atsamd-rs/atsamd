@@ -308,7 +308,7 @@ use num_traits::AsPrimitive;
 
 use crate::ehal;
 pub use crate::ehal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
-use crate::sercom::{pad::SomePad, Sercom, APB_CLK_CTRL};
+use crate::sercom::{pad::SomePad, ApbClkCtrl, Sercom};
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
 
@@ -688,7 +688,7 @@ impl<P: ValidPads> Config<P> {
     )]
     #[inline]
     pub fn new(
-        apb_clk_ctrl: &APB_CLK_CTRL,
+        apb_clk_ctrl: &ApbClkCtrl,
         mut sercom: P::Sercom,
         pads: P,
         freq: impl Into<Hertz>,

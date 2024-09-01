@@ -37,21 +37,21 @@ mod app {
     #[init]
     fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         let mut peripherals: Peripherals = cx.device;
-        let pins = bsp::Pins::new(peripherals.PORT);
+        let pins = bsp::Pins::new(peripherals.port);
         let mut core: rtic::export::Peripherals = cx.core;
         let mut clocks = GenericClockController::with_external_32kosc(
-            peripherals.GCLK,
-            &mut peripherals.PM,
-            &mut peripherals.SYSCTRL,
-            &mut peripherals.NVMCTRL,
+            peripherals.gclk,
+            &mut peripherals.pm,
+            &mut peripherals.sysctrl,
+            &mut peripherals.nvmctrl,
         );
         let _gclk = clocks.gclk0();
         let rtc_clock_src = clocks
-            .configure_gclk_divider_and_source(ClockGenId::GCLK2, 1, ClockSource::XOSC32K, false)
+            .configure_gclk_divider_and_source(ClockGenId::Gclk2, 1, ClockSource::Xosc32k, false)
             .unwrap();
-        clocks.configure_standby(ClockGenId::GCLK2, true);
+        clocks.configure_standby(ClockGenId::Gclk2, true);
         let rtc_clock = clocks.rtc(&rtc_clock_src).unwrap();
-        let rtc = Rtc::count32_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
+        let rtc = Rtc::count32_mode(peripherals.rtc, rtc_clock.freq(), &mut peripherals.pm);
         let red_led: bsp::RedLed = pins.d13.into();
 
         // We can use the RTC in standby for maximum power savings

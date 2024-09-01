@@ -218,8 +218,8 @@ pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 pub fn spi_master(
     clocks: &mut GenericClockController,
     baud: Hertz,
-    sercom4: pac::SERCOM4,
-    pm: &mut pac::PM,
+    sercom4: pac::Sercom4,
+    pm: &mut pac::Pm,
     sclk: impl Into<Sclk>,
     mosi: impl Into<Mosi>,
     miso: impl Into<Miso>,
@@ -248,8 +248,8 @@ pub type FlashSpi = (spi::Spi<spi::Config<FlashPads>, spi::Duplex>, FlashCs);
 /// SPI Master.
 pub fn flash_spi_master(
     clocks: &mut GenericClockController,
-    sercom5: pac::SERCOM5,
-    pm: &mut pac::PM,
+    sercom5: pac::Sercom5,
+    pm: &mut pac::Pm,
     sclk: impl Into<FlashSclk>,
     mosi: impl Into<FlashMosi>,
     miso: impl Into<FlashMiso>,
@@ -288,7 +288,7 @@ pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
     sercom: Sercom3,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
 ) -> I2c {
@@ -311,8 +311,8 @@ pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 pub fn uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom0: pac::SERCOM0,
-    pm: &mut pac::PM,
+    sercom0: pac::Sercom0,
+    pm: &mut pac::Pm,
     uart_rx: impl Into<UartRx>,
     uart_tx: impl Into<UartTx>,
 ) -> Uart {
@@ -327,9 +327,9 @@ pub fn uart(
 
 #[cfg(feature = "usb")]
 pub fn usb_allocator(
-    usb: pac::USB,
+    usb: pac::Usb,
     clocks: &mut GenericClockController,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {

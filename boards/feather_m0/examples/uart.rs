@@ -12,10 +12,12 @@ use panic_semihosting as _;
 use bsp::hal;
 use bsp::pac;
 use feather_m0 as bsp;
+use hal::nb;
 
 use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::GenericClockController;
 use hal::dmac::{DmaController, PriorityLevel};
+use hal::ehal_nb::serial::{Read, Write};
 use hal::fugit::RateExtU32;
 
 use pac::Peripherals;
@@ -24,22 +26,22 @@ use pac::Peripherals;
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let mut pm = peripherals.PM;
-    let dmac = peripherals.DMAC;
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut pm = peripherals.pm;
+    let dmac = peripherals.dmac;
+    let pins = bsp::Pins::new(peripherals.port);
 
     // Setup DMA channels for later use
     let mut dmac = DmaController::init(dmac, &mut pm);
     let channels = dmac.split();
 
-    let chan0 = channels.0.init(PriorityLevel::LVL0);
-    let chan1 = channels.1.init(PriorityLevel::LVL0);
+    let chan0 = channels.0.init(PriorityLevel::Lvl0);
+    let chan1 = channels.1.init(PriorityLevel::Lvl0);
 
     // Take peripheral and pins
     let uart_sercom = periph_alias!(peripherals.uart_sercom);

@@ -23,12 +23,12 @@ use pac::Peripherals;
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
     // gclk0 represents a configured clock using the system 48MHz oscillator
@@ -36,7 +36,7 @@ fn main() -> ! {
     // configure a clock for the TC4 and TC5 peripherals
     let tc45 = &clocks.tc4_tc5(&gclk0).unwrap();
     // instantiate a timer objec for the TC4 peripheral
-    let mut timer = TimerCounter::tc4_(tc45, peripherals.TC4, &mut peripherals.PM);
+    let mut timer = TimerCounter::tc4_(tc45, peripherals.tc4, &mut peripherals.pm);
     // start a 5Hz timer
     timer.start(Hertz::Hz(5).into_duration());
 

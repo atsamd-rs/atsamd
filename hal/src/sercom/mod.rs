@@ -36,9 +36,9 @@ use crate::pac;
 use pac::sercom0;
 
 #[hal_cfg("sercom0-d5x")]
-use pac::Mclk as APB_CLK_CTRL;
+use pac::Mclk as ApbClkCtrl;
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-use pac::Pm as APB_CLK_CTRL;
+use pac::Pm as ApbClkCtrl;
 
 #[cfg(feature = "dma")]
 use crate::dmac::TriggerSource;
@@ -71,24 +71,26 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     #[cfg(feature = "dma")]
     const DMA_TX_TRIGGER: TriggerSource;
     /// Enable the corresponding APB clock
-    fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL);
+    fn enable_apb_clock(&mut self, ctrl: &ApbClkCtrl);
 }
 
 macro_rules! sercom {
-    ( $apbmask:ident, $N:expr, $pac_type:ident, $pac_rx:ident, $pac_tx:ident, $pac_modify:ident) => {
-        // use pac::$pac_type;
-        /// Type alias for the corresponding SERCOM instance
-        pub type $pac_type = $crate::pac::$pac_type;
-        impl Sealed for $pac_type {}
-        impl Sercom for $pac_type {
-            const NUM: usize = $N;
-            #[cfg(feature = "dma")]
-            const DMA_RX_TRIGGER: TriggerSource = TriggerSource::$pac_rx;
-            #[cfg(feature = "dma")]
-            const DMA_TX_TRIGGER: TriggerSource = TriggerSource::$pac_tx;
-            #[inline]
-            fn enable_apb_clock(&mut self, ctrl: &APB_CLK_CTRL) {
-                ctrl.$apbmask().modify(|_, w| w.$pac_modify().set_bit());
+    ( $apbmask:ident, $N:expr) => {
+        paste::paste! {
+            // use pac::$pac_type;
+            /// Type alias for the corresponding SERCOM instance
+            pub type [< Sercom $N >] = $crate::pac::[< Sercom $N >];
+            impl Sealed for [< Sercom $N >] {}
+            impl Sercom for [< Sercom $N >] {
+                const NUM: usize = $N;
+                #[cfg(feature = "dma")]
+                const DMA_RX_TRIGGER: TriggerSource = TriggerSource::[< Sercom $N Rx >];
+                #[cfg(feature = "dma")]
+                const DMA_TX_TRIGGER: TriggerSource = TriggerSource::[< Sercom $N Tx >];
+                #[inline]
+                fn enable_apb_clock(&mut self, ctrl: &ApbClkCtrl) {
+                    ctrl.$apbmask().modify(|_, w| w.[< sercom $N _>]().set_bit());
+                }
             }
         }
     };
@@ -96,44 +98,44 @@ macro_rules! sercom {
 
 // d11 and d21 families
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-sercom!(apbcmask, 0, Sercom0, Sercom0Rx, Sercom0Tx, sercom0_);
+sercom!(apbcmask, 0);
 
 #[hal_cfg(any("sercom1-d11", "sercom1-d21"))]
-sercom!(apbcmask, 1, Sercom1, Sercom1Rx, Sercom1Tx, sercom1_);
+sercom!(apbcmask, 1);
 
 #[hal_cfg(any("sercom2-d11", "sercom2-d21"))]
-sercom!(apbcmask, 2, Sercom2, Sercom2Rx, Sercom2Tx, sercom2_);
+sercom!(apbcmask, 2);
 
 #[hal_cfg("sercom3-d21")]
-sercom!(apbcmask, 3, Sercom3, SERCOM3_RX, SERCOM3_TX, sercom3_);
+sercom!(apbcmask, 3);
 
 #[hal_cfg("sercom4-d21")]
-sercom!(apbcmask, 4, Sercom4, SERCOM4_RX, SERCOM4_TX, sercom4_);
+sercom!(apbcmask, 4);
 
 #[hal_cfg("sercom5-d21")]
-sercom!(apbcmask, 5, Sercom5, SERCOM5_RX, SERCOM5_TX, sercom5_);
+sercom!(apbcmask, 5);
 
 // d5x family
 #[hal_cfg("sercom0-d5x")]
-sercom!(apbamask, 0, Sercom0, SERCOM0_RX, SERCOM0_TX, sercom0_);
+sercom!(apbamask, 0);
 
 #[hal_cfg("sercom1-d5x")]
-sercom!(apbamask, 1, Sercom1, SERCOM1_RX, SERCOM1_TX, sercom1_);
+sercom!(apbamask, 1);
 
 #[hal_cfg("sercom2-d5x")]
-sercom!(apbbmask, 2, Sercom2, SERCOM2_RX, SERCOM2_TX, sercom2_);
+sercom!(apbbmask, 2);
 
 #[hal_cfg("sercom3-d5x")]
-sercom!(apbbmask, 3, Sercom3, SERCOM3_RX, SERCOM3_TX, sercom3_);
+sercom!(apbbmask, 3);
 
 #[hal_cfg("sercom4-d5x")]
-sercom!(apbdmask, 4, Sercom4, SERCOM4_RX, SERCOM4_TX, sercom4_);
+sercom!(apbdmask, 4);
 
 #[hal_cfg("sercom5-d5x")]
-sercom!(apbdmask, 5, Sercom5, SERCOM5_RX, SERCOM5_TX, sercom5_);
+sercom!(apbdmask, 5);
 
 #[hal_cfg("sercom6-d5x")]
-sercom!(apbdmask, 6, Sercom6, SERCOM6_RX, SERCOM6_TX, sercom6_);
+sercom!(apbdmask, 6);
 
 #[hal_cfg("sercom7-d5x")]
-sercom!(apbdmask, 7, Sercom7, SERCOM7_RX, SERCOM7_TX, sercom7_);
+sercom!(apbdmask, 7);

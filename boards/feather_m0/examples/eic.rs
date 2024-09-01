@@ -34,21 +34,21 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
     let gclk0 = clocks.gclk0();
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut red_led: bsp::RedLed = pins.d13.into();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let eic_clock = clocks.eic(&gclk0).unwrap();
-    let mut eic = EIC::init(&mut peripherals.PM, eic_clock, peripherals.EIC);
+    let mut eic = EIC::init(&mut peripherals.pm, eic_clock, peripherals.eic);
     let button: Pin<_, PullUpInterrupt> = pins.d10.into();
     let mut extint = ExtInt2::new(button);
-    extint.sense(&mut eic, Sense::FALL);
+    extint.sense(&mut eic, Sense::Fall);
     extint.enable_interrupt(&mut eic);
 
     // Enable EIC interrupt in the NVIC
@@ -83,8 +83,8 @@ fn EIC() {
     // Increase the counter and clear the interrupt.
     unsafe {
         // Accessing registers from interrupts context is safe
-        let eic = &*pac::EIC::ptr();
-        eic.intflag.modify(|_, w| w.extint2().set_bit());
+        let eic = &*pac::Eic::ptr();
+        eic.intflag().modify(|_, w| w.extint2().set_bit());
     }
     COUNTER.store(COUNTER.load(Ordering::SeqCst) + 1, Ordering::SeqCst);
 }

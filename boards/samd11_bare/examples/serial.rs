@@ -16,9 +16,8 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use cortex_m::peripheral::Peripherals as CorePeripherals;
 use hal::delay::Delay;
-use hal::pac::Peripherals;
+use hal::pac::{CorePeripherals, Peripherals};
 
 use hal::pac::gclk::{clkctrl::Genselect, genctrl::Srcselect};
 use hal::sercom::{

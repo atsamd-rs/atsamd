@@ -24,14 +24,14 @@ use pac::Peripherals;
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let _clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let mut pm = peripherals.PM;
-    let dmac = peripherals.DMAC;
+    let mut pm = peripherals.pm;
+    let dmac = peripherals.dmac;
 
     // Initialize buffers
     const LENGTH: usize = 50;
@@ -46,13 +46,13 @@ fn main() -> ! {
     let mut channels = dmac.split();
 
     // Initialize DMA Channel 0
-    let chan0 = channels.0.init(PriorityLevel::LVL0);
+    let chan0 = channels.0.init(PriorityLevel::Lvl0);
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size
     let xfer = Transfer::new_from_arrays(chan0, buf_src, buf_dest, false)
         .with_waker(|_status| asm::nop())
-        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
+        .begin(TriggerSource::Disable, TriggerAction::Block);
     // Wait for transfer to complete and grab resulting buffers
     let (chan0, buf_src, buf_dest) = xfer.wait();
 
@@ -68,7 +68,7 @@ fn main() -> ! {
     // destination) with a 16-bit beat size.
     let xfer = Transfer::new(chan0, const_16, buf_16, false)
         .unwrap()
-        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
+        .begin(TriggerSource::Disable, TriggerAction::Block);
 
     let (chan0, const_16, buf_16) = xfer.wait();
 
@@ -85,7 +85,7 @@ fn main() -> ! {
     // destination) with a 16-bit beat size
     let xfer = Transfer::new(chan0, buf_16, const_16, false)
         .unwrap()
-        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
+        .begin(TriggerSource::Disable, TriggerAction::Block);
 
     let (chan0, buf_16, const_16) = xfer.wait();
 

@@ -432,15 +432,15 @@ clock_generator!(
 #[hal_cfg("clock-d21")]
 clock_generator!(
     (tcc0_tcc1, Tcc0Tcc1Clock, Tcc0Tcc1),
-    (tcc2_tc3, Tcc2Tc3Clock, Tcc2Tcc3),
-    (tc4_tc5, Tc4Tc5Clock, Tc4Tcc5),
-    (tc6_tc7, Tc6Tc7Clock, Tc6Tcc7),
+    (tcc2_tc3, Tcc2Tc3Clock, Tcc2Tc3),
+    (tc4_tc5, Tc4Tc5Clock, Tc4Tc5),
+    (tc6_tc7, Tc6Tc7Clock, Tc6Tc7),
     (sercom0_core, Sercom0CoreClock, Sercom0Core),
     (sercom1_core, Sercom1CoreClock, Sercom1Core),
     (sercom2_core, Sercom2CoreClock, Sercom2Core),
-    (sercom3_core, Sercom3CoreClock, Sercoom3Core),
-    (sercom4_core, Sercom4CoreClock, Sercoom4Core),
-    (sercom5_core, Sercom5CoreClock, Sercoom5Core),
+    (sercom3_core, Sercom3CoreClock, Sercom3Core),
+    (sercom4_core, Sercom4CoreClock, Sercom4Core),
+    (sercom5_core, Sercom5CoreClock, Sercom5Core),
     (usb, UsbClock, Usb),
     (rtc, RtcClock, Rtc),
     (adc, AdcClock, Adc),
@@ -457,12 +457,12 @@ clock_generator!(
     (evsys8, Evsys8Clock, Evsys8),
     (evsys9, Evsys9Clock, Evsys9),
     (evsys10, Evsys10Clock, Evsys10),
-    (evsys11, Evsys11Clock, EVSYS_11),
+    (evsys11, Evsys11Clock, Evsys11),
     (ac_ana, AcAnaClock, AcAna),
     (ac_dig, AcDigClock, AcDig),
     (dac, DacClock, Dac),
-    (i2s0, I2S0Clock, I2S_0),
-    (i2s1, I2S1Clock, I2S_1),
+    (i2s0, I2S0Clock, I2s0),
+    (i2s1, I2S1Clock, I2s1),
 );
 
 /// The frequency of the 48Mhz source.
@@ -479,7 +479,7 @@ fn set_flash_to_half_auto_wait_state(nvmctrl: &mut Nvmctrl) {
 /// Prevent automatic writes to flash by pointers to flash area
 #[hal_cfg("clock-d21")]
 fn set_flash_manual_write(nvmctrl: &mut Nvmctrl) {
-    nvmctrl.ctrlb.modify(|_, w| w.manw().set_bit());
+    nvmctrl.ctrlb().modify(|_, w| w.manw().set_bit());
 }
 
 fn enable_gclk_apb(pm: &mut Pm) {
@@ -604,8 +604,8 @@ fn configure_and_enable_dfll48m(sysctrl: &mut Sysctrl, use_external_crystal: boo
     #[hal_cfg("clock-d21")]
     if use_external_crystal {
         // wait for lock
-        while sysctrl.pclksr.read().dflllckc().bit_is_clear()
-            || sysctrl.pclksr.read().dflllckf().bit_is_clear()
+        while sysctrl.pclksr().read().dflllckc().bit_is_clear()
+            || sysctrl.pclksr().read().dflllckf().bit_is_clear()
         {}
     }
 

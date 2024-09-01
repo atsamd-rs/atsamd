@@ -489,7 +489,7 @@ impl Monotonic for Rtc<Count32Mode> {
     unsafe fn reset(&mut self) {
         // Since reset is only called once, we use it to enable the interrupt generation
         // bit.
-        self.mode0().intenset.write(|w| w.cmp0().set_bit());
+        self.mode0().intenset().write(|w| w.cmp0().set_bit());
     }
 
     fn now(&mut self) -> Self::Instant {
@@ -501,10 +501,14 @@ impl Monotonic for Rtc<Count32Mode> {
     }
 
     fn set_compare(&mut self, instant: Self::Instant) {
-        unsafe { self.mode0().comp[0].write(|w| w.comp().bits(instant.ticks())) }
+        unsafe {
+            self.mode0()
+                .comp(0)
+                .write(|w| w.comp().bits(instant.ticks()))
+        }
     }
 
     fn clear_compare_flag(&mut self) {
-        self.mode0().intflag.write(|w| w.cmp0().set_bit());
+        self.mode0().intflag().write(|w| w.cmp0().set_bit());
     }
 }

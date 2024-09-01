@@ -3,7 +3,7 @@
 use super::{I2c, InactiveTimeout, PadSet, Registers};
 use crate::{
     pac::sercom0::i2cm::ctrla::Modeselect,
-    sercom::{Sercom, APB_CLK_CTRL},
+    sercom::{ApbClkCtrl, Sercom},
     time::Hertz,
     typelevel::{Is, Sealed},
 };
@@ -62,7 +62,7 @@ impl<P: PadSet> Config<P> {
     /// GCLK frequency for this [`Sercom`] instance.
     #[inline]
     pub fn new(
-        apb_clk_ctrl: &APB_CLK_CTRL,
+        apb_clk_ctrl: &ApbClkCtrl,
         mut sercom: P::Sercom,
         pads: P,
         freq: impl Into<Hertz>,

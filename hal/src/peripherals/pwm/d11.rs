@@ -285,4 +285,4 @@ pwm_tcc! { Pwm0: (Tcc0, Tcc0Tcc1Clock, apbcmask, tcc0_, Pwm0Wrapper) }
 #[hal_cfg("tcc1")]
 pwm_tcc! { Pwm1: (Tcc1, Tcc0Tcc1Clock, apbcmask, tcc1_, Pwm1Wrapper) }
 #[hal_cfg("tcc1")]
-pwm_tcc! { Pwm2: (Tc2, Tcc2Tc3Clock, apbcmask, tcc2_, Pwm2Wrapper) }
+pwm_tcc! { Pwm2: (Tcc2, Tcc2Tc3Clock, apbcmask, tcc2_, Pwm2Wrapper) }
