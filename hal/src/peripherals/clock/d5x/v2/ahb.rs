@@ -40,11 +40,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! ```
 //!
@@ -60,11 +60,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! let ahb_qspi = clocks.ahbs.qspi;
 //! ```
@@ -83,11 +83,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let ahb_qspi = clocks.ahbs.qspi;
 //! let ahb_qspi = buses.ahb.disable(ahb_qspi);
@@ -107,11 +107,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let ahb_qspi = clocks.ahbs.qspi;
 //! let ahb_qspi = buses.ahb.disable(ahb_qspi);
@@ -129,7 +129,7 @@ use core::marker::PhantomData;
 use bitflags;
 use paste::paste;
 
-use crate::pac::{mclk, MCLK};
+use crate::pac::{mclk, Mclk};
 
 use super::types::*;
 
@@ -160,11 +160,11 @@ impl Ahb {
     }
 
     #[inline]
-    fn ahbmask(&mut self) -> &mclk::AHBMASK {
+    fn ahbmask(&mut self) -> &mclk::Ahbmask {
         // Safety: The `Ahb` type has exclusive access to the `AHBMASK`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*MCLK::PTR).ahbmask }
+        unsafe { (*Mclk::PTR).ahbmask() }
     }
 
     #[inline]

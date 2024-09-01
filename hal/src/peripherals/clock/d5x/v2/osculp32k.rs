@@ -49,11 +49,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! ```
 //!
@@ -70,11 +70,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! let base = clocks.osculp32k_base;
 //! let (osculp1k, base) = OscUlp1k::enable(tokens.osculp32k.osculp1k, base);
@@ -93,11 +93,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let base = clocks.osculp32k_base;
 //! # let (osculp1k, base) = OscUlp1k::enable(tokens.osculp32k.osculp1k, base);
@@ -119,11 +119,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let base = clocks.osculp32k_base;
 //! # let (osculp1k, base) = OscUlp1k::enable(tokens.osculp32k.osculp1k, base);
@@ -144,11 +144,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let base = clocks.osculp32k_base;
 //! let (osculp1k, base) = OscUlp1k::enable(tokens.osculp32k.osculp1k, base);
@@ -164,7 +164,7 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::osc32kctrl::OSCULP32K;
+use crate::pac::osc32kctrl::Osculp32k;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
@@ -235,11 +235,11 @@ impl OscUlp32kTokens {
 
 impl OscUlp32kBaseToken {
     #[inline]
-    fn osculp32k(&self) -> &OSCULP32K {
+    fn osculp32k(&self) -> &Osculp32k {
         // Safety: The `OscUlp32kBaseToken` has exclusive access to the
         // `OSCULP32K` register. See the notes on `Token` types and memory
         // safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSC32KCTRL::PTR).osculp32k }
+        unsafe { (*crate::pac::Osc32kctrl::PTR).osculp32k() }
     }
 
     /// Set the calibration

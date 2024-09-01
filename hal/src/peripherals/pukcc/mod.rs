@@ -23,7 +23,7 @@ pub mod curves;
 
 use core::iter::{once, repeat};
 
-use crate::pac::MCLK;
+use crate::pac::Mclk;
 use c_abi::{u2, u4, CryptoRamSlice, Service};
 use curves::Curve;
 
@@ -72,11 +72,11 @@ impl Pukcc {
     ///
     /// Waits for a CryptoRAM readiness, enables a synchronous PUKCC clock and
     /// performs a self test. In case a self test fails it returns an error
-    pub fn enable(mclk: &mut MCLK) -> Result<Self, SelfTestFailure> {
+    pub fn enable(mclk: &mut Mclk) -> Result<Self, SelfTestFailure> {
         unsafe {
             c_abi::wait_for_crypto_ram_clear_process();
         }
-        mclk.ahbmask.modify(|_, w| w.pukcc_().set_bit());
+        mclk.ahbmask().modify(|_, w| w.pukcc_().set_bit());
         let pukcc = Self { __: () };
         pukcc.self_test().map(|_| pukcc)
     }

@@ -25,7 +25,7 @@ pub trait EicPin {
     fn into_pull_down_ei(self) -> Self::PullDown;
 }
 
-pub type Sense = pac::eic::config::SENSE0SELECT_A;
+pub type Sense = pac::eic::config::Sense0select;
 
 pub type ExternalInterruptID = usize;
 
@@ -72,43 +72,43 @@ crate::paste::item! {
         }
 
         pub fn enable_event(&mut self, eic: &mut super::ConfigurableEIC) {
-            eic.eic.evctrl.modify(|_, w| unsafe {
+            eic.eic.evctrl().modify(|_, w| unsafe {
                 w.bits(1 << $num)
             });
         }
 
         pub fn enable_interrupt(&mut self, eic: &mut super::ConfigurableEIC) {
-            eic.eic.intenset.write(|w| unsafe {
+            eic.eic.intenset().write(|w| unsafe {
                 w.bits(1 << $num)
             })
         }
 
         pub fn disable_interrupt(&mut self, eic: &mut super::ConfigurableEIC) {
-            eic.eic.intenclr.write(|w| unsafe {
+            eic.eic.intenclr().write(|w| unsafe {
                 w.bits(1 << $num)
             })
         }
 
         pub fn is_interrupt(&mut self) -> bool {
-            let intflag = unsafe { &(*pac::EIC::ptr()) }.intflag.read().bits();
+            let intflag = unsafe { &(*pac::Eic::ptr()) }.intflag().read().bits();
             intflag & (1 << $num) != 0
         }
 
         pub fn state(&mut self) -> bool {
-            let state = unsafe { &(*pac::EIC::ptr()) }.pinstate.read().bits();
+            let state = unsafe { &(*pac::Eic::ptr()) }.pinstate().read().bits();
             state & (1 << $num) != 0
         }
 
         pub fn clear_interrupt(&mut self) {
             unsafe {
-                {&(*pac::EIC::ptr())}.intflag.write(|w| { w.bits(1 << $num) });
+                {&(*pac::Eic::ptr())}.intflag().write(|w| { w.bits(1 << $num) });
             }
         }
 
         pub fn sense(&mut self, _eic: &mut super::ConfigurableEIC, sense: Sense) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::EIC::ptr()).config[offset] };
+            let config = unsafe { &(*pac::Eic::ptr()).config(offset) };
 
             config.modify(|_, w| unsafe {
                 // Which of the eight eic configs in this config block
@@ -129,7 +129,7 @@ crate::paste::item! {
         pub fn filter(&mut self, _eic: &mut super::ConfigurableEIC, filter: bool) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::EIC::ptr()).config[offset] };
+            let config = unsafe { &(*pac::Eic::ptr()).config(offset) };
 
             config.modify(|_, w| {
                 // Which of the eight eic configs in this config block

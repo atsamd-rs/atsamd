@@ -39,10 +39,7 @@ use channel_regs::{
 use channel_regs::{Chctrla, Chctrlb, Chintenclr, Chintenset, Chintflag, Chstatus};
 
 #[hal_cfg("dmac-d5x")]
-use pac::dmac::{
-    channel::{chprilvl::CHPRILVL_SPEC, Chprilvl},
-    CHANNEL,
-};
+use pac::dmac::channel::{chprilvl::ChprilvlSpec, Chprilvl};
 
 //==============================================================================
 // RegisterBlock
@@ -96,7 +93,7 @@ pub(super) trait Register<Id: ChId> {
     /// to the correct channel number and run the closure on that.
     #[hal_cfg("dmac-d5x")]
     #[inline]
-    fn with_chid<F: FnOnce(&CHANNEL) -> R, R>(&mut self, fun: F) -> R {
+    fn with_chid<F: FnOnce(&pac::dmac::Channel) -> R, R>(&mut self, fun: F) -> R {
         // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
         // not to mess with either:
         // - The global DMAC configuration
@@ -104,7 +101,7 @@ pub(super) trait Register<Id: ChId> {
         //
         // In practice, this means that the channel-specific registers should only be
         // accessed through the `with_chid` method.
-        let ch = &self.dmac().channel[Id::USIZE];
+        let ch = &self.dmac().channel(Id::USIZE);
         fun(ch)
     }
 }

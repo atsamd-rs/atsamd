@@ -5,7 +5,7 @@ use crate::ehal;
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use crate::pac::sercom0::Spi;
 #[hal_cfg("sercom0-d5x")]
-use crate::pac::sercom0::SPIM;
+use crate::pac::sercom0::Spim;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use crate::pac::sercom0::spi::ctrla::Modeselect;

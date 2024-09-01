@@ -41,7 +41,7 @@ impl<S: Sercom> Registers<S> {
     /// `SERCOM`
     #[hal_cfg("sercom0-d5x")]
     #[inline]
-    fn usart(&self) -> &pac::sercom0::USART_INT {
+    fn usart(&self) -> &pac::sercom0::UsartInt {
         self.sercom.usart_int()
     }
 

@@ -22,11 +22,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! ```
 //!
@@ -40,11 +40,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! let (osculp32k, base) = OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
 //! ```
@@ -58,11 +58,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let (osculp32k, base) = OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
 //! let (rtc_osc, osculp32k) = RtcOsc::enable(tokens.rtcosc, osculp32k);
@@ -77,11 +77,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let (osculp32k, base) = OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
 //! let (rtc_osc, osculp32k) = RtcOsc::enable(tokens.rtcosc, osculp32k);
@@ -93,9 +93,9 @@
 
 use core::marker::PhantomData;
 
-use crate::pac::osc32kctrl::rtcctrl::RTCSELSELECT_A;
-use crate::pac::osc32kctrl::RTCCTRL;
-use crate::pac::OSC32KCTRL;
+use crate::pac::osc32kctrl::rtcctrl::Rtcselselect;
+use crate::pac::osc32kctrl::Rtcctrl;
+use crate::pac::Osc32kctrl;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment};
@@ -133,11 +133,11 @@ impl RtcOscToken {
     }
 
     #[inline]
-    fn rtcctrl(&self) -> &RTCCTRL {
+    fn rtcctrl(&self) -> &Rtcctrl {
         // Safety: The `RtcOsc` only has exclusive access to the RTCCTRL
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*OSC32KCTRL::PTR).rtcctrl }
+        unsafe { (*Osc32kctrl::PTR).rtcctrl() }
     }
 
     #[inline]
@@ -168,16 +168,15 @@ pub enum DynRtcSourceId {
     Xosc32k,
 }
 
-impl From<DynRtcSourceId> for RTCSELSELECT_A {
+impl From<DynRtcSourceId> for Rtcselselect {
     #[inline]
     fn from(source: DynRtcSourceId) -> Self {
         use DynRtcSourceId::*;
-        use RTCSELSELECT_A::*;
         match source {
-            OscUlp1k => ULP1K,
-            OscUlp32k => ULP32K,
-            Xosc1k => XOSC1K,
-            Xosc32k => XOSC32K,
+            OscUlp1k => Self::Ulp1k,
+            OscUlp32k => Self::Ulp32k,
+            Xosc1k => Self::Xosc1k,
+            Xosc32k => Self::Xosc32k,
         }
     }
 }

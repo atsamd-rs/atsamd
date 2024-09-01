@@ -5,7 +5,7 @@ use atsamd_hal_macros::hal_cfg;
 use crate::clock;
 use crate::gpio::*;
 use crate::gpio::{AlternateE, AnyPin, Pin};
-use crate::pac::MCLK;
+use crate::pac::Mclk;
 use crate::time::Hertz;
 use crate::timer_params::TimerParams;
 
@@ -148,15 +148,15 @@ impl<I: PinId> $TYPE<I> {
         freq: Hertz,
         tc: crate::pac::$TC,
         pinout: $pinout<I>,
-        mclk: &mut MCLK,
+        mclk: &mut Mclk,
     ) -> Self {
         let count = tc.count16();
         let params = TimerParams::new(freq.convert(), clock.freq());
-        mclk.$apmask.modify(|_, w| w.$apbits().set_bit());
-        count.ctrla.write(|w| w.swrst().set_bit());
-        while count.ctrla.read().bits() & 1 != 0 {}
-        count.ctrla.modify(|_, w| w.enable().clear_bit());
-        count.ctrla.modify(|_, w| {
+        mclk.$apmask().modify(|_, w| w.$apbits().set_bit());
+        count.ctrla().write(|w| w.swrst().set_bit());
+        while count.ctrla().read().bits() & 1 != 0 {}
+        count.ctrla().modify(|_, w| w.enable().clear_bit());
+        count.ctrla().modify(|_, w| {
             match params.divider {
                 1 => w.prescaler().div1(),
                 2 => w.prescaler().div2(),
@@ -169,12 +169,12 @@ impl<I: PinId> $TYPE<I> {
                 _ => unreachable!(),
             }
         });
-        count.wave.write(|w| w.wavegen().mpwm());
-        count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
-        while count.syncbusy.read().cc0().bit_is_set() {}
-        count.cc[1].write(|w| unsafe { w.cc().bits(0) });
-        while count.syncbusy.read().cc1().bit_is_set() {}
-        count.ctrla.modify(|_, w| w.enable().set_bit());
+        count.wave().write(|w| w.wavegen().mpwm());
+        count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
+        while count.syncbusy().read().cc0().bit_is_set() {}
+        count.cc(1).write(|w| unsafe { w.cc().bits(0) });
+        while count.syncbusy().read().cc1().bit_is_set() {}
+        count.ctrla().modify(|_, w| w.enable().set_bit());
 
         Self {
             clock_freq: clock.freq(),
@@ -185,8 +185,8 @@ impl<I: PinId> $TYPE<I> {
 
     pub fn get_period(&self) -> Hertz {
         let count = self.tc.count16();
-        let divisor = count.ctrla.read().prescaler().bits();
-        let top = count.cc[0].read().cc().bits();
+        let divisor = count.ctrla().read().prescaler().bits();
+        let top = count.cc(0).read().cc().bits();
         self.clock_freq / divisor as u32 / (top + 1) as u32
     }
 
@@ -195,8 +195,8 @@ impl<I: PinId> $TYPE<I> {
         let period = period.into();
         let params = TimerParams::new(period, self.clock_freq);
         let count = self.tc.count16();
-        count.ctrla.modify(|_, w| w.enable().clear_bit());
-        count.ctrla.modify(|_, w| {
+        count.ctrla().modify(|_, w| w.enable().clear_bit());
+        count.ctrla().modify(|_, w| {
                 match params.divider {
                     1 => w.prescaler().div1(),
                     2 => w.prescaler().div2(),
@@ -209,9 +209,9 @@ impl<I: PinId> $TYPE<I> {
                     _ => unreachable!(),
                 }
             });
-        count.ctrla.modify(|_, w| w.enable().set_bit());
-        count.cc[0].write(|w| unsafe { w.cc().bits(params.cycles as u16) });
-        while count.syncbusy.read().cc0().bit_is_set() {}
+        count.ctrla().modify(|_, w| w.enable().set_bit());
+        count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
+        while count.syncbusy().read().cc0().bit_is_set() {}
     }
 }
 
@@ -222,13 +222,13 @@ impl<I: PinId> $crate::ehal::pwm::ErrorType for$TYPE<I> {
 impl<I: PinId> $crate::ehal::pwm::SetDutyCycle for $TYPE<I> {
     fn max_duty_cycle(&self) -> u16 {
         let count = self.tc.count16();
-        let top = count.cc[0].read().cc().bits();
+        let top = count.cc(0).read().cc().bits();
         top
     }
 
     fn set_duty_cycle(&mut self, duty: u16) -> Result<(), Self::Error> {
         let count = self.tc.count16();
-        unsafe { count.ccbuf[1].write(|w| w.ccbuf().bits(duty)); }
+        unsafe { count.ccbuf(1).write(|w| w.ccbuf().bits(duty)); }
         Ok(())
     }
 }
@@ -238,18 +238,18 @@ impl<I: PinId> $crate::ehal_02::PwmPin for $TYPE<I> {
 
     fn disable(&mut self) {
         let count = self.tc.count16();
-        count.ctrla.modify(|_, w| w.enable().clear_bit());
+        count.ctrla().modify(|_, w| w.enable().clear_bit());
     }
 
     fn enable(&mut self) {
         let count = self.tc.count16();
-        count.ctrla.modify(|_, w| w.enable().set_bit());
+        count.ctrla().modify(|_, w| w.enable().set_bit());
     }
 
 
     fn get_duty(&self) -> Self::Duty {
         let count = self.tc.count16();
-        let duty: u16 = count.ccbuf[1].read().ccbuf().bits();
+        let duty: u16 = count.ccbuf(1).read().ccbuf().bits();
         duty
     }
 
@@ -269,21 +269,21 @@ impl<I: PinId> $crate::ehal_02::PwmPin for $TYPE<I> {
 )+}}
 
 #[hal_cfg("tc0")]
-pwm! { Pwm0: (TC0, TC0Pinout, Tc0Tc1Clock, apbamask, tc0_, Pwm0Wrapper) }
+pwm! { Pwm0: (Tc0, TC0Pinout, Tc0Tc1Clock, apbamask, tc0_, Pwm0Wrapper) }
 #[hal_cfg("tc1")]
-pwm! { Pwm1: (TC1, TC1Pinout, Tc0Tc1Clock, apbamask, tc1_, Pwm1Wrapper) }
+pwm! { Pwm1: (Tc1, TC1Pinout, Tc0Tc1Clock, apbamask, tc1_, Pwm1Wrapper) }
 #[hal_cfg("tc2")]
-pwm! { Pwm2: (TC2, TC2Pinout, Tc2Tc3Clock, apbbmask, tc2_, Pwm2Wrapper) }
+pwm! { Pwm2: (Tc2, TC2Pinout, Tc2Tc3Clock, apbbmask, tc2_, Pwm2Wrapper) }
 #[hal_cfg("tc3")]
-pwm! { Pwm3: (TC3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_, Pwm3Wrapper) }
+pwm! { Pwm3: (Tc3, TC3Pinout, Tc2Tc3Clock, apbbmask, tc3_, Pwm3Wrapper) }
 #[hal_cfg("tc4")]
-pwm! { Pwm4: (TC4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper) }
+pwm! { Pwm4: (Tc4, TC4Pinout, Tc4Tc5Clock, apbcmask, tc4_, Pwm4Wrapper) }
 #[hal_cfg("tc5")]
-pwm! { Pwm5: (TC5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper) }
+pwm! { Pwm5: (Tc5, TC5Pinout, Tc4Tc5Clock, apbcmask, tc5_, Pwm5Wrapper) }
 #[hal_cfg("tc6")]
-pwm! { Pwm6: (TC6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper) }
+pwm! { Pwm6: (Tc6, TC6Pinout, Tc6Tc7Clock, apbdmask, tc6_, Pwm6Wrapper) }
 #[hal_cfg("tc7")]
-pwm! { Pwm7: (TC7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper) }
+pwm! { Pwm7: (Tc7, TC7Pinout, Tc6Tc7Clock, apbdmask, tc7_, Pwm7Wrapper) }
 
 // Timer/Counter for Control Applications (TCCx)
 
@@ -564,16 +564,16 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
         freq: Hertz,
         tcc: crate::pac::$TCC,
         pinout: $pinout<I, M>,
-        mclk: &mut MCLK,
+        mclk: &mut Mclk,
     ) -> Self {
         let params = TimerParams::new(freq.convert(), clock.freq());
-        mclk.$apmask.modify(|_, w| w.$apbits().set_bit());
-        tcc.ctrla.write(|w| w.swrst().set_bit());
-        while tcc.syncbusy.read().swrst().bit_is_set() {}
-        tcc.ctrlbclr.write(|w| w.dir().set_bit() );
-        while tcc.syncbusy.read().ctrlb().bit_is_set() {}
-        tcc.ctrla.modify(|_, w| w.enable().clear_bit());
-        tcc.ctrla.modify(|_, w| {
+        mclk.$apmask().modify(|_, w| w.$apbits().set_bit());
+        tcc.ctrla().write(|w| w.swrst().set_bit());
+        while tcc.syncbusy().read().swrst().bit_is_set() {}
+        tcc.ctrlbclr().write(|w| w.dir().set_bit() );
+        while tcc.syncbusy().read().ctrlb().bit_is_set() {}
+        tcc.ctrla().modify(|_, w| w.enable().clear_bit());
+        tcc.ctrla().modify(|_, w| {
             match params.divider {
                 1 => w.prescaler().div1(),
                 2 => w.prescaler().div2(),
@@ -586,11 +586,11 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
                 _ => unreachable!(),
             }
         });
-        tcc.wave.write(|w| w.wavegen().npwm());
-        while tcc.syncbusy.read().wave().bit_is_set() {}
+        tcc.wave().write(|w| w.wavegen().npwm());
+        while tcc.syncbusy().read().wave().bit_is_set() {}
         tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
-        while tcc.syncbusy.read().per().bit_is_set() {}
-        tcc.ctrla.modify(|_, w| w.enable().set_bit());
+        while tcc.syncbusy().read().per().bit_is_set() {}
+        tcc.ctrla().modify(|_, w| w.enable().set_bit());
 
         Self {
             clock_freq: clock.freq(),
@@ -606,24 +606,24 @@ impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
     type Duty = u32;
 
     fn disable(&mut self, _channel: Self::Channel) {
-        self.tcc.ctrla.modify(|_, w| w.enable().clear_bit());
-        while self.tcc.syncbusy.read().enable().bit_is_set() {}
+        self.tcc.ctrla().modify(|_, w| w.enable().clear_bit());
+        while self.tcc.syncbusy().read().enable().bit_is_set() {}
     }
 
     fn enable(&mut self, _channel: Self::Channel) {
-        self.tcc.ctrla.modify(|_, w| w.enable().set_bit());
-        while self.tcc.syncbusy.read().enable().bit_is_set() {}
+        self.tcc.ctrla().modify(|_, w| w.enable().set_bit());
+        while self.tcc.syncbusy().read().enable().bit_is_set() {}
     }
 
     fn get_period(&self) -> Self::Time {
-        let divisor = self.tcc.ctrla.read().prescaler().bits();
+        let divisor = self.tcc.ctrla().read().prescaler().bits();
         let top = self.tcc.per().read().bits();
         self.clock_freq / divisor as u32 / (top + 1) as u32
     }
 
     fn get_duty(&self, channel: Self::Channel) -> Self::Duty {
-        let cc = self.tcc.cc();
-        let duty = cc[channel as usize].read().cc().bits();
+        let cc = self.tcc.cc(channel as usize);
+        let duty = cc.read().cc().bits();
         duty
     }
 
@@ -633,8 +633,8 @@ impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
     }
 
     fn set_duty(&mut self, channel: Self::Channel, duty: Self::Duty) {
-        let cc = self.tcc.cc();
-        cc[channel as usize].write(|w| unsafe { w.cc().bits(duty) });
+        let cc = self.tcc.cc(channel as usize);
+        cc.write(|w| unsafe { w.cc().bits(duty) });
     }
 
     fn set_period<P>(&mut self, period: P)
@@ -642,9 +642,9 @@ impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
         P: Into<Self::Time>,
     {
         let params = TimerParams::new(period.into().convert(), self.clock_freq);
-        self.tcc.ctrla.modify(|_, w| w.enable().clear_bit());
-        while self.tcc.syncbusy.read().enable().bit_is_set() {}
-        self.tcc.ctrla.modify(|_, w| {
+        self.tcc.ctrla().modify(|_, w| w.enable().clear_bit());
+        while self.tcc.syncbusy().read().enable().bit_is_set() {}
+        self.tcc.ctrla().modify(|_, w| {
             match params.divider {
                 1 => w.prescaler().div1(),
                 2 => w.prescaler().div2(),
@@ -657,10 +657,10 @@ impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
                 _ => unreachable!(),
             }
         });
-        self.tcc.ctrla.modify(|_, w| w.enable().set_bit());
-        while self.tcc.syncbusy.read().enable().bit_is_set() {}
+        self.tcc.ctrla().modify(|_, w| w.enable().set_bit());
+        while self.tcc.syncbusy().read().enable().bit_is_set() {}
         self.tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
-        while self.tcc.syncbusy.read().per().bit() {}
+        while self.tcc.syncbusy().read().per().bit() {}
     }
 }
 
@@ -669,12 +669,12 @@ impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
 }
 
 #[hal_cfg("tcc0")]
-pwm_tcc! { Tcc0Pwm: (TCC0, TCC0Pinout, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper) }
+pwm_tcc! { Tcc0Pwm: (Tcc0, TCC0Pinout, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper) }
 #[hal_cfg("tcc1")]
-pwm_tcc! { Tcc1Pwm: (TCC1, TCC1Pinout, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper) }
+pwm_tcc! { Tcc1Pwm: (Tcc1, TCC1Pinout, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper) }
 #[hal_cfg("tcc2")]
-pwm_tcc! { Tcc2Pwm: (TCC2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper) }
+pwm_tcc! { Tcc2Pwm: (Tcc2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper) }
 #[hal_cfg("tcc3")]
-pwm_tcc! { Tcc3Pwm: (TCC3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper) }
+pwm_tcc! { Tcc3Pwm: (Tcc3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper) }
 #[hal_cfg("tcc4")]
-pwm_tcc! { Tcc4Pwm: (TCC4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper) }
+pwm_tcc! { Tcc4Pwm: (Tcc4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper) }

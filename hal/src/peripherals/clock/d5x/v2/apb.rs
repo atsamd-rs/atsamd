@@ -40,11 +40,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! ```
 //!
@@ -60,11 +60,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! let apb_port = clocks.apbs.port;
 //! ```
@@ -85,11 +85,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let apb_port = clocks.apbs.port;
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
@@ -106,11 +106,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let apb_port = clocks.apbs.port;
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
@@ -127,7 +127,7 @@ use core::marker::PhantomData;
 use bitflags;
 use paste::paste;
 
-use crate::pac::{mclk, MCLK};
+use crate::pac::{self, mclk};
 
 use crate::typelevel::Sealed;
 
@@ -165,27 +165,27 @@ impl Apb {
         // registers, and it uses a shared reference to the register block. See
         // the notes on `Token` types and memory safety in the root of the
         // `clock` module for more details.
-        unsafe { &*MCLK::PTR }
+        unsafe { &*pac::Mclk::PTR }
     }
 
     #[inline]
-    fn apbamask(&mut self) -> &mclk::APBAMASK {
-        &self.mclk().apbamask
+    fn apbamask(&mut self) -> &mclk::Apbamask {
+        self.mclk().apbamask()
     }
 
     #[inline]
-    fn apbbmask(&mut self) -> &mclk::APBBMASK {
-        &self.mclk().apbbmask
+    fn apbbmask(&mut self) -> &mclk::Apbbmask {
+        self.mclk().apbbmask()
     }
 
     #[inline]
-    fn apbcmask(&mut self) -> &mclk::APBCMASK {
-        &self.mclk().apbcmask
+    fn apbcmask(&mut self) -> &mclk::Apbcmask {
+        self.mclk().apbcmask()
     }
 
     #[inline]
-    fn apbdmask(&mut self) -> &mclk::APBDMASK {
-        &self.mclk().apbdmask
+    fn apbdmask(&mut self) -> &mclk::Apbdmask {
+        self.mclk().apbdmask()
     }
 
     #[inline]

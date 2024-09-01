@@ -379,7 +379,7 @@
 //! message_region3_sha256[6] = 0xDEAD_BEEF;
 //!
 //! icm.enable()
-use crate::pac::icm::uasr::URATSELECT_A;
+use crate::pac::icm::uasr::Uratselect;
 
 use paste::paste;
 use seq_macro::seq;
@@ -391,7 +391,7 @@ use crate::typelevel::Sealed;
 use core::marker::PhantomData;
 
 /// Reexport the User SHA Algorithm
-pub use crate::icm::cfg::UALGOSELECT_A as icm_algorithm;
+pub use crate::icm::cfg::Ualgoselect as icm_algorithm;
 
 // Convenient bitflags representing select parts of
 // the status interrupt register `ICM->ISR`
@@ -623,43 +623,43 @@ impl<I: RegionNum> Region<I> {
     /// Only one [Region] accessible at any given time
     #[inline]
     fn icm(&self) -> &RegisterBlock {
-        unsafe { &*crate::pac::ICM::ptr() }
+        unsafe { &*crate::pac::Icm::ptr() }
     }
 
     /// Control
     #[inline]
-    fn ctrl(&self) -> &CTRL {
-        &self.icm().ctrl
+    fn ctrl(&self) -> &Ctrl {
+        self.icm().ctrl()
     }
 
     /// Interrupt Disable
     #[inline]
-    fn idr(&self) -> &IDR {
-        &self.icm().idr
+    fn idr(&self) -> &Idr {
+        self.icm().idr()
     }
 
     /// Interrupt Enable
     #[inline]
-    fn ier(&self) -> &IER {
-        &self.icm().ier
+    fn ier(&self) -> &Ier {
+        self.icm().ier()
     }
 
     /// Interrupt Mask
     #[inline]
-    fn imr(&self) -> &IMR {
-        &self.icm().imr
+    fn imr(&self) -> &Imr {
+        self.icm().imr()
     }
 
     /// Interrupt Status
     #[inline]
-    fn isr(&self) -> &ISR {
-        &self.icm().isr
+    fn isr(&self) -> &Isr {
+        self.icm().isr()
     }
 
     /// Status
     #[inline]
-    fn sr(&self) -> &SR {
-        &self.icm().sr
+    fn sr(&self) -> &Sr {
+        self.icm().sr()
     }
 
     // Beginning of helper functions
@@ -876,7 +876,7 @@ impl<I: RegionNum> Region<I> {
 /// and provides an interface to the ICM hardware
 pub struct Icm {
     /// ICM pac register providing hardware access
-    icm: crate::pac::ICM,
+    icm: crate::pac::Icm,
 }
 
 impl Icm {
@@ -892,7 +892,7 @@ impl Icm {
     /// Clock::v2
     /// `tokens.apbs.icm.enable();`
     #[inline]
-    pub fn new(icm: crate::pac::ICM) -> Self {
+    pub fn new(icm: crate::pac::Icm) -> Self {
         Self { icm }
     }
 
@@ -906,62 +906,62 @@ impl Icm {
 
     /// Configuration
     #[inline]
-    fn cfg(&self) -> &CFG {
-        &self.icm().cfg
+    fn cfg(&self) -> &Cfg {
+        self.icm().cfg()
     }
 
     /// Control
     #[inline]
-    fn ctrl(&self) -> &CTRL {
-        &self.icm().ctrl
+    fn ctrl(&self) -> &Ctrl {
+        self.icm().ctrl()
     }
 
     /// Region Descriptor Area Start Address
     #[inline]
-    fn dscr(&self) -> &DSCR {
-        &self.icm().dscr
+    fn dscr(&self) -> &Dscr {
+        self.icm().dscr()
     }
 
     /// Region Hash Area Start Address
     #[inline]
-    fn hash(&self) -> &HASH {
-        &self.icm().hash
+    fn hash(&self) -> &Hash {
+        self.icm().hash()
     }
 
     /// Interrupt Disable
     #[inline]
-    fn idr(&self) -> &IDR {
-        &self.icm().idr
+    fn idr(&self) -> &Idr {
+        self.icm().idr()
     }
 
     /// Interrupt Enable
     #[inline]
-    fn ier(&self) -> &IER {
-        &self.icm().ier
+    fn ier(&self) -> &Ier {
+        self.icm().ier()
     }
 
     /// Interrupt Mask
     #[inline]
-    fn imr(&self) -> &IMR {
-        &self.icm().imr
+    fn imr(&self) -> &Imr {
+        self.icm().imr()
     }
 
     /// Interrupt Status
     #[inline]
-    fn isr(&self) -> &ISR {
-        &self.icm().isr
+    fn isr(&self) -> &Isr {
+        self.icm().isr()
     }
 
     /// Status
     #[inline]
-    fn sr(&self) -> &SR {
-        &self.icm().sr
+    fn sr(&self) -> &Sr {
+        self.icm().sr()
     }
 
     /// Undefined Access Status
     #[inline]
-    fn uasr(&self) -> &UASR {
-        &self.icm().uasr
+    fn uasr(&self) -> &Uasr {
+        self.icm().uasr()
     }
 
     // User interface for ICM
@@ -997,7 +997,7 @@ impl Icm {
 
     /// Destroy the ICM peripheral and return the underlying ICM register
     #[inline]
-    pub fn destroy(self) -> crate::pac::ICM {
+    pub fn destroy(self) -> crate::pac::Icm {
         self.icm
     }
 
@@ -1066,7 +1066,9 @@ impl Icm {
     #[inline]
     pub fn set_user_initial_hash_value(&self, user_initial_hash_value: [u32; 8]) {
         for (index, initial_value) in user_initial_hash_value.iter().enumerate() {
-            self.icm().uihval[index].write(|w| unsafe { w.val().bits(*initial_value) });
+            self.icm()
+                .uihval(index)
+                .write(|w| unsafe { w.val().bits(*initial_value) });
         }
     }
 
@@ -1186,7 +1188,7 @@ impl Icm {
     ///
     /// This field is only reset by `swrst`
     #[inline]
-    pub fn get_urat(&self) -> URATSELECT_A {
+    pub fn get_urat(&self) -> Uratselect {
         self.uasr().read().urat().variant().unwrap()
     }
 
@@ -1601,9 +1603,9 @@ impl RegionConfiguration {
     #[inline]
     pub fn get_algo(&mut self) -> icm_algorithm {
         match self.get_algo_bits() {
-            2 => icm_algorithm::SHA224,
-            4 => icm_algorithm::SHA256,
-            _ => icm_algorithm::SHA1,
+            2 => icm_algorithm::Sha224,
+            4 => icm_algorithm::Sha256,
+            _ => icm_algorithm::Sha1,
         }
     }
     /// Reset the [`RegionConfiguration`] to default values

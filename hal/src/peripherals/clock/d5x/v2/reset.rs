@@ -4,7 +4,7 @@
 
 use typenum::U1;
 
-use crate::pac::{GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
+use crate::pac::{Gclk, Mclk, Nvmctrl, Osc32kctrl, Oscctrl};
 
 use super::*;
 
@@ -18,10 +18,10 @@ use super::*;
 /// sufficient. In these cases, users can access the registers directly by
 /// calling [`Pac::steal`] to recover the PAC structs.
 pub struct Pac {
-    oscctrl: OSCCTRL,
-    osc32kctrl: OSC32KCTRL,
-    gclk: GCLK,
-    mclk: MCLK,
+    oscctrl: Oscctrl,
+    osc32kctrl: Osc32kctrl,
+    gclk: Gclk,
+    mclk: Mclk,
 }
 
 impl Pac {
@@ -30,13 +30,13 @@ impl Pac {
     /// Consume the [`Pac`] and return the low-level PAC structs. This is
     /// useful when the `clock::v2` API does not provide a necessary feature, or
     /// when dealing with the legacy `clock::v1` API. For example, many of the
-    /// `clock::v1` functions require access to the [`MCLK`] peripheral.
+    /// `clock::v1` functions require access to the [`Mclk`] peripheral.
     ///
     /// # Safety
     ///
     /// Directly configuring clocks through the PAC API can invalidate the
     /// type-level guarantees of the `clock` module API.
-    pub unsafe fn steal(self) -> (OSCCTRL, OSC32KCTRL, GCLK, MCLK) {
+    pub unsafe fn steal(self) -> (Oscctrl, Osc32kctrl, Gclk, Mclk) {
         (self.oscctrl, self.osc32kctrl, self.gclk, self.mclk)
     }
 }
@@ -127,17 +127,17 @@ pub struct Tokens {
 /// Consume the PAC clocking structs and return a HAL-level
 /// representation of the clocks at power-on reset
 ///
-/// This function consumes the [`OSCCTRL`], [`OSC32KCTRL`], [`GCLK`] and
-/// [`MCLK`] PAC structs and returns the [`Buses`], [`Clocks`] and [`Tokens`].
+/// This function consumes the [`Oscctrl`], [`Osc32kctrl`], [`Gclk`] and
+/// [`Mclk`] PAC structs and returns the [`Buses`], [`Clocks`] and [`Tokens`].
 ///
 /// See the [module-level documentation](super) for more details.
 #[inline]
 pub fn clock_system_at_reset(
-    oscctrl: OSCCTRL,
-    osc32kctrl: OSC32KCTRL,
-    gclk: GCLK,
-    mclk: MCLK,
-    nvmctrl: &mut NVMCTRL,
+    oscctrl: Oscctrl,
+    osc32kctrl: Osc32kctrl,
+    gclk: Gclk,
+    mclk: Mclk,
+    nvmctrl: &mut Nvmctrl,
 ) -> (Buses, Clocks, Tokens) {
     // Safety: No bus, clock or token is instantiated more than once
     unsafe {

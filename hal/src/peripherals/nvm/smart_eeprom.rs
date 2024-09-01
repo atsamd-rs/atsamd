@@ -12,12 +12,12 @@
 //! cycles.
 //!
 //! From technical standpoint, NVM controller sacrifices last
-//! `2*8192*NVMCTRL.SEESTAT.SBLK` bytes of flash (in an inactive bank). Memory
+//! `2*8192*Nvmctrl.SEESTAT.SBLK` bytes of flash (in an inactive bank). Memory
 //! access through flash address space will cause HardFault. All accesses has to
 //! be conducted through SmartEEPROM specific address space.
 //!
 //! Prerequisites:
-//! Both `NVMCTRL.SEESTAT.{SBLK,PSZ}` (block size, virtual page size) are being
+//! Both `Nvmctrl.SEESTAT.{SBLK,PSZ}` (block size, virtual page size) are being
 //! populated from proper bits in NVM controller user page on power-on-reset. By
 //! default, `SBLK` property is set to `0`, effectively disabling SmartEEPROM.
 //!
@@ -32,7 +32,7 @@
 use core::marker::PhantomData;
 
 use super::Nvm;
-use crate::pac::{nvmctrl::ctrlb::CMDSELECT_AW, NVMCTRL};
+use crate::pac::{nvmctrl::ctrlb::Cmdselect, Nvmctrl};
 use crate::typelevel::Sealed;
 
 /// Struct representing a SmartEEPROM instance.
@@ -94,10 +94,10 @@ pub type Result<'a> = core::result::Result<SmartEepromMode<'a>, SmartEepromRetri
 
 #[inline]
 fn wait_if_busy() {
-    // Workaround: Cannot access `NVMCTRL` through `self.nvm.nvm` because of double
+    // Workaround: Cannot access `Nvmctrl` through `self.nvm.nvm` because of double
     // borrowing in iterator for [`SmartEeprom::set`]. This should be safe though.
-    let nvmctrl = unsafe { &*NVMCTRL::ptr() };
-    while nvmctrl.seestat.read().busy().bit_is_set() {}
+    let nvmctrl = unsafe { &*Nvmctrl::ptr() };
+    while nvmctrl.seestat().read().busy().bit_is_set() {}
 }
 
 impl<'a> SmartEepromMode<'a> {
@@ -106,23 +106,23 @@ impl<'a> SmartEepromMode<'a> {
     pub(super) fn retrieve(nvm: &'a mut Nvm) -> Result<'a> {
         use SmartEepromMode as Mode;
         use SmartEepromRetrievalFailure::*;
-        if nvm.nvm.seecfg.read().aprdis().bit_is_set() {
+        if nvm.nvm.seecfg().read().aprdis().bit_is_set() {
             return Err(DisabledAutomaticPageReallocationNotSupported);
         }
-        if nvm.nvm.seecfg.read().wmode().is_buffered() {
+        if nvm.nvm.seecfg().read().wmode().is_buffered() {
             return Err(BufferedWritesNotSupported);
         }
-        let sblk = nvm.nvm.seestat.read().sblk().bits() as u32;
-        let psz = nvm.nvm.seestat.read().psz().bits() as u32;
+        let sblk = nvm.nvm.seestat().read().sblk().bits() as u32;
+        let psz = nvm.nvm.seestat().read().psz().bits() as u32;
         let virtual_size = match (sblk, psz) {
             (0, _) => return Err(Disabled),
             (sblk @ 11..=u32::MAX, _) => return Err(InvalidBlockCount { sblk }),
             (_, 8..=u32::MAX) => {
-                unreachable!("`NVMCTRL.SEESTAT.PSZ` value is represented with 3 bits in user page")
+                unreachable!("`Nvmctrl.SEESTAT.PSZ` value is represented with 3 bits in user page")
             }
             others => Self::map_sblk_psz_to_virtual_size(others),
         };
-        if nvm.nvm.seestat.read().lock().bit_is_set() {
+        if nvm.nvm.seestat().read().lock().bit_is_set() {
             Ok(Mode::Locked(SmartEeprom {
                 nvm,
                 virtual_size,
@@ -166,7 +166,7 @@ impl<'a, T: SmartEepromState> SmartEeprom<'a, T> {
     ///
     /// # Safety
     ///
-    /// `NVMCTRL.SEESTAT.BUSY` register must be 0 before memory access can be
+    /// `Nvmctrl.SEESTAT.BUSY` register must be 0 before memory access can be
     /// performed.
     pub unsafe fn get_slice<TP: SmartEepromPointableSize>(&self) -> &[TP] {
         core::slice::from_raw_parts_mut(
@@ -215,7 +215,7 @@ impl<'a> SmartEeprom<'a, Unlocked> {
     ///
     /// # Safety
     ///
-    /// `NVMCTRL.SEESTAT.BUSY` register must be 0 before memory access can be
+    /// `Nvmctrl.SEESTAT.BUSY` register must be 0 before memory access can be
     /// performed.
     pub unsafe fn get_mut_slice<TP: SmartEepromPointableSize>(&mut self) -> &mut [TP] {
         core::slice::from_raw_parts_mut(
@@ -250,7 +250,7 @@ impl<'a> SmartEeprom<'a, Unlocked> {
     pub fn lock(self) -> SmartEeprom<'a, Locked> {
         // Panic case should never happen as we wait for STATUS.READY
         self.nvm
-            .command_sync(CMDSELECT_AW::LSEE)
+            .command_sync(Cmdselect::Lsee)
             .expect("SmartEEPROM locking failed");
         let Self {
             nvm, virtual_size, ..
@@ -268,7 +268,7 @@ impl<'a> SmartEeprom<'a, Locked> {
     pub fn unlock(self) -> SmartEeprom<'a, Unlocked> {
         // Panic case should never happen as we wait for STATUS.READY
         self.nvm
-            .command_sync(CMDSELECT_AW::USEE)
+            .command_sync(Cmdselect::Usee)
             .expect("SmartEEPROM unlocking failed");
         let Self {
             nvm, virtual_size, ..

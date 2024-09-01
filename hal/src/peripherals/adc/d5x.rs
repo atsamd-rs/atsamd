@@ -5,20 +5,20 @@ use crate::clock::GenericClockController;
 #[rustfmt::skip]
 use crate::gpio::*;
 use crate::ehal_02::adc::{Channel, OneShot};
-use crate::pac::gclk::genctrl::SRCSELECT_A::DFLL;
-use crate::pac::gclk::pchctrl::GENSELECT_A;
-use crate::pac::{adc0, ADC0, ADC1, MCLK};
+use crate::pac::gclk::genctrl::Srcselect::Dfll;
+use crate::pac::gclk::pchctrl::Genselect;
+use crate::pac::{adc0, Adc0, Adc1, Mclk};
 
 use crate::calibration;
 
 /// Samples per reading
-pub use adc0::avgctrl::SAMPLENUMSELECT_A as SampleRate;
+pub use adc0::avgctrl::Samplenumselect as SampleRate;
 /// Clock frequency relative to the system clock
-pub use adc0::ctrla::PRESCALERSELECT_A as Prescaler;
+pub use adc0::ctrla::Prescalerselect as Prescaler;
 /// Reading resolution in bits
-pub use adc0::ctrlb::RESSELSELECT_A as Resolution;
+pub use adc0::ctrlb::Resselselect as Resolution;
 /// Reference voltage (or its source)
-pub use adc0::refctrl::REFSELSELECT_A as Reference;
+pub use adc0::refctrl::Refselselect as Reference;
 
 /// An ADC where results are accessible via interrupt servicing.
 pub struct InterruptAdc<ADC, C>
@@ -49,65 +49,65 @@ macro_rules! adc_hal {
     ($($ADC:ident: ($init:ident, $mclk:ident, $apmask:ident, $compcal:ident, $refcal:ident, $r2rcal:ident),)+) => {
         $(
 impl Adc<$ADC> {
-    pub fn $init(adc: $ADC, mclk: &mut MCLK, clocks: &mut GenericClockController, gclk:GENSELECT_A) -> Self {
-        mclk.$mclk.modify(|_, w| w.$apmask().set_bit());
+    pub fn $init(adc: $ADC, mclk: &mut Mclk, clocks: &mut GenericClockController, gclk:Genselect) -> Self {
+        mclk.$mclk().modify(|_, w| w.$apmask().set_bit());
         // set to 1/(1/(48000000/32) * 6) = 250000 SPS
-        let adc_clock = clocks.configure_gclk_divider_and_source(gclk, 1, DFLL, false)
+        let adc_clock = clocks.configure_gclk_divider_and_source(gclk, 1, Dfll, false)
             .expect("adc clock setup failed");
         clocks.$init(&adc_clock).expect("adc clock setup failed");
-        adc.ctrla.modify(|_, w| w.prescaler().div32());
-        adc.ctrlb.modify(|_, w| w.ressel()._12bit());
-        while adc.syncbusy.read().ctrlb().bit_is_set() {}
-        adc.sampctrl.modify(|_, w| unsafe {w.samplen().bits(5)}); // sample length
-        while adc.syncbusy.read().sampctrl().bit_is_set() {}
-        adc.inputctrl.modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
-        while adc.syncbusy.read().inputctrl().bit_is_set() {}
+        adc.ctrla().modify(|_, w| w.prescaler().div32());
+        adc.ctrlb().modify(|_, w| w.ressel()._12bit());
+        while adc.syncbusy().read().ctrlb().bit_is_set() {}
+        adc.sampctrl().modify(|_, w| unsafe {w.samplen().bits(5)}); // sample length
+        while adc.syncbusy().read().sampctrl().bit_is_set() {}
+        adc.inputctrl().modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
+        while adc.syncbusy().read().inputctrl().bit_is_set() {}
 
-        adc.calib.write(|w| unsafe {
+        adc.calib().write(|w| unsafe {
             w.biascomp().bits(calibration::$compcal());
             w.biasrefbuf().bits(calibration::$refcal());
             w.biasr2r().bits(calibration::$r2rcal())
         });
 
         let mut newadc = Self { adc };
-        newadc.samples(adc0::avgctrl::SAMPLENUMSELECT_A::_1);
-        newadc.reference(adc0::refctrl::REFSELSELECT_A::INTVCC1);
+        newadc.samples(adc0::avgctrl::Samplenumselect::_1);
+        newadc.reference(adc0::refctrl::Refselselect::Intvcc1);
 
         newadc
     }
 
     /// Set the sample rate
     pub fn samples(&mut self, samples: SampleRate) {
-        use adc0::avgctrl::SAMPLENUMSELECT_A;
-        self.adc.avgctrl.modify(|_, w| {
+        use adc0::avgctrl::Samplenumselect;
+        self.adc.avgctrl().modify(|_, w| {
             w.samplenum().variant(samples);
             unsafe {
                 // Table 45-3 (45.6.2.10) specifies the adjres
                 // values necessary for each SAMPLENUM value.
                 w.adjres().bits(match samples {
-                    SAMPLENUMSELECT_A::_1 => 0,
-                    SAMPLENUMSELECT_A::_2 => 1,
-                    SAMPLENUMSELECT_A::_4 => 2,
-                    SAMPLENUMSELECT_A::_8 => 3,
+                    Samplenumselect::_1 => 0,
+                    Samplenumselect::_2 => 1,
+                    Samplenumselect::_4 => 2,
+                    Samplenumselect::_8 => 3,
                     _ => 4,
                 })
             }
         });
-        while self.adc.syncbusy.read().avgctrl().bit_is_set() {}
+        while self.adc.syncbusy().read().avgctrl().bit_is_set() {}
     }
 
     /// Set the voltage reference
     pub fn reference(&mut self, reference: Reference) {
         self.adc
-            .refctrl
+            .refctrl()
             .modify(|_, w| w.refsel().variant(reference));
-        while self.adc.syncbusy.read().refctrl().bit_is_set() {}
+        while self.adc.syncbusy().read().refctrl().bit_is_set() {}
     }
 
     /// Set the prescaler for adjusting the clock relative to the system clock
     pub fn prescaler(&mut self, prescaler: Prescaler) {
         self.adc
-            .ctrla
+            .ctrla()
             .modify(|_, w| w.prescaler().variant(prescaler));
         // Note there is no syncbusy for ctrla
     }
@@ -115,64 +115,64 @@ impl Adc<$ADC> {
     /// Set the input resolution
     pub fn resolution(&mut self, resolution: Resolution) {
         self.adc
-            .ctrlb
+            .ctrlb()
             .modify(|_, w| w.ressel().variant(resolution));
-        while self.adc.syncbusy.read().ctrlb().bit_is_set() {}
+        while self.adc.syncbusy().read().ctrlb().bit_is_set() {}
     }
 
     fn power_up(&mut self) {
-        while self.adc.syncbusy.read().enable().bit_is_set() {}
-        self.adc.ctrla.modify(|_, w| w.enable().set_bit());
-        while self.adc.syncbusy.read().enable().bit_is_set() {}
+        while self.adc.syncbusy().read().enable().bit_is_set() {}
+        self.adc.ctrla().modify(|_, w| w.enable().set_bit());
+        while self.adc.syncbusy().read().enable().bit_is_set() {}
     }
 
     fn power_down(&mut self) {
-        while self.adc.syncbusy.read().enable().bit_is_set() {}
-        self.adc.ctrla.modify(|_, w| w.enable().clear_bit());
-        while self.adc.syncbusy.read().enable().bit_is_set() {}
+        while self.adc.syncbusy().read().enable().bit_is_set() {}
+        self.adc.ctrla().modify(|_, w| w.enable().clear_bit());
+        while self.adc.syncbusy().read().enable().bit_is_set() {}
     }
 
     #[inline(always)]
     fn start_conversion(&mut self) {
         // start conversion
-        self.adc.swtrig.modify(|_, w| w.start().set_bit());
+        self.adc.swtrig().modify(|_, w| w.start().set_bit());
         // do it again because the datasheet tells us to
-        self.adc.swtrig.modify(|_, w| w.start().set_bit());
+        self.adc.swtrig().modify(|_, w| w.start().set_bit());
     }
 
     fn enable_freerunning(&mut self) {
-        self.adc.ctrlb.modify(|_, w| w.freerun().set_bit());
-        while self.adc.syncbusy.read().ctrlb().bit_is_set() {}
+        self.adc.ctrlb().modify(|_, w| w.freerun().set_bit());
+        while self.adc.syncbusy().read().ctrlb().bit_is_set() {}
     }
 
     fn disable_freerunning(&mut self) {
-        self.adc.ctrlb.modify(|_, w| w.freerun().set_bit());
-        while self.adc.syncbusy.read().ctrlb().bit_is_set() {}
+        self.adc.ctrlb().modify(|_, w| w.freerun().set_bit());
+        while self.adc.syncbusy().read().ctrlb().bit_is_set() {}
     }
 
     fn synchronous_convert(&mut self) -> u16 {
         self.start_conversion();
-        while self.adc.intflag.read().resrdy().bit_is_clear() {}
+        while self.adc.intflag().read().resrdy().bit_is_clear() {}
 
-        self.adc.result.read().result().bits()
+        self.adc.result().read().result().bits()
     }
 
     /// Enables an interrupt when conversion is ready.
     fn enable_interrupts(&mut self) {
-        self.adc.intflag.write(|w| w.resrdy().set_bit());
-        self.adc.intenset.write(|w| w.resrdy().set_bit());
+        self.adc.intflag().write(|w| w.resrdy().set_bit());
+        self.adc.intenset().write(|w| w.resrdy().set_bit());
     }
 
     /// Disables the interrupt for when conversion is ready.
     fn disable_interrupts(&mut self) {
-        self.adc.intenclr.write(|w| w.resrdy().set_bit());
+        self.adc.intenclr().write(|w| w.resrdy().set_bit());
     }
 
     fn service_interrupt_ready(&mut self) -> Option<u16> {
-        if self.adc.intflag.read().resrdy().bit_is_set() {
-            self.adc.intflag.write(|w| w.resrdy().set_bit());
+        if self.adc.intflag().read().resrdy().bit_is_set() {
+            self.adc.intflag().write(|w| w.resrdy().set_bit());
 
-            Some(self.adc.result.read().result().bits())
+            Some(self.adc.result().read().result().bits())
         } else {
             None
         }
@@ -182,8 +182,8 @@ impl Adc<$ADC> {
     /// so must be called while the peripheral is disabled.
     fn mux<PIN: Channel<$ADC, ID=u8>>(&mut self, _pin: &mut PIN) {
         let chan = PIN::channel();
-        while self.adc.syncbusy.read().inputctrl().bit_is_set() {}
-        self.adc.inputctrl.modify(|_, w| w.muxpos().bits(chan));
+        while self.adc.syncbusy().read().inputctrl().bit_is_set() {}
+        self.adc.inputctrl().modify(|_, w| unsafe{ w.muxpos().bits(chan) });
     }
 }
 
@@ -268,8 +268,8 @@ where
 }
 
 adc_hal! {
-    ADC0: (adc0, apbdmask, adc0_, adc0_biascomp_scale_cal, adc0_biasref_scale_cal, adc0_biasr2r_scale_cal),
-    ADC1: (adc1, apbdmask, adc1_, adc1_biascomp_scale_cal, adc1_biasref_scale_cal, adc1_biasr2r_scale_cal),
+    Adc0: (adc0, apbdmask, adc0_, adc0_biascomp_scale_cal, adc0_biasref_scale_cal, adc0_biasr2r_scale_cal),
+    Adc1: (adc1, apbdmask, adc1_, adc1_biascomp_scale_cal, adc1_biasref_scale_cal, adc1_biasr2r_scale_cal),
 }
 
 macro_rules! adc_pins {
@@ -292,68 +292,68 @@ macro_rules! adc_pins {
 
 adc_pins! {
     #[hal_cfg("pa02")]
-    PA02: (ADC0, 0),
+    PA02: (Adc0, 0),
     #[hal_cfg("pa03")]
-    PA03: (ADC0, 1),
+    PA03: (Adc0, 1),
     #[hal_cfg("pb08")]
-    PB08: (ADC0, 2),
+    PB08: (Adc0, 2),
     #[hal_cfg("pb09")]
-    PB09: (ADC0, 3),
+    PB09: (Adc0, 3),
     #[hal_cfg("pa04")]
-    PA04: (ADC0, 4),
+    PA04: (Adc0, 4),
     #[hal_cfg("pa05")]
-    PA05: (ADC0, 5),
+    PA05: (Adc0, 5),
     #[hal_cfg("pa06")]
-    PA06: (ADC0, 6),
+    PA06: (Adc0, 6),
     #[hal_cfg("pa07")]
-    PA07: (ADC0, 7),
+    PA07: (Adc0, 7),
     #[hal_cfg("pa08")]
-    PA08: (ADC0, 8),
+    PA08: (Adc0, 8),
     #[hal_cfg("pa09")]
-    PA09: (ADC0, 9),
+    PA09: (Adc0, 9),
     #[hal_cfg("pa10")]
-    PA10: (ADC0, 10),
+    PA10: (Adc0, 10),
     #[hal_cfg("pa11")]
-    PA11: (ADC0, 11),
+    PA11: (Adc0, 11),
     #[hal_cfg("pb00")]
-    PB00: (ADC0, 12),
+    PB00: (Adc0, 12),
     #[hal_cfg("pb01")]
-    PB01: (ADC0, 13),
+    PB01: (Adc0, 13),
     #[hal_cfg("pb02")]
-    PB02: (ADC0, 14),
+    PB02: (Adc0, 14),
     #[hal_cfg("pb03")]
-    PB03: (ADC0, 15),
+    PB03: (Adc0, 15),
 
     #[hal_cfg("pb08")]
-    PB08: (ADC1, 0),
+    PB08: (Adc1, 0),
     #[hal_cfg("pb09")]
-    PB09: (ADC1, 1),
+    PB09: (Adc1, 1),
     #[hal_cfg("pa08")]
-    PA08: (ADC1, 2),
+    PA08: (Adc1, 2),
     #[hal_cfg("pa09")]
-    PA09: (ADC1, 3),
+    PA09: (Adc1, 3),
     #[hal_cfg("pc02")]
-    PC02: (ADC1, 4),
+    PC02: (Adc1, 4),
     #[hal_cfg("pc03")]
-    PC03: (ADC1, 5),
+    PC03: (Adc1, 5),
     #[hal_cfg("pb04")]
-    PB04: (ADC1, 6),
+    PB04: (Adc1, 6),
     #[hal_cfg("pb05")]
-    PB05: (ADC1, 7),
+    PB05: (Adc1, 7),
     #[hal_cfg("pb06")]
-    PB06: (ADC1, 8),
+    PB06: (Adc1, 8),
     #[hal_cfg("pb07")]
-    PB07: (ADC1, 9),
+    PB07: (Adc1, 9),
     #[hal_cfg("pc00")]
-    PC00: (ADC1, 10),
+    PC00: (Adc1, 10),
     #[hal_cfg("pc01")]
-    PC01: (ADC1, 11),
+    PC01: (Adc1, 11),
     #[hal_cfg("pc30")]
-    PC30: (ADC1, 12),
+    PC30: (Adc1, 12),
     #[hal_cfg("pc31")]
-    PC31: (ADC1, 13),
+    PC31: (Adc1, 13),
     #[hal_cfg("pd00")]
-    PD00: (ADC1, 14),
+    PD00: (Adc1, 14),
     #[hal_cfg("pd01")]
-    PD01: (ADC1, 15),
+    PD01: (Adc1, 15),
 }

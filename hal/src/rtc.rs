@@ -24,8 +24,8 @@ use rtic_monotonic::Monotonic;
 // SAMx5x imports
 #[hal_cfg("rtc-d5x")]
 use crate::pac::{
-    rtc::mode0::ctrla::Prescalerselect, rtc::mode0::CTRLA as Mode0CtrlA,
-    rtc::mode2::CTRLA as Mode2CtrlA, MCLK as PM,
+    rtc::mode0::ctrla::Prescalerselect, rtc::mode0::Ctrla as Mode0CtrlA,
+    rtc::mode2::Ctrla as Mode2CtrlA, Mclk as Pm,
 };
 
 // SAMD11/SAMD21 imports
@@ -117,7 +117,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     #[inline]
     fn mode0_ctrla(&self) -> &Mode0CtrlA {
         #[hal_cfg("rtc-d5x")]
-        return &self.mode0().ctrla;
+        return self.mode0().ctrla();
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         return self.mode0().ctrl();
     }
@@ -125,7 +125,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     #[inline]
     fn mode2_ctrla(&self) -> &Mode2CtrlA {
         #[hal_cfg("rtc-d5x")]
-        return &self.mode2().ctrla;
+        return self.mode2().ctrla();
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         return self.mode2().ctrl();
     }
@@ -133,7 +133,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     #[inline]
     fn sync(&self) {
         #[hal_cfg("rtc-d5x")]
-        while self.mode2().syncbusy.read().bits() != 0 {}
+        while self.mode2().syncbusy().read().bits() != 0 {}
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         while self.mode2().status().read().syncbusy().bit_is_set() {}
     }

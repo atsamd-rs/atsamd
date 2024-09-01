@@ -12,14 +12,14 @@ use atsamd_hal_macros::hal_macro_helper;
 use fugit::RateExtU32;
 
 use crate::clock::v2::pclk::{ids::*, Pclk, PclkSourceId};
-use crate::pac::gclk::genctrl::SRCSELECT_A::*;
-use crate::pac::gclk::pchctrl::GENSELECT_A::*;
-use crate::pac::{self, GCLK, MCLK, NVMCTRL, OSC32KCTRL, OSCCTRL};
+use crate::pac::gclk::genctrl::Srcselect::*;
+use crate::pac::gclk::pchctrl::Genselect::*;
+use crate::pac::{self, Gclk, Mclk, Nvmctrl, Osc32kctrl, Oscctrl};
 use crate::sercom::*;
 use crate::time::Hertz;
 
-pub type ClockGenId = pac::gclk::pchctrl::GENSELECT_A;
-pub type ClockSource = pac::gclk::genctrl::SRCSELECT_A;
+pub type ClockGenId = pac::gclk::pchctrl::Genselect;
+pub type ClockSource = pac::gclk::genctrl::Srcselect;
 
 #[allow(non_camel_case_types)]
 pub enum ClockId {
@@ -98,18 +98,19 @@ impl Into<Hertz> for GClock {
 }
 
 struct State {
-    gclk: GCLK,
+    gclk: Gclk,
 }
 
 impl State {
     fn reset_gclk(&mut self) {
-        self.gclk.ctrla.write(|w| w.swrst().set_bit());
-        while self.gclk.ctrla.read().swrst().bit_is_set() || self.gclk.syncbusy.read().bits() != 0 {
-        }
+        self.gclk.ctrla().write(|w| w.swrst().set_bit());
+        while self.gclk.ctrla().read().swrst().bit_is_set()
+            || self.gclk.syncbusy().read().bits() != 0
+        {}
     }
 
     fn wait_for_sync(&mut self) {
-        while self.gclk.syncbusy.read().bits() != 0 {}
+        while self.gclk.syncbusy().read().bits() != 0 {}
     }
 
     fn set_gclk_divider_and_source(
@@ -121,7 +122,7 @@ impl State {
     ) {
         // validate the divisor factor based on gclk ID (see 14.8.3)
         let mut divisor_invalid = false;
-        if gclk == GCLK1 {
+        if gclk == Gclk1 {
             if divider as u32 >= 2_u32.pow(16) {
                 divisor_invalid = true;
             }
@@ -129,37 +130,43 @@ impl State {
             divisor_invalid = true;
         }
         if divisor_invalid {
-            panic!("invalid divisor {} for GCLK {}", divider, gclk as u8);
+            panic!("invalid divisor {} for Gclk {}", divider, gclk as u8);
         }
 
-        self.gclk.genctrl[u8::from(gclk) as usize].write(|w| unsafe {
-            w.src().variant(src);
-            w.div().bits(divider);
-            // divide directly by divider, rather than 2^(n+1)
-            w.divsel().clear_bit();
-            w.idc().bit(improve_duty_cycle);
-            w.genen().set_bit();
-            w.oe().set_bit()
-        });
+        self.gclk
+            .genctrl(u8::from(gclk) as usize)
+            .write(|w| unsafe {
+                w.src().variant(src);
+                w.div().bits(divider);
+                // divide directly by divider, rather than 2^(n+1)
+                w.divsel().clear_bit();
+                w.idc().bit(improve_duty_cycle);
+                w.genen().set_bit();
+                w.oe().set_bit()
+            });
 
         self.wait_for_sync();
     }
 
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
-        self.gclk.pchctrl[u8::from(clock) as usize].write(|w| unsafe {
-            w.gen().bits(generator.into());
-            w.chen().set_bit()
-        });
+        self.gclk
+            .pchctrl(u8::from(clock) as usize)
+            .write(|w| unsafe {
+                w.gen().bits(generator.into());
+                w.chen().set_bit()
+            });
         self.wait_for_sync();
     }
 
     fn configure_standby(&mut self, gclk: ClockGenId, enable: bool) {
-        self.gclk.genctrl[u8::from(gclk) as usize].modify(|_, w| w.runstdby().bit(enable));
+        self.gclk
+            .genctrl(u8::from(gclk) as usize)
+            .modify(|_, w| w.runstdby().bit(enable));
         self.wait_for_sync();
     }
 }
 
-/// `GenericClockController` encapsulates the GCLK hardware.
+/// `GenericClockController` encapsulates the Gclk hardware.
 ///
 /// It provides a type safe way to configure the system clocks.
 /// Initializing the `GenericClockController` instance configures
@@ -176,11 +183,11 @@ impl GenericClockController {
     /// Reset the clock controller, configure the system to run
     /// at 120Mhz and reset various clock dividers.
     pub fn with_internal_32kosc(
-        gclk: GCLK,
-        mclk: &mut MCLK,
-        osc32kctrl: &mut OSC32KCTRL,
-        oscctrl: &mut OSCCTRL,
-        nvmctrl: &mut NVMCTRL,
+        gclk: Gclk,
+        mclk: &mut Mclk,
+        osc32kctrl: &mut Osc32kctrl,
+        oscctrl: &mut Oscctrl,
+        nvmctrl: &mut Nvmctrl,
     ) -> Self {
         Self::new(gclk, mclk, osc32kctrl, oscctrl, nvmctrl, false)
     }
@@ -188,21 +195,21 @@ impl GenericClockController {
     /// Reset the clock controller, configure the system to run
     /// at 120Mhz and reset various clock dividers.
     pub fn with_external_32kosc(
-        gclk: GCLK,
-        mclk: &mut MCLK,
-        osc32kctrl: &mut OSC32KCTRL,
-        oscctrl: &mut OSCCTRL,
-        nvmctrl: &mut NVMCTRL,
+        gclk: Gclk,
+        mclk: &mut Mclk,
+        osc32kctrl: &mut Osc32kctrl,
+        oscctrl: &mut Oscctrl,
+        nvmctrl: &mut Nvmctrl,
     ) -> Self {
         Self::new(gclk, mclk, osc32kctrl, oscctrl, nvmctrl, true)
     }
 
     fn new(
-        gclk: GCLK,
-        mclk: &mut MCLK,
-        osc32kctrl: &mut OSC32KCTRL,
-        oscctrl: &mut OSCCTRL,
-        nvmctrl: &mut NVMCTRL,
+        gclk: Gclk,
+        mclk: &mut Mclk,
+        osc32kctrl: &mut Osc32kctrl,
+        oscctrl: &mut Oscctrl,
+        nvmctrl: &mut Nvmctrl,
         use_external_crystal: bool,
     ) -> Self {
         let mut state = State { gclk };
@@ -213,35 +220,35 @@ impl GenericClockController {
         if use_external_crystal {
             enable_external_32kosc(osc32kctrl);
             state.reset_gclk();
-            state.set_gclk_divider_and_source(GCLK1, 1, XOSC32K, false);
+            state.set_gclk_divider_and_source(Gclk1, 1, Xosc32k, false);
         } else {
             enable_internal_32kosc(osc32kctrl);
             state.reset_gclk();
-            state.set_gclk_divider_and_source(GCLK1, 1, OSCULP32K, false);
+            state.set_gclk_divider_and_source(Gclk1, 1, Osculp32k, false);
         }
 
-        while state.gclk.syncbusy.read().genctrl().is_gclk0() {}
+        while state.gclk.syncbusy().read().genctrl().is_gclk0() {}
 
         #[cfg(feature = "usb")]
         configure_usb_correction(oscctrl);
 
         // GCLK5 set to 2MHz
         unsafe {
-            state.gclk.genctrl[5].write(|w| {
+            state.gclk.genctrl(5).write(|w| {
                 w.src().dfll();
                 w.genen().set_bit();
                 w.div().bits(24)
             });
         }
 
-        while state.gclk.syncbusy.read().genctrl().is_gclk5() {}
+        while state.gclk.syncbusy().read().genctrl().is_gclk5() {}
 
         configure_and_enable_dpll0(oscctrl, &mut state.gclk);
         wait_for_dpllrdy(oscctrl);
 
         unsafe {
             // GCLK0 set to DPLL0 (120MHz)
-            state.gclk.genctrl[0].write(|w| {
+            state.gclk.genctrl(0).write(|w| {
                 w.src().dpll0();
                 w.div().bits(1);
                 w.oe().set_bit();
@@ -249,9 +256,9 @@ impl GenericClockController {
             });
         }
 
-        while state.gclk.syncbusy.read().genctrl().is_gclk0() {}
+        while state.gclk.syncbusy().read().genctrl().is_gclk0() {}
 
-        mclk.cpudiv.write(|w| w.div().div1());
+        mclk.cpudiv().write(|w| w.div().div1());
 
         Self {
             state,
@@ -276,7 +283,7 @@ impl GenericClockController {
     /// Returns a `GClock` for gclk0, the 120MHz oscillator.
     pub fn gclk0(&mut self) -> GClock {
         GClock {
-            gclk: GCLK0,
+            gclk: Gclk0,
             freq: self.gclks[0],
         }
     }
@@ -284,7 +291,7 @@ impl GenericClockController {
     /// Returns a `GClock` for gclk1, the 32KHz oscillator.
     pub fn gclk1(&mut self) -> GClock {
         GClock {
-            gclk: GCLK1,
+            gclk: Gclk1,
             freq: self.gclks[1],
         }
     }
@@ -327,11 +334,11 @@ impl GenericClockController {
         self.state
             .set_gclk_divider_and_source(gclk, divider, src, improve_duty_cycle);
         let freq: Hertz = match src {
-            XOSC32K | OSCULP32K => OSC32K_FREQ,
-            GCLKGEN1 => self.gclks[1],
-            DFLL => OSC48M_FREQ,
-            DPLL0 => OSC120M_FREQ,
-            XOSC0 | XOSC1 | GCLKIN | DPLL1 => unimplemented!(),
+            Xosc32k | Osculp32k => OSC32K_FREQ,
+            Gclkgen1 => self.gclks[1],
+            Dfll => OSC48M_FREQ,
+            Dpll0 => OSC120M_FREQ,
+            Xosc0 | Xosc1 | Gclkin | Dpll1 => unimplemented!(),
         };
         self.gclks[idx] = freq / divider as u32;
         Some(GClock { gclk, freq })
@@ -492,28 +499,30 @@ pub const OSC32K_FREQ: Hertz = Hertz::Hz(32_768);
 /// The frequency of the 120Mhz source.
 pub const OSC120M_FREQ: Hertz = Hertz::Hz(120_000_000);
 
-fn set_flash_to_half_auto_wait_state(nvmctrl: &mut NVMCTRL) {
+fn set_flash_to_half_auto_wait_state(nvmctrl: &mut Nvmctrl) {
     // Zero indicates zero wait states, one indicates one wait state, etc.,
     // up to 15 wait states.
-    nvmctrl.ctrla.modify(|_, w| unsafe { w.rws().bits(0b0111) });
+    nvmctrl
+        .ctrla()
+        .modify(|_, w| unsafe { w.rws().bits(0b0111) });
 }
 
-fn enable_gclk_apb(mclk: &mut MCLK) {
-    mclk.apbamask.modify(|_, w| w.gclk_().set_bit());
+fn enable_gclk_apb(mclk: &mut Mclk) {
+    mclk.apbamask().modify(|_, w| w.gclk_().set_bit());
 }
 
 /// Turn on the internal 32hkz oscillator
-fn enable_internal_32kosc(osc32kctrl: &mut OSC32KCTRL) {
-    osc32kctrl.osculp32k.modify(|_, w| {
+fn enable_internal_32kosc(osc32kctrl: &mut Osc32kctrl) {
+    osc32kctrl.osculp32k().modify(|_, w| {
         w.en32k().set_bit();
         w.en1k().set_bit()
     });
-    osc32kctrl.rtcctrl.write(|w| w.rtcsel().ulp1k());
+    osc32kctrl.rtcctrl().write(|w| w.rtcsel().ulp1k());
 }
 
 /// Turn on the external 32hkz oscillator
-fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
-    osc32kctrl.xosc32k.modify(|_, w| {
+fn enable_external_32kosc(osc32kctrl: &mut Osc32kctrl) {
+    osc32kctrl.xosc32k().modify(|_, w| {
         w.ondemand().clear_bit();
         // Enable 32khz output
         w.en32k().set_bit();
@@ -525,32 +534,32 @@ fn enable_external_32kosc(osc32kctrl: &mut OSC32KCTRL) {
         w.runstdby().set_bit()
     });
 
-    osc32kctrl.rtcctrl.write(|w| w.rtcsel().xosc1k());
+    osc32kctrl.rtcctrl().write(|w| w.rtcsel().xosc1k());
 
     // Wait for the oscillator to stabilize
-    while osc32kctrl.status.read().xosc32krdy().bit_is_clear() {}
+    while osc32kctrl.status().read().xosc32krdy().bit_is_clear() {}
 }
 
-fn wait_for_dpllrdy(oscctrl: &mut OSCCTRL) {
-    while oscctrl.dpll[0].dpllstatus.read().lock().bit_is_clear()
-        || oscctrl.dpll[0].dpllstatus.read().clkrdy().bit_is_clear()
+fn wait_for_dpllrdy(oscctrl: &mut Oscctrl) {
+    while oscctrl.dpll(0).dpllstatus().read().lock().bit_is_clear()
+        || oscctrl.dpll(0).dpllstatus().read().clkrdy().bit_is_clear()
     {}
 }
 
 /// Configure the dpll0 to run at 120MHz
-fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
-    gclk.pchctrl[ClockId::FDPLL0 as usize].write(|w| {
+fn configure_and_enable_dpll0(oscctrl: &mut Oscctrl, gclk: &mut Gclk) {
+    gclk.pchctrl(ClockId::FDPLL0 as usize).write(|w| {
         w.chen().set_bit();
         w.gen().gclk5()
     });
     unsafe {
-        oscctrl.dpll[0].dpllratio.write(|w| {
+        oscctrl.dpll(0).dpllratio().write(|w| {
             w.ldr().bits(59);
             w.ldrfrac().bits(0)
         });
     }
-    oscctrl.dpll[0].dpllctrlb.write(|w| w.refclk().gclk());
-    oscctrl.dpll[0].dpllctrla.write(|w| {
+    oscctrl.dpll(0).dpllctrlb().write(|w| w.refclk().gclk());
+    oscctrl.dpll(0).dpllctrla().write(|w| {
         w.enable().set_bit();
         w.ondemand().clear_bit()
     });
@@ -558,16 +567,16 @@ fn configure_and_enable_dpll0(oscctrl: &mut OSCCTRL, gclk: &mut GCLK) {
 
 #[cfg(feature = "usb")]
 /// Configure the dfll48m to calibrate against the 1Khz USB SOF reference.
-fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
-    oscctrl.dfllmul.write(|w| unsafe {
+fn configure_usb_correction(oscctrl: &mut Oscctrl) {
+    oscctrl.dfllmul().write(|w| unsafe {
         w.cstep().bits(0x1)
         .fstep().bits(0x1)
         // scaling factor for 1Khz SOF signal.
         .mul().bits((48_000_000u32 / 1000) as u16)
     });
-    while oscctrl.dfllsync.read().dfllmul().bit_is_set() {}
+    while oscctrl.dfllsync().read().dfllmul().bit_is_set() {}
 
-    oscctrl.dfllctrlb.write(|w| {
+    oscctrl.dfllctrlb().write(|w| {
         // closed loop mode
         w.mode().set_bit()
         // chill cycle disable
@@ -575,5 +584,5 @@ fn configure_usb_correction(oscctrl: &mut OSCCTRL) {
         // usb correction
         .usbcrm().set_bit()
     });
-    while oscctrl.dfllsync.read().dfllctrlb().bit_is_set() {}
+    while oscctrl.dfllsync().read().dfllctrlb().bit_is_set() {}
 }
