@@ -16,8 +16,8 @@ use hal::ehal::delay::DelayNs;
 use hal::ehal_nb::serial::Write;
 use hal::fugit::RateExtU32;
 use hal::nb;
-use hal::pac::gclk::genctrl::SRCSELECT_A;
-use hal::pac::gclk::pchctrl::GENSELECT_A;
+use hal::pac::gclk::genctrl::Srcselect;
+use hal::pac::gclk::pchctrl::Genselect;
 use hal::pac::{CorePeripherals, Peripherals};
 
 #[entry]
@@ -25,15 +25,15 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
-    clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
+    clocks.configure_gclk_divider_and_source(Genselect::Gclk2, 1, Srcselect::Dfll, false);
 
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let uart_rx = pin_alias!(pins.uart_rx);
     let uart_tx = pin_alias!(pins.uart_tx);
     let mut delay = Delay::new(core.SYST, &mut clocks);
@@ -43,7 +43,7 @@ fn main() -> ! {
         &mut clocks,
         19200.Hz(),
         uart_sercom,
-        &mut peripherals.MCLK,
+        &mut peripherals.mclk,
         uart_rx,
         uart_tx,
     );

@@ -12,7 +12,7 @@ use panic_semihosting as _;
 
 use bsp::entry;
 use hal::clock::GenericClockController;
-use hal::pac::{interrupt, CorePeripherals, Peripherals, RTC};
+use hal::pac::{interrupt, CorePeripherals, Peripherals, Rtc};
 use hal::prelude::*;
 use hal::rtc;
 use hal::sleeping_delay::SleepingDelay;
@@ -28,17 +28,17 @@ fn main() -> ! {
     // Configure all of our peripherals/clocks
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
-    let _clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+    let _clocks = GenericClockController::with_external_32kosc(
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
     // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
     // main clock
-    let timer = rtc::Rtc::count32_mode(peripherals.RTC, 1024.Hz(), &mut peripherals.MCLK);
+    let timer = rtc::Rtc::count32_mode(peripherals.rtc, 1024.Hz(), &mut peripherals.mclk);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
 
     // We can use the RTC in standby for maximum power savings
@@ -51,22 +51,22 @@ fn main() -> ! {
     }
 
     // Turn off unnecessary peripherals
-    peripherals.MCLK.ahbmask.modify(|_, w| {
+    peripherals.mclk.ahbmask().modify(|_, w| {
         w.usb_().clear_bit();
         w.dmac_().clear_bit()
     });
-    peripherals.MCLK.apbamask.modify(|_, w| {
+    peripherals.mclk.apbamask().modify(|_, w| {
         w.eic_().clear_bit();
         w.wdt_().clear_bit()
     });
-    peripherals.MCLK.apbbmask.modify(|_, w| {
+    peripherals.mclk.apbbmask().modify(|_, w| {
         w.usb_().clear_bit();
         w.nvmctrl_().clear_bit();
         w.dsu_().clear_bit()
     });
 
     // Configure our red LED and blink forever, sleeping between!
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut red_led = pins.d13.into_push_pull_output();
     loop {
         red_led.set_low().unwrap();
@@ -81,11 +81,11 @@ fn RTC() {
     // Let the sleepingtimer know that the interrupt fired, and clear it
     INTERRUPT_FIRED.store(true, atomic::Ordering::Relaxed);
     unsafe {
-        RTC::ptr()
+        Rtc::ptr()
             .as_ref()
             .unwrap()
             .mode0()
-            .intflag
+            .intflag()
             .modify(|_, w| w.cmp0().set_bit());
     }
 }

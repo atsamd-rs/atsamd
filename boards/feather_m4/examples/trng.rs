@@ -23,20 +23,20 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     // We will use the red led and a delay in this simplest possible
     // demonstration of the random number generator.
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut red_led = pins.d13.into_push_pull_output();
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
     // Create a struct as a representation of the random number generator peripheral
-    let trng = Trng::new(&mut peripherals.MCLK, peripherals.TRNG);
+    let trng = Trng::new(&mut peripherals.mclk, peripherals.trng);
 
     // Simple loop that blinks the red led with random on and off times that are
     // sourced from the random number generator.

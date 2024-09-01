@@ -29,21 +29,21 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut red_led: bsp::RedLed = pins.d13.into();
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(
-            peripherals.USB,
+            peripherals.usb,
             &mut clocks,
-            &mut peripherals.MCLK,
+            &mut peripherals.mclk,
             pins.usb_dm,
             pins.usb_dp,
         ));

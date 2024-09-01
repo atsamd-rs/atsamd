@@ -21,15 +21,15 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let _clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let mut pm = peripherals.PM;
-    let dmac = peripherals.DMAC;
+    let mut pm = peripherals.pm;
+    let dmac = peripherals.dmac;
     let _nvic = core.NVIC;
 
     // Initialize buffers
@@ -45,12 +45,12 @@ fn main() -> ! {
     let mut channels = dmac.split();
 
     // Initialize DMA Channel 0
-    let chan0 = channels.0.init(PriorityLevel::LVL0);
+    let chan0 = channels.0.init(PriorityLevel::Lvl0);
 
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size
     let xfer = Transfer::new_from_arrays(chan0, buf_src, buf_dest, false)
-        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
+        .begin(TriggerSource::Disable, TriggerAction::Block);
 
     // Wait for transfer to complete and grab resulting buffers
     let (chan0, buf_src, buf_dest) = xfer.wait();
@@ -67,7 +67,7 @@ fn main() -> ! {
     // destination) with a 16-bit beat size.
     let xfer = Transfer::new(chan0, const_16, buf_16, false)
         .unwrap()
-        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
+        .begin(TriggerSource::Disable, TriggerAction::Block);
 
     let (chan0, const_16, buf_16) = xfer.wait();
 
@@ -84,7 +84,7 @@ fn main() -> ! {
     // destination) with a 16-bit beat size
     let xfer = Transfer::new(chan0, buf_16, const_16, false)
         .unwrap()
-        .begin(TriggerSource::DISABLE, TriggerAction::BLOCK);
+        .begin(TriggerSource::Disable, TriggerAction::Block);
 
     let (chan0, buf_16, const_16) = xfer.wait();
 

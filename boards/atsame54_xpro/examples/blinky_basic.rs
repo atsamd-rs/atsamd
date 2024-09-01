@@ -19,16 +19,16 @@ fn main() -> ! {
     let core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut led = bsp::pin_alias!(pins.led).into_push_pull_output();
 
     loop {

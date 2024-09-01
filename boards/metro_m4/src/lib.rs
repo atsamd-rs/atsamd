@@ -23,15 +23,15 @@ use hal::{
     time::Hertz,
 };
 
-use pac::MCLK;
+use pac::Mclk;
 
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
 hal::bsp_peripherals!(
-    SERCOM2 { SpiSercom }
-    SERCOM3 { UartSercom }
-    SERCOM5 { I2cSercom }
+    Sercom2 { SpiSercom }
+    Sercom3 { UartSercom }
+    Sercom5 { I2cSercom }
 );
 
 hal::bsp_pins!(
@@ -252,7 +252,7 @@ pub fn spi_master(
     clocks: &mut GenericClockController,
     baud: Hertz,
     sercom: SpiSercom,
-    mclk: &mut pac::MCLK,
+    mclk: &mut pac::Mclk,
     sclk: impl Into<Sclk>,
     mosi: impl Into<Mosi>,
     miso: impl Into<Miso>,
@@ -273,8 +273,8 @@ pub fn spi_master(
 /// assuming 120MHz system clock, for 4MHz QSPI mode 0 operation.
 #[allow(clippy::too_many_arguments)]
 pub fn qspi_master(
-    mclk: &mut MCLK,
-    qspi: pac::QSPI,
+    mclk: &mut Mclk,
+    qspi: pac::Qspi,
     sclk: impl Into<FlashSclk>,
     cs: impl Into<FlashCs>,
     data0: impl Into<FlashD0>,
@@ -312,7 +312,7 @@ pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
     sercom: I2cSercom,
-    mclk: &mut pac::MCLK,
+    mclk: &mut pac::Mclk,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
 ) -> I2c {
@@ -338,7 +338,7 @@ pub fn uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
     sercom: UartSercom,
-    mclk: &mut pac::MCLK,
+    mclk: &mut pac::Mclk,
     uart_rx: impl Into<UartRx>,
     uart_tx: impl Into<UartTx>,
 ) -> Uart {
@@ -354,16 +354,16 @@ pub fn uart(
 #[cfg(feature = "usb")]
 /// Convenience function for setting up USB
 pub fn usb_allocator(
-    usb: pac::USB,
+    usb: pac::Usb,
     clocks: &mut GenericClockController,
-    mclk: &mut pac::MCLK,
+    mclk: &mut pac::Mclk,
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
-    use pac::gclk::{genctrl::SRCSELECT_A, pchctrl::GENSELECT_A};
+    use pac::gclk::{genctrl::Srcselect, pchctrl::Genselect};
 
-    clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
-    let usb_gclk = clocks.get_gclk(GENSELECT_A::GCLK2).unwrap();
+    clocks.configure_gclk_divider_and_source(Genselect::Gclk2, 1, Srcselect::Dfll, false);
+    let usb_gclk = clocks.get_gclk(Genselect::Gclk2).unwrap();
     let usb_clock = &clocks.usb(&usb_gclk).unwrap();
     let (dm, dp) = (dm.into(), dp.into());
     UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))

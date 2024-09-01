@@ -24,14 +24,14 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let trng = Trng::new(&mut peripherals.MCLK, peripherals.TRNG);
+    let trng = Trng::new(&mut peripherals.mclk, peripherals.trng);
 
     loop {
         hprintln!("{}", trng.random_u32()).ok();

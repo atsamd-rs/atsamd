@@ -113,24 +113,24 @@ where
 }
 
 unsafe impl CanId for Can0 {
-    const ADDRESS: *const () = crate::pac::CAN0::PTR as *const _;
+    const ADDRESS: *const () = crate::pac::Can0::PTR as *const _;
 }
 
 #[hal_cfg("can1")]
 unsafe impl CanId for Can1 {
-    const ADDRESS: *const () = crate::pac::CAN1::PTR as *const _;
+    const ADDRESS: *const () = crate::pac::Can1::PTR as *const _;
 }
 
 trait OwnedPeripheral {
     type Represents: CanId;
 }
 
-impl OwnedPeripheral for crate::pac::CAN0 {
+impl OwnedPeripheral for crate::pac::Can0 {
     type Represents = Can0;
 }
 
 #[hal_cfg("can1")]
-impl OwnedPeripheral for crate::pac::CAN1 {
+impl OwnedPeripheral for crate::pac::Can1 {
     type Represents = Can1;
 }
 
