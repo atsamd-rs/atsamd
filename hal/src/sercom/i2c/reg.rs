@@ -379,7 +379,8 @@ impl<S: Sercom> Registers<S> {
     pub(super) fn read_one(&mut self) -> u8 {
         while !self.i2c_master().intflag().read().sb().bit_is_set() {}
 
-        // SAMx5x: u32 -> u8 conversion is fine as long as we don't set CTRLC.DATA32B to 1.
+        // SAMx5x: u32 -> u8 conversion is fine as long as we don't set CTRLC.DATA32B to
+        // 1.
         self.i2c_master().data().read().bits() as u8
     }
 
