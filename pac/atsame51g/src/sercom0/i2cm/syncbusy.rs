@@ -6,8 +6,6 @@ pub type SwrstR = crate::BitReader;
 pub type EnableR = crate::BitReader;
 #[doc = "Field `SYSOP` reader - System Operation Synchronization Busy"]
 pub type SysopR = crate::BitReader;
-#[doc = "Field `LENGTH` reader - Length Synchronization Busy"]
-pub type LengthR = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Software Reset Synchronization Busy"]
     #[inline(always)]
@@ -23,11 +21,6 @@ impl R {
     #[inline(always)]
     pub fn sysop(&self) -> SysopR {
         SysopR::new(((self.bits >> 2) & 1) != 0)
-    }
-    #[doc = "Bit 4 - Length Synchronization Busy"]
-    #[inline(always)]
-    pub fn length(&self) -> LengthR {
-        LengthR::new(((self.bits >> 4) & 1) != 0)
     }
 }
 #[doc = "I2CM Synchronization Busy\n\nYou can [`read`](crate::Reg::read) this register and get [`syncbusy::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]

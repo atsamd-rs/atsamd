@@ -14,10 +14,92 @@ pub type ArblostW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type RxnackR = crate::BitReader;
 #[doc = "Field `RXNACK` writer - Received Not Acknowledge"]
 pub type RxnackW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Bus State\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Busstateselect {
+    #[doc = "0: The Bus state is unknown to the I2C Host"]
+    Unknown = 0,
+    #[doc = "1: The Bus state is waiting for a transaction to be initialized"]
+    Idle = 1,
+    #[doc = "2: The I2C Host is the current owner of the bus"]
+    Owner = 2,
+    #[doc = "3: Some other I2C Host owns the bus"]
+    Busy = 3,
+}
+impl From<Busstateselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Busstateselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Busstateselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Busstateselect {}
 #[doc = "Field `BUSSTATE` reader - Bus State"]
-pub type BusstateR = crate::FieldReader;
+pub type BusstateR = crate::FieldReader<Busstateselect>;
+impl BusstateR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Busstateselect {
+        match self.bits {
+            0 => Busstateselect::Unknown,
+            1 => Busstateselect::Idle,
+            2 => Busstateselect::Owner,
+            3 => Busstateselect::Busy,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "The Bus state is unknown to the I2C Host"]
+    #[inline(always)]
+    pub fn is_unknown(&self) -> bool {
+        *self == Busstateselect::Unknown
+    }
+    #[doc = "The Bus state is waiting for a transaction to be initialized"]
+    #[inline(always)]
+    pub fn is_idle(&self) -> bool {
+        *self == Busstateselect::Idle
+    }
+    #[doc = "The I2C Host is the current owner of the bus"]
+    #[inline(always)]
+    pub fn is_owner(&self) -> bool {
+        *self == Busstateselect::Owner
+    }
+    #[doc = "Some other I2C Host owns the bus"]
+    #[inline(always)]
+    pub fn is_busy(&self) -> bool {
+        *self == Busstateselect::Busy
+    }
+}
 #[doc = "Field `BUSSTATE` writer - Bus State"]
-pub type BusstateW<'a, REG> = crate::FieldWriter<'a, REG, 2>;
+pub type BusstateW<'a, REG> = crate::FieldWriter<'a, REG, 2, Busstateselect, crate::Safe>;
+impl<'a, REG> BusstateW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "The Bus state is unknown to the I2C Host"]
+    #[inline(always)]
+    pub fn unknown(self) -> &'a mut crate::W<REG> {
+        self.variant(Busstateselect::Unknown)
+    }
+    #[doc = "The Bus state is waiting for a transaction to be initialized"]
+    #[inline(always)]
+    pub fn idle(self) -> &'a mut crate::W<REG> {
+        self.variant(Busstateselect::Idle)
+    }
+    #[doc = "The I2C Host is the current owner of the bus"]
+    #[inline(always)]
+    pub fn owner(self) -> &'a mut crate::W<REG> {
+        self.variant(Busstateselect::Owner)
+    }
+    #[doc = "Some other I2C Host owns the bus"]
+    #[inline(always)]
+    pub fn busy(self) -> &'a mut crate::W<REG> {
+        self.variant(Busstateselect::Busy)
+    }
+}
 #[doc = "Field `LOWTOUT` reader - SCL Low Timeout"]
 pub type LowtoutR = crate::BitReader;
 #[doc = "Field `LOWTOUT` writer - SCL Low Timeout"]

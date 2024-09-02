@@ -1,9 +1,9 @@
 #[doc = "Register `SISR` reader"]
 pub type R = crate::R<SisrSpec>;
-#[doc = "Field `INTSSL` reader - Interrupt Signal for Each Slot"]
+#[doc = "Field `INTSSL` reader - Interrupt Signal for Each SDHC Slot"]
 pub type IntsslR = crate::BitReader;
 impl R {
-    #[doc = "Bit 0 - Interrupt Signal for Each Slot"]
+    #[doc = "Bit 0 - Interrupt Signal for Each SDHC Slot"]
     #[inline(always)]
     pub fn intssl(&self) -> IntsslR {
         IntsslR::new((self.bits & 1) != 0)

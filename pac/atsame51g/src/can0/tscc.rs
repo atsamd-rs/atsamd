@@ -10,8 +10,6 @@ pub enum Tssselect {
     Zero = 0,
     #[doc = "1: Timestamp counter value incremented by TCP"]
     Inc = 1,
-    #[doc = "2: External timestamp counter value used"]
-    Ext = 2,
 }
 impl From<Tssselect> for u8 {
     #[inline(always)]
@@ -32,7 +30,6 @@ impl TssR {
         match self.bits {
             0 => Some(Tssselect::Zero),
             1 => Some(Tssselect::Inc),
-            2 => Some(Tssselect::Ext),
             _ => None,
         }
     }
@@ -45,11 +42,6 @@ impl TssR {
     #[inline(always)]
     pub fn is_inc(&self) -> bool {
         *self == Tssselect::Inc
-    }
-    #[doc = "External timestamp counter value used"]
-    #[inline(always)]
-    pub fn is_ext(&self) -> bool {
-        *self == Tssselect::Ext
     }
 }
 #[doc = "Field `TSS` writer - Timestamp Select"]
@@ -68,11 +60,6 @@ where
     #[inline(always)]
     pub fn inc(self) -> &'a mut crate::W<REG> {
         self.variant(Tssselect::Inc)
-    }
-    #[doc = "External timestamp counter value used"]
-    #[inline(always)]
-    pub fn ext(self) -> &'a mut crate::W<REG> {
-        self.variant(Tssselect::Ext)
     }
 }
 #[doc = "Field `TCP` reader - Timestamp Counter Prescaler"]

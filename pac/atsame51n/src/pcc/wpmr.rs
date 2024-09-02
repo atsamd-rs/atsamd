@@ -6,10 +6,53 @@ pub type W = crate::W<WpmrSpec>;
 pub type WpenR = crate::BitReader;
 #[doc = "Field `WPEN` writer - Write Protection Enable"]
 pub type WpenW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Write Protection Key\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u32)]
+pub enum Wpkeyselect {
+    #[doc = "5260099: Write Protection Key"]
+    Passwd = 5260099,
+}
+impl From<Wpkeyselect> for u32 {
+    #[inline(always)]
+    fn from(variant: Wpkeyselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Wpkeyselect {
+    type Ux = u32;
+}
+impl crate::IsEnum for Wpkeyselect {}
 #[doc = "Field `WPKEY` reader - Write Protection Key"]
-pub type WpkeyR = crate::FieldReader<u32>;
+pub type WpkeyR = crate::FieldReader<Wpkeyselect>;
+impl WpkeyR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<Wpkeyselect> {
+        match self.bits {
+            5260099 => Some(Wpkeyselect::Passwd),
+            _ => None,
+        }
+    }
+    #[doc = "Write Protection Key"]
+    #[inline(always)]
+    pub fn is_passwd(&self) -> bool {
+        *self == Wpkeyselect::Passwd
+    }
+}
 #[doc = "Field `WPKEY` writer - Write Protection Key"]
-pub type WpkeyW<'a, REG> = crate::FieldWriter<'a, REG, 24, u32>;
+pub type WpkeyW<'a, REG> = crate::FieldWriter<'a, REG, 24, Wpkeyselect>;
+impl<'a, REG> WpkeyW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u32>,
+{
+    #[doc = "Write Protection Key"]
+    #[inline(always)]
+    pub fn passwd(self) -> &'a mut crate::W<REG> {
+        self.variant(Wpkeyselect::Passwd)
+    }
+}
 impl R {
     #[doc = "Bit 0 - Write Protection Enable"]
     #[inline(always)]

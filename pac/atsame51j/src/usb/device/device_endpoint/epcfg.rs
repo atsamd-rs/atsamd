@@ -10,10 +10,6 @@ pub type Eptype0W<'a, REG> = crate::FieldWriter<'a, REG, 3>;
 pub type Eptype1R = crate::FieldReader;
 #[doc = "Field `EPTYPE1` writer - End Point Type1"]
 pub type Eptype1W<'a, REG> = crate::FieldWriter<'a, REG, 3>;
-#[doc = "Field `NYETDIS` reader - NYET Token Disable"]
-pub type NyetdisR = crate::BitReader;
-#[doc = "Field `NYETDIS` writer - NYET Token Disable"]
-pub type NyetdisW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bits 0:2 - End Point Type0"]
     #[inline(always)]
@@ -24,11 +20,6 @@ impl R {
     #[inline(always)]
     pub fn eptype1(&self) -> Eptype1R {
         Eptype1R::new((self.bits >> 4) & 7)
-    }
-    #[doc = "Bit 7 - NYET Token Disable"]
-    #[inline(always)]
-    pub fn nyetdis(&self) -> NyetdisR {
-        NyetdisR::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
@@ -43,12 +34,6 @@ impl W {
     #[must_use]
     pub fn eptype1(&mut self) -> Eptype1W<EpcfgSpec> {
         Eptype1W::new(self, 4)
-    }
-    #[doc = "Bit 7 - NYET Token Disable"]
-    #[inline(always)]
-    #[must_use]
-    pub fn nyetdis(&mut self) -> NyetdisW<EpcfgSpec> {
-        NyetdisW::new(self, 7)
     }
 }
 #[doc = "DEVICE_ENDPOINT End Point Configuration\n\nYou can [`read`](crate::Reg::read) this register and get [`epcfg::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`epcfg::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]

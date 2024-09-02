@@ -58,10 +58,6 @@ pub type Sdhc0_W<'a, REG> = crate::BitWriter<'a, REG>;
 pub type Qspi_R = crate::BitReader;
 #[doc = "Field `QSPI_` writer - QSPI"]
 pub type Qspi_W<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `BKUPRAM_` reader - BKUPRAM"]
-pub type Bkupram_R = crate::BitReader;
-#[doc = "Field `BKUPRAM_` writer - BKUPRAM"]
-pub type Bkupram_W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - FLASH"]
     #[inline(always)]
@@ -132,11 +128,6 @@ impl R {
     #[inline(always)]
     pub fn qspi_(&self) -> Qspi_R {
         Qspi_R::new(((self.bits >> 14) & 1) != 0)
-    }
-    #[doc = "Bit 15 - BKUPRAM"]
-    #[inline(always)]
-    pub fn bkupram_(&self) -> Bkupram_R {
-        Bkupram_R::new(((self.bits >> 15) & 1) != 0)
     }
 }
 impl W {
@@ -223,12 +214,6 @@ impl W {
     #[must_use]
     pub fn qspi_(&mut self) -> Qspi_W<IntflagahbSpec> {
         Qspi_W::new(self, 14)
-    }
-    #[doc = "Bit 15 - BKUPRAM"]
-    #[inline(always)]
-    #[must_use]
-    pub fn bkupram_(&mut self) -> Bkupram_W<IntflagahbSpec> {
-        Bkupram_W::new(self, 15)
     }
 }
 #[doc = "Bridge interrupt flag status\n\nYou can [`read`](crate::Reg::read) this register and get [`intflagahb::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intflagahb::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]

@@ -2,79 +2,6 @@
 pub type R = crate::R<TxctrlSpec>;
 #[doc = "Register `TXCTRL` writer"]
 pub type W = crate::W<TxctrlSpec>;
-#[doc = "Serializer Mode\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-#[repr(u8)]
-pub enum Sermodeselect {
-    #[doc = "0: Receive"]
-    Rx = 0,
-    #[doc = "1: Transmit"]
-    Tx = 1,
-    #[doc = "2: Receive one PDM data on each serial clock edge"]
-    Pdm2 = 2,
-}
-impl From<Sermodeselect> for u8 {
-    #[inline(always)]
-    fn from(variant: Sermodeselect) -> Self {
-        variant as _
-    }
-}
-impl crate::FieldSpec for Sermodeselect {
-    type Ux = u8;
-}
-impl crate::IsEnum for Sermodeselect {}
-#[doc = "Field `SERMODE` reader - Serializer Mode"]
-pub type SermodeR = crate::FieldReader<Sermodeselect>;
-impl SermodeR {
-    #[doc = "Get enumerated values variant"]
-    #[inline(always)]
-    pub const fn variant(&self) -> Option<Sermodeselect> {
-        match self.bits {
-            0 => Some(Sermodeselect::Rx),
-            1 => Some(Sermodeselect::Tx),
-            2 => Some(Sermodeselect::Pdm2),
-            _ => None,
-        }
-    }
-    #[doc = "Receive"]
-    #[inline(always)]
-    pub fn is_rx(&self) -> bool {
-        *self == Sermodeselect::Rx
-    }
-    #[doc = "Transmit"]
-    #[inline(always)]
-    pub fn is_tx(&self) -> bool {
-        *self == Sermodeselect::Tx
-    }
-    #[doc = "Receive one PDM data on each serial clock edge"]
-    #[inline(always)]
-    pub fn is_pdm2(&self) -> bool {
-        *self == Sermodeselect::Pdm2
-    }
-}
-#[doc = "Field `SERMODE` writer - Serializer Mode"]
-pub type SermodeW<'a, REG> = crate::FieldWriter<'a, REG, 2, Sermodeselect>;
-impl<'a, REG> SermodeW<'a, REG>
-where
-    REG: crate::Writable + crate::RegisterSpec,
-    REG::Ux: From<u8>,
-{
-    #[doc = "Receive"]
-    #[inline(always)]
-    pub fn rx(self) -> &'a mut crate::W<REG> {
-        self.variant(Sermodeselect::Rx)
-    }
-    #[doc = "Transmit"]
-    #[inline(always)]
-    pub fn tx(self) -> &'a mut crate::W<REG> {
-        self.variant(Sermodeselect::Tx)
-    }
-    #[doc = "Receive one PDM data on each serial clock edge"]
-    #[inline(always)]
-    pub fn pdm2(self) -> &'a mut crate::W<REG> {
-        self.variant(Sermodeselect::Pdm2)
-    }
-}
 #[doc = "Line Default Line when Slot Disabled\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -199,59 +126,6 @@ where
     #[inline(always)]
     pub fn same(self) -> &'a mut crate::W<REG> {
         self.variant(Txsameselect::Same)
-    }
-}
-#[doc = "Clock Unit Selection\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Clkselselect {
-    #[doc = "0: Use Clock Unit 0"]
-    Clk0 = 0,
-    #[doc = "1: Use Clock Unit 1"]
-    Clk1 = 1,
-}
-impl From<Clkselselect> for bool {
-    #[inline(always)]
-    fn from(variant: Clkselselect) -> Self {
-        variant as u8 != 0
-    }
-}
-#[doc = "Field `CLKSEL` reader - Clock Unit Selection"]
-pub type ClkselR = crate::BitReader<Clkselselect>;
-impl ClkselR {
-    #[doc = "Get enumerated values variant"]
-    #[inline(always)]
-    pub const fn variant(&self) -> Clkselselect {
-        match self.bits {
-            false => Clkselselect::Clk0,
-            true => Clkselselect::Clk1,
-        }
-    }
-    #[doc = "Use Clock Unit 0"]
-    #[inline(always)]
-    pub fn is_clk0(&self) -> bool {
-        *self == Clkselselect::Clk0
-    }
-    #[doc = "Use Clock Unit 1"]
-    #[inline(always)]
-    pub fn is_clk1(&self) -> bool {
-        *self == Clkselselect::Clk1
-    }
-}
-#[doc = "Field `CLKSEL` writer - Clock Unit Selection"]
-pub type ClkselW<'a, REG> = crate::BitWriter<'a, REG, Clkselselect>;
-impl<'a, REG> ClkselW<'a, REG>
-where
-    REG: crate::Writable + crate::RegisterSpec,
-{
-    #[doc = "Use Clock Unit 0"]
-    #[inline(always)]
-    pub fn clk0(self) -> &'a mut crate::W<REG> {
-        self.variant(Clkselselect::Clk0)
-    }
-    #[doc = "Use Clock Unit 1"]
-    #[inline(always)]
-    pub fn clk1(self) -> &'a mut crate::W<REG> {
-        self.variant(Clkselselect::Clk1)
     }
 }
 #[doc = "Data Slot Formatting Adjust\n\nValue on reset: 0"]
@@ -776,11 +650,6 @@ where
     }
 }
 impl R {
-    #[doc = "Bits 0:1 - Serializer Mode"]
-    #[inline(always)]
-    pub fn sermode(&self) -> SermodeR {
-        SermodeR::new((self.bits & 3) as u8)
-    }
     #[doc = "Bits 2:3 - Line Default Line when Slot Disabled"]
     #[inline(always)]
     pub fn txdefault(&self) -> TxdefaultR {
@@ -790,11 +659,6 @@ impl R {
     #[inline(always)]
     pub fn txsame(&self) -> TxsameR {
         TxsameR::new(((self.bits >> 4) & 1) != 0)
-    }
-    #[doc = "Bit 5 - Clock Unit Selection"]
-    #[inline(always)]
-    pub fn clksel(&self) -> ClkselR {
-        ClkselR::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 7 - Data Slot Formatting Adjust"]
     #[inline(always)]
@@ -873,12 +737,6 @@ impl R {
     }
 }
 impl W {
-    #[doc = "Bits 0:1 - Serializer Mode"]
-    #[inline(always)]
-    #[must_use]
-    pub fn sermode(&mut self) -> SermodeW<TxctrlSpec> {
-        SermodeW::new(self, 0)
-    }
     #[doc = "Bits 2:3 - Line Default Line when Slot Disabled"]
     #[inline(always)]
     #[must_use]
@@ -890,12 +748,6 @@ impl W {
     #[must_use]
     pub fn txsame(&mut self) -> TxsameW<TxctrlSpec> {
         TxsameW::new(self, 4)
-    }
-    #[doc = "Bit 5 - Clock Unit Selection"]
-    #[inline(always)]
-    #[must_use]
-    pub fn clksel(&mut self) -> ClkselW<TxctrlSpec> {
-        ClkselW::new(self, 5)
     }
     #[doc = "Bit 7 - Data Slot Formatting Adjust"]
     #[inline(always)]

@@ -8,8 +8,6 @@ pub enum Speedselect {
     Fs = 0,
     #[doc = "1: Low-speed mode"]
     Ls = 1,
-    #[doc = "2: High-speed mode"]
-    Hs = 2,
 }
 impl From<Speedselect> for u8 {
     #[inline(always)]
@@ -30,7 +28,6 @@ impl SpeedR {
         match self.bits {
             0 => Some(Speedselect::Fs),
             1 => Some(Speedselect::Ls),
-            2 => Some(Speedselect::Hs),
             _ => None,
         }
     }
@@ -44,22 +41,17 @@ impl SpeedR {
     pub fn is_ls(&self) -> bool {
         *self == Speedselect::Ls
     }
-    #[doc = "High-speed mode"]
-    #[inline(always)]
-    pub fn is_hs(&self) -> bool {
-        *self == Speedselect::Hs
-    }
 }
 #[doc = "USB Line State Status\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Linestateselect {
     #[doc = "0: SE0/RESET"]
-    _0 = 0,
+    Se0reset = 0,
     #[doc = "1: FS-J or LS-K State"]
-    _1 = 1,
+    Fsjlsk = 1,
     #[doc = "2: FS-K or LS-J State"]
-    _2 = 2,
+    Fsklsj = 2,
 }
 impl From<Linestateselect> for u8 {
     #[inline(always)]
@@ -78,26 +70,26 @@ impl LinestateR {
     #[inline(always)]
     pub const fn variant(&self) -> Option<Linestateselect> {
         match self.bits {
-            0 => Some(Linestateselect::_0),
-            1 => Some(Linestateselect::_1),
-            2 => Some(Linestateselect::_2),
+            0 => Some(Linestateselect::Se0reset),
+            1 => Some(Linestateselect::Fsjlsk),
+            2 => Some(Linestateselect::Fsklsj),
             _ => None,
         }
     }
     #[doc = "SE0/RESET"]
     #[inline(always)]
-    pub fn is_0(&self) -> bool {
-        *self == Linestateselect::_0
+    pub fn is_se0reset(&self) -> bool {
+        *self == Linestateselect::Se0reset
     }
     #[doc = "FS-J or LS-K State"]
     #[inline(always)]
-    pub fn is_1(&self) -> bool {
-        *self == Linestateselect::_1
+    pub fn is_fsjlsk(&self) -> bool {
+        *self == Linestateselect::Fsjlsk
     }
     #[doc = "FS-K or LS-J State"]
     #[inline(always)]
-    pub fn is_2(&self) -> bool {
-        *self == Linestateselect::_2
+    pub fn is_fsklsj(&self) -> bool {
+        *self == Linestateselect::Fsklsj
     }
 }
 impl R {

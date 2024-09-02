@@ -6,14 +6,178 @@ pub type W = crate::W<CtrlcSpec>;
 pub type GtimeR = crate::FieldReader;
 #[doc = "Field `GTIME` writer - Guard Time"]
 pub type GtimeW<'a, REG> = crate::FieldWriter<'a, REG, 3>;
+#[doc = "LIN Master Break Length\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Brklenselect {
+    #[doc = "0: Break field transmission is 13 bit times"]
+    _13Bit = 0,
+    #[doc = "1: Break field transmission is 17 bit times"]
+    _17Bit = 1,
+    #[doc = "2: Break field transmission is 21 bit times"]
+    _21Bit = 2,
+    #[doc = "3: Break field transmission is 26 bit times"]
+    _26Bit = 3,
+}
+impl From<Brklenselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Brklenselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Brklenselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Brklenselect {}
 #[doc = "Field `BRKLEN` reader - LIN Master Break Length"]
-pub type BrklenR = crate::FieldReader;
+pub type BrklenR = crate::FieldReader<Brklenselect>;
+impl BrklenR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Brklenselect {
+        match self.bits {
+            0 => Brklenselect::_13Bit,
+            1 => Brklenselect::_17Bit,
+            2 => Brklenselect::_21Bit,
+            3 => Brklenselect::_26Bit,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "Break field transmission is 13 bit times"]
+    #[inline(always)]
+    pub fn is_13_bit(&self) -> bool {
+        *self == Brklenselect::_13Bit
+    }
+    #[doc = "Break field transmission is 17 bit times"]
+    #[inline(always)]
+    pub fn is_17_bit(&self) -> bool {
+        *self == Brklenselect::_17Bit
+    }
+    #[doc = "Break field transmission is 21 bit times"]
+    #[inline(always)]
+    pub fn is_21_bit(&self) -> bool {
+        *self == Brklenselect::_21Bit
+    }
+    #[doc = "Break field transmission is 26 bit times"]
+    #[inline(always)]
+    pub fn is_26_bit(&self) -> bool {
+        *self == Brklenselect::_26Bit
+    }
+}
 #[doc = "Field `BRKLEN` writer - LIN Master Break Length"]
-pub type BrklenW<'a, REG> = crate::FieldWriter<'a, REG, 2>;
+pub type BrklenW<'a, REG> = crate::FieldWriter<'a, REG, 2, Brklenselect, crate::Safe>;
+impl<'a, REG> BrklenW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Break field transmission is 13 bit times"]
+    #[inline(always)]
+    pub fn _13_bit(self) -> &'a mut crate::W<REG> {
+        self.variant(Brklenselect::_13Bit)
+    }
+    #[doc = "Break field transmission is 17 bit times"]
+    #[inline(always)]
+    pub fn _17_bit(self) -> &'a mut crate::W<REG> {
+        self.variant(Brklenselect::_17Bit)
+    }
+    #[doc = "Break field transmission is 21 bit times"]
+    #[inline(always)]
+    pub fn _21_bit(self) -> &'a mut crate::W<REG> {
+        self.variant(Brklenselect::_21Bit)
+    }
+    #[doc = "Break field transmission is 26 bit times"]
+    #[inline(always)]
+    pub fn _26_bit(self) -> &'a mut crate::W<REG> {
+        self.variant(Brklenselect::_26Bit)
+    }
+}
+#[doc = "LIN Master Header Delay\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Hdrdlyselect {
+    #[doc = "0: Delay between break and sync transmission is 1 bit time; Delay between sync and ID transmission is 1 bit time"]
+    Delay0 = 0,
+    #[doc = "1: Delay between break and sync transmission is 4 bit time; Delay between sync and ID transmission is 4 bit time"]
+    Delay1 = 1,
+    #[doc = "2: Delay between break and sync transmission is 8 bit time; Delay between sync and ID transmission is 4 bit time"]
+    Delay2 = 2,
+    #[doc = "3: Delay between break and sync transmission is 14 bit time; Delay between sync and ID transmission is 4 bit time"]
+    Delay3 = 3,
+}
+impl From<Hdrdlyselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Hdrdlyselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Hdrdlyselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Hdrdlyselect {}
 #[doc = "Field `HDRDLY` reader - LIN Master Header Delay"]
-pub type HdrdlyR = crate::FieldReader;
+pub type HdrdlyR = crate::FieldReader<Hdrdlyselect>;
+impl HdrdlyR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Hdrdlyselect {
+        match self.bits {
+            0 => Hdrdlyselect::Delay0,
+            1 => Hdrdlyselect::Delay1,
+            2 => Hdrdlyselect::Delay2,
+            3 => Hdrdlyselect::Delay3,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "Delay between break and sync transmission is 1 bit time; Delay between sync and ID transmission is 1 bit time"]
+    #[inline(always)]
+    pub fn is_delay0(&self) -> bool {
+        *self == Hdrdlyselect::Delay0
+    }
+    #[doc = "Delay between break and sync transmission is 4 bit time; Delay between sync and ID transmission is 4 bit time"]
+    #[inline(always)]
+    pub fn is_delay1(&self) -> bool {
+        *self == Hdrdlyselect::Delay1
+    }
+    #[doc = "Delay between break and sync transmission is 8 bit time; Delay between sync and ID transmission is 4 bit time"]
+    #[inline(always)]
+    pub fn is_delay2(&self) -> bool {
+        *self == Hdrdlyselect::Delay2
+    }
+    #[doc = "Delay between break and sync transmission is 14 bit time; Delay between sync and ID transmission is 4 bit time"]
+    #[inline(always)]
+    pub fn is_delay3(&self) -> bool {
+        *self == Hdrdlyselect::Delay3
+    }
+}
 #[doc = "Field `HDRDLY` writer - LIN Master Header Delay"]
-pub type HdrdlyW<'a, REG> = crate::FieldWriter<'a, REG, 2>;
+pub type HdrdlyW<'a, REG> = crate::FieldWriter<'a, REG, 2, Hdrdlyselect, crate::Safe>;
+impl<'a, REG> HdrdlyW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Delay between break and sync transmission is 1 bit time; Delay between sync and ID transmission is 1 bit time"]
+    #[inline(always)]
+    pub fn delay0(self) -> &'a mut crate::W<REG> {
+        self.variant(Hdrdlyselect::Delay0)
+    }
+    #[doc = "Delay between break and sync transmission is 4 bit time; Delay between sync and ID transmission is 4 bit time"]
+    #[inline(always)]
+    pub fn delay1(self) -> &'a mut crate::W<REG> {
+        self.variant(Hdrdlyselect::Delay1)
+    }
+    #[doc = "Delay between break and sync transmission is 8 bit time; Delay between sync and ID transmission is 4 bit time"]
+    #[inline(always)]
+    pub fn delay2(self) -> &'a mut crate::W<REG> {
+        self.variant(Hdrdlyselect::Delay2)
+    }
+    #[doc = "Delay between break and sync transmission is 14 bit time; Delay between sync and ID transmission is 4 bit time"]
+    #[inline(always)]
+    pub fn delay3(self) -> &'a mut crate::W<REG> {
+        self.variant(Hdrdlyselect::Delay3)
+    }
+}
 #[doc = "Field `INACK` reader - Inhibit Not Acknowledge"]
 pub type InackR = crate::BitReader;
 #[doc = "Field `INACK` writer - Inhibit Not Acknowledge"]

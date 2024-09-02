@@ -143,6 +143,70 @@ pub enum Crcsrcselect {
     Disable = 0,
     #[doc = "1: I/O interface"]
     Io = 1,
+    #[doc = "32: DMA Channel 0"]
+    Chn0 = 32,
+    #[doc = "33: DMA Channel 1"]
+    Chn1 = 33,
+    #[doc = "34: DMA Channel 2"]
+    Chn2 = 34,
+    #[doc = "35: DMA Channel 3"]
+    Chn3 = 35,
+    #[doc = "36: DMA Channel 4"]
+    Chn4 = 36,
+    #[doc = "37: DMA Channel 5"]
+    Chn5 = 37,
+    #[doc = "38: DMA Channel 6"]
+    Chn6 = 38,
+    #[doc = "39: DMA Channel 7"]
+    Chn7 = 39,
+    #[doc = "40: DMA Channel 8"]
+    Chn8 = 40,
+    #[doc = "41: DMA Channel 9"]
+    Chn9 = 41,
+    #[doc = "42: DMA Channel 10"]
+    Chn10 = 42,
+    #[doc = "43: DMA Channel 11"]
+    Chn11 = 43,
+    #[doc = "44: DMA Channel 12"]
+    Chn12 = 44,
+    #[doc = "45: DMA Channel 13"]
+    Chn13 = 45,
+    #[doc = "46: DMA Channel 14"]
+    Chn14 = 46,
+    #[doc = "47: DMA Channel 15"]
+    Chn15 = 47,
+    #[doc = "48: DMA Channel 16"]
+    Chn16 = 48,
+    #[doc = "49: DMA Channel 17"]
+    Chn17 = 49,
+    #[doc = "50: DMA Channel 18"]
+    Chn18 = 50,
+    #[doc = "51: DMA Channel 19"]
+    Chn19 = 51,
+    #[doc = "52: DMA Channel 20"]
+    Chn20 = 52,
+    #[doc = "53: DMA Channel 21"]
+    Chn21 = 53,
+    #[doc = "54: DMA Channel 22"]
+    Chn22 = 54,
+    #[doc = "55: DMA Channel 23"]
+    Chn23 = 55,
+    #[doc = "56: DMA Channel 24"]
+    Chn24 = 56,
+    #[doc = "57: DMA Channel 25"]
+    Chn25 = 57,
+    #[doc = "58: DMA Channel 26"]
+    Chn26 = 58,
+    #[doc = "59: DMA Channel 27"]
+    Chn27 = 59,
+    #[doc = "60: DMA Channel 28"]
+    Chn28 = 60,
+    #[doc = "61: DMA Channel 29"]
+    Chn29 = 61,
+    #[doc = "62: DMA Channel 30"]
+    Chn30 = 62,
+    #[doc = "63: DMA Channel 31"]
+    Chn31 = 63,
 }
 impl From<Crcsrcselect> for u8 {
     #[inline(always)]
@@ -163,6 +227,38 @@ impl CrcsrcR {
         match self.bits {
             0 => Some(Crcsrcselect::Disable),
             1 => Some(Crcsrcselect::Io),
+            32 => Some(Crcsrcselect::Chn0),
+            33 => Some(Crcsrcselect::Chn1),
+            34 => Some(Crcsrcselect::Chn2),
+            35 => Some(Crcsrcselect::Chn3),
+            36 => Some(Crcsrcselect::Chn4),
+            37 => Some(Crcsrcselect::Chn5),
+            38 => Some(Crcsrcselect::Chn6),
+            39 => Some(Crcsrcselect::Chn7),
+            40 => Some(Crcsrcselect::Chn8),
+            41 => Some(Crcsrcselect::Chn9),
+            42 => Some(Crcsrcselect::Chn10),
+            43 => Some(Crcsrcselect::Chn11),
+            44 => Some(Crcsrcselect::Chn12),
+            45 => Some(Crcsrcselect::Chn13),
+            46 => Some(Crcsrcselect::Chn14),
+            47 => Some(Crcsrcselect::Chn15),
+            48 => Some(Crcsrcselect::Chn16),
+            49 => Some(Crcsrcselect::Chn17),
+            50 => Some(Crcsrcselect::Chn18),
+            51 => Some(Crcsrcselect::Chn19),
+            52 => Some(Crcsrcselect::Chn20),
+            53 => Some(Crcsrcselect::Chn21),
+            54 => Some(Crcsrcselect::Chn22),
+            55 => Some(Crcsrcselect::Chn23),
+            56 => Some(Crcsrcselect::Chn24),
+            57 => Some(Crcsrcselect::Chn25),
+            58 => Some(Crcsrcselect::Chn26),
+            59 => Some(Crcsrcselect::Chn27),
+            60 => Some(Crcsrcselect::Chn28),
+            61 => Some(Crcsrcselect::Chn29),
+            62 => Some(Crcsrcselect::Chn30),
+            63 => Some(Crcsrcselect::Chn31),
             _ => None,
         }
     }
@@ -175,6 +271,166 @@ impl CrcsrcR {
     #[inline(always)]
     pub fn is_io(&self) -> bool {
         *self == Crcsrcselect::Io
+    }
+    #[doc = "DMA Channel 0"]
+    #[inline(always)]
+    pub fn is_chn0(&self) -> bool {
+        *self == Crcsrcselect::Chn0
+    }
+    #[doc = "DMA Channel 1"]
+    #[inline(always)]
+    pub fn is_chn1(&self) -> bool {
+        *self == Crcsrcselect::Chn1
+    }
+    #[doc = "DMA Channel 2"]
+    #[inline(always)]
+    pub fn is_chn2(&self) -> bool {
+        *self == Crcsrcselect::Chn2
+    }
+    #[doc = "DMA Channel 3"]
+    #[inline(always)]
+    pub fn is_chn3(&self) -> bool {
+        *self == Crcsrcselect::Chn3
+    }
+    #[doc = "DMA Channel 4"]
+    #[inline(always)]
+    pub fn is_chn4(&self) -> bool {
+        *self == Crcsrcselect::Chn4
+    }
+    #[doc = "DMA Channel 5"]
+    #[inline(always)]
+    pub fn is_chn5(&self) -> bool {
+        *self == Crcsrcselect::Chn5
+    }
+    #[doc = "DMA Channel 6"]
+    #[inline(always)]
+    pub fn is_chn6(&self) -> bool {
+        *self == Crcsrcselect::Chn6
+    }
+    #[doc = "DMA Channel 7"]
+    #[inline(always)]
+    pub fn is_chn7(&self) -> bool {
+        *self == Crcsrcselect::Chn7
+    }
+    #[doc = "DMA Channel 8"]
+    #[inline(always)]
+    pub fn is_chn8(&self) -> bool {
+        *self == Crcsrcselect::Chn8
+    }
+    #[doc = "DMA Channel 9"]
+    #[inline(always)]
+    pub fn is_chn9(&self) -> bool {
+        *self == Crcsrcselect::Chn9
+    }
+    #[doc = "DMA Channel 10"]
+    #[inline(always)]
+    pub fn is_chn10(&self) -> bool {
+        *self == Crcsrcselect::Chn10
+    }
+    #[doc = "DMA Channel 11"]
+    #[inline(always)]
+    pub fn is_chn11(&self) -> bool {
+        *self == Crcsrcselect::Chn11
+    }
+    #[doc = "DMA Channel 12"]
+    #[inline(always)]
+    pub fn is_chn12(&self) -> bool {
+        *self == Crcsrcselect::Chn12
+    }
+    #[doc = "DMA Channel 13"]
+    #[inline(always)]
+    pub fn is_chn13(&self) -> bool {
+        *self == Crcsrcselect::Chn13
+    }
+    #[doc = "DMA Channel 14"]
+    #[inline(always)]
+    pub fn is_chn14(&self) -> bool {
+        *self == Crcsrcselect::Chn14
+    }
+    #[doc = "DMA Channel 15"]
+    #[inline(always)]
+    pub fn is_chn15(&self) -> bool {
+        *self == Crcsrcselect::Chn15
+    }
+    #[doc = "DMA Channel 16"]
+    #[inline(always)]
+    pub fn is_chn16(&self) -> bool {
+        *self == Crcsrcselect::Chn16
+    }
+    #[doc = "DMA Channel 17"]
+    #[inline(always)]
+    pub fn is_chn17(&self) -> bool {
+        *self == Crcsrcselect::Chn17
+    }
+    #[doc = "DMA Channel 18"]
+    #[inline(always)]
+    pub fn is_chn18(&self) -> bool {
+        *self == Crcsrcselect::Chn18
+    }
+    #[doc = "DMA Channel 19"]
+    #[inline(always)]
+    pub fn is_chn19(&self) -> bool {
+        *self == Crcsrcselect::Chn19
+    }
+    #[doc = "DMA Channel 20"]
+    #[inline(always)]
+    pub fn is_chn20(&self) -> bool {
+        *self == Crcsrcselect::Chn20
+    }
+    #[doc = "DMA Channel 21"]
+    #[inline(always)]
+    pub fn is_chn21(&self) -> bool {
+        *self == Crcsrcselect::Chn21
+    }
+    #[doc = "DMA Channel 22"]
+    #[inline(always)]
+    pub fn is_chn22(&self) -> bool {
+        *self == Crcsrcselect::Chn22
+    }
+    #[doc = "DMA Channel 23"]
+    #[inline(always)]
+    pub fn is_chn23(&self) -> bool {
+        *self == Crcsrcselect::Chn23
+    }
+    #[doc = "DMA Channel 24"]
+    #[inline(always)]
+    pub fn is_chn24(&self) -> bool {
+        *self == Crcsrcselect::Chn24
+    }
+    #[doc = "DMA Channel 25"]
+    #[inline(always)]
+    pub fn is_chn25(&self) -> bool {
+        *self == Crcsrcselect::Chn25
+    }
+    #[doc = "DMA Channel 26"]
+    #[inline(always)]
+    pub fn is_chn26(&self) -> bool {
+        *self == Crcsrcselect::Chn26
+    }
+    #[doc = "DMA Channel 27"]
+    #[inline(always)]
+    pub fn is_chn27(&self) -> bool {
+        *self == Crcsrcselect::Chn27
+    }
+    #[doc = "DMA Channel 28"]
+    #[inline(always)]
+    pub fn is_chn28(&self) -> bool {
+        *self == Crcsrcselect::Chn28
+    }
+    #[doc = "DMA Channel 29"]
+    #[inline(always)]
+    pub fn is_chn29(&self) -> bool {
+        *self == Crcsrcselect::Chn29
+    }
+    #[doc = "DMA Channel 30"]
+    #[inline(always)]
+    pub fn is_chn30(&self) -> bool {
+        *self == Crcsrcselect::Chn30
+    }
+    #[doc = "DMA Channel 31"]
+    #[inline(always)]
+    pub fn is_chn31(&self) -> bool {
+        *self == Crcsrcselect::Chn31
     }
 }
 #[doc = "Field `CRCSRC` writer - CRC Input Source"]
@@ -193,6 +449,166 @@ where
     #[inline(always)]
     pub fn io(self) -> &'a mut crate::W<REG> {
         self.variant(Crcsrcselect::Io)
+    }
+    #[doc = "DMA Channel 0"]
+    #[inline(always)]
+    pub fn chn0(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn0)
+    }
+    #[doc = "DMA Channel 1"]
+    #[inline(always)]
+    pub fn chn1(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn1)
+    }
+    #[doc = "DMA Channel 2"]
+    #[inline(always)]
+    pub fn chn2(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn2)
+    }
+    #[doc = "DMA Channel 3"]
+    #[inline(always)]
+    pub fn chn3(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn3)
+    }
+    #[doc = "DMA Channel 4"]
+    #[inline(always)]
+    pub fn chn4(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn4)
+    }
+    #[doc = "DMA Channel 5"]
+    #[inline(always)]
+    pub fn chn5(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn5)
+    }
+    #[doc = "DMA Channel 6"]
+    #[inline(always)]
+    pub fn chn6(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn6)
+    }
+    #[doc = "DMA Channel 7"]
+    #[inline(always)]
+    pub fn chn7(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn7)
+    }
+    #[doc = "DMA Channel 8"]
+    #[inline(always)]
+    pub fn chn8(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn8)
+    }
+    #[doc = "DMA Channel 9"]
+    #[inline(always)]
+    pub fn chn9(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn9)
+    }
+    #[doc = "DMA Channel 10"]
+    #[inline(always)]
+    pub fn chn10(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn10)
+    }
+    #[doc = "DMA Channel 11"]
+    #[inline(always)]
+    pub fn chn11(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn11)
+    }
+    #[doc = "DMA Channel 12"]
+    #[inline(always)]
+    pub fn chn12(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn12)
+    }
+    #[doc = "DMA Channel 13"]
+    #[inline(always)]
+    pub fn chn13(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn13)
+    }
+    #[doc = "DMA Channel 14"]
+    #[inline(always)]
+    pub fn chn14(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn14)
+    }
+    #[doc = "DMA Channel 15"]
+    #[inline(always)]
+    pub fn chn15(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn15)
+    }
+    #[doc = "DMA Channel 16"]
+    #[inline(always)]
+    pub fn chn16(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn16)
+    }
+    #[doc = "DMA Channel 17"]
+    #[inline(always)]
+    pub fn chn17(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn17)
+    }
+    #[doc = "DMA Channel 18"]
+    #[inline(always)]
+    pub fn chn18(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn18)
+    }
+    #[doc = "DMA Channel 19"]
+    #[inline(always)]
+    pub fn chn19(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn19)
+    }
+    #[doc = "DMA Channel 20"]
+    #[inline(always)]
+    pub fn chn20(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn20)
+    }
+    #[doc = "DMA Channel 21"]
+    #[inline(always)]
+    pub fn chn21(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn21)
+    }
+    #[doc = "DMA Channel 22"]
+    #[inline(always)]
+    pub fn chn22(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn22)
+    }
+    #[doc = "DMA Channel 23"]
+    #[inline(always)]
+    pub fn chn23(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn23)
+    }
+    #[doc = "DMA Channel 24"]
+    #[inline(always)]
+    pub fn chn24(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn24)
+    }
+    #[doc = "DMA Channel 25"]
+    #[inline(always)]
+    pub fn chn25(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn25)
+    }
+    #[doc = "DMA Channel 26"]
+    #[inline(always)]
+    pub fn chn26(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn26)
+    }
+    #[doc = "DMA Channel 27"]
+    #[inline(always)]
+    pub fn chn27(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn27)
+    }
+    #[doc = "DMA Channel 28"]
+    #[inline(always)]
+    pub fn chn28(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn28)
+    }
+    #[doc = "DMA Channel 29"]
+    #[inline(always)]
+    pub fn chn29(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn29)
+    }
+    #[doc = "DMA Channel 30"]
+    #[inline(always)]
+    pub fn chn30(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn30)
+    }
+    #[doc = "DMA Channel 31"]
+    #[inline(always)]
+    pub fn chn31(self) -> &'a mut crate::W<REG> {
+        self.variant(Crcsrcselect::Chn31)
     }
 }
 #[doc = "CRC Operating Mode\n\nValue on reset: 0"]

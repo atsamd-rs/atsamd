@@ -227,10 +227,79 @@ pub type TxenW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type RxenR = crate::BitReader;
 #[doc = "Field `RXEN` writer - Receiver Enable"]
 pub type RxenW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "LIN Command\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Lincmdselect {
+    #[doc = "0: Normal USART transmission"]
+    None = 0,
+    #[doc = "1: Break field is transmitted when DATA is written"]
+    SoftwareControlTransmitCmd = 1,
+    #[doc = "2: Break, sync and identifier are automatically transmitted when DATA is written with the identifier"]
+    AutoTransmitCmd = 2,
+}
+impl From<Lincmdselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Lincmdselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Lincmdselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Lincmdselect {}
 #[doc = "Field `LINCMD` reader - LIN Command"]
-pub type LincmdR = crate::FieldReader;
+pub type LincmdR = crate::FieldReader<Lincmdselect>;
+impl LincmdR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<Lincmdselect> {
+        match self.bits {
+            0 => Some(Lincmdselect::None),
+            1 => Some(Lincmdselect::SoftwareControlTransmitCmd),
+            2 => Some(Lincmdselect::AutoTransmitCmd),
+            _ => None,
+        }
+    }
+    #[doc = "Normal USART transmission"]
+    #[inline(always)]
+    pub fn is_none(&self) -> bool {
+        *self == Lincmdselect::None
+    }
+    #[doc = "Break field is transmitted when DATA is written"]
+    #[inline(always)]
+    pub fn is_software_control_transmit_cmd(&self) -> bool {
+        *self == Lincmdselect::SoftwareControlTransmitCmd
+    }
+    #[doc = "Break, sync and identifier are automatically transmitted when DATA is written with the identifier"]
+    #[inline(always)]
+    pub fn is_auto_transmit_cmd(&self) -> bool {
+        *self == Lincmdselect::AutoTransmitCmd
+    }
+}
 #[doc = "Field `LINCMD` writer - LIN Command"]
-pub type LincmdW<'a, REG> = crate::FieldWriter<'a, REG, 2>;
+pub type LincmdW<'a, REG> = crate::FieldWriter<'a, REG, 2, Lincmdselect>;
+impl<'a, REG> LincmdW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Normal USART transmission"]
+    #[inline(always)]
+    pub fn none(self) -> &'a mut crate::W<REG> {
+        self.variant(Lincmdselect::None)
+    }
+    #[doc = "Break field is transmitted when DATA is written"]
+    #[inline(always)]
+    pub fn software_control_transmit_cmd(self) -> &'a mut crate::W<REG> {
+        self.variant(Lincmdselect::SoftwareControlTransmitCmd)
+    }
+    #[doc = "Break, sync and identifier are automatically transmitted when DATA is written with the identifier"]
+    #[inline(always)]
+    pub fn auto_transmit_cmd(self) -> &'a mut crate::W<REG> {
+        self.variant(Lincmdselect::AutoTransmitCmd)
+    }
+}
 impl R {
     #[doc = "Bits 0:2 - Character Size"]
     #[inline(always)]

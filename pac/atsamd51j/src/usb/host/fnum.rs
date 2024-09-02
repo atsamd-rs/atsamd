@@ -2,20 +2,11 @@
 pub type R = crate::R<FnumSpec>;
 #[doc = "Register `FNUM` writer"]
 pub type W = crate::W<FnumSpec>;
-#[doc = "Field `MFNUM` reader - Micro Frame Number"]
-pub type MfnumR = crate::FieldReader;
-#[doc = "Field `MFNUM` writer - Micro Frame Number"]
-pub type MfnumW<'a, REG> = crate::FieldWriter<'a, REG, 3>;
 #[doc = "Field `FNUM` reader - Frame Number"]
 pub type FnumR = crate::FieldReader<u16>;
 #[doc = "Field `FNUM` writer - Frame Number"]
 pub type FnumW<'a, REG> = crate::FieldWriter<'a, REG, 11, u16>;
 impl R {
-    #[doc = "Bits 0:2 - Micro Frame Number"]
-    #[inline(always)]
-    pub fn mfnum(&self) -> MfnumR {
-        MfnumR::new((self.bits & 7) as u8)
-    }
     #[doc = "Bits 3:13 - Frame Number"]
     #[inline(always)]
     pub fn fnum(&self) -> FnumR {
@@ -23,12 +14,6 @@ impl R {
     }
 }
 impl W {
-    #[doc = "Bits 0:2 - Micro Frame Number"]
-    #[inline(always)]
-    #[must_use]
-    pub fn mfnum(&mut self) -> MfnumW<FnumSpec> {
-        MfnumW::new(self, 0)
-    }
     #[doc = "Bits 3:13 - Frame Number"]
     #[inline(always)]
     #[must_use]

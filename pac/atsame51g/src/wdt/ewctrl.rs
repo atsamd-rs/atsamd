@@ -28,8 +28,6 @@ pub enum Ewoffsetselect {
     Cyc4096 = 9,
     #[doc = "10: 8192 clock cycles"]
     Cyc8192 = 10,
-    #[doc = "11: 16384 clock cycles"]
-    Cyc16384 = 11,
 }
 impl From<Ewoffsetselect> for u8 {
     #[inline(always)]
@@ -59,7 +57,6 @@ impl EwoffsetR {
             8 => Some(Ewoffsetselect::Cyc2048),
             9 => Some(Ewoffsetselect::Cyc4096),
             10 => Some(Ewoffsetselect::Cyc8192),
-            11 => Some(Ewoffsetselect::Cyc16384),
             _ => None,
         }
     }
@@ -117,11 +114,6 @@ impl EwoffsetR {
     #[inline(always)]
     pub fn is_cyc8192(&self) -> bool {
         *self == Ewoffsetselect::Cyc8192
-    }
-    #[doc = "16384 clock cycles"]
-    #[inline(always)]
-    pub fn is_cyc16384(&self) -> bool {
-        *self == Ewoffsetselect::Cyc16384
     }
 }
 #[doc = "Field `EWOFFSET` writer - Early Warning Interrupt Time Offset"]
@@ -185,11 +177,6 @@ where
     #[inline(always)]
     pub fn cyc8192(self) -> &'a mut crate::W<REG> {
         self.variant(Ewoffsetselect::Cyc8192)
-    }
-    #[doc = "16384 clock cycles"]
-    #[inline(always)]
-    pub fn cyc16384(self) -> &'a mut crate::W<REG> {
-        self.variant(Ewoffsetselect::Cyc16384)
     }
 }
 impl R {

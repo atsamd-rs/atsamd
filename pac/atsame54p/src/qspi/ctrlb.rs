@@ -55,10 +55,59 @@ where
         self.variant(Modeselect::Memory)
     }
 }
+#[doc = "Local Loopback Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Loopenselect {
+    #[doc = "0: Local Loopback is disabled"]
+    Disabled = 0,
+    #[doc = "1: Local Loopback is enabled"]
+    Enabled = 1,
+}
+impl From<Loopenselect> for bool {
+    #[inline(always)]
+    fn from(variant: Loopenselect) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Field `LOOPEN` reader - Local Loopback Enable"]
-pub type LoopenR = crate::BitReader;
+pub type LoopenR = crate::BitReader<Loopenselect>;
+impl LoopenR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Loopenselect {
+        match self.bits {
+            false => Loopenselect::Disabled,
+            true => Loopenselect::Enabled,
+        }
+    }
+    #[doc = "Local Loopback is disabled"]
+    #[inline(always)]
+    pub fn is_disabled(&self) -> bool {
+        *self == Loopenselect::Disabled
+    }
+    #[doc = "Local Loopback is enabled"]
+    #[inline(always)]
+    pub fn is_enabled(&self) -> bool {
+        *self == Loopenselect::Enabled
+    }
+}
 #[doc = "Field `LOOPEN` writer - Local Loopback Enable"]
-pub type LoopenW<'a, REG> = crate::BitWriter<'a, REG>;
+pub type LoopenW<'a, REG> = crate::BitWriter<'a, REG, Loopenselect>;
+impl<'a, REG> LoopenW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
+    #[doc = "Local Loopback is disabled"]
+    #[inline(always)]
+    pub fn disabled(self) -> &'a mut crate::W<REG> {
+        self.variant(Loopenselect::Disabled)
+    }
+    #[doc = "Local Loopback is enabled"]
+    #[inline(always)]
+    pub fn enabled(self) -> &'a mut crate::W<REG> {
+        self.variant(Loopenselect::Enabled)
+    }
+}
 #[doc = "Field `WDRBT` reader - Wait Data Read Before Transfer"]
 pub type WdrbtR = crate::BitReader;
 #[doc = "Field `WDRBT` writer - Wait Data Read Before Transfer"]

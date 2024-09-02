@@ -22,18 +22,10 @@ pub type Hpb3_W<'a, REG> = crate::BitWriter<'a, REG>;
 pub type Dsu_R = crate::BitReader;
 #[doc = "Field `DSU_` writer - DSU AHB Clock Mask"]
 pub type Dsu_W<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `HMATRIX_` reader - HMATRIX AHB Clock Mask"]
-pub type Hmatrix_R = crate::BitReader;
-#[doc = "Field `HMATRIX_` writer - HMATRIX AHB Clock Mask"]
-pub type Hmatrix_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `NVMCTRL_` reader - NVMCTRL AHB Clock Mask"]
 pub type Nvmctrl_R = crate::BitReader;
 #[doc = "Field `NVMCTRL_` writer - NVMCTRL AHB Clock Mask"]
 pub type Nvmctrl_W<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `HSRAM_` reader - HSRAM AHB Clock Mask"]
-pub type Hsram_R = crate::BitReader;
-#[doc = "Field `HSRAM_` writer - HSRAM AHB Clock Mask"]
-pub type Hsram_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CMCC_` reader - CMCC AHB Clock Mask"]
 pub type Cmcc_R = crate::BitReader;
 #[doc = "Field `CMCC_` writer - CMCC AHB Clock Mask"]
@@ -46,10 +38,6 @@ pub type Dmac_W<'a, REG> = crate::BitWriter<'a, REG>;
 pub type Usb_R = crate::BitReader;
 #[doc = "Field `USB_` writer - USB AHB Clock Mask"]
 pub type Usb_W<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `BKUPRAM_` reader - BKUPRAM AHB Clock Mask"]
-pub type Bkupram_R = crate::BitReader;
-#[doc = "Field `BKUPRAM_` writer - BKUPRAM AHB Clock Mask"]
-pub type Bkupram_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PAC_` reader - PAC AHB Clock Mask"]
 pub type Pac_R = crate::BitReader;
 #[doc = "Field `PAC_` writer - PAC AHB Clock Mask"]
@@ -112,20 +100,10 @@ impl R {
     pub fn dsu_(&self) -> Dsu_R {
         Dsu_R::new(((self.bits >> 4) & 1) != 0)
     }
-    #[doc = "Bit 5 - HMATRIX AHB Clock Mask"]
-    #[inline(always)]
-    pub fn hmatrix_(&self) -> Hmatrix_R {
-        Hmatrix_R::new(((self.bits >> 5) & 1) != 0)
-    }
     #[doc = "Bit 6 - NVMCTRL AHB Clock Mask"]
     #[inline(always)]
     pub fn nvmctrl_(&self) -> Nvmctrl_R {
         Nvmctrl_R::new(((self.bits >> 6) & 1) != 0)
-    }
-    #[doc = "Bit 7 - HSRAM AHB Clock Mask"]
-    #[inline(always)]
-    pub fn hsram_(&self) -> Hsram_R {
-        Hsram_R::new(((self.bits >> 7) & 1) != 0)
     }
     #[doc = "Bit 8 - CMCC AHB Clock Mask"]
     #[inline(always)]
@@ -141,11 +119,6 @@ impl R {
     #[inline(always)]
     pub fn usb_(&self) -> Usb_R {
         Usb_R::new(((self.bits >> 10) & 1) != 0)
-    }
-    #[doc = "Bit 11 - BKUPRAM AHB Clock Mask"]
-    #[inline(always)]
-    pub fn bkupram_(&self) -> Bkupram_R {
-        Bkupram_R::new(((self.bits >> 11) & 1) != 0)
     }
     #[doc = "Bit 12 - PAC AHB Clock Mask"]
     #[inline(always)]
@@ -224,23 +197,11 @@ impl W {
     pub fn dsu_(&mut self) -> Dsu_W<AhbmaskSpec> {
         Dsu_W::new(self, 4)
     }
-    #[doc = "Bit 5 - HMATRIX AHB Clock Mask"]
-    #[inline(always)]
-    #[must_use]
-    pub fn hmatrix_(&mut self) -> Hmatrix_W<AhbmaskSpec> {
-        Hmatrix_W::new(self, 5)
-    }
     #[doc = "Bit 6 - NVMCTRL AHB Clock Mask"]
     #[inline(always)]
     #[must_use]
     pub fn nvmctrl_(&mut self) -> Nvmctrl_W<AhbmaskSpec> {
         Nvmctrl_W::new(self, 6)
-    }
-    #[doc = "Bit 7 - HSRAM AHB Clock Mask"]
-    #[inline(always)]
-    #[must_use]
-    pub fn hsram_(&mut self) -> Hsram_W<AhbmaskSpec> {
-        Hsram_W::new(self, 7)
     }
     #[doc = "Bit 8 - CMCC AHB Clock Mask"]
     #[inline(always)]
@@ -259,12 +220,6 @@ impl W {
     #[must_use]
     pub fn usb_(&mut self) -> Usb_W<AhbmaskSpec> {
         Usb_W::new(self, 10)
-    }
-    #[doc = "Bit 11 - BKUPRAM AHB Clock Mask"]
-    #[inline(always)]
-    #[must_use]
-    pub fn bkupram_(&mut self) -> Bkupram_W<AhbmaskSpec> {
-        Bkupram_W::new(self, 11)
     }
     #[doc = "Bit 12 - PAC AHB Clock Mask"]
     #[inline(always)]

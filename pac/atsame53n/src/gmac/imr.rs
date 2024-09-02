@@ -46,6 +46,8 @@ pub type PdrqftR = crate::BitReader;
 pub type PdrsftR = crate::BitReader;
 #[doc = "Field `SRI` reader - TSU Seconds Register Increment"]
 pub type SriR = crate::BitReader;
+#[doc = "Field `RXLPISBC` reader - Enable RX LPI Indication"]
+pub type RxlpisbcR = crate::BitReader;
 #[doc = "Field `WOL` reader - Wake On Lan"]
 pub type WolR = crate::BitReader;
 #[doc = "Field `TSUCMP` reader - Tsu timer comparison"]
@@ -165,6 +167,11 @@ impl R {
     #[inline(always)]
     pub fn sri(&self) -> SriR {
         SriR::new(((self.bits >> 26) & 1) != 0)
+    }
+    #[doc = "Bit 27 - Enable RX LPI Indication"]
+    #[inline(always)]
+    pub fn rxlpisbc(&self) -> RxlpisbcR {
+        RxlpisbcR::new(((self.bits >> 27) & 1) != 0)
     }
     #[doc = "Bit 28 - Wake On Lan"]
     #[inline(always)]

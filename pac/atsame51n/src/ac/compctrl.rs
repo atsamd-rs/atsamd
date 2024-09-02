@@ -396,12 +396,14 @@ pub type HystenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Hystselect {
-    #[doc = "0: 50mV"]
-    Hyst50 = 0,
-    #[doc = "1: 100mV"]
-    Hyst100 = 1,
-    #[doc = "2: 150mV"]
-    Hyst150 = 2,
+    #[doc = "0: 25mV"]
+    Hyst25 = 0,
+    #[doc = "1: 50mV"]
+    Hyst50 = 1,
+    #[doc = "2: 75mV"]
+    Hyst75 = 2,
+    #[doc = "3: 100mV"]
+    Hyst100 = 3,
 }
 impl From<Hystselect> for u8 {
     #[inline(always)]
@@ -418,51 +420,62 @@ pub type HystR = crate::FieldReader<Hystselect>;
 impl HystR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<Hystselect> {
+    pub const fn variant(&self) -> Hystselect {
         match self.bits {
-            0 => Some(Hystselect::Hyst50),
-            1 => Some(Hystselect::Hyst100),
-            2 => Some(Hystselect::Hyst150),
-            _ => None,
+            0 => Hystselect::Hyst25,
+            1 => Hystselect::Hyst50,
+            2 => Hystselect::Hyst75,
+            3 => Hystselect::Hyst100,
+            _ => unreachable!(),
         }
+    }
+    #[doc = "25mV"]
+    #[inline(always)]
+    pub fn is_hyst25(&self) -> bool {
+        *self == Hystselect::Hyst25
     }
     #[doc = "50mV"]
     #[inline(always)]
     pub fn is_hyst50(&self) -> bool {
         *self == Hystselect::Hyst50
     }
+    #[doc = "75mV"]
+    #[inline(always)]
+    pub fn is_hyst75(&self) -> bool {
+        *self == Hystselect::Hyst75
+    }
     #[doc = "100mV"]
     #[inline(always)]
     pub fn is_hyst100(&self) -> bool {
         *self == Hystselect::Hyst100
     }
-    #[doc = "150mV"]
-    #[inline(always)]
-    pub fn is_hyst150(&self) -> bool {
-        *self == Hystselect::Hyst150
-    }
 }
 #[doc = "Field `HYST` writer - Hysteresis Level"]
-pub type HystW<'a, REG> = crate::FieldWriter<'a, REG, 2, Hystselect>;
+pub type HystW<'a, REG> = crate::FieldWriter<'a, REG, 2, Hystselect, crate::Safe>;
 impl<'a, REG> HystW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
 {
+    #[doc = "25mV"]
+    #[inline(always)]
+    pub fn hyst25(self) -> &'a mut crate::W<REG> {
+        self.variant(Hystselect::Hyst25)
+    }
     #[doc = "50mV"]
     #[inline(always)]
     pub fn hyst50(self) -> &'a mut crate::W<REG> {
         self.variant(Hystselect::Hyst50)
     }
+    #[doc = "75mV"]
+    #[inline(always)]
+    pub fn hyst75(self) -> &'a mut crate::W<REG> {
+        self.variant(Hystselect::Hyst75)
+    }
     #[doc = "100mV"]
     #[inline(always)]
     pub fn hyst100(self) -> &'a mut crate::W<REG> {
         self.variant(Hystselect::Hyst100)
-    }
-    #[doc = "150mV"]
-    #[inline(always)]
-    pub fn hyst150(self) -> &'a mut crate::W<REG> {
-        self.variant(Hystselect::Hyst150)
     }
 }
 #[doc = "Filter Length\n\nValue on reset: 0"]

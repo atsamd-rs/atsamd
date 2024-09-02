@@ -6,10 +6,79 @@ pub type W = crate::W<MrSpec>;
 pub type PcenR = crate::BitReader;
 #[doc = "Field `PCEN` writer - Parallel Capture Enable"]
 pub type PcenW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Data size\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Dsizeselect {
+    #[doc = "0: 1 data is read in the PCC_RHR"]
+    _1data = 0,
+    #[doc = "1: 2 data is read in the PCC_RHR"]
+    _2data = 1,
+    #[doc = "2: 4 data are read in the PCC_RHR (only for 8 bits data size, ISIZE = 0)"]
+    _4data = 2,
+}
+impl From<Dsizeselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Dsizeselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Dsizeselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Dsizeselect {}
 #[doc = "Field `DSIZE` reader - Data size"]
-pub type DsizeR = crate::FieldReader;
+pub type DsizeR = crate::FieldReader<Dsizeselect>;
+impl DsizeR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<Dsizeselect> {
+        match self.bits {
+            0 => Some(Dsizeselect::_1data),
+            1 => Some(Dsizeselect::_2data),
+            2 => Some(Dsizeselect::_4data),
+            _ => None,
+        }
+    }
+    #[doc = "1 data is read in the PCC_RHR"]
+    #[inline(always)]
+    pub fn is_1data(&self) -> bool {
+        *self == Dsizeselect::_1data
+    }
+    #[doc = "2 data is read in the PCC_RHR"]
+    #[inline(always)]
+    pub fn is_2data(&self) -> bool {
+        *self == Dsizeselect::_2data
+    }
+    #[doc = "4 data are read in the PCC_RHR (only for 8 bits data size, ISIZE = 0)"]
+    #[inline(always)]
+    pub fn is_4data(&self) -> bool {
+        *self == Dsizeselect::_4data
+    }
+}
 #[doc = "Field `DSIZE` writer - Data size"]
-pub type DsizeW<'a, REG> = crate::FieldWriter<'a, REG, 2>;
+pub type DsizeW<'a, REG> = crate::FieldWriter<'a, REG, 2, Dsizeselect>;
+impl<'a, REG> DsizeW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "1 data is read in the PCC_RHR"]
+    #[inline(always)]
+    pub fn _1data(self) -> &'a mut crate::W<REG> {
+        self.variant(Dsizeselect::_1data)
+    }
+    #[doc = "2 data is read in the PCC_RHR"]
+    #[inline(always)]
+    pub fn _2data(self) -> &'a mut crate::W<REG> {
+        self.variant(Dsizeselect::_2data)
+    }
+    #[doc = "4 data are read in the PCC_RHR (only for 8 bits data size, ISIZE = 0)"]
+    #[inline(always)]
+    pub fn _4data(self) -> &'a mut crate::W<REG> {
+        self.variant(Dsizeselect::_4data)
+    }
+}
 #[doc = "Field `SCALE` reader - Scale data"]
 pub type ScaleR = crate::BitReader;
 #[doc = "Field `SCALE` writer - Scale data"]
@@ -26,10 +95,92 @@ pub type HalfsW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type FrstsR = crate::BitReader;
 #[doc = "Field `FRSTS` writer - First sample"]
 pub type FrstsW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Input Data Size\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Isizeselect {
+    #[doc = "0: Input data bus size is 8 bits"]
+    _8bits = 0,
+    #[doc = "1: Input data bus size is 10 bits"]
+    _10bits = 1,
+    #[doc = "2: Input data bus size is 12 bits"]
+    _12bits = 2,
+    #[doc = "3: Input data bus size is 14 bits"]
+    _14bits = 3,
+}
+impl From<Isizeselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Isizeselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Isizeselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Isizeselect {}
 #[doc = "Field `ISIZE` reader - Input Data Size"]
-pub type IsizeR = crate::FieldReader;
+pub type IsizeR = crate::FieldReader<Isizeselect>;
+impl IsizeR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<Isizeselect> {
+        match self.bits {
+            0 => Some(Isizeselect::_8bits),
+            1 => Some(Isizeselect::_10bits),
+            2 => Some(Isizeselect::_12bits),
+            3 => Some(Isizeselect::_14bits),
+            _ => None,
+        }
+    }
+    #[doc = "Input data bus size is 8 bits"]
+    #[inline(always)]
+    pub fn is_8bits(&self) -> bool {
+        *self == Isizeselect::_8bits
+    }
+    #[doc = "Input data bus size is 10 bits"]
+    #[inline(always)]
+    pub fn is_10bits(&self) -> bool {
+        *self == Isizeselect::_10bits
+    }
+    #[doc = "Input data bus size is 12 bits"]
+    #[inline(always)]
+    pub fn is_12bits(&self) -> bool {
+        *self == Isizeselect::_12bits
+    }
+    #[doc = "Input data bus size is 14 bits"]
+    #[inline(always)]
+    pub fn is_14bits(&self) -> bool {
+        *self == Isizeselect::_14bits
+    }
+}
 #[doc = "Field `ISIZE` writer - Input Data Size"]
-pub type IsizeW<'a, REG> = crate::FieldWriter<'a, REG, 3>;
+pub type IsizeW<'a, REG> = crate::FieldWriter<'a, REG, 3, Isizeselect>;
+impl<'a, REG> IsizeW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Input data bus size is 8 bits"]
+    #[inline(always)]
+    pub fn _8bits(self) -> &'a mut crate::W<REG> {
+        self.variant(Isizeselect::_8bits)
+    }
+    #[doc = "Input data bus size is 10 bits"]
+    #[inline(always)]
+    pub fn _10bits(self) -> &'a mut crate::W<REG> {
+        self.variant(Isizeselect::_10bits)
+    }
+    #[doc = "Input data bus size is 12 bits"]
+    #[inline(always)]
+    pub fn _12bits(self) -> &'a mut crate::W<REG> {
+        self.variant(Isizeselect::_12bits)
+    }
+    #[doc = "Input data bus size is 14 bits"]
+    #[inline(always)]
+    pub fn _14bits(self) -> &'a mut crate::W<REG> {
+        self.variant(Isizeselect::_14bits)
+    }
+}
 #[doc = "Field `CID` reader - Clear If Disabled"]
 pub type CidR = crate::FieldReader;
 #[doc = "Field `CID` writer - Clear If Disabled"]

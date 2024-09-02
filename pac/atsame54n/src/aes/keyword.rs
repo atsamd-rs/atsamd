@@ -1,11 +1,15 @@
 #[doc = "Register `KEYWORD[%s]` writer"]
 pub type W = crate::W<KeywordSpec>;
-impl core::fmt::Debug for crate::generic::Reg<KeywordSpec> {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "(not readable)")
+#[doc = "Field `KEYWORD` writer - Key Word Value"]
+pub type KeywordW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
+impl W {
+    #[doc = "Bits 0:31 - Key Word Value"]
+    #[inline(always)]
+    #[must_use]
+    pub fn keyword(&mut self) -> KeywordW<KeywordSpec> {
+        KeywordW::new(self, 0)
     }
 }
-impl W {}
 #[doc = "Keyword n\n\nYou can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`keyword::W`](W). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct KeywordSpec;
 impl crate::RegisterSpec for KeywordSpec {

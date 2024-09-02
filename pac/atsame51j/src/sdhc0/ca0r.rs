@@ -110,10 +110,6 @@ impl BaseclkfR {
 pub enum Maxblklselect {
     #[doc = "0: 512 bytes"]
     _512 = 0,
-    #[doc = "1: 1024 bytes"]
-    _1024 = 1,
-    #[doc = "2: 2048 bytes"]
-    _2048 = 2,
 }
 impl From<Maxblklselect> for u8 {
     #[inline(always)]
@@ -133,8 +129,6 @@ impl MaxblklR {
     pub const fn variant(&self) -> Option<Maxblklselect> {
         match self.bits {
             0 => Some(Maxblklselect::_512),
-            1 => Some(Maxblklselect::_1024),
-            2 => Some(Maxblklselect::_2048),
             _ => None,
         }
     }
@@ -142,16 +136,6 @@ impl MaxblklR {
     #[inline(always)]
     pub fn is_512(&self) -> bool {
         *self == Maxblklselect::_512
-    }
-    #[doc = "1024 bytes"]
-    #[inline(always)]
-    pub fn is_1024(&self) -> bool {
-        *self == Maxblklselect::_1024
-    }
-    #[doc = "2048 bytes"]
-    #[inline(always)]
-    pub fn is_2048(&self) -> bool {
-        *self == Maxblklselect::_2048
     }
 }
 #[doc = "8-bit Support for Embedded Device\n\nValue on reset: 0"]

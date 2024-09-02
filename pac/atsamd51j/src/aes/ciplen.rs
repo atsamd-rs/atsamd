@@ -2,12 +2,25 @@
 pub type R = crate::R<CiplenSpec>;
 #[doc = "Register `CIPLEN` writer"]
 pub type W = crate::W<CiplenSpec>;
-impl core::fmt::Debug for R {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(f, "{}", self.bits())
+#[doc = "Field `CIPLEN` reader - Cipher Length"]
+pub type CiplenR = crate::FieldReader<u32>;
+#[doc = "Field `CIPLEN` writer - Cipher Length"]
+pub type CiplenW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
+impl R {
+    #[doc = "Bits 0:31 - Cipher Length"]
+    #[inline(always)]
+    pub fn ciplen(&self) -> CiplenR {
+        CiplenR::new(self.bits)
     }
 }
-impl W {}
+impl W {
+    #[doc = "Bits 0:31 - Cipher Length"]
+    #[inline(always)]
+    #[must_use]
+    pub fn ciplen(&mut self) -> CiplenW<CiplenSpec> {
+        CiplenW::new(self, 0)
+    }
+}
 #[doc = "Cipher Length\n\nYou can [`read`](crate::Reg::read) this register and get [`ciplen::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ciplen::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct CiplenSpec;
 impl crate::RegisterSpec for CiplenSpec {

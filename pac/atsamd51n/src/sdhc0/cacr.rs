@@ -6,10 +6,53 @@ pub type W = crate::W<CacrSpec>;
 pub type CapwrenR = crate::BitReader;
 #[doc = "Field `CAPWREN` writer - Capabilities Registers Write Enable (Required to write the correct frequencies in the Capabilities Registers)"]
 pub type CapwrenW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Key (0x46)\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Keyselect {
+    #[doc = "70: Key"]
+    Key = 70,
+}
+impl From<Keyselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Keyselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Keyselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Keyselect {}
 #[doc = "Field `KEY` reader - Key (0x46)"]
-pub type KeyR = crate::FieldReader;
+pub type KeyR = crate::FieldReader<Keyselect>;
+impl KeyR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<Keyselect> {
+        match self.bits {
+            70 => Some(Keyselect::Key),
+            _ => None,
+        }
+    }
+    #[doc = "Key"]
+    #[inline(always)]
+    pub fn is_key(&self) -> bool {
+        *self == Keyselect::Key
+    }
+}
 #[doc = "Field `KEY` writer - Key (0x46)"]
-pub type KeyW<'a, REG> = crate::FieldWriter<'a, REG, 8>;
+pub type KeyW<'a, REG> = crate::FieldWriter<'a, REG, 8, Keyselect>;
+impl<'a, REG> KeyW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "Key"]
+    #[inline(always)]
+    pub fn key(self) -> &'a mut crate::W<REG> {
+        self.variant(Keyselect::Key)
+    }
+}
 impl R {
     #[doc = "Bit 0 - Capabilities Registers Write Enable (Required to write the correct frequencies in the Capabilities Registers)"]
     #[inline(always)]

@@ -90,6 +90,10 @@ pub type PdrsftW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type SriR = crate::BitReader;
 #[doc = "Field `SRI` writer - TSU Seconds Register Increment"]
 pub type SriW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Field `RXLPISBC` reader - Enable RX LPI Indication"]
+pub type RxlpisbcR = crate::BitReader;
+#[doc = "Field `RXLPISBC` writer - Enable RX LPI Indication"]
+pub type RxlpisbcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WOL` reader - Wake On LAN"]
 pub type WolR = crate::BitReader;
 #[doc = "Field `WOL` writer - Wake On LAN"]
@@ -208,6 +212,11 @@ impl R {
     #[inline(always)]
     pub fn sri(&self) -> SriR {
         SriR::new(((self.bits >> 26) & 1) != 0)
+    }
+    #[doc = "Bit 27 - Enable RX LPI Indication"]
+    #[inline(always)]
+    pub fn rxlpisbc(&self) -> RxlpisbcR {
+        RxlpisbcR::new(((self.bits >> 27) & 1) != 0)
     }
     #[doc = "Bit 28 - Wake On LAN"]
     #[inline(always)]
@@ -352,6 +361,12 @@ impl W {
     #[must_use]
     pub fn sri(&mut self) -> SriW<IsrSpec> {
         SriW::new(self, 26)
+    }
+    #[doc = "Bit 27 - Enable RX LPI Indication"]
+    #[inline(always)]
+    #[must_use]
+    pub fn rxlpisbc(&mut self) -> RxlpisbcW<IsrSpec> {
+        RxlpisbcW::new(self, 27)
     }
     #[doc = "Bit 28 - Wake On LAN"]
     #[inline(always)]

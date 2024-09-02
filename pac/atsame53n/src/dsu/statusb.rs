@@ -12,10 +12,6 @@ pub type Dccd1R = crate::BitReader;
 pub type HpeR = crate::BitReader;
 #[doc = "Field `CELCK` reader - Chip Erase Locked"]
 pub type CelckR = crate::BitReader;
-#[doc = "Field `TDCCD0` reader - Test Debug Communication Channel 0 Dirty"]
-pub type Tdccd0R = crate::BitReader;
-#[doc = "Field `TDCCD1` reader - Test Debug Communication Channel 1 Dirty"]
-pub type Tdccd1R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Protected"]
     #[inline(always)]
@@ -46,16 +42,6 @@ impl R {
     #[inline(always)]
     pub fn celck(&self) -> CelckR {
         CelckR::new(((self.bits >> 5) & 1) != 0)
-    }
-    #[doc = "Bit 6 - Test Debug Communication Channel 0 Dirty"]
-    #[inline(always)]
-    pub fn tdccd0(&self) -> Tdccd0R {
-        Tdccd0R::new(((self.bits >> 6) & 1) != 0)
-    }
-    #[doc = "Bit 7 - Test Debug Communication Channel 1 Dirty"]
-    #[inline(always)]
-    pub fn tdccd1(&self) -> Tdccd1R {
-        Tdccd1R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 #[doc = "Status B\n\nYou can [`read`](crate::Reg::read) this register and get [`statusb::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]

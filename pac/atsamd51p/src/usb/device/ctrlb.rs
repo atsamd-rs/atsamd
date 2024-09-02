@@ -18,10 +18,6 @@ pub enum Spdconfselect {
     Fs = 0,
     #[doc = "1: LS : Low Speed"]
     Ls = 1,
-    #[doc = "2: HS : High Speed capable"]
-    Hs = 2,
-    #[doc = "3: HSTM: High Speed Test Mode (force high-speed mode for test mode)"]
-    Hstm = 3,
 }
 impl From<Spdconfselect> for u8 {
     #[inline(always)]
@@ -38,13 +34,11 @@ pub type SpdconfR = crate::FieldReader<Spdconfselect>;
 impl SpdconfR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Spdconfselect {
+    pub const fn variant(&self) -> Option<Spdconfselect> {
         match self.bits {
-            0 => Spdconfselect::Fs,
-            1 => Spdconfselect::Ls,
-            2 => Spdconfselect::Hs,
-            3 => Spdconfselect::Hstm,
-            _ => unreachable!(),
+            0 => Some(Spdconfselect::Fs),
+            1 => Some(Spdconfselect::Ls),
+            _ => None,
         }
     }
     #[doc = "FS : Full Speed"]
@@ -57,19 +51,9 @@ impl SpdconfR {
     pub fn is_ls(&self) -> bool {
         *self == Spdconfselect::Ls
     }
-    #[doc = "HS : High Speed capable"]
-    #[inline(always)]
-    pub fn is_hs(&self) -> bool {
-        *self == Spdconfselect::Hs
-    }
-    #[doc = "HSTM: High Speed Test Mode (force high-speed mode for test mode)"]
-    #[inline(always)]
-    pub fn is_hstm(&self) -> bool {
-        *self == Spdconfselect::Hstm
-    }
 }
 #[doc = "Field `SPDCONF` writer - Speed Configuration"]
-pub type SpdconfW<'a, REG> = crate::FieldWriter<'a, REG, 2, Spdconfselect, crate::Safe>;
+pub type SpdconfW<'a, REG> = crate::FieldWriter<'a, REG, 2, Spdconfselect>;
 impl<'a, REG> SpdconfW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
@@ -85,37 +69,11 @@ where
     pub fn ls(self) -> &'a mut crate::W<REG> {
         self.variant(Spdconfselect::Ls)
     }
-    #[doc = "HS : High Speed capable"]
-    #[inline(always)]
-    pub fn hs(self) -> &'a mut crate::W<REG> {
-        self.variant(Spdconfselect::Hs)
-    }
-    #[doc = "HSTM: High Speed Test Mode (force high-speed mode for test mode)"]
-    #[inline(always)]
-    pub fn hstm(self) -> &'a mut crate::W<REG> {
-        self.variant(Spdconfselect::Hstm)
-    }
 }
 #[doc = "Field `NREPLY` reader - No Reply"]
 pub type NreplyR = crate::BitReader;
 #[doc = "Field `NREPLY` writer - No Reply"]
 pub type NreplyW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `TSTJ` reader - Test mode J"]
-pub type TstjR = crate::BitReader;
-#[doc = "Field `TSTJ` writer - Test mode J"]
-pub type TstjW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `TSTK` reader - Test mode K"]
-pub type TstkR = crate::BitReader;
-#[doc = "Field `TSTK` writer - Test mode K"]
-pub type TstkW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `TSTPCKT` reader - Test packet mode"]
-pub type TstpcktR = crate::BitReader;
-#[doc = "Field `TSTPCKT` writer - Test packet mode"]
-pub type TstpcktW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `OPMODE2` reader - Specific Operational Mode"]
-pub type Opmode2R = crate::BitReader;
-#[doc = "Field `OPMODE2` writer - Specific Operational Mode"]
-pub type Opmode2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `GNAK` reader - Global NAK"]
 pub type GnakR = crate::BitReader;
 #[doc = "Field `GNAK` writer - Global NAK"]
@@ -130,8 +88,6 @@ pub enum Lpmhdskselect {
     Ack = 1,
     #[doc = "2: NYET"]
     Nyet = 2,
-    #[doc = "3: STALL"]
-    Stall = 3,
 }
 impl From<Lpmhdskselect> for u8 {
     #[inline(always)]
@@ -148,13 +104,12 @@ pub type LpmhdskR = crate::FieldReader<Lpmhdskselect>;
 impl LpmhdskR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Lpmhdskselect {
+    pub const fn variant(&self) -> Option<Lpmhdskselect> {
         match self.bits {
-            0 => Lpmhdskselect::No,
-            1 => Lpmhdskselect::Ack,
-            2 => Lpmhdskselect::Nyet,
-            3 => Lpmhdskselect::Stall,
-            _ => unreachable!(),
+            0 => Some(Lpmhdskselect::No),
+            1 => Some(Lpmhdskselect::Ack),
+            2 => Some(Lpmhdskselect::Nyet),
+            _ => None,
         }
     }
     #[doc = "No handshake. LPM is not supported"]
@@ -172,14 +127,9 @@ impl LpmhdskR {
     pub fn is_nyet(&self) -> bool {
         *self == Lpmhdskselect::Nyet
     }
-    #[doc = "STALL"]
-    #[inline(always)]
-    pub fn is_stall(&self) -> bool {
-        *self == Lpmhdskselect::Stall
-    }
 }
 #[doc = "Field `LPMHDSK` writer - Link Power Management Handshake"]
-pub type LpmhdskW<'a, REG> = crate::FieldWriter<'a, REG, 2, Lpmhdskselect, crate::Safe>;
+pub type LpmhdskW<'a, REG> = crate::FieldWriter<'a, REG, 2, Lpmhdskselect>;
 impl<'a, REG> LpmhdskW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
@@ -199,11 +149,6 @@ where
     #[inline(always)]
     pub fn nyet(self) -> &'a mut crate::W<REG> {
         self.variant(Lpmhdskselect::Nyet)
-    }
-    #[doc = "STALL"]
-    #[inline(always)]
-    pub fn stall(self) -> &'a mut crate::W<REG> {
-        self.variant(Lpmhdskselect::Stall)
     }
 }
 impl R {
@@ -226,26 +171,6 @@ impl R {
     #[inline(always)]
     pub fn nreply(&self) -> NreplyR {
         NreplyR::new(((self.bits >> 4) & 1) != 0)
-    }
-    #[doc = "Bit 5 - Test mode J"]
-    #[inline(always)]
-    pub fn tstj(&self) -> TstjR {
-        TstjR::new(((self.bits >> 5) & 1) != 0)
-    }
-    #[doc = "Bit 6 - Test mode K"]
-    #[inline(always)]
-    pub fn tstk(&self) -> TstkR {
-        TstkR::new(((self.bits >> 6) & 1) != 0)
-    }
-    #[doc = "Bit 7 - Test packet mode"]
-    #[inline(always)]
-    pub fn tstpckt(&self) -> TstpcktR {
-        TstpcktR::new(((self.bits >> 7) & 1) != 0)
-    }
-    #[doc = "Bit 8 - Specific Operational Mode"]
-    #[inline(always)]
-    pub fn opmode2(&self) -> Opmode2R {
-        Opmode2R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Global NAK"]
     #[inline(always)]
@@ -282,30 +207,6 @@ impl W {
     #[must_use]
     pub fn nreply(&mut self) -> NreplyW<CtrlbSpec> {
         NreplyW::new(self, 4)
-    }
-    #[doc = "Bit 5 - Test mode J"]
-    #[inline(always)]
-    #[must_use]
-    pub fn tstj(&mut self) -> TstjW<CtrlbSpec> {
-        TstjW::new(self, 5)
-    }
-    #[doc = "Bit 6 - Test mode K"]
-    #[inline(always)]
-    #[must_use]
-    pub fn tstk(&mut self) -> TstkW<CtrlbSpec> {
-        TstkW::new(self, 6)
-    }
-    #[doc = "Bit 7 - Test packet mode"]
-    #[inline(always)]
-    #[must_use]
-    pub fn tstpckt(&mut self) -> TstpcktW<CtrlbSpec> {
-        TstpcktW::new(self, 7)
-    }
-    #[doc = "Bit 8 - Specific Operational Mode"]
-    #[inline(always)]
-    #[must_use]
-    pub fn opmode2(&mut self) -> Opmode2W<CtrlbSpec> {
-        Opmode2W::new(self, 8)
     }
     #[doc = "Bit 9 - Global NAK"]
     #[inline(always)]

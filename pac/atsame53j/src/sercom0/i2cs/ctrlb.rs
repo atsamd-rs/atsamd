@@ -14,10 +14,79 @@ pub type GcmdW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type AackenR = crate::BitReader;
 #[doc = "Field `AACKEN` writer - Automatic Address Acknowledge"]
 pub type AackenW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Address Mode\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Amodeselect {
+    #[doc = "0: I2C Address mask"]
+    Mask = 0,
+    #[doc = "1: Two unique Addressess"]
+    _2Addresses = 1,
+    #[doc = "2: Address Range"]
+    Range = 2,
+}
+impl From<Amodeselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Amodeselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Amodeselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Amodeselect {}
 #[doc = "Field `AMODE` reader - Address Mode"]
-pub type AmodeR = crate::FieldReader;
+pub type AmodeR = crate::FieldReader<Amodeselect>;
+impl AmodeR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<Amodeselect> {
+        match self.bits {
+            0 => Some(Amodeselect::Mask),
+            1 => Some(Amodeselect::_2Addresses),
+            2 => Some(Amodeselect::Range),
+            _ => None,
+        }
+    }
+    #[doc = "I2C Address mask"]
+    #[inline(always)]
+    pub fn is_mask(&self) -> bool {
+        *self == Amodeselect::Mask
+    }
+    #[doc = "Two unique Addressess"]
+    #[inline(always)]
+    pub fn is_2_addresses(&self) -> bool {
+        *self == Amodeselect::_2Addresses
+    }
+    #[doc = "Address Range"]
+    #[inline(always)]
+    pub fn is_range(&self) -> bool {
+        *self == Amodeselect::Range
+    }
+}
 #[doc = "Field `AMODE` writer - Address Mode"]
-pub type AmodeW<'a, REG> = crate::FieldWriter<'a, REG, 2>;
+pub type AmodeW<'a, REG> = crate::FieldWriter<'a, REG, 2, Amodeselect>;
+impl<'a, REG> AmodeW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "I2C Address mask"]
+    #[inline(always)]
+    pub fn mask(self) -> &'a mut crate::W<REG> {
+        self.variant(Amodeselect::Mask)
+    }
+    #[doc = "Two unique Addressess"]
+    #[inline(always)]
+    pub fn _2_addresses(self) -> &'a mut crate::W<REG> {
+        self.variant(Amodeselect::_2Addresses)
+    }
+    #[doc = "Address Range"]
+    #[inline(always)]
+    pub fn range(self) -> &'a mut crate::W<REG> {
+        self.variant(Amodeselect::Range)
+    }
+}
 #[doc = "Field `CMD` reader - Command"]
 pub type CmdR = crate::FieldReader;
 #[doc = "Field `CMD` writer - Command"]

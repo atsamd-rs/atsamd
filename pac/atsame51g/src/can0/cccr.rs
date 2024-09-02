@@ -54,10 +54,6 @@ pub type EfbiW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type TxpR = crate::BitReader;
 #[doc = "Field `TXP` writer - Transmit Pause"]
 pub type TxpW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `NISO` reader - Non ISO Operation"]
-pub type NisoR = crate::BitReader;
-#[doc = "Field `NISO` writer - Non ISO Operation"]
-pub type NisoW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Initialization"]
     #[inline(always)]
@@ -123,11 +119,6 @@ impl R {
     #[inline(always)]
     pub fn txp(&self) -> TxpR {
         TxpR::new(((self.bits >> 14) & 1) != 0)
-    }
-    #[doc = "Bit 15 - Non ISO Operation"]
-    #[inline(always)]
-    pub fn niso(&self) -> NisoR {
-        NisoR::new(((self.bits >> 15) & 1) != 0)
     }
 }
 impl W {
@@ -208,12 +199,6 @@ impl W {
     #[must_use]
     pub fn txp(&mut self) -> TxpW<CccrSpec> {
         TxpW::new(self, 14)
-    }
-    #[doc = "Bit 15 - Non ISO Operation"]
-    #[inline(always)]
-    #[must_use]
-    pub fn niso(&mut self) -> NisoW<CccrSpec> {
-        NisoW::new(self, 15)
     }
 }
 #[doc = "CC Control\n\nYou can [`read`](crate::Reg::read) this register and get [`cccr::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cccr::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]

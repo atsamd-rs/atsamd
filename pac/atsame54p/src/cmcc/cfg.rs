@@ -20,14 +20,6 @@ pub enum Csizeswselect {
     ConfCsize2kb = 1,
     #[doc = "2: The Cache Size is configured to 4KB"]
     ConfCsize4kb = 2,
-    #[doc = "3: The Cache Size is configured to 8KB"]
-    ConfCsize8kb = 3,
-    #[doc = "4: The Cache Size is configured to 16KB"]
-    ConfCsize16kb = 4,
-    #[doc = "5: The Cache Size is configured to 32KB"]
-    ConfCsize32kb = 5,
-    #[doc = "6: The Cache Size is configured to 64KB"]
-    ConfCsize64kb = 6,
 }
 impl From<Csizeswselect> for u8 {
     #[inline(always)]
@@ -49,10 +41,6 @@ impl CsizeswR {
             0 => Some(Csizeswselect::ConfCsize1kb),
             1 => Some(Csizeswselect::ConfCsize2kb),
             2 => Some(Csizeswselect::ConfCsize4kb),
-            3 => Some(Csizeswselect::ConfCsize8kb),
-            4 => Some(Csizeswselect::ConfCsize16kb),
-            5 => Some(Csizeswselect::ConfCsize32kb),
-            6 => Some(Csizeswselect::ConfCsize64kb),
             _ => None,
         }
     }
@@ -70,26 +58,6 @@ impl CsizeswR {
     #[inline(always)]
     pub fn is_conf_csize_4kb(&self) -> bool {
         *self == Csizeswselect::ConfCsize4kb
-    }
-    #[doc = "The Cache Size is configured to 8KB"]
-    #[inline(always)]
-    pub fn is_conf_csize_8kb(&self) -> bool {
-        *self == Csizeswselect::ConfCsize8kb
-    }
-    #[doc = "The Cache Size is configured to 16KB"]
-    #[inline(always)]
-    pub fn is_conf_csize_16kb(&self) -> bool {
-        *self == Csizeswselect::ConfCsize16kb
-    }
-    #[doc = "The Cache Size is configured to 32KB"]
-    #[inline(always)]
-    pub fn is_conf_csize_32kb(&self) -> bool {
-        *self == Csizeswselect::ConfCsize32kb
-    }
-    #[doc = "The Cache Size is configured to 64KB"]
-    #[inline(always)]
-    pub fn is_conf_csize_64kb(&self) -> bool {
-        *self == Csizeswselect::ConfCsize64kb
     }
 }
 #[doc = "Field `CSIZESW` writer - Cache size configured by software"]
@@ -113,26 +81,6 @@ where
     #[inline(always)]
     pub fn conf_csize_4kb(self) -> &'a mut crate::W<REG> {
         self.variant(Csizeswselect::ConfCsize4kb)
-    }
-    #[doc = "The Cache Size is configured to 8KB"]
-    #[inline(always)]
-    pub fn conf_csize_8kb(self) -> &'a mut crate::W<REG> {
-        self.variant(Csizeswselect::ConfCsize8kb)
-    }
-    #[doc = "The Cache Size is configured to 16KB"]
-    #[inline(always)]
-    pub fn conf_csize_16kb(self) -> &'a mut crate::W<REG> {
-        self.variant(Csizeswselect::ConfCsize16kb)
-    }
-    #[doc = "The Cache Size is configured to 32KB"]
-    #[inline(always)]
-    pub fn conf_csize_32kb(self) -> &'a mut crate::W<REG> {
-        self.variant(Csizeswselect::ConfCsize32kb)
-    }
-    #[doc = "The Cache Size is configured to 64KB"]
-    #[inline(always)]
-    pub fn conf_csize_64kb(self) -> &'a mut crate::W<REG> {
-        self.variant(Csizeswselect::ConfCsize64kb)
     }
 }
 impl R {

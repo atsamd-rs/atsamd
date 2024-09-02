@@ -39,13 +39,14 @@ pub struct RegisterBlock {
     _reserved32: [u8; 0x8c],
     sisr: Sisr,
     hcvr: Hcvr,
-    _reserved34: [u8; 0x0104],
+    _reserved34: [u8; 0x0100],
+    apsr: Apsr,
     mc1r: Mc1r,
     mc2r: Mc2r,
-    _reserved36: [u8; 0x02],
+    _reserved37: [u8; 0x02],
     acr: Acr,
     cc2r: Cc2r,
-    _reserved38: [u8; 0x20],
+    _reserved39: [u8; 0x20],
     cacr: Cacr,
     dbgr: Dbgr,
 }
@@ -256,13 +257,13 @@ impl RegisterBlock {
     pub const fn aesr(&self) -> &Aesr {
         &self.aesr
     }
-    #[doc = "0x58 - ADMA System Address n"]
+    #[doc = "0x58 - ADMA System Address"]
     #[inline(always)]
     pub const fn asar(&self, n: usize) -> &Asar {
         &self.asar[n]
     }
     #[doc = "Iterator for array of:"]
-    #[doc = "0x58 - ADMA System Address n"]
+    #[doc = "0x58 - ADMA System Address"]
     #[inline(always)]
     pub fn asar_iter(&self) -> impl Iterator<Item = &Asar> {
         self.asar.iter()
@@ -287,6 +288,11 @@ impl RegisterBlock {
     #[inline(always)]
     pub const fn hcvr(&self) -> &Hcvr {
         &self.hcvr
+    }
+    #[doc = "0x200 - Additional Present State Register"]
+    #[inline(always)]
+    pub const fn apsr(&self) -> &Apsr {
+        &self.apsr
     }
     #[doc = "0x204 - MMC Control 1"]
     #[inline(always)]
@@ -559,11 +565,11 @@ module"]
 pub type Aesr = crate::Reg<aesr::AesrSpec>;
 #[doc = "ADMA Error Status"]
 pub mod aesr;
-#[doc = "ASAR (rw) register accessor: ADMA System Address n\n\nYou can [`read`](crate::Reg::read) this register and get [`asar::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`asar::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@asar`]
+#[doc = "ASAR (rw) register accessor: ADMA System Address\n\nYou can [`read`](crate::Reg::read) this register and get [`asar::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`asar::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@asar`]
 module"]
 #[doc(alias = "ASAR")]
 pub type Asar = crate::Reg<asar::AsarSpec>;
-#[doc = "ADMA System Address n"]
+#[doc = "ADMA System Address"]
 pub mod asar;
 #[doc = "PVR (rw) register accessor: Preset Value n\n\nYou can [`read`](crate::Reg::read) this register and get [`pvr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`pvr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pvr`]
 module"]
@@ -583,6 +589,12 @@ module"]
 pub type Hcvr = crate::Reg<hcvr::HcvrSpec>;
 #[doc = "Host Controller Version"]
 pub mod hcvr;
+#[doc = "APSR (r) register accessor: Additional Present State Register\n\nYou can [`read`](crate::Reg::read) this register and get [`apsr::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apsr`]
+module"]
+#[doc(alias = "APSR")]
+pub type Apsr = crate::Reg<apsr::ApsrSpec>;
+#[doc = "Additional Present State Register"]
+pub mod apsr;
 #[doc = "MC1R (rw) register accessor: MMC Control 1\n\nYou can [`read`](crate::Reg::read) this register and get [`mc1r::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`mc1r::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@mc1r`]
 module"]
 #[doc(alias = "MC1R")]

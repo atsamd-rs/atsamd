@@ -21,7 +21,7 @@ impl W {
         AdmasaW::new(self, 0)
     }
 }
-#[doc = "ADMA System Address n\n\nYou can [`read`](crate::Reg::read) this register and get [`asar::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`asar::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+#[doc = "ADMA System Address\n\nYou can [`read`](crate::Reg::read) this register and get [`asar::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`asar::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct AsarSpec;
 impl crate::RegisterSpec for AsarSpec {
     type Ux = u32;

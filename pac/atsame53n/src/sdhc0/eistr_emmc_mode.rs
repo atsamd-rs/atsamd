@@ -536,9 +536,9 @@ where
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Bootaeselect {
     #[doc = "0: FIFO contains at least one byte"]
-    _0 = 0,
+    Fifonotempty = 0,
     #[doc = "1: FIFO is empty"]
-    _1 = 1,
+    Fifoempty = 1,
 }
 impl From<Bootaeselect> for bool {
     #[inline(always)]
@@ -553,19 +553,19 @@ impl BootaeR {
     #[inline(always)]
     pub const fn variant(&self) -> Bootaeselect {
         match self.bits {
-            false => Bootaeselect::_0,
-            true => Bootaeselect::_1,
+            false => Bootaeselect::Fifonotempty,
+            true => Bootaeselect::Fifoempty,
         }
     }
     #[doc = "FIFO contains at least one byte"]
     #[inline(always)]
-    pub fn is_0(&self) -> bool {
-        *self == Bootaeselect::_0
+    pub fn is_fifonotempty(&self) -> bool {
+        *self == Bootaeselect::Fifonotempty
     }
     #[doc = "FIFO is empty"]
     #[inline(always)]
-    pub fn is_1(&self) -> bool {
-        *self == Bootaeselect::_1
+    pub fn is_fifoempty(&self) -> bool {
+        *self == Bootaeselect::Fifoempty
     }
 }
 #[doc = "Field `BOOTAE` writer - Boot Acknowledge Error"]
@@ -576,13 +576,13 @@ where
 {
     #[doc = "FIFO contains at least one byte"]
     #[inline(always)]
-    pub fn _0(self) -> &'a mut crate::W<REG> {
-        self.variant(Bootaeselect::_0)
+    pub fn fifonotempty(self) -> &'a mut crate::W<REG> {
+        self.variant(Bootaeselect::Fifonotempty)
     }
     #[doc = "FIFO is empty"]
     #[inline(always)]
-    pub fn _1(self) -> &'a mut crate::W<REG> {
-        self.variant(Bootaeselect::_1)
+    pub fn fifoempty(self) -> &'a mut crate::W<REG> {
+        self.variant(Bootaeselect::Fifoempty)
     }
 }
 impl R {

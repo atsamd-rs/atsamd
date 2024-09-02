@@ -12,8 +12,6 @@ pub type Cmcc_R = crate::BitReader;
 pub type Port_R = crate::BitReader;
 #[doc = "Field `DMAC_` reader - DMAC APB Protect Enable"]
 pub type Dmac_R = crate::BitReader;
-#[doc = "Field `HMATRIX_` reader - HMATRIX APB Protect Enable"]
-pub type Hmatrix_R = crate::BitReader;
 #[doc = "Field `EVSYS_` reader - EVSYS APB Protect Enable"]
 pub type Evsys_R = crate::BitReader;
 #[doc = "Field `SERCOM2_` reader - SERCOM2 APB Protect Enable"]
@@ -60,11 +58,6 @@ impl R {
     #[inline(always)]
     pub fn dmac_(&self) -> Dmac_R {
         Dmac_R::new(((self.bits >> 5) & 1) != 0)
-    }
-    #[doc = "Bit 6 - HMATRIX APB Protect Enable"]
-    #[inline(always)]
-    pub fn hmatrix_(&self) -> Hmatrix_R {
-        Hmatrix_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - EVSYS APB Protect Enable"]
     #[inline(always)]

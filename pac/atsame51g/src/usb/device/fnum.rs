@@ -1,17 +1,10 @@
 #[doc = "Register `FNUM` reader"]
 pub type R = crate::R<FnumSpec>;
-#[doc = "Field `MFNUM` reader - Micro Frame Number"]
-pub type MfnumR = crate::FieldReader;
 #[doc = "Field `FNUM` reader - Frame Number"]
 pub type FnumR = crate::FieldReader<u16>;
 #[doc = "Field `FNCERR` reader - Frame Number CRC Error"]
 pub type FncerrR = crate::BitReader;
 impl R {
-    #[doc = "Bits 0:2 - Micro Frame Number"]
-    #[inline(always)]
-    pub fn mfnum(&self) -> MfnumR {
-        MfnumR::new((self.bits & 7) as u8)
-    }
     #[doc = "Bits 3:13 - Frame Number"]
     #[inline(always)]
     pub fn fnum(&self) -> FnumR {

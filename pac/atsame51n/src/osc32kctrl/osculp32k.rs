@@ -10,10 +10,6 @@ pub type En32kW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type En1kR = crate::BitReader;
 #[doc = "Field `EN1K` writer - Enable Out 1k"]
 pub type En1kW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `CALIB` reader - Oscillator Calibration"]
-pub type CalibR = crate::FieldReader;
-#[doc = "Field `CALIB` writer - Oscillator Calibration"]
-pub type CalibW<'a, REG> = crate::FieldWriter<'a, REG, 6>;
 #[doc = "Field `WRTLOCK` reader - Write Lock"]
 pub type WrtlockR = crate::BitReader;
 #[doc = "Field `WRTLOCK` writer - Write Lock"]
@@ -28,11 +24,6 @@ impl R {
     #[inline(always)]
     pub fn en1k(&self) -> En1kR {
         En1kR::new(((self.bits >> 2) & 1) != 0)
-    }
-    #[doc = "Bits 8:13 - Oscillator Calibration"]
-    #[inline(always)]
-    pub fn calib(&self) -> CalibR {
-        CalibR::new(((self.bits >> 8) & 0x3f) as u8)
     }
     #[doc = "Bit 15 - Write Lock"]
     #[inline(always)]
@@ -52,12 +43,6 @@ impl W {
     #[must_use]
     pub fn en1k(&mut self) -> En1kW<Osculp32kSpec> {
         En1kW::new(self, 2)
-    }
-    #[doc = "Bits 8:13 - Oscillator Calibration"]
-    #[inline(always)]
-    #[must_use]
-    pub fn calib(&mut self) -> CalibW<Osculp32kSpec> {
-        CalibW::new(self, 8)
     }
     #[doc = "Bit 15 - Write Lock"]
     #[inline(always)]

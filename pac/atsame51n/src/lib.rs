@@ -462,267 +462,267 @@ pub static __INTERRUPTS: [Vector; 136] = [
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[repr(u16)]
 pub enum Interrupt {
-    #[doc = "0 - PM"]
+    #[doc = "0 - Power Manager"]
     PM = 0,
-    #[doc = "1 - MCLK"]
+    #[doc = "1 - Main Clock"]
     MCLK = 1,
-    #[doc = "2 - OSCCTRL_XOSC0"]
+    #[doc = "2 - External Oscillator 0"]
     OSCCTRL_XOSC0 = 2,
-    #[doc = "3 - OSCCTRL_XOSC1"]
+    #[doc = "3 - External Oscillator 1"]
     OSCCTRL_XOSC1 = 3,
-    #[doc = "4 - OSCCTRL_DFLL"]
+    #[doc = "4 - Digital Frequency Locked Loop"]
     OSCCTRL_DFLL = 4,
-    #[doc = "5 - OSCCTRL_DPLL0"]
+    #[doc = "5 - Digital Phase Locked Loop 0"]
     OSCCTRL_DPLL0 = 5,
-    #[doc = "6 - OSCCTRL_DPLL1"]
+    #[doc = "6 - Digital Phase Locked Loop 1"]
     OSCCTRL_DPLL1 = 6,
-    #[doc = "7 - OSC32KCTRL"]
+    #[doc = "7 - 32Khz Oscillator Controller"]
     OSC32KCTRL = 7,
-    #[doc = "8 - SUPC_OTHER"]
+    #[doc = "8 - Suppyly controller"]
     SUPC_OTHER = 8,
-    #[doc = "9 - SUPC_BODDET"]
+    #[doc = "9 - Brown Out Detection"]
     SUPC_BODDET = 9,
-    #[doc = "10 - WDT"]
+    #[doc = "10 - Watch Dog Timer"]
     WDT = 10,
-    #[doc = "11 - RTC"]
+    #[doc = "11 - Real Time Counter"]
     RTC = 11,
-    #[doc = "12 - EIC_EXTINT_0"]
+    #[doc = "12 - EIC Channel 0"]
     EIC_EXTINT_0 = 12,
-    #[doc = "13 - EIC_EXTINT_1"]
+    #[doc = "13 - EIC Channel 1"]
     EIC_EXTINT_1 = 13,
-    #[doc = "14 - EIC_EXTINT_2"]
+    #[doc = "14 - EIC Channel 2"]
     EIC_EXTINT_2 = 14,
-    #[doc = "15 - EIC_EXTINT_3"]
+    #[doc = "15 - EIC Channel 3"]
     EIC_EXTINT_3 = 15,
-    #[doc = "16 - EIC_EXTINT_4"]
+    #[doc = "16 - EIC Channel 4"]
     EIC_EXTINT_4 = 16,
-    #[doc = "17 - EIC_EXTINT_5"]
+    #[doc = "17 - EIC Channel 5"]
     EIC_EXTINT_5 = 17,
-    #[doc = "18 - EIC_EXTINT_6"]
+    #[doc = "18 - EIC Channel 6"]
     EIC_EXTINT_6 = 18,
-    #[doc = "19 - EIC_EXTINT_7"]
+    #[doc = "19 - EIC Channel 7"]
     EIC_EXTINT_7 = 19,
-    #[doc = "20 - EIC_EXTINT_8"]
+    #[doc = "20 - EIC Channel 8"]
     EIC_EXTINT_8 = 20,
-    #[doc = "21 - EIC_EXTINT_9"]
+    #[doc = "21 - EIC Channel 9"]
     EIC_EXTINT_9 = 21,
-    #[doc = "22 - EIC_EXTINT_10"]
+    #[doc = "22 - EIC Channel 10"]
     EIC_EXTINT_10 = 22,
-    #[doc = "23 - EIC_EXTINT_11"]
+    #[doc = "23 - EIC Channel 11"]
     EIC_EXTINT_11 = 23,
-    #[doc = "24 - EIC_EXTINT_12"]
+    #[doc = "24 - EIC Channel 12"]
     EIC_EXTINT_12 = 24,
-    #[doc = "25 - EIC_EXTINT_13"]
+    #[doc = "25 - EIC Channel 13"]
     EIC_EXTINT_13 = 25,
-    #[doc = "26 - EIC_EXTINT_14"]
+    #[doc = "26 - EIC Channel 14"]
     EIC_EXTINT_14 = 26,
-    #[doc = "27 - EIC_EXTINT_15"]
+    #[doc = "27 - EIC Channel 15"]
     EIC_EXTINT_15 = 27,
-    #[doc = "28 - FREQM"]
+    #[doc = "28 - Frequency Meter"]
     FREQM = 28,
-    #[doc = "29 - NVMCTRL_0"]
+    #[doc = "29 - Non-Volatile Memory Controller"]
     NVMCTRL_0 = 29,
-    #[doc = "30 - NVMCTRL_1"]
+    #[doc = "30 - NVMCTRL SmartEEPROM Interrupts"]
     NVMCTRL_1 = 30,
-    #[doc = "31 - DMAC_0"]
+    #[doc = "31 - DMA Channel 0"]
     DMAC_0 = 31,
-    #[doc = "32 - DMAC_1"]
+    #[doc = "32 - DMA Channel 1"]
     DMAC_1 = 32,
-    #[doc = "33 - DMAC_2"]
+    #[doc = "33 - DMA Channel 2"]
     DMAC_2 = 33,
-    #[doc = "34 - DMAC_3"]
+    #[doc = "34 - DMA Channel 3"]
     DMAC_3 = 34,
-    #[doc = "35 - DMAC_OTHER"]
+    #[doc = "35 - DMA Channel 4..X"]
     DMAC_OTHER = 35,
-    #[doc = "36 - EVSYS_0"]
+    #[doc = "36 - Event System Channel 0"]
     EVSYS_0 = 36,
-    #[doc = "37 - EVSYS_1"]
+    #[doc = "37 - Event System Channel 1"]
     EVSYS_1 = 37,
-    #[doc = "38 - EVSYS_2"]
+    #[doc = "38 - Event System Channel 2"]
     EVSYS_2 = 38,
-    #[doc = "39 - EVSYS_3"]
+    #[doc = "39 - Event System Channel 3"]
     EVSYS_3 = 39,
-    #[doc = "40 - EVSYS_OTHER"]
+    #[doc = "40 - Event System Channel 4..X"]
     EVSYS_OTHER = 40,
-    #[doc = "41 - PAC"]
+    #[doc = "41 - Peripheral Access Controller"]
     PAC = 41,
-    #[doc = "45 - RAMECC"]
+    #[doc = "45 - RAM Error Correction Code"]
     RAMECC = 45,
-    #[doc = "46 - SERCOM0_0"]
+    #[doc = "46 - Serial Communication Interface 0"]
     SERCOM0_0 = 46,
-    #[doc = "47 - SERCOM0_1"]
+    #[doc = "47 - Serial Communication Interface 0"]
     SERCOM0_1 = 47,
-    #[doc = "48 - SERCOM0_2"]
+    #[doc = "48 - Serial Communication Interface 0"]
     SERCOM0_2 = 48,
-    #[doc = "49 - SERCOM0_OTHER"]
+    #[doc = "49 - Serial Communication Interface 0"]
     SERCOM0_OTHER = 49,
-    #[doc = "50 - SERCOM1_0"]
+    #[doc = "50 - Serial Communication Interface 1"]
     SERCOM1_0 = 50,
-    #[doc = "51 - SERCOM1_1"]
+    #[doc = "51 - Serial Communication Interface 1"]
     SERCOM1_1 = 51,
-    #[doc = "52 - SERCOM1_2"]
+    #[doc = "52 - Serial Communication Interface 1"]
     SERCOM1_2 = 52,
-    #[doc = "53 - SERCOM1_OTHER"]
+    #[doc = "53 - Serial Communication Interface 1"]
     SERCOM1_OTHER = 53,
-    #[doc = "54 - SERCOM2_0"]
+    #[doc = "54 - Serial Communication Interface 2"]
     SERCOM2_0 = 54,
-    #[doc = "55 - SERCOM2_1"]
+    #[doc = "55 - Serial Communication Interface 2"]
     SERCOM2_1 = 55,
-    #[doc = "56 - SERCOM2_2"]
+    #[doc = "56 - Serial Communication Interface 2"]
     SERCOM2_2 = 56,
-    #[doc = "57 - SERCOM2_OTHER"]
+    #[doc = "57 - Serial Communication Interface 2"]
     SERCOM2_OTHER = 57,
-    #[doc = "58 - SERCOM3_0"]
+    #[doc = "58 - Serial Communication Interface 3"]
     SERCOM3_0 = 58,
-    #[doc = "59 - SERCOM3_1"]
+    #[doc = "59 - Serial Communication Interface 3"]
     SERCOM3_1 = 59,
-    #[doc = "60 - SERCOM3_2"]
+    #[doc = "60 - Serial Communication Interface 3"]
     SERCOM3_2 = 60,
-    #[doc = "61 - SERCOM3_OTHER"]
+    #[doc = "61 - Serial Communication Interface 3"]
     SERCOM3_OTHER = 61,
-    #[doc = "62 - SERCOM4_0"]
+    #[doc = "62 - Serial Communication Interface 4"]
     SERCOM4_0 = 62,
-    #[doc = "63 - SERCOM4_1"]
+    #[doc = "63 - Serial Communication Interface 4"]
     SERCOM4_1 = 63,
-    #[doc = "64 - SERCOM4_2"]
+    #[doc = "64 - Serial Communication Interface 4"]
     SERCOM4_2 = 64,
-    #[doc = "65 - SERCOM4_OTHER"]
+    #[doc = "65 - Serial Communication Interface 4"]
     SERCOM4_OTHER = 65,
-    #[doc = "66 - SERCOM5_0"]
+    #[doc = "66 - Serial Communication Interface 5"]
     SERCOM5_0 = 66,
-    #[doc = "67 - SERCOM5_1"]
+    #[doc = "67 - Serial Communication Interface 5"]
     SERCOM5_1 = 67,
-    #[doc = "68 - SERCOM5_2"]
+    #[doc = "68 - Serial Communication Interface 5"]
     SERCOM5_2 = 68,
-    #[doc = "69 - SERCOM5_OTHER"]
+    #[doc = "69 - Serial Communication Interface 5"]
     SERCOM5_OTHER = 69,
-    #[doc = "70 - SERCOM6_0"]
+    #[doc = "70 - Serial Communication Interface 6"]
     SERCOM6_0 = 70,
-    #[doc = "71 - SERCOM6_1"]
+    #[doc = "71 - Serial Communication Interface 6"]
     SERCOM6_1 = 71,
-    #[doc = "72 - SERCOM6_2"]
+    #[doc = "72 - Serial Communication Interface 6"]
     SERCOM6_2 = 72,
-    #[doc = "73 - SERCOM6_OTHER"]
+    #[doc = "73 - Serial Communication Interface 6"]
     SERCOM6_OTHER = 73,
-    #[doc = "74 - SERCOM7_0"]
+    #[doc = "74 - Serial Communication Interface 7"]
     SERCOM7_0 = 74,
-    #[doc = "75 - SERCOM7_1"]
+    #[doc = "75 - Serial Communication Interface 7"]
     SERCOM7_1 = 75,
-    #[doc = "76 - SERCOM7_2"]
+    #[doc = "76 - Serial Communication Interface 7"]
     SERCOM7_2 = 76,
-    #[doc = "77 - SERCOM7_OTHER"]
+    #[doc = "77 - Serial Communication Interface 7"]
     SERCOM7_OTHER = 77,
-    #[doc = "78 - CAN0"]
+    #[doc = "78 - Controller Area Network 0"]
     CAN0 = 78,
-    #[doc = "79 - CAN1"]
+    #[doc = "79 - Controller Area Network 1"]
     CAN1 = 79,
-    #[doc = "80 - USB_OTHER"]
+    #[doc = "80 - Universal Serial Bus"]
     USB_OTHER = 80,
-    #[doc = "81 - USB_SOF_HSOF"]
+    #[doc = "81 - USB Start of Frame"]
     USB_SOF_HSOF = 81,
-    #[doc = "82 - USB_TRCPT0"]
+    #[doc = "82 - USB Transfer Complete 0"]
     USB_TRCPT0 = 82,
-    #[doc = "83 - USB_TRCPT1"]
+    #[doc = "83 - USB Transfer Complete 1"]
     USB_TRCPT1 = 83,
-    #[doc = "85 - TCC0_OTHER"]
+    #[doc = "85 - Timer Counter Control 0"]
     TCC0_OTHER = 85,
-    #[doc = "86 - TCC0_MC0"]
+    #[doc = "86 - TCC Match/Compare 0"]
     TCC0_MC0 = 86,
-    #[doc = "87 - TCC0_MC1"]
+    #[doc = "87 - TCC Match/Compare 1"]
     TCC0_MC1 = 87,
-    #[doc = "88 - TCC0_MC2"]
+    #[doc = "88 - TCC Match/Compare 2"]
     TCC0_MC2 = 88,
-    #[doc = "89 - TCC0_MC3"]
+    #[doc = "89 - TCC Match/Compare 3"]
     TCC0_MC3 = 89,
-    #[doc = "90 - TCC0_MC4"]
+    #[doc = "90 - TCC Match/Compare 4"]
     TCC0_MC4 = 90,
-    #[doc = "91 - TCC0_MC5"]
+    #[doc = "91 - TCC Match/Compare 5"]
     TCC0_MC5 = 91,
-    #[doc = "92 - TCC1_OTHER"]
+    #[doc = "92 - Timer Counter Control 1"]
     TCC1_OTHER = 92,
-    #[doc = "93 - TCC1_MC0"]
+    #[doc = "93 - TCC Match/Compare 0"]
     TCC1_MC0 = 93,
-    #[doc = "94 - TCC1_MC1"]
+    #[doc = "94 - TCC Match/Compare 1"]
     TCC1_MC1 = 94,
-    #[doc = "95 - TCC1_MC2"]
+    #[doc = "95 - TCC Match/Compare 2"]
     TCC1_MC2 = 95,
-    #[doc = "96 - TCC1_MC3"]
+    #[doc = "96 - TCC Match/Compare 3"]
     TCC1_MC3 = 96,
-    #[doc = "97 - TCC2_OTHER"]
+    #[doc = "97 - Timer Counter Control 2"]
     TCC2_OTHER = 97,
-    #[doc = "98 - TCC2_MC0"]
+    #[doc = "98 - TCC Match/Compare 0"]
     TCC2_MC0 = 98,
-    #[doc = "99 - TCC2_MC1"]
+    #[doc = "99 - TCC Match/Compare 1"]
     TCC2_MC1 = 99,
-    #[doc = "100 - TCC2_MC2"]
+    #[doc = "100 - TCC Match/Compare 2"]
     TCC2_MC2 = 100,
-    #[doc = "101 - TCC3_OTHER"]
+    #[doc = "101 - Timer Counter Control 3"]
     TCC3_OTHER = 101,
-    #[doc = "102 - TCC3_MC0"]
+    #[doc = "102 - TCC Match/Compare 0"]
     TCC3_MC0 = 102,
-    #[doc = "103 - TCC3_MC1"]
+    #[doc = "103 - TCC Match/Compare 1"]
     TCC3_MC1 = 103,
-    #[doc = "104 - TCC4_OTHER"]
+    #[doc = "104 - Timer Counter Control 4"]
     TCC4_OTHER = 104,
-    #[doc = "105 - TCC4_MC0"]
+    #[doc = "105 - TCC Match/Compare 0"]
     TCC4_MC0 = 105,
-    #[doc = "106 - TCC4_MC1"]
+    #[doc = "106 - TCC Match/Compare 1"]
     TCC4_MC1 = 106,
-    #[doc = "107 - TC0"]
+    #[doc = "107 - Timer Counter 0"]
     TC0 = 107,
-    #[doc = "108 - TC1"]
+    #[doc = "108 - Timer Counter 1"]
     TC1 = 108,
-    #[doc = "109 - TC2"]
+    #[doc = "109 - Timer Counter 2"]
     TC2 = 109,
-    #[doc = "110 - TC3"]
+    #[doc = "110 - Timer Counter 3"]
     TC3 = 110,
-    #[doc = "111 - TC4"]
+    #[doc = "111 - Timer Counter 4"]
     TC4 = 111,
-    #[doc = "112 - TC5"]
+    #[doc = "112 - Timer Counter 5"]
     TC5 = 112,
-    #[doc = "113 - TC6"]
+    #[doc = "113 - Timer Counter 6"]
     TC6 = 113,
-    #[doc = "114 - TC7"]
+    #[doc = "114 - Timer Counter 7"]
     TC7 = 114,
-    #[doc = "115 - PDEC_OTHER"]
+    #[doc = "115 - Position Decoder"]
     PDEC_OTHER = 115,
-    #[doc = "116 - PDEC_MC0"]
+    #[doc = "116 - PDEC Match/Compare 0"]
     PDEC_MC0 = 116,
-    #[doc = "117 - PDEC_MC1"]
+    #[doc = "117 - PDEC Match Compare 1"]
     PDEC_MC1 = 117,
-    #[doc = "118 - ADC0_OTHER"]
+    #[doc = "118 - Analog To Digital Converter 0"]
     ADC0_OTHER = 118,
-    #[doc = "119 - ADC0_RESRDY"]
+    #[doc = "119 - ADC0 Result Ready"]
     ADC0_RESRDY = 119,
-    #[doc = "120 - ADC1_OTHER"]
+    #[doc = "120 - Analog To Digital Converter 1"]
     ADC1_OTHER = 120,
-    #[doc = "121 - ADC1_RESRDY"]
+    #[doc = "121 - ADC1 Result Ready"]
     ADC1_RESRDY = 121,
-    #[doc = "122 - AC"]
+    #[doc = "122 - Analog Comparator"]
     AC = 122,
-    #[doc = "123 - DAC_OTHER"]
+    #[doc = "123 - Digital to Analog Converter"]
     DAC_OTHER = 123,
-    #[doc = "124 - DAC_EMPTY_0"]
+    #[doc = "124 - DAC Buffer 0 Empty"]
     DAC_EMPTY_0 = 124,
-    #[doc = "125 - DAC_EMPTY_1"]
+    #[doc = "125 - DAC Buffer 1 Empty"]
     DAC_EMPTY_1 = 125,
-    #[doc = "126 - DAC_RESRDY_0"]
+    #[doc = "126 - DAC Filter 0 Result Ready"]
     DAC_RESRDY_0 = 126,
-    #[doc = "127 - DAC_RESRDY_1"]
+    #[doc = "127 - DAC Filter 1 Result Ready"]
     DAC_RESRDY_1 = 127,
-    #[doc = "128 - I2S"]
+    #[doc = "128 - Inter-IC Sound Interface"]
     I2S = 128,
-    #[doc = "129 - PCC"]
+    #[doc = "129 - Parallel Capture Controller"]
     PCC = 129,
-    #[doc = "130 - AES"]
+    #[doc = "130 - Advanced Encryption Standard"]
     AES = 130,
-    #[doc = "131 - TRNG"]
+    #[doc = "131 - True Random Generator"]
     TRNG = 131,
-    #[doc = "132 - ICM"]
+    #[doc = "132 - Integrity Check Monitor"]
     ICM = 132,
-    #[doc = "134 - QSPI"]
+    #[doc = "134 - Quad SPI interface"]
     QSPI = 134,
-    #[doc = "135 - SDHC0"]
+    #[doc = "135 - SD/MMC Host Controller 0"]
     SDHC0 = 135,
 }
 unsafe impl cortex_m::interrupt::InterruptNumber for Interrupt {
@@ -3537,52 +3537,6 @@ impl core::fmt::Debug for SystemControl {
 }
 #[doc = "System Control Registers"]
 pub mod system_control;
-#[doc = "Trace Port Interface Register"]
-pub struct Tpi {
-    _marker: PhantomData<*const ()>,
-}
-unsafe impl Send for Tpi {}
-impl Tpi {
-    #[doc = r"Pointer to the register block"]
-    pub const PTR: *const tpi::RegisterBlock = 0xe004_0000 as *const _;
-    #[doc = r"Return the pointer to the register block"]
-    #[inline(always)]
-    pub const fn ptr() -> *const tpi::RegisterBlock {
-        Self::PTR
-    }
-    #[doc = r" Steal an instance of this peripheral"]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Ensure that the new instance of the peripheral cannot be used in a way"]
-    #[doc = r" that may race with any existing instances, for example by only"]
-    #[doc = r" accessing read-only or write-only registers, or by consuming the"]
-    #[doc = r" original peripheral and using critical sections to coordinate"]
-    #[doc = r" access between multiple new instances."]
-    #[doc = r""]
-    #[doc = r" Additionally, other software such as HALs may rely on only one"]
-    #[doc = r" peripheral instance existing to ensure memory safety; ensure"]
-    #[doc = r" no stolen instances are passed to such software."]
-    pub unsafe fn steal() -> Self {
-        Self {
-            _marker: PhantomData,
-        }
-    }
-}
-impl Deref for Tpi {
-    type Target = tpi::RegisterBlock;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*Self::PTR }
-    }
-}
-impl core::fmt::Debug for Tpi {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        f.debug_struct("Tpi").finish()
-    }
-}
-#[doc = "Trace Port Interface Register"]
-pub mod tpi;
 #[no_mangle]
 static mut DEVICE_PERIPHERALS: bool = false;
 #[doc = r" All the peripherals."]
@@ -3710,8 +3664,6 @@ pub struct Peripherals {
     pub sys_tick: SysTick,
     #[doc = "SystemControl"]
     pub system_control: SystemControl,
-    #[doc = "TPI"]
-    pub tpi: Tpi,
 }
 impl Peripherals {
     #[doc = r" Returns all the peripherals *once*."]
@@ -3794,7 +3746,6 @@ impl Peripherals {
             etm: Etm::steal(),
             sys_tick: SysTick::steal(),
             system_control: SystemControl::steal(),
-            tpi: Tpi::steal(),
         }
     }
 }

@@ -18,7 +18,7 @@ pub struct I2cm {
     _reserved9: [u8; 0x04],
     addr: Addr,
     data: Data,
-    _reserved11: [u8; 0x07],
+    _reserved11: [u8; 0x04],
     dbgctrl: Dbgctrl,
 }
 impl I2cm {

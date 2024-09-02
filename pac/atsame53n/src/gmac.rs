@@ -226,13 +226,13 @@ impl RegisterBlock {
     pub fn sa_iter(&self) -> impl Iterator<Item = &Sa> {
         self.sa.iter()
     }
-    #[doc = "0xa8..0xb8 - Type ID Match Register"]
+    #[doc = "0xa8..0xb8 - Type ID Match n Register"]
     #[inline(always)]
     pub const fn tidm(&self, n: usize) -> &Tidm {
         &self.tidm[n]
     }
     #[doc = "Iterator for array of:"]
-    #[doc = "0xa8..0xb8 - Type ID Match Register"]
+    #[doc = "0xa8..0xb8 - Type ID Match n Register"]
     #[inline(always)]
     pub fn tidm_iter(&self) -> impl Iterator<Item = &Tidm> {
         self.tidm.iter()
@@ -769,11 +769,11 @@ pub use self::sa::Sa;
 #[doc = r"Cluster"]
 #[doc = "SA\\[%s\\]"]
 pub mod sa;
-#[doc = "TIDM (rw) register accessor: Type ID Match Register\n\nYou can [`read`](crate::Reg::read) this register and get [`tidm::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`tidm::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@tidm`]
+#[doc = "TIDM (rw) register accessor: Type ID Match n Register\n\nYou can [`read`](crate::Reg::read) this register and get [`tidm::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`tidm::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@tidm`]
 module"]
 #[doc(alias = "TIDM")]
 pub type Tidm = crate::Reg<tidm::TidmSpec>;
-#[doc = "Type ID Match Register"]
+#[doc = "Type ID Match n Register"]
 pub mod tidm;
 #[doc = "WOL (rw) register accessor: Wake on LAN\n\nYou can [`read`](crate::Reg::read) this register and get [`wol::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`wol::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wol`]
 module"]

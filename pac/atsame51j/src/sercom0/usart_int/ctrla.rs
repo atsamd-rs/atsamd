@@ -408,10 +408,92 @@ is used for data reception"]
         self.variant(Rxposelect::Pad3)
     }
 }
+#[doc = "Sample Adjustment\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Sampaselect {
+    #[doc = "0: 16x Over-sampling = 7-8-9; 8x Over-sampling = 3-4-5"]
+    Adj0 = 0,
+    #[doc = "1: 16x Over-sampling = 9-10-11; 8x Over-sampling = 4-5-6"]
+    Adj1 = 1,
+    #[doc = "2: 16x Over-sampling = 11-12-13; 8x Over-sampling = 5-6-7"]
+    Adj2 = 2,
+    #[doc = "3: 16x Over-sampling = 13-14-15; 8x Over-sampling = 6-7-8"]
+    Adj3 = 3,
+}
+impl From<Sampaselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Sampaselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Sampaselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Sampaselect {}
 #[doc = "Field `SAMPA` reader - Sample Adjustment"]
-pub type SampaR = crate::FieldReader;
+pub type SampaR = crate::FieldReader<Sampaselect>;
+impl SampaR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Sampaselect {
+        match self.bits {
+            0 => Sampaselect::Adj0,
+            1 => Sampaselect::Adj1,
+            2 => Sampaselect::Adj2,
+            3 => Sampaselect::Adj3,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "16x Over-sampling = 7-8-9; 8x Over-sampling = 3-4-5"]
+    #[inline(always)]
+    pub fn is_adj0(&self) -> bool {
+        *self == Sampaselect::Adj0
+    }
+    #[doc = "16x Over-sampling = 9-10-11; 8x Over-sampling = 4-5-6"]
+    #[inline(always)]
+    pub fn is_adj1(&self) -> bool {
+        *self == Sampaselect::Adj1
+    }
+    #[doc = "16x Over-sampling = 11-12-13; 8x Over-sampling = 5-6-7"]
+    #[inline(always)]
+    pub fn is_adj2(&self) -> bool {
+        *self == Sampaselect::Adj2
+    }
+    #[doc = "16x Over-sampling = 13-14-15; 8x Over-sampling = 6-7-8"]
+    #[inline(always)]
+    pub fn is_adj3(&self) -> bool {
+        *self == Sampaselect::Adj3
+    }
+}
 #[doc = "Field `SAMPA` writer - Sample Adjustment"]
-pub type SampaW<'a, REG> = crate::FieldWriter<'a, REG, 2>;
+pub type SampaW<'a, REG> = crate::FieldWriter<'a, REG, 2, Sampaselect, crate::Safe>;
+impl<'a, REG> SampaW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "16x Over-sampling = 7-8-9; 8x Over-sampling = 3-4-5"]
+    #[inline(always)]
+    pub fn adj0(self) -> &'a mut crate::W<REG> {
+        self.variant(Sampaselect::Adj0)
+    }
+    #[doc = "16x Over-sampling = 9-10-11; 8x Over-sampling = 4-5-6"]
+    #[inline(always)]
+    pub fn adj1(self) -> &'a mut crate::W<REG> {
+        self.variant(Sampaselect::Adj1)
+    }
+    #[doc = "16x Over-sampling = 11-12-13; 8x Over-sampling = 5-6-7"]
+    #[inline(always)]
+    pub fn adj2(self) -> &'a mut crate::W<REG> {
+        self.variant(Sampaselect::Adj2)
+    }
+    #[doc = "16x Over-sampling = 13-14-15; 8x Over-sampling = 6-7-8"]
+    #[inline(always)]
+    pub fn adj3(self) -> &'a mut crate::W<REG> {
+        self.variant(Sampaselect::Adj3)
+    }
+}
 #[doc = "Frame Format\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -422,7 +504,7 @@ pub enum Formselect {
     UsartFrameWithParity = 1,
     #[doc = "2: LIN Master - Break and sync generation"]
     UsartFrameLinMasterMode = 2,
-    #[doc = "4: Auto-baud - break detection and auto-baud"]
+    #[doc = "4: Auto-baud (LIN Slave) - break detection and auto-baud"]
     UsartFrameAutoBaudNoParity = 4,
     #[doc = "5: Auto-baud - break detection and auto-baud with parity"]
     UsartFrameAutoBaudWithParity = 5,
@@ -470,7 +552,7 @@ impl FormR {
     pub fn is_usart_frame_lin_master_mode(&self) -> bool {
         *self == Formselect::UsartFrameLinMasterMode
     }
-    #[doc = "Auto-baud - break detection and auto-baud"]
+    #[doc = "Auto-baud (LIN Slave) - break detection and auto-baud"]
     #[inline(always)]
     pub fn is_usart_frame_auto_baud_no_parity(&self) -> bool {
         *self == Formselect::UsartFrameAutoBaudNoParity
@@ -508,7 +590,7 @@ where
     pub fn usart_frame_lin_master_mode(self) -> &'a mut crate::W<REG> {
         self.variant(Formselect::UsartFrameLinMasterMode)
     }
-    #[doc = "Auto-baud - break detection and auto-baud"]
+    #[doc = "Auto-baud (LIN Slave) - break detection and auto-baud"]
     #[inline(always)]
     pub fn usart_frame_auto_baud_no_parity(self) -> &'a mut crate::W<REG> {
         self.variant(Formselect::UsartFrameAutoBaudNoParity)

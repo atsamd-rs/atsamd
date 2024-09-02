@@ -18,10 +18,6 @@ pub type Nvmctrl_W<'a, REG> = crate::BitWriter<'a, REG>;
 pub type Port_R = crate::BitReader;
 #[doc = "Field `PORT_` writer - PORT APB Clock Enable"]
 pub type Port_W<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `HMATRIX_` reader - HMATRIX APB Clock Enable"]
-pub type Hmatrix_R = crate::BitReader;
-#[doc = "Field `HMATRIX_` writer - HMATRIX APB Clock Enable"]
-pub type Hmatrix_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EVSYS_` reader - EVSYS APB Clock Enable"]
 pub type Evsys_R = crate::BitReader;
 #[doc = "Field `EVSYS_` writer - EVSYS APB Clock Enable"]
@@ -74,11 +70,6 @@ impl R {
     #[inline(always)]
     pub fn port_(&self) -> Port_R {
         Port_R::new(((self.bits >> 4) & 1) != 0)
-    }
-    #[doc = "Bit 6 - HMATRIX APB Clock Enable"]
-    #[inline(always)]
-    pub fn hmatrix_(&self) -> Hmatrix_R {
-        Hmatrix_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - EVSYS APB Clock Enable"]
     #[inline(always)]
@@ -145,12 +136,6 @@ impl W {
     #[must_use]
     pub fn port_(&mut self) -> Port_W<ApbbmaskSpec> {
         Port_W::new(self, 4)
-    }
-    #[doc = "Bit 6 - HMATRIX APB Clock Enable"]
-    #[inline(always)]
-    #[must_use]
-    pub fn hmatrix_(&mut self) -> Hmatrix_W<ApbbmaskSpec> {
-        Hmatrix_W::new(self, 6)
     }
     #[doc = "Bit 7 - EVSYS APB Clock Enable"]
     #[inline(always)]

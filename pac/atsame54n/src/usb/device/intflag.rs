@@ -6,10 +6,6 @@ pub type W = crate::W<IntflagSpec>;
 pub type SuspendR = crate::BitReader;
 #[doc = "Field `SUSPEND` writer - Suspend"]
 pub type SuspendW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `MSOF` reader - Micro Start of Frame in High Speed Mode"]
-pub type MsofR = crate::BitReader;
-#[doc = "Field `MSOF` writer - Micro Start of Frame in High Speed Mode"]
-pub type MsofW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SOF` reader - Start Of Frame"]
 pub type SofR = crate::BitReader;
 #[doc = "Field `SOF` writer - Start Of Frame"]
@@ -47,11 +43,6 @@ impl R {
     #[inline(always)]
     pub fn suspend(&self) -> SuspendR {
         SuspendR::new((self.bits & 1) != 0)
-    }
-    #[doc = "Bit 1 - Micro Start of Frame in High Speed Mode"]
-    #[inline(always)]
-    pub fn msof(&self) -> MsofR {
-        MsofR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Start Of Frame"]
     #[inline(always)]
@@ -100,12 +91,6 @@ impl W {
     #[must_use]
     pub fn suspend(&mut self) -> SuspendW<IntflagSpec> {
         SuspendW::new(self, 0)
-    }
-    #[doc = "Bit 1 - Micro Start of Frame in High Speed Mode"]
-    #[inline(always)]
-    #[must_use]
-    pub fn msof(&mut self) -> MsofW<IntflagSpec> {
-        MsofW::new(self, 1)
     }
     #[doc = "Bit 2 - Start Of Frame"]
     #[inline(always)]

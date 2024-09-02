@@ -2,10 +2,59 @@
 pub type R = crate::R<LutctrlSpec>;
 #[doc = "Register `LUTCTRL[%s]` writer"]
 pub type W = crate::W<LutctrlSpec>;
+#[doc = "LUT Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Enableselect {
+    #[doc = "0: LUT block is disabled"]
+    Disable = 0,
+    #[doc = "1: LUT block is enabled"]
+    Enable = 1,
+}
+impl From<Enableselect> for bool {
+    #[inline(always)]
+    fn from(variant: Enableselect) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Field `ENABLE` reader - LUT Enable"]
-pub type EnableR = crate::BitReader;
+pub type EnableR = crate::BitReader<Enableselect>;
+impl EnableR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Enableselect {
+        match self.bits {
+            false => Enableselect::Disable,
+            true => Enableselect::Enable,
+        }
+    }
+    #[doc = "LUT block is disabled"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == Enableselect::Disable
+    }
+    #[doc = "LUT block is enabled"]
+    #[inline(always)]
+    pub fn is_enable(&self) -> bool {
+        *self == Enableselect::Enable
+    }
+}
 #[doc = "Field `ENABLE` writer - LUT Enable"]
-pub type EnableW<'a, REG> = crate::BitWriter<'a, REG>;
+pub type EnableW<'a, REG> = crate::BitWriter<'a, REG, Enableselect>;
+impl<'a, REG> EnableW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
+    #[doc = "LUT block is disabled"]
+    #[inline(always)]
+    pub fn disable(self) -> &'a mut crate::W<REG> {
+        self.variant(Enableselect::Disable)
+    }
+    #[doc = "LUT block is enabled"]
+    #[inline(always)]
+    pub fn enable(self) -> &'a mut crate::W<REG> {
+        self.variant(Enableselect::Enable)
+    }
+}
 #[doc = "Filter Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -79,10 +128,59 @@ where
         self.variant(Filtselselect::Filter)
     }
 }
+#[doc = "Edge Selection\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Edgeselselect {
+    #[doc = "0: Edge detector is disabled"]
+    Disable = 0,
+    #[doc = "1: Edge detector is enabled"]
+    Enable = 1,
+}
+impl From<Edgeselselect> for bool {
+    #[inline(always)]
+    fn from(variant: Edgeselselect) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Field `EDGESEL` reader - Edge Selection"]
-pub type EdgeselR = crate::BitReader;
+pub type EdgeselR = crate::BitReader<Edgeselselect>;
+impl EdgeselR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Edgeselselect {
+        match self.bits {
+            false => Edgeselselect::Disable,
+            true => Edgeselselect::Enable,
+        }
+    }
+    #[doc = "Edge detector is disabled"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == Edgeselselect::Disable
+    }
+    #[doc = "Edge detector is enabled"]
+    #[inline(always)]
+    pub fn is_enable(&self) -> bool {
+        *self == Edgeselselect::Enable
+    }
+}
 #[doc = "Field `EDGESEL` writer - Edge Selection"]
-pub type EdgeselW<'a, REG> = crate::BitWriter<'a, REG>;
+pub type EdgeselW<'a, REG> = crate::BitWriter<'a, REG, Edgeselselect>;
+impl<'a, REG> EdgeselW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
+    #[doc = "Edge detector is disabled"]
+    #[inline(always)]
+    pub fn disable(self) -> &'a mut crate::W<REG> {
+        self.variant(Edgeselselect::Disable)
+    }
+    #[doc = "Edge detector is enabled"]
+    #[inline(always)]
+    pub fn enable(self) -> &'a mut crate::W<REG> {
+        self.variant(Edgeselselect::Enable)
+    }
+}
 #[doc = "Input Selection 0\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -575,18 +673,165 @@ where
         self.variant(Insel2select::Sercom)
     }
 }
+#[doc = "Inverted Event Input Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Inveiselect {
+    #[doc = "0: Incoming event is not inverted"]
+    Disable = 0,
+    #[doc = "1: Incoming event is inverted"]
+    Enable = 1,
+}
+impl From<Inveiselect> for bool {
+    #[inline(always)]
+    fn from(variant: Inveiselect) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Field `INVEI` reader - Inverted Event Input Enable"]
-pub type InveiR = crate::BitReader;
+pub type InveiR = crate::BitReader<Inveiselect>;
+impl InveiR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Inveiselect {
+        match self.bits {
+            false => Inveiselect::Disable,
+            true => Inveiselect::Enable,
+        }
+    }
+    #[doc = "Incoming event is not inverted"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == Inveiselect::Disable
+    }
+    #[doc = "Incoming event is inverted"]
+    #[inline(always)]
+    pub fn is_enable(&self) -> bool {
+        *self == Inveiselect::Enable
+    }
+}
 #[doc = "Field `INVEI` writer - Inverted Event Input Enable"]
-pub type InveiW<'a, REG> = crate::BitWriter<'a, REG>;
+pub type InveiW<'a, REG> = crate::BitWriter<'a, REG, Inveiselect>;
+impl<'a, REG> InveiW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
+    #[doc = "Incoming event is not inverted"]
+    #[inline(always)]
+    pub fn disable(self) -> &'a mut crate::W<REG> {
+        self.variant(Inveiselect::Disable)
+    }
+    #[doc = "Incoming event is inverted"]
+    #[inline(always)]
+    pub fn enable(self) -> &'a mut crate::W<REG> {
+        self.variant(Inveiselect::Enable)
+    }
+}
+#[doc = "LUT Event Input Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Luteiselect {
+    #[doc = "0: LUT incoming event is disabled"]
+    Disable = 0,
+    #[doc = "1: LUT incoming event is enabled"]
+    Enable = 1,
+}
+impl From<Luteiselect> for bool {
+    #[inline(always)]
+    fn from(variant: Luteiselect) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Field `LUTEI` reader - LUT Event Input Enable"]
-pub type LuteiR = crate::BitReader;
+pub type LuteiR = crate::BitReader<Luteiselect>;
+impl LuteiR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Luteiselect {
+        match self.bits {
+            false => Luteiselect::Disable,
+            true => Luteiselect::Enable,
+        }
+    }
+    #[doc = "LUT incoming event is disabled"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == Luteiselect::Disable
+    }
+    #[doc = "LUT incoming event is enabled"]
+    #[inline(always)]
+    pub fn is_enable(&self) -> bool {
+        *self == Luteiselect::Enable
+    }
+}
 #[doc = "Field `LUTEI` writer - LUT Event Input Enable"]
-pub type LuteiW<'a, REG> = crate::BitWriter<'a, REG>;
+pub type LuteiW<'a, REG> = crate::BitWriter<'a, REG, Luteiselect>;
+impl<'a, REG> LuteiW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
+    #[doc = "LUT incoming event is disabled"]
+    #[inline(always)]
+    pub fn disable(self) -> &'a mut crate::W<REG> {
+        self.variant(Luteiselect::Disable)
+    }
+    #[doc = "LUT incoming event is enabled"]
+    #[inline(always)]
+    pub fn enable(self) -> &'a mut crate::W<REG> {
+        self.variant(Luteiselect::Enable)
+    }
+}
+#[doc = "LUT Event Output Enable\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Luteoselect {
+    #[doc = "0: LUT event output is disabled"]
+    Disable = 0,
+    #[doc = "1: LUT event output is enabled"]
+    Enable = 1,
+}
+impl From<Luteoselect> for bool {
+    #[inline(always)]
+    fn from(variant: Luteoselect) -> Self {
+        variant as u8 != 0
+    }
+}
 #[doc = "Field `LUTEO` reader - LUT Event Output Enable"]
-pub type LuteoR = crate::BitReader;
+pub type LuteoR = crate::BitReader<Luteoselect>;
+impl LuteoR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Luteoselect {
+        match self.bits {
+            false => Luteoselect::Disable,
+            true => Luteoselect::Enable,
+        }
+    }
+    #[doc = "LUT event output is disabled"]
+    #[inline(always)]
+    pub fn is_disable(&self) -> bool {
+        *self == Luteoselect::Disable
+    }
+    #[doc = "LUT event output is enabled"]
+    #[inline(always)]
+    pub fn is_enable(&self) -> bool {
+        *self == Luteoselect::Enable
+    }
+}
 #[doc = "Field `LUTEO` writer - LUT Event Output Enable"]
-pub type LuteoW<'a, REG> = crate::BitWriter<'a, REG>;
+pub type LuteoW<'a, REG> = crate::BitWriter<'a, REG, Luteoselect>;
+impl<'a, REG> LuteoW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+{
+    #[doc = "LUT event output is disabled"]
+    #[inline(always)]
+    pub fn disable(self) -> &'a mut crate::W<REG> {
+        self.variant(Luteoselect::Disable)
+    }
+    #[doc = "LUT event output is enabled"]
+    #[inline(always)]
+    pub fn enable(self) -> &'a mut crate::W<REG> {
+        self.variant(Luteoselect::Enable)
+    }
+}
 #[doc = "Field `TRUTH` reader - Truth Value"]
 pub type TruthR = crate::FieldReader;
 #[doc = "Field `TRUTH` writer - Truth Value"]

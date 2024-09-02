@@ -38,22 +38,6 @@ pub enum Muxposselect {
     Ain14 = 14,
     #[doc = "15: ADC AIN15 Pin"]
     Ain15 = 15,
-    #[doc = "16: ADC AIN16 Pin"]
-    Ain16 = 16,
-    #[doc = "17: ADC AIN17 Pin"]
-    Ain17 = 17,
-    #[doc = "18: ADC AIN18 Pin"]
-    Ain18 = 18,
-    #[doc = "19: ADC AIN19 Pin"]
-    Ain19 = 19,
-    #[doc = "20: ADC AIN20 Pin"]
-    Ain20 = 20,
-    #[doc = "21: ADC AIN21 Pin"]
-    Ain21 = 21,
-    #[doc = "22: ADC AIN22 Pin"]
-    Ain22 = 22,
-    #[doc = "23: ADC AIN23 Pin"]
-    Ain23 = 23,
     #[doc = "24: 1/4 Scaled Core Supply"]
     Scaledcorevcc = 24,
     #[doc = "25: 1/4 Scaled VBAT Supply"]
@@ -62,9 +46,9 @@ pub enum Muxposselect {
     Scalediovcc = 26,
     #[doc = "27: Bandgap Voltage"]
     Bandgap = 27,
-    #[doc = "28: Temperature Sensor"]
+    #[doc = "28: Temperature Sensor TSENSP"]
     Ptat = 28,
-    #[doc = "29: Temperature Sensor"]
+    #[doc = "29: Temperature Sensor TSENSC"]
     Ctat = 29,
     #[doc = "30: DAC Output"]
     Dac = 30,
@@ -86,41 +70,33 @@ pub type MuxposR = crate::FieldReader<Muxposselect>;
 impl MuxposR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Muxposselect {
+    pub const fn variant(&self) -> Option<Muxposselect> {
         match self.bits {
-            0 => Muxposselect::Ain0,
-            1 => Muxposselect::Ain1,
-            2 => Muxposselect::Ain2,
-            3 => Muxposselect::Ain3,
-            4 => Muxposselect::Ain4,
-            5 => Muxposselect::Ain5,
-            6 => Muxposselect::Ain6,
-            7 => Muxposselect::Ain7,
-            8 => Muxposselect::Ain8,
-            9 => Muxposselect::Ain9,
-            10 => Muxposselect::Ain10,
-            11 => Muxposselect::Ain11,
-            12 => Muxposselect::Ain12,
-            13 => Muxposselect::Ain13,
-            14 => Muxposselect::Ain14,
-            15 => Muxposselect::Ain15,
-            16 => Muxposselect::Ain16,
-            17 => Muxposselect::Ain17,
-            18 => Muxposselect::Ain18,
-            19 => Muxposselect::Ain19,
-            20 => Muxposselect::Ain20,
-            21 => Muxposselect::Ain21,
-            22 => Muxposselect::Ain22,
-            23 => Muxposselect::Ain23,
-            24 => Muxposselect::Scaledcorevcc,
-            25 => Muxposselect::Scaledvbat,
-            26 => Muxposselect::Scalediovcc,
-            27 => Muxposselect::Bandgap,
-            28 => Muxposselect::Ptat,
-            29 => Muxposselect::Ctat,
-            30 => Muxposselect::Dac,
-            31 => Muxposselect::Ptc,
-            _ => unreachable!(),
+            0 => Some(Muxposselect::Ain0),
+            1 => Some(Muxposselect::Ain1),
+            2 => Some(Muxposselect::Ain2),
+            3 => Some(Muxposselect::Ain3),
+            4 => Some(Muxposselect::Ain4),
+            5 => Some(Muxposselect::Ain5),
+            6 => Some(Muxposselect::Ain6),
+            7 => Some(Muxposselect::Ain7),
+            8 => Some(Muxposselect::Ain8),
+            9 => Some(Muxposselect::Ain9),
+            10 => Some(Muxposselect::Ain10),
+            11 => Some(Muxposselect::Ain11),
+            12 => Some(Muxposselect::Ain12),
+            13 => Some(Muxposselect::Ain13),
+            14 => Some(Muxposselect::Ain14),
+            15 => Some(Muxposselect::Ain15),
+            24 => Some(Muxposselect::Scaledcorevcc),
+            25 => Some(Muxposselect::Scaledvbat),
+            26 => Some(Muxposselect::Scalediovcc),
+            27 => Some(Muxposselect::Bandgap),
+            28 => Some(Muxposselect::Ptat),
+            29 => Some(Muxposselect::Ctat),
+            30 => Some(Muxposselect::Dac),
+            31 => Some(Muxposselect::Ptc),
+            _ => None,
         }
     }
     #[doc = "ADC AIN0 Pin"]
@@ -203,46 +179,6 @@ impl MuxposR {
     pub fn is_ain15(&self) -> bool {
         *self == Muxposselect::Ain15
     }
-    #[doc = "ADC AIN16 Pin"]
-    #[inline(always)]
-    pub fn is_ain16(&self) -> bool {
-        *self == Muxposselect::Ain16
-    }
-    #[doc = "ADC AIN17 Pin"]
-    #[inline(always)]
-    pub fn is_ain17(&self) -> bool {
-        *self == Muxposselect::Ain17
-    }
-    #[doc = "ADC AIN18 Pin"]
-    #[inline(always)]
-    pub fn is_ain18(&self) -> bool {
-        *self == Muxposselect::Ain18
-    }
-    #[doc = "ADC AIN19 Pin"]
-    #[inline(always)]
-    pub fn is_ain19(&self) -> bool {
-        *self == Muxposselect::Ain19
-    }
-    #[doc = "ADC AIN20 Pin"]
-    #[inline(always)]
-    pub fn is_ain20(&self) -> bool {
-        *self == Muxposselect::Ain20
-    }
-    #[doc = "ADC AIN21 Pin"]
-    #[inline(always)]
-    pub fn is_ain21(&self) -> bool {
-        *self == Muxposselect::Ain21
-    }
-    #[doc = "ADC AIN22 Pin"]
-    #[inline(always)]
-    pub fn is_ain22(&self) -> bool {
-        *self == Muxposselect::Ain22
-    }
-    #[doc = "ADC AIN23 Pin"]
-    #[inline(always)]
-    pub fn is_ain23(&self) -> bool {
-        *self == Muxposselect::Ain23
-    }
     #[doc = "1/4 Scaled Core Supply"]
     #[inline(always)]
     pub fn is_scaledcorevcc(&self) -> bool {
@@ -263,12 +199,12 @@ impl MuxposR {
     pub fn is_bandgap(&self) -> bool {
         *self == Muxposselect::Bandgap
     }
-    #[doc = "Temperature Sensor"]
+    #[doc = "Temperature Sensor TSENSP"]
     #[inline(always)]
     pub fn is_ptat(&self) -> bool {
         *self == Muxposselect::Ptat
     }
-    #[doc = "Temperature Sensor"]
+    #[doc = "Temperature Sensor TSENSC"]
     #[inline(always)]
     pub fn is_ctat(&self) -> bool {
         *self == Muxposselect::Ctat
@@ -285,7 +221,7 @@ impl MuxposR {
     }
 }
 #[doc = "Field `MUXPOS` writer - Positive Mux Input Selection"]
-pub type MuxposW<'a, REG> = crate::FieldWriter<'a, REG, 5, Muxposselect, crate::Safe>;
+pub type MuxposW<'a, REG> = crate::FieldWriter<'a, REG, 5, Muxposselect>;
 impl<'a, REG> MuxposW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
@@ -371,46 +307,6 @@ where
     pub fn ain15(self) -> &'a mut crate::W<REG> {
         self.variant(Muxposselect::Ain15)
     }
-    #[doc = "ADC AIN16 Pin"]
-    #[inline(always)]
-    pub fn ain16(self) -> &'a mut crate::W<REG> {
-        self.variant(Muxposselect::Ain16)
-    }
-    #[doc = "ADC AIN17 Pin"]
-    #[inline(always)]
-    pub fn ain17(self) -> &'a mut crate::W<REG> {
-        self.variant(Muxposselect::Ain17)
-    }
-    #[doc = "ADC AIN18 Pin"]
-    #[inline(always)]
-    pub fn ain18(self) -> &'a mut crate::W<REG> {
-        self.variant(Muxposselect::Ain18)
-    }
-    #[doc = "ADC AIN19 Pin"]
-    #[inline(always)]
-    pub fn ain19(self) -> &'a mut crate::W<REG> {
-        self.variant(Muxposselect::Ain19)
-    }
-    #[doc = "ADC AIN20 Pin"]
-    #[inline(always)]
-    pub fn ain20(self) -> &'a mut crate::W<REG> {
-        self.variant(Muxposselect::Ain20)
-    }
-    #[doc = "ADC AIN21 Pin"]
-    #[inline(always)]
-    pub fn ain21(self) -> &'a mut crate::W<REG> {
-        self.variant(Muxposselect::Ain21)
-    }
-    #[doc = "ADC AIN22 Pin"]
-    #[inline(always)]
-    pub fn ain22(self) -> &'a mut crate::W<REG> {
-        self.variant(Muxposselect::Ain22)
-    }
-    #[doc = "ADC AIN23 Pin"]
-    #[inline(always)]
-    pub fn ain23(self) -> &'a mut crate::W<REG> {
-        self.variant(Muxposselect::Ain23)
-    }
     #[doc = "1/4 Scaled Core Supply"]
     #[inline(always)]
     pub fn scaledcorevcc(self) -> &'a mut crate::W<REG> {
@@ -431,12 +327,12 @@ where
     pub fn bandgap(self) -> &'a mut crate::W<REG> {
         self.variant(Muxposselect::Bandgap)
     }
-    #[doc = "Temperature Sensor"]
+    #[doc = "Temperature Sensor TSENSP"]
     #[inline(always)]
     pub fn ptat(self) -> &'a mut crate::W<REG> {
         self.variant(Muxposselect::Ptat)
     }
-    #[doc = "Temperature Sensor"]
+    #[doc = "Temperature Sensor TSENSC"]
     #[inline(always)]
     pub fn ctat(self) -> &'a mut crate::W<REG> {
         self.variant(Muxposselect::Ctat)

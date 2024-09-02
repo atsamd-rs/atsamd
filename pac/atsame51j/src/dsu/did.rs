@@ -10,10 +10,14 @@ pub type DieR = crate::FieldReader;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Seriesselect {
-    #[doc = "0: Cortex-M0+ processor, basic feature set"]
-    _0 = 0,
-    #[doc = "1: Cortex-M0+ processor, USB"]
-    _1 = 1,
+    #[doc = "1: SAM E51"]
+    Same51 = 1,
+    #[doc = "3: SAM E53"]
+    Same53 = 3,
+    #[doc = "4: SAM E54"]
+    Same54 = 4,
+    #[doc = "6: SAM D51"]
+    Samd51 = 6,
 }
 impl From<Seriesselect> for u8 {
     #[inline(always)]
@@ -32,20 +36,32 @@ impl SeriesR {
     #[inline(always)]
     pub const fn variant(&self) -> Option<Seriesselect> {
         match self.bits {
-            0 => Some(Seriesselect::_0),
-            1 => Some(Seriesselect::_1),
+            1 => Some(Seriesselect::Same51),
+            3 => Some(Seriesselect::Same53),
+            4 => Some(Seriesselect::Same54),
+            6 => Some(Seriesselect::Samd51),
             _ => None,
         }
     }
-    #[doc = "Cortex-M0+ processor, basic feature set"]
+    #[doc = "SAM E51"]
     #[inline(always)]
-    pub fn is_0(&self) -> bool {
-        *self == Seriesselect::_0
+    pub fn is_same51(&self) -> bool {
+        *self == Seriesselect::Same51
     }
-    #[doc = "Cortex-M0+ processor, USB"]
+    #[doc = "SAM E53"]
     #[inline(always)]
-    pub fn is_1(&self) -> bool {
-        *self == Seriesselect::_1
+    pub fn is_same53(&self) -> bool {
+        *self == Seriesselect::Same53
+    }
+    #[doc = "SAM E54"]
+    #[inline(always)]
+    pub fn is_same54(&self) -> bool {
+        *self == Seriesselect::Same54
+    }
+    #[doc = "SAM D51"]
+    #[inline(always)]
+    pub fn is_samd51(&self) -> bool {
+        *self == Seriesselect::Samd51
     }
 }
 #[doc = "Family\n\nValue on reset: 3"]
@@ -53,9 +69,9 @@ impl SeriesR {
 #[repr(u8)]
 pub enum Familyselect {
     #[doc = "0: General purpose microcontroller"]
-    _0 = 0,
-    #[doc = "1: PicoPower"]
-    _1 = 1,
+    Samd5x = 0,
+    #[doc = "3: PicoPower"]
+    Same5x = 3,
 }
 impl From<Familyselect> for u8 {
     #[inline(always)]
@@ -74,38 +90,28 @@ impl FamilyR {
     #[inline(always)]
     pub const fn variant(&self) -> Option<Familyselect> {
         match self.bits {
-            0 => Some(Familyselect::_0),
-            1 => Some(Familyselect::_1),
+            0 => Some(Familyselect::Samd5x),
+            3 => Some(Familyselect::Same5x),
             _ => None,
         }
     }
     #[doc = "General purpose microcontroller"]
     #[inline(always)]
-    pub fn is_0(&self) -> bool {
-        *self == Familyselect::_0
+    pub fn is_samd5x(&self) -> bool {
+        *self == Familyselect::Samd5x
     }
     #[doc = "PicoPower"]
     #[inline(always)]
-    pub fn is_1(&self) -> bool {
-        *self == Familyselect::_1
+    pub fn is_same5x(&self) -> bool {
+        *self == Familyselect::Same5x
     }
 }
 #[doc = "Processor\n\nValue on reset: 6"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Processorselect {
-    #[doc = "1: Cortex-M0+"]
-    Cm0p = 1,
-    #[doc = "2: Cortex-M23"]
-    Cm23 = 2,
-    #[doc = "3: Cortex-M3"]
-    Cm3 = 3,
-    #[doc = "5: Cortex-M4"]
-    Cm4 = 5,
     #[doc = "6: Cortex-M4 with FPU"]
     Cm4f = 6,
-    #[doc = "7: Cortex-M33"]
-    Cm33 = 7,
 }
 impl From<Processorselect> for u8 {
     #[inline(always)]
@@ -124,44 +130,14 @@ impl ProcessorR {
     #[inline(always)]
     pub const fn variant(&self) -> Option<Processorselect> {
         match self.bits {
-            1 => Some(Processorselect::Cm0p),
-            2 => Some(Processorselect::Cm23),
-            3 => Some(Processorselect::Cm3),
-            5 => Some(Processorselect::Cm4),
             6 => Some(Processorselect::Cm4f),
-            7 => Some(Processorselect::Cm33),
             _ => None,
         }
-    }
-    #[doc = "Cortex-M0+"]
-    #[inline(always)]
-    pub fn is_cm0p(&self) -> bool {
-        *self == Processorselect::Cm0p
-    }
-    #[doc = "Cortex-M23"]
-    #[inline(always)]
-    pub fn is_cm23(&self) -> bool {
-        *self == Processorselect::Cm23
-    }
-    #[doc = "Cortex-M3"]
-    #[inline(always)]
-    pub fn is_cm3(&self) -> bool {
-        *self == Processorselect::Cm3
-    }
-    #[doc = "Cortex-M4"]
-    #[inline(always)]
-    pub fn is_cm4(&self) -> bool {
-        *self == Processorselect::Cm4
     }
     #[doc = "Cortex-M4 with FPU"]
     #[inline(always)]
     pub fn is_cm4f(&self) -> bool {
         *self == Processorselect::Cm4f
-    }
-    #[doc = "Cortex-M33"]
-    #[inline(always)]
-    pub fn is_cm33(&self) -> bool {
-        *self == Processorselect::Cm33
     }
 }
 impl R {

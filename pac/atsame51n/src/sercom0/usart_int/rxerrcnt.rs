@@ -1,8 +1,12 @@
 #[doc = "Register `RXERRCNT` reader"]
 pub type R = crate::R<RxerrcntSpec>;
-impl core::fmt::Debug for R {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(f, "{}", self.bits())
+#[doc = "Field `RXERRCNT` reader - Receive Error Count"]
+pub type RxerrcntR = crate::FieldReader;
+impl R {
+    #[doc = "Bits 0:7 - Receive Error Count"]
+    #[inline(always)]
+    pub fn rxerrcnt(&self) -> RxerrcntR {
+        RxerrcntR::new(self.bits)
     }
 }
 #[doc = "USART_INT Receive Error Count\n\nYou can [`read`](crate::Reg::read) this register and get [`rxerrcnt::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]

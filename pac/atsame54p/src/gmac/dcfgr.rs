@@ -2,10 +2,92 @@
 pub type R = crate::R<DcfgrSpec>;
 #[doc = "Register `DCFGR` writer"]
 pub type W = crate::W<DcfgrSpec>;
+#[doc = "Fixed Burst Length for DMA Data Operations:\n\nValue on reset: 4"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Fbldoselect {
+    #[doc = "1: 00001: Always use SINGLE AHB bursts"]
+    Single = 1,
+    #[doc = "4: 001xx: Attempt to use INCR4 AHB bursts (Default)"]
+    Incr4 = 4,
+    #[doc = "8: 01xxx: Attempt to use INCR8 AHB bursts"]
+    Incr8 = 8,
+    #[doc = "16: 1xxxx: Attempt to use INCR16 AHB bursts"]
+    Incr16 = 16,
+}
+impl From<Fbldoselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Fbldoselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Fbldoselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Fbldoselect {}
 #[doc = "Field `FBLDO` reader - Fixed Burst Length for DMA Data Operations:"]
-pub type FbldoR = crate::FieldReader;
+pub type FbldoR = crate::FieldReader<Fbldoselect>;
+impl FbldoR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<Fbldoselect> {
+        match self.bits {
+            1 => Some(Fbldoselect::Single),
+            4 => Some(Fbldoselect::Incr4),
+            8 => Some(Fbldoselect::Incr8),
+            16 => Some(Fbldoselect::Incr16),
+            _ => None,
+        }
+    }
+    #[doc = "00001: Always use SINGLE AHB bursts"]
+    #[inline(always)]
+    pub fn is_single(&self) -> bool {
+        *self == Fbldoselect::Single
+    }
+    #[doc = "001xx: Attempt to use INCR4 AHB bursts (Default)"]
+    #[inline(always)]
+    pub fn is_incr4(&self) -> bool {
+        *self == Fbldoselect::Incr4
+    }
+    #[doc = "01xxx: Attempt to use INCR8 AHB bursts"]
+    #[inline(always)]
+    pub fn is_incr8(&self) -> bool {
+        *self == Fbldoselect::Incr8
+    }
+    #[doc = "1xxxx: Attempt to use INCR16 AHB bursts"]
+    #[inline(always)]
+    pub fn is_incr16(&self) -> bool {
+        *self == Fbldoselect::Incr16
+    }
+}
 #[doc = "Field `FBLDO` writer - Fixed Burst Length for DMA Data Operations:"]
-pub type FbldoW<'a, REG> = crate::FieldWriter<'a, REG, 5>;
+pub type FbldoW<'a, REG> = crate::FieldWriter<'a, REG, 5, Fbldoselect>;
+impl<'a, REG> FbldoW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "00001: Always use SINGLE AHB bursts"]
+    #[inline(always)]
+    pub fn single(self) -> &'a mut crate::W<REG> {
+        self.variant(Fbldoselect::Single)
+    }
+    #[doc = "001xx: Attempt to use INCR4 AHB bursts (Default)"]
+    #[inline(always)]
+    pub fn incr4(self) -> &'a mut crate::W<REG> {
+        self.variant(Fbldoselect::Incr4)
+    }
+    #[doc = "01xxx: Attempt to use INCR8 AHB bursts"]
+    #[inline(always)]
+    pub fn incr8(self) -> &'a mut crate::W<REG> {
+        self.variant(Fbldoselect::Incr8)
+    }
+    #[doc = "1xxxx: Attempt to use INCR16 AHB bursts"]
+    #[inline(always)]
+    pub fn incr16(self) -> &'a mut crate::W<REG> {
+        self.variant(Fbldoselect::Incr16)
+    }
+}
 #[doc = "Field `ESMA` reader - Endian Swap Mode Enable for Management Descriptor Accesses"]
 pub type EsmaR = crate::BitReader;
 #[doc = "Field `ESMA` writer - Endian Swap Mode Enable for Management Descriptor Accesses"]
@@ -14,10 +96,92 @@ pub type EsmaW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type EspaR = crate::BitReader;
 #[doc = "Field `ESPA` writer - Endian Swap Mode Enable for Packet Data Accesses"]
 pub type EspaW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Receiver Packet Buffer Memory Size Select\n\nValue on reset: 3"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Rxbmsselect {
+    #[doc = "0: RECEIVE_BUFFER_SIZE/8 Kbyte Memory Size"]
+    Eighth = 0,
+    #[doc = "1: RECEIVE_BUFFER_SIZE/4 Kbytes Memory Size"]
+    Quarter = 1,
+    #[doc = "2: RECEIVE_BUFFER_SIZE/2 Kbytes Memory Size"]
+    Half = 2,
+    #[doc = "3: RECEIVE_BUFFER_SIZE Kbytes Memory Size"]
+    Full = 3,
+}
+impl From<Rxbmsselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Rxbmsselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Rxbmsselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Rxbmsselect {}
 #[doc = "Field `RXBMS` reader - Receiver Packet Buffer Memory Size Select"]
-pub type RxbmsR = crate::FieldReader;
+pub type RxbmsR = crate::FieldReader<Rxbmsselect>;
+impl RxbmsR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Rxbmsselect {
+        match self.bits {
+            0 => Rxbmsselect::Eighth,
+            1 => Rxbmsselect::Quarter,
+            2 => Rxbmsselect::Half,
+            3 => Rxbmsselect::Full,
+            _ => unreachable!(),
+        }
+    }
+    #[doc = "RECEIVE_BUFFER_SIZE/8 Kbyte Memory Size"]
+    #[inline(always)]
+    pub fn is_eighth(&self) -> bool {
+        *self == Rxbmsselect::Eighth
+    }
+    #[doc = "RECEIVE_BUFFER_SIZE/4 Kbytes Memory Size"]
+    #[inline(always)]
+    pub fn is_quarter(&self) -> bool {
+        *self == Rxbmsselect::Quarter
+    }
+    #[doc = "RECEIVE_BUFFER_SIZE/2 Kbytes Memory Size"]
+    #[inline(always)]
+    pub fn is_half(&self) -> bool {
+        *self == Rxbmsselect::Half
+    }
+    #[doc = "RECEIVE_BUFFER_SIZE Kbytes Memory Size"]
+    #[inline(always)]
+    pub fn is_full(&self) -> bool {
+        *self == Rxbmsselect::Full
+    }
+}
 #[doc = "Field `RXBMS` writer - Receiver Packet Buffer Memory Size Select"]
-pub type RxbmsW<'a, REG> = crate::FieldWriter<'a, REG, 2>;
+pub type RxbmsW<'a, REG> = crate::FieldWriter<'a, REG, 2, Rxbmsselect, crate::Safe>;
+impl<'a, REG> RxbmsW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "RECEIVE_BUFFER_SIZE/8 Kbyte Memory Size"]
+    #[inline(always)]
+    pub fn eighth(self) -> &'a mut crate::W<REG> {
+        self.variant(Rxbmsselect::Eighth)
+    }
+    #[doc = "RECEIVE_BUFFER_SIZE/4 Kbytes Memory Size"]
+    #[inline(always)]
+    pub fn quarter(self) -> &'a mut crate::W<REG> {
+        self.variant(Rxbmsselect::Quarter)
+    }
+    #[doc = "RECEIVE_BUFFER_SIZE/2 Kbytes Memory Size"]
+    #[inline(always)]
+    pub fn half(self) -> &'a mut crate::W<REG> {
+        self.variant(Rxbmsselect::Half)
+    }
+    #[doc = "RECEIVE_BUFFER_SIZE Kbytes Memory Size"]
+    #[inline(always)]
+    pub fn full(self) -> &'a mut crate::W<REG> {
+        self.variant(Rxbmsselect::Full)
+    }
+}
 #[doc = "Field `TXPBMS` reader - Transmitter Packet Buffer Memory Size Select"]
 pub type TxpbmsR = crate::BitReader;
 #[doc = "Field `TXPBMS` writer - Transmitter Packet Buffer Memory Size Select"]

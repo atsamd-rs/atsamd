@@ -103,14 +103,6 @@ where
         self.variant(Ualgoselect::Sha224)
     }
 }
-#[doc = "Field `HAPROT` reader - Region Hash Area Protection"]
-pub type HaprotR = crate::FieldReader;
-#[doc = "Field `HAPROT` writer - Region Hash Area Protection"]
-pub type HaprotW<'a, REG> = crate::FieldWriter<'a, REG, 6>;
-#[doc = "Field `DAPROT` reader - Region Descriptor Area Protection"]
-pub type DaprotR = crate::FieldReader;
-#[doc = "Field `DAPROT` writer - Region Descriptor Area Protection"]
-pub type DaprotW<'a, REG> = crate::FieldWriter<'a, REG, 6>;
 impl R {
     #[doc = "Bit 0 - Write Back Disable"]
     #[inline(always)]
@@ -151,16 +143,6 @@ impl R {
     #[inline(always)]
     pub fn ualgo(&self) -> UalgoR {
         UalgoR::new(((self.bits >> 13) & 7) as u8)
-    }
-    #[doc = "Bits 16:21 - Region Hash Area Protection"]
-    #[inline(always)]
-    pub fn haprot(&self) -> HaprotR {
-        HaprotR::new(((self.bits >> 16) & 0x3f) as u8)
-    }
-    #[doc = "Bits 24:29 - Region Descriptor Area Protection"]
-    #[inline(always)]
-    pub fn daprot(&self) -> DaprotR {
-        DaprotR::new(((self.bits >> 24) & 0x3f) as u8)
     }
 }
 impl W {
@@ -211,18 +193,6 @@ impl W {
     #[must_use]
     pub fn ualgo(&mut self) -> UalgoW<CfgSpec> {
         UalgoW::new(self, 13)
-    }
-    #[doc = "Bits 16:21 - Region Hash Area Protection"]
-    #[inline(always)]
-    #[must_use]
-    pub fn haprot(&mut self) -> HaprotW<CfgSpec> {
-        HaprotW::new(self, 16)
-    }
-    #[doc = "Bits 24:29 - Region Descriptor Area Protection"]
-    #[inline(always)]
-    #[must_use]
-    pub fn daprot(&mut self) -> DaprotW<CfgSpec> {
-        DaprotW::new(self, 24)
     }
 }
 #[doc = "Configuration\n\nYou can [`read`](crate::Reg::read) this register and get [`cfg::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cfg::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]

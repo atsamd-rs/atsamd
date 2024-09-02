@@ -26,10 +26,6 @@ pub type Port_W<'a, REG> = crate::BitWriter<'a, REG>;
 pub type Dmac_R = crate::BitReader;
 #[doc = "Field `DMAC_` writer - DMAC"]
 pub type Dmac_W<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `HMATRIX_` reader - HMATRIX"]
-pub type Hmatrix_R = crate::BitReader;
-#[doc = "Field `HMATRIX_` writer - HMATRIX"]
-pub type Hmatrix_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EVSYS_` reader - EVSYS"]
 pub type Evsys_R = crate::BitReader;
 #[doc = "Field `EVSYS_` writer - EVSYS"]
@@ -92,11 +88,6 @@ impl R {
     #[inline(always)]
     pub fn dmac_(&self) -> Dmac_R {
         Dmac_R::new(((self.bits >> 5) & 1) != 0)
-    }
-    #[doc = "Bit 6 - HMATRIX"]
-    #[inline(always)]
-    pub fn hmatrix_(&self) -> Hmatrix_R {
-        Hmatrix_R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - EVSYS"]
     #[inline(always)]
@@ -175,12 +166,6 @@ impl W {
     #[must_use]
     pub fn dmac_(&mut self) -> Dmac_W<IntflagbSpec> {
         Dmac_W::new(self, 5)
-    }
-    #[doc = "Bit 6 - HMATRIX"]
-    #[inline(always)]
-    #[must_use]
-    pub fn hmatrix_(&mut self) -> Hmatrix_W<IntflagbSpec> {
-        Hmatrix_W::new(self, 6)
     }
     #[doc = "Bit 7 - EVSYS"]
     #[inline(always)]

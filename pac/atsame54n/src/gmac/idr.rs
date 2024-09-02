@@ -46,6 +46,8 @@ pub type PdrqftW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type PdrsftW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SRI` writer - TSU Seconds Register Increment"]
 pub type SriW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "Field `RXLPISBC` writer - Enable RX LPI Indication"]
+pub type RxlpisbcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WOL` writer - Wake On LAN"]
 pub type WolW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TSUCMP` writer - Tsu timer comparison"]
@@ -188,6 +190,12 @@ impl W {
     #[must_use]
     pub fn sri(&mut self) -> SriW<IdrSpec> {
         SriW::new(self, 26)
+    }
+    #[doc = "Bit 27 - Enable RX LPI Indication"]
+    #[inline(always)]
+    #[must_use]
+    pub fn rxlpisbc(&mut self) -> RxlpisbcW<IdrSpec> {
+        RxlpisbcW::new(self, 27)
     }
     #[doc = "Bit 28 - Wake On LAN"]
     #[inline(always)]

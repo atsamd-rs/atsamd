@@ -10,10 +10,8 @@ pub type ResumeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Spdconfselect {
-    #[doc = "0: Normal mode: the host starts in full-speed mode and performs a high-speed reset to switch to the high speed mode if the downstream peripheral is high-speed capable."]
+    #[doc = "0: Low and Full Speed capable"]
     Normal = 0,
-    #[doc = "3: Full-speed: the host remains in full-speed mode whatever is the peripheral speed capability. Relevant in UTMI mode only."]
-    Fs = 3,
 }
 impl From<Spdconfselect> for u8 {
     #[inline(always)]
@@ -33,19 +31,13 @@ impl SpdconfR {
     pub const fn variant(&self) -> Option<Spdconfselect> {
         match self.bits {
             0 => Some(Spdconfselect::Normal),
-            3 => Some(Spdconfselect::Fs),
             _ => None,
         }
     }
-    #[doc = "Normal mode: the host starts in full-speed mode and performs a high-speed reset to switch to the high speed mode if the downstream peripheral is high-speed capable."]
+    #[doc = "Low and Full Speed capable"]
     #[inline(always)]
     pub fn is_normal(&self) -> bool {
         *self == Spdconfselect::Normal
-    }
-    #[doc = "Full-speed: the host remains in full-speed mode whatever is the peripheral speed capability. Relevant in UTMI mode only."]
-    #[inline(always)]
-    pub fn is_fs(&self) -> bool {
-        *self == Spdconfselect::Fs
     }
 }
 #[doc = "Field `SPDCONF` writer - Speed Configuration for Host"]
@@ -55,29 +47,16 @@ where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
 {
-    #[doc = "Normal mode: the host starts in full-speed mode and performs a high-speed reset to switch to the high speed mode if the downstream peripheral is high-speed capable."]
+    #[doc = "Low and Full Speed capable"]
     #[inline(always)]
     pub fn normal(self) -> &'a mut crate::W<REG> {
         self.variant(Spdconfselect::Normal)
-    }
-    #[doc = "Full-speed: the host remains in full-speed mode whatever is the peripheral speed capability. Relevant in UTMI mode only."]
-    #[inline(always)]
-    pub fn fs(self) -> &'a mut crate::W<REG> {
-        self.variant(Spdconfselect::Fs)
     }
 }
 #[doc = "Field `AUTORESUME` reader - Auto Resume Enable"]
 pub type AutoresumeR = crate::BitReader;
 #[doc = "Field `AUTORESUME` writer - Auto Resume Enable"]
 pub type AutoresumeW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `TSTJ` reader - Test mode J"]
-pub type TstjR = crate::BitReader;
-#[doc = "Field `TSTJ` writer - Test mode J"]
-pub type TstjW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `TSTK` reader - Test mode K"]
-pub type TstkR = crate::BitReader;
-#[doc = "Field `TSTK` writer - Test mode K"]
-pub type TstkW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SOFE` reader - Start of Frame Generation Enable"]
 pub type SofeR = crate::BitReader;
 #[doc = "Field `SOFE` writer - Start of Frame Generation Enable"]
@@ -109,16 +88,6 @@ impl R {
     #[inline(always)]
     pub fn autoresume(&self) -> AutoresumeR {
         AutoresumeR::new(((self.bits >> 4) & 1) != 0)
-    }
-    #[doc = "Bit 5 - Test mode J"]
-    #[inline(always)]
-    pub fn tstj(&self) -> TstjR {
-        TstjR::new(((self.bits >> 5) & 1) != 0)
-    }
-    #[doc = "Bit 6 - Test mode K"]
-    #[inline(always)]
-    pub fn tstk(&self) -> TstkR {
-        TstkR::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 8 - Start of Frame Generation Enable"]
     #[inline(always)]
@@ -159,18 +128,6 @@ impl W {
     #[must_use]
     pub fn autoresume(&mut self) -> AutoresumeW<CtrlbSpec> {
         AutoresumeW::new(self, 4)
-    }
-    #[doc = "Bit 5 - Test mode J"]
-    #[inline(always)]
-    #[must_use]
-    pub fn tstj(&mut self) -> TstjW<CtrlbSpec> {
-        TstjW::new(self, 5)
-    }
-    #[doc = "Bit 6 - Test mode K"]
-    #[inline(always)]
-    #[must_use]
-    pub fn tstk(&mut self) -> TstkW<CtrlbSpec> {
-        TstkW::new(self, 6)
     }
     #[doc = "Bit 8 - Start of Frame Generation Enable"]
     #[inline(always)]

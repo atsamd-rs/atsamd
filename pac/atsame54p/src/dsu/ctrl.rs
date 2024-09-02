@@ -8,10 +8,6 @@ pub type CrcW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type MbistW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CE` writer - Chip-Erase"]
 pub type CeW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `ARR` writer - Auxiliary Row Read"]
-pub type ArrW<'a, REG> = crate::BitWriter<'a, REG>;
-#[doc = "Field `SMSA` writer - Start Memory Stream Access"]
-pub type SmsaW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
@@ -36,18 +32,6 @@ impl W {
     #[must_use]
     pub fn ce(&mut self) -> CeW<CtrlSpec> {
         CeW::new(self, 4)
-    }
-    #[doc = "Bit 6 - Auxiliary Row Read"]
-    #[inline(always)]
-    #[must_use]
-    pub fn arr(&mut self) -> ArrW<CtrlSpec> {
-        ArrW::new(self, 6)
-    }
-    #[doc = "Bit 7 - Start Memory Stream Access"]
-    #[inline(always)]
-    #[must_use]
-    pub fn smsa(&mut self) -> SmsaW<CtrlSpec> {
-        SmsaW::new(self, 7)
     }
 }
 #[doc = "Control\n\nYou can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrl::W`](W). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]

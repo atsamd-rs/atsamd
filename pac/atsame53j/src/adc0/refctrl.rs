@@ -12,11 +12,11 @@ pub enum Refselselect {
     Intvcc0 = 2,
     #[doc = "3: VDDANA"]
     Intvcc1 = 3,
-    #[doc = "4: External Reference"]
+    #[doc = "4: External Reference A"]
     Arefa = 4,
-    #[doc = "5: External Reference"]
+    #[doc = "5: External Reference B"]
     Arefb = 5,
-    #[doc = "6: External Reference (only on ADC1)"]
+    #[doc = "6: External Reference C (only on ADC1)"]
     Arefc = 6,
 }
 impl From<Refselselect> for u8 {
@@ -60,17 +60,17 @@ impl RefselR {
     pub fn is_intvcc1(&self) -> bool {
         *self == Refselselect::Intvcc1
     }
-    #[doc = "External Reference"]
+    #[doc = "External Reference A"]
     #[inline(always)]
     pub fn is_arefa(&self) -> bool {
         *self == Refselselect::Arefa
     }
-    #[doc = "External Reference"]
+    #[doc = "External Reference B"]
     #[inline(always)]
     pub fn is_arefb(&self) -> bool {
         *self == Refselselect::Arefb
     }
-    #[doc = "External Reference (only on ADC1)"]
+    #[doc = "External Reference C (only on ADC1)"]
     #[inline(always)]
     pub fn is_arefc(&self) -> bool {
         *self == Refselselect::Arefc
@@ -98,17 +98,17 @@ where
     pub fn intvcc1(self) -> &'a mut crate::W<REG> {
         self.variant(Refselselect::Intvcc1)
     }
-    #[doc = "External Reference"]
+    #[doc = "External Reference A"]
     #[inline(always)]
     pub fn arefa(self) -> &'a mut crate::W<REG> {
         self.variant(Refselselect::Arefa)
     }
-    #[doc = "External Reference"]
+    #[doc = "External Reference B"]
     #[inline(always)]
     pub fn arefb(self) -> &'a mut crate::W<REG> {
         self.variant(Refselselect::Arefb)
     }
-    #[doc = "External Reference (only on ADC1)"]
+    #[doc = "External Reference C (only on ADC1)"]
     #[inline(always)]
     pub fn arefc(self) -> &'a mut crate::W<REG> {
         self.variant(Refselselect::Arefc)

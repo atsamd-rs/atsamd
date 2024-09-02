@@ -28,8 +28,6 @@ pub enum Cmdselect {
     Update = 3,
     #[doc = "4: Force a read synchronization of COUNT"]
     Readsync = 4,
-    #[doc = "5: One-shot DMA trigger"]
-    Dmaos = 5,
 }
 impl From<Cmdselect> for u8 {
     #[inline(always)]
@@ -53,7 +51,6 @@ impl CmdR {
             2 => Some(Cmdselect::Stop),
             3 => Some(Cmdselect::Update),
             4 => Some(Cmdselect::Readsync),
-            5 => Some(Cmdselect::Dmaos),
             _ => None,
         }
     }
@@ -81,11 +78,6 @@ impl CmdR {
     #[inline(always)]
     pub fn is_readsync(&self) -> bool {
         *self == Cmdselect::Readsync
-    }
-    #[doc = "One-shot DMA trigger"]
-    #[inline(always)]
-    pub fn is_dmaos(&self) -> bool {
-        *self == Cmdselect::Dmaos
     }
 }
 #[doc = "Field `CMD` writer - Command"]
@@ -119,11 +111,6 @@ where
     #[inline(always)]
     pub fn readsync(self) -> &'a mut crate::W<REG> {
         self.variant(Cmdselect::Readsync)
-    }
-    #[doc = "One-shot DMA trigger"]
-    #[inline(always)]
-    pub fn dmaos(self) -> &'a mut crate::W<REG> {
-        self.variant(Cmdselect::Dmaos)
     }
 }
 impl R {

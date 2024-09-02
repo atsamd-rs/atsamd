@@ -58,10 +58,118 @@ pub type LferdW<'a, REG> = crate::BitWriter<'a, REG>;
 pub type RfcsR = crate::BitReader;
 #[doc = "Field `RFCS` writer - Remove FCS"]
 pub type RfcsW<'a, REG> = crate::BitWriter<'a, REG>;
+#[doc = "MDC CLock Division\n\nValue on reset: 2"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Clkselect {
+    #[doc = "0: MCK divided by 8"]
+    Mck8 = 0,
+    #[doc = "1: MCK divided by 16"]
+    Mck16 = 1,
+    #[doc = "2: MCK divided by 32"]
+    Mck32 = 2,
+    #[doc = "3: MCK divided by 48"]
+    Mck48 = 3,
+    #[doc = "4: MCK divided by 64"]
+    Mck64 = 4,
+    #[doc = "5: MCK divided by 96"]
+    Mck96 = 5,
+}
+impl From<Clkselect> for u8 {
+    #[inline(always)]
+    fn from(variant: Clkselect) -> Self {
+        variant as _
+    }
+}
+impl crate::FieldSpec for Clkselect {
+    type Ux = u8;
+}
+impl crate::IsEnum for Clkselect {}
 #[doc = "Field `CLK` reader - MDC CLock Division"]
-pub type ClkR = crate::FieldReader;
+pub type ClkR = crate::FieldReader<Clkselect>;
+impl ClkR {
+    #[doc = "Get enumerated values variant"]
+    #[inline(always)]
+    pub const fn variant(&self) -> Option<Clkselect> {
+        match self.bits {
+            0 => Some(Clkselect::Mck8),
+            1 => Some(Clkselect::Mck16),
+            2 => Some(Clkselect::Mck32),
+            3 => Some(Clkselect::Mck48),
+            4 => Some(Clkselect::Mck64),
+            5 => Some(Clkselect::Mck96),
+            _ => None,
+        }
+    }
+    #[doc = "MCK divided by 8"]
+    #[inline(always)]
+    pub fn is_mck8(&self) -> bool {
+        *self == Clkselect::Mck8
+    }
+    #[doc = "MCK divided by 16"]
+    #[inline(always)]
+    pub fn is_mck16(&self) -> bool {
+        *self == Clkselect::Mck16
+    }
+    #[doc = "MCK divided by 32"]
+    #[inline(always)]
+    pub fn is_mck32(&self) -> bool {
+        *self == Clkselect::Mck32
+    }
+    #[doc = "MCK divided by 48"]
+    #[inline(always)]
+    pub fn is_mck48(&self) -> bool {
+        *self == Clkselect::Mck48
+    }
+    #[doc = "MCK divided by 64"]
+    #[inline(always)]
+    pub fn is_mck64(&self) -> bool {
+        *self == Clkselect::Mck64
+    }
+    #[doc = "MCK divided by 96"]
+    #[inline(always)]
+    pub fn is_mck96(&self) -> bool {
+        *self == Clkselect::Mck96
+    }
+}
 #[doc = "Field `CLK` writer - MDC CLock Division"]
-pub type ClkW<'a, REG> = crate::FieldWriter<'a, REG, 3>;
+pub type ClkW<'a, REG> = crate::FieldWriter<'a, REG, 3, Clkselect>;
+impl<'a, REG> ClkW<'a, REG>
+where
+    REG: crate::Writable + crate::RegisterSpec,
+    REG::Ux: From<u8>,
+{
+    #[doc = "MCK divided by 8"]
+    #[inline(always)]
+    pub fn mck8(self) -> &'a mut crate::W<REG> {
+        self.variant(Clkselect::Mck8)
+    }
+    #[doc = "MCK divided by 16"]
+    #[inline(always)]
+    pub fn mck16(self) -> &'a mut crate::W<REG> {
+        self.variant(Clkselect::Mck16)
+    }
+    #[doc = "MCK divided by 32"]
+    #[inline(always)]
+    pub fn mck32(self) -> &'a mut crate::W<REG> {
+        self.variant(Clkselect::Mck32)
+    }
+    #[doc = "MCK divided by 48"]
+    #[inline(always)]
+    pub fn mck48(self) -> &'a mut crate::W<REG> {
+        self.variant(Clkselect::Mck48)
+    }
+    #[doc = "MCK divided by 64"]
+    #[inline(always)]
+    pub fn mck64(self) -> &'a mut crate::W<REG> {
+        self.variant(Clkselect::Mck64)
+    }
+    #[doc = "MCK divided by 96"]
+    #[inline(always)]
+    pub fn mck96(self) -> &'a mut crate::W<REG> {
+        self.variant(Clkselect::Mck96)
+    }
+}
 #[doc = "Field `DBW` reader - Data Bus Width"]
 pub type DbwR = crate::FieldReader;
 #[doc = "Field `DBW` writer - Data Bus Width"]

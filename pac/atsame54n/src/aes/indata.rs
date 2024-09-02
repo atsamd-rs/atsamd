@@ -2,12 +2,25 @@
 pub type R = crate::R<IndataSpec>;
 #[doc = "Register `INDATA` writer"]
 pub type W = crate::W<IndataSpec>;
-impl core::fmt::Debug for R {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(f, "{}", self.bits())
+#[doc = "Field `INDATA` reader - Data Value"]
+pub type IndataR = crate::FieldReader<u32>;
+#[doc = "Field `INDATA` writer - Data Value"]
+pub type IndataW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
+impl R {
+    #[doc = "Bits 0:31 - Data Value"]
+    #[inline(always)]
+    pub fn indata(&self) -> IndataR {
+        IndataR::new(self.bits)
     }
 }
-impl W {}
+impl W {
+    #[doc = "Bits 0:31 - Data Value"]
+    #[inline(always)]
+    #[must_use]
+    pub fn indata(&mut self) -> IndataW<IndataSpec> {
+        IndataW::new(self, 0)
+    }
+}
 #[doc = "Indata\n\nYou can [`read`](crate::Reg::read) this register and get [`indata::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`indata::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct IndataSpec;
 impl crate::RegisterSpec for IndataSpec {
