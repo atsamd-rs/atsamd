@@ -22,28 +22,28 @@ use pac::Peripherals;
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+    let mut clocks = GenericClockController::with_external_32kosc(
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let mut mclk = peripherals.MCLK;
-    let dmac = peripherals.DMAC;
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let mut mclk = peripherals.mclk;
+    let dmac = peripherals.dmac;
+    let pins = bsp::Pins::new(peripherals.port);
 
     // Take RX and TX pins
     let uart_rx = pin_alias!(pins.uart_rx);
     let uart_tx = pin_alias!(pins.uart_tx);
 
     // Setup DMA channels for later use
-    let mut dmac = DmaController::init(dmac, &mut peripherals.PM);
+    let mut dmac = DmaController::init(dmac, &mut peripherals.pm);
     let channels = dmac.split();
 
-    let chan0 = channels.0.init(PriorityLevel::LVL0);
-    let chan1 = channels.1.init(PriorityLevel::LVL0);
+    let chan0 = channels.0.init(PriorityLevel::Lvl0);
+    let chan1 = channels.1.init(PriorityLevel::Lvl0);
 
     let uart_sercom = periph_alias!(peripherals.uart_sercom);
 

@@ -1,123 +1,117 @@
 #[doc = "Register `STATUS` reader"]
-pub type R = crate::R<STATUS_SPEC>;
-#[doc = "Field `SPEED` reader - Speed Status"]
-pub type SPEED_R = crate::FieldReader<SPEEDSELECT_A>;
+pub type R = crate::R<StatusSpec>;
 #[doc = "Speed Status\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum SPEEDSELECT_A {
+pub enum Speedselect {
     #[doc = "0: Full-speed mode"]
-    FS = 0,
+    Fs = 0,
     #[doc = "1: Low-speed mode"]
-    LS = 1,
-    #[doc = "2: High-speed mode"]
-    HS = 2,
+    Ls = 1,
 }
-impl From<SPEEDSELECT_A> for u8 {
+impl From<Speedselect> for u8 {
     #[inline(always)]
-    fn from(variant: SPEEDSELECT_A) -> Self {
+    fn from(variant: Speedselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for SPEEDSELECT_A {
+impl crate::FieldSpec for Speedselect {
     type Ux = u8;
 }
-impl SPEED_R {
+impl crate::IsEnum for Speedselect {}
+#[doc = "Field `SPEED` reader - Speed Status"]
+pub type SpeedR = crate::FieldReader<Speedselect>;
+impl SpeedR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<SPEEDSELECT_A> {
+    pub const fn variant(&self) -> Option<Speedselect> {
         match self.bits {
-            0 => Some(SPEEDSELECT_A::FS),
-            1 => Some(SPEEDSELECT_A::LS),
-            2 => Some(SPEEDSELECT_A::HS),
+            0 => Some(Speedselect::Fs),
+            1 => Some(Speedselect::Ls),
             _ => None,
         }
     }
     #[doc = "Full-speed mode"]
     #[inline(always)]
     pub fn is_fs(&self) -> bool {
-        *self == SPEEDSELECT_A::FS
+        *self == Speedselect::Fs
     }
     #[doc = "Low-speed mode"]
     #[inline(always)]
     pub fn is_ls(&self) -> bool {
-        *self == SPEEDSELECT_A::LS
-    }
-    #[doc = "High-speed mode"]
-    #[inline(always)]
-    pub fn is_hs(&self) -> bool {
-        *self == SPEEDSELECT_A::HS
+        *self == Speedselect::Ls
     }
 }
-#[doc = "Field `LINESTATE` reader - USB Line State Status"]
-pub type LINESTATE_R = crate::FieldReader<LINESTATESELECT_A>;
 #[doc = "USB Line State Status\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum LINESTATESELECT_A {
+pub enum Linestateselect {
     #[doc = "0: SE0/RESET"]
-    _0 = 0,
+    Se0reset = 0,
     #[doc = "1: FS-J or LS-K State"]
-    _1 = 1,
+    Fsjlsk = 1,
     #[doc = "2: FS-K or LS-J State"]
-    _2 = 2,
+    Fsklsj = 2,
 }
-impl From<LINESTATESELECT_A> for u8 {
+impl From<Linestateselect> for u8 {
     #[inline(always)]
-    fn from(variant: LINESTATESELECT_A) -> Self {
+    fn from(variant: Linestateselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for LINESTATESELECT_A {
+impl crate::FieldSpec for Linestateselect {
     type Ux = u8;
 }
-impl LINESTATE_R {
+impl crate::IsEnum for Linestateselect {}
+#[doc = "Field `LINESTATE` reader - USB Line State Status"]
+pub type LinestateR = crate::FieldReader<Linestateselect>;
+impl LinestateR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<LINESTATESELECT_A> {
+    pub const fn variant(&self) -> Option<Linestateselect> {
         match self.bits {
-            0 => Some(LINESTATESELECT_A::_0),
-            1 => Some(LINESTATESELECT_A::_1),
-            2 => Some(LINESTATESELECT_A::_2),
+            0 => Some(Linestateselect::Se0reset),
+            1 => Some(Linestateselect::Fsjlsk),
+            2 => Some(Linestateselect::Fsklsj),
             _ => None,
         }
     }
     #[doc = "SE0/RESET"]
     #[inline(always)]
-    pub fn is_0(&self) -> bool {
-        *self == LINESTATESELECT_A::_0
+    pub fn is_se0reset(&self) -> bool {
+        *self == Linestateselect::Se0reset
     }
     #[doc = "FS-J or LS-K State"]
     #[inline(always)]
-    pub fn is_1(&self) -> bool {
-        *self == LINESTATESELECT_A::_1
+    pub fn is_fsjlsk(&self) -> bool {
+        *self == Linestateselect::Fsjlsk
     }
     #[doc = "FS-K or LS-J State"]
     #[inline(always)]
-    pub fn is_2(&self) -> bool {
-        *self == LINESTATESELECT_A::_2
+    pub fn is_fsklsj(&self) -> bool {
+        *self == Linestateselect::Fsklsj
     }
 }
 impl R {
     #[doc = "Bits 2:3 - Speed Status"]
     #[inline(always)]
-    pub fn speed(&self) -> SPEED_R {
-        SPEED_R::new((self.bits >> 2) & 3)
+    pub fn speed(&self) -> SpeedR {
+        SpeedR::new((self.bits >> 2) & 3)
     }
     #[doc = "Bits 6:7 - USB Line State Status"]
     #[inline(always)]
-    pub fn linestate(&self) -> LINESTATE_R {
-        LINESTATE_R::new((self.bits >> 6) & 3)
+    pub fn linestate(&self) -> LinestateR {
+        LinestateR::new((self.bits >> 6) & 3)
     }
 }
-#[doc = "DEVICE Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct STATUS_SPEC;
-impl crate::RegisterSpec for STATUS_SPEC {
+#[doc = "DEVICE Status\n\nYou can [`read`](crate::Reg::read) this register and get [`status::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct StatusSpec;
+impl crate::RegisterSpec for StatusSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`status::R`](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {}
+impl crate::Readable for StatusSpec {}
 #[doc = "`reset()` method sets STATUS to value 0x40"]
-impl crate::Resettable for STATUS_SPEC {
-    const RESET_VALUE: Self::Ux = 0x40;
+impl crate::Resettable for StatusSpec {
+    const RESET_VALUE: u8 = 0x40;
 }

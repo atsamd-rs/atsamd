@@ -25,18 +25,18 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc1_tc2(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc1_(&timer_clock, peripherals.TC1, &mut peripherals.PM);
+    let mut timer = TimerCounter::tc1_(&timer_clock, peripherals.tc1, &mut peripherals.pm);
     timer.start(Hertz::Hz(1).into_duration());
 
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut d2: bsp::Led = pins.d2.into();
 
     loop {

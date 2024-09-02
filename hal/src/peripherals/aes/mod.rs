@@ -101,8 +101,8 @@
 
 // Re-exports
 pub use crate::pac::aes::ctrla::{
-    AESMODESELECT_A, CFBSSELECT_A, CIPHERSELECT_A, KEYSIZESELECT_A, LODSELECT_A, STARTMODESELECT_A,
-    XORKEYSELECT_A,
+    Aesmodeselect, Cfbsselect, Cipherselect, Keysizeselect, Lodselect, Startmodeselect,
+    Xorkeyselect,
 };
 
 // Re-export Aes128 with hardware backing
@@ -120,7 +120,7 @@ pub use cipher::{
     BlockCipher, BlockDecrypt, BlockEncrypt, NewBlockCipher,
 };
 
-use crate::pac::aes::*;
+use crate::pac::aes::{self, *};
 
 use bitfield::BitRange;
 
@@ -249,7 +249,7 @@ impl AesRustCrypto {
 /// and provides an interface to the AES hardware
 pub struct Aes {
     /// AES pac register providing hardware access
-    aes: crate::pac::AES,
+    aes: crate::pac::Aes,
 }
 
 impl Aes {
@@ -265,7 +265,7 @@ impl Aes {
     /// Clock::v2
     /// `tokens.apbs.aes.enable();`
     #[inline]
-    pub fn new(aes: crate::pac::AES) -> Self {
+    pub fn new(aes: crate::pac::Aes) -> Self {
         Self { aes }
     }
 
@@ -303,44 +303,44 @@ impl Aes {
     ///
     /// Enable-protected register
     #[inline]
-    fn ctrla(&self) -> &CTRLA {
-        &self.aes().ctrla
+    fn ctrla(&self) -> &Ctrla {
+        self.aes().ctrla()
     }
 
     /// Control B
     #[inline]
-    fn ctrlb(&self) -> &CTRLB {
-        &self.aes().ctrlb
+    fn ctrlb(&self) -> &Ctrlb {
+        self.aes().ctrlb()
     }
 
     /// Interrupt Enable Clear
     #[inline]
-    fn intenclr(&self) -> &INTENCLR {
-        &self.aes().intenclr
+    fn intenclr(&self) -> &Intenclr {
+        self.aes().intenclr()
     }
 
     /// Interrupt Enable Set
     #[inline]
-    fn intenset(&self) -> &INTENSET {
-        &self.aes().intenset
+    fn intenset(&self) -> &Intenset {
+        self.aes().intenset()
     }
 
     /// Interrupt Flag Status and Clear
     #[inline]
-    fn intflag(&self) -> &INTFLAG {
-        &self.aes().intflag
+    fn intflag(&self) -> &Intflag {
+        self.aes().intflag()
     }
 
     /// Data Buffer Pointer
     #[inline]
-    fn databufptr(&self) -> &DATABUFPTR {
-        &self.aes().databufptr
+    fn databufptr(&self) -> &Databufptr {
+        self.aes().databufptr()
     }
 
     /// Debug
     #[inline]
-    fn dbgctrl(&self) -> &DBGCTRL {
-        &self.aes().dbgctrl
+    fn dbgctrl(&self) -> &Dbgctrl {
+        self.aes().dbgctrl()
     }
 
     /// INDATA
@@ -355,22 +355,22 @@ impl Aes {
     /// Reading INDATA register will return 0’s when AES is performing
     /// encryption or decryption operation
     #[inline]
-    fn indata(&self) -> &INDATA {
-        &self.aes().indata
+    fn indata(&self) -> &aes::Indata {
+        self.aes().indata()
     }
 
     /// Galois Hash x (GCM mode only)
     ///
     /// Cipher length
     #[inline]
-    fn ciplen(&self) -> &CIPLEN {
-        &self.aes().ciplen
+    fn ciplen(&self) -> &aes::Ciplen {
+        self.aes().ciplen()
     }
 
     /// Random Seed
     #[inline]
-    fn randseed(&self) -> &RANDSEED {
-        &self.aes().randseed
+    fn randseed(&self) -> &Randseed {
+        self.aes().randseed()
     }
 
     // User interface for AES
@@ -395,7 +395,7 @@ impl Aes {
 
     /// Destroy the AES peripheral and return the underlying AES register
     #[inline]
-    pub fn destroy(self) -> crate::pac::AES {
+    pub fn destroy(self) -> crate::pac::Aes {
         self.aes
     }
 
@@ -403,37 +403,37 @@ impl Aes {
 
     /// Set AES Mode
     #[inline]
-    pub fn set_aesmode(self, mode: AESMODESELECT_A) {
+    pub fn set_aesmode(self, mode: Aesmodeselect) {
         self.ctrla().modify(|_, w| w.aesmode().variant(mode));
     }
 
     /// Set Cipher Feedback Block Size (CFBS)
     #[inline]
-    pub fn set_cfbs(self, blocksize: CFBSSELECT_A) {
+    pub fn set_cfbs(self, blocksize: Cfbsselect) {
         self.ctrla().modify(|_, w| w.cfbs().variant(blocksize));
     }
 
     /// Set Encryption Key Size
     #[inline]
-    pub fn set_keysize(self, keysize: KEYSIZESELECT_A) {
+    pub fn set_keysize(self, keysize: Keysizeselect) {
         self.ctrla().modify(|_, w| w.keysize().variant(keysize));
     }
 
     /// Set Cipher Mode
     #[inline]
-    pub fn set_cipher(self, mode: CIPHERSELECT_A) {
+    pub fn set_cipher(self, mode: Cipherselect) {
         self.ctrla().modify(|_, w| w.cipher().variant(mode));
     }
 
     /// Set Start Mode
     #[inline]
-    pub fn set_startmode(self, mode: STARTMODESELECT_A) {
+    pub fn set_startmode(self, mode: Startmodeselect) {
         self.ctrla().modify(|_, w| w.startmode().variant(mode));
     }
 
     /// Set Last Output Data (LOD) Mode
     #[inline]
-    pub fn set_lod(self, mode: LODSELECT_A) {
+    pub fn set_lod(self, mode: Lodselect) {
         self.ctrla().modify(|_, w| w.lod().variant(mode));
     }
 
@@ -449,7 +449,7 @@ impl Aes {
     ///
     /// The user keyword gets XORed with the previous keyword register content
     #[inline]
-    pub fn set_xorkey(self, mode: XORKEYSELECT_A) {
+    pub fn set_xorkey(self, mode: Xorkeyselect) {
         self.ctrla().modify(|_, w| w.xorkey().variant(mode));
     }
 
@@ -597,7 +597,7 @@ impl Aes {
                 keyword[index + 2],
                 keyword[index + 3],
             ]);
-            self.aes().keyword[index].write(|w| unsafe { w.bits(data) });
+            self.aes().keyword(index).write(|w| unsafe { w.bits(data) });
         }
     }
 
@@ -631,7 +631,9 @@ impl Aes {
     #[inline]
     pub fn set_initialization_vector(&self, iv: InitVec) {
         for (index, data) in iv.iter().enumerate() {
-            self.aes().intvectv[index].write(|w| unsafe { w.bits(*data) });
+            self.aes()
+                .intvectv(index)
+                .write(|w| unsafe { w.bits(*data) });
         }
     }
 
@@ -641,14 +643,16 @@ impl Aes {
     #[inline]
     pub fn set_hashkey(&self, hashkey: Hashkey) {
         for (index, data) in hashkey.iter().enumerate() {
-            self.aes().hashkey[index].write(|w| unsafe { w.bits(*data) });
+            self.aes()
+                .hashkey(index)
+                .write(|w| unsafe { w.bits(*data) });
         }
     }
 
     pub fn get_hashkey(&self) -> Hashkey {
         let mut output = [0; 4];
-        for (index, data) in self.aes().hashkey.iter().enumerate() {
-            output[index] = data.read().bits();
+        for (index, data) in output.iter_mut().enumerate() {
+            *data = self.aes().hashkey(index).read().bits();
         }
         output
     }
@@ -661,7 +665,7 @@ impl Aes {
     #[inline]
     pub fn set_ghash(&self, ghash: Ghash) {
         for (index, data) in ghash.iter().enumerate() {
-            self.aes().ghash[index].write(|w| unsafe { w.bits(*data) });
+            self.aes().ghash(index).write(|w| unsafe { w.bits(*data) });
         }
     }
 
@@ -669,8 +673,8 @@ impl Aes {
     #[inline]
     pub fn get_ghash(&self) -> Ghash {
         let mut output = [0; 4];
-        for (index, data) in self.aes().ghash.iter().enumerate() {
-            output[index] = data.read().bits();
+        for (index, data) in output.iter_mut().enumerate() {
+            *data = self.aes().ghash(index).read().bits();
         }
         output
     }

@@ -1,49 +1,40 @@
 #[doc = "Register `CTRLA` reader"]
-pub type R = crate::R<CTRLA_SPEC>;
+pub type R = crate::R<CtrlaSpec>;
 #[doc = "Register `CTRLA` writer"]
-pub type W = crate::W<CTRLA_SPEC>;
+pub type W = crate::W<CtrlaSpec>;
 #[doc = "Field `IORET` reader - I/O Retention"]
-pub type IORET_R = crate::BitReader;
+pub type IoretR = crate::BitReader;
 #[doc = "Field `IORET` writer - I/O Retention"]
-pub type IORET_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type IoretW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 2 - I/O Retention"]
     #[inline(always)]
-    pub fn ioret(&self) -> IORET_R {
-        IORET_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn ioret(&self) -> IoretR {
+        IoretR::new(((self.bits >> 2) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 2 - I/O Retention"]
     #[inline(always)]
     #[must_use]
-    pub fn ioret(&mut self) -> IORET_W<CTRLA_SPEC, 2> {
-        IORET_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn ioret(&mut self) -> IoretW<CtrlaSpec> {
+        IoretW::new(self, 2)
     }
 }
-#[doc = "Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CTRLA_SPEC;
-impl crate::RegisterSpec for CTRLA_SPEC {
+#[doc = "Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`ctrla::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CtrlaSpec;
+impl crate::RegisterSpec for CtrlaSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`ctrla::R`](R) reader structure"]
-impl crate::Readable for CTRLA_SPEC {}
+impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
-impl crate::Writable for CTRLA_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CtrlaSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CTRLA_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CtrlaSpec {
+    const RESET_VALUE: u8 = 0;
 }

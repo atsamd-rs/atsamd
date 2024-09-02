@@ -1,64 +1,55 @@
 #[doc = "Register `CCB%s_DITH6` reader"]
-pub type R = crate::R<CCB_DITH6_SPEC>;
+pub type R = crate::R<CcbDith6Spec>;
 #[doc = "Register `CCB%s_DITH6` writer"]
-pub type W = crate::W<CCB_DITH6_SPEC>;
+pub type W = crate::W<CcbDith6Spec>;
 #[doc = "Field `DITHERCYB` reader - Dithering Buffer Cycle Number"]
-pub type DITHERCYB_R = crate::FieldReader;
+pub type DithercybR = crate::FieldReader;
 #[doc = "Field `DITHERCYB` writer - Dithering Buffer Cycle Number"]
-pub type DITHERCYB_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 6, O>;
+pub type DithercybW<'a, REG> = crate::FieldWriter<'a, REG, 6>;
 #[doc = "Field `CCB` reader - Channel Compare/Capture Buffer Value"]
-pub type CCB_R = crate::FieldReader<u32>;
+pub type CcbR = crate::FieldReader<u32>;
 #[doc = "Field `CCB` writer - Channel Compare/Capture Buffer Value"]
-pub type CCB_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 18, O, u32>;
+pub type CcbW<'a, REG> = crate::FieldWriter<'a, REG, 18, u32>;
 impl R {
     #[doc = "Bits 0:5 - Dithering Buffer Cycle Number"]
     #[inline(always)]
-    pub fn dithercyb(&self) -> DITHERCYB_R {
-        DITHERCYB_R::new((self.bits & 0x3f) as u8)
+    pub fn dithercyb(&self) -> DithercybR {
+        DithercybR::new((self.bits & 0x3f) as u8)
     }
     #[doc = "Bits 6:23 - Channel Compare/Capture Buffer Value"]
     #[inline(always)]
-    pub fn ccb(&self) -> CCB_R {
-        CCB_R::new((self.bits >> 6) & 0x0003_ffff)
+    pub fn ccb(&self) -> CcbR {
+        CcbR::new((self.bits >> 6) & 0x0003_ffff)
     }
 }
 impl W {
     #[doc = "Bits 0:5 - Dithering Buffer Cycle Number"]
     #[inline(always)]
     #[must_use]
-    pub fn dithercyb(&mut self) -> DITHERCYB_W<CCB_DITH6_SPEC, 0> {
-        DITHERCYB_W::new(self)
+    pub fn dithercyb(&mut self) -> DithercybW<CcbDith6Spec> {
+        DithercybW::new(self, 0)
     }
     #[doc = "Bits 6:23 - Channel Compare/Capture Buffer Value"]
     #[inline(always)]
     #[must_use]
-    pub fn ccb(&mut self) -> CCB_W<CCB_DITH6_SPEC, 6> {
-        CCB_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn ccb(&mut self) -> CcbW<CcbDith6Spec> {
+        CcbW::new(self, 6)
     }
 }
-#[doc = "Compare and Capture Buffer\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ccb_dith6::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ccb_dith6::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CCB_DITH6_SPEC;
-impl crate::RegisterSpec for CCB_DITH6_SPEC {
+#[doc = "Compare and Capture Buffer\n\nYou can [`read`](crate::Reg::read) this register and get [`ccb_dith6::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ccb_dith6::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CcbDith6Spec;
+impl crate::RegisterSpec for CcbDith6Spec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`ccb_dith6::R`](R) reader structure"]
-impl crate::Readable for CCB_DITH6_SPEC {}
+impl crate::Readable for CcbDith6Spec {}
 #[doc = "`write(|w| ..)` method takes [`ccb_dith6::W`](W) writer structure"]
-impl crate::Writable for CCB_DITH6_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CcbDith6Spec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CCB%s_DITH6 to value 0"]
-impl crate::Resettable for CCB_DITH6_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CcbDith6Spec {
+    const RESET_VALUE: u32 = 0;
 }

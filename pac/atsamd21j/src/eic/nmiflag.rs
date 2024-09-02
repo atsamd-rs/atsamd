@@ -1,49 +1,40 @@
 #[doc = "Register `NMIFLAG` reader"]
-pub type R = crate::R<NMIFLAG_SPEC>;
+pub type R = crate::R<NmiflagSpec>;
 #[doc = "Register `NMIFLAG` writer"]
-pub type W = crate::W<NMIFLAG_SPEC>;
+pub type W = crate::W<NmiflagSpec>;
 #[doc = "Field `NMI` reader - Non-Maskable Interrupt"]
-pub type NMI_R = crate::BitReader;
+pub type NmiR = crate::BitReader;
 #[doc = "Field `NMI` writer - Non-Maskable Interrupt"]
-pub type NMI_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type NmiW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Non-Maskable Interrupt"]
     #[inline(always)]
-    pub fn nmi(&self) -> NMI_R {
-        NMI_R::new((self.bits & 1) != 0)
+    pub fn nmi(&self) -> NmiR {
+        NmiR::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Non-Maskable Interrupt"]
     #[inline(always)]
     #[must_use]
-    pub fn nmi(&mut self) -> NMI_W<NMIFLAG_SPEC, 0> {
-        NMI_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn nmi(&mut self) -> NmiW<NmiflagSpec> {
+        NmiW::new(self, 0)
     }
 }
-#[doc = "Non-Maskable Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`nmiflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`nmiflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct NMIFLAG_SPEC;
-impl crate::RegisterSpec for NMIFLAG_SPEC {
+#[doc = "Non-Maskable Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`nmiflag::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`nmiflag::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct NmiflagSpec;
+impl crate::RegisterSpec for NmiflagSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`nmiflag::R`](R) reader structure"]
-impl crate::Readable for NMIFLAG_SPEC {}
+impl crate::Readable for NmiflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`nmiflag::W`](W) writer structure"]
-impl crate::Writable for NMIFLAG_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for NmiflagSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets NMIFLAG to value 0"]
-impl crate::Resettable for NMIFLAG_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for NmiflagSpec {
+    const RESET_VALUE: u8 = 0;
 }

@@ -1,67 +1,68 @@
 #[doc = "Register `MC1R` reader"]
-pub type R = crate::R<MC1R_SPEC>;
+pub type R = crate::R<Mc1rSpec>;
 #[doc = "Register `MC1R` writer"]
-pub type W = crate::W<MC1R_SPEC>;
-#[doc = "Field `CMDTYP` reader - e.MMC Command Type"]
-pub type CMDTYP_R = crate::FieldReader<CMDTYPSELECT_A>;
+pub type W = crate::W<Mc1rSpec>;
 #[doc = "e.MMC Command Type\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum CMDTYPSELECT_A {
+pub enum Cmdtypselect {
     #[doc = "0: Not a MMC specific command"]
-    NORMAL = 0,
+    Normal = 0,
     #[doc = "1: Wait IRQ Command"]
-    WAITIRQ = 1,
+    Waitirq = 1,
     #[doc = "2: Stream Command"]
-    STREAM = 2,
+    Stream = 2,
     #[doc = "3: Boot Command"]
-    BOOT = 3,
+    Boot = 3,
 }
-impl From<CMDTYPSELECT_A> for u8 {
+impl From<Cmdtypselect> for u8 {
     #[inline(always)]
-    fn from(variant: CMDTYPSELECT_A) -> Self {
+    fn from(variant: Cmdtypselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for CMDTYPSELECT_A {
+impl crate::FieldSpec for Cmdtypselect {
     type Ux = u8;
 }
-impl CMDTYP_R {
+impl crate::IsEnum for Cmdtypselect {}
+#[doc = "Field `CMDTYP` reader - e.MMC Command Type"]
+pub type CmdtypR = crate::FieldReader<Cmdtypselect>;
+impl CmdtypR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> CMDTYPSELECT_A {
+    pub const fn variant(&self) -> Cmdtypselect {
         match self.bits {
-            0 => CMDTYPSELECT_A::NORMAL,
-            1 => CMDTYPSELECT_A::WAITIRQ,
-            2 => CMDTYPSELECT_A::STREAM,
-            3 => CMDTYPSELECT_A::BOOT,
+            0 => Cmdtypselect::Normal,
+            1 => Cmdtypselect::Waitirq,
+            2 => Cmdtypselect::Stream,
+            3 => Cmdtypselect::Boot,
             _ => unreachable!(),
         }
     }
     #[doc = "Not a MMC specific command"]
     #[inline(always)]
     pub fn is_normal(&self) -> bool {
-        *self == CMDTYPSELECT_A::NORMAL
+        *self == Cmdtypselect::Normal
     }
     #[doc = "Wait IRQ Command"]
     #[inline(always)]
     pub fn is_waitirq(&self) -> bool {
-        *self == CMDTYPSELECT_A::WAITIRQ
+        *self == Cmdtypselect::Waitirq
     }
     #[doc = "Stream Command"]
     #[inline(always)]
     pub fn is_stream(&self) -> bool {
-        *self == CMDTYPSELECT_A::STREAM
+        *self == Cmdtypselect::Stream
     }
     #[doc = "Boot Command"]
     #[inline(always)]
     pub fn is_boot(&self) -> bool {
-        *self == CMDTYPSELECT_A::BOOT
+        *self == Cmdtypselect::Boot
     }
 }
 #[doc = "Field `CMDTYP` writer - e.MMC Command Type"]
-pub type CMDTYP_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, CMDTYPSELECT_A>;
-impl<'a, REG, const O: u8> CMDTYP_W<'a, REG, O>
+pub type CmdtypW<'a, REG> = crate::FieldWriter<'a, REG, 2, Cmdtypselect, crate::Safe>;
+impl<'a, REG> CmdtypW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -69,137 +70,128 @@ where
     #[doc = "Not a MMC specific command"]
     #[inline(always)]
     pub fn normal(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDTYPSELECT_A::NORMAL)
+        self.variant(Cmdtypselect::Normal)
     }
     #[doc = "Wait IRQ Command"]
     #[inline(always)]
     pub fn waitirq(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDTYPSELECT_A::WAITIRQ)
+        self.variant(Cmdtypselect::Waitirq)
     }
     #[doc = "Stream Command"]
     #[inline(always)]
     pub fn stream(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDTYPSELECT_A::STREAM)
+        self.variant(Cmdtypselect::Stream)
     }
     #[doc = "Boot Command"]
     #[inline(always)]
     pub fn boot(self) -> &'a mut crate::W<REG> {
-        self.variant(CMDTYPSELECT_A::BOOT)
+        self.variant(Cmdtypselect::Boot)
     }
 }
 #[doc = "Field `DDR` reader - e.MMC HSDDR Mode"]
-pub type DDR_R = crate::BitReader;
+pub type DdrR = crate::BitReader;
 #[doc = "Field `DDR` writer - e.MMC HSDDR Mode"]
-pub type DDR_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DdrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `OPD` reader - e.MMC Open Drain Mode"]
-pub type OPD_R = crate::BitReader;
+pub type OpdR = crate::BitReader;
 #[doc = "Field `OPD` writer - e.MMC Open Drain Mode"]
-pub type OPD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type OpdW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `BOOTA` reader - e.MMC Boot Acknowledge Enable"]
-pub type BOOTA_R = crate::BitReader;
+pub type BootaR = crate::BitReader;
 #[doc = "Field `BOOTA` writer - e.MMC Boot Acknowledge Enable"]
-pub type BOOTA_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type BootaW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RSTN` reader - e.MMC Reset Signal"]
-pub type RSTN_R = crate::BitReader;
+pub type RstnR = crate::BitReader;
 #[doc = "Field `RSTN` writer - e.MMC Reset Signal"]
-pub type RSTN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RstnW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FCD` reader - e.MMC Force Card Detect"]
-pub type FCD_R = crate::BitReader;
+pub type FcdR = crate::BitReader;
 #[doc = "Field `FCD` writer - e.MMC Force Card Detect"]
-pub type FCD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type FcdW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bits 0:1 - e.MMC Command Type"]
     #[inline(always)]
-    pub fn cmdtyp(&self) -> CMDTYP_R {
-        CMDTYP_R::new(self.bits & 3)
+    pub fn cmdtyp(&self) -> CmdtypR {
+        CmdtypR::new(self.bits & 3)
     }
     #[doc = "Bit 3 - e.MMC HSDDR Mode"]
     #[inline(always)]
-    pub fn ddr(&self) -> DDR_R {
-        DDR_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn ddr(&self) -> DdrR {
+        DdrR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - e.MMC Open Drain Mode"]
     #[inline(always)]
-    pub fn opd(&self) -> OPD_R {
-        OPD_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn opd(&self) -> OpdR {
+        OpdR::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - e.MMC Boot Acknowledge Enable"]
     #[inline(always)]
-    pub fn boota(&self) -> BOOTA_R {
-        BOOTA_R::new(((self.bits >> 5) & 1) != 0)
+    pub fn boota(&self) -> BootaR {
+        BootaR::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - e.MMC Reset Signal"]
     #[inline(always)]
-    pub fn rstn(&self) -> RSTN_R {
-        RSTN_R::new(((self.bits >> 6) & 1) != 0)
+    pub fn rstn(&self) -> RstnR {
+        RstnR::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - e.MMC Force Card Detect"]
     #[inline(always)]
-    pub fn fcd(&self) -> FCD_R {
-        FCD_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn fcd(&self) -> FcdR {
+        FcdR::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:1 - e.MMC Command Type"]
     #[inline(always)]
     #[must_use]
-    pub fn cmdtyp(&mut self) -> CMDTYP_W<MC1R_SPEC, 0> {
-        CMDTYP_W::new(self)
+    pub fn cmdtyp(&mut self) -> CmdtypW<Mc1rSpec> {
+        CmdtypW::new(self, 0)
     }
     #[doc = "Bit 3 - e.MMC HSDDR Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn ddr(&mut self) -> DDR_W<MC1R_SPEC, 3> {
-        DDR_W::new(self)
+    pub fn ddr(&mut self) -> DdrW<Mc1rSpec> {
+        DdrW::new(self, 3)
     }
     #[doc = "Bit 4 - e.MMC Open Drain Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn opd(&mut self) -> OPD_W<MC1R_SPEC, 4> {
-        OPD_W::new(self)
+    pub fn opd(&mut self) -> OpdW<Mc1rSpec> {
+        OpdW::new(self, 4)
     }
     #[doc = "Bit 5 - e.MMC Boot Acknowledge Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn boota(&mut self) -> BOOTA_W<MC1R_SPEC, 5> {
-        BOOTA_W::new(self)
+    pub fn boota(&mut self) -> BootaW<Mc1rSpec> {
+        BootaW::new(self, 5)
     }
     #[doc = "Bit 6 - e.MMC Reset Signal"]
     #[inline(always)]
     #[must_use]
-    pub fn rstn(&mut self) -> RSTN_W<MC1R_SPEC, 6> {
-        RSTN_W::new(self)
+    pub fn rstn(&mut self) -> RstnW<Mc1rSpec> {
+        RstnW::new(self, 6)
     }
     #[doc = "Bit 7 - e.MMC Force Card Detect"]
     #[inline(always)]
     #[must_use]
-    pub fn fcd(&mut self) -> FCD_W<MC1R_SPEC, 7> {
-        FCD_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn fcd(&mut self) -> FcdW<Mc1rSpec> {
+        FcdW::new(self, 7)
     }
 }
-#[doc = "MMC Control 1\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`mc1r::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`mc1r::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct MC1R_SPEC;
-impl crate::RegisterSpec for MC1R_SPEC {
+#[doc = "MMC Control 1\n\nYou can [`read`](crate::Reg::read) this register and get [`mc1r::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`mc1r::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct Mc1rSpec;
+impl crate::RegisterSpec for Mc1rSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`mc1r::R`](R) reader structure"]
-impl crate::Readable for MC1R_SPEC {}
+impl crate::Readable for Mc1rSpec {}
 #[doc = "`write(|w| ..)` method takes [`mc1r::W`](W) writer structure"]
-impl crate::Writable for MC1R_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for Mc1rSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets MC1R to value 0"]
-impl crate::Resettable for MC1R_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for Mc1rSpec {
+    const RESET_VALUE: u8 = 0;
 }

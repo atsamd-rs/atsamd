@@ -1,109 +1,100 @@
 #[doc = "Register `EVCTRL` reader"]
-pub type R = crate::R<EVCTRL_SPEC>;
+pub type R = crate::R<EvctrlSpec>;
 #[doc = "Register `EVCTRL` writer"]
-pub type W = crate::W<EVCTRL_SPEC>;
+pub type W = crate::W<EvctrlSpec>;
 #[doc = "Field `COMPEO0` reader - Comparator 0 Event Output Enable"]
-pub type COMPEO0_R = crate::BitReader;
+pub type Compeo0R = crate::BitReader;
 #[doc = "Field `COMPEO0` writer - Comparator 0 Event Output Enable"]
-pub type COMPEO0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Compeo0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `COMPEO1` reader - Comparator 1 Event Output Enable"]
-pub type COMPEO1_R = crate::BitReader;
+pub type Compeo1R = crate::BitReader;
 #[doc = "Field `COMPEO1` writer - Comparator 1 Event Output Enable"]
-pub type COMPEO1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Compeo1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WINEO0` reader - Window 0 Event Output Enable"]
-pub type WINEO0_R = crate::BitReader;
+pub type Wineo0R = crate::BitReader;
 #[doc = "Field `WINEO0` writer - Window 0 Event Output Enable"]
-pub type WINEO0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Wineo0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `COMPEI0` reader - Comparator 0 Event Input"]
-pub type COMPEI0_R = crate::BitReader;
+pub type Compei0R = crate::BitReader;
 #[doc = "Field `COMPEI0` writer - Comparator 0 Event Input"]
-pub type COMPEI0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Compei0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `COMPEI1` reader - Comparator 1 Event Input"]
-pub type COMPEI1_R = crate::BitReader;
+pub type Compei1R = crate::BitReader;
 #[doc = "Field `COMPEI1` writer - Comparator 1 Event Input"]
-pub type COMPEI1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Compei1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Comparator 0 Event Output Enable"]
     #[inline(always)]
-    pub fn compeo0(&self) -> COMPEO0_R {
-        COMPEO0_R::new((self.bits & 1) != 0)
+    pub fn compeo0(&self) -> Compeo0R {
+        Compeo0R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Comparator 1 Event Output Enable"]
     #[inline(always)]
-    pub fn compeo1(&self) -> COMPEO1_R {
-        COMPEO1_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn compeo1(&self) -> Compeo1R {
+        Compeo1R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 4 - Window 0 Event Output Enable"]
     #[inline(always)]
-    pub fn wineo0(&self) -> WINEO0_R {
-        WINEO0_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn wineo0(&self) -> Wineo0R {
+        Wineo0R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 8 - Comparator 0 Event Input"]
     #[inline(always)]
-    pub fn compei0(&self) -> COMPEI0_R {
-        COMPEI0_R::new(((self.bits >> 8) & 1) != 0)
+    pub fn compei0(&self) -> Compei0R {
+        Compei0R::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Comparator 1 Event Input"]
     #[inline(always)]
-    pub fn compei1(&self) -> COMPEI1_R {
-        COMPEI1_R::new(((self.bits >> 9) & 1) != 0)
+    pub fn compei1(&self) -> Compei1R {
+        Compei1R::new(((self.bits >> 9) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Comparator 0 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn compeo0(&mut self) -> COMPEO0_W<EVCTRL_SPEC, 0> {
-        COMPEO0_W::new(self)
+    pub fn compeo0(&mut self) -> Compeo0W<EvctrlSpec> {
+        Compeo0W::new(self, 0)
     }
     #[doc = "Bit 1 - Comparator 1 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn compeo1(&mut self) -> COMPEO1_W<EVCTRL_SPEC, 1> {
-        COMPEO1_W::new(self)
+    pub fn compeo1(&mut self) -> Compeo1W<EvctrlSpec> {
+        Compeo1W::new(self, 1)
     }
     #[doc = "Bit 4 - Window 0 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn wineo0(&mut self) -> WINEO0_W<EVCTRL_SPEC, 4> {
-        WINEO0_W::new(self)
+    pub fn wineo0(&mut self) -> Wineo0W<EvctrlSpec> {
+        Wineo0W::new(self, 4)
     }
     #[doc = "Bit 8 - Comparator 0 Event Input"]
     #[inline(always)]
     #[must_use]
-    pub fn compei0(&mut self) -> COMPEI0_W<EVCTRL_SPEC, 8> {
-        COMPEI0_W::new(self)
+    pub fn compei0(&mut self) -> Compei0W<EvctrlSpec> {
+        Compei0W::new(self, 8)
     }
     #[doc = "Bit 9 - Comparator 1 Event Input"]
     #[inline(always)]
     #[must_use]
-    pub fn compei1(&mut self) -> COMPEI1_W<EVCTRL_SPEC, 9> {
-        COMPEI1_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn compei1(&mut self) -> Compei1W<EvctrlSpec> {
+        Compei1W::new(self, 9)
     }
 }
-#[doc = "Event Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`evctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`evctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct EVCTRL_SPEC;
-impl crate::RegisterSpec for EVCTRL_SPEC {
+#[doc = "Event Control\n\nYou can [`read`](crate::Reg::read) this register and get [`evctrl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`evctrl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct EvctrlSpec;
+impl crate::RegisterSpec for EvctrlSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`evctrl::R`](R) reader structure"]
-impl crate::Readable for EVCTRL_SPEC {}
+impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
-impl crate::Writable for EVCTRL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for EvctrlSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EVCTRL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for EvctrlSpec {
+    const RESET_VALUE: u16 = 0;
 }

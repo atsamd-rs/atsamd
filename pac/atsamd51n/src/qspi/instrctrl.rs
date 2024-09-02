@@ -1,64 +1,55 @@
 #[doc = "Register `INSTRCTRL` reader"]
-pub type R = crate::R<INSTRCTRL_SPEC>;
+pub type R = crate::R<InstrctrlSpec>;
 #[doc = "Register `INSTRCTRL` writer"]
-pub type W = crate::W<INSTRCTRL_SPEC>;
+pub type W = crate::W<InstrctrlSpec>;
 #[doc = "Field `INSTR` reader - Instruction Code"]
-pub type INSTR_R = crate::FieldReader;
+pub type InstrR = crate::FieldReader;
 #[doc = "Field `INSTR` writer - Instruction Code"]
-pub type INSTR_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
+pub type InstrW<'a, REG> = crate::FieldWriter<'a, REG, 8>;
 #[doc = "Field `OPTCODE` reader - Option Code"]
-pub type OPTCODE_R = crate::FieldReader;
+pub type OptcodeR = crate::FieldReader;
 #[doc = "Field `OPTCODE` writer - Option Code"]
-pub type OPTCODE_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
+pub type OptcodeW<'a, REG> = crate::FieldWriter<'a, REG, 8>;
 impl R {
     #[doc = "Bits 0:7 - Instruction Code"]
     #[inline(always)]
-    pub fn instr(&self) -> INSTR_R {
-        INSTR_R::new((self.bits & 0xff) as u8)
+    pub fn instr(&self) -> InstrR {
+        InstrR::new((self.bits & 0xff) as u8)
     }
     #[doc = "Bits 16:23 - Option Code"]
     #[inline(always)]
-    pub fn optcode(&self) -> OPTCODE_R {
-        OPTCODE_R::new(((self.bits >> 16) & 0xff) as u8)
+    pub fn optcode(&self) -> OptcodeR {
+        OptcodeR::new(((self.bits >> 16) & 0xff) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:7 - Instruction Code"]
     #[inline(always)]
     #[must_use]
-    pub fn instr(&mut self) -> INSTR_W<INSTRCTRL_SPEC, 0> {
-        INSTR_W::new(self)
+    pub fn instr(&mut self) -> InstrW<InstrctrlSpec> {
+        InstrW::new(self, 0)
     }
     #[doc = "Bits 16:23 - Option Code"]
     #[inline(always)]
     #[must_use]
-    pub fn optcode(&mut self) -> OPTCODE_W<INSTRCTRL_SPEC, 16> {
-        OPTCODE_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn optcode(&mut self) -> OptcodeW<InstrctrlSpec> {
+        OptcodeW::new(self, 16)
     }
 }
-#[doc = "Instruction Code\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`instrctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`instrctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct INSTRCTRL_SPEC;
-impl crate::RegisterSpec for INSTRCTRL_SPEC {
+#[doc = "Instruction Code\n\nYou can [`read`](crate::Reg::read) this register and get [`instrctrl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`instrctrl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct InstrctrlSpec;
+impl crate::RegisterSpec for InstrctrlSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`instrctrl::R`](R) reader structure"]
-impl crate::Readable for INSTRCTRL_SPEC {}
+impl crate::Readable for InstrctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`instrctrl::W`](W) writer structure"]
-impl crate::Writable for INSTRCTRL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for InstrctrlSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INSTRCTRL to value 0"]
-impl crate::Resettable for INSTRCTRL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for InstrctrlSpec {
+    const RESET_VALUE: u32 = 0;
 }

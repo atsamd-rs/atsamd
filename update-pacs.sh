@@ -4,8 +4,8 @@ set -xe
 
 # INSTALL DEPENDENCIES
 
-cargo install --version 0.30.2 svd2rust
-cargo install --version 0.10.0 form
+cargo install --version 0.33.4 svd2rust
+cargo install --version 0.12.1 form
 
 # PATCH SVD FILES AND GENERATE CRATES
 
@@ -23,7 +23,7 @@ for xsl in svd/devices/*\.xsl; do
   # remove last characters, because they just represent the memory size
   pushd "${TOP}/pac/${chip:0:9}"
 
-  xsltproc "${TOP}/${xsl}" "${TOP}/${svd}" | svd2rust
+  xsltproc "${TOP}/${xsl}" "${TOP}/${svd}" | svd2rust --reexport-core-peripherals --reexport-interrupt
 
   rm "${TOP}/${svd}"
   rm -rf src/

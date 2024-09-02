@@ -148,10 +148,10 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
 
         #[hal_cfg(any("dmac-d11", "dmac-d21"))]
         // Setup priority level
-        self.regs.chctrlb.modify(|_, w| w.lvl().bits(lvl as u8));
+        self.regs.chctrlb.modify(|_, w| w.lvl().variant(lvl));
 
         #[hal_cfg("dmac-d5x")]
-        self.regs.chprilvl.modify(|_, w| w.prilvl().bits(lvl as u8));
+        self.regs.chprilvl.modify(|_, w| w.prilvl().variant(lvl));
 
         Channel {
             regs: self.regs,
@@ -226,7 +226,7 @@ impl<Id: ChId> Channel<Id, Ready> {
     pub fn fifo_threshold(&mut self, threshold: FifoThreshold) {
         self.regs
             .chctrla
-            .modify(|_, w| w.threshold().bits(threshold as u8));
+            .modify(|_, w| w.threshold().variant(threshold));
     }
 
     /// Set burst length for the channel, in number of beats. A burst transfer
@@ -236,7 +236,7 @@ impl<Id: ChId> Channel<Id, Ready> {
     pub fn burst_length(&mut self, burst_length: BurstLength) {
         self.regs
             .chctrla
-            .modify(|_, w| w.burstlen().bits(burst_length as u8));
+            .modify(|_, w| w.burstlen().variant(burst_length));
     }
 
     /// Start transfer on channel using the specified trigger source.
@@ -268,7 +268,7 @@ impl<Id: ChId> Channel<Id, Ready> {
         self.regs.chctrla.modify(|_, w| w.enable().set_bit());
 
         // If trigger source is DISABLE, manually trigger transfer
-        if trig_src == TriggerSource::DISABLE {
+        if trig_src == TriggerSource::Disable {
             self._trigger_private();
         }
 

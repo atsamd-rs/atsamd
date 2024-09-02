@@ -47,11 +47,11 @@ mod app {
 
         // Get the clocks & tokens
         let (_buses, clocks, tokens) = clock::clock_system_at_reset(
-            device.OSCCTRL,
-            device.OSC32KCTRL,
-            device.GCLK,
-            device.MCLK,
-            &mut device.NVMCTRL,
+            device.oscctrl,
+            device.osc32kctrl,
+            device.gclk,
+            device.mclk,
+            &mut device.nvmctrl,
         );
 
         // This is required because the `sercom` and `rtc` modules have not yet
@@ -59,7 +59,7 @@ mod app {
         let (_, _, _, mut mclk) = unsafe { clocks.pac.steal() };
 
         // Get the pins
-        let pins = Pins::new(device.PORT);
+        let pins = Pins::new(device.port);
 
         // Take `Dfll` 48 MHz, divide down to `2 MHz` through `Gclk1`
         let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
@@ -127,7 +127,7 @@ mod app {
         let pads = uart::Pads::default().rx(pins.pa05).tx(pins.pa04);
         // In the future, the `Uart` will take ownership of the `Pclk` and will
         // take an `ApbClk` instead of `&MCLK`
-        let mut uart = uart::Config::new(&mclk, device.SERCOM0, pads, pclk_sercom0.freq())
+        let mut uart = uart::Config::new(&mclk, device.sercom0, pads, pclk_sercom0.freq())
             .baud(115_200.Hz(), BaudMode::Arithmetic(Oversampling::Bits16))
             .enable();
         uart.enable_interrupts(Flags::RXC);
@@ -137,7 +137,7 @@ mod app {
 
         // Setup an `Rtc` in `ClockMode`
         // In the future, the `Rtc` will take ownership of the `RtcOsc`
-        let rtc = Rtc::clock_mode(device.RTC, rtc_osc.freq(), &mut mclk);
+        let rtc = Rtc::clock_mode(device.rtc, rtc_osc.freq(), &mut mclk);
 
         writeln!(&mut uart as &mut dyn Write<Error = _>, "RTIC booted!").unwrap();
 

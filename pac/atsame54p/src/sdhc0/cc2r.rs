@@ -1,98 +1,89 @@
 #[doc = "Register `CC2R` reader"]
-pub type R = crate::R<CC2R_SPEC>;
+pub type R = crate::R<Cc2rSpec>;
 #[doc = "Register `CC2R` writer"]
-pub type W = crate::W<CC2R_SPEC>;
-#[doc = "Field `FSDCLKD` reader - Force SDCK Disabled"]
-pub type FSDCLKD_R = crate::BitReader<FSDCLKDSELECT_A>;
+pub type W = crate::W<Cc2rSpec>;
 #[doc = "Force SDCK Disabled\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum FSDCLKDSELECT_A {
+pub enum Fsdclkdselect {
     #[doc = "0: No effect"]
-    NOEFFECT = 0,
+    Noeffect = 0,
     #[doc = "1: SDCLK can be stopped at any time after DATA transfer.SDCLK enable forcing for 8 SDCLK cycles is disabled"]
-    DISABLE = 1,
+    Disable = 1,
 }
-impl From<FSDCLKDSELECT_A> for bool {
+impl From<Fsdclkdselect> for bool {
     #[inline(always)]
-    fn from(variant: FSDCLKDSELECT_A) -> Self {
+    fn from(variant: Fsdclkdselect) -> Self {
         variant as u8 != 0
     }
 }
-impl FSDCLKD_R {
+#[doc = "Field `FSDCLKD` reader - Force SDCK Disabled"]
+pub type FsdclkdR = crate::BitReader<Fsdclkdselect>;
+impl FsdclkdR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> FSDCLKDSELECT_A {
+    pub const fn variant(&self) -> Fsdclkdselect {
         match self.bits {
-            false => FSDCLKDSELECT_A::NOEFFECT,
-            true => FSDCLKDSELECT_A::DISABLE,
+            false => Fsdclkdselect::Noeffect,
+            true => Fsdclkdselect::Disable,
         }
     }
     #[doc = "No effect"]
     #[inline(always)]
     pub fn is_noeffect(&self) -> bool {
-        *self == FSDCLKDSELECT_A::NOEFFECT
+        *self == Fsdclkdselect::Noeffect
     }
     #[doc = "SDCLK can be stopped at any time after DATA transfer.SDCLK enable forcing for 8 SDCLK cycles is disabled"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == FSDCLKDSELECT_A::DISABLE
+        *self == Fsdclkdselect::Disable
     }
 }
 #[doc = "Field `FSDCLKD` writer - Force SDCK Disabled"]
-pub type FSDCLKD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O, FSDCLKDSELECT_A>;
-impl<'a, REG, const O: u8> FSDCLKD_W<'a, REG, O>
+pub type FsdclkdW<'a, REG> = crate::BitWriter<'a, REG, Fsdclkdselect>;
+impl<'a, REG> FsdclkdW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
 {
     #[doc = "No effect"]
     #[inline(always)]
     pub fn noeffect(self) -> &'a mut crate::W<REG> {
-        self.variant(FSDCLKDSELECT_A::NOEFFECT)
+        self.variant(Fsdclkdselect::Noeffect)
     }
     #[doc = "SDCLK can be stopped at any time after DATA transfer.SDCLK enable forcing for 8 SDCLK cycles is disabled"]
     #[inline(always)]
     pub fn disable(self) -> &'a mut crate::W<REG> {
-        self.variant(FSDCLKDSELECT_A::DISABLE)
+        self.variant(Fsdclkdselect::Disable)
     }
 }
 impl R {
     #[doc = "Bit 0 - Force SDCK Disabled"]
     #[inline(always)]
-    pub fn fsdclkd(&self) -> FSDCLKD_R {
-        FSDCLKD_R::new((self.bits & 1) != 0)
+    pub fn fsdclkd(&self) -> FsdclkdR {
+        FsdclkdR::new((self.bits & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Force SDCK Disabled"]
     #[inline(always)]
     #[must_use]
-    pub fn fsdclkd(&mut self) -> FSDCLKD_W<CC2R_SPEC, 0> {
-        FSDCLKD_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn fsdclkd(&mut self) -> FsdclkdW<Cc2rSpec> {
+        FsdclkdW::new(self, 0)
     }
 }
-#[doc = "Clock Control 2\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cc2r::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cc2r::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CC2R_SPEC;
-impl crate::RegisterSpec for CC2R_SPEC {
+#[doc = "Clock Control 2\n\nYou can [`read`](crate::Reg::read) this register and get [`cc2r::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cc2r::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct Cc2rSpec;
+impl crate::RegisterSpec for Cc2rSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`cc2r::R`](R) reader structure"]
-impl crate::Readable for CC2R_SPEC {}
+impl crate::Readable for Cc2rSpec {}
 #[doc = "`write(|w| ..)` method takes [`cc2r::W`](W) writer structure"]
-impl crate::Writable for CC2R_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for Cc2rSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CC2R to value 0"]
-impl crate::Resettable for CC2R_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for Cc2rSpec {
+    const RESET_VALUE: u32 = 0;
 }

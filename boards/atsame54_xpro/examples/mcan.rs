@@ -5,10 +5,11 @@
 //!   switching
 //!
 //! 1. Sends a message over CAN on SW0 button press and prints out transmit
-//! event queue content, protocol status register and error counter register in
-//! RTT terminal.
+//!    event queue content, protocol status register and error counter register
+//!    in RTT terminal.
 //!
-//! 2. Sets up an interrupt line and message filters
+//! 2. Sets up an interrupt line and message filters:
+//!
 //! - messages with standard IDs will end up in RxFifo0
 //! - messages with extended IDs will end up in RxFifo1
 //! - messages content will be printed out in RTT terminal upon arrival
@@ -83,7 +84,7 @@ type Aux = mcan::bus::Aux<
         clock::gclk::Gclk0Id,
         bsp::Ata6561Rx,
         bsp::Ata6561Tx,
-        bsp::pac::CAN1,
+        bsp::pac::Can1,
     >,
 >;
 type Button = ExtInt15<Pin<PB31, GpioInterrupt<PullUp>>>;
@@ -119,11 +120,11 @@ mod app {
         rprintln!("Application up!");
 
         let (_buses, clocks, tokens) = clock::clock_system_at_reset(
-            ctx.device.OSCCTRL,
-            ctx.device.OSC32KCTRL,
-            ctx.device.GCLK,
-            ctx.device.MCLK,
-            &mut ctx.device.NVMCTRL,
+            ctx.device.oscctrl,
+            ctx.device.osc32kctrl,
+            ctx.device.gclk,
+            ctx.device.mclk,
+            &mut ctx.device.nvmctrl,
         );
 
         let (_, _, _, mut mclk) = unsafe { clocks.pac.steal() };
@@ -135,14 +136,14 @@ mod app {
             clocks.gclk0.freq().to_Hz(),
         );
 
-        let pins = bsp::Pins::new(ctx.device.PORT);
+        let pins = bsp::Pins::new(ctx.device.port);
 
         let (pclk_eic, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.eic, clocks.gclk0);
 
-        let mut eic = hal::eic::init_with_ulp32k(&mut mclk, pclk_eic.into(), ctx.device.EIC);
+        let mut eic = hal::eic::init_with_ulp32k(&mut mclk, pclk_eic.into(), ctx.device.eic);
         let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei();
         eic.button_debounce_pins(&[button.id()]);
-        button.sense(&mut eic, Sense::FALL);
+        button.sense(&mut eic, Sense::Fall);
         button.enable_interrupt(&mut eic);
         eic.finalize();
 
@@ -160,7 +161,7 @@ mod app {
             clocks.ahbs.can1,
             can1_rx,
             can1_tx,
-            ctx.device.CAN1,
+            ctx.device.can1,
         );
 
         let mut can =

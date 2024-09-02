@@ -38,12 +38,12 @@ impl From<u8> for ResetCause {
 
 /// Returns the cause of the last reset.
 #[hal_cfg(any("pm-d11", "pm-d21"))]
-pub fn reset_cause(pm: &crate::pac::PM) -> ResetCause {
-    ResetCause::from(pm.rcause.read().bits())
+pub fn reset_cause(pm: &crate::pac::Pm) -> ResetCause {
+    ResetCause::from(pm.rcause().read().bits())
 }
 
 /// Returns the cause of the last reset.
 #[hal_cfg("rstc-d5x")]
-pub fn reset_cause(rstc: &crate::pac::RSTC) -> ResetCause {
-    ResetCause::from(rstc.rcause.read().bits())
+pub fn reset_cause(rstc: &crate::pac::Rstc) -> ResetCause {
+    ResetCause::from(rstc.rcause().read().bits())
 }

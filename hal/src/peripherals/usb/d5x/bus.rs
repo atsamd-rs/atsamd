@@ -10,8 +10,8 @@ use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
 use crate::gpio::{AlternateH, AnyPin, Pin, PA24, PA25};
 use crate::pac;
-use crate::pac::usb::DEVICE;
-use crate::pac::{MCLK, USB};
+use crate::pac::usb::Device;
+use crate::pac::{Mclk, Usb};
 use crate::usb::devicedesc::DeviceDescBank;
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
@@ -203,43 +203,16 @@ pub struct UsbBus {
     inner: Mutex<RefCell<Inner>>,
 }
 
-/// Generate a method that allows returning the endpoint register
-/// for a given endpoint index.  This helps very slightly with
-/// two inconvenient issues:
-/// - the SVD file translation generates a sequence of elements like ecfg0,
-///   efcg1 rather than an array, so we have to manually translate the indices
-/// - rust doesn't currently have a great solution for generating identifier
-///   names, so we have to pass in a list of the possible names.
-macro_rules! ep {
-    ($name:ident, $type:ident) => {
-        #[allow(unused)]
-        #[inline]
-        fn $name(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::$type {
-            match endpoint {
-                0 => &self.usb().device_endpoint0.$name,
-                1 => &self.usb().device_endpoint1.$name,
-                2 => &self.usb().device_endpoint2.$name,
-                3 => &self.usb().device_endpoint3.$name,
-                4 => &self.usb().device_endpoint4.$name,
-                5 => &self.usb().device_endpoint5.$name,
-                6 => &self.usb().device_endpoint6.$name,
-                7 => &self.usb().device_endpoint7.$name,
-                _ => unreachable!(),
-            }
-        }
-    };
-}
-
 struct Bank<'a, T> {
     address: EndpointAddress,
-    usb: &'a DEVICE,
+    usb: &'a Device,
     desc: RefMut<'a, super::Descriptors>,
     _phantom: PhantomData<T>,
     endpoints: Ref<'a, AllEndpoints>,
 }
 
 impl<'a, T> Bank<'a, T> {
-    fn usb(&self) -> &DEVICE {
+    fn usb(&self) -> &Device {
         self.usb
     }
 
@@ -458,19 +431,61 @@ impl<'a> Bank<'a, OutBank> {
 }
 
 impl<'a, T> Bank<'a, T> {
-    ep!(epcfg, EPCFG);
-    ep!(epstatusclr, EPSTATUSCLR);
-    ep!(epstatusset, EPSTATUSSET);
-    ep!(epstatus, EPSTATUS);
-    ep!(epintflag, EPINTFLAG);
-    ep!(epintenclr, EPINTENCLR);
-    ep!(epintenset, EPINTENSET);
+    #[inline]
+    #[allow(dead_code)]
+    fn epcfg(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epcfg {
+        self.usb().device_endpoint(endpoint).epcfg()
+    }
+
+    #[inline]
+    fn epstatusclr(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epstatusclr {
+        self.usb().device_endpoint(endpoint).epstatusclr()
+    }
+
+    #[inline]
+    fn epstatusset(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epstatusset {
+        self.usb().device_endpoint(endpoint).epstatusset()
+    }
+
+    #[inline]
+    fn epstatus(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epstatus {
+        self.usb().device_endpoint(endpoint).epstatus()
+    }
+
+    #[inline]
+    fn epintflag(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epintflag {
+        self.usb().device_endpoint(endpoint).epintflag()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    fn epintenclr(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epintenclr {
+        self.usb().device_endpoint(endpoint).epintenclr()
+    }
+
+    #[inline]
+    fn epintenset(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epintenset {
+        self.usb().device_endpoint(endpoint).epintenset()
+    }
 }
 
 impl Inner {
-    ep!(epcfg, EPCFG);
-    ep!(epstatus, EPSTATUS);
-    ep!(epintflag, EPINTFLAG);
+    #[inline]
+    fn epcfg(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epcfg {
+        self.usb().device_endpoint(endpoint).epcfg()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    fn epstatus(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epstatus {
+        self.usb().device_endpoint(endpoint).epstatus()
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    fn epintflag(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epintflag {
+        self.usb().device_endpoint(endpoint).epintflag()
+    }
 
     fn bank0(&'_ self, ep: EndpointAddress) -> UsbResult<Bank<'_, OutBank>> {
         if ep.is_in() {
@@ -512,13 +527,13 @@ impl Inner {
 impl UsbBus {
     pub fn new(
         _clock: &clock::UsbClock,
-        mclk: &mut MCLK,
+        mclk: &mut Mclk,
         dm_pad: impl AnyPin<Id = PA24>,
         dp_pad: impl AnyPin<Id = PA25>,
-        _usb: USB,
+        _usb: Usb,
     ) -> Self {
-        mclk.ahbmask.modify(|_, w| w.usb_().set_bit());
-        mclk.apbbmask.modify(|_, w| w.usb_().set_bit());
+        mclk.ahbmask().modify(|_, w| w.usb_().set_bit());
+        mclk.apbbmask().modify(|_, w| w.usb_().set_bit());
 
         let desc = RefCell::new(Descriptors::new());
 
@@ -537,8 +552,8 @@ impl UsbBus {
 }
 
 impl Inner {
-    fn usb(&self) -> &DEVICE {
-        unsafe { (*USB::ptr()).device() }
+    fn usb(&self) -> &Device {
+        unsafe { (*Usb::ptr()).device() }
     }
 
     fn set_stall<EP: Into<EndpointAddress>>(&self, ep: EP, stall: bool) {
@@ -564,48 +579,48 @@ enum FlushConfigMode {
 impl Inner {
     fn enable(&mut self) {
         let usb = self.usb();
-        usb.ctrla.modify(|_, w| w.swrst().set_bit());
-        while usb.syncbusy.read().swrst().bit_is_set() {}
+        usb.ctrla().modify(|_, w| w.swrst().set_bit());
+        while usb.syncbusy().read().swrst().bit_is_set() {}
 
         let addr = self.desc.borrow().address();
-        usb.descadd.write(|w| unsafe { w.descadd().bits(addr) });
-        usb.padcal.modify(|_, w| unsafe {
+        usb.descadd().write(|w| unsafe { w.descadd().bits(addr) });
+        usb.padcal().modify(|_, w| unsafe {
             w.transn().bits(usb_transn_cal());
             w.transp().bits(usb_transp_cal());
             w.trim().bits(usb_trim_cal())
         });
-        usb.qosctrl.modify(|_, w| unsafe {
+        usb.qosctrl().modify(|_, w| unsafe {
             w.dqos().bits(0b11);
             w.cqos().bits(0b11)
         });
-        usb.ctrla.modify(|_, w| {
+        usb.ctrla().modify(|_, w| {
             w.mode().device();
             w.runstdby().set_bit()
         });
         // full speed
-        usb.ctrlb.modify(|_, w| w.spdconf().fs());
+        usb.ctrlb().modify(|_, w| w.spdconf().fs());
 
-        usb.ctrla.modify(|_, w| w.enable().set_bit());
-        while usb.syncbusy.read().enable().bit_is_set() {}
+        usb.ctrla().modify(|_, w| w.enable().set_bit());
+        while usb.syncbusy().read().enable().bit_is_set() {}
 
         // Clear pending.
-        usb.intflag
-            .write(|w| unsafe { w.bits(usb.intflag.read().bits()) });
-        usb.intenset.write(|w| w.eorst().set_bit());
+        usb.intflag()
+            .write(|w| unsafe { w.bits(usb.intflag().read().bits()) });
+        usb.intenset().write(|w| w.eorst().set_bit());
 
         // Configure the endpoints before we attach, as hosts may enumerate
         // before attempting a USB protocol reset.
         self.flush_eps(FlushConfigMode::Full);
 
-        usb.ctrlb.modify(|_, w| w.detach().clear_bit());
+        usb.ctrlb().modify(|_, w| w.detach().clear_bit());
     }
 
     /// Enables/disables the Start Of Frame (SOF) interrupt
     fn sof_interrupt(&self, enable: bool) {
         if enable {
-            self.usb().intenset.write(|w| w.sof().set_bit());
+            self.usb().intenset().write(|w| w.sof().set_bit());
         } else {
-            self.usb().intenclr.write(|w| w.sof().set_bit());
+            self.usb().intenclr().write(|w| w.sof().set_bit());
         }
     }
 
@@ -731,23 +746,23 @@ impl Inner {
 
     fn set_device_address(&self, addr: u8) {
         self.usb()
-            .dadd
+            .dadd()
             .write(|w| unsafe { w.dadd().bits(addr).adden().set_bit() });
     }
 
     fn check_sof_interrupt(&self) -> bool {
-        if self.usb().intflag.read().sof().bit() {
-            self.usb().intflag.write(|w| w.sof().set_bit());
+        if self.usb().intflag().read().sof().bit() {
+            self.usb().intflag().write(|w| w.sof().set_bit());
             return true;
         }
         false
     }
 
     fn poll(&self) -> PollResult {
-        let intflags = self.usb().intflag.read();
+        let intflags = self.usb().intflag().read();
         if intflags.eorst().bit() {
             // end of reset interrupt
-            self.usb().intflag.write(|w| w.eorst().set_bit());
+            self.usb().intflag().write(|w| w.eorst().set_bit());
             return PollResult::Reset;
         }
         // As the suspend & wakup interrupts/states cannot distinguish between
@@ -758,7 +773,7 @@ impl Inner {
         let mut ep_in_complete = 0;
         let mut ep_setup = 0;
 
-        let intbits = self.usb().epintsmry.read().bits();
+        let intbits = self.usb().epintsmry().read().bits();
 
         for ep in 0..8u16 {
             let mask = 1 << ep;

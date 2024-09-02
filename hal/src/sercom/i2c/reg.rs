@@ -6,9 +6,16 @@ use super::{Flags, Status};
 use crate::pac;
 use crate::sercom::Sercom;
 use crate::time::Hertz;
+use atsamd_hal_macros::hal_cfg;
 
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
+
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
+type DataReg = u8;
+
+#[hal_cfg("sercom0-d5x")]
+type DataReg = u32;
 
 pub(super) struct Registers<S: Sercom> {
     pub sercom: S,
@@ -25,15 +32,15 @@ impl<S: Sercom> Registers<S> {
         Self { sercom }
     }
 
-    /// Helper function to access the underlying `I2CM` from the given `SERCOM`
+    /// Helper function to access the underlying `I2cm` from the given `SERCOM`
     #[inline]
-    fn i2c_master(&self) -> &pac::sercom0::I2CM {
+    fn i2c_master(&self) -> &pac::sercom0::I2cm {
         self.sercom.i2cm()
     }
 
     /// Get a pointer to the `DATA` register
     pub(super) fn data_ptr<T>(&self) -> *mut T {
-        self.i2c_master().data.as_ptr() as *mut _
+        self.i2c_master().data().as_ptr() as *mut _
     }
 
     /// Free the `Registers` struct and return the underlying `Sercom` instance
@@ -45,15 +52,15 @@ impl<S: Sercom> Registers<S> {
     /// Reset the SERCOM peripheral
     #[inline]
     pub(super) fn swrst(&mut self) {
-        self.i2c_master().ctrla.write(|w| w.swrst().set_bit());
-        while self.i2c_master().syncbusy.read().swrst().bit_is_set() {}
+        self.i2c_master().ctrla().write(|w| w.swrst().set_bit());
+        while self.i2c_master().syncbusy().read().swrst().bit_is_set() {}
     }
 
     /// Configure the SERCOM to use I2C master mode
     #[inline]
-    pub(super) fn set_op_mode(&mut self, mode: pac::sercom0::i2cm::ctrla::MODESELECT_A) {
+    pub(super) fn set_op_mode(&mut self, mode: pac::sercom0::i2cm::ctrla::Modeselect) {
         self.i2c_master()
-            .ctrla
+            .ctrla()
             .modify(|_, w| w.mode().variant(mode));
     }
 
@@ -64,14 +71,14 @@ impl<S: Sercom> Registers<S> {
         let baud = (clock_freq.into().to_Hz() / (2 * baud.into().to_Hz()) - 1) as u8;
 
         unsafe {
-            self.i2c_master().baud.modify(|_, w| w.baud().bits(baud));
+            self.i2c_master().baud().modify(|_, w| w.baud().bits(baud));
         }
     }
 
     /// Get the contents of the `BAUD` register.
     #[inline]
     pub(super) fn get_baud(&self) -> u32 {
-        self.i2c_master().baud.read().bits()
+        self.i2c_master().baud().read().bits()
     }
 
     /// Set SCL Low Time-Out
@@ -84,7 +91,7 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn set_low_timeout(&mut self, set: bool) {
         self.i2c_master()
-            .ctrla
+            .ctrla()
             .modify(|_, w| w.lowtouten().bit(set));
     }
 
@@ -97,7 +104,7 @@ impl<S: Sercom> Registers<S> {
     /// STATUS.BUSERR status bits will be set.
     #[inline]
     pub(super) fn get_low_timeout(&mut self) -> bool {
-        self.i2c_master().ctrla.read().lowtouten().bit()
+        self.i2c_master().ctrla().read().lowtouten().bit()
     }
 
     /// Set the inactive timeout after which the bus state will be set to IDLE.
@@ -108,14 +115,14 @@ impl<S: Sercom> Registers<S> {
         // thumbv6m targets, but not thumbv7em.
         #[allow(unused_unsafe)]
         self.i2c_master()
-            .ctrla
+            .ctrla()
             .modify(|_, w| unsafe { w.inactout().bits(timeout as u8) })
     }
 
     /// Get the inactive timeout setting.
     #[inline]
     pub(super) fn get_inactive_timeout(&mut self) -> InactiveTimeout {
-        let timeout = self.i2c_master().ctrla.read().inactout().bits();
+        let timeout = self.i2c_master().ctrla().read().inactout().bits();
 
         match timeout {
             0 => InactiveTimeout::Disabled,
@@ -132,46 +139,48 @@ impl<S: Sercom> Registers<S> {
     /// datasheet for more details.
     #[inline]
     pub(super) fn set_run_in_standby(&mut self, set: bool) {
-        self.i2c_master().ctrla.modify(|_, w| w.runstdby().bit(set));
+        self.i2c_master()
+            .ctrla()
+            .modify(|_, w| w.runstdby().bit(set));
     }
 
     /// Get the current run in standby mode
     #[inline]
     pub(super) fn get_run_in_standby(&self) -> bool {
-        self.i2c_master().ctrla.read().runstdby().bit()
+        self.i2c_master().ctrla().read().runstdby().bit()
     }
 
     /// Set Smart Mode
     #[inline]
     pub(super) fn set_smart_mode(&mut self, set: bool) {
-        self.i2c_master().ctrlb.modify(|_, w| w.smen().bit(set));
+        self.i2c_master().ctrlb().modify(|_, w| w.smen().bit(set));
     }
 
     /// Get the current Smart Mode setting
     #[inline]
     pub(super) fn get_smart_mode(&self) -> bool {
-        self.i2c_master().ctrlb.read().smen().bit()
+        self.i2c_master().ctrlb().read().smen().bit()
     }
 
     /// Clear specified interrupt flags
     #[inline]
     pub(super) fn clear_flags(&mut self, flags: Flags) {
         self.i2c_master()
-            .intflag
+            .intflag()
             .modify(|_, w| unsafe { w.bits(flags.bits()) });
     }
 
     /// Read interrupt flags
     #[inline]
     pub(super) fn read_flags(&self) -> Flags {
-        Flags::from_bits_truncate(self.i2c_master().intflag.read().bits())
+        Flags::from_bits_truncate(self.i2c_master().intflag().read().bits())
     }
 
     /// Enable specified interrupts
     #[inline]
     pub(super) fn enable_interrupts(&mut self, flags: Flags) {
         self.i2c_master()
-            .intenset
+            .intenset()
             .write(|w| unsafe { w.bits(flags.bits()) });
     }
 
@@ -179,7 +188,7 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn disable_interrupts(&mut self, flags: Flags) {
         self.i2c_master()
-            .intenclr
+            .intenclr()
             .write(|w| unsafe { w.bits(flags.bits()) });
     }
 
@@ -187,14 +196,14 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn clear_status(&mut self, status: Status) {
         self.i2c_master()
-            .status
+            .status()
             .modify(|_, w| unsafe { w.bits(status.into()) });
     }
 
     /// Read status flags
     #[inline]
     pub(super) fn read_status(&self) -> Status {
-        self.i2c_master().status.read().bits().into()
+        self.i2c_master().status().read().bits().into()
     }
 
     pub(super) fn check_bus_status(&self) -> Result<(), Error> {
@@ -224,12 +233,12 @@ impl<S: Sercom> Registers<S> {
         // address for a write transaction.
         unsafe {
             self.i2c_master()
-                .addr
+                .addr()
                 .write(|w| w.addr().bits(encode_write_address(addr)));
         }
 
         // wait for transmission to complete
-        while !self.i2c_master().intflag.read().mb().bit_is_set() {}
+        while !self.i2c_master().intflag().read().mb().bit_is_set() {}
         self.read_status().check_bus_error()
     }
 
@@ -245,20 +254,20 @@ impl<S: Sercom> Registers<S> {
         self.check_bus_status()?;
 
         self.i2c_master()
-            .intflag
+            .intflag()
             .modify(|_, w| w.error().clear_bit());
 
         // RESET the `ADDR` register, then signal start (or repeated start if
         // appropriate) and transmit encoded address for a read transaction.
         unsafe {
             self.i2c_master()
-                .addr
+                .addr()
                 .write(|w| w.addr().bits(encode_read_address(addr)));
         }
 
         // wait for transmission to complete
         loop {
-            let intflag = self.i2c_master().intflag.read();
+            let intflag = self.i2c_master().intflag().read();
             // If arbitration was lost, it will be signalled via the mb bit
             if intflag.mb().bit_is_set() {
                 return Err(Error::ArbitrationLost);
@@ -287,7 +296,7 @@ impl<S: Sercom> Registers<S> {
             self.enable();
         }
 
-        self.i2c_master().addr.write(|w| unsafe {
+        self.i2c_master().addr().write(|w| unsafe {
             w.addr().bits(encode_write_address(address));
             w.len().bits(xfer_len);
             w.lenen().set_bit()
@@ -312,7 +321,7 @@ impl<S: Sercom> Registers<S> {
             self.enable();
         }
 
-        self.i2c_master().addr.write(|w| unsafe {
+        self.i2c_master().addr().write(|w| unsafe {
             w.addr().bits(encode_read_address(address));
             w.len().bits(xfer_len);
             w.lenen().set_bit()
@@ -324,7 +333,7 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn issue_command(&mut self, cmd: u8) {
         self.i2c_master()
-            .ctrlb
+            .ctrlb()
             .modify(|_, w| unsafe { w.cmd().bits(cmd) });
 
         self.sync_sysop();
@@ -338,7 +347,7 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn cmd_read(&mut self) {
         unsafe {
-            self.i2c_master().ctrlb.modify(|_, w| {
+            self.i2c_master().ctrlb().modify(|_, w| {
                 // clear bit means send ack
                 w.ackact().clear_bit();
                 w.cmd().bits(MASTER_ACT_READ)
@@ -351,11 +360,11 @@ impl<S: Sercom> Registers<S> {
     pub(super) fn send_bytes(&mut self, bytes: &[u8]) -> Result<(), Error> {
         for b in bytes {
             unsafe {
-                self.i2c_master().data.write(|w| w.bits(*b));
+                self.i2c_master().data().write(|w| w.bits(*b as DataReg));
             }
 
             loop {
-                let intflag = self.i2c_master().intflag.read();
+                let intflag = self.i2c_master().intflag().read();
                 if intflag.mb().bit_is_set() || intflag.error().bit_is_set() {
                     break;
                 }
@@ -366,9 +375,13 @@ impl<S: Sercom> Registers<S> {
     }
 
     #[inline]
+    #[allow(clippy::unnecessary_cast)]
     pub(super) fn read_one(&mut self) -> u8 {
-        while !self.i2c_master().intflag.read().sb().bit_is_set() {}
-        self.i2c_master().data.read().bits()
+        while !self.i2c_master().intflag().read().sb().bit_is_set() {}
+
+        // SAMx5x: u32 -> u8 conversion is fine as long as we don't set CTRLC.DATA32B to
+        // 1.
+        self.i2c_master().data().read().bits() as u8
     }
 
     #[inline]
@@ -390,7 +403,9 @@ impl<S: Sercom> Registers<S> {
 
         // arrange to send nack on next command to
         // stop slave from transmitting more data
-        self.i2c_master().ctrlb.modify(|_, w| w.ackact().set_bit());
+        self.i2c_master()
+            .ctrlb()
+            .modify(|_, w| w.ackact().set_bit());
 
         Ok(())
     }
@@ -442,7 +457,7 @@ impl<S: Sercom> Registers<S> {
     pub(super) fn bus_idle(&mut self) {
         // Set the bus idle
         self.i2c_master()
-            .status
+            .status()
             .modify(|_, w| unsafe { w.busstate().bits(BusState::Idle as u8) });
         // Wait for it to take effect
         self.sync_sysop();
@@ -450,7 +465,7 @@ impl<S: Sercom> Registers<S> {
 
     #[inline]
     fn sync_sysop(&mut self) {
-        while self.i2c_master().syncbusy.read().sysop().bit_is_set() {}
+        while self.i2c_master().syncbusy().read().sysop().bit_is_set() {}
     }
 
     /// Enable the I2C peripheral
@@ -474,9 +489,9 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub(super) fn enable_peripheral(&mut self, enable: bool) {
         self.i2c_master()
-            .ctrla
+            .ctrla()
             .modify(|_, w| w.enable().bit(enable));
-        while self.i2c_master().syncbusy.read().enable().bit_is_set() {}
+        while self.i2c_master().syncbusy().read().enable().bit_is_set() {}
     }
 }
 

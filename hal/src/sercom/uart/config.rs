@@ -50,15 +50,15 @@ where
     freq: Hertz,
 }
 
-/// Clock type needed to create a new [`Config`]. [`PM`](pac::PM) for thumbv6m
+/// Clock type needed to create a new [`Config`]. [`Pm`](pac::Pm) for thumbv6m
 /// targets.
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-pub type Clock = pac::PM;
+pub type Clock = pac::Pm;
 
-/// Clock type needed to create a new [`Config`]. [`MCLK`](pac::MCLK) for
+/// Clock type needed to create a new [`Config`]. [`Mclk`](pac::Mclk) for
 /// thumbv7em targets.
 #[hal_cfg("sercom0-d5x")]
-pub type Clock = pac::MCLK;
+pub type Clock = pac::Mclk;
 
 impl<P: ValidPads> Config<P> {
     /// Create a new [`Config`] in the default configuration

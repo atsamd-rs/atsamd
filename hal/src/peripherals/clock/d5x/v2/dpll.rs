@@ -56,11 +56,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! ```
 //!
@@ -82,11 +82,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
 //! let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
@@ -108,11 +108,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
@@ -136,11 +136,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
@@ -180,11 +180,11 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
@@ -211,11 +211,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let (gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
 //! let gclk1 = gclk1.div(GclkDiv16::Div(24)).enable();
@@ -242,10 +242,10 @@ use core::marker::PhantomData;
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, DPLLCTRLA, DPLLCTRLB, DPLLRATIO};
-use crate::pac::oscctrl::DPLL;
+use crate::pac::oscctrl;
+use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, Dpllctrla, Dpllctrlb, Dpllratio};
 
-use crate::pac::oscctrl::dpll::dpllctrlb::REFCLKSELECT_A;
+use crate::pac::oscctrl::dpll::dpllctrlb::Refclkselect;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
@@ -292,42 +292,42 @@ impl<D: DpllId> DpllToken<D> {
 
     /// Access the corresponding PAC `DPLL` struct
     #[inline]
-    fn dpll(&self) -> &DPLL {
+    fn dpll(&self) -> &oscctrl::Dpll {
         // Safety: Each `DpllToken` only has access to a mutually exclusive set
         // of registers for the corresponding `DpllId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSCCTRL::PTR).dpll[D::NUM] }
+        unsafe { (*crate::pac::Oscctrl::PTR).dpll(D::NUM) }
     }
 
-    /// Access the corresponding DPLLCTRLA register
+    /// Access the corresponding Dpllctrla register
     #[inline]
-    fn ctrla(&self) -> &DPLLCTRLA {
-        &self.dpll().dpllctrla
+    fn ctrla(&self) -> &Dpllctrla {
+        self.dpll().dpllctrla()
     }
 
-    /// Access the corresponding DPLLCTRLB register
+    /// Access the corresponding Dpllctrlb register
     #[inline]
-    fn ctrlb(&self) -> &DPLLCTRLB {
-        &self.dpll().dpllctrlb
+    fn ctrlb(&self) -> &Dpllctrlb {
+        self.dpll().dpllctrlb()
     }
 
-    /// Access the corresponding DPLLRATIO register
+    /// Access the corresponding Dpllratio register
     #[inline]
-    fn ratio(&self) -> &DPLLRATIO {
-        &self.dpll().dpllratio
+    fn ratio(&self) -> &Dpllratio {
+        self.dpll().dpllratio()
     }
 
     /// Access the corresponding DPLLSYNCBUSY register for reading only
     #[inline]
     fn syncbusy(&self) -> dpllsyncbusy::R {
-        self.dpll().dpllsyncbusy.read()
+        self.dpll().dpllsyncbusy().read()
     }
 
     /// Access the corresponding DPLLSTATUS register for reading only
     #[inline]
     fn status(&self) -> dpllstatus::R {
-        self.dpll().dpllstatus.read()
+        self.dpll().dpllstatus().read()
     }
 
     #[inline]
@@ -479,13 +479,13 @@ pub enum DynDpllSourceId {
     Xosc32k,
 }
 
-impl From<DynDpllSourceId> for REFCLKSELECT_A {
+impl From<DynDpllSourceId> for Refclkselect {
     fn from(source: DynDpllSourceId) -> Self {
         match source {
-            DynDpllSourceId::Pclk => REFCLKSELECT_A::GCLK,
-            DynDpllSourceId::Xosc0 => REFCLKSELECT_A::XOSC0,
-            DynDpllSourceId::Xosc1 => REFCLKSELECT_A::XOSC1,
-            DynDpllSourceId::Xosc32k => REFCLKSELECT_A::XOSC32,
+            DynDpllSourceId::Pclk => Refclkselect::Gclk,
+            DynDpllSourceId::Xosc0 => Refclkselect::Xosc0,
+            DynDpllSourceId::Xosc1 => Refclkselect::Xosc1,
+            DynDpllSourceId::Xosc32k => Refclkselect::Xosc32,
         }
     }
 }

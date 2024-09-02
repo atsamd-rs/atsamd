@@ -1,101 +1,102 @@
 #[doc = "Register `FSMSTATUS` reader"]
-pub type R = crate::R<FSMSTATUS_SPEC>;
-#[doc = "Field `FSMSTATE` reader - Fine State Machine Status"]
-pub type FSMSTATE_R = crate::FieldReader<FSMSTATESELECT_A>;
+pub type R = crate::R<FsmstatusSpec>;
 #[doc = "Fine State Machine Status\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum FSMSTATESELECT_A {
+pub enum Fsmstateselect {
     #[doc = "1: OFF (L3). It corresponds to the powered-off, disconnected, and disabled state"]
-    OFF = 1,
+    Off = 1,
     #[doc = "2: ON (L0). It corresponds to the Idle and Active states"]
-    ON = 2,
+    On = 2,
     #[doc = "4: SUSPEND (L2)"]
-    SUSPEND = 4,
+    Suspend = 4,
     #[doc = "8: SLEEP (L1)"]
-    SLEEP = 8,
+    Sleep = 8,
     #[doc = "16: DNRESUME. Down Stream Resume."]
-    DNRESUME = 16,
+    Dnresume = 16,
     #[doc = "32: UPRESUME. Up Stream Resume."]
-    UPRESUME = 32,
+    Upresume = 32,
     #[doc = "64: RESET. USB lines Reset."]
-    RESET = 64,
+    Reset = 64,
 }
-impl From<FSMSTATESELECT_A> for u8 {
+impl From<Fsmstateselect> for u8 {
     #[inline(always)]
-    fn from(variant: FSMSTATESELECT_A) -> Self {
+    fn from(variant: Fsmstateselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for FSMSTATESELECT_A {
+impl crate::FieldSpec for Fsmstateselect {
     type Ux = u8;
 }
-impl FSMSTATE_R {
+impl crate::IsEnum for Fsmstateselect {}
+#[doc = "Field `FSMSTATE` reader - Fine State Machine Status"]
+pub type FsmstateR = crate::FieldReader<Fsmstateselect>;
+impl FsmstateR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<FSMSTATESELECT_A> {
+    pub const fn variant(&self) -> Option<Fsmstateselect> {
         match self.bits {
-            1 => Some(FSMSTATESELECT_A::OFF),
-            2 => Some(FSMSTATESELECT_A::ON),
-            4 => Some(FSMSTATESELECT_A::SUSPEND),
-            8 => Some(FSMSTATESELECT_A::SLEEP),
-            16 => Some(FSMSTATESELECT_A::DNRESUME),
-            32 => Some(FSMSTATESELECT_A::UPRESUME),
-            64 => Some(FSMSTATESELECT_A::RESET),
+            1 => Some(Fsmstateselect::Off),
+            2 => Some(Fsmstateselect::On),
+            4 => Some(Fsmstateselect::Suspend),
+            8 => Some(Fsmstateselect::Sleep),
+            16 => Some(Fsmstateselect::Dnresume),
+            32 => Some(Fsmstateselect::Upresume),
+            64 => Some(Fsmstateselect::Reset),
             _ => None,
         }
     }
     #[doc = "OFF (L3). It corresponds to the powered-off, disconnected, and disabled state"]
     #[inline(always)]
     pub fn is_off(&self) -> bool {
-        *self == FSMSTATESELECT_A::OFF
+        *self == Fsmstateselect::Off
     }
     #[doc = "ON (L0). It corresponds to the Idle and Active states"]
     #[inline(always)]
     pub fn is_on(&self) -> bool {
-        *self == FSMSTATESELECT_A::ON
+        *self == Fsmstateselect::On
     }
     #[doc = "SUSPEND (L2)"]
     #[inline(always)]
     pub fn is_suspend(&self) -> bool {
-        *self == FSMSTATESELECT_A::SUSPEND
+        *self == Fsmstateselect::Suspend
     }
     #[doc = "SLEEP (L1)"]
     #[inline(always)]
     pub fn is_sleep(&self) -> bool {
-        *self == FSMSTATESELECT_A::SLEEP
+        *self == Fsmstateselect::Sleep
     }
     #[doc = "DNRESUME. Down Stream Resume."]
     #[inline(always)]
     pub fn is_dnresume(&self) -> bool {
-        *self == FSMSTATESELECT_A::DNRESUME
+        *self == Fsmstateselect::Dnresume
     }
     #[doc = "UPRESUME. Up Stream Resume."]
     #[inline(always)]
     pub fn is_upresume(&self) -> bool {
-        *self == FSMSTATESELECT_A::UPRESUME
+        *self == Fsmstateselect::Upresume
     }
     #[doc = "RESET. USB lines Reset."]
     #[inline(always)]
     pub fn is_reset(&self) -> bool {
-        *self == FSMSTATESELECT_A::RESET
+        *self == Fsmstateselect::Reset
     }
 }
 impl R {
     #[doc = "Bits 0:6 - Fine State Machine Status"]
     #[inline(always)]
-    pub fn fsmstate(&self) -> FSMSTATE_R {
-        FSMSTATE_R::new(self.bits & 0x7f)
+    pub fn fsmstate(&self) -> FsmstateR {
+        FsmstateR::new(self.bits & 0x7f)
     }
 }
-#[doc = "Finite State Machine Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`fsmstatus::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct FSMSTATUS_SPEC;
-impl crate::RegisterSpec for FSMSTATUS_SPEC {
+#[doc = "Finite State Machine Status\n\nYou can [`read`](crate::Reg::read) this register and get [`fsmstatus::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct FsmstatusSpec;
+impl crate::RegisterSpec for FsmstatusSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`fsmstatus::R`](R) reader structure"]
-impl crate::Readable for FSMSTATUS_SPEC {}
+impl crate::Readable for FsmstatusSpec {}
 #[doc = "`reset()` method sets FSMSTATUS to value 0x01"]
-impl crate::Resettable for FSMSTATUS_SPEC {
-    const RESET_VALUE: Self::Ux = 0x01;
+impl crate::Resettable for FsmstatusSpec {
+    const RESET_VALUE: u8 = 0x01;
 }

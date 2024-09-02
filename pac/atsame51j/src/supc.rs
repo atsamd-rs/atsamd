@@ -1,75 +1,127 @@
-#[doc = r"Register block"]
 #[repr(C)]
+#[doc = "Register block"]
 pub struct RegisterBlock {
-    #[doc = "0x00 - Interrupt Enable Clear"]
-    pub intenclr: INTENCLR,
-    #[doc = "0x04 - Interrupt Enable Set"]
-    pub intenset: INTENSET,
-    #[doc = "0x08 - Interrupt Flag Status and Clear"]
-    pub intflag: INTFLAG,
-    #[doc = "0x0c - Power and Clocks Status"]
-    pub status: STATUS,
-    #[doc = "0x10 - BOD33 Control"]
-    pub bod33: BOD33,
+    intenclr: Intenclr,
+    intenset: Intenset,
+    intflag: Intflag,
+    status: Status,
+    bod33: Bod33,
     _reserved5: [u8; 0x04],
-    #[doc = "0x18 - VREG Control"]
-    pub vreg: VREG,
-    #[doc = "0x1c - VREF Control"]
-    pub vref: VREF,
-    #[doc = "0x20 - Battery Backup Power Switch"]
-    pub bbps: BBPS,
-    #[doc = "0x24 - Backup Output Control"]
-    pub bkout: BKOUT,
-    #[doc = "0x28 - Backup Input Control"]
-    pub bkin: BKIN,
+    vreg: Vreg,
+    vref: Vref,
+    bbps: Bbps,
+    bkout: Bkout,
+    bkin: Bkin,
 }
-#[doc = "INTENCLR (rw) register accessor: Interrupt Enable Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenclr::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`]
+impl RegisterBlock {
+    #[doc = "0x00 - Interrupt Enable Clear"]
+    #[inline(always)]
+    pub const fn intenclr(&self) -> &Intenclr {
+        &self.intenclr
+    }
+    #[doc = "0x04 - Interrupt Enable Set"]
+    #[inline(always)]
+    pub const fn intenset(&self) -> &Intenset {
+        &self.intenset
+    }
+    #[doc = "0x08 - Interrupt Flag Status and Clear"]
+    #[inline(always)]
+    pub const fn intflag(&self) -> &Intflag {
+        &self.intflag
+    }
+    #[doc = "0x0c - Power and Clocks Status"]
+    #[inline(always)]
+    pub const fn status(&self) -> &Status {
+        &self.status
+    }
+    #[doc = "0x10 - BOD33 Control"]
+    #[inline(always)]
+    pub const fn bod33(&self) -> &Bod33 {
+        &self.bod33
+    }
+    #[doc = "0x18 - VREG Control"]
+    #[inline(always)]
+    pub const fn vreg(&self) -> &Vreg {
+        &self.vreg
+    }
+    #[doc = "0x1c - VREF Control"]
+    #[inline(always)]
+    pub const fn vref(&self) -> &Vref {
+        &self.vref
+    }
+    #[doc = "0x20 - Battery Backup Power Switch"]
+    #[inline(always)]
+    pub const fn bbps(&self) -> &Bbps {
+        &self.bbps
+    }
+    #[doc = "0x24 - Backup Output Control"]
+    #[inline(always)]
+    pub const fn bkout(&self) -> &Bkout {
+        &self.bkout
+    }
+    #[doc = "0x28 - Backup Input Control"]
+    #[inline(always)]
+    pub const fn bkin(&self) -> &Bkin {
+        &self.bkin
+    }
+}
+#[doc = "INTENCLR (rw) register accessor: Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intenclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`]
 module"]
-pub type INTENCLR = crate::Reg<intenclr::INTENCLR_SPEC>;
+#[doc(alias = "INTENCLR")]
+pub type Intenclr = crate::Reg<intenclr::IntenclrSpec>;
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
-#[doc = "INTENSET (rw) register accessor: Interrupt Enable Set\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intenset::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`]
+#[doc = "INTENSET (rw) register accessor: Interrupt Enable Set\n\nYou can [`read`](crate::Reg::read) this register and get [`intenset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`]
 module"]
-pub type INTENSET = crate::Reg<intenset::INTENSET_SPEC>;
+#[doc(alias = "INTENSET")]
+pub type Intenset = crate::Reg<intenset::IntensetSpec>;
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
-#[doc = "INTFLAG (rw) register accessor: Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`]
+#[doc = "INTFLAG (rw) register accessor: Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intflag::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`]
 module"]
-pub type INTFLAG = crate::Reg<intflag::INTFLAG_SPEC>;
+#[doc(alias = "INTFLAG")]
+pub type Intflag = crate::Reg<intflag::IntflagSpec>;
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
-#[doc = "STATUS (r) register accessor: Power and Clocks Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@status`]
+#[doc = "STATUS (r) register accessor: Power and Clocks Status\n\nYou can [`read`](crate::Reg::read) this register and get [`status::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@status`]
 module"]
-pub type STATUS = crate::Reg<status::STATUS_SPEC>;
+#[doc(alias = "STATUS")]
+pub type Status = crate::Reg<status::StatusSpec>;
 #[doc = "Power and Clocks Status"]
 pub mod status;
-#[doc = "BOD33 (rw) register accessor: BOD33 Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bod33::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`bod33::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bod33`]
+#[doc = "BOD33 (rw) register accessor: BOD33 Control\n\nYou can [`read`](crate::Reg::read) this register and get [`bod33::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`bod33::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bod33`]
 module"]
-pub type BOD33 = crate::Reg<bod33::BOD33_SPEC>;
+#[doc(alias = "BOD33")]
+pub type Bod33 = crate::Reg<bod33::Bod33Spec>;
 #[doc = "BOD33 Control"]
 pub mod bod33;
-#[doc = "VREG (rw) register accessor: VREG Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`vreg::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`vreg::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@vreg`]
+#[doc = "VREG (rw) register accessor: VREG Control\n\nYou can [`read`](crate::Reg::read) this register and get [`vreg::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`vreg::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@vreg`]
 module"]
-pub type VREG = crate::Reg<vreg::VREG_SPEC>;
+#[doc(alias = "VREG")]
+pub type Vreg = crate::Reg<vreg::VregSpec>;
 #[doc = "VREG Control"]
 pub mod vreg;
-#[doc = "VREF (rw) register accessor: VREF Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`vref::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`vref::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@vref`]
+#[doc = "VREF (rw) register accessor: VREF Control\n\nYou can [`read`](crate::Reg::read) this register and get [`vref::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`vref::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@vref`]
 module"]
-pub type VREF = crate::Reg<vref::VREF_SPEC>;
+#[doc(alias = "VREF")]
+pub type Vref = crate::Reg<vref::VrefSpec>;
 #[doc = "VREF Control"]
 pub mod vref;
-#[doc = "BBPS (rw) register accessor: Battery Backup Power Switch\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bbps::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`bbps::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bbps`]
+#[doc = "BBPS (rw) register accessor: Battery Backup Power Switch\n\nYou can [`read`](crate::Reg::read) this register and get [`bbps::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`bbps::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bbps`]
 module"]
-pub type BBPS = crate::Reg<bbps::BBPS_SPEC>;
+#[doc(alias = "BBPS")]
+pub type Bbps = crate::Reg<bbps::BbpsSpec>;
 #[doc = "Battery Backup Power Switch"]
 pub mod bbps;
-#[doc = "BKOUT (rw) register accessor: Backup Output Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bkout::R`].  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`bkout::W`]. You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bkout`]
+#[doc = "BKOUT (rw) register accessor: Backup Output Control\n\nYou can [`read`](crate::Reg::read) this register and get [`bkout::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`bkout::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bkout`]
 module"]
-pub type BKOUT = crate::Reg<bkout::BKOUT_SPEC>;
+#[doc(alias = "BKOUT")]
+pub type Bkout = crate::Reg<bkout::BkoutSpec>;
 #[doc = "Backup Output Control"]
 pub mod bkout;
-#[doc = "BKIN (r) register accessor: Backup Input Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`bkin::R`].  See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bkin`]
+#[doc = "BKIN (r) register accessor: Backup Input Control\n\nYou can [`read`](crate::Reg::read) this register and get [`bkin::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bkin`]
 module"]
-pub type BKIN = crate::Reg<bkin::BKIN_SPEC>;
+#[doc(alias = "BKIN")]
+pub type Bkin = crate::Reg<bkin::BkinSpec>;
 #[doc = "Backup Input Control"]
 pub mod bkin;

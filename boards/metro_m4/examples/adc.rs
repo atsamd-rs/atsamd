@@ -18,7 +18,7 @@ use hal::adc::Adc;
 use hal::clock::GenericClockController;
 use hal::gpio::B;
 use hal::prelude::*;
-use pac::gclk::pchctrl::GENSELECT_A::GCLK11;
+use pac::gclk::pchctrl::Genselect::Gclk11;
 use pac::{CorePeripherals, Peripherals};
 
 #[entry]
@@ -26,15 +26,15 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let mut adc0 = Adc::adc0(peripherals.ADC0, &mut peripherals.MCLK, &mut clocks, GCLK11);
+    let mut adc0 = Adc::adc0(peripherals.adc0, &mut peripherals.mclk, &mut clocks, Gclk11);
     let mut a0 = pins.a0.into_alternate::<B>();
 
     loop {

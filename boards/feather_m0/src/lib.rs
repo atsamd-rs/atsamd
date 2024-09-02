@@ -18,9 +18,9 @@ use hal::time::Hertz;
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
 hal::bsp_peripherals!(
-    SERCOM0 { UartSercom }
-    SERCOM3 { I2cSercom }
-    SERCOM4 { SpiSercom }
+    Sercom0 { UartSercom }
+    Sercom3 { I2cSercom }
+    Sercom4 { SpiSercom }
 );
 
 /// Definitions related to pins and pin aliases
@@ -286,7 +286,7 @@ pub fn spi_master(
     clocks: &mut GenericClockController,
     baud: Hertz,
     sercom: SpiSercom,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     sclk: impl Into<Sclk>,
     mosi: impl Into<Mosi>,
     miso: impl Into<Miso>,
@@ -320,7 +320,7 @@ pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
     sercom: I2cSercom,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
 ) -> I2c {
@@ -344,7 +344,7 @@ pub fn uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
     sercom: UartSercom,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     uart_rx: impl Into<UartRx>,
     uart_tx: impl Into<UartTx>,
 ) -> Uart {
@@ -360,9 +360,9 @@ pub fn uart(
 #[cfg(feature = "usb")]
 /// Convenience function for setting up USB
 pub fn usb_allocator(
-    usb: pac::USB,
+    usb: pac::Usb,
     clocks: &mut GenericClockController,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {

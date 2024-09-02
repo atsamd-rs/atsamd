@@ -63,13 +63,13 @@
 //!     time::U32Ext,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! ```
 //!
@@ -84,13 +84,13 @@
 //! #     time::U32Ext,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
 //! ```
@@ -107,13 +107,13 @@
 //! #     time::U32Ext,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
 //! let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
@@ -134,13 +134,13 @@
 //! #     time::U32Ext,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
 //! # let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
@@ -163,13 +163,13 @@
 //!     time::U32Ext,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
 //! let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
@@ -228,13 +228,13 @@
 //!     time::U32Ext,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! let (buses, mut clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let gclk4 = Gclk::from_pin(tokens.gclks.gclk4, pins.pa10, 32_768.hz()).enable();
 //! let (pclk, gclk4) = Pclk::enable(tokens.pclks.dfll, gclk4);
@@ -308,27 +308,27 @@ impl DfllToken {
         // of registers for the DFLL, and we use a shared reference to the
         // register block. See the notes on `Token` types and memory safety in
         // the root of the `clock` module for more details.
-        unsafe { &*crate::pac::OSCCTRL::PTR }
+        unsafe { &*crate::pac::Oscctrl::PTR }
     }
 
     #[inline]
-    fn dfllctrla(&self) -> &crate::pac::oscctrl::DFLLCTRLA {
-        &self.oscctrl().dfllctrla
+    fn dfllctrla(&self) -> &crate::pac::oscctrl::Dfllctrla {
+        self.oscctrl().dfllctrla()
     }
 
     #[inline]
-    fn dfllctrlb(&self) -> &crate::pac::oscctrl::DFLLCTRLB {
-        &self.oscctrl().dfllctrlb
+    fn dfllctrlb(&self) -> &crate::pac::oscctrl::Dfllctrlb {
+        self.oscctrl().dfllctrlb()
     }
 
     #[inline]
-    fn dfllmul(&self) -> &crate::pac::oscctrl::DFLLMUL {
-        &self.oscctrl().dfllmul
+    fn dfllmul(&self) -> &crate::pac::oscctrl::Dfllmul {
+        self.oscctrl().dfllmul()
     }
 
     #[inline]
-    fn dfllsync(&self) -> &crate::pac::oscctrl::DFLLSYNC {
-        &self.oscctrl().dfllsync
+    fn dfllsync(&self) -> &crate::pac::oscctrl::Dfllsync {
+        self.oscctrl().dfllsync()
     }
 
     #[inline]

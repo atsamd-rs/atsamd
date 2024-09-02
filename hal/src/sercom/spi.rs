@@ -308,7 +308,7 @@ use num_traits::AsPrimitive;
 
 use crate::ehal;
 pub use crate::ehal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
-use crate::sercom::{pad::SomePad, Sercom, APB_CLK_CTRL};
+use crate::sercom::{pad::SomePad, ApbClkCtrl, Sercom};
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
 
@@ -320,9 +320,9 @@ use reg::Registers;
 //=============================================================================
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-use crate::pac::sercom0::spi::ctrla::MODESELECT_A;
+use crate::pac::sercom0::spi::ctrla::Modeselect;
 #[hal_cfg("sercom0-d5x")]
-use crate::pac::sercom0::spim::ctrla::MODESELECT_A;
+use crate::pac::sercom0::spim::ctrla::Modeselect;
 
 #[hal_module(
     any("sercom0-d11", "sercom0-d21") => "spi/pads_thumbv6m.rs",
@@ -448,7 +448,7 @@ pub enum Error {
 /// [type-level enums]: crate::typelevel#type-level-enums
 pub trait OpMode: Sealed {
     /// Corresponding variant from the PAC enum
-    const MODE: MODESELECT_A;
+    const MODE: Modeselect;
     /// Bit indicating whether hardware `SS` control is enabled
     const MSSEN: bool;
 }
@@ -467,17 +467,17 @@ impl Sealed for MasterHWSS {}
 impl Sealed for Slave {}
 
 impl OpMode for Master {
-    const MODE: MODESELECT_A = MODESELECT_A::SPI_MASTER;
+    const MODE: Modeselect = Modeselect::SpiMaster;
     const MSSEN: bool = false;
 }
 
 impl OpMode for MasterHWSS {
-    const MODE: MODESELECT_A = MODESELECT_A::SPI_MASTER;
+    const MODE: Modeselect = Modeselect::SpiMaster;
     const MSSEN: bool = true;
 }
 
 impl OpMode for Slave {
-    const MODE: MODESELECT_A = MODESELECT_A::SPI_SLAVE;
+    const MODE: Modeselect = Modeselect::SpiSlave;
     const MSSEN: bool = false;
 }
 
@@ -688,7 +688,7 @@ impl<P: ValidPads> Config<P> {
     )]
     #[inline]
     pub fn new(
-        apb_clk_ctrl: &APB_CLK_CTRL,
+        apb_clk_ctrl: &ApbClkCtrl,
         mut sercom: P::Sercom,
         pads: P,
         freq: impl Into<Hertz>,

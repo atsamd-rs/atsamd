@@ -1,109 +1,100 @@
 #[doc = "Register `ADDR` reader"]
-pub type R = crate::R<ADDR_SPEC>;
+pub type R = crate::R<AddrSpec>;
 #[doc = "Register `ADDR` writer"]
-pub type W = crate::W<ADDR_SPEC>;
+pub type W = crate::W<AddrSpec>;
 #[doc = "Field `ADDR` reader - Address Value"]
-pub type ADDR_R = crate::FieldReader<u16>;
+pub type AddrR = crate::FieldReader<u16>;
 #[doc = "Field `ADDR` writer - Address Value"]
-pub type ADDR_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 11, O, u16>;
+pub type AddrW<'a, REG> = crate::FieldWriter<'a, REG, 11, u16>;
 #[doc = "Field `LENEN` reader - Length Enable"]
-pub type LENEN_R = crate::BitReader;
+pub type LenenR = crate::BitReader;
 #[doc = "Field `LENEN` writer - Length Enable"]
-pub type LENEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type LenenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `HS` reader - High Speed Mode"]
-pub type HS_R = crate::BitReader;
+pub type HsR = crate::BitReader;
 #[doc = "Field `HS` writer - High Speed Mode"]
-pub type HS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type HsW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TENBITEN` reader - Ten Bit Addressing Enable"]
-pub type TENBITEN_R = crate::BitReader;
+pub type TenbitenR = crate::BitReader;
 #[doc = "Field `TENBITEN` writer - Ten Bit Addressing Enable"]
-pub type TENBITEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type TenbitenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `LEN` reader - Length"]
-pub type LEN_R = crate::FieldReader;
+pub type LenR = crate::FieldReader;
 #[doc = "Field `LEN` writer - Length"]
-pub type LEN_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 8, O>;
+pub type LenW<'a, REG> = crate::FieldWriter<'a, REG, 8>;
 impl R {
     #[doc = "Bits 0:10 - Address Value"]
     #[inline(always)]
-    pub fn addr(&self) -> ADDR_R {
-        ADDR_R::new((self.bits & 0x07ff) as u16)
+    pub fn addr(&self) -> AddrR {
+        AddrR::new((self.bits & 0x07ff) as u16)
     }
     #[doc = "Bit 13 - Length Enable"]
     #[inline(always)]
-    pub fn lenen(&self) -> LENEN_R {
-        LENEN_R::new(((self.bits >> 13) & 1) != 0)
+    pub fn lenen(&self) -> LenenR {
+        LenenR::new(((self.bits >> 13) & 1) != 0)
     }
     #[doc = "Bit 14 - High Speed Mode"]
     #[inline(always)]
-    pub fn hs(&self) -> HS_R {
-        HS_R::new(((self.bits >> 14) & 1) != 0)
+    pub fn hs(&self) -> HsR {
+        HsR::new(((self.bits >> 14) & 1) != 0)
     }
     #[doc = "Bit 15 - Ten Bit Addressing Enable"]
     #[inline(always)]
-    pub fn tenbiten(&self) -> TENBITEN_R {
-        TENBITEN_R::new(((self.bits >> 15) & 1) != 0)
+    pub fn tenbiten(&self) -> TenbitenR {
+        TenbitenR::new(((self.bits >> 15) & 1) != 0)
     }
     #[doc = "Bits 16:23 - Length"]
     #[inline(always)]
-    pub fn len(&self) -> LEN_R {
-        LEN_R::new(((self.bits >> 16) & 0xff) as u8)
+    pub fn len(&self) -> LenR {
+        LenR::new(((self.bits >> 16) & 0xff) as u8)
     }
 }
 impl W {
     #[doc = "Bits 0:10 - Address Value"]
     #[inline(always)]
     #[must_use]
-    pub fn addr(&mut self) -> ADDR_W<ADDR_SPEC, 0> {
-        ADDR_W::new(self)
+    pub fn addr(&mut self) -> AddrW<AddrSpec> {
+        AddrW::new(self, 0)
     }
     #[doc = "Bit 13 - Length Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn lenen(&mut self) -> LENEN_W<ADDR_SPEC, 13> {
-        LENEN_W::new(self)
+    pub fn lenen(&mut self) -> LenenW<AddrSpec> {
+        LenenW::new(self, 13)
     }
     #[doc = "Bit 14 - High Speed Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn hs(&mut self) -> HS_W<ADDR_SPEC, 14> {
-        HS_W::new(self)
+    pub fn hs(&mut self) -> HsW<AddrSpec> {
+        HsW::new(self, 14)
     }
     #[doc = "Bit 15 - Ten Bit Addressing Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn tenbiten(&mut self) -> TENBITEN_W<ADDR_SPEC, 15> {
-        TENBITEN_W::new(self)
+    pub fn tenbiten(&mut self) -> TenbitenW<AddrSpec> {
+        TenbitenW::new(self, 15)
     }
     #[doc = "Bits 16:23 - Length"]
     #[inline(always)]
     #[must_use]
-    pub fn len(&mut self) -> LEN_W<ADDR_SPEC, 16> {
-        LEN_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn len(&mut self) -> LenW<AddrSpec> {
+        LenW::new(self, 16)
     }
 }
-#[doc = "I2CM Address\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`addr::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`addr::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct ADDR_SPEC;
-impl crate::RegisterSpec for ADDR_SPEC {
+#[doc = "I2CM Address\n\nYou can [`read`](crate::Reg::read) this register and get [`addr::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`addr::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct AddrSpec;
+impl crate::RegisterSpec for AddrSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`addr::R`](R) reader structure"]
-impl crate::Readable for ADDR_SPEC {}
+impl crate::Readable for AddrSpec {}
 #[doc = "`write(|w| ..)` method takes [`addr::W`](W) writer structure"]
-impl crate::Writable for ADDR_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for AddrSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ADDR to value 0"]
-impl crate::Resettable for ADDR_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for AddrSpec {
+    const RESET_VALUE: u32 = 0;
 }

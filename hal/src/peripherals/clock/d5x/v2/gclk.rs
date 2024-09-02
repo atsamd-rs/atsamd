@@ -68,13 +68,13 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! ```
 //!
 //! Next, we use [`Gclk::from_pin`] to create a [`Gclk`] from a [`GclkToken`],
@@ -102,13 +102,13 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! ```
 //!
@@ -130,13 +130,13 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! ```
@@ -167,13 +167,13 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
@@ -197,13 +197,13 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
@@ -227,13 +227,13 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
@@ -258,13 +258,13 @@
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
@@ -289,13 +289,13 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
 //! let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
@@ -343,12 +343,12 @@ use seq_macro::seq;
 use typenum::{U0, U1};
 
 use crate::pac;
-use crate::pac::gclk::genctrl::DIVSELSELECT_A;
-use crate::pac::NVMCTRL;
+use crate::pac::gclk::genctrl::Divselselect;
+use crate::pac::Nvmctrl;
 
 use crate::gpio::{self, AlternateM, AnyPin, Pin, PinId};
-use crate::pac::gclk::genctrl::SRCSELECT_A;
-use crate::pac::gclk::GENCTRL;
+use crate::pac::gclk::genctrl::Srcselect;
+use crate::pac::gclk::Genctrl;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
@@ -395,14 +395,14 @@ impl<G: GclkId> GclkToken<G> {
     /// SYNCBUSY register mask for the corresponding GCLK
     const MASK: u16 = 1 << G::NUM;
 
-    /// Provide a reference to the corresponding [`GENCTRL`] register
+    /// Provide a reference to the corresponding [`Genctrl`] register
     #[inline]
-    fn genctrl(&self) -> &GENCTRL {
+    fn genctrl(&self) -> &Genctrl {
         // Safety: Each `GclkToken` only has access to a mutually exclusive set
         // of registers for the corresponding `GclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*pac::GCLK::PTR).genctrl[G::NUM] }
+        unsafe { (*pac::Gclk::PTR).genctrl(G::NUM) }
     }
 
     /// Block until synchronization has completed
@@ -414,7 +414,7 @@ impl<G: GclkId> GclkToken<G> {
         // Safety: We are only reading from the `SYNCBUSY` register, and we are
         // only observing the bit corresponding to this particular `GclkId`, so
         // there is no risk of memory corruption.
-        let syncbusy = unsafe { &(*pac::GCLK::PTR).syncbusy };
+        let syncbusy = unsafe { &(*pac::Gclk::PTR).syncbusy() };
         while syncbusy.read().genctrl().bits() & Self::MASK != 0 {}
     }
 
@@ -629,7 +629,7 @@ pub trait GclkDivider: Sealed + Default + Copy {
     /// Returns the actual clock divider value as a `u32`
     fn divider(&self) -> u32;
     /// Return the corresponding `DIVSEL` and and `DIV` register fields
-    fn divsel_div(&self) -> (DIVSELSELECT_A, u16);
+    fn divsel_div(&self) -> (Divselselect, u16);
 }
 
 //==============================================================================
@@ -676,11 +676,11 @@ impl GclkDivider for GclkDiv8 {
     }
 
     #[inline]
-    fn divsel_div(&self) -> (DIVSELSELECT_A, u16) {
+    fn divsel_div(&self) -> (Divselselect, u16) {
         match self {
-            GclkDiv8::Div(div) => (DIVSELSELECT_A::DIV1, (*div).into()),
-            GclkDiv8::Div2Pow8 => (DIVSELSELECT_A::DIV2, 7),
-            GclkDiv8::Div2Pow9 => (DIVSELSELECT_A::DIV2, 8),
+            GclkDiv8::Div(div) => (Divselselect::Div1, (*div).into()),
+            GclkDiv8::Div2Pow8 => (Divselselect::Div2, 7),
+            GclkDiv8::Div2Pow9 => (Divselselect::Div2, 8),
         }
     }
 }
@@ -728,11 +728,11 @@ impl GclkDivider for GclkDiv16 {
     }
 
     #[inline]
-    fn divsel_div(&self) -> (DIVSELSELECT_A, u16) {
+    fn divsel_div(&self) -> (Divselselect, u16) {
         match self {
-            GclkDiv16::Div(div) => (DIVSELSELECT_A::DIV1, *div),
-            GclkDiv16::Div2Pow16 => (DIVSELSELECT_A::DIV2, 15),
-            GclkDiv16::Div2Pow17 => (DIVSELSELECT_A::DIV2, 16),
+            GclkDiv16::Div(div) => (Divselselect::Div1, *div),
+            GclkDiv16::Div2Pow16 => (Divselselect::Div2, 15),
+            GclkDiv16::Div2Pow17 => (Divselselect::Div2, 16),
         }
     }
 }
@@ -848,20 +848,19 @@ pub enum DynGclkSourceId {
     Xosc32k,
 }
 
-impl From<DynGclkSourceId> for SRCSELECT_A {
+impl From<DynGclkSourceId> for Srcselect {
     fn from(source: DynGclkSourceId) -> Self {
         use DynGclkSourceId::*;
-        use SRCSELECT_A::*;
         match source {
-            Dfll => DFLL,
-            Dpll0 => DPLL0,
-            Dpll1 => DPLL1,
-            Gclk1 => GCLKGEN1,
-            GclkIn => GCLKIN,
-            OscUlp32k => OSCULP32K,
-            Xosc0 => XOSC0,
-            Xosc1 => XOSC1,
-            Xosc32k => XOSC32K,
+            Dfll => Self::Dfll,
+            Dpll0 => Self::Dpll0,
+            Dpll1 => Self::Dpll1,
+            Gclk1 => Self::Gclkgen1,
+            GclkIn => Self::Gclkin,
+            OscUlp32k => Self::Osculp32k,
+            Xosc0 => Self::Xosc0,
+            Xosc1 => Self::Xosc1,
+            Xosc32k => Self::Xosc32k,
         }
     }
 }
@@ -1422,9 +1421,9 @@ seq!(N in 1..=11 {
             /// All of the invariants required by `GclkToken::new` must be
             /// upheld here as well.
             #[inline]
-            pub(super) unsafe fn new(nvmctrl: &mut NVMCTRL) -> Self {
+            pub(super) unsafe fn new(nvmctrl: &mut Nvmctrl) -> Self {
                 // Use auto wait states
-                nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
+                nvmctrl.ctrla().modify(|_, w| w.autows().set_bit());
                 GclkTokens {
                     #( gclk~N: GclkToken::new(), )*
                 }

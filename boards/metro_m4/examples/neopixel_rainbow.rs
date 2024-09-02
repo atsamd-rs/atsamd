@@ -31,18 +31,18 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let gclk0 = clocks.gclk0();
     let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.TC3, &mut peripherals.MCLK);
+    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.tc3, &mut peripherals.mclk);
     timer.start(Hertz::MHz(3).into_duration());
 
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let neopixel_pin = pins.neopixel.into_push_pull_output();
     let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
     let mut delay = Delay::new(core.SYST, &mut clocks);

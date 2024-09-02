@@ -1,523 +1,523 @@
 #[doc = "Register `PSR` reader"]
-pub type R = crate::R<PSR_SPEC>;
-#[doc = "Field `CMDINHC` reader - Command Inhibit (CMD)"]
-pub type CMDINHC_R = crate::BitReader<CMDINHCSELECT_A>;
+pub type R = crate::R<PsrSpec>;
 #[doc = "Command Inhibit (CMD)\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CMDINHCSELECT_A {
+pub enum Cmdinhcselect {
     #[doc = "0: Can issue command using only CMD line"]
-    CAN = 0,
+    Can = 0,
     #[doc = "1: Cannot issue command"]
-    CANNOT = 1,
+    Cannot = 1,
 }
-impl From<CMDINHCSELECT_A> for bool {
+impl From<Cmdinhcselect> for bool {
     #[inline(always)]
-    fn from(variant: CMDINHCSELECT_A) -> Self {
+    fn from(variant: Cmdinhcselect) -> Self {
         variant as u8 != 0
     }
 }
-impl CMDINHC_R {
+#[doc = "Field `CMDINHC` reader - Command Inhibit (CMD)"]
+pub type CmdinhcR = crate::BitReader<Cmdinhcselect>;
+impl CmdinhcR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> CMDINHCSELECT_A {
+    pub const fn variant(&self) -> Cmdinhcselect {
         match self.bits {
-            false => CMDINHCSELECT_A::CAN,
-            true => CMDINHCSELECT_A::CANNOT,
+            false => Cmdinhcselect::Can,
+            true => Cmdinhcselect::Cannot,
         }
     }
     #[doc = "Can issue command using only CMD line"]
     #[inline(always)]
     pub fn is_can(&self) -> bool {
-        *self == CMDINHCSELECT_A::CAN
+        *self == Cmdinhcselect::Can
     }
     #[doc = "Cannot issue command"]
     #[inline(always)]
     pub fn is_cannot(&self) -> bool {
-        *self == CMDINHCSELECT_A::CANNOT
+        *self == Cmdinhcselect::Cannot
     }
 }
-#[doc = "Field `CMDINHD` reader - Command Inhibit (DAT)"]
-pub type CMDINHD_R = crate::BitReader<CMDINHDSELECT_A>;
 #[doc = "Command Inhibit (DAT)\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CMDINHDSELECT_A {
+pub enum Cmdinhdselect {
     #[doc = "0: Can issue command which uses the DAT line"]
-    CAN = 0,
+    Can = 0,
     #[doc = "1: Cannot issue command which uses the DAT line"]
-    CANNOT = 1,
+    Cannot = 1,
 }
-impl From<CMDINHDSELECT_A> for bool {
+impl From<Cmdinhdselect> for bool {
     #[inline(always)]
-    fn from(variant: CMDINHDSELECT_A) -> Self {
+    fn from(variant: Cmdinhdselect) -> Self {
         variant as u8 != 0
     }
 }
-impl CMDINHD_R {
+#[doc = "Field `CMDINHD` reader - Command Inhibit (DAT)"]
+pub type CmdinhdR = crate::BitReader<Cmdinhdselect>;
+impl CmdinhdR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> CMDINHDSELECT_A {
+    pub const fn variant(&self) -> Cmdinhdselect {
         match self.bits {
-            false => CMDINHDSELECT_A::CAN,
-            true => CMDINHDSELECT_A::CANNOT,
+            false => Cmdinhdselect::Can,
+            true => Cmdinhdselect::Cannot,
         }
     }
     #[doc = "Can issue command which uses the DAT line"]
     #[inline(always)]
     pub fn is_can(&self) -> bool {
-        *self == CMDINHDSELECT_A::CAN
+        *self == Cmdinhdselect::Can
     }
     #[doc = "Cannot issue command which uses the DAT line"]
     #[inline(always)]
     pub fn is_cannot(&self) -> bool {
-        *self == CMDINHDSELECT_A::CANNOT
+        *self == Cmdinhdselect::Cannot
     }
 }
-#[doc = "Field `DLACT` reader - DAT Line Active"]
-pub type DLACT_R = crate::BitReader<DLACTSELECT_A>;
 #[doc = "DAT Line Active\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum DLACTSELECT_A {
+pub enum Dlactselect {
     #[doc = "0: DAT Line Inactive"]
-    INACTIVE = 0,
+    Inactive = 0,
     #[doc = "1: DAT Line Active"]
-    ACTIVE = 1,
+    Active = 1,
 }
-impl From<DLACTSELECT_A> for bool {
+impl From<Dlactselect> for bool {
     #[inline(always)]
-    fn from(variant: DLACTSELECT_A) -> Self {
+    fn from(variant: Dlactselect) -> Self {
         variant as u8 != 0
     }
 }
-impl DLACT_R {
+#[doc = "Field `DLACT` reader - DAT Line Active"]
+pub type DlactR = crate::BitReader<Dlactselect>;
+impl DlactR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> DLACTSELECT_A {
+    pub const fn variant(&self) -> Dlactselect {
         match self.bits {
-            false => DLACTSELECT_A::INACTIVE,
-            true => DLACTSELECT_A::ACTIVE,
+            false => Dlactselect::Inactive,
+            true => Dlactselect::Active,
         }
     }
     #[doc = "DAT Line Inactive"]
     #[inline(always)]
     pub fn is_inactive(&self) -> bool {
-        *self == DLACTSELECT_A::INACTIVE
+        *self == Dlactselect::Inactive
     }
     #[doc = "DAT Line Active"]
     #[inline(always)]
     pub fn is_active(&self) -> bool {
-        *self == DLACTSELECT_A::ACTIVE
+        *self == Dlactselect::Active
     }
 }
-#[doc = "Field `RTREQ` reader - Re-Tuning Request"]
-pub type RTREQ_R = crate::BitReader<RTREQSELECT_A>;
 #[doc = "Re-Tuning Request\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum RTREQSELECT_A {
+pub enum Rtreqselect {
     #[doc = "0: Fixed or well-tuned sampling clock"]
-    OK = 0,
+    Ok = 0,
     #[doc = "1: Sampling clock needs re-tuning"]
-    REQUIRED = 1,
+    Required = 1,
 }
-impl From<RTREQSELECT_A> for bool {
+impl From<Rtreqselect> for bool {
     #[inline(always)]
-    fn from(variant: RTREQSELECT_A) -> Self {
+    fn from(variant: Rtreqselect) -> Self {
         variant as u8 != 0
     }
 }
-impl RTREQ_R {
+#[doc = "Field `RTREQ` reader - Re-Tuning Request"]
+pub type RtreqR = crate::BitReader<Rtreqselect>;
+impl RtreqR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> RTREQSELECT_A {
+    pub const fn variant(&self) -> Rtreqselect {
         match self.bits {
-            false => RTREQSELECT_A::OK,
-            true => RTREQSELECT_A::REQUIRED,
+            false => Rtreqselect::Ok,
+            true => Rtreqselect::Required,
         }
     }
     #[doc = "Fixed or well-tuned sampling clock"]
     #[inline(always)]
     pub fn is_ok(&self) -> bool {
-        *self == RTREQSELECT_A::OK
+        *self == Rtreqselect::Ok
     }
     #[doc = "Sampling clock needs re-tuning"]
     #[inline(always)]
     pub fn is_required(&self) -> bool {
-        *self == RTREQSELECT_A::REQUIRED
+        *self == Rtreqselect::Required
+    }
+}
+#[doc = "Write Transfer Active\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Wtactselect {
+    #[doc = "0: No valid data"]
+    No = 0,
+    #[doc = "1: Transferring data"]
+    Yes = 1,
+}
+impl From<Wtactselect> for bool {
+    #[inline(always)]
+    fn from(variant: Wtactselect) -> Self {
+        variant as u8 != 0
     }
 }
 #[doc = "Field `WTACT` reader - Write Transfer Active"]
-pub type WTACT_R = crate::BitReader<WTACTSELECT_A>;
-#[doc = "Write Transfer Active\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum WTACTSELECT_A {
-    #[doc = "0: No valid data"]
-    NO = 0,
-    #[doc = "1: Transferring data"]
-    YES = 1,
-}
-impl From<WTACTSELECT_A> for bool {
-    #[inline(always)]
-    fn from(variant: WTACTSELECT_A) -> Self {
-        variant as u8 != 0
-    }
-}
-impl WTACT_R {
+pub type WtactR = crate::BitReader<Wtactselect>;
+impl WtactR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> WTACTSELECT_A {
+    pub const fn variant(&self) -> Wtactselect {
         match self.bits {
-            false => WTACTSELECT_A::NO,
-            true => WTACTSELECT_A::YES,
+            false => Wtactselect::No,
+            true => Wtactselect::Yes,
         }
     }
     #[doc = "No valid data"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == WTACTSELECT_A::NO
+        *self == Wtactselect::No
     }
     #[doc = "Transferring data"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == WTACTSELECT_A::YES
+        *self == Wtactselect::Yes
+    }
+}
+#[doc = "Read Transfer Active\n\nValue on reset: 0"]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Rtactselect {
+    #[doc = "0: No valid data"]
+    No = 0,
+    #[doc = "1: Transferring data"]
+    Yes = 1,
+}
+impl From<Rtactselect> for bool {
+    #[inline(always)]
+    fn from(variant: Rtactselect) -> Self {
+        variant as u8 != 0
     }
 }
 #[doc = "Field `RTACT` reader - Read Transfer Active"]
-pub type RTACT_R = crate::BitReader<RTACTSELECT_A>;
-#[doc = "Read Transfer Active\n\nValue on reset: 0"]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum RTACTSELECT_A {
-    #[doc = "0: No valid data"]
-    NO = 0,
-    #[doc = "1: Transferring data"]
-    YES = 1,
-}
-impl From<RTACTSELECT_A> for bool {
-    #[inline(always)]
-    fn from(variant: RTACTSELECT_A) -> Self {
-        variant as u8 != 0
-    }
-}
-impl RTACT_R {
+pub type RtactR = crate::BitReader<Rtactselect>;
+impl RtactR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> RTACTSELECT_A {
+    pub const fn variant(&self) -> Rtactselect {
         match self.bits {
-            false => RTACTSELECT_A::NO,
-            true => RTACTSELECT_A::YES,
+            false => Rtactselect::No,
+            true => Rtactselect::Yes,
         }
     }
     #[doc = "No valid data"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == RTACTSELECT_A::NO
+        *self == Rtactselect::No
     }
     #[doc = "Transferring data"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == RTACTSELECT_A::YES
+        *self == Rtactselect::Yes
     }
 }
-#[doc = "Field `BUFWREN` reader - Buffer Write Enable"]
-pub type BUFWREN_R = crate::BitReader<BUFWRENSELECT_A>;
 #[doc = "Buffer Write Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum BUFWRENSELECT_A {
+pub enum Bufwrenselect {
     #[doc = "0: Write disable"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: Write enable"]
-    ENABLE = 1,
+    Enable = 1,
 }
-impl From<BUFWRENSELECT_A> for bool {
+impl From<Bufwrenselect> for bool {
     #[inline(always)]
-    fn from(variant: BUFWRENSELECT_A) -> Self {
+    fn from(variant: Bufwrenselect) -> Self {
         variant as u8 != 0
     }
 }
-impl BUFWREN_R {
+#[doc = "Field `BUFWREN` reader - Buffer Write Enable"]
+pub type BufwrenR = crate::BitReader<Bufwrenselect>;
+impl BufwrenR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> BUFWRENSELECT_A {
+    pub const fn variant(&self) -> Bufwrenselect {
         match self.bits {
-            false => BUFWRENSELECT_A::DISABLE,
-            true => BUFWRENSELECT_A::ENABLE,
+            false => Bufwrenselect::Disable,
+            true => Bufwrenselect::Enable,
         }
     }
     #[doc = "Write disable"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == BUFWRENSELECT_A::DISABLE
+        *self == Bufwrenselect::Disable
     }
     #[doc = "Write enable"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == BUFWRENSELECT_A::ENABLE
+        *self == Bufwrenselect::Enable
     }
 }
-#[doc = "Field `BUFRDEN` reader - Buffer Read Enable"]
-pub type BUFRDEN_R = crate::BitReader<BUFRDENSELECT_A>;
 #[doc = "Buffer Read Enable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum BUFRDENSELECT_A {
+pub enum Bufrdenselect {
     #[doc = "0: Read disable"]
-    DISABLE = 0,
+    Disable = 0,
     #[doc = "1: Read enable"]
-    ENABLE = 1,
+    Enable = 1,
 }
-impl From<BUFRDENSELECT_A> for bool {
+impl From<Bufrdenselect> for bool {
     #[inline(always)]
-    fn from(variant: BUFRDENSELECT_A) -> Self {
+    fn from(variant: Bufrdenselect) -> Self {
         variant as u8 != 0
     }
 }
-impl BUFRDEN_R {
+#[doc = "Field `BUFRDEN` reader - Buffer Read Enable"]
+pub type BufrdenR = crate::BitReader<Bufrdenselect>;
+impl BufrdenR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> BUFRDENSELECT_A {
+    pub const fn variant(&self) -> Bufrdenselect {
         match self.bits {
-            false => BUFRDENSELECT_A::DISABLE,
-            true => BUFRDENSELECT_A::ENABLE,
+            false => Bufrdenselect::Disable,
+            true => Bufrdenselect::Enable,
         }
     }
     #[doc = "Read disable"]
     #[inline(always)]
     pub fn is_disable(&self) -> bool {
-        *self == BUFRDENSELECT_A::DISABLE
+        *self == Bufrdenselect::Disable
     }
     #[doc = "Read enable"]
     #[inline(always)]
     pub fn is_enable(&self) -> bool {
-        *self == BUFRDENSELECT_A::ENABLE
+        *self == Bufrdenselect::Enable
     }
 }
-#[doc = "Field `CARDINS` reader - Card Inserted"]
-pub type CARDINS_R = crate::BitReader<CARDINSSELECT_A>;
 #[doc = "Card Inserted\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CARDINSSELECT_A {
+pub enum Cardinsselect {
     #[doc = "0: Reset or Debouncing or No Card"]
-    NO = 0,
+    No = 0,
     #[doc = "1: Card inserted"]
-    YES = 1,
+    Yes = 1,
 }
-impl From<CARDINSSELECT_A> for bool {
+impl From<Cardinsselect> for bool {
     #[inline(always)]
-    fn from(variant: CARDINSSELECT_A) -> Self {
+    fn from(variant: Cardinsselect) -> Self {
         variant as u8 != 0
     }
 }
-impl CARDINS_R {
+#[doc = "Field `CARDINS` reader - Card Inserted"]
+pub type CardinsR = crate::BitReader<Cardinsselect>;
+impl CardinsR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> CARDINSSELECT_A {
+    pub const fn variant(&self) -> Cardinsselect {
         match self.bits {
-            false => CARDINSSELECT_A::NO,
-            true => CARDINSSELECT_A::YES,
+            false => Cardinsselect::No,
+            true => Cardinsselect::Yes,
         }
     }
     #[doc = "Reset or Debouncing or No Card"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == CARDINSSELECT_A::NO
+        *self == Cardinsselect::No
     }
     #[doc = "Card inserted"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == CARDINSSELECT_A::YES
+        *self == Cardinsselect::Yes
     }
 }
-#[doc = "Field `CARDSS` reader - Card State Stable"]
-pub type CARDSS_R = crate::BitReader<CARDSSSELECT_A>;
 #[doc = "Card State Stable\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CARDSSSELECT_A {
+pub enum Cardssselect {
     #[doc = "0: Reset or Debouncing"]
-    NO = 0,
+    No = 0,
     #[doc = "1: No Card or Insered"]
-    YES = 1,
+    Yes = 1,
 }
-impl From<CARDSSSELECT_A> for bool {
+impl From<Cardssselect> for bool {
     #[inline(always)]
-    fn from(variant: CARDSSSELECT_A) -> Self {
+    fn from(variant: Cardssselect) -> Self {
         variant as u8 != 0
     }
 }
-impl CARDSS_R {
+#[doc = "Field `CARDSS` reader - Card State Stable"]
+pub type CardssR = crate::BitReader<Cardssselect>;
+impl CardssR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> CARDSSSELECT_A {
+    pub const fn variant(&self) -> Cardssselect {
         match self.bits {
-            false => CARDSSSELECT_A::NO,
-            true => CARDSSSELECT_A::YES,
+            false => Cardssselect::No,
+            true => Cardssselect::Yes,
         }
     }
     #[doc = "Reset or Debouncing"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == CARDSSSELECT_A::NO
+        *self == Cardssselect::No
     }
     #[doc = "No Card or Insered"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == CARDSSSELECT_A::YES
+        *self == Cardssselect::Yes
     }
 }
-#[doc = "Field `CARDDPL` reader - Card Detect Pin Level"]
-pub type CARDDPL_R = crate::BitReader<CARDDPLSELECT_A>;
 #[doc = "Card Detect Pin Level\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum CARDDPLSELECT_A {
+pub enum Carddplselect {
     #[doc = "0: No card present (SDCD#=1)"]
-    NO = 0,
+    No = 0,
     #[doc = "1: Card present (SDCD#=0)"]
-    YES = 1,
+    Yes = 1,
 }
-impl From<CARDDPLSELECT_A> for bool {
+impl From<Carddplselect> for bool {
     #[inline(always)]
-    fn from(variant: CARDDPLSELECT_A) -> Self {
+    fn from(variant: Carddplselect) -> Self {
         variant as u8 != 0
     }
 }
-impl CARDDPL_R {
+#[doc = "Field `CARDDPL` reader - Card Detect Pin Level"]
+pub type CarddplR = crate::BitReader<Carddplselect>;
+impl CarddplR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> CARDDPLSELECT_A {
+    pub const fn variant(&self) -> Carddplselect {
         match self.bits {
-            false => CARDDPLSELECT_A::NO,
-            true => CARDDPLSELECT_A::YES,
+            false => Carddplselect::No,
+            true => Carddplselect::Yes,
         }
     }
     #[doc = "No card present (SDCD#=1)"]
     #[inline(always)]
     pub fn is_no(&self) -> bool {
-        *self == CARDDPLSELECT_A::NO
+        *self == Carddplselect::No
     }
     #[doc = "Card present (SDCD#=0)"]
     #[inline(always)]
     pub fn is_yes(&self) -> bool {
-        *self == CARDDPLSELECT_A::YES
+        *self == Carddplselect::Yes
     }
 }
-#[doc = "Field `WRPPL` reader - Write Protect Pin Level"]
-pub type WRPPL_R = crate::BitReader<WRPPLSELECT_A>;
 #[doc = "Write Protect Pin Level\n\nValue on reset: 1"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum WRPPLSELECT_A {
+pub enum Wrpplselect {
     #[doc = "0: Write protected (SDWP#=0)"]
-    PROTECTED = 0,
+    Protected = 0,
     #[doc = "1: Write enabled (SDWP#=1)"]
-    ENABLED = 1,
+    Enabled = 1,
 }
-impl From<WRPPLSELECT_A> for bool {
+impl From<Wrpplselect> for bool {
     #[inline(always)]
-    fn from(variant: WRPPLSELECT_A) -> Self {
+    fn from(variant: Wrpplselect) -> Self {
         variant as u8 != 0
     }
 }
-impl WRPPL_R {
+#[doc = "Field `WRPPL` reader - Write Protect Pin Level"]
+pub type WrpplR = crate::BitReader<Wrpplselect>;
+impl WrpplR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> WRPPLSELECT_A {
+    pub const fn variant(&self) -> Wrpplselect {
         match self.bits {
-            false => WRPPLSELECT_A::PROTECTED,
-            true => WRPPLSELECT_A::ENABLED,
+            false => Wrpplselect::Protected,
+            true => Wrpplselect::Enabled,
         }
     }
     #[doc = "Write protected (SDWP#=0)"]
     #[inline(always)]
     pub fn is_protected(&self) -> bool {
-        *self == WRPPLSELECT_A::PROTECTED
+        *self == Wrpplselect::Protected
     }
     #[doc = "Write enabled (SDWP#=1)"]
     #[inline(always)]
     pub fn is_enabled(&self) -> bool {
-        *self == WRPPLSELECT_A::ENABLED
+        *self == Wrpplselect::Enabled
     }
 }
 #[doc = "Field `DATLL` reader - DAT\\[3:0\\]
 Line Level"]
-pub type DATLL_R = crate::FieldReader;
+pub type DatllR = crate::FieldReader;
 #[doc = "Field `CMDLL` reader - CMD Line Level"]
-pub type CMDLL_R = crate::BitReader;
+pub type CmdllR = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Command Inhibit (CMD)"]
     #[inline(always)]
-    pub fn cmdinhc(&self) -> CMDINHC_R {
-        CMDINHC_R::new((self.bits & 1) != 0)
+    pub fn cmdinhc(&self) -> CmdinhcR {
+        CmdinhcR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Command Inhibit (DAT)"]
     #[inline(always)]
-    pub fn cmdinhd(&self) -> CMDINHD_R {
-        CMDINHD_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn cmdinhd(&self) -> CmdinhdR {
+        CmdinhdR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - DAT Line Active"]
     #[inline(always)]
-    pub fn dlact(&self) -> DLACT_R {
-        DLACT_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn dlact(&self) -> DlactR {
+        DlactR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Re-Tuning Request"]
     #[inline(always)]
-    pub fn rtreq(&self) -> RTREQ_R {
-        RTREQ_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn rtreq(&self) -> RtreqR {
+        RtreqR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 8 - Write Transfer Active"]
     #[inline(always)]
-    pub fn wtact(&self) -> WTACT_R {
-        WTACT_R::new(((self.bits >> 8) & 1) != 0)
+    pub fn wtact(&self) -> WtactR {
+        WtactR::new(((self.bits >> 8) & 1) != 0)
     }
     #[doc = "Bit 9 - Read Transfer Active"]
     #[inline(always)]
-    pub fn rtact(&self) -> RTACT_R {
-        RTACT_R::new(((self.bits >> 9) & 1) != 0)
+    pub fn rtact(&self) -> RtactR {
+        RtactR::new(((self.bits >> 9) & 1) != 0)
     }
     #[doc = "Bit 10 - Buffer Write Enable"]
     #[inline(always)]
-    pub fn bufwren(&self) -> BUFWREN_R {
-        BUFWREN_R::new(((self.bits >> 10) & 1) != 0)
+    pub fn bufwren(&self) -> BufwrenR {
+        BufwrenR::new(((self.bits >> 10) & 1) != 0)
     }
     #[doc = "Bit 11 - Buffer Read Enable"]
     #[inline(always)]
-    pub fn bufrden(&self) -> BUFRDEN_R {
-        BUFRDEN_R::new(((self.bits >> 11) & 1) != 0)
+    pub fn bufrden(&self) -> BufrdenR {
+        BufrdenR::new(((self.bits >> 11) & 1) != 0)
     }
     #[doc = "Bit 16 - Card Inserted"]
     #[inline(always)]
-    pub fn cardins(&self) -> CARDINS_R {
-        CARDINS_R::new(((self.bits >> 16) & 1) != 0)
+    pub fn cardins(&self) -> CardinsR {
+        CardinsR::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - Card State Stable"]
     #[inline(always)]
-    pub fn cardss(&self) -> CARDSS_R {
-        CARDSS_R::new(((self.bits >> 17) & 1) != 0)
+    pub fn cardss(&self) -> CardssR {
+        CardssR::new(((self.bits >> 17) & 1) != 0)
     }
     #[doc = "Bit 18 - Card Detect Pin Level"]
     #[inline(always)]
-    pub fn carddpl(&self) -> CARDDPL_R {
-        CARDDPL_R::new(((self.bits >> 18) & 1) != 0)
+    pub fn carddpl(&self) -> CarddplR {
+        CarddplR::new(((self.bits >> 18) & 1) != 0)
     }
     #[doc = "Bit 19 - Write Protect Pin Level"]
     #[inline(always)]
-    pub fn wrppl(&self) -> WRPPL_R {
-        WRPPL_R::new(((self.bits >> 19) & 1) != 0)
+    pub fn wrppl(&self) -> WrpplR {
+        WrpplR::new(((self.bits >> 19) & 1) != 0)
     }
     #[doc = "Bits 20:23 - DAT\\[3:0\\]
 Line Level"]
     #[inline(always)]
-    pub fn datll(&self) -> DATLL_R {
-        DATLL_R::new(((self.bits >> 20) & 0x0f) as u8)
+    pub fn datll(&self) -> DatllR {
+        DatllR::new(((self.bits >> 20) & 0x0f) as u8)
     }
     #[doc = "Bit 24 - CMD Line Level"]
     #[inline(always)]
-    pub fn cmdll(&self) -> CMDLL_R {
-        CMDLL_R::new(((self.bits >> 24) & 1) != 0)
+    pub fn cmdll(&self) -> CmdllR {
+        CmdllR::new(((self.bits >> 24) & 1) != 0)
     }
 }
-#[doc = "Present State\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`psr::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct PSR_SPEC;
-impl crate::RegisterSpec for PSR_SPEC {
+#[doc = "Present State\n\nYou can [`read`](crate::Reg::read) this register and get [`psr::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct PsrSpec;
+impl crate::RegisterSpec for PsrSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`psr::R`](R) reader structure"]
-impl crate::Readable for PSR_SPEC {}
+impl crate::Readable for PsrSpec {}
 #[doc = "`reset()` method sets PSR to value 0x00f8_0000"]
-impl crate::Resettable for PSR_SPEC {
-    const RESET_VALUE: Self::Ux = 0x00f8_0000;
+impl crate::Resettable for PsrSpec {
+    const RESET_VALUE: u32 = 0x00f8_0000;
 }

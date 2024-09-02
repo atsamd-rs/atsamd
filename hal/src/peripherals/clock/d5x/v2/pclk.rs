@@ -43,11 +43,11 @@
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, clocks.gclk0);
 //! ```
@@ -70,7 +70,7 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::pac;
-use crate::pac::gclk::pchctrl::GENSELECT_A;
+use crate::pac::gclk::pchctrl::Genselect;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
@@ -113,12 +113,12 @@ impl<P: PclkId> PclkToken<P> {
 
     /// Access the corresponding `PCHCTRL` register
     #[inline]
-    fn pchctrl(&self) -> &pac::gclk::PCHCTRL {
+    fn pchctrl(&self) -> &pac::gclk::Pchctrl {
         // Safety: Each `PclkToken` only has access to a mutually exclusive set
         // of registers for the corresponding `PclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*pac::GCLK::PTR).pchctrl[P::DYN as usize] }
+        unsafe { (*pac::Gclk::PTR).pchctrl(P::DYN as usize) }
     }
 
     /// Set the [`Pclk`] source
@@ -367,12 +367,12 @@ pub trait PclkId: Sealed {
 pub type DynPclkSourceId = DynGclkId;
 
 /// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
-impl From<DynPclkSourceId> for GENSELECT_A {
+impl From<DynPclkSourceId> for Genselect {
     fn from(source: DynPclkSourceId) -> Self {
         seq!(N in 0..=11 {
             match source {
                 #(
-                    DynGclkId::Gclk~N => GENSELECT_A::GCLK~N,
+                    DynGclkId::Gclk~N => Genselect::Gclk~N,
                 )*
             }
         })

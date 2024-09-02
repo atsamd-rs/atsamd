@@ -45,7 +45,7 @@
 //!
 //! While `Xosc` clock failure detection is configured directly in the
 //! `XOSCCTRL` register, the XOSC32K peripheral has a separate, dedicated
-//! clock failure detection register (`CFDCTRL`). This difference likely exists
+//! clock failure detection register (`Cfdctrl`). This difference likely exists
 //! to provide control of clock failure detection *after* write lock has been
 //! enabled.
 //!
@@ -53,7 +53,7 @@
 //! [`Xosc32kBase`] clock, which prevents any further access to the `XOSC32K`
 //! register. Thus, to allow control of clock failure detection in the presence
 //! of write lock, we provide a dedicated [`Xosc32kCfd`] interface, which has
-//! exclusive control over the `CFDCTRL` register.
+//! exclusive control over the `Cfdctrl` register.
 //!
 //! ## Example
 //!
@@ -78,13 +78,13 @@
 //!     pac::Peripherals,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! ```
 //!
@@ -108,13 +108,13 @@
 //! #     pac::Peripherals,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! let xosc32k_base = Xosc32kBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
 //!     .start_up_delay(StartUpDelay::Delay1s)
@@ -139,13 +139,13 @@
 //! #     pac::Peripherals,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let xosc32k_base = Xosc32kBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
 //! #     .start_up_delay(StartUpDelay::Delay1s)
@@ -175,13 +175,13 @@
 //! #     pac::Peripherals,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let xosc32k_base = Xosc32kBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
 //! #     .start_up_delay(StartUpDelay::Delay1s)
@@ -221,13 +221,13 @@
 //! #     pac::Peripherals,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let xosc32k_base = Xosc32kBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
 //! #     .start_up_delay(StartUpDelay::Delay1s)
@@ -262,13 +262,13 @@
 //! #     pac::Peripherals,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let xosc32k_base = Xosc32kBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
 //! #     .start_up_delay(StartUpDelay::Delay1s)
@@ -303,13 +303,13 @@
 //!     pac::Peripherals,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let xosc32k_base = Xosc32kBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
 //!     .start_up_delay(StartUpDelay::Delay1s)
@@ -344,8 +344,8 @@
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::osc32kctrl::xosc32k::{CGMSELECT_A, STARTUPSELECT_A};
-use crate::pac::osc32kctrl::{status, CFDCTRL, XOSC32K};
+use crate::pac::osc32kctrl::xosc32k::{Cgmselect, Startupselect};
+use crate::pac::osc32kctrl::{self, status, Cfdctrl};
 
 use crate::gpio::{FloatingDisabled, Pin, PA00, PA01};
 use crate::time::Hertz;
@@ -431,7 +431,7 @@ impl Xosc32kBaseToken {
     fn status(&self) -> status::R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        unsafe { (*crate::pac::OSC32KCTRL::PTR).status.read() }
+        unsafe { (*crate::pac::Osc32kctrl::PTR).status().read() }
     }
 
     /// Check whether the XOSC32K is stable and ready
@@ -441,11 +441,11 @@ impl Xosc32kBaseToken {
     }
 
     #[inline]
-    fn xosc32k(&self) -> &XOSC32K {
+    fn xosc32k(&self) -> &osc32kctrl::Xosc32k {
         // Safety: The `Xosc32kBaseToken` has exclusive access to the `XOSC32K`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSC32KCTRL::PTR).xosc32k }
+        unsafe { (*crate::pac::Osc32kctrl::PTR).xosc32k() }
     }
 
     /// Reset the XOSC32K register
@@ -515,7 +515,7 @@ impl Xosc32kCfdToken {
     fn status(&self) -> status::R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        unsafe { (*crate::pac::OSC32KCTRL::PTR).status.read() }
+        unsafe { (*crate::pac::Osc32kctrl::PTR).status().read() }
     }
 
     /// Check whether the XOSC32K has triggered failure detection
@@ -531,11 +531,11 @@ impl Xosc32kCfdToken {
     }
 
     #[inline]
-    fn cfdctrl(&self) -> &CFDCTRL {
-        // Safety: The `Xosc32kCfdToken` has exclusive access to the `CFDCTRL`
+    fn cfdctrl(&self) -> &Cfdctrl {
+        // Safety: The `Xosc32kCfdToken` has exclusive access to the `Cfdctrl`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSC32KCTRL::PTR).cfdctrl }
+        unsafe { (*crate::pac::Osc32kctrl::PTR).cfdctrl() }
     }
 
     /// Enable clock failure detection and set the safe clock divider
@@ -644,16 +644,16 @@ pub enum StartUpDelay {
     Delay8s,
 }
 
-impl From<StartUpDelay> for STARTUPSELECT_A {
+impl From<StartUpDelay> for Startupselect {
     fn from(delay: StartUpDelay) -> Self {
         match delay {
-            StartUpDelay::Delay63ms => STARTUPSELECT_A::CYCLE2048,
-            StartUpDelay::Delay125ms => STARTUPSELECT_A::CYCLE4096,
-            StartUpDelay::Delay500ms => STARTUPSELECT_A::CYCLE16384,
-            StartUpDelay::Delay1s => STARTUPSELECT_A::CYCLE32768,
-            StartUpDelay::Delay2s => STARTUPSELECT_A::CYCLE65536,
-            StartUpDelay::Delay4s => STARTUPSELECT_A::CYCLE131072,
-            StartUpDelay::Delay8s => STARTUPSELECT_A::CYCLE262144,
+            StartUpDelay::Delay63ms => Startupselect::Cycle2048,
+            StartUpDelay::Delay125ms => Startupselect::Cycle4096,
+            StartUpDelay::Delay500ms => Startupselect::Cycle16384,
+            StartUpDelay::Delay1s => Startupselect::Cycle32768,
+            StartUpDelay::Delay2s => Startupselect::Cycle65536,
+            StartUpDelay::Delay4s => Startupselect::Cycle131072,
+            StartUpDelay::Delay8s => Startupselect::Cycle262144,
         }
     }
 }
@@ -673,11 +673,11 @@ pub enum ControlGainMode {
     HighSpeed,
 }
 
-impl From<ControlGainMode> for CGMSELECT_A {
+impl From<ControlGainMode> for Cgmselect {
     fn from(cgm: ControlGainMode) -> Self {
         match cgm {
-            ControlGainMode::Standard => CGMSELECT_A::XT,
-            ControlGainMode::HighSpeed => CGMSELECT_A::HS,
+            ControlGainMode::Standard => Cgmselect::Xt,
+            ControlGainMode::HighSpeed => Cgmselect::Hs,
         }
     }
 }
@@ -1042,7 +1042,7 @@ impl Xosc32kCfd {
 
     /// Attempt to switch from the safe clock back to the external clock
     ///
-    /// This function will set the switch back bit (`SWBACK`) in the `CFDCTRL`
+    /// This function will set the switch back bit (`SWBACK`) in the `Cfdctrl`
     /// register. Once the hardware has successfully switched back, this bit
     /// will be automatically cleared.
     ///

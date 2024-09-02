@@ -1,154 +1,145 @@
 #[doc = "Register `EVCTRL` reader"]
-pub type R = crate::R<EVCTRL_SPEC>;
+pub type R = crate::R<EvctrlSpec>;
 #[doc = "Register `EVCTRL` writer"]
-pub type W = crate::W<EVCTRL_SPEC>;
+pub type W = crate::W<EvctrlSpec>;
 #[doc = "Field `EXTINTEO0` reader - External Interrupt 0 Event Output Enable"]
-pub type EXTINTEO0_R = crate::BitReader;
+pub type Extinteo0R = crate::BitReader;
 #[doc = "Field `EXTINTEO0` writer - External Interrupt 0 Event Output Enable"]
-pub type EXTINTEO0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Extinteo0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EXTINTEO1` reader - External Interrupt 1 Event Output Enable"]
-pub type EXTINTEO1_R = crate::BitReader;
+pub type Extinteo1R = crate::BitReader;
 #[doc = "Field `EXTINTEO1` writer - External Interrupt 1 Event Output Enable"]
-pub type EXTINTEO1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Extinteo1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EXTINTEO2` reader - External Interrupt 2 Event Output Enable"]
-pub type EXTINTEO2_R = crate::BitReader;
+pub type Extinteo2R = crate::BitReader;
 #[doc = "Field `EXTINTEO2` writer - External Interrupt 2 Event Output Enable"]
-pub type EXTINTEO2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Extinteo2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EXTINTEO3` reader - External Interrupt 3 Event Output Enable"]
-pub type EXTINTEO3_R = crate::BitReader;
+pub type Extinteo3R = crate::BitReader;
 #[doc = "Field `EXTINTEO3` writer - External Interrupt 3 Event Output Enable"]
-pub type EXTINTEO3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Extinteo3W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EXTINTEO4` reader - External Interrupt 4 Event Output Enable"]
-pub type EXTINTEO4_R = crate::BitReader;
+pub type Extinteo4R = crate::BitReader;
 #[doc = "Field `EXTINTEO4` writer - External Interrupt 4 Event Output Enable"]
-pub type EXTINTEO4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Extinteo4W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EXTINTEO5` reader - External Interrupt 5 Event Output Enable"]
-pub type EXTINTEO5_R = crate::BitReader;
+pub type Extinteo5R = crate::BitReader;
 #[doc = "Field `EXTINTEO5` writer - External Interrupt 5 Event Output Enable"]
-pub type EXTINTEO5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Extinteo5W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EXTINTEO6` reader - External Interrupt 6 Event Output Enable"]
-pub type EXTINTEO6_R = crate::BitReader;
+pub type Extinteo6R = crate::BitReader;
 #[doc = "Field `EXTINTEO6` writer - External Interrupt 6 Event Output Enable"]
-pub type EXTINTEO6_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Extinteo6W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EXTINTEO7` reader - External Interrupt 7 Event Output Enable"]
-pub type EXTINTEO7_R = crate::BitReader;
+pub type Extinteo7R = crate::BitReader;
 #[doc = "Field `EXTINTEO7` writer - External Interrupt 7 Event Output Enable"]
-pub type EXTINTEO7_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Extinteo7W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - External Interrupt 0 Event Output Enable"]
     #[inline(always)]
-    pub fn extinteo0(&self) -> EXTINTEO0_R {
-        EXTINTEO0_R::new((self.bits & 1) != 0)
+    pub fn extinteo0(&self) -> Extinteo0R {
+        Extinteo0R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - External Interrupt 1 Event Output Enable"]
     #[inline(always)]
-    pub fn extinteo1(&self) -> EXTINTEO1_R {
-        EXTINTEO1_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn extinteo1(&self) -> Extinteo1R {
+        Extinteo1R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - External Interrupt 2 Event Output Enable"]
     #[inline(always)]
-    pub fn extinteo2(&self) -> EXTINTEO2_R {
-        EXTINTEO2_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn extinteo2(&self) -> Extinteo2R {
+        Extinteo2R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - External Interrupt 3 Event Output Enable"]
     #[inline(always)]
-    pub fn extinteo3(&self) -> EXTINTEO3_R {
-        EXTINTEO3_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn extinteo3(&self) -> Extinteo3R {
+        Extinteo3R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - External Interrupt 4 Event Output Enable"]
     #[inline(always)]
-    pub fn extinteo4(&self) -> EXTINTEO4_R {
-        EXTINTEO4_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn extinteo4(&self) -> Extinteo4R {
+        Extinteo4R::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - External Interrupt 5 Event Output Enable"]
     #[inline(always)]
-    pub fn extinteo5(&self) -> EXTINTEO5_R {
-        EXTINTEO5_R::new(((self.bits >> 5) & 1) != 0)
+    pub fn extinteo5(&self) -> Extinteo5R {
+        Extinteo5R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - External Interrupt 6 Event Output Enable"]
     #[inline(always)]
-    pub fn extinteo6(&self) -> EXTINTEO6_R {
-        EXTINTEO6_R::new(((self.bits >> 6) & 1) != 0)
+    pub fn extinteo6(&self) -> Extinteo6R {
+        Extinteo6R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - External Interrupt 7 Event Output Enable"]
     #[inline(always)]
-    pub fn extinteo7(&self) -> EXTINTEO7_R {
-        EXTINTEO7_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn extinteo7(&self) -> Extinteo7R {
+        Extinteo7R::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - External Interrupt 0 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn extinteo0(&mut self) -> EXTINTEO0_W<EVCTRL_SPEC, 0> {
-        EXTINTEO0_W::new(self)
+    pub fn extinteo0(&mut self) -> Extinteo0W<EvctrlSpec> {
+        Extinteo0W::new(self, 0)
     }
     #[doc = "Bit 1 - External Interrupt 1 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn extinteo1(&mut self) -> EXTINTEO1_W<EVCTRL_SPEC, 1> {
-        EXTINTEO1_W::new(self)
+    pub fn extinteo1(&mut self) -> Extinteo1W<EvctrlSpec> {
+        Extinteo1W::new(self, 1)
     }
     #[doc = "Bit 2 - External Interrupt 2 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn extinteo2(&mut self) -> EXTINTEO2_W<EVCTRL_SPEC, 2> {
-        EXTINTEO2_W::new(self)
+    pub fn extinteo2(&mut self) -> Extinteo2W<EvctrlSpec> {
+        Extinteo2W::new(self, 2)
     }
     #[doc = "Bit 3 - External Interrupt 3 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn extinteo3(&mut self) -> EXTINTEO3_W<EVCTRL_SPEC, 3> {
-        EXTINTEO3_W::new(self)
+    pub fn extinteo3(&mut self) -> Extinteo3W<EvctrlSpec> {
+        Extinteo3W::new(self, 3)
     }
     #[doc = "Bit 4 - External Interrupt 4 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn extinteo4(&mut self) -> EXTINTEO4_W<EVCTRL_SPEC, 4> {
-        EXTINTEO4_W::new(self)
+    pub fn extinteo4(&mut self) -> Extinteo4W<EvctrlSpec> {
+        Extinteo4W::new(self, 4)
     }
     #[doc = "Bit 5 - External Interrupt 5 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn extinteo5(&mut self) -> EXTINTEO5_W<EVCTRL_SPEC, 5> {
-        EXTINTEO5_W::new(self)
+    pub fn extinteo5(&mut self) -> Extinteo5W<EvctrlSpec> {
+        Extinteo5W::new(self, 5)
     }
     #[doc = "Bit 6 - External Interrupt 6 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn extinteo6(&mut self) -> EXTINTEO6_W<EVCTRL_SPEC, 6> {
-        EXTINTEO6_W::new(self)
+    pub fn extinteo6(&mut self) -> Extinteo6W<EvctrlSpec> {
+        Extinteo6W::new(self, 6)
     }
     #[doc = "Bit 7 - External Interrupt 7 Event Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn extinteo7(&mut self) -> EXTINTEO7_W<EVCTRL_SPEC, 7> {
-        EXTINTEO7_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn extinteo7(&mut self) -> Extinteo7W<EvctrlSpec> {
+        Extinteo7W::new(self, 7)
     }
 }
-#[doc = "Event Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`evctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`evctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct EVCTRL_SPEC;
-impl crate::RegisterSpec for EVCTRL_SPEC {
+#[doc = "Event Control\n\nYou can [`read`](crate::Reg::read) this register and get [`evctrl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`evctrl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct EvctrlSpec;
+impl crate::RegisterSpec for EvctrlSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`evctrl::R`](R) reader structure"]
-impl crate::Readable for EVCTRL_SPEC {}
+impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
-impl crate::Writable for EVCTRL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for EvctrlSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EVCTRL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for EvctrlSpec {
+    const RESET_VALUE: u32 = 0;
 }

@@ -1,15 +1,15 @@
-use crate::pac::{MCLK, TRNG};
+use crate::pac::{self, Mclk};
 
 use rand_core::{CryptoRng, RngCore};
 
 use crate::ehal_02::blocking::rng::Read;
 
-pub struct Trng(TRNG);
+pub struct Trng(pac::Trng);
 
 impl Trng {
-    pub fn new(mclk: &mut MCLK, trng: TRNG) -> Trng {
-        mclk.apbcmask.modify(|_, w| w.trng_().set_bit());
-        trng.ctrla.modify(|_, w| w.enable().set_bit());
+    pub fn new(mclk: &mut Mclk, trng: pac::Trng) -> Trng {
+        mclk.apbcmask().modify(|_, w| w.trng_().set_bit());
+        trng.ctrla().modify(|_, w| w.enable().set_bit());
         Self(trng)
     }
 
@@ -28,15 +28,15 @@ impl Trng {
     }
 
     pub fn random_u32(&self) -> u32 {
-        while self.0.intflag.read().datardy().bit_is_clear() {}
-        self.0.data.read().bits()
+        while self.0.intflag().read().datardy().bit_is_clear() {}
+        self.0.data().read().bits()
     }
 
     pub fn random_u64(&self) -> u64 {
-        while self.0.intflag.read().datardy().bit_is_clear() {}
-        let lower_half = self.0.data.read().bits() as u64;
-        while self.0.intflag.read().datardy().bit_is_clear() {}
-        let upper_half = self.0.data.read().bits() as u64;
+        while self.0.intflag().read().datardy().bit_is_clear() {}
+        let lower_half = self.0.data().read().bits() as u64;
+        while self.0.intflag().read().datardy().bit_is_clear() {}
+        let upper_half = self.0.data().read().bits() as u64;
         (upper_half << 32) | lower_half
     }
 }

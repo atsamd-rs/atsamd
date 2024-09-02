@@ -1,83 +1,84 @@
 #[doc = "Register `CTRLB` reader"]
-pub type R = crate::R<CTRLB_SPEC>;
+pub type R = crate::R<CtrlbSpec>;
 #[doc = "Register `CTRLB` writer"]
-pub type W = crate::W<CTRLB_SPEC>;
+pub type W = crate::W<CtrlbSpec>;
 #[doc = "Field `DIFFMODE` reader - Differential Mode"]
-pub type DIFFMODE_R = crate::BitReader;
+pub type DiffmodeR = crate::BitReader;
 #[doc = "Field `DIFFMODE` writer - Differential Mode"]
-pub type DIFFMODE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DiffmodeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `LEFTADJ` reader - Left-Adjusted Result"]
-pub type LEFTADJ_R = crate::BitReader;
+pub type LeftadjR = crate::BitReader;
 #[doc = "Field `LEFTADJ` writer - Left-Adjusted Result"]
-pub type LEFTADJ_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type LeftadjW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `FREERUN` reader - Free Running Mode"]
-pub type FREERUN_R = crate::BitReader;
+pub type FreerunR = crate::BitReader;
 #[doc = "Field `FREERUN` writer - Free Running Mode"]
-pub type FREERUN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type FreerunW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CORREN` reader - Digital Correction Logic Enabled"]
-pub type CORREN_R = crate::BitReader;
+pub type CorrenR = crate::BitReader;
 #[doc = "Field `CORREN` writer - Digital Correction Logic Enabled"]
-pub type CORREN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `RESSEL` reader - Conversion Result Resolution"]
-pub type RESSEL_R = crate::FieldReader<RESSELSELECT_A>;
+pub type CorrenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Conversion Result Resolution\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum RESSELSELECT_A {
+pub enum Resselselect {
     #[doc = "0: 12-bit result"]
-    _12BIT = 0,
+    _12bit = 0,
     #[doc = "1: For averaging mode output"]
-    _16BIT = 1,
+    _16bit = 1,
     #[doc = "2: 10-bit result"]
-    _10BIT = 2,
+    _10bit = 2,
     #[doc = "3: 8-bit result"]
-    _8BIT = 3,
+    _8bit = 3,
 }
-impl From<RESSELSELECT_A> for u8 {
+impl From<Resselselect> for u8 {
     #[inline(always)]
-    fn from(variant: RESSELSELECT_A) -> Self {
+    fn from(variant: Resselselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for RESSELSELECT_A {
+impl crate::FieldSpec for Resselselect {
     type Ux = u8;
 }
-impl RESSEL_R {
+impl crate::IsEnum for Resselselect {}
+#[doc = "Field `RESSEL` reader - Conversion Result Resolution"]
+pub type ResselR = crate::FieldReader<Resselselect>;
+impl ResselR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> RESSELSELECT_A {
+    pub const fn variant(&self) -> Resselselect {
         match self.bits {
-            0 => RESSELSELECT_A::_12BIT,
-            1 => RESSELSELECT_A::_16BIT,
-            2 => RESSELSELECT_A::_10BIT,
-            3 => RESSELSELECT_A::_8BIT,
+            0 => Resselselect::_12bit,
+            1 => Resselselect::_16bit,
+            2 => Resselselect::_10bit,
+            3 => Resselselect::_8bit,
             _ => unreachable!(),
         }
     }
     #[doc = "12-bit result"]
     #[inline(always)]
     pub fn is_12bit(&self) -> bool {
-        *self == RESSELSELECT_A::_12BIT
+        *self == Resselselect::_12bit
     }
     #[doc = "For averaging mode output"]
     #[inline(always)]
     pub fn is_16bit(&self) -> bool {
-        *self == RESSELSELECT_A::_16BIT
+        *self == Resselselect::_16bit
     }
     #[doc = "10-bit result"]
     #[inline(always)]
     pub fn is_10bit(&self) -> bool {
-        *self == RESSELSELECT_A::_10BIT
+        *self == Resselselect::_10bit
     }
     #[doc = "8-bit result"]
     #[inline(always)]
     pub fn is_8bit(&self) -> bool {
-        *self == RESSELSELECT_A::_8BIT
+        *self == Resselselect::_8bit
     }
 }
 #[doc = "Field `RESSEL` writer - Conversion Result Resolution"]
-pub type RESSEL_W<'a, REG, const O: u8> = crate::FieldWriterSafe<'a, REG, 2, O, RESSELSELECT_A>;
-impl<'a, REG, const O: u8> RESSEL_W<'a, REG, O>
+pub type ResselW<'a, REG> = crate::FieldWriter<'a, REG, 2, Resselselect, crate::Safe>;
+impl<'a, REG> ResselW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -85,117 +86,117 @@ where
     #[doc = "12-bit result"]
     #[inline(always)]
     pub fn _12bit(self) -> &'a mut crate::W<REG> {
-        self.variant(RESSELSELECT_A::_12BIT)
+        self.variant(Resselselect::_12bit)
     }
     #[doc = "For averaging mode output"]
     #[inline(always)]
     pub fn _16bit(self) -> &'a mut crate::W<REG> {
-        self.variant(RESSELSELECT_A::_16BIT)
+        self.variant(Resselselect::_16bit)
     }
     #[doc = "10-bit result"]
     #[inline(always)]
     pub fn _10bit(self) -> &'a mut crate::W<REG> {
-        self.variant(RESSELSELECT_A::_10BIT)
+        self.variant(Resselselect::_10bit)
     }
     #[doc = "8-bit result"]
     #[inline(always)]
     pub fn _8bit(self) -> &'a mut crate::W<REG> {
-        self.variant(RESSELSELECT_A::_8BIT)
+        self.variant(Resselselect::_8bit)
     }
 }
-#[doc = "Field `PRESCALER` reader - Prescaler Configuration"]
-pub type PRESCALER_R = crate::FieldReader<PRESCALERSELECT_A>;
 #[doc = "Prescaler Configuration\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum PRESCALERSELECT_A {
+pub enum Prescalerselect {
     #[doc = "0: Peripheral clock divided by 4"]
-    DIV4 = 0,
+    Div4 = 0,
     #[doc = "1: Peripheral clock divided by 8"]
-    DIV8 = 1,
+    Div8 = 1,
     #[doc = "2: Peripheral clock divided by 16"]
-    DIV16 = 2,
+    Div16 = 2,
     #[doc = "3: Peripheral clock divided by 32"]
-    DIV32 = 3,
+    Div32 = 3,
     #[doc = "4: Peripheral clock divided by 64"]
-    DIV64 = 4,
+    Div64 = 4,
     #[doc = "5: Peripheral clock divided by 128"]
-    DIV128 = 5,
+    Div128 = 5,
     #[doc = "6: Peripheral clock divided by 256"]
-    DIV256 = 6,
+    Div256 = 6,
     #[doc = "7: Peripheral clock divided by 512"]
-    DIV512 = 7,
+    Div512 = 7,
 }
-impl From<PRESCALERSELECT_A> for u8 {
+impl From<Prescalerselect> for u8 {
     #[inline(always)]
-    fn from(variant: PRESCALERSELECT_A) -> Self {
+    fn from(variant: Prescalerselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for PRESCALERSELECT_A {
+impl crate::FieldSpec for Prescalerselect {
     type Ux = u8;
 }
-impl PRESCALER_R {
+impl crate::IsEnum for Prescalerselect {}
+#[doc = "Field `PRESCALER` reader - Prescaler Configuration"]
+pub type PrescalerR = crate::FieldReader<Prescalerselect>;
+impl PrescalerR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> PRESCALERSELECT_A {
+    pub const fn variant(&self) -> Prescalerselect {
         match self.bits {
-            0 => PRESCALERSELECT_A::DIV4,
-            1 => PRESCALERSELECT_A::DIV8,
-            2 => PRESCALERSELECT_A::DIV16,
-            3 => PRESCALERSELECT_A::DIV32,
-            4 => PRESCALERSELECT_A::DIV64,
-            5 => PRESCALERSELECT_A::DIV128,
-            6 => PRESCALERSELECT_A::DIV256,
-            7 => PRESCALERSELECT_A::DIV512,
+            0 => Prescalerselect::Div4,
+            1 => Prescalerselect::Div8,
+            2 => Prescalerselect::Div16,
+            3 => Prescalerselect::Div32,
+            4 => Prescalerselect::Div64,
+            5 => Prescalerselect::Div128,
+            6 => Prescalerselect::Div256,
+            7 => Prescalerselect::Div512,
             _ => unreachable!(),
         }
     }
     #[doc = "Peripheral clock divided by 4"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV4
+        *self == Prescalerselect::Div4
     }
     #[doc = "Peripheral clock divided by 8"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV8
+        *self == Prescalerselect::Div8
     }
     #[doc = "Peripheral clock divided by 16"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV16
+        *self == Prescalerselect::Div16
     }
     #[doc = "Peripheral clock divided by 32"]
     #[inline(always)]
     pub fn is_div32(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV32
+        *self == Prescalerselect::Div32
     }
     #[doc = "Peripheral clock divided by 64"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV64
+        *self == Prescalerselect::Div64
     }
     #[doc = "Peripheral clock divided by 128"]
     #[inline(always)]
     pub fn is_div128(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV128
+        *self == Prescalerselect::Div128
     }
     #[doc = "Peripheral clock divided by 256"]
     #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV256
+        *self == Prescalerselect::Div256
     }
     #[doc = "Peripheral clock divided by 512"]
     #[inline(always)]
     pub fn is_div512(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV512
+        *self == Prescalerselect::Div512
     }
 }
 #[doc = "Field `PRESCALER` writer - Prescaler Configuration"]
-pub type PRESCALER_W<'a, REG, const O: u8> =
-    crate::FieldWriterSafe<'a, REG, 3, O, PRESCALERSELECT_A>;
-impl<'a, REG, const O: u8> PRESCALER_W<'a, REG, O>
+pub type PrescalerW<'a, REG> = crate::FieldWriter<'a, REG, 3, Prescalerselect, crate::Safe>;
+impl<'a, REG> PrescalerW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -203,137 +204,128 @@ where
     #[doc = "Peripheral clock divided by 4"]
     #[inline(always)]
     pub fn div4(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV4)
+        self.variant(Prescalerselect::Div4)
     }
     #[doc = "Peripheral clock divided by 8"]
     #[inline(always)]
     pub fn div8(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV8)
+        self.variant(Prescalerselect::Div8)
     }
     #[doc = "Peripheral clock divided by 16"]
     #[inline(always)]
     pub fn div16(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV16)
+        self.variant(Prescalerselect::Div16)
     }
     #[doc = "Peripheral clock divided by 32"]
     #[inline(always)]
     pub fn div32(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV32)
+        self.variant(Prescalerselect::Div32)
     }
     #[doc = "Peripheral clock divided by 64"]
     #[inline(always)]
     pub fn div64(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV64)
+        self.variant(Prescalerselect::Div64)
     }
     #[doc = "Peripheral clock divided by 128"]
     #[inline(always)]
     pub fn div128(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV128)
+        self.variant(Prescalerselect::Div128)
     }
     #[doc = "Peripheral clock divided by 256"]
     #[inline(always)]
     pub fn div256(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV256)
+        self.variant(Prescalerselect::Div256)
     }
     #[doc = "Peripheral clock divided by 512"]
     #[inline(always)]
     pub fn div512(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV512)
+        self.variant(Prescalerselect::Div512)
     }
 }
 impl R {
     #[doc = "Bit 0 - Differential Mode"]
     #[inline(always)]
-    pub fn diffmode(&self) -> DIFFMODE_R {
-        DIFFMODE_R::new((self.bits & 1) != 0)
+    pub fn diffmode(&self) -> DiffmodeR {
+        DiffmodeR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Left-Adjusted Result"]
     #[inline(always)]
-    pub fn leftadj(&self) -> LEFTADJ_R {
-        LEFTADJ_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn leftadj(&self) -> LeftadjR {
+        LeftadjR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Free Running Mode"]
     #[inline(always)]
-    pub fn freerun(&self) -> FREERUN_R {
-        FREERUN_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn freerun(&self) -> FreerunR {
+        FreerunR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Digital Correction Logic Enabled"]
     #[inline(always)]
-    pub fn corren(&self) -> CORREN_R {
-        CORREN_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn corren(&self) -> CorrenR {
+        CorrenR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bits 4:5 - Conversion Result Resolution"]
     #[inline(always)]
-    pub fn ressel(&self) -> RESSEL_R {
-        RESSEL_R::new(((self.bits >> 4) & 3) as u8)
+    pub fn ressel(&self) -> ResselR {
+        ResselR::new(((self.bits >> 4) & 3) as u8)
     }
     #[doc = "Bits 8:10 - Prescaler Configuration"]
     #[inline(always)]
-    pub fn prescaler(&self) -> PRESCALER_R {
-        PRESCALER_R::new(((self.bits >> 8) & 7) as u8)
+    pub fn prescaler(&self) -> PrescalerR {
+        PrescalerR::new(((self.bits >> 8) & 7) as u8)
     }
 }
 impl W {
     #[doc = "Bit 0 - Differential Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn diffmode(&mut self) -> DIFFMODE_W<CTRLB_SPEC, 0> {
-        DIFFMODE_W::new(self)
+    pub fn diffmode(&mut self) -> DiffmodeW<CtrlbSpec> {
+        DiffmodeW::new(self, 0)
     }
     #[doc = "Bit 1 - Left-Adjusted Result"]
     #[inline(always)]
     #[must_use]
-    pub fn leftadj(&mut self) -> LEFTADJ_W<CTRLB_SPEC, 1> {
-        LEFTADJ_W::new(self)
+    pub fn leftadj(&mut self) -> LeftadjW<CtrlbSpec> {
+        LeftadjW::new(self, 1)
     }
     #[doc = "Bit 2 - Free Running Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn freerun(&mut self) -> FREERUN_W<CTRLB_SPEC, 2> {
-        FREERUN_W::new(self)
+    pub fn freerun(&mut self) -> FreerunW<CtrlbSpec> {
+        FreerunW::new(self, 2)
     }
     #[doc = "Bit 3 - Digital Correction Logic Enabled"]
     #[inline(always)]
     #[must_use]
-    pub fn corren(&mut self) -> CORREN_W<CTRLB_SPEC, 3> {
-        CORREN_W::new(self)
+    pub fn corren(&mut self) -> CorrenW<CtrlbSpec> {
+        CorrenW::new(self, 3)
     }
     #[doc = "Bits 4:5 - Conversion Result Resolution"]
     #[inline(always)]
     #[must_use]
-    pub fn ressel(&mut self) -> RESSEL_W<CTRLB_SPEC, 4> {
-        RESSEL_W::new(self)
+    pub fn ressel(&mut self) -> ResselW<CtrlbSpec> {
+        ResselW::new(self, 4)
     }
     #[doc = "Bits 8:10 - Prescaler Configuration"]
     #[inline(always)]
     #[must_use]
-    pub fn prescaler(&mut self) -> PRESCALER_W<CTRLB_SPEC, 8> {
-        PRESCALER_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn prescaler(&mut self) -> PrescalerW<CtrlbSpec> {
+        PrescalerW::new(self, 8)
     }
 }
-#[doc = "Control B\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrlb::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrlb::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CTRLB_SPEC;
-impl crate::RegisterSpec for CTRLB_SPEC {
+#[doc = "Control B\n\nYou can [`read`](crate::Reg::read) this register and get [`ctrlb::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrlb::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CtrlbSpec;
+impl crate::RegisterSpec for CtrlbSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`ctrlb::R`](R) reader structure"]
-impl crate::Readable for CTRLB_SPEC {}
+impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
-impl crate::Writable for CTRLB_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CtrlbSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CTRLB_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CtrlbSpec {
+    const RESET_VALUE: u16 = 0;
 }

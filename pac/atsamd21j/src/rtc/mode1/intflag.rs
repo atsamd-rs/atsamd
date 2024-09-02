@@ -1,94 +1,85 @@
 #[doc = "Register `INTFLAG` reader"]
-pub type R = crate::R<INTFLAG_SPEC>;
+pub type R = crate::R<IntflagSpec>;
 #[doc = "Register `INTFLAG` writer"]
-pub type W = crate::W<INTFLAG_SPEC>;
+pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `CMP0` reader - Compare 0"]
-pub type CMP0_R = crate::BitReader;
+pub type Cmp0R = crate::BitReader;
 #[doc = "Field `CMP0` writer - Compare 0"]
-pub type CMP0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cmp0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CMP1` reader - Compare 1"]
-pub type CMP1_R = crate::BitReader;
+pub type Cmp1R = crate::BitReader;
 #[doc = "Field `CMP1` writer - Compare 1"]
-pub type CMP1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cmp1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SYNCRDY` reader - Synchronization Ready"]
-pub type SYNCRDY_R = crate::BitReader;
+pub type SyncrdyR = crate::BitReader;
 #[doc = "Field `SYNCRDY` writer - Synchronization Ready"]
-pub type SYNCRDY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SyncrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `OVF` reader - Overflow"]
-pub type OVF_R = crate::BitReader;
+pub type OvfR = crate::BitReader;
 #[doc = "Field `OVF` writer - Overflow"]
-pub type OVF_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type OvfW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Compare 0"]
     #[inline(always)]
-    pub fn cmp0(&self) -> CMP0_R {
-        CMP0_R::new((self.bits & 1) != 0)
+    pub fn cmp0(&self) -> Cmp0R {
+        Cmp0R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Compare 1"]
     #[inline(always)]
-    pub fn cmp1(&self) -> CMP1_R {
-        CMP1_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn cmp1(&self) -> Cmp1R {
+        Cmp1R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 6 - Synchronization Ready"]
     #[inline(always)]
-    pub fn syncrdy(&self) -> SYNCRDY_R {
-        SYNCRDY_R::new(((self.bits >> 6) & 1) != 0)
+    pub fn syncrdy(&self) -> SyncrdyR {
+        SyncrdyR::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 7 - Overflow"]
     #[inline(always)]
-    pub fn ovf(&self) -> OVF_R {
-        OVF_R::new(((self.bits >> 7) & 1) != 0)
+    pub fn ovf(&self) -> OvfR {
+        OvfR::new(((self.bits >> 7) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Compare 0"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp0(&mut self) -> CMP0_W<INTFLAG_SPEC, 0> {
-        CMP0_W::new(self)
+    pub fn cmp0(&mut self) -> Cmp0W<IntflagSpec> {
+        Cmp0W::new(self, 0)
     }
     #[doc = "Bit 1 - Compare 1"]
     #[inline(always)]
     #[must_use]
-    pub fn cmp1(&mut self) -> CMP1_W<INTFLAG_SPEC, 1> {
-        CMP1_W::new(self)
+    pub fn cmp1(&mut self) -> Cmp1W<IntflagSpec> {
+        Cmp1W::new(self, 1)
     }
     #[doc = "Bit 6 - Synchronization Ready"]
     #[inline(always)]
     #[must_use]
-    pub fn syncrdy(&mut self) -> SYNCRDY_W<INTFLAG_SPEC, 6> {
-        SYNCRDY_W::new(self)
+    pub fn syncrdy(&mut self) -> SyncrdyW<IntflagSpec> {
+        SyncrdyW::new(self, 6)
     }
     #[doc = "Bit 7 - Overflow"]
     #[inline(always)]
     #[must_use]
-    pub fn ovf(&mut self) -> OVF_W<INTFLAG_SPEC, 7> {
-        OVF_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn ovf(&mut self) -> OvfW<IntflagSpec> {
+        OvfW::new(self, 7)
     }
 }
-#[doc = "MODE1 Interrupt Flag Status and Clear\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`intflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct INTFLAG_SPEC;
-impl crate::RegisterSpec for INTFLAG_SPEC {
+#[doc = "MODE1 Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intflag::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intflag::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct IntflagSpec;
+impl crate::RegisterSpec for IntflagSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`intflag::R`](R) reader structure"]
-impl crate::Readable for INTFLAG_SPEC {}
+impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
-impl crate::Writable for INTFLAG_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for IntflagSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for INTFLAG_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for IntflagSpec {
+    const RESET_VALUE: u8 = 0;
 }

@@ -1,92 +1,92 @@
 #[doc = "Register `SYNCBUSY` reader"]
-pub type R = crate::R<SYNCBUSY_SPEC>;
+pub type R = crate::R<SyncbusySpec>;
 #[doc = "Field `SWRST` reader - Software Reset Busy"]
-pub type SWRST_R = crate::BitReader;
+pub type SwrstR = crate::BitReader;
 #[doc = "Field `ENABLE` reader - Enable Bit Busy"]
-pub type ENABLE_R = crate::BitReader;
+pub type EnableR = crate::BitReader;
 #[doc = "Field `FREQCORR` reader - FREQCORR Register Busy"]
-pub type FREQCORR_R = crate::BitReader;
+pub type FreqcorrR = crate::BitReader;
 #[doc = "Field `COUNT` reader - COUNT Register Busy"]
-pub type COUNT_R = crate::BitReader;
+pub type CountR = crate::BitReader;
 #[doc = "Field `COMP0` reader - COMP 0 Register Busy"]
-pub type COMP0_R = crate::BitReader;
+pub type Comp0R = crate::BitReader;
 #[doc = "Field `COMP1` reader - COMP 1 Register Busy"]
-pub type COMP1_R = crate::BitReader;
+pub type Comp1R = crate::BitReader;
 #[doc = "Field `COUNTSYNC` reader - Count Synchronization Enable Bit Busy"]
-pub type COUNTSYNC_R = crate::BitReader;
+pub type CountsyncR = crate::BitReader;
 #[doc = "Field `GP0` reader - General Purpose 0 Register Busy"]
-pub type GP0_R = crate::BitReader;
+pub type Gp0R = crate::BitReader;
 #[doc = "Field `GP1` reader - General Purpose 1 Register Busy"]
-pub type GP1_R = crate::BitReader;
+pub type Gp1R = crate::BitReader;
 #[doc = "Field `GP2` reader - General Purpose 2 Register Busy"]
-pub type GP2_R = crate::BitReader;
+pub type Gp2R = crate::BitReader;
 #[doc = "Field `GP3` reader - General Purpose 3 Register Busy"]
-pub type GP3_R = crate::BitReader;
+pub type Gp3R = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Software Reset Busy"]
     #[inline(always)]
-    pub fn swrst(&self) -> SWRST_R {
-        SWRST_R::new((self.bits & 1) != 0)
+    pub fn swrst(&self) -> SwrstR {
+        SwrstR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Enable Bit Busy"]
     #[inline(always)]
-    pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn enable(&self) -> EnableR {
+        EnableR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - FREQCORR Register Busy"]
     #[inline(always)]
-    pub fn freqcorr(&self) -> FREQCORR_R {
-        FREQCORR_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn freqcorr(&self) -> FreqcorrR {
+        FreqcorrR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - COUNT Register Busy"]
     #[inline(always)]
-    pub fn count(&self) -> COUNT_R {
-        COUNT_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn count(&self) -> CountR {
+        CountR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 5 - COMP 0 Register Busy"]
     #[inline(always)]
-    pub fn comp0(&self) -> COMP0_R {
-        COMP0_R::new(((self.bits >> 5) & 1) != 0)
+    pub fn comp0(&self) -> Comp0R {
+        Comp0R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - COMP 1 Register Busy"]
     #[inline(always)]
-    pub fn comp1(&self) -> COMP1_R {
-        COMP1_R::new(((self.bits >> 6) & 1) != 0)
+    pub fn comp1(&self) -> Comp1R {
+        Comp1R::new(((self.bits >> 6) & 1) != 0)
     }
     #[doc = "Bit 15 - Count Synchronization Enable Bit Busy"]
     #[inline(always)]
-    pub fn countsync(&self) -> COUNTSYNC_R {
-        COUNTSYNC_R::new(((self.bits >> 15) & 1) != 0)
+    pub fn countsync(&self) -> CountsyncR {
+        CountsyncR::new(((self.bits >> 15) & 1) != 0)
     }
     #[doc = "Bit 16 - General Purpose 0 Register Busy"]
     #[inline(always)]
-    pub fn gp0(&self) -> GP0_R {
-        GP0_R::new(((self.bits >> 16) & 1) != 0)
+    pub fn gp0(&self) -> Gp0R {
+        Gp0R::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - General Purpose 1 Register Busy"]
     #[inline(always)]
-    pub fn gp1(&self) -> GP1_R {
-        GP1_R::new(((self.bits >> 17) & 1) != 0)
+    pub fn gp1(&self) -> Gp1R {
+        Gp1R::new(((self.bits >> 17) & 1) != 0)
     }
     #[doc = "Bit 18 - General Purpose 2 Register Busy"]
     #[inline(always)]
-    pub fn gp2(&self) -> GP2_R {
-        GP2_R::new(((self.bits >> 18) & 1) != 0)
+    pub fn gp2(&self) -> Gp2R {
+        Gp2R::new(((self.bits >> 18) & 1) != 0)
     }
     #[doc = "Bit 19 - General Purpose 3 Register Busy"]
     #[inline(always)]
-    pub fn gp3(&self) -> GP3_R {
-        GP3_R::new(((self.bits >> 19) & 1) != 0)
+    pub fn gp3(&self) -> Gp3R {
+        Gp3R::new(((self.bits >> 19) & 1) != 0)
     }
 }
-#[doc = "MODE0 Synchronization Busy Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`syncbusy::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct SYNCBUSY_SPEC;
-impl crate::RegisterSpec for SYNCBUSY_SPEC {
+#[doc = "MODE0 Synchronization Busy Status\n\nYou can [`read`](crate::Reg::read) this register and get [`syncbusy::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct SyncbusySpec;
+impl crate::RegisterSpec for SyncbusySpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`syncbusy::R`](R) reader structure"]
-impl crate::Readable for SYNCBUSY_SPEC {}
+impl crate::Readable for SyncbusySpec {}
 #[doc = "`reset()` method sets SYNCBUSY to value 0"]
-impl crate::Resettable for SYNCBUSY_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for SyncbusySpec {
+    const RESET_VALUE: u32 = 0;
 }

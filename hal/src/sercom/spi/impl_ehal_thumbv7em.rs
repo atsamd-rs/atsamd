@@ -811,14 +811,14 @@ fn transfer_slice<'w>(sercom: &RegisterBlock, buf: &'w mut [u8]) -> Result<&'w [
     let mut to_send = cells.iter();
     let mut to_recv = cells.iter();
     while to_recv.len() > 0 {
-        let errors = sercom.spim().status.read();
+        let errors = sercom.spim().status().read();
         if errors.bufovf().bit_is_set() {
             return Err(Error::Overflow);
         }
         if errors.lenerr().bit_is_set() {
             return Err(Error::LengthError);
         }
-        let flags = sercom.spim().intflag.read();
+        let flags = sercom.spim().intflag().read();
         if to_send.len() > 0 && flags.dre().bit_is_set() {
             let mut bytes = [0; 4];
             for byte in &mut bytes {
@@ -828,10 +828,13 @@ fn transfer_slice<'w>(sercom: &RegisterBlock, buf: &'w mut [u8]) -> Result<&'w [
                 }
             }
             let word = u32::from_le_bytes(bytes);
-            sercom.spim().data.write(|w| unsafe { w.data().bits(word) });
+            sercom
+                .spim()
+                .data()
+                .write(|w| unsafe { w.data().bits(word) });
         }
         if to_recv.len() > to_send.len() && flags.rxc().bit_is_set() {
-            let word = sercom.spim().data.read().data().bits();
+            let word = sercom.spim().data().read().data().bits();
             let bytes = word.to_le_bytes();
             for byte in bytes.iter() {
                 match to_recv.next() {
@@ -855,14 +858,14 @@ fn write_slice(sercom: &RegisterBlock, buf: &[u8], duplex: bool) -> Result<(), E
     let mut to_send = buf.iter();
     let mut to_recv: usize = to_send.len();
     while to_recv > 0 {
-        let errors = sercom.spim().status.read();
+        let errors = sercom.spim().status().read();
         if duplex && errors.bufovf().bit_is_set() {
             return Err(Error::Overflow);
         }
         if errors.lenerr().bit_is_set() {
             return Err(Error::LengthError);
         }
-        let flags = sercom.spim().intflag.read();
+        let flags = sercom.spim().intflag().read();
         // Send the word
         if to_send.len() > 0 && flags.dre().bit_is_set() {
             let mut bytes = [0; 4];
@@ -873,10 +876,13 @@ fn write_slice(sercom: &RegisterBlock, buf: &[u8], duplex: bool) -> Result<(), E
                 }
             }
             let word = u32::from_le_bytes(bytes);
-            sercom.spim().data.write(|w| unsafe { w.data().bits(word) });
+            sercom
+                .spim()
+                .data()
+                .write(|w| unsafe { w.data().bits(word) });
         }
         if duplex && to_recv > to_send.len() && flags.rxc().bit_is_set() {
-            sercom.spim().data.read().data().bits();
+            sercom.spim().data().read().data().bits();
             let diff = to_recv - to_send.len();
             to_recv -= if diff < 4 { diff } else { 4 };
         }

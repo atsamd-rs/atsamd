@@ -1,5 +1,10 @@
 # Unreleased
 
+- Upgrade PACs to latest SVD and `svd2rust`:
+  - All peripheral types are now `PascalCase`
+  - All register field accessors are now methods instead of struct members
+  - Members of the `Peripherals` struct are now `snake_case`
+  - Removed: `EnabledOscUlp32kBase::set_calibration`
 - update path of Cargo config
 
 # v0.12.0

@@ -82,8 +82,8 @@ pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 pub fn uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom0: pac::SERCOM0,
-    pm: &mut pac::PM,
+    sercom0: pac::Sercom0,
+    pm: &mut pac::Pm,
     rx: impl Into<UartRx>,
     tx: impl Into<UartTx>,
 ) -> Uart {
@@ -113,8 +113,8 @@ pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom: pac::SERCOM0,
-    pm: &mut pac::PM,
+    sercom: pac::Sercom0,
+    pm: &mut pac::Pm,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
 ) -> I2c {

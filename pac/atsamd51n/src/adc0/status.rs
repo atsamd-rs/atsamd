@@ -1,29 +1,29 @@
 #[doc = "Register `STATUS` reader"]
-pub type R = crate::R<STATUS_SPEC>;
+pub type R = crate::R<StatusSpec>;
 #[doc = "Field `ADCBUSY` reader - ADC Busy Status"]
-pub type ADCBUSY_R = crate::BitReader;
+pub type AdcbusyR = crate::BitReader;
 #[doc = "Field `WCC` reader - Window Comparator Counter"]
-pub type WCC_R = crate::FieldReader;
+pub type WccR = crate::FieldReader;
 impl R {
     #[doc = "Bit 0 - ADC Busy Status"]
     #[inline(always)]
-    pub fn adcbusy(&self) -> ADCBUSY_R {
-        ADCBUSY_R::new((self.bits & 1) != 0)
+    pub fn adcbusy(&self) -> AdcbusyR {
+        AdcbusyR::new((self.bits & 1) != 0)
     }
     #[doc = "Bits 2:7 - Window Comparator Counter"]
     #[inline(always)]
-    pub fn wcc(&self) -> WCC_R {
-        WCC_R::new((self.bits >> 2) & 0x3f)
+    pub fn wcc(&self) -> WccR {
+        WccR::new((self.bits >> 2) & 0x3f)
     }
 }
-#[doc = "Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct STATUS_SPEC;
-impl crate::RegisterSpec for STATUS_SPEC {
+#[doc = "Status\n\nYou can [`read`](crate::Reg::read) this register and get [`status::R`](R). See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct StatusSpec;
+impl crate::RegisterSpec for StatusSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`status::R`](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {}
+impl crate::Readable for StatusSpec {}
 #[doc = "`reset()` method sets STATUS to value 0"]
-impl crate::Resettable for STATUS_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for StatusSpec {
+    const RESET_VALUE: u8 = 0;
 }

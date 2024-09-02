@@ -42,13 +42,13 @@
 //!     time::U32Ext,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! ```
 //!
@@ -68,13 +68,13 @@
 //! #     time::U32Ext,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
 //!     .current(CrystalCurrent::Medium)
@@ -109,13 +109,13 @@
 //! #     time::U32Ext,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
 //! #     .current(CrystalCurrent::Medium)
@@ -143,13 +143,13 @@
 //! #     time::U32Ext,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
-//! # let pins = Pins::new(pac.PORT);
+//! # let pins = Pins::new(pac.port);
 //! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
+//! #     pac.oscctrl,
+//! #     pac.osc32kctrl,
+//! #     pac.gclk,
+//! #     pac.mclk,
+//! #     &mut pac.nvmctrl,
 //! # );
 //! # let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
 //! #     .current(CrystalCurrent::Medium)
@@ -179,13 +179,13 @@
 //!     time::U32Ext,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
-//! let pins = Pins::new(pac.PORT);
+//! let pins = Pins::new(pac.port);
 //! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &mut pac.NVMCTRL,
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
 //! );
 //! let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
 //!     .current(CrystalCurrent::Medium)
@@ -208,7 +208,7 @@ use core::marker::PhantomData;
 
 use typenum::U0;
 
-use crate::pac::oscctrl::{self, XOSCCTRL};
+use crate::pac::oscctrl::{self, Xoscctrl};
 
 use crate::gpio::{FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
 use crate::time::Hertz;
@@ -252,12 +252,12 @@ impl<X: XoscId> XoscToken<X> {
 
     /// Return a reference to the corresponding XOSCCTRL register
     #[inline]
-    fn xoscctrl(&self) -> &XOSCCTRL {
+    fn xoscctrl(&self) -> &Xoscctrl {
         // Safety: Each `XoscToken` only has access to a mutually exclusive set
         // of registers for the corresponding `XoscId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::OSCCTRL::PTR).xoscctrl[X::NUM] }
+        unsafe { (*crate::pac::Oscctrl::PTR).xoscctrl(X::NUM) }
     }
 
     /// Read the STATUS register
@@ -265,7 +265,7 @@ impl<X: XoscId> XoscToken<X> {
     fn status(&self) -> oscctrl::status::R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        unsafe { (*crate::pac::OSCCTRL::PTR).status.read() }
+        unsafe { (*crate::pac::Oscctrl::PTR).status().read() }
     }
 
     /// Check whether the XOSC is stable and ready

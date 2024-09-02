@@ -1,76 +1,76 @@
 #[doc = "Register `CTRLA` reader"]
-pub type R = crate::R<CTRLA_SPEC>;
+pub type R = crate::R<CtrlaSpec>;
 #[doc = "Register `CTRLA` writer"]
-pub type W = crate::W<CTRLA_SPEC>;
+pub type W = crate::W<CtrlaSpec>;
 #[doc = "Field `SWRST` reader - Software Reset"]
-pub type SWRST_R = crate::BitReader;
+pub type SwrstR = crate::BitReader;
 #[doc = "Field `SWRST` writer - Software Reset"]
-pub type SWRST_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SwrstW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ENABLE` reader - Enable"]
-pub type ENABLE_R = crate::BitReader;
+pub type EnableR = crate::BitReader;
 #[doc = "Field `ENABLE` writer - Enable"]
-pub type ENABLE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `RESOLUTION` reader - Enhanced Resolution"]
-pub type RESOLUTION_R = crate::FieldReader<RESOLUTIONSELECT_A>;
+pub type EnableW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Enhanced Resolution\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum RESOLUTIONSELECT_A {
+pub enum Resolutionselect {
     #[doc = "0: Dithering is disabled"]
-    NONE = 0,
+    None = 0,
     #[doc = "1: Dithering is done every 16 PWM frames"]
-    DITH4 = 1,
+    Dith4 = 1,
     #[doc = "2: Dithering is done every 32 PWM frames"]
-    DITH5 = 2,
+    Dith5 = 2,
     #[doc = "3: Dithering is done every 64 PWM frames"]
-    DITH6 = 3,
+    Dith6 = 3,
 }
-impl From<RESOLUTIONSELECT_A> for u8 {
+impl From<Resolutionselect> for u8 {
     #[inline(always)]
-    fn from(variant: RESOLUTIONSELECT_A) -> Self {
+    fn from(variant: Resolutionselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for RESOLUTIONSELECT_A {
+impl crate::FieldSpec for Resolutionselect {
     type Ux = u8;
 }
-impl RESOLUTION_R {
+impl crate::IsEnum for Resolutionselect {}
+#[doc = "Field `RESOLUTION` reader - Enhanced Resolution"]
+pub type ResolutionR = crate::FieldReader<Resolutionselect>;
+impl ResolutionR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> RESOLUTIONSELECT_A {
+    pub const fn variant(&self) -> Resolutionselect {
         match self.bits {
-            0 => RESOLUTIONSELECT_A::NONE,
-            1 => RESOLUTIONSELECT_A::DITH4,
-            2 => RESOLUTIONSELECT_A::DITH5,
-            3 => RESOLUTIONSELECT_A::DITH6,
+            0 => Resolutionselect::None,
+            1 => Resolutionselect::Dith4,
+            2 => Resolutionselect::Dith5,
+            3 => Resolutionselect::Dith6,
             _ => unreachable!(),
         }
     }
     #[doc = "Dithering is disabled"]
     #[inline(always)]
     pub fn is_none(&self) -> bool {
-        *self == RESOLUTIONSELECT_A::NONE
+        *self == Resolutionselect::None
     }
     #[doc = "Dithering is done every 16 PWM frames"]
     #[inline(always)]
     pub fn is_dith4(&self) -> bool {
-        *self == RESOLUTIONSELECT_A::DITH4
+        *self == Resolutionselect::Dith4
     }
     #[doc = "Dithering is done every 32 PWM frames"]
     #[inline(always)]
     pub fn is_dith5(&self) -> bool {
-        *self == RESOLUTIONSELECT_A::DITH5
+        *self == Resolutionselect::Dith5
     }
     #[doc = "Dithering is done every 64 PWM frames"]
     #[inline(always)]
     pub fn is_dith6(&self) -> bool {
-        *self == RESOLUTIONSELECT_A::DITH6
+        *self == Resolutionselect::Dith6
     }
 }
 #[doc = "Field `RESOLUTION` writer - Enhanced Resolution"]
-pub type RESOLUTION_W<'a, REG, const O: u8> =
-    crate::FieldWriterSafe<'a, REG, 2, O, RESOLUTIONSELECT_A>;
-impl<'a, REG, const O: u8> RESOLUTION_W<'a, REG, O>
+pub type ResolutionW<'a, REG> = crate::FieldWriter<'a, REG, 2, Resolutionselect, crate::Safe>;
+impl<'a, REG> ResolutionW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -78,117 +78,117 @@ where
     #[doc = "Dithering is disabled"]
     #[inline(always)]
     pub fn none(self) -> &'a mut crate::W<REG> {
-        self.variant(RESOLUTIONSELECT_A::NONE)
+        self.variant(Resolutionselect::None)
     }
     #[doc = "Dithering is done every 16 PWM frames"]
     #[inline(always)]
     pub fn dith4(self) -> &'a mut crate::W<REG> {
-        self.variant(RESOLUTIONSELECT_A::DITH4)
+        self.variant(Resolutionselect::Dith4)
     }
     #[doc = "Dithering is done every 32 PWM frames"]
     #[inline(always)]
     pub fn dith5(self) -> &'a mut crate::W<REG> {
-        self.variant(RESOLUTIONSELECT_A::DITH5)
+        self.variant(Resolutionselect::Dith5)
     }
     #[doc = "Dithering is done every 64 PWM frames"]
     #[inline(always)]
     pub fn dith6(self) -> &'a mut crate::W<REG> {
-        self.variant(RESOLUTIONSELECT_A::DITH6)
+        self.variant(Resolutionselect::Dith6)
     }
 }
-#[doc = "Field `PRESCALER` reader - Prescaler"]
-pub type PRESCALER_R = crate::FieldReader<PRESCALERSELECT_A>;
 #[doc = "Prescaler\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum PRESCALERSELECT_A {
+pub enum Prescalerselect {
     #[doc = "0: No division"]
-    DIV1 = 0,
+    Div1 = 0,
     #[doc = "1: Divide by 2"]
-    DIV2 = 1,
+    Div2 = 1,
     #[doc = "2: Divide by 4"]
-    DIV4 = 2,
+    Div4 = 2,
     #[doc = "3: Divide by 8"]
-    DIV8 = 3,
+    Div8 = 3,
     #[doc = "4: Divide by 16"]
-    DIV16 = 4,
+    Div16 = 4,
     #[doc = "5: Divide by 64"]
-    DIV64 = 5,
+    Div64 = 5,
     #[doc = "6: Divide by 256"]
-    DIV256 = 6,
+    Div256 = 6,
     #[doc = "7: Divide by 1024"]
-    DIV1024 = 7,
+    Div1024 = 7,
 }
-impl From<PRESCALERSELECT_A> for u8 {
+impl From<Prescalerselect> for u8 {
     #[inline(always)]
-    fn from(variant: PRESCALERSELECT_A) -> Self {
+    fn from(variant: Prescalerselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for PRESCALERSELECT_A {
+impl crate::FieldSpec for Prescalerselect {
     type Ux = u8;
 }
-impl PRESCALER_R {
+impl crate::IsEnum for Prescalerselect {}
+#[doc = "Field `PRESCALER` reader - Prescaler"]
+pub type PrescalerR = crate::FieldReader<Prescalerselect>;
+impl PrescalerR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> PRESCALERSELECT_A {
+    pub const fn variant(&self) -> Prescalerselect {
         match self.bits {
-            0 => PRESCALERSELECT_A::DIV1,
-            1 => PRESCALERSELECT_A::DIV2,
-            2 => PRESCALERSELECT_A::DIV4,
-            3 => PRESCALERSELECT_A::DIV8,
-            4 => PRESCALERSELECT_A::DIV16,
-            5 => PRESCALERSELECT_A::DIV64,
-            6 => PRESCALERSELECT_A::DIV256,
-            7 => PRESCALERSELECT_A::DIV1024,
+            0 => Prescalerselect::Div1,
+            1 => Prescalerselect::Div2,
+            2 => Prescalerselect::Div4,
+            3 => Prescalerselect::Div8,
+            4 => Prescalerselect::Div16,
+            5 => Prescalerselect::Div64,
+            6 => Prescalerselect::Div256,
+            7 => Prescalerselect::Div1024,
             _ => unreachable!(),
         }
     }
     #[doc = "No division"]
     #[inline(always)]
     pub fn is_div1(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV1
+        *self == Prescalerselect::Div1
     }
     #[doc = "Divide by 2"]
     #[inline(always)]
     pub fn is_div2(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV2
+        *self == Prescalerselect::Div2
     }
     #[doc = "Divide by 4"]
     #[inline(always)]
     pub fn is_div4(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV4
+        *self == Prescalerselect::Div4
     }
     #[doc = "Divide by 8"]
     #[inline(always)]
     pub fn is_div8(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV8
+        *self == Prescalerselect::Div8
     }
     #[doc = "Divide by 16"]
     #[inline(always)]
     pub fn is_div16(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV16
+        *self == Prescalerselect::Div16
     }
     #[doc = "Divide by 64"]
     #[inline(always)]
     pub fn is_div64(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV64
+        *self == Prescalerselect::Div64
     }
     #[doc = "Divide by 256"]
     #[inline(always)]
     pub fn is_div256(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV256
+        *self == Prescalerselect::Div256
     }
     #[doc = "Divide by 1024"]
     #[inline(always)]
     pub fn is_div1024(&self) -> bool {
-        *self == PRESCALERSELECT_A::DIV1024
+        *self == Prescalerselect::Div1024
     }
 }
 #[doc = "Field `PRESCALER` writer - Prescaler"]
-pub type PRESCALER_W<'a, REG, const O: u8> =
-    crate::FieldWriterSafe<'a, REG, 3, O, PRESCALERSELECT_A>;
-impl<'a, REG, const O: u8> PRESCALER_W<'a, REG, O>
+pub type PrescalerW<'a, REG> = crate::FieldWriter<'a, REG, 3, Prescalerselect, crate::Safe>;
+impl<'a, REG> PrescalerW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -196,100 +196,101 @@ where
     #[doc = "No division"]
     #[inline(always)]
     pub fn div1(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV1)
+        self.variant(Prescalerselect::Div1)
     }
     #[doc = "Divide by 2"]
     #[inline(always)]
     pub fn div2(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV2)
+        self.variant(Prescalerselect::Div2)
     }
     #[doc = "Divide by 4"]
     #[inline(always)]
     pub fn div4(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV4)
+        self.variant(Prescalerselect::Div4)
     }
     #[doc = "Divide by 8"]
     #[inline(always)]
     pub fn div8(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV8)
+        self.variant(Prescalerselect::Div8)
     }
     #[doc = "Divide by 16"]
     #[inline(always)]
     pub fn div16(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV16)
+        self.variant(Prescalerselect::Div16)
     }
     #[doc = "Divide by 64"]
     #[inline(always)]
     pub fn div64(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV64)
+        self.variant(Prescalerselect::Div64)
     }
     #[doc = "Divide by 256"]
     #[inline(always)]
     pub fn div256(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV256)
+        self.variant(Prescalerselect::Div256)
     }
     #[doc = "Divide by 1024"]
     #[inline(always)]
     pub fn div1024(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCALERSELECT_A::DIV1024)
+        self.variant(Prescalerselect::Div1024)
     }
 }
 #[doc = "Field `RUNSTDBY` reader - Run in Standby"]
-pub type RUNSTDBY_R = crate::BitReader;
+pub type RunstdbyR = crate::BitReader;
 #[doc = "Field `RUNSTDBY` writer - Run in Standby"]
-pub type RUNSTDBY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
-#[doc = "Field `PRESCSYNC` reader - Prescaler and Counter Synchronization Selection"]
-pub type PRESCSYNC_R = crate::FieldReader<PRESCSYNCSELECT_A>;
+pub type RunstdbyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Prescaler and Counter Synchronization Selection\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum PRESCSYNCSELECT_A {
+pub enum Prescsyncselect {
     #[doc = "0: Reload or reset counter on next GCLK"]
-    GCLK = 0,
+    Gclk = 0,
     #[doc = "1: Reload or reset counter on next prescaler clock"]
-    PRESC = 1,
+    Presc = 1,
     #[doc = "2: Reload or reset counter on next GCLK and reset prescaler counter"]
-    RESYNC = 2,
+    Resync = 2,
 }
-impl From<PRESCSYNCSELECT_A> for u8 {
+impl From<Prescsyncselect> for u8 {
     #[inline(always)]
-    fn from(variant: PRESCSYNCSELECT_A) -> Self {
+    fn from(variant: Prescsyncselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for PRESCSYNCSELECT_A {
+impl crate::FieldSpec for Prescsyncselect {
     type Ux = u8;
 }
-impl PRESCSYNC_R {
+impl crate::IsEnum for Prescsyncselect {}
+#[doc = "Field `PRESCSYNC` reader - Prescaler and Counter Synchronization Selection"]
+pub type PrescsyncR = crate::FieldReader<Prescsyncselect>;
+impl PrescsyncR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<PRESCSYNCSELECT_A> {
+    pub const fn variant(&self) -> Option<Prescsyncselect> {
         match self.bits {
-            0 => Some(PRESCSYNCSELECT_A::GCLK),
-            1 => Some(PRESCSYNCSELECT_A::PRESC),
-            2 => Some(PRESCSYNCSELECT_A::RESYNC),
+            0 => Some(Prescsyncselect::Gclk),
+            1 => Some(Prescsyncselect::Presc),
+            2 => Some(Prescsyncselect::Resync),
             _ => None,
         }
     }
     #[doc = "Reload or reset counter on next GCLK"]
     #[inline(always)]
     pub fn is_gclk(&self) -> bool {
-        *self == PRESCSYNCSELECT_A::GCLK
+        *self == Prescsyncselect::Gclk
     }
     #[doc = "Reload or reset counter on next prescaler clock"]
     #[inline(always)]
     pub fn is_presc(&self) -> bool {
-        *self == PRESCSYNCSELECT_A::PRESC
+        *self == Prescsyncselect::Presc
     }
     #[doc = "Reload or reset counter on next GCLK and reset prescaler counter"]
     #[inline(always)]
     pub fn is_resync(&self) -> bool {
-        *self == PRESCSYNCSELECT_A::RESYNC
+        *self == Prescsyncselect::Resync
     }
 }
 #[doc = "Field `PRESCSYNC` writer - Prescaler and Counter Synchronization Selection"]
-pub type PRESCSYNC_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 2, O, PRESCSYNCSELECT_A>;
-impl<'a, REG, const O: u8> PRESCSYNC_W<'a, REG, O>
+pub type PrescsyncW<'a, REG> = crate::FieldWriter<'a, REG, 2, Prescsyncselect>;
+impl<'a, REG> PrescsyncW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -297,247 +298,238 @@ where
     #[doc = "Reload or reset counter on next GCLK"]
     #[inline(always)]
     pub fn gclk(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCSYNCSELECT_A::GCLK)
+        self.variant(Prescsyncselect::Gclk)
     }
     #[doc = "Reload or reset counter on next prescaler clock"]
     #[inline(always)]
     pub fn presc(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCSYNCSELECT_A::PRESC)
+        self.variant(Prescsyncselect::Presc)
     }
     #[doc = "Reload or reset counter on next GCLK and reset prescaler counter"]
     #[inline(always)]
     pub fn resync(self) -> &'a mut crate::W<REG> {
-        self.variant(PRESCSYNCSELECT_A::RESYNC)
+        self.variant(Prescsyncselect::Resync)
     }
 }
 #[doc = "Field `ALOCK` reader - Auto Lock"]
-pub type ALOCK_R = crate::BitReader;
+pub type AlockR = crate::BitReader;
 #[doc = "Field `ALOCK` writer - Auto Lock"]
-pub type ALOCK_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type AlockW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `MSYNC` reader - Master Synchronization (only for TCC Slave Instance)"]
-pub type MSYNC_R = crate::BitReader;
+pub type MsyncR = crate::BitReader;
 #[doc = "Field `MSYNC` writer - Master Synchronization (only for TCC Slave Instance)"]
-pub type MSYNC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type MsyncW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DMAOS` reader - DMA One-shot Trigger Mode"]
-pub type DMAOS_R = crate::BitReader;
+pub type DmaosR = crate::BitReader;
 #[doc = "Field `DMAOS` writer - DMA One-shot Trigger Mode"]
-pub type DMAOS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DmaosW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CPTEN0` reader - Capture Channel 0 Enable"]
-pub type CPTEN0_R = crate::BitReader;
+pub type Cpten0R = crate::BitReader;
 #[doc = "Field `CPTEN0` writer - Capture Channel 0 Enable"]
-pub type CPTEN0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cpten0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CPTEN1` reader - Capture Channel 1 Enable"]
-pub type CPTEN1_R = crate::BitReader;
+pub type Cpten1R = crate::BitReader;
 #[doc = "Field `CPTEN1` writer - Capture Channel 1 Enable"]
-pub type CPTEN1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cpten1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CPTEN2` reader - Capture Channel 2 Enable"]
-pub type CPTEN2_R = crate::BitReader;
+pub type Cpten2R = crate::BitReader;
 #[doc = "Field `CPTEN2` writer - Capture Channel 2 Enable"]
-pub type CPTEN2_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cpten2W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CPTEN3` reader - Capture Channel 3 Enable"]
-pub type CPTEN3_R = crate::BitReader;
+pub type Cpten3R = crate::BitReader;
 #[doc = "Field `CPTEN3` writer - Capture Channel 3 Enable"]
-pub type CPTEN3_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cpten3W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CPTEN4` reader - Capture Channel 4 Enable"]
-pub type CPTEN4_R = crate::BitReader;
+pub type Cpten4R = crate::BitReader;
 #[doc = "Field `CPTEN4` writer - Capture Channel 4 Enable"]
-pub type CPTEN4_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cpten4W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CPTEN5` reader - Capture Channel 5 Enable"]
-pub type CPTEN5_R = crate::BitReader;
+pub type Cpten5R = crate::BitReader;
 #[doc = "Field `CPTEN5` writer - Capture Channel 5 Enable"]
-pub type CPTEN5_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Cpten5W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    pub fn swrst(&self) -> SWRST_R {
-        SWRST_R::new((self.bits & 1) != 0)
+    pub fn swrst(&self) -> SwrstR {
+        SwrstR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    pub fn enable(&self) -> ENABLE_R {
-        ENABLE_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn enable(&self) -> EnableR {
+        EnableR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bits 5:6 - Enhanced Resolution"]
     #[inline(always)]
-    pub fn resolution(&self) -> RESOLUTION_R {
-        RESOLUTION_R::new(((self.bits >> 5) & 3) as u8)
+    pub fn resolution(&self) -> ResolutionR {
+        ResolutionR::new(((self.bits >> 5) & 3) as u8)
     }
     #[doc = "Bits 8:10 - Prescaler"]
     #[inline(always)]
-    pub fn prescaler(&self) -> PRESCALER_R {
-        PRESCALER_R::new(((self.bits >> 8) & 7) as u8)
+    pub fn prescaler(&self) -> PrescalerR {
+        PrescalerR::new(((self.bits >> 8) & 7) as u8)
     }
     #[doc = "Bit 11 - Run in Standby"]
     #[inline(always)]
-    pub fn runstdby(&self) -> RUNSTDBY_R {
-        RUNSTDBY_R::new(((self.bits >> 11) & 1) != 0)
+    pub fn runstdby(&self) -> RunstdbyR {
+        RunstdbyR::new(((self.bits >> 11) & 1) != 0)
     }
     #[doc = "Bits 12:13 - Prescaler and Counter Synchronization Selection"]
     #[inline(always)]
-    pub fn prescsync(&self) -> PRESCSYNC_R {
-        PRESCSYNC_R::new(((self.bits >> 12) & 3) as u8)
+    pub fn prescsync(&self) -> PrescsyncR {
+        PrescsyncR::new(((self.bits >> 12) & 3) as u8)
     }
     #[doc = "Bit 14 - Auto Lock"]
     #[inline(always)]
-    pub fn alock(&self) -> ALOCK_R {
-        ALOCK_R::new(((self.bits >> 14) & 1) != 0)
+    pub fn alock(&self) -> AlockR {
+        AlockR::new(((self.bits >> 14) & 1) != 0)
     }
     #[doc = "Bit 15 - Master Synchronization (only for TCC Slave Instance)"]
     #[inline(always)]
-    pub fn msync(&self) -> MSYNC_R {
-        MSYNC_R::new(((self.bits >> 15) & 1) != 0)
+    pub fn msync(&self) -> MsyncR {
+        MsyncR::new(((self.bits >> 15) & 1) != 0)
     }
     #[doc = "Bit 23 - DMA One-shot Trigger Mode"]
     #[inline(always)]
-    pub fn dmaos(&self) -> DMAOS_R {
-        DMAOS_R::new(((self.bits >> 23) & 1) != 0)
+    pub fn dmaos(&self) -> DmaosR {
+        DmaosR::new(((self.bits >> 23) & 1) != 0)
     }
     #[doc = "Bit 24 - Capture Channel 0 Enable"]
     #[inline(always)]
-    pub fn cpten0(&self) -> CPTEN0_R {
-        CPTEN0_R::new(((self.bits >> 24) & 1) != 0)
+    pub fn cpten0(&self) -> Cpten0R {
+        Cpten0R::new(((self.bits >> 24) & 1) != 0)
     }
     #[doc = "Bit 25 - Capture Channel 1 Enable"]
     #[inline(always)]
-    pub fn cpten1(&self) -> CPTEN1_R {
-        CPTEN1_R::new(((self.bits >> 25) & 1) != 0)
+    pub fn cpten1(&self) -> Cpten1R {
+        Cpten1R::new(((self.bits >> 25) & 1) != 0)
     }
     #[doc = "Bit 26 - Capture Channel 2 Enable"]
     #[inline(always)]
-    pub fn cpten2(&self) -> CPTEN2_R {
-        CPTEN2_R::new(((self.bits >> 26) & 1) != 0)
+    pub fn cpten2(&self) -> Cpten2R {
+        Cpten2R::new(((self.bits >> 26) & 1) != 0)
     }
     #[doc = "Bit 27 - Capture Channel 3 Enable"]
     #[inline(always)]
-    pub fn cpten3(&self) -> CPTEN3_R {
-        CPTEN3_R::new(((self.bits >> 27) & 1) != 0)
+    pub fn cpten3(&self) -> Cpten3R {
+        Cpten3R::new(((self.bits >> 27) & 1) != 0)
     }
     #[doc = "Bit 28 - Capture Channel 4 Enable"]
     #[inline(always)]
-    pub fn cpten4(&self) -> CPTEN4_R {
-        CPTEN4_R::new(((self.bits >> 28) & 1) != 0)
+    pub fn cpten4(&self) -> Cpten4R {
+        Cpten4R::new(((self.bits >> 28) & 1) != 0)
     }
     #[doc = "Bit 29 - Capture Channel 5 Enable"]
     #[inline(always)]
-    pub fn cpten5(&self) -> CPTEN5_R {
-        CPTEN5_R::new(((self.bits >> 29) & 1) != 0)
+    pub fn cpten5(&self) -> Cpten5R {
+        Cpten5R::new(((self.bits >> 29) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
     #[must_use]
-    pub fn swrst(&mut self) -> SWRST_W<CTRLA_SPEC, 0> {
-        SWRST_W::new(self)
+    pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
+        SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn enable(&mut self) -> ENABLE_W<CTRLA_SPEC, 1> {
-        ENABLE_W::new(self)
+    pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
+        EnableW::new(self, 1)
     }
     #[doc = "Bits 5:6 - Enhanced Resolution"]
     #[inline(always)]
     #[must_use]
-    pub fn resolution(&mut self) -> RESOLUTION_W<CTRLA_SPEC, 5> {
-        RESOLUTION_W::new(self)
+    pub fn resolution(&mut self) -> ResolutionW<CtrlaSpec> {
+        ResolutionW::new(self, 5)
     }
     #[doc = "Bits 8:10 - Prescaler"]
     #[inline(always)]
     #[must_use]
-    pub fn prescaler(&mut self) -> PRESCALER_W<CTRLA_SPEC, 8> {
-        PRESCALER_W::new(self)
+    pub fn prescaler(&mut self) -> PrescalerW<CtrlaSpec> {
+        PrescalerW::new(self, 8)
     }
     #[doc = "Bit 11 - Run in Standby"]
     #[inline(always)]
     #[must_use]
-    pub fn runstdby(&mut self) -> RUNSTDBY_W<CTRLA_SPEC, 11> {
-        RUNSTDBY_W::new(self)
+    pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
+        RunstdbyW::new(self, 11)
     }
     #[doc = "Bits 12:13 - Prescaler and Counter Synchronization Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn prescsync(&mut self) -> PRESCSYNC_W<CTRLA_SPEC, 12> {
-        PRESCSYNC_W::new(self)
+    pub fn prescsync(&mut self) -> PrescsyncW<CtrlaSpec> {
+        PrescsyncW::new(self, 12)
     }
     #[doc = "Bit 14 - Auto Lock"]
     #[inline(always)]
     #[must_use]
-    pub fn alock(&mut self) -> ALOCK_W<CTRLA_SPEC, 14> {
-        ALOCK_W::new(self)
+    pub fn alock(&mut self) -> AlockW<CtrlaSpec> {
+        AlockW::new(self, 14)
     }
     #[doc = "Bit 15 - Master Synchronization (only for TCC Slave Instance)"]
     #[inline(always)]
     #[must_use]
-    pub fn msync(&mut self) -> MSYNC_W<CTRLA_SPEC, 15> {
-        MSYNC_W::new(self)
+    pub fn msync(&mut self) -> MsyncW<CtrlaSpec> {
+        MsyncW::new(self, 15)
     }
     #[doc = "Bit 23 - DMA One-shot Trigger Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn dmaos(&mut self) -> DMAOS_W<CTRLA_SPEC, 23> {
-        DMAOS_W::new(self)
+    pub fn dmaos(&mut self) -> DmaosW<CtrlaSpec> {
+        DmaosW::new(self, 23)
     }
     #[doc = "Bit 24 - Capture Channel 0 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cpten0(&mut self) -> CPTEN0_W<CTRLA_SPEC, 24> {
-        CPTEN0_W::new(self)
+    pub fn cpten0(&mut self) -> Cpten0W<CtrlaSpec> {
+        Cpten0W::new(self, 24)
     }
     #[doc = "Bit 25 - Capture Channel 1 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cpten1(&mut self) -> CPTEN1_W<CTRLA_SPEC, 25> {
-        CPTEN1_W::new(self)
+    pub fn cpten1(&mut self) -> Cpten1W<CtrlaSpec> {
+        Cpten1W::new(self, 25)
     }
     #[doc = "Bit 26 - Capture Channel 2 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cpten2(&mut self) -> CPTEN2_W<CTRLA_SPEC, 26> {
-        CPTEN2_W::new(self)
+    pub fn cpten2(&mut self) -> Cpten2W<CtrlaSpec> {
+        Cpten2W::new(self, 26)
     }
     #[doc = "Bit 27 - Capture Channel 3 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cpten3(&mut self) -> CPTEN3_W<CTRLA_SPEC, 27> {
-        CPTEN3_W::new(self)
+    pub fn cpten3(&mut self) -> Cpten3W<CtrlaSpec> {
+        Cpten3W::new(self, 27)
     }
     #[doc = "Bit 28 - Capture Channel 4 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cpten4(&mut self) -> CPTEN4_W<CTRLA_SPEC, 28> {
-        CPTEN4_W::new(self)
+    pub fn cpten4(&mut self) -> Cpten4W<CtrlaSpec> {
+        Cpten4W::new(self, 28)
     }
     #[doc = "Bit 29 - Capture Channel 5 Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cpten5(&mut self) -> CPTEN5_W<CTRLA_SPEC, 29> {
-        CPTEN5_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn cpten5(&mut self) -> Cpten5W<CtrlaSpec> {
+        Cpten5W::new(self, 29)
     }
 }
-#[doc = "Control A\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`ctrla::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CTRLA_SPEC;
-impl crate::RegisterSpec for CTRLA_SPEC {
+#[doc = "Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`ctrla::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrla::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CtrlaSpec;
+impl crate::RegisterSpec for CtrlaSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`ctrla::R`](R) reader structure"]
-impl crate::Readable for CTRLA_SPEC {}
+impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
-impl crate::Writable for CTRLA_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CtrlaSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CTRLA_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CtrlaSpec {
+    const RESET_VALUE: u32 = 0;
 }

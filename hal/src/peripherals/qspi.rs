@@ -1,7 +1,7 @@
 use crate::{
     gpio::{AlternateH, AnyPin, Pin, PA08, PA09, PA10, PA11, PB10, PB11},
     pac::qspi::instrframe,
-    pac::{MCLK, QSPI},
+    pac::{self, Mclk},
 };
 use core::marker::PhantomData;
 
@@ -18,7 +18,7 @@ pub struct OneShot;
 pub struct XIP;
 
 pub struct Qspi<MODE> {
-    qspi: QSPI,
+    qspi: pac::Qspi,
     _sck: Pin<PB10, AlternateH>,
     _cs: Pin<PB11, AlternateH>,
     _io0: Pin<PA08, AlternateH>,
@@ -33,8 +33,8 @@ impl Qspi<OneShot> {
     /// assuming 120mhz system clock, for 4mhz spi mode 0 operation.
     #[allow(clippy::too_many_arguments)]
     pub fn new(
-        mclk: &mut MCLK,
-        qspi: QSPI,
+        mclk: &mut Mclk,
+        qspi: pac::Qspi,
         _sck: impl AnyPin<Id = PB10>,
         _cs: impl AnyPin<Id = PB11>,
         _io0: impl AnyPin<Id = PA08>,
@@ -42,9 +42,9 @@ impl Qspi<OneShot> {
         _io2: impl AnyPin<Id = PA10>,
         _io3: impl AnyPin<Id = PA11>,
     ) -> Qspi<OneShot> {
-        mclk.apbcmask.modify(|_, w| w.qspi_().set_bit());
+        mclk.apbcmask().modify(|_, w| w.qspi_().set_bit());
         // Enable the clocks for the qspi peripheral in single data rate mode.
-        mclk.ahbmask.modify(|_, w| {
+        mclk.ahbmask().modify(|_, w| {
             w.qspi_().set_bit();
             w.qspi_2x_().clear_bit()
         });
@@ -56,8 +56,8 @@ impl Qspi<OneShot> {
         let _io2 = _io2.into().into_alternate();
         let _io3 = _io3.into().into_alternate();
 
-        qspi.ctrla.write(|w| w.swrst().set_bit());
-        qspi.baud.write(|w| unsafe {
+        qspi.ctrla().write(|w| w.swrst().set_bit());
+        qspi.baud().write(|w| unsafe {
             // TODO get system clock value instead of hardcoding
             //(120_000_000u32 / 4_000_000u32) = 30 = BAUD + 1
             // BAUD = 29
@@ -67,14 +67,14 @@ impl Qspi<OneShot> {
             w.cpha().clear_bit()
         });
 
-        qspi.ctrlb.write(|w| {
+        qspi.ctrlb().write(|w| {
             w.mode().memory();
             w.csmode().noreload();
             w.csmode().lastxfer();
             w.datalen()._8bits()
         });
 
-        qspi.ctrla.modify(|_, w| w.enable().set_bit());
+        qspi.ctrla().modify(|_, w| w.enable().set_bit());
 
         Self {
             qspi,
@@ -241,14 +241,14 @@ impl Qspi<OneShot> {
         }
     }
 
-    /// Return the consumed pins and the QSPI peripheral
+    /// Return the consumed pins and the Qspi peripheral
     ///
     /// Order: `(qspi, sck, cs, io0, io1, io2, io3)`
     #[allow(clippy::type_complexity)]
     pub fn free(
         self,
     ) -> (
-        QSPI,
+        pac::Qspi,
         Pin<PB10, AlternateH>,
         Pin<PB11, AlternateH>,
         Pin<PA08, AlternateH>,
@@ -285,15 +285,15 @@ impl Qspi<XIP> {
 // (Mostly internal) methods available in any mode.
 impl<MODE> Qspi<MODE> {
     unsafe fn finalize(&self) {
-        self.qspi.ctrla.write(|w| {
+        self.qspi.ctrla().write(|w| {
             w.enable().set_bit();
             w.lastxfer().set_bit()
         });
 
-        while self.qspi.intflag.read().instrend().bit_is_clear() {}
-        self.qspi.intflag.write(|w| w.instrend().set_bit());
-        while self.qspi.intflag.read().csrise().bit_is_clear() {}
-        self.qspi.intflag.write(|w| w.csrise().set_bit());
+        while self.qspi.intflag().read().instrend().bit_is_clear() {}
+        self.qspi.intflag().write(|w| w.instrend().set_bit());
+        while self.qspi.intflag().read().csrise().bit_is_clear() {}
+        self.qspi.intflag().write(|w| w.csrise().set_bit());
     }
 
     unsafe fn run_write_instruction(
@@ -304,22 +304,22 @@ impl<MODE> Qspi<MODE> {
         buf: &[u8],
     ) {
         if command == Command::EraseSector || command == Command::EraseBlock {
-            self.qspi.instraddr.write(|w| w.addr().bits(addr));
+            self.qspi.instraddr().write(|w| w.addr().bits(addr));
         }
         self.qspi
-            .instrctrl
+            .instrctrl()
             .modify(|_, w| w.instr().bits(command.bits()));
-        self.qspi.instrframe.write(|w| {
+        self.qspi.instrframe().write(|w| {
             tfm.instrframe(
                 w,
                 if command == Command::QuadPageProgram {
-                    instrframe::TFRTYPESELECT_A::WRITEMEMORY
+                    instrframe::Tfrtypeselect::Writememory
                 } else {
-                    instrframe::TFRTYPESELECT_A::WRITE
+                    instrframe::Tfrtypeselect::Write
                 },
             )
         });
-        self.qspi.instrframe.read().bits();
+        self.qspi.instrframe().read().bits();
 
         if !buf.is_empty() {
             core::ptr::copy(buf.as_ptr(), (QSPI_AHB + addr) as *mut u8, buf.len());
@@ -337,19 +337,19 @@ impl<MODE> Qspi<MODE> {
         finalize: bool,
     ) {
         self.qspi
-            .instrctrl
+            .instrctrl()
             .modify(|_, w| w.instr().bits(command.bits()));
-        self.qspi.instrframe.write(|w| {
+        self.qspi.instrframe().write(|w| {
             tfm.instrframe(
                 w,
                 if command == Command::QuadRead {
-                    instrframe::TFRTYPESELECT_A::READMEMORY
+                    instrframe::Tfrtypeselect::Readmemory
                 } else {
-                    instrframe::TFRTYPESELECT_A::READ
+                    instrframe::Tfrtypeselect::Read
                 },
             )
         });
-        self.qspi.instrframe.read().bits();
+        self.qspi.instrframe().read().bits();
 
         if !buf.is_empty() {
             core::ptr::copy((QSPI_AHB + addr) as *mut u8, buf.as_mut_ptr(), buf.len());
@@ -365,14 +365,14 @@ impl<MODE> Qspi<MODE> {
     /// This fn safely subtracts 1 from your input value as the underlying fn is
     /// SCK Baud = MCKL / (value + 1)
     ///
-    /// ex if MCLK is 120mhz
+    /// ex if Mclk is 120mhz
     /// value  0 is reduced to  0 results in 120mhz clock
     /// value  1 is reduced to  0 results in 120mhz clock
     /// value  2 is reduced to  1 results in  60mhz clock
     pub fn set_clk_divider(&mut self, value: u8) {
         // The baud register is divisor - 1
         self.qspi
-            .baud
+            .baud()
             .write(|w| unsafe { w.baud().bits(value.saturating_sub(1)) });
     }
 }
@@ -391,7 +391,7 @@ impl TransferMode {
     unsafe fn instrframe(
         self,
         instrframe: &mut instrframe::W,
-        tfrtype: instrframe::TFRTYPESELECT_A,
+        tfrtype: instrframe::Tfrtypeselect,
     ) -> &mut instrframe::W {
         if self.quad_width {
             instrframe.width().quad_output();

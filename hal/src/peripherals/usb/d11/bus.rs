@@ -9,9 +9,8 @@ use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
 use crate::gpio::{AlternateG, AnyPin, Pin, PA24, PA25};
-use crate::pac;
-use crate::pac::usb::DEVICE;
-use crate::pac::{PM, USB};
+use crate::pac::usb::Device;
+use crate::pac::{Pm, Usb};
 use crate::usb::devicedesc::DeviceDescBank;
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::cell::{Ref, RefCell, RefMut};
@@ -204,44 +203,16 @@ pub struct UsbBus {
     inner: Mutex<RefCell<Inner>>,
 }
 
-/// Generate a method that allows returning the endpoint register
-/// for a given endpoint index.  This helps very slightly with
-/// two inconvenient issues:
-/// - the SVD file translation generates a sequence of elements like ecfg0,
-///   efcg1 rather than an array, so we have to manually translate the indices
-/// - rust doesn't currently have a great solution for generating identifier
-///   names, so we have to pass in a list of the possible names.
-macro_rules! ep {
-    ($name:ident, $type:ident, $e0:ident, $e1:ident, $e2:ident,
-     $e3:ident, $e4:ident, $e5:ident, $e6:ident, $e7:ident) => {
-        #[allow(unused)]
-        #[inline]
-        fn $name(&self, endpoint: usize) -> &pac::usb::device::$type {
-            match endpoint {
-                0 => &self.usb().$e0,
-                1 => &self.usb().$e1,
-                2 => &self.usb().$e2,
-                3 => &self.usb().$e3,
-                4 => &self.usb().$e4,
-                5 => &self.usb().$e5,
-                6 => &self.usb().$e6,
-                7 => &self.usb().$e7,
-                _ => unreachable!(),
-            }
-        }
-    };
-}
-
 struct Bank<'a, T> {
     address: EndpointAddress,
-    usb: &'a DEVICE,
+    usb: &'a Device,
     desc: RefMut<'a, super::Descriptors>,
     _phantom: PhantomData<T>,
     endpoints: Ref<'a, AllEndpoints>,
 }
 
 impl<'a, T> Bank<'a, T> {
-    fn usb(&self) -> &DEVICE {
+    fn usb(&self) -> &Device {
         self.usb
     }
 
@@ -276,7 +247,7 @@ impl<'a> Bank<'a, InBank> {
     /// Returns true if Bank 1 is Ready and thus has data that can be written
     #[inline]
     fn is_ready(&self) -> bool {
-        self.epstatus(self.index()).read().bk1rdy().bit()
+        self.usb().epstatus(self.index()).read().bk1rdy().bit()
     }
 
     /// Set Bank 1 Ready.
@@ -284,10 +255,12 @@ impl<'a> Bank<'a, InBank> {
     #[inline]
     fn set_ready(&self, ready: bool) {
         if ready {
-            self.epstatusset(self.index())
+            self.usb()
+                .epstatusset(self.index())
                 .write(|w| w.bk1rdy().set_bit());
         } else {
-            self.epstatusclr(self.index())
+            self.usb()
+                .epstatusclr(self.index())
                 .write(|w| w.bk1rdy().set_bit());
         }
     }
@@ -296,14 +269,15 @@ impl<'a> Bank<'a, InBank> {
     #[inline]
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
-        self.epintflag(self.index())
+        self.usb()
+            .epintflag(self.index())
             .write(|w| w.trcpt1().set_bit().trfail1().set_bit());
     }
 
     /// Indicates if a transfer is complete or pending.
     #[inline]
     fn is_transfer_complete(&self) -> bool {
-        self.epintflag(self.index()).read().trcpt1().bit()
+        self.usb().epintflag(self.index()).read().trcpt1().bit()
     }
 
     /// Writes out endpoint configuration to its in-memory descriptor.
@@ -320,7 +294,8 @@ impl<'a> Bank<'a, InBank> {
 
     /// Enables endpoint-specific interrupts.
     fn setup_ep_interrupts(&mut self) {
-        self.epintenset(self.index())
+        self.usb()
+            .epintenset(self.index())
             .write(|w| w.trcpt1().set_bit());
     }
 
@@ -343,15 +318,17 @@ impl<'a> Bank<'a, InBank> {
     }
 
     fn is_stalled(&self) -> bool {
-        self.epintflag(self.index()).read().stall1().bit()
+        self.usb().epintflag(self.index()).read().stall1().bit()
     }
 
     fn set_stall(&mut self, stall: bool) {
         if stall {
-            self.epstatusset(self.index())
+            self.usb()
+                .epstatusset(self.index())
                 .write(|w| w.stallrq1().set_bit())
         } else {
-            self.epstatusclr(self.index())
+            self.usb()
+                .epstatusclr(self.index())
                 .write(|w| w.stallrq1().set_bit())
         }
     }
@@ -366,7 +343,7 @@ impl<'a> Bank<'a, OutBank> {
     /// Returns true if Bank 0 is Ready and thus has data that can be read.
     #[inline]
     fn is_ready(&self) -> bool {
-        self.epstatus(self.index()).read().bk0rdy().bit()
+        self.usb().epstatus(self.index()).read().bk0rdy().bit()
     }
 
     /// Set Bank 0 Ready.
@@ -374,10 +351,12 @@ impl<'a> Bank<'a, OutBank> {
     #[inline]
     fn set_ready(&self, ready: bool) {
         if ready {
-            self.epstatusset(self.index())
+            self.usb()
+                .epstatusset(self.index())
                 .write(|w| w.bk0rdy().set_bit());
         } else {
-            self.epstatusclr(self.index())
+            self.usb()
+                .epstatusclr(self.index())
                 .write(|w| w.bk0rdy().set_bit());
         }
     }
@@ -386,7 +365,8 @@ impl<'a> Bank<'a, OutBank> {
     #[inline]
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
-        self.epintflag(self.index())
+        self.usb()
+            .epintflag(self.index())
             .write(|w| w.trcpt0().set_bit().trfail0().set_bit());
     }
 
@@ -394,7 +374,7 @@ impl<'a> Bank<'a, OutBank> {
     /// This indicates that the read buffer holds a SETUP packet.
     #[inline]
     fn received_setup_interrupt(&self) -> bool {
-        self.epintflag(self.index()).read().rxstp().bit()
+        self.usb().epintflag(self.index()).read().rxstp().bit()
     }
 
     /// Acknowledges the signal that a SETUP packet was received
@@ -402,7 +382,9 @@ impl<'a> Bank<'a, OutBank> {
     #[inline]
     fn clear_received_setup_interrupt(&self) {
         // Clear bits in epintflag by writing them to 1
-        self.epintflag(self.index()).write(|w| w.rxstp().set_bit());
+        self.usb()
+            .epintflag(self.index())
+            .write(|w| w.rxstp().set_bit());
     }
 
     /// Writes out endpoint configuration to its in-memory descriptor.
@@ -419,7 +401,8 @@ impl<'a> Bank<'a, OutBank> {
 
     /// Enables endpoint-specific interrupts.
     fn setup_ep_interrupts(&mut self) {
-        self.epintenset(self.index())
+        self.usb()
+            .epintenset(self.index())
             .write(|w| w.rxstp().set_bit().trcpt0().set_bit());
     }
 
@@ -445,91 +428,23 @@ impl<'a> Bank<'a, OutBank> {
     }
 
     fn is_stalled(&self) -> bool {
-        self.epintflag(self.index()).read().stall0().bit()
+        self.usb().epintflag(self.index()).read().stall0().bit()
     }
 
     fn set_stall(&mut self, stall: bool) {
         if stall {
-            self.epstatusset(self.index())
+            self.usb()
+                .epstatusset(self.index())
                 .write(|w| w.stallrq0().set_bit())
         } else {
-            self.epstatusclr(self.index())
+            self.usb()
+                .epstatusclr(self.index())
                 .write(|w| w.stallrq0().set_bit())
         }
     }
 }
 
-impl<'a, T> Bank<'a, T> {
-    ep!(epcfg, EPCFG, epcfg0, epcfg1, epcfg2, epcfg3, epcfg4, epcfg5, epcfg6, epcfg7);
-    ep!(
-        epstatusclr,
-        EPSTATUSCLR,
-        epstatusclr0,
-        epstatusclr1,
-        epstatusclr2,
-        epstatusclr3,
-        epstatusclr4,
-        epstatusclr5,
-        epstatusclr6,
-        epstatusclr7
-    );
-    ep!(
-        epstatusset,
-        EPSTATUSSET,
-        epstatusset0,
-        epstatusset1,
-        epstatusset2,
-        epstatusset3,
-        epstatusset4,
-        epstatusset5,
-        epstatusset6,
-        epstatusset7
-    );
-    ep!(
-        epstatus, EPSTATUS, epstatus0, epstatus1, epstatus2, epstatus3, epstatus4, epstatus5,
-        epstatus6, epstatus7
-    );
-    ep!(
-        epintflag, EPINTFLAG, epintflag0, epintflag1, epintflag2, epintflag3, epintflag4,
-        epintflag5, epintflag6, epintflag7
-    );
-    ep!(
-        epintenclr,
-        EPINTENCLR,
-        epintenclr0,
-        epintenclr1,
-        epintenclr2,
-        epintenclr3,
-        epintenclr4,
-        epintenclr5,
-        epintenclr6,
-        epintenclr7
-    );
-    ep!(
-        epintenset,
-        EPINTENSET,
-        epintenset0,
-        epintenset1,
-        epintenset2,
-        epintenset3,
-        epintenset4,
-        epintenset5,
-        epintenset6,
-        epintenset7
-    );
-}
-
 impl Inner {
-    ep!(epcfg, EPCFG, epcfg0, epcfg1, epcfg2, epcfg3, epcfg4, epcfg5, epcfg6, epcfg7);
-    ep!(
-        epstatus, EPSTATUS, epstatus0, epstatus1, epstatus2, epstatus3, epstatus4, epstatus5,
-        epstatus6, epstatus7
-    );
-    ep!(
-        epintflag, EPINTFLAG, epintflag0, epintflag1, epintflag2, epintflag3, epintflag4,
-        epintflag5, epintflag6, epintflag7
-    );
-
     fn bank0(&'_ self, ep: EndpointAddress) -> UsbResult<Bank<'_, OutBank>> {
         if ep.is_in() {
             return Err(UsbError::InvalidEndpoint);
@@ -570,12 +485,12 @@ impl Inner {
 impl UsbBus {
     pub fn new(
         _clock: &clock::UsbClock,
-        pm: &mut PM,
+        pm: &mut Pm,
         dm_pad: impl AnyPin<Id = PA24>,
         dp_pad: impl AnyPin<Id = PA25>,
-        _usb: USB,
+        _usb: Usb,
     ) -> Self {
-        pm.apbbmask.modify(|_, w| w.usb_().set_bit());
+        pm.apbbmask().modify(|_, w| w.usb_().set_bit());
 
         let desc = RefCell::new(Descriptors::new());
 
@@ -595,13 +510,13 @@ impl UsbBus {
 
 impl Inner {
     #[hal_cfg("usb-d11")]
-    fn usb(&self) -> &DEVICE {
-        unsafe { &(*USB::ptr()).device }
+    fn usb(&self) -> &Device {
+        unsafe { (*Usb::ptr()).device() }
     }
 
     #[hal_cfg("usb-d21")]
-    fn usb(&self) -> &DEVICE {
-        unsafe { (*USB::ptr()).device() }
+    fn usb(&self) -> &Device {
+        unsafe { (*Usb::ptr()).device() }
     }
 
     fn set_stall<EP: Into<EndpointAddress>>(&self, ep: EP, stall: bool) {
@@ -628,56 +543,56 @@ impl Inner {
     #[hal_macro_helper]
     fn enable(&mut self) {
         let usb = self.usb();
-        usb.ctrla.modify(|_, w| w.swrst().set_bit());
-        while usb.syncbusy.read().swrst().bit_is_set() {}
+        usb.ctrla().modify(|_, w| w.swrst().set_bit());
+        while usb.syncbusy().read().swrst().bit_is_set() {}
 
         let addr = self.desc.borrow().address();
-        usb.descadd.write(|w| unsafe { w.descadd().bits(addr) });
-        usb.padcal.modify(|_, w| unsafe {
+        usb.descadd().write(|w| unsafe { w.descadd().bits(addr) });
+        usb.padcal().modify(|_, w| unsafe {
             w.transn().bits(usb_transn_cal());
             w.transp().bits(usb_transp_cal());
             w.trim().bits(usb_trim_cal())
         });
 
         #[hal_cfg("usb-d11")]
-        usb.qosctrl.modify(|_, w| unsafe {
+        usb.qosctrl().modify(|_, w| unsafe {
             w.dqos().bits(0b11);
             w.cqos().bits(0b11)
         });
         #[hal_cfg("usb-d21")]
-        usb.qosctrl.modify(|_, w| {
+        usb.qosctrl().modify(|_, w| unsafe {
             w.dqos().bits(0b11);
             w.cqos().bits(0b11)
         });
 
-        usb.ctrla.modify(|_, w| {
+        usb.ctrla().modify(|_, w| {
             w.mode().device();
             w.runstdby().set_bit()
         });
         // full speed
-        usb.ctrlb.modify(|_, w| w.spdconf().fs());
+        usb.ctrlb().modify(|_, w| w.spdconf().fs());
 
-        usb.ctrla.modify(|_, w| w.enable().set_bit());
-        while usb.syncbusy.read().enable().bit_is_set() {}
+        usb.ctrla().modify(|_, w| w.enable().set_bit());
+        while usb.syncbusy().read().enable().bit_is_set() {}
 
         // Clear pending.
-        usb.intflag
-            .write(|w| unsafe { w.bits(usb.intflag.read().bits()) });
-        usb.intenset.write(|w| w.eorst().set_bit());
+        usb.intflag()
+            .write(|w| unsafe { w.bits(usb.intflag().read().bits()) });
+        usb.intenset().write(|w| w.eorst().set_bit());
 
         // Configure the endpoints before we attach, as hosts may enumerate
         // before attempting a USB protocol reset.
         self.flush_eps(FlushConfigMode::Full);
 
-        usb.ctrlb.modify(|_, w| w.detach().clear_bit());
+        usb.ctrlb().modify(|_, w| w.detach().clear_bit());
     }
 
     /// Enables/disables the Start Of Frame (SOF) interrupt
     fn sof_interrupt(&self, enable: bool) {
         if enable {
-            self.usb().intenset.write(|w| w.sof().set_bit());
+            self.usb().intenset().write(|w| w.sof().set_bit());
         } else {
-            self.usb().intenclr.write(|w| w.sof().set_bit());
+            self.usb().intenclr().write(|w| w.sof().set_bit());
         }
     }
 
@@ -716,7 +631,7 @@ impl Inner {
     /// flush_ep commits bank descriptor information for the endpoint pair,
     /// and enables the endpoint according to its type.
     fn flush_ep(&self, idx: usize) {
-        let cfg = self.epcfg(idx);
+        let cfg = self.usb().epcfg(idx);
         let info = &self.endpoints.borrow().endpoints[idx];
         // Write bank descriptors first. We do this so there is no period in
         // which the endpoint is enabled but has an invalid descriptor.
@@ -804,23 +719,23 @@ impl Inner {
 
     fn set_device_address(&self, addr: u8) {
         self.usb()
-            .dadd
+            .dadd()
             .write(|w| unsafe { w.dadd().bits(addr).adden().set_bit() });
     }
 
     fn check_sof_interrupt(&self) -> bool {
-        if self.usb().intflag.read().sof().bit() {
-            self.usb().intflag.write(|w| w.sof().set_bit());
+        if self.usb().intflag().read().sof().bit() {
+            self.usb().intflag().write(|w| w.sof().set_bit());
             return true;
         }
         false
     }
 
     fn poll(&self) -> PollResult {
-        let intflags = self.usb().intflag.read();
+        let intflags = self.usb().intflag().read();
         if intflags.eorst().bit() {
             // end of reset interrupt
-            self.usb().intflag.write(|w| w.eorst().set_bit());
+            self.usb().intflag().write(|w| w.eorst().set_bit());
             return PollResult::Reset;
         }
         // As the suspend & wakup interrupts/states cannot distinguish between
@@ -831,7 +746,7 @@ impl Inner {
         let mut ep_in_complete = 0;
         let mut ep_setup = 0;
 
-        let intbits = self.usb().epintsmry.read().bits();
+        let intbits = self.usb().epintsmry().read().bits();
 
         for ep in 0..8u16 {
             let mask = 1 << ep;

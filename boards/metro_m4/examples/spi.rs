@@ -24,21 +24,21 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
 
     let miso = pins.miso;
     let mosi = pins.mosi;
     let sclk = pins.sclk;
     let spi_sercom = periph_alias!(peripherals.spi_sercom);
-    let mclk = &mut peripherals.MCLK;
+    let mclk = &mut peripherals.mclk;
 
     let mut spi = bsp::spi_master(&mut clocks, 3.MHz(), spi_sercom, mclk, sclk, mosi, miso);
 

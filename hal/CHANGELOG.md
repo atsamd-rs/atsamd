@@ -1,5 +1,10 @@
 # Unreleased Changes
 
+- Upgrade PACs to latest SVD and `svd2rust`:
+  - All peripheral types are now `PascalCase`
+  - All register field accessors are now methods instead of struct members
+  - Members of the `Peripherals` struct are now `snake_case`
+  - SAMx5x: removed: `EnabledOscUlp32kBase::set_calibration`
 - Fix `embedded-hal` 0.2 CountDown timer implementation
 - Fix Clippy docstring warnings
 - Fix blocking behaviour for `embedded-hal` 0.2 SPI writes

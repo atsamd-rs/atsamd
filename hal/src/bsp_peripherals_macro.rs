@@ -183,7 +183,7 @@ macro_rules! __define_periph_alias_macro {
                         {
                             $( #[$attr] )*
                             macro_rules! [<peripheral_alias_ $Alias:snake>] {
-                                () => { $peripherals.$PERIPHERAL };
+                                () => { $peripherals.[< $PERIPHERAL:snake:lower >] };
                             }
                             [<peripheral_alias_ $Alias:snake>]!()
                         }

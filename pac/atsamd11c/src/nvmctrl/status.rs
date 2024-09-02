@@ -1,108 +1,99 @@
 #[doc = "Register `STATUS` reader"]
-pub type R = crate::R<STATUS_SPEC>;
+pub type R = crate::R<StatusSpec>;
 #[doc = "Register `STATUS` writer"]
-pub type W = crate::W<STATUS_SPEC>;
+pub type W = crate::W<StatusSpec>;
 #[doc = "Field `PRM` reader - Power Reduction Mode"]
-pub type PRM_R = crate::BitReader;
+pub type PrmR = crate::BitReader;
 #[doc = "Field `LOAD` reader - NVM Page Buffer Active Loading"]
-pub type LOAD_R = crate::BitReader;
+pub type LoadR = crate::BitReader;
 #[doc = "Field `LOAD` writer - NVM Page Buffer Active Loading"]
-pub type LOAD_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type LoadW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PROGE` reader - Programming Error Status"]
-pub type PROGE_R = crate::BitReader;
+pub type ProgeR = crate::BitReader;
 #[doc = "Field `PROGE` writer - Programming Error Status"]
-pub type PROGE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type ProgeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `LOCKE` reader - Lock Error Status"]
-pub type LOCKE_R = crate::BitReader;
+pub type LockeR = crate::BitReader;
 #[doc = "Field `LOCKE` writer - Lock Error Status"]
-pub type LOCKE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type LockeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `NVME` reader - NVM Error"]
-pub type NVME_R = crate::BitReader;
+pub type NvmeR = crate::BitReader;
 #[doc = "Field `NVME` writer - NVM Error"]
-pub type NVME_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type NvmeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SB` reader - Security Bit Status"]
-pub type SB_R = crate::BitReader;
+pub type SbR = crate::BitReader;
 impl R {
     #[doc = "Bit 0 - Power Reduction Mode"]
     #[inline(always)]
-    pub fn prm(&self) -> PRM_R {
-        PRM_R::new((self.bits & 1) != 0)
+    pub fn prm(&self) -> PrmR {
+        PrmR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - NVM Page Buffer Active Loading"]
     #[inline(always)]
-    pub fn load(&self) -> LOAD_R {
-        LOAD_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn load(&self) -> LoadR {
+        LoadR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Programming Error Status"]
     #[inline(always)]
-    pub fn proge(&self) -> PROGE_R {
-        PROGE_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn proge(&self) -> ProgeR {
+        ProgeR::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Lock Error Status"]
     #[inline(always)]
-    pub fn locke(&self) -> LOCKE_R {
-        LOCKE_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn locke(&self) -> LockeR {
+        LockeR::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - NVM Error"]
     #[inline(always)]
-    pub fn nvme(&self) -> NVME_R {
-        NVME_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn nvme(&self) -> NvmeR {
+        NvmeR::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 8 - Security Bit Status"]
     #[inline(always)]
-    pub fn sb(&self) -> SB_R {
-        SB_R::new(((self.bits >> 8) & 1) != 0)
+    pub fn sb(&self) -> SbR {
+        SbR::new(((self.bits >> 8) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 1 - NVM Page Buffer Active Loading"]
     #[inline(always)]
     #[must_use]
-    pub fn load(&mut self) -> LOAD_W<STATUS_SPEC, 1> {
-        LOAD_W::new(self)
+    pub fn load(&mut self) -> LoadW<StatusSpec> {
+        LoadW::new(self, 1)
     }
     #[doc = "Bit 2 - Programming Error Status"]
     #[inline(always)]
     #[must_use]
-    pub fn proge(&mut self) -> PROGE_W<STATUS_SPEC, 2> {
-        PROGE_W::new(self)
+    pub fn proge(&mut self) -> ProgeW<StatusSpec> {
+        ProgeW::new(self, 2)
     }
     #[doc = "Bit 3 - Lock Error Status"]
     #[inline(always)]
     #[must_use]
-    pub fn locke(&mut self) -> LOCKE_W<STATUS_SPEC, 3> {
-        LOCKE_W::new(self)
+    pub fn locke(&mut self) -> LockeW<StatusSpec> {
+        LockeW::new(self, 3)
     }
     #[doc = "Bit 4 - NVM Error"]
     #[inline(always)]
     #[must_use]
-    pub fn nvme(&mut self) -> NVME_W<STATUS_SPEC, 4> {
-        NVME_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u16) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn nvme(&mut self) -> NvmeW<StatusSpec> {
+        NvmeW::new(self, 4)
     }
 }
-#[doc = "Status\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`status::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`status::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct STATUS_SPEC;
-impl crate::RegisterSpec for STATUS_SPEC {
+#[doc = "Status\n\nYou can [`read`](crate::Reg::read) this register and get [`status::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`status::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct StatusSpec;
+impl crate::RegisterSpec for StatusSpec {
     type Ux = u16;
 }
 #[doc = "`read()` method returns [`status::R`](R) reader structure"]
-impl crate::Readable for STATUS_SPEC {}
+impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
-impl crate::Writable for STATUS_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for StatusSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0"]
-impl crate::Resettable for STATUS_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for StatusSpec {
+    const RESET_VALUE: u16 = 0;
 }

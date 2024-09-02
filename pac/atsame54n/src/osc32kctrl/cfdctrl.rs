@@ -1,79 +1,70 @@
 #[doc = "Register `CFDCTRL` reader"]
-pub type R = crate::R<CFDCTRL_SPEC>;
+pub type R = crate::R<CfdctrlSpec>;
 #[doc = "Register `CFDCTRL` writer"]
-pub type W = crate::W<CFDCTRL_SPEC>;
+pub type W = crate::W<CfdctrlSpec>;
 #[doc = "Field `CFDEN` reader - Clock Failure Detector Enable"]
-pub type CFDEN_R = crate::BitReader;
+pub type CfdenR = crate::BitReader;
 #[doc = "Field `CFDEN` writer - Clock Failure Detector Enable"]
-pub type CFDEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type CfdenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SWBACK` reader - Clock Switch Back"]
-pub type SWBACK_R = crate::BitReader;
+pub type SwbackR = crate::BitReader;
 #[doc = "Field `SWBACK` writer - Clock Switch Back"]
-pub type SWBACK_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type SwbackW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CFDPRESC` reader - Clock Failure Detector Prescaler"]
-pub type CFDPRESC_R = crate::BitReader;
+pub type CfdprescR = crate::BitReader;
 #[doc = "Field `CFDPRESC` writer - Clock Failure Detector Prescaler"]
-pub type CFDPRESC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type CfdprescW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Clock Failure Detector Enable"]
     #[inline(always)]
-    pub fn cfden(&self) -> CFDEN_R {
-        CFDEN_R::new((self.bits & 1) != 0)
+    pub fn cfden(&self) -> CfdenR {
+        CfdenR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Clock Switch Back"]
     #[inline(always)]
-    pub fn swback(&self) -> SWBACK_R {
-        SWBACK_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn swback(&self) -> SwbackR {
+        SwbackR::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Clock Failure Detector Prescaler"]
     #[inline(always)]
-    pub fn cfdpresc(&self) -> CFDPRESC_R {
-        CFDPRESC_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn cfdpresc(&self) -> CfdprescR {
+        CfdprescR::new(((self.bits >> 2) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Clock Failure Detector Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn cfden(&mut self) -> CFDEN_W<CFDCTRL_SPEC, 0> {
-        CFDEN_W::new(self)
+    pub fn cfden(&mut self) -> CfdenW<CfdctrlSpec> {
+        CfdenW::new(self, 0)
     }
     #[doc = "Bit 1 - Clock Switch Back"]
     #[inline(always)]
     #[must_use]
-    pub fn swback(&mut self) -> SWBACK_W<CFDCTRL_SPEC, 1> {
-        SWBACK_W::new(self)
+    pub fn swback(&mut self) -> SwbackW<CfdctrlSpec> {
+        SwbackW::new(self, 1)
     }
     #[doc = "Bit 2 - Clock Failure Detector Prescaler"]
     #[inline(always)]
     #[must_use]
-    pub fn cfdpresc(&mut self) -> CFDPRESC_W<CFDCTRL_SPEC, 2> {
-        CFDPRESC_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn cfdpresc(&mut self) -> CfdprescW<CfdctrlSpec> {
+        CfdprescW::new(self, 2)
     }
 }
-#[doc = "Clock Failure Detector Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`cfdctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`cfdctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct CFDCTRL_SPEC;
-impl crate::RegisterSpec for CFDCTRL_SPEC {
+#[doc = "Clock Failure Detector Control\n\nYou can [`read`](crate::Reg::read) this register and get [`cfdctrl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cfdctrl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct CfdctrlSpec;
+impl crate::RegisterSpec for CfdctrlSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`cfdctrl::R`](R) reader structure"]
-impl crate::Readable for CFDCTRL_SPEC {}
+impl crate::Readable for CfdctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`cfdctrl::W`](W) writer structure"]
-impl crate::Writable for CFDCTRL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for CfdctrlSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CFDCTRL to value 0"]
-impl crate::Resettable for CFDCTRL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for CfdctrlSpec {
+    const RESET_VALUE: u8 = 0;
 }

@@ -1,111 +1,112 @@
 #[doc = "Register `GENCTRL` reader"]
-pub type R = crate::R<GENCTRL_SPEC>;
+pub type R = crate::R<GenctrlSpec>;
 #[doc = "Register `GENCTRL` writer"]
-pub type W = crate::W<GENCTRL_SPEC>;
+pub type W = crate::W<GenctrlSpec>;
 #[doc = "Field `ID` reader - Generic Clock Generator Selection"]
-pub type ID_R = crate::FieldReader;
+pub type IdR = crate::FieldReader;
 #[doc = "Field `ID` writer - Generic Clock Generator Selection"]
-pub type ID_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 4, O>;
-#[doc = "Field `SRC` reader - Source Select"]
-pub type SRC_R = crate::FieldReader<SRCSELECT_A>;
+pub type IdW<'a, REG> = crate::FieldWriter<'a, REG, 4>;
 #[doc = "Source Select\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
-pub enum SRCSELECT_A {
+pub enum Srcselect {
     #[doc = "0: XOSC oscillator output"]
-    XOSC = 0,
+    Xosc = 0,
     #[doc = "1: Generator input pad"]
-    GCLKIN = 1,
+    Gclkin = 1,
     #[doc = "2: Generic clock generator 1 output"]
-    GCLKGEN1 = 2,
+    Gclkgen1 = 2,
     #[doc = "3: OSCULP32K oscillator output"]
-    OSCULP32K = 3,
+    Osculp32k = 3,
     #[doc = "4: OSC32K oscillator output"]
-    OSC32K = 4,
+    Osc32k = 4,
     #[doc = "5: XOSC32K oscillator output"]
-    XOSC32K = 5,
+    Xosc32k = 5,
     #[doc = "6: OSC8M oscillator output"]
-    OSC8M = 6,
+    Osc8m = 6,
     #[doc = "7: DFLL48M output"]
-    DFLL48M = 7,
+    Dfll48m = 7,
     #[doc = "8: DPLL96M output"]
-    DPLL96M = 8,
+    Dpll96m = 8,
 }
-impl From<SRCSELECT_A> for u8 {
+impl From<Srcselect> for u8 {
     #[inline(always)]
-    fn from(variant: SRCSELECT_A) -> Self {
+    fn from(variant: Srcselect) -> Self {
         variant as _
     }
 }
-impl crate::FieldSpec for SRCSELECT_A {
+impl crate::FieldSpec for Srcselect {
     type Ux = u8;
 }
-impl SRC_R {
+impl crate::IsEnum for Srcselect {}
+#[doc = "Field `SRC` reader - Source Select"]
+pub type SrcR = crate::FieldReader<Srcselect>;
+impl SrcR {
     #[doc = "Get enumerated values variant"]
     #[inline(always)]
-    pub const fn variant(&self) -> Option<SRCSELECT_A> {
+    pub const fn variant(&self) -> Option<Srcselect> {
         match self.bits {
-            0 => Some(SRCSELECT_A::XOSC),
-            1 => Some(SRCSELECT_A::GCLKIN),
-            2 => Some(SRCSELECT_A::GCLKGEN1),
-            3 => Some(SRCSELECT_A::OSCULP32K),
-            4 => Some(SRCSELECT_A::OSC32K),
-            5 => Some(SRCSELECT_A::XOSC32K),
-            6 => Some(SRCSELECT_A::OSC8M),
-            7 => Some(SRCSELECT_A::DFLL48M),
-            8 => Some(SRCSELECT_A::DPLL96M),
+            0 => Some(Srcselect::Xosc),
+            1 => Some(Srcselect::Gclkin),
+            2 => Some(Srcselect::Gclkgen1),
+            3 => Some(Srcselect::Osculp32k),
+            4 => Some(Srcselect::Osc32k),
+            5 => Some(Srcselect::Xosc32k),
+            6 => Some(Srcselect::Osc8m),
+            7 => Some(Srcselect::Dfll48m),
+            8 => Some(Srcselect::Dpll96m),
             _ => None,
         }
     }
     #[doc = "XOSC oscillator output"]
     #[inline(always)]
     pub fn is_xosc(&self) -> bool {
-        *self == SRCSELECT_A::XOSC
+        *self == Srcselect::Xosc
     }
     #[doc = "Generator input pad"]
     #[inline(always)]
     pub fn is_gclkin(&self) -> bool {
-        *self == SRCSELECT_A::GCLKIN
+        *self == Srcselect::Gclkin
     }
     #[doc = "Generic clock generator 1 output"]
     #[inline(always)]
     pub fn is_gclkgen1(&self) -> bool {
-        *self == SRCSELECT_A::GCLKGEN1
+        *self == Srcselect::Gclkgen1
     }
     #[doc = "OSCULP32K oscillator output"]
     #[inline(always)]
     pub fn is_osculp32k(&self) -> bool {
-        *self == SRCSELECT_A::OSCULP32K
+        *self == Srcselect::Osculp32k
     }
     #[doc = "OSC32K oscillator output"]
     #[inline(always)]
     pub fn is_osc32k(&self) -> bool {
-        *self == SRCSELECT_A::OSC32K
+        *self == Srcselect::Osc32k
     }
     #[doc = "XOSC32K oscillator output"]
     #[inline(always)]
     pub fn is_xosc32k(&self) -> bool {
-        *self == SRCSELECT_A::XOSC32K
+        *self == Srcselect::Xosc32k
     }
     #[doc = "OSC8M oscillator output"]
     #[inline(always)]
     pub fn is_osc8m(&self) -> bool {
-        *self == SRCSELECT_A::OSC8M
+        *self == Srcselect::Osc8m
     }
     #[doc = "DFLL48M output"]
     #[inline(always)]
     pub fn is_dfll48m(&self) -> bool {
-        *self == SRCSELECT_A::DFLL48M
+        *self == Srcselect::Dfll48m
     }
     #[doc = "DPLL96M output"]
     #[inline(always)]
     pub fn is_dpll96m(&self) -> bool {
-        *self == SRCSELECT_A::DPLL96M
+        *self == Srcselect::Dpll96m
     }
 }
 #[doc = "Field `SRC` writer - Source Select"]
-pub type SRC_W<'a, REG, const O: u8> = crate::FieldWriter<'a, REG, 5, O, SRCSELECT_A>;
-impl<'a, REG, const O: u8> SRC_W<'a, REG, O>
+pub type SrcW<'a, REG> = crate::FieldWriter<'a, REG, 5, Srcselect>;
+impl<'a, REG> SrcW<'a, REG>
 where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
@@ -113,188 +114,179 @@ where
     #[doc = "XOSC oscillator output"]
     #[inline(always)]
     pub fn xosc(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::XOSC)
+        self.variant(Srcselect::Xosc)
     }
     #[doc = "Generator input pad"]
     #[inline(always)]
     pub fn gclkin(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::GCLKIN)
+        self.variant(Srcselect::Gclkin)
     }
     #[doc = "Generic clock generator 1 output"]
     #[inline(always)]
     pub fn gclkgen1(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::GCLKGEN1)
+        self.variant(Srcselect::Gclkgen1)
     }
     #[doc = "OSCULP32K oscillator output"]
     #[inline(always)]
     pub fn osculp32k(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::OSCULP32K)
+        self.variant(Srcselect::Osculp32k)
     }
     #[doc = "OSC32K oscillator output"]
     #[inline(always)]
     pub fn osc32k(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::OSC32K)
+        self.variant(Srcselect::Osc32k)
     }
     #[doc = "XOSC32K oscillator output"]
     #[inline(always)]
     pub fn xosc32k(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::XOSC32K)
+        self.variant(Srcselect::Xosc32k)
     }
     #[doc = "OSC8M oscillator output"]
     #[inline(always)]
     pub fn osc8m(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::OSC8M)
+        self.variant(Srcselect::Osc8m)
     }
     #[doc = "DFLL48M output"]
     #[inline(always)]
     pub fn dfll48m(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::DFLL48M)
+        self.variant(Srcselect::Dfll48m)
     }
     #[doc = "DPLL96M output"]
     #[inline(always)]
     pub fn dpll96m(self) -> &'a mut crate::W<REG> {
-        self.variant(SRCSELECT_A::DPLL96M)
+        self.variant(Srcselect::Dpll96m)
     }
 }
 #[doc = "Field `GENEN` reader - Generic Clock Generator Enable"]
-pub type GENEN_R = crate::BitReader;
+pub type GenenR = crate::BitReader;
 #[doc = "Field `GENEN` writer - Generic Clock Generator Enable"]
-pub type GENEN_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type GenenW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `IDC` reader - Improve Duty Cycle"]
-pub type IDC_R = crate::BitReader;
+pub type IdcR = crate::BitReader;
 #[doc = "Field `IDC` writer - Improve Duty Cycle"]
-pub type IDC_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type IdcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `OOV` reader - Output Off Value"]
-pub type OOV_R = crate::BitReader;
+pub type OovR = crate::BitReader;
 #[doc = "Field `OOV` writer - Output Off Value"]
-pub type OOV_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type OovW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `OE` reader - Output Enable"]
-pub type OE_R = crate::BitReader;
+pub type OeR = crate::BitReader;
 #[doc = "Field `OE` writer - Output Enable"]
-pub type OE_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type OeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DIVSEL` reader - Divide Selection"]
-pub type DIVSEL_R = crate::BitReader;
+pub type DivselR = crate::BitReader;
 #[doc = "Field `DIVSEL` writer - Divide Selection"]
-pub type DIVSEL_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type DivselW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RUNSTDBY` reader - Run in Standby"]
-pub type RUNSTDBY_R = crate::BitReader;
+pub type RunstdbyR = crate::BitReader;
 #[doc = "Field `RUNSTDBY` writer - Run in Standby"]
-pub type RUNSTDBY_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RunstdbyW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bits 0:3 - Generic Clock Generator Selection"]
     #[inline(always)]
-    pub fn id(&self) -> ID_R {
-        ID_R::new((self.bits & 0x0f) as u8)
+    pub fn id(&self) -> IdR {
+        IdR::new((self.bits & 0x0f) as u8)
     }
     #[doc = "Bits 8:12 - Source Select"]
     #[inline(always)]
-    pub fn src(&self) -> SRC_R {
-        SRC_R::new(((self.bits >> 8) & 0x1f) as u8)
+    pub fn src(&self) -> SrcR {
+        SrcR::new(((self.bits >> 8) & 0x1f) as u8)
     }
     #[doc = "Bit 16 - Generic Clock Generator Enable"]
     #[inline(always)]
-    pub fn genen(&self) -> GENEN_R {
-        GENEN_R::new(((self.bits >> 16) & 1) != 0)
+    pub fn genen(&self) -> GenenR {
+        GenenR::new(((self.bits >> 16) & 1) != 0)
     }
     #[doc = "Bit 17 - Improve Duty Cycle"]
     #[inline(always)]
-    pub fn idc(&self) -> IDC_R {
-        IDC_R::new(((self.bits >> 17) & 1) != 0)
+    pub fn idc(&self) -> IdcR {
+        IdcR::new(((self.bits >> 17) & 1) != 0)
     }
     #[doc = "Bit 18 - Output Off Value"]
     #[inline(always)]
-    pub fn oov(&self) -> OOV_R {
-        OOV_R::new(((self.bits >> 18) & 1) != 0)
+    pub fn oov(&self) -> OovR {
+        OovR::new(((self.bits >> 18) & 1) != 0)
     }
     #[doc = "Bit 19 - Output Enable"]
     #[inline(always)]
-    pub fn oe(&self) -> OE_R {
-        OE_R::new(((self.bits >> 19) & 1) != 0)
+    pub fn oe(&self) -> OeR {
+        OeR::new(((self.bits >> 19) & 1) != 0)
     }
     #[doc = "Bit 20 - Divide Selection"]
     #[inline(always)]
-    pub fn divsel(&self) -> DIVSEL_R {
-        DIVSEL_R::new(((self.bits >> 20) & 1) != 0)
+    pub fn divsel(&self) -> DivselR {
+        DivselR::new(((self.bits >> 20) & 1) != 0)
     }
     #[doc = "Bit 21 - Run in Standby"]
     #[inline(always)]
-    pub fn runstdby(&self) -> RUNSTDBY_R {
-        RUNSTDBY_R::new(((self.bits >> 21) & 1) != 0)
+    pub fn runstdby(&self) -> RunstdbyR {
+        RunstdbyR::new(((self.bits >> 21) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bits 0:3 - Generic Clock Generator Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn id(&mut self) -> ID_W<GENCTRL_SPEC, 0> {
-        ID_W::new(self)
+    pub fn id(&mut self) -> IdW<GenctrlSpec> {
+        IdW::new(self, 0)
     }
     #[doc = "Bits 8:12 - Source Select"]
     #[inline(always)]
     #[must_use]
-    pub fn src(&mut self) -> SRC_W<GENCTRL_SPEC, 8> {
-        SRC_W::new(self)
+    pub fn src(&mut self) -> SrcW<GenctrlSpec> {
+        SrcW::new(self, 8)
     }
     #[doc = "Bit 16 - Generic Clock Generator Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn genen(&mut self) -> GENEN_W<GENCTRL_SPEC, 16> {
-        GENEN_W::new(self)
+    pub fn genen(&mut self) -> GenenW<GenctrlSpec> {
+        GenenW::new(self, 16)
     }
     #[doc = "Bit 17 - Improve Duty Cycle"]
     #[inline(always)]
     #[must_use]
-    pub fn idc(&mut self) -> IDC_W<GENCTRL_SPEC, 17> {
-        IDC_W::new(self)
+    pub fn idc(&mut self) -> IdcW<GenctrlSpec> {
+        IdcW::new(self, 17)
     }
     #[doc = "Bit 18 - Output Off Value"]
     #[inline(always)]
     #[must_use]
-    pub fn oov(&mut self) -> OOV_W<GENCTRL_SPEC, 18> {
-        OOV_W::new(self)
+    pub fn oov(&mut self) -> OovW<GenctrlSpec> {
+        OovW::new(self, 18)
     }
     #[doc = "Bit 19 - Output Enable"]
     #[inline(always)]
     #[must_use]
-    pub fn oe(&mut self) -> OE_W<GENCTRL_SPEC, 19> {
-        OE_W::new(self)
+    pub fn oe(&mut self) -> OeW<GenctrlSpec> {
+        OeW::new(self, 19)
     }
     #[doc = "Bit 20 - Divide Selection"]
     #[inline(always)]
     #[must_use]
-    pub fn divsel(&mut self) -> DIVSEL_W<GENCTRL_SPEC, 20> {
-        DIVSEL_W::new(self)
+    pub fn divsel(&mut self) -> DivselW<GenctrlSpec> {
+        DivselW::new(self, 20)
     }
     #[doc = "Bit 21 - Run in Standby"]
     #[inline(always)]
     #[must_use]
-    pub fn runstdby(&mut self) -> RUNSTDBY_W<GENCTRL_SPEC, 21> {
-        RUNSTDBY_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn runstdby(&mut self) -> RunstdbyW<GenctrlSpec> {
+        RunstdbyW::new(self, 21)
     }
 }
-#[doc = "Generic Clock Generator Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`genctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`genctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct GENCTRL_SPEC;
-impl crate::RegisterSpec for GENCTRL_SPEC {
+#[doc = "Generic Clock Generator Control\n\nYou can [`read`](crate::Reg::read) this register and get [`genctrl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`genctrl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct GenctrlSpec;
+impl crate::RegisterSpec for GenctrlSpec {
     type Ux = u32;
 }
 #[doc = "`read()` method returns [`genctrl::R`](R) reader structure"]
-impl crate::Readable for GENCTRL_SPEC {}
+impl crate::Readable for GenctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`genctrl::W`](W) writer structure"]
-impl crate::Writable for GENCTRL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for GenctrlSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets GENCTRL to value 0"]
-impl crate::Resettable for GENCTRL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for GenctrlSpec {
+    const RESET_VALUE: u32 = 0;
 }

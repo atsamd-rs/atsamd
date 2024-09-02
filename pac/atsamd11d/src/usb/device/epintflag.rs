@@ -1,139 +1,130 @@
 #[doc = "Register `EPINTFLAG%s` reader"]
-pub type R = crate::R<EPINTFLAG_SPEC>;
+pub type R = crate::R<EpintflagSpec>;
 #[doc = "Register `EPINTFLAG%s` writer"]
-pub type W = crate::W<EPINTFLAG_SPEC>;
+pub type W = crate::W<EpintflagSpec>;
 #[doc = "Field `TRCPT0` reader - Transfer Complete 0"]
-pub type TRCPT0_R = crate::BitReader;
+pub type Trcpt0R = crate::BitReader;
 #[doc = "Field `TRCPT0` writer - Transfer Complete 0"]
-pub type TRCPT0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Trcpt0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TRCPT1` reader - Transfer Complete 1"]
-pub type TRCPT1_R = crate::BitReader;
+pub type Trcpt1R = crate::BitReader;
 #[doc = "Field `TRCPT1` writer - Transfer Complete 1"]
-pub type TRCPT1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Trcpt1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TRFAIL0` reader - Error Flow 0"]
-pub type TRFAIL0_R = crate::BitReader;
+pub type Trfail0R = crate::BitReader;
 #[doc = "Field `TRFAIL0` writer - Error Flow 0"]
-pub type TRFAIL0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Trfail0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TRFAIL1` reader - Error Flow 1"]
-pub type TRFAIL1_R = crate::BitReader;
+pub type Trfail1R = crate::BitReader;
 #[doc = "Field `TRFAIL1` writer - Error Flow 1"]
-pub type TRFAIL1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Trfail1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXSTP` reader - Received Setup"]
-pub type RXSTP_R = crate::BitReader;
+pub type RxstpR = crate::BitReader;
 #[doc = "Field `RXSTP` writer - Received Setup"]
-pub type RXSTP_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type RxstpW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `STALL0` reader - Stall 0 In/out"]
-pub type STALL0_R = crate::BitReader;
+pub type Stall0R = crate::BitReader;
 #[doc = "Field `STALL0` writer - Stall 0 In/out"]
-pub type STALL0_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Stall0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `STALL1` reader - Stall 1 In/out"]
-pub type STALL1_R = crate::BitReader;
+pub type Stall1R = crate::BitReader;
 #[doc = "Field `STALL1` writer - Stall 1 In/out"]
-pub type STALL1_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type Stall1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Transfer Complete 0"]
     #[inline(always)]
-    pub fn trcpt0(&self) -> TRCPT0_R {
-        TRCPT0_R::new((self.bits & 1) != 0)
+    pub fn trcpt0(&self) -> Trcpt0R {
+        Trcpt0R::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Transfer Complete 1"]
     #[inline(always)]
-    pub fn trcpt1(&self) -> TRCPT1_R {
-        TRCPT1_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn trcpt1(&self) -> Trcpt1R {
+        Trcpt1R::new(((self.bits >> 1) & 1) != 0)
     }
     #[doc = "Bit 2 - Error Flow 0"]
     #[inline(always)]
-    pub fn trfail0(&self) -> TRFAIL0_R {
-        TRFAIL0_R::new(((self.bits >> 2) & 1) != 0)
+    pub fn trfail0(&self) -> Trfail0R {
+        Trfail0R::new(((self.bits >> 2) & 1) != 0)
     }
     #[doc = "Bit 3 - Error Flow 1"]
     #[inline(always)]
-    pub fn trfail1(&self) -> TRFAIL1_R {
-        TRFAIL1_R::new(((self.bits >> 3) & 1) != 0)
+    pub fn trfail1(&self) -> Trfail1R {
+        Trfail1R::new(((self.bits >> 3) & 1) != 0)
     }
     #[doc = "Bit 4 - Received Setup"]
     #[inline(always)]
-    pub fn rxstp(&self) -> RXSTP_R {
-        RXSTP_R::new(((self.bits >> 4) & 1) != 0)
+    pub fn rxstp(&self) -> RxstpR {
+        RxstpR::new(((self.bits >> 4) & 1) != 0)
     }
     #[doc = "Bit 5 - Stall 0 In/out"]
     #[inline(always)]
-    pub fn stall0(&self) -> STALL0_R {
-        STALL0_R::new(((self.bits >> 5) & 1) != 0)
+    pub fn stall0(&self) -> Stall0R {
+        Stall0R::new(((self.bits >> 5) & 1) != 0)
     }
     #[doc = "Bit 6 - Stall 1 In/out"]
     #[inline(always)]
-    pub fn stall1(&self) -> STALL1_R {
-        STALL1_R::new(((self.bits >> 6) & 1) != 0)
+    pub fn stall1(&self) -> Stall1R {
+        Stall1R::new(((self.bits >> 6) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Transfer Complete 0"]
     #[inline(always)]
     #[must_use]
-    pub fn trcpt0(&mut self) -> TRCPT0_W<EPINTFLAG_SPEC, 0> {
-        TRCPT0_W::new(self)
+    pub fn trcpt0(&mut self) -> Trcpt0W<EpintflagSpec> {
+        Trcpt0W::new(self, 0)
     }
     #[doc = "Bit 1 - Transfer Complete 1"]
     #[inline(always)]
     #[must_use]
-    pub fn trcpt1(&mut self) -> TRCPT1_W<EPINTFLAG_SPEC, 1> {
-        TRCPT1_W::new(self)
+    pub fn trcpt1(&mut self) -> Trcpt1W<EpintflagSpec> {
+        Trcpt1W::new(self, 1)
     }
     #[doc = "Bit 2 - Error Flow 0"]
     #[inline(always)]
     #[must_use]
-    pub fn trfail0(&mut self) -> TRFAIL0_W<EPINTFLAG_SPEC, 2> {
-        TRFAIL0_W::new(self)
+    pub fn trfail0(&mut self) -> Trfail0W<EpintflagSpec> {
+        Trfail0W::new(self, 2)
     }
     #[doc = "Bit 3 - Error Flow 1"]
     #[inline(always)]
     #[must_use]
-    pub fn trfail1(&mut self) -> TRFAIL1_W<EPINTFLAG_SPEC, 3> {
-        TRFAIL1_W::new(self)
+    pub fn trfail1(&mut self) -> Trfail1W<EpintflagSpec> {
+        Trfail1W::new(self, 3)
     }
     #[doc = "Bit 4 - Received Setup"]
     #[inline(always)]
     #[must_use]
-    pub fn rxstp(&mut self) -> RXSTP_W<EPINTFLAG_SPEC, 4> {
-        RXSTP_W::new(self)
+    pub fn rxstp(&mut self) -> RxstpW<EpintflagSpec> {
+        RxstpW::new(self, 4)
     }
     #[doc = "Bit 5 - Stall 0 In/out"]
     #[inline(always)]
     #[must_use]
-    pub fn stall0(&mut self) -> STALL0_W<EPINTFLAG_SPEC, 5> {
-        STALL0_W::new(self)
+    pub fn stall0(&mut self) -> Stall0W<EpintflagSpec> {
+        Stall0W::new(self, 5)
     }
     #[doc = "Bit 6 - Stall 1 In/out"]
     #[inline(always)]
     #[must_use]
-    pub fn stall1(&mut self) -> STALL1_W<EPINTFLAG_SPEC, 6> {
-        STALL1_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn stall1(&mut self) -> Stall1W<EpintflagSpec> {
+        Stall1W::new(self, 6)
     }
 }
-#[doc = "DEVICE End Point Interrupt Flag\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`epintflag::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`epintflag::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct EPINTFLAG_SPEC;
-impl crate::RegisterSpec for EPINTFLAG_SPEC {
+#[doc = "DEVICE End Point Interrupt Flag\n\nYou can [`read`](crate::Reg::read) this register and get [`epintflag::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`epintflag::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct EpintflagSpec;
+impl crate::RegisterSpec for EpintflagSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`epintflag::R`](R) reader structure"]
-impl crate::Readable for EPINTFLAG_SPEC {}
+impl crate::Readable for EpintflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`epintflag::W`](W) writer structure"]
-impl crate::Writable for EPINTFLAG_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for EpintflagSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EPINTFLAG%s to value 0"]
-impl crate::Resettable for EPINTFLAG_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for EpintflagSpec {
+    const RESET_VALUE: u8 = 0;
 }

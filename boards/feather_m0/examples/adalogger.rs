@@ -22,6 +22,7 @@ use feather_m0 as bsp;
 use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::{ClockGenId, ClockSource, GenericClockController};
 use hal::delay::Delay;
+use hal::fugit::RateExtU32;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::rtc;
@@ -35,21 +36,21 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     // configure the peripherals we'll need
     // get the internal 32k running at 1024 Hz for the RTC
     let timer_clock = clocks
-        .configure_gclk_divider_and_source(ClockGenId::GCLK3, 32, ClockSource::OSC32K, true)
+        .configure_gclk_divider_and_source(ClockGenId::Gclk3, 32, ClockSource::Osc32k, true)
         .unwrap();
     let rtc_clock = clocks.rtc(&timer_clock).unwrap();
-    let timer = rtc::Rtc::clock_mode(peripherals.RTC, rtc_clock.freq(), &mut peripherals.PM);
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let timer = rtc::Rtc::clock_mode(peripherals.rtc, rtc_clock.freq(), &mut peripherals.pm);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
     red_led.set_high().unwrap();
@@ -57,9 +58,9 @@ fn main() -> ! {
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(
-            peripherals.USB,
+            peripherals.usb,
             &mut clocks,
-            &mut peripherals.PM,
+            &mut peripherals.pm,
             pins.usb_dm,
             pins.usb_dp,
         ));
@@ -70,9 +71,11 @@ fn main() -> ! {
         USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
             UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
-                .manufacturer("Fake company")
-                .product("Serial port")
-                .serial_number("TEST")
+                .strings(&[StringDescriptors::new(LangID::EN)
+                    .manufacturer("Fake company")
+                    .product("Serial port")
+                    .serial_number("TEST")])
+                .expect("Failed to set strings")
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
@@ -90,9 +93,9 @@ fn main() -> ! {
     let spi_sercom = periph_alias!(peripherals.spi_sercom);
     let spi = bsp::spi_master(
         &mut clocks,
-        400_u32.khz(),
+        400_u32.kHz(),
         spi_sercom,
-        &mut peripherals.PM,
+        &mut peripherals.pm,
         pins.sclk,
         pins.mosi,
         pins.miso,
@@ -130,7 +133,7 @@ fn main() -> ! {
             controller
                 .device()
                 .spi()
-                .reconfigure(|c| c.set_baud(4.mhz()));
+                .reconfigure(|c| c.set_baud(4.MHz()));
             usbserial_write!("OK!\r\nCard size...\r\n");
             match controller.device().card_size_bytes() {
                 Ok(size) => usbserial_write!("{} bytes\r\n", size),

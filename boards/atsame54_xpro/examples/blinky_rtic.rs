@@ -31,14 +31,14 @@ mod app {
         rtt_init_print!();
 
         let (_buses, clocks, tokens) = clock::clock_system_at_reset(
-            ctx.device.OSCCTRL,
-            ctx.device.OSC32KCTRL,
-            ctx.device.GCLK,
-            ctx.device.MCLK,
-            &mut ctx.device.NVMCTRL,
+            ctx.device.oscctrl,
+            ctx.device.osc32kctrl,
+            ctx.device.gclk,
+            ctx.device.mclk,
+            &mut ctx.device.nvmctrl,
         );
 
-        let pins = bsp::Pins::new(ctx.device.PORT);
+        let pins = bsp::Pins::new(ctx.device.port);
         let xosc = clock::xosc::Xosc::from_crystal(
             tokens.xosc1,
             bsp::pin_alias!(pins.xosc1_x_in),

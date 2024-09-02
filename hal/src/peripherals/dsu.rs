@@ -5,12 +5,12 @@
 //! - Run a CRC32 checksum over memory
 #![warn(missing_docs)]
 
-use crate::pac::{DSU, PAC};
+use crate::pac::{self, Pac};
 
 /// Device Service Unit
 pub struct Dsu {
     /// PAC peripheral
-    dsu: DSU,
+    dsu: pac::Dsu,
 }
 
 /// Errors from hardware
@@ -41,13 +41,13 @@ pub type Result<T> = core::result::Result<T, Error>;
 impl Dsu {
     /// Unlock the DSU and instantiate peripheral
     #[inline]
-    pub fn new(dsu: DSU, pac: &PAC) -> Result<Self> {
+    pub fn new(dsu: pac::Dsu, pac: &Pac) -> Result<Self> {
         // Attempt to unlock DSU
-        pac.wrctrl
+        pac.wrctrl()
             .write(|w| unsafe { w.perid().bits(33).key().clr() });
 
         // Check if DSU was unlocked
-        if pac.statusb.read().dsu_().bit_is_set() {
+        if pac.statusb().read().dsu_().bit_is_set() {
             Err(Error::PacUnlockFailed)
         } else {
             Ok(Self { dsu })
@@ -56,41 +56,41 @@ impl Dsu {
 
     /// Clear bus error bit
     fn clear_bus_error(&mut self) {
-        self.dsu.statusa.write(|w| w.berr().set_bit());
+        self.dsu.statusa().write(|w| w.berr().set_bit());
     }
 
     /// Read bus error bit
     fn bus_error(&mut self) -> bool {
-        self.dsu.statusa.read().berr().bit()
+        self.dsu.statusa().read().berr().bit()
     }
 
     /// Check if operation is done
     fn is_done(&self) -> bool {
-        self.dsu.statusa.read().done().bit_is_set()
+        self.dsu.statusa().read().done().bit_is_set()
     }
 
     /// Check if an operation has failed
     fn has_failed(&self) -> bool {
-        self.dsu.statusa.read().fail().bit_is_set()
+        self.dsu.statusa().read().fail().bit_is_set()
     }
 
     /// Set target address given as number of words offset
     fn set_address(&mut self, address: u32) -> Result<()> {
-        self.dsu.addr.write(|w| unsafe { w.addr().bits(address) });
+        self.dsu.addr().write(|w| unsafe { w.addr().bits(address) });
         Ok(())
     }
 
     /// Set length given as number of words
     fn set_length(&mut self, length: u32) -> Result<()> {
         self.dsu
-            .length
+            .length()
             .write(|w| unsafe { w.length().bits(length) });
         Ok(())
     }
 
     /// Seed CRC32
     fn seed(&mut self, data: u32) {
-        self.dsu.data.write(|w| unsafe { w.data().bits(data) });
+        self.dsu.data().write(|w| unsafe { w.data().bits(data) });
     }
 
     /// Calculate CRC32 of a memory region
@@ -131,11 +131,11 @@ impl Dsu {
 
         // Clear the status flags indicating termination of the operation
         self.dsu
-            .statusa
+            .statusa()
             .write(|w| w.done().set_bit().fail().set_bit());
 
         // Initialize CRC calculation
-        self.dsu.ctrl.write(|w| w.crc().set_bit());
+        self.dsu.ctrl().write(|w| w.crc().set_bit());
 
         // Wait until done or failed
         while !self.is_done() && !self.has_failed() {}
@@ -151,7 +151,7 @@ impl Dsu {
             Err(Error::Peripheral(PeripheralError::BusError))
         } else {
             // Return the calculated CRC32 (complement of data register)
-            Ok(!self.dsu.data.read().data().bits())
+            Ok(!self.dsu.data().read().data().bits())
         }
     }
 }

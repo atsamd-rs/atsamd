@@ -1,64 +1,55 @@
 #[doc = "Register `DBGCTRL` reader"]
-pub type R = crate::R<DBGCTRL_SPEC>;
+pub type R = crate::R<DbgctrlSpec>;
 #[doc = "Register `DBGCTRL` writer"]
-pub type W = crate::W<DBGCTRL_SPEC>;
+pub type W = crate::W<DbgctrlSpec>;
 #[doc = "Field `ECCDIS` reader - Debugger ECC Read Disable"]
-pub type ECCDIS_R = crate::BitReader;
+pub type EccdisR = crate::BitReader;
 #[doc = "Field `ECCDIS` writer - Debugger ECC Read Disable"]
-pub type ECCDIS_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type EccdisW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ECCELOG` reader - Debugger ECC Error Tracking Mode"]
-pub type ECCELOG_R = crate::BitReader;
+pub type EccelogR = crate::BitReader;
 #[doc = "Field `ECCELOG` writer - Debugger ECC Error Tracking Mode"]
-pub type ECCELOG_W<'a, REG, const O: u8> = crate::BitWriter<'a, REG, O>;
+pub type EccelogW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Debugger ECC Read Disable"]
     #[inline(always)]
-    pub fn eccdis(&self) -> ECCDIS_R {
-        ECCDIS_R::new((self.bits & 1) != 0)
+    pub fn eccdis(&self) -> EccdisR {
+        EccdisR::new((self.bits & 1) != 0)
     }
     #[doc = "Bit 1 - Debugger ECC Error Tracking Mode"]
     #[inline(always)]
-    pub fn eccelog(&self) -> ECCELOG_R {
-        ECCELOG_R::new(((self.bits >> 1) & 1) != 0)
+    pub fn eccelog(&self) -> EccelogR {
+        EccelogR::new(((self.bits >> 1) & 1) != 0)
     }
 }
 impl W {
     #[doc = "Bit 0 - Debugger ECC Read Disable"]
     #[inline(always)]
     #[must_use]
-    pub fn eccdis(&mut self) -> ECCDIS_W<DBGCTRL_SPEC, 0> {
-        ECCDIS_W::new(self)
+    pub fn eccdis(&mut self) -> EccdisW<DbgctrlSpec> {
+        EccdisW::new(self, 0)
     }
     #[doc = "Bit 1 - Debugger ECC Error Tracking Mode"]
     #[inline(always)]
     #[must_use]
-    pub fn eccelog(&mut self) -> ECCELOG_W<DBGCTRL_SPEC, 1> {
-        ECCELOG_W::new(self)
-    }
-    #[doc = r" Writes raw bits to the register."]
-    #[doc = r""]
-    #[doc = r" # Safety"]
-    #[doc = r""]
-    #[doc = r" Passing incorrect value can cause undefined behaviour. See reference manual"]
-    #[inline(always)]
-    pub unsafe fn bits(&mut self, bits: u8) -> &mut Self {
-        self.bits = bits;
-        self
+    pub fn eccelog(&mut self) -> EccelogW<DbgctrlSpec> {
+        EccelogW::new(self, 1)
     }
 }
-#[doc = "Debug Control\n\nYou can [`read`](crate::generic::Reg::read) this register and get [`dbgctrl::R`](R).  You can [`reset`](crate::generic::Reg::reset), [`write`](crate::generic::Reg::write), [`write_with_zero`](crate::generic::Reg::write_with_zero) this register using [`dbgctrl::W`](W). You can also [`modify`](crate::generic::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
-pub struct DBGCTRL_SPEC;
-impl crate::RegisterSpec for DBGCTRL_SPEC {
+#[doc = "Debug Control\n\nYou can [`read`](crate::Reg::read) this register and get [`dbgctrl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dbgctrl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+pub struct DbgctrlSpec;
+impl crate::RegisterSpec for DbgctrlSpec {
     type Ux = u8;
 }
 #[doc = "`read()` method returns [`dbgctrl::R`](R) reader structure"]
-impl crate::Readable for DBGCTRL_SPEC {}
+impl crate::Readable for DbgctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`dbgctrl::W`](W) writer structure"]
-impl crate::Writable for DBGCTRL_SPEC {
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+impl crate::Writable for DbgctrlSpec {
+    type Safety = crate::Unsafe;
+    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DBGCTRL to value 0"]
-impl crate::Resettable for DBGCTRL_SPEC {
-    const RESET_VALUE: Self::Ux = 0;
+impl crate::Resettable for DbgctrlSpec {
+    const RESET_VALUE: u8 = 0;
 }

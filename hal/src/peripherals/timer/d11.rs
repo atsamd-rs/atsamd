@@ -5,11 +5,11 @@ use atsamd_hal_macros::hal_cfg;
 use fugit::NanosDurationU32;
 
 use crate::ehal_02::timer::{CountDown, Periodic};
-use crate::pac::PM;
+use crate::pac::Pm;
 #[hal_cfg("tc1-d11")]
-use crate::pac::{tc1::COUNT16, TC1};
+use crate::pac::{tc1::Count16 as Count16Reg, Tc1};
 #[hal_cfg("tc3-d21")]
-use crate::pac::{tc3::COUNT16, TC3, TC4, TC5};
+use crate::pac::{tc3::Count16 as Count16Reg, Tc3, Tc4, Tc5};
 use crate::timer_params::TimerParams;
 
 use crate::clock;
@@ -42,7 +42,7 @@ impl<TC: Count16> TimerCounter<TC> {}
 /// TimerCounter impl generic.  It doesn't make too much sense to
 /// to try to implement this trait outside of this module.
 pub trait Count16 {
-    fn count_16(&self) -> &COUNT16;
+    fn count_16(&self) -> &Count16Reg;
 }
 
 impl<TC> Periodic for TimerCounter<TC> {}
@@ -77,7 +77,7 @@ where
     /// the interrupt; it does not configure the interrupt controller
     /// or define an interrupt handler.
     fn enable_interrupt(&mut self) {
-        self.tc.count_16().intenset.write(|w| w.ovf().set_bit());
+        self.tc.count_16().intenset().write(|w| w.ovf().set_bit());
     }
 
     fn start<T: Into<NanosDurationU32>>(&mut self, timeout: T) {
@@ -88,18 +88,18 @@ where
         let count = self.tc.count_16();
 
         // Disable the timer while we reconfigure it
-        count.ctrla.modify(|_, w| w.enable().clear_bit());
-        while count.status.read().syncbusy().bit_is_set() {}
+        count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
 
         // Now that we have a clock routed to the peripheral, we
         // can ask it to perform a reset.
-        count.ctrla.write(|w| w.swrst().set_bit());
-        while count.status.read().syncbusy().bit_is_set() {}
+        count.ctrla().write(|w| w.swrst().set_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
         // the SVD erroneously marks swrst as write-only, so we
         // need to manually read the bit here
-        while count.ctrla.read().bits() & 1 != 0 {}
+        while count.ctrla().read().bits() & 1 != 0 {}
 
-        count.ctrlbset.write(|w| {
+        count.ctrlbset().write(|w| {
             // Count up when the direction bit is zero
             w.dir().clear_bit();
             // Periodic
@@ -107,9 +107,9 @@ where
         });
 
         // Set TOP value for mfrq mode
-        count.cc[0].write(|w| unsafe { w.cc().bits(cycles as u16) });
+        count.cc(0).write(|w| unsafe { w.cc().bits(cycles as u16) });
 
-        count.ctrla.modify(|_, w| {
+        count.ctrla().modify(|_, w| {
             match divider {
                 1 => w.prescaler().div1(),
                 2 => w.prescaler().div2(),
@@ -130,9 +130,9 @@ where
 
     fn wait(&mut self) -> nb::Result<(), Infallible> {
         let count = self.tc.count_16();
-        if count.intflag.read().ovf().bit_is_set() {
+        if count.intflag().read().ovf().bit_is_set() {
             // Writing a 1 clears the flag
-            count.intflag.modify(|_, w| w.ovf().set_bit());
+            count.intflag().modify(|_, w| w.ovf().set_bit());
             Ok(())
         } else {
             Err(nb::Error::WouldBlock)
@@ -144,7 +144,7 @@ where
     /// triggering the interrupt; it does not configure the interrupt
     /// controller.
     fn disable_interrupt(&mut self) {
-        self.tc.count_16().intenclr.write(|w| w.ovf().set_bit());
+        self.tc.count_16().intenclr().write(|w| w.ovf().set_bit());
     }
 }
 
@@ -154,7 +154,7 @@ macro_rules! tc {
 pub type $TYPE = TimerCounter<$TC>;
 
 impl Count16 for $TC {
-    fn count_16(&self) -> &COUNT16 {
+    fn count_16(&self) -> &Count16Reg {
         self.count16()
     }
 }
@@ -167,15 +167,15 @@ impl TimerCounter<$TC>
     /// the timeout values that can be passed to the `start` method.
     /// Note that some hardware timer instances share the same clock
     /// generator instance and thus will be clocked at the same rate.
-    pub fn $pm(clock: &clock::$clock, tc: $TC, pm: &mut PM) -> Self {
+    pub fn $pm(clock: &clock::$clock, tc: $TC, pm: &mut Pm) -> Self {
         // this is safe because we're constrained to just the tc3 bit
-        pm.apbcmask.modify(|_, w| w.$pm().set_bit());
+        pm.apbcmask().modify(|_, w| w.$pm().set_bit());
         {
             let count = tc.count_16();
 
             // Disable the timer while we reconfigure it
-            count.ctrla.modify(|_, w| w.enable().clear_bit());
-            while count.status.read().syncbusy().bit_is_set() {}
+            count.ctrla().modify(|_, w| w.enable().clear_bit());
+            while count.status().read().syncbusy().bit_is_set() {}
         }
         Self {
             freq: clock.freq(),
@@ -190,12 +190,12 @@ impl TimerCounter<$TC>
 // samd11
 #[hal_cfg("tc1-d11")]
 tc! {
-    TimerCounter1: (TC1, tc1_, Tc1Tc2Clock),
+    TimerCounter1: (Tc1, tc1_, Tc1Tc2Clock),
 }
 // samd21
 #[hal_cfg("tc3-d21")]
 tc! {
-    TimerCounter3: (TC3, tc3_, Tcc2Tc3Clock),
-    TimerCounter4: (TC4, tc4_, Tc4Tc5Clock),
-    TimerCounter5: (TC5, tc5_, Tc4Tc5Clock),
+    TimerCounter3: (Tc3, tc3_, Tcc2Tc3Clock),
+    TimerCounter4: (Tc4, tc4_, Tc4Tc5Clock),
+    TimerCounter5: (Tc5, tc5_, Tc4Tc5Clock),
 }
