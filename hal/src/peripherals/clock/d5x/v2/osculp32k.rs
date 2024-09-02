@@ -242,14 +242,6 @@ impl OscUlp32kBaseToken {
         unsafe { (*crate::pac::Osc32kctrl::PTR).osculp32k() }
     }
 
-    /// Set the calibration
-    #[inline]
-    fn set_calibration(&mut self, calib: u8) {
-        // Safety: All bit patterns are valid for this field
-        self.osculp32k()
-            .modify(|_, w| unsafe { w.calib().bits(calib) });
-    }
-
     /// Enable the 1 kHz output
     #[inline]
     fn enable_1k(&mut self) {
@@ -328,12 +320,6 @@ impl OscUlp32kBase {
 }
 
 impl<N> EnabledOscUlp32kBase<N> {
-    /// Override the factory-default calibration value
-    #[inline]
-    pub fn set_calibration(&mut self, calib: u8) {
-        self.0.token.set_calibration(calib);
-    }
-
     /// Freeze the OSCULP32K configuration until power-on reset
     ///
     /// This function sets the write-lock bit, which freezes the OSCULP32K

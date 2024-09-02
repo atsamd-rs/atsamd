@@ -6,9 +6,16 @@ use super::{Flags, Status};
 use crate::pac;
 use crate::sercom::Sercom;
 use crate::time::Hertz;
+use atsamd_hal_macros::hal_cfg;
 
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
+
+#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
+type DataReg = u8;
+
+#[hal_cfg("sercom0-d5x")]
+type DataReg = u32;
 
 pub(super) struct Registers<S: Sercom> {
     pub sercom: S,
@@ -353,7 +360,7 @@ impl<S: Sercom> Registers<S> {
     pub(super) fn send_bytes(&mut self, bytes: &[u8]) -> Result<(), Error> {
         for b in bytes {
             unsafe {
-                self.i2c_master().data().write(|w| w.bits(*b));
+                self.i2c_master().data().write(|w| w.bits(*b as DataReg));
             }
 
             loop {
@@ -368,9 +375,12 @@ impl<S: Sercom> Registers<S> {
     }
 
     #[inline]
+    #[allow(clippy::unnecessary_cast)]
     pub(super) fn read_one(&mut self) -> u8 {
         while !self.i2c_master().intflag().read().sb().bit_is_set() {}
-        self.i2c_master().data().read().bits()
+
+        // SAMx5x: u32 -> u8 conversion is fine as long as we don't set CTRLC.DATA32B to 1.
+        self.i2c_master().data().read().bits() as u8
     }
 
     #[inline]
