@@ -11,3 +11,4 @@ Cargo.lock
 **/.DS_Store
 *.svd.patched
 .vscode
+__pycache__/

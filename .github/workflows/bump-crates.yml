@@ -29,6 +29,7 @@ jobs:
     steps:
       - name: Set up Rust
         run: |
+          sudo apt-get install python3-pip && pip install tomlkit
           rustup set profile minimal
           rustup override set stable
       - uses: actions/checkout@v4
@@ -49,9 +50,13 @@ jobs:
           for dir in pac/*/ ; do
             # Remove the trailing slash
             dir=${dir%/}
+            manifest="$dir/Cargo.toml"
 
             # Bump the PAC version
-            cargo set-version --manifest-path "$dir/Cargo.toml" --bump ${{ github.event.inputs.pac_bump }}
+            cargo set-version --manifest-path $manifest --bump ${{ github.event.inputs.pac_bump }}
+
+            # Update the changelog
+            python3 .github/workflows/update_changelog.py $dir
           done
 
       - name: Update HAL deps
@@ -67,6 +72,9 @@ jobs:
           # Bump the HAL version
           cargo set-version --manifest-path "hal/Cargo.toml" --exclude atsamd-hal-macros --bump ${{ github.event.inputs.hal_bump }}
 
+          # Update the changelog
+          python3 .github/workflows/update_changelog.py hal/
+
       - name: Update BSP deps
         if: github.event.inputs.sync_bsp == 'yes'
         uses: ./.github/actions/sync-bsp-versions
@@ -78,8 +86,13 @@ jobs:
           set -ex
 
           jq -r '.boards | to_entries | map(select(.value.tier == 1) | .key) | .[]' crates.json | while read dir; do
+            manifest="boards/$dir/Cargo.toml"
+
             # Bump the BSP version
-            cargo set-version --manifest-path "boards/$dir/Cargo.toml" --bump ${{ github.event.inputs.bsp_bump }}
+            cargo set-version --manifest-path $manifest --bump ${{ github.event.inputs.bsp_bump }}
+
+            # Update the changelog
+            python3 .github/workflows/update_changelog.py "boards/$dir/"
           done
 
       - name: Generate patch
