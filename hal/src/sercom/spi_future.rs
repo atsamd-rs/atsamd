@@ -1,4 +1,3 @@
-#![allow(rustdoc::broken_intra_doc_links)]
 //! A [`Future`]-like interface for SPI transactions
 //!
 //! An [`SpiFuture`] takes ownership of an [`Spi`] `struct` and a `[u8]`-like
@@ -532,7 +531,7 @@ where
     /// Consume the [`SpiFuture`] and free its components
     ///
     /// If the transaction is complete, this function will consume the
-    /// [`SpiFuture`] and return the [`Spi`](super::spi::Spi) object, the
+    /// [`SpiFuture`] and return the [`Spi`] object, the
     /// buffer, and the SS pin, if present.
     ///
     /// If the transaction is not complete, it will return `Err(self)`.

@@ -4,6 +4,7 @@ use super::{config::AnyConfig, flags::Error, I2c};
 use crate::ehal::i2c::{self, ErrorKind, ErrorType, NoAcknowledgeSource};
 
 impl i2c::Error for Error {
+    #[allow(unreachable_patterns)]
     fn kind(&self) -> ErrorKind {
         match self {
             Error::BusError => ErrorKind::Bus,
@@ -11,6 +12,8 @@ impl i2c::Error for Error {
             Error::LengthError => ErrorKind::Other,
             Error::Nack => ErrorKind::NoAcknowledge(NoAcknowledgeSource::Unknown),
             Error::Timeout => ErrorKind::Other,
+            // _ pattern reachable when "dma" feature enabled.
+            _ => ErrorKind::Other,
         }
     }
 }
