@@ -78,4 +78,4 @@ required-features = [ "usb"]
 
 [[example]]
 name = "i2c"
-required-features = ["atsamd-hal/dma"]
+required-features = ["dma"]
