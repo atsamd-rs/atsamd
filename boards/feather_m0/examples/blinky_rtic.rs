@@ -1,7 +1,4 @@
-//! Uses RTIC with the RTC as time source to blink an LED.
-//!
-//! The idle task is sleeping the CPU, so in practice this gives similar power
-//! figure as the "sleeping_timer_rtc" example.
+//! Uses RTIC with a software task to blink an LED.
 #![no_std]
 #![no_main]
 
@@ -16,10 +13,11 @@ use panic_semihosting as _;
 mod app {
     use super::*;
     use bsp::{hal, pin_alias};
-    use hal::clock::{ClockGenId, ClockSource, GenericClockController};
+    use fugit::MillisDurationU32;
+    use hal::clock::GenericClockController;
     use hal::pac::Peripherals;
     use hal::prelude::*;
-    use hal::rtc::{Count32Mode, Duration, Rtc};
+    use rtic_monotonics::systick::Systick;
 
     #[local]
     struct Local {}
@@ -31,11 +29,8 @@ mod app {
         red_led: bsp::RedLed,
     }
 
-    #[monotonic(binds = RTC, default = true)]
-    type RtcMonotonic = Rtc<Count32Mode>;
-
     #[init]
-    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(cx: init::Context) -> (Shared, Local) {
         let mut peripherals: Peripherals = cx.device;
         let pins = bsp::Pins::new(peripherals.port);
         let mut core: rtic::export::Peripherals = cx.core;
@@ -46,12 +41,6 @@ mod app {
             &mut peripherals.nvmctrl,
         );
         let _gclk = clocks.gclk0();
-        let rtc_clock_src = clocks
-            .configure_gclk_divider_and_source(ClockGenId::Gclk2, 1, ClockSource::Xosc32k, false)
-            .unwrap();
-        clocks.configure_standby(ClockGenId::Gclk2, true);
-        let rtc_clock = clocks.rtc(&rtc_clock_src).unwrap();
-        let rtc = Rtc::count32_mode(peripherals.rtc, rtc_clock.freq(), &mut peripherals.pm);
         let red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
         // We can use the RTC in standby for maximum power savings
@@ -60,13 +49,17 @@ mod app {
         // Start the blink task
         blink::spawn().unwrap();
 
-        (Shared { red_led }, Local {}, init::Monotonics(rtc))
+        (Shared { red_led }, Local {})
     }
 
     #[task(shared = [red_led])]
-    fn blink(mut cx: blink::Context) {
-        // If the LED were a local resource, the lock would not be necessary
-        cx.shared.red_led.lock(|led| led.toggle().unwrap());
-        blink::spawn_after(Duration::secs(1)).ok();
+    async fn blink(mut cx: blink::Context) {
+        loop {
+            // If the LED were a local resource, the lock would not be necessary
+            cx.shared.red_led.lock(|led| led.toggle().unwrap());
+
+            // cx.local.rtc.delay(Duration::secs(1)).await;
+            Systick::delay(MillisDurationU32::from_ticks(1000).convert()).await;
+        }
     }
 }
