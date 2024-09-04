@@ -76,6 +76,9 @@ pub mod time;
 pub mod timer_params;
 pub mod timer_traits;
 
+#[cfg(feature = "async")]
+pub mod async_hal;
+
 #[cfg(feature = "dma")]
 pub mod dmac;
 
