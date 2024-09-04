@@ -298,6 +298,27 @@ let (chan0, _, spi, _) = dma_transfer.wait();
 [`dmac`]: crate::dmac
 "
 )]
+//! # `async` operation
+//!
+//! When the `async` Cargo feature is enabled, a [`Spi`] can be used for
+//! `async` operations. Configuring a [`Spi`] in async mode is relatively
+//! simple:
+//!
+//! * Bind the corresponding `SERCOM` interrupt source to the SPI
+//!   [`InterruptHandler`] (refer to the module-level [`async_hal`]
+//!   documentation for more information).
+//! * Turn a previously configured [`Spi`] into a [`SpiFuture`] by calling
+//!   [`Spi::into_future`]
+//! * Optionally, add DMA channels to RX, TX or both using
+//!   [`SpiFuture::with_rx_dma_channel`] and [`SpiFuture::with_tx_dma_channel`].
+//!   The API is exactly the same whether DMA channels are used or not.
+//! * Use the provided async methods for reading or writing to the SPI
+//!   peripheral. [`SpiFuture`] implements [`embedded_hal_async::spi::SpiBus`].
+//!
+//! `SpiFuture` implements `AsRef<Spi>` and `AsMut<Spi>` so
+//! that it can be reconfigured using the regular [`Spi`] methods.
+//!
+//! [`async_hal`]: crate::async_hal
 
 use atsamd_hal_macros::{hal_cfg, hal_docs, hal_macro_helper, hal_module};
 
@@ -350,6 +371,11 @@ pub mod lengths {
 
 pub mod impl_ehal;
 
+#[cfg(feature = "async")]
+mod async_api;
+#[cfg(feature = "async")]
+pub use async_api::*;
+
 //=============================================================================
 // BitOrder
 //=============================================================================
@@ -367,6 +393,15 @@ pub enum BitOrder {
 // Flags
 //=============================================================================
 
+const DRE: u8 = 0x01;
+const TXC: u8 = 0x02;
+const RXC: u8 = 0x04;
+const SSL: u8 = 0x08;
+const ERROR: u8 = 0x80;
+
+pub const RX_FLAG_MASK: u8 = RXC;
+pub const TX_FLAG_MASK: u8 = DRE | TXC;
+
 bitflags! {
     /// Interrupt bit flags for SPI transactions
     ///
@@ -375,12 +410,18 @@ bitflags! {
     /// `INTFLAG` register.
     #[derive(Clone, Copy)]
     pub struct Flags: u8 {
-        const DRE = 0x01;
-        const TXC = 0x02;
-        const RXC = 0x04;
-        const SSL = 0x08;
-        const ERROR = 0x80;
+        const DRE = DRE;
+        const TXC = TXC;
+        const RXC = RXC;
+        const SSL = SSL;
+        const ERROR = ERROR;
     }
+}
+
+#[allow(dead_code)]
+impl Flags {
+    pub(super) const RX: Self = Self::from_bits_retain(RX_FLAG_MASK);
+    pub(super) const TX: Self = Self::from_bits_retain(TX_FLAG_MASK);
 }
 
 //=============================================================================
@@ -429,6 +470,8 @@ impl Status {
 pub enum Error {
     Overflow,
     LengthError,
+    #[cfg(feature = "dma")]
+    Dma(crate::dmac::Error),
 }
 
 //=============================================================================

@@ -38,6 +38,14 @@ bitflags! {
     }
 }
 
+impl Flags {
+    /// [`Flags`] which can be used for receiving
+    pub const RX: Self = Self::from_bits_retain(RX_FLAG_MASK);
+
+    /// [`Flags`] which can be used for transmitting
+    pub const TX: Self = Self::from_bits_retain(TX_FLAG_MASK);
+}
+
 //=============================================================================
 // Status flags
 //=============================================================================
@@ -120,6 +128,9 @@ pub enum Error {
     InconsistentSyncField,
     /// Detected a collision
     CollisionDetected,
+    /// DMA error
+    #[cfg(feature = "dma")]
+    Dma(crate::dmac::Error),
 }
 
 impl From<Error> for Status {
@@ -132,6 +143,9 @@ impl From<Error> for Status {
             Overflow => Status::BUFOVF,
             InconsistentSyncField => Status::ISF,
             CollisionDetected => Status::COLL,
+            // Don't try to convert a DMA error into a [`Status`]
+            #[cfg(feature = "dma")]
+            _ => unreachable!(),
         }
     }
 }
