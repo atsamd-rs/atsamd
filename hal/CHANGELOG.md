@@ -1,5 +1,10 @@
 # Unreleased Changes
 
+- Add `async` APIs:
+  - Implemented: I2C, SPI, UART, EIC, timers, DMAC
+- *Breaking*: EIC API
+- *Breaking*: DMAC transfers no longer accept wakers. Use the async APIs instead.
+- *Deprecated*: `SpiFuture` will be removed in a following version. Use the async APIs instead.
 - Upgrade PACs to latest SVD and `svd2rust`:
   - All peripheral types are now `PascalCase`
   - All register field accessors are now methods instead of struct members
