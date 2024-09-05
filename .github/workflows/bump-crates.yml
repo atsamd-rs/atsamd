@@ -6,18 +6,10 @@ on:
         description: 'PAC version bump (none/patch/minor/major)'
         required: true
         default: 'none'
-      sync_hal:
-        description: 'Update PAC dep string in HAL crate (yes/no)'
-        required: true
-        default: 'yes'
       hal_bump:
         description: 'HAL version bump (none/patch/minor/major)'
         required: true
         default: 'none'
-      sync_bsp:
-        description: 'Update HAL dep string in T1 BSP crates (yes/no)'
-        required: true
-        default: 'yes'
       bsp_bump:
         description: 'T1 BSP version bump (none/patch/minor/major)'
         required: true
@@ -60,7 +52,6 @@ jobs:
           done
 
       - name: Update HAL deps
-        if: github.event.inputs.sync_hal == 'yes'
         uses: ./.github/actions/sync-pac-versions
 
       - name: Bump HAL version
@@ -76,7 +67,6 @@ jobs:
           python3 .github/workflows/update_changelog.py hal/
 
       - name: Update BSP deps
-        if: github.event.inputs.sync_bsp == 'yes'
         uses: ./.github/actions/sync-bsp-versions
 
       - name: Bump BSP versions
