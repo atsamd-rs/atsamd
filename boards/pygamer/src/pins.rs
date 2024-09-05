@@ -2,7 +2,7 @@
 
 use super::{hal, pac};
 
-use pac::{MCLK, QSPI, TC4};
+use pac::{MCLK, QSPI};
 
 use hal::prelude::*;
 
@@ -13,12 +13,9 @@ use hal::qspi;
 use hal::sercom::uart::{self, BaudMode, Oversampling};
 use hal::sercom::{i2c, spi, IoSet1, Sercom1, Sercom4, UndocIoSet1};
 use hal::time::Hertz;
-use hal::timer::TimerCounter;
-use hal::timer_traits::InterruptDrivenTimer;
 use hal::typelevel::NoneT;
 
 use st7735_lcd::{Orientation, ST7735};
-use ws2812_timer_delay as ws2812;
 
 #[cfg(feature = "usb")]
 use hal::usb::usb_device::bus::UsbBusAllocator;
@@ -632,23 +629,6 @@ impl Display {
 /// Neopixel pins
 pub struct Neopixel {
     pub neopixel: NeopixelReset,
-}
-
-impl Neopixel {
-    /// Convenience for setting up the onboard neopixels
-    pub fn init(
-        self,
-        clocks: &mut GenericClockController,
-        timer4: TC4,
-        mclk: &mut MCLK,
-    ) -> ws2812::Ws2812<TimerCounter<TC4>, NeopixelPin> {
-        let gclk0 = clocks.gclk0();
-        let timer_clock = clocks.tc4_tc5(&gclk0).unwrap();
-        let mut timer = TimerCounter::tc4_(&timer_clock, timer4, mclk);
-        InterruptDrivenTimer::start(&mut timer, Hertz::MHz(3).into_duration());
-
-        ws2812::Ws2812::new(timer, self.neopixel.into())
-    }
 }
 
 /// SPI pins
