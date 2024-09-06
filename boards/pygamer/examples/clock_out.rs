@@ -3,13 +3,14 @@
 #![no_std]
 #![no_main]
 
+use bsp::{entry, hal, pac, GclkOut, Pins};
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{entry, hal, pac, Pins};
+use pygamer as bsp;
 
 use hal::clock::GenericClockController;
-use pac::gclk::genctrl::SRC_A::DPLL0;
-use pac::gclk::pchctrl::GEN_A::GCLK2;
+use pac::gclk::genctrl::SRCSELECT_A::DPLL0;
+use pac::gclk::pchctrl::GENSELECT_A::GCLK2;
 use pac::Peripherals;
 
 #[entry]
@@ -22,12 +23,12 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = Pins::new(peripherals.PORT);
+    let pins = Pins::new(peripherals.PORT);
 
-    //3mhz
+    // Output 3 MHz clock on pin d5
     let _gclk2 = clocks
         .configure_gclk_divider_and_source(GCLK2, 40, DPLL0, false)
         .unwrap();
-    pins.d5.into_function_m(&mut pins.port);
+    let _clock_out_pin: GclkOut = pins.d5.into();
     loop {}
 }

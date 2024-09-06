@@ -4,13 +4,17 @@
 #![no_std]
 #![no_main]
 
+use bsp::{entry, hal, pac, Pins, RedLed};
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{entry, hal, pac, Pins};
+use pygamer as bsp;
 
 use hal::clock::GenericClockController;
-use hal::prelude::*;
+use hal::ehal::digital::OutputPin;
+use hal::nb;
+use hal::time::Hertz;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 use pac::Peripherals;
 
 #[entry]
@@ -23,19 +27,32 @@ fn main() -> ! {
         &mut peripherals.OSCCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = Pins::new(peripherals.PORT);
+    let pins = Pins::new(peripherals.PORT);
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
     let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.MCLK);
-    timer.start(250.khz());
-    let mut d5 = pins.d5.into_push_pull_output(&mut pins.port);
+    timer.start(Hertz::kHz(250).into_duration());
+    let mut d13: RedLed = pins.d13.into();
 
-    //50% duty cycle, so 500khz period
+    // Cycle red LED through 50%, 100%, 0%
     loop {
-        let _ = d5.set_high();
-        let _ = nb::block!(timer.wait());
-        let _ = d5.set_low();
-        let _ = nb::block!(timer.wait());
+        for _ in 0..125000 {
+            //50% duty cycle, so 125khz period
+            let _ = d13.set_high();
+            let _ = nb::block!(timer.wait());
+            let _ = d13.set_low();
+            let _ = nb::block!(timer.wait());
+        }
+        let _ = d13.set_high();
+        for _ in 0..125000 {
+            let _ = nb::block!(timer.wait());
+            let _ = nb::block!(timer.wait());
+        }
+        let _ = d13.set_low();
+        for _ in 0..125000 {
+            let _ = nb::block!(timer.wait());
+            let _ = nb::block!(timer.wait());
+        }
     }
 }

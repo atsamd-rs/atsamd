@@ -4,9 +4,10 @@
 #![no_std]
 #![no_main]
 
+use bsp::{entry, hal, pac, Pins, RedLed};
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
-use pygamer::{entry, hal, pac, Pins};
+use pygamer as bsp;
 
 use hal::clock::GenericClockController;
 use hal::prelude::*;
@@ -26,21 +27,26 @@ fn main() -> ! {
         &mut peripherals.NVMCTRL,
     );
 
-    let mut pins = Pins::new(peripherals.PORT).split();
+    let pins = Pins::new(peripherals.PORT).split();
 
     let usb_bus = pins
         .usb
         .init(peripherals.USB, &mut clocks, &mut peripherals.MCLK);
 
     let mut serial = SerialPort::new(&usb_bus);
-    let mut led = pins.led_pin.into_open_drain_output(&mut pins.port);
+    let mut led: RedLed = pins.led_pin.into();
 
     let mut usb_dev = UsbDeviceBuilder::new(&usb_bus, UsbVidPid(0x16c0, 0x27dd))
-        .manufacturer("Fake company")
-        .product("Serial port")
-        .serial_number("TEST")
+        .strings(&[StringDescriptors::new(LangID::EN)
+            .manufacturer("Fake company")
+            .product("Serial port")
+            .serial_number("TEST")])
+        .expect("Failed to set strings")
         .device_class(USB_CLASS_CDC)
         .build();
+
+    let mut led_state = false;
+    let _ = led.set_low(); // Turn off
 
     loop {
         if !usb_dev.poll(&mut [&mut serial]) {
@@ -51,10 +57,16 @@ fn main() -> ! {
 
         match serial.read(&mut buf) {
             Ok(count) if count > 0 => {
-                let _ = led.set_high(); // Turn on
-
                 // Echo back in upper case
                 for c in buf[0..count].iter_mut() {
+                    led_state = if led_state {
+                        let _ = led.set_low(); // Turn off
+                        false
+                    } else {
+                        let _ = led.set_high(); // Turn on
+                        true
+                    };
+
                     if 0x61 <= *c && *c <= 0x7a {
                         *c &= !0x20;
                     }
@@ -72,7 +84,5 @@ fn main() -> ! {
             }
             _ => {}
         }
-
-        let _ = led.set_low(); // Turn off
     }
 }
