@@ -1,4 +1,4 @@
-name: Bump crate versions
+name: Bump version of a single Tier 2 crate
 on:
   workflow_dispatch:
     inputs:
@@ -16,7 +16,6 @@ jobs:
     steps:
       - name: Set up Rust
         run: |
-          sudo apt-get install python3-pip && pip install tomlkit
           rustup set profile minimal
           rustup override set stable
       - uses: actions/checkout@v4
@@ -47,7 +46,8 @@ jobs:
             cargo set-version --manifest-path $manifest --bump ${{ github.event.inputs.bsp_bump }}
 
             # Update the changelog
-            python3 .github/workflows/update_changelog.py "boards/$bsp/"
+            version=$(cargo metadata --manifest-path $manifest --no-deps --format-version 1 | jq -r '.packages[0].version')
+            python3 .github/workflows/update_changelog.py "boards/$bsp/" $version
           else
             echo "BSP $bsp is not Tier 2."
             exit 2

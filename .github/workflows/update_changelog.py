@@ -1,4 +1,3 @@
-from crate_version import get_crate_version
 import argparse
 import re
 import sys
@@ -27,13 +26,13 @@ def update_changelog(changelog_path, version):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Update crate changelog by parsing version from Cargo manifest")
     parser.add_argument('crate_path', help="Path to the crate")
+    parser.add_argument('crate_version', help="Version of the crate")
     
     args = parser.parse_args()
 
     # Get the crate version from Cargo.toml
     manifest_path = f'{args.crate_path}/Cargo.toml'
-    crate_version = get_crate_version(manifest_path)
     
     # Update the changelog
     crate_changelog_path = f'{args.crate_path}/CHANGELOG.md'
-    update_changelog(crate_changelog_path, crate_version)
+    update_changelog(crate_changelog_path, args.crate_version)

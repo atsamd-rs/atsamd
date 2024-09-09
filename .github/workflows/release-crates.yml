@@ -76,14 +76,12 @@ jobs:
         run: |
           set -ex
 
-          sudo apt-get install python3-pip && pip install tomlkit
-
           # Force update of the registry
           cargo update || true
 
           cd "hal" && cargo publish --no-verify
 
-          version=$(python3 ../.github/workflows/crate_version.py Cargo.toml)
+          version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
           git tag -a "v${version}" -m "atsamd-hal release v${version}"
           git push origin tag "v${version}"
 
