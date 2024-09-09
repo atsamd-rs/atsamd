@@ -66,6 +66,10 @@ jobs:
             )
           done
 
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.ATSAMD_BOT_SSH_PRIVKEY }}
+
       - name: Release HAL crate
         if: github.event.inputs.release_hal == 'yes'
         shell: bash
@@ -76,6 +80,10 @@ jobs:
           cargo update || true
 
           cd "hal" && cargo publish --no-verify
+
+          version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
+          git tag -a "v${version}" -m "atsamd-hal release v${version}"
+          git push origin tag "v${version}"
 
 
       - name: Release BSP crates

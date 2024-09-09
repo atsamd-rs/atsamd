@@ -6,18 +6,10 @@ on:
         description: 'PAC version bump (none/patch/minor/major)'
         required: true
         default: 'none'
-      sync_hal:
-        description: 'Update PAC dep string in HAL crate (yes/no)'
-        required: true
-        default: 'yes'
       hal_bump:
         description: 'HAL version bump (none/patch/minor/major)'
         required: true
         default: 'none'
-      sync_bsp:
-        description: 'Update HAL dep string in T1 BSP crates (yes/no)'
-        required: true
-        default: 'yes'
       bsp_bump:
         description: 'T1 BSP version bump (none/patch/minor/major)'
         required: true
@@ -38,7 +30,7 @@ jobs:
         shell: bash
         run: |
           set -ex
-          cargo install cargo-workspace2
+          cargo install cargo-edit
 
       - name: Bump PAC versions
         if: github.event.inputs.pac_bump != 'none'
@@ -46,23 +38,20 @@ jobs:
         run: |
           set -ex
 
-          # Create a fake workspace file for all PACs.
-          echo "[workspace]" > Cargo.toml
-          echo "members = [" >> Cargo.toml
-          for d in pac/*/ ; do echo "    \"${d::-1}\"," >> Cargo.toml; done
-          echo "]" >> Cargo.toml
-          echo "" >> Cargo.toml
+          for dir in pac/*/ ; do
+            # Remove the trailing slash
+            dir=${dir%/}
+            manifest="$dir/Cargo.toml"
 
-          # Create a ws2 query string for all PACs.
-          pacs=$(for d in pac/*/ ; do echo -n "${d:4:${#d}-5} "; done )
-          pacs=${pacs::-1} # Trim trailing space
+            # Bump the PAC version
+            cargo set-version --manifest-path $manifest --bump ${{ github.event.inputs.pac_bump }}
 
-          echo "y" | cargo ws2 [ "${pacs}" ] publish ${{ github.event.inputs.pac_bump }}
-
-          git checkout Cargo.toml
+            # Update the changelog
+            version=$(cargo metadata --manifest-path $manifest --no-deps --format-version 1 | jq -r '.packages[0].version')
+            python3 .github/workflows/update_changelog.py $dir $version
+          done
 
       - name: Update HAL deps
-        if: github.event.inputs.sync_hal == 'yes'
         uses: ./.github/actions/sync-pac-versions
 
       - name: Bump HAL version
@@ -71,19 +60,14 @@ jobs:
         run: |
           set -ex
 
-          # Create a fake workspace file for the HAL.
-          echo "[workspace]" > Cargo.toml
-          echo "members = [" >> Cargo.toml
-          echo '  "hal",' >> Cargo.toml
-          echo "]" >> Cargo.toml
-          echo "" >> Cargo.toml
+          # Bump the HAL version
+          cargo set-version --manifest-path "hal/Cargo.toml" --exclude atsamd-hal-macros --bump ${{ github.event.inputs.hal_bump }}
 
-          echo "y" | cargo ws2 [ "atsamd-hal" ] publish ${{ github.event.inputs.hal_bump }}
-
-          git checkout Cargo.toml
+          # Update the changelog
+          version=$(cargo metadata --manifest-path "hal/Cargo.toml" --no-deps --format-version 1 | jq -r '.packages[0].version')
+          python3 .github/workflows/update_changelog.py hal/ $version
 
       - name: Update BSP deps
-        if: github.event.inputs.sync_bsp == 'yes'
         uses: ./.github/actions/sync-bsp-versions
 
       - name: Bump BSP versions
@@ -92,19 +76,16 @@ jobs:
         run: |
           set -ex
 
-          T1_BOARDS=$(cat crates.json | jq -Mr -c '[.boards | to_entries | map([.key, .value.tier]) | .[] | select(.[1] == 1) | .[0]] | join(" ")')
+          jq -r '.boards | to_entries | map(select(.value.tier == 1) | .key) | .[]' crates.json | while read dir; do
+            manifest="boards/$dir/Cargo.toml"
 
-          # Create a fake workspace file for all BSPs.
-          echo "[workspace]" > Cargo.toml
-          echo "members = [" >> Cargo.toml
-          for d in $T1_BOARDS; do echo "    \"boards/${d}\"," >> Cargo.toml; done
-          echo "]" >> Cargo.toml
-          echo "" >> Cargo.toml
+            # Bump the BSP version
+            cargo set-version --manifest-path $manifest --bump ${{ github.event.inputs.bsp_bump }}
 
-          echo "y" | cargo ws2 [ "${T1_BOARDS}" ] publish ${{ github.event.inputs.bsp_bump }}
-
-          git checkout Cargo.toml
-
+            # Update the changelog
+            version=$(cargo metadata --manifest-path $manifest --no-deps --format-version 1 | jq -r '.packages[0].version')
+            python3 .github/workflows/update_changelog.py "boards/$dir/" $version
+          done
 
       - name: Generate patch
         shell: bash
@@ -127,7 +108,12 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: ${{ github.event.inputs.bump }} bump of crate versions
+          commit-message: |
+            Bump crate versions
+
+            HAL:  ${{ github.event.inputs.hal_bump }}
+            Tier 1 BSPs:  ${{ github.event.inputs.bsp_bump }}
+            PACs:  ${{ github.event.inputs.pac_bump }}
           committer: GitHub <noreply@github.com>
           author: atsamd-bot <atsamd-bot@users.noreply.github.com>
           signoff: false
