@@ -1,4 +1,6 @@
-# Unreleased
+# Unreleased Changes
+
+# v0.10.0
 
 - remove neopixel support and examples (currently unreliable)
 - update HAL v0.14 -> v0.17 and other dependencies, fix examples
