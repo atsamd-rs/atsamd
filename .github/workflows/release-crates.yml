@@ -58,7 +58,6 @@ jobs:
           do
             (
               cd "${d}"
-              set +e
 
               PAC_NAME="${d#pac/}"
               PAC_NAME="${PAC_NAME%/}"
@@ -74,6 +73,7 @@ jobs:
                 fi
               fi
 
+              set +e
               PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
               set -e
               if [[ "$PUBLISH_ERR" == *" is already uploaded"* ]]; then
@@ -150,7 +150,6 @@ jobs:
           do
             (
               cd "boards/${bsp}"
-              set +e
 
               VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
               TAG_NAME="${bsp}-${VERSION}"
@@ -163,6 +162,7 @@ jobs:
                 fi
               fi
 
+              set +e
               PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
               set -e
               if [[ "$PUBLISH_ERR" == *" is already uploaded"* ]]; then
