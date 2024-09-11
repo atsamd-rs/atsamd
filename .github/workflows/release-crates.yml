@@ -65,7 +65,14 @@ jobs:
 
               VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
               TAG_NAME="${PAC_NAME}-${VERSION}"
-              (git tag -a $TAG_NAME -m "${PAC_NAME} release ${VERSION}" && git push origin tag "$TAG_NAME")|| (git tag --points-at $(git rev-parse HEAD) | grep "$TAG_NAME" > /dev/null && echo '(and points at this commit). Continuing.')
+              
+              if ! git tag -a $TAG_NAME -m "${PAC_NAME} release ${VERSION}" && git push origin tag "$TAG_NAME"; then
+                if git tag --points-at "$(git rev-parse HEAD)" | grep "$TAG_NAME" > /dev/null; then
+                  echo '(and points at this commit). Continuing.'
+                else
+                  false
+                fi
+              fi
 
               PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
               set -e
@@ -99,7 +106,14 @@ jobs:
           
           # Create+push a git tag. If that fails, check if an identical tag already exists at the
           # same commit. Bail otherwise.
-          (git tag -a $TAG_NAME -m "atsamd-hal release ${VERSION}" && git push origin tag "$TAG_NAME") || (git tag --points-at $(git rev-parse HEAD) | grep "$TAG_NAME" > /dev/null && echo '(and points at this commit). Continuing.')
+          if ! git tag -a $TAG_NAME -m "atsamd-hal release ${VERSION}" && git push origin tag "$TAG_NAME"; then
+            if git tag --points-at "$(git rev-parse HEAD)" | grep "$TAG_NAME" > /dev/null; then
+              echo '(and points at this commit). Continuing.'
+            else
+              false
+            fi
+          fi
+
 
           cargo publish
 
@@ -140,7 +154,14 @@ jobs:
 
               VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
               TAG_NAME="${bsp}-${VERSION}"
-              (git tag -a $TAG_NAME -m "${bsp} release ${VERSION}" && git push origin tag "$TAG_NAME") || (git tag --points-at $(git rev-parse HEAD) | grep "$TAG_NAME" > /dev/null && echo '(and points at this commit). Continuing.')
+
+              if ! git tag -a $TAG_NAME -m "${bsp} release ${VERSION}" && git push origin tag "$TAG_NAME"; then
+                if git tag --points-at "$(git rev-parse HEAD)" | grep "$TAG_NAME" > /dev/null; then
+                  echo '(and points at this commit). Continuing.'
+                else
+                  false
+                fi
+              fi
 
               PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
               set -e
