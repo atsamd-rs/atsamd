@@ -48,12 +48,25 @@ jobs:
           #
           # All errors start with the form 'error: ', so we detect that and
           # bail the subshell to crash out on other publish errors.
+          #
+          # Before publishing, we also tag each PAC with its current version.
+          # If creating+pushing the tag fails, we check if there already is an
+          # identical tag at the same commit, and continue processing if that's
+          # the case. If tagging fails for any other reason, bail the subshell.
 
           for d in pac/*/
           do
             (
               cd "${d}"
               set +e
+
+              PAC_NAME="${d#pac/}"
+              PAC_NAME="${PAC_NAME%/}"
+
+              VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
+              TAG_NAME="${PAC_NAME}-${VERSION}"
+              (git tag -a $TAG_NAME -m "${PAC_NAME} release ${VERSION}" && git push origin tag "$TAG_NAME")|| (git tag --points-at $(git rev-parse HEAD) | grep "$TAG_NAME" > /dev/null && echo '(and points at this commit). Continuing.')
+
               PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
               set -e
               if [[ "$PUBLISH_ERR" == *" is already uploaded"* ]]; then
@@ -79,11 +92,16 @@ jobs:
           # Force update of the registry
           cargo update || true
 
-          cd "hal" && cargo publish --no-verify
+          cd hal
 
-          version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
-          git tag -a "v${version}" -m "atsamd-hal release v${version}"
-          git push origin tag "v${version}"
+          VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
+          TAG_NAME="atsamd-hal-${VERSION}"
+          
+          # Create+push a git tag. If that fails, check if an identical tag already exists at the
+          # same commit. Bail otherwise.
+          (git tag -a $TAG_NAME -m "atsamd-hal release ${VERSION}" && git push origin tag "$TAG_NAME") || (git tag --points-at $(git rev-parse HEAD) | grep "$TAG_NAME" > /dev/null && echo '(and points at this commit). Continuing.')
+
+          cargo publish
 
 
       - name: Release BSP crates
@@ -108,12 +126,22 @@ jobs:
           #
           # All errors start with the form 'error: ', so we detect that and
           # bail the subshell to crash out on other publish errors.
+          #
+          # Before publishing, we also tag each BSP with its current version.
+          # If creating+pushing the tag fails, we check if there already is an
+          # identical tag at the same commit, and continue processing if that's
+          # the case. If tagging fails for any other reason, bail the subshell.
 
           for bsp in $(cat crates.json | jq -Mr -c '.boards | keys[]');
           do
             (
               cd "boards/${bsp}"
               set +e
+
+              VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
+              TAG_NAME="${bsp}-${VERSION}"
+              (git tag -a $TAG_NAME -m "${bsp} release ${VERSION}" && git push origin tag "$TAG_NAME") || (git tag --points-at $(git rev-parse HEAD) | grep "$TAG_NAME" > /dev/null && echo '(and points at this commit). Continuing.')
+
               PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
               set -e
               if [[ "$PUBLISH_ERR" == *" is already uploaded"* ]]; then
