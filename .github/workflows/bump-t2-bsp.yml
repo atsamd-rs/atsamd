@@ -75,11 +75,11 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: |
-            Bump ${{ github.event.input.bsp_name }} (${{ github.event.inputs.bsp_bump }})
+            Bump ${{ github.event.inputs.bsp_name }} (${{ github.event.inputs.bsp_bump }})
           committer: GitHub <noreply@github.com>
           author: atsamd-bot <atsamd-bot@users.noreply.github.com>
           signoff: false
-          branch: bump-${{ github.event.input.bsp_name }}
+          branch: bump-${{ github.event.inputs.bsp_name }}
           delete-branch: true
           title: '[atsamd-bot] Bump crate versions'
           body: |
