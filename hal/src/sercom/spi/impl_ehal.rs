@@ -11,10 +11,13 @@ use num_traits::PrimInt;
 pub mod impl_ehal_02 {}
 
 impl spi::Error for Error {
+    #[allow(unreachable_patterns)]
     fn kind(&self) -> crate::ehal::spi::ErrorKind {
         match self {
             Error::Overflow => crate::ehal::spi::ErrorKind::Overrun,
             Error::LengthError => crate::ehal::spi::ErrorKind::Other,
+            // Pattern reachable when "dma" feature is enabled
+            _ => crate::ehal::spi::ErrorKind::Other,
         }
     }
 }

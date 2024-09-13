@@ -1,5 +1,6 @@
 # Unreleased
 
+- Add async examples and update examples to match new HAL APIs
 - Upgrade PACs to latest SVD and `svd2rust`:
   - All peripheral types are now `PascalCase`
   - All register field accessors are now methods instead of struct members
