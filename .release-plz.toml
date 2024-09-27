@@ -2,8 +2,6 @@
 git_release_name = "{{ package }}-{{ version }}"
 git_tag_name = "{{ package }}-{{ version }}"
 pr_labels = ["release", "bot"]
-git_tag_enable = false # # Remove this line when ready to go live with release-plz
-publish = false # Remove this line when ready to go live with release-plz
 publish_timeout = "10m"
 
 # Only try to publish releases when a release PR is merged
