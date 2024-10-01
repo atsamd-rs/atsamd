@@ -158,15 +158,18 @@ impl DmaController {
 
         Self::swreset(&mut dmac);
 
-        // SAFETY this is safe because we write a whole u32 to 32-bit registers,
+        // SAFETY:
+        //
+        // This is safe because we write a whole u32 to 32-bit registers,
         // and the descriptor array addesses will never change since they are static.
         // We just need to ensure the writeback and descriptor_section addresses
         // are valid.
+        #[allow(static_mut_refs)]
         unsafe {
             dmac.baseaddr()
-                .write(|w| w.baseaddr().bits(DESCRIPTOR_SECTION.as_ptr() as u32));
+                .write(|w| w.baseaddr().bits(DESCRIPTOR_SECTION.as_mut_ptr() as u32));
             dmac.wrbaddr()
-                .write(|w| w.wrbaddr().bits(WRITEBACK.as_ptr() as u32));
+                .write(|w| w.wrbaddr().bits(WRITEBACK.as_mut_ptr() as u32));
         }
 
         // ----- Select priority levels ----- //

@@ -648,7 +648,7 @@ where
     }
 
     /// Modify a completed transfer with a new `destination`, then restart.
-
+    ///
     /// Returns a Result containing the destination from the
     /// completed transfer. Returns `Err(_)` if the buffer lengths are
     /// mismatched or if the previous transfer has not yet completed.
@@ -673,7 +673,7 @@ where
     }
 
     /// Modify a completed transfer with a new `source`, then restart.
-
+    ///
     /// Returns a Result containing the source from the
     /// completed transfer. Returns `Err(_)` if the buffer lengths are
     /// mismatched or if the previous transfer has not yet completed.
