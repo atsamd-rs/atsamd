@@ -1,5 +1,3 @@
-#![allow(unused_braces)]
-
 //! # Direct Memory Access Controller
 //!
 //! This library provides a type-safe API with compile-time guarantees
@@ -253,8 +251,6 @@
 
 use atsamd_hal_macros::hal_cfg;
 
-use modular_bitfield::prelude::*;
-
 pub use channel::*;
 pub use dma_controller::*;
 pub use transfer::*;
@@ -342,69 +338,71 @@ macro_rules! get {
 /// Number of DMA channels used by the driver
 pub const NUM_CHANNELS: usize = with_num_channels!(get);
 
-// ----- DMAC SRAM registers ----- //
-impl Default for BlockTransferControl {
-    fn default() -> Self {
-        Self::new()
+/// DMAC SRAM registers
+mod sram {
+    #![allow(dead_code, unused_braces)]
+
+    use super::{BeatSize, NUM_CHANNELS};
+
+    use modular_bitfield::{
+        bitfield,
+        specifiers::{B2, B3},
+    };
+
+    /// Bitfield representing the BTCTRL SRAM DMAC register
+    #[allow(unused_braces)]
+    #[bitfield]
+    #[derive(Clone, Copy)]
+    #[repr(u16)]
+    pub(super) struct BlockTransferControl {
+        pub(super) valid: bool,
+        pub(super) evosel: B2,
+        pub(super) blockact: B2,
+        #[skip]
+        _reserved: B3,
+        #[bits = 2]
+        pub(super) beatsize: BeatSize,
+        pub(super) srcinc: bool,
+        pub(super) dstinc: bool,
+        pub(super) stepsel: bool,
+        pub(super) stepsize: B3,
     }
+
+    impl Default for BlockTransferControl {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
+    /// Descriptor representing a SRAM register. Datasheet section 19.8.2
+    #[derive(Clone, Copy)]
+    #[repr(C, align(16))]
+    pub(super) struct DmacDescriptor {
+        pub(super) btctrl: BlockTransferControl,
+        pub(super) btcnt: u16,
+        pub(super) srcaddr: *const (),
+        pub(super) dstaddr: *const (),
+        pub(super) descaddr: *const DmacDescriptor,
+    }
+
+    pub(super) const DEFAULT_DESCRIPTOR: DmacDescriptor = DmacDescriptor {
+        btctrl: BlockTransferControl::new(),
+        btcnt: 0,
+        srcaddr: 0 as *mut _,
+        dstaddr: 0 as *mut _,
+        descaddr: 0 as *mut _,
+    };
+
+    /// Writeback section. This static variable should never be written to in an
+    /// interrupt or thread context.
+    pub(super) static mut WRITEBACK: [DmacDescriptor; NUM_CHANNELS] =
+        [DEFAULT_DESCRIPTOR; NUM_CHANNELS];
+
+    /// Descriptor section. This static variable should never be written to in
+    /// an interrupt or thread context.
+    pub(super) static mut DESCRIPTOR_SECTION: [DmacDescriptor; NUM_CHANNELS] =
+        [DEFAULT_DESCRIPTOR; NUM_CHANNELS];
 }
-
-/// Bitfield representing the BTCTRL SRAM DMAC register
-#[bitfield]
-#[derive(Clone, Copy)]
-#[repr(u16)]
-#[doc(hidden)]
-pub struct BlockTransferControl {
-    #[allow(dead_code)]
-    valid: bool,
-    #[allow(dead_code)]
-    evosel: B2,
-    #[allow(dead_code)]
-    blockact: B2,
-    #[skip]
-    _reserved: B3,
-    #[bits = 2]
-    #[allow(dead_code)]
-    beatsize: BeatSize,
-    #[allow(dead_code)]
-    srcinc: bool,
-    #[allow(dead_code)]
-    dstinc: bool,
-    #[allow(dead_code)]
-    stepsel: bool,
-    #[allow(dead_code)]
-    stepsize: B3,
-}
-
-/// Descriptor representing a SRAM register. Datasheet section 19.8.2
-#[derive(Clone, Copy)]
-#[repr(C, align(16))]
-#[doc(hidden)]
-pub struct DmacDescriptor {
-    btctrl: BlockTransferControl,
-    btcnt: u16,
-    srcaddr: *const (),
-    dstaddr: *const (),
-    descaddr: *const DmacDescriptor,
-}
-
-#[doc(hidden)]
-pub const DEFAULT_DESCRIPTOR: DmacDescriptor = DmacDescriptor {
-    btctrl: BlockTransferControl::new(),
-    btcnt: 0,
-    srcaddr: 0 as *mut _,
-    dstaddr: 0 as *mut _,
-    descaddr: 0 as *mut _,
-};
-
-// Writeback section. This static variable should never be written to in an
-// interrupt or thread context.
-#[doc(hidden)]
-static mut WRITEBACK: [DmacDescriptor; NUM_CHANNELS] = [DEFAULT_DESCRIPTOR; NUM_CHANNELS];
-// Descriptor section. This static variable should never be written to in an
-// interrupt or thread context.
-#[doc(hidden)]
-static mut DESCRIPTOR_SECTION: [DmacDescriptor; NUM_CHANNELS] = [DEFAULT_DESCRIPTOR; NUM_CHANNELS];
 
 pub mod channel;
 pub mod dma_controller;
