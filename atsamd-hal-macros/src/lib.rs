@@ -70,11 +70,11 @@ fn hal_cfg_impl(args: TokenStream) -> Result<Group, Error> {
 ///     "nvmctrl-d5x" => "calibration/d5x.rs",
 /// )]
 /// pub mod calibration {}
-
+///
 /// #[hal_module("aes")
 /// pub mod aes {}
 /// ```
-/// 
+///
 /// This will then expand to something of the form:
 /// ```ignore
 /// #[cfg(any(feature = "samd11c", ...))]
@@ -88,7 +88,7 @@ fn hal_cfg_impl(args: TokenStream) -> Result<Group, Error> {
 /// #[cfg(any(feature = "samd51g", ...))]
 /// pub mod aes;
 /// ```
-/// 
+///
 /// Ideally you would be to write `pub mod calibration;` instead of
 /// `pub mod calibration {}`, but unfortunately non-inline modules are not
 /// currently supposed in proc macros. See
