@@ -1,4 +1,18 @@
 [workspace]
 resolver = "2"
-members = ["hal", "atsamd-hal-macros"]
-exclude = ["pac", "boards"]
+members = [
+	"hal",
+	"atsamd-hal-macros",
+	"pac/*",
+	"boards/*",
+]
+
+[profile.dev]
+debug = true
+opt-level = 0
+lto = false
+
+[profile.release]
+lto = true
+opt-level = "s"
+debug = true
