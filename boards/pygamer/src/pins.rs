@@ -2,8 +2,6 @@
 
 use super::{hal, pac};
 
-use pac::{MCLK, QSPI};
-
 use hal::prelude::*;
 
 use hal::clock::GenericClockController;
@@ -25,14 +23,14 @@ pub use hal::usb::UsbBus;
 use pac::gclk::{genctrl::SRCSELECT_A, pchctrl::GENSELECT_A};
 
 hal::bsp_peripherals!(
-    SERCOM2 { I2cSercom }
-    SERCOM5 { UartSercom }
+    Sercom2 { I2cSercom }
+    Sercom5 { UartSercom }
 );
 
 pub use crate::buttons::ButtonReader;
 pub use crate::buttons::Keys;
 use hal::pwm::Pwm2;
-use pac::{ADC0, ADC1};
+use pac::{Adc0, Adc1};
 
 /// Pin constants and type aliases
 pub use aliases::*;
@@ -591,9 +589,9 @@ impl Display {
     pub fn init(
         self,
         clocks: &mut GenericClockController,
-        sercom4: pac::SERCOM4,
-        mclk: &mut pac::MCLK,
-        timer2: pac::TC2,
+        sercom4: pac::Sercom4,
+        mclk: &mut pac::Mclk,
+        timer2: pac::Tc2,
         delay: &mut hal::delay::Delay,
     ) -> Result<(ST7735<TftSpi, TftDc, TftReset>, Pwm2<PA01>), ()> {
         let gclk0 = clocks.gclk0();
@@ -655,8 +653,8 @@ impl SPI {
         self,
         clocks: &mut GenericClockController,
         baud: impl Into<Hertz>,
-        sercom1: pac::SERCOM1,
-        mclk: &mut MCLK,
+        sercom1: pac::Sercom1,
+        mclk: &mut pac::Mclk,
     ) -> Spi {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom1_core(&gclk0).unwrap();
@@ -695,7 +693,7 @@ pub fn i2c_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
     sercom: I2cSercom,
-    mclk: &mut pac::MCLK,
+    mclk: &mut pac::Mclk,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
 ) -> I2c {
@@ -759,7 +757,7 @@ impl UART {
         clocks: &mut GenericClockController,
         baud: impl Into<Hertz>,
         sercom: UartSercom,
-        mclk: &mut MCLK,
+        mclk: &mut pac::Mclk,
     ) -> Uart {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom5_core(&gclk0).unwrap();
@@ -807,7 +805,7 @@ pub struct QSPIFlash {
 }
 
 impl QSPIFlash {
-    pub fn init(self, mclk: &mut MCLK, qspi: QSPI) -> qspi::Qspi<qspi::OneShot> {
+    pub fn init(self, mclk: &mut pac::Mclk, qspi: pac::Qspi) -> qspi::Qspi<qspi::OneShot> {
         qspi::Qspi::new(
             mclk, qspi, self.sclk, self.cs, self.data0, self.data1, self.data2, self.data3,
         )
@@ -852,7 +850,7 @@ pub struct JoystickReader {
 impl JoystickReader {
     /// returns a tuple (x,y) where values are 12 bit, between 0-4095
     /// values are NOT centered, but could be by subtracting 2048
-    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC1>) -> (u16, u16) {
+    pub fn read(&mut self, adc: &mut hal::adc::Adc<Adc1>) -> (u16, u16) {
         //note adafruit averages 3 readings on x and y (not inside the adc) seems
         // unnecessary? note adafruit recenters around zero.. Im not doing that
         // either atm.
@@ -891,7 +889,7 @@ pub struct BatteryReader {
 
 impl BatteryReader {
     /// Returns a float for voltage of battery
-    pub fn read(&mut self, adc: &mut hal::adc::Adc<ADC0>) -> f32 {
+    pub fn read(&mut self, adc: &mut hal::adc::Adc<Adc0>) -> f32 {
         let data: u16 = adc.read(&mut self.battery).unwrap();
         let result: f32 = (data as f32 / 4095.0) * 2.0 * 3.3;
         result
