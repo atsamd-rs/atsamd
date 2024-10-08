@@ -1,8 +1,9 @@
 # Unreleased Changes
 
+- update PAC references for item name name changes (#756)
+
 # v0.10.0
 
-- update PAC references for item name name changes (#756)
 - remove neopixel support and examples (currently unreliable)
 - update HAL v0.14 -> v0.17 and other dependencies, fix examples
 - update path of Cargo config
