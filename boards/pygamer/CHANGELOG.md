@@ -1,5 +1,7 @@
 # Unreleased Changes
 
+- update PAC references for item name name changes (#756)
+
 # v0.10.0
 
 - remove neopixel support and examples (currently unreliable)

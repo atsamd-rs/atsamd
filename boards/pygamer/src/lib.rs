@@ -34,7 +34,7 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
     use hal::ehal::digital::OutputPin;
 
     let peripherals = unsafe { crate::pac::Peripherals::steal() };
-    let pins = Pins::new(peripherals.PORT);
+    let pins = Pins::new(peripherals.port);
     pins.d13.into_push_pull_output().set_high().ok();
 
     cortex_m::asm::udf()
