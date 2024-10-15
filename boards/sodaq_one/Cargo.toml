@@ -35,13 +35,3 @@ use_semihosting = []
 # for cargo flash
 [package.metadata]
 chip = "ATSAMD21G18A"
-
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = false
-
-[profile.release]
-lto = true
-opt-level = "s"

@@ -41,12 +41,6 @@ max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd11c-rt"]
 use_semihosting = []
 
-[profile.release]
-debug = true
-
-[profile.dev]
-opt-level = "s"
-
 [[example]]
 name = "adc"
 required-features = ["rt", "use_semihosting"]

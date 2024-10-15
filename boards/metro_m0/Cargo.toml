@@ -49,17 +49,6 @@ use_rtt = ["atsamd-hal/use_rtt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
 
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = false
-
-[profile.release]
-debug = true
-lto = true
-opt-level = "s"
-
 [[example]]
 name = "usb_echo"
 required-features = ["usb"]
