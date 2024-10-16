@@ -27,7 +27,7 @@
     },
     "samd11_bare": {
       "tier": 1,
-      "build": "cargo build --examples --all-features",
+      "build": "cargo build --profile dev-optimized --examples --all-features",
       "target": "thumbv6m-none-eabi"
     },
     "arduino_mkr1000": {
