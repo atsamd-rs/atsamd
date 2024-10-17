@@ -1,6 +1,6 @@
 [package]
 name = "samd21_mini"
-version = "0.10.0"
+version = "0.10.1"
 authors = ["Ze'ev Klapow <zklapow@gmail.com>"]
 description = "Board Support crate for the Sparkfun SAMD21 Mini Breakout"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]

@@ -1,6 +1,6 @@
 [package]
 name = "trinket_m0"
-version = "0.11.0"
+version = "0.11.1"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit Trinket M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]

@@ -1,6 +1,6 @@
 [package]
 name = "trellis_m4"
-version = "0.10.0"
+version = "0.10.1"
 authors = [
     "Tony Arcieri <bascule@gmail.com>",
     "Paul Sajna <sajattack@gmail.com>",

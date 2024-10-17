@@ -1,3 +1,18 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.14.0](https://github.com/atsamd-rs/atsamd/compare/atsamd11d-0.13.0...atsamd11d-0.14.0) - 2024-10-17
+
+### Other
+
+- Improve release workflows ([#757](https://github.com/atsamd-rs/atsamd/pull/757))
+- Update PACS to svd2rust 0.34 ([#756](https://github.com/atsamd-rs/atsamd/pull/756))
 # Unreleased Changes
 
 - Upgrade PAC generated code to latest SVD and `svd2rust-0.34.1`:

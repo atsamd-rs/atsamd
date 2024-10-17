@@ -1,6 +1,6 @@
 [package]
 name = "arduino_mkrvidor4000"
-version = "0.6.0"
+version = "0.6.1"
 authors = ["Sameer Puri <purisame@spuri.io>"]
 description = "Board Support crate for the Arduino MKR VIDOR 4000"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]

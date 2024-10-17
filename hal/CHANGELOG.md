@@ -1,3 +1,27 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.17.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.17.0...atsamd-hal-0.17.1) - 2024-10-17
+
+### Other
+
+- Update PACS to svd2rust 0.34 ([#756](https://github.com/atsamd-rs/atsamd/pull/756))
+- Fix nightly clippy lints
+- Various small fixes ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
+- Wait at end of ehal 0.2 blocking SPI writes
+- Fix build failures for SAMD11 USB
+- Upgrade bitflags and get rid of TryFrom<()> implementations
+- Make I2C transactions continuous according to specification ([#741](https://github.com/atsamd-rs/atsamd/pull/741))
+- Fix Nightly doc build errors ([#737](https://github.com/atsamd-rs/atsamd/pull/737))
+- replace modify with write. prevent losing interrupts in intflag ([#739](https://github.com/atsamd-rs/atsamd/pull/739))
+- Remove statement excluding samd51j from i2s peripheral ([#735](https://github.com/atsamd-rs/atsamd/pull/735))
+- Add USB clock ([#734](https://github.com/atsamd-rs/atsamd/pull/734))
 # Unreleased Changes
 
 - Upgrade PACs to latest SVD and `svd2rust`:

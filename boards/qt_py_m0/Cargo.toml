@@ -1,6 +1,6 @@
 [package]
 name = "qt_py_m0"
-version = "0.10.0"
+version = "0.10.1"
 authors = ["Garret Kelly <gkelly@gkel.ly>"]
 description = "Board Support crate for the Adafruit QT Py"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]

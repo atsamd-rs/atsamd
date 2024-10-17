@@ -1,6 +1,6 @@
 [package]
 name = "neokey_trinkey"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Broderick Carlin <broderick.carlin@gmail.com>"]
 description = "Board Support crate for the Adafruit Neokey Trinkey"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]

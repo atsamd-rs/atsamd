@@ -1,3 +1,20 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.12.2](https://github.com/atsamd-rs/atsamd/compare/xiao_m0-0.12.1...xiao_m0-0.12.2) - 2024-10-17
+
+### Other
+
+- *(ci)* `release-plz`: Complete overhaul of the release process ([#762](https://github.com/atsamd-rs/atsamd/pull/762))
+- Updated XIAO M0 dependencies and examples ([#742](https://github.com/atsamd-rs/atsamd/pull/742))
+- Fix xiao_m0 spi clock used in spi_master ([#711](https://github.com/atsamd-rs/atsamd/pull/711))
+- bump hal to 0.16 for xiao_m0 ([#708](https://github.com/atsamd-rs/atsamd/pull/708))
 # Unreleased
 
 - Add cortex-m critical section feature
