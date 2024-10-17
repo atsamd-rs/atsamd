@@ -9,14 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.1](https://github.com/atsamd-rs/atsamd/compare/arduino_mkr1000-0.5.0...arduino_mkr1000-0.5.1) - 2024-10-17
 
-### Other
+### Refactored
 
-- Various small fixes ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
-# Unreleased
+- update path of Cargo config ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
 
-- update path of Cargo config
-
-# v0.5.0
+## v0.5.0
 
 - update to `atsamd-hal-0.14` and other latest dependencies (#564)
 - remove extraneous `embedded-hal` dependencies from BSPs

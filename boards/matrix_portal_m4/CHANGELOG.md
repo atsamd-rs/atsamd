@@ -9,14 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1](https://github.com/atsamd-rs/atsamd/compare/matrix_portal_m4-0.1.0...matrix_portal_m4-0.1.1) - 2024-10-17
 
-### Other
+### Refactored
 
-- Various small fixes ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
-# Unreleased
+- update path of Cargo config ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
 
-- update path of Cargo config
-
-# v0.1.0
+## v0.1.0
 
 - Added RedLedPwm alias to onboard led
 - Added blinky_basic.rs example

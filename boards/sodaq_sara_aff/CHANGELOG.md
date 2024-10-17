@@ -9,18 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.9.2](https://github.com/atsamd-rs/atsamd/compare/sodaq_sara_aff-0.9.1...sodaq_sara_aff-0.9.2) - 2024-10-17
 
-### Other
+### Refactored
 
-- Various small fixes ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
-# Unreleased
+- update path of Cargo config ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
 
-- update path of Cargo config
-
-# v0.9.1
+## v0.9.1
 
 - Fixed the `use_semihosting` feature of the BSP 
 
-# v0.9.0
+## v0.9.0
 
 - update to `atsamd-hal-0.14` and other latest dependencies (#564)
 - remove extraneous `embedded-hal` dependencies from BSPs

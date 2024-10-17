@@ -9,6 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.1.0...atsamd-hal-macros-0.1.1) - 2024-10-17
 
-### Other
+### Fixed
 
 - Remove statement excluding samd51j from i2s peripheral ([#735](https://github.com/atsamd-rs/atsamd/pull/735))
