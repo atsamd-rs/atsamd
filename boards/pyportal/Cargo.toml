@@ -1,6 +1,6 @@
 [package]
 name = "pyportal"
-version = "0.10.1"
+version = "0.10.2"
 authors = [
     "Shella Stephens <shella@infracoven.io",
     "Paul Sajna <sajattack@gmail.com>",

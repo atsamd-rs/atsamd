@@ -1,6 +1,6 @@
 [package]
 name = "arduino_nano33iot"
-version = "0.7.1"
+version = "0.7.2"
 authors = ["Gus Wynn <guswynn@gmail.com>"]
 description = "Board Support crate for the Arduino Nano 33 IOT"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]

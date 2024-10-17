@@ -1,6 +1,6 @@
 [package]
 name = "wio_lite_w600"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Daniel Mason <daniel@danielmason.com"]
 description = "Board Support crate for the Wio Lite W600"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]

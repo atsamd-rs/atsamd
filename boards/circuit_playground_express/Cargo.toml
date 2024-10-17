@@ -1,6 +1,6 @@
 [package]
 name = "circuit_playground_express"
-version = "0.11.0"
+version = "0.11.1"
 authors = ["Paul Sajna <paulsajna@gmail.com>"]
 description = "Board Support crate for the Adafruit Circuit Playground Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
