@@ -7,19 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.8.1](https://github.com/atsamd-rs/atsamd/compare/itsybitsy_m4-0.8.0...itsybitsy_m4-0.8.1) - 2024-10-17
+## [0.9.0](https://github.com/atsamd-rs/atsamd/compare/itsybitsy_m4-0.8.0...itsybitsy_m4-0.9.0) - 2024-10-17
 
-### Other
+### Refactored
 
-- *(ci)* `release-plz`: Complete overhaul of the release process ([#762](https://github.com/atsamd-rs/atsamd/pull/762))
-- Update itsybitsy_m0 and itsybitsy_m4 to HAL 0.17 ([#754](https://github.com/atsamd-rs/atsamd/pull/754))
-- Various small fixes ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
-# Unreleased
+- update path of Cargo config ([#749](https://github.com/atsamd-rs/atsamd/pull/749)) 
+- Remove build profiles from Cargo.toml ([#762](https://github.com/atsamd-rs/atsamd/pull/762))
 
-- update hal dependency to v0.17
-- update path of Cargo config
+### Dependencies
 
-# 0.8.0
+- **[breaking]** Update HAL dependency to `0.17` ([#754](https://github.com/atsamd-rs/atsamd/pull/754))
+
+## 0.8.0
 
 - update hal dependency to v0.15
   - Removed use of i2c v1 API
@@ -29,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - manually configure sercom for uart operation
   - use sercom interrupts
 
-# 0.7.0
+## 0.7.0
 
 - update bsp to use the v2 API
 - bump cortex-m dependency to 0.7

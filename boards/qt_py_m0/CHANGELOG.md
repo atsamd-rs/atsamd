@@ -9,15 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.1](https://github.com/atsamd-rs/atsamd/compare/qt_py_m0-0.10.0...qt_py_m0-0.10.1) - 2024-10-17
 
-### Other
+### Refactored
 
-- Various small fixes ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
-- Readme and warnings ([#712](https://github.com/atsamd-rs/atsamd/pull/712))
-# Unreleased
+- update path of Cargo config ([#749](https://github.com/atsamd-rs/atsamd/pull/749)) 
+- Add `usb_echo` example to `Cargo.toml` ([#712](https://github.com/atsamd-rs/atsamd/pull/712))
 
-- update path of Cargo config
-
-# v0.10.0
+## v0.10.0
 
 - fix `cortex-m` dev-dependency (#563)
 - update to latest HAL and v2 APIs (#563)

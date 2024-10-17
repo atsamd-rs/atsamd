@@ -1,12 +1,28 @@
-# Unreleased Changes
+# Changelog
 
-# v0.10.0
+All notable changes to this project will be documented in this file.
 
-- remove neopixel support and examples (currently unreliable)
-- update HAL v0.14 -> v0.17 and other dependencies, fix examples
-- update path of Cargo config
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# v0.9.0
+## [Unreleased]
+
+## [0.10.0](https://github.com/atsamd-rs/atsamd/compare/pygamer-0.9.0...pygamer-0.10.0) - 2024-10-17
+
+### Refactored
+
+- update path of Cargo config ([#749](https://github.com/atsamd-rs/atsamd/pull/749)) 
+- Remove build profiles from Cargo.toml ([#762](https://github.com/atsamd-rs/atsamd/pull/762))
+
+### Removed
+
+- **[breaking]**Temporary removal of neopixel support and examples (which are currently unreliable) ([#750](https://github.com/atsamd-rs/atsamd/pull/750))
+
+### Dependencies
+
+- **[breaking]** Update HAL dependency to `0.17` ([#750](https://github.com/atsamd-rs/atsamd/pull/750))
+
+## v0.9.0
 
 - update to `atsamd-hal-0.14` and other latest dependencies (#564)
 - remove extraneous `embedded-hal` dependencies from BSPs

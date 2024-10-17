@@ -9,15 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.1](https://github.com/atsamd-rs/atsamd/compare/samd21_mini-0.10.0...samd21_mini-0.10.1) - 2024-10-17
 
-### Other
+### Refactored
 
-- *(ci)* `release-plz`: Complete overhaul of the release process ([#762](https://github.com/atsamd-rs/atsamd/pull/762))
-- Various small fixes ([#749](https://github.com/atsamd-rs/atsamd/pull/749))
-# Unreleased
+- update path of Cargo config ([#749](https://github.com/atsamd-rs/atsamd/pull/749)) 
+- Remove build profiles from Cargo.toml ([#762](https://github.com/atsamd-rs/atsamd/pull/762))
 
-- update path of Cargo config
-
-# v0.10.0
+## v0.10.0
 
 - update to `atsamd-hal-0.14` and other latest dependencies (#564)
 - Updated to 2021 edition, updated dependencies, removed unused dependencies (#562)
