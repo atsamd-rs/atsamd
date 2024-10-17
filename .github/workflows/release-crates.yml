@@ -1,176 +1,31 @@
 name: Release crates
+
+permissions:
+  pull-requests: write
+  contents: write
+
 on:
-  workflow_dispatch:
-    inputs:
-      release_pac:
-        description: 'Release PAC (yes/no)'
-        required: true
-        default: 'yes'
-      release_hal:
-        description: 'Release HAL (yes/no)'
-        required: true
-        default: 'yes'
-      release_bsp:
-        description: 'Release BSPs (yes/no)'
-        required: true
-        default: 'yes'
+  push:
+    branches:
+      - master
+
 jobs:
-  release-crates:
+  release-plz:
+    name: Release-plz
     runs-on: ubuntu-latest
     steps:
-      - name: Install Rust
-        run: |
-          rustup set profile minimal
-          rustup override set stable
-          rustup target add thumbv6m-none-eabi
-          rustup target add thumbv7em-none-eabihf
-
-      - name: Login
-        run: cargo login ${CRATES_IO_TOKEN}
-        env:
-          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
-
-      - name: Release PAC crates
-        if: github.event.inputs.release_pac == 'yes'
-        shell: bash
-        run: |
-          set -ex
-
-          # Run `cargo publish` on each PAC.
-          # Unfortunately, cargo publish errors if the crate is already uploaded,
-          # and there is no way to turn that off. As a result, we need to do some
-          # janky hacks to detect that condition and ignore it.
-          #
-          # Specifically, we ignore the exit code but capture the stderr. If
-          # the standard error contains ' is already uploaded', then it must
-          # be the error we dont care about, so we exit the subshell with a
-          # success status.
-          #
-          # All errors start with the form 'error: ', so we detect that and
-          # bail the subshell to crash out on other publish errors.
-          #
-          # Before publishing, we also tag each PAC with its current version.
-          # If creating+pushing the tag fails, we check if there already is an
-          # identical tag at the same commit, and continue processing if that's
-          # the case. If tagging fails for any other reason, bail the subshell.
-
-          for d in pac/*/
-          do
-            (
-              cd "${d}"
-
-              PAC_NAME="${d#pac/}"
-              PAC_NAME="${PAC_NAME%/}"
-
-              VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
-              TAG_NAME="${PAC_NAME}-${VERSION}"
-              
-              if ! git tag -a $TAG_NAME -m "${PAC_NAME} release ${VERSION}" && git push origin tag "$TAG_NAME"; then
-                if git tag --points-at "$(git rev-parse HEAD)" | grep "$TAG_NAME" > /dev/null; then
-                  echo '(and points at this commit). Continuing.'
-                else
-                  false
-                fi
-              fi
-
-              set +e
-              PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
-              set -e
-              if [[ "$PUBLISH_ERR" == *" is already uploaded"* ]]; then
-                exit 0
-              fi
-              if [[ "$PUBLISH_ERR" == *"error: "* ]]; then
-                echo "$PUBLISH_ERR"
-                exit 1
-              fi
-            )
-          done
-
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          ssh-key: ${{ secrets.ATSAMD_BOT_SSH_PRIVKEY }}
+          fetch-depth: 0
 
-      - name: Release HAL crate
-        if: github.event.inputs.release_hal == 'yes'
-        shell: bash
-        run: |
-          set -ex
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+            targets: thumbv6m-none-eabi, thumbv7em-none-eabihf
 
-          # Force update of the registry
-          cargo update || true
-
-          cd hal
-
-          VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
-          TAG_NAME="atsamd-hal-${VERSION}"
-          
-          # Create+push a git tag. If that fails, check if an identical tag already exists at the
-          # same commit. Bail otherwise.
-          if ! git tag -a $TAG_NAME -m "atsamd-hal release ${VERSION}" && git push origin tag "$TAG_NAME"; then
-            if git tag --points-at "$(git rev-parse HEAD)" | grep "$TAG_NAME" > /dev/null; then
-              echo '(and points at this commit). Continuing.'
-            else
-              false
-            fi
-          fi
-
-
-          cargo publish
-
-
-      - name: Release BSP crates
-        if: github.event.inputs.release_bsp == 'yes'
-        shell: bash
-        run: |
-          set -ex
-
-          # Force update of the registry
-          cargo update || true
-
-          sudo apt-get install -y jq
-
-          # Unfortunately, cargo publish errors if the crate is already uploaded,
-          # and there is no way to turn that off. As a result, we need to do some
-          # janky hacks to detect that condition and ignore it.
-          #
-          # Specifically, we ignore the exit code but capture the stderr. If
-          # the standard error contains ' is already uploaded', then it must
-          # be the error we dont care about, so we exit the subshell with a
-          # success status.
-          #
-          # All errors start with the form 'error: ', so we detect that and
-          # bail the subshell to crash out on other publish errors.
-          #
-          # Before publishing, we also tag each BSP with its current version.
-          # If creating+pushing the tag fails, we check if there already is an
-          # identical tag at the same commit, and continue processing if that's
-          # the case. If tagging fails for any other reason, bail the subshell.
-
-          for bsp in $(cat crates.json | jq -Mr -c '.boards | keys[]');
-          do
-            (
-              cd "boards/${bsp}"
-
-              VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
-              TAG_NAME="${bsp}-${VERSION}"
-
-              if ! git tag -a $TAG_NAME -m "${bsp} release ${VERSION}" && git push origin tag "$TAG_NAME"; then
-                if git tag --points-at "$(git rev-parse HEAD)" | grep "$TAG_NAME" > /dev/null; then
-                  echo '(and points at this commit). Continuing.'
-                else
-                  false
-                fi
-              fi
-
-              set +e
-              PUBLISH_ERR=$(cargo publish 2>&1 >/dev/null)
-              set -e
-              if [[ "$PUBLISH_ERR" == *" is already uploaded"* ]]; then
-                exit 0
-              fi
-              if [[ "$PUBLISH_ERR" == *"error: "* ]]; then
-                echo "$PUBLISH_ERR"
-                exit 1
-              fi
-            )
-          done
+      - name: Run release-plz
+        uses: MarcoIeni/release-plz-action@v0.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}

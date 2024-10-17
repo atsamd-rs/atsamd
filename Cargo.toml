@@ -1,4 +1,29 @@
 [workspace]
 resolver = "2"
-members = ["hal", "atsamd-hal-macros"]
-exclude = ["pac", "boards"]
+default-members = ["hal"]
+members = [
+	"hal",
+	"atsamd-hal-macros",
+	"pac/*",
+	"boards/*",
+]
+
+[profile.dev]
+debug = true
+opt-level = 0
+lto = false
+
+# Neopixel and USB examples rely on some timing constraints that can only be upheld
+# with some optimizations enabled.
+#
+# Add `--profile dev-optimized` to your cargo invocations to use this profile.
+[profile.dev-optimized]
+inherits = "dev"
+opt-level = 2
+lto = "thin"
+
+
+[profile.release]
+lto = true
+opt-level = "s"
+debug = true

@@ -44,17 +44,6 @@ dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 use_semihosting = []
 
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = false
-
-[profile.release]
-debug = true
-lto = true
-opt-level = "s"
-
 [[example]]
 name = "blinky_basic"
 
