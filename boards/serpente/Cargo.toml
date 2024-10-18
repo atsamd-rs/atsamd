@@ -1,6 +1,6 @@
 [package]
 name = "serpente"
-version = "0.7.1"
+version = "0.7.2"
 authors = ["Jens Andersen <jens.andersen@gmail.com>"]
 description = "Board Support crate for the Serpente board"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]

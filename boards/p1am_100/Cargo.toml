@@ -1,6 +1,6 @@
 [package]
 name = "p1am_100"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Quentin Smith <quentin@mit.edu>"]
 description = "Board Support crate for the Facts Engineering P1AM-100"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -43,17 +43,6 @@ usb = ["atsamd-hal/usb", "usb-device"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 use_semihosting = []
-
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = false
-
-[profile.release]
-debug = true
-lto = true
-opt-level = "s"
 
 [[example]]
 name = "blinky_basic"

@@ -1,6 +1,6 @@
 [package]
 name = "feather_m0"
-version = "0.14.0"
+version = "0.15.0"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit Feather M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -21,7 +21,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.17.0"
+version = "0.18.0"
 default-features = false
 
 [dependencies.cortex-m]
@@ -68,17 +68,6 @@ winc = []
 sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
 rtic = ["atsamd-hal/rtic"]
 use_semihosting = []
-
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = false
-
-[profile.release]
-debug = true
-lto = true
-opt-level = "s"
 
 [[example]]
 name = "blinky_basic"

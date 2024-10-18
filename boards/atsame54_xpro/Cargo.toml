@@ -1,6 +1,6 @@
 [package]
 name = "atsame54_xpro"
-version = "0.7.0"
+version = "0.8.0"
 authors = [
     "Karsten Große <karsten.grosse@sympatron.de>",
     "John Little <johngigantic@gmail.com>"
@@ -23,7 +23,7 @@ features = ["critical-section-single-core"]
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.17.0"
+version = "0.18.0"
 default-features = false
 
 [dependencies.usb-device]
@@ -42,16 +42,6 @@ default = ["rt", "atsamd-hal/same54p"]
 rt = ["cortex-m-rt", "atsamd-hal/same54p-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 can = ["atsamd-hal/can"]
-
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = true
-
-[profile.release]
-lto = true
-opt-level = "s"
 
 [[example]]
 name = "mcan"

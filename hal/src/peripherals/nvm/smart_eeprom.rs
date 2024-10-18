@@ -294,7 +294,7 @@ impl<'a, TP: SmartEepromPointableSize> Iterator for SmartEepromIter<'a, TP> {
     }
 }
 
-impl<'a, TP: SmartEepromPointableSize> DoubleEndedIterator for SmartEepromIter<'a, TP> {
+impl<TP: SmartEepromPointableSize> DoubleEndedIterator for SmartEepromIter<'_, TP> {
     fn next_back(&mut self) -> Option<Self::Item> {
         wait_if_busy();
         self.iter.next_back()
@@ -314,7 +314,7 @@ impl<'a, TP: SmartEepromPointableSize> Iterator for SmartEepromIterMut<'a, TP> {
     }
 }
 
-impl<'a, TP: SmartEepromPointableSize> DoubleEndedIterator for SmartEepromIterMut<'a, TP> {
+impl<TP: SmartEepromPointableSize> DoubleEndedIterator for SmartEepromIterMut<'_, TP> {
     fn next_back(&mut self) -> Option<Self::Item> {
         wait_if_busy();
         self.iter.next_back()

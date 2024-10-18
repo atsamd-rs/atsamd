@@ -1,6 +1,6 @@
 [package]
 name = "sodaq_one"
-version = "0.10.0"
+version = "0.10.1"
 authors = ["Robert Hennig <robert.hennig@freylax.de>"]
 description = "Board Support crate for the SODAQ ONE"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -35,13 +35,3 @@ use_semihosting = []
 # for cargo flash
 [package.metadata]
 chip = "ATSAMD21G18A"
-
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = false
-
-[profile.release]
-lto = true
-opt-level = "s"
