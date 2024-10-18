@@ -18,6 +18,7 @@
 //!
 //! Using the [`DmaController::free`] method will
 //! deinitialize the DMAC and return the underlying PAC object.
+#![allow(unused_braces)]
 
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
@@ -40,7 +41,7 @@ pub use crate::pac::dmac::channel::{
 
 use super::{
     channel::{new_chan, Channel, Uninitialized},
-    DESCRIPTOR_SECTION, WRITEBACK,
+    sram,
 };
 use crate::pac::{Dmac, Pm};
 
@@ -93,17 +94,13 @@ pub struct PriorityLevelMask {
     #[skip]
     _reserved: B8,
     /// Level 0
-    #[allow(dead_code)]
-    level0: bool,
+    pub level0: bool,
     /// Level 1
-    #[allow(dead_code)]
-    level1: bool,
+    pub level1: bool,
     /// Level 2
-    #[allow(dead_code)]
-    level2: bool,
+    pub level2: bool,
     /// Level 3
-    #[allow(dead_code)]
-    level3: bool,
+    pub level3: bool,
     #[skip]
     _reserved: B4,
 }
@@ -121,23 +118,19 @@ pub struct RoundRobinMask {
     #[skip]
     _reserved: B7,
     /// Level 0
-    #[allow(dead_code)]
-    level0: bool,
+    pub level0: bool,
     #[skip]
     _reserved: B7,
     /// Level 1
-    #[allow(dead_code)]
-    level1: bool,
+    pub level1: bool,
     #[skip]
     _reserved: B7,
     /// Level 2
-    #[allow(dead_code)]
-    level2: bool,
+    pub level2: bool,
     #[skip]
     _reserved: B7,
     /// Level 3
-    #[allow(dead_code)]
-    level3: bool,
+    pub level3: bool,
 }
 
 impl DmaController {
@@ -166,10 +159,12 @@ impl DmaController {
         // are valid.
         #[allow(static_mut_refs)]
         unsafe {
-            dmac.baseaddr()
-                .write(|w| w.baseaddr().bits(DESCRIPTOR_SECTION.as_mut_ptr() as u32));
+            dmac.baseaddr().write(|w| {
+                w.baseaddr()
+                    .bits(sram::DESCRIPTOR_SECTION.as_mut_ptr() as u32)
+            });
             dmac.wrbaddr()
-                .write(|w| w.wrbaddr().bits(WRITEBACK.as_mut_ptr() as u32));
+                .write(|w| w.wrbaddr().bits(sram::WRITEBACK.as_mut_ptr() as u32));
         }
 
         // ----- Select priority levels ----- //

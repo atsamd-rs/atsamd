@@ -31,6 +31,8 @@
 //! `Uninitialized` state. You will be required to call [`Channel::init`]
 //! again before being able to use it with a `Transfer`.
 
+#![allow(unused_braces)]
+
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use super::dma_controller::{ChId, PriorityLevel, TriggerAction, TriggerSource};
