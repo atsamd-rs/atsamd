@@ -1,5 +1,6 @@
 {
   "boards": {
+    
     "atsame54_xpro": {
       "tier": 1,
       "build": "cargo build --examples --all-features",
@@ -25,11 +26,17 @@
       "build": "cargo build --examples --all-features",
       "target": "thumbv7em-none-eabihf"
     },
+    "pygamer": {
+      "tier": 1,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv7em-none-eabihf"
+    },
     "samd11_bare": {
       "tier": 1,
       "build": "cargo build --profile dev-optimized --examples --all-features",
       "target": "thumbv6m-none-eabi"
     },
+
     "arduino_mkr1000": {
       "tier": 2,
       "build": "cargo build --examples --all-features",
@@ -101,11 +108,6 @@
       "target": "thumbv6m-none-eabi"
     },
     "pfza_proto1": {
-      "tier": 2,
-      "build": "cargo build --examples --all-features",
-      "target": "thumbv7em-none-eabihf"
-    },
-    "pygamer": {
       "tier": 2,
       "build": "cargo build --examples --all-features",
       "target": "thumbv7em-none-eabihf"
