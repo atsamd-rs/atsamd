@@ -20,7 +20,7 @@ use hal::usb::usb_device::bus::UsbBusAllocator;
 #[cfg(feature = "usb")]
 pub use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
-use pac::gclk::{genctrl::SRCSELECT_A, pchctrl::GENSELECT_A};
+use pac::gclk::{genctrl::Srcselect, pchctrl::Genselect};
 
 hal::bsp_peripherals!(
     Sercom2 { I2cSercom }
@@ -725,12 +725,12 @@ impl USB {
     /// as a USB device.
     pub fn init(
         self,
-        usb: pac::USB,
+        usb: pac::Usb,
         clocks: &mut GenericClockController,
-        mclk: &mut MCLK,
+        mclk: &mut pac::Mclk,
     ) -> UsbBusAllocator<UsbBus> {
-        clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
-        let usb_gclk = clocks.get_gclk(GENSELECT_A::GCLK2).unwrap();
+        clocks.configure_gclk_divider_and_source(Genselect::Gclk2, 1, Srcselect::Dfll, false);
+        let usb_gclk = clocks.get_gclk(Genselect::Gclk2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
         let (dm, dp): (UsbDm, UsbDp) = (self.dm.into(), self.dp.into());
         UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
