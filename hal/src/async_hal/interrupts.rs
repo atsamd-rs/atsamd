@@ -379,13 +379,6 @@ pub trait InterruptExt: InterruptNumber + Copy {
         compiler_fence(Ordering::SeqCst);
     }
 
-    /// Check if interrupt is being handled.
-    // #[inline]
-    // #[hal_cfg("nvic-d5x")]
-    // fn is_active(self) -> bool {
-    //     NVIC::is_active(self)
-    // }
-
     /// Check if interrupt is enabled.
     #[inline]
     fn is_enabled(self) -> bool {
