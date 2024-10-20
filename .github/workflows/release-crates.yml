@@ -24,9 +24,6 @@ jobs:
         with:
             targets: thumbv6m-none-eabi, thumbv7em-none-eabihf
 
-      - name: Login to crates.io
-        run: cargo login ${{ secrets.CRATES_IO_TOKEN }}
-
       - name: Run release-plz
         uses: MarcoIeni/release-plz-action@v0.5
         env:
