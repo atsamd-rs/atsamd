@@ -38,15 +38,15 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let pins = Pins::new(peripherals.PORT).split();
+    let pins = Pins::new(peripherals.port).split();
 
     let mut red_led: RedLed = pins.led_pin.into();
 
@@ -54,9 +54,9 @@ fn main() -> ! {
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM4,
-            &mut peripherals.MCLK,
-            peripherals.TC2,
+            peripherals.sercom4,
+            &mut peripherals.mclk,
+            peripherals.tc2,
             &mut delay,
         )
         .unwrap();
@@ -73,15 +73,15 @@ fn main() -> ! {
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tc4_tc5(&gclk0).unwrap();
-    let mut khz_timer = TimerCounter::tc4_(&timer_clock, peripherals.TC4, &mut peripherals.MCLK);
+    let mut khz_timer = TimerCounter::tc4_(&timer_clock, peripherals.tc4, &mut peripherals.mclk);
     InterruptDrivenTimer::start(&mut khz_timer, Hertz::kHz(1).into_duration());
 
     let sdmmc_cs = pins.sd_cs_pin.into_push_pull_output();
     let sdmmc_spi_bus = pins.spi.init(
         &mut clocks,
         3.MHz(),
-        peripherals.SERCOM1,
-        &mut peripherals.MCLK,
+        peripherals.sercom1,
+        &mut peripherals.mclk,
     );
 
     let sdmmc_spi =

@@ -23,7 +23,8 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.17"
+version = "0.18.0"
+path = "../../hal"
 default-features = false
 
 [dependencies.micromath]

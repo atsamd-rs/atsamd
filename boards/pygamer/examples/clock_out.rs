@@ -9,25 +9,25 @@ use panic_halt as _;
 use pygamer as bsp;
 
 use hal::clock::GenericClockController;
-use pac::gclk::genctrl::SRCSELECT_A::DPLL0;
-use pac::gclk::pchctrl::GENSELECT_A::GCLK2;
+use pac::gclk::genctrl::Srcselect::Dpll0;
+use pac::gclk::pchctrl::Genselect::Gclk2;
 use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = Pins::new(peripherals.PORT);
+    let pins = Pins::new(peripherals.port);
 
     // Output 3 MHz clock on pin d5
     let _gclk2 = clocks
-        .configure_gclk_divider_and_source(GCLK2, 40, DPLL0, false)
+        .configure_gclk_divider_and_source(Gclk2, 40, Dpll0, false)
         .unwrap();
     let _clock_out_pin: GclkOut = pins.d5.into();
     loop {}
