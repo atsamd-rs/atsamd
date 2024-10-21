@@ -8,6 +8,7 @@ pub use fugit;
 pub use nb;
 pub use paste;
 pub mod typelevel;
+mod util;
 
 macro_rules! define_pac {
     ( $( ($pac:ident, $feat:literal)),+ ) => {
@@ -74,6 +75,9 @@ pub mod sleeping_delay;
 pub mod time;
 pub mod timer_params;
 pub mod timer_traits;
+
+#[cfg(feature = "async")]
+pub mod async_hal;
 
 #[cfg(feature = "dma")]
 pub mod dmac;

@@ -74,10 +74,13 @@ use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
 
 impl ehal_nb::serial::Error for Error {
+    #[allow(unreachable_patterns)]
     fn kind(&self) -> ehal_nb::serial::ErrorKind {
         match self {
             Error::Overflow => ehal_nb::serial::ErrorKind::Overrun,
             Error::LengthError => ehal_nb::serial::ErrorKind::Other,
+            // Pattern reachable when "dma" feature is enabled
+            _ => ehal_nb::serial::ErrorKind::Other,
         }
     }
 }
