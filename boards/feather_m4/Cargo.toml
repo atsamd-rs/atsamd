@@ -1,6 +1,6 @@
 [package]
 name = "feather_m4"
-version = "0.12.0"
+version = "0.13.0"
 edition = "2021"
 authors = ["Theodore DeRego <tderego94@gmail.com>"]
 description = "Board Support crate for the Adafruit Feather M4"
@@ -25,7 +25,7 @@ features = ["critical-section-single-core"]
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.17.0"
+version = "0.18.0"
 default-features = false
 
 [dependencies.usb-device]
@@ -48,18 +48,6 @@ rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/dma"]
-
-
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = true
-
-[profile.release]
-debug = true
-lto = true
-opt-level = "s"
 
 [[example]]
 name = "pwm"

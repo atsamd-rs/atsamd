@@ -1,6 +1,6 @@
 [package]
 name = "wio_terminal"
-version = "0.7.0"
+version = "0.7.1"
 authors = [
     "Jesse Braham <jesse@beta7.io>",
     "Tom <twitchyliquid64@ciphersink.net>"
@@ -62,16 +62,6 @@ usb = ["atsamd-hal/usb", "usb-device"]
 # enable feature for RTL8720 firmware older than 2.1.2
 wifi-fw-before-212 = []
 wifi = ["bbqueue", "generic-array", "seeed-erpc"]
-
-[profile.dev]
-incremental = false
-codegen-units = 1
-debug = true
-lto = true
-
-[profile.release]
-lto = true
-opt-level = "s"
 
 [[example]]
 name = "blinky"

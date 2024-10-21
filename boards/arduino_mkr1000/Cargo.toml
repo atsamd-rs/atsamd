@@ -1,6 +1,6 @@
 [package]
 name = "arduino_mkr1000"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["Eric Rushing <rushinge@gmail.com>"]
 description = "Board Support crate for the Arduino MKR 1000 WiFi"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]

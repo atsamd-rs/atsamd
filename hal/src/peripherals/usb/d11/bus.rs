@@ -211,7 +211,7 @@ struct Bank<'a, T> {
     endpoints: Ref<'a, AllEndpoints>,
 }
 
-impl<'a, T> Bank<'a, T> {
+impl<T> Bank<'_, T> {
     fn usb(&self) -> &Device {
         self.usb
     }
@@ -238,7 +238,7 @@ struct InBank;
 /// OutBank represents Out direction banks, Bank #0
 struct OutBank;
 
-impl<'a> Bank<'a, InBank> {
+impl Bank<'_, InBank> {
     fn desc_bank(&mut self) -> &mut DeviceDescBank {
         let idx = self.index();
         self.desc.bank(idx, 1)
@@ -334,7 +334,7 @@ impl<'a> Bank<'a, InBank> {
     }
 }
 
-impl<'a> Bank<'a, OutBank> {
+impl Bank<'_, OutBank> {
     fn desc_bank(&mut self) -> &mut DeviceDescBank {
         let idx = self.index();
         self.desc.bank(idx, 0)

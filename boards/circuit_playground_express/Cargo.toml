@@ -1,6 +1,6 @@
 [package]
 name = "circuit_playground_express"
-version = "0.11.0"
+version = "0.11.1"
 authors = ["Paul Sajna <paulsajna@gmail.com>"]
 description = "Board Support crate for the Adafruit Circuit Playground Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -39,9 +39,6 @@ rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
-
-[profile.release]
-debug = true
 
 # for cargo flash
 [package.metadata]

@@ -1,6 +1,6 @@
 [package]
 name = "xiao_m0"
-version = "0.12.1"
+version = "0.13.0"
 authors = ["Garret Kelly <gdk@google.com>", "Maciej Procyk <macieekprocyk@gmail.com>"]
 description = "Board support crate for the Seeed Studio Seeeduino XIAO"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -51,11 +51,6 @@ name = "ssd1306_i2c"
 [[example]]
 name = "usb_echo"
 required-features = ["usb"]
-
-[profile.release]
-debug = false
-lto = true
-opt-level = "s"
 
 # for cargo flash
 [package.metadata]
