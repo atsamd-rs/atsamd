@@ -1,63 +1,54 @@
 [package]
-name = "pygamer"
-version = "0.10.0"
 authors = [
-    "Paul Sajna <sajattack@gmail.com>",
-    "Wez Furlong <wez@wezfurlong.org>"
+  "Paul Sajna <sajattack@gmail.com>",
+  "Wez Furlong <wez@wezfurlong.org>",
 ]
-description = "Board Support crate for the Adafruit PyGamer"
-keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
+description = "Board Support crate for the Adafruit PyGamer"
 edition = "2021"
 exclude = ["assets"]
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+name = "pygamer"
+readme = "README.md"
+repository = "https://github.com/atsamd-rs/atsamd"
+version = "0.10.0"
 
 [dependencies]
 cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
 st7735-lcd = "0.8.1"
 
 [dependencies.cortex-m-rt]
-version = "0.7"
 optional = true
+version = "0.7"
 
 [dependencies.atsamd-hal]
-version = "0.18.0"
-path = "../../hal"
 default-features = false
-
-[dependencies.micromath]
-version = "0.5.1"
-optional = true
-
-[dependencies.embedded-sdmmc]
-version = "0.8.0"
-optional = true
+path = "../../hal"
+version = "0.18.0"
 
 [dependencies.usb-device]
-version = "0.3.1"
 optional = true
+version = "0.3.1"
 
 [dev-dependencies]
-usbd-serial = "0.2"
-panic-halt = "0.2"
-embedded-graphics = "0.7.1"
-embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
-embedded-hal-bus = "0.2.0"
-smart-leds = "0.3"
-lis3dh = "0.1.0"
 cortex-m-rtic = "1.0"
+embedded-graphics = "0.7.1"
+embedded-hal-bus = "0.2.0"
+embedded-sdmmc = "0.8.0"
+lis3dh = "0.1.0"
+micromath = "0.5.1"
+panic-halt = "0.2"
+smart-leds = "0.3"
 tinybmp = "0.3.1"
+usbd-serial = "0.2"
 
 [features]
 # ask the HAL to enable atsamd51j support
 default = ["rt", "atsamd-hal/samd51j"]
+panic_led = []
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
-sd-card = ["embedded-sdmmc"]
-math = ["micromath"]
-panic_led = []
 
 # for cargo flash
 [package.metadata]
@@ -66,15 +57,3 @@ chip = "ATSAMD51J19A"
 [[example]]
 name = "usb_poll"
 required-features = ["usb"]
-
-[[example]]
-name = "sd_card"
-required-features = ["sd-card"]
-
-[[example]]
-name = "pwm_tc4"
-required-features = ["math"]
-
-[[example]]
-name = "pwm_tcc0"
-required-features = ["math"]

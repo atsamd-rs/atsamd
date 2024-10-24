@@ -42,7 +42,7 @@ fn main() -> ! {
         1.kHz(),
         peripherals.tcc0,
         TCC0Pinout::Pa23(tcc0_pin),
-        &mut peripherals.mclK,
+        &mut peripherals.mclk,
     );
     let max_duty = pwm0.get_max_duty();
 
