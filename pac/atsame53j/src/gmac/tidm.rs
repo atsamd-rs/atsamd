@@ -6,9 +6,9 @@ pub type W = crate::W<TidmSpec>;
 pub type TidR = crate::FieldReader<u16>;
 #[doc = "Field `TID` writer - Type ID Match n"]
 pub type TidW<'a, REG> = crate::FieldWriter<'a, REG, 16, u16>;
-#[doc = "Field `ENID` reader - Enable Copying of TID Matched Frames"]
+#[doc = "Field `ENID` reader - Enable Copying of TID n Matched Frames"]
 pub type EnidR = crate::BitReader;
-#[doc = "Field `ENID` writer - Enable Copying of TID Matched Frames"]
+#[doc = "Field `ENID` writer - Enable Copying of TID n Matched Frames"]
 pub type EnidW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bits 0:15 - Type ID Match n"]
@@ -16,7 +16,7 @@ impl R {
     pub fn tid(&self) -> TidR {
         TidR::new((self.bits & 0xffff) as u16)
     }
-    #[doc = "Bit 31 - Enable Copying of TID Matched Frames"]
+    #[doc = "Bit 31 - Enable Copying of TID n Matched Frames"]
     #[inline(always)]
     pub fn enid(&self) -> EnidR {
         EnidR::new(((self.bits >> 31) & 1) != 0)
@@ -29,7 +29,7 @@ impl W {
     pub fn tid(&mut self) -> TidW<TidmSpec> {
         TidW::new(self, 0)
     }
-    #[doc = "Bit 31 - Enable Copying of TID Matched Frames"]
+    #[doc = "Bit 31 - Enable Copying of TID n Matched Frames"]
     #[inline(always)]
     #[must_use]
     pub fn enid(&mut self) -> EnidW<TidmSpec> {

@@ -4,7 +4,7 @@ set -xe
 
 # INSTALL DEPENDENCIES
 
-cargo install --version 0.33.4 svd2rust
+cargo install --version 0.33.5 svd2rust
 cargo install --version 0.12.1 form
 
 # PATCH SVD FILES AND GENERATE CRATES
