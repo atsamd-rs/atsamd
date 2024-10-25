@@ -682,9 +682,11 @@ pub type I2cPads = i2c::Pads<I2cSercom, IoSet1, Sda, Scl>;
 
 /// I2C master for the labelled I2C peripheral
 ///
-/// This type implements [`Read`](ehal::blocking::i2c::Read),
-/// [`Write`](ehal::blocking::i2c::Write) and
-/// [`WriteRead`](ehal::blocking::i2c::WriteRead).
+/// This type implements [`Read`](https://docs.rs/embedded-hal/0.2.7/embedded_hal/blocking/i2c/trait.Read.html),
+/// [`Write`](https://docs.rs/embedded-hal/0.2.7/embedded_hal/blocking/i2c/trait.Write.html) and
+/// [`WriteRead`](https://docs.rs/embedded-hal/0.2.7/embedded_hal/blocking/i2c/trait.WriteRead.html) for `embedded-hal` version 0.2,
+/// and also implements [`I2c`](hal::ehal::i2c::I2c) for `embedded-hal` version
+/// 1.
 pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to

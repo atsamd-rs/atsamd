@@ -12,7 +12,7 @@ use hal::time::Hertz;
 use hal::timer::TimerCounter;
 use rtic::app;
 
-#[app(device = crate::hal::pac, peripherals = true)]
+#[app(device = crate::hal::pac, dispatchers = [EVSYS_0])]
 mod app {
     use super::*;
 
@@ -48,7 +48,7 @@ mod app {
     }
 
     #[init]
-    fn init(c: init::Context) -> (Shared, Resources, init::Monotonics) {
+    fn init(c: init::Context) -> (Shared, Resources) {
         let mut device = c.device;
         let mut clocks = GenericClockController::with_internal_32kosc(
             device.gclk,
@@ -76,7 +76,6 @@ mod app {
                 red_led: pins.led_pin.into(),
                 timer: tc3,
             },
-            init::Monotonics(),
         )
     }
 }
