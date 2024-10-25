@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.0...atsamd-hal-macros-0.2.1) - 2024-10-25
+
+### Fixed
+
+- Cleanup newly introduced nightly Clippy lints ([#763](https://github.com/atsamd-rs/atsamd/pull/763))
+
 ## [0.2.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.1.0...atsamd-hal-macros-0.2.0) - 2024-10-17
 
 ### Removed

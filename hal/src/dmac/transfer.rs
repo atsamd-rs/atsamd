@@ -85,7 +85,7 @@
 use super::{
     channel::{AnyChannel, Busy, CallbackStatus, Channel, ChannelId, InterruptFlags, Ready},
     dma_controller::{ChId, TriggerAction, TriggerSource},
-    BlockTransferControl, DmacDescriptor, Error, Result, DESCRIPTOR_SECTION,
+    sram, Error, Result,
 };
 use crate::typelevel::{Is, Sealed};
 use core::{ptr::null_mut, sync::atomic};
@@ -378,7 +378,7 @@ where
             // SAFETY This is safe as we are only reading the descriptor's address,
             // and not actually writing any data to it. We also assume the descriptor
             // will never be moved.
-            &mut DESCRIPTOR_SECTION[id] as *mut _
+            &mut sram::DESCRIPTOR_SECTION[id] as *mut _
         } else {
             null_mut()
         };
@@ -397,13 +397,13 @@ where
         // that a transfer has completed iff the blockact field in btctrl is not
         // set to SUSPEND.  We implicitly leave blockact set to NOACT here; if
         // that changes Channel::xfer_complete() may need to be modified.
-        let btctrl = BlockTransferControl::new()
+        let btctrl = sram::BlockTransferControl::new()
             .with_srcinc(src_inc)
             .with_dstinc(dst_inc)
             .with_beatsize(S::Beat::BEATSIZE)
             .with_valid(true);
 
-        let xfer_descriptor = DmacDescriptor {
+        let xfer_descriptor = sram::DmacDescriptor {
             // Next descriptor address:  0x0 terminates the transaction (no linked list),
             // any other address points to the next block descriptor
             descaddr,
@@ -421,7 +421,7 @@ where
         // belonging to OUR channel. We assume this is the only place
         // in the entire library that this section or the array
         // will be written to.
-        DESCRIPTOR_SECTION[id] = xfer_descriptor;
+        sram::DESCRIPTOR_SECTION[id] = xfer_descriptor;
     }
 }
 
