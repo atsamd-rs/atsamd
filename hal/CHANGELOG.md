@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.0...atsamd-hal-0.19.0) - 2024-10-25
+
+### Fixed
+
+- [**breaking**] Changes to the `dmac` public API
+- Cleanup newly introduced nightly Clippy lints ([#763](https://github.com/atsamd-rs/atsamd/pull/763))
+
 ## [0.18.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.17.0...atsamd-hal-0.18.0) - 2024-10-17
 
 ### Dependencies
