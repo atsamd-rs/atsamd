@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.19.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.0...atsamd-hal-0.19.0) - 2024-10-25
+## [0.18.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.0...atsamd-hal-0.18.1) - 2024-10-25
 
 ### Fixed
 
-- [**breaking**] Changes to the `dmac` public API
+- Changes to the `dmac` public API ([#764](https://github.com/atsamd-rs/atsamd/pull/764)):
+  * Make `BlockTransferControl` and `DmacDescriptor` structs private instead of `#[doc(hidden)]`
+  * Add getters/setters for `level0`, `level1`, `level2`, and `level3` for `PriorityLevelMask` and `RoundRobinMask` structs
 - Cleanup newly introduced nightly Clippy lints ([#763](https://github.com/atsamd-rs/atsamd/pull/763))
 
 ## [0.18.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.17.0...atsamd-hal-0.18.0) - 2024-10-17
