@@ -554,7 +554,9 @@ seq_macro::seq!(N in 1..=4 {
 /// the [type-level enum] documentation for more details.
 ///
 /// [type-level enum]: crate::typelevel#type-level-enums
-pub trait Capability: Sealed + Default {}
+pub trait Capability: Sealed + Default {
+    const RX_ENABLE: bool;
+}
 
 /// Sub-set of [`Capability`] variants that can receive data, i.e. [`Rx`] and
 /// [`Duplex`]
@@ -581,7 +583,9 @@ pub struct Rx {
 }
 
 impl Sealed for Rx {}
-impl Capability for Rx {}
+impl Capability for Rx {
+    const RX_ENABLE: bool = true;
+}
 impl Receive for Rx {}
 
 /// Type-level variant of the [`Capability`] enum for simplex, [`Transmit`]-only
@@ -593,7 +597,9 @@ impl Receive for Rx {}
 pub struct Tx;
 
 impl Sealed for Tx {}
-impl Capability for Tx {}
+impl Capability for Tx {
+    const RX_ENABLE: bool = false;
+}
 impl Transmit for Tx {}
 
 /// Type-level variant of the [`Capability`] enum for duplex transactions
@@ -605,7 +611,9 @@ impl Transmit for Tx {}
 pub struct Duplex;
 
 impl Sealed for Duplex {}
-impl Capability for Duplex {}
+impl Capability for Duplex {
+    const RX_ENABLE: bool = true;
+}
 impl Receive for Duplex {}
 impl Transmit for Duplex {}
 
@@ -985,11 +993,15 @@ where
     where
         Self: ValidConfig,
     {
-        self.regs.rx_enable();
+        if P::Capability::RX_ENABLE {
+            self.regs.rx_enable();
+        }
         self.regs.enable();
         Spi {
             config: self,
             capability: P::Capability::default(),
+            rx_channel: NoneT,
+            tx_channel: NoneT,
         }
     }
 }
