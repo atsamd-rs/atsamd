@@ -58,5 +58,32 @@ usb = ["atsamd-hal/usb", "usb-device"]
 chip = "ATSAMD51J19A"
 
 [[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "button_rtic"
+
+[[example]]
+name = "clock_out"
+
+[[example]]
+name = "ferris_img"
+
+[[example]]
+name = "pwm_tc4"
+
+[[example]]
+name = "pwm_tcc0"
+
+[[example]]
+name = "qspi"
+
+[[example]]
+name = "sd_card"
+
+[[example]]
+name = "timer"
+
+[[example]]
 name = "usb_poll"
 required-features = ["usb"]
