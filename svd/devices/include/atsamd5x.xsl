@@ -36,19 +36,6 @@
     <name>CHANNELS[%s]</name>
   </xsl:template>
 
-  <!-- The GMAC::TIDM::ENIDn fields are all missing. -->
-  <xsl:template match="/device/peripherals/peripheral[name='GMAC']/registers/register[name='TIDM[%s]']/fields">
-    <fields>
-      <xsl:copy-of select="./field"/>
-      <field>
-        <name>ENID</name>
-        <description>Enable Copying of TID Matched Frames</description>
-        <bitOffset>31</bitOffset>
-        <bitWidth>1</bitWidth>
-      </field>
-    </fields>
-  </xsl:template>
-
   <!-- The SERCOM USART TXPO enumerated values of the original SVD don't match the datasheet-->
   <xsl:template match = "/device/peripherals/peripheral[name='SERCOM0']/registers/cluster[name='USART_INT']/register[name='CTRLA']/fields/field[name='TXPO']/enumeratedValues">
     <enumeratedValues>
