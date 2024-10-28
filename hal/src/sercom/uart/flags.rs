@@ -120,6 +120,9 @@ pub enum Error {
     InconsistentSyncField,
     /// Detected a collision
     CollisionDetected,
+    /// DMA error
+    #[cfg(feature = "dma")]
+    Dma(crate::dmac::Error),
 }
 
 impl From<Error> for Status {
@@ -132,6 +135,8 @@ impl From<Error> for Status {
             Overflow => Status::BUFOVF,
             InconsistentSyncField => Status::ISF,
             CollisionDetected => Status::COLL,
+            #[cfg(feature = "dma")]
+            Dma(_) => unimplemented!(),
         }
     }
 }
