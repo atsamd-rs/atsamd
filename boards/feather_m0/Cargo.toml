@@ -127,8 +127,19 @@ required-features = ["rtic"]
 
 [[example]]
 name = "uart"
+
+[[example]]
+name = "uart_dma_nonblocking"
+required-features = ["dma"]
+
+[[example]]
+name = "uart_dma_blocking"
 required-features = ["dma"]
 
 [[example]]
 name = "i2c"
+required-features = ["dma"]
+
+[[example]]
+name = "spi"
 required-features = ["dma"]

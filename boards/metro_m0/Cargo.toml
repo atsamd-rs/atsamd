@@ -63,3 +63,7 @@ name = "blinky_basic"
 [[example]]
 name = "i2c"
 required-features = ["dma"]
+
+[[example]]
+name = "spi"
+required-features = ["dma"]
