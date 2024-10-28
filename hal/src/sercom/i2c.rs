@@ -136,13 +136,12 @@
 //! parameter, representing the underlying [`Config`].
 //!
 //! Only the [`I2c`] struct can actually perform
-//! transactions. To do so, use the embedded HAL traits, like
-//! [`i2c::WriteRead`], [`i2c::Read`] and [`i2c::Write`].
+//! transactions. To do so, use the [`embedded_hal::i2c::I2c`] trait.
 //!
 //! ```
-//! use embedded_hal::blocking::i2c::Write;
+//! use embedded_hal::i2c::I2c;
 //!
-//! i2c.write(0x54, 0x0fe)
+//! i2c.write(0x54, 0x0fe).unwrap();
 //! ```
 //!
 //! # Reading the current configuration
@@ -163,7 +162,6 @@
 //!
 //! ```no_run
 //! use atsamd_hal::sercom::i2c::I2c;
-//! use atsamd_hal::time::*;
 //!
 //! // Assume config is a valid Duplex I2C Config struct
 //! let i2c = config.enable();
@@ -183,8 +181,48 @@
 //! * High-speed mode is not supported.
 //! * 4-wire mode is not supported.
 //! * 32-bit extension mode is not supported (SAMx5x). If you need to transfer
-//!   slices, consider using the DMA methods instead. The `dma` Cargo feature
-//!   must be enabled.
+//!   slices, consider using the DMA methods instead . The <span class="stab
+//!   portability" title="Available on crate feature `dma`
+//!   only"><code>dma</code></span> Cargo feature must be enabled.
+//!
+//! # Using I2C with DMA <span class="stab portability" title="Available on crate feature `dma` only"><code>dma</code></span>
+//!
+//! This HAL includes support for DMA-enabled I2C transfers. Use
+//! [`I2c::with_dma_channel`] to attach a DMA channel to the [`I2c`] struct. A
+//! DMA-enabled [`I2c`] implements the blocking
+//! [`embedded_hal::i2c::I2c`](crate::ehal::i2c::I2c) trait, which can be used
+//! to perform I2C transfers which are fast, continuous and low jitter, even
+//! if they are preemped by a higher priority interrupt.
+//!
+//!
+//! ```no_run
+//! use atsamd_hal::dmac::channel::{AnyChannel, Ready};
+//! use atsand_hal::sercom::i2c::{I2c, AnyConfig, Error};
+//! use atsamd_hal::embedded_hal::i2c::I2c;
+//! fn i2c_send_with_dma<A: AnyConfig, C: AnyChannel<Status = Ready>>(i2c: I2c<A>, channel: C, bytes: &[u8]) -> Result<(), Error>{
+//!     // Attach a DMA channel
+//!     let i2c = i2c.with_dma_channel(channel);
+//!     i2c.send(0x54, bytes)?;
+//! }
+//! ```
+//!
+//! ## Limitations of using DMA with I2C
+//!
+//! * The I2C peripheral only supports continuous DMA read/writes of up to 255
+//!   bytes. Trying to read/write with a transfer of 256 bytes or more will
+//!   result in a panic. This also applies to using [`I2c::transaction`] with
+//!   adjacent write/read operations of the same type; the total number of bytes
+//!   across all adjacent operations must not exceed 256. If you need continuous
+//!   transfers of 256 bytes or more, use the non-DMA [`I2c`] implementations.
+//!
+//! * Using [`I2c::transaction`] consumes significantly more memory than the
+//!   other methods provided by [`embedded_hal::i2c::I2c`] (at least 256 bytes
+//!   extra).
+//!
+//! * When using [`I2c::transaction`], up to 17 adjacent operations of the same
+//!   type can be continuously handled by DMA without CPU intervention. If you
+//!   need more than 17 adjacent operations of the same type, the transfer will
+//!   reverted to using the byte-by-byte (non-DMA) implementation.
 //!
 //! [`enable`]: Config::enable
 //! [`disable`]: I2c::disable
@@ -199,61 +237,8 @@
 //! [`Pin`]: crate::gpio::pin::Pin
 //! [`PinId`]: crate::gpio::pin::PinId
 //! [`PinMode`]: crate::gpio::pin::PinMode
-//! [`i2c::Write`]: embedded_hal::blocking::i2c::Write
-//! [`i2c::Read`]: embedded_hal::blocking::i2c::Read
-//! [`i2c::WriteRead`]: embedded_hal::blocking::i2c::WriteRead
-#![cfg_attr(
-    feature = "dma",
-    doc = "
-# Using I2C with DMA
-
-This HAL includes support for DMA-enabled I2C transfers. [`I2c`]
-implements the DMAC [`Buffer`]
-trait. The provided [`send_with_dma`] and
-[`receive_with_dma`] build and begin a
-[`dmac::Transfer`], thus starting the I2C
-in a non-blocking way.
-
-Note that the [`init_dma_transfer`] method should be called immediately before
-starting a DMA transfer with I2C. This will check that the bus is in a correct
-state before starting the transfer, and providing a token type to pass to the
-[`send_with_dma`] and [`receive_with_dma`] methods.
-
-Optionally, interrupts can be enabled on the provided
-[`Channel`]. Note that the `dma` feature must
-be enabled. Please refer to the [`dmac`](crate::dmac) module-level
-documentation for more information.
-
-```no_run
-use atsamd_hal::dmac::channel::{AnyChannel, Ready};
-use atsand_hal::sercom::i2c::{I2c, AnyConfig, Error};
-fn i2c_send_with_dma<A: AnyConfig, C: AnyChannel<Status = Ready>>(i2c: I2c<A>, channel: C) -> Result<(), Error>{
-    // Create data to send. Note that it must be `'static`.
-    let buffer: [u8; 50] = [0xff; 50];
-
-    // Initialize the bus and check for errors
-    let token = i2c.init_dma_transfer()?;
-    let transfer = i2c.send_with_dma(0x54, token, buffer, channel0, |_| {})
-
-
-    // Wait for transfers to complete and reclaim resources
-    let (chan0, buffer, i2c) = transfer.wait();
-
-    // Check for errors that may have occured during the transfer.
-    i2c.read_status().check_bus_error()?;
-}
-```
-
-[`Buffer`]: crate::dmac::transfer::Buffer
-[`init_dma_transfer`]: I2c::init_dma_transfer
-[`send_with_dma`]: I2c::send_with_dma
-[`receive_with_dma`]: I2c::receive_with_dma
-[`dmac::Transfer`]: crate::dmac::Transfer
-[`Channel`]: crate::dmac::channel::Channel
-[`dmac`]: crate::dmac
-
-"
-)]
+//! [`embedded_hal::i2c::I2c`]: crate::ehal::i2c::I2c
+//! [`I2c::transaction`]: crate::ehal::i2c::I2c::transaction
 
 use atsamd_hal_macros::hal_module;
 
@@ -294,11 +279,12 @@ pub enum InactiveTimeout {
 }
 
 /// Abstraction over a I2C peripheral, allowing to perform I2C transactions.
-pub struct I2c<C: AnyConfig> {
+pub struct I2c<C: AnyConfig, D = crate::typelevel::NoneT> {
     config: C,
+    dma_channel: D,
 }
 
-impl<C: AnyConfig> I2c<C> {
+impl<C: AnyConfig, D> I2c<C, D> {
     /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
     #[inline]
     pub fn data_ptr(&self) -> *mut Word {
@@ -429,6 +415,37 @@ impl<C: AnyConfig> I2c<C> {
         let mut config = self.config;
         config.as_mut().registers.disable();
         config
+    }
+}
+
+impl<C: AnyConfig> I2c<C> {
+    /// Attach a DMA channel to this [`I2c`]. Its
+    /// [`embedded_hal::i2c::I2c`](crate::ehal::i2c::I2c) implementation will
+    /// use DMA to carry out its transactions.
+    #[cfg(feature = "dma")]
+    #[inline]
+    pub fn with_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::Ready>>(
+        self,
+        channel: Chan,
+    ) -> I2c<C, Chan> {
+        I2c {
+            config: self.config,
+            dma_channel: channel,
+        }
+    }
+}
+
+#[cfg(feature = "dma")]
+impl<C: AnyConfig, D: crate::dmac::AnyChannel<Status = crate::dmac::Ready>> I2c<C, D> {
+    /// Reclaim the DMA channels
+    pub fn take_dma_channel(self) -> (I2c<C, crate::typelevel::NoneT>, D) {
+        (
+            I2c {
+                config: self.config,
+                dma_channel: crate::typelevel::NoneT,
+            },
+            self.dma_channel,
+        )
     }
 }
 
