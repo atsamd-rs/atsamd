@@ -73,37 +73,6 @@ use crate::ehal_nb;
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
 
-impl ehal_nb::serial::Error for Error {
-    fn kind(&self) -> ehal_nb::serial::ErrorKind {
-        match self {
-            Error::Overflow => ehal_nb::serial::ErrorKind::Overrun,
-            Error::LengthError => ehal_nb::serial::ErrorKind::Other,
-        }
-    }
-}
-
-impl<C, D> ehal_nb::serial::ErrorType for Spi<C, D>
-where
-    C: ValidConfig,
-    D: Capability,
-{
-    type Error = Error;
-}
-
-impl embedded_io::Error for Error {
-    fn kind(&self) -> embedded_io::ErrorKind {
-        embedded_io::ErrorKind::Other
-    }
-}
-
-impl<C, D> embedded_io::ErrorType for Spi<C, D>
-where
-    C: ValidConfig,
-    D: Capability,
-{
-    type Error = Error;
-}
-
 //=============================================================================
 // serial::Read
 //=============================================================================

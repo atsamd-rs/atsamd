@@ -93,45 +93,14 @@
 use crate::ehal_02;
 use crate::ehal_nb;
 use crate::sercom::spi::{
-    AtomicSize, Capability, Config, DataWidth, Duplex, DynLength, Error, Flags, GreaterThan4,
-    Length, MasterMode, OpMode, Receive, Rx, Slave, Spi, Status, Tx, ValidConfig, ValidPads, Word,
+    AtomicSize, Config, DataWidth, Duplex, DynLength, Error, Flags, GreaterThan4, Length,
+    MasterMode, OpMode, Receive, Rx, Slave, Spi, Status, Tx, ValidConfig, ValidPads, Word,
 };
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
 use typenum::{U1, U2, U3, U4};
 
 use crate::pac::sercom0::RegisterBlock;
-
-impl ehal_nb::serial::Error for Error {
-    fn kind(&self) -> ehal_nb::serial::ErrorKind {
-        match self {
-            Error::Overflow => ehal_nb::serial::ErrorKind::Overrun,
-            Error::LengthError => ehal_nb::serial::ErrorKind::Other,
-        }
-    }
-}
-
-impl<C, D> ehal_nb::serial::ErrorType for Spi<C, D>
-where
-    C: ValidConfig,
-    D: Capability,
-{
-    type Error = Error;
-}
-
-impl embedded_io::Error for Error {
-    fn kind(&self) -> embedded_io::ErrorKind {
-        embedded_io::ErrorKind::Other
-    }
-}
-
-impl<C, D> embedded_io::ErrorType for Spi<C, D>
-where
-    C: ValidConfig,
-    D: Capability,
-{
-    type Error = Error;
-}
 
 //=============================================================================
 // serial::Read
