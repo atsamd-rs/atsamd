@@ -1524,6 +1524,76 @@ where
     }
 }
 
+/// Wrapper type around a [`Spi`] that allows using
+/// [`embedded_hal::spi::SpiBus`] even though it only has RX capability. Will
+/// panic if any write-adjacent method is used (ie, `write`, `transfer`,
+/// `transfer_in_place`, and `flush`).
+///
+/// Also implements `Into<Spi>, `AsRef<Spi>` and `AsMut<Spi>` if you need to use
+/// `Spi` methods.
+///
+/// [`embedded_hal::spi::SpiBus`]: crate::ehal::spi::SpiBus
+pub struct PanicOnWrite<T: crate::ehal::spi::ErrorType>(T);
+
+impl<C: ValidConfig, R, T> From<PanicOnWrite<Spi<C, Rx, R, T>>> for Spi<C, Rx, R, T> {
+    fn from(value: PanicOnWrite<Spi<C, Rx, R, T>>) -> Self {
+        value.0
+    }
+}
+
+impl<C: ValidConfig, R, T> AsRef<Spi<C, Rx, R, T>> for PanicOnWrite<Spi<C, Rx, R, T>> {
+    fn as_ref(&self) -> &Spi<C, Rx, R, T> {
+        &self.0
+    }
+}
+impl<C: ValidConfig, R, T> AsMut<Spi<C, Rx, R, T>> for PanicOnWrite<Spi<C, Rx, R, T>> {
+    fn as_mut(&mut self) -> &mut Spi<C, Rx, R, T> {
+        &mut self.0
+    }
+}
+
+impl<C: ValidConfig, R, T> Spi<C, Tx, R, T> {
+    /// Turn a [`Tx`] [`Spi`] into a [`PanicOnWrite`]
+    pub fn into_panic_on_write(self) -> PanicOnWrite<Self> {
+        PanicOnWrite(self)
+    }
+}
+
+/// Wrapper type around a [`Spi`] that allows using
+/// [`embedded_hal::spi::SpiBus`] even though it only has TX capability. Will
+/// panic if any write-adjacent method is used (ie, `read`, `transfer`, and
+/// `transfer_in_place`).
+///
+/// Also implements `Into<Spi>, `AsRef<Spi>` and `AsMut<Spi>` if you need to use
+/// `Spi` methods.
+///
+/// [`embedded_hal::spi::SpiBus`]: crate::ehal::spi::SpiBus
+pub struct PanicOnRead<T: crate::ehal::spi::ErrorType>(T);
+
+impl<C: ValidConfig, R, T> From<PanicOnRead<Spi<C, Tx, R, T>>> for Spi<C, Tx, R, T> {
+    fn from(value: PanicOnRead<Spi<C, Tx, R, T>>) -> Self {
+        value.0
+    }
+}
+
+impl<C: ValidConfig, R, T> AsRef<Spi<C, Tx, R, T>> for PanicOnRead<Spi<C, Tx, R, T>> {
+    fn as_ref(&self) -> &Spi<C, Tx, R, T> {
+        &self.0
+    }
+}
+
+impl<C: ValidConfig, R, T> AsMut<Spi<C, Tx, R, T>> for PanicOnRead<Spi<C, Tx, R, T>> {
+    fn as_mut(&mut self) -> &mut Spi<C, Tx, R, T> {
+        &mut self.0
+    }
+}
+
+impl<C: ValidConfig, R, T> Spi<C, Tx, R, T> {
+    /// Turn a [`Rx`] [`Spi`] into a [`PanicOnRead`]
+    pub fn into_panic_on_read(self) -> PanicOnRead<Self> {
+        PanicOnRead(self)
+    }
+}
 
 #[hal_cfg("sercom0-d5x")]
 impl<P, M, A> Spi<Config<P, M, DynLength>, A>

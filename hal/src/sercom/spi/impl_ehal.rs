@@ -7,6 +7,7 @@ use num_traits::PrimInt;
 
 #[cfg(feature = "dma")]
 mod dma;
+mod panic_on;
 
 #[hal_module(
     any("sercom0-d11", "sercom0-d21") => "impl_ehal_thumbv6m.rs",
