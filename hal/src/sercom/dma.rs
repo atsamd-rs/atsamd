@@ -116,6 +116,10 @@ unsafe impl<T: Beat> Buffer for SercomPtr<T> {
 ///
 /// For use with [`send_with_dma`](super::i2c::I2c::send_with_dma) and
 /// [`receive_with_dma`](super::i2c::I2c::send_with_dma).
+#[deprecated(
+    since = "0.19.0",
+    note = "Use `I2c::with_dma_channel` instead. You will have access to DMA-enabled `embedded-hal` implementations."
+)]
 pub struct I2cBusReady;
 
 unsafe impl<C: i2c::AnyConfig> Buffer for I2c<C> {
@@ -156,6 +160,11 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// [`init_dma_transfer`]: super::i2c::I2c::init_dma_transfer
     /// [`send_with_dma`]: super::i2c::I2c::send_with_dma
     /// [`receive_with_dma`]: super::i2c::I2c::receive_with_dma
+    #[deprecated(
+        since = "0.19.0",
+        note = "Use `I2c::with_dma_channel` instead. You will have access to DMA-enabled `embedded-hal` implementations."
+    )]
+    #[allow(deprecated)]
     pub fn init_dma_transfer(&mut self) -> Result<I2cBusReady, super::i2c::Error> {
         self.check_bus_status()?;
         Ok(I2cBusReady)
@@ -167,6 +176,11 @@ impl<C: i2c::AnyConfig> I2c<C> {
     ///
     /// It is recommended that you check for errors after the transfer is
     /// complete by calling [`read_status`](I2c::read_status).
+    #[deprecated(
+        since = "0.19.0",
+        note = "Use `I2c::with_dma_channel` instead. You will have access to DMA-enabled `embedded-hal` implementations."
+    )]
+    #[allow(deprecated)]
     #[hal_macro_helper]
     pub fn receive_with_dma<Ch, B, W>(
         self,
@@ -217,6 +231,11 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// complete by calling [`read_status`](I2c::read_status).
     #[inline]
     #[hal_macro_helper]
+    #[deprecated(
+        since = "0.19.0",
+        note = "Use `I2c::with_dma_chahnnel` instead. You will have access to DMA-enabled `embedded-hal` implementations."
+    )]
+    #[allow(deprecated)]
     pub fn send_with_dma<Ch, B, W>(
         self,
         address: u8,

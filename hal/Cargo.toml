@@ -41,6 +41,7 @@ embedded-hal-1 = {package = "embedded-hal", version = "1.0.0"}
 embedded-hal-nb = "1.0.0"
 embedded-io = "0.6"
 fugit = "0.3"
+heapless = "0.8"
 modular-bitfield = "0.11"
 nb = "1.0"
 num-traits = {version = "0.2.14", default-features = false}
