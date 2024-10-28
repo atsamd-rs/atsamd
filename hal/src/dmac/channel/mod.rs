@@ -33,15 +33,21 @@
 
 #![allow(unused_braces)]
 
+use core::marker::PhantomData;
+use core::sync::atomic;
+
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
-use super::dma_controller::{ChId, PriorityLevel, TriggerAction, TriggerSource};
+use super::{
+    dma_controller::{ChId, PriorityLevel, TriggerAction, TriggerSource},
+    sram::{self, DmacDescriptor},
+    transfer::{BufferPair, Transfer},
+    Beat, Buffer, Error,
+};
 use crate::typelevel::{Is, Sealed};
-use core::marker::PhantomData;
 use modular_bitfield::prelude::*;
 
 mod reg;
-
 use reg::RegisterBlock;
 
 #[hal_cfg("dmac-d5x")]
@@ -194,6 +200,14 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     }
 
     #[inline]
+    pub(super) fn change_status<N: Status>(self) -> Channel<Id, N> {
+        Channel {
+            regs: self.regs,
+            _status: PhantomData,
+        }
+    }
+
+    #[inline]
     fn _reset_private(&mut self) {
         // Reset the channel to its startup state and wait for reset to complete
         self.regs.chctrla.modify(|_, w| w.swrst().set_bit());
@@ -203,6 +217,99 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     #[inline]
     fn _trigger_private(&mut self) {
         self.regs.swtrigctrl.set_bit();
+    }
+
+    #[inline]
+    fn _enable_private(&mut self) {
+        self.regs.chctrla.modify(|_, w| w.enable().set_bit());
+    }
+
+    /// Stop transfer on channel whether or not the transfer has completed
+    #[inline]
+    pub(crate) fn stop(&mut self) {
+        self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
+    }
+
+    /// Returns whether or not the transfer is complete.
+    #[inline]
+    pub(crate) fn xfer_complete(&mut self) -> bool {
+        !self.regs.chctrla.read().enable().bit_is_set()
+    }
+
+    /// Returns the transfer's success status.
+    #[allow(dead_code)]
+    #[inline]
+    pub(crate) fn xfer_success(&mut self) -> super::Result<()> {
+        let success = self.regs.chintflag.read().terr().bit_is_clear();
+        success.then_some(()).ok_or(Error::TransferError)
+    }
+
+    /// Return a mutable reference to the DMAC descriptor that belongs to this
+    /// channel. In the case of linked transfers, this will be the first
+    /// descriptor in the chain.
+    #[inline]
+    fn descriptor_mut(&mut self) -> &mut DmacDescriptor {
+        // SAFETY this is only safe as long as we read/write to the descriptor
+        // belonging to OUR channel. We assume this is the case, as there can only ever
+        // exist one (safely created) instance of Self, and we're taking an exclusive
+        // reference to Self.
+        unsafe {
+            let id = ChannelId::<Self>::USIZE;
+            &mut *sram::get_descriptor(id)
+        }
+    }
+
+    /// Fill the first descriptor of a channel into the SRAM descriptor section.
+    ///
+    /// # Safety
+    ///
+    /// This method may only be called on a channel which is not actively being
+    /// used for transferring data.
+    #[inline]
+    pub(super) unsafe fn fill_descriptor<Src: Buffer, Dst: Buffer<Beat = Src::Beat>>(
+        &mut self,
+        source: &mut Src,
+        destination: &mut Dst,
+        circular: bool,
+    ) {
+        let descriptor = self.descriptor_mut();
+
+        // Enable support for circular transfers. If circular_xfer is true,
+        // we set the address of the "next" block descriptor to actually
+        // be the same address as the current block descriptor.
+        // Otherwise we set it to NULL, which terminates the transaction.
+        let descaddr = if circular {
+            // SAFETY This is safe as we are only reading the descriptor's address,
+            // and not actually writing any data to it. We also assume the descriptor
+            // will never be moved.
+            descriptor as *mut _
+        } else {
+            core::ptr::null_mut()
+        };
+
+        write_descriptor(descriptor, source, destination, descaddr);
+    }
+
+    /// Add a linked descriptor after the first descriptor in the transfer.
+    ///
+    /// # Safety
+    ///
+    /// * This method may only be called on a channel which is not actively
+    ///   being used for transferring data.
+    ///
+    /// * `next` must point to a valid [`DmacDescriptor`], with all the safety
+    ///   considerations that entails: the source and destination buffers must
+    ///   be valid, have compatible lengths, remain in scope for the entirety of
+    ///   the transfer, etc.
+    ///
+    /// * The pointer in the `descaddr` field of `next`, along with the
+    ///   descriptor it points to, etc, must point to a valid [`DmacDescriptor`]
+    ///   memory location, or be null. They must not be circular (ie, points to
+    ///   itself). Any linked transfer must strictly be a read transaction
+    ///   (destination pointer is a byte buffer, source pointer is the SERCOM
+    ///   DATA register).
+    pub(super) unsafe fn link_next(&mut self, next: *mut DmacDescriptor) {
+        self.descriptor_mut().descaddr = next;
     }
 }
 
@@ -241,18 +348,32 @@ impl<Id: ChId> Channel<Id, Ready> {
             .modify(|_, w| w.burstlen().variant(burst_length));
     }
 
-    /// Start transfer on channel using the specified trigger source.
+    /// Start the transfer.
     ///
-    /// # Return
+    /// # Safety
     ///
-    /// A `Channel` with a `Busy` status.
+    /// This function is unsafe because it starts the transfer without changing
+    /// the channel status to [`Busy`]. A [`Ready`] channel which is actively
+    /// transferring should NEVER be leaked.
     #[inline]
     #[hal_macro_helper]
-    pub(crate) fn start(
-        mut self,
+    pub(super) unsafe fn _start_private(
+        &mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Channel<Id, Busy> {
+    ) {
+        // Configure the trigger source and trigger action
+        self.configure_trigger(trig_src, trig_act);
+        self._enable_private();
+        // If trigger source is DISABLE, manually trigger transfer
+        if trig_src == TriggerSource::Disable {
+            self._trigger_private();
+        }
+    }
+
+    #[inline]
+    #[hal_macro_helper]
+    pub(super) fn configure_trigger(&mut self, trig_src: TriggerSource, trig_act: TriggerAction) {
         // Configure the trigger source and trigger action
         #[hal_cfg(any("dmac-d11", "dmac-d21"))]
         self.regs.chctrlb.modify(|_, w| {
@@ -265,18 +386,112 @@ impl<Id: ChId> Channel<Id, Ready> {
             w.trigsrc().variant(trig_src);
             w.trigact().variant(trig_act)
         });
+    }
+}
 
-        // Start channel
-        self.regs.chctrla.modify(|_, w| w.enable().set_bit());
+impl<Id: ChId> Channel<Id, Ready> {
+    /// Start transfer on channel using the specified trigger source.
+    ///
+    /// # Return
+    ///
+    /// A `Channel` with a `Busy` status.
+    #[inline]
+    pub(crate) fn start(
+        mut self,
+        trig_src: TriggerSource,
+        trig_act: TriggerAction,
+    ) -> Channel<Id, Busy> {
+        unsafe {
+            self._start_private(trig_src, trig_act);
+        }
+        self.change_status()
+    }
 
-        // If trigger source is DISABLE, manually trigger transfer
-        if trig_src == TriggerSource::Disable {
-            self._trigger_private();
+    /// Begin a [`Transfer`], without changing the channel's type to [`Busy`].
+    ///
+    /// This method provides an additional safety guarantee over
+    /// [`Self::transfer_unchecked`]; it checks that the buffer lengths are
+    /// valid before attempting to start the transfer.
+    ///
+    /// Also provides support for linked transfers via an optional `&mut
+    /// DmacDescriptor`.
+    ///
+    /// This function guarantees that it will never return [`Err`] if the
+    /// transfer has been started.
+    ///
+    /// # Safety
+    ///
+    /// * You must ensure that the transfer is completed or stopped before
+    ///   returning the [`Channel`]. Doing otherwise breaks type safety, because
+    ///   a [`Ready`] channel would still be in the middle of a transfer.
+    /// * If the provided `linked_descriptor` is `Some` it must not be dropped
+    ///   until the transfer is completed or stopped.
+    /// * Additionnally, this function doesn't take `'static` buffers. Again,
+    ///   you must guarantee that the returned transfer has completed or has
+    ///   been stopped before giving up control of the underlying [`Channel`].
+    #[inline]
+    #[allow(dead_code)]
+    pub(crate) unsafe fn transfer<S, D>(
+        &mut self,
+        source: &mut S,
+        dest: &mut D,
+        trig_src: TriggerSource,
+        trig_act: TriggerAction,
+        linked_descriptor: Option<&mut DmacDescriptor>,
+    ) -> Result<(), Error>
+    where
+        S: Buffer,
+        D: Buffer<Beat = S::Beat>,
+    {
+        Transfer::<Self, BufferPair<S, D>>::check_buffer_pair(source, dest)?;
+        self.transfer_unchecked(source, dest, trig_src, trig_act, linked_descriptor);
+        Ok(())
+    }
+
+    /// Begin a [`Transfer`], without changing the channel's type to [`Busy`].
+    ///
+    /// Also provides support for linked transfers via an optional `&mut
+    /// DmacDescriptor`.
+    ///
+    /// # Safety
+    ///
+    /// * This method does not check that the two provided buffers have
+    ///   compatible lengths. You must guarantee that:
+    ///   - Either `source` or `dest` has a buffer length of 1, or
+    ///   - Both buffers have the same length.
+    /// * You must ensure that the transfer is completed or stopped before
+    ///   returning the [`Channel`]. Doing otherwise breaks type safety, because
+    ///   a [`Ready`] channel would still be in the middle of a transfer.
+    /// * If the provided `linked_descriptor` is `Some` it must not be dropped
+    ///   until the transfer is completed or stopped.
+    /// * Additionnally, this function doesn't take `'static` buffers. Again,
+    ///   you must guarantee that the returned transfer has completed or has
+    ///   been stopped before giving up control of the underlying [`Channel`].
+    #[inline]
+    pub(crate) unsafe fn transfer_unchecked<S, D>(
+        &mut self,
+        source: &mut S,
+        dest: &mut D,
+        trig_src: TriggerSource,
+        trig_act: TriggerAction,
+        linked_descriptor: Option<&mut DmacDescriptor>,
+    ) where
+        S: Buffer,
+        D: Buffer<Beat = S::Beat>,
+    {
+        self.fill_descriptor(source, dest, false);
+
+        if let Some(next) = linked_descriptor {
+            self.link_next(next as *mut _);
         }
 
-        Channel {
-            regs: self.regs,
-            _status: PhantomData,
+        self.configure_trigger(trig_src, trig_act);
+
+        atomic::fence(atomic::Ordering::Release);
+        self._enable_private();
+
+        if trig_src == TriggerSource::Disable {
+            self._trigger_private();
         }
     }
 }
@@ -287,12 +502,6 @@ impl<Id: ChId> Channel<Id, Busy> {
     #[inline]
     pub(crate) fn software_trigger(&mut self) {
         self._trigger_private();
-    }
-
-    /// Returns whether or not the transfer is complete.
-    #[inline]
-    pub(crate) fn xfer_complete(&mut self) -> bool {
-        !self.regs.chctrla.read().enable().bit_is_set()
     }
 
     /// Stop transfer on channel whether or not the transfer has completed
@@ -379,4 +588,68 @@ pub struct InterruptFlags {
     pub susp: bool,
     #[skip]
     _reserved: B5,
+}
+
+/// Generate a [`DmacDescriptor`], and write it to the provided descriptor
+/// reference.
+///
+/// `next` is the address of the next descriptor (for linked transfers). If
+/// it is set to `0`, the transfer will terminate after this descriptor. For
+/// circular transfers, set `next` to the descriptor's own address.
+///
+/// # Safety
+///
+/// * This method may only be called on a channel which is not actively being
+///   used for transferring data.
+///
+/// * `next` must point to a valid [`DmacDescriptor`], with all the safety
+///   considerations that entails: the source and destination buffers must be
+///   valid, have compatible lengths, remain in scope for the entirety of the
+///   transfer, etc.
+///
+/// * The pointer in the `descaddr` field of `next`, along with the descriptor
+///   it points to, etc, must point to a valid [`DmacDescriptor`] memory
+///   location, or be null. They must not be circular (ie, points to itself).
+///   Any linked transfer must strictly be a read transaction (destination
+///   pointer is a byte buffer, source pointer is the SERCOM DATA register).
+#[inline]
+pub(crate) unsafe fn write_descriptor<Src: Buffer, Dst: Buffer<Beat = Src::Beat>>(
+    descriptor: &mut DmacDescriptor,
+    source: &mut Src,
+    destination: &mut Dst,
+    next: *mut DmacDescriptor,
+) {
+    let src_ptr = source.dma_ptr();
+    let src_inc = source.incrementing();
+    let src_len = source.buffer_len();
+
+    let dst_ptr = destination.dma_ptr();
+    let dst_inc = destination.incrementing();
+    let dst_len = destination.buffer_len();
+
+    let length = core::cmp::max(src_len, dst_len);
+
+    // Channel::xfer_complete() tests the channel enable bit, which indicates
+    // that a transfer has completed iff the blockact field in btctrl is not
+    // set to SUSPEND.  We implicitly leave blockact set to NOACT here; if
+    // that changes Channel::xfer_complete() may need to be modified.
+    let btctrl = sram::BlockTransferControl::new()
+        .with_srcinc(src_inc)
+        .with_dstinc(dst_inc)
+        .with_beatsize(Src::Beat::BEATSIZE)
+        .with_valid(true);
+
+    *descriptor = DmacDescriptor {
+        // Next descriptor address:  0x0 terminates the transaction (no linked list),
+        // any other address points to the next block descriptor
+        descaddr: next,
+        // Source address: address of the last beat transfer source in block
+        srcaddr: src_ptr as *mut _,
+        // Destination address: address of the last beat transfer destination in block
+        dstaddr: dst_ptr as *mut _,
+        // Block transfer count: number of beats in block transfer
+        btcnt: length as u16,
+        // Block transfer control: Datasheet  section 19.8.2.1 p.329
+        btctrl,
+    };
 }
