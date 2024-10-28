@@ -10,7 +10,7 @@ use crate::{
     pac,
     sercom::Sercom,
     time::Hertz,
-    typelevel::{Is, Sealed},
+    typelevel::{Is, NoneT, Sealed},
 };
 use core::marker::PhantomData;
 use num_traits::{AsPrimitive, PrimInt};
@@ -408,6 +408,8 @@ where
         Uart {
             config: self,
             capability: PhantomData,
+            rx_channel: NoneT,
+            tx_channel: NoneT,
         }
     }
 }

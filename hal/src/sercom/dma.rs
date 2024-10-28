@@ -314,8 +314,14 @@ where
     C: uart::ValidConfig,
     D: uart::Receive,
 {
-    /// Transform an [`Uart`] into a DMA [`Transfer`]) and
-    /// start receiving into the provided buffer.
+    /// Transform an [`Uart`] into a DMA [`Transfer`]) and start reveiving into
+    /// the provided buffer.
+    ///
+    /// In order to be (safely) non-blocking, his method has to take a `'static`
+    /// buffer. If you'd rather use DMA with the blocking
+    /// [`embedded_io::Read`](crate::embedded_io::Read) trait, and avoid having
+    /// to use static buffers,
+    /// use[`Uart::with_rx_channel`](Self::with_tx_channel) instead.
     #[inline]
     #[hal_macro_helper]
     pub fn receive_with_dma<Ch, B, W>(
@@ -353,8 +359,14 @@ where
     C: uart::ValidConfig,
     D: uart::Transmit,
 {
-    /// Transform an [`Uart`] into a DMA [`Transfer`]) and
-    /// start sending the provided buffer.
+    /// Transform an [`Uart`] into a DMA [`Transfer`]) and start sending the
+    /// provided buffer.
+    ///
+    /// In order to be (safely) non-blocking, his method takes a `'static`
+    /// buffer. If you'd rather use DMA with the blocking
+    /// [`embedded_io::Write`](crate::embedded_io::Write) trait, and avoid
+    /// having to use static buffers,
+    /// use[`Uart::with_tx_channel`](Self::with_tx_channel) instead.
     #[inline]
     #[hal_macro_helper]
     pub fn send_with_dma<Ch, B, W>(
