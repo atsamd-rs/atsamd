@@ -9,7 +9,7 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use metro_m4 as bsp;
+use feather_m0 as bsp;
 
 use bsp::entry;
 use bsp::hal;
@@ -25,14 +25,14 @@ use hal::fugit::RateExtU32;
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_external_32kosc(
+    let mut clocks = GenericClockController::with_internal_32kosc(
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
         &mut peripherals.nvmctrl,
     );
 
+    let mut pm = peripherals.pm;
     let dmac = peripherals.dmac;
     let pins = bsp::Pins::new(peripherals.port);
 
@@ -40,16 +40,17 @@ fn main() -> ! {
     let (miso, mosi, sclk) = (pins.miso, pins.mosi, pins.sclk);
 
     // Setup DMA channels for later use
-    let mut dmac = DmaController::init(dmac, &mut peripherals.pm);
+    let mut dmac = DmaController::init(dmac, &mut pm);
     let channels = dmac.split();
     let chan0 = channels.0.init(PriorityLevel::Lvl0);
     let chan1 = channels.1.init(PriorityLevel::Lvl0);
 
+    // Create a Spi with DMA enabled
     let mut spi = bsp::spi_master(
         &mut clocks,
         100.kHz(),
-        peripherals.sercom2,
-        &mut peripherals.mclk,
+        peripherals.sercom4,
+        &mut pm,
         sclk,
         mosi,
         miso,

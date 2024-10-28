@@ -9,7 +9,7 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use metro_m4 as bsp;
+use feather_m4 as bsp;
 
 use bsp::entry;
 use bsp::hal;
@@ -37,7 +37,7 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.port);
 
     // Take SPI pins
-    let (miso, mosi, sclk) = (pins.miso, pins.mosi, pins.sclk);
+    let (miso, mosi, sclk) = (pins.miso, pins.mosi, pins.sck);
 
     // Setup DMA channels for later use
     let mut dmac = DmaController::init(dmac, &mut peripherals.pm);
@@ -48,7 +48,7 @@ fn main() -> ! {
     let mut spi = bsp::spi_master(
         &mut clocks,
         100.kHz(),
-        peripherals.sercom2,
+        peripherals.sercom1,
         &mut peripherals.mclk,
         sclk,
         mosi,

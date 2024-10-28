@@ -1,4 +1,5 @@
-//! This example showcases the i2c module.
+//! This example showcases the i2c module, and uses DMA to perform I2C
+//! transactions.
 
 #![no_std]
 #![no_main]
@@ -23,8 +24,9 @@ use hal::ehal::i2c::I2c;
 use hal::fugit::RateExtU32;
 use hal::sercom::i2c;
 
-const LENGTH: usize = 1;
-const ADDRESS: u8 = 0x77;
+// This example is based on the BMP388 pressure sensor. Adjust the device and
+// register addresses to your liking
+const ADDRESS: u8 = 0x76;
 
 #[entry]
 fn main() -> ! {
@@ -49,32 +51,19 @@ fn main() -> ! {
     let channels = dmac.split();
     let chan0 = channels.0.init(PriorityLevel::Lvl0);
 
-    let buf_src: &'static mut [u8; LENGTH] =
-        cortex_m::singleton!(: [u8; LENGTH] = [0x00; LENGTH]).unwrap();
-    let buf_dest: &'static mut [u8; LENGTH] =
-        cortex_m::singleton!(: [u8; LENGTH] = [0x00; LENGTH]).unwrap();
-
     let gclk0 = clocks.gclk0();
     let sercom2_clock = &clocks.sercom2_core(&gclk0).unwrap();
     let pads = i2c::Pads::new(sda, scl);
     let i2c_sercom = periph_alias!(peripherals.i2c_sercom);
     let mut i2c = i2c::Config::new(&mclk, i2c_sercom, pads, sercom2_clock.freq())
         .baud(100.kHz())
-        .enable();
+        .enable()
+        .with_dma_channel(chan0);
 
-    let mut buffer = [0x00; 1];
+    let mut received = [0x00; 1];
 
     // Test writing then reading from an I2C chip
-    i2c.write_read(ADDRESS, &[0x00], &mut buffer).unwrap();
-
-    // Test writing then reading using DMA
-    let init_token = i2c.init_dma_transfer().unwrap();
-    let xfer = i2c.send_with_dma(ADDRESS, init_token, buf_src, chan0, |_| {});
-    let (chan0, _buf_src, mut i2c) = xfer.wait();
-
-    let init_token = i2c.init_dma_transfer().unwrap();
-    let xfer = i2c.receive_with_dma(ADDRESS, init_token, buf_dest, chan0, |_| {});
-    let (_chan0, _i2c, _buf_dest) = xfer.wait();
+    i2c.write_read(ADDRESS, &[0x00; 8], &mut received).unwrap();
 
     loop {
         // Go to sleep

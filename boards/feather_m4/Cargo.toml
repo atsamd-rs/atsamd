@@ -48,6 +48,7 @@ rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/dma"]
+use_semihosting =  []
 
 [[example]]
 name = "pwm"
@@ -62,6 +63,16 @@ required-features = ["dma"]
 
 [[example]]
 name = "uart"
+
+[[example]]
+name = "uart_poll_echo"
+
+[[example]]
+name = "uart_dma_nonblocking"
+required-features = ["dma"]
+
+[[example]]
+name = "uart_dma_blocking"
 required-features = ["dma"]
 
 [[example]]
@@ -78,4 +89,8 @@ required-features = [ "usb"]
 
 [[example]]
 name = "i2c"
-required-features = ["atsamd-hal/dma"]
+required-features = ["dma"]
+
+[[example]]
+name = "spi"
+required-features = ["dma"]
