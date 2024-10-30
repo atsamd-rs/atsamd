@@ -12,7 +12,7 @@ use hal::time::Hertz;
 use hal::timer::TimerCounter;
 use rtic::app;
 
-#[app(device = crate::hal::pac, peripherals = true)]
+#[app(device = crate::hal::pac, dispatchers = [EVSYS_0])]
 mod app {
     use super::*;
 
@@ -48,22 +48,22 @@ mod app {
     }
 
     #[init]
-    fn init(c: init::Context) -> (Shared, Resources, init::Monotonics) {
+    fn init(c: init::Context) -> (Shared, Resources) {
         let mut device = c.device;
         let mut clocks = GenericClockController::with_internal_32kosc(
-            device.GCLK,
-            &mut device.MCLK,
-            &mut device.OSC32KCTRL,
-            &mut device.OSCCTRL,
-            &mut device.NVMCTRL,
+            device.gclk,
+            &mut device.mclk,
+            &mut device.osc32kctrl,
+            &mut device.oscctrl,
+            &mut device.nvmctrl,
         );
 
-        let pins = Pins::new(device.PORT).split();
+        let pins = Pins::new(device.port).split();
 
         let gclk0 = clocks.gclk0();
         let timer_clock = clocks.tc2_tc3(&gclk0).unwrap();
 
-        let mut tc3 = TimerCounter::tc3_(&timer_clock, device.TC3, &mut device.MCLK);
+        let mut tc3 = TimerCounter::tc3_(&timer_clock, device.tc3, &mut device.mclk);
 
         InterruptDrivenTimer::start(&mut tc3, Hertz::Hz(200).into_duration());
 
@@ -76,7 +76,6 @@ mod app {
                 red_led: pins.led_pin.into(),
                 timer: tc3,
             },
-            init::Monotonics(),
         )
     }
 }

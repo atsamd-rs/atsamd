@@ -20,18 +20,18 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut _core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let pins = Pins::new(peripherals.PORT).split();
+    let pins = Pins::new(peripherals.port).split();
 
     let usb_bus = pins
         .usb
-        .init(peripherals.USB, &mut clocks, &mut peripherals.MCLK);
+        .init(peripherals.usb, &mut clocks, &mut peripherals.mclk);
 
     let mut serial = SerialPort::new(&usb_bus);
     let mut led: RedLed = pins.led_pin.into();

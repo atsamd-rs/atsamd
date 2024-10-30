@@ -25,22 +25,22 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = Pins::new(peripherals.PORT).split();
+    let pins = Pins::new(peripherals.port).split();
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
     let (mut display, _backlight) = pins
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM4,
-            &mut peripherals.MCLK,
-            peripherals.TC2,
+            peripherals.sercom4,
+            &mut peripherals.mclk,
+            peripherals.tc2,
             &mut delay,
         )
         .unwrap();

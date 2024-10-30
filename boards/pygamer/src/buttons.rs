@@ -97,7 +97,6 @@ impl Iterator for ButtonIter {
 }
 
 /// Button pins
-
 pub struct ButtonReader {
     /// Button Latch
     pub latch: ButtonLatch,

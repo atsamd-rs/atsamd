@@ -21,17 +21,17 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
     delay.delay_ms(400u16);
 
-    let pins = Pins::new(peripherals.PORT);
+    let pins = Pins::new(peripherals.port);
 
     let gclk = clocks.gclk0();
 
@@ -40,9 +40,9 @@ fn main() -> ! {
     let mut pwm0 = Tcc0Pwm::new(
         &clocks.tcc0_tcc1(&gclk).unwrap(),
         1.kHz(),
-        peripherals.TCC0,
+        peripherals.tcc0,
         TCC0Pinout::Pa23(tcc0_pin),
-        &mut peripherals.MCLK,
+        &mut peripherals.mclk,
     );
     let max_duty = pwm0.get_max_duty();
 
