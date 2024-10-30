@@ -16,7 +16,6 @@ version = "0.10.0"
 
 [dependencies]
 cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
-# TODO Holding off on this one pending some decisions, see the `pygamer-upgrade-lcd-driver` branch
 st7735-lcd = "0.8.1"
 
 [dependencies.cortex-m-rt]
@@ -33,7 +32,6 @@ optional = true
 version = "0.3.1"
 
 [dev-dependencies]
-# TODO Cannot upgrade this yet, must be done with `st7735-lcd`
 embedded-graphics = "0.7.1"
 embedded-hal-bus = "0.2.0"
 embedded-sdmmc = "0.8.0"
@@ -42,7 +40,6 @@ micromath = "2.1"
 panic-halt = "0.2"
 rtic = {version = "2.1.1", features = ["thumbv7-backend"]}
 smart-leds = "0.4"
-# TODO Cannot upgrade this yet, must be done with `st7735-lcd`
 tinybmp = "0.3.1"
 usbd-serial = "0.2"
 
