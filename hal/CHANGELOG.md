@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.1...atsamd-hal-0.18.2) - 2024-10-30
+
+### Other
+
+- updated the following local packages: atsamd11c, atsamd11d, atsamd21e, atsamd21g, atsamd21j, atsamd51g, atsamd51j, atsamd51n, atsamd51p, atsame51g, atsame51j, atsame51n, atsame53j, atsame53n, atsame54n, atsame54p
+
 ## [0.18.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.0...atsamd-hal-0.18.1) - 2024-10-25
 
 ### Fixed
