@@ -1,7 +1,7 @@
 [package]
 name = "atsamd51g"
 description = "Peripheral access API for ATSAMD51G microcontrollers (generated using svd2rust)"
-version = "0.14.0"
+version = "0.14.1"
 authors = ["Wez Furlong <wez@wezfurlong.org>", "Tony Arcieri <bascule@gmail.com>"]
 keywords = ["no-std", "arm", "cortex-m"]
 categories = ["embedded", "hardware-support", "no-std"]

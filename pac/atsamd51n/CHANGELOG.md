@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.1](https://github.com/atsamd-rs/atsamd/compare/atsamd51n-0.14.0...atsamd51n-0.14.1) - 2024-10-30
+
+### Other
+
+- *(pacs)* Update to svd2rust 0.33.5 and re-generate PACs ([#774](https://github.com/atsamd-rs/atsamd/pull/774))
+
 ## [0.14.0](https://github.com/atsamd-rs/atsamd/compare/atsamd51n-0.13.0...atsamd51n-0.14.0) - 2024-10-17
 
 ### Changed
