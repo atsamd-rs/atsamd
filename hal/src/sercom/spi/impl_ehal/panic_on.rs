@@ -5,8 +5,8 @@ use num_traits::{AsPrimitive, PrimInt};
 use crate::ehal::spi::{ErrorType, SpiBus};
 
 use super::{
-    Config, DataWidth, MasterMode, NoneT, PanicOnRead, PanicOnWrite, Rx, Sercom, Size, Spi, Tx,
-    ValidConfig, ValidPads, Word,
+    Config, DataWidth, MasterMode, PanicOnRead, PanicOnWrite, Rx, Size, Spi, Tx, ValidConfig,
+    ValidPads, Word,
 };
 
 impl<T: ErrorType> ErrorType for PanicOnRead<T> {
@@ -94,6 +94,8 @@ where
 mod dma {
     use super::*;
     use crate::dmac::{AnyChannel, Beat, Ready};
+    use crate::sercom::Sercom;
+    use crate::typelevel::NoneT;
 
     /// [`SpiBus`] implementation for [`PanicOnRead`] using DMA transfers
     impl<P, M, C, T, S> SpiBus<Word<C>> for PanicOnRead<Spi<Config<P, M, C>, Tx, NoneT, T>>

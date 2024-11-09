@@ -281,7 +281,7 @@ pub enum InactiveTimeout {
 /// Abstraction over a I2C peripheral, allowing to perform I2C transactions.
 pub struct I2c<C: AnyConfig, D = crate::typelevel::NoneT> {
     config: C,
-    dma_channel: D,
+    _dma_channel: D,
 }
 
 impl<C: AnyConfig, D> I2c<C, D> {
@@ -430,7 +430,7 @@ impl<C: AnyConfig> I2c<C> {
     ) -> I2c<C, Chan> {
         I2c {
             config: self.config,
-            dma_channel: channel,
+            _dma_channel: channel,
         }
     }
 }
@@ -442,9 +442,9 @@ impl<C: AnyConfig, D: crate::dmac::AnyChannel<Status = crate::dmac::Ready>> I2c<
         (
             I2c {
                 config: self.config,
-                dma_channel: crate::typelevel::NoneT,
+                _dma_channel: crate::typelevel::NoneT,
             },
-            self.dma_channel,
+            self._dma_channel,
         )
     }
 }

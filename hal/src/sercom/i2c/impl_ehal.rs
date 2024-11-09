@@ -179,7 +179,7 @@ mod dma {
             );
 
             self.start_dma_read(address, transfer_len as u8);
-            let channel = self.dma_channel.as_mut();
+            let channel = self._dma_channel.as_mut();
 
             // SAFETY: We must make sure that any DMA transfer is complete or stopped before
             // returning.
@@ -193,7 +193,7 @@ mod dma {
             channel.stop();
 
             self.read_status().check_bus_error()?;
-            self.dma_channel.as_mut().xfer_success()?;
+            self._dma_channel.as_mut().xfer_success()?;
             Ok(())
         }
 
@@ -233,7 +233,7 @@ mod dma {
 
             self.start_dma_write(address, transfer_len as u8);
             let mut bytes = SharedSliceBuffer::from_slice(source);
-            let channel = self.dma_channel.as_mut();
+            let channel = self._dma_channel.as_mut();
 
             // SAFETY: We must make sure that any DMA transfer is complete or stopped before
             // returning.
@@ -251,7 +251,7 @@ mod dma {
             }
 
             self.read_status().check_bus_error()?;
-            self.dma_channel.as_mut().xfer_success()?;
+            self._dma_channel.as_mut().xfer_success()?;
             Ok(())
         }
     }

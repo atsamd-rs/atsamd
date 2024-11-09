@@ -10,9 +10,8 @@ mod dma;
 mod panic_on;
 
 #[hal_module(
-    any("sercom0-d11", "sercom0-d21") => "impl_ehal_thumbv6m.rs",
-    "sercom0-d5x" => "impl_ehal_thumbv7em.rs"
-)]
+    any("sercom0-d11", "sercom0-d21") => "thumbv6m.rs",
+    "sercom0-d5x" => "thumbv7em.rs")]
 pub mod impl_ehal_02 {}
 
 impl spi::Error for Error {
@@ -133,6 +132,7 @@ where
 
     /// Wait on TXC and RXC flags
     #[inline]
+    #[cfg(feature = "dma")]
     fn flush_tx_rx(&mut self) -> Result<(), Error> {
         self.block_on_flags(Flags::TXC | Flags::RXC)
     }

@@ -160,11 +160,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
 
         #[hal_cfg("dmac-d5x")]
         self.regs.chprilvl.modify(|_, w| w.prilvl().variant(lvl));
-
-        Channel {
-            regs: self.regs,
-            _status: PhantomData,
-        }
+        self.change_status()
     }
 
     /// Selectively enable interrupts
@@ -219,8 +215,13 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         self.regs.swtrigctrl.set_bit();
     }
 
+    /// Enable the transfer, and emit a compiler fence.
     #[inline]
     fn _enable_private(&mut self) {
+        // Prevent the compiler from re-ordering read/write
+        // operations beyond this fence.
+        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+        atomic::fence(atomic::Ordering::Release); // ▲
         self.regs.chctrla.modify(|_, w| w.enable().set_bit());
     }
 
@@ -228,12 +229,22 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     #[inline]
     pub(crate) fn stop(&mut self) {
         self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
+
+        // Wait for the burst to finish
+        while !self.xfer_complete() {
+            core::hint::spin_loop();
+        }
+
+        // Prevent the compiler from re-ordering read/write
+        // operations beyond this fence.
+        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+        atomic::fence(atomic::Ordering::Acquire); // ▼
     }
 
     /// Returns whether or not the transfer is complete.
     #[inline]
     pub(crate) fn xfer_complete(&mut self) -> bool {
-        !self.regs.chctrla.read().enable().bit_is_set()
+        self.regs.chctrla.read().enable().bit_is_clear()
     }
 
     /// Returns the transfer's success status.
@@ -320,11 +331,7 @@ impl<Id: ChId> Channel<Id, Ready> {
     #[inline]
     pub fn reset(mut self) -> Channel<Id, Uninitialized> {
         self._reset_private();
-
-        Channel {
-            regs: self.regs,
-            _status: PhantomData,
-        }
+        self.change_status()
     }
 
     /// Set the FIFO threshold length. The channel will wait until it has
@@ -365,6 +372,7 @@ impl<Id: ChId> Channel<Id, Ready> {
         // Configure the trigger source and trigger action
         self.configure_trigger(trig_src, trig_act);
         self._enable_private();
+
         // If trigger source is DISABLE, manually trigger transfer
         if trig_src == TriggerSource::Disable {
             self._trigger_private();
@@ -486,8 +494,6 @@ impl<Id: ChId> Channel<Id, Ready> {
         }
 
         self.configure_trigger(trig_src, trig_act);
-
-        atomic::fence(atomic::Ordering::Release);
         self._enable_private();
 
         if trig_src == TriggerSource::Disable {
@@ -512,12 +518,8 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
     pub(crate) fn free(mut self) -> Channel<Id, Ready> {
-        self.regs.chctrla.modify(|_, w| w.enable().clear_bit());
-        while !self.xfer_complete() {}
-        Channel {
-            regs: self.regs,
-            _status: PhantomData,
-        }
+        self.stop();
+        self.change_status()
     }
 
     #[inline]
@@ -545,16 +547,14 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// Restart transfer using previously-configured trigger source and action
     #[inline]
     pub(crate) fn restart(&mut self) {
-        self.regs.chctrla.modify(|_, w| w.enable().set_bit());
+        self._enable_private();
     }
 }
 
 impl<Id: ChId> From<Channel<Id, Ready>> for Channel<Id, Uninitialized> {
-    fn from(item: Channel<Id, Ready>) -> Self {
-        Channel {
-            regs: item.regs,
-            _status: PhantomData,
-        }
+    fn from(mut item: Channel<Id, Ready>) -> Self {
+        item._reset_private();
+        item.change_status()
     }
 }
 
@@ -567,12 +567,6 @@ pub enum CallbackStatus {
     TransferError,
     /// Transfer Suspended
     TransferSuspended,
-}
-
-impl Default for InterruptFlags {
-    fn default() -> Self {
-        Self::new()
-    }
 }
 
 /// Interrupt sources available to a DMA channel
@@ -588,6 +582,12 @@ pub struct InterruptFlags {
     pub susp: bool,
     #[skip]
     _reserved: B5,
+}
+
+impl Default for InterruptFlags {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 /// Generate a [`DmacDescriptor`], and write it to the provided descriptor
