@@ -16,7 +16,9 @@ version = "0.11.0"
 
 [dependencies]
 cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
-st7735-lcd = "0.8.1"
+embedded-hal-bus = "0.2.0"
+# This version is pinned as recommended by: https://docs.rs/embedded-hal-bus/0.2.0/embedded_hal_bus/spi/struct.ExclusiveDevice.html#method.new_no_delay
+st7735-lcd = "=0.10.0"
 
 [dependencies.cortex-m-rt]
 optional = true
@@ -29,18 +31,17 @@ version = "0.18.2"
 
 [dependencies.usb-device]
 optional = true
-version = "0.3.1"
+version = "0.3.2"
 
 [dev-dependencies]
-embedded-graphics = "0.7.1"
-embedded-hal-bus = "0.2.0"
+embedded-graphics = "0.8.1"
 embedded-sdmmc = "0.8.0"
 lis3dh = "0.4.3"
 micromath = "2.1"
-panic-halt = "0.2"
+panic-halt = "1"
 rtic = {version = "2.1.1", features = ["thumbv7-backend"]}
 smart-leds = "0.4"
-tinybmp = "0.3.1"
+tinybmp = "0.6"
 usbd-serial = "0.2"
 
 [features]
