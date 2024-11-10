@@ -19,7 +19,7 @@ use crate::{
         Source,
     },
     gpio::*,
-    typelevel::{Decrement, Increment},
+    typelevel::{Decrement, Increment, Sealed},
 };
 use atsamd_hal_macros::hal_cfg;
 
@@ -121,24 +121,30 @@ unsafe impl CanId for Can1 {
     const ADDRESS: *const () = crate::pac::Can1::PTR as *const _;
 }
 
-trait OwnedPeripheral {
+/// Trait representing a CAN peripheral
+pub trait OwnedPeripheral: Sealed {
     type Represents: CanId;
 }
 
+impl Sealed for crate::pac::Can0 {}
 impl OwnedPeripheral for crate::pac::Can0 {
     type Represents = Can0;
 }
 
 #[hal_cfg("can1")]
+impl Sealed for crate::pac::Can1 {}
+#[hal_cfg("can1")]
 impl OwnedPeripheral for crate::pac::Can1 {
     type Represents = Can1;
 }
 
-trait RxPin {
+/// Trait implemented on pins that can be set as RX pins for CAN
+pub trait RxPin: Sealed {
     type ValidFor: CanId;
 }
 
-trait TxPin {
+/// Trait implemented on pins that can be set as TX pins for CAN
+pub trait TxPin: Sealed {
     type ValidFor: CanId;
 }
 
