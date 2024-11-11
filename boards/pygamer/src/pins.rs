@@ -4,6 +4,7 @@ use super::{hal, pac};
 
 use hal::prelude::*;
 
+use embedded_hal_bus::spi as bspi;
 use hal::clock::GenericClockController;
 use hal::gpio::PA01;
 use hal::pwm;
@@ -581,11 +582,39 @@ pub struct Display {
     pub tft_backlight: TftBacklightReset,
 }
 
+/// Error that can occur when initializing the display.
+#[derive(Debug)]
+pub enum DisplayError {
+    /// Could not configure the SERCOM4 clock.
+    SercomClock,
+    /// Could not configure the SPI port to drive the display.
+    Spi,
+    /// Could not setup the ST7735 display driver.
+    Driver,
+    /// Could not configure the TC2/TC3 clock for PWM control of the backlight.
+    Tc2Tc3Clock,
+}
+impl From<()> for DisplayError {
+    #[inline]
+    fn from(_value: ()) -> Self {
+        Self::Driver
+    }
+}
+
 pub type TftPads = spi::Pads<Sercom4, IoSet1, NoneT, TftMosi, TftSclk>;
-pub type TftSpi = spi::Spi<spi::Config<TftPads>, spi::Tx>;
+pub type TftSpi = bspi::ExclusiveDevice<
+    spi::PanicOnRead<spi::Spi<spi::Config<TftPads>, spi::Tx>>,
+    TftCs,
+    bspi::NoDelay,
+>;
+
+/// The on-board display driver that is a
+/// [`DrawTarget`](https://docs.rs/embedded-graphics/latest/embedded_graphics/draw_target/trait.DrawTarget.html)
+/// for embedded graphics.
+pub type DisplayDriver = ST7735<TftSpi, TftDc, TftReset>;
 
 impl Display {
-    /// Convenience for setting up the on board display.
+    /// Convenience for setting up the on-board display.
     pub fn init(
         self,
         clocks: &mut GenericClockController,
@@ -593,18 +622,25 @@ impl Display {
         mclk: &mut pac::Mclk,
         timer2: pac::Tc2,
         delay: &mut hal::delay::Delay,
-    ) -> Result<(ST7735<TftSpi, TftDc, TftReset>, Pwm2<PA01>), ()> {
+    ) -> Result<(DisplayDriver, Pwm2<PA01>), DisplayError> {
         let gclk0 = clocks.gclk0();
-        let clock = &clocks.sercom4_core(&gclk0).ok_or(())?;
+        let clock = &clocks
+            .sercom4_core(&gclk0)
+            .ok_or(DisplayError::SercomClock)?;
         let pads = spi::Pads::default()
             .sclk(self.tft_sclk)
             .data_out(self.tft_mosi);
-        let tft_spi = spi::Config::new(mclk, sercom4, pads, clock.freq())
-            .spi_mode(spi::MODE_0)
-            .baud(16.MHz())
-            .enable();
         let mut tft_cs: TftCs = self.tft_cs.into();
         tft_cs.set_low().ok();
+        let tft_spi = bspi::ExclusiveDevice::new_no_delay(
+            spi::Config::new(mclk, sercom4, pads, clock.freq())
+                .spi_mode(spi::MODE_0)
+                .baud(16.MHz())
+                .enable()
+                .into_panic_on_read(),
+            tft_cs,
+        )
+        .map_err(|_| DisplayError::Spi)?;
         let mut display = st7735_lcd::ST7735::new(
             tft_spi,
             self.tft_dc.into(),
