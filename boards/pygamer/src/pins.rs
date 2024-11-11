@@ -582,13 +582,22 @@ pub struct Display {
     pub tft_backlight: TftBacklightReset,
 }
 
-/// This empty error occurs if there is an issue setting up the on-board
-/// display.
+/// Error that can occur when initializing the display.
 #[derive(Debug)]
-pub struct DisplayError;
+pub enum DisplayError {
+    /// Could not configure the SERCOM4 clock.
+    SercomClock,
+    /// Could not configure the SPI port to drive the display.
+    Spi,
+    /// Could not setup the ST7735 display driver.
+    Driver,
+    /// Could not configure the TC2/TC3 clock for PWM control of the backlight.
+    Tc2Tc3Clock,
+}
 impl From<()> for DisplayError {
+    #[inline]
     fn from(_value: ()) -> Self {
-        DisplayError
+        Self::Driver
     }
 }
 
@@ -615,7 +624,9 @@ impl Display {
         delay: &mut hal::delay::Delay,
     ) -> Result<(DisplayDriver, Pwm2<PA01>), DisplayError> {
         let gclk0 = clocks.gclk0();
-        let clock = &clocks.sercom4_core(&gclk0).ok_or(DisplayError)?;
+        let clock = &clocks
+            .sercom4_core(&gclk0)
+            .ok_or(DisplayError::SercomClock)?;
         let pads = spi::Pads::default()
             .sclk(self.tft_sclk)
             .data_out(self.tft_mosi);
@@ -629,7 +640,7 @@ impl Display {
                 .into_panic_on_read(),
             tft_cs,
         )
-        .map_err(|_| DisplayError)?;
+        .map_err(|_| DisplayError::Spi)?;
         let mut display = st7735_lcd::ST7735::new(
             tft_spi,
             self.tft_dc.into(),

@@ -59,5 +59,7 @@ fn main() -> ! {
     let ferris = Image::new(&raw_image, Point::new(32, 32));
 
     ferris.draw(&mut display).unwrap();
-    loop {}
+    loop {
+        cortex_m::asm::wfi();
+    }
 }

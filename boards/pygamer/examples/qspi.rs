@@ -99,7 +99,9 @@ fn main() -> ! {
     flash.read_memory(0, &mut read_buf);
     assert_eq!(read_buf, write_buf);
 
-    loop {}
+    loop {
+        cortex_m::asm::wfi();
+    }
 }
 
 /// Wait for the write-in-progress and suspended write/erase.

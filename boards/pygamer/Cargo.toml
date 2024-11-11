@@ -47,6 +47,8 @@ usbd-serial = "0.2"
 [features]
 # ask the HAL to enable atsamd51j support
 default = ["rt", "atsamd-hal/samd51j"]
+dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
 panic_led = []
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]

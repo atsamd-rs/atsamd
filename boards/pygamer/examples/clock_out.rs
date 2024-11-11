@@ -30,5 +30,7 @@ fn main() -> ! {
         .configure_gclk_divider_and_source(Gclk2, 40, Dpll0, false)
         .unwrap();
     let _clock_out_pin: GclkOut = pins.d5.into();
-    loop {}
+    loop {
+        cortex_m::asm::wfi();
+    }
 }
