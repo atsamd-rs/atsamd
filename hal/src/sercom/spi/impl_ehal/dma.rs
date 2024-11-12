@@ -307,7 +307,7 @@ where
 
     #[inline]
     fn transfer_in_place(&mut self, words: &mut [C::Word]) -> Result<(), Self::Error> {
-        // Safefy: Aliasing the buffer is only safe because the DMA read will always be
+        // Safety: Aliasing the buffer is only safe because the DMA read will always be
         // lagging one word behind the write, so they don't overlap on the same memory.
         // It's preferable to use two `SharedSliceBuffer`s here; using the `words` slice
         // directly as a buffer could potentially cause UB issues if not careful when
