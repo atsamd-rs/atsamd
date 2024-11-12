@@ -276,6 +276,9 @@ reg_proxy!(swtrigctrl, bit, rw);
 /// Acts as a proxy to the PAC DMAC object. Only registers and bits
 /// within registers that should be readable/writable by specific
 /// [`Channel`]s are exposed.
+///
+/// This struct implements [`Drop`]. Dropping this struct will stop
+/// any ongoing transfers for the channel which it represents.
 #[allow(dead_code)]
 #[hal_macro_helper]
 pub(super) struct RegisterBlock<Id: ChId> {
@@ -310,5 +313,21 @@ impl<Id: ChId> RegisterBlock<Id> {
             #[hal_cfg("dmac-d5x")]
             chprilvl: ChprilvlProxy::new(),
         }
+    }
+}
+
+impl<Id: ChId> Drop for RegisterBlock<Id> {
+    fn drop(&mut self) {
+        // Stop any potentially ongoing transfers
+        self.chctrla.modify(|_, w| w.enable().clear_bit());
+
+        while self.chctrla.read().enable().bit_is_set() {
+            core::hint::spin_loop();
+        }
+
+        // Prevent the compiler from re-ordering read/write
+        // operations beyond this fence.
+        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+        core::sync::atomic::fence(core::sync::atomic::Ordering::Acquire); // ▼
     }
 }

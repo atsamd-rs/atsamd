@@ -307,13 +307,18 @@ where
 
     #[inline]
     fn transfer_in_place(&mut self, words: &mut [C::Word]) -> Result<(), Self::Error> {
-        for word in words {
-            let read = self.transfer_word_in_place(*word)?;
-            *word = read;
+        // Safety: Aliasing the buffer is only safe because the DMA read will always be
+        // lagging one word behind the write, so they don't overlap on the same memory.
+        // It's preferable to use two `SharedSliceBuffer`s here; using the `words` slice
+        // directly as a buffer could potentially cause UB issues if not careful when
+        // aliasing, as it could be easy to create two `&mut` references pointing to the
+        // same buffer. `read_buf` and `write_buf` may only be read/written to by the
+        // DMAC, otherwise an `UnsafeCell` would be necessary.
+        unsafe {
+            let mut read_buf = SharedSliceBuffer::from_slice_unchecked(words);
+            let mut write_buf = SharedSliceBuffer::from_slice(words);
+            self.transfer_blocking(&mut read_buf, &mut write_buf)
         }
-
-        self.flush_tx();
-        Ok(())
     }
 
     #[inline]

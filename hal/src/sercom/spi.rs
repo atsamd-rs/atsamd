@@ -302,14 +302,6 @@
 //! spi.write(&mut buffer)?;
 //! ```
 //!
-//! ### Considerations when using SPI DMA transfers
-//!
-//! * The implemenatation for the `transfer_in_place` method provided by
-//!   [`embedded_hal::spi::SpiBus`] cannot make use of DMA transfers, because
-//!   two DMA transfers may not operate on the same buffer at the same time
-//!   without introducing undefined behaviour. The method falls back to using
-//!   word-by-word transfers.
-//!
 //! [`enable`]: Config::enable
 //! [`gpio`]: crate::gpio
 //! [`Pin`]: crate::gpio::pin::Pin

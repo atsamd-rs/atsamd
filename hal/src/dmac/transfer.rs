@@ -88,7 +88,6 @@ use super::{
     Error, Result,
 };
 use crate::typelevel::{Is, Sealed};
-use core::sync::atomic;
 use modular_bitfield::prelude::*;
 
 //==============================================================================
@@ -453,10 +452,6 @@ where
         // before this function returns.
         self.complete = false;
 
-        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
-        // operations beyond this fence.
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        atomic::fence(atomic::Ordering::Release); //  ▲
         let chan = self.chan.into().start(trig_src, trig_act);
 
         Transfer {
@@ -649,13 +644,9 @@ where
     /// resources
     #[inline]
     pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D) {
+        // `free()` stops the transfer, waits for the burst to finish, and emits a
+        // compiler fence.
         let chan = self.chan.into().free();
-
-        // Memory barrier to prevent the compiler/CPU from re-ordering read/write
-        // operations beyond this fence.
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        atomic::fence(atomic::Ordering::Acquire); // ▼
-
         (chan, self.buffers.source, self.buffers.destination)
     }
 }

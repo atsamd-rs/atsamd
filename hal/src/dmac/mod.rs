@@ -99,9 +99,9 @@
 //! stack-allocated buffers for reuse while the DMAC is still writing to/reading
 //! from them! Needless to say that is very unsafe.
 //! Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget)
-//! or [here](https://blog.japaric.io/safe-dma/) for more information. You may choose to forego
-//! the `'static` lifetimes by using the unsafe API and the
-//! [`Transfer::new_unchecked`](transfer::Transfer::new_unchecked) method.
+//! or [here](https://blog.japaric.io/safe-dma/#leakpocalypse) for more information.
+//! You may choose to forgo the `'static` lifetimes by using the unsafe API and
+//! the [`Transfer::new_unchecked`](transfer::Transfer::new_unchecked) method.
 //!
 //! # Unsafe API
 //!

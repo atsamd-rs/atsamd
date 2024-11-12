@@ -232,7 +232,7 @@ impl<P: PadSet> Config<P> {
 
         I2c {
             config: self,
-            dma_channel: NoneT,
+            _dma_channel: NoneT,
         }
     }
 }
