@@ -48,6 +48,8 @@ nom = { version = "5", default-features = false }
 heapless = "0.7"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
+systick-monotonic = "1.0.0"
+rtt-target = {version= "0.3.1",  features = ["cortex-m"] }
 
 [features]
 # ask the HAL to enable atsamd21g support
@@ -124,6 +126,10 @@ required-features = ["adalogger", "usb", "sdmmc"]
 [[example]]
 name = "blinky_rtic"
 required-features = ["rtic"]
+
+[[example]]
+name = "adc_rtic"
+required-features = ["rtic", "unproven"]
 
 [[example]]
 name = "uart"
