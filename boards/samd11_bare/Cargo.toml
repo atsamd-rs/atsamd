@@ -38,6 +38,8 @@ rtt-target = { version = "0.3.0", features = ["cortex-m"] }
 default = ["rt", "atsamd-hal/samd11c"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
+# Enable async support from atsamd-hal
+async = ["atsamd-hal/async"]
 rt = ["cortex-m-rt", "atsamd-hal/samd11c-rt"]
 use_semihosting = []
 

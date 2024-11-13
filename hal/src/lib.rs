@@ -7,7 +7,15 @@ pub use embedded_io;
 pub use fugit;
 pub use nb;
 pub use paste;
+
+#[cfg(feature = "async")]
+pub use embedded_hal_async as ehal_async;
+
+#[cfg(feature = "async")]
+pub use embedded_io_async;
+
 pub mod typelevel;
+mod util;
 
 macro_rules! define_pac {
     ( $( ($pac:ident, $feat:literal)),+ ) => {
@@ -59,6 +67,9 @@ macro_rules! dbgprint {
 macro_rules! dbgprint {
     ($($arg:tt)*) => {{}};
 }
+
+#[cfg(feature = "async")]
+pub mod async_hal;
 
 #[cfg(feature = "device")]
 pub mod delay;

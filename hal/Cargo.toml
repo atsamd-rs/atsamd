@@ -23,7 +23,7 @@ rust-version = "1.77.2"
 version = "0.19.0"
 
 [package.metadata.docs.rs]
-features = ["samd21g", "samd21g-rt", "usb", "dma"]
+features = ["samd21g", "samd21g-rt", "usb", "dma", "async"]
 
 #===============================================================================
 # Required depdendencies
@@ -35,6 +35,7 @@ atsamd-hal-macros = { version = "0.2.1", path = "../atsamd-hal-macros" }
 bitfield = "0.13"
 bitflags = "2.6.0"
 cipher = "0.3"
+critical-section = "1.2.0"
 cortex-m = "0.7"
 embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
 embedded-hal-1 = {package = "embedded-hal", version = "1.0.0"}
@@ -43,10 +44,11 @@ embedded-io = "0.6"
 fugit = "0.3"
 heapless = "0.8"
 modular-bitfield = "0.11"
-nb = "1.0"
-num-traits = {version = "0.2.14", default-features = false}
+nb = "1.1"
+num-traits = {version = "0.2.19", default-features = false}
 opaque-debug = "0.3.0"
-paste = "1.0.11"
+paste = "1.0.15"
+portable-atomic = {version = "1.9.0", optional = true, default-features = false, features = ["critical-section"]}
 rand_core = "0.6"
 seq-macro = "0.3"
 typenum = "1.12.0"
@@ -57,12 +59,16 @@ void = {version = "1.0", default-features = false}
 # Optional depdendencies
 #===============================================================================
 
+defmt = { version = "0.3.8", optional = true}
+embassy-sync = {version = "0.6.0", optional = true}
+embedded-hal-async = {version = "1.0.0", optional = true}
+embedded-io-async = {version = "0.6.1", optional = true}
 embedded-sdmmc = {version = "0.3", optional = true}
+futures = {version = "0.3.31", default-features = false, features = ["async-await"], optional = true}
 jlink_rtt = {version = "0.2", optional = true}
 mcan-core = {version = "0.2", optional = true}
 rtic-monotonic = {version = "1.0", optional = true}
-usb-device = {version = "0.3.1", optional = true}
-defmt = {version = "0.3.4", optional = true}
+usb-device = {version = "0.3.2", optional = true}
 
 #===============================================================================
 # PACs
@@ -184,6 +190,13 @@ rtic = ["rtic-monotonic"]
 sdmmc = ["embedded-sdmmc"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
+async = [
+    "embassy-sync",
+    "embedded-hal-async",
+    "embedded-io-async",
+    "futures",
+    "portable-atomic"
+]
 
 #===============================================================================
 # Implementation-details

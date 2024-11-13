@@ -48,6 +48,8 @@ rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/dma"]
+# Enable async support from atsamd-hal
+async = ["atsamd-hal/async"]
 use_semihosting =  []
 
 [[example]]

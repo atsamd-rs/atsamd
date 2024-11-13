@@ -6,50 +6,13 @@ use crate::dmac::{channel, sram::DmacDescriptor, AnyChannel, Beat, Buffer, Ready
 use crate::ehal::spi::SpiBus;
 use crate::sercom::dma::{
     read_dma, read_dma_linked, write_dma, write_dma_linked, SercomPtr, SharedSliceBuffer,
+    SinkSourceBuffer,
 };
-use atsamd_hal_macros::hal_macro_helper;
 
 use super::{
     Capability, Config, DataWidth, Duplex, Error, MasterMode, OpMode, Receive, Sercom, Size, Slave,
     Spi, Transmit, ValidConfig, ValidPads, Word,
 };
-
-struct SinkSourceBuffer<'a, T: Beat> {
-    word: &'a mut T,
-    length: usize,
-}
-
-/// Sink/source buffer to use for unidirectional SPI-DMA transfers.
-///
-/// When reading/writing from a [`Duplex`] [`Spi`] with DMA enabled,
-/// we must always read and write the same number of words, regardless of
-/// whether we care about the result (ie, for write, we discard the read
-/// words, whereas for read, we must send a no-op word).
-///
-/// This [`Buffer`] implementation provides a source/sink for a single word,
-/// but with a variable length.
-impl<'a, T: Beat> SinkSourceBuffer<'a, T> {
-    fn new(word: &'a mut T, length: usize) -> Self {
-        Self { word, length }
-    }
-}
-unsafe impl<T: Beat> Buffer for SinkSourceBuffer<'_, T> {
-    type Beat = T;
-    #[inline]
-    fn incrementing(&self) -> bool {
-        false
-    }
-
-    #[inline]
-    fn buffer_len(&self) -> usize {
-        self.length
-    }
-
-    #[inline]
-    fn dma_ptr(&mut self) -> *mut Self::Beat {
-        self.word as *mut _
-    }
-}
 
 impl<P, M, Z, D, R, T> Spi<Config<P, M, Z>, D, R, T>
 where
@@ -61,7 +24,7 @@ where
     Z::Word: Beat,
 {
     #[inline]
-    pub(super) fn sercom_ptr(&self) -> SercomPtr<Z::Word> {
+    pub(in super::super) fn sercom_ptr(&self) -> SercomPtr<Z::Word> {
         SercomPtr(self.config.regs.spi().data().as_ptr() as *mut _)
     }
 }
@@ -88,7 +51,7 @@ where
         self.config.as_mut().regs.rx_disable();
 
         let sercom_ptr = self.sercom_ptr();
-        let tx = self.tx_channel.as_mut();
+        let tx = self._tx_channel.as_mut();
         let mut words = crate::sercom::dma::SharedSliceBuffer::from_slice(buf);
 
         // SAFETY: We make sure that any DMA transfer is complete or stopped before
@@ -110,7 +73,7 @@ where
             self.config.as_mut().regs.rx_enable();
         }
 
-        self.tx_channel.as_mut().xfer_success()?;
+        self._tx_channel.as_mut().xfer_success()?;
         self.flush_tx();
         Ok(buf.len())
     }
@@ -136,8 +99,8 @@ where
         source: &mut Source,
     ) -> Result<(), Error> {
         let sercom_ptr = self.sercom_ptr();
-        let rx = self.rx_channel.as_mut();
-        let tx = self.tx_channel.as_mut();
+        let rx = self._rx_channel.as_mut();
+        let tx = self._tx_channel.as_mut();
 
         // SAFETY: We make sure that any DMA transfer is complete or stopped before
         // returning. The order of operations is important; the RX transfer
@@ -157,10 +120,10 @@ where
 
         // Check for overflows or DMA errors
         self.flush_tx_rx()?;
-        self.rx_channel
+        self._rx_channel
             .as_mut()
             .xfer_success()
-            .and(self.tx_channel.as_mut().xfer_success())?;
+            .and(self._tx_channel.as_mut().xfer_success())?;
         Ok(())
     }
 
@@ -190,7 +153,6 @@ where
     R: AnyChannel<Status = Ready>,
     T: AnyChannel<Status = Ready>,
 {
-    #[hal_macro_helper]
     #[inline]
     fn read(&mut self, words: &mut [C::Word]) -> Result<(), Self::Error> {
         self.read_dma_master(words)
@@ -275,8 +237,8 @@ where
             }
         };
 
-        let rx = self.rx_channel.as_mut();
-        let tx = self.tx_channel.as_mut();
+        let rx = self._rx_channel.as_mut();
+        let tx = self._tx_channel.as_mut();
 
         let mut write = SharedSliceBuffer::from_slice(write);
 
@@ -298,10 +260,10 @@ where
 
         // Check for overflows or DMA errors
         self.flush_tx_rx()?;
-        self.rx_channel
+        self._rx_channel
             .as_mut()
             .xfer_success()
-            .and(self.tx_channel.as_mut().xfer_success())?;
+            .and(self._tx_channel.as_mut().xfer_success())?;
         Ok(())
     }
 
@@ -390,7 +352,7 @@ where
         // to UART RX). We need to check if we haven't missed any.
         self.flush_rx()?;
         let sercom_ptr = self.sercom_ptr();
-        let rx = self.rx_channel.as_mut();
+        let rx = self._rx_channel.as_mut();
 
         // SAFETY: We make sure that any DMA transfer is complete or stopped before
         // returning.
@@ -407,7 +369,7 @@ where
 
         // Check for overflows or DMA errors
         self.flush_rx()?;
-        self.rx_channel.as_mut().xfer_success()?;
+        self._rx_channel.as_mut().xfer_success()?;
         Ok(buf.len())
     }
 }

@@ -91,6 +91,25 @@ The Peripheral Access Crates (PACs) are automatically generated from Microchip S
 [wio_terminal]: https://github.com/atsamd-rs/atsamd/tree/master/boards/wio_terminal
 [xiao_m0]: https://github.com/atsamd-rs/atsamd/tree/master/boards/xiao_m0
 
+
+### `async` APIs
+
+[`atsamd_hal`](https://crates.io/crate/atsamd-hal) provides APIs for using `async`/`await` constructs with some of its peripherals. To enable `async` support, use the `async` Cargo feature.
+Detailed documentation is provided in the `atsamd_hal::async_hal` module. The [metro_m4](https://github.com/atsamd-rs/atsamd/tree/master/boards/metro_m4/examples) and
+[feather_m0](https://github.com/atsamd-rs/atsamd/tree/master/boards/feather_m0/examples) feature complete examples showing how to use async APIs.
+
+Please note that you must bring your own executor runtime such as [`embassy-executor`](https://crates.io/crates/embassy-executor) or [`rtic`](https://crates.io/crates/rtic) to be able to
+use the async APIs.
+
+#### Supported peripherals
+
+* SPI
+* I2C
+* USART
+* DMAC
+* EIC (GPIO interrupts)
+* Timers
+
 ### Examples
 
 The BSPs include examples to quickly get up and running with the board. Building the examples

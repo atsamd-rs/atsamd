@@ -47,9 +47,9 @@ fn main() -> ! {
     let eic_clock = clocks.eic(&gclk0).unwrap();
     let mut eic = EIC::init(&mut peripherals.pm, eic_clock, peripherals.eic);
     let button: Pin<_, PullUpInterrupt> = pins.d10.into();
-    let mut extint = ExtInt2::new(button);
-    extint.sense(&mut eic, Sense::Fall);
-    extint.enable_interrupt(&mut eic);
+    let mut extint = ExtInt2::new(button, &mut eic);
+    extint.sense(Sense::Fall);
+    extint.enable_interrupt();
 
     // Enable EIC interrupt in the NVIC
     unsafe {

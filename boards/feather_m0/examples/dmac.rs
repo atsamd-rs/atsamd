@@ -51,7 +51,6 @@ fn main() -> ! {
     // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing
     // destination) with a 8-bit beat size
     let xfer = Transfer::new_from_arrays(chan0, buf_src, buf_dest, false)
-        .with_waker(|_status| asm::nop())
         .begin(TriggerSource::Disable, TriggerAction::Block);
     // Wait for transfer to complete and grab resulting buffers
     let (chan0, buf_src, buf_dest) = xfer.wait();

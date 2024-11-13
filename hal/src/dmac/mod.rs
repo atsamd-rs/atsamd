@@ -115,7 +115,7 @@
 //! `Drop` implementation is offered for `Transfer`s.
 //!
 //! Additionally, you can (unsafely) implement your own buffer types through the
-//! unsafe [`Buffer`](transfer::Buffer) trait.
+//! unsafe [`Buffer`] trait.
 //!
 //! # Example
 //! ```
@@ -513,3 +513,18 @@ pub(crate) mod sram {
 pub mod channel;
 pub mod dma_controller;
 pub mod transfer;
+
+#[cfg(feature = "async")]
+pub mod async_api;
+#[cfg(feature = "async")]
+pub use async_api::*;
+
+#[cfg(feature = "async")]
+mod waker {
+    use embassy_sync::waitqueue::AtomicWaker;
+
+    #[allow(clippy::declare_interior_mutable_const)]
+    const NEW_WAKER: AtomicWaker = AtomicWaker::new();
+    pub(super) static WAKERS: [AtomicWaker; with_num_channels!(get)] =
+        [NEW_WAKER; with_num_channels!(get)];
+}

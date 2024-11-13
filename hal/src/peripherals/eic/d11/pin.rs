@@ -157,9 +157,85 @@ crate::paste::item! {
         }
     }
 
-    impl<GPIO: AnyPin> ExternalInterrupt for [<$PadType $num>]<GPIO> {
-        fn id(&self) -> ExternalInterruptID {
-            $num
+    #[cfg(feature = "async")]
+    impl<GPIO> [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        pub async fn wait(&mut self, sense: Sense)
+        {
+            use core::{task::Poll, future::poll_fn};
+            self.disable_interrupt();
+
+            match sense {
+                Sense::High => if self.is_high().unwrap() { return; },
+                Sense::Low => if self.is_low().unwrap() { return; },
+                _ => (),
+            }
+
+            self.sense(sense);
+            poll_fn(|cx| {
+                if self.is_interrupt() {
+                    self.clear_interrupt();
+                    self.disable_interrupt();
+                    self.sense(Sense::None);
+                    return Poll::Ready(());
+                }
+
+                super::super::async_api::WAKERS[$num].register(cx.waker());
+                self.enable_interrupt();
+
+                if self.is_interrupt(){
+                    self.clear_interrupt();
+                    self.disable_interrupt();
+                    self.sense(Sense::None);
+                    return Poll::Ready(());
+                }
+
+                Poll::Pending
+            }).await;
+        }
+    }
+
+    #[cfg(feature = "async")]
+    impl<GPIO> embedded_hal_1::digital::ErrorType for [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        type Error = core::convert::Infallible;
+    }
+
+    #[cfg(feature = "async")]
+    impl<GPIO> embedded_hal_async::digital::Wait for [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        async fn wait_for_high(&mut self) -> Result<(), Self::Error>{
+                self.wait(Sense::High).await;
+                Ok(())
+        }
+
+        async fn wait_for_low(&mut self) ->  Result<(), Self::Error> {
+                self.wait(Sense::Low).await;
+                Ok(())
+        }
+
+        async fn wait_for_rising_edge(&mut self) -> Result<(), Self::Error> {
+                self.wait(Sense::Rise).await;
+                Ok(())
+        }
+
+        async fn wait_for_falling_edge(&mut self) -> Result<(), Self::Error>{
+                self.wait(Sense::Fall).await;
+                Ok(())
+        }
+
+        async fn wait_for_any_edge(&mut self) -> Result<(), Self::Error> {
+                self.wait(Sense::Both).await;
+                Ok(())
         }
     }
 
@@ -218,6 +294,9 @@ crate::paste::item! {
 // SAMD11
 
 #[hal_cfg("eic-d11")]
+pub const NUM_CHANNELS: usize = 8;
+
+#[hal_cfg("eic-d11")]
 mod impls {
     use super::*;
 
@@ -262,6 +341,9 @@ mod impls {
 }
 
 // SAMD21
+
+#[hal_cfg("eic-d21")]
+pub const NUM_CHANNELS: usize = 16;
 
 #[hal_cfg("eic-d21")]
 mod impls {

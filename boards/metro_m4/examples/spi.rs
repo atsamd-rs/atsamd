@@ -77,7 +77,6 @@ fn main() -> ! {
         spi.transfer(&mut dest, &source).unwrap();
 
         // Simultaneously read and write from the same buffer
-        // Cannot use DMA for this method, so it reverts to word by word transfers.
         spi.transfer_in_place(&mut source).unwrap();
     }
 }

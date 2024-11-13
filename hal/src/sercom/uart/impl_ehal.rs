@@ -202,7 +202,7 @@ mod dma {
         D: Capability,
         W: Beat,
     {
-        fn sercom_ptr(&self) -> SercomPtr<W> {
+        pub(in super::super) fn sercom_ptr(&self) -> SercomPtr<W> {
             SercomPtr(self.data_ptr())
         }
     }

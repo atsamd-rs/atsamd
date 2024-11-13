@@ -54,12 +54,7 @@ fn main() -> ! {
 
     // Make buffers to store data to send/receive
     let mut rx_buffer = [0x00; 50];
-    let mut tx_buffer = [0x00; 50];
-
-    // For fun, store numbers from 0 to 49 in buffer
-    for (i, c) in tx_buffer.iter_mut().enumerate() {
-        *c = i as u8;
-    }
+    let tx_buffer = b"Hello, world!";
 
     loop {
         // Send data. We block on each byte, but we could also perform some tasks while

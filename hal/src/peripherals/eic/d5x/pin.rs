@@ -178,6 +178,60 @@ crate::paste::item! {
                 e.debouncen().modify(|_, w| unsafe { w.bits($num) });
             });
         }
+
+        /// Turn an EIC pin into a pin usable as a [`Future`](core::future::Future).
+        /// The correct interrupt source is needed.
+        #[cfg(feature = "async")]
+        pub fn into_future<I>(self, _irq: I) -> [<$PadType $num>]<GPIO>
+        where
+            I: crate::async_hal::interrupts::Binding<crate::async_hal::interrupts::[<EIC_EXTINT_ $num>], super::async_api::InterruptHandler>
+        {
+            use crate::async_hal::interrupts;
+            use interrupts::Interrupt;
+
+            interrupts::[<EIC_EXTINT_ $num>]::unpend();
+            unsafe { interrupts::[<EIC_EXTINT_ $num>]::enable() };
+
+            [<$PadType $num>] {
+                _pin: self._pin,
+                eic: self.eic,
+            }
+        }
+    }
+
+    #[cfg(feature = "async")]
+    impl<GPIO> [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        pub async fn wait(&mut self, sense: Sense)
+        {
+            use core::{task::Poll, future::poll_fn};
+            self.disable_interrupt();
+
+            self.sense(sense);
+            poll_fn(|cx| {
+                if self.is_interrupt() {
+                    self.clear_interrupt();
+                    self.disable_interrupt();
+                    self.sense(Sense::None);
+                    return Poll::Ready(());
+                }
+
+                super::async_api::WAKERS[$num].register(cx.waker());
+                self.enable_interrupt();
+
+                if self.is_interrupt(){
+                    self.clear_interrupt();
+                    self.disable_interrupt();
+                    self.sense(Sense::None);
+                    return Poll::Ready(());
+                }
+
+                Poll::Pending
+            }).await;
+        }
     }
 
     impl<GPIO, C> InputPin for [<$PadType $num>]<GPIO>
@@ -193,6 +247,51 @@ crate::paste::item! {
         #[inline]
         fn is_low(&self) -> Result<bool, Self::Error> {
             self._pin.is_low()
+        }
+    }
+
+    #[cfg(feature = "async")]
+    impl<GPIO> embedded_hal_1::digital::ErrorType for [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        type Error = core::convert::Infallible;
+    }
+
+    #[cfg(feature = "async")]
+    impl<GPIO> embedded_hal_async::digital::Wait for [<$PadType $num>]<GPIO>
+    where
+        GPIO: AnyPin,
+        Self: InputPin<Error = core::convert::Infallible>,
+    {
+        async fn wait_for_high(& mut self) -> Result<(), Self::Error> {
+            self.wait(Sense::High).await;
+            Ok(())
+        }
+
+
+        async fn wait_for_low(& mut self) -> Result<(), Self::Error> {
+            self.wait(Sense::Low).await;
+            Ok(())
+        }
+
+
+        async fn wait_for_rising_edge(& mut self) -> Result<(), Self::Error>{
+            self.wait(Sense::Rise).await;
+            Ok(())
+        }
+
+
+        async fn wait_for_falling_edge(& mut self) -> Result<(), Self::Error>{
+            self.wait(Sense::Fall).await;
+            Ok(())
+        }
+
+
+        async fn wait_for_any_edge(& mut self) -> Result<(), Self::Error> {
+            self.wait(Sense::Both).await;
+            Ok(())
         }
     }
 
@@ -228,6 +327,8 @@ crate::paste::item! {
 
     };
 }
+
+pub const NUM_CHANNELS: usize = 16;
 
 ei!(ExtInt[0] {
     #[hal_cfg("pa00")]

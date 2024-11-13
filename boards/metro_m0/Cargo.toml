@@ -43,6 +43,8 @@ cortex-m-rtic = "1.0"
 default = ["rt", "atsamd-hal/samd21g"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
+# Enable async support from atsamd-hal
+async = ["atsamd-hal/async"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 rtic = ["atsamd-hal/rtic"]
 use_rtt = ["atsamd-hal/use_rtt"]
