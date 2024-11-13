@@ -9,3 +9,18 @@ release_always = false
 
 [changelog]
 protect_breaking_commits = true
+
+commit_parsers = [
+	{ message = "^feat", group = "added" },
+	{ message = "^changed", group = "changed" },
+	{ message = "^deprecated", group = "deprecated" },
+	{ message = "^fix", group = "fixed" },
+	{ message = "^security", group = "security" },
+	{ message = "^deps", group = "dependencies" },
+	{ message = "^removed", group = "removed" },
+	{ message = "^docs", group = "documentation" },
+	{ message = "^refactor", group = "refactored" },
+	{ message = "^style", group = "formatted" },
+	{ message = "^examples", group = "examples"},
+	{ message = "^.*", group = "other" },
+]
