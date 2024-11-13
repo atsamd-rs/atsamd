@@ -1,7 +1,7 @@
 //! [`embedded-hal`] trait implementations for [`I2c`]s
 
 use super::{config::AnyConfig, flags::Error, I2c};
-use crate::ehal::i2c::{self, ErrorKind, ErrorType, NoAcknowledgeSource};
+use crate::ehal::i2c::{self, ErrorKind, ErrorType, NoAcknowledgeSource, Operation};
 
 impl i2c::Error for Error {
     #[allow(unreachable_patterns)]
@@ -26,42 +26,42 @@ impl<C: AnyConfig, D> I2c<C, D> {
     fn transaction_byte_by_byte(
         &mut self,
         address: u8,
-        operations: &mut [i2c::Operation<'_>],
+        operations: &mut [Operation<'_>],
     ) -> Result<(), Error> {
-        /// Helper type for keeping track of the type of operation that was
-        /// executed last
-        #[derive(Clone, Copy)]
-        enum Operation {
-            Read,
-            Write,
-        }
+        let mut op_groups = chunk_operations(operations).peekable();
 
-        // Keep track of the last executed operation type. The method
-        // specification demands, that no repeated start condition is sent
-        // between adjacent operations of the same type.
-        let mut last_op = None;
-        for op in operations {
+        while let Some(group) = op_groups.next() {
+            let mut group = group.iter_mut();
+            // Unwrapping is OK here because chunk_operations will never give us a 0-length
+            // chunk.
+            let op = group.next().unwrap();
+
+            // First operation in the group - send a START with the address, and the first
+            // operation.
             match op {
-                i2c::Operation::Read(buf) => {
-                    if let Some(Operation::Read) = last_op {
-                        self.continue_read(buf)?;
-                    } else {
-                        self.do_read(address, buf)?;
-                        last_op = Some(Operation::Read);
-                    }
+                Operation::Read(buf) => self.do_read(address, buf)?,
+                Operation::Write(buf) => self.do_write(address, buf)?,
+            }
+
+            // For all subsequent operations, just send/read more bytes without any more
+            // ceremony.
+            for op in group {
+                match op {
+                    Operation::Read(buf) => self.continue_read(buf)?,
+                    Operation::Write(buf) => self.continue_write(buf)?,
                 }
-                i2c::Operation::Write(bytes) => {
-                    if let Some(Operation::Write) = last_op {
-                        self.continue_write(bytes)?;
-                    } else {
-                        self.do_write(address, bytes)?;
-                        last_op = Some(Operation::Write);
-                    }
-                }
+            }
+
+            let regs = &mut self.config.as_mut().registers;
+            if op_groups.peek().is_some() {
+                // If we still have more groups to go, send a repeated start
+                regs.cmd_repeated_start();
+            } else {
+                // Otherwise, send a stop
+                regs.cmd_stop();
             }
         }
 
-        self.cmd_stop();
         Ok(())
     }
 }
@@ -70,7 +70,7 @@ impl<C: AnyConfig> i2c::I2c for I2c<C> {
     fn transaction(
         &mut self,
         address: u8,
-        operations: &mut [i2c::Operation<'_>],
+        operations: &mut [Operation<'_>],
     ) -> Result<(), Self::Error> {
         self.transaction_byte_by_byte(address, operations)?;
         Ok(())
@@ -290,10 +290,7 @@ mod dma {
             //  the same type, we must revert to the byte-by-byte I2C implementations.
             let mut descriptors = heapless::Vec::<DmacDescriptor, NUM_LINKED_TRANSFERS>::new();
 
-            // Arrange operations in groups of contiguous types (R/W)
-            let op_groups = operations.chunk_by_mut(|this, next| {
-                matches!((this, next), (Write(_), Write(_)) | (Read(_), Read(_)))
-            });
+            let op_groups = chunk_operations(operations);
 
             for group in op_groups {
                 descriptors.clear();
@@ -434,4 +431,15 @@ impl<C: AnyConfig> crate::ehal_02::blocking::i2c::WriteRead for I2c<C> {
         self.cmd_stop();
         Ok(())
     }
+}
+
+/// Arrange all operations in contiguous chunks of the same R/W type
+pub(super) fn chunk_operations<'a, 'op>(
+    operations: &'a mut [Operation<'op>],
+) -> impl Iterator<Item = &'a mut [Operation<'op>]> {
+    use i2c::Operation::{Read, Write};
+
+    operations.chunk_by_mut(|this, next| {
+        matches!((this, next), (Write(_), Write(_)) | (Read(_), Read(_)))
+    })
 }

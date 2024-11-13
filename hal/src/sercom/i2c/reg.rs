@@ -10,6 +10,7 @@ use atsamd_hal_macros::hal_cfg;
 
 const MASTER_ACT_READ: u8 = 2;
 const MASTER_ACT_STOP: u8 = 3;
+const MASTER_ACT_REPEATED_START: u8 = 1;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 type DataReg = u8;
@@ -330,18 +331,32 @@ impl<S: Sercom> Registers<S> {
         self.sync_sysop();
     }
 
+    /// Send a STOP condition. If the I2C is performing a read, will also send a
+    /// NACK to the slave.
     #[inline]
-    pub(super) fn issue_command(&mut self, cmd: u8) {
-        self.i2c_master()
-            .ctrlb()
-            .modify(|_, w| unsafe { w.cmd().bits(cmd) });
-
+    pub(super) fn cmd_stop(&mut self) {
+        unsafe {
+            self.i2c_master().ctrlb().modify(|_, w| {
+                // set bit means send NACK
+                w.ackact().set_bit();
+                w.cmd().bits(MASTER_ACT_STOP)
+            });
+        }
         self.sync_sysop();
     }
 
+    /// Send a REPEATED START condition. If the I2C is performing a read, will
+    /// also send a NACK to the slave.
     #[inline]
-    pub(super) fn cmd_stop(&mut self) {
-        self.issue_command(MASTER_ACT_STOP)
+    pub(super) fn cmd_repeated_start(&mut self) {
+        unsafe {
+            self.i2c_master().ctrlb().modify(|_, w| {
+                // set bit means send NACK
+                w.ackact().set_bit();
+                w.cmd().bits(MASTER_ACT_REPEATED_START)
+            });
+        }
+        self.sync_sysop();
     }
 
     #[inline]
