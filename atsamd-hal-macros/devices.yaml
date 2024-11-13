@@ -17,6 +17,7 @@ families:
       samd11c: ["pins-14", "pa28"]
       samd11d: ["pins-24", "pa27", "pa28"]
     peripherals:
+      - nvic
       - serial-numbers
       - dsu
       - clock
@@ -48,6 +49,7 @@ families:
       samd21el: ["pins-32l"]
       samd21gl: ["pins-48l", "pa28"]
     peripherals:
+      - nvic
       - serial-numbers
       - dsu
       - clock
@@ -89,6 +91,7 @@ families:
       same54n: ["pins-100"]
       same54p: ["pins-128"]
     peripherals:
+      - nvic
       - serial-numbers
       - cmcc
       - dsu
