@@ -15,6 +15,12 @@ use crate::timer_traits::InterruptDrivenTimer;
 use crate::clock;
 use crate::time::{Hertz, Nanoseconds};
 
+#[cfg(feature = "async")]
+mod async_api;
+
+#[cfg(feature = "async")]
+pub use async_api::*;
+
 // Note:
 // TC3 + TC4 can be paired to make a 32-bit counter
 // TC5 + TC6 can be paired to make a 32-bit counter

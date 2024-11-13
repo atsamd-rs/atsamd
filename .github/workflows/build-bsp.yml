@@ -30,6 +30,7 @@ jobs:
 
     - name: Install Rust
       run: |
+        rustup update
         rustup set profile minimal
         rustup override set ${{ matrix.toolchain }}
         target=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .target')

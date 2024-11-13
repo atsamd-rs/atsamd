@@ -81,11 +81,11 @@ fn main() -> ! {
 
     // Setup a DMA transfer to send our data asynchronously.
     // We'll set the waker to be a no-op
-    let tx_dma = tx.send_with_dma(tx_buffer, chan0, |_| {});
+    let tx_dma = tx.send_with_dma(tx_buffer, chan0);
 
     // Setup a DMA transfer to receive our data asynchronously.
     // Again, we'll set the waker to be a no-op
-    let rx_dma = rx.receive_with_dma(rx_buffer, chan1, |_| {});
+    let rx_dma = rx.receive_with_dma(rx_buffer, chan1);
 
     // Wait for transmit DMA transfer to complete
     let (_chan0, _tx_buffer, _tx) = tx_dma.wait();

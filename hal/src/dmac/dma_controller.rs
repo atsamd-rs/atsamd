@@ -16,11 +16,12 @@
 //!
 //! # Releasing the DMAC
 //!
-//! Using the [`DmaController::free`] method will
+//! Using the [`free`](DmaController::free) method will
 //! deinitialize the DMAC and return the underlying PAC object.
 #![allow(unused_braces)]
 
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+use core::marker::PhantomData;
 
 use modular_bitfield::prelude::*;
 use seq_macro::seq;
@@ -40,15 +41,70 @@ pub use crate::pac::dmac::channel::{
 };
 
 use super::{
-    channel::{new_chan, Channel, Uninitialized},
+    channel::{Channel, Uninitialized},
     sram,
 };
-use crate::pac::{Dmac, Pm};
+use crate::{
+    pac::{Dmac, Pm},
+    typelevel::NoneT,
+};
 
 /// Trait representing a DMA channel ID
 pub trait ChId {
     const U8: u8;
     const USIZE: usize;
+}
+
+/// Mask representing which priority levels should be enabled/disabled
+#[bitfield]
+#[repr(u16)]
+pub struct PriorityLevelMask {
+    #[skip]
+    _reserved: B8,
+    /// Level 0
+    pub level0: bool,
+    /// Level 1
+    pub level1: bool,
+    /// Level 2
+    pub level2: bool,
+    /// Level 3
+    pub level3: bool,
+    #[skip]
+    _reserved: B4,
+}
+
+impl Default for PriorityLevelMask {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// Mask representing which priority levels should be configured as round-robin
+#[bitfield]
+#[repr(u32)]
+pub struct RoundRobinMask {
+    #[skip]
+    _reserved: B7,
+    /// Level 0
+    pub level0: bool,
+    #[skip]
+    _reserved: B7,
+    /// Level 1
+    pub level1: bool,
+    #[skip]
+    _reserved: B7,
+    /// Level 2
+    pub level2: bool,
+    #[skip]
+    _reserved: B7,
+    /// Level 3
+    pub level3: bool,
+}
+
+impl Default for RoundRobinMask {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 macro_rules! define_channels_struct {
@@ -76,61 +132,27 @@ macro_rules! define_channels_struct {
 
 with_num_channels!(define_channels_struct);
 
+#[cfg(feature = "async")]
+macro_rules! define_channels_struct_future {
+    ($num_channels:literal) => {
+        seq!(N in 0..$num_channels {
+            /// Struct generating individual handles to each DMA channel for `async` operation
+            pub struct FutureChannels(
+                #(
+                    pub Channel<Ch~N, super::channel::UninitializedFuture>,
+                )*
+            );
+        });
+    };
+}
+
+#[cfg(feature = "async")]
+with_num_channels!(define_channels_struct_future);
+
 /// Initialized DMA Controller
-pub struct DmaController {
+pub struct DmaController<I = NoneT> {
     dmac: Dmac,
-}
-
-impl Default for PriorityLevelMask {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-/// Mask representing which priority levels should be enabled/disabled
-#[bitfield]
-#[repr(u16)]
-pub struct PriorityLevelMask {
-    #[skip]
-    _reserved: B8,
-    /// Level 0
-    pub level0: bool,
-    /// Level 1
-    pub level1: bool,
-    /// Level 2
-    pub level2: bool,
-    /// Level 3
-    pub level3: bool,
-    #[skip]
-    _reserved: B4,
-}
-
-impl Default for RoundRobinMask {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-/// Mask representing which priority levels should be configured as round-robin
-#[bitfield]
-#[repr(u32)]
-pub struct RoundRobinMask {
-    #[skip]
-    _reserved: B7,
-    /// Level 0
-    pub level0: bool,
-    #[skip]
-    _reserved: B7,
-    /// Level 1
-    pub level1: bool,
-    #[skip]
-    _reserved: B7,
-    /// Level 2
-    pub level2: bool,
-    #[skip]
-    _reserved: B7,
-    /// Level 3
-    pub level3: bool,
+    _irqs: PhantomData<I>,
 }
 
 impl DmaController {
@@ -175,9 +197,38 @@ impl DmaController {
         // Enable DMA controller
         dmac.ctrl().modify(|_, w| w.dmaenable().set_bit());
 
-        Self { dmac }
+        Self {
+            dmac,
+            _irqs: PhantomData,
+        }
     }
 
+    /// Release the DMAC and return the register block.
+    ///
+    /// **Note**: The [`Channels`] struct is consumed by this method. This means
+    /// that any [`Channel`] obtained by [`split`](DmaController::split) must be
+    /// moved back into the [`Channels`] struct before being able to pass it
+    /// into [`free`](DmaController::free).
+    #[inline]
+    #[hal_macro_helper]
+    pub fn free(mut self, _channels: Channels, _pm: &mut Pm) -> Dmac {
+        self.dmac.ctrl().modify(|_, w| w.dmaenable().clear_bit());
+
+        Self::swreset(&mut self.dmac);
+
+        #[hal_cfg(any("dmac-d11", "dmac-d21"))]
+        {
+            // Disable the DMAC clocking
+            _pm.apbbmask().modify(|_, w| w.dmac_().clear_bit());
+            _pm.ahbmask().modify(|_, w| w.dmac_().clear_bit());
+        }
+
+        // Release the DMAC
+        self.dmac
+    }
+}
+
+impl<T> DmaController<T> {
     /// Enable multiple priority levels simultaneously
     #[inline]
     pub fn enable_levels(&mut self, mask: PriorityLevelMask) {
@@ -228,6 +279,51 @@ impl DmaController {
         }
     }
 
+    /// Use the [`DmaController`] in async mode. You are required to provide the
+    /// struct created by the
+    /// [`bind_interrupts`](crate::bind_interrupts) macro to prove
+    /// that the interrupt sources have been correctly configured. This function
+    /// will automatically enable the relevant NVIC interrupt sources. However,
+    /// you are required to configure the desired interrupt priorities prior to
+    /// calling this method. Consult [`crate::async_hal::interrupts`]
+    /// module-level documentation for more information.
+    /// [`bind_interrupts`](crate::bind_interrupts).
+    #[cfg(feature = "async")]
+    #[inline]
+    pub fn into_future<I>(self, _interrupts: I) -> DmaController<I>
+    where
+        I: crate::async_hal::interrupts::Binding<
+            crate::async_hal::interrupts::DMAC,
+            super::async_api::InterruptHandler,
+        >,
+    {
+        use crate::async_hal::interrupts::{InterruptSource, DMAC};
+
+        DMAC::unpend();
+        unsafe { DMAC::enable() };
+
+        DmaController {
+            dmac: self.dmac,
+            _irqs: PhantomData,
+        }
+    }
+
+    /// Issue a software reset to the DMAC and wait for reset to complete
+    #[inline]
+    fn swreset(dmac: &mut Dmac) {
+        dmac.ctrl().modify(|_, w| w.swrst().set_bit());
+        while dmac.ctrl().read().swrst().bit_is_set() {}
+    }
+}
+
+#[cfg(feature = "async")]
+impl<I> DmaController<I>
+where
+    I: crate::async_hal::interrupts::Binding<
+        crate::async_hal::interrupts::DMAC,
+        super::async_api::InterruptHandler,
+    >,
+{
     /// Release the DMAC and return the register block.
     ///
     /// **Note**: The [`Channels`] struct is consumed by this method. This means
@@ -236,7 +332,7 @@ impl DmaController {
     /// into [`free`](DmaController::free).
     #[inline]
     #[hal_macro_helper]
-    pub fn free(mut self, _channels: Channels, _pm: &mut Pm) -> Dmac {
+    pub fn free(mut self, _channels: FutureChannels, _pm: &mut Pm) -> Dmac {
         self.dmac.ctrl().modify(|_, w| w.dmaenable().clear_bit());
 
         Self::swreset(&mut self.dmac);
@@ -251,13 +347,6 @@ impl DmaController {
         // Release the DMAC
         self.dmac
     }
-
-    /// Issue a software reset to the DMAC and wait for reset to complete
-    #[inline]
-    fn swreset(dmac: &mut Dmac) {
-        dmac.ctrl().modify(|_, w| w.swrst().set_bit());
-        while dmac.ctrl().read().swrst().bit_is_set() {}
-    }
 }
 
 macro_rules! define_split {
@@ -268,7 +357,7 @@ macro_rules! define_split {
             pub fn split(&mut self) -> Channels {
                 Channels(
                     #(
-                        new_chan(core::marker::PhantomData),
+                        crate::dmac::channel::new_chan(core::marker::PhantomData),
                     )*
                 )
             }
@@ -278,4 +367,32 @@ macro_rules! define_split {
 
 impl DmaController {
     with_num_channels!(define_split);
+}
+
+#[cfg(feature = "async")]
+macro_rules! define_split_future {
+    ($num_channels:literal) => {
+        seq!(N in 0..$num_channels {
+            /// Split the DMAC into individual channels
+            #[inline]
+            pub fn split(&mut self) -> FutureChannels {
+                FutureChannels(
+                    #(
+                        crate::dmac::channel::new_chan_future(core::marker::PhantomData),
+                    )*
+                )
+            }
+        });
+    };
+}
+
+#[cfg(feature = "async")]
+impl<I> DmaController<I>
+where
+    I: crate::async_hal::interrupts::Binding<
+        crate::async_hal::interrupts::DMAC,
+        super::async_api::InterruptHandler,
+    >,
+{
+    with_num_channels!(define_split_future);
 }

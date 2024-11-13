@@ -23,7 +23,7 @@ impl<C: AnyConfig, D> ErrorType for I2c<C, D> {
 }
 
 impl<C: AnyConfig, D> I2c<C, D> {
-    fn transaction_byte_by_byte(
+    pub(super) fn transaction_byte_by_byte(
         &mut self,
         address: u8,
         operations: &mut [Operation<'_>],
@@ -103,17 +103,19 @@ impl<C: AnyConfig> i2c::I2c for I2c<C> {
 #[cfg(feature = "dma")]
 mod dma {
     use super::*;
+    use crate::dmac::ReadyChannel;
     use crate::dmac::{channel, sram::DmacDescriptor, AnyChannel, Ready};
     use crate::sercom::dma::{read_dma_linked, write_dma_linked, SercomPtr, SharedSliceBuffer};
     use crate::sercom::{self, Sercom};
 
-    impl<C, D, S> I2c<C, D>
+    impl<C, D, S, R> I2c<C, D>
     where
         C: AnyConfig<Sercom = S>,
         S: Sercom,
-        D: AnyChannel<Status = Ready>,
+        D: AnyChannel<Status = R>,
+        R: ReadyChannel,
     {
-        fn sercom_ptr(&self) -> SercomPtr<sercom::i2c::Word> {
+        pub(in super::super) fn sercom_ptr(&self) -> SercomPtr<sercom::i2c::Word> {
             SercomPtr(self.data_ptr())
         }
 
@@ -144,6 +146,86 @@ mod dma {
             cnt
         }
 
+        /// Prepare an I2C read transaction, with the option to add in linked
+        /// transfers after this first transaction.
+        ///
+        /// # Safety
+        ///
+        /// If `next` is [`Some`], the pointer in its `descaddr` field, along
+        /// with the descriptor it points to, etc, must point to a valid
+        /// [`DmacDescriptor`] memory location, or be null. They must not be
+        /// circular (ie, points to itself). Any linked transfer must
+        /// strictly be a read transaction (destination pointer is a byte
+        /// buffer, source pointer is the SERCOM DATA register).
+        #[inline]
+        pub(in super::super) unsafe fn prepare_read_linked(
+            &mut self,
+            address: u8,
+            dest: &mut [u8],
+            next: &Option<&mut DmacDescriptor>,
+        ) -> Result<(), Error> {
+            if dest.is_empty() {
+                return Ok(());
+            }
+
+            self.check_bus_status()?;
+
+            // Calculate the total number of bytes for this transaction across all linked
+            // transfers, including the first transfer.
+            let transfer_len = dest.len() + Self::linked_transfer_length(next);
+
+            assert!(
+                transfer_len <= 255,
+                "I2C read transfers of more than 255 bytes are unsupported."
+            );
+
+            self.start_dma_read(address, transfer_len as u8);
+            Ok(())
+        }
+
+        /// Prepare an I2C write transaction, with the option to add in linked
+        /// transfers after this first transaction.
+        ///
+        /// # Safety
+        ///
+        /// If `next` is [`Some`], the pointer in its `descaddr` field, along
+        /// with the descriptor it points to, etc, must point to a valid
+        /// [`DmacDescriptor`] memory location, or be null. They must not be
+        /// circular (ie, points to itself). Any linked transfer must
+        /// strictly be a write transaction (source pointer is a byte buffer,
+        /// destination pointer is the SERCOM DATA register).
+        pub(in super::super) unsafe fn prepare_write_linked(
+            &mut self,
+            address: u8,
+            source: &[u8],
+            next: &Option<&mut DmacDescriptor>,
+        ) -> Result<(), Error> {
+            self.check_bus_status()?;
+
+            if source.is_empty() {
+                return Ok(());
+            }
+
+            // Calculate the total number of bytes for this transaction across all linked
+            // transfers, including the first transfer.
+            let transfer_len = source.len() + Self::linked_transfer_length(next);
+
+            assert!(
+                transfer_len <= 255,
+                "I2C write transfers of more than 255 bytes are unsupported."
+            );
+
+            self.start_dma_write(address, transfer_len as u8);
+            Ok(())
+        }
+    }
+
+    impl<C, D, S> I2c<C, D>
+    where
+        C: AnyConfig<Sercom = S>,
+        S: Sercom,
+        D: AnyChannel<Status = Ready>,
+    {
         /// Make an I2C read transaction, with the option to add in linked
         /// transfers after this first transaction.
         ///
@@ -162,23 +244,8 @@ mod dma {
             mut dest: &mut [u8],
             next: Option<&mut DmacDescriptor>,
         ) -> Result<(), Error> {
-            self.check_bus_status()?;
+            self.prepare_read_linked(address, dest, &next)?;
             let sercom_ptr = self.sercom_ptr();
-
-            if dest.is_empty() {
-                return Ok(());
-            }
-
-            // Calculate the total number of bytes for this transaction across all linked
-            // transfers, including the first transfer.
-            let transfer_len = dest.len() + Self::linked_transfer_length(&next);
-
-            assert!(
-                transfer_len <= 255,
-                "I2C read transfers of more than 255 bytes are unsupported."
-            );
-
-            self.start_dma_read(address, transfer_len as u8);
             let channel = self._dma_channel.as_mut();
 
             // SAFETY: We must make sure that any DMA transfer is complete or stopped before
@@ -215,23 +282,9 @@ mod dma {
             source: &[u8],
             next: Option<&mut DmacDescriptor>,
         ) -> Result<(), Error> {
-            self.check_bus_status()?;
+            self.prepare_write_linked(address, source, &next)?;
+
             let sercom_ptr = self.sercom_ptr();
-
-            if source.is_empty() {
-                return Ok(());
-            }
-
-            // Calculate the total number of bytes for this transaction across all linked
-            // transfers, including the first transfer.
-            let transfer_len = source.len() + Self::linked_transfer_length(&next);
-
-            assert!(
-                transfer_len <= 255,
-                "I2C write transfers of more than 255 bytes are unsupported."
-            );
-
-            self.start_dma_write(address, transfer_len as u8);
             let mut bytes = SharedSliceBuffer::from_slice(source);
             let channel = self._dma_channel.as_mut();
 

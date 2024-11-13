@@ -381,6 +381,124 @@
 //! let (chan1, rx, rx_buffer) = rx_dma.wait();
 //! ```
 //!
+//! # `async` operation <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span>
+//!
+//! A [`Uart`] can be used for `async` operations. Configuring a [`Uart`] in
+//! async mode is relatively simple:
+//!
+//! * Bind the corresponding `SERCOM` interrupt source to the UART
+//!   [`InterruptHandler`] (refer to the module-level [`async_hal`]
+//!   documentation for more information).
+//! * Turn a previously configured [`Uart`] into a [`UartFuture`] by calling
+//!   [`Uart::into_future`]
+//! * Optionally, add DMA channels to RX, TX or both using
+//!   [`UartFuture::with_rx_dma_channel`] and
+//!   [`UartFuture::with_tx_dma_channel`]. The API is exactly the same whether
+//!   DMA channels are used or not.
+//! * Use the provided async methods for reading or writing to the UART
+//!   peripheral.
+//!
+//! `UartFuture` implements `AsRef<Uart>` and `AsMut<Uart>` so
+//! that it can be reconfigured using the regular [`Uart`] methods. It also
+//! exposes a [`split`](UartFuture::split) method to split it into its RX and TX
+//! parts.
+//!
+//!  ## Considerations when using `async` [`Uart`] with DMA <span class="stab
+//! portability" title="Available on crate feature `async`
+//! only"><code>async</code></span> <span class="stab portability"
+//! title="Available on crate feature `dma` only"><code>dma</code></span>
+//!
+//! * An [`Uart`] struct must be turned into an [`UartFuture`] by calling
+//!   [`Uart::into_future`] before calling `with_dma_channel`. The DMA channel
+//!   itself must also be configured in async mode by using
+//!   [`DmaController::into_future`](crate::dmac::DmaController::into_future).
+//!   If a DMA channel is added to the [`Uart`] struct before it is turned into
+//!   an [`UartFuture`], it will not be able to use DMA in async mode.
+//!
+//! ```
+//! // This will work
+//! let uart = uart.into_future().with_dma_channels(rx_channel, tx_channel);
+//!
+//! // This won't
+//! let uart = uart.with_dma_channels(rx_channel, tx_channel).into_future();
+//! ```
+//!
+//! ### Safety considerations
+//!
+//! In `async` mode, an SPI+DMA transfer does not require `'static` source and
+//! destination buffers. This, in theory, makes its use `unsafe`. However it is
+//! marked as safe for better ergonomics.
+//!
+//! This means that, as an user, you **must** ensure that the [`Future`]s
+//! returned by the [`read`](UartFuture::read) and [`write`](UartFuture::write)
+//! methods may never be forgotten through [`forget`] or by wrapping them with a
+//! [`ManuallyDrop`].
+//!
+//! The returned futures implement [`Drop`] and will automatically stop any
+//! ongoing transfers; this guarantees that the memory occupied by the
+//! now-dropped buffers may not be corrupted by running transfers.
+//!
+//! This means that using functions like [`futures::select_biased`] to implement
+//! timeouts is safe; transfers will be safely cancelled if the timeout expires.
+//!
+//! This also means that should you [`forget`] this [`Future`] after its
+//! first [`poll`] call, the transfer will keep running, ruining the
+//! now-reclaimed memory, as well as the rest of your day.
+//!
+//! * `await`ing is fine: the [`Future`] will run to completion.
+//! * Dropping an incomplete transfer is also fine. Dropping can happen, for
+//!   example, if the transfer doesn't complete before a timeout expires.
+//! * Dropping an incomplete transfer *without running its destructor* is
+//!   **unsound** and will trigger undefined behavior.
+//!
+//! ```ignore
+//! async fn always_ready() {}
+//!
+//! let mut buffer = [0x00; 10];
+//!
+//! // This is completely safe
+//! uart.read(&mut buffer).await?;
+//!
+//! // This is also safe: we launch a transfer, which is then immediately cancelled
+//! futures::select_biased! {
+//!     _ = uart.read(&mut buffer)?,
+//!     _ = always_ready(),
+//! }
+//!
+//! // This, while contrived, is also safe.
+//! {
+//!     use core::future::Future;
+//!
+//!     let future = uart.read(&mut buffer);
+//!     futures::pin_mut!(future);
+//!     // Assume ctx is a `core::task::Context` given out by the executor.
+//!     // The future is polled, therefore starting the transfer
+//!     future.as_mut().poll(ctx);
+//!
+//!     // Future is dropped here - transfer is cancelled.
+//! }
+//!
+//! // DANGER: This is an example of undefined behavior
+//! {
+//!     use core::future::Future;
+//!     use core::ops::DerefMut;
+//!
+//!     let future = core::mem::ManuallyDrop::new(uart.read(&mut buffer));
+//!     futures::pin_mut!(future);
+//!     // To actually make this example compile, we would need to wrap the returned
+//!     // future from `i2c.read()` in a newtype that implements Future, because we
+//!     // can't actually call as_mut() without being able to name the type we want
+//!     // to deref to.
+//!     let future_ref: &mut SomeNewTypeFuture = &mut future.as_mut();
+//!     future.as_mut().poll(ctx);
+//!
+//!     // Future is NOT dropped here - transfer is not cancelled, resulting un UB.
+//! }
+//! ```
+//!
+//! As you can see, unsoundness is relatively hard to come by - however, caution
+//! should still be exercised.
+//!
 //! [`enable`]: Config::enable
 //! [`disable`]: Uart::disable
 //! [`reconfigure`]: Uart::reconfigure
@@ -398,6 +516,11 @@
 //! [`send_with_dma`]: Self::send_with_dma
 //! [`dmac::Transfer`]: crate::dmac::Transfer
 //! [`Channel`]: crate::dmac::Channel
+//! [`async_hal`]: crate::async_hal
+//! [`forget`]: core::mem::forget
+//! [`ManuallyDrop`]: core::mem::ManuallyDrop
+//! [`Future`]: core::future::Future
+//! [`poll`]: core::future::Future::poll
 
 use atsamd_hal_macros::{hal_cfg, hal_module};
 
@@ -422,6 +545,11 @@ mod config;
 pub use config::*;
 
 pub mod impl_ehal;
+
+#[cfg(feature = "async")]
+mod async_api;
+#[cfg(feature = "async")]
+pub use async_api::*;
 
 use crate::{
     sercom::pad::SomePad,
@@ -522,6 +650,10 @@ pub trait Receive: Capability {}
 /// capability, but not both
 pub trait Simplex: Capability {}
 
+/// Type-level enum representing a UART that is *not* half of a split
+/// [`Duplex`]
+pub trait SingleOwner: Capability {}
+
 /// Marker type representing a UART that has both transmit and receive
 /// capability
 pub enum Duplex {}
@@ -538,6 +670,7 @@ impl Capability for Duplex {
 }
 impl Receive for Duplex {}
 impl Transmit for Duplex {}
+impl SingleOwner for Duplex {}
 
 /// Marker type representing a UART that can only receive
 pub enum Rx {}
@@ -554,6 +687,7 @@ impl Capability for Rx {
 }
 impl Receive for Rx {}
 impl Simplex for Rx {}
+impl SingleOwner for Rx {}
 
 /// Marker type representing a UART that can only transmit
 pub enum Tx {}
@@ -570,6 +704,7 @@ impl Capability for Tx {
 }
 impl Transmit for Tx {}
 impl Simplex for Tx {}
+impl SingleOwner for Tx {}
 
 /// Marker type representing the Rx half of a  [`Duplex`] UART
 pub enum RxDuplex {}
@@ -874,13 +1009,15 @@ where
 }
 
 #[cfg(feature = "dma")]
-impl<C, D, R, T> Uart<C, D, R, T>
+impl<C, D, R, T, S> Uart<C, D, R, T>
 where
     C: ValidConfig,
     D: Capability,
-    R: crate::dmac::AnyChannel<Status = crate::dmac::Ready>,
+    R: crate::dmac::AnyChannel<Status = S>,
+    S: crate::dmac::ReadyChannel,
 {
-    /// Reclaim the RX DMA channel
+    /// Reclaim the RX DMA channel. Subsequent RX operations will no longer use
+    /// DMA.
     pub fn take_rx_channel(self) -> (Uart<C, D, NoneT, T>, R) {
         (
             Uart {
@@ -895,13 +1032,15 @@ where
 }
 
 #[cfg(feature = "dma")]
-impl<C, D, R, T> Uart<C, D, R, T>
+impl<C, D, R, T, S> Uart<C, D, R, T>
 where
     C: ValidConfig,
     D: Capability,
-    T: crate::dmac::AnyChannel<Status = crate::dmac::Ready>,
+    T: crate::dmac::AnyChannel<Status = S>,
+    S: crate::dmac::ReadyChannel,
 {
-    /// Reclaim the TX DMA channel
+    /// Reclaim the TX DMA channel. Subsequent TX operations will no longer use
+    /// DMA.
     pub fn take_tx_channel(self) -> (Uart<C, D, R, NoneT>, T) {
         (
             Uart {
@@ -1046,13 +1185,14 @@ where
     #[inline]
     pub fn flush_rx_buffer(&mut self) {
         // TODO Is this a hardware bug???
-        /*
-        usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
-        while usart.syncbusy.read().ctrlb().bit() || usart.ctrlb.read().rxen().bit_is_set() {}
 
-        usart.ctrlb.modify(|_, w| w.rxen().set_bit());
-        while usart.syncbusy.read().ctrlb().bit() || usart.ctrlb.read().rxen().bit_is_clear() {}
-        */
+        // usart.ctrlb.modify(|_, w| w.rxen().clear_bit());
+        // while usart.syncbusy.read().ctrlb().bit() ||
+        // usart.ctrlb.read().rxen().bit_is_set() {}
+
+        // usart.ctrlb.modify(|_, w| w.rxen().set_bit());
+        // while usart.syncbusy.read().ctrlb().bit() ||
+        // usart.ctrlb.read().rxen().bit_is_clear() {}
 
         for _ in 0..=2 {
             let _data = unsafe { self.config.as_mut().registers.read_data() };

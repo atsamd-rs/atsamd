@@ -30,7 +30,7 @@ pub struct Config<P>
 where
     P: PadSet,
 {
-    pub(super) registers: Registers<P::Sercom>,
+    pub(in super::super) registers: Registers<P::Sercom>,
     pads: P,
     freq: Hertz,
 }

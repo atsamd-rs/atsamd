@@ -38,6 +38,14 @@ bitflags! {
     }
 }
 
+impl Flags {
+    /// [`Flags`] which can be used for receiving
+    pub const RX: Self = Self::from_bits_retain(RX_FLAG_MASK);
+
+    /// [`Flags`] which can be used for transmitting
+    pub const TX: Self = Self::from_bits_retain(TX_FLAG_MASK);
+}
+
 //=============================================================================
 // Status flags
 //=============================================================================

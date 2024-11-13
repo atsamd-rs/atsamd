@@ -10,7 +10,7 @@ use atsamd_hal_macros::hal_macro_helper;
 use crate::{
     dmac::{
         self,
-        channel::{AnyChannel, Busy, CallbackStatus, Channel, InterruptFlags, Ready},
+        channel::{AnyChannel, Busy, Channel, InterruptFlags, Ready},
         sram::DmacDescriptor,
         transfer::BufferPair,
         Beat, Buffer, Transfer, TriggerAction,
@@ -81,6 +81,42 @@ unsafe impl<T: Beat> Buffer for SharedSliceBuffer<'_, T> {
     }
 }
 
+/// Sink/source buffer to use for unidirectional SPI-DMA transfers.
+///
+/// When reading/writing from a [`Duplex`] [`Spi`] with DMA enabled,
+/// we must always read and write the same number of words, regardless of
+/// whether we care about the result (ie, for write, we discard the read
+/// words, whereas for read, we must send a no-op word).
+///
+/// This [`Buffer`] implementation provides a source/sink for a single word,
+/// but with a variable length.
+pub(super) struct SinkSourceBuffer<'a, T: Beat> {
+    word: &'a mut T,
+    length: usize,
+}
+
+impl<'a, T: Beat> SinkSourceBuffer<'a, T> {
+    pub(super) fn new(word: &'a mut T, length: usize) -> Self {
+        Self { word, length }
+    }
+}
+unsafe impl<T: Beat> Buffer for SinkSourceBuffer<'_, T> {
+    type Beat = T;
+    #[inline]
+    fn incrementing(&self) -> bool {
+        false
+    }
+
+    #[inline]
+    fn buffer_len(&self) -> usize {
+        self.length
+    }
+
+    #[inline]
+    fn dma_ptr(&mut self) -> *mut Self::Beat {
+        self.word as *mut _
+    }
+}
 /// Wrapper type over Sercom instances to get around lifetime issues when using
 /// one as a DMA source/destination buffer. This is an implementation detail to
 /// make SERCOM-DMA transfers work.
@@ -111,7 +147,7 @@ unsafe impl<T: Beat> Buffer for SercomPtr<T> {
 // I2C DMA transfers
 //=============================================================================
 
-/// Token type representing an [`I2c`](super::i2c::I2c) for which the bus is
+/// Token type representing an [`I2c`] for which the bus is
 /// ready to start a transaction.
 ///
 /// For use with [`send_with_dma`](super::i2c::I2c::send_with_dma) and
@@ -153,7 +189,7 @@ impl<C: i2c::AnyConfig> I2c<C> {
     /// # fn init_transfer<A: i2c::AnyConfig, C: AnyChannel<dmac::Ready>>(i2c: I2c<A>, chan0: C, buf_src: &'static mut [u8]){
     /// // Assume `i2c` is a fully configured `I2c`, and `chan0` a fully configured `dmac::Channel`.
     /// let token = i2c.init_dma_transfer()?;
-    /// i2c.send_with_dma(ADDRESS, token, buf_src, chan0, |_| {});
+    /// i2c.send_with_dma(ADDRESS, token, buf_src, chan0);
     /// # }
     /// ```
     ///
@@ -182,18 +218,16 @@ impl<C: i2c::AnyConfig> I2c<C> {
     )]
     #[allow(deprecated)]
     #[hal_macro_helper]
-    pub fn receive_with_dma<Ch, B, W>(
+    pub fn receive_with_dma<Ch, B>(
         self,
         address: u8,
         _ready_token: I2cBusReady,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = i2c::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         let len = buf.buffer_len();
         assert!(len > 0 && len <= 255);
@@ -211,9 +245,7 @@ impl<C: i2c::AnyConfig> I2c<C> {
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `I2c` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
-        let mut xfer = xfer
-            .with_waker(waker)
-            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action);
+        let mut xfer = xfer.begin(C::Sercom::DMA_RX_TRIGGER, trigger_action);
 
         // SAFETY: we borrow the source from under a `Busy` transfer. While the type
         // system believes the transfer is running, we haven't enabled it in the
@@ -236,18 +268,16 @@ impl<C: i2c::AnyConfig> I2c<C> {
         note = "Use `I2c::with_dma_chahnnel` instead. You will have access to DMA-enabled `embedded-hal` implementations."
     )]
     #[allow(deprecated)]
-    pub fn send_with_dma<Ch, B, W>(
+    pub fn send_with_dma<Ch, B>(
         self,
         address: u8,
         _ready_token: I2cBusReady,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = i2c::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         let len = buf.buffer_len();
         assert!(len > 0 && len <= 255);
@@ -265,9 +295,7 @@ impl<C: i2c::AnyConfig> I2c<C> {
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `I2c` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
-        let mut xfer = xfer
-            .with_waker(waker)
-            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action);
+        let mut xfer = xfer.begin(C::Sercom::DMA_TX_TRIGGER, trigger_action);
 
         // SAFETY: we borrow the source from under a `Busy` transfer. While the type
         // system believes the transfer is running, we haven't enabled it in the
@@ -324,16 +352,14 @@ where
     /// use[`Uart::with_rx_channel`](Self::with_tx_channel) instead.
     #[inline]
     #[hal_macro_helper]
-    pub fn receive_with_dma<Ch, B, W>(
+    pub fn receive_with_dma<Ch, B>(
         self,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         channel
             .as_mut()
@@ -348,8 +374,7 @@ where
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `Uart` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
-        xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
+        xfer.begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }
 
@@ -369,16 +394,14 @@ where
     /// use[`Uart::with_tx_channel`](Self::with_tx_channel) instead.
     #[inline]
     #[hal_macro_helper]
-    pub fn send_with_dma<Ch, B, W>(
+    pub fn send_with_dma<Ch, B>(
         self,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         channel
             .as_mut()
@@ -393,8 +416,7 @@ where
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `Uart` is always 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
-        xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
+        xfer.begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
 
@@ -442,16 +464,14 @@ where
         since = "0.19.0",
         note = "Use `Spi::with_dma_channels` instead. You will have access to DMA-enabled `embedded-hal` implementations."
     )]
-    pub fn send_with_dma<Ch, B, W>(
+    pub fn send_with_dma<Ch, B>(
         self,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         channel
             .as_mut()
@@ -466,8 +486,7 @@ where
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `Spi` is always 1.
         let xfer = unsafe { Transfer::new_unchecked(channel, buf, self, false) };
-        xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
+        xfer.begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
 }
 
@@ -485,16 +504,14 @@ where
         since = "0.19.0",
         note = "Use `Spi::with_dma_channels` instead. You will have access to DMA-enabled `embedded-hal` implementations."
     )]
-    pub fn receive_with_dma<Ch, B, W>(
+    pub fn receive_with_dma<Ch, B>(
         self,
         buf: B,
         mut channel: Ch,
-        waker: W,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>, W>
+    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>>
     where
         Ch: AnyChannel<Status = Ready>,
         B: Buffer<Beat = C::Word> + 'static,
-        W: FnOnce(CallbackStatus) + 'static,
     {
         channel
             .as_mut()
@@ -509,8 +526,7 @@ where
         // SAFETY: This is safe because the of the `'static` bound check
         // for `B`, and the fact that the buffer length of an `Spi` is always 1.
         let xfer = unsafe { Transfer::new_unchecked(channel, self, buf, false) };
-        xfer.with_waker(waker)
-            .begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
+        xfer.begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
 }
 
@@ -620,4 +636,128 @@ pub(super) unsafe fn write_dma_linked<T, B, S>(
         trigger_action,
         next,
     );
+}
+
+/// Use the DMA Controller to perform async transfers using the SERCOM
+/// peripheral
+///
+/// See the [`mod@uart`], [`mod@i2c`] and [`mod@spi`] modules for the
+/// corresponding DMA transfer implementations.
+#[cfg(feature = "async")]
+pub(crate) mod async_dma {
+    use dmac::{Error, ReadyFuture};
+
+    use super::*;
+
+    /// Perform a SERCOM DMA read with a provided `&mut [T]`
+    #[inline]
+    pub(in super::super) async fn read_dma<T, B, S>(
+        channel: &mut impl AnyChannel<Status = ReadyFuture>,
+        sercom_ptr: SercomPtr<T>,
+        buf: &mut B,
+    ) -> Result<(), Error>
+    where
+        B: Buffer<Beat = T>,
+        T: Beat,
+        S: Sercom,
+    {
+        unsafe { read_dma_linked::<_, _, S>(channel, sercom_ptr, buf, None).await }
+    }
+
+    /// Perform a SERCOM DMA read with a provided [`Buffer`], and add an
+    /// optional link to a next [`DmacDescriptor`] to support linked
+    /// transfers.
+    ///
+    /// # Safety
+    ///
+    /// You **must** guarantee that the DMA transfer is either stopped or
+    /// completed before giving back control of `channel` AND `buf`.
+    #[inline]
+    #[hal_macro_helper]
+    pub(in super::super) async unsafe fn read_dma_linked<T, B, S>(
+        channel: &mut impl AnyChannel<Status = ReadyFuture>,
+        mut sercom_ptr: SercomPtr<T>,
+        buf: &mut B,
+        next: Option<&mut DmacDescriptor>,
+    ) -> Result<(), Error>
+    where
+        T: Beat,
+        B: Buffer<Beat = T>,
+        S: Sercom,
+    {
+        #[hal_cfg("dmac-d5x")]
+        let trigger_action = TriggerAction::Burst;
+
+        #[hal_cfg(any("dmac-d11", "dmac-d21"))]
+        let trigger_action = TriggerAction::Beat;
+
+        // Safety: It is safe to bypass the buffer length check because `SercomPtr`
+        // always has a buffer length of 1.
+        channel
+            .as_mut()
+            .transfer_future_linked(
+                &mut sercom_ptr,
+                buf,
+                S::DMA_RX_TRIGGER,
+                trigger_action,
+                next,
+            )
+            .await
+    }
+
+    /// Perform a SERCOM DMA write with a provided `&[T]`
+    #[inline]
+    pub(in super::super) async fn write_dma<T, B, S>(
+        channel: &mut impl AnyChannel<Status = ReadyFuture>,
+        sercom_ptr: SercomPtr<T>,
+        buf: &mut B,
+    ) -> Result<(), Error>
+    where
+        B: Buffer<Beat = T>,
+        T: Beat,
+        S: Sercom,
+    {
+        unsafe { write_dma_linked::<_, _, S>(channel, sercom_ptr, buf, None).await }
+    }
+
+    /// Perform a SERCOM DMA write with a provided [`Buffer`], and add an
+    /// optional link to a next [`DmacDescriptor`] to support linked
+    /// transfers.
+    ///
+    /// # Safety
+    ///
+    /// You **must** guarantee that the DMA transfer is either stopped or
+    /// completed before giving back control of `channel` AND `buf`.
+    #[inline]
+    #[hal_macro_helper]
+    pub(in super::super) async unsafe fn write_dma_linked<T, B, S>(
+        channel: &mut impl AnyChannel<Status = ReadyFuture>,
+        mut sercom_ptr: SercomPtr<T>,
+        buf: &mut B,
+        next: Option<&mut DmacDescriptor>,
+    ) -> Result<(), Error>
+    where
+        B: Buffer<Beat = T>,
+        T: Beat,
+        S: Sercom,
+    {
+        #[hal_cfg("dmac-d5x")]
+        let trigger_action = TriggerAction::Burst;
+
+        #[hal_cfg(any("dmac-d11", "dmac-d21"))]
+        let trigger_action = TriggerAction::Beat;
+
+        // Safety: It is safe to bypass the buffer length check because `SercomPtr`
+        // always has a buffer length of 1.
+        channel
+            .as_mut()
+            .transfer_future_linked(
+                buf,
+                &mut sercom_ptr,
+                S::DMA_TX_TRIGGER,
+                trigger_action,
+                next,
+            )
+            .await
+    }
 }

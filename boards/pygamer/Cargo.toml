@@ -52,6 +52,8 @@ max-channels = ["dma", "atsamd-hal/max-channels"]
 panic_led = []
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
+# Enable async support from atsamd-hal
+async = ["atsamd-hal/async"]
 
 # for cargo flash
 [package.metadata]

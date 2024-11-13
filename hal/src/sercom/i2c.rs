@@ -181,9 +181,9 @@
 //! * High-speed mode is not supported.
 //! * 4-wire mode is not supported.
 //! * 32-bit extension mode is not supported (SAMx5x). If you need to transfer
-//!   slices, consider using the DMA methods instead . The <span class="stab
+//!   slices, consider using the DMA methods instead <span class="stab
 //!   portability" title="Available on crate feature `dma`
-//!   only"><code>dma</code></span> Cargo feature must be enabled.
+//!   only"><code>dma</code></span>.
 //!
 //! # Using I2C with DMA <span class="stab portability" title="Available on crate feature `dma` only"><code>dma</code></span>
 //!
@@ -231,6 +231,121 @@
 //!   need more than 17 adjacent operations of the same type, the transfer will
 //!   reverted to using the byte-by-byte (non-DMA) implementation.
 //!
+//! All these limitations also apply to I2C transfers in async mode when using
+//! DMA. They do not apply to I2C transfers in async mode when not using DMA.
+//!
+//! # `async` operation <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span>
+//!
+//! An [`I2c`] can be used for
+//! `async` operations. Configuring an [`I2c`] in async mode is relatively
+//! simple:
+//!
+//! * Bind the corresponding `SERCOM` interrupt source to the SPI
+//!   [`InterruptHandler`] (refer to the module-level [`async_hal`]
+//!   documentation for more information).
+//! * Turn a previously configured [`I2c`] into an [`I2cFuture`] by calling
+//!   [`I2c::into_future`]
+//! * Optionally, add a DMA channel by using [`I2cFuture::with_dma_channel`].
+//!   The API is exactly the same whether a DMA channel is used or not.
+//! * Use the provided async methods for reading or writing to the I2C
+//!   peripheral. [`I2cFuture`] implements [`embedded_hal_async::i2c::I2c`].
+//!
+//! `I2cFuture` implements `AsRef<I2c>` and `AsMut<I2c>` so
+//! that it can be reconfigured using the regular [`I2c`] methods.
+//!
+//! ## Considerations when using `async` [`I2c`] with DMA <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span> <span class="stab portability" title="Available on crate feature `dma` only"><code>dma</code></span>
+//!
+//! * An [`I2c`] struct must be turned into an [`I2cFuture`] by calling
+//!   [`I2c::into_future`] before calling `with_dma_channel`. The DMA channel
+//!   itself must also be configured in async mode by using
+//!   [`DmaController::into_future`](crate::dmac::DmaController::into_future).
+//!   If a DMA channel is added to the [`I2c`] struct before it is turned into
+//!   an [`I2cFuture`], it will not be able to use DMA in async mode.
+//!
+//! ```
+//! // This will work
+//! let i2c = i2c.into_future().with_dma_channel(channel);
+//!
+//! // This won't
+//! let i2c = i2c.with_dma_channel(channel).into_future();
+//! ```
+//!
+//! ### Safety considerations
+//!
+//! In `async` mode, an I2C+DMA transfer does not require `'static` source and
+//! destination buffers. This, in theory, makes its use `unsafe`. However it is
+//! marked as safe for better ergonomics, and to enable the implementation of
+//! the [`embedded_hal_async::i2c::I2c`] trait.
+//!
+//! This means that, as an user, you **must** ensure that the [`Future`]s
+//! returned by the [`embedded_hal_async::i2c::I2c`] methods may never be
+//! forgotten through [`forget`] or by wrapping them with a [`ManuallyDrop`].
+//!
+//! The returned futures implement [`Drop`] and will automatically stop any
+//! ongoing transfers; this guarantees that the memory occupied by the
+//! now-dropped buffers may not be corrupted by running transfers.
+//!
+//! This means that using functions like [`futures::select_biased`] to implement
+//! timeouts is safe; transfers will be safely cancelled if the timeout expires.
+//!
+//! This also means that should you [`forget`] this [`Future`] after its
+//! first [`poll`] call, the transfer will keep running, ruining the
+//! now-reclaimed memory, as well as the rest of your day.
+//!
+//! * `await`ing is fine: the [`Future`] will run to completion.
+//! * Dropping an incomplete transfer is also fine. Dropping can happen, for
+//!   example, if the transfer doesn't complete before a timeout expires.
+//! * Dropping an incomplete transfer *without running its destructor* is
+//!   **unsound** and will trigger undefined behavior.
+//!
+//! ```ignore
+//! async fn always_ready() {}
+//!
+//! let mut buffer = [0x00; 10];
+//!
+//! // This is completely safe
+//! i2c.read(&mut buffer).await?;
+//!
+//! // This is also safe: we launch a transfer, which is then immediately cancelled
+//! futures::select_biased! {
+//!     _ = i2c.read(&mut buffer)?,
+//!     _ = always_ready(),
+//! }
+//!
+//! // This, while contrived, is also safe.
+//! {
+//!     use core::future::Future;
+//!
+//!     let future = i2c.read(&mut buffer);
+//!     futures::pin_mut!(future);
+//!     // Assume ctx is a `core::task::Context` given out by the executor.
+//!     // The future is polled, therefore starting the transfer
+//!     future.as_mut().poll(ctx);
+//!
+//!     // Future is dropped here - transfer is cancelled.
+//! }
+//!
+//! // DANGER: This is an example of undefined behavior
+//! {
+//!     use core::future::Future;
+//!     use core::ops::DerefMut;
+//!
+//!     let future = core::mem::ManuallyDrop::new(i2c.read(&mut buffer));
+//!     futures::pin_mut!(future);
+//!     // To actually make this example compile, we would need to wrap the returned
+//!     // future from `i2c.read()` in a newtype that implements Future, because we
+//!     // can't actually call as_mut() without being able to name the type we want
+//!     // to deref to.
+//!     let future_ref: &mut SomeNewTypeFuture = &mut future.as_mut();
+//!     future.as_mut().poll(ctx);
+//!
+//!     // Future is NOT dropped here - transfer is not cancelled, resulting un UB.
+//! }
+//! ```
+//!
+//! As you can see, unsoundness is relatively hard to come by - however, caution
+//! should still be exercised.
+//!
 //! [`enable`]: Config::enable
 //! [`disable`]: I2c::disable
 //! [`reconfigure`]: I2c::reconfigure
@@ -247,6 +362,11 @@
 //! [`embedded_hal::i2c::I2c`]: crate::ehal::i2c::I2c
 //! [`I2c::transaction`]: crate::ehal::i2c::I2c::transaction
 //! [`I2c::write_read`]: crate::ehal::i2c::I2c::write_read
+//! [`async_hal`]: crate::async_hal
+//! [`forget`]: core::mem::forget
+//! [`ManuallyDrop`]: core::mem::ManuallyDrop
+//! [`Future`]: core::future::Future
+//! [`poll`]: core::future::Future::poll
 
 use atsamd_hal_macros::hal_module;
 
@@ -268,6 +388,12 @@ mod config;
 pub use config::*;
 
 mod impl_ehal;
+
+#[cfg(feature = "async")]
+mod async_api;
+
+#[cfg(feature = "async")]
+pub use async_api::*;
 
 /// Word size for an I2C message
 pub type Word = u8;
@@ -444,8 +570,14 @@ impl<C: AnyConfig> I2c<C> {
 }
 
 #[cfg(feature = "dma")]
-impl<C: AnyConfig, D: crate::dmac::AnyChannel<Status = crate::dmac::Ready>> I2c<C, D> {
-    /// Reclaim the DMA channels
+impl<C, D, S> I2c<C, D>
+where
+    C: AnyConfig,
+    D: crate::dmac::AnyChannel<Status = S>,
+    S: crate::dmac::ReadyChannel,
+{
+    /// Reclaim the DMA channel. Any subsequent I2C operations will no longer
+    /// use DMA.
     pub fn take_dma_channel(self) -> (I2c<C, crate::typelevel::NoneT>, D) {
         (
             I2c {
