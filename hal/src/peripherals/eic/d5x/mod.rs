@@ -1,5 +1,4 @@
-use crate::clock::EicClock;
-use crate::pac;
+use crate::{clock::EicClock, pac};
 
 pub mod pin;
 
@@ -59,7 +58,32 @@ pub fn init_with_ulp32k(mclk: &mut pac::Mclk, _clock: EicClock, eic: pac::Eic) -
 
 /// A configured External Interrupt Controller.
 pub struct EIC {
-    _eic: pac::Eic,
+    eic: pac::Eic,
+}
+
+impl EIC {
+    /// Run the provided closure with the EIC peripheral disabled. The
+    /// enable-protected registers, such as CONFIGx, should be accessed through
+    /// this method.
+    ///
+    /// # Caution
+    ///
+    /// You should not re-enable the provided EIC PAC object inside the provided
+    /// closure.
+    fn with_disable(&mut self, fun: impl Fn(&mut pac::Eic)) {
+        self.eic.ctrla().modify(|_, w| w.enable().clear_bit());
+        self.enable_sync();
+        fun(&mut self.eic);
+        self.eic.ctrla().modify(|_, w| w.enable().set_bit());
+        self.enable_sync();
+    }
+
+    /// Busy-wait until SYNCBUSY.ENABLE clears
+    fn enable_sync(&mut self) {
+        while self.eic.syncbusy().read().enable().bit_is_set() {
+            core::hint::spin_loop();
+        }
+    }
 }
 
 impl From<ConfigurableEIC> for EIC {
@@ -69,6 +93,6 @@ impl From<ConfigurableEIC> for EIC {
             cortex_m::asm::nop();
         }
 
-        Self { _eic: eic.eic }
+        Self { eic: eic.eic }
     }
 }

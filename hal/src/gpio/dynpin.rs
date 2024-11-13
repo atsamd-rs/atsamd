@@ -36,8 +36,7 @@
 //! Users may try to convert value-level pins back to their type-level
 //! equivalents. However, this option is fallible, because the compiler cannot
 //! guarantee the pin has the correct ID or is in the correct mode at
-//! compile-time. Use [`TryFrom`](core::convert::TryFrom)/
-//! [`TryInto`](core::convert::TryInto) for this conversion.
+//! compile-time. Use [`TryFrom`]/[`TryInto`] for this conversion.
 //!
 //! ```
 //! // Convert to a `DynPin`

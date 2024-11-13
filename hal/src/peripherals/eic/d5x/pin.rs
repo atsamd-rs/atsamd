@@ -1,9 +1,11 @@
+use super::EIC;
 use crate::ehal_02::digital::v2::InputPin;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
 use crate::pac;
 use atsamd_hal_macros::hal_cfg;
+use core::mem::ManuallyDrop;
 
 /// The EicPin trait makes it more ergonomic to convert a gpio pin into an EIC
 /// pin. You should not implement this trait for yourself; only the
@@ -16,13 +18,13 @@ pub trait EicPin {
     type PullDown;
 
     /// Configure a pin as a floating external interrupt
-    fn into_floating_ei(self) -> Self::Floating;
+    fn into_floating_ei(self, eic: &mut EIC) -> Self::Floating;
 
     /// Configure a pin as pulled-up external interrupt
-    fn into_pull_up_ei(self) -> Self::PullUp;
+    fn into_pull_up_ei(self, eic: &mut EIC) -> Self::PullUp;
 
     /// Configure a pin as pulled-down external interrupt
-    fn into_pull_down_ei(self) -> Self::PullDown;
+    fn into_pull_down_ei(self, eic: &mut EIC) -> Self::PullDown;
 }
 
 pub type Sense = pac::eic::config::Sense0select;
@@ -55,102 +57,126 @@ crate::paste::item! {
     where
         GPIO: AnyPin,
     {
+        eic: ManuallyDrop<EIC>,
         _pin: Pin<GPIO::Id, GPIO::Mode>,
     }
 
     // impl !Send for [<$PadType $num>]<GPIO> {};
     // impl !Sync for [<$PadType $num>]<GPIO> {}}
 
-    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO> {
+    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO>{
         /// Construct pad from the appropriate pin in any mode.
         /// You may find it more convenient to use the `into_pad` trait
         /// and avoid referencing the pad type.
-        pub fn new(pin: GPIO) -> Self {
+        pub fn new(pin: GPIO, eic: &mut EIC) -> Self {
+            let eic = unsafe {
+                ManuallyDrop::new(core::ptr::read(eic as *const _))
+            };
+
             [<$PadType $num>]{
-                _pin: pin.into()
+                _pin: pin.into(),
+                eic,
             }
         }
+    }
 
-        pub fn enable_event(&mut self, eic: &mut super::ConfigurableEIC) {
-            eic.eic.evctrl().modify(|_, w| unsafe {
+    impl<GPIO: AnyPin> [<$PadType $num>]<GPIO> {
+
+        pub fn enable_event(&mut self) {
+            self.eic.eic.evctrl().modify(|_, w| unsafe {
                 w.bits(1 << $num)
             });
         }
 
-        pub fn enable_interrupt(&mut self, eic: &mut super::ConfigurableEIC) {
-            eic.eic.intenset().write(|w| unsafe {
+        pub fn enable_interrupt(&mut self) {
+            self.eic.eic.intenset().write(|w| unsafe {
                 w.bits(1 << $num)
             })
         }
 
-        pub fn disable_interrupt(&mut self, eic: &mut super::ConfigurableEIC) {
-            eic.eic.intenclr().write(|w| unsafe {
+        pub fn disable_interrupt(&mut self) {
+            self.eic.eic.intenclr().write(|w| unsafe {
                 w.bits(1 << $num)
             })
         }
 
         pub fn is_interrupt(&mut self) -> bool {
-            let intflag = unsafe { &(*pac::Eic::ptr()) }.intflag().read().bits();
+            let intflag = self.eic.eic.intflag().read().bits();
             intflag & (1 << $num) != 0
         }
 
         pub fn state(&mut self) -> bool {
-            let state = unsafe { &(*pac::Eic::ptr()) }.pinstate().read().bits();
+            let state = self.eic.eic.pinstate().read().bits();
             state & (1 << $num) != 0
         }
 
         pub fn clear_interrupt(&mut self) {
             unsafe {
-                {&(*pac::Eic::ptr())}.intflag().write(|w| { w.bits(1 << $num) });
+                self.eic.eic.intflag().write(|w| { w.bits(1 << $num) });
             }
         }
 
-        pub fn sense(&mut self, _eic: &mut super::ConfigurableEIC, sense: Sense) {
-            // Which of the two config blocks this eic config is in
-            let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::Eic::ptr()).config(offset) };
+        pub fn sense(&mut self, sense: Sense) {
+            self.eic.with_disable(|e| {
+                // Which of the two config blocks this eic config is in
+                let offset = ($num >> 3) & 0b0001;
+                let config = &e.config(offset);
 
-            config.modify(|_, w| unsafe {
-                // Which of the eight eic configs in this config block
-                match $num & 0b111 {
-                    0b000 => w.sense0().bits(sense as u8),
-                    0b001 => w.sense1().bits(sense as u8),
-                    0b010 => w.sense2().bits(sense as u8),
-                    0b011 => w.sense3().bits(sense as u8),
-                    0b100 => w.sense4().bits(sense as u8),
-                    0b101 => w.sense5().bits(sense as u8),
-                    0b110 => w.sense6().bits(sense as u8),
-                    0b111 => w.sense7().bits(sense as u8),
-                    _ => unreachable!(),
-                }
+                config.modify(|_, w| unsafe {
+                    // Which of the eight eic configs in this config block
+                    match $num & 0b111 {
+                        0b000 => w.sense0().bits(sense as u8),
+                        0b001 => w.sense1().bits(sense as u8),
+                        0b010 => w.sense2().bits(sense as u8),
+                        0b011 => w.sense3().bits(sense as u8),
+                        0b100 => w.sense4().bits(sense as u8),
+                        0b101 => w.sense5().bits(sense as u8),
+                        0b110 => w.sense6().bits(sense as u8),
+                        0b111 => w.sense7().bits(sense as u8),
+                        _ => unreachable!(),
+                    }
+                });
+        });
+
+
+        }
+
+        pub fn filter(&mut self, filter: bool) {
+            self.eic.with_disable(|e| {
+                // Which of the two config blocks this eic config is in
+                let offset = ($num >> 3) & 0b0001;
+                let config = &e.config(offset);
+
+                config.modify(|_, w| {
+                    // Which of the eight eic configs in this config block
+                    match $num & 0b111 {
+                        0b000 => w.filten0().bit(filter),
+                        0b001 => w.filten1().bit(filter),
+                        0b010 => w.filten2().bit(filter),
+                        0b011 => w.filten3().bit(filter),
+                        0b100 => w.filten4().bit(filter),
+                        0b101 => w.filten5().bit(filter),
+                        0b110 => w.filten6().bit(filter),
+                        0b111 => w.filten7().bit(filter),
+                        _ => unreachable!(),
+                    }
+                });
             });
         }
 
-        pub fn filter(&mut self, _eic: &mut super::ConfigurableEIC, filter: bool) {
-            // Which of the two config blocks this eic config is in
-            let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::Eic::ptr()).config(offset) };
+        /// Enable debouncing for this pin, with a configuration appropriate for debouncing physical buttons.
+        pub fn debounce(&mut self) {
+            self.eic.with_disable(|e| {
+                e.dprescaler().modify(|_, w| {
+                    w.tickon().set_bit()    // Use the 32k clock for debouncing.
+                    .states0().set_bit()    // Require 7 0 samples to see a falling edge.
+                    .states1().set_bit()    // Require 7 1 samples to see a rising edge.
+                    .prescaler0().div16()
+                    .prescaler1().div16()
+                });
 
-            config.modify(|_, w| {
-                // Which of the eight eic configs in this config block
-                match $num & 0b111 {
-                    0b000 => w.filten0().bit(filter),
-                    0b001 => w.filten1().bit(filter),
-                    0b010 => w.filten2().bit(filter),
-                    0b011 => w.filten3().bit(filter),
-                    0b100 => w.filten4().bit(filter),
-                    0b101 => w.filten5().bit(filter),
-                    0b110 => w.filten6().bit(filter),
-                    0b111 => w.filten7().bit(filter),
-                    _ => unreachable!(),
-                }
+                e.debouncen().modify(|_, w| unsafe { w.bits($num) });
             });
-        }
-    }
-
-    impl<GPIO: AnyPin> ExternalInterrupt for [<$PadType $num>]<GPIO> {
-        fn id(&self) -> ExternalInterruptID {
-            $num
         }
     }
 
@@ -177,16 +203,16 @@ crate::paste::item! {
             type PullUp = [<$PadType $num>]<Pin<gpio::$PinType, PullUpInterrupt>>;
             type PullDown = [<$PadType $num>]<Pin<gpio::$PinType, PullDownInterrupt>>;
 
-            fn into_floating_ei(self) -> Self::Floating {
-                [<$PadType $num>]::new(self.into_floating_interrupt())
+            fn into_floating_ei(self, eic: &mut EIC) -> Self::Floating {
+                [<$PadType $num>]::new(self.into_floating_interrupt(), eic)
             }
 
-            fn into_pull_up_ei(self) -> Self::PullUp {
-                [<$PadType $num>]::new(self.into_pull_up_interrupt())
+            fn into_pull_up_ei(self, eic: &mut EIC) -> Self::PullUp {
+                [<$PadType $num>]::new(self.into_pull_up_interrupt(), eic)
             }
 
-            fn into_pull_down_ei(self) -> Self::PullDown {
-                [<$PadType $num>]::new(self.into_pull_down_interrupt())
+            fn into_pull_down_ei(self, eic: &mut EIC) -> Self::PullDown {
+                [<$PadType $num>]::new(self.into_pull_down_interrupt(), eic)
             }
         }
 
