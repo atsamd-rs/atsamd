@@ -39,7 +39,7 @@
 //! struct.
 //!
 //! To create the [`Pins`] struct, users must supply the PAC
-//! [`Port`](crate::pac::Port) peripheral. The [`Pins`] struct takes
+//! [`Port`] peripheral. The [`Pins`] struct takes
 //! ownership of the [`Port`] and provides the corresponding pins. Each [`Pin`]
 //! within the [`Pins`] struct can be moved out and used individually.
 //!
@@ -123,7 +123,7 @@ use super::reg::RegisterInterface;
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait DisabledConfig: Sealed {
-    /// Corresponding [`DynDisabled`](super::DynDisabled)
+    /// Corresponding [`DynDisabled`]
     const DYN: DynDisabled;
 }
 
@@ -181,7 +181,7 @@ pub type Reset = FloatingDisabled;
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait InputConfig: Sealed {
-    /// Corresponding [`DynInput`](super::DynInput)
+    /// Corresponding [`DynInput`]
     const DYN: DynInput;
 }
 
@@ -220,7 +220,7 @@ pub type PullUpInput = Input<PullUp>;
 
 /// Type-level `enum` for Interrupt configurations
 pub trait InterruptConfig: Sealed {
-    /// Corresponding [`DynInterrupt`](super::DynInterrupt)
+    /// Corresponding [`DynInterrupt`]
     const DYN: DynInterrupt;
 }
 
@@ -264,7 +264,7 @@ pub type PullUpInterrupt = Interrupt<PullUp>;
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait OutputConfig: Sealed {
-    /// Corresponding [`DynOutput`](super::DynOutput)
+    /// Corresponding [`DynOutput`]
     const DYN: DynOutput;
 }
 
@@ -309,7 +309,7 @@ pub type ReadableOutput = Output<Readable>;
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait AlternateConfig: Sealed {
-    /// Corresponding [`DynAlternate`](super::DynAlternate)
+    /// Corresponding [`DynAlternate`]
     const DYN: DynAlternate;
 }
 
@@ -368,7 +368,7 @@ impl<C: AlternateConfig> Sealed for Alternate<C> {}
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait PinMode: Sealed {
-    /// Corresponding [`DynPinMode`](super::DynPinMode)
+    /// Corresponding [`DynPinMode`]
     const DYN: DynPinMode;
 }
 
@@ -404,7 +404,7 @@ impl<C: AlternateConfig> PinMode for Alternate<C> {
 ///
 /// [type-level enum]: crate::typelevel#type-level-enum
 pub trait PinId: Sealed {
-    /// Corresponding [`DynPinId`](super::DynPinId)
+    /// Corresponding [`DynPinId`]
     const DYN: DynPinId;
 }
 

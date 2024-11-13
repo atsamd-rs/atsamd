@@ -1,5 +1,4 @@
-use crate::clock::EicClock;
-use crate::pac;
+use crate::{clock::EicClock, pac};
 
 pub mod pin;
 

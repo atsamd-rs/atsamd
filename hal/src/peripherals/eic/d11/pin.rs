@@ -4,6 +4,7 @@ use crate::gpio::{
 };
 use crate::pac;
 use atsamd_hal_macros::hal_cfg;
+use core::mem::ManuallyDrop;
 
 use super::EIC;
 
@@ -18,13 +19,13 @@ pub trait EicPin {
     type PullDown;
 
     /// Configure a pin as a floating external interrupt
-    fn into_floating_ei(self) -> Self::Floating;
+    fn into_floating_ei(self, eic: &mut EIC) -> Self::Floating;
 
     /// Configure a pin as pulled-up external interrupt
-    fn into_pull_up_ei(self) -> Self::PullUp;
+    fn into_pull_up_ei(self, eic: &mut EIC) -> Self::PullUp;
 
     /// Configure a pin as pulled-down external interrupt
-    fn into_pull_down_ei(self) -> Self::PullDown;
+    fn into_pull_down_ei(self, eic: &mut EIC) -> Self::PullDown;
 }
 
 pub type Sense = pac::eic::config::Sense0select;
@@ -56,6 +57,7 @@ crate::paste::item! {
     where
         GPIO: AnyPin,
     {
+        eic: ManuallyDrop<EIC>,
         _pin: Pin<GPIO::Id, GPIO::Mode>,
     }
 
@@ -66,33 +68,38 @@ crate::paste::item! {
         /// Construct pad from the appropriate pin in any mode.
         /// You may find it more convenient to use the `into_pad` trait
         /// and avoid referencing the pad type.
-        pub fn new(pin: GPIO) -> Self {
+        pub fn new(pin: GPIO, eic: &mut super::EIC) -> [<$PadType $num>]<GPIO> {
+            let eic = unsafe {
+                ManuallyDrop::new(core::ptr::read(eic as *const _))
+            };
+
             [<$PadType $num>]{
-                _pin:pin.into()
+                _pin:pin.into(),
+                eic,
             }
         }
 
         /// Configure the eic with options for this external interrupt
-        pub fn enable_event(&mut self, eic: &mut EIC) {
-            eic.eic.evctrl().modify(|_, w| {
+        pub fn enable_event(&mut self) {
+            self.eic.eic.evctrl().modify(|_, w| {
                 w.[<extinteo $num>]().set_bit()
             });
         }
 
-        pub fn enable_interrupt(&mut self, eic: &mut EIC) {
-            eic.eic.intenset().write(|w| {
+        pub fn enable_interrupt(&mut self) {
+            self.eic.eic.intenset().write(|w| {
                 w.[<extint $num>]().set_bit()
             });
         }
 
-        pub fn enable_interrupt_wake(&mut self, eic: &mut EIC) {
-            eic.eic.wakeup().modify(|_, w| {
+        pub fn enable_interrupt_wake(&mut self) {
+            self.eic.eic.wakeup().modify(|_, w| {
                 w.[<wakeupen $num>]().set_bit()
             })
         }
 
-        pub fn disable_interrupt(&mut self, eic: &mut EIC) {
-            eic.eic.intenclr().write(|w| {
+        pub fn disable_interrupt(&mut self) {
+            self.eic.eic.intenclr().write(|w| {
                 w.[<extint $num>]().set_bit()
             });
         }
@@ -107,10 +114,10 @@ crate::paste::item! {
             });
         }
 
-        pub fn sense(&mut self, _eic: &mut EIC, sense: Sense) {
+        pub fn sense(&mut self, sense: Sense) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::Eic::ptr()).config(offset) };
+            let config = &self.eic.eic.config(offset);
 
             config.modify(|_, w| unsafe {
                 // Which of the eight eic configs in this config block
@@ -128,10 +135,10 @@ crate::paste::item! {
             });
         }
 
-        pub fn filter(&mut self, _eic: &mut EIC, filter: bool) {
+        pub fn filter(&mut self, filter: bool) {
             // Which of the two config blocks this eic config is in
             let offset = ($num >> 3) & 0b0001;
-            let config = unsafe { &(*pac::Eic::ptr()).config(offset) };
+            let config = &self.eic.eic.config(offset);
 
             config.modify(|_, w| {
                 // Which of the eight eic configs in this config block
@@ -179,16 +186,16 @@ crate::paste::item! {
             type PullUp = [<$PadType $num>]<Pin<gpio::$PinType, PullUpInterrupt>>;
             type PullDown = [<$PadType $num>]<Pin<gpio::$PinType, PullDownInterrupt>>;
 
-            fn into_floating_ei(self) -> Self::Floating {
-                [<$PadType $num>]::new(self.into_floating_interrupt())
+            fn into_floating_ei(self, eic: &mut super::EIC) -> Self::Floating {
+                [<$PadType $num>]::new(self.into_floating_interrupt(), eic)
             }
 
-            fn into_pull_up_ei(self) -> Self::PullUp {
-                [<$PadType $num>]::new(self.into_pull_up_interrupt())
+            fn into_pull_up_ei(self, eic: &mut super::EIC) -> Self::PullUp {
+                [<$PadType $num>]::new(self.into_pull_up_interrupt(), eic)
             }
 
-            fn into_pull_down_ei(self) -> Self::PullDown {
-                [<$PadType $num>]::new(self.into_pull_down_interrupt())
+            fn into_pull_down_ei(self, eic: &mut super::EIC) -> Self::PullDown {
+                [<$PadType $num>]::new(self.into_pull_down_interrupt(), eic)
             }
         }
 
