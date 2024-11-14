@@ -75,13 +75,11 @@ fn main() -> ! {
 
     // Enable EIC interrupt in the NVIC
     unsafe {
-        // REVIEW: Does this need to be in a free?
         core.NVIC.set_priority(interrupt::EIC_EXTINT_6, 1);
         NVIC::unmask(interrupt::EIC_EXTINT_6);
     }
 
     // Blink the LED once to show that we have started up.
-
     toggle_led();
     delay.delay_ms(200u8);
     toggle_led();
