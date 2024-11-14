@@ -50,5 +50,8 @@ name = "blinky_basic"
 name = "neopixel_rainbow"
 
 [[example]]
+name = "eic"
+
+[[example]]
 name = "usb_serial"
 required-features = ["usb"]
