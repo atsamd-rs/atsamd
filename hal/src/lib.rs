@@ -91,6 +91,9 @@ pub mod timer_traits;
 #[cfg(feature = "dma")]
 pub mod dmac;
 
+#[cfg(feature = "rtic")]
+pub use rtic_time;
+
 #[doc(hidden)]
 mod peripherals;
 #[doc(inline)]
