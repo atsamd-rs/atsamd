@@ -43,27 +43,27 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let gclk0 = clocks.gclk0();
     let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.TC3, &mut peripherals.MCLK);
+    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.tc3, &mut peripherals.mclk);
     InterruptDrivenTimer::start(&mut timer, Hertz::MHz(3).into_duration());
 
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let neopixel_pin = pins.neopixel.into_push_pull_output();
     let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
     let _ = neopixel.write((0..5).map(|_| RGB8::default()));
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(
-            peripherals.USB,
+            peripherals.usb,
             &mut clocks,
-            &mut peripherals.MCLK,
+            &mut peripherals.mclk,
             pins.usb_dm,
             pins.usb_dp,
         ));

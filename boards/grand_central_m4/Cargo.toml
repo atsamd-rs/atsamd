@@ -15,11 +15,11 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.17.0"
+version = "0.18"
 default-features = false
 
 [dependencies.usb-device]
-version = "0.3"
+version = "0.3.2"
 optional = true
 
 [dependencies.cortex-m]
@@ -47,10 +47,10 @@ chip = "ATSAMD51P20A"
 name = "blinky_basic"
 
 [[example]]
-name = "neopixel_rainbow"
+name = "eic"
 
 [[example]]
-name = "eic"
+name = "neopixel_rainbow"
 
 [[example]]
 name = "usb_serial"
