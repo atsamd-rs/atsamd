@@ -12,7 +12,7 @@ license = "MIT OR Apache-2.0"
 name = "pygamer"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
-version = "0.11.0"
+version = "0.12.0"
 
 [dependencies]
 cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
@@ -27,7 +27,7 @@ version = "0.7"
 [dependencies.atsamd-hal]
 default-features = false
 path = "../../hal"
-version = "0.18.2"
+version = "0.19.0"
 
 [dependencies.usb-device]
 optional = true

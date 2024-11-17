@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.2](https://github.com/atsamd-rs/atsamd/compare/metro_m0-0.15.1...metro_m0-0.15.2) - 2024-11-17
+
+### Other
+
+- Add DMA examples for SPI, I2C, and UART to Tier 1 BSPs
+- release ([#775](https://github.com/atsamd-rs/atsamd/pull/775))
+
 ## [0.15.1](https://github.com/atsamd-rs/atsamd/compare/metro_m0-0.15.0...metro_m0-0.15.1) - 2024-10-25
 
 ### Other

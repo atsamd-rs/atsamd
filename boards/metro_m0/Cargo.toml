@@ -1,6 +1,6 @@
 [package]
 name = "metro_m0"
-version = "0.15.1"
+version = "0.15.2"
 authors = ["Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Metro M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -24,7 +24,7 @@ features = ["critical-section-single-core"]
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.18.2"
+version = "0.19.0"
 default-features = false
 
 [dependencies.usb-device]

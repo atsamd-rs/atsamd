@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0](https://github.com/atsamd-rs/atsamd/compare/pygamer-0.11.0...pygamer-0.12.0) - 2024-11-17
+
+### Other
+
+- *(pygamer)* [**breaking**] Upgrade `pygamer` BSP display driver and graphics dependencies ([#777](https://github.com/atsamd-rs/atsamd/pull/777))
+
 ## [0.11.0](https://github.com/atsamd-rs/atsamd/compare/pygamer-0.10.0...pygamer-0.11.0) - 2024-10-30
 
 ### Other
