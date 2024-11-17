@@ -48,13 +48,13 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     free(|cs| {
         RED_LED
             .borrow(cs)
@@ -65,11 +65,11 @@ fn main() -> ! {
 
     let gclk0 = clocks.gclk0();
     let eic_clock = clocks.eic(&gclk0).unwrap();
-    let mut eic = eic::init_with_ulp32k(&mut peripherals.MCLK, eic_clock, peripherals.EIC);
+    let mut eic = eic::init_with_ulp32k(&mut peripherals.mclk, eic_clock, peripherals.eic);
     let button: Pin<_, PullUpInterrupt> = pins.d46.into();
     eic.button_debounce_pins(&[button.id()]);
     let mut extint_button = ExtInt6::new(button);
-    extint_button.sense(&mut eic, Sense::BOTH);
+    extint_button.sense(&mut eic, Sense::Both);
     extint_button.enable_interrupt(&mut eic);
     eic.finalize();
 
@@ -95,9 +95,9 @@ fn EIC_EXTINT_6() {
     // clear the interrupt and toggle the led
     let eic = unsafe {
         // Accessing registers from interrupts context is safe
-        &*pac::EIC::ptr()
+        &*pac::Eic::ptr()
     };
-    eic.intflag
+    eic.intflag()
         .modify(|r, w| unsafe { w.bits(r.bits() | 1 << 6) });
     toggle_led();
 }
