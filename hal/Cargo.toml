@@ -23,7 +23,7 @@ rust-version = "1.77.2"
 version = "0.20.2"
 
 [package.metadata.docs.rs]
-features = ["samd21g", "samd21g-rt", "usb", "dma", "async"]
+features = ["samd21g", "samd21g-rt", "usb", "dma", "async", "rtic"]
 
 #===============================================================================
 # Required depdendencies
