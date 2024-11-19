@@ -37,6 +37,7 @@ ws2812-timer-delay = "0.3"
 
 [features]
 default = ["rt", "atsamd-hal/samd51p"]
+dma = ["atsamd-hal/dma"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51p-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 
@@ -46,6 +47,10 @@ chip = "ATSAMD51P20A"
 
 [[example]]
 name = "blinky_basic"
+
+[[example]]
+name = "i2c"
+required-features = ["dma"]
 
 [[example]]
 name = "eic"
