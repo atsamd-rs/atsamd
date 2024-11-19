@@ -38,6 +38,7 @@ ws2812-timer-delay = "0.3"
 [features]
 default = ["rt", "atsamd-hal/samd51p"]
 dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51p-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 
