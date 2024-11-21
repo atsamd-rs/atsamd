@@ -1,6 +1,6 @@
 [package]
 name = "feather_m4"
-version = "0.13.2"
+version = "0.14.0"
 edition = "2021"
 authors = ["Theodore DeRego <tderego94@gmail.com>"]
 description = "Board Support crate for the Adafruit Feather M4"
