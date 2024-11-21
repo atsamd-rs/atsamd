@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0](https://github.com/atsamd-rs/atsamd/compare/atsame54_xpro-0.8.1...atsame54_xpro-0.9.0) - 2024-11-17
+
+### Examples
+
+- Add DMA examples for SPI, I2C, and UART to Tier 1 BSPs ([#772](https://github.com/atsamd-rs/atsamd/pull/772))
+
+### Dependencies
+
+- Update HAL dependency to `0.19`
+
 ## [0.8.1](https://github.com/atsamd-rs/atsamd/compare/atsame54_xpro-0.8.0...atsame54_xpro-0.8.1) - 2024-10-25
 
 ### Other

@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.2...atsamd-hal-0.19.0) - 2024-11-17
+
+### Added
+
+- *(spi)* Unlock DMA transfers for SpiBus::transfer_in_place ([#780](https://github.com/atsamd-rs/atsamd/pull/780))
+- Make `OwnedPeripheral`, `RxPin` and `TxPin` traits from the `can` module public ([#778](https://github.com/atsamd-rs/atsamd/pull/778))
+- *(spi)* Add PanicOnRead and PanicOnWrite for simplex SPI transactions ([#772](https://github.com/atsamd-rs/atsamd/pull/772))
+- *(uart)* embedded_io implementations for UART DMA transfers ([#772](https://github.com/atsamd-rs/atsamd/pull/772))
+- *(i2c)* embedded_hal I2c implementation for I2C DMA transfers ([#772](https://github.com/atsamd-rs/atsamd/pull/772))
+- *(spi)* embedded_hal SpiBus implementation for SPI DMA transfers ([#772](https://github.com/atsamd-rs/atsamd/pull/772))
+
+### Fixed
+
+- *(spi)* Only enable SPI receiver when it has RX capability ([#772](https://github.com/atsamd-rs/atsamd/pull/772))
+
+### Other
+
+- [**breaking**] Bump MSRV to Rust 1.77.2
+
 ## [0.18.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.1...atsamd-hal-0.18.2) - 2024-10-30
 
 ### Other
