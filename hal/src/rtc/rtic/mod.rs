@@ -234,8 +234,7 @@ macro_rules! __internal_create_rtc_interrupt {
         #[no_mangle]
         #[allow(non_snake_case)]
         unsafe extern "C" fn RTC() {
-            use $crate::rtic_time::timer_queue::TimerQueueBackend;
-            $crate::rtc::rtic::$backend::timer_queue().on_monotonic_interrupt();
+            $crate::rtc::rtic::$backend::interrupt_handler();
         }
     };
 }
@@ -328,4 +327,17 @@ unsafe fn set_monotonic_prio(prio_bits: u8, interrupt: impl cortex_m::interrupt:
     let mut nvic: cortex_m::peripheral::NVIC = core::mem::transmute(());
 
     nvic.set_priority(interrupt, hw_prio);
+}
+
+// TODO: Test code
+#[derive(Default)]
+struct LoopChecker {
+    count: usize,
+}
+impl LoopChecker {
+    pub fn too_many(&mut self) -> bool {
+        self.count += 1;
+
+        self.count > 0x800000
+    }
 }
