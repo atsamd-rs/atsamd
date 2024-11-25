@@ -1,30 +1,14 @@
-use crate::{clock::EicClock, pac};
-
 pub mod pin;
-
-pub struct EIC {
-    eic: pac::Eic,
-}
-
-impl EIC {
-    pub fn init(pm: &mut pac::Pm, _clock: EicClock, eic: pac::Eic) -> Self {
-        pm.apbamask().modify(|_, w| w.eic_().set_bit());
-
-        eic.ctrl().modify(|_, w| w.enable().set_bit());
-        while eic.status().read().syncbusy().bit_is_set() {
-            cortex_m::asm::nop();
-        }
-
-        EIC { eic }
-    }
-}
 
 #[cfg(feature = "async")]
 mod async_api {
-    use super::pin::NUM_CHANNELS;
-    use super::*;
     use crate::async_hal::interrupts::{Binding, Handler, Interrupt, EIC as EicInterrupt};
+    use crate::eic::{Eic, EicFuture, NUM_CHANNELS};
+    use crate::pac;
     use crate::util::BitIter;
+
+    use core::marker::PhantomData;
+
     use embassy_sync::waitqueue::AtomicWaker;
 
     pub struct InterruptHandler {
@@ -48,15 +32,20 @@ mod async_api {
         }
     }
 
-    impl EIC {
-        pub fn into_future<I>(self, _irq: I) -> EIC
+    impl Eic {
+        /// Turn an EIC pin into a pin usable as a [`Future`](core::future::Future).
+        /// The correct interrupt source is needed.
+        pub fn into_future<I>(self, _irq: I) -> Eic<EicFuture>
         where
             I: Binding<EicInterrupt, InterruptHandler>,
         {
             EicInterrupt::unpend();
             unsafe { EicInterrupt::enable() };
 
-            EIC { eic: self.eic }
+            Eic {
+                eic: self.eic,
+                _irqs: PhantomData,
+            }
         }
     }
 
