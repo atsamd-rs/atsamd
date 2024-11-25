@@ -50,15 +50,15 @@
 //! * Bind the corresponding `EIC` interrupt source to the SPI
 //!   [`InterruptHandler`] (refer to the module-level
 //!   [`async_hal`](crate::async_hal) documentation for more information).
-//! *
-//!     * SAMD11/SAMD21: Turn an [`Eic`] into an async-enabled [`Eic`] by
-//!       calling [`Eic::into_future`]. Since there is only a single interrupt
-//!       handler for the EIC peripheral, all EXTINT channels must be turned
-//!       into async channels at once.
-//!     * SAMx5x: Turn an individuel [`ExtInt`] into an async-enabled [`ExtInt`]
-//!       by calling [`ExtInt::into_future`]. Each channel has a dedicated
-//!       interrupt source, therefore you must individually choose which
-//!       channels to turn into async channels.
+//!
+//! * SAMD11/SAMD21: Turn an [`Eic`] into an async-enabled [`Eic`] by calling
+//!   [`Eic::into_future`]. Since there is only a single interrupt handler for
+//!   the EIC peripheral, all EXTINT channels must be turned into async channels
+//!   at once.
+//! * SAMx5x: Turn an individuel [`ExtInt`] into an async-enabled [`ExtInt`] by
+//!   calling [`ExtInt::into_future`]. Each channel has a dedicated interrupt
+//!   source, therefore you must individually choose which channels to turn into
+//!   async channels.
 //! * Use the provided [`wait`](ExtInt::wait) method. async-enabled [`ExtInt`]s
 //!   also implement [`embedded_hal_async::digital::Wait`].
 
