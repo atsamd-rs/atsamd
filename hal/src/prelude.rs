@@ -1,5 +1,5 @@
 //! Import the prelude to gain convenient access to helper traits
-pub use crate::eic::pin::EicPin;
+pub use crate::eic::EicPin;
 pub use crate::timer_traits::InterruptDrivenTimer;
 pub use fugit::ExtU32 as _;
 pub use fugit::RateExtU32 as _;

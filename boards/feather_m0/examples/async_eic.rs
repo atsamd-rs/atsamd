@@ -10,10 +10,7 @@ use feather_m0 as bsp;
 use hal::{
     clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
     ehal::digital::StatefulOutputPin,
-    eic::{
-        pin::{ExtInt2, Sense},
-        EIC,
-    },
+    eic::{Eic, Sense},
     gpio::{Pin, PullUpInterrupt},
 };
 
@@ -46,10 +43,12 @@ async fn main(_s: embassy_executor::Spawner) {
     let gclk2 = clocks.get_gclk(ClockGenId::Gclk2).unwrap();
     let eic_clock = clocks.eic(&gclk2).unwrap();
 
-    let mut eic = EIC::init(&mut peripherals.pm, eic_clock, peripherals.eic).into_future(Irqs);
+    let eic_channels = Eic::new(&mut peripherals.pm, eic_clock, peripherals.eic)
+        .into_future(Irqs)
+        .split();
+
     let button: Pin<_, PullUpInterrupt> = pins.d10.into();
-    let mut extint = ExtInt2::new(button, &mut eic);
-    extint.enable_interrupt_wake();
+    let mut extint = eic_channels.2.with_pin(button);
 
     loop {
         // Here we show straight falling edge detection without

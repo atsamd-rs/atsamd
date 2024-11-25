@@ -9,10 +9,7 @@ use bsp::{hal, pin_alias};
 use hal::{
     clock::{ClockGenId, ClockSource, GenericClockController},
     ehal::digital::StatefulOutputPin,
-    eic::{
-        self,
-        pin::{ExtInt7, Sense},
-    },
+    eic::{Eic, Sense},
     gpio::{Pin, PullUpInterrupt},
 };
 use metro_m4 as bsp;
@@ -45,12 +42,10 @@ async fn main(_s: embassy_executor::Spawner) {
     let gclk2 = clocks.get_gclk(ClockGenId::Gclk2).unwrap();
     let eic_clock = clocks.eic(&gclk2).unwrap();
 
-    let mut eic =
-        eic::init_with_ulp32k(&mut peripherals.mclk, eic_clock, peripherals.eic).finalize();
-    // let mut eic = EIC::init(&mut peripherals.MCLK, eic_clock,
-    // peripherals.EIC).into_future(Irqs);
+    let eic_channels = Eic::new(&mut peripherals.mclk, eic_clock, peripherals.eic).split();
+
     let button: Pin<_, PullUpInterrupt> = pins.d0.into();
-    let mut extint = ExtInt7::new(button, &mut eic).into_future(Irqs);
+    let mut extint = eic_channels.7.with_pin(button).into_future(Irqs);
     extint.enable_interrupt();
 
     loop {

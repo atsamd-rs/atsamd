@@ -18,11 +18,7 @@ pub mod calibration {}
 )]
 pub mod timer {}
 
-#[hal_module(
-    any("eic-d11", "eic-d21") => "eic/d11/mod.rs",
-    "eic-d5x" => "eic/d5x/mod.rs",
-)]
-pub mod eic {}
+pub mod eic;
 
 #[cfg(feature = "usb")]
 #[hal_module(
