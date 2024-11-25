@@ -1,7 +1,7 @@
 use super::{ChId, Channel};
 use crate::pac;
 
-pub mod pin;
+mod pin;
 
 impl<Id: ChId, F> Channel<Id, F> {
     /// Run the provided closure with the EIC peripheral disabled. The
@@ -29,13 +29,14 @@ impl<Id: ChId, F> Channel<Id, F> {
 }
 
 #[cfg(feature = "async")]
-mod async_api {
+pub(super) mod async_api {
     use super::*;
     use crate::async_hal::interrupts::Handler;
     use crate::eic::NUM_CHANNELS;
     use crate::util::BitIter;
     use embassy_sync::waitqueue::AtomicWaker;
 
+    /// Interrupt handler used for `async` operations.
     pub struct InterruptHandler {
         _private: (),
     }
@@ -66,6 +67,3 @@ mod async_api {
     const NEW_WAKER: AtomicWaker = AtomicWaker::new();
     pub(super) static WAKERS: [AtomicWaker; NUM_CHANNELS] = [NEW_WAKER; NUM_CHANNELS];
 }
-
-#[cfg(feature = "async")]
-pub use async_api::*;
