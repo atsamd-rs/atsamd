@@ -1,7 +1,7 @@
-pub mod pin;
+mod pin;
 
 #[cfg(feature = "async")]
-mod async_api {
+pub(super) mod async_api {
     use crate::async_hal::interrupts::{Binding, Handler, Interrupt, EIC as EicInterrupt};
     use crate::eic::{Eic, EicFuture, NUM_CHANNELS};
     use crate::pac;
@@ -53,6 +53,3 @@ mod async_api {
     const NEW_WAKER: AtomicWaker = AtomicWaker::new();
     pub(super) static WAKERS: [AtomicWaker; NUM_CHANNELS] = [NEW_WAKER; NUM_CHANNELS];
 }
-
-#[cfg(feature = "async")]
-pub use async_api::*;

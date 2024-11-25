@@ -1,3 +1,67 @@
+//! # External Interrupt Controller
+//!
+//! This module provides typesafe APIs for interacting with the EIC peripheral,
+//! which is used to generate interrupts based on the state of a GPIO.
+//!
+//! Each chip has a number of EXTINT channels:
+//!
+//! * SAMD11: 8 channels
+//! * SAMD21/SAMx5x: 16 channels
+//!
+//! Each channel can operate independently, and sense state changes for a single
+//! GPIO pin at a time. Refer to the datasheet for GPIO pin/EXTINT channel
+//! compatibility. In this module, an [`ExtInt`] represents an EXTINT channel
+//! which is tied to a GPIO [`Pin`], and is capable of sensing state changes.
+//!
+//! ## Steps to create an [`ExtInt`]
+//!
+//! 1. Start by creating an [`Eic`] struct, by calling [`Eic::new`]. This
+//!    initializes the EIC peripheral and sets up the correct clocking.
+//!
+//! 1. Turn the [`Eic`] into a tuple of [`Channel`]s by calling [`Eic::split`].
+//!    Each channel represents a single EXTINT channel.
+//!
+//! 1. Assign a pin to a channel by calling [`Channel::with_pin`]. This returns
+//!    a fully configured and ready to use [`ExtInt`]. A [`Pin`] can also be
+//!    directly converted into an [`ExtInt`] by calling one of the methods
+//!    provided by the [`EicPin`] trait.
+//!
+//! ### Example setup
+//!
+//! ```no_run
+//! let eic_clock = clocks.eic(&gclk0).unwrap();
+//! // Initialize the EIC peripheral
+//! let eic = Eic::new(&mut peripherals.pm, eic_clock, peripherals.eic);
+//! // Split into channels
+//! let eic_channels = eic.split();
+//!
+//! // Take the pin that we want to use
+//! let button: Pin<_, PullUpInterrupt> = pins.d10.into();
+//!
+//! // Turn the EXTINT[2] channel into an ExtInt struct
+//! let mut extint = eic_channels.2.with_pin(button);
+//! ```
+//!
+//! ## `async` operation <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span>
+//!
+//! [`ExtInt`]s can be used for async operations. Configuring the [`Eic`] in
+//! async mode is relatively simple:
+//!
+//! * Bind the corresponding `EIC` interrupt source to the SPI
+//!   [`InterruptHandler`] (refer to the module-level
+//!   [`async_hal`](crate::async_hal) documentation for more information).
+//! *
+//!     * SAMD11/SAMD21: Turn an [`Eic`] into an async-enabled [`Eic`] by
+//!       calling [`Eic::into_future`]. Since there is only a single interrupt
+//!       handler for the EIC peripheral, all EXTINT channels must be turned
+//!       into async channels at once.
+//!     * SAMx5x: Turn an individuel [`ExtInt`] into an async-enabled [`ExtInt`]
+//!       by calling [`ExtInt::into_future`]. Each channel has a dedicated
+//!       interrupt source, therefore you must individually choose which
+//!       channels to turn into async channels.
+//! * Use the provided [`wait`](ExtInt::wait) method. async-enabled [`ExtInt`]s
+//!   also implement [`embedded_hal_async::digital::Wait`].
+
 use core::marker::PhantomData;
 
 use atsamd_hal_macros::{hal_cfg, hal_module};
@@ -15,16 +79,17 @@ use crate::{
     "eic-d5x" => "eic/d5x/mod.rs",
 )]
 mod impls {}
-pub use impls::*;
+#[cfg(feature = "async")]
+pub use impls::async_api::*;
 
 pub type Sense = pac::eic::config::Sense0select;
 
-/// Trait representing a EIC EXTINT channel ID
+/// Trait representing an EXTINT channel ID.
 pub trait ChId {
     const ID: usize;
 }
 
-/// Marker struct that represents an EXTINT channel capable of doing async
+/// Marker type that represents an EXTINT channel capable of doing async
 /// operations.
 #[cfg(feature = "async")]
 pub enum EicFuture {}
@@ -51,31 +116,33 @@ pub trait EicPin: AnyPin + Sealed {
     fn into_pull_down_ei(self, chan: Channel<Self::ChId>) -> Self::PullDown;
 }
 
-/// Represents a numbered external interrupt. The external interrupt is generic
-/// over any pin, only the EicPin implementations in this module make sense.
+/// A numbered external interrupt, which can be used to sense state changes on
+/// its pin.
 pub struct ExtInt<P, Id, F = NoneT>
 where
     P: EicPin,
     Id: ChId,
 {
     chan: Channel<Id, F>,
-    _pin: Pin<P::Id, P::Mode>,
+    pin: Pin<P::Id, P::Mode>,
 }
-
-// impl !Send for [<$PadType $num>]<GPIO> {}
-// impl !Sync for [<$PadType $num>]<GPIO> {}
 
 impl<P, Id, F> ExtInt<P, Id, F>
 where
     P: EicPin,
     Id: ChId,
 {
+    /// Release the underlying resources: [`Pin`] and [`Channel`].
+    pub fn free(self) -> (Pin<P::Id, P::Mode>, Channel<Id, F>) {
+        (self.pin, self.chan)
+    }
+
     /// Construct pad from the appropriate pin in any mode.
     /// You may find it more convenient to use the `into_pad` trait
     /// and avoid referencing the pad type.
     fn new(pin: P, chan: Channel<Id, F>) -> Self {
         ExtInt {
-            _pin: pin.into(),
+            pin: pin.into(),
             chan,
         }
     }
@@ -117,9 +184,11 @@ impl<Id: ChId, F> Channel<Id, F> {
     }
 }
 
-/// External Interrupt Controller. Use [`split`](Self::split) to split the
-/// struct into individual channels, which can then be used to create
-/// [`ExtInt`]s, by calling [`Channel::with_pin`].
+/// External Interrupt Controller.
+///
+/// Use [`split`](Self::split) to split the struct into individual channels,
+/// which can then be used to create [`ExtInt`]s, by calling
+/// [`Channel::with_pin`].
 pub struct Eic<I = NoneT> {
     eic: pac::Eic,
     _irqs: PhantomData<I>,
@@ -153,26 +222,68 @@ impl Eic {
     pub fn new(mclk: &mut pac::Mclk, _clock: EicClock, eic: pac::Eic) -> Self {
         mclk.apbamask().modify(|_, w| w.eic_().set_bit());
 
+        let mut eic = Self {
+            eic,
+            _irqs: PhantomData,
+        };
+
         // Reset the EIC
-        eic.ctrla().modify(|_, w| w.swrst().set_bit());
-        while eic.syncbusy().read().swrst().bit_is_set() {
-            core::hint::spin_loop();
-        }
+        eic.swreset();
 
         // Use the low-power 32k clock and enable.
-        eic.ctrla().modify(|_, w| {
+        eic.eic.ctrla().modify(|_, w| {
             w.cksel().set_bit();
             w.enable().set_bit()
         });
 
-        while eic.syncbusy().read().enable().bit_is_set() {
+        while eic.eic.syncbusy().read().enable().bit_is_set() {
             core::hint::spin_loop();
         }
 
-        Self {
-            eic,
-            _irqs: PhantomData,
+        eic
+    }
+
+    /// Release the EIC and return the register block.
+    ///
+    /// **Note**: The [`Channels`] struct is consumed by this method. This means
+    /// that any [`Channel`] obtained by [`split`](Eic::split) must be
+    /// moved back into the [`Channels`] struct before being able to pass it
+    /// into [`free`](Eic::free).
+    pub fn free(mut self, _channels: Channels) -> pac::Eic {
+        self.swreset();
+
+        self.eic
+    }
+}
+
+impl<F> Eic<F> {
+    /// Reset the EIC
+    #[atsamd_hal_macros::hal_macro_helper]
+    fn swreset(&mut self) {
+        #[hal_cfg(any("eic-d11", "eic-d21"))]
+        let ctrl = self.eic.ctrl();
+
+        #[hal_cfg("eic-d5x")]
+        let ctrl = self.eic.ctrla();
+
+        ctrl.modify(|_, w| w.swrst().set_bit());
+        while ctrl.read().swrst().bit_is_set() {
+            core::hint::spin_loop();
         }
+    }
+}
+
+#[cfg(feature = "async")]
+impl Eic<EicFuture> {
+    /// Release the EIC and return the register block.
+    ///
+    /// **Note**: The [`Channels`] struct is consumed by this method. This means
+    /// that any [`Channel`] obtained by [`split`](Eic::split) must be
+    /// moved back into the [`Channels`] struct before being able to pass it
+    /// into [`free`](Eic::free).
+    pub fn free(mut self, _channels: FutureChannels) -> pac::Eic {
+        self.swreset();
+        self.eic
     }
 }
 
@@ -196,6 +307,7 @@ macro_rules! get {
     };
 }
 
+/// The number of EXTINT channels on this chip.
 pub const NUM_CHANNELS: usize = with_num_channels!(get);
 
 macro_rules! define_channels_struct {
@@ -203,7 +315,7 @@ macro_rules! define_channels_struct {
         seq!(N in 0..$num_channels {
             #(
                 /// Type alias for a channel number
-                pub struct Ch~N;
+                pub enum Ch~N {}
 
                 impl ChId for Ch~N {
                     const ID: usize = N;

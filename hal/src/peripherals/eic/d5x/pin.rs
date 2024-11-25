@@ -5,7 +5,6 @@ use crate::eic::*;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
-use crate::typelevel::NoneT;
 
 /// The pad macro defines the given EIC pin and implements EicPin for the
 /// given pins. The EicPin implementation will configure the pin for the
@@ -166,11 +165,11 @@ where
     type Error = core::convert::Infallible;
     #[inline]
     fn is_high(&self) -> Result<bool, Self::Error> {
-        self._pin.is_high()
+        self.pin.is_high()
     }
     #[inline]
     fn is_low(&self) -> Result<bool, Self::Error> {
-        self._pin.is_low()
+        self.pin.is_low()
     }
 }
 
@@ -184,6 +183,7 @@ mod async_impls {
     use crate::{
         async_hal::interrupts::{Binding, Handler, InterruptSource},
         eic::EicFuture,
+        typelevel::NoneT,
     };
 
     use super::{
@@ -207,7 +207,7 @@ mod async_impls {
             unsafe { P::InterruptSource::enable() };
 
             ExtInt {
-                _pin: self._pin,
+                pin: self.pin,
                 chan: self.chan.change_mode(),
             }
         }

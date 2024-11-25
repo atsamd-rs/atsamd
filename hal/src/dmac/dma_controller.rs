@@ -112,7 +112,7 @@ macro_rules! define_channels_struct {
         seq!(N in 0..$num_channels {
             #(
                 /// Type alias for a channel number
-                pub struct Ch~N;
+                pub enum Ch~N {}
 
                 impl ChId for Ch~N {
                     const U8: u8 = N;

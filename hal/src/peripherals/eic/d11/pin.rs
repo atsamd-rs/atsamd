@@ -142,11 +142,11 @@ where
     type Error = core::convert::Infallible;
     #[inline]
     fn is_high(&self) -> Result<bool, Self::Error> {
-        self._pin.is_high()
+        self.pin.is_high()
     }
     #[inline]
     fn is_low(&self) -> Result<bool, Self::Error> {
-        self._pin.is_low()
+        self.pin.is_low()
     }
 }
 
