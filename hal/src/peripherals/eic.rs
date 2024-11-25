@@ -1,6 +1,7 @@
 use core::marker::PhantomData;
 
 use atsamd_hal_macros::{hal_cfg, hal_module};
+use seq_macro::seq;
 
 use crate::{
     clock::EicClock,
@@ -79,7 +80,9 @@ where
     }
 }
 
-/// EIC channel. Use this struct to create an [`ExtInt`](pins::ExtInt)
+/// EIC channel.
+///
+/// Use this struct to create an [`ExtInt`](pins::ExtInt) by calling [`with_pin`](Self::with_pin).
 pub struct Channel<Id: ChId, F = NoneT> {
     eic: core::mem::ManuallyDrop<pac::Eic>,
     _id: PhantomData<Id>,
@@ -193,7 +196,7 @@ pub const NUM_CHANNELS: usize = with_num_channels!(get);
 
 macro_rules! define_channels_struct {
     ($num_channels:literal) => {
-        seq_macro::seq!(N in 0..$num_channels {
+        seq!(N in 0..$num_channels {
             #(
                 /// Type alias for a channel number
                 pub struct Ch~N;
@@ -218,7 +221,7 @@ with_num_channels!(define_channels_struct);
 #[cfg(feature = "async")]
 macro_rules! define_channels_struct_future {
     ($num_channels:literal) => {
-        seq_macro::seq!(N in 0..$num_channels {
+        seq!(N in 0..$num_channels {
             /// Struct generating individual handles to each EXTINT channel for `async` operation
             pub struct FutureChannels(
                 #(
@@ -234,7 +237,7 @@ with_num_channels!(define_channels_struct_future);
 
 macro_rules! define_split {
     ($num_channels:literal) => {
-        seq_macro::seq!(N in 0..$num_channels {
+        seq!(N in 0..$num_channels {
             /// Split the EIC into individual channels.
             #[inline]
             pub fn split(self) -> Channels {
@@ -256,7 +259,7 @@ impl Eic {
 #[cfg(feature = "async")]
 macro_rules! define_split_future {
     ($num_channels:literal) => {
-        seq_macro::seq!(N in 0..$num_channels {
+        seq!(N in 0..$num_channels {
             /// Split the EIC into individual channels
             #[inline]
             pub fn split(self) -> FutureChannels {

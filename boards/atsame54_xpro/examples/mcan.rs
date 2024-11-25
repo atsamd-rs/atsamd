@@ -22,7 +22,7 @@
 use atsame54_xpro as bsp;
 use bsp::hal;
 use hal::clock::v2 as clock;
-use hal::eic::pin::*;
+use hal::eic::{Ch15, Eic, ExtInt, Sense};
 use hal::gpio::{Interrupt as GpioInterrupt, *};
 use hal::prelude::*;
 
@@ -87,7 +87,7 @@ type Aux = mcan::bus::Aux<
         bsp::pac::Can1,
     >,
 >;
-type Button = ExtInt15<Pin<PB31, GpioInterrupt<PullUp>>>;
+type Button = ExtInt<Pin<PB31, GpioInterrupt<PullUp>>, Ch15>;
 
 #[rtic::app(device = hal::pac, peripherals = true, dispatchers = [FREQM])]
 mod app {
@@ -140,9 +140,8 @@ mod app {
 
         let (pclk_eic, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.eic, clocks.gclk0);
 
-        let mut eic =
-            hal::eic::init_with_ulp32k(&mut mclk, pclk_eic.into(), ctx.device.eic).finalize();
-        let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei(&mut eic);
+        let eic_channels = Eic::new(&mut mclk, pclk_eic.into(), ctx.device.eic).split();
+        let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei(eic_channels.15);
         button.sense(Sense::Fall);
         button.debounce();
         button.enable_interrupt();
