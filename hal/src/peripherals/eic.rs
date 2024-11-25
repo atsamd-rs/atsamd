@@ -24,7 +24,8 @@ pub trait ChId {
     const ID: usize;
 }
 
-/// Marker struct that represents an EXTINT channel capable of doing async operations.
+/// Marker struct that represents an EXTINT channel capable of doing async
+/// operations.
 #[cfg(feature = "async")]
 pub enum EicFuture {}
 
@@ -82,7 +83,8 @@ where
 
 /// EIC channel.
 ///
-/// Use this struct to create an [`ExtInt`](pins::ExtInt) by calling [`with_pin`](Self::with_pin).
+/// Use this struct to create an [`ExtInt`](pins::ExtInt) by calling
+/// [`with_pin`](Self::with_pin).
 pub struct Channel<Id: ChId, F = NoneT> {
     eic: core::mem::ManuallyDrop<pac::Eic>,
     _id: PhantomData<Id>,
@@ -90,8 +92,8 @@ pub struct Channel<Id: ChId, F = NoneT> {
 }
 
 impl<Id: ChId, F> Channel<Id, F> {
-    /// Assign a pin to this [`Channel`], and turn it into an [`ExtInt`], which is capable of sensing
-    /// state changes on the pin.
+    /// Assign a pin to this [`Channel`], and turn it into an [`ExtInt`], which
+    /// is capable of sensing state changes on the pin.
     pub fn with_pin<P: EicPin<ChId = Id>>(self, pin: P) -> ExtInt<P, Id, F> {
         ExtInt::new(pin, self)
     }
@@ -115,7 +117,9 @@ impl<Id: ChId, F> Channel<Id, F> {
     }
 }
 
-/// External Interrupt Controller. Use [`split`](Self::split) to split the struct into individual channels, whcih can be used to create [`ExtInt`]s.
+/// External Interrupt Controller. Use [`split`](Self::split) to split the
+/// struct into individual channels, which can then be used to create
+/// [`ExtInt`]s, by calling [`Channel::with_pin`].
 pub struct Eic<I = NoneT> {
     eic: pac::Eic,
     _irqs: PhantomData<I>,
