@@ -18,6 +18,7 @@ pub mod calibration {}
 )]
 pub mod timer {}
 
+#[cfg(feature = "device")]
 pub mod eic;
 
 #[cfg(feature = "usb")]
