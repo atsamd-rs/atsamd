@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.19.0...atsamd-hal-0.20.0) - 2024-11-28
+
+### Added
+
+- [**breaking**] Add async support for many peripherals ([#635](https://github.com/atsamd-rs/atsamd/pull/635))
+
+### Changed
+
+- *(eic)* [**breaking**] EIC pins no longer need to take a reference to the underlying peripheral ([#635](https://github.com/atsamd-rs/atsamd/pull/635))
+
+### Fixed
+
+- *(i2c)* Send repeated starts in byte-by-byte I2C transactions
+
+### Other
+
+- rustfmt (again)
+- Improve docs, minor refactor
+- rustfmt
+- Fix atsame54_xpro mcan example
+- Refactor common code, use channels
+- Use typestate EIC pins (D5x)
+
 ## [0.19.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.2...atsamd-hal-0.19.0) - 2024-11-17
 
 ### Added
