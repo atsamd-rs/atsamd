@@ -20,7 +20,7 @@ name = "atsamd-hal"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
 rust-version = "1.77.2"
-version = "0.19.0"
+version = "0.20.0"
 
 [package.metadata.docs.rs]
 features = ["samd21g", "samd21g-rt", "usb", "dma", "async"]
@@ -31,7 +31,7 @@ features = ["samd21g", "samd21g-rt", "usb", "dma", "async"]
 
 [dependencies]
 aes = "0.7.5"
-atsamd-hal-macros = { version = "0.2.1", path = "../atsamd-hal-macros" }
+atsamd-hal-macros = { version = "0.2.2", path = "../atsamd-hal-macros" }
 bitfield = "0.13"
 bitflags = "2.6.0"
 cipher = "0.3"

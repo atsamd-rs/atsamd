@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0](https://github.com/atsamd-rs/atsamd/compare/atsame54_xpro-0.9.0...atsame54_xpro-0.10.0) - 2024-11-28
+
+### Added
+
+- [**breaking**] Add async support for many peripherals ([#635](https://github.com/atsamd-rs/atsamd/pull/635))
+
+### Other
+
+- Fix atsame54_xpro mcan example
+
 ## [0.9.0](https://github.com/atsamd-rs/atsamd/compare/atsame54_xpro-0.8.1...atsame54_xpro-0.9.0) - 2024-11-17
 
 ### Examples

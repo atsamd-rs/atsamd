@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.1...atsamd-hal-macros-0.2.2) - 2024-11-28
+
+### Added
+
+- *(atsamd-hal-macros)* Add `nvic` peripheral ([#635](https://github.com/atsamd-rs/atsamd/pull/635))
+
 ## [0.2.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.0...atsamd-hal-macros-0.2.1) - 2024-10-25
 
 ### Fixed

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0](https://github.com/atsamd-rs/atsamd/compare/metro_m0-0.16.0...metro_m0-0.17.0) - 2024-11-28
+
+### Added
+
+- [**breaking**] Add async support for many peripherals ([#635](https://github.com/atsamd-rs/atsamd/pull/635))
+
 ## [0.16.0](https://github.com/atsamd-rs/atsamd/compare/metro_m0-0.15.1...metro_m0-0.16.0) - 2024-11-17
 
 ### Examples

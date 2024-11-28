@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.19.0...atsamd-hal-0.20.0) - 2024-11-28
+
+### Added
+
+- [**breaking**] Add async support for many peripherals ([#635](https://github.com/atsamd-rs/atsamd/pull/635)):
+    * Supported peripherals: SPI, I2C, UART, DMAC, Timer/counter, external interrupts (EIC)
+    * [Additional reading](https://docs.rs/atsamd-hal/latest/atsamd_hal/async_hal/index.html)
+
+### Changed
+
+- *(eic)* [**breaking**] Overhaul the `eic` API  ([#635](https://github.com/atsamd-rs/atsamd/pull/635), [792](https://github.com/atsamd-rs/atsamd/pull/792)):
+    * API now uses a typestate pattern for `ExtInt` struct instead of individual `ExtInt1`, `ExtInt2`, ...
+    * `ExtInt` methods no longer require a reference to the underlying `Eic`
+    * `ExtInt`s take ownership of an EXTINT channel, preventing erroneous reuse
+    * [Additional reading](https://docs.rs/atsamd-hal/latest/atsamd_hal/eic/index.html)
+
+
+### Fixed
+
+- *(i2c)* Send repeated starts in byte-by-byte I2C transactions
+
 ## [0.19.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.18.2...atsamd-hal-0.19.0) - 2024-11-17
 
 ### Added
