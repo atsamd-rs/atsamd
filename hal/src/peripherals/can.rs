@@ -13,7 +13,6 @@
 use crate::{
     clock::v2::{
         ahb::{AhbClk, AhbId},
-        gclk::Gclk0Id,
         pclk::{Pclk, PclkId, PclkSourceId},
         types::Can0,
         Source,
@@ -49,7 +48,7 @@ impl<ID: PclkId + AhbId, PS: PclkSourceId, RX, TX, CAN> Dependencies<ID, PS, RX,
     /// This struct implements [`mcan_core::Dependencies`] trait, making it
     /// possible to construct an instance of `mcan::bus::CanConfigurable`.
     pub fn new<S>(
-        gclk0: S,
+        gclk: S,
         pclk: Pclk<ID, PS>,
         ahbclk: AhbClk<ID>,
         rx: RX,
@@ -57,27 +56,27 @@ impl<ID: PclkId + AhbId, PS: PclkSourceId, RX, TX, CAN> Dependencies<ID, PS, RX,
         can: CAN,
     ) -> (Self, S::Inc)
     where
-        S: Source<Id = Gclk0Id> + Increment,
+        S: Source + Increment,
     {
         (
             Self {
                 pclk,
-                host_freq: gclk0.freq(),
+                host_freq: gclk.freq(),
                 ahbclk,
                 rx,
                 tx,
                 can,
             },
-            gclk0.inc(),
+            gclk.inc(),
         )
     }
     /// Destroy an instance of `Dependencies` struct.
     ///
     /// Releases all enclosed objects back to the user.
     #[allow(clippy::type_complexity)]
-    pub fn free<S>(self, gclk0: S) -> (Pclk<ID, PS>, HertzU32, AhbClk<ID>, RX, TX, CAN, S::Dec)
+    pub fn free<S>(self, gclk: S) -> (Pclk<ID, PS>, HertzU32, AhbClk<ID>, RX, TX, CAN, S::Dec)
     where
-        S: Source<Id = Gclk0Id> + Decrement,
+        S: Source + Decrement,
     {
         let Self {
             pclk,
@@ -87,7 +86,7 @@ impl<ID: PclkId + AhbId, PS: PclkSourceId, RX, TX, CAN> Dependencies<ID, PS, RX,
             tx,
             can,
         } = self;
-        (pclk, host_freq, ahbclk, rx, tx, can, gclk0.dec())
+        (pclk, host_freq, ahbclk, rx, tx, can, gclk.dec())
     }
 }
 
