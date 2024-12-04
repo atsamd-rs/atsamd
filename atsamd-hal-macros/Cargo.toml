@@ -1,6 +1,7 @@
 [package]
 authors = ["Tethys Svensson"]
 name = "atsamd-hal-macros"
+rust-version = "1.77.2"
 version = "0.2.2"
 edition = "2021"
 license = "MIT OR Apache-2.0"
