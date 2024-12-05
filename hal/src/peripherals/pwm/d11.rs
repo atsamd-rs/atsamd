@@ -31,6 +31,7 @@ impl $TYPE {
         count.ctrla().write(|w| w.swrst().set_bit());
         while count.ctrla().read().bits() & 1 != 0 {}
         count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
         count.ctrla().modify(|_, w| {
             match params.divider {
                 1 => w.prescaler().div1(),
@@ -48,6 +49,7 @@ impl $TYPE {
         count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
         count.cc(1).write(|w| unsafe { w.cc().bits(0) });
         count.ctrla().modify(|_, w| w.enable().set_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
 
         Self {
             clock_freq: clock.freq(),
@@ -60,6 +62,7 @@ impl $TYPE {
         let params = TimerParams::new(period, self.clock_freq);
         let count = self.tc.count16();
         count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
         count.ctrla().modify(|_, w| {
             match params.divider {
                 1 => w.prescaler().div1(),
@@ -74,6 +77,7 @@ impl $TYPE {
             }
         });
         count.ctrla().modify(|_, w| w.enable().set_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
         count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
     }
 
@@ -109,11 +113,13 @@ impl $crate::ehal_02::PwmPin for $TYPE {
     fn disable(&mut self) {
         let count = self.tc.count16();
         count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
     }
 
     fn enable(&mut self) {
         let count = self.tc.count16();
         count.ctrla().modify(|_, w| w.enable().set_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
     }
 
     fn get_duty(&self) -> Self::Duty {
@@ -188,6 +194,7 @@ impl $TYPE {
             tcc.ctrlbclr().write(|w| w.dir().set_bit() );
             while tcc.syncbusy().read().ctrlb().bit_is_set() {}
             tcc.ctrla().modify(|_, w| w.enable().clear_bit());
+            while tcc.syncbusy().read().enable().bit_is_set() {}
             tcc.ctrla().modify(|_, w| {
                 match params.divider {
                     1 => w.prescaler().div1(),
@@ -206,6 +213,7 @@ impl $TYPE {
             tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
             while tcc.syncbusy().read().per().bit_is_set() {}
             tcc.ctrla().modify(|_, w| w.enable().set_bit());
+            while tcc.syncbusy().read().enable().bit_is_set() {}
         }
 
         Self {
@@ -222,10 +230,12 @@ impl $crate::ehal_02::Pwm for $TYPE {
 
     fn disable(&mut self, _channel: Self::Channel) {
         self.tcc.ctrla().modify(|_, w| w.enable().clear_bit());
+        while self.tcc.syncbusy().read().enable().bit_is_set() {}
     }
 
     fn enable(&mut self, _channel: Self::Channel) {
         self.tcc.ctrla().modify(|_, w| w.enable().set_bit());
+        while self.tcc.syncbusy().read().enable().bit_is_set() {}
     }
 
     fn get_period(&self) -> Self::Time {
@@ -257,6 +267,7 @@ impl $crate::ehal_02::Pwm for $TYPE {
         let period = period.into();
         let params = TimerParams::new(period, self.clock_freq);
         self.tcc.ctrla().modify(|_, w| w.enable().clear_bit());
+        while self.tcc.syncbusy().read().enable().bit_is_set() {}
         self.tcc.ctrla().modify(|_, w| {
             match params.divider {
                 1 => w.prescaler().div1(),
@@ -271,6 +282,7 @@ impl $crate::ehal_02::Pwm for $TYPE {
             }
         });
         self.tcc.ctrla().modify(|_, w| w.enable().set_bit());
+        while self.tcc.syncbusy().read().enable().bit_is_set() {}
         self.tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
         while self.tcc.syncbusy().read().per().bit() {}
     }
