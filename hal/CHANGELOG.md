@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.20.0...atsamd-hal-0.20.1) - 2024-12-05
+
+### Added
+
+- *(can)* Allow the use of any GCLK with the CAN peripheral ([#797](https://github.com/atsamd-rs/atsamd/pull/797))
+
+### Fixed
+
+- *(pwm)* Fix missing sync of timer ENABLE bit ([#795](https://github.com/atsamd-rs/atsamd/pull/795))
+
 ## [0.20.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.19.0...atsamd-hal-0.20.0) - 2024-11-28
 
 ### Added
