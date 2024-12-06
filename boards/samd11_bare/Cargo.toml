@@ -1,6 +1,6 @@
 [package]
 name = "samd11_bare"
-version = "0.13.0"
+version = "0.13.1"
 authors = ["Jesse Braham <jesse@beta7.io>"]
 description = "Support crate for the ATSAMD11C"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -23,7 +23,7 @@ features = ["critical-section-single-core"]
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.20.0"
+version = "0.20.2"
 default-features = false
 
 [dev-dependencies]
