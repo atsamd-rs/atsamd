@@ -194,7 +194,6 @@ where
             self.spi.config.as_mut().regs.rx_enable();
         }
 
-        self.flush_tx().await;
         tx_result?;
         Ok(words.len())
     }
@@ -229,7 +228,7 @@ where
         );
 
         // Check for overflows or DMA errors
-        self.flush_tx_rx().await?;
+        self.spi.read_status().check_bus_error()?;
         rx_result.and(tx_result)?;
         Ok(())
     }
@@ -365,7 +364,7 @@ where
         };
 
         // Check for overflows or DMA errors
-        self.flush_tx_rx().await?;
+        self.spi.read_status().check_bus_error()?;
         rx_result.and(tx_result)?;
         Ok(())
     }
