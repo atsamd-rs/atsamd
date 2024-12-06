@@ -258,6 +258,24 @@
 //! let rcvd: u16 = block!(spi.read());
 //! ```
 //!
+//! ## Flushing the bus
+//!
+//! The [`SpiBus`](crate::ehal::spi::SpiBus) methods do not flush the bus when a
+//! transaction is complete. This is in part to increase performance and allow
+//! for pipelining SPI transactions. This is true for both sync and async
+//! operation. As such, you should ensure you manually call
+//! [`flush`](crate::ehal::spi::SpiBus::flush) when:
+//! * You must synchronize SPI activity and GPIO activity, for example before
+//!   deasserting a CS pin.
+//! * Before deinitializing the SPI peripheral.
+//!
+//! Take note that the [`SpiDevice`](crate::ehal::spi::SpiDevice)
+//! implementations automatically take care of flushing, so no further flushing
+//! is needed.
+//!
+//! [See the embedded-hal spec](https://docs.rs/embedded-hal/latest/embedded_hal/spi/index.html#flushing)
+//! for more information.
+//!
 //! # [`PanicOnRead`] and [`PanicOnWrite`]
 //!
 //! Some driver libraries take a type implementing [`embedded_hal::spi::SpiBus`]
