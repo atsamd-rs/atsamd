@@ -1,6 +1,6 @@
 [package]
 name = "metro_m4"
-version = "0.16.0"
+version = "0.16.1"
 authors = ["Paul Sajna <sajattack@gmail.com>", "Wez Furlong <wez@wezfurlong.org>"]
 description = "Board Support crate for the Adafruit Metro M4"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -20,7 +20,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.20.0"
+version = "0.20.2"
 default-features = false
 
 [dependencies.usb-device]

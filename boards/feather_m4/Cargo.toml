@@ -1,6 +1,6 @@
 [package]
 name = "feather_m4"
-version = "0.15.0"
+version = "0.15.1"
 edition = "2021"
 authors = ["Theodore DeRego <tderego94@gmail.com>"]
 description = "Board Support crate for the Adafruit Feather M4"
@@ -25,7 +25,7 @@ features = ["critical-section-single-core"]
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.20.0"
+version = "0.20.2"
 default-features = false
 
 [dependencies.usb-device]

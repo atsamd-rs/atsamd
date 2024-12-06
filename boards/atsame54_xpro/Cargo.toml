@@ -1,6 +1,6 @@
 [package]
 name = "atsame54_xpro"
-version = "0.10.0"
+version = "0.10.1"
 authors = [
     "Karsten Große <karsten.grosse@sympatron.de>",
     "John Little <johngigantic@gmail.com>"
@@ -23,7 +23,7 @@ features = ["critical-section-single-core"]
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.20.0"
+version = "0.20.2"
 default-features = false
 
 [dependencies.usb-device]
