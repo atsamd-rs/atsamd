@@ -150,7 +150,8 @@ pub mod aliases {
             name: neopixel
             aliases: {
                 PushPullOutput: NeopixelPin,
-                Reset: NeopixelReset
+                Reset: NeopixelReset,
+                AlternateC: NeopixelPinSpi,
             }
         },
         /// Digital pin 9
@@ -663,6 +664,47 @@ impl Display {
 /// Neopixel pins
 pub struct Neopixel {
     pub neopixel: NeopixelReset,
+}
+
+/// Pads for the neopixel SPI driver
+#[cfg(feature = "neopixel-spi")]
+pub type NeopixelSpiPads = spi::Pads<hal::sercom::Sercom2, IoSet1, NoneT, NeopixelPinSpi, Scl>;
+
+/// SPI master neopixel driver
+#[cfg(feature = "neopixel-spi")]
+pub type NeopixelSpi = spi::PanicOnRead<spi::Spi<spi::Config<NeopixelSpiPads>, spi::Tx>>;
+
+#[cfg(feature = "neopixel-spi")]
+impl Neopixel {
+    /// Setup the SPI driver for neopixel addressable LEDs.
+    ///
+    /// Unfortunately, the SPI uses SERCOM2, which is also used by the onboard
+    /// I2C. Therefore the I2C cannot be used simultaneously with the neopixels
+    /// in SPI mode. The SPI peripheral driver also requires PA12, aka SDA to
+    /// drive the SCLK signal. Even though it's not used by the LEDs, it's still
+    /// required to provide a clock pin in order to compile.
+    pub fn init_spi(
+        self,
+        clocks: &mut GenericClockController,
+        scl: impl hal::gpio::AnyPin<Id = hal::gpio::PA13>,
+        sercom2: pac::Sercom2,
+        mclk: &mut pac::Mclk,
+    ) -> ws2812_spi::Ws2812<NeopixelSpi> {
+        use hal::fugit::RateExtU32;
+
+        let gclk0 = clocks.gclk0();
+        let clock = &clocks.sercom2_core(&gclk0).unwrap();
+        let pads = spi::Pads::default()
+            .data_out(self.neopixel)
+            .sclk(scl.into());
+        let spi = spi::Config::new(mclk, sercom2, pads, clock.freq())
+            .spi_mode(spi::MODE_0)
+            .baud(3.MHz())
+            .enable()
+            .into_panic_on_read();
+
+        ws2812_spi::Ws2812::new(spi)
+    }
 }
 
 /// SPI pins
