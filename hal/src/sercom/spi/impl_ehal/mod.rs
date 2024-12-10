@@ -113,7 +113,6 @@ where
             *r = self.transfer_word_in_place(*w)?;
         }
 
-        self.flush_tx();
         Ok(())
     }
 
@@ -128,13 +127,6 @@ where
     #[inline]
     fn flush_rx(&mut self) -> Result<(), Error> {
         self.block_on_flags(Flags::RXC)
-    }
-
-    /// Wait on TXC and RXC flags
-    #[inline]
-    #[cfg(feature = "dma")]
-    fn flush_tx_rx(&mut self) -> Result<(), Error> {
-        self.block_on_flags(Flags::TXC | Flags::RXC)
     }
 }
 
@@ -156,7 +148,6 @@ where
         for word in words.iter_mut() {
             *word = self.transfer_word_in_place(self.config.nop_word.as_())?;
         }
-        self.flush_tx();
         Ok(())
     }
 
@@ -171,7 +162,6 @@ where
                 self.write_data(word.as_());
             }
         }
-        self.flush_tx();
 
         // Reenable receiver only if necessary
         if D::RX_ENABLE {
@@ -213,7 +203,6 @@ where
             *word = read;
         }
 
-        self.flush_tx();
         Ok(())
     }
 

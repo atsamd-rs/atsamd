@@ -283,13 +283,6 @@ where
     async fn flush_rx(&mut self) -> Result<(), Error> {
         self.wait_flags(Flags::RXC).await
     }
-
-    /// Wait on TXC and RXC flags
-    #[inline]
-    #[cfg(feature = "dma")]
-    async fn flush_tx_rx(&mut self) -> Result<(), Error> {
-        self.wait_flags(Flags::TXC | Flags::RXC).await
-    }
 }
 
 impl<C, A, R, T> AsRef<Spi<C, A, R, T>> for SpiFuture<C, A, R, T>

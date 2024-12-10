@@ -74,7 +74,6 @@ where
         }
 
         self._tx_channel.as_mut().xfer_success()?;
-        self.flush_tx();
         Ok(buf.len())
     }
 }
@@ -119,7 +118,7 @@ where
         rx.stop();
 
         // Check for overflows or DMA errors
-        self.flush_tx_rx()?;
+        self.read_status().check_bus_error()?;
         self._rx_channel
             .as_mut()
             .xfer_success()
@@ -259,7 +258,7 @@ where
         rx.stop();
 
         // Check for overflows or DMA errors
-        self.flush_tx_rx()?;
+        self.read_status().check_bus_error()?;
         self._rx_channel
             .as_mut()
             .xfer_success()
@@ -368,7 +367,7 @@ where
         rx.stop();
 
         // Check for overflows or DMA errors
-        self.flush_rx()?;
+        self.read_status().check_bus_error()?;
         self._rx_channel.as_mut().xfer_success()?;
         Ok(buf.len())
     }

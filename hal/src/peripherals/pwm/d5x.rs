@@ -156,6 +156,7 @@ impl<I: PinId> $TYPE<I> {
         count.ctrla().write(|w| w.swrst().set_bit());
         while count.ctrla().read().bits() & 1 != 0 {}
         count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.syncbusy().read().enable().bit_is_set() {}
         count.ctrla().modify(|_, w| {
             match params.divider {
                 1 => w.prescaler().div1(),
@@ -175,6 +176,7 @@ impl<I: PinId> $TYPE<I> {
         count.cc(1).write(|w| unsafe { w.cc().bits(0) });
         while count.syncbusy().read().cc1().bit_is_set() {}
         count.ctrla().modify(|_, w| w.enable().set_bit());
+        while count.syncbusy().read().enable().bit_is_set() {}
 
         Self {
             clock_freq: clock.freq(),
@@ -196,6 +198,7 @@ impl<I: PinId> $TYPE<I> {
         let params = TimerParams::new(period, self.clock_freq);
         let count = self.tc.count16();
         count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.syncbusy().read().enable().bit_is_set() {}
         count.ctrla().modify(|_, w| {
                 match params.divider {
                     1 => w.prescaler().div1(),
@@ -210,6 +213,7 @@ impl<I: PinId> $TYPE<I> {
                 }
             });
         count.ctrla().modify(|_, w| w.enable().set_bit());
+        while count.syncbusy().read().enable().bit_is_set() {}
         count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
         while count.syncbusy().read().cc0().bit_is_set() {}
     }
@@ -239,11 +243,13 @@ impl<I: PinId> $crate::ehal_02::PwmPin for $TYPE<I> {
     fn disable(&mut self) {
         let count = self.tc.count16();
         count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.syncbusy().read().enable().bit_is_set() {}
     }
 
     fn enable(&mut self) {
         let count = self.tc.count16();
         count.ctrla().modify(|_, w| w.enable().set_bit());
+        while count.syncbusy().read().enable().bit_is_set() {}
     }
 
 
@@ -573,6 +579,7 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
         tcc.ctrlbclr().write(|w| w.dir().set_bit() );
         while tcc.syncbusy().read().ctrlb().bit_is_set() {}
         tcc.ctrla().modify(|_, w| w.enable().clear_bit());
+        while tcc.syncbusy().read().enable().bit_is_set() {}
         tcc.ctrla().modify(|_, w| {
             match params.divider {
                 1 => w.prescaler().div1(),
@@ -591,6 +598,7 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
         tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
         while tcc.syncbusy().read().per().bit_is_set() {}
         tcc.ctrla().modify(|_, w| w.enable().set_bit());
+        while tcc.syncbusy().read().enable().bit_is_set() {}
 
         Self {
             clock_freq: clock.freq(),
