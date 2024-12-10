@@ -7,6 +7,8 @@ use crate::clock::GenericClockController;
 use crate::ehal::delay::DelayNs;
 use crate::ehal_02;
 use crate::time::Hertz;
+use crate::typelevel::Increment;
+use crate::clock::v2::Source;
 
 /// System timer (SysTick) as a delay provider
 pub struct Delay {
@@ -23,6 +25,18 @@ impl Delay {
             syst,
             sysclock: clocks.gclk0().into(),
         }
+    }
+
+    pub fn new_with_source<S>(mut syst: SYST, source: S) -> (Self, S::Inc)
+    where S: Source + Increment {
+        syst.set_clock_source(SystClkSource::Core);
+        (
+            Delay {
+                syst,
+                sysclock: source.freq(),
+            },
+            source.inc()
+        )
     }
 
     /// Releases the system timer (SysTick) resource
