@@ -14,19 +14,6 @@ use crate::pac;
 use atsamd_hal_macros::hal_macro_helper;
 use pac::Rtc;
 
-// TODO: Test code
-#[derive(Default)]
-pub struct LoopChecker {
-    count: usize,
-}
-impl LoopChecker {
-    pub fn too_many(&mut self) -> bool {
-        self.count += 1;
-
-        self.count > 0x800000
-    }
-}
-
 /// Type-level enum for RTC interrupts.
 pub trait RtcInterrupt {
     /// Enable this interrupt.
@@ -78,10 +65,6 @@ pub trait RtcMode {
     /// in order to trigger.
     const MIN_COMPARE_TICKS: Self::Count;
 
-    // TODO: Test code
-    fn check_loop(rtc: &Rtc, checker: &mut LoopChecker, item: &str);
-    fn check_for_clock_anomaly(rtc: &Rtc, last_count: Self::Count, count: Self::Count);
-
     /// Sets this mode in the CTRL register.
     unsafe fn set_mode(rtc: &Rtc);
     /// Sets a compare value.
@@ -108,16 +91,11 @@ pub trait RtcMode {
         rtc.mode0().ctrla().modify(|_, w| w.swrst().set_bit());
 
         // Wait for the reset to complete
-        let mut loop_checker = LoopChecker::default();
         // SYNC: Write (we just read though)
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-        while rtc.mode0().ctrl().read().swrst().bit_is_set() {
-            Self::check_loop(rtc, &mut loop_checker, "reset");
-        }
+        while rtc.mode0().ctrl().read().swrst().bit_is_set() {}
         #[hal_cfg("rtc-d5x")]
-        while rtc.mode0().ctrla().read().swrst().bit_is_set() {
-            Self::check_loop(rtc, &mut loop_checker, "reset");
-        }
+        while rtc.mode0().ctrla().read().swrst().bit_is_set() {}
     }
 
     /// Enables an RTC interrupt.
@@ -143,11 +121,7 @@ pub trait RtcMode {
     /// if no currently syncing.
     #[inline]
     fn sync(rtc: &Rtc) {
-        let mut loop_checker = LoopChecker::default();
-
-        while Self::sync_busy(rtc) {
-            Self::check_loop(rtc, &mut loop_checker, "sync");
-        }
+        while Self::sync_busy(rtc) {}
     }
 
     /// Disables the RTC.
@@ -174,17 +148,6 @@ pub trait RtcMode {
         rtc.mode0().ctrla().modify(|_, w| w.enable().set_bit());
     }
 
-    /// Returns whether the RTC is enabled.
-    #[inline]
-    fn is_enabled(rtc: &Rtc) -> bool {
-        // SYNC: Write (we just read though)
-        // NOTE: This register and field are the same in all modes.
-        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-        return rtc.mode0().ctrl().read().enable().bit_is_set();
-        #[hal_cfg("rtc-d5x")]
-        return rtc.mode0().ctrla().read().enable().bit_is_set();
-    }
-
     /// Waits until the COUNT register changes.
     ///
     /// Note that this may not necessarily be the next tick due sync delay.
@@ -193,17 +156,12 @@ pub trait RtcMode {
     fn wait_for_count_change(rtc: &Rtc) -> Self::Count {
         let mut last_count = Self::count(rtc);
 
-        let mut loop_checker = LoopChecker::default();
         loop {
             let count = Self::count(rtc);
 
             if count != last_count {
-                Self::check_for_clock_anomaly(rtc, last_count, count);
-
                 break count;
             }
-
-            Self::check_loop(rtc, &mut loop_checker, "wait_for_count_change");
 
             last_count = count;
         }
@@ -227,26 +185,6 @@ pub mod mode0 {
         type Count = u32;
         const HALF_PERIOD: Self::Count = 0x8000_0000;
         const MIN_COMPARE_TICKS: Self::Count = 5;
-
-        // TODO: Test code
-        fn check_loop(rtc: &Rtc, checker: &mut LoopChecker, item: &str) {
-            if checker.too_many() {
-                panic!(
-                "Took too long in '{item}' with count 0x{:X} and cmp 0x{:X}. Int flags: 0x{:X}, Enabled: {:?}",
-                Self::count(rtc),
-                Self::get_compare(rtc, 0),
-                rtc.mode0().intflag().read().bits(),
-                Self::is_enabled(rtc),
-            );
-            }
-        }
-
-        // TODO: Test code
-        fn check_for_clock_anomaly(rtc: &Rtc, last_count: Self::Count, count: Self::Count) {
-            if last_count > 0 && count != last_count.wrapping_add(4) {
-                panic!("Clock anomaly at 0x{count:X} with previous step at 0x{last_count:X} with cmp 0x{:X}", Self::get_compare(rtc, 0));
-            }
-        }
 
         #[inline]
         unsafe fn set_mode(rtc: &Rtc) {
@@ -342,26 +280,6 @@ pub mod mode1 {
         type Count = u16;
         const HALF_PERIOD: Self::Count = 0x8000;
         const MIN_COMPARE_TICKS: Self::Count = 5;
-
-        // TODO: Test code
-        fn check_loop(rtc: &Rtc, checker: &mut LoopChecker, item: &str) {
-            if checker.too_many() {
-                panic!(
-                "Took too long in '{item}' with count 0x{:X} and cmp 0x{:X}. Int flags: 0x{:X}, Enabled: {:?}",
-                Self::count(rtc),
-                Self::get_compare(rtc, 0),
-                rtc.mode1().intflag().read().bits(),
-                Self::is_enabled(rtc),
-            );
-            }
-        }
-
-        // TODO: Test code
-        fn check_for_clock_anomaly(rtc: &Rtc, last_count: Self::Count, count: Self::Count) {
-            if last_count > 0 && count != last_count.wrapping_add(4) {
-                panic!("Clock anomaly at 0x{count:X} with previous step at 0x{last_count:X} with cmp 0x{:X}", Self::get_compare(rtc, 0));
-            }
-        }
 
         #[inline]
         unsafe fn set_mode(rtc: &Rtc) {
