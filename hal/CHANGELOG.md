@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.20.1...atsamd-hal-0.20.2) - 2024-12-11
+
+### Changed
+
+- *(spi)* Remove explicit flushes from SpiBus impl
+
 ## [0.20.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.20.0...atsamd-hal-0.20.1) - 2024-12-05
 
 ### Added

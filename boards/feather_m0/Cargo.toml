@@ -1,6 +1,6 @@
 [package]
 name = "feather_m0"
-version = "0.17.0"
+version = "0.17.1"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit Feather M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -21,7 +21,7 @@ optional = true
 
 [dependencies.atsamd-hal]
 path = "../../hal"
-version = "0.20.0"
+version = "0.20.2"
 default-features = false
 
 [dependencies.cortex-m]
