@@ -35,13 +35,6 @@
 //! platforms offers nothing except more undesirable more frequent interrupts,
 //! so its use is not recommended.
 //!
-//! NOTE: These monotonics currently live in the HAL for testing and refinement
-//! purposes. The intention is to eventually move them to the
-//! [`rtic-monotonics`](https://docs.rs/rtic-monotonics/latest/rtic_monotonics/) crate,
-//! which is a central location for peripheral-based RTIC monotonics for various
-//! microcontroller families. As such, be aware that this module could disappear
-//! at any time in the future.
-//!
 //! # Choosing a mode
 //!
 //! The overall monotonic period (i.e. the time before the monotonic rolls over
@@ -74,14 +67,15 @@
 //! # RTC clock selection
 //!
 //! Prior to starting the monotonic, the RTC clock source must be configured
-//! using the [`atsamd-hal`](https://docs.rs/atsamd-hal/latest/atsamd_hal/index.html)
-//! crate. On SAMD11/21 platforms, the RTC clock must be setup as a
-//! [generic clock](https://docs.rs/atsamd-hal/latest/atsamd_hal/clock/struct.GenericClockController.html).
+//! using [`clocks`](crate::clock). On SAMD11/21 platforms, the RTC clock must
+//! be setup as a [generic clock](crate::clock::GenericClockController).
 //! On SAMx5x platforms the RTC clock must be selected from either the 1.1024
 //! kHz clock or the 32.768 kHz clock, either of which can be internal or
 //! external.
 //!
-//! TODO: Update HAL links and [should proof of RTC clock setup be required?](https://github.com/atsamd-rs/atsamd/issues/765#issuecomment-2526974751)
+//! NOTE: Eventually, starting the monotonic will require proof that the RTC
+//! clock has been configured. However, this requires v2 of the clock API for
+//! SAMx5x chips, which is not yet fully supported in the rest of the HAL.
 //!
 //! # Usage
 //!
@@ -93,9 +87,13 @@
 //! be passed to the macro as the second argument.
 //!
 //! Sometime during initialization, the monotonic also must be started by called
-//! the `start` method on the created monotonic. The [`Rtc`](pac::Rtc) struct
-//! must be passed to the `start` to ensure that the monotonic has complete
-//! control of the RTC.
+//! the `start` method on the created monotonic. The [`Rtc`](crate::pac::Rtc)
+//! peripheral struct must be passed to `start` to ensure that the monotonic
+//! has complete control of the RTC.
+//!
+//! Note that the macro creates the RTC interrupt handler, and starting the
+//! monotonic enables RTC interrupts in the NVIC, so that this does not need to
+//! be done manually.
 //!
 //! # Example
 //!
@@ -138,6 +136,8 @@
 //! changes. This is true regardless of the clock rate used, as the
 //! synchronization delay scales along with the clock period.
 
+// TODO: Need to revisit this and either modernize (e.g. it does not use period
+// counting) it or remove it.
 mod v1 {
     use crate::rtc::{Count32Mode, Rtc};
     use rtic_monotonic::Monotonic;
@@ -180,10 +180,9 @@ mod v1 {
 }
 
 mod backends;
-mod modes;
 
-pub use modes::mode0::RtcBackend as RtcMode0Backend;
-pub use modes::mode1::RtcBackend as RtcMode1Backend;
+use super::modes::{mode0::RtcMode0, mode1::RtcMode1, RtcMode};
+use atsamd_hal_macros::hal_macro_helper;
 
 pub mod prelude {
     pub use super::rtc_clock;
@@ -227,6 +226,50 @@ pub mod rtc_clock {
         const RATE_HZ: u32 = RATE_HZ;
     }
 }
+
+trait RtcModeMonotonic: RtcMode {
+    /// The COUNT value representing a half period.
+    const HALF_PERIOD: Self::Count;
+    /// The minimum number of ticks that compares need to be ahead of the COUNT
+    /// in order to trigger.
+    const MIN_COMPARE_TICKS: Self::Count;
+}
+impl RtcModeMonotonic for RtcMode0 {
+    const HALF_PERIOD: Self::Count = 0x8000_0000;
+    const MIN_COMPARE_TICKS: Self::Count = 5;
+}
+impl RtcModeMonotonic for RtcMode1 {
+    const HALF_PERIOD: Self::Count = 0x8000;
+    const MIN_COMPARE_TICKS: Self::Count = 5;
+}
+
+#[hal_macro_helper]
+mod mode0 {
+    use super::*;
+    use crate::rtc::modes::mode0::Compare0;
+    #[hal_cfg("rtc-d5x")]
+    use crate::rtc::modes::mode0::{Compare1, Overflow};
+
+    // The SAMD11/21 chips do not feature a second compare in MODE0.
+    #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+    crate::__internal_basic_backend!(RtcBackend, RtcMode0, 0, Compare0);
+    #[hal_cfg("rtc-d5x")]
+    crate::__internal_half_period_counting_backend!(
+        RtcBackend, RtcMode0, 0, Compare0, Compare1, Overflow
+    );
+}
+
+mod mode1 {
+    use super::*;
+    use crate::rtc::modes::mode1::{Compare0, Compare1, Overflow};
+
+    crate::__internal_half_period_counting_backend!(
+        RtcBackend, RtcMode1, 1, Compare0, Compare1, Overflow
+    );
+}
+
+pub use mode0::RtcBackend as RtcMode0Backend;
+pub use mode1::RtcBackend as RtcMode1Backend;
 
 #[doc(hidden)]
 #[macro_export]
@@ -304,8 +347,7 @@ const fn cortex_logical2hw(logical: u8, nvic_prio_bits: u8) -> u8 {
     ((1 << nvic_prio_bits) - logical) << (8 - nvic_prio_bits)
 }
 
-/// This function was copied from the private function in `rtic-monotonics`,
-/// so that should be used when the monotonics move there.
+/// This function was copied from the private function in `rtic-monotonics`.
 unsafe fn set_monotonic_prio(prio_bits: u8, interrupt: impl cortex_m::interrupt::InterruptNumber) {
     extern "C" {
         static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8;
