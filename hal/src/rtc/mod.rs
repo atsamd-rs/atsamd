@@ -14,6 +14,8 @@ use core::marker::PhantomData;
 #[cfg(feature = "sdmmc")]
 use embedded_sdmmc::{TimeSource, Timestamp};
 
+mod modes;
+
 #[cfg(feature = "rtic")]
 pub mod rtic;
 

@@ -29,7 +29,7 @@ macro_rules! __internal_backend_methods {
             ) -> bool {
                 let d = a.wrapping_sub(b);
 
-                d >= <$mode>::HALF_PERIOD
+                d >= <$mode as RtcModeMonotonic>::HALF_PERIOD
             }
 
             // Ensure that the COUNT is at least the compare value
@@ -94,13 +94,13 @@ macro_rules! __internal_backend_methods {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __internal_basic_backend {
-    ($name:ident, $mode:ty, $rtic_int:ty) => {
+    ($name:ident, $mode:ty, $mode_num:literal, $rtic_int:ty) => {
         use atsamd_hal_macros::hal_macro_helper;
         use rtic_time::timer_queue::{TimerQueue, TimerQueueBackend};
         use $crate::pac;
-        use $crate::rtc::rtic::modes::RtcMode;
+        use $crate::rtc::modes::RtcMode;
 
-        /// Basic RTC-based [`TimerQueueBackend`] without period counting.
+        #[doc = concat!("Basic RTC-based [`TimerQueueBackend`] without period counting that uses the RTC in mode ", stringify!($mode_num), ".")]
         pub struct $name;
 
         static RTC_TQ: TimerQueue<$name> = TimerQueue::new();
@@ -153,8 +153,10 @@ macro_rules! __internal_basic_backend {
                 // couple of ticks, so delay it a bit if it is too close.
                 // This is not mentioned in the documentation or errata, but is known to be an
                 // issue for other microcontrollers as well (e.g. nRF family).
-                if instant.saturating_sub(Self::now()) < <$mode>::MIN_COMPARE_TICKS {
-                    instant = instant.wrapping_add(<$mode>::MIN_COMPARE_TICKS)
+                if instant.saturating_sub(Self::now())
+                    < <$mode as RtcModeMonotonic>::MIN_COMPARE_TICKS
+                {
+                    instant = instant.wrapping_add(<$mode as RtcModeMonotonic>::MIN_COMPARE_TICKS)
                 }
 
                 unsafe { <$mode>::set_compare(&rtc, 0, instant) };
@@ -178,7 +180,7 @@ macro_rules! __internal_basic_backend {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __internal_half_period_counting_backend {
-    ($name:ident, $mode:ty, $rtic_int:ty, $half_period_int:ty, $overflow_int:ty) => {
+    ($name:ident, $mode:ty, $mode_num:literal, $rtic_int:ty, $half_period_int:ty, $overflow_int:ty) => {
         use atsamd_hal_macros::hal_macro_helper;
         use core::sync::atomic::Ordering;
         use portable_atomic::AtomicU64;
@@ -187,7 +189,6 @@ macro_rules! __internal_half_period_counting_backend {
             timer_queue::{TimerQueue, TimerQueueBackend},
         };
         use $crate::pac;
-        use $crate::rtc::rtic::modes::RtcMode;
 
         struct TimerValue(<$mode as RtcMode>::Count);
         impl rtic_time::half_period_counter::TimerValue for TimerValue {
@@ -199,8 +200,7 @@ macro_rules! __internal_half_period_counting_backend {
             }
         }
 
-        /// An RTC-based [`TimerQueueBackend`] that vastly extends the overall monotonic
-        /// period using [half-period counting](rtic_time::half_period_counter).
+        #[doc = concat!("An RTC-based [`TimerQueueBackend`] using [half-period counting](rtic_time::half_period_counter) that uses the RTC in mode ", stringify!($mode_num), ".")]
         pub struct $name;
 
         static RTC_PERIOD_COUNT: AtomicU64 = AtomicU64::new(0);
@@ -215,7 +215,7 @@ macro_rules! __internal_half_period_counting_backend {
                 init_compares = {
                     // Configure the compare registers
                     <$mode>::set_compare(&rtc, 0, 0);
-                    <$mode>::set_compare(&rtc, 1, <$mode>::HALF_PERIOD);
+                    <$mode>::set_compare(&rtc, 1, <$mode as RtcModeMonotonic>::HALF_PERIOD);
                 }
                 statics = {
                     // Make sure period counter is synced with the timer value
@@ -263,7 +263,7 @@ macro_rules! __internal_half_period_counting_backend {
 
                     // Ensure that the COUNT has crossed
                     // Due to syncing delay this may not be the case initially
-                    while <$mode>::count(&rtc) < <$mode>::HALF_PERIOD {}
+                    while <$mode>::count(&rtc) < <$mode as RtcModeMonotonic>::HALF_PERIOD {}
                 }
                 if <$mode>::check_interrupt_flag::<$overflow_int>(&rtc) {
                     <$mode>::clear_interrupt_flag::<$overflow_int>(&rtc);
@@ -272,7 +272,7 @@ macro_rules! __internal_half_period_counting_backend {
 
                     // Ensure that the COUNT has wrapped
                     // Due to syncing delay this may not be the case initially
-                    while <$mode>::count(&rtc) > <$mode>::HALF_PERIOD {}
+                    while <$mode>::count(&rtc) > <$mode as RtcModeMonotonic>::HALF_PERIOD {}
                 }
             }
 
@@ -298,8 +298,9 @@ macro_rules! __internal_half_period_counting_backend {
                         // close. This is not mentioned in the documentation
                         // or errata, but is known to be an issue for other
                         // microcontrollers as well (e.g. nRF family).
-                        if diff < <$mode>::MIN_COMPARE_TICKS.into() {
-                            instant = instant.wrapping_add(<$mode>::MIN_COMPARE_TICKS.into())
+                        if diff < <$mode as RtcModeMonotonic>::MIN_COMPARE_TICKS.into() {
+                            instant = instant
+                                .wrapping_add(<$mode as RtcModeMonotonic>::MIN_COMPARE_TICKS.into())
                         }
 
                         (instant & MAX) as <$mode as RtcMode>::Count
