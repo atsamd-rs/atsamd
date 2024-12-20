@@ -4,65 +4,8 @@
 //! Enabling the `rtic` feature is required to use this module.
 //!
 //! For RTIC v1, the old [`rtic_monotonic::Monotonic`] trait is implemented for
-//! [`Rtc`](crate::rtc::Rtc) in [`Count32Mode`](crate::rtc::Count32Mode).
-//!
-//! The items here provide monotonics for RTIC v2. Two monotonics are provided:
-//! one that uses the RTC in mode 0 (32-bit hardware counter), and another that
-//! uses the RTC in mode 1 (16-bit hardware counter).
-//!
-//! Which mode is used can influence the total monotonic period before the its
-//! time counter overflows and rolls back to zero time. This rollover violates
-//! the contract of the monotonic, which is supposed to count time
-//! _monotonically_. As such, the rollover can cause strange behavior for tasks
-//! scheduled near the time of the rollover. Hence, the monotonic should be
-//! chosen to match the use case such that the monotonic will never roll over
-//! during the expected total duration of program execution.
-//!
-//! For all chip variants, the mode 1 monotonic uses [half-period
-//! counting](rtic_time::half_period_counter) to extend the monotonic counter to
-//! 64-bits. This is enabled by the fact that the RTC for every variant has
-//! at least two compare registers in mode 1. This greatly extends the total
-//! monotonic period. However, in this mode, half-period counting interrupts
-//! occur more frequently (see below) due to the hardware counter being only 16
-//! bits wide, so it is less efficient in that regard.
-//!
-//! For SAMD11/21 chips, the mode 0 monotonic only has a single compare register
-//! so that half-period counting is not possible. This significantly reduces the
-//! total monotonic period. The SAMx5x chips, however, feature two compare
-//! registers in mode 0 so that half-period counting can be done. In the latter
-//! case, the mode 0 monotonic has extremely infrequent half-period counting
-//! interrupts and so is more efficient. In fact, the mode 1 monotonic on SAMx5x
-//! platforms offers nothing except more undesirable more frequent interrupts,
-//! so its use is not recommended.
-//!
-//! # Choosing a mode
-//!
-//! The overall monotonic period (i.e. the time before the monotonic rolls over
-//! back to zero time) is as follows:
-//!
-//! |                        | 1 kHz clock        | 32 kHz clock        |
-//! | ---------------------- | ------------------ | ------------------- |
-//! | **Mode 0 (SAMD11/21)** | ~48 days           | ~36 hours           |
-//! | **Mode 0 (SAMx5x)**    | ~571 million years | ~17.8 million years |
-//! | **Mode 1**             | ~571 million years | ~17.8 million years |
-//!
-//! The half-period counting interrupt periods for the monotonics are:
-//!
-//! |                        | 1 kHz clock | 32 kHz clock |
-//! | ---------------------- | ----------- | ------------ |
-//! | **Mode 0 (SAMD11/21)** | Never       | Never        |
-//! | **Mode 0 (SAMx5x)**    | ~24 days    | ~18 hours    |
-//! | **Mode 1**             | 32 seconds  | 1 second     |
-//!
-//! The time resolution (i.e. the RTC tick time and shortest delay time) is as
-//! follows:
-//!
-//! |              | 1 kHz clock | 32 kHz clock |
-//! | ------------ | ----------- | ------------ |
-//! | **Any mode** | ~977 μs     | ~31 μs       |
-//!
-//! It should be apparent from these numbers that the mode 1 monotonic offers
-//! nothing but more frequent interrupts on SAMx5x platforms.
+//! [`Rtc`](crate::rtc::Rtc) in [`Count32Mode`](crate::rtc::Count32Mode). A
+//! monotonic for RTIC v2 is provided here.
 //!
 //! # RTC clock selection
 //!
@@ -73,23 +16,59 @@
 //! kHz clock or the 32.768 kHz clock, either of which can be internal or
 //! external.
 //!
-//! NOTE: Eventually, starting the monotonic will require proof that the RTC
+//! **NOTE: Eventually, starting the monotonic will require proof that the RTC
 //! clock has been configured. However, this requires v2 of the clock API for
-//! SAMx5x chips, which is not yet fully supported in the rest of the HAL.
+//! SAMx5x chips, which is not yet fully supported in the rest of the HAL.**
+//!
+//! # RTC modes
+//!
+//! The RTC on all chip variants has two counter modes: mode 0 features a 32-bit
+//! hardware counter, and mode 1 features a a 16-bit hardware counter but some
+//! additional features. Part of the [`Monotonic`](rtic_time::Monotonic)
+//! contract is that the monotonic should always count up and never roll over
+//! back to time zero. However, even the 32-bit hardware counter will overflow
+//! after about 36 hours using the faster clock rate, which is not acceptable.
+//!
+//! A technique known as [half-period counting
+//! (HPC)](rtic_time::half_period_counter) is used to effectively increase the
+//! montononic counter to be 64 bits wide in either mode. The result is a
+//! monotonic that effectively counts up forever without rolling over. This
+//! technique requires two compare registers, one for waking RTIC tasks and one
+//! for HPC. The number of compare registers available on ATSAMD chips is as
+//! follows:
+//!
+//! |            | SAMD11/21 | SAMx5x |
+//! | -----------| --------- | ------ |
+//! | **Mode 0** | 1         | 2      |
+//! | **Mode 1** | 2         | 4      |
+//!
+//! As a result, HPC can be done in mode 0 for SAMx5x chips but requires mode 1
+//! for SAMD11/21 variants. The monotonic provided for each variant uses the
+//! appropriate RTC mode.
+//!
+//! The monotonics have the following specifications:
+//!
+//! |                                      | 1 kHz clock        | 32 kHz clock        |
+//! | ------------------------------------ | ------------------ | ------------------- |
+//! | **Rollover period**                  | ~571 million years | ~17.8 million years |
+//! | **HPC interrupt period (SAMD11/21)** | 32 seconds         | 1 second            |
+//! | **HPC interrupt period (SAMx5x)**    | ~24 days           | ~18 hours           |
+//! | **Time resolution**                  | ~977 μs            | ~31 μs              |
 //!
 //! # Usage
 //!
-//! A monotonic using the desired RTC mode should be created with the
-//! appropriate [macro](crate::rtc::rtic::prelude). The first macro argument is
-//! the name of the global structure that will implement
+//! The monotonic should be created using the
+//! [macro](prelude::rtc_monotonic), which is included in the
+//! [prelude](crate::prelude). The first macro argument is the name of
+//! the global structure that will implement
 //! [`Monotonic`](rtic_time::Monotonic). The RTC clock rate must be
 //! known at compile time, and so the appropriate type from [`rtc_clock`] must
 //! be passed to the macro as the second argument.
 //!
-//! Sometime during initialization, the monotonic also must be started by called
-//! the `start` method on the created monotonic. The [`Rtc`](crate::pac::Rtc)
-//! peripheral struct must be passed to `start` to ensure that the monotonic
-//! has complete control of the RTC.
+//! Sometime during initialization, the monotonic also must be started by
+//! calling the `start` method on the created monotonic. The
+//! [`Rtc`](crate::pac::Rtc) peripheral struct must be passed to `start` to
+//! ensure that the monotonic has complete control of the RTC.
 //!
 //! Note that the macro creates the RTC interrupt handler, and starting the
 //! monotonic enables RTC interrupts in the NVIC, so that this does not need to
@@ -101,14 +80,14 @@
 //! use atsamd_hal::prelude::*;
 //!
 //! // Create the monotonic struct named `Mono`
-//! rtc_mode0_monotonic!(Mono, rtc_clock::Clock32k);
+//! rtc_monotonic!(Mono, rtc_clock::Clock32k);
 //!
 //! fn init() {
 //!     # // This is normally provided by the selected PAC
 //!     # let rtc = unsafe { core::mem::transmute(()) };
 //!     # let mut mclk = unsafe { core::mem::transmute(()) };
 //!     # let mut osc32kctrl = unsafe { core::mem::transmute(()) };
-//!     // Here the RTC clock source should be configured using the HAL
+//!     // Here the RTC clock source should be configured using the clocks API
 //!
 //!     // Start the monotonic
 //!     Mono::start(rtc);
@@ -186,7 +165,7 @@ use atsamd_hal_macros::hal_macro_helper;
 
 pub mod prelude {
     pub use super::rtc_clock;
-    pub use crate::{rtc_mode0_monotonic, rtc_mode1_monotonic};
+    pub use crate::rtc_monotonic;
     pub use rtic_time::Monotonic;
 
     pub use fugit::{self, ExtU32, ExtU32Ceil, ExtU64, ExtU64Ceil};
@@ -244,32 +223,29 @@ impl RtcModeMonotonic for RtcMode1 {
 }
 
 #[hal_macro_helper]
-mod mode0 {
+mod backend {
     use super::*;
-    use crate::rtc::modes::mode0::Compare0;
-    #[hal_cfg("rtc-d5x")]
-    use crate::rtc::modes::mode0::{Compare1, Overflow};
 
-    // The SAMD11/21 chips do not feature a second compare in MODE0.
+    // For SAMD11/21 chips mode 1 is the only sensible option
     #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-    crate::__internal_basic_backend!(RtcBackend, RtcMode0, 0, Compare0);
+    use crate::rtc::modes::mode1::{Compare0, Compare1, Overflow};
+
+    #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+    crate::__internal_half_period_counting_backend!(
+        RtcBackend, RtcMode1, 1, Compare0, Compare1, Overflow
+    );
+
+    // For SAMx5x mode 0 is the best option
+    #[hal_cfg("rtc-d5x")]
+    use crate::rtc::modes::mode0::{Compare0, Compare1, Overflow};
+
     #[hal_cfg("rtc-d5x")]
     crate::__internal_half_period_counting_backend!(
         RtcBackend, RtcMode0, 0, Compare0, Compare1, Overflow
     );
 }
 
-mod mode1 {
-    use super::*;
-    use crate::rtc::modes::mode1::{Compare0, Compare1, Overflow};
-
-    crate::__internal_half_period_counting_backend!(
-        RtcBackend, RtcMode1, 1, Compare0, Compare1, Overflow
-    );
-}
-
-pub use mode0::RtcBackend as RtcMode0Backend;
-pub use mode1::RtcBackend as RtcMode1Backend;
+pub use backend::RtcBackend;
 
 #[doc(hidden)]
 #[macro_export]
@@ -321,23 +297,13 @@ macro_rules! __internal_create_rtc_struct {
     };
 }
 
-/// Create an RTIC v2 monotonic that uses the RTC in mode 0.
+/// Create an RTIC v2 monotonic that uses the RTC.
 ///
 /// See the [`rtic`](crate::rtc::rtic) module for details.
 #[macro_export]
-macro_rules! rtc_mode0_monotonic {
+macro_rules! rtc_monotonic {
     ($name:ident, $clock_rate: ty) => {
-        $crate::__internal_create_rtc_struct!($name, RtcMode0Backend, $clock_rate);
-    };
-}
-
-/// Create an RTIC v2 monotonic that uses the RTC in mode 1.
-///
-/// See the [`rtic`](crate::rtc::rtic) module for details.
-#[macro_export]
-macro_rules! rtc_mode1_monotonic {
-    ($name:ident, $clock_rate: ty) => {
-        $crate::__internal_create_rtc_struct!($name, RtcMode1Backend, $clock_rate);
+        $crate::__internal_create_rtc_struct!($name, RtcBackend, $clock_rate);
     };
 }
 
