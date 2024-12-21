@@ -115,17 +115,21 @@
 //! changes. This is true regardless of the clock rate used, as the
 //! synchronization delay scales along with the clock period.
 
-// TODO: Need to revisit this and either modernize (e.g. it does not use period
-// counting) it or remove it.
-mod v1 {
+/// Items for RTIC v1.
+///
+/// TODO: This probably needs to be modernized (e.g. it does not implement
+/// half-period counting) or deprecated/removed.
+pub mod v1 {
     use crate::rtc::{Count32Mode, Rtc};
     use rtic_monotonic::Monotonic;
 
     /// The RTC clock frequency in Hz.
     pub const CLOCK_FREQ: u32 = 32_768;
 
-    type Instant = fugit::Instant<u32, 1, CLOCK_FREQ>;
-    type Duration = fugit::Duration<u32, 1, CLOCK_FREQ>;
+    /// The [`fugit`] time instant.
+    pub type Instant = fugit::Instant<u32, 1, CLOCK_FREQ>;
+    /// The [`fugit`] time duration.
+    pub type Duration = fugit::Duration<u32, 1, CLOCK_FREQ>;
 
     impl Monotonic for Rtc<Count32Mode> {
         type Instant = Instant;

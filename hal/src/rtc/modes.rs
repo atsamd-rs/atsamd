@@ -130,7 +130,7 @@ pub trait RtcMode {
 
             // Errata: The first read of the count is incorrect so we need to read it
             // then wait for it to change.
-            Self::wait_for_count_change(rtc);
+            Self::_wait_for_count_change(rtc);
         }
     }
 
@@ -189,7 +189,7 @@ pub trait RtcMode {
     /// Note that this may not necessarily be the next tick due sync delay.
     /// Beware that this will wait forever if the RTC is disabled!
     #[inline]
-    fn wait_for_count_change(rtc: &Rtc) -> Self::Count {
+    fn _wait_for_count_change(rtc: &Rtc) -> Self::Count {
         let mut last_count = Self::count(rtc);
 
         loop {
