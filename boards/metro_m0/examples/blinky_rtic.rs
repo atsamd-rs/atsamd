@@ -19,7 +19,7 @@ mod app {
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
     use hal::pac::Peripherals;
     use hal::prelude::*;
-    use hal::rtc::{Count32Mode, Duration, Rtc};
+    use hal::rtc::{rtic::v1::Duration, Count32Mode, Rtc};
 
     #[local]
     struct Local {}
