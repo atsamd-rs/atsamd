@@ -77,11 +77,6 @@ macro_rules! create_rtc_interrupt {
 pub trait RtcMode {
     /// The type of the COUNT register.
     type Count: Copy + PartialEq + Eq;
-    /// The COUNT value representing a half period.
-    const HALF_PERIOD: Self::Count;
-    /// The minimum number of ticks that compares need to be ahead of the COUNT
-    /// in order to trigger.
-    const MIN_COMPARE_TICKS: Self::Count;
 
     /// Sets this mode in the CTRL register.
     unsafe fn set_mode(rtc: &Rtc);
@@ -219,8 +214,6 @@ pub mod mode0 {
 
     impl RtcMode for RtcMode0 {
         type Count = u32;
-        const HALF_PERIOD: Self::Count = 0x8000_0000;
-        const MIN_COMPARE_TICKS: Self::Count = 5;
 
         #[inline]
         unsafe fn set_mode(rtc: &Rtc) {
@@ -286,8 +279,6 @@ pub mod mode1 {
 
     impl RtcMode for RtcMode1 {
         type Count = u16;
-        const HALF_PERIOD: Self::Count = 0x8000;
-        const MIN_COMPARE_TICKS: Self::Count = 5;
 
         #[inline]
         unsafe fn set_mode(rtc: &Rtc) {

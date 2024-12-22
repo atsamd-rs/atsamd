@@ -219,11 +219,11 @@ trait RtcModeMonotonic: RtcMode {
 }
 impl RtcModeMonotonic for RtcMode0 {
     const HALF_PERIOD: Self::Count = 0x8000_0000;
-    const MIN_COMPARE_TICKS: Self::Count = 5;
+    const MIN_COMPARE_TICKS: Self::Count = 8;
 }
 impl RtcModeMonotonic for RtcMode1 {
     const HALF_PERIOD: Self::Count = 0x8000;
-    const MIN_COMPARE_TICKS: Self::Count = 5;
+    const MIN_COMPARE_TICKS: Self::Count = 8;
 }
 
 #[hal_macro_helper]
