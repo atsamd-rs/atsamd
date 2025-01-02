@@ -96,7 +96,7 @@ macro_rules! __internal_backend_methods {
 #[macro_export]
 macro_rules! __internal_basic_backend {
     ($name:ident, $mode:ty, $mode_num:literal, $rtic_int:ty) => {
-        use atsamd_hal_macros::hal_macro_helper;
+        use atsamd_hal_macros::hal_cfg;
         use rtic_time::timer_queue::{TimerQueue, TimerQueueBackend};
         use $crate::pac;
         use $crate::rtc::modes::RtcMode;
@@ -106,7 +106,6 @@ macro_rules! __internal_basic_backend {
 
         static RTC_TQ: TimerQueue<$name> = TimerQueue::new();
 
-        #[hal_macro_helper]
         impl $name {
             $crate::__internal_backend_methods! {
                 mode = $mode;
@@ -181,7 +180,7 @@ macro_rules! __internal_basic_backend {
 #[macro_export]
 macro_rules! __internal_half_period_counting_backend {
     ($name:ident, $mode:ty, $mode_num:literal, $rtic_int:ty, $half_period_int:ty, $overflow_int:ty) => {
-        use atsamd_hal_macros::hal_macro_helper;
+        use atsamd_hal_macros::hal_cfg;
         use core::sync::atomic::Ordering;
         use portable_atomic::AtomicU64;
         use rtic_time::{
@@ -206,7 +205,6 @@ macro_rules! __internal_half_period_counting_backend {
         static RTC_PERIOD_COUNT: AtomicU64 = AtomicU64::new(0);
         static RTC_TQ: TimerQueue<$name> = TimerQueue::new();
 
-        #[hal_macro_helper]
         impl $name {
             $crate::__internal_backend_methods! {
                 mode = $mode;

@@ -4,8 +4,8 @@
 //! Enabling the `rtic` feature is required to use this module.
 //!
 //! For RTIC v1, the old [`rtic_monotonic::Monotonic`] trait is implemented for
-//! [`Rtc`](crate::rtc::Rtc) in [`Count32Mode`](crate::rtc::Count32Mode). A
-//! monotonic for RTIC v2 is provided here.
+//! [`Rtc`](crate::rtc::Rtc) in [`Count32Mode`](crate::rtc::Count32Mode) in the
+//! [`v1`] module. A monotonic for RTIC v2 is provided here.
 //!
 //! # RTC clock selection
 //!
@@ -117,8 +117,11 @@
 
 /// Items for RTIC v1.
 ///
-/// TODO: This probably needs to be modernized (e.g. it does not implement
-/// half-period counting) or deprecated/removed.
+/// This mainly implements [`rtic_monotonic::Monotonic`] for
+/// [`Rtc<Count32Mode>`](crate::rtc::Rtc).
+///
+/// This will be removed in a future release, users should migrate to RTIC v2.
+#[deprecated]
 pub mod v1 {
     use crate::rtc::{Count32Mode, Rtc};
     use rtic_monotonic::Monotonic;
@@ -165,7 +168,7 @@ pub mod v1 {
 mod backends;
 
 use super::modes::{mode0::RtcMode0, mode1::RtcMode1, RtcMode};
-use atsamd_hal_macros::hal_macro_helper;
+use atsamd_hal_macros::hal_cfg;
 
 pub mod prelude {
     pub use super::rtc_clock;
@@ -226,7 +229,6 @@ impl RtcModeMonotonic for RtcMode1 {
     const MIN_COMPARE_TICKS: Self::Count = 8;
 }
 
-#[hal_macro_helper]
 mod backend {
     use super::*;
 
@@ -317,7 +319,16 @@ const fn cortex_logical2hw(logical: u8, nvic_prio_bits: u8) -> u8 {
     ((1 << nvic_prio_bits) - logical) << (8 - nvic_prio_bits)
 }
 
-/// This function was copied from the private function in `rtic-monotonics`.
+/// This function was modified from the private function in `rtic-monotonics`.
+///
+/// Note that this depends on the static variable `RTIC_ASYNC_MAX_LOGICAL_PRIO`
+/// defined as part of RTIC. Should this ever be used without linking with RTIC,
+/// the user would need to define this as follows:
+///
+/// ```
+/// #[no_mangle]
+/// pub static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8 = (something);
+/// ```
 unsafe fn set_monotonic_prio(prio_bits: u8, interrupt: impl cortex_m::interrupt::InterruptNumber) {
     extern "C" {
         static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8;

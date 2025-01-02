@@ -100,7 +100,6 @@ pub struct Rtc<Mode: RtcMode> {
     _mode: PhantomData<Mode>,
 }
 
-#[hal_macro_helper]
 impl<Mode: RtcMode> Rtc<Mode> {
     // --- Helper Functions for M0 vs M4 targets
     #[inline]
@@ -114,6 +113,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn mode0_ctrla(&self) -> &Mode0CtrlA {
         #[hal_cfg("rtc-d5x")]
         return self.mode0().ctrla();
@@ -122,6 +122,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn mode2_ctrla(&self) -> &Mode2CtrlA {
         #[hal_cfg("rtc-d5x")]
         return self.mode2().ctrla();
@@ -130,6 +131,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn sync(&self) {
         #[hal_cfg("rtc-d5x")]
         while self.mode2().syncbusy().read().bits() != 0 {}
@@ -166,6 +168,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     /// Reonfigures the peripheral for 32bit counter mode.
+    #[hal_macro_helper]
     pub fn into_count32_mode(mut self) -> Rtc<Count32Mode> {
         self.enable(false);
         self.sync();
@@ -192,6 +195,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
 
     /// Reconfigures the peripheral for clock/calendar mode. Requires the source
     /// clock to be running at 1024 Hz.
+    #[hal_macro_helper]
     pub fn into_clock_mode(mut self) -> Rtc<ClockMode> {
         // The max divisor is 1024, so to get 1 Hz, we need a 1024 Hz source.
         assert_eq!(

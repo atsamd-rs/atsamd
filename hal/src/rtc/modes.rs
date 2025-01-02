@@ -29,7 +29,7 @@
 // access was checked in the datasheet and accounted for.
 
 use crate::pac;
-use atsamd_hal_macros::hal_macro_helper;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use pac::Rtc;
 
 /// Type-level enum for RTC interrupts.
@@ -73,7 +73,6 @@ macro_rules! create_rtc_interrupt {
 /// An abstraction of an RTC in a particular mode that provides low-level
 /// access and handles all register syncing issues using only associated
 /// functions.
-#[hal_macro_helper]
 pub trait RtcMode {
     /// The type of the COUNT register.
     type Count: Copy + PartialEq + Eq;
@@ -91,6 +90,7 @@ pub trait RtcMode {
 
     /// Resets the RTC, leaving it disabled in MODE0.
     #[inline]
+    #[hal_macro_helper]
     fn reset(rtc: &Rtc) {
         // Reset RTC back to initial settings, which disables it and enters mode 0.
         // NOTE: This register and field are the same in all modes.
@@ -111,6 +111,7 @@ pub trait RtcMode {
 
     /// Starts the RTC and does any required initialization for this mode.
     #[inline]
+    #[hal_macro_helper]
     fn start_and_initialize(rtc: &Rtc) {
         Self::enable(rtc);
 
@@ -157,6 +158,7 @@ pub trait RtcMode {
 
     /// Disables the RTC.
     #[inline]
+    #[hal_macro_helper]
     fn disable(rtc: &Rtc) {
         // SYNC: Write
         Self::sync(rtc);
@@ -169,6 +171,7 @@ pub trait RtcMode {
 
     /// Enables the RTC.
     #[inline]
+    #[hal_macro_helper]
     fn enable(rtc: &Rtc) {
         // SYNC: Write
         Self::sync(rtc);
@@ -199,7 +202,6 @@ pub trait RtcMode {
     }
 }
 
-#[hal_macro_helper]
 pub mod mode0 {
     use super::*;
 
@@ -216,6 +218,7 @@ pub mod mode0 {
         type Count = u32;
 
         #[inline]
+        #[hal_macro_helper]
         unsafe fn set_mode(rtc: &Rtc) {
             // SYNC: Write
             Self::sync(rtc);
@@ -240,6 +243,7 @@ pub mod mode0 {
         }
 
         #[inline]
+        #[hal_macro_helper]
         fn count(rtc: &Rtc) -> Self::Count {
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
             {
@@ -254,6 +258,7 @@ pub mod mode0 {
         }
 
         #[inline]
+        #[hal_macro_helper]
         fn sync_busy(rtc: &Rtc) -> bool {
             // SYNC: None
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
@@ -266,7 +271,6 @@ pub mod mode0 {
     }
 }
 
-#[hal_macro_helper]
 pub mod mode1 {
     use super::*;
 
@@ -281,6 +285,7 @@ pub mod mode1 {
         type Count = u16;
 
         #[inline]
+        #[hal_macro_helper]
         unsafe fn set_mode(rtc: &Rtc) {
             // SYNC: Write
             Self::sync(rtc);
@@ -310,6 +315,7 @@ pub mod mode1 {
         }
 
         #[inline]
+        #[hal_macro_helper]
         fn count(rtc: &Rtc) -> Self::Count {
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
             {
@@ -324,6 +330,7 @@ pub mod mode1 {
         }
 
         #[inline]
+        #[hal_macro_helper]
         fn sync_busy(rtc: &Rtc) -> bool {
             // SYNC: None
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
