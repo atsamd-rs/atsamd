@@ -55,7 +55,7 @@ where
         self.chan
             .eic
             .evctrl()
-            .modify(|r, w| unsafe { w.bits(r.bits() | 1 << P::ChId::ID) });
+            .modify(|r, w| unsafe { w.bits(r.bits() | (1 << P::ChId::ID)) });
     }
 
     pub fn enable_interrupt(&mut self) {
@@ -69,7 +69,7 @@ where
         self.chan
             .eic
             .wakeup()
-            .modify(|r, w| unsafe { w.bits(r.bits() | 1 << P::ChId::ID) })
+            .modify(|r, w| unsafe { w.bits(r.bits() | (1 << P::ChId::ID)) })
     }
 
     pub fn disable_interrupt(&mut self) {
