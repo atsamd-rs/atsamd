@@ -543,5 +543,5 @@ fn encode_write_address(addr_7_bits: u8) -> u16 {
 }
 
 fn encode_read_address(addr_7_bits: u8) -> u16 {
-    (addr_7_bits as u16) << 1 | 1
+    ((addr_7_bits as u16) << 1) | 1
 }
