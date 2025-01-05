@@ -76,6 +76,8 @@ pub mod delay;
 #[cfg(feature = "device")]
 pub mod gpio;
 #[cfg(feature = "device")]
+pub mod interrupt;
+#[cfg(feature = "device")]
 pub mod prelude;
 #[cfg(feature = "device")]
 pub mod rtc;
