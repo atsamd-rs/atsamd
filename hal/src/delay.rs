@@ -8,6 +8,8 @@ use crate::clock::GenericClockController;
 use crate::ehal::delay::DelayNs;
 use crate::ehal_02;
 use crate::time::Hertz;
+
+#[hal_cfg("rtc-d5x")]
 use crate::typelevel::Increment;
 
 #[hal_cfg("rtc-d5x")]
