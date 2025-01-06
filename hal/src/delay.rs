@@ -13,9 +13,7 @@ use crate::time::Hertz;
 use crate::typelevel::Increment;
 
 #[hal_cfg("rtc-d5x")]
-use crate::clock::v2::{
-    Source, gclk::Gclk0Id
-};
+use crate::clock::v2::{gclk::Gclk0Id, Source};
 
 /// System timer (SysTick) as a delay provider
 pub struct Delay {
@@ -38,14 +36,16 @@ impl Delay {
     /// Configures the system timer (SysTick) as a delay provide, compatible
     /// with the V2 clocking API
     pub fn new_with_source<S>(mut syst: SYST, gclk0: S) -> (Self, S::Inc)
-    where S: Source<Id = Gclk0Id> + Increment {
+    where
+        S: Source<Id = Gclk0Id> + Increment,
+    {
         syst.set_clock_source(SystClkSource::Core);
         (
             Delay {
                 syst,
                 sysclock: gclk0.freq(),
             },
-            gclk0.inc()
+            gclk0.inc(),
         )
     }
 
