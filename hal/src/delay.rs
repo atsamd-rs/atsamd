@@ -1,5 +1,6 @@
 //! Delays
 
+use atsamd_hal_macros::hal_cfg;
 use cortex_m::peripheral::syst::SystClkSource;
 use cortex_m::peripheral::SYST;
 
@@ -7,6 +8,12 @@ use crate::clock::GenericClockController;
 use crate::ehal::delay::DelayNs;
 use crate::ehal_02;
 use crate::time::Hertz;
+
+#[hal_cfg("rtc-d5x")]
+use crate::typelevel::Increment;
+
+#[hal_cfg("rtc-d5x")]
+use crate::clock::v2::{gclk::Gclk0Id, Source};
 
 /// System timer (SysTick) as a delay provider
 pub struct Delay {
@@ -23,6 +30,23 @@ impl Delay {
             syst,
             sysclock: clocks.gclk0().into(),
         }
+    }
+
+    #[hal_cfg("rtc-d5x")]
+    /// Configures the system timer (SysTick) as a delay provide, compatible
+    /// with the V2 clocking API
+    pub fn new_with_source<S>(mut syst: SYST, gclk0: S) -> (Self, S::Inc)
+    where
+        S: Source<Id = Gclk0Id> + Increment,
+    {
+        syst.set_clock_source(SystClkSource::Core);
+        (
+            Delay {
+                syst,
+                sysclock: gclk0.freq(),
+            },
+            gclk0.inc(),
+        )
     }
 
     /// Releases the system timer (SysTick) resource
