@@ -57,12 +57,10 @@ macro_rules! __internal_backend_methods {
             // Reset RTC back to initial settings, which disables it and enters mode 0.
             <$mode>::reset(&$rtc_pac);
 
-            unsafe {
-                // Set the RTC mode
-                <$mode>::set_mode(&$rtc_pac);
+            // Set the RTC mode
+            <$mode>::set_mode(&$rtc_pac);
 
-                $init_compares
-            }
+            $init_compares
 
             // Timing critical, make sure we don't get interrupted.
             critical_section::with(|_| {
@@ -305,7 +303,7 @@ macro_rules! __internal_half_period_counting_backend {
                         <$mode>::count(&rtc).wrapping_sub(1)
                     };
 
-                    unsafe { <$mode>::set_compare(&rtc, 0, val) };
+                    <$mode>::set_compare(&rtc, 0, val);
                 });
             }
 

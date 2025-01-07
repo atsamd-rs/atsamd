@@ -1,4 +1,5 @@
 //! Provides low-level access to the [Real Time Clock (RTC)](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-E17D8859-D42B-4B0E-9B81-76168A0C38AC.html) peripheral on ATSAMD chips.
+//!
 //! The main abstraction is the [`RtcMode`] trait, which exposes
 //! static/associated functions to use the RTC in in a particular mode. All functions are marked as [`inline`](https://matklad.github.io/2021/07/09/inline-in-rust.html)
 //! so that this should be a zero cost abstraction.
@@ -9,7 +10,7 @@
 //!
 //! Abstraction benefits:
 //! - Handles all RTC register accesses.
-//! - Handles RTC [register synchronization](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-ABE2D37F-8125-4279-9955-BC3900046CFF.html)
+//! - Handles RTC [register synchronization](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-ABE2D37F-8125-4279-9955-BC3900046CFF.html).
 //! - Handles ATSAMD chip variations.
 //!
 //! The idea is that various higher-level users of these abstractions will not
@@ -46,7 +47,7 @@ pub trait RtcInterrupt {
 /// Macro to easily declare an RTC interrupt.
 macro_rules! create_rtc_interrupt {
     ($mode:ident, $name:ident, $bit:ident) => {
-        /// Type-level variant for the $name interrupt in $mode.
+        #[doc = concat!("Type-level variant for the ", stringify!($name), " interrupt in ", stringify!($mode))]
         pub enum $name {}
         impl RtcInterrupt for $name {
             #[inline]
@@ -78,17 +79,59 @@ pub trait RtcMode {
     type Count: Copy + PartialEq + Eq;
 
     /// Sets this mode in the CTRL register.
-    unsafe fn set_mode(rtc: &Rtc);
+    ///
+    /// # Safety
+    ///
+    /// This can be called any time but is typically only called once before
+    /// calling most other methods.
+    fn set_mode(rtc: &Rtc);
+
     /// Sets a compare value.
-    unsafe fn set_compare(rtc: &Rtc, number: usize, value: Self::Count);
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
+    fn set_compare(rtc: &Rtc, number: usize, value: Self::Count);
+
     /// Retrieves a compare from the register.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
     fn get_compare(rtc: &Rtc, number: usize) -> Self::Count;
+
     /// Returns the current synced COUNT value.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
     fn count(rtc: &Rtc) -> Self::Count;
+
     /// Returns whether register syncing is currently happening.
-    fn sync_busy(rtc: &Rtc) -> bool;
+    ///
+    /// # Safety
+    ///
+    /// Can be called any time.
+    #[inline]
+    #[hal_macro_helper]
+    fn sync_busy(rtc: &Rtc) -> bool {
+        // NOTE: This register and field are the same in all modes.
+        // SYNC: None
+        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+        return rtc.mode0().status().read().syncbusy().bit_is_set();
+        // SYNC: None
+        #[hal_cfg("rtc-d5x")]
+        return rtc.mode0().syncbusy().read().bits() != 0;
+    }
 
     /// Resets the RTC, leaving it disabled in MODE0.
+    ///
+    /// # Safety
+    ///
+    /// Can be called any time.
     #[inline]
     #[hal_macro_helper]
     fn reset(rtc: &Rtc) {
@@ -110,6 +153,11 @@ pub trait RtcMode {
     }
 
     /// Starts the RTC and does any required initialization for this mode.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
     #[inline]
     #[hal_macro_helper]
     fn start_and_initialize(rtc: &Rtc) {
@@ -131,12 +179,22 @@ pub trait RtcMode {
     }
 
     /// Enables an RTC interrupt.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
     #[inline]
     fn enable_interrupt<I: RtcInterrupt>(rtc: &Rtc) {
         I::enable(rtc);
     }
 
     /// Returns whether an RTC interrupt has been triggered.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
     #[inline]
     fn check_interrupt_flag<I: RtcInterrupt>(rtc: &Rtc) -> bool {
         I::check_flag(rtc)
@@ -144,19 +202,32 @@ pub trait RtcMode {
 
     /// Clears an RTC interrupt flag so the ISR will not be called again
     /// immediately.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
     #[inline]
     fn clear_interrupt_flag<I: RtcInterrupt>(rtc: &Rtc) {
         I::clear_flag(rtc);
     }
 
     /// Waits for any register syncing to be completed, or returns immediately
-    /// if no currently syncing.
+    /// if not currently syncing.
+    ///
+    /// # Safety
+    ///
+    /// Can be called any time.
     #[inline]
     fn sync(rtc: &Rtc) {
         while Self::sync_busy(rtc) {}
     }
 
     /// Disables the RTC.
+    ///
+    /// # Safety
+    ///
+    /// Can be called any time.
     #[inline]
     #[hal_macro_helper]
     fn disable(rtc: &Rtc) {
@@ -170,6 +241,10 @@ pub trait RtcMode {
     }
 
     /// Enables the RTC.
+    ///
+    /// # Safety
+    ///
+    /// Can be called any time.
     #[inline]
     #[hal_macro_helper]
     fn enable(rtc: &Rtc) {
@@ -184,8 +259,14 @@ pub trait RtcMode {
 
     /// Waits until the COUNT register changes.
     ///
-    /// Note that this may not necessarily be the next tick due sync delay.
-    /// Beware that this will wait forever if the RTC is disabled!
+    /// Note that this may not necessarily be the next tick numerically due sync
+    /// delay.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode). This will halt forever if called when
+    /// the RTC is disabled.
     #[inline]
     fn _wait_for_count_change(rtc: &Rtc) -> Self::Count {
         let mut last_count = Self::count(rtc);
@@ -202,6 +283,7 @@ pub trait RtcMode {
     }
 }
 
+/// Interface for using the RTC in MODE0 (32-bit COUNT)
 pub mod mode0 {
     use super::*;
 
@@ -211,7 +293,7 @@ pub mod mode0 {
     #[hal_cfg("rtc-d5x")]
     create_rtc_interrupt!(mode0, Overflow, ovf);
 
-    /// The RTC operating in MODE0 (23-bit COUNT)
+    /// The RTC operating in MODE0 (32-bit COUNT)
     pub struct RtcMode0;
 
     impl RtcMode for RtcMode0 {
@@ -219,7 +301,7 @@ pub mod mode0 {
 
         #[inline]
         #[hal_macro_helper]
-        unsafe fn set_mode(rtc: &Rtc) {
+        fn set_mode(rtc: &Rtc) {
             // SYNC: Write
             Self::sync(rtc);
             // NOTE: This register and field are the same in all modes.
@@ -230,10 +312,12 @@ pub mod mode0 {
         }
 
         #[inline]
-        unsafe fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
+        fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
             // SYNC: Write
             Self::sync(rtc);
-            rtc.mode0().comp(number).write(|w| w.comp().bits(value));
+            unsafe {
+                rtc.mode0().comp(number).write(|w| w.comp().bits(value));
+            }
         }
 
         #[inline]
@@ -256,21 +340,10 @@ pub mod mode0 {
             Self::sync(rtc);
             rtc.mode0().count().read().bits()
         }
-
-        #[inline]
-        #[hal_macro_helper]
-        fn sync_busy(rtc: &Rtc) -> bool {
-            // SYNC: None
-            #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-            return rtc.mode0().status().read().syncbusy().bit_is_set();
-
-            // SYNC: None
-            #[hal_cfg("rtc-d5x")]
-            return rtc.mode0().syncbusy().read().bits() != 0;
-        }
     }
 }
 
+/// Interface for using the RTC in MODE1 (16-bit COUNT)
 pub mod mode1 {
     use super::*;
 
@@ -286,7 +359,7 @@ pub mod mode1 {
 
         #[inline]
         #[hal_macro_helper]
-        unsafe fn set_mode(rtc: &Rtc) {
+        fn set_mode(rtc: &Rtc) {
             // SYNC: Write
             Self::sync(rtc);
             // NOTE: This register and field are the same in all modes.
@@ -298,14 +371,14 @@ pub mod mode1 {
             // Set the mode 1 period
             // SYNC: Write
             Self::sync(rtc);
-            rtc.mode1().per().write(|w| w.bits(0xFFFF));
+            unsafe { rtc.mode1().per().write(|w| w.bits(0xFFFF)) };
         }
 
         #[inline]
-        unsafe fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
+        fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
             // SYNC: Write
             Self::sync(rtc);
-            rtc.mode1().comp(number).write(|w| w.comp().bits(value));
+            unsafe { rtc.mode1().comp(number).write(|w| w.comp().bits(value)) };
         }
 
         #[inline]
@@ -327,18 +400,6 @@ pub mod mode1 {
             // SYNC: Read/Write
             Self::sync(rtc);
             rtc.mode1().count().read().bits()
-        }
-
-        #[inline]
-        #[hal_macro_helper]
-        fn sync_busy(rtc: &Rtc) -> bool {
-            // SYNC: None
-            #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-            return rtc.mode1().status().read().syncbusy().bit_is_set();
-
-            // SYNC: None
-            #[hal_cfg("rtc-d5x")]
-            return rtc.mode1().syncbusy().read().bits() != 0;
         }
     }
 }

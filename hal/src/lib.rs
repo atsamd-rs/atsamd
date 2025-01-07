@@ -14,6 +14,9 @@ pub use embedded_hal_async as ehal_async;
 #[cfg(feature = "async")]
 pub use embedded_io_async;
 
+#[cfg(feature = "rtic")]
+pub use rtic_time;
+
 pub mod typelevel;
 mod util;
 
@@ -90,9 +93,6 @@ pub mod timer_traits;
 
 #[cfg(feature = "dma")]
 pub mod dmac;
-
-#[cfg(feature = "rtic")]
-pub use rtic_time;
 
 #[doc(hidden)]
 mod peripherals;

@@ -13,4 +13,7 @@ pub use crate::ehal_02::digital::v2::ToggleableOutputPin as _atsamd_hal_embedded
 pub use crate::ehal_02::prelude::*;
 
 #[cfg(feature = "rtic")]
-pub use crate::rtc::rtic::prelude::*;
+pub use rtic_time::Monotonic as _;
+
+#[cfg(feature = "rtic")]
+pub use fugit::{ExtU64, ExtU64Ceil};

@@ -58,8 +58,7 @@
 //! # Usage
 //!
 //! The monotonic should be created using the
-//! [macro](prelude::rtc_monotonic), which is included in the
-//! [prelude](crate::prelude). The first macro argument is the name of
+//! [macro](crate::rtc_monotonic). The first macro argument is the name of
 //! the global structure that will implement
 //! [`Monotonic`](rtic_time::Monotonic). The RTC clock rate must be
 //! known at compile time, and so the appropriate type from [`rtc_clock`] must
@@ -78,9 +77,19 @@
 //!
 //! ```
 //! use atsamd_hal::prelude::*;
+//! use atsamd_hal::rtc::rtic::rtc_clock;
 //!
 //! // Create the monotonic struct named `Mono`
 //! rtc_monotonic!(Mono, rtc_clock::Clock32k);
+//!
+//! // Uncomment if not using the RTIC RTOS:
+//! // #[no_mangle]
+//! // static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8 = 1;
+//! //
+//! // This tells the monotonic driver the maximum interrupt
+//! // priority it's allowed to use. RTIC sets it automatically,
+//! // but you need to set it manually if you're writing
+//! // a RTIC-less app.
 //!
 //! fn init() {
 //!     # // This is normally provided by the selected PAC
@@ -170,22 +179,14 @@ mod backends;
 use super::modes::{mode0::RtcMode0, mode1::RtcMode1, RtcMode};
 use atsamd_hal_macros::hal_cfg;
 
-pub mod prelude {
-    pub use super::rtc_clock;
-    pub use crate::rtc_monotonic;
-    pub use rtic_time::Monotonic;
-
-    pub use fugit::{self, ExtU32, ExtU32Ceil, ExtU64, ExtU64Ceil};
-}
-
 /// Types used to specify the RTC clock rate at compile time when creating the
 /// monotonics.
 ///
 /// These types utilize [type-level programming](crate::typelevel)
 /// techniques and are passed to the [monotonic creation
-/// macros](crate::rtc::rtic::prelude).
-/// The clock rate must be specified at compile time so that the `Instant` and
-/// `Duration` types in
+/// macro](crate::rtc_monotonic).
+/// The RTC clock rate must be specified at compile time so that the `Instant`
+/// and `Duration` types in
 /// [`TimerQueueBasedMonotonic`](rtic_time::monotonic::TimerQueueBasedMonotonic)
 /// can be specified.
 pub mod rtc_clock {
@@ -322,13 +323,8 @@ const fn cortex_logical2hw(logical: u8, nvic_prio_bits: u8) -> u8 {
 /// This function was modified from the private function in `rtic-monotonics`.
 ///
 /// Note that this depends on the static variable `RTIC_ASYNC_MAX_LOGICAL_PRIO`
-/// defined as part of RTIC. Should this ever be used without linking with RTIC,
-/// the user would need to define this as follows:
-///
-/// ```
-/// #[no_mangle]
-/// pub static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8 = (something);
-/// ```
+/// defined as part of RTIC. Refer to the example in the [`rtic`
+/// module](crate::rtc::rtic) documentation for more details.
 unsafe fn set_monotonic_prio(prio_bits: u8, interrupt: impl cortex_m::interrupt::InterruptNumber) {
     extern "C" {
         static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8;
