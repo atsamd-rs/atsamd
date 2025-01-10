@@ -205,6 +205,13 @@ seq_macro::seq!(N in 0..= 15 {
     }
 });
 
+// ----------  ADC Interrupt ---------- //
+#[hal_cfg("adc-d5x")]
+declare_multiple_interrupts!(ADC0: [ADC0_RESRDY, ADC0_OTHER]);
+#[hal_cfg("adc-d5x")]
+declare_multiple_interrupts!(ADC1: [ADC1_RESRDY, ADC1_OTHER]);
+#[hal_cfg(any("adc-d11", "adc-d21"))]
+declare_interrupts!(ADC);
 /// An interrupt source that may have one or many interrupt bindings.
 ///
 /// This trait may implemented directly when multiple interrupt sources are

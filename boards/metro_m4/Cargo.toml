@@ -68,6 +68,10 @@ use_semihosting = []
 name = "adc"
 
 [[example]]
+name = "async_adc"
+required-features = ["async"]
+
+[[example]]
 name = "async_dmac"
 required-features = ["dma", "async"]
 

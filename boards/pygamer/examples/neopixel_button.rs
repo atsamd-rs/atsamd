@@ -10,12 +10,13 @@
 #![no_std]
 #![no_main]
 
+use atsamd_hal::adc::Config;
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
 use pygamer::{self as bsp, entry, hal, pac, pins::Keys, Pins};
 
 use bsp::util::map_from;
-use hal::adc::Adc;
+use hal::adc::{Accumulation, Adc, Config, Prescaler, Resolution};
 use hal::{clock::GenericClockController, delay::Delay};
 
 use pac::gclk::pchctrl::Genselect::Gclk11;
@@ -47,7 +48,13 @@ fn main() -> ! {
 
     let mut buttons = pins.buttons.init();
 
-    let mut adc1 = Adc::adc1(peripherals.adc1, &mut peripherals.mclk, &mut clocks, Gclk11);
+    let adc1_settings = Config::new()
+        .clock_cycles_per_sample(5)
+        .clock_divider(Prescaler::Div32)
+        .sample_resolution(Resolution::_12bit)
+        .accumulation_method(Accumulation::Single);
+
+    let mut adc1 = Adc::adc(peripherals.adc1, &mut peripherals.mclk, &mut clocks, Gclk11);
     let mut joystick = pins.joystick.init();
 
     // neopixels

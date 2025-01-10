@@ -109,6 +109,7 @@ use the async APIs.
 * DMAC
 * EIC (GPIO interrupts)
 * Timers
+* ADC
 
 ### Examples
 

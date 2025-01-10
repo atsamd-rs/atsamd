@@ -1,54 +1,54 @@
-//! Reads the adc and prints to rtt every second.
-//!
-//! Requires `cargo install probe-run`
-//!
-//! probe-run builds, uploads, and runs your code on device and in combination
-//! with rtt-target and panic-probe prints debug and panic information to your
-//! console. Its used for short running sessions like seeing the results of a
-//! calculation or a measurement, a panic message or backtrace of an error right
-//! on your command line. You can also force an exit with a
-//! cortex_m::asm::bkpt()
-//!
-//! `cargo run --release --example adc`
-
 #![no_std]
 #![no_main]
 
-use panic_probe as _;
-
-use bsp::hal;
+use atsamd_hal::adc::{AdcBuilder, Reference};
 use samd11_bare as bsp;
 
+use bsp::hal;
+use bsp::pac;
+
+#[cfg(not(feature = "use_semihosting"))]
+use panic_halt as _;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
+
 use bsp::entry;
-use hal::adc::Adc;
-use hal::clock::GenericClockController;
-use hal::gpio::*;
-use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
-use rtt_target::{rprintln, rtt_init_print};
+use bsp::Pins;
+use pac::{CorePeripherals, Peripherals};
+
+use hal::{
+    adc::{Accumulation, Adc, Prescaler, Resolution},
+    clock::GenericClockController,
+};
 
 #[entry]
 fn main() -> ! {
-    rtt_init_print!();
-
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
+    let _core = CorePeripherals::take().unwrap();
 
-    let mut clocks = GenericClockController::with_internal_32kosc(
+    let pins = Pins::new(peripherals.port);
+
+    let mut clocks = GenericClockController::with_external_32kosc(
         peripherals.gclk,
         &mut peripherals.pm,
         &mut peripherals.sysctrl,
         &mut peripherals.nvmctrl,
     );
-    let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
-    let pins = bsp::Pins::new(peripherals.port);
+    let gclk0 = clocks.gclk0();
+    let adc_clock = clocks.adc(&gclk0).unwrap();
 
-    let mut adc = Adc::adc(peripherals.adc, &mut peripherals.pm, &mut clocks);
-    let mut a0: Pin<_, AlternateB> = pins.d1.into_mode();
+    let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
+        .with_clock_cycles_per_sample(5)
+        .with_clock_divider(Prescaler::Div128)
+        .with_vref(Reference::Arefa)
+        .enable(peripherals.adc, &mut peripherals.pm, &adc_clock)
+        .unwrap();
+
+    let mut adc_pin = pins.d1.into_alternate();
 
     loop {
-        let data: u16 = adc.read(&mut a0).unwrap();
-        rprintln!("{}", data);
-        delay.delay_ms(1000u16);
+        let res = adc.read(&mut adc_pin);
+        #[cfg(feature = "use_semihosting")]
+        cortex_m_semihosting::hprintln!("ADC Result: {}", res);
     }
 }
