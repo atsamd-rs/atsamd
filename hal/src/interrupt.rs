@@ -42,6 +42,15 @@ pub enum Priority {
 }
 
 impl Priority {
+    /// Creates the `Priority` from a numeric priority if possible.
+    pub const fn from_numeric(prio: u8) -> Option<Self> {
+        if prio >= 1 && prio <= 8 {
+            Some(unsafe { core::mem::transmute::<u8, Self>(prio) })
+        } else {
+            None
+        }
+    }
+
     /// Convert a logical priority (where higher priority number = higher
     /// priority level) to a hardware priority level (where lower priority
     /// number = higher priority level).
