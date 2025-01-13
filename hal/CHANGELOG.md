@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.20.2...atsamd-hal-0.21.0) - 2025-01-13
+
+### Added
+
+- [**breaking**] Add support for RTIC v2.0 monotonic drivers using RTC peripheral (#804)
+- Allow the construction of systick Delay using the clock::v2 API (#803)
+
+### Changed
+
+- Break out non-async specific interrupt functionality out of async_hal module
+
+### Refactored
+
+- Satisfy recent nightly clippy lint additions
+
 ## [0.20.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.20.1...atsamd-hal-0.20.2) - 2024-12-11
 
 ### Changed
