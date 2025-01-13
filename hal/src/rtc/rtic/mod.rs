@@ -177,6 +177,7 @@ pub mod v1 {
 mod backends;
 
 use super::modes::{mode0::RtcMode0, mode1::RtcMode1, RtcMode};
+use crate::interrupt::{Priority, NVIC_PRIO_BITS};
 use atsamd_hal_macros::hal_cfg;
 
 /// Types used to specify the RTC clock rate at compile time when creating the
@@ -314,24 +315,21 @@ macro_rules! rtc_monotonic {
     };
 }
 
-/// This function was copied from the private function in `rtic-monotonics`,
-/// so that should be used when the monotonics move there.
-const fn cortex_logical2hw(logical: u8, nvic_prio_bits: u8) -> u8 {
-    ((1 << nvic_prio_bits) - logical) << (8 - nvic_prio_bits)
-}
-
-/// This function was modified from the private function in `rtic-monotonics`.
+/// This function was modified from the private function in `rtic-monotonics`,
+/// part of the [`rtic`](https://github.com/rtic-rs/rtic) project.
 ///
 /// Note that this depends on the static variable `RTIC_ASYNC_MAX_LOGICAL_PRIO`
 /// defined as part of RTIC. Refer to the example in the [`rtic`
 /// module](crate::rtc::rtic) documentation for more details.
-unsafe fn set_monotonic_prio(prio_bits: u8, interrupt: impl cortex_m::interrupt::InterruptNumber) {
+///
+/// See LICENSE-MIT and LICENSE-APACHE for the licenses.
+unsafe fn set_monotonic_prio(interrupt: impl cortex_m::interrupt::InterruptNumber) {
     extern "C" {
         static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8;
     }
 
-    let max_prio = RTIC_ASYNC_MAX_LOGICAL_PRIO.max(1).min(1 << prio_bits);
-    let hw_prio = cortex_logical2hw(max_prio, prio_bits);
+    let max_prio = RTIC_ASYNC_MAX_LOGICAL_PRIO.clamp(1, 1 << NVIC_PRIO_BITS);
+    let hw_prio = Priority::from_numeric(max_prio).unwrap().logical2hw();
 
     // We take ownership of the entire IRQ and all settings to it, we only change
     // settings for the IRQ we control.

@@ -82,7 +82,7 @@ macro_rules! __internal_backend_methods {
                 // plus we are not using any external shared resources so we won't impact
                 // basepri/source masking based critical sections.
                 unsafe {
-                    $crate::rtc::rtic::set_monotonic_prio(pac::NVIC_PRIO_BITS, pac::Interrupt::RTC);
+                    $crate::rtc::rtic::set_monotonic_prio(pac::Interrupt::RTC);
                     pac::NVIC::unmask(pac::Interrupt::RTC);
                 }
             });
