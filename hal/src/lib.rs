@@ -14,6 +14,9 @@ pub use embedded_hal_async as ehal_async;
 #[cfg(feature = "async")]
 pub use embedded_io_async;
 
+#[cfg(feature = "rtic")]
+pub use rtic_time;
+
 pub mod typelevel;
 mod util;
 
@@ -75,6 +78,8 @@ pub mod async_hal;
 pub mod delay;
 #[cfg(feature = "device")]
 pub mod gpio;
+#[cfg(feature = "device")]
+pub mod interrupt;
 #[cfg(feature = "device")]
 pub mod prelude;
 #[cfg(feature = "device")]

@@ -15,11 +15,10 @@ use core::marker::PhantomData;
 use embedded_sdmmc::{TimeSource, Timestamp};
 
 #[cfg(feature = "rtic")]
-pub type Instant = fugit::Instant<u32, 1, 32_768>;
+mod modes;
+
 #[cfg(feature = "rtic")]
-pub type Duration = fugit::Duration<u32, 1, 32_768>;
-#[cfg(feature = "rtic")]
-use rtic_monotonic::Monotonic;
+pub mod rtic;
 
 // SAMx5x imports
 #[hal_cfg("rtc-d5x")]
@@ -101,7 +100,6 @@ pub struct Rtc<Mode: RtcMode> {
     _mode: PhantomData<Mode>,
 }
 
-#[hal_macro_helper]
 impl<Mode: RtcMode> Rtc<Mode> {
     // --- Helper Functions for M0 vs M4 targets
     #[inline]
@@ -115,6 +113,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn mode0_ctrla(&self) -> &Mode0CtrlA {
         #[hal_cfg("rtc-d5x")]
         return self.mode0().ctrla();
@@ -123,6 +122,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn mode2_ctrla(&self) -> &Mode2CtrlA {
         #[hal_cfg("rtc-d5x")]
         return self.mode2().ctrla();
@@ -131,6 +131,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn sync(&self) {
         #[hal_cfg("rtc-d5x")]
         while self.mode2().syncbusy().read().bits() != 0 {}
@@ -167,6 +168,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
     }
 
     /// Reonfigures the peripheral for 32bit counter mode.
+    #[hal_macro_helper]
     pub fn into_count32_mode(mut self) -> Rtc<Count32Mode> {
         self.enable(false);
         self.sync();
@@ -193,6 +195,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
 
     /// Reconfigures the peripheral for clock/calendar mode. Requires the source
     /// clock to be running at 1024 Hz.
+    #[hal_macro_helper]
     pub fn into_clock_mode(mut self) -> Rtc<ClockMode> {
         // The max divisor is 1024, so to get 1 Hz, we need a 1024 Hz source.
         assert_eq!(
@@ -237,6 +240,10 @@ impl Rtc<Count32Mode> {
     /// state after reset) and the counter initialized to zero.
     pub fn count32_mode(rtc: pac::Rtc, rtc_clock_freq: Hertz, pm: &mut Pm) -> Self {
         pm.apbamask().modify(|_, w| w.rtc_().set_bit());
+
+        // TODO: This may not work properly because here the count sync bit is not set
+        // as it is in Self::into_count32_mode Maybe we can just call that to
+        // avoid code duplication
 
         let mut new_rtc = Self {
             rtc,
@@ -479,36 +486,5 @@ impl TimerParams {
         let cycles: u32 = ticks / divider_value;
 
         TimerParams { divider, cycles }
-    }
-}
-
-#[cfg(feature = "rtic")]
-impl Monotonic for Rtc<Count32Mode> {
-    type Instant = Instant;
-    type Duration = Duration;
-    unsafe fn reset(&mut self) {
-        // Since reset is only called once, we use it to enable the interrupt generation
-        // bit.
-        self.mode0().intenset().write(|w| w.cmp0().set_bit());
-    }
-
-    fn now(&mut self) -> Self::Instant {
-        Self::Instant::from_ticks(self.count32())
-    }
-
-    fn zero() -> Self::Instant {
-        Self::Instant::from_ticks(0)
-    }
-
-    fn set_compare(&mut self, instant: Self::Instant) {
-        unsafe {
-            self.mode0()
-                .comp(0)
-                .write(|w| w.comp().bits(instant.ticks()))
-        }
-    }
-
-    fn clear_compare_flag(&mut self) {
-        self.mode0().intflag().write(|w| w.cmp0().set_bit());
     }
 }
