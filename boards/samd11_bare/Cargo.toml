@@ -1,6 +1,6 @@
 [package]
 name = "samd11_bare"
-version = "0.13.2"
+version = "0.14.0"
 authors = ["Jesse Braham <jesse@beta7.io>"]
 description = "Support crate for the ATSAMD11C"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
