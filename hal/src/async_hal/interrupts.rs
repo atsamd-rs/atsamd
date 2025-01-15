@@ -199,6 +199,10 @@ seq_macro::seq!(N in 0..= 15 {
     }
 });
 
+// ----------  ADC Interrupt ---------- //
+declare_multiple_interrupts!(ADC0: [ADC0_RESRDY, ADC0_OTHER]);
+declare_multiple_interrupts!(ADC1: [ADC1_RESRDY, ADC1_OTHER]);
+
 /// An interrupt source that may have one or many interrupt bindings.
 ///
 /// This trait may implemented directly when multiple interrupt sources are

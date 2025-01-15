@@ -1,5 +1,11 @@
 //! Analogue-to-Digital Conversion
+use core::future::poll_fn;
+use core::ops::Deref;
+use core::task::Poll;
+
+use adc_settings::AdcSettingsBuilder;
 use atsamd_hal_macros::hal_cfg;
+use atsame51j::Peripherals;
 
 use crate::clock::GenericClockController;
 #[rustfmt::skip]
@@ -10,6 +16,10 @@ use crate::pac::gclk::pchctrl::Genselect;
 use crate::pac::{adc0, Adc0, Adc1, Mclk};
 
 use crate::calibration;
+use crate::typelevel::Sealed;
+
+pub mod async_api;
+pub mod adc_settings;
 
 /// Samples per reading
 pub use adc0::avgctrl::Samplenumselect as SampleRate;
@@ -20,15 +30,123 @@ pub use adc0::ctrlb::Resselselect as Resolution;
 /// Reference voltage (or its source)
 pub use adc0::refctrl::Refselselect as Reference;
 
-/// An ADC where results are accessible via interrupt servicing.
-pub struct InterruptAdc<ADC, C>
-where
-    C: ConversionMode<ADC>,
-{
-    adc: Adc<ADC>,
-    m: core::marker::PhantomData<C>,
+pub const NUM_ADC: usize = 2;
+
+pub trait Adc: Sealed + Deref<Target = adc0::RegisterBlock> {
+    /// ADC number
+    const NUM: usize;
+
+    #[cfg(feature = "async")]
+    type Interrupt: crate::async_hal::interrupts::InterruptSource;
+
+    /// Get a reference to the Adc from a
+    /// [`Peripherals`] block
+    fn reg_block(peripherals: &mut Peripherals) -> &crate::pac::adc0::RegisterBlock;
+
+    /// Get a reference to this [`Adc`]'s associated RX Waker
+    #[cfg(feature = "async")]
+    #[inline]
+    fn waker() -> &'static embassy_sync::waitqueue::AtomicWaker {
+        &async_api::waker::ADC_WAKERS[Self::NUM]
+    }
 }
 
+pub struct ADC0 {
+    adc: Adc0
+}
+
+impl Sealed for ADC0 {}
+
+impl Adc for ADC0 {
+    const NUM: usize = 0;
+
+    type Interrupt = crate::async_hal::interrupts::ADC0;
+
+    fn reg_block(peripherals: &mut Peripherals) -> &crate::pac::adc0::RegisterBlock {
+        &peripherals.adc0
+    }
+}
+
+impl Deref for ADC0 {
+    type Target = adc0::RegisterBlock;
+
+    fn deref(&self) -> &Self::Target {
+        todo!()
+    }
+}
+
+impl ADC0 {
+    pub fn new(cfg: AdcSettingsBuilder, adc: Adc0 , mclk: &mut Mclk) -> Self {
+        Self {
+            adc: adc
+        }
+    }
+
+    fn power_up(&mut self) {
+        while self.adc.syncbusy().read().enable().bit_is_set() {}
+        self.adc.ctrla().modify(|_, w| w.enable().set_bit());
+        while self.adc.syncbusy().read().enable().bit_is_set() {}
+    }
+
+    fn power_down(&mut self) {
+        while self.adc.syncbusy().read().enable().bit_is_set() {}
+        self.adc.ctrla().modify(|_, w| w.enable().clear_bit());
+        while self.adc.syncbusy().read().enable().bit_is_set() {}
+    }
+
+    /// Enables an interrupt when conversion is ready.
+    fn enable_interrupts(&mut self) {
+        self.adc.intflag().write(|w| w.resrdy().set_bit());
+        self.adc.intenset().write(|w| w.resrdy().set_bit());
+    }
+
+    /// Disables the interrupt for when conversion is ready.
+    fn disable_interrupts(&mut self) {
+        self.adc.intenclr().write(|w| w.resrdy().set_bit());
+    }
+
+    #[inline(always)]
+    fn start_conversion(&mut self) {
+        // start conversion
+        self.adc.swtrig().modify(|_, w| w.start().set_bit());
+        // do it again because the datasheet tells us to
+        self.adc.swtrig().modify(|_, w| w.start().set_bit());
+    }
+
+    fn conversion_ready(&mut self) -> Option<u16> {
+        if self.adc.intflag().read().resrdy().bit_is_set() {
+            self.adc.intflag().write(|w| w.resrdy().set_bit());
+            Some(self.adc.result().read().result().bits())
+        } else {
+            None
+        }
+    }
+
+    pub async fn oneshot_read<PIN: Channel<ADC0, ID=u8>>(&mut self, _pin: &mut PIN) -> u16 {
+        let channel = PIN::channel();
+        while self.adc.syncbusy().read().inputctrl().bit_is_set() {}
+        self.adc.inputctrl().modify(|_, w| unsafe{ w.muxpos().bits(channel) });
+
+        self.enable_interrupts();
+        self.start_conversion();
+        let v: u16 = poll_fn(|cx| {
+            if let Some(r) = self.conversion_ready() {
+                return Poll::Ready(r);
+            }
+            Self::waker().register(cx.waker());
+
+            if let Some(r) = self.conversion_ready() {
+                return Poll::Ready(r);
+            }
+            Poll::Pending
+        }).await;
+        self.disable_interrupts();
+        self.power_down();
+        v
+    }
+}
+
+/*
 /// `Adc` encapsulates the device ADC
 pub struct Adc<ADC> {
     adc: ADC,
@@ -271,6 +389,7 @@ adc_hal! {
     Adc0: (adc0, apbdmask, adc0_, adc0_biascomp_scale_cal, adc0_biasref_scale_cal, adc0_biasr2r_scale_cal),
     Adc1: (adc1, apbdmask, adc1_, adc1_biascomp_scale_cal, adc1_biasref_scale_cal, adc1_biasr2r_scale_cal),
 }
+*/
 
 macro_rules! adc_pins {
     (
