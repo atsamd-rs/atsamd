@@ -1,98 +1,124 @@
 [package]
-name = "feather_m4"
-version = "0.16.0"
-edition = "2021"
 authors = ["Theodore DeRego <tderego94@gmail.com>"]
-description = "Board Support crate for the Adafruit Feather M4"
-keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
+description = "Board Support crate for the Adafruit Feather M4"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j/feather_m4/"
+edition = "2021"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+name = "feather_m4"
+readme = "README.md"
+repository = "https://github.com/atsamd-rs/atsamd"
+version = "0.16.0"
 
 # for cargo flash
 [package.metadata]
 chip = "ATSAMD51J19A"
 
 [dependencies.cortex-m-rt]
-version = "0.7"
 optional = true
+version = "0.7"
 
 [dependencies.cortex-m]
-version = "0.7"
 features = ["critical-section-single-core"]
+version = "0.7"
 
 [dependencies.atsamd-hal]
+default-features = false
 path = "../../hal"
 version = "0.21.0"
-default-features = false
 
 [dependencies.usb-device]
-version = "0.3.1"
 optional = true
+version = "0.3.1"
 
 [dev-dependencies]
-usbd-serial = "0.2"
-cortex-m-rtic = "0.6.0-rc.2"
+heapless = "0.7"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
+rtic = {version = "2.1.1", features = ["thumbv7-backend"]}
 smart-leds = "0.3"
+usbd-serial = "0.2"
 ws2812-timer-delay = "0.3"
-heapless = "0.7"
 
 [features]
 # ask the HAL to enable atsamd51j support
 default = ["rt", "atsamd-hal/samd51j"]
-rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
-usb = ["atsamd-hal/usb", "usb-device"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/dma"]
+rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
+rtic = ["atsamd-hal/rtic"]
+usb = ["atsamd-hal/usb", "usb-device"]
 # Enable async support from atsamd-hal
 async = ["atsamd-hal/async"]
-use_semihosting =  []
+use_semihosting = []
 
 [[example]]
-name = "pwm"
+name = "blinky_basic"
 
 [[example]]
-name = "usb_echo"
-required-features = ["usb"]
+name = "blinky_rtic"
+required-features = ["rtic"]
+
+[[example]]
+name = "clocking_v2"
 
 [[example]]
 name = "dmac"
 required-features = ["dma"]
 
 [[example]]
-name = "uart"
-
-[[example]]
-name = "uart_poll_echo"
-
-[[example]]
-name = "uart_dma_nonblocking"
+name = "i2c"
 required-features = ["dma"]
 
 [[example]]
-name = "uart_dma_blocking"
-required-features = ["dma"]
-
-[[example]]
-name = "pukcc_test"
-required-features = ["usb"]
+name = "neopixel_rainbow"
 
 [[example]]
 name = "nvm_dsu"
 required-features = ["usb"]
 
 [[example]]
-name = "smart_eeprom"
-required-features = [ "usb"]
+name = "pukcc_test"
+required-features = ["usb"]
 
 [[example]]
-name = "i2c"
-required-features = ["dma"]
+name = "pwm"
+
+[[example]]
+name = "serial"
+
+[[example]]
+name = "sleeping_timer_rtc"
+
+[[example]]
+name = "smart_eeprom"
+required-features = ["usb"]
 
 [[example]]
 name = "spi"
 required-features = ["dma"]
+
+[[example]]
+name = "timers"
+
+[[example]]
+name = "trng"
+
+[[example]]
+name = "uart"
+
+[[example]]
+name = "uart_dma_blocking"
+required-features = ["dma"]
+
+[[example]]
+name = "uart_dma_nonblocking"
+required-features = ["dma"]
+
+[[example]]
+name = "uart_poll_echo"
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb"]

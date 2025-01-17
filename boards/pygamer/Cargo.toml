@@ -60,6 +60,8 @@ rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 # Enable async support from atsamd-hal
 async = ["atsamd-hal/async"]
+# Enable rtic support from atsamd-hal
+rtic = ["atsamd-hal/rtic"]
 
 # for cargo flash
 [package.metadata]
@@ -69,6 +71,10 @@ chip = "ATSAMD51J19A"
 name = "blinky_basic"
 
 [[example]]
+name = "blinky_rtic"
+required-features = ["rtic"]
+
+[[example]]
 name = "button_rtic"
 
 [[example]]
@@ -76,25 +82,6 @@ name = "clock_out"
 
 [[example]]
 name = "ferris_img"
-
-[[example]]
-name = "pwm_tc4"
-
-[[example]]
-name = "pwm_tcc0"
-
-[[example]]
-name = "qspi"
-
-[[example]]
-name = "sd_card"
-
-[[example]]
-name = "timer"
-
-[[example]]
-name = "usb_poll"
-required-features = ["usb"]
 
 [[example]]
 name = "neopixel_adc_battery"
@@ -115,3 +102,22 @@ required-features = ["neopixel-spi"]
 [[example]]
 name = "neopixel_rainbow"
 required-features = ["neopixel-spi"]
+
+[[example]]
+name = "pwm_tc4"
+
+[[example]]
+name = "pwm_tcc0"
+
+[[example]]
+name = "qspi"
+
+[[example]]
+name = "sd_card"
+
+[[example]]
+name = "timer"
+
+[[example]]
+name = "usb_poll"
+required-features = ["usb"]

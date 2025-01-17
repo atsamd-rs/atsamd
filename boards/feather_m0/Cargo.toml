@@ -1,167 +1,95 @@
 [package]
-name = "feather_m0"
-version = "0.18.0"
 authors = ["Ben Bergman <ben@benbergman.ca>"]
-description = "Board Support crate for the Adafruit Feather M0"
-keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
+description = "Board Support crate for the Adafruit Feather M0"
 edition = "2021"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+name = "feather_m0"
+readme = "README.md"
+repository = "https://github.com/atsamd-rs/atsamd"
 resolver = "2"
+version = "0.18.0"
 
 # for cargo flash
 [package.metadata]
 chip = "ATSAMD21G18A"
 
 [dependencies.cortex-m-rt]
-version = "0.7"
 optional = true
+version = "0.7"
 
 [dependencies.atsamd-hal]
+default-features = false
 path = "../../hal"
 version = "0.21.0"
-default-features = false
 
 [dependencies.cortex-m]
-version = "0.7"
 features = ["critical-section-single-core"]
+version = "0.7"
+
+[dependencies.rtic]
+features = ["thumbv6-backend"]
+optional = true
+version = "2.1.1"
 
 [dependencies.usb-device]
-version = "0.3.1"
 optional = true
+version = "0.3.1"
 
 [dependencies.embedded-sdmmc]
-version = "0.3"
 optional = true
+version = "0.3"
 
 [dev-dependencies]
-embassy-executor = { version = "0.6.2", features = ["arch-cortex-m", "executor-thread", "task-arena-size-64"] }
-rtic = { version = "2.1.1", features = ["thumbv6-backend"] }
-rtic-monotonics = { version = "1.3.0", features = ["cortex-m-systick", "systick-10khz"] }
-fugit = "0.3.6"
 cortex-m = "0.7"
-usbd-serial = "0.2"
 cortex-m-semihosting = "0.3"
-ssd1306 = "0.7"
-embedded-graphics = "0.7.1"
-drogue-nom-utils = "0.1"
-nom = { version = "5", default-features = false }
-heapless = "0.8"
-panic-halt = "0.2"
-panic-semihosting = "0.6"
 defmt = "0.3"
 defmt-rtt = "0.4"
+drogue-nom-utils = "0.1"
+embassy-executor = {version = "0.6.2", features = ["arch-cortex-m", "executor-thread", "task-arena-size-64"]}
+embedded-graphics = "0.7.1"
+heapless = "0.8"
+nom = {version = "5", default-features = false}
+panic-halt = "0.2"
 panic-probe = "0.3"
+panic-semihosting = "0.6"
+rtic-monotonics = {version = "1.3.0", features = ["cortex-m-systick", "systick-10khz"]}
+ssd1306 = "0.7"
+usbd-serial = "0.2"
 
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
-use_rtt = ["atsamd-hal/use_rtt"]
 usb = ["atsamd-hal/usb", "usb-device"]
+use_rtt = ["atsamd-hal/use_rtt"]
 # Enable pins for the radio on "RadioFruits" with RFM95, RFM96, RFM69
+dma = ["atsamd-hal/dma"]
 rfm = []
 # Enable pins for the flash and neopixel on the Feather M0 Express
 express = []
-dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable async support from atsamd-hal
 async = ["atsamd-hal/async"]
 # Enable pins for the adalogger SD card reader
 adalogger = []
+rtic = ["dep:rtic", "atsamd-hal/rtic"]
+sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
+use_semihosting = []
 # Enable pins for Feather with WINC1500 wifi
 winc = []
-sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
-rtic = ["atsamd-hal/rtic"]
-use_semihosting = []
-
-[[example]]
-name = "blinky_basic"
-
-[[example]]
-name = "blinky_rtic"
-required-features = ["rtic"]
-
-[[example]]
-name = "timers"
-
-[[example]]
-name = "pwm"
-
-[[example]]
-name = "adc"
-
-[[example]]
-name = "ssd1306_graphicsmode_128x64_i2c"
-
-[[example]]
-name = "ssd1306_graphicsmode_128x32_i2c"
-
-[[example]]
-name = "ssd1306_terminalmode_128x32_i2c"
-
-[[example]]
-name = "ssd1306_terminalmode_128x64_i2c"
-
-[[example]]
-name = "ssd1306_graphicsmode_128x64_spi"
-
-[[example]]
-name = "ssd1306_terminalmode_128x64_spi"
-
-[[example]]
-name = "usb_echo"
-required-features = ["usb"]
-
-[[example]]
-name = "sleeping_timer"
-
-[[example]]
-name = "sleeping_timer_rtc"
-
-[[example]]
-name = "dmac"
-required-features = ["dma"]
-
-[[example]]
-name = "clock"
-required-features = ["usb"]
 
 [[example]]
 name = "adalogger"
 required-features = ["adalogger", "usb", "sdmmc"]
 
 [[example]]
-name = "blinky_monotonic"
-
-[[example]]
-name = "uart"
-
-[[example]]
-name = "uart_dma_nonblocking"
-required-features = ["dma"]
-
-[[example]]
-name = "uart_dma_blocking"
-required-features = ["dma"]
-
-[[example]]
-name = "i2c"
-required-features = ["dma"]
-
-[[example]]
-name = "spi"
-required-features = ["dma"]
+name = "adc"
 
 [[example]]
 name = "async_dmac"
 required-features = ["dma", "async"]
-
-[[example]]
-name = "async_timer"
-required-features = ["async"]
 
 [[example]]
 name = "async_eic"
@@ -176,5 +104,84 @@ name = "async_spi"
 required-features = ["dma", "async"]
 
 [[example]]
+name = "async_timer"
+required-features = ["async"]
+
+[[example]]
 name = "async_uart"
 required-features = ["dma", "async"]
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "blinky_embassy"
+required-features = ["rtic"]
+
+[[example]]
+name = "blinky_rtic"
+required-features = ["rtic"]
+
+[[example]]
+name = "clock"
+required-features = ["usb"]
+
+[[example]]
+name = "dmac"
+required-features = ["dma"]
+
+[[example]]
+name = "eic"
+
+[[example]]
+name = "i2c"
+required-features = ["dma"]
+
+[[example]]
+name = "pwm"
+
+[[example]]
+name = "sleeping_timer"
+
+[[example]]
+name = "sleeping_timer_rtc"
+
+[[example]]
+name = "spi"
+required-features = ["dma"]
+
+[[example]]
+name = "ssd1306_graphicsmode_128x32_i2c"
+
+[[example]]
+name = "ssd1306_graphicsmode_128x64_i2c"
+
+[[example]]
+name = "ssd1306_graphicsmode_128x64_spi"
+
+[[example]]
+name = "ssd1306_terminalmode_128x32_i2c"
+
+[[example]]
+name = "ssd1306_terminalmode_128x64_i2c"
+
+[[example]]
+name = "ssd1306_terminalmode_128x64_spi"
+
+[[example]]
+name = "timers"
+
+[[example]]
+name = "uart"
+
+[[example]]
+name = "uart_dma_blocking"
+required-features = ["dma"]
+
+[[example]]
+name = "uart_dma_nonblocking"
+required-features = ["dma"]
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb"]

@@ -21,12 +21,12 @@
 
 use atsame54_xpro as bsp;
 use bsp::hal;
+use clock::{osculp32k::OscUlp1k, rtcosc::RtcOsc};
 use hal::clock::v2 as clock;
 use hal::eic::{Ch15, Eic, ExtInt, Sense};
 use hal::gpio::{Interrupt as GpioInterrupt, *};
 use hal::prelude::*;
-
-use dwt_systick_monotonic::{DwtSystick, ExtU32};
+use hal::rtc::rtic::rtc_clock;
 
 use mcan::embedded_can as ecan;
 use mcan::generic_array::typenum::consts::*;
@@ -44,6 +44,8 @@ use mcan::{
 };
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
+
+hal::rtc_monotonic!(Mono, rtc_clock::Clock1k);
 
 pub struct Capacities;
 
@@ -89,12 +91,9 @@ type Aux = mcan::bus::Aux<
 >;
 type Button = ExtInt<Pin<PB31, GpioInterrupt<PullUp>>, Ch15>;
 
-#[rtic::app(device = hal::pac, peripherals = true, dispatchers = [FREQM])]
+#[rtic::app(device = hal::pac, dispatchers = [FREQM])]
 mod app {
     use super::*;
-
-    #[monotonic(binds = SysTick, default = true)]
-    type Mono = DwtSystick<48_000_000>;
 
     #[shared]
     struct Shared {}
@@ -115,32 +114,40 @@ mod app {
         #[link_section = ".can"]
         can_memory: SharedMemory<Capacities> = SharedMemory::new()
     ])]
-    fn init(mut ctx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(ctx: init::Context) -> (Shared, Local) {
+        let mut device = ctx.device;
+
         rtt_init_print!();
         rprintln!("Application up!");
 
         let (_buses, clocks, tokens) = clock::clock_system_at_reset(
-            ctx.device.oscctrl,
-            ctx.device.osc32kctrl,
-            ctx.device.gclk,
-            ctx.device.mclk,
-            &mut ctx.device.nvmctrl,
+            device.oscctrl,
+            device.osc32kctrl,
+            device.gclk,
+            device.mclk,
+            &mut device.nvmctrl,
         );
 
+        // Enable the 1 kHz clock from the internal 32 kHz source
+        let (osculp1k, _) = OscUlp1k::enable(tokens.osculp32k.osculp1k, clocks.osculp32k_base);
+
+        // Enable the RTC clock with the 1 kHz source.
+        // Note that currently the proof of this (the `RtcOsc` instance) is not
+        // required to start the monotonic.
+        let _ = RtcOsc::enable(tokens.rtcosc, osculp1k);
+
+        // Start the monotonic
+        Mono::start(device.rtc);
+
+        // Need to get the MCLK peripheral back due to things in the HAL still using v1
+        // of the clocks API
         let (_, _, _, mut mclk) = unsafe { clocks.pac.steal() };
 
-        let mono = DwtSystick::new(
-            &mut ctx.core.DCB,
-            ctx.core.DWT,
-            ctx.core.SYST,
-            clocks.gclk0.freq().to_Hz(),
-        );
-
-        let pins = bsp::Pins::new(ctx.device.port);
+        let pins = bsp::Pins::new(device.port);
 
         let (pclk_eic, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.eic, clocks.gclk0);
 
-        let eic_channels = Eic::new(&mut mclk, pclk_eic.into(), ctx.device.eic).split();
+        let eic_channels = Eic::new(&mut mclk, pclk_eic.into(), device.eic).split();
         let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei(eic_channels.15);
         button.sense(Sense::Fall);
         button.debounce();
@@ -160,7 +167,7 @@ mod app {
             clocks.ahbs.can1,
             can1_rx,
             can1_tx,
-            ctx.device.can1,
+            device.can1,
         );
 
         let mut can =
@@ -217,7 +224,7 @@ mod app {
 
         let led = bsp::pin_alias!(pins.led).into();
 
-        bump_activity_led();
+        let _ = activity_led::spawn(true);
 
         (
             Shared {},
@@ -231,14 +238,13 @@ mod app {
                 tx_event_fifo,
                 aux,
             },
-            init::Monotonics(mono),
         )
     }
 
     #[task(binds = EIC_EXTINT_15, local = [counter: u16 = 0, button, tx_event_fifo, aux, tx])]
     fn button(ctx: button::Context) {
         ctx.local.button.clear_interrupt();
-        bump_activity_led();
+        let _ = activity_led::spawn(true);
         rprintln!("Button pressed! Status:");
         while let Some(e) = ctx.local.tx_event_fifo.pop() {
             rprintln!("TxEvent: {:0X?}", e);
@@ -273,7 +279,7 @@ mod app {
 
     #[task(priority = 2, binds = CAN1, local = [line_interrupts, rx_fifo_0, rx_fifo_1])]
     fn can1(mut ctx: can1::Context) {
-        bump_activity_led();
+        let _ = activity_led::spawn(true);
         let line_interrupts = ctx.local.line_interrupts;
         for interrupt in line_interrupts.iter_flagged() {
             match interrupt {
@@ -292,16 +298,13 @@ mod app {
         }
     }
 
-    #[task(local = [led])]
-    fn activity_led(ctx: activity_led::Context, led_on: bool) {
+    /// This function is spawned and never returns.
+    #[task(priority = 1, local = [led])]
+    async fn activity_led(ctx: activity_led::Context, led_on: bool) {
         let _ = ctx.local.led.set_state((!led_on).into());
         if led_on {
-            let _ = activity_led::spawn_after(100.millis(), false);
+            Mono::delay(100u64.millis()).await;
         }
-    }
-
-    fn bump_activity_led() {
-        let _ = activity_led::spawn(true);
     }
 
     fn log(fifo: &str, message: &impl mcan::message::Raw) {

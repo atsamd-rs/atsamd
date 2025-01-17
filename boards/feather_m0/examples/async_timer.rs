@@ -8,10 +8,10 @@ use panic_semihosting as _;
 
 use bsp::{hal, pac, pin_alias};
 use feather_m0 as bsp;
-use fugit::MillisDurationU32;
 use hal::{
     clock::{enable_internal_32kosc, ClockGenId, ClockSource, GenericClockController},
     ehal::digital::StatefulOutputPin,
+    fugit::MillisDurationU32,
     pac::Tc4,
     timer::TimerCounter,
 };
