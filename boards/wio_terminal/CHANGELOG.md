@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2](https://github.com/atsamd-rs/atsamd/compare/wio_terminal-0.7.1...wio_terminal-0.7.2) - 2025-01-20
+
+### Fixed
+
+- *(examples)* Fix arrow in wio_terminal/examples/buttons (#812)
+
 ## [0.7.1](https://github.com/atsamd-rs/atsamd/compare/wio_terminal-0.7.0...wio_terminal-0.7.1) - 2024-10-17
 
 ### Refactored
