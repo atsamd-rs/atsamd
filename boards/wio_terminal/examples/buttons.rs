@@ -114,9 +114,9 @@ where
                 .draw(display)
                 .ok();
             Triangle::new(
-                Point::new(90, 115),
-                Point::new(85, 120),
-                Point::new(90, 125),
+                Point::new(100, 115),
+                Point::new(95, 120),
+                Point::new(100, 125),
             )
             .into_styled(style)
             .draw(display)
