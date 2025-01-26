@@ -8,6 +8,8 @@
 use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
+use crate::clock::v2::pclk::{Pclk, PclkSourceId};
+use crate::clock::v2::types::Usb as UsbClk;
 use crate::gpio::{AlternateH, AnyPin, Pin, PA24, PA25};
 use crate::pac;
 use crate::pac::usb::Device;
@@ -527,6 +529,31 @@ impl Inner {
 impl UsbBus {
     pub fn new(
         _clock: &clock::UsbClock,
+        mclk: &mut Mclk,
+        dm_pad: impl AnyPin<Id = PA24>,
+        dp_pad: impl AnyPin<Id = PA25>,
+        _usb: Usb,
+    ) -> Self {
+        mclk.ahbmask().modify(|_, w| w.usb_().set_bit());
+        mclk.apbbmask().modify(|_, w| w.usb_().set_bit());
+
+        let desc = RefCell::new(Descriptors::new());
+
+        let inner = Inner {
+            _dm_pad: dm_pad.into().into_mode::<AlternateH>(),
+            _dp_pad: dp_pad.into().into_mode::<AlternateH>(),
+            desc,
+            buffers: RefCell::new(BufferAllocator::new()),
+            endpoints: RefCell::new(AllEndpoints::new()),
+        };
+
+        Self {
+            inner: Mutex::new(RefCell::new(inner)),
+        }
+    }
+
+    pub fn new_with_v2_clock<PS: PclkSourceId>(
+        _pclk: Pclk<UsbClk, PS>,
         mclk: &mut Mclk,
         dm_pad: impl AnyPin<Id = PA24>,
         dp_pad: impl AnyPin<Id = PA25>,
