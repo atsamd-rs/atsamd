@@ -16,7 +16,7 @@ version = "0.14.0"
 
 [dependencies]
 cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
-embedded-hal-bus = "0.2.0"
+embedded-hal-bus = "0.3.0"
 # This version is pinned as recommended by: https://docs.rs/embedded-hal-bus/0.2.0/embedded_hal_bus/spi/struct.ExclusiveDevice.html#method.new_no_delay
 st7735-lcd = "=0.10.0"
 
@@ -34,17 +34,17 @@ optional = true
 version = "0.3.2"
 
 [dependencies.ws2812-spi]
-version = "0.5.0"
 features = ["mosi_idle_high"]
 optional = true
+version = "0.5.0"
 
 [dev-dependencies]
 embedded-graphics = "0.8.1"
-embedded-sdmmc = "0.8.0"
+embedded-sdmmc = "0.8.1"
 lis3dh = "0.4.3"
 micromath = "2.1"
 panic-halt = "1"
-rtic = {version = "2.1.1", features = ["thumbv7-backend"]}
+rtic = {version = "2.1.2", features = ["thumbv7-backend"]}
 smart-leds = "0.4"
 tinybmp = "0.6"
 usbd-serial = "0.2"
@@ -54,10 +54,10 @@ usbd-serial = "0.2"
 default = ["rt", "atsamd-hal/samd51j"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
+neopixel-spi = ["dep:ws2812-spi"]
 panic_led = []
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
-neopixel-spi = ["dep:ws2812-spi"]
 # Enable async support from atsamd-hal
 async = ["atsamd-hal/async"]
 
