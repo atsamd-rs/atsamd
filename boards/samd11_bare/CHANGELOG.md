@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.1](https://github.com/atsamd-rs/atsamd/compare/samd11_bare-0.14.0...samd11_bare-0.14.1) - 2025-01-31
+
+### Examples
+
+- Updates all Tier 1 BSP examples to use RTIC v2 and the RTC monotonic where applicable (#817)
+
 ## [0.14.0](https://github.com/atsamd-rs/atsamd/compare/samd11_bare-0.13.1...samd11_bare-0.14.0) - 2025-01-13
 
 ### Other
