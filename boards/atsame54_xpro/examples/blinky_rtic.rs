@@ -3,20 +3,19 @@
 
 use atsame54_xpro as bsp;
 use bsp::hal;
-use bsp::hal::clock::v2 as clock;
-use dwt_systick_monotonic::DwtSystick;
-use dwt_systick_monotonic::{fugit::RateExtU32, ExtU32};
-// TODO: Any reason this cannot be in a HAL's prelude?
-use hal::ehal::digital::StatefulOutputPin;
+use hal::clock::v2::{clock_system_at_reset, osculp32k::OscUlp1k, rtcosc::RtcOsc};
+use hal::prelude::*;
+use hal::rtc::rtic::rtc_clock;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
+// TODO: Any reason this cannot be in a HAL's prelude?
+use hal::ehal::digital::StatefulOutputPin;
 
-#[rtic::app(device = hal::pac, peripherals = true, dispatchers = [FREQM])]
+hal::rtc_monotonic!(Mono, rtc_clock::Clock1k);
+
+#[rtic::app(device = hal::pac, dispatchers = [FREQM])]
 mod app {
     use super::*;
-
-    #[monotonic(binds = SysTick, default = true)]
-    type Mono = DwtSystick<12_000_000>;
 
     #[shared]
     struct Shared {}
@@ -27,46 +26,50 @@ mod app {
     }
 
     #[init]
-    fn init(mut ctx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(ctx: init::Context) -> (Shared, Local) {
+        let mut device = ctx.device;
+        let mut core: rtic::export::Peripherals = ctx.core;
+
         rtt_init_print!();
 
-        let (_buses, clocks, tokens) = clock::clock_system_at_reset(
-            ctx.device.oscctrl,
-            ctx.device.osc32kctrl,
-            ctx.device.gclk,
-            ctx.device.mclk,
-            &mut ctx.device.nvmctrl,
+        let (_buses, clocks, tokens) = clock_system_at_reset(
+            device.oscctrl,
+            device.osc32kctrl,
+            device.gclk,
+            device.mclk,
+            &mut device.nvmctrl,
         );
 
-        let pins = bsp::Pins::new(ctx.device.port);
-        let xosc = clock::xosc::Xosc::from_crystal(
-            tokens.xosc1,
-            bsp::pin_alias!(pins.xosc1_x_in),
-            bsp::pin_alias!(pins.xosc1_x_out),
-            // Xosc1 on Same54Xpro is 12 MHz
-            12_u32.MHz(),
+        // Enable the 1 kHz clock from the internal 32 kHz source
+        let (osculp1k, _) = OscUlp1k::enable(tokens.osculp32k.osculp1k, clocks.osculp32k_base);
+
+        // Enable the RTC clock with the 1 kHz source.
+        // Note that currently the proof of this (the `RtcOsc` instance) is not
+        // required to start the monotonic.
+        let _ = RtcOsc::enable(tokens.rtcosc, osculp1k);
+
+        // Start the monotonic
+        Mono::start(device.rtc);
+
+        let pins = bsp::Pins::new(device.port);
+
+        // We can use the RTC in standby for maximum power savings
+        core.SCB.set_sleepdeep();
+
+        blink_led::spawn().unwrap();
+
+        (
+            Shared {},
+            Local {
+                led: bsp::pin_alias!(pins.led).into(),
+            },
         )
-        .enable();
-
-        let (gclk0, _, _) = clocks.gclk0.swap_sources(clocks.dfll, xosc);
-
-        let mono = DwtSystick::new(
-            &mut ctx.core.DCB,
-            ctx.core.DWT,
-            ctx.core.SYST,
-            gclk0.freq().to_Hz(),
-        );
-
-        let led = bsp::pin_alias!(pins.led).into();
-
-        led::spawn().unwrap();
-
-        (Shared {}, Local { led }, init::Monotonics(mono))
     }
 
-    #[task(local = [led])]
-    fn led(ctx: led::Context) {
-        ctx.local.led.toggle().unwrap();
+    /// This function is spawned and never returns.
+    #[task(priority = 1, local=[led])]
+    async fn blink_led(ctx: blink_led::Context) {
+        StatefulOutputPin::toggle(ctx.local.led).unwrap();
         rprintln!(
             "LED {}!",
             if ctx.local.led.is_set_high().unwrap() {
@@ -75,6 +78,6 @@ mod app {
                 "ON"
             }
         );
-        led::spawn_at(monotonics::now() + 200.millis()).unwrap();
+        Mono::delay(200u64.millis()).await;
     }
 }

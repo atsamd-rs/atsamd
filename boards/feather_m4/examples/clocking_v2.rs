@@ -28,7 +28,7 @@ use rtic::app;
 type Pads = uart::PadsFromIds<Sercom0, IoSet3, PA05, PA04>;
 type Uart = uart::Uart<uart::Config<Pads>, uart::Duplex>;
 
-#[app(device = atsamd_hal::pac, peripherals = true)]
+#[app(device = atsamd_hal::pac)]
 mod app {
     use super::*;
 
@@ -42,7 +42,7 @@ mod app {
     struct LocalResources {}
 
     #[init]
-    fn init(cx: init::Context) -> (SharedResources, LocalResources, init::Monotonics()) {
+    fn init(cx: init::Context) -> (SharedResources, LocalResources) {
         let mut device = cx.device;
 
         // Get the clocks & tokens
@@ -141,11 +141,7 @@ mod app {
 
         writeln!(&mut uart as &mut dyn Write<Error = _>, "RTIC booted!").unwrap();
 
-        (
-            SharedResources { uart, rtc },
-            LocalResources {},
-            init::Monotonics(),
-        )
+        (SharedResources { uart, rtc }, LocalResources {})
     }
 
     #[task(binds = SERCOM0_2, shared = [uart, rtc])]

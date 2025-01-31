@@ -7,11 +7,11 @@ use panic_probe as _;
 use bsp::hal;
 use bsp::pac;
 use feather_m0 as bsp;
-use fugit::MillisDuration;
 use hal::ehal_async::i2c::I2c;
 use hal::{
     clock::GenericClockController,
     dmac::{DmaController, PriorityLevel},
+    fugit::MillisDuration,
     prelude::*,
     sercom::{i2c, Sercom3},
 };

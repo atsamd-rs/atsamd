@@ -12,7 +12,7 @@ use hal::time::Hertz;
 use hal::timer::TimerCounter;
 use rtic::app;
 
-#[app(device = crate::hal::pac, dispatchers = [EVSYS_0])]
+#[app(device = bsp::pac, dispatchers = [EVSYS_0])]
 mod app {
     use super::*;
 

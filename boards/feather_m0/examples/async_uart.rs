@@ -6,10 +6,10 @@ use panic_probe as _;
 
 use bsp::{hal, pac, periph_alias, pin_alias};
 use feather_m0 as bsp;
-use fugit::MillisDuration;
 use hal::{
     clock::GenericClockController,
     dmac::{Ch0, Ch1, DmaController, PriorityLevel},
+    fugit::MillisDuration,
     prelude::*,
     sercom::{
         uart::{Config, UartFutureRxDuplexDma, UartFutureTxDuplexDma},

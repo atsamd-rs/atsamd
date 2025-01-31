@@ -5,21 +5,24 @@
 #![no_std]
 #![no_main]
 
+use bsp::hal;
+use hal::rtc::rtic::rtc_clock;
 use metro_m0 as bsp;
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
+use rtic::app;
 
-#[rtic::app(device = bsp::pac, peripherals = true, dispatchers = [EVSYS])]
+hal::rtc_monotonic!(Mono, rtc_clock::ClockCustom<2_048>);
+
+#[app(device = bsp::pac, dispatchers = [EVSYS])]
 mod app {
 
     use super::*;
-    use bsp::hal;
     use hal::clock::{ClockGenId, ClockSource, GenericClockController};
     use hal::pac::Peripherals;
     use hal::prelude::*;
-    use hal::rtc::{rtic::v1::Duration, Count32Mode, Rtc};
 
     #[local]
     struct Local {}
@@ -31,11 +34,8 @@ mod app {
         red_led: bsp::RedLed,
     }
 
-    #[monotonic(binds = RTC, default = true)]
-    type RtcMonotonic = Rtc<Count32Mode>;
-
     #[init]
-    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(cx: init::Context) -> (Shared, Local) {
         let mut peripherals: Peripherals = cx.device;
         let pins = bsp::Pins::new(peripherals.port);
         let mut core: rtic::export::Peripherals = cx.core;
@@ -45,28 +45,38 @@ mod app {
             &mut peripherals.sysctrl,
             &mut peripherals.nvmctrl,
         );
-        let _gclk = clocks.gclk0();
+
+        // Set the RTC clock to use a 2.048 kHz clock derived from the external 32 kHz
+        // oscillator.
         let rtc_clock_src = clocks
-            .configure_gclk_divider_and_source(ClockGenId::Gclk2, 1, ClockSource::Xosc32k, false)
+            .configure_gclk_divider_and_source(ClockGenId::Gclk2, 16, ClockSource::Xosc32k, false)
             .unwrap();
         clocks.configure_standby(ClockGenId::Gclk2, true);
-        let rtc_clock = clocks.rtc(&rtc_clock_src).unwrap();
-        let rtc = Rtc::count32_mode(peripherals.rtc, rtc_clock.freq(), &mut peripherals.pm);
+        let _ = clocks.rtc(&rtc_clock_src).unwrap();
+
         let red_led: bsp::RedLed = pins.d13.into();
+
+        // Start the monotonic
+        Mono::start(peripherals.rtc);
 
         // We can use the RTC in standby for maximum power savings
         core.SCB.set_sleepdeep();
 
         // Start the blink task
-        blink::spawn().unwrap();
+        blink_led::spawn().unwrap();
 
-        (Shared { red_led }, Local {}, init::Monotonics(rtc))
+        (Shared { red_led }, Local {})
     }
 
-    #[task(shared = [red_led])]
-    fn blink(mut cx: blink::Context) {
-        // If the LED were a local resource, the lock would not be necessary
-        cx.shared.red_led.lock(|led| led.toggle().unwrap());
-        blink::spawn_after(Duration::secs(1)).ok();
+    /// This function is spawned and never returns.
+    #[task(priority = 1, shared=[red_led])]
+    async fn blink_led(mut cx: blink_led::Context) {
+        loop {
+            // If the LED were a local resource, the lock would not be necessary
+            cx.shared.red_led.lock(|led| {
+                led.toggle().unwrap();
+            });
+            Mono::delay(1u64.secs()).await;
+        }
     }
 }

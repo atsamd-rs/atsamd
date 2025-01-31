@@ -1,37 +1,42 @@
 [package]
-name = "samd11_bare"
-version = "0.14.0"
 authors = ["Jesse Braham <jesse@beta7.io>"]
 description = "Support crate for the ATSAMD11C"
+edition = "2018"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
+name = "samd11_bare"
 readme = "README.md"
-edition = "2018"
+repository = "https://github.com/atsamd-rs/atsamd"
+version = "0.14.0"
 
 # for cargo flash
 [package.metadata]
 chip = "ATSAMD11C14A"
 
 [dependencies.cortex-m-rt]
-version = "0.7"
 optional = true
+version = "0.7"
 
 [dependencies.cortex-m]
-version = "0.7"
 features = ["critical-section-single-core"]
+version = "0.7"
 
 [dependencies.atsamd-hal]
+default-features = false
 path = "../../hal"
 version = "0.21.0"
-default-features = false
+
+[dependencies.rtic]
+features = ["thumbv6-backend"]
+optional = true
+version = "2.1.1"
 
 [dev-dependencies]
 cortex-m = "0.7"
 panic-halt = "0.2"
-panic-semihosting = "0.5"
 panic-probe = "0.2.0"
-rtt-target = { version = "0.3.0", features = ["cortex-m"] }
+panic-semihosting = "0.5"
+rtt-target = {version = "0.3.0", features = ["cortex-m"]}
 
 [features]
 # ask the HAL to enable atsamd11c support
@@ -41,6 +46,7 @@ max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable async support from atsamd-hal
 async = ["atsamd-hal/async"]
 rt = ["cortex-m-rt", "atsamd-hal/samd11c-rt"]
+rtic = ["dep:rtic", "atsamd-hal/rtic"]
 use_semihosting = []
 
 [[example]]
@@ -51,6 +57,14 @@ required-features = ["rt", "use_semihosting"]
 name = "blinky_basic"
 
 [[example]]
+name = "blinky_rtic"
+required-features = ["rtic"]
+
+[[example]]
+name = "i2c"
+required-features = ["dma"]
+
+[[example]]
 name = "pwm"
 
 [[example]]
@@ -58,7 +72,3 @@ name = "serial"
 
 [[example]]
 name = "timer"
-
-[[example]]
-name = "i2c"
-required-features = ["dma"]
