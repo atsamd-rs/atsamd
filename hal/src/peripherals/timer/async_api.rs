@@ -6,6 +6,7 @@
 use crate::{
     async_hal::interrupts::{Binding, Handler, Interrupt},
     pac,
+    time::Nanoseconds,
     timer_traits::InterruptDrivenTimer,
     typelevel::Sealed,
 };
@@ -17,7 +18,6 @@ use core::{
     task::{Poll, Waker},
 };
 use embassy_sync::waitqueue::AtomicWaker;
-use fugit::NanosDurationU32;
 use portable_atomic::AtomicBool;
 
 use crate::peripherals::timer;
@@ -186,7 +186,7 @@ where
 {
     /// Delay asynchronously
     #[inline]
-    pub async fn delay(&mut self, count: NanosDurationU32) {
+    pub async fn delay(&mut self, count: Nanoseconds) {
         self.timer.start(count);
         self.timer.enable_interrupt();
 
@@ -217,7 +217,8 @@ where
     T: AsyncCount16,
 {
     async fn delay_ns(&mut self, ns: u32) {
-        self.delay(NanosDurationU32::from_ticks(ns).convert()).await;
+        self.delay(Nanoseconds::from_ticks(ns.into()).convert())
+            .await;
     }
 }
 
