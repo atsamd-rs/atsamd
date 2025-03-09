@@ -1,4 +1,5 @@
 mod pin;
+mod pin2;
 
 #[cfg(feature = "async")]
 pub(super) mod async_api {

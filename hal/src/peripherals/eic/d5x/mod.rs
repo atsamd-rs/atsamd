@@ -2,6 +2,7 @@ use super::{ChId, Channel};
 use crate::pac;
 
 mod pin;
+mod pin2;
 
 impl<Id: ChId, F> Channel<Id, F> {
     /// Run the provided closure with the EIC peripheral disabled. The
