@@ -1,5 +1,5 @@
 use super::pins::*;
-use atsamd_hal::ehal::blocking::delay::DelayMs;
+use atsamd_hal::ehal::delay::DelayNs;
 use atsamd_hal::prelude::*;
 use display_interface_parallel_gpio::{Generic8BitBus, PGPIO8BitInterface};
 use ili9341::{DisplaySize, Ili9341};
@@ -18,7 +18,7 @@ impl Display {
         self,
         display_size: impl DisplaySize,
         orientation: Orientation,
-        delay: &mut impl DelayMs<u16>,
+        delay: &mut impl DelayNs,
     ) -> (Lcd, TftBacklightReset, TftTeReset) {
         let bus: LcdDataBus = Generic8BitBus::new((
             self.lcd_data0.into(),
@@ -29,8 +29,7 @@ impl Display {
             self.lcd_data5.into(),
             self.lcd_data6.into(),
             self.lcd_data7.into(),
-        ))
-        .unwrap();
+        ));
 
         let interface = PGPIO8BitInterface::new(bus, self.tft_rs.into(), self.tft_wr.into());
         // set to high when not in use
