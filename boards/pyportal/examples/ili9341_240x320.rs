@@ -25,14 +25,14 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let pins = bsp::Pins::new(peripherals.PORT).split();
+    let pins = bsp::Pins::new(peripherals.port).split();
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
