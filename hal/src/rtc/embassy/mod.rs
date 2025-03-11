@@ -17,7 +17,7 @@ struct AtmelDriver {
 }
 
 impl AtmelDriver {
-    fn set_alarm(&self, _cs: &CriticalSection, at: u64) -> bool {
+    fn set_alarm(&self, _cs: &CriticalSection, at: u64, rtc: &Rtc) -> bool {
         // SAFETY: inside a CriticalSection
         let rtc = unsafe {
             Rtc::steal()
@@ -29,7 +29,6 @@ impl AtmelDriver {
         };
 
         RtcMode0::set_compare(&rtc, 0, at);
-        RtcMode0::enable(&rtc);
         true
     }
 }
@@ -37,36 +36,42 @@ impl AtmelDriver {
 #[interrupt]
 fn RTC() {
     hprintln!("Handling interrupt"); // load bearing hprintln!
-    critical_section::with(|cs| {
-        // safety: inside a critical section
-        let rtc = unsafe {
-            Rtc::steal()
-        };
-        if RtcMode0::check_interrupt_flag::<Compare0>(&rtc) {
-            RtcMode0::clear_interrupt_flag::<Compare0>(&rtc);
-            let now = RtcMode0::count(&rtc) as u64;
+    // safety: inside a critical section
+    let rtc = unsafe {
+        Rtc::steal()
+    };
+    if RtcMode0::check_interrupt_flag::<Compare0>(&rtc) {
+        RtcMode0::clear_interrupt_flag::<Compare0>(&rtc);
+        let now = RtcMode0::count(&rtc) as u64;
+
+        critical_section::with(|cs| {
             let next = DRIVER.queue.borrow_ref_mut(cs).next_expiration(now);
-            DRIVER.set_alarm(&cs, next);
-        }
-    });
+            DRIVER.set_alarm(&cs, next, &rtc);
+        });
+    }
 }
 
 impl Driver for AtmelDriver {
     fn now(&self) -> u64 {
-        let rtc = unsafe {
-            Rtc::steal()
-        };
-        let now =  RtcMode0::count(&rtc) as u64;
-        now
+        critical_section::with(|cs| {
+            let rtc = unsafe {
+                Rtc::steal()
+            };
+            let now =  RtcMode0::count(&rtc) as u64;
+            now
+        })
     }
 
     fn schedule_wake(&self, at: u64, waker: &Waker) {
         critical_section::with(|cs| {
+            let rtc = unsafe {
+                Rtc::steal()
+            };
             let mut queue = self.queue.borrow(cs).borrow_mut();
             if queue.schedule_wake(at, waker) {
                 let next = queue.next_expiration(self.now());
                 // We can only handle one alarm at a time right now
-                self.set_alarm(&cs, next);
+                self.set_alarm(&cs, next, &rtc);
             }
         });
     }
@@ -79,15 +84,19 @@ pub unsafe fn init() {
     RtcMode0::reset(&rtc);
     RtcMode0::set_mode(&rtc);
 
+
     critical_section::with(|_| {
         RtcMode0::start_and_initialize(&rtc);
         RtcMode0::clear_interrupt_flag::<Compare0>(&rtc);
         RtcMode0::enable_interrupt::<Compare0>(&rtc);
+        rtc.mode0().evctrl().write(|w| w.cmpeo0().set_bit());
 
         unsafe {
             let mut nvic: cortex_m::peripheral::NVIC = core::mem::transmute(());
             nvic.set_priority(Interrupt::RTC, 128);
             NVIC::unmask(Interrupt::RTC);
         }
+
+        RtcMode0::enable(&rtc);
     });
 }
