@@ -9,7 +9,7 @@ name = "feather_m0"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
 resolver = "2"
-version = "0.18.1"
+version = "0.18.2"
 
 # for cargo flash
 [package.metadata]
@@ -22,7 +22,7 @@ version = "0.7"
 [dependencies.atsamd-hal]
 default-features = false
 path = "../../hal"
-version = "0.21.0"
+version = "0.21.1"
 
 [dependencies.cortex-m]
 features = ["critical-section-single-core"]
