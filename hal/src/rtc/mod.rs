@@ -1,6 +1,5 @@
 //! Real-time clock/counter
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
-use fugit::NanosDurationU32;
 
 use crate::ehal_02;
 use crate::pac;
@@ -383,7 +382,7 @@ impl InterruptDrivenTimer for Rtc<Count32Mode> {
 
     fn start<T>(&mut self, timeout: T)
     where
-        T: Into<NanosDurationU32>,
+        T: Into<Nanoseconds>,
     {
         let params = TimerParams::new_us(timeout, self.rtc_clock_freq);
         let divider = params.divider;
@@ -458,8 +457,7 @@ impl TimerParams {
     pub fn new_us(timeout: impl Into<Nanoseconds>, src_freq: impl Into<Hertz>) -> Self {
         let timeout = timeout.into();
         let src_freq = src_freq.into();
-        let ticks: u32 =
-            (timeout.to_nanos() as u64 * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
+        let ticks: u32 = (timeout.to_nanos() * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
         Self::new_from_ticks(ticks)
     }
 
