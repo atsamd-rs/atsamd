@@ -34,10 +34,11 @@ async fn main(_s: embassy_executor::Spawner) {
     let pins = bsp::Pins::new(peripherals.port);
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
+    // Select the 32khz source
+    peripherals.osc32kctrl.rtcctrl().write(|w| w.rtcsel().ulp32k());
+
     unsafe { hal::rtc::embassy::init(); }
 
-    // let _timer_clock = clocks.configure_gclk_divider_and_source(ClockGenId::Gclk2, 1, ClockSource::Osculp32k, false).unwrap();
-    // clocks.configure_standby(ClockGenId::Gclk2, true);
 
     loop {
         red_led.toggle().unwrap();
