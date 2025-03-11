@@ -28,17 +28,15 @@ impl AtmelDriver {
             Err(_) => return false,
         };
 
-        hprintln!("setting alarm for {}", at);
-
         RtcMode0::set_compare(&rtc, 0, at);
-        RtcMode0::enable_interrupt::<Compare0>(&rtc);
+        RtcMode0::enable(&rtc);
         true
     }
 }
 
 #[interrupt]
 fn RTC() {
-    hprintln!("Handling interrupt");
+    hprintln!("Handling interrupt"); // load bearing hprintln!
     critical_section::with(|cs| {
         // safety: inside a critical section
         let rtc = unsafe {
@@ -59,7 +57,6 @@ impl Driver for AtmelDriver {
             Rtc::steal()
         };
         let now =  RtcMode0::count(&rtc) as u64;
-        hprintln!("It is currently {}", now);
         now
     }
 
@@ -86,13 +83,11 @@ pub unsafe fn init() {
         RtcMode0::start_and_initialize(&rtc);
         RtcMode0::clear_interrupt_flag::<Compare0>(&rtc);
         RtcMode0::enable_interrupt::<Compare0>(&rtc);
-        RtcMode0::enable(&rtc);
 
         unsafe {
             let mut nvic: cortex_m::peripheral::NVIC = core::mem::transmute(());
-
-            nvic.set_priority(Interrupt::RTC, 1);
+            nvic.set_priority(Interrupt::RTC, 128);
             NVIC::unmask(Interrupt::RTC);
         }
-    })
+    });
 }
