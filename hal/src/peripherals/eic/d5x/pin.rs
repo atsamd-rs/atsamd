@@ -1,6 +1,8 @@
 use atsamd_hal_macros::hal_cfg;
 
-use crate::ehal_02::digital::v2::InputPin;
+use core::convert::Infallible;
+use crate::ehal_02::digital::v2::InputPin as InputPin_02;
+use crate::ehal::digital::{ErrorType, InputPin};
 use crate::eic::*;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
@@ -156,13 +158,13 @@ where
     }
 }
 
-impl<P, C, Id, F> InputPin for ExtInt<P, Id, F>
+impl<P, C, Id, F> InputPin_02 for ExtInt<P, Id, F>
 where
     P: EicPin + AnyPin<Mode = Interrupt<C>>,
     C: InterruptConfig,
     Id: ChId,
 {
-    type Error = core::convert::Infallible;
+    type Error = Infallible;
     #[inline]
     fn is_high(&self) -> Result<bool, Self::Error> {
         self.pin.is_high()
@@ -173,11 +175,32 @@ where
     }
 }
 
+impl<P, Id, F> InputPin for ExtInt<P, Id, F>
+where Self: ErrorType,
+    P: EicPin,
+    Id: ChId,
+{
+    #[inline]
+    fn is_high(&mut self) -> Result<bool, Self::Error> {
+        Ok(self.pin._is_high())
+    }
+
+    #[inline]
+    fn is_low(&mut self) -> Result<bool, Self::Error> {
+        Ok(self.pin._is_low())
+    }
+}
+
+impl<P, Id, F> ErrorType for ExtInt<P, Id, F>
+where
+    P: EicPin,
+    Id: ChId,
+{
+    type Error = Infallible;
+}
+
 #[cfg(feature = "async")]
 mod async_impls {
-    use core::convert::Infallible;
-
-    use embedded_hal_1::digital::ErrorType;
     use embedded_hal_async::digital::Wait;
 
     use crate::{
@@ -246,15 +269,6 @@ mod async_impls {
             })
             .await;
         }
-    }
-
-    impl<P, Id> ErrorType for ExtInt<P, Id, EicFuture>
-    where
-        P: EicPin,
-        Self: InputPin<Error = Infallible>,
-        Id: ChId,
-    {
-        type Error = Infallible;
     }
 
     impl<P, Id> Wait for ExtInt<P, Id, EicFuture>
