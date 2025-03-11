@@ -38,6 +38,7 @@ rtt-target = {version = "0.3", features = ["cortex-m"]}
 
 [features]
 default = ["rt", "atsamd-hal/same54p"]
+defmt = ["atsamd-hal/defmt"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable async support from atsamd-hal

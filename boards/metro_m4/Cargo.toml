@@ -57,6 +57,7 @@ version = "0.3"
 default = ["rt", "atsamd-hal/samd51j"]
 # Enable async support from atsamd-hal
 async = ["atsamd-hal/async"]
+defmt = ["atsamd-hal/defmt"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
