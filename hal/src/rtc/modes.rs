@@ -1,4 +1,4 @@
-//! Provides low-level access to the [Real Time Clock (RTC)](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-E17D8859-D42B-4B0E-9B81-76168A0C38AC.html) peripheral on ATSAMD chips.
+//! Provides low-level access no the [Real Time Clock (RTC)](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-E17D8859-D42B-4B0E-9B81-76168A0C38AC.html) peripheral on ATSAMD chips.
 //!
 //! The main abstraction is the [`RtcMode`] trait, which exposes
 //! static/associated functions to use the RTC in in a particular mode. All functions are marked as [`inline`](https://matklad.github.io/2021/07/09/inline-in-rust.html)
