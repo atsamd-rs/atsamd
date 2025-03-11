@@ -60,8 +60,9 @@ macro_rules! create_rtc_interrupt {
         impl RtcInterrupt for $name {
             #[inline]
             fn enable(rtc: &Rtc) {
-                // SYNC: None
+                // SYNC: write
                 rtc.$mode().intenset().write(|w| w.$bit().set_bit());
+                while rtc.$mode().syncbusy().read().enable().bit_is_set() {}
             }
 
             #[inline]
@@ -395,10 +396,12 @@ pub mod mode0 {
         #[inline]
         fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
             // SYNC: Write
-            Self::sync(rtc);
             unsafe {
                 rtc.mode0().comp(number).write(|w| w.comp().bits(value));
             }
+
+            // TODO(stillinbeta) handle other `number`
+            while rtc.mode0().syncbusy().read().comp0().bit_is_set() {}
         }
 
         #[inline]

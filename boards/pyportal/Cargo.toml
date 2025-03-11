@@ -19,7 +19,8 @@ version = "0.7.5"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.21.0"
+# version = "0.21.0"
+path = "../../hal"
 default-features = false
 
 [dependencies.display-interface-parallel-gpio]
@@ -40,10 +41,20 @@ panic-semihosting = "0.5"
 smart-leds = "~0.3"
 usbd-serial = "0.2.2"
 embedded-graphics = "0.8.1"
+embassy-time = "0.4"
+critical-section = "1.2.0"
+
+
+[dev-dependencies.embassy-executor]
+version = "0.7"
+features = ["arch-cortex-m", "executor-thread", "task-arena-size-256"]
 
 [dev-dependencies.cortex-m]
 features = ["critical-section-single-core"]
 version = "0.7.5"
+
+[dev-dependencies.cortex-m-semihosting]
+version = "0.5"
 
 [dev-dependencies.ws2812-timer-delay]
 version = "~0.3"
@@ -55,6 +66,8 @@ rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 display = ["display-interface-parallel-gpio", "ili9341"]
 use_semihosting = []
+rtic = ["atsamd-hal/rtic"]
+embassy-time = ["atsamd-hal/embassy-time"]
 
 # for cargo flash
 [package.metadata]
@@ -73,3 +86,7 @@ name = "neopixel_rainbow"
 [[example]]
 name = "usb_echo"
 required-features = ["usb"]
+
+[[example]]
+name = "embassy_timer"
+required-features = ["embassy-time"]
