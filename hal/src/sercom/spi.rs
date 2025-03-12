@@ -1,22 +1,21 @@
 //! Use a SERCOM peripheral for SPI transactions
 //!
 //! Using an SPI peripheral occurs in three steps. First, you must supply
-//! [`gpio`] [`Pin`]s to create a set of [`Pads`]. Next, you combine the
-//! `Pads` with other pieces to form a [`Config`] struct. Finally, after
-//! configuring the peripheral, you [`enable`] it to yield a functional
-//! [`Spi`] struct. Transactions are performed using traits from the
-//! [`embedded_hal`] crate, specifically those from the
-//! [`spi`](embedded_hal::spi), [`serial`](embedded_hal::serial), and
-//! [`blocking`](embedded_hal::blocking) modules.
+//! [`gpio`] [`Pin`]s to create a set of [`Pads`]. Next, you combine the `Pads`
+//! with other pieces to form a [`Config`] struct. Finally, after configuring
+//! the peripheral, you [`enable`] it to yield a functional [`Spi`] struct.
+//! Transactions are performed using traits from the Embedded HAL crates,
+//! specifically those from the [`spi`](ehal::spi),
+//! [`serial`](embedded_hal_02::serial), and
+//! [`blocking`](embedded_hal_02::blocking) modules.
 //!
 //! # Crating a set of [`Pads`]
 //!
 //! An SPI peripheral can use up to four [`Pin`]s as [`Sercom`] pads. However,
 //! only certain `Pin` combinations are acceptable. All `Pin`s must be mapped to
 //! the same `Sercom`, and for SAMx5x chips, they must also belong to the same
-//! `IoSet`.
-//! This HAL makes it impossible to use invalid `Pin` combinations, and the
-//! [`Pads`] struct is responsible for enforcing these constraints.
+//! `IoSet`. This HAL makes it impossible to use invalid `Pin` combinations, and
+//! the [`Pads`] struct is responsible for enforcing these constraints.
 //!
 //! A `Pads` type takes five or six type parameters, depending on the chip. The
 //! first type always specifies the `Sercom`. On SAMx5x chips, the second type
@@ -51,9 +50,9 @@
 //! [`PinMode`]: crate::gpio::pin::PinMode
 //!
 //!
-//! Alternatively, you can use the `PadsFromIds` alias to define a set of
-//! `Pads` in terms of [`PinId`]s instead of [`Pin`]s. This is useful when you
-//! don't have [`Pin`] aliases pre-defined.
+//! Alternatively, you can use the `PadsFromIds` alias to define a set of `Pads`
+//! in terms of [`PinId`]s instead of [`Pin`]s. This is useful when you don't
+//! have [`Pin`] aliases pre-defined.
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09};
@@ -108,16 +107,13 @@
 //!
 //! Next, create a [`Config`] struct, which represents the SPI peripheral in its
 //! disabled state. A `Config` is specified with three type parameters: the
-//! [`Pads`] type; an [`OpMode`], which defaults to [`Master`]; and a
-//! [`Size`] type that varies by chip. [`Size`] essentially acts as a trait
-//! alias. On SAMD11 and SAMD21 chips, it represents the
-//! `CharSize`, which can either be `EightBit` or `NineBit`.
-//! While on SAMx5x chips, it represents the transaction
-//! `Length`
-//! in bytes, using type-level numbers provided by the [`typenum`] crate. Valid
-//! transaction lengths, from `U1` to `U255`, are re-exported in the
-//! `lengths`
-//! sub-module.
+//! [`Pads`] type; an [`OpMode`], which defaults to [`Master`]; and a [`Size`]
+//! type that varies by chip. [`Size`] essentially acts as a trait alias. On
+//! SAMD11 and SAMD21 chips, it represents the `CharSize`, which can either be
+//! `EightBit` or `NineBit`. While on SAMx5x chips, it represents the
+//! transaction `Length` in bytes, using type-level numbers provided by the
+//! [`typenum`] crate. Valid transaction lengths, from `U1` to `U255`, are
+//! re-exported in the `lengths` sub-module.
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09};
@@ -241,14 +237,12 @@
 //! ```
 //!
 //! Only [`Spi`] structs can actually perform transactions. To do so, use the
-//! various embedded HAL traits, like
-//! [`spi::SpiBus`](crate::ehal::spi::SpiBus),
+//! various embedded HAL traits, like [`spi::SpiBus`](crate::ehal::spi::SpiBus),
 //! [`embedded_io::Read`], [`embedded_io::Write`],
 //! [`embedded_hal_nb::serial::Read`](crate::ehal_nb::serial::Read), or
-//! [`embedded_hal_nb::serial::Write`](crate::ehal_nb::serial::Write).
-//! See the [`impl_ehal`] module documentation for more details about the
-//! specific trait implementations, which vary based on [`Size`] and
-//! [`Capability`].
+//! [`embedded_hal_nb::serial::Write`](crate::ehal_nb::serial::Write). See the
+//! [`impl_ehal`] module documentation for more details about the specific trait
+//! implementations, which vary based on [`Size`] and [`Capability`].
 //!
 //! ```
 //! use nb::block;
@@ -273,7 +267,8 @@
 //! implementations automatically take care of flushing, so no further flushing
 //! is needed.
 //!
-//! [See the embedded-hal spec](https://docs.rs/embedded-hal/latest/embedded_hal/spi/index.html#flushing)
+//! [See the embedded-hal
+//! spec](https://docs.rs/embedded-hal/latest/embedded_hal/spi/index.html#flushing)
 //! for more information.
 //!
 //! # [`PanicOnRead`] and [`PanicOnWrite`]
@@ -299,8 +294,8 @@
 //! This HAL includes support for DMA-enabled SPI transfers. Use
 //! [`Spi::with_dma_channels`] ([`Duplex`] and [`Rx`]), and
 //! [`Spi::with_tx_channel`] ([`Tx`]-only) to attach DMA channels to the [`Spi`]
-//! struct. A DMA-enabled [`Spi`] implements the
-//! blocking [`embedded_hal::spi::SpiBus`], [`embedded_io::Write`] and/or
+//! struct. A DMA-enabled [`Spi`] implements the blocking
+//! [`embedded_hal::spi::SpiBus`], [`embedded_io::Write`] and/or
 //! [`embedded_io::Read`] traits, which can be used to perform SPI transactions
 //! which are fast, continuous and low jitter, even if they are preemped by a
 //! higher priority interrupt.
@@ -321,9 +316,8 @@
 //!
 //! # `async` operation <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span>
 //!
-//! An [`Spi`] can be used for
-//! `async` operations. Configuring a [`Spi`] in async mode is relatively
-//! simple:
+//! An [`Spi`] can be used for `async` operations. Configuring a [`Spi`] in
+//! async mode is relatively simple:
 //!
 //! * Bind the corresponding `SERCOM` interrupt source to the SPI
 //!   [`InterruptHandler`] (refer to the module-level [`async_hal`]
@@ -336,8 +330,8 @@
 //! * Use the provided async methods for reading or writing to the SPI
 //!   peripheral. [`SpiFuture`] implements [`embedded_hal_async::spi::SpiBus`].
 //!
-//! `SpiFuture` implements `AsRef<Spi>` and `AsMut<Spi>` so
-//! that it can be reconfigured using the regular [`Spi`] methods.
+//! `SpiFuture` implements `AsRef<Spi>` and `AsMut<Spi>` so that it can be
+//! reconfigured using the regular [`Spi`] methods.
 //!
 //! ## Considerations when using `async` [`Spi`] with DMA <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span> <span class="stab portability" title="Available on crate feature `dma` only"><code>dma</code></span>
 //!
@@ -374,9 +368,9 @@
 //! This means that using functions like [`futures::select_biased`] to implement
 //! timeouts is safe; transfers will be safely cancelled if the timeout expires.
 //!
-//! This also means that should you [`forget`] this [`Future`] after its
-//! first [`poll`] call, the transfer will keep running, ruining the
-//! now-reclaimed memory, as well as the rest of your day.
+//! This also means that should you [`forget`] this [`Future`] after its first
+//! [`poll`] call, the transfer will keep running, ruining the now-reclaimed
+//! memory, as well as the rest of your day.
 //!
 //! * `await`ing is fine: the [`Future`] will run to completion.
 //! * Dropping an incomplete transfer is also fine. Dropping can happen, for
@@ -434,6 +428,9 @@
 //!
 //! [`enable`]: Config::enable
 //! [`gpio`]: crate::gpio
+//! [`IsPad`]: super::pad::IsPad
+//! [`OptionalPad`]: super::pad::OptionalPad
+//! [`PadNum`]: super::pad::PadNum
 //! [`Pin`]: crate::gpio::pin::Pin
 //! [`PinId`]: crate::gpio::pin::PinId
 //! [`PinMode`]: crate::gpio::pin::PinMode
@@ -1425,11 +1422,11 @@ where
     ///
     /// Only the ERROR, SSL and TXC flags can be cleared.
     ///
-    /// **Note:** The implementation of of [`serial::Write::flush`] waits on and
-    /// clears the `TXC` flag. Manually clearing this flag could cause it to
-    /// hang indefinitely.
+    /// **Note:** Implementations of `flush` methods (eg [`SpiBus::flush`]) wait
+    /// on and clear the `TXC` flag. Manually clearing this flag could cause
+    /// them to hang indefinitely.
     ///
-    /// [`serial::Write::flush`]: embedded_hal::serial::Write::flush
+    /// [`SpiBus::flush`]: ehal::spi::SpiBus::flush
     #[inline]
     pub fn clear_flags(&mut self, flags: Flags) {
         self.config.as_mut().regs.clear_flags(flags);
@@ -1686,8 +1683,8 @@ where
 /// panic if any write-adjacent method is used (ie, `write`, `transfer`,
 /// `transfer_in_place`, and `flush`).
 ///
-/// Also implements `Into<Spi>, `AsRef<Spi>` and `AsMut<Spi>` if you need to use
-/// `Spi` methods.
+/// Also implements `Into<Spi>`, `AsRef<Spi>` and `AsMut<Spi>` if you need to
+/// use `Spi` methods.
 ///
 /// [`embedded_hal::spi::SpiBus`]: crate::ehal::spi::SpiBus
 pub struct PanicOnWrite<T: crate::ehal::spi::ErrorType>(T);
@@ -1721,8 +1718,8 @@ impl<C: ValidConfig, R, T> Spi<C, Tx, R, T> {
 /// panic if any write-adjacent method is used (ie, `read`, `transfer`, and
 /// `transfer_in_place`).
 ///
-/// Also implements `Into<Spi>, `AsRef<Spi>` and `AsMut<Spi>` if you need to use
-/// `Spi` methods.
+/// Also implements `Into<Spi>`, `AsRef<Spi>` and `AsMut<Spi>` if you need to
+/// use `Spi` methods.
 ///
 /// [`embedded_hal::spi::SpiBus`]: crate::ehal::spi::SpiBus
 pub struct PanicOnRead<T: crate::ehal::spi::ErrorType>(T);

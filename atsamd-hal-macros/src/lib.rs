@@ -71,7 +71,7 @@ fn hal_cfg_impl(args: TokenStream) -> Result<Group, Error> {
 /// )]
 /// pub mod calibration {}
 ///
-/// #[hal_module("aes")
+/// #[hal_module("aes")]
 /// pub mod aes {}
 /// ```
 ///
