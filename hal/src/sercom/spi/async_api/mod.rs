@@ -69,8 +69,7 @@ where
     ///
     /// In cases where the underlying [`Spi`] is [`Duplex`], reading words need
     /// to be accompanied with sending a no-op word. By default it is set to
-    /// 0x00, but you can configure it by using the
-    /// [`nop_word`](crate::sercom::spi::Config::nop_word) method.
+    /// 0x00, but you can configure it using [`Config::set_nop_word`].
     #[inline]
     pub fn into_future<I>(self, _interrupts: I) -> SpiFuture<C, A>
     where
@@ -210,8 +209,8 @@ where
     /// Read words into a buffer asynchronously, word by word.
     ///
     /// Since we are using a [`Duplex`] [`SpiFuture`], we need to send a word
-    /// simultaneously while receiving one. This `no-op` word is
-    /// configurable via the [`nop_word`](Self::nop_word) method.
+    /// simultaneously while receiving one. This `no-op` word is configurable
+    /// via [`Config::set_nop_word`].
     #[inline]
     pub async fn read(&mut self, buffer: &mut [C::Word]) -> Result<(), Error> {
         if buffer.is_empty() {
