@@ -3,10 +3,10 @@
 //! Configuring an UART peripheral occurs in three steps. First, you must create
 //! a set of [`Pads`] for use by the peripheral. Next, you assemble pieces into
 //! a [`Config`] struct. After configuring the peripheral, you then [`enable`]
-//! it, yielding a functional [`Uart`] struct.
-//! Transactions are performed using the [`embedded_io::Write`],
-//! [`embedded_io::Read`], [`embedded_hal_nb::serial::Write`], and
-//! [`embedded_hal_nb::serial::Read`] traits.
+//! it, yielding a functional [`Uart`] struct. Transactions are performed using
+//! the [`embedded_io::Write`], [`embedded_io::Read`],
+//! [`embedded_hal_nb::serial::Write`], and [`embedded_hal_nb::serial::Read`]
+//! traits.
 //!
 //! # [`Pads`]
 //!
@@ -23,8 +23,8 @@
 //! represent the Data In, Data Out, Sclk and SS pads respectively. Each of the
 //! remaining type parameters is an [`OptionalPad`] and defaults to [`NoneT`]. A
 //! [`Pad`] is just a [`Pin`] configured in the correct [`PinMode`] that
-//! implements [`IsPad`]. The [`bsp_pins!`](crate::bsp_pins) macro can be
-//! used to define convenient type aliases for [`Pad`] types.
+//! implements [`IsPad`]. The [`bsp_pins!`](crate::bsp_pins) macro can be used
+//! to define convenient type aliases for [`Pad`] types.
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09, AlternateC};
@@ -92,15 +92,16 @@
 //! ```
 //!
 //! Upon creation, the [`Config`] takes ownership of both the [`Pads`] struct
-//! and the PAC [`Sercom`] struct. It takes a reference to the PM, so that it
-//! can enable the APB clock, and it takes a frequency to indicate the GCLK
-//! configuration. Users are responsible for correctly configuring the GCLK.
+//! and the PAC `SercomN` struct (eg [`Sercom0`]). It takes a reference to the
+//! PM, so that it can enable the APB clock, and it takes a frequency to
+//! indicate the GCLK configuration. Users are responsible for correctly
+//! configuring the GCLK.
 //!
 //! ```
 //! use atsamd_hal::time::U32Ext;
 //!
 //! let pm = peripherals.PM;
-//! let sercom = peripherals.SERCOM0;
+//! let sercom = peripherals.Sercom0;
 //! // Configure GCLK for 10 MHz
 //! let freq = 10.mhz();
 //! let config = uart::Config::new(&pm, sercom, pads, freq);
@@ -199,10 +200,10 @@
 //! type UartTx = uart::UartTx<Config, RxDuples>;
 //! ```
 //!
-//! Only the [`Uart`] struct can actually perform
-//! transactions. To do so, use the embedded HAL traits, like
-//! [`embedded_hal_nb::serial::Read`], [`embedded_hal_nb::serial::Write`],
-//! [`embedded_io::Read`], and [`embedded_io::Write`].
+//! Only the [`Uart`] struct can actually perform transactions. To do so, use
+//! the embedded HAL traits, like [`embedded_hal_nb::serial::Read`],
+//! [`embedded_hal_nb::serial::Write`], [`embedded_io::Read`], and
+//! [`embedded_io::Write`].
 //!
 //! ```
 //! use nb::block;
@@ -228,7 +229,8 @@
 //! [`Config`] has a `CTS` pad specified. The
 //! [`disable_ctsic`](Uart::disable_ctsic) and
 //! [`clear_ctsic`](Uart::clear_ctsic) methods are also available under the same
-//! conditions. [This application note](https://www.silabs.com/documents/public/application-notes/an0059.0-uart-flow-control.pdf)
+//! conditions. [This application
+//! note](https://www.silabs.com/documents/public/application-notes/an0059.0-uart-flow-control.pdf)
 //! provides more information about UART hardware flow control.
 //!
 //! # Splitting
@@ -291,8 +293,8 @@
 //! Some methods, such as [`disable`] and [`reconfigure`], need to operate on
 //! all parts of a UART at once. In practice, this means that these methods
 //! operate on the type that was returned by [`enable`]. This can be `Uart<C,
-//! Rx>`, `Uart<C, Tx>`, or `Uart<C, Duplex>`, depending on how the
-//! peripheral was configured.
+//! Rx>`, `Uart<C, Tx>`, or `Uart<C, Duplex>`, depending on how the peripheral
+//! was configured.
 //!
 //! The [`reconfigure`] method gives out an `&mut Config` reference, which can
 //! then use the `set_*` methods.
@@ -339,7 +341,7 @@
 //!
 //! ```no_run
 //! use atsamd_hal::dmac::channel::{AnyChannel, Ready};
-//! use atsand_hal::sercom::Uart::{I2c, ValidConfig, Error, TxDuplex};
+//! use atsamd_hal::sercom::Uart::{I2c, ValidConfig, Error, TxDuplex};
 //! use atsamd_hal::embedded_io::Write;
 //! fn uart_send_with_dma<A: ValidConfig, C: AnyChannel<Status = Ready>>(uart: Uart<A, TxDuplex>, channel: C, bytes: &[u8]) -> Result<(), Error>{
 //!     // Attach a DMA channel
@@ -352,15 +354,13 @@
 //!
 //! Non-blocking DMA transfers are also supported.
 //!
-//! The provided [`send_with_dma`] and
-//! [`receive_with_dma`] build and begin a
-//! [`dmac::Transfer`], thus starting the UART
-//! in a non-blocking way. Note that these methods require `'static` buffers in
-//! order to remain memory-safe.
+//! The provided [`send_with_dma`] and [`receive_with_dma`] build and begin a
+//! [`Transfer`], thus starting the UART in a non-blocking way. Note that these
+//! methods require `'static` buffers in order to remain memory-safe.
 //!
-//! Optionally, interrupts can be enabled on the provided
-//! [`Channel`]. Please refer to the [`dmac`](crate::dmac) module-level
-//! documentation for more information.
+//! Optionally, interrupts can be enabled on the provided [`Channel`]. Please
+//! refer to the [`dmac`](crate::dmac) module-level documentation for more
+//! information.
 //!
 //! ```
 //! // Assume channel0 and channel1 are configured `dmac::Channel`s,
@@ -398,15 +398,11 @@
 //! * Use the provided async methods for reading or writing to the UART
 //!   peripheral.
 //!
-//! `UartFuture` implements `AsRef<Uart>` and `AsMut<Uart>` so
-//! that it can be reconfigured using the regular [`Uart`] methods. It also
-//! exposes a [`split`](UartFuture::split) method to split it into its RX and TX
-//! parts.
+//!  `UartFuture` implements `AsRef<Uart>` and `AsMut<Uart>` so that it can be
+//!  reconfigured using the regular [`Uart`] methods. It also exposes a
+//!  [`split`](UartFuture::split) method to split it into its RX and TX parts.
 //!
-//!  ## Considerations when using `async` [`Uart`] with DMA <span class="stab
-//! portability" title="Available on crate feature `async`
-//! only"><code>async</code></span> <span class="stab portability"
-//! title="Available on crate feature `dma` only"><code>dma</code></span>
+//! ## Considerations when using `async` [`Uart`] with DMA <span class="stab portability" title="Available on crate feature `async` only"> <code>async</code></span> <span class="stab portability" title="Available on crate feature `dma` only"><code>dma</code></span>
 //!
 //! * An [`Uart`] struct must be turned into an [`UartFuture`] by calling
 //!   [`Uart::into_future`] before calling `with_dma_channel`. The DMA channel
@@ -441,9 +437,9 @@
 //! This means that using functions like [`futures::select_biased`] to implement
 //! timeouts is safe; transfers will be safely cancelled if the timeout expires.
 //!
-//! This also means that should you [`forget`] this [`Future`] after its
-//! first [`poll`] call, the transfer will keep running, ruining the
-//! now-reclaimed memory, as well as the rest of your day.
+//! This also means that should you [`forget`] this [`Future`] after its first
+//! [`poll`] call, the transfer will keep running, ruining the now-reclaimed
+//! memory, as well as the rest of your day.
 //!
 //! * `await`ing is fine: the [`Future`] will run to completion.
 //! * Dropping an incomplete transfer is also fine. Dropping can happen, for
@@ -510,17 +506,21 @@
 //! [`split`]: Uart::split
 //! [`join`]: Uart::join
 //! [`NoneT`]: crate::typelevel::NoneT
-//! [`serial::Write`]: embedded_hal::serial::Write
-//! [`serial::Read`]: embedded_hal::serial::Read
-//! [`receive_with_dma`]: Self::receive_with_dma
-//! [`send_with_dma`]: Self::send_with_dma
-//! [`dmac::Transfer`]: crate::dmac::Transfer
+//! [`receive_with_dma`]: Uart::receive_with_dma
+//! [`send_with_dma`]: Uart::send_with_dma
+//! [`Transfer`]: crate::dmac::Transfer
 //! [`Channel`]: crate::dmac::Channel
 //! [`async_hal`]: crate::async_hal
 //! [`forget`]: core::mem::forget
 //! [`ManuallyDrop`]: core::mem::ManuallyDrop
 //! [`Future`]: core::future::Future
 //! [`poll`]: core::future::Future::poll
+//! [`Sercom`]: crate::sercom::Sercom
+//! [`Sercom0`]: crate::pac::Sercom0
+//! [`PadNum`]: crate::sercom::pad::PadNum
+//! [`Pad`]: crate::sercom::pad::Pad
+//! [`IsPad`]: crate::sercom::pad::IsPad
+//! [`OptionalPad`]: crate::sercom::pad::OptionalPad
 
 use atsamd_hal_macros::{hal_cfg, hal_module};
 

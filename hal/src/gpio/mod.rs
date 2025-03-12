@@ -1,7 +1,7 @@
 //! # GPIO
 //!
 //! The GPIO module is used to configure GPIO pins through the
-//! [PORT](crate::pac::PORT) interface.
+//! [Port](crate::pac::Port) interface.
 //!
 //! ## Versions
 //!

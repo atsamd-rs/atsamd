@@ -3,16 +3,16 @@
 //! Configuring an I2C peripheral occurs in three steps. First, you must create
 //! a set of [`Pads`] for use by the peripheral. Next, you assemble pieces into
 //! a [`Config`] struct. After configuring the peripheral, you then [`enable`]
-//! it, yielding a functional [`I2c`] struct.
-//! Transactions are performed using the [`i2c`](embedded_hal::blocking::i2c)
-//! traits from embedded HAL.
+//! it, yielding a functional [`I2c`] struct. Transactions are performed using
+//! traits from embedded-hal ([v1.0](crate::ehal) and blocking traits from
+//! [v0.2](`crate::ehal_02`)).
 //!
 //! # [`Pads`]
 //!
-//! A [`Sercom`] uses two [`Pin`]s as peripheral [`Pad`]s, but only
-//! certain [`Pin`] combinations are acceptable. In particular, all [`Pin`]s
-//! must be mapped to the same [`Sercom`], and SDA is always [`Pad0`], while SCL
-//! is always [`Pad1`] (see the datasheet). This HAL makes it impossible to use
+//! A [`Sercom`] uses two [`Pin`]s as peripheral [`Pad`]s, but only certain
+//! [`Pin`] combinations are acceptable. In particular, all [`Pin`]s must be
+//! mapped to the same [`Sercom`], and SDA is always [`Pad0`], while SCL is
+//! always [`Pad1`] (see the datasheet). This HAL makes it impossible to use
 //! invalid [`Pin`]/[`Pad`] combinations, and the [`Pads`] struct is responsible
 //! for enforcing these constraints.
 //!
@@ -74,8 +74,8 @@
 //!
 //! # [`Config`]
 //!
-//! Next, create a [`Config`] struct, which represents the I2C peripheral in
-//! its disabled state. A [`Config`] is specified with one type parameters, the
+//! Next, create a [`Config`] struct, which represents the I2C peripheral in its
+//! disabled state. A [`Config`] is specified with one type parameters, the
 //! [`Pads`] type.
 //!
 //! Upon creation, the [`Config`] takes ownership of both the [`Pads`] struct
@@ -135,8 +135,8 @@
 //! [`I2c`] structs can only be created from a [`Config`]. They have one type
 //! parameter, representing the underlying [`Config`].
 //!
-//! Only the [`I2c`] struct can actually perform
-//! transactions. To do so, use the [`embedded_hal::i2c::I2c`] trait.
+//! Only the [`I2c`] struct can actually perform transactions. To do so, use the
+//! [`embedded_hal::i2c::I2c`] trait.
 //!
 //! ```
 //! use embedded_hal::i2c::I2c;
@@ -146,9 +146,9 @@
 //!
 //! # Reading the current configuration
 //!
-//! The `AsRef<Config<P>>` trait is implemented for `I2c<Config<P>>`.
-//! This means you can use the `get_` methods implemented for `Config`, since
-//! they take an `&self` argument.
+//! The `AsRef<Config<P>>` trait is implemented for `I2c<Config<P>>`. This means
+//! you can use the `get_` methods implemented for `Config`, since they take an
+//! `&self` argument.
 //!
 //! ```no_run
 //! // Assume i2c is a I2c<C<P>>
@@ -191,8 +191,8 @@
 //! [`I2c::with_dma_channel`] to attach a DMA channel to the [`I2c`] struct. A
 //! DMA-enabled [`I2c`] implements the blocking
 //! [`embedded_hal::i2c::I2c`](crate::ehal::i2c::I2c) trait, which can be used
-//! to perform I2C transfers which are fast, continuous and low jitter, even
-//! if they are preemped by a higher priority interrupt.
+//! to perform I2C transfers which are fast, continuous and low jitter, even if
+//! they are preemped by a higher priority interrupt.
 //!
 //!
 //! ```no_run
@@ -236,9 +236,8 @@
 //!
 //! # `async` operation <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span>
 //!
-//! An [`I2c`] can be used for
-//! `async` operations. Configuring an [`I2c`] in async mode is relatively
-//! simple:
+//! An [`I2c`] can be used for `async` operations. Configuring an [`I2c`] in
+//! async mode is relatively simple:
 //!
 //! * Bind the corresponding `SERCOM` interrupt source to the SPI
 //!   [`InterruptHandler`] (refer to the module-level [`async_hal`]
@@ -250,8 +249,8 @@
 //! * Use the provided async methods for reading or writing to the I2C
 //!   peripheral. [`I2cFuture`] implements [`embedded_hal_async::i2c::I2c`].
 //!
-//! `I2cFuture` implements `AsRef<I2c>` and `AsMut<I2c>` so
-//! that it can be reconfigured using the regular [`I2c`] methods.
+//! `I2cFuture` implements `AsRef<I2c>` and `AsMut<I2c>` so that it can be
+//! reconfigured using the regular [`I2c`] methods.
 //!
 //! ## Considerations when using `async` [`I2c`] with DMA <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span> <span class="stab portability" title="Available on crate feature `dma` only"><code>dma</code></span>
 //!
@@ -288,9 +287,9 @@
 //! This means that using functions like [`futures::select_biased`] to implement
 //! timeouts is safe; transfers will be safely cancelled if the timeout expires.
 //!
-//! This also means that should you [`forget`] this [`Future`] after its
-//! first [`poll`] call, the transfer will keep running, ruining the
-//! now-reclaimed memory, as well as the rest of your day.
+//! This also means that should you [`forget`] this [`Future`] after its first
+//! [`poll`] call, the transfer will keep running, ruining the now-reclaimed
+//! memory, as well as the rest of your day.
 //!
 //! * `await`ing is fine: the [`Future`] will run to completion.
 //! * Dropping an incomplete transfer is also fine. Dropping can happen, for
