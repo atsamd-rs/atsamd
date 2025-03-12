@@ -61,6 +61,7 @@ usbd-serial = "0.2"
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g"]
+defmt = ["atsamd-hal/defmt"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 use_rtt = ["atsamd-hal/use_rtt"]

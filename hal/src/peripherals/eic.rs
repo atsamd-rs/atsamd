@@ -150,7 +150,7 @@ where
 
 /// EIC channel.
 ///
-/// Use this struct to create an [`ExtInt`](pins::ExtInt) by calling
+/// Use this struct to create an [`ExtInt`] by calling
 /// [`with_pin`](Self::with_pin).
 pub struct Channel<Id: ChId, F = NoneT> {
     eic: core::mem::ManuallyDrop<pac::Eic>,

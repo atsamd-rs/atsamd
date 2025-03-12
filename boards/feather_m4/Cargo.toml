@@ -44,6 +44,7 @@ ws2812-timer-delay = "0.3"
 [features]
 # ask the HAL to enable atsamd51j support
 default = ["rt", "atsamd-hal/samd51j"]
+defmt = ["atsamd-hal/defmt"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/dma"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]

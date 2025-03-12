@@ -49,6 +49,7 @@ panic-semihosting = "0.5"
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g"]
+defmt = ["atsamd-hal/defmt"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 use_rtt = ["atsamd-hal/use_rtt"]
 usb = ["atsamd-hal/usb", "usb-device"]

@@ -36,6 +36,7 @@ cortex-m-rtic = "1.0"
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g", "usb"]
+defmt = ["atsamd-hal/defmt"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 unproven = ["atsamd-hal/unproven"]

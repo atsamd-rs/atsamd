@@ -1686,8 +1686,8 @@ where
 /// panic if any write-adjacent method is used (ie, `write`, `transfer`,
 /// `transfer_in_place`, and `flush`).
 ///
-/// Also implements `Into<Spi>, `AsRef<Spi>` and `AsMut<Spi>` if you need to use
-/// `Spi` methods.
+/// Also implements `Into<Spi>`, `AsRef<Spi>` and `AsMut<Spi>` if you need to
+/// use `Spi` methods.
 ///
 /// [`embedded_hal::spi::SpiBus`]: crate::ehal::spi::SpiBus
 pub struct PanicOnWrite<T: crate::ehal::spi::ErrorType>(T);
@@ -1721,8 +1721,8 @@ impl<C: ValidConfig, R, T> Spi<C, Tx, R, T> {
 /// panic if any write-adjacent method is used (ie, `read`, `transfer`, and
 /// `transfer_in_place`).
 ///
-/// Also implements `Into<Spi>, `AsRef<Spi>` and `AsMut<Spi>` if you need to use
-/// `Spi` methods.
+/// Also implements `Into<Spi>`, `AsRef<Spi>` and `AsMut<Spi>` if you need to
+/// use `Spi` methods.
 ///
 /// [`embedded_hal::spi::SpiBus`]: crate::ehal::spi::SpiBus
 pub struct PanicOnRead<T: crate::ehal::spi::ErrorType>(T);
