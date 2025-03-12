@@ -768,10 +768,10 @@
 //! ```
 //!
 //! [PAC]: crate::pac
-//! [`OSCCTRL`]: crate::pac::OSCCTRL
-//! [`OSC32KCTRL`]: crate::pac::OSC32KCTRL
-//! [`GCLK`]: crate::pac::GCLK
-//! [`MCLK`]: crate::pac::MCLK
+//! [`OSCCTRL`]: crate::pac::Oscctrl
+//! [`OSC32KCTRL`]: crate::pac::Osc32kctrl
+//! [`GCLK`]: crate::pac::Gclk
+//! [`MCLK`]: crate::pac::Mclk
 //! [`Peripherals::steal`]: crate::pac::Peripherals::steal
 //!
 //! [`Ahb`]: ahb::Ahb

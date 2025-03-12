@@ -96,6 +96,8 @@ use crate::sercom::spi::{
     AtomicSize, Config, DataWidth, Duplex, DynLength, Error, Flags, GreaterThan4, Length,
     MasterMode, OpMode, Receive, Rx, Slave, Spi, Status, Tx, ValidConfig, ValidPads, Word,
 };
+#[cfg(doc)]
+use crate::sercom::spi::Capability;
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
 use typenum::{U1, U2, U3, U4};
@@ -106,12 +108,13 @@ use crate::pac::sercom0::RegisterBlock;
 // serial::Read
 //=============================================================================
 
-/// Implement [`ehal_nb::serial::Read`] for [`Rx`] [`Spi`] structs in a [`MasterMode`]
+/// Implement [`ehal_nb::serial::Read`] for [`Rx`] [`Spi`] structs in a
+/// [`MasterMode`]
 ///
 /// `serial::Read` is only implemented for `Spi` structs with `Rx`
 /// [`Capability`]. In a `MasterMode`, `Read` has to initiate transactions, so
-/// it keeps track of the transaction state. If a transaction is in progress,
-/// it will wait on `RXC`. If not, it will wait on `DRE`, and then send `0`.
+/// it keeps track of the transaction state. If a transaction is in progress, it
+/// will wait on `RXC`. If not, it will wait on `DRE`, and then send `0`.
 impl<P, M, L> ehal_nb::serial::Read<L::Word> for Spi<Config<P, M, L>, Rx>
 where
     Config<P, M, L>: ValidConfig,
@@ -137,9 +140,12 @@ where
     }
 }
 
-/// Implement [`serial::Read`] for [`Rx`] [`Spi`] structs in a [`MasterMode`]
+/// Implement embedded-hal 0.2 [`serial::Read`] for [`Rx`] [`Spi`] structs in a
+/// [`MasterMode`]
 ///
-/// Refer to the [`ehal_nb::serial::Read`] implementation of [`Spi`] for more details.
+/// Refer to the [`serial::Read`] implementation of [`Spi`] for more details.
+///
+/// [`serial::Read`]: ehal_02::serial::Read
 impl<P, M, L> ehal_02::serial::Read<L::Word> for Spi<Config<P, M, L>, Rx>
 where
     Config<P, M, L>: ValidConfig,
@@ -164,6 +170,8 @@ where
 /// [`Capability`]. In `Slave` `OpMode`, `Read` does not have to initiate
 /// transactions, so it does not have to store any internal state. It only has
 /// to wait on `RXC`.
+///
+/// [`serial::Read`]: ehal_nb::serial::Read
 impl<P, L> ehal_nb::serial::Read<L::Word> for Spi<Config<P, Slave, L>, Rx>
 where
     Config<P, Slave, L>: ValidConfig,
@@ -183,10 +191,12 @@ where
     }
 }
 
-/// Implement [`serial::Read`] for [`Rx`] [`Spi`] structs in [`Slave`]
-/// [`OpMode`]
+/// Implement embedded-hal 0.2 [`serial::Read`] for [`Rx`] [`Spi`] structs in
+/// [`Slave`] [`OpMode`]
 ///
-/// Refer to the [`ehal_nb::serial::Read`] implementation of [`Spi`] for more details.
+/// Refer to the [`serial::Read`] implementation of [`Spi`] for more details.
+///
+/// [`serial::Read`]: ehal_02::serial::Read
 impl<P, L> ehal_02::serial::Read<L::Word> for Spi<Config<P, Slave, L>, Rx>
 where
     Config<P, Slave, L>: ValidConfig,
@@ -244,7 +254,9 @@ where
     }
 }
 
-/// Implement [`serial::Write`] for [`Tx`] [`Spi`] structs
+/// Implement embedded-hal 0.2 [`serial::Write`] for [`Tx`] [`Spi`] structs
+///
+/// [`serial::Write`]: ehal_02::serial::Write
 impl<C> ehal_02::serial::Write<C::Word> for Spi<C, Tx>
 where
     C: ValidConfig,
@@ -314,12 +326,14 @@ where
     }
 }
 
-/// Implement [`spi::FullDuplex`] for [`Spi`] structs with [`AtomicSize`]
+/// Implement embedded-hal 0.2 [`spi::FullDuplex`] for [`Spi`] structs with [`AtomicSize`]
 ///
 /// `spi::FullDuplex` is only implemented when the `Spi` struct has [`Duplex`]
 /// [`Capability`] and the transaction [`Length`] is `<= 4` bytes. When the
 /// [`Length`] is `<= 4`, the [`Word`] is a primitive integer, with a size that
 /// depends on the [`Length`] (`u8`, `u16` or `u32`).
+///
+/// [`spi::FullDuplex`]: ehal_02::spi::FullDuplex
 impl<C> ehal_02::spi::FullDuplex<C::Word> for Spi<C, Duplex>
 where
     C: ValidConfig,
@@ -359,14 +373,14 @@ macro_rules! impl_blocking_spi_transfer {
     ( $($Length:ident),+ ) => {
         $(
 
-            /// Implement [`Transfer`] for [`Spi`] structs that can [`Receive`]
-            /// and have an [`AtomicSize`]
+            /// Implement embedded_hal 0.2 [`Transfer`] for [`Spi`] structs that
+            /// can [`Receive`] and have an [`AtomicSize`]
             ///
             /// The transaction [`Length`] must be `<= 4`. The transfer accepts
-            /// a slice of primitive integers, depending on the `Length`
-            /// (`u8`, `u16` or `u32`).
+            /// a slice of primitive integers, depending on the `Length` (`u8`,
+            /// `u16` or `u32`).
             ///
-            /// [`Transfer`]: blocking::spi::Transfer
+            /// [`Transfer`]: ehal_02::blocking::spi::Transfer
             impl<P, M, A> $crate::ehal_02::blocking::spi::Transfer<Word<$Length>> for Spi<Config<P, M, $Length>, A>
             where
                 Config<P, M, $Length>: ValidConfig,
@@ -407,14 +421,14 @@ macro_rules! impl_blocking_spi_transfer {
 
 impl_blocking_spi_transfer!(U1, U2, U3, U4);
 
-/// Implement [`Transfer`] for [`Spi`] structs that can [`Receive`] and have
-/// long transaction [`Length`]s
+/// Implement embedded-hal 0.2 [`Transfer`] for [`Spi`] structs that can
+/// [`Receive`] and have long transaction [`Length`]s
 ///
 /// The transaction [`Length`] must be `> 4`. The transfer accepts a slice of
 /// `u8` with a length equal to the transaction [`Length`]. If the slice length
 /// is incorrect, it will panic.
 ///
-/// [`Transfer`]: blocking::spi::Transfer
+/// [`Transfer`]: ehal_02::blocking::spi::Transfer
 impl<P, M, L, A> ehal_02::blocking::spi::Transfer<u8> for Spi<Config<P, M, L>, A>
 where
     Config<P, M, L>: ValidConfig,
@@ -433,14 +447,14 @@ where
     }
 }
 
-/// Implement [`Transfer`] for [`Spi`] structs that can [`Receive`] and have
-/// [`DynLength`]
+/// Implement embedded-hal 0.2 [`Transfer`] for [`Spi`] structs that can
+/// [`Receive`] and have [`DynLength`]
 ///
 /// The transfer accepts a slice of `u8` with a length equal to the run-time
-/// dynamic transaction length. If the slice length does not match the result
-/// of [`Spi::get_dyn_length`], it will panic.
+/// dynamic transaction length. If the slice length does not match the result of
+/// [`Spi::get_dyn_length`], it will panic.
 ///
-/// [`Transfer`]: blocking::spi::Transfer
+/// [`Transfer`]: ehal_02::blocking::spi::Transfer
 impl<P, M, A> ehal_02::blocking::spi::Transfer<u8> for Spi<Config<P, M, DynLength>, A>
 where
     Config<P, M, DynLength>: ValidConfig,
@@ -466,14 +480,14 @@ macro_rules! impl_blocking_spi_write {
     ( $($Length:ident),+ ) => {
         $(
 
-            /// Implement [`Write`] for [`Spi`] structs with [`Duplex`]
-            /// [`Capability`] and an [`AtomicSize`]
+            /// Implement embedded-hal 0.2 [`Write`] for [`Spi`] structs with
+            /// [`Duplex`] [`Capability`] and an [`AtomicSize`]
             ///
-            /// The transaction `Length` must be `<= 4`. The transfer accepts
-            /// a slice of primitive integers, depending on the `Length`
-            /// (`u8`, `u16` or `u32`).
+            /// The transaction `Length` must be `<= 4`. The transfer accepts a
+            /// slice of primitive integers, depending on the `Length` (`u8`,
+            /// `u16` or `u32`).
             ///
-            /// [`Write`]: blocking::spi::Write
+            /// [`Write`]: ehal_02::blocking::spi::Write
             impl<P, M> $crate::ehal_02::blocking::spi::Write<Word<$Length>> for Spi<Config<P, M, $Length>, Duplex>
             where
                 Config<P, M, $Length>: ValidConfig,
@@ -506,17 +520,17 @@ macro_rules! impl_blocking_spi_write {
                 }
             }
 
-            /// Implement [`Write`] for [`Spi`] structs with [`Tx`]
-            /// [`Capability`] and an [`AtomicSize`]
+            /// Implement embedded-hal 0.2 [`Write`] for [`Spi`] structs with
+            /// [`Tx`] [`Capability`] and an [`AtomicSize`]
             ///
-            /// The transaction `Length` must be `<= 4`. The transfer accepts
-            /// a slice of primitive integers, depending on the `Length`
-            /// (`u8`, `u16` or `u32`).
+            /// The transaction `Length` must be `<= 4`. The transfer accepts a
+            /// slice of primitive integers, depending on the `Length` (`u8`,
+            /// `u16` or `u32`).
             ///
             /// Because the `Capability` is `Tx`, this implementation never
             /// reads the DATA register and ignores all buffer overflow errors.
             ///
-            /// [`Write`]: blocking::spi::Write
+            /// [`Write`]: ehal_02::blocking::spi::Write
             impl<P, M> $crate::ehal_02::blocking::spi::Write<Word<$Length>> for Spi<Config<P, M, $Length>, Tx>
             where
                 Config<P, M, $Length>: ValidConfig,
@@ -550,14 +564,14 @@ macro_rules! impl_blocking_spi_write {
 
 impl_blocking_spi_write!(U1, U2, U3, U4);
 
-/// Implement [`Write`] for [`Spi`] structs with [`Duplex`] [`Capability`] and
-/// long transaction [`Length`]s
+/// Implement embedded-hal 0.2 [`Write`] for [`Spi`] structs with [`Duplex`]
+/// [`Capability`] and long transaction [`Length`]s
 ///
 /// The transaction [`Length`] must be `> 4`. The transfer accepts a `[u8]` with
 /// a length equal to the transfer [`Length`]. If the slice length is incorrect,
 /// it will panic.
 ///
-/// [`Write`]: blocking::spi::Write
+/// [`Write`]: ehal_02::blocking::spi::Write
 impl<P, M, L> ehal_02::blocking::spi::Write<u8> for Spi<Config<P, M, L>, Duplex>
 where
     Config<P, M, L>: ValidConfig,
@@ -577,8 +591,8 @@ where
     }
 }
 
-/// Implement [`Write`] for [`Spi`] structs with [`Tx`] [`Capability`] and long
-/// transaction [`Length`]s
+/// Implement embedded-hal 0.2 [`Write`] for [`Spi`] structs with [`Tx`]
+/// [`Capability`] and long transaction [`Length`]s
 ///
 /// The transaction [`Length`] must be `> 4`. The transfer accepts a `[u8]` with
 /// a length equal to the transfer [`Length`]. If the slice length is incorrect,
@@ -587,7 +601,7 @@ where
 /// Because the `Capability` is `Tx`, this implementation never reads the DATA
 /// register and ignores all buffer overflow errors.
 ///
-/// [`Write`]: blocking::spi::Write
+/// [`Write`]: ehal_02::blocking::spi::Write
 impl<P, M, L> ehal_02::blocking::spi::Write<u8> for Spi<Config<P, M, L>, Tx>
 where
     Config<P, M, L>: ValidConfig,
@@ -610,14 +624,14 @@ where
     }
 }
 
-/// Implement [`Write`] for [`Spi`] structs with [`Duplex`] [`Capability`] and
-/// [`DynLength`]
+/// Implement embedded-hal 0.2 [`Write`] for [`Spi`] structs with [`Duplex`]
+/// [`Capability`] and [`DynLength`]
 ///
 /// The transfer accepts a `[u8]` with a length equal to the run-time dynamic
 /// transaction length. If the slice length does not match the result of
 /// [`Spi::get_dyn_length`], it will panic.
 ///
-/// [`Write`]: blocking::spi::Write
+/// [`Write`]: ehal_02::blocking::spi::Write
 impl<P, M> ehal_02::blocking::spi::Write<u8> for Spi<Config<P, M, DynLength>, Duplex>
 where
     Config<P, M, DynLength>: ValidConfig,
@@ -636,8 +650,8 @@ where
     }
 }
 
-/// Implement [`Write`] for [`Spi`] structs with [`Tx`] [`Capability`] and
-/// [`DynLength`]
+/// Implement embedded-hal 0.2 [`Write`] for [`Spi`] structs with [`Tx`]
+/// [`Capability`] and [`DynLength`]
 ///
 /// The transfer accepts a `[u8]` with a length equal to the run-time dynamic
 /// transaction length. If the slice length does not match the result of
@@ -646,7 +660,7 @@ where
 /// Because the `Capability` is `Tx`, this implementation never reads the DATA
 /// register and ignores all buffer overflow errors.
 ///
-/// [`Write`]: blocking::spi::Write
+/// [`Write`]: ehal_02::blocking::spi::Write
 impl<P, M> ehal_02::blocking::spi::Write<u8> for Spi<Config<P, M, DynLength>, Tx>
 where
     Config<P, M, DynLength>: ValidConfig,
@@ -676,14 +690,14 @@ macro_rules! impl_blocking_spi_write_iter {
     ( $($Length:ident),+ ) => {
         $(
 
-            /// Implement [`WriteIter`] for [`Spi`] structs with [`Duplex`]
-            /// [`Capability`] and an [`AtomicSize`]
+            /// Implement embedded-hal 0.2 [`WriteIter`] for [`Spi`] structs
+            /// with [`Duplex`] [`Capability`] and an [`AtomicSize`]
             ///
-            /// The transaction `Length` must be `<= 4`. The transfer accepts
-            /// a slice of primitive integers, depending on the `Length`
-            /// (`u8`, `u16` or `u32`).
+            /// The transaction `Length` must be `<= 4`. The transfer accepts a
+            /// slice of primitive integers, depending on the `Length` (`u8`,
+            /// `u16` or `u32`).
             ///
-            /// [`WriteIter`]: blocking::spi::WriteIter
+            /// [`WriteIter`]: ehal_02::blocking::spi::WriteIter
             impl<P, M> $crate::ehal_02::blocking::spi::WriteIter<Word<$Length>> for Spi<Config<P, M, $Length>, Duplex>
             where
                 Config<P, M, $Length>: ValidConfig,
@@ -720,17 +734,17 @@ macro_rules! impl_blocking_spi_write_iter {
                     Ok(())
                 }
             }
-            /// Implement [`WriteIter`] for [`Spi`] structs with [`Tx`]
-            /// [`Capability`] and an [`AtomicSize`]
+            /// Implement embedded-hal 0.2 [`WriteIter`] for [`Spi`] structs
+            /// with [`Tx`] [`Capability`] and an [`AtomicSize`]
             ///
-            /// The transaction `Length` must be `<= 4`. The transfer accepts
-            /// a slice of primitive integers, depending on the `Length`
-            /// (`u8`, `u16` or `u32`).
+            /// The transaction `Length` must be `<= 4`. The transfer accepts a
+            /// slice of primitive integers, depending on the `Length` (`u8`,
+            /// `u16` or `u32`).
             ///
             /// Because the `Capability` is `Tx`, this implementation never
             /// reads the DATA register and ignores all buffer overflow errors.
             ///
-            /// [`WriteIter`]: blocking::spi::WriteIter
+            /// [`WriteIter`]: embedded_hal_02::blocking::spi::WriteIter
             impl<P, M> $crate::ehal_02::blocking::spi::WriteIter<Word<$Length>> for Spi<Config<P, M, $Length>, Tx>
             where
                 Config<P, M, $Length>: ValidConfig,
