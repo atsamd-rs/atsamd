@@ -91,6 +91,7 @@
 //! [type classes]: crate::typelevel#type-classes
 //! [type-level enum]: crate::typelevel#type-level-enum
 //! [`OptionalKind`]: crate::typelevel#optionalkind-trait-pattern
+//! [`ToggleableOutputPin`]: crate::ehal_02::digital::v2::ToggleableOutputPin
 //! [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 
 #![allow(clippy::zero_prefixed_literal)]

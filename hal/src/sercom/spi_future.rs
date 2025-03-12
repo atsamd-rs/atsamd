@@ -183,11 +183,13 @@ use crate::typelevel::NoneT;
 
 use super::spi::{AnySpi, Error, Flags};
 
+#[allow(unused_imports)]
+// This isn't used in the `d11` or `d21` builds, but is for `doc` and `d5x`
+use super::spi::Spi;
+
 #[hal_cfg("sercom0-d5x")]
 use {
-    super::spi::{
-        Capability, Config, DynLength, OpMode, Spi, StaticLength, ValidConfig, ValidPads,
-    },
+    super::spi::{Capability, Config, DynLength, OpMode, StaticLength, ValidConfig, ValidPads},
     typenum::Unsigned,
 };
 
