@@ -401,6 +401,14 @@ where
             .modify(|_, w| w.threshold().variant(threshold));
     }
 
+    #[cfg(doc)]
+    #[hal_cfg(not("dmac-d5x"))]
+    /// This method is not present with the selected feature set, defined for
+    /// documentation only
+    pub fn fifo_threshold(&mut self) {
+        unimplemented!()
+    }
+
     /// Set burst length for the channel, in number of beats. A burst transfer
     /// is an atomic, uninterruptible operation.
     #[hal_cfg("dmac-d5x")]
@@ -409,6 +417,14 @@ where
         self.regs
             .chctrla
             .modify(|_, w| w.burstlen().variant(burst_length));
+    }
+
+    #[cfg(doc)]
+    #[hal_cfg(not("dmac-d5x"))]
+    /// This method is not present with the selected feature set, defined for
+    /// documentation only
+    pub fn burst_length(&mut self) {
+        unimplemented!()
     }
 
     /// Start the transfer.

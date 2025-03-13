@@ -202,6 +202,12 @@ type Data = u16;
 #[hal_cfg("sercom0-d5x")]
 type Data = u32;
 
+#[cfg(doc)]
+#[hal_cfg(not("sercom0-d5x"))]
+/// This type is not present with the selected feature set, defined for
+/// documentation only
+pub enum DynLength {}
+
 //=============================================================================
 // CheckBufLen
 //=============================================================================

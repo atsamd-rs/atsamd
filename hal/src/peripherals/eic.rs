@@ -146,6 +146,14 @@ where
             chan,
         }
     }
+
+    #[cfg(all(doc, feature = "async"))]
+    #[hal_cfg(not("eic-d5x"))]
+    /// This method is not present with the selected feature set, defined for
+    /// documentation only
+    pub fn into_future(self) {
+        unimplemented!()
+    }
 }
 
 /// EIC channel.
@@ -241,6 +249,14 @@ impl Eic {
         }
 
         eic
+    }
+
+    #[cfg(all(doc, feature = "async"))]
+    #[hal_cfg(not(any("eic-d11", "eic-d21")))]
+    /// This method is not present with the selected feature set, defined for
+    /// documentation only
+    pub fn into_future(self) {
+        unimplemented!()
     }
 
     /// Release the EIC and return the register block.
