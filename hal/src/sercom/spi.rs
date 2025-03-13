@@ -480,6 +480,34 @@ pub use pads::*;
 )]
 pub mod size {}
 
+#[cfg(doc)]
+#[hal_cfg(not(any("sercom0-d11", "sercom0-d21")))]
+/// This type is not present with the selected feature set, defined for
+/// documentation only
+pub enum NineBit {}
+
+#[cfg(doc)]
+#[hal_cfg(not(any("sercom0-d11", "sercom0-d21")))]
+/// This type is not present with the selected feature set, defined for
+/// documentation only
+pub enum EightBit {}
+
+#[cfg(doc)]
+#[hal_cfg(not(any("sercom0-d11", "sercom0-d21")))]
+/// This trait is not present with the selected feature set, defined for
+/// documentation only
+pub trait CharSize {
+    /// This type is not present with the selected feature set, defined for
+    /// documentation only
+    type Word;
+}
+
+#[cfg(doc)]
+#[hal_cfg(not("sercom0-d5x"))]
+/// This trait is not present with the selected feature set, defined for
+/// documentation only
+pub trait Length {}
+
 pub use size::*;
 
 /// Valid transaction [`Length`]s from the [`typenum`] crate
@@ -1777,6 +1805,16 @@ where
     #[inline]
     pub fn set_dyn_length(&mut self, length: u8) {
         self.config.set_dyn_length(length);
+    }
+}
+
+#[cfg(doc)]
+#[hal_cfg(not("sercom0-d5x"))]
+impl<C: ValidConfig, R, T> Spi<C, Tx, R, T> {
+    /// This method is not present with the selected feature set, defined for
+    /// documentation only
+    pub fn get_dyn_length(&self) -> u8 {
+        unimplemented!()
     }
 }
 
