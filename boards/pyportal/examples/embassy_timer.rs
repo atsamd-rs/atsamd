@@ -37,11 +37,14 @@ async fn main(_s: embassy_executor::Spawner) {
     // Select the 32khz source
     peripherals.osc32kctrl.rtcctrl().write(|w| w.rtcsel().ulp32k());
 
+    peripherals.rtc.mode0().dbgctrl().write(|w| w.dbgrun().set_bit());
+
     unsafe { hal::rtc::embassy::init(); }
 
 
     loop {
         red_led.toggle().unwrap();
+        hprintln!("The time is {}", RtcMode0::count(&peripherals.rtc));
         Timer::after_secs(1).await;
     }
 }

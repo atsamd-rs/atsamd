@@ -30,12 +30,13 @@ impl AtmelDriver {
 
         RtcMode0::set_compare(&rtc, 0, at);
         true
+
     }
 }
 
-#[interrupt]
-fn RTC() {
-    hprintln!("Handling interrupt"); // load bearing hprintln!
+fn handle_interrupt() {
+    hprintln!("interrupt handled");
+    
     // safety: inside a critical section
     let rtc = unsafe {
         Rtc::steal()
@@ -49,6 +50,11 @@ fn RTC() {
             DRIVER.set_alarm(&cs, next, &rtc);
         });
     }
+}
+
+#[interrupt]
+fn RTC() {
+    handle_interrupt()
 }
 
 impl Driver for AtmelDriver {
