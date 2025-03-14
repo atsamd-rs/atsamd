@@ -1,7 +1,8 @@
 # vim:ft=toml:
 [target.thumbv7em-none-eabihf]
-runner = "hf2 elf"
+# runner = "hf2 elf"
 # runner = 'probe-rs run --chip ATSAMD51J20A'
+runner = "gdb -q -x ./openocd.gdb"
 
 [build]
 target = "thumbv7em-none-eabihf"
