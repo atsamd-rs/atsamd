@@ -31,27 +31,27 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let mut serial = bsp::uart(
         &mut clocks,
         115200.Hz(),
-        peripherals.SERCOM3,
-        &mut peripherals.MCLK,
+        peripherals.sercom3,
+        &mut peripherals.mclk,
         pins.d0_rx,
         pins.d1_tx,
     );
     let mut spi1 = spi_master(
         &mut clocks,
         4.MHz(),
-        peripherals.SERCOM1,
-        &mut peripherals.MCLK,
+        peripherals.sercom1,
+        &mut peripherals.mclk,
         pins.sck,
         pins.mosi,
         pins.miso,
