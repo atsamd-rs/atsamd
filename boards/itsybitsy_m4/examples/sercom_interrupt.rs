@@ -55,8 +55,8 @@ type Uart0 = uart::Uart<uart::Config<UartPads0>, uart::Duplex>;
 pub fn uart0(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom0: pac::SERCOM0,
-    mclk: &mut pac::MCLK,
+    sercom0: pac::Sercom0,
+    mclk: &mut pac::Mclk,
     uart_rx: impl Into<IoSet3Sercom0Pad2>,
     uart_tx: impl Into<IoSet3Sercom0Pad0>,
 ) -> Uart0 {
@@ -80,22 +80,22 @@ fn main() -> ! {
     let mut dp = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        dp.GCLK,
-        &mut dp.MCLK,
-        &mut dp.OSC32KCTRL,
-        &mut dp.OSCCTRL,
-        &mut dp.NVMCTRL,
+        dp.gclk,
+        &mut dp.mclk,
+        &mut dp.osc32kctrl,
+        &mut dp.oscctrl,
+        &mut dp.nvmctrl,
     );
 
-    let pins = bsp::Pins::new(dp.PORT);
+    let pins = bsp::Pins::new(dp.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     // custom sercom uart configuration
     let mut serial_sercom0 = uart0(
         &mut clocks,
         115200.Hz(),
-        dp.SERCOM0,
-        &mut dp.MCLK,
+        dp.sercom0,
+        &mut dp.mclk,
         pins.a5,
         pins.a4,
     );
@@ -104,8 +104,8 @@ fn main() -> ! {
     let mut serial_sercom3 = bsp::uart(
         &mut clocks,
         115200.Hz(),
-        dp.SERCOM3,
-        &mut dp.MCLK,
+        dp.sercom3,
+        &mut dp.mclk,
         pins.d0_rx,
         pins.d1_tx,
     );
