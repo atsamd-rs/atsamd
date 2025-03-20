@@ -1803,6 +1803,16 @@ where
     }
 }
 
+#[cfg(doc)]
+#[hal_cfg(not("sercom0-d5x"))]
+impl<C: ValidConfig, R, T> Spi<C, Tx, R, T> {
+    /// This method is not present with the selected feature set, defined for
+    /// documentation only
+    pub fn get_dyn_length(&self) -> u8 {
+        unimplemented!()
+    }
+}
+
 //=============================================================================
 // AnySpi
 //=============================================================================
