@@ -77,6 +77,13 @@ pub fn hal_expr_to_devices(expr: &HalExpr) -> Result<BTreeSet<&'static str>, Err
             }
             Ok(devices)
         }
+        HalExpr::Not(arg) => {
+            let mut devices = all_devices();
+            for device in hal_expr_to_devices(arg)? {
+                devices.remove(device);
+            }
+            Ok(devices)
+        }
         HalExpr::Peripheral(lit) => Ok(lookup_peripheral(lit)?.iter().copied().collect()),
     }
 }
