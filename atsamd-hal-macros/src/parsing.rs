@@ -110,31 +110,47 @@ pub fn eat_eof(args: &mut impl Iterator<Item = TokenTree>) -> Result<(), Error> 
 pub enum HalExpr {
     All(Vec<HalExpr>),
     Any(Vec<HalExpr>),
+    Not(Box<HalExpr>),
     Peripheral(std::borrow::Cow<'static, str>),
 }
 
 pub fn eat_hal_expr(expr: &mut impl Iterator<Item = TokenTree>) -> Result<HalExpr, Error> {
     match expr.next() {
         Some(TokenTree::Ident(ident)) => {
-            let variant: Option<fn(_) -> _> = match ident.to_string().as_str() {
-                "all" => Some(HalExpr::All),
-                "any" => Some(HalExpr::Any),
-                _ => None,
-            };
-            if let Some(variant) = variant {
-                if let Some(TokenTree::Group(group)) = expr.next() {
-                    if group.delimiter() == Delimiter::Parenthesis {
-                        let mut inner = Vec::new();
-                        let mut args = group.stream().into_iter().peekable();
-                        while args.peek().is_some() {
-                            inner.push(eat_hal_expr(&mut args)?);
-                            if args.peek().is_none() {
-                                break;
-                            }
-                            eat_operator(",", &mut args)?;
+            if let Some(TokenTree::Group(group)) = expr.next() {
+                if group.delimiter() == Delimiter::Parenthesis {
+                    // First, get the arguments to the expression as `inner`
+                    let mut inner = Vec::new();
+                    let mut args = group.stream().into_iter().peekable();
+                    while args.peek().is_some() {
+                        inner.push(eat_hal_expr(&mut args)?);
+                        if args.peek().is_none() {
+                            break;
                         }
-                        eat_eof(&mut args)?;
-                        return Ok(variant(inner));
+                        eat_operator(",", &mut args)?;
+                    }
+                    eat_eof(&mut args)?;
+
+                    // Now that we have `inner`, parse the identifier and return
+                    // if we know how to handle it
+                    match ident.to_string().as_str() {
+                        "all" => {
+                            return Ok(HalExpr::All(inner));
+                        }
+                        "any" => {
+                            return Ok(HalExpr::Any(inner));
+                        }
+                        "not" => {
+                            return if inner.len() == 1 {
+                                Ok(HalExpr::Not(Box::new(inner.remove(0))))
+                            } else {
+                                Err(Error::GenericParseError {
+                                    expected: "not() expression takes exactly one argument"
+                                        .to_string(),
+                                })
+                            };
+                        }
+                        _ => {}
                     }
                 }
             }
@@ -147,6 +163,6 @@ pub fn eat_hal_expr(expr: &mut impl Iterator<Item = TokenTree>) -> Result<HalExp
         _ => (),
     }
     Err(Error::GenericParseError {
-        expected: "a string literal or an any()/all() expression".to_string(),
+        expected: "a string literal or an any()/all()/not() expression".to_string(),
     })
 }
