@@ -17,7 +17,6 @@ jobs:
       - name: Install Rust
         run: |
           rustup set profile minimal
-          rustup override set ${{ matrix.toolchain }}
           rustup target add thumbv6m-none-eabi
           rustup target add thumbv7em-none-eabihf
 
