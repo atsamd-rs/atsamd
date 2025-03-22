@@ -101,6 +101,9 @@ jobs:
 
           git remote add upstream https://github.com/atsamd-rs/docs.git
 
+          # https://stackoverflow.com/questions/64374179/how-to-push-to-another-repository-in-github-actions
+          git config --unset-all http.https://github.com/.extraheader
+
           # Disable command echoing and compute the base64 header in a wrapper
           # function, to avoid the token or the base64-encoded token from
           # hitting the logs.
