@@ -356,3 +356,27 @@ mod ioset {
 
 #[hal_cfg("sercom0-d5x")]
 pub use ioset::*;
+
+#[cfg(doc)]
+#[hal_cfg(not("sercom0-d5x"))]
+/// This trait is not present with the selected feature set, defined for
+/// documentation only
+pub trait IoSet {}
+
+#[cfg(doc)]
+#[hal_cfg(not("sercom0-d5x"))]
+/// This trait is not present with the selected feature set, defined for
+/// documentation only
+pub trait InIoSet {}
+
+#[cfg(doc)]
+#[hal_cfg(not("sercom0-d5x"))]
+/// This type is not present with the selected feature set, defined for
+/// documentation only
+pub enum UndocIoSet1 {}
+
+#[cfg(doc)]
+#[hal_cfg(not("sercom0-d5x"))]
+/// This type is not present with the selected feature set, defined for
+/// documentation only
+pub enum UndocIoSet2 {}

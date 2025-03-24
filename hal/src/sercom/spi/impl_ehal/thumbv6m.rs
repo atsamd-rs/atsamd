@@ -1,4 +1,5 @@
-//! Implement [`embedded_hal`] traits for [`Spi`] structs
+//! Implement Embedded HAL ([v0.2](crate::ehal_02) and [nb](ehal_nb)) traits for
+//! [`Spi`] structs
 //!
 //! As noted in the [spi module](super) documentation, the embedded-hal trait
 //! implementations vary by both [`Size`] and [`Capability`]. Each
@@ -21,7 +22,7 @@
 //! non-blocking fashion, but this can be done using
 #![cfg_attr(feature = "dma", doc = "[`DMA`](crate::dmac)")]
 #![cfg_attr(not(feature = "dma"), doc = "`DMA`")]
-//! or using interrupts and the [`spi_future`](super::super::spi_future) module.
+//! or using interrupts and the [`spi_future`](crate::sercom::spi_future) module.
 //!
 //! # Variations by [`Capability`]
 //!
@@ -331,11 +332,13 @@ where
 // spi::FullDuplex
 //=============================================================================
 
-/// Implement [`spi::FullDuplex`] for [`Spi`] structs with [`AtomicSize`]
+/// Implement embedded-hal-nb [`spi::FullDuplex`] for [`Spi`] structs with [`AtomicSize`]
 ///
 /// `spi::FullDuplex` is only implemented when the `Spi` struct has [`Duplex`]
 /// [`Capability`]. The [`Word`] size used in the implementation depends on the
 /// corresponding [`CharSize`].
+///
+/// [`spi::FullDuplex`]: ehal_nb::spi::FullDuplex
 impl<C> ehal_nb::spi::FullDuplex<C::Word> for Spi<C, Duplex>
 where
     C: ValidConfig,
@@ -364,11 +367,13 @@ where
     }
 }
 
-/// Implement [`spi::FullDuplex`] for [`Spi`] structs with [`AtomicSize`]
+/// Implement embedded-hal 0.2 [`spi::FullDuplex`] for [`Spi`] structs with [`AtomicSize`]
 ///
 /// `spi::FullDuplex` is only implemented when the `Spi` struct has [`Duplex`]
 /// [`Capability`]. The [`Word`] size used in the implementation depends on the
 /// corresponding [`CharSize`].
+///
+/// [`spi::FullDuplex`]: crate::ehal_02::spi::FullDuplex
 impl<C> crate::ehal_02::spi::FullDuplex<C::Word> for Spi<C, Duplex>
 where
     C: ValidConfig,
