@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Keyselect"],"struct":["CacrSpec"],"type":["CapwrenR","CapwrenW","KeyR","KeyW","R","W"]};

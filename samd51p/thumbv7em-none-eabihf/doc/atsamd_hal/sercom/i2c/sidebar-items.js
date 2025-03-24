@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BusState","Error","InactiveTimeout"],"struct":["Config","Flags","I2c","I2cFuture","InterruptHandler","Pads","Status"],"trait":["AnyConfig","PadSet"],"type":["ConfigSercom","I2cFutureDma","PadsFromIds","SpecificConfig","Word"]};

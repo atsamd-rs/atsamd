@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["clkctrl","ctrla","intenclr","intenset","intflag","rxctrl","rxdata","syncbusy","txctrl","txdata"],"struct":["RegisterBlock"],"type":["Clkctrl","Ctrla","Intenclr","Intenset","Intflag","Rxctrl","Rxdata","Syncbusy","Txctrl","Txdata"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DhcsrSpec"],"type":["CDebugenR","CDebugenW","CHaltR","CHaltW","CMaskintsR","CMaskintsW","CSnapstallR","CSnapstallW","CStepR","CStepW","DbgkeyW","R","SHaltR","SLockupR","SRegrdyR","SResetStR","SRetireStR","SSleepR","W"]};

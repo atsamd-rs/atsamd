@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["SwtrigSpec"],"type":["FlushR","FlushW","R","StartR","StartW","W"]};

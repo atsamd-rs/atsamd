@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CtrlbSpec"],"type":["ChsizeR","ChsizeW","ColdenR","ColdenW","EncR","EncW","PmodeR","PmodeW","R","RxenR","RxenW","SbmodeR","SbmodeW","SfdeR","SfdeW","TxenR","TxenW","W"]};

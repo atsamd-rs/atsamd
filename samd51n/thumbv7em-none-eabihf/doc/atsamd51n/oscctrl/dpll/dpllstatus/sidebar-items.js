@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DpllstatusSpec"],"type":["ClkrdyR","LockR","R"]};

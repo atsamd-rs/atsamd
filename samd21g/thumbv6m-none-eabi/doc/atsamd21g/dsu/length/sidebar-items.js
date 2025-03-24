@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["LengthSpec"],"type":["LengthR","LengthW","R","W"]};

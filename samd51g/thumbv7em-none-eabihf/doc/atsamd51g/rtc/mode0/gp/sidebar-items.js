@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["GpSpec"],"type":["GpR","GpW","R","W"]};

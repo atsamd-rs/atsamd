@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DseqstatSpec"],"type":["AvgctrlR","BusyR","CtrlbR","GaincorrR","InputctrlR","OffsetcorrR","R","RefctrlR","SampctrlR","WinltR","WinutR"]};

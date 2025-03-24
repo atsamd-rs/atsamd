@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Typehselect","Typelselect"],"struct":["EccerrSpec"],"type":["AddrR","R","TypehR","TypelR"]};

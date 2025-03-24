@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["EpstatusSpec"],"type":["Bk0rdyR","Bk1rdyR","CurbkR","DtglinR","DtgloutR","R","Stallrq0R","Stallrq1R"]};

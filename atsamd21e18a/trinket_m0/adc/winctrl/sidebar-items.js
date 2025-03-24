@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["WINMODER","Possible values of the field `WINMODE`"],["WINMODEW","Values that can be written to the field `WINMODE`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_WINMODEW","Proxy"]]});

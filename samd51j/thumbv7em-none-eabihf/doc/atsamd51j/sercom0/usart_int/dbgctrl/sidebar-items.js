@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DbgctrlSpec"],"type":["DbgstopR","DbgstopW","R","W"]};

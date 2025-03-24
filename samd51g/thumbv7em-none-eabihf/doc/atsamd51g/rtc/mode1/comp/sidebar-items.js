@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CompSpec"],"type":["CompR","CompW","R","W"]};

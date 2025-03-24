@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Prescaler0select","Prescaler1select","States0select","States1select","Tickonselect"],"struct":["DprescalerSpec"],"type":["Prescaler0R","Prescaler0W","Prescaler1R","Prescaler1W","R","States0R","States0W","States1R","States1W","TickonR","TickonW","W"]};

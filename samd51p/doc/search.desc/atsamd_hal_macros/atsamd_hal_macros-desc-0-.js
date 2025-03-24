@@ -1,0 +1,1 @@
+searchState.loadedDescShard("atsamd_hal_macros", 0, "This crate contains proc-macros to be used by the …\nAttribute macro which expands to a suitable <code>#[cfg(...)]</code> …\nHelper macro to make conditional docs work nicer\nHelper macro to allow using <code>#[hal_cfg(..)]</code> macro in more …\nMacro which expands to a <code>mod foo;</code> item with different …")

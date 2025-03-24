@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["CALIBR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["WRTLOCKR","Value of the field"],["_CALIBW","Proxy"],["_WRTLOCKW","Proxy"]]});

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Dualselselect","Prescalerselect"],"struct":["CtrlaSpec"],"type":["DualselR","DualselW","EnableR","EnableW","OndemandR","OndemandW","PrescalerR","PrescalerW","R","R2rR","R2rW","RunstdbyR","RunstdbyW","SlaveenR","SlaveenW","SwrstR","SwrstW","W"]};

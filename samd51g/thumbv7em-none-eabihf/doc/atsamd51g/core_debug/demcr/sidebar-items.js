@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DemcrSpec"],"type":["MonEnR","MonEnW","MonPendR","MonPendW","MonReqR","MonReqW","MonStepR","MonStepW","R","TrcenaR","TrcenaW","VcBuserrR","VcBuserrW","VcChkerrR","VcChkerrW","VcCoreresetR","VcCoreresetW","VcHarderrR","VcHarderrW","VcInterrR","VcInterrW","VcMmerrR","VcMmerrW","VcNocperrR","VcNocperrW","VcStaterrR","VcStaterrW","W"]};

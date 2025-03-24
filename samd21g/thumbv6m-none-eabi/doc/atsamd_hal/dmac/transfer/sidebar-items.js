@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BeatSize"],"struct":["BufferPair","Transfer"],"trait":["AnyBufferPair","Beat","Buffer"],"type":["BufferPairBeat","BufferPairDst","BufferPairSrc","SpecificBufferPair"]};

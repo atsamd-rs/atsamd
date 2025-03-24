@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["CONFIGURATION_NONE","CONFIGURATION_VALUE","DEFAULT_ALTERNATE_SETTING"],"enum":["UsbDeviceState","UsbRev"],"struct":["StringDescriptors","UsbDevice","UsbDeviceBuilder","UsbVidPid"]};

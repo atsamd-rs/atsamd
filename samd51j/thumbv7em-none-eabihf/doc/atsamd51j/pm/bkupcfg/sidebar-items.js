@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Bramcfgselect"],"struct":["BkupcfgSpec"],"type":["BramcfgR","BramcfgW","R","W"]};

@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Direct Memory Access Controller"><title>atsamd_hal::dmac - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module dmac</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#direct-memory-access-controller" title="Direct Memory Access Controller">Direct Memory Access Controller</a></li><li><a href="#enabling-dma-support" title="Enabling DMA support">Enabling DMA support</a></li><li><a href="#channels-and-ram" title="Channels and RAM">Channels and RAM</a></li><li><a href="#priority-levels-and-arbitration" title="Priority levels and Arbitration">Priority levels and Arbitration</a></li><li><a href="#interrupts" title="Interrupts">Interrupts</a></li><li><a href="#about-static-lifetimes" title="About static lifetimes">About static lifetimes</a></li><li><a href="#unsafe-api" title="Unsafe API">Unsafe API</a></li><li><a href="#example" title="Example">Example</a></li><li><a href="#transfer-recycling" title="`Transfer` recycling"><code>Transfer</code> recycling</a></li><li><a href="#waker-operation" title="Waker operation">Waker operation</a><ul><li><a href="#rtic-example" title="RTIC example">RTIC example</a></li></ul></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#constants" title="Constants">Constants</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate atsamd_<wbr>hal</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../index.html">atsamd_hal</a></span><h1>Module <span>dmac</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/atsamd_hal/dmac/mod.rs.html#1-530">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="direct-memory-access-controller"><a class="doc-anchor" href="#direct-memory-access-controller">§</a>Direct Memory Access Controller</h2>
+<p>This library provides a type-safe API with compile-time guarantees
+that the peripheral and individual DMA channels are correctly configured
+before launching a DMA transfer.</p>
+<p>This module currently supports most basic DMA
+functions, including memory-to-memory,
+memory-to-peripheral, peripheral-to-memory,
+and peripheral-to-peripheral transfers.
+One-shot and circular transfers are supported. More complex
+transfer configurations, including multi-buffer
+(linked-list descriptor) transfers, are not currently supported.</p>
+<p>Transfers are supported for <code>i8</code>, <code>u8</code>, <code>i16</code>, <code>u16</code>, <code>i32</code>, <code>u32</code> and <code>f32</code>
+beat sizes.</p>
+<h2 id="enabling-dma-support"><a class="doc-anchor" href="#enabling-dma-support">§</a>Enabling DMA support</h2>
+<p>You must enable the <code>dma</code> feature in your board support crate
+or final executable.</p>
+<p>Add this to your <code>Cargo.toml</code>:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>[features]
+dma = [<span class="string">"atsamd-hal/dma"</span>]</code></pre></div>
+<h2 id="channels-and-ram"><a class="doc-anchor" href="#channels-and-ram">§</a>Channels and RAM</h2>
+<p>Using DMA channels require a certain amount of RAM - 32 bytes per channel,
+to be exact. RAM will be not allocated unless the <code>dma</code> feature is enabled
+for the HAL. By default, half the channels available on the chip are
+enabled. If you need all DMA channels enabled, enable the <code>max-channels</code>
+feature in your board support crate or final executable.</p>
+<p><code>Cargo.toml</code></p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>[features]
+dma = [<span class="string">"atsamd-hal/dma"</span>]
+max-channels = [<span class="string">"dma"</span>, <span class="string">"atsamd-hal/max-channels"</span>]</code></pre></div>
+<p>RAM usage per chip family:</p>
+<ul>
+<li>
+<p><code>ATSAMD11</code> - 3 channels (default): 96 bytes</p>
+</li>
+<li>
+<p><code>ATSAMD11</code> - 6 channels (max): 192 bytes</p>
+</li>
+<li>
+<p><code>ATSAMD21</code> - 6 channels (default): 192 bytes</p>
+</li>
+<li>
+<p><code>ATSAMD21</code>: - 12 channels (max): 384 bytes</p>
+</li>
+<li>
+<p><code>ATSAMD51/ATSAME5x</code>: - 16 channels (default): 512 bytes</p>
+</li>
+<li>
+<p><code>ATSAMD51/ATSAME5x</code>: - 32 channels (max): 1024 bytes</p>
+</li>
+</ul>
+<h2 id="priority-levels-and-arbitration"><a class="doc-anchor" href="#priority-levels-and-arbitration">§</a>Priority levels and Arbitration</h2>
+<p>The DMAC features 4 priority levels. Level 3 has the highest priority
+and level 0 has the lowest. Each channel can be assigned to one priority
+level. If two channels with the same priority level are requested to
+execute a transfer at the same time, the lowest channel number will have
+priority (in the default, ie static, arbitration scheme).</p>
+<p>By default, all priority levels are enabled when initializing the DMAC
+(see <a href="dma_controller/struct.DmaController.html#method.init" title="associated function atsamd_hal::dmac::dma_controller::DmaController::init"><code>DmaController::init</code></a>). Levels
+can be enabled or disabled through the
+<a href="dma_controller/struct.DmaController.html#method.enable_levels" title="method atsamd_hal::dmac::dma_controller::DmaController::enable_levels"><code>DmaController::enable_levels</code></a> and
+<a href="dma_controller/struct.DmaController.html#method.disable_levels" title="method atsamd_hal::dmac::dma_controller::DmaController::disable_levels"><code>DmaController::disable_levels</code></a> methods. These methods must be supplied a
+<a href="dma_controller/struct.PriorityLevelMask.html" title="struct atsamd_hal::dmac::dma_controller::PriorityLevelMask"><code>PriorityLevelMask</code></a>.</p>
+<p>Round-Robin Arbitration can be enabled for multiple priority levels
+simultaneously by using the
+<a href="dma_controller/struct.DmaController.html#method.round_robin_arbitration" title="method atsamd_hal::dmac::dma_controller::DmaController::round_robin_arbitration"><code>DmaController::round_robin_arbitration</code></a> and
+<a href="dma_controller/struct.DmaController.html#method.static_arbitration" title="method atsamd_hal::dmac::dma_controller::DmaController::static_arbitration"><code>DmaController::static_arbitration</code></a> methods. These methods must be
+supplied a <a href="dma_controller/struct.RoundRobinMask.html" title="struct atsamd_hal::dmac::dma_controller::RoundRobinMask"><code>RoundRobinMask</code></a>. By default, all priority levels are
+initialized with a static arbitration scheme. See ATSAMD21 datasheet section
+19.6.2.4 for more information.</p>
+<h2 id="interrupts"><a class="doc-anchor" href="#interrupts">§</a>Interrupts</h2>
+<p>This driver does not use or manage interrupts issued by the DMAC. Individual
+channels can be configured to generate interrupts when the transfer is
+complete, an error is detected or the channel is suspended. However, these
+interrupts will not be triggered unless the DMAC interrupt is unmasked in
+the NVIC. You will be responsible for clearing the interrupt flags in the
+ISR.</p>
+<h2 id="about-static-lifetimes"><a class="doc-anchor" href="#about-static-lifetimes">§</a>About static lifetimes</h2>
+<p>The safe API this driver offers requires all buffers (source and
+destination) to have <code>'static</code> lifetimes. This is because
+<a href="https://doc.rust-lang.org/1.85.0/core/mem/fn.forget.html" title="fn core::mem::forget"><code>mem::forget</code></a> is a safe API, and therefore relying on
+<a href="https://doc.rust-lang.org/1.85.0/core/mem/fn.drop.html" title="fn core::mem::drop"><code>mem::drop</code></a> to terminate or abort a transfer
+does not guarantee the transfer will be terminated (specifically if
+<a href="https://doc.rust-lang.org/1.85.0/core/mem/fn.forget.html" title="fn core::mem::forget"><code>mem::forget</code></a> is called on a <code>Transfer</code> containaing
+a <code>Channel&lt;Id, Busy&gt;</code>). This could cause the compiler to reclaim
+stack-allocated buffers for reuse while the DMAC is still writing to/reading
+from them! Needless to say that is very unsafe.
+Refer <a href="https://docs.rust-embedded.org/embedonomicon/dma.html#memforget">here</a>
+or <a href="https://blog.japaric.io/safe-dma/#leakpocalypse">here</a> for more information.
+You may choose to forgo the <code>'static</code> lifetimes by using the unsafe API and
+the <a href="transfer/struct.Transfer.html#method.new_unchecked" title="associated function atsamd_hal::dmac::transfer::Transfer::new_unchecked"><code>Transfer::new_unchecked</code></a> method.</p>
+<h2 id="unsafe-api"><a class="doc-anchor" href="#unsafe-api">§</a>Unsafe API</h2>
+<p>This driver also offers an <code>unsafe</code> API through the
+<a href="transfer/struct.Transfer.html#method.new_unchecked" title="associated function atsamd_hal::dmac::transfer::Transfer::new_unchecked"><code>Transfer::new_unchecked</code></a> method. It
+does not enforce <code>'static</code> lifetimes, and allow using buffers of different
+lengths. If you choose to use these methods, you MUST prove that
+a <code>Transfer</code> containing a <code>Channel&lt;Id, Busy&gt;</code> will NEVER be dropped. You
+<em>must</em> call <code>wait()</code> or <code>stop()</code> manually on every
+<code>Transfer</code> that has been created using the unsafe API. No destructor or
+<code>Drop</code> implementation is offered for <code>Transfer</code>s.</p>
+<p>Additionally, you can (unsafely) implement your own buffer types through the
+unsafe <a href="transfer/trait.Buffer.html" title="trait atsamd_hal::dmac::transfer::Buffer"><code>Buffer</code></a> trait.</p>
+<h2 id="example"><a class="doc-anchor" href="#example">§</a>Example</h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>peripherals = Peripherals::take().unwrap();
+<span class="kw">let </span><span class="kw-2">mut </span>dmac = DmaController::init(peripherals.DMAC, <span class="kw-2">&amp;mut </span>peripherals.PM);
+<span class="comment">// Get individual handles to DMA channels
+</span><span class="kw">let </span>channels = dmac.split();
+
+<span class="comment">// Initialize DMA Channel 0
+</span><span class="kw">let </span>chan0 = channels.<span class="number">0</span>.init(PriorityLevel::LVL0, <span class="bool-val">false</span>, <span class="kw-2">&amp;mut </span>dmac);
+
+<span class="comment">// Setup a DMA transfer (memory-to-memory -&gt; incrementing source, incrementing destination)
+// NOTE: buf_src and buf_dest should be either:
+// &amp;'static mut T, &amp;'static mut [T], or &amp;'static mut [T; N] where T: BeatSize
+</span><span class="kw">let </span>xfer = Transfer::new(chan0, buf_src, buf_dest, <span class="bool-val">false</span>).begin(
+    <span class="kw-2">&amp;mut </span>dmac,
+    TriggerSource::DISABLE,
+    TriggerAction::BLOCK,
+);
+
+<span class="comment">// Wait for transfer to complete and grab resulting buffers
+</span><span class="kw">let </span>(chan0, buf_src, buf_dest, <span class="kw">_</span>) = xfer.wait(<span class="kw-2">&amp;mut </span>dmac);
+
+<span class="comment">// (Optional) free the [`DmaController`] struct and return the underlying PAC struct
+</span>channels.<span class="number">0 </span>= chan0.into();
+<span class="kw">let </span>dmac = dmac.free(channels, <span class="kw-2">&amp;mut </span>peripherals.PM);</code></pre></div>
+<h2 id="transfer-recycling"><a class="doc-anchor" href="#transfer-recycling">§</a><a href="transfer/struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer"><code>Transfer</code></a> recycling</h2>
+<p>A common use-case with DMAC transfers is to trigger a new transfer as soon
+as the old transfer is completed. To avoid having to
+<a href="transfer/struct.Transfer.html#method.stop" title="method atsamd_hal::dmac::transfer::Transfer::stop"><code>stop</code></a> a <a href="transfer/struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer"><code>Transfer</code></a>, build a new <a href="transfer/struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer"><code>Transfer</code></a> (with
+<a href="transfer/struct.Transfer.html#method.new" title="associated function atsamd_hal::dmac::transfer::Transfer::new"><code>new</code></a> or <a href="transfer/struct.Transfer.html#method.new_from_arrays" title="associated function atsamd_hal::dmac::transfer::Transfer::new_from_arrays"><code>new_from_arrays</code></a>)
+then call <a href="transfer/struct.Transfer.html#method.begin" title="method atsamd_hal::dmac::transfer::Transfer::begin"><code>begin</code></a>, a <a href="transfer/struct.Transfer.html#method.recycle" title="method atsamd_hal::dmac::transfer::Transfer::recycle"><code>Transfer::recycle</code></a> method
+is provided. If the buffer lengths match and the previous transfer is
+completed, a new transfer will immediately be triggered using the provided
+source and destination buffers. If the recycling operation is succesful,
+<code>Ok((source, destination))</code> containing the old source and destination
+buffers is returned. Otherwise, <code>Err(_)</code> is returned.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>new_source = produce_source();
+<span class="kw">let </span>new_destination = produce_destination();
+
+<span class="comment">// Assume xfer is a `Busy` `Transfer`
+</span><span class="kw">let </span>(old_source, old_dest) = xfer.recycle(new_source, new_destination).unwrap();</code></pre></div>
+<h2 id="waker-operation"><a class="doc-anchor" href="#waker-operation">§</a>Waker operation</h2>
+<p>A <a href="transfer/struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer"><code>Transfer</code></a> can also accept a function or closure that will be called on
+completion of the transaction, acting like a waker.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>wake_up() {
+    <span class="comment">//...
+</span>}
+
+<span class="kw">fn </span>use_waker&lt;<span class="kw">const </span>N: usize&gt;(dmac: DmaController,
+    source: <span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="kw-2">mut </span>[u8; N],
+    destination: <span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="kw-2">mut </span>[u8; N]
+){
+    <span class="kw">let </span>chan0 = dmac.split().<span class="number">0</span>;
+    <span class="kw">let </span>xfer = Transfer::new_from_arrays(chan0, source, destination, <span class="bool-val">false</span>)
+        .with_waker(wake_up)
+        .begin();
+    <span class="comment">//...
+</span>}</code></pre></div>
+<h3 id="rtic-example"><a class="doc-anchor" href="#rtic-example">§</a>RTIC example</h3>
+<p>The <a href="https://rtic.rs">RTIC</a> framework provides a convenient way to store a <code>static</code>ally
+allocated <a href="transfer/struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer"><code>Transfer</code></a>, so that it can be accessed by both the interrupt
+handlers and user code. The following example shows how <a href="transfer/struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer"><code>Transfer</code></a>s might
+be used for a series of transactions. It uses features from the latest
+release of <a href="https://rtic.rs">RTIC</a>, <code>v0.6-alpha.4</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::dmac::<span class="kw-2">*</span>;
+
+<span class="kw">const </span>LENGTH: usize = <span class="number">50</span>;
+<span class="kw">type </span>TransferBuffer = <span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="kw-2">mut </span>[u8; LENGTH];
+<span class="kw">type </span>Xfer = Transfer&lt;Channel&lt;Ch0, Busy&gt;, TransferBuffer, TransferBuffer&gt;;
+
+<span class="attr">#[resources]
+</span><span class="kw">struct </span>Resources {
+    <span class="attr">#[lock_free]
+    #[init(<span class="prelude-val">None</span>)]
+    </span>opt_xfer: <span class="prelude-ty">Option</span>&lt;Xfer&gt;,
+
+    <span class="attr">#[lock_free]
+    #[init(<span class="prelude-val">None</span>)]
+    </span>opt_channel: <span class="prelude-ty">Option</span>&lt;Channel&lt;Ch0, Ready&gt;&gt;,
+}
+
+<span class="comment">// Note: Assume interrupts have already been enabled for the concerned channel
+</span><span class="attr">#[task(resources = [opt_xfer, opt_channel]</span>)]
+<span class="kw">fn </span>task(ctx: task::Context) {
+    <span class="kw">let </span>task::Context { opt_xfer } = ctx;
+    <span class="kw">match </span>opt_xfer {
+        <span class="prelude-val">Some</span>(xfer) =&gt; {
+            <span class="kw">if </span>xfer.complete() {
+                <span class="kw">let </span>(chan0, _source, dest, _payload) = xfer.take().unwrap().stop();
+                <span class="kw-2">*</span>opt_channel = <span class="prelude-val">Some</span>(chan0);
+                consume_data(buf);
+            }
+        }
+        <span class="prelude-val">None </span>=&gt; {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(chan0) = opt_channel.take() {
+                <span class="kw">let </span>source: [u8; <span class="number">50</span>] = produce_source();
+                <span class="kw">let </span>dest: [u8; <span class="number">50</span>] = produce_destination();
+                <span class="kw">let </span>xfer = opt_xfer.get_or_insert(
+                    Transfer::new_from_arrays(channel0, source, destination)
+                        .with_waker(|| { task::spawn().ok(); })
+                        .begin()
+                );
+            }
+        }
+    }
+}
+
+<span class="attr">#[task(binds = DMAC, resources = [opt_future]</span>)]
+<span class="kw">fn </span>tcmpl(ctx: tcmpl::Context) {
+    ctx.resources.opt_xfer.as_mut().unwrap().callback();
+}</code></pre></div>
+</div></details><h2 id="reexports" class="section-header">Re-exports<a href="#reexports" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><code>pub use <a class="mod" href="channel/index.html" title="mod atsamd_hal::dmac::channel">channel</a>::*;</code></div></li><li><div class="item-name"><code>pub use <a class="mod" href="dma_controller/index.html" title="mod atsamd_hal::dmac::dma_controller">dma_controller</a>::*;</code></div></li><li><div class="item-name"><code>pub use <a class="mod" href="transfer/index.html" title="mod atsamd_hal::dmac::transfer">transfer</a>::*;</code></div></li><li><div class="item-name"><code>pub use <a class="mod" href="async_api/index.html" title="mod atsamd_hal::dmac::async_api">async_api</a>::*;</code></div></li></ul><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="async_api/index.html" title="mod atsamd_hal::dmac::async_api">async_<wbr>api</a></div><div class="desc docblock-short">APIs for async DMAC operations.</div></li><li><div class="item-name"><a class="mod" href="channel/index.html" title="mod atsamd_hal::dmac::channel">channel</a></div><div class="desc docblock-short">Abstractions over individual DMA channels</div></li><li><div class="item-name"><a class="mod" href="dma_controller/index.html" title="mod atsamd_hal::dmac::dma_controller">dma_<wbr>controller</a></div><div class="desc docblock-short">Abstractions to setup and use the DMA controller</div></li><li><div class="item-name"><a class="mod" href="transfer/index.html" title="mod atsamd_hal::dmac::transfer">transfer</a></div><div class="desc docblock-short">DMA transfer abstractions</div></li></ul><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.Error.html" title="enum atsamd_hal::dmac::Error">Error</a></div><div class="desc docblock-short">Runtime errors that may occur when dealing with DMA transfers.</div></li></ul><h2 id="constants" class="section-header">Constants<a href="#constants" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="constant" href="constant.NUM_CHANNELS.html" title="constant atsamd_hal::dmac::NUM_CHANNELS">NUM_<wbr>CHANNELS</a></div><div class="desc docblock-short">Number of DMA channels used by the driver</div></li></ul><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.Result.html" title="type atsamd_hal::dmac::Result">Result</a></div><div class="desc docblock-short">Result for DMAC operations</div></li></ul></section></div></main></body></html>

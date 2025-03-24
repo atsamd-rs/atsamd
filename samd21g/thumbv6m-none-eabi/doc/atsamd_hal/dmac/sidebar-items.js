@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["NUM_CHANNELS"],"enum":["Error"],"mod":["async_api","channel","dma_controller","transfer"],"type":["Result"]};

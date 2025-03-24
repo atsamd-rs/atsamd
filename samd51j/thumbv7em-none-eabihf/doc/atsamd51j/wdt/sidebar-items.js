@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["clear","config","ctrla","ewctrl","intenclr","intenset","intflag","syncbusy"],"struct":["RegisterBlock"],"type":["Clear","Config","Ctrla","Ewctrl","Intenclr","Intenset","Intflag","Syncbusy"]};

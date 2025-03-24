@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["EpintflagSpec"],"type":["R","RxstpR","RxstpW","Stall0R","Stall0W","Stall1R","Stall1W","Trcpt0R","Trcpt0W","Trcpt1R","Trcpt1W","Trfail0R","Trfail0W","Trfail1R","Trfail1W","W"]};

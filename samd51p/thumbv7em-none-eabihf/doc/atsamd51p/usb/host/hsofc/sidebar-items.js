@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["HsofcSpec"],"type":["FlencR","FlencW","FlenceR","FlenceW","R","W"]};

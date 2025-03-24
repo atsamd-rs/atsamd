@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Modeselect"],"struct":["CtrlaSpec"],"type":["EnableR","EnableW","ModeR","ModeW","R","RunstdbyR","RunstdbyW","SwrstR","SwrstW","W"]};

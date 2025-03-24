@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PerbufDith4ModeSpec"],"type":["DitherbufR","DitherbufW","PerbufR","PerbufW","R","W"]};

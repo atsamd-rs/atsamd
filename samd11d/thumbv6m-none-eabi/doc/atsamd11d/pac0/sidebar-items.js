@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["wpclr","wpset"],"struct":["RegisterBlock"],"type":["Wpclr","Wpset"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Hourselect"],"struct":["AlarmSpec"],"type":["DayR","DayW","HourR","HourW","MinuteR","MinuteW","MonthR","MonthW","R","SecondR","SecondW","W","YearR","YearW"]};

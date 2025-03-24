@@ -1,0 +1,9 @@
+(function() {
+    var implementors = Object.fromEntries([["atsamd_hal",[["impl <a class=\"trait\" href=\"embedded_hal/digital/trait.ErrorType.html\" title=\"trait embedded_hal::digital::ErrorType\">ErrorType</a> for <a class=\"struct\" href=\"atsamd_hal/gpio/dynpin/struct.DynPin.html\" title=\"struct atsamd_hal::gpio::dynpin::DynPin\">DynPin</a>"],["impl&lt;I, M&gt; <a class=\"trait\" href=\"embedded_hal/digital/trait.ErrorType.html\" title=\"trait embedded_hal::digital::ErrorType\">ErrorType</a> for <a class=\"struct\" href=\"atsamd_hal/gpio/pin/struct.Pin.html\" title=\"struct atsamd_hal::gpio::pin::Pin\">Pin</a>&lt;I, M&gt;<div class=\"where\">where\n    I: <a class=\"trait\" href=\"atsamd_hal/gpio/pin/trait.PinId.html\" title=\"trait atsamd_hal::gpio::pin::PinId\">PinId</a>,\n    M: <a class=\"trait\" href=\"atsamd_hal/gpio/pin/trait.PinMode.html\" title=\"trait atsamd_hal::gpio::pin::PinMode\">PinMode</a>,</div>"],["impl&lt;P, Id, F&gt; <a class=\"trait\" href=\"embedded_hal/digital/trait.ErrorType.html\" title=\"trait embedded_hal::digital::ErrorType\">ErrorType</a> for <a class=\"struct\" href=\"atsamd_hal/eic/struct.ExtInt.html\" title=\"struct atsamd_hal::eic::ExtInt\">ExtInt</a>&lt;P, Id, F&gt;<div class=\"where\">where\n    P: <a class=\"trait\" href=\"atsamd_hal/prelude/trait.EicPin.html\" title=\"trait atsamd_hal::prelude::EicPin\">EicPin</a>,\n    Id: <a class=\"trait\" href=\"atsamd_hal/eic/trait.ChId.html\" title=\"trait atsamd_hal::eic::ChId\">ChId</a>,</div>"]]],["embedded_hal",[]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":57,"fragment_lengths":[1447,20]}

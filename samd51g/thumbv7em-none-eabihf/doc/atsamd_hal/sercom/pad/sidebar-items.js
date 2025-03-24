@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["IoSet1","IoSet2","IoSet3","IoSet4","IoSet5","IoSet6","Pad0","Pad1","Pad2","Pad3","UndocIoSet1","UndocIoSet2"],"trait":["GetOptionalPad","GetPad","InIoSet","IoSet","IsI2cPad","IsPad","OptionalPad","OptionalPadNum","PadNum","SomePad"],"type":["Pad","PadMode"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Samplenumselect"],"struct":["AvgctrlSpec"],"type":["AdjresR","AdjresW","R","SamplenumR","SamplenumW","W"]};

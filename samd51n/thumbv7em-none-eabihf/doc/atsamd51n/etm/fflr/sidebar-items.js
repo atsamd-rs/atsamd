@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["FflrSpec"],"type":["R","W"]};

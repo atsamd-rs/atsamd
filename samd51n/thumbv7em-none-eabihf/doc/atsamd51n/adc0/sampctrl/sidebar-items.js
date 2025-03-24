@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["SampctrlSpec"],"type":["OffcompR","OffcompW","R","SamplenR","SamplenW","W"]};

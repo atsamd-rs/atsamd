@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["clkctrl","ctrl","genctrl","gendiv","status"],"struct":["RegisterBlock"],"type":["Clkctrl","Ctrl","Genctrl","Gendiv","Status"]};

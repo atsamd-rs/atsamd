@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["SwtrigctrlSpec"],"type":["R","Swtrig0R","Swtrig0W","Swtrig1R","Swtrig1W","Swtrig2R","Swtrig2W","Swtrig3R","Swtrig3W","Swtrig4R","Swtrig4W","Swtrig5R","Swtrig5W","W"]};

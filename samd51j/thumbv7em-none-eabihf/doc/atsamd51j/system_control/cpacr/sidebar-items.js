@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Cp10select","Cp11select"],"struct":["CpacrSpec"],"type":["Cp10R","Cp10W","Cp11R","Cp11W","R","W"]};

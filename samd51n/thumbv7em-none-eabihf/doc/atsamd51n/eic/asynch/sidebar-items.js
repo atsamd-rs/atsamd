@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Asynchselect"],"struct":["AsynchSpec"],"type":["AsynchR","AsynchW","R","W"]};

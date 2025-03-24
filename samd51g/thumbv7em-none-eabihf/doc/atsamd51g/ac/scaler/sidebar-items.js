@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ScalerSpec"],"type":["R","ValueR","ValueW","W"]};

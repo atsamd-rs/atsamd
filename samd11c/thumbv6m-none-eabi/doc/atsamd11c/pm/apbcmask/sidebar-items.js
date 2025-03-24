@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ApbcmaskSpec"],"type":["Ac_R","Ac_W","Adc_R","Adc_W","Dac_R","Dac_W","Evsys_R","Evsys_W","Pac2_R","Pac2_W","Ptc_R","Ptc_W","R","Sercom0_R","Sercom0_W","Sercom1_R","Sercom1_W","Tc1_R","Tc1_W","Tc2_R","Tc2_W","Tcc0_R","Tcc0_W","W"]};

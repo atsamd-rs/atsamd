@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["MemtypeSpec"],"type":["R","SmempR"]};

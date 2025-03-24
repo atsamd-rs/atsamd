@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DynApbId"],"struct":["Apb","ApbClk","ApbClks","ApbToken","ApbTokens"],"trait":["ApbId"]};

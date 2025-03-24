@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Wmodeselect"],"struct":["SeecfgSpec"],"type":["AprdisR","AprdisW","R","W","WmodeR","WmodeW"]};

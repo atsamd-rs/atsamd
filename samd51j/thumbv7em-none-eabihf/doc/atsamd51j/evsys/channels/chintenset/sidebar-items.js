@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ChintensetSpec"],"type":["EvdR","EvdW","OvrR","OvrW","R","W"]};

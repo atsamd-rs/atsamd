@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["MasterSpec"],"type":["EnR","EnW","HaltreqR","HaltreqW","MaskR","MaskW","R","RamprivR","RamprivW","SfrwprivR","SfrwprivW","TstartenR","TstartenW","TstopenR","TstopenW","W"]};

@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["TYPEHR","Possible values of the field `TYPEH`"],["TYPELR","Possible values of the field `TYPEL`"]],"struct":[["ADDRR","Value of the field"],["R","Value read from the register"]]});

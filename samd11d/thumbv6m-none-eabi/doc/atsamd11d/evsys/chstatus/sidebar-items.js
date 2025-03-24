@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ChstatusSpec"],"type":["Chbusy0R","Chbusy1R","Chbusy2R","Chbusy3R","Chbusy4R","Chbusy5R","R","Usrrdy0R","Usrrdy1R","Usrrdy2R","Usrrdy3R","Usrrdy4R","Usrrdy5R"]};

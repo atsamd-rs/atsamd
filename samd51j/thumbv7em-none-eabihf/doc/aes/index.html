@@ -1,0 +1,66 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Pure Rust implementation of the Advanced Encryption Standard (a.k.a. Rijndael)"><title>aes - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="aes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../static.files/storage-59e33391.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="icon" href="https://raw.githubusercontent.com/RustCrypto/meta/master/logo.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button><a class="logo-container" href="../aes/index.html"><img src="https://raw.githubusercontent.com/RustCrypto/meta/master/logo.svg" alt=""></a></nav><nav class="sidebar"><div class="sidebar-crate"><a class="logo-container" href="../aes/index.html"><img src="https://raw.githubusercontent.com/RustCrypto/meta/master/logo.svg" alt="logo"></a><h2><a href="../aes/index.html">aes</a><span class="version">0.7.5</span></h2></div><div class="sidebar-elems"><ul class="block"><li><a id="all-types" href="all.html">All Items</a></li></ul><section id="rustdoc-toc"><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#supported-backends" title="Supported backends">Supported backends</a><ul><li><a href="#soft-portable-backend" title="“soft” portable backend">“soft” portable backend</a></li><li><a href="#armv8-intrinsics-nightly-only" title="ARMv8 intrinsics (nightly-only)">ARMv8 intrinsics (nightly-only)</a></li><li><a href="#x86x86_64-intrinsics-aes-ni" title="`x86`/`x86_64` intrinsics (AES-NI)"><code>x86</code>/<code>x86_64</code> intrinsics (AES-NI)</a></li></ul></li><li><a href="#usage-example" title="Usage example">Usage example</a></li></ul><h3><a href="#reexports">Crate Items</a></h3><ul class="block"><li><a href="#reexports" title="Re-exports">Re-exports</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#constants" title="Constants">Constants</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Crate <span>aes</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/aes/lib.rs.html#1-138">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Pure Rust implementation of the Advanced Encryption Standard
+(a.k.a. Rijndael)</p>
+<h2 id="supported-backends"><a class="doc-anchor" href="#supported-backends">§</a>Supported backends</h2>
+<p>This crate provides multiple backends including a portable pure Rust
+backend as well as ones based on CPU intrinsics.</p>
+<p>By default, it performs runtime detection of CPU intrinsics and uses them
+if they are available.</p>
+<h3 id="soft-portable-backend"><a class="doc-anchor" href="#soft-portable-backend">§</a>“soft” portable backend</h3>
+<p>As a baseline implementation, this crate provides a constant-time pure Rust
+implementation based on <a href="https://eprint.iacr.org/2020/1123.pdf">fixslicing</a>, a more advanced form of bitslicing
+implemented entirely in terms of bitwise arithmetic with no use of any
+lookup tables or data-dependent branches.</p>
+<p>Enabling the <code>compact</code> Cargo feature will reduce the code size of this
+backend at the cost of decreased performance (using a modified form of
+the fixslicing technique called “semi-fixslicing”).</p>
+<h3 id="armv8-intrinsics-nightly-only"><a class="doc-anchor" href="#armv8-intrinsics-nightly-only">§</a>ARMv8 intrinsics (nightly-only)</h3>
+<p>On <code>aarch64</code> targets including <code>aarch64-apple-darwin</code> (Apple M1) and Linux
+targets such as <code>aarch64-unknown-linux-gnu</code> and <code>aarch64-unknown-linux-musl</code>,
+support for using AES intrinsics provided by the ARMv8 Cryptography Extensions
+is available when using the nightly compiler, and can be enabled using the
+<code>armv8</code> crate feature.</p>
+<p>On Linux and macOS, when the <code>armv8</code> feature is enabled support for AES
+intrinsics is autodetected at runtime. On other platforms the <code>aes</code>
+target feature must be enabled via RUSTFLAGS.</p>
+<h3 id="x86x86_64-intrinsics-aes-ni"><a class="doc-anchor" href="#x86x86_64-intrinsics-aes-ni">§</a><code>x86</code>/<code>x86_64</code> intrinsics (AES-NI)</h3>
+<p>By default this crate uses runtime detection on <code>i686</code>/<code>x86_64</code> targets
+in order to determine if AES-NI is available, and if it is not, it will
+fallback to using a constant-time software implementation.</p>
+<p>Passing <code>RUSTFLAGS=-Ctarget-feature=+aes,+ssse3</code> explicitly at compile-time
+will override runtime detection and ensure that AES-NI is always used.
+Programs built in this manner will crash with an illegal instruction on
+CPUs which do not have AES-NI enabled.</p>
+<p>Note: runtime detection is not possible on SGX targets. Please use the
+afforementioned <code>RUSTFLAGS</code> to leverage AES-NI on these targets.</p>
+<h2 id="usage-example"><a class="doc-anchor" href="#usage-example">§</a>Usage example</h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>aes::{Aes128, Block, ParBlocks};
+<span class="kw">use </span>aes::cipher::{
+    BlockCipher, BlockEncrypt, BlockDecrypt, NewBlockCipher,
+    generic_array::GenericArray,
+};
+
+<span class="kw">let </span>key = GenericArray::from_slice(<span class="kw-2">&amp;</span>[<span class="number">0u8</span>; <span class="number">16</span>]);
+<span class="kw">let </span><span class="kw-2">mut </span>block = Block::default();
+<span class="kw">let </span><span class="kw-2">mut </span>block8 = ParBlocks::default();
+
+<span class="comment">// Initialize cipher
+</span><span class="kw">let </span>cipher = Aes128::new(<span class="kw-2">&amp;</span>key);
+
+<span class="kw">let </span>block_copy = block.clone();
+
+<span class="comment">// Encrypt block in-place
+</span>cipher.encrypt_block(<span class="kw-2">&amp;mut </span>block);
+
+<span class="comment">// And decrypt it back
+</span>cipher.decrypt_block(<span class="kw-2">&amp;mut </span>block);
+<span class="macro">assert_eq!</span>(block, block_copy);
+
+<span class="comment">// We can encrypt 8 blocks simultaneously using
+// instruction-level parallelism
+</span><span class="kw">let </span>block8_copy = block8.clone();
+cipher.encrypt_par_blocks(<span class="kw-2">&amp;mut </span>block8);
+cipher.decrypt_par_blocks(<span class="kw-2">&amp;mut </span>block8);
+<span class="macro">assert_eq!</span>(block8, block8_copy);</code></pre></div>
+<p>For implementations of block cipher modes of operation see
+<a href="https://docs.rs/block-modes"><code>block-modes</code></a> crate.</p>
+</div></details><h2 id="reexports" class="section-header">Re-exports<a href="#reexports" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name" id="reexport.cipher"><code>pub use <a class="mod" href="../cipher/index.html" title="mod cipher">cipher</a>;</code></div></li></ul><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Aes128.html" title="struct aes::Aes128">Aes128</a></div><div class="desc docblock-short">AES-128 block cipher instance</div></li><li><div class="item-name"><a class="struct" href="struct.Aes192.html" title="struct aes::Aes192">Aes192</a></div><div class="desc docblock-short">AES-192 block cipher instance</div></li><li><div class="item-name"><a class="struct" href="struct.Aes256.html" title="struct aes::Aes256">Aes256</a></div><div class="desc docblock-short">AES-256 block cipher instance</div></li></ul><h2 id="constants" class="section-header">Constants<a href="#constants" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="constant" href="constant.BLOCK_SIZE.html" title="constant aes::BLOCK_SIZE">BLOCK_<wbr>SIZE</a></div><div class="desc docblock-short">Size of an AES block (128-bits; 16-bytes)</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.BlockCipher.html" title="trait aes::BlockCipher">Block<wbr>Cipher</a></div><div class="desc docblock-short">Trait which marks a type as being a block cipher.</div></li><li><div class="item-name"><a class="trait" href="trait.BlockDecrypt.html" title="trait aes::BlockDecrypt">Block<wbr>Decrypt</a></div><div class="desc docblock-short">Decrypt-only functionality for block ciphers.</div></li><li><div class="item-name"><a class="trait" href="trait.BlockEncrypt.html" title="trait aes::BlockEncrypt">Block<wbr>Encrypt</a></div><div class="desc docblock-short">Encrypt-only functionality for block ciphers.</div></li><li><div class="item-name"><a class="trait" href="trait.NewBlockCipher.html" title="trait aes::NewBlockCipher">NewBlock<wbr>Cipher</a></div><div class="desc docblock-short">Instantiate a <a href="trait.BlockCipher.html" title="trait aes::BlockCipher"><code>BlockCipher</code></a> algorithm.</div></li></ul><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.Block.html" title="type aes::Block">Block</a></div><div class="desc docblock-short">128-bit AES block</div></li><li><div class="item-name"><a class="type" href="type.ParBlocks.html" title="type aes::ParBlocks">ParBlocks</a></div><div class="desc docblock-short">8 x 128-bit AES blocks to be processed in parallel</div></li></ul></section></div></main></body></html>

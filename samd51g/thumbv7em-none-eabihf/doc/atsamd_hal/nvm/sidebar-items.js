@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BLOCKSIZE","PAGESIZE","QUADWORDSIZE"],"enum":["Bank","Error","PeripheralError","PhysicalBank","Prmselect","UserpageStatus","WriteGranularity"],"fn":["retrieve_bank_size","retrieve_flash_size"],"mod":["smart_eeprom"],"struct":["CalibrationArea","Nvm","RawUserpage","TemperaturesCalibrationArea"],"type":["Result","Userpage"]};

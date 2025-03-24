@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Ualgoselect"],"struct":["CfgSpec"],"type":["AscdR","AscdW","BbcR","BbcW","DualbuffR","DualbuffW","EomdisR","EomdisW","R","SlbdisR","SlbdisW","UalgoR","UalgoW","UihashR","UihashW","W","WbdisR","WbdisW"]};

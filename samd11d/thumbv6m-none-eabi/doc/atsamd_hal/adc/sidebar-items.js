@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Gain","Prescaler","Reference","Resolution","SampleRate"],"struct":["Adc"]};

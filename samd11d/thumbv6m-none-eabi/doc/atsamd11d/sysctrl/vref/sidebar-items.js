@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["VrefSpec"],"type":["BgoutenR","BgoutenW","CalibR","CalibW","R","TsenR","TsenW","W"]};

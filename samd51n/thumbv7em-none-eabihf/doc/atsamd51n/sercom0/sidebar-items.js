@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["i2cm","i2cs","spim","spis","usart_ext","usart_int"],"struct":["RegisterBlock"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["GendivSpec"],"type":["DivR","DivW","IdR","IdW","R","W"]};

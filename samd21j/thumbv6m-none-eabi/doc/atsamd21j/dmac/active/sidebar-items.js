@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ActiveSpec"],"type":["AbusyR","BtcntR","IdR","Lvlex0R","Lvlex1R","Lvlex2R","Lvlex3R","R"]};

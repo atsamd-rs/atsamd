@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["EpcfgSpec"],"type":["Eptype0R","Eptype0W","Eptype1R","Eptype1W","R","W"]};

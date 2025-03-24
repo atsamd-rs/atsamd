@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Digital Phase-Locked Loop"><title>atsamd_hal::clock::v2::dpll - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module dpll</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#digital-phase-locked-loop" title="Digital Phase-Locked Loop">Digital Phase-Locked Loop</a><ul><li><a href="#overview" title="Overview">Overview</a></li><li><a href="#example" title="Example">Example</a></li></ul></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>clock::<wbr>v2</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../../../index.html">atsamd_hal</a>::<wbr><a href="../../index.html">clock</a>::<wbr><a href="../index.html">v2</a></span><h1>Module <span>dpll</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../src/atsamd_hal/peripherals/clock/d5x/v2/dpll.rs.html#1-1025">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="digital-phase-locked-loop"><a class="doc-anchor" href="#digital-phase-locked-loop">§</a>Digital Phase-Locked Loop</h2><h3 id="overview"><a class="doc-anchor" href="#overview">§</a>Overview</h3>
+<p>The <code>dpll</code> module provides access to the two digital phase-locked loops
+(DPLLs) within the <code>OSCCTRL</code> peripheral.</p>
+<p>A DPLL is used to multiply clock frequencies. It takes a lower-frequency
+input clock and produces a higher-frequency output clock. It works by taking
+the output clock, dividing it down to the same frequency as the input clock,
+comparing phase between the two signals, and locking that phase difference
+to zero. Consequently, the clock divider within the feedback loop sets the
+frequency multiplication factor.</p>
+<p>The DPLLs operate over a large range of frequencies, but their operating
+region is not infinite. Specifically, they can only accept input frequencies
+between 32 kHz and 3.2 MHz, and they can only output frequencies in the
+range of 96 MHz to 200 MHz.</p>
+<p>Creating and configuring a <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a> proceeds according to the principles
+outlined in the <a href="../index.html" title="mod atsamd_hal::clock::v2"><code>clock</code> module documentation</a>. It is best shown with an
+example.</p>
+<h3 id="example"><a class="doc-anchor" href="#example">§</a>Example</h3>
+<p>Suppose we start with the default clock tree after power-on reset.</p>
+<div class="example-wrap"><pre class="language-text"><code>DFLL (48 MHz)
+└── GCLK0 (48 MHz)
+    └── Master clock (48 MHz)</code></pre></div>
+<p>We would like to transform it to a clock tree like this:</p>
+<div class="example-wrap"><pre class="language-text"><code>DFLL (48 MHz)
+└── GCLK1 (2 MHz)
+    └── DPLL (200 MHz)
+        └── GCLK0 (200 MHz)
+            └── Master clock (200 MHz)</code></pre></div>
+<p>Let’s start by using <a href="../fn.clock_system_at_reset.html" title="fn atsamd_hal::clock::v2::clock_system_at_reset"><code>clock_system_at_reset</code></a> to access the HAL clocking
+structs.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::{
+    clock::v2::{
+        clock_system_at_reset,
+        dpll::Dpll,
+        gclk::{Gclk, GclkDiv16},
+        pclk::Pclk,
+    },
+    pac::Peripherals,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>pac = Peripherals::take().unwrap();
+<span class="kw">let </span>(buses, clocks, tokens) = clock_system_at_reset(
+    pac.oscctrl,
+    pac.osc32kctrl,
+    pac.gclk,
+    pac.mclk,
+    <span class="kw-2">&amp;mut </span>pac.nvmctrl,
+);</code></pre></div>
+<p>First, we would like to divide down the 48 MHz output of the <a href="../dfll/struct.Dfll.html" title="struct atsamd_hal::clock::v2::dfll::Dfll"><code>Dfll</code></a> to
+produce a valid input frequency for the <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a>. We start by feeding the
+already-<a href="../struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled</code></a> <a href="../dfll/struct.Dfll.html" title="struct atsamd_hal::clock::v2::dfll::Dfll"><code>Dfll</code></a> to <a href="../gclk/type.Gclk1.html" title="type atsamd_hal::clock::v2::gclk::Gclk1"><code>Gclk1</code></a> with a <a href="../gclk/trait.GclkDivider.html" title="trait atsamd_hal::clock::v2::gclk::GclkDivider"><code>GclkDivider</code></a> of 24,
+producing a 2 MHz output frequency. This has the side effect of
+<a href="../../../typelevel/trait.Increment.html" title="trait atsamd_hal::typelevel::Increment"><code>Increment</code></a>ing the counter for <a href="../dfll/type.EnabledDfll.html" title="type atsamd_hal::clock::v2::dfll::EnabledDfll"><code>EnabledDfll</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>(gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
+<span class="kw">let </span>gclk1 = gclk1.div(GclkDiv16::Div(<span class="number">24</span>)).enable();</code></pre></div>
+<p>Next, we use the output of <a href="../gclk/type.Gclk1.html" title="type atsamd_hal::clock::v2::gclk::Gclk1"><code>Gclk1</code></a> to enable the peripheral channel clock
+(<a href="../pclk/struct.Pclk.html" title="struct atsamd_hal::clock::v2::pclk::Pclk"><code>Pclk</code></a>) for <a href="type.Dpll0.html" title="type atsamd_hal::clock::v2::dpll::Dpll0"><code>Dpll0</code></a>. This <a href="../../../typelevel/trait.Increment.html" title="trait atsamd_hal::typelevel::Increment"><code>Increment</code></a>s the counter for
+<a href="../gclk/type.EnabledGclk1.html" title="type atsamd_hal::clock::v2::gclk::EnabledGclk1"><code>EnabledGclk1</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>(pclk_dpll0, gclk1) = Pclk::enable(tokens.pclks.dpll0, gclk1);</code></pre></div>
+<p>Now we use <a href="struct.Dpll.html#method.from_pclk" title="associated function atsamd_hal::clock::v2::dpll::Dpll::from_pclk"><code>Dpll::from_pclk</code></a>, which consumes the <a href="../pclk/struct.Pclk.html" title="struct atsamd_hal::clock::v2::pclk::Pclk"><code>Pclk</code></a> and returns an
+instance of <a href="type.Dpll0.html" title="type atsamd_hal::clock::v2::dpll::Dpll0"><code>Dpll0</code></a>. We use builder API functions to set the loop divider
+to 100 and enable the <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a>. This will multiply the 2 MHz input clock to
+produce a 200 MHz output clock.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>dpll0 = Dpll::from_pclk(tokens.dpll0, pclk_dpll0)
+    .loop_div(<span class="number">100</span>, <span class="number">0</span>)
+    .enable();</code></pre></div>
+<p>There are two things to note at this point.</p>
+<p>First, the loop divider has both an integer part and a fractional part.
+However, users should generally avoid using fractional division, if
+possible, because it increases the jitter of the output clock. See the
+<a href="struct.Dpll.html#method.loop_div" title="method atsamd_hal::clock::v2::dpll::Dpll::loop_div"><code>Dpll::loop_div</code></a> documentation for more details.</p>
+<p>Second, because the input clock frequency and loop division factors are
+run-time values, the <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a> cannot verify at compile time that the input
+and output frequencies satisfy the requirements specified in the
+<a href="index.html#overview" title="mod atsamd_hal::clock::v2::dpll">overview</a>. Instead, these values are checked at run-time. If
+either frequency violates its requirement, the call to <a href="struct.Dpll.html#method.enable" title="method atsamd_hal::clock::v2::dpll::Dpll::enable"><code>Dpll::enable</code></a> will
+panic.</p>
+<p>Finally, we wait until the <a href="type.EnabledDpll0.html" title="type atsamd_hal::clock::v2::dpll::EnabledDpll0"><code>EnabledDpll0</code></a> output is ready, and then we
+swap the <a href="../gclk/type.EnabledGclk0.html" title="type atsamd_hal::clock::v2::gclk::EnabledGclk0"><code>EnabledGclk0</code></a>, which feeds the processor master clock, from the
+48 MHz <a href="../dfll/type.EnabledDfll.html" title="type atsamd_hal::clock::v2::dfll::EnabledDfll"><code>EnabledDfll</code></a> to the 200 MHz <a href="type.EnabledDpll0.html" title="type atsamd_hal::clock::v2::dpll::EnabledDpll0"><code>EnabledDpll0</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">while </span>!dpll0.is_ready() {}
+<span class="kw">let </span>(gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(dfll, dpll0);</code></pre></div>
+<p>We have now achieved the disired clock tree. The complete example is
+provided below.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::{
+    clock::v2::{
+        clock_system_at_reset,
+        dpll::Dpll,
+        gclk::{Gclk, GclkDiv16},
+        pclk::Pclk,
+    },
+    pac::Peripherals,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>pac = Peripherals::take().unwrap();
+<span class="kw">let </span>(buses, clocks, tokens) = clock_system_at_reset(
+    pac.oscctrl,
+    pac.osc32kctrl,
+    pac.gclk,
+    pac.mclk,
+    <span class="kw-2">&amp;mut </span>pac.nvmctrl,
+);
+<span class="kw">let </span>(gclk1, dfll) = Gclk::from_source(tokens.gclks.gclk1, clocks.dfll);
+<span class="kw">let </span>gclk1 = gclk1.div(GclkDiv16::Div(<span class="number">24</span>)).enable();
+<span class="kw">let </span>(pclk_dpll0, gclk1) = Pclk::enable(tokens.pclks.dpll0, gclk1);
+<span class="kw">let </span>dpll0 = Dpll::from_pclk(tokens.dpll0, pclk_dpll0)
+    .loop_div(<span class="number">100</span>, <span class="number">0</span>)
+    .enable();
+<span class="kw">while </span>!dpll0.is_ready() {}
+<span class="kw">let </span>(gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(dfll, dpll0);</code></pre></div>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll">Dpll</a></div><div class="desc docblock-short">Digital phase-locked loop used to multiply clock frequencies</div></li><li><div class="item-name"><a class="struct" href="struct.DpllToken.html" title="struct atsamd_hal::clock::v2::dpll::DpllToken">Dpll<wbr>Token</a></div><div class="desc docblock-short">Singleton token that can be exchanged for a <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a></div></li></ul><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.Dpll0Id.html" title="enum atsamd_hal::clock::v2::dpll::Dpll0Id">Dpll0Id</a></div><div class="desc docblock-short">Type-level variant of <a href="trait.DpllId.html" title="trait atsamd_hal::clock::v2::dpll::DpllId"><code>DpllId</code></a> representing the identity of DPLL0</div></li><li><div class="item-name"><a class="enum" href="enum.Dpll1Id.html" title="enum atsamd_hal::clock::v2::dpll::Dpll1Id">Dpll1Id</a></div><div class="desc docblock-short">Type-level variant of <a href="trait.DpllId.html" title="trait atsamd_hal::clock::v2::dpll::DpllId"><code>DpllId</code></a> representing the identity of DPLL1</div></li><li><div class="item-name"><a class="enum" href="enum.DynDpllId.html" title="enum atsamd_hal::clock::v2::dpll::DynDpllId">DynDpll<wbr>Id</a></div><div class="desc docblock-short">Value-level enum identifying one of two possible <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a>s</div></li><li><div class="item-name"><a class="enum" href="enum.DynDpllSourceId.html" title="enum atsamd_hal::clock::v2::dpll::DynDpllSourceId">DynDpll<wbr>Source<wbr>Id</a></div><div class="desc docblock-short">Value-level enum of possible clock sources for a <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a></div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.DpllId.html" title="trait atsamd_hal::clock::v2::dpll::DpllId">DpllId</a></div><div class="desc docblock-short">Type-level enum identifying one of two possible <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a>s</div></li><li><div class="item-name"><a class="trait" href="trait.DpllSourceId.html" title="trait atsamd_hal::clock::v2::dpll::DpllSourceId">Dpll<wbr>Source<wbr>Id</a></div><div class="desc docblock-short">Type-level enum of possible clock <a href="../trait.Source.html" title="trait atsamd_hal::clock::v2::Source"><code>Source</code></a>s for a <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a></div></li></ul><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.Dpll0.html" title="type atsamd_hal::clock::v2::dpll::Dpll0">Dpll0</a></div><div class="desc docblock-short">Type alias for the corresponding <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a></div></li><li><div class="item-name"><a class="type" href="type.Dpll1.html" title="type atsamd_hal::clock::v2::dpll::Dpll1">Dpll1</a></div><div class="desc docblock-short">Type alias for the corresponding <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a></div></li><li><div class="item-name"><a class="type" href="type.EnabledDpll.html" title="type atsamd_hal::clock::v2::dpll::EnabledDpll">Enabled<wbr>Dpll</a></div><div class="desc docblock-short">An <a href="../struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled</code></a> <a href="struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a></div></li><li><div class="item-name"><a class="type" href="type.EnabledDpll0.html" title="type atsamd_hal::clock::v2::dpll::EnabledDpll0">Enabled<wbr>Dpll0</a></div><div class="desc docblock-short">Type alias for the corresponding <a href="type.EnabledDpll.html" title="type atsamd_hal::clock::v2::dpll::EnabledDpll"><code>EnabledDpll</code></a></div></li><li><div class="item-name"><a class="type" href="type.EnabledDpll1.html" title="type atsamd_hal::clock::v2::dpll::EnabledDpll1">Enabled<wbr>Dpll1</a></div><div class="desc docblock-short">Type alias for the corresponding <a href="type.EnabledDpll.html" title="type atsamd_hal::clock::v2::dpll::EnabledDpll"><code>EnabledDpll</code></a></div></li></ul></section></div></main></body></html>

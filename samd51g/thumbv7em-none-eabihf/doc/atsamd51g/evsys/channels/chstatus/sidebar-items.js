@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ChstatusSpec"],"type":["BusychR","R","RdyusrR"]};

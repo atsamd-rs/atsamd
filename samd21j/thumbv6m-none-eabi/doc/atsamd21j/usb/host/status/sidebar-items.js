@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["StatusSpec"],"type":["LinestateR","R","SpeedR","SpeedW","W"]};

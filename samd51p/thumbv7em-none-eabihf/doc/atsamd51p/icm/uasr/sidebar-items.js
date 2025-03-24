@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Uratselect"],"struct":["UasrSpec"],"type":["R","UratR"]};

@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["LINESTATER","Value of the field"],["R","Value read from the register"],["SPEEDR","Value of the field"],["W","Value to write to the register"],["_SPEEDW","Proxy"]]});

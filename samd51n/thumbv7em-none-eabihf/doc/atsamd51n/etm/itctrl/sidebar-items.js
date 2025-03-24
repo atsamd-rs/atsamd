@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ItctrlSpec"],"type":["IntegrationR","IntegrationW","R","W"]};

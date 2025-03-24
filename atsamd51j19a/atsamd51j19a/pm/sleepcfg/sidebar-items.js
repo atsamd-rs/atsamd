@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["SLEEPMODER","Possible values of the field `SLEEPMODE`"],["SLEEPMODEW","Values that can be written to the field `SLEEPMODE`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_SLEEPMODEW","Proxy"]]});

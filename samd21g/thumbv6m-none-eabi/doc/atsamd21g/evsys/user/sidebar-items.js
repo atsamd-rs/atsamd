@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Channelselect"],"struct":["UserSpec"],"type":["ChannelR","ChannelW","R","UserR","UserW","W"]};

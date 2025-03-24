@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["busych","channels","ctrla","intpend","intstatus","prictrl","readyusr","swevt","user"],"struct":["RegisterBlock"],"type":["Busych","Ctrla","Intpend","Intstatus","Prictrl","Readyusr","Swevt","User"]};

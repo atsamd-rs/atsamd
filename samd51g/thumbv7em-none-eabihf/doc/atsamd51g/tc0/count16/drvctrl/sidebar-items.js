@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DrvctrlSpec"],"type":["Inven0R","Inven0W","Inven1R","Inven1W","R","W"]};

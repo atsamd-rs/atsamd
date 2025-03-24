@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["ADCBUSYR","Value of the field"],["R","Value read from the register"],["WCCR","Value of the field"]]});

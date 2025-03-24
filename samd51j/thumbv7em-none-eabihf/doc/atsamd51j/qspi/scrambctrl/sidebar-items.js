@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ScrambctrlSpec"],"type":["EnableR","EnableW","R","RandomdisR","RandomdisW","W"]};

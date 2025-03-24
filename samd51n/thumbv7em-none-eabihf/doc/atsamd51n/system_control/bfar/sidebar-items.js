@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["BfarSpec"],"type":["AddressR","AddressW","R","W"]};

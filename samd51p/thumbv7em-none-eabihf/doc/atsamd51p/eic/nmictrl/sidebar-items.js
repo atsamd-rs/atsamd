@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Nmiasynchselect","Nmisenseselect"],"struct":["NmictrlSpec"],"type":["NmiasynchR","NmiasynchW","NmifiltenR","NmifiltenW","NmisenseR","NmisenseW","R","W"]};

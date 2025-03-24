@@ -1,0 +1,1 @@
+searchState.loadedDescShard("modular_bitfield_impl", 0, "Derive macro for Rust <code>enums</code> to implement <code>Specifier</code> trait.\nApplicable to structs to turn their fields into compact …\nGenerates the <code>B1</code>, <code>B2</code>, …, <code>B128</code> bitfield specifiers.")

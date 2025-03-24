@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Brklenselect","Data32bselect","Hdrdlyselect"],"struct":["CtrlcSpec"],"type":["BrklenR","BrklenW","Data32bR","Data32bW","DsnackR","DsnackW","GtimeR","GtimeW","HdrdlyR","HdrdlyW","InackR","InackW","MaxiterR","MaxiterW","R","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["GaincorrSpec"],"type":["GaincorrR","GaincorrW","R","W"]};

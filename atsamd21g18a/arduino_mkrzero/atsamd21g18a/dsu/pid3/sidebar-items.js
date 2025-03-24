@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["CUSMODR","Value of the field"],["R","Value read from the register"],["REVANDR","Value of the field"]]});

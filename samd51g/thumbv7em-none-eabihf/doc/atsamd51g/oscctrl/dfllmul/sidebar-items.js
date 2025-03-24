@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DfllmulSpec"],"type":["CstepR","CstepW","FstepR","FstepW","MulR","MulW","R","W"]};

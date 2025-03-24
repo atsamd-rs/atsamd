@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Prescaler","Reference","Resolution","SampleRate"],"struct":["Adc","FreeRunning","InterruptAdc","SingleConversion"],"trait":["ConversionMode"]};

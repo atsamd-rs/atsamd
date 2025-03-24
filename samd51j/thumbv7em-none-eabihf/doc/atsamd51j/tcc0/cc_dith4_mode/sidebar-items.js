@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CcDith4ModeSpec"],"type":["CcR","CcW","DitherR","DitherW","R","W"]};

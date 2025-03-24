@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["EOC0R","Value of the field"],["EOC1R","Value of the field"],["R","Value read from the register"],["READY0R","Value of the field"],["READY1R","Value of the field"]]});

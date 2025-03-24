@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PattbSpec"],"type":["Pgeb0R","Pgeb0W","Pgeb1R","Pgeb1W","Pgeb2R","Pgeb2W","Pgeb3R","Pgeb3W","Pgeb4R","Pgeb4W","Pgeb5R","Pgeb5W","Pgeb6R","Pgeb6W","Pgeb7R","Pgeb7W","Pgvb0R","Pgvb0W","Pgvb1R","Pgvb1W","Pgvb2R","Pgvb2W","Pgvb3R","Pgvb3W","Pgvb4R","Pgvb4W","Pgvb5R","Pgvb5W","Pgvb6R","Pgvb6W","Pgvb7R","Pgvb7W","R","W"]};

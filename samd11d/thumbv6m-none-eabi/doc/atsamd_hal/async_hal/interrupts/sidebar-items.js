@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DMAC","EIC","SERCOM0","SERCOM1","SERCOM2","TC1","TC2"],"trait":["Binding","Handler","Interrupt","InterruptSource","MultipleInterruptSources","SingleInterruptSource"]};

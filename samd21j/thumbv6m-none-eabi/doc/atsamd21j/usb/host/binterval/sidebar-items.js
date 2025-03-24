@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["BintervalSpec"],"type":["BitintervalR","BitintervalW","R","W"]};

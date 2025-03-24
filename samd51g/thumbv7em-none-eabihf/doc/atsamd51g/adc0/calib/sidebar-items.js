@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CalibSpec"],"type":["BiascompR","BiascompW","Biasr2rR","Biasr2rW","BiasrefbufR","BiasrefbufW","R","W"]};

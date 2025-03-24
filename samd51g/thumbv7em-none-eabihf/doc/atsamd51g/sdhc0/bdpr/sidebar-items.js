@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["BdprSpec"],"type":["BufdataR","BufdataW","R","W"]};

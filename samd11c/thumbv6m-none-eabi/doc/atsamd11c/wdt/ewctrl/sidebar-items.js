@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Ewoffsetselect"],"struct":["EwctrlSpec"],"type":["EwoffsetR","EwoffsetW","R","W"]};

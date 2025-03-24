@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["FKBCR","Value of the field"],["JEPCCR","Value of the field"],["R","Value read from the register"]]});

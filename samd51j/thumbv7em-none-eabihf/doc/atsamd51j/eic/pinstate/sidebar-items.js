@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PinstateSpec"],"type":["PinstateR","R"]};

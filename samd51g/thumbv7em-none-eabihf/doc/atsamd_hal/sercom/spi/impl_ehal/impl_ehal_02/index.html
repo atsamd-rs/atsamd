@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Implement [`embedded_hal`] traits for `Spi` structs"><title>atsamd_hal::sercom::spi::impl_ehal::impl_ehal_02 - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module impl_<wbr>ehal_<wbr>02</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#variations-by-size" title="Variations by [`Size`]">Variations by [<code>Size</code>]</a></li><li><a href="#variations-by-capability" title="Variations by [`Capability`]">Variations by [<code>Capability</code>]</a></li><li><a href="#notes-on-individual-embedded-hal-traits" title="Notes on individual embedded HAL traits">Notes on individual embedded HAL traits</a><ul><li><a href="#spifullduplex" title="`spi::FullDuplex`"><code>spi::FullDuplex</code></a></li><li><a href="#serialread" title="`serial::Read`"><code>serial::Read</code></a></li><li><a href="#serialwrite" title="`serial::Write`"><code>serial::Write</code></a></li><li><a href="#blockingserialwrite" title="`blocking::serial::Write`"><code>blocking::serial::Write</code></a></li><li><a href="#blockingspi-traits" title="`blocking::spi` traits"><code>blocking::spi</code> traits</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>sercom::<wbr>spi::<wbr>impl_<wbr>ehal</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../../../../index.html">atsamd_hal</a>::<wbr><a href="../../../index.html">sercom</a>::<wbr><a href="../../index.html">spi</a>::<wbr><a href="../index.html">impl_ehal</a></span><h1>Module <span>impl_ehal_02</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../../src/atsamd_hal/sercom/spi/impl_ehal/thumbv7em.rs.html#1-860">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Implement [<code>embedded_hal</code>] traits for <a href="../../struct.Spi.html" title="struct atsamd_hal::sercom::spi::Spi"><code>Spi</code></a> structs</p>
+<p>As noted in the <a href="../index.html" title="mod atsamd_hal::sercom::spi::impl_ehal">spi module</a> documentation, the embedded-hal trait
+implementations vary by both [<code>Size</code>] and [<code>Capability</code>]. Each
+implementation is optimized to take advantage of all information known at
+compile-time, so it is importatnt to carefully read the documentation in
+this module.</p>
+<h2 id="variations-by-size"><a class="doc-anchor" href="#variations-by-size">§</a>Variations by [<code>Size</code>]</h2>
+<p>Remember that SAMx5x chips operate in 32-bit extension mode and use the
+hardware <code>LENGTH</code> counter to set the number of bytes in each transaction.
+The transaction <a href="../../size/trait.Length.html" title="trait atsamd_hal::sercom::spi::size::Length"><code>Length</code></a> is usually tracked at compile-time using
+type-level integers from the <a href="../../../../../typenum/index.html" title="mod typenum"><code>typenum</code></a> crate, but it can also be tracked
+at run-time when using a <a href="../../size/type.DynLength.html" title="type atsamd_hal::sercom::spi::size::DynLength"><code>DynLength</code></a>.</p>
+<p>The transaction <code>Length</code>s can be sub-divided into three groups:</p>
+<ul>
+<li><code>Length</code>s of 1-4 bytes can be completed in a single read/write of the
+<code>DATA</code> register. These <code>Length</code>s are marked as <a href="../../trait.AtomicSize.html" title="trait atsamd_hal::sercom::spi::AtomicSize"><code>AtomicSize</code></a>s.</li>
+<li><code>Length</code>s <a href="../../size/trait.GreaterThan4.html" title="trait atsamd_hal::sercom::spi::size::GreaterThan4"><code>GreaterThan4</code></a> are known at compile-time but cannot be
+completed atomically.</li>
+<li>A <code>DynLength</code> can be any length, but the value is only known at run-time.</li>
+</ul>
+<p>In general, transaction lengths with an <code>AtomicSize</code> implement embedded HAL
+traits with the corresponding <a href="../../size/type.Word.html" title="type atsamd_hal::sercom::spi::size::Word"><code>Word</code></a> type. For example, <a href="../../struct.Spi.html" title="struct atsamd_hal::sercom::spi::Spi"><code>Spi</code></a> structs
+using a transaction <code>Length</code> of 2 bytes implement <code>FullDuplex&lt;u16&gt;</code>. These
+lengths implement both the blocking and non-blocking traits from embedded
+HAL. The non-blocking traits are found in the [<code>spi</code>] and [<code>serial</code>]
+modules, while the blocking traits are found in the [<code>blocking</code>] module.</p>
+<p>Transaction lengths <code>GreaterThan4</code> cannot be completed in a single read or
+write of the <code>DATA</code> register, so these lengths do <strong>NOT</strong> implement the
+non-blocking traits from the embedded HAL <code>spi</code> and <code>serial</code> modules.
+Instead, they only implement traits from the <code>blocking</code> module. These traits
+are implemented for <code>u8</code> types, e.g. <code>blocking::spi::Transfer&lt;u8&gt;</code>, and
+operate on <code>[u8]</code> slices. The length of the slice is checked to ensure it
+matches the transaction <code>Length</code>.</p>
+<p>Because a <code>DynLength</code> is not guaranteed to be an <code>AtomicSize</code>, the
+corresponding <code>Spi</code> structs only implement the <code>blocking</code> traits as well.</p>
+<p>For a non-blocking alternative that can be used to transfer arbitrary-length
+slices, you could use either
+<a href="../../../../dmac/index.html" title="mod atsamd_hal::dmac"><code>DMA</code></a>
+or the <a href="super::super::spi_future"><code>spi_future</code></a> module.</p>
+<h2 id="variations-by-capability"><a class="doc-anchor" href="#variations-by-capability">§</a>Variations by [<code>Capability</code>]</h2>
+<p>The implementations in this module also seek to optimize as much as possible
+based on the <code>Capability</code> of the <code>Spi</code> struct. They follow a few general
+rules:</p>
+<ul>
+<li><a href="../../struct.Tx.html" title="struct atsamd_hal::sercom::spi::Tx"><code>Tx</code></a> structs can never receive data, so their corresponding trait
+implementations never read the <code>DATA</code> register and can never return an
+<a href="../../enum.Error.html#variant.Overflow" title="variant atsamd_hal::sercom::spi::Error::Overflow"><code>Error::Overflow</code></a>.</li>
+<li><a href="../../struct.Rx.html" title="struct atsamd_hal::sercom::spi::Rx"><code>Rx</code></a> structs in a <a href="../../trait.MasterMode.html" title="trait atsamd_hal::sercom::spi::MasterMode"><code>MasterMode</code></a> must initiate all
+transactions, so their implementations of non-blocking traits must track
+the state of on-going transactions.</li>
+<li><a href="../../struct.Duplex.html" title="struct atsamd_hal::sercom::spi::Duplex"><code>Duplex</code></a> structs must always read as many bytes as they send, even when
+implementing <code>Write</code>-only traits, to ensure they never introduce an
+<a href="../../enum.Error.html#variant.Overflow" title="variant atsamd_hal::sercom::spi::Error::Overflow"><code>Error::Overflow</code></a>.</li>
+</ul>
+<h2 id="notes-on-individual-embedded-hal-traits"><a class="doc-anchor" href="#notes-on-individual-embedded-hal-traits">§</a>Notes on individual embedded HAL traits</h2><h3 id="spifullduplex"><a class="doc-anchor" href="#spifullduplex">§</a><code>spi::FullDuplex</code></h3>
+<p><code>spi::FullDuplex</code> is only implemented for structs with <code>Duplex</code>
+<code>Capability</code>. Although the embedded HAL documentation assumes a
+<code>MasterMode</code>, this module also implements it for the <a href="../../enum.Slave.html" title="enum atsamd_hal::sercom::spi::Slave"><code>Slave</code></a> <a href="../../trait.OpMode.html" title="trait atsamd_hal::sercom::spi::OpMode"><code>OpMode</code></a>.</p>
+<h3 id="serialread"><a class="doc-anchor" href="#serialread">§</a><code>serial::Read</code></h3>
+<p><code>serial::Read</code> is only implemented for structs with <code>Rx</code> <code>Capability</code>. When
+in a <code>MasterMode</code>, it initiates and tracks the state of the on-going
+transactions. But this is not required when acting as a <code>Slave</code>.</p>
+<h3 id="serialwrite"><a class="doc-anchor" href="#serialwrite">§</a><code>serial::Write</code></h3>
+<p><code>serial::Write</code> is only implemented for structs with <code>Tx</code> <code>Capability</code>.
+These implementations never read the <code>DATA</code> register and ignore all
+instances of <a href="../../enum.Error.html#variant.Overflow" title="variant atsamd_hal::sercom::spi::Error::Overflow"><code>Error::Overflow</code></a>.</p>
+<h3 id="blockingserialwrite"><a class="doc-anchor" href="#blockingserialwrite">§</a><code>blocking::serial::Write</code></h3>
+<p>This trait uses the <code>blocking::serial::write::Default</code> implementation for
+implementers of <code>serial::Write</code>.</p>
+<h3 id="blockingspi-traits"><a class="doc-anchor" href="#blockingspi-traits">§</a><code>blocking::spi</code> traits</h3>
+<p>These traits are implemented following all of the rules outlined above for
+the different [<code>Size</code>] and [<code>Capability</code>] options.</p>
+</div></details></section></div></main></body></html>

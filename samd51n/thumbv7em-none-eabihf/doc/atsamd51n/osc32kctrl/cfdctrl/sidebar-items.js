@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CfdctrlSpec"],"type":["CfdenR","CfdenW","CfdprescR","CfdprescW","R","SwbackR","SwbackW","W"]};

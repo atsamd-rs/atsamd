@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Perselect","Windowselect"],"struct":["ConfigSpec"],"type":["PerR","PerW","R","W","WindowR","WindowW"]};

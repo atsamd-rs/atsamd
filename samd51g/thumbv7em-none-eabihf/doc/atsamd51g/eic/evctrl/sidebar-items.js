@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["EvctrlSpec"],"type":["ExtinteoR","ExtinteoW","R","W"]};

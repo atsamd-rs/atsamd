@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["VregSpec"],"type":["ForceldoR","ForceldoW","R","RunstdbyR","RunstdbyW","W"]};

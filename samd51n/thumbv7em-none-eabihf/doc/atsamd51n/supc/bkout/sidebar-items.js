@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["BkoutSpec"],"type":["Clrout0R","Clrout0W","Clrout1R","Clrout1W","Enout0R","Enout0W","Enout1R","Enout1W","R","Rtctglout0R","Rtctglout0W","Rtctglout1R","Rtctglout1W","Setout0R","Setout0W","Setout1R","Setout1W","W"]};

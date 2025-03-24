@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PerbSpec"],"type":["PerbR","PerbW","R","W"]};

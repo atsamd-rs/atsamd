@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["bkupcfg","ctrla","hibcfg","intenclr","intenset","intflag","pwsakdly","sleepcfg","stdbycfg"],"struct":["RegisterBlock"],"type":["Bkupcfg","Ctrla","Hibcfg","Intenclr","Intenset","Intflag","Pwsakdly","Sleepcfg","Stdbycfg"]};

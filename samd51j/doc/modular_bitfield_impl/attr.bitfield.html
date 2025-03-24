@@ -1,0 +1,194 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Applicable to structs to turn their fields into compact bitfields."><title>bitfield in modular_bitfield_impl - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="modular_bitfield_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../static.files/storage-59e33391.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc attr"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../modular_bitfield_impl/index.html">modular_<wbr>bitfield_<wbr>impl</a><span class="version">0.11.2</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">bitfield</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#generated-api" title="Generated API">Generated API</a></li><li><a href="#parameters" title="Parameters">Parameters</a><ul><li><a href="#parameter-bytes--n" title="Parameter: `bytes = N`">Parameter: <code>bytes = N</code></a></li><li><a href="#parameter-filled-bool" title="Parameter: `filled: bool`">Parameter: <code>filled: bool</code></a></li><li><a href="#parameter-bits--n" title="Parameter: `bits = N`">Parameter: <code>bits = N</code></a></li><li><a href="#field-parameter-bits--n" title="Field Parameter: `#[bits = N]`">Field Parameter: <code>#[bits = N]</code></a></li><li><a href="#field-parameter-skip" title="Field Parameter: `#[skip(..)]`">Field Parameter: <code>#[skip(..)]</code></a></li></ul></li><li><a href="#features" title="Features">Features</a><ul><li><a href="#support-derivebitfieldspecifier" title="Support: `#[derive(BitfieldSpecifier)]`">Support: <code>#[derive(BitfieldSpecifier)]</code></a></li><li><a href="#support-derivedebug" title="Support: `#[derive(Debug)]`">Support: <code>#[derive(Debug)]</code></a></li><li><a href="#support-reprun" title="Support: `#[repr(uN)]`">Support: <code>#[repr(uN)]</code></a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate modular_<wbr>bitfield_<wbr>impl</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="index.html">modular_bitfield_impl</a></span><h1>Attribute Macro <span class="attr">bitfield</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/modular_bitfield_impl/lib.rs.html#301-303">Source</a> </span></div><pre class="rust item-decl"><code>#[bitfield]</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Applicable to structs to turn their fields into compact bitfields.</p>
+<h2 id="generated-api"><a class="doc-anchor" href="#generated-api">§</a>Generated API</h2>
+<p>By default this generates the following API:</p>
+<ul>
+<li>
+<p><strong>Constructors:</strong></p>
+<ol>
+<li><code>new()</code>: Initializes all bits to 0 even if 0 bits may be invalid.
+Note that invalid bit patterns are supported in that getters and setters will
+be protecting accesses.</li>
+</ol>
+</li>
+<li>
+<p><strong>Getters:</strong></p>
+<p>For every field <code>f</code> we generate the following getters:</p>
+<ol>
+<li><code>f()</code>: Returns the value of <code>f</code> and might panic
+if the value contains an invalid bit pattern.</li>
+<li><code>f_or_err()</code>: Returns the value of <code>f</code> or an error
+if the value contains an invalid bit pattern.</li>
+</ol>
+</li>
+<li>
+<p><strong>Setters:</strong></p>
+<p>For every field <code>f</code> we generate the following setters:</p>
+<ol>
+<li><code>set_f(new_value)</code>: Sets the value of <code>f</code> to <code>new_value</code> and might panic
+if <code>new_value</code> is out of bounds for the bit width of <code>f</code>.</li>
+<li><code>set_f_checked(new_value)</code>: Sets the value of <code>f</code> to <code>new</code> or returns an error
+if <code>new_value</code> if out of bounds for the bit width of <code>f</code>.</li>
+<li><code>with_f(new_value)</code>: Similar to <code>set_f</code> but consumes and returns <code>Self</code>.
+Primarily useful for method chaining.</li>
+<li><code>with_f_checked(new_value)</code>: Similar to <code>set_f_checked</code> but consumes and returns <code>Self</code>.
+Primarily useful for method chaining.</li>
+</ol>
+</li>
+<li>
+<p><strong>Conversions:</strong></p>
+<ul>
+<li><code>from_bytes(bytes)</code>: Allows to constructor the bitfield type from a fixed array of bytes.</li>
+<li><code>into_bytes()</code>: Allows to convert the bitfield into its underlying byte representation.</li>
+</ul>
+</li>
+</ul>
+<h2 id="parameters"><a class="doc-anchor" href="#parameters">§</a>Parameters</h2>
+<p>The following parameters for the <code>#[bitfield]</code> macro are supported:</p>
+<h3 id="parameter-bytes--n"><a class="doc-anchor" href="#parameter-bytes--n">§</a>Parameter: <code>bytes = N</code></h3>
+<p>This ensures at compilation time that the resulting <code>#[bitfield]</code> struct consists of
+exactly <code>N</code> bytes. Yield a compilation error if this does not hold true.</p>
+<h4 id="example"><a class="doc-anchor" href="#example">§</a>Example</h4>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield(bytes = <span class="number">2</span>)]
+</span><span class="kw">pub struct </span>SingedInt {
+    sign: bool, <span class="comment">//  1 bit
+    </span>value: B15, <span class="comment">// 15 bits
+</span>}</code></pre></div>
+<h3 id="parameter-filled-bool"><a class="doc-anchor" href="#parameter-filled-bool">§</a>Parameter: <code>filled: bool</code></h3>
+<p>If <code>filled</code> is <code>true</code> ensures that the <code>#[bitfield]</code> struct defines all bits and
+therefore has a bitwidth that is divisible by 8. If <code>filled</code> is <code>false</code> ensures the
+exact opposite.</p>
+<p>The default value is: <code>true</code></p>
+<h4 id="example-1"><a class="doc-anchor" href="#example-1">§</a>Example</h4>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield(filled = <span class="bool-val">false</span>)]
+</span><span class="kw">pub struct </span>Package {
+    is_received: bool, <span class="comment">// 1 bit
+    </span>is_alive: bool,    <span class="comment">// 1 bit
+    </span>status: B2,        <span class="comment">// 2 bits
+</span>}</code></pre></div>
+<h3 id="parameter-bits--n"><a class="doc-anchor" href="#parameter-bits--n">§</a>Parameter: <code>bits = N</code></h3>
+<p>With the <code>bits: int</code> parameter it is possible to control the targeted bit width of
+a <code>#[bitfield]</code> annoated struct. Using <code>bits = N</code> guarantees that the resulting bitfield
+struct will have a bit width of exactly <code>N</code>.</p>
+<h4 id="example-1-1"><a class="doc-anchor" href="#example-1-1">§</a>Example 1</h4>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield(bits = <span class="number">16</span>)]
+</span><span class="kw">pub struct </span>Package {
+    is_received: bool, <span class="comment">// 1 bit
+    </span>is_alive: bool,    <span class="comment">// 1 bit
+    </span>status: B14,       <span class="comment">// 14 bits
+</span>}</code></pre></div>
+<h4 id="example-2"><a class="doc-anchor" href="#example-2">§</a>Example 2</h4>
+<p>The <code>bits: int</code> parameter is especially useful when using this in conjunction with
+<code>#[derive(BitfieldSpecifier)] and </code>filled = false` as shown in the below example.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield(bits = <span class="number">5</span>)]
+#[derive(BitfieldSpecifier)]
+</span><span class="kw">pub struct </span>Package {
+    is_received: bool, <span class="comment">// 1 bit
+    </span>is_alive: bool,    <span class="comment">// 1 bit
+    </span>status: B3,        <span class="comment">// 3 bits
+</span>}</code></pre></div>
+<h3 id="field-parameter-bits--n"><a class="doc-anchor" href="#field-parameter-bits--n">§</a>Field Parameter: <code>#[bits = N]</code></h3>
+<p>To ensure at compile time that a field of a <code>#[bitfield]</code> struct has a bit width of exactly
+<code>N</code> a user may add <code>#[bits = N]</code> to the field in question.</p>
+<h4 id="example-2"><a class="doc-anchor" href="#example-2">§</a>Example</h4>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>Base {
+    <span class="attr">#[bits = <span class="number">4</span>]
+    </span>header: Header, <span class="comment">//  4 bits
+    </span>content: B28,   <span class="comment">// 28 bits
+</span>}</code></pre></div>
+<h3 id="field-parameter-skip"><a class="doc-anchor" href="#field-parameter-skip">§</a>Field Parameter: <code>#[skip(..)]</code></h3>
+<p>It is possible to skip the entire code generation for getters or setters with the <code>#[skip]</code>
+field attribute.
+This is useful if a field just needs to be read or written exclusively. Skipping both
+setters and getters is useful if you want to have undefined blocks within your bitfields.</p>
+<h4 id="example-3"><a class="doc-anchor" href="#example-3">§</a>Example</h4>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>Sparse {
+    <span class="attr">#[skip(getters)]
+    </span>no_getters: B4,
+    <span class="attr">#[skip(setters)]
+    </span>no_setters: B4,
+    <span class="attr">#[skip]
+    </span>skipped_entirely: B4,
+    <span class="attr">#[skip(getters, setters)]
+    </span>skipped_entirely_2: B2,
+    <span class="attr">#[skip(getters)] #[skip(setters)]
+    </span>skipped_entirely_2: B2,
+}</code></pre></div>
+<h4 id="trick-wildcards"><a class="doc-anchor" href="#trick-wildcards">§</a>Trick: Wildcards</h4>
+<p>If you are completely uninterested in a field of a bitfield, for example when specifying
+some undefined bits in your bitfield you can use double wildcards as their names:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>Sparse {
+    <span class="attr">#[skip] </span>__: B10,
+    a: bool,
+    <span class="attr">#[skip] </span>__: B10,
+    b: bool,
+    <span class="attr">#[skip] </span>__: B10,
+}</code></pre></div>
+<h2 id="features"><a class="doc-anchor" href="#features">§</a>Features</h2><h3 id="support-derivebitfieldspecifier"><a class="doc-anchor" href="#support-derivebitfieldspecifier">§</a>Support: <code>#[derive(BitfieldSpecifier)]</code></h3>
+<p>If a <code>#[bitfield]</code> struct is annotated with a <code>#[derive(BitfieldSpecifier)]</code> attribute
+an implementation of the <code>Specifier</code> trait will be generated for it. This has the effect
+that the bitfield struct itself can be used as the type of a field of another bitfield type.</p>
+<p>This feature is limited to bitfield types that have a total bit width of 128 bit or fewer.
+This restriction is ensured at compile time.</p>
+<h4 id="example-4"><a class="doc-anchor" href="#example-4">§</a>Example</h4>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield(filled = <span class="bool-val">false</span>)]
+#[derive(BitfieldSpecifier)]
+</span><span class="kw">pub struct </span>Header {
+    is_received: bool, <span class="comment">// 1 bit
+    </span>is_alive: bool,    <span class="comment">// 1 bit
+    </span>status: B2,        <span class="comment">// 2 bits
+</span>}</code></pre></div>
+<p>Now the above <code>Header</code> bitfield type can be used in yet another <code>#[bitfield]</code> annotated type:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>Base {
+    header: Header, <span class="comment">//  4 bits
+    </span>content: B28,   <span class="comment">// 28 bits
+</span>}</code></pre></div>
+<h3 id="support-derivedebug"><a class="doc-anchor" href="#support-derivedebug">§</a>Support: <code>#[derive(Debug)]</code></h3>
+<p>If a <code>#[derive(Debug)]</code> is found by the <code>#[bitfield]</code> a naturally formatting implementation
+is going to be generated that clearly displays all the fields and their values as the user
+would expect.
+Also invalid bit patterns for fields are clearly displayed under this implementation.</p>
+<h4 id="example-5"><a class="doc-anchor" href="#example-5">§</a>Example</h4>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+#[derive(Debug)]
+</span><span class="kw">pub struct </span>Package {
+    is_received: bool, <span class="comment">// 1 bit
+    </span>is_alive: bool,    <span class="comment">// 1 bit
+    </span>status: B6,        <span class="comment">// 6 bits
+</span>}
+
+<span class="kw">let </span>package = Package::new()
+    .with_is_received(<span class="bool-val">false</span>)
+    .with_is_alive(<span class="bool-val">true</span>)
+    .with_status(<span class="number">3</span>);
+<span class="macro">println!</span>(<span class="string">"{:?}"</span>, package);
+<span class="macro">assert_eq!</span>(
+    <span class="macro">format!</span>(<span class="string">"{:?}"</span>, package),
+    <span class="string">"Package { is_received: false, is_alive: true, status: 3 }"</span>,
+);</code></pre></div>
+<h3 id="support-reprun"><a class="doc-anchor" href="#support-reprun">§</a>Support: <code>#[repr(uN)]</code></h3>
+<p>It is possible to additionally annotate a <code>#[bitfield]</code> annotated struct with <code>#[repr(uN)]</code>
+where <code>uN</code> is one of <code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code> or <code>u128</code> in order to make it conveniently
+interchangeable with such an unsigned integer value.</p>
+<p>As an effect to the user this implements <code>From</code> implementations between the chosen primitive
+and the bitfield as well as ensuring at compile time that the bit width of the bitfield struct
+matches the bit width of the primitive.</p>
+<h4 id="example-6"><a class="doc-anchor" href="#example-6">§</a>Example</h4>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+#[repr(u16)]
+</span><span class="kw">pub struct </span>SignedU16 {
+    sign: bool,     <span class="comment">//  1 bit
+    </span>abs_value: B15, <span class="comment">// 15 bits
+</span>}
+
+<span class="kw">let </span>sint = SignedU16::from(<span class="number">0b0111_0001</span>);
+<span class="macro">assert_eq!</span>(sint.sign(), <span class="bool-val">true</span>);
+<span class="macro">assert_eq!</span>(sint.abs_value(), <span class="number">0b0011_1000</span>);
+<span class="macro">assert_eq!</span>(u16::from(sint), <span class="number">0b0111_0001_u16</span>);</code></pre></div>
+</div></details></section></div></main></body></html>

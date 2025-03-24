@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DbgctrlSpec"],"type":["EccdisR","EccdisW","EccelogR","EccelogW","R","W"]};

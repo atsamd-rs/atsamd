@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Advanced high performance bus clocks"><title>atsamd_hal::clock::v2::ahb - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module ahb</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#advanced-high-performance-bus-clocks" title="Advanced high performance bus clocks">Advanced high performance bus clocks</a><ul><li><a href="#overview" title="Overview">Overview</a></li><li><a href="#example" title="Example">Example</a></li></ul></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#traits" title="Traits">Traits</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>clock::<wbr>v2</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../../../index.html">atsamd_hal</a>::<wbr><a href="../../index.html">clock</a>::<wbr><a href="../index.html">v2</a></span><h1>Module <span>ahb</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../src/atsamd_hal/peripherals/clock/d5x/v2/ahb.rs.html#1-400">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="advanced-high-performance-bus-clocks"><a class="doc-anchor" href="#advanced-high-performance-bus-clocks">§</a>Advanced high performance bus clocks</h2><h3 id="overview"><a class="doc-anchor" href="#overview">§</a>Overview</h3>
+<p>AHB clocks facilitate communication between the processor core and
+peripherals on the AHB bus. To communicate with a peripheral, the
+corresponding AHB clock must be enabled, which is done by setting a bit in
+the <code>AHBMASK</code> register.</p>
+<p>In this module, <em>enabled</em> AHB clocks are represented by the <a href="struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk"><code>AhbClk&lt;A&gt;</code></a>
+struct, where the type parameter <code>A</code> is a type that implements <a href="trait.AhbId.html" title="trait atsamd_hal::clock::v2::ahb::AhbId"><code>AhbId</code></a> and
+corresponds to one of the bits in the <code>AHBMASK</code> register.</p>
+<p>While most other clocks in the <code>clock</code> module are configured through
+mutually exclusive registers, the <a href="struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk"><code>AhbClk</code></a>s share a single <code>AHBMASK</code>
+register. This presents a challenge for memory safety. Specifically, if we
+allowed unrestricted access to the <code>AHBMASK</code> register through each <code>AhbClk</code>,
+we could create data races.</p>
+<p>To solve this problem, we restrict access to the <code>AHBMASK</code> register using
+the <a href="struct.Ahb.html" title="struct atsamd_hal::clock::v2::ahb::Ahb"><code>Ahb</code></a> type. <code>Ahb</code> was created to act as a gateway to the <code>AHBMASK</code>
+register, allowing us to use <code>&amp;mut Ahb</code> as compile-time proof of exclusive
+access to it.</p>
+<h3 id="example"><a class="doc-anchor" href="#example">§</a>Example</h3>
+<p>Enabling and disabling the <a href="struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk"><code>AhbClk</code></a>s proceeds according to the principles
+outlined in the <a href="../index.html" title="mod atsamd_hal::clock::v2"><code>clock</code> module documentation</a>. It is best shown with an
+example.</p>
+<p>Let’s start by using <a href="../fn.clock_system_at_reset.html" title="fn atsamd_hal::clock::v2::clock_system_at_reset"><code>clock_system_at_reset</code></a> to access the HAL clocking
+structs.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::{
+    clock::v2::{
+        clock_system_at_reset,
+    },
+    pac::Peripherals,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>pac = Peripherals::take().unwrap();
+<span class="kw">let </span>(<span class="kw-2">mut </span>buses, clocks, tokens) = clock_system_at_reset(
+    pac.oscctrl,
+    pac.osc32kctrl,
+    pac.gclk,
+    pac.mclk,
+    <span class="kw-2">&amp;mut </span>pac.nvmctrl,
+);</code></pre></div>
+<p>All AHB clocks are enabled at power-on reset. We can find them in the
+<a href="../struct.Clocks.html" title="struct atsamd_hal::clock::v2::Clocks"><code>Clocks</code></a> struct.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>ahb_qspi = clocks.ahbs.qspi;</code></pre></div>
+<p>To disable an <code>AhbClk</code>, we must have access to the <a href="struct.Ahb.html" title="struct atsamd_hal::clock::v2::ahb::Ahb"><code>Ahb</code></a> bus type, which
+is found in the <a href="../struct.Buses.html" title="struct atsamd_hal::clock::v2::Buses"><code>Buses</code></a> struct. As described above, <a href="struct.Ahb.html" title="struct atsamd_hal::clock::v2::ahb::Ahb"><code>Ahb</code></a> mediates
+access to the shared <code>AHBMASK</code> register. We call <a href="struct.Ahb.html#method.disable" title="method atsamd_hal::clock::v2::ahb::Ahb::disable"><code>Ahb::disable</code></a> to convert
+an <a href="struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk"><code>AhbClk</code></a> into the corresponding <a href="struct.AhbToken.html" title="struct atsamd_hal::clock::v2::ahb::AhbToken"><code>AhbToken</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>ahb_qspi = buses.ahb.disable(ahb_qspi);</code></pre></div>
+<p>To reenable an <code>AhbClk</code>, users must save the <code>AhbToken</code> and use it when
+calling <a href="struct.Ahb.html#method.enable" title="method atsamd_hal::clock::v2::ahb::Ahb::enable"><code>Ahb::enable</code></a>.</p>
+<p>The complete example is shown below.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::{
+    clock::v2::{
+        clock_system_at_reset,
+    },
+    pac::Peripherals,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>pac = Peripherals::take().unwrap();
+<span class="kw">let </span>(<span class="kw-2">mut </span>buses, clocks, tokens) = clock_system_at_reset(
+    pac.oscctrl,
+    pac.osc32kctrl,
+    pac.gclk,
+    pac.mclk,
+    <span class="kw-2">&amp;mut </span>pac.nvmctrl,
+);
+<span class="kw">let </span>ahb_qspi = clocks.ahbs.qspi;
+<span class="kw">let </span>ahb_qspi = buses.ahb.disable(ahb_qspi);</code></pre></div>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Ahb.html" title="struct atsamd_hal::clock::v2::ahb::Ahb">Ahb</a></div><div class="desc docblock-short">AHB clock controller</div></li><li><div class="item-name"><a class="struct" href="struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk">AhbClk</a></div><div class="desc docblock-short">An enabled AHB clock</div></li><li><div class="item-name"><a class="struct" href="struct.AhbClks.html" title="struct atsamd_hal::clock::v2::ahb::AhbClks">AhbClks</a></div><div class="desc docblock-short">Set of all <a href="struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk"><code>AhbClk</code></a>s</div></li><li><div class="item-name"><a class="struct" href="struct.AhbToken.html" title="struct atsamd_hal::clock::v2::ahb::AhbToken">AhbToken</a></div><div class="desc docblock-short">Singleton token that can be exchanged for an <a href="struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk"><code>AhbClk</code></a></div></li></ul><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.DynAhbId.html" title="enum atsamd_hal::clock::v2::ahb::DynAhbId">DynAhb<wbr>Id</a></div><div class="desc docblock-short">Value-level enum identifying a single AHB clock</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.AhbId.html" title="trait atsamd_hal::clock::v2::ahb::AhbId">AhbId</a></div><div class="desc docblock-short">Type-level enum identifying one of the possible AHB clocks</div></li></ul></section></div></main></body></html>

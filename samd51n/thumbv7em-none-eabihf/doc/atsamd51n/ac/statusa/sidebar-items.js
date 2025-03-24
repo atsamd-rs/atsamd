@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Wstate0select"],"struct":["StatusaSpec"],"type":["R","State0R","State1R","Wstate0R"]};

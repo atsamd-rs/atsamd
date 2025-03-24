@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ChintenclrSpec"],"type":["R","SuspR","SuspW","TcmplR","TcmplW","TerrR","TerrW","W"]};

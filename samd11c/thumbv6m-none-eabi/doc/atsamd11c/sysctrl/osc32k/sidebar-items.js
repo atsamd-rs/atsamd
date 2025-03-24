@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Osc32kSpec"],"type":["CalibR","CalibW","En1kR","En1kW","En32kR","En32kW","EnableR","EnableW","OndemandR","OndemandW","R","RunstdbyR","RunstdbyW","StartupR","StartupW","W","WrtlockR","WrtlockW"]};

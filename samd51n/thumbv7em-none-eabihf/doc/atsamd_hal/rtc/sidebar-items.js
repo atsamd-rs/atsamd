@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ClockMode","Count32Mode"],"struct":["Datetime","Rtc","TimerParams"],"trait":["RtcMode"]};

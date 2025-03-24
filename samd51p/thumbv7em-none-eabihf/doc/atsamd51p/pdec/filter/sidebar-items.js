@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["FilterSpec"],"type":["FilterR","FilterW","R","W"]};

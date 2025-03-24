@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DirtglSpec"],"type":["DirtglR","DirtglW","R","W"]};

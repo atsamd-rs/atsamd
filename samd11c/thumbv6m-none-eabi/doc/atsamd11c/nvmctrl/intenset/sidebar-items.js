@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["IntensetSpec"],"type":["ErrorR","ErrorW","R","ReadyR","ReadyW","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["dma","i2c","pad","spi","spi_future","uart"],"trait":["Sercom"],"type":["Sercom0","Sercom1"]};

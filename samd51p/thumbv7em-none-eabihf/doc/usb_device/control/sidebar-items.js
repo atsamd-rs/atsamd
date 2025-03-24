@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Recipient","RequestType"],"struct":["Request"]};

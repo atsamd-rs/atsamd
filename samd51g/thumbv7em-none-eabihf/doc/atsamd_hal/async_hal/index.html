@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Asynchronous HAL APIs"><title>atsamd_hal::async_hal - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module async_<wbr>hal</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#asynchronous-hal-apis" title="Asynchronous HAL APIs">Asynchronous HAL APIs</a><ul><li><a href="#using-the-async-apis" title="Using the `async` APIs">Using the <code>async</code> APIs</a></li><li><a href="#supported-peripherals" title="Supported peripherals">Supported peripherals</a></li><li><a href="#declaring-interrupt-bindings" title="Declaring interrupt bindings">Declaring interrupt bindings</a></li><li><a href="#declaring-multiple-interrupt-source-bindings" title="Declaring multiple interrupt source bindings">Declaring multiple interrupt source bindings</a></li><li><a href="#complete-example-using-the-feather_m0-bsp-and-the-embassy-executor" title="Complete example using the `feather_m0` BSP and the Embassy executor">Complete example using the <code>feather_m0</code> BSP and the Embassy executor</a></li></ul></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate atsamd_<wbr>hal</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../index.html">atsamd_hal</a></span><h1>Module <span>async_hal</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/atsamd_hal/async_hal/mod.rs.html#1-238">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="asynchronous-hal-apis"><a class="doc-anchor" href="#asynchronous-hal-apis">§</a>Asynchronous HAL APIs</h2>
+<p>This HAL provides a comprehensive and efficient way to interact with
+the underlying peripherals in an asynchronous fashion, enabling concurrent
+and non-blocking programming through the use of <code>async</code>/<code>await</code> APIs.</p>
+<p>This module provides the basis for interacting with peripherals through
+<code>async</code> APIs. Notably, in order to function correctly and wake an <code>await</code>ing
+<a href="https://doc.rust-lang.org/1.85.0/core/future/future/trait.Future.html" title="trait core::future::future::Future"><code>Future</code></a>, peripherals must be able to signal when
+their respective interrupts fire. Traditionally, the user manually writes
+their own interrupt handlers. When using <code>async</code> APIs, the peripherals
+effectively take control of their own interrupt handlers in order to wake
+tasks at the appropriate time.</p>
+<h3 id="using-the-async-apis"><a class="doc-anchor" href="#using-the-async-apis">§</a>Using the <code>async</code> APIs</h3>
+<p>To use the asynchronous APIs provided by the HAL, enable the <code>async</code> Cargo
+feature. Note that this uses a certain amount of static RAM in order to
+initialize wakers for each peripheral.</p>
+<h3 id="supported-peripherals"><a class="doc-anchor" href="#supported-peripherals">§</a>Supported peripherals</h3>
+<ul>
+<li><a href="../sercom/uart/index.html" title="mod atsamd_hal::sercom::uart"><code>UART</code></a></li>
+<li><a href="../sercom/spi/index.html" title="mod atsamd_hal::sercom::spi"><code>SPI</code></a></li>
+<li><a href="../sercom/i2c/index.html" title="mod atsamd_hal::sercom::i2c"><code>I2C</code></a></li>
+<li><a href="../dmac/index.html" title="mod atsamd_hal::dmac"><code>DMAC</code></a></li>
+<li><a href="../eic/index.html" title="mod atsamd_hal::eic"><code>EIC</code></a> (external GPIO interrupts)</li>
+<li><a href="../timer/index.html" title="mod atsamd_hal::timer"><code>Timers</code></a></li>
+</ul>
+<p><strong>Note</strong>: The asynchronous APIs for the individual peripherals are provided
+in their respective modules. This module only deals with the generalities of
+using <code>async</code> constructs throughout the HAL.</p>
+<h3 id="declaring-interrupt-bindings"><a class="doc-anchor" href="#declaring-interrupt-bindings">§</a>Declaring interrupt bindings</h3>
+<p>In order for the peripherals to wake their respective tasks, the interrupt
+sources must be bound to their handler at compile time. A struct that
+implements <a href="interrupts/trait.Binding.html" title="trait atsamd_hal::async_hal::interrupts::Binding"><code>Binding</code></a> must be passed to an async
+peripheral in order to prove to the compiler that the correct interrupt
+handlers have been bound.</p>
+<p>This module provides convenient macros that generate the interrupt bindings.
+Use <a href="../macro.bind_interrupts.html" title="macro atsamd_hal::bind_interrupts"><code>bind_interrupts</code></a> to bind single interrupt
+sources to handlers. See also <a href="#declaring-multiple-interrupt-source-bindings">Declaring multiple interrupt source
+bindings</a>.</p>
+<h3 id="declaring-multiple-interrupt-source-bindings"><a class="doc-anchor" href="#declaring-multiple-interrupt-source-bindings">§</a>Declaring multiple interrupt source bindings</h3>
+<p>For some <code>thumbv7em</code> peripherals, there are multiple interrupt sources used
+by a single peripheral. In these cases, we must provide a binding to an
+interrupt handler for each of these interrupt sources in order for the
+peripheral driver to function properly. The HAL defines only one interrupt
+“source” per peripheral. Your job is to tell it where to find all the
+relevant interrupts it must use to operate the peripheral properly. Use
+<a href="../macro.bind_multiple_interrupts.html" title="macro atsamd_hal::bind_multiple_interrupts"><code>bind_multiple_interrupts</code></a> to bind
+multiple interrupts to a single handler.</p>
+<p>Currently, the supported peripherals which have multiple interrupts per
+peripheral (<strong>thumbv7em targets only</strong>):</p>
+<ul>
+<li><code>SERCOMx: [SERCOMx_0, SERCOMx_1, SERCOMx_2, SERCOMx_OTHER]</code></li>
+<li><code>DMAC: [DMAC_0, DMAC_1, DMAC_2, DMAC_OTHER]</code></li>
+</ul>
+<h3 id="complete-example-using-the-feather_m0-bsp-and-the-embassy-executor"><a class="doc-anchor" href="#complete-example-using-the-feather_m0-bsp-and-the-embassy-executor">§</a>Complete example using the <code>feather_m0</code> BSP and the <a href="https://crates.io/crates/embassy-executor">Embassy executor</a></h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#![no_std]
+#![no_main]
+
+</span><span class="kw">use </span>defmt_rtt <span class="kw">as _</span>;
+<span class="kw">use </span>panic_probe <span class="kw">as _</span>;
+
+<span class="kw">use </span>bsp::hal;
+<span class="kw">use </span>bsp::pac;
+<span class="kw">use </span>feather_m0 <span class="kw">as </span>bsp;
+<span class="kw">use </span>fugit::MillisDuration;
+<span class="kw">use </span>hal::{
+    clock::GenericClockController,
+    dmac::{DmaController, PriorityLevel},
+    prelude::<span class="kw-2">*</span>,
+    sercom::Sercom4,
+};
+<span class="kw">use </span>rtic_monotonics::systick::Systick;
+
+<span class="macro">atsamd_hal::bind_interrupts!</span>(<span class="kw">struct </span>Irqs {
+    SERCOM4 =&gt; atsamd_hal::sercom::spi::InterruptHandler&lt;Sercom4&gt;;
+    DMAC =&gt; atsamd_hal::dmac::InterruptHandler;
+});
+
+<span class="attr">#[embassy_executor::main]
+</span><span class="kw">async fn </span>main(_s: embassy_executor::Spawner) {
+    <span class="kw">let </span><span class="kw-2">mut </span>peripherals = pac::Peripherals::take().unwrap();
+    <span class="kw">let </span>_core = pac::CorePeripherals::take().unwrap();
+
+    <span class="kw">let </span><span class="kw-2">mut </span>clocks = GenericClockController::with_external_32kosc(
+        peripherals.gclk,
+        <span class="kw-2">&amp;mut </span>peripherals.pm,
+        <span class="kw-2">&amp;mut </span>peripherals.sysctrl,
+        <span class="kw-2">&amp;mut </span>peripherals.nvmctrl,
+    );
+
+    <span class="kw">let </span>pins = bsp::Pins::new(peripherals.port);
+
+    <span class="comment">// Take SPI pins
+    </span><span class="kw">let </span>(miso, mosi, sclk) = (pins.miso, pins.mosi, pins.sclk);
+
+    <span class="comment">// Initialize DMA Controller
+    </span><span class="kw">let </span>dmac = DmaController::init(peripherals.dmac, <span class="kw-2">&amp;mut </span>peripherals.pm);
+
+    <span class="comment">// Turn dmac into an async controller
+    </span><span class="kw">let </span><span class="kw-2">mut </span>dmac = dmac.into_future(Irqs);
+    <span class="comment">// Get individual handles to DMA channels
+    </span><span class="kw">let </span>channels = dmac.split();
+
+    <span class="comment">// Initialize DMA Channels 0 and 1
+    </span><span class="kw">let </span>channel0 = channels.<span class="number">0</span>.init(PriorityLevel::Lvl0);
+    <span class="kw">let </span>channel1 = channels.<span class="number">1</span>.init(PriorityLevel::Lvl0);
+
+    <span class="kw">let </span><span class="kw-2">mut </span>spi = bsp::spi_master(
+        <span class="kw-2">&amp;mut </span>clocks,
+        <span class="number">100</span>.kHz(),
+        peripherals.sercom4,
+        <span class="kw-2">&amp;mut </span>peripherals.pm,
+        sclk,
+        mosi,
+        miso,
+    )
+    .into_future(Irqs)
+    .with_dma_channels(channel0, channel1);
+
+    <span class="kw">loop </span>{
+        <span class="macro">defmt::info!</span>(<span class="string">"Sending 0x00 to SPI device..."</span>);
+        spi.write(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>]).<span class="kw">await</span>.unwrap();
+
+        <span class="macro">defmt::info!</span>(<span class="string">"Sent 0x00."</span>);
+
+        <span class="kw">let </span><span class="kw-2">mut </span>buffer = [<span class="number">0xff</span>; <span class="number">4</span>];
+        spi.read(<span class="kw-2">&amp;mut </span>buffer).<span class="kw">await</span>.unwrap();
+        <span class="macro">defmt::info!</span>(<span class="string">"Read buffer: {:#x}"</span>, buffer);
+        Systick::delay(MillisDuration::&lt;u32&gt;::from_ticks(<span class="number">500</span>).convert()).<span class="kw">await</span>;
+    }
+}</code></pre></div>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="interrupts/index.html" title="mod atsamd_hal::async_hal::interrupts">interrupts</a></div><div class="desc docblock-short">Async interrupts</div></li></ul></section></div></main></body></html>

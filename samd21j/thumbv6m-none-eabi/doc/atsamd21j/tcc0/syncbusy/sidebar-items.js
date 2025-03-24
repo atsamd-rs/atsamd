@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["SyncbusySpec"],"type":["Cc0R","Cc1R","Cc2R","Cc3R","Ccb0R","Ccb1R","Ccb2R","Ccb3R","CountR","CtrlbR","EnableR","PattR","PattbR","PerR","PerbR","R","StatusR","SwrstR","WaveR","WavebR"]};

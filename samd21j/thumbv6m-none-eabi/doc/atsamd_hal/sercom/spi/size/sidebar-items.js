@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["EightBit","NineBit"],"trait":["CharSize"],"type":["Word"]};

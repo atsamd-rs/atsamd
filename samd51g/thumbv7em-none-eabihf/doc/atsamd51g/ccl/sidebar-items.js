@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["ctrl","lutctrl","seqctrl"],"struct":["RegisterBlock"],"type":["Ctrl","Lutctrl","Seqctrl"]};

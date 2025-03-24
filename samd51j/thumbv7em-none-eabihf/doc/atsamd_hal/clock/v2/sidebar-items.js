@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["clock_system_at_reset"],"mod":["ahb","apb","dfll","dpll","gclk","osculp32k","pclk","rtcosc","types","xosc","xosc32k"],"struct":["Buses","Clocks","Enabled","Pac","Tokens"],"trait":["Source"]};

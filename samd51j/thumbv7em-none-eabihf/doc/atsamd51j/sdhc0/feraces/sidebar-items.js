@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Acmd12neselect","Acmdcrcselect","Acmdendselect","Acmdidxselect","Acmdteoselect","Cmdniselect"],"struct":["FeracesSpec"],"type":["Acmd12neW","AcmdcrcW","AcmdendW","AcmdidxW","AcmdteoW","CmdniW","W"]};

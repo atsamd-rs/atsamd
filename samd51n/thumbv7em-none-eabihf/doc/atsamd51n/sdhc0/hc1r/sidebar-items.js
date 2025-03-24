@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Carddselselect","Carddtlselect","Dmaselselect","Dwselect","Hsenselect","Ledctrlselect"],"struct":["Hc1rSpec"],"type":["CarddselR","CarddselW","CarddtlR","CarddtlW","DmaselR","DmaselW","DwR","DwW","HsenR","HsenW","LedctrlR","LedctrlW","R","W"]};

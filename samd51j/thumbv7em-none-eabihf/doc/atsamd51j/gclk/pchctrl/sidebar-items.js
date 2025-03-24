@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Genselect"],"struct":["PchctrlSpec"],"type":["ChenR","ChenW","GenR","GenW","R","W","WrtlockR","WrtlockW"]};

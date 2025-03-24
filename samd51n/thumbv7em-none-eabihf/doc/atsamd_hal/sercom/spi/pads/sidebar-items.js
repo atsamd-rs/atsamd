@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Pads"],"trait":["Dipo","DipoDopo","Dopo","PadSet","ValidPads"],"type":["PadsFromIds"]};

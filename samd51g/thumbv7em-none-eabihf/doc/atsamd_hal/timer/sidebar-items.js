@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["InterruptHandler","TimerCounter","TimerFuture"],"trait":["AsyncCount16","Count16"],"type":["TimerCounter2","TimerCounter3"]};

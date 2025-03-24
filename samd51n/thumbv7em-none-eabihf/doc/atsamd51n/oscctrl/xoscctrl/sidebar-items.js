@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Cfdprescselect","Startupselect"],"struct":["XoscctrlSpec"],"type":["CfdenR","CfdenW","CfdprescR","CfdprescW","EnableR","EnableW","EnalcR","EnalcW","ImultR","ImultW","IptatR","IptatW","LowbufgainR","LowbufgainW","OndemandR","OndemandW","R","RunstdbyR","RunstdbyW","StartupR","StartupW","SwbenR","SwbenW","W","XtalenR","XtalenW"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Ch0","Ch1","Ch2","PriorityLevel","TriggerAction","TriggerSource"],"struct":["Channels","DmaController","FutureChannels","PriorityLevelMask","RoundRobinMask"],"trait":["ChId"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PrictrlSpec"],"type":["PriR","PriW","R","RrenR","RrenW","W"]};

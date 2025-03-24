@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CtrlSpec"],"type":["CrcenableR","CrcenableW","DmaenableR","DmaenableW","Lvlen0R","Lvlen0W","Lvlen1R","Lvlen1W","Lvlen2R","Lvlen2W","Lvlen3R","Lvlen3W","R","SwrstR","SwrstW","W"]};

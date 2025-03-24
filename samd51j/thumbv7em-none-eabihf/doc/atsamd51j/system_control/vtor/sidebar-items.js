@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["VtorSpec"],"type":["R","TbloffR","TbloffW","W"]};

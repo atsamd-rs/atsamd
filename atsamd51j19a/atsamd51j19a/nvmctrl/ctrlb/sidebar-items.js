@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["CMDEXW","Values that can be written to the field `CMDEX`"],["CMDW","Values that can be written to the field `CMD`"]],"struct":[["W","Value to write to the register"],["_CMDEXW","Proxy"],["_CMDW","Proxy"]]});

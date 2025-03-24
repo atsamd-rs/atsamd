@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Bootprotselect"],"struct":["StatusSpec"],"type":["AfirstR","BootprotR","BpdisR","LoadR","PrmR","R","ReadyR","SuspR"]};

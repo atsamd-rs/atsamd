@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Maxcur18vselect","Maxcur30vselect","Maxcur33vselect"],"struct":["MccarSpec"],"type":["Maxcur18vR","Maxcur30vR","Maxcur33vR","R"]};

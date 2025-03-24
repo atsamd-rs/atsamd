@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["HcvrSpec"],"type":["R","SverR","VverR"]};

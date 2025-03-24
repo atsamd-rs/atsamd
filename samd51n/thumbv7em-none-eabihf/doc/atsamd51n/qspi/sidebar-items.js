@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["baud","ctrla","ctrlb","instraddr","instrctrl","instrframe","intenclr","intenset","intflag","rxdata","scrambctrl","scrambkey","status","txdata"],"struct":["RegisterBlock"],"type":["Baud","Ctrla","Ctrlb","Instraddr","Instrctrl","Instrframe","Intenclr","Intenset","Intflag","Rxdata","Scrambctrl","Scrambkey","Status","Txdata"]};

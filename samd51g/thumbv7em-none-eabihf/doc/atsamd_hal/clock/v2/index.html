@@ -1,0 +1,433 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Version 2 of the `clock` module"><title>atsamd_hal::clock::v2 - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module v2</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#version-2-of-the-clock-module" title="Version 2 of the `clock` module">Version 2 of the <code>clock</code> module</a><ul><li><a href="#overview" title="Overview">Overview</a></li><li><a href="#clock-safety" title="Clock safety">Clock safety</a></li><li><a href="#clock-state-machines" title="Clock state machines">Clock state machines</a></li><li><a href="#clock-relationships" title="Clock relationships">Clock relationships</a></li><li><a href="#tracking-n-at-compile-time-for-1n-clocks" title="Tracking N at compile-time for 1:N clocks">Tracking N at compile-time for 1:N clocks</a></li><li><a href="#notes-on-memory-safety" title="Notes on memory safety">Notes on memory safety</a></li><li><a href="#getting-started" title="Getting started">Getting started</a></li><li><a href="#example-clock-tree" title="Example clock tree">Example clock tree</a></li></ul></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>clock</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../../index.html">atsamd_hal</a>::<wbr><a href="../index.html">clock</a></span><h1>Module <span>v2</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/atsamd_hal/peripherals/clock/d5x/v2.rs.html#1-1016">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="version-2-of-the-clock-module"><a class="doc-anchor" href="#version-2-of-the-clock-module">§</a>Version 2 of the <code>clock</code> module</h2><h3 id="overview"><a class="doc-anchor" href="#overview">§</a>Overview</h3>
+<p>This module provides a simple, ergonomic, and most of all <strong>safe</strong> API to
+create and manage the clock tree in ATSAMD5x and E5x devices. It uses
+<a href="../../typelevel/index.html" title="mod atsamd_hal::typelevel">type-level programming techniques</a> to prevent users from
+creating invalid or unsound clocking configurations.</p>
+<p style="background:rgba(255,181,77,0.16);padding:0.75em;">
+<strong> Note: </strong> Using a type-level API does place some limitations
+on how the clocks can be configured. The types must be checked at
+compile-time, which means the state of a given clock must also be known at
+compile-time. This is exceedingly reasonable for most clocking
+configurations, because most users set up their clocks once and never change
+them again. However, if you need to dynamically change the clocking
+configuration at run-time, you may find this API less ergonomic. A future,
+fully dynamic API has been discussed, but nothing has been developed so far.
+</p>
+<p>The sections that follow provide an explanation of key concepts in the
+module. We highly recommend users read through them to better understand the
+<code>clock</code> module API. A <a href="index.html#getting-started" title="mod atsamd_hal::clock::v2">complete example</a> is also
+provided.</p>
+<h3 id="clock-safety"><a class="doc-anchor" href="#clock-safety">§</a>Clock safety</h3>
+<p>A clock tree represents dependencies among clocks, where producer clocks
+feed consumer clocks. Root clocks are the original producers, as they are
+derived from oscillators or external clocks. Branch clocks are both
+producers and consumers, since they modify and distribute clocks. And leaf
+clocks are consumers only; they drive peripherals or external clock outputs
+but do not feed other clocks.</p>
+<p>To safely create and use a clock tree, it is critical that producer clocks
+not be modified or disabled while their consumer clocks are still in active
+use. Stated differently, if clock <code>B</code> consumes clock <code>A</code>, then clock <code>A</code>
+<strong>must not</strong> be modified or disabled while clock <code>B</code> is still in use.</p>
+<p>Notice that this requirement mimics the principle of “aliased XOR mutable”
+underlying the Rust borrow checker. A producer clock can only be modified if
+it is not “borrowed” (consumed) by any other clocks.</p>
+<p>The following sections will review the various type-level programming
+techniques used to enforce this principle in the <code>clock</code> module.</p>
+<h3 id="clock-state-machines"><a class="doc-anchor" href="#clock-state-machines">§</a>Clock state machines</h3>
+<p>Each available clock is represented in Rust as a unique, singleton object.
+Users cannot create two instances of the same clock without using <code>unsafe</code>.</p>
+<p>However, a given clock is not always represented with the same <strong>type</strong>.
+Specifically, each clock has at least two representations, one for the
+configured and enabled clock, and another for the unconfigured and disabled
+clock.</p>
+<p>These states are represented in Rust using distinct types, forming a
+type-level state machine. Moreover, the disabled state is always represented
+by a <code>Token</code> type. As the name implies, <code>Token</code>s have no functionality on
+their own; they can only be exchanged for a different type representing
+another state.</p>
+<h3 id="clock-relationships"><a class="doc-anchor" href="#clock-relationships">§</a>Clock relationships</h3>
+<p>In general, there are two classes of clock in ATSAMD chips. Some clocks map
+one-to-one (1:1) to a specific bus or peripheral. This is true for the AHB
+clocks (<a href="ahb/struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk"><code>AhbClk</code></a>s), APB clocks (<a href="apb/struct.ApbClk.html" title="struct atsamd_hal::clock::v2::apb::ApbClk"><code>ApbClk</code></a>s), GCLK outputs (<a href="gclk/struct.GclkOut.html" title="struct atsamd_hal::clock::v2::gclk::GclkOut"><code>GclkOut</code></a>s),
+peripheral channel clocks (<a href="pclk/struct.Pclk.html" title="struct atsamd_hal::clock::v2::pclk::Pclk"><code>Pclk</code></a>s), and RTC oscillator (<a href="rtcosc/struct.RtcOsc.html" title="struct atsamd_hal::clock::v2::rtcosc::RtcOsc"><code>RtcOsc</code></a>).
+Other clocks form one-to-many (1:N) relationships, like the external crystal
+oscillator (<a href="xosc/struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a>), the 48 MHz DFLL (<a href="dfll/struct.Dfll.html" title="struct atsamd_hal::clock::v2::dfll::Dfll"><code>Dfll</code></a>) or the two DPLLs
+(<a href="dpll/struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a>).</p>
+<p>The <code>clock</code> module uses a distinct approach for each class.</p>
+<h4 id="11-clocks"><a class="doc-anchor" href="#11-clocks">§</a>1:1 clocks</h4>
+<p>One-to-one relationships are easily modelled in Rust using move semantics.
+For example, an enabled peripheral channel clock is represented as a
+<a href="pclk/struct.Pclk.html" title="struct atsamd_hal::clock::v2::pclk::Pclk"><code>Pclk</code></a> object. The respective peripheral API can move the <code>Pclk</code> and take
+ownership of it. In that case, the <code>Pclk</code> acts as proof that the peripheral
+clock is enabled, and the transfer of ownership prevents users from
+modifying or disabling the <code>Pclk</code> while it is in use by the peripheral.</p>
+<p>One-to-one clocks generally have little to no configuration. They are
+typically converted directly from disabled <code>Token</code> types to fully enabled
+clock types. For example, the <code>Pclk</code> type has only two methods,
+<a href="pclk/struct.Pclk.html#method.enable" title="associated function atsamd_hal::clock::v2::pclk::Pclk::enable"><code>Pclk::enable</code></a> and <a href="pclk/struct.Pclk.html#method.disable" title="method atsamd_hal::clock::v2::pclk::Pclk::disable"><code>Pclk::disable</code></a>, which convert <a href="pclk/struct.PclkToken.html" title="struct atsamd_hal::clock::v2::pclk::PclkToken"><code>PclkToken</code></a>s to
+<code>Pclk</code>s and vice versa.</p>
+<h4 id="1n-clocks"><a class="doc-anchor" href="#1n-clocks">§</a>1:N clocks</h4>
+<p>One-to-many relationships are more difficult to model in Rust.</p>
+<p>As discussed above, we are trying to create something akin to “aliased XOR
+mutable”, where producer clocks cannot be modified while used by consumer
+clocks. A natural approach would be to use the Rust borrow checker directly.
+In that case, consumer clocks would hold <code>&amp;Producer</code> references to the
+<code>Producer</code> clock object. The existence of outstanding shared borrows would
+naturally prevent users from calling <code>Producer</code> methods taking <code>&amp;mut self</code>.</p>
+<p>Unfortunately, while this approach could work, there is a critical problem
+with disastrous consequences for ergonomics. To satisfy the Rust borrow
+checker, <code>Producer</code> clock objects <em>could not be moved</em> while <code>&amp;Producer</code>
+references were still held by consumer clocks.</p>
+<p>However, this restriction is unnecessary. A <code>Producer</code> clock object is
+merely a semantic object representing the “idea” of a producer clock. And
+“borrowing” the producer is not meant to protect memory from corruption.
+Rather, our goal is only to restrict the <code>Producer</code> API, to prevent it from
+being modified or disabled once it has been connected to a consumer. We
+don’t need to permanently hold the <code>Producer</code> object in place to do that.</p>
+<p>It is possible to build a <code>clock</code> API based on the borrow checker, but it
+would be extremely frustrating to use in practice, because of restrictions
+on the movement of <code>Producer</code> objects.</p>
+<p>Instead, the <code>clock</code> module takes a different approach. It uses type-level
+programming to track, at compile-time, the number of consumer clocks, N,
+fed by a particular producer clock. With this approach, we can move
+<code>Producer</code> objects while still making them impossible to modify if N &gt; 0.</p>
+<p>The following sections will describe the implementation of this strategy.</p>
+<h3 id="tracking-n-at-compile-time-for-1n-clocks"><a class="doc-anchor" href="#tracking-n-at-compile-time-for-1n-clocks">§</a>Tracking N at compile-time for 1:N clocks</h3>
+<p>We have two specific goals. We need to both track the number of consumer
+clocks, N, that are actively using a given producer clock. And we need to
+restrict the producer clock API when N &gt; 0.</p>
+<h4 id="a-compile-time-counter"><a class="doc-anchor" href="#a-compile-time-counter">§</a>A compile-time counter</h4>
+<p>First, we need to develop some way to track the number of consumer clocks,
+N, within the type system. To accomplish this, we need both a way to
+represent N in the type system and a way to increase or decrease N when
+making or breaking connections in the clock tree.</p>
+<p>To represent N, we can use type-level, <a href="../../../typenum/marker_traits/trait.Unsigned.html" title="trait typenum::marker_traits::Unsigned"><code>Unsigned</code></a> integers from the
+<a href="../../../typenum/index.html" title="mod typenum"><code>typenum</code></a> crate (i.e. <a href="../../../typenum/gen/consts/type.U0.html" title="type typenum::gen::consts::U0"><code>U0</code></a>, <a href="../../sercom/spi/lengths/type.U1.html" title="type atsamd_hal::sercom::spi::lengths::U1"><code>U1</code></a>, etc). And we can use a type
+<em>parameter</em>, <code>N</code>, to represent some unknown, type-level number.</p>
+<p>Next, we need a way to increase or decrease the type parameter <code>N</code>. The
+<a href="../../../typenum/index.html" title="mod typenum"><code>typenum</code></a> crate provides type aliases <a href="../../../typenum/operator_aliases/type.Add1.html" title="type typenum::operator_aliases::Add1"><code>Add1</code></a> and <a href="../../../typenum/operator_aliases/type.Sub1.html" title="type typenum::operator_aliases::Sub1"><code>Sub1</code></a> that map from
+each <a href="../../../typenum/marker_traits/trait.Unsigned.html" title="trait typenum::marker_traits::Unsigned"><code>Unsigned</code></a> integer to its successor and predecessor types,
+respectively. We can leverage these to create our own type with a counter
+that we <a href="../../typelevel/trait.Increment.html" title="trait atsamd_hal::typelevel::Increment"><code>Increment</code></a> or <a href="../../typelevel/trait.Decrement.html" title="trait atsamd_hal::typelevel::Decrement"><code>Decrement</code></a> at compile-time. These two traits
+form the foundation for our strategy for handling 1:N clocks in this module.</p>
+<h4 id="the-enabled-wrapper"><a class="doc-anchor" href="#the-enabled-wrapper">§</a>The <code>Enabled</code> wrapper</h4>
+<p>Our representation of a 1:N producer clock is <a href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled&lt;T, N&gt;</code></a>, which is a
+wrapper struct that pairs some <em>enabled</em> clock type <code>T</code> with a type <code>N</code>
+representing a consumer count. The wrapper restricts access to the
+underlying clock type, <code>T</code>, allowing us to selectively define methods when
+<code>N = U0</code>, that is, when there are no consumers of a given producer clock.</p>
+<p>The <a href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled</code></a> type itself implements <a href="../../typelevel/trait.Increment.html" title="trait atsamd_hal::typelevel::Increment"><code>Increment</code></a> and <a href="../../typelevel/trait.Decrement.html" title="trait atsamd_hal::typelevel::Decrement"><code>Decrement</code></a> as
+well, which allows type-level transformations to increment or decrement the
+counter, e.g. <code>Enabled&lt;T, U0&gt;</code> to <code>Enabled&lt;T, U1&gt;</code>. Such transformations can
+only be performed within the HAL; so users cannot change the consumer count
+arbitrarily.</p>
+<h4 id="acting-as-a-clock-source"><a class="doc-anchor" href="#acting-as-a-clock-source">§</a>Acting as a clock <code>Source</code></h4>
+<p>Finally, we need to define some generic interface for interacting with 1:N
+producer clocks. However, when designing this interface, we need to be
+careful not to lose information during type-level transformations.</p>
+<p>In particular, the <code>Enabled</code> counter type alone is not enough for proper
+clock safety. If we used consumer <code>A</code> to <code>Increment</code> producer <code>P</code> from
+<code>Enabled&lt;P, U0&gt;</code> to <code>Enabled&lt;P, U1&gt;</code>, but then used consumer <code>B</code> to
+<code>Decrement</code> the producer back to <code>Enabled&lt;P, U0&gt;</code>, we would leave consumer
+<code>A</code> dangling.</p>
+<p>To solve this problem, we need some way to guarantee that a given consumer
+can only <code>Decrement</code> the same producer it <code>Increment</code>ed. Stated differently,
+we need a way to track the identity of each consumer’s clock source.</p>
+<p>The <a href="trait.Source.html" title="trait atsamd_hal::clock::v2::Source"><code>Source</code></a> trait is designed for this purpose. It marks
+<a href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled&lt;T, N&gt;</code></a> producer clocks, and it’s associated type, <a href="trait.Source.html#associatedtype.Id" title="associated type atsamd_hal::clock::v2::Source::Id"><code>Id</code></a>, is the
+identity type that should be stored by consumers.</p>
+<p>Given that all implementers of <code>Source</code> are instances of <code>Enabled&lt;T, N&gt;</code>,
+the naïve choice for <a href="trait.Source.html#associatedtype.Id" title="associated type atsamd_hal::clock::v2::Source::Id"><code>Source::Id</code></a> would be <code>T</code>. However, in a moment, we
+will see why this choice is not ideal.</p>
+<h4 id="id-types"><a class="doc-anchor" href="#id-types">§</a><code>Id</code> types</h4>
+<p>Many of the clock types in this module have additional type parameters that
+track the clock’s configuration. For instance, <a href="xosc/type.Xosc0.html" title="type atsamd_hal::clock::v2::xosc::Xosc0"><code>Xosc0&lt;M&gt;</code></a> represents one
+of the external crystal oscillators. Here, the type parameter <code>M</code> represents
+the XOSC’s <a href="xosc/trait.Mode.html" title="trait atsamd_hal::clock::v2::xosc::Mode"><code>Mode</code></a>, which can either be <a href="xosc/enum.CrystalMode.html" title="enum atsamd_hal::clock::v2::xosc::CrystalMode"><code>CrystalMode</code></a> or
+<a href="xosc/enum.ClockMode.html" title="enum atsamd_hal::clock::v2::xosc::ClockMode"><code>ClockMode</code></a>. Accordingly, methods to adjust the crystal current, etc. are
+only available on <code>Xosc0&lt;CrystalMode&gt;</code>.</p>
+<p>While these type parameters are important and necessary for configuration of
+a given producer clock, they are not relevant to consumer clocks. A consumer
+clock does not need to know or care which <code>Mode</code> the XOSC is using, but
+it <em>does</em> need to track that its clock <a href="trait.Source.html" title="trait atsamd_hal::clock::v2::Source"><code>Source</code></a> is XOSC0.</p>
+<p>From this, we can see that <code>Enabled&lt;Xosc0&lt;M&gt;, N&gt;</code> should not implement
+<code>Source</code> with <code>Source::Id = Xosc0&lt;M&gt;</code>, because that would require consumers
+to needlessly track the XOSC <code>Mode</code>.</p>
+<p>Instead, this module defines a series of <code>Id</code> types representing the
+<em>identity</em> of a given clock, rather than the clock itself. This is like the
+distinction between a passport and a person. A passport identifies a person,
+regardless of changes to their clothes or hair. The <code>Id</code> types serve to
+erase configuration information, representing only the clock’s identity.</p>
+<p>For <code>Xosc0&lt;M&gt;</code>, the corresponding <code>Id</code> type is <a href="xosc/enum.Xosc0Id.html" title="enum atsamd_hal::clock::v2::xosc::Xosc0Id"><code>Xosc0Id</code></a>. Thus,
+<code>Enabled&lt;Xosc0&lt;M&gt;, N&gt;</code> implements <code>Source</code> with <code>Source::Id = Xosc0Id</code>.</p>
+<h3 id="notes-on-memory-safety"><a class="doc-anchor" href="#notes-on-memory-safety">§</a>Notes on memory safety</h3><h4 id="register-interfaces"><a class="doc-anchor" href="#register-interfaces">§</a>Register interfaces</h4>
+<p>Although HAL users see <code>Token</code> types as merely opaque objects, internally
+they serve a dual purpose as the primary register interface to control the
+corresponding clock. Moreover, they also fundamentally restructure the way
+registers are accessed relative to the <a href="../../../atsamd51g/index.html" title="mod atsamd51g">PAC</a>.</p>
+<p>Each of the four PAC clocking structs (<a href="crate::pac::OSCCTRL"><code>OSCCTRL</code></a>, <a href="crate::pac::OSC32KCTRL"><code>OSC32KCTRL</code></a>, <a href="crate::pac::GCLK"><code>GCLK</code></a>
+and <a href="crate::pac::MCLK"><code>MCLK</code></a>) is a singleton object that controls a set of MMIO registers.
+It is impossible to create two instances of any PAC object without <code>unsafe</code>.
+However, each object controls a large set of registers that can be further
+sub-divided into smaller sets for individual clocks. For example, the
+<a href="crate::pac::GCLK"><code>GCLK</code></a> object controls registers for 12 different clock generators and 48
+peripheral channel clocks.</p>
+<p><code>Token</code> types serve to break up the large PAC objects into smaller,
+more-targetted pieces. And in the process, they also remove the PAC objects’
+<a href="https://doc.rust-lang.org/reference/interior-mutability.html">interior mutability</a>. But this is only possible because each <code>Token</code> is
+<em>also</em> a singleton, and because individual clocks are configured through
+<em>mutually exclusive</em> sets of registers.</p>
+<h4 id="bus-clocks"><a class="doc-anchor" href="#bus-clocks">§</a>Bus clocks</h4>
+<p>Bus clocks are fundamentally different from the other clock types in this
+module, because they do not use mutually exclusive registers for
+configuration. For instance, the registers that control <a href="dpll/type.Dpll0.html" title="type atsamd_hal::clock::v2::dpll::Dpll0"><code>Dpll0</code></a> are
+mutually exclusive to those that control <a href="dpll/type.Dpll1.html" title="type atsamd_hal::clock::v2::dpll::Dpll1"><code>Dpll1</code></a>, but <code>ApbClk&lt;Sercom0&gt;</code>
+and <code>ApbClk&lt;Sercom1&gt;</code> share a single register.</p>
+<p>This presents a challenge for memory safety, because we need some way to
+guarantee that there are no data races. For example, if both
+<code>ApbClk&lt;Sercom0&gt;</code> and <code>ApbClk&lt;Sercom1&gt;</code> tried to modify the <code>APBAMASK</code>
+register from two different execution contexts, a read/modify/write
+operation could be preempted, leading to memory corruption.</p>
+<p>To prevent data races when controlling bus clocks, we introduce two new
+types to mediate access to the shared registers. For <a href="ahb/struct.AhbClk.html" title="struct atsamd_hal::clock::v2::ahb::AhbClk"><code>AhbClk</code></a>s, this is
+the <a href="ahb/struct.Ahb.html" title="struct atsamd_hal::clock::v2::ahb::Ahb"><code>Ahb</code></a> type; and for <a href="apb/struct.ApbClk.html" title="struct atsamd_hal::clock::v2::apb::ApbClk"><code>ApbClk</code></a>s, this is the <a href="apb/struct.Apb.html" title="struct atsamd_hal::clock::v2::apb::Apb"><code>Apb</code></a> type. In a sense,
+the <code>Ahb</code> and <code>Apb</code> types represent the actual corresponding buses. Thus,
+enabling an APB clock by converting an <a href="apb/struct.ApbToken.html" title="struct atsamd_hal::clock::v2::apb::ApbToken"><code>ApbToken</code></a> into an <code>ApbClk</code>
+requires exclusive access to the <code>Apb</code> in the form of <code>&amp;mut Apb</code>.</p>
+<h3 id="getting-started"><a class="doc-anchor" href="#getting-started">§</a>Getting started</h3>
+<p>To set up a clock tree, start by trading the <a href="../../../atsamd51g/index.html" title="mod atsamd51g">PAC</a>-level
+clocking structs for their HAL equivalents. Right now, the only way to do so
+safely is using the <a href="fn.clock_system_at_reset.html" title="fn atsamd_hal::clock::v2::clock_system_at_reset"><code>clock_system_at_reset</code></a> function, which assumes all
+clocks are in their default state at power-on reset. If this is not the
+case, because, for example, a bootloader has modified the clocks, then you
+may need to manually create the matching configuration using <code>unsafe</code> code.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::clock::v2::clock_system_at_reset;
+<span class="kw">use </span>atsamd_hal::pac::Peripherals;
+<span class="kw">let </span><span class="kw-2">mut </span>pac = Peripherals::take().unwrap();
+<span class="kw">let </span>(buses, clocks, tokens) = clock_system_at_reset(
+    pac.OSCCTRL,
+    pac.OSC32KCTRL,
+    pac.GCLK,
+    pac.MCLK,
+    <span class="kw-2">&amp;mut </span>pac.NVMCTRL,
+);</code></pre></div>
+<p>At this point, you may notice that the function returned three different
+objects, the <a href="struct.Buses.html" title="struct atsamd_hal::clock::v2::Buses"><code>Buses</code></a>, <a href="struct.Clocks.html" title="struct atsamd_hal::clock::v2::Clocks"><code>Clocks</code></a> and <a href="struct.Tokens.html" title="struct atsamd_hal::clock::v2::Tokens"><code>Tokens</code></a>.</p>
+<p>The <a href="struct.Buses.html" title="struct atsamd_hal::clock::v2::Buses"><code>Buses</code></a> struct contains the <a href="ahb/struct.Ahb.html" title="struct atsamd_hal::clock::v2::ahb::Ahb"><code>Ahb</code></a> and <a href="apb/struct.Apb.html" title="struct atsamd_hal::clock::v2::apb::Apb"><code>Apb</code></a> objects, which
+represent the corresponding AHB and APB buses. See the <a href="index.html#notes-on-memory-safety" title="mod atsamd_hal::clock::v2">notes on memory
+safety</a> for more details on these types.</p>
+<p>The <a href="struct.Clocks.html" title="struct atsamd_hal::clock::v2::Clocks"><code>Clocks</code></a> struct contains all of the clocks that are enabled and
+running at power-on reset, specifically:</p>
+<ul>
+<li>All of the <a href="ahb/struct.AhbClks.html" title="struct atsamd_hal::clock::v2::ahb::AhbClks"><code>AhbClks</code></a></li>
+<li>Some of the <a href="apb/struct.ApbClks.html" title="struct atsamd_hal::clock::v2::apb::ApbClks"><code>ApbClks</code></a></li>
+<li>The 48 MHz <a href="dfll/struct.Dfll.html" title="struct atsamd_hal::clock::v2::dfll::Dfll"><code>Dfll</code></a>, running in open-loop mode, represented as as
+<code>Enabled&lt;Dfll, U1&gt;</code>. <code>N = U1</code> here because <a href="gclk/type.Gclk0.html" title="type atsamd_hal::clock::v2::gclk::Gclk0"><code>Gclk0</code></a> consumes it. See
+<a href="index.html#tracking-n-at-compile-time-for-1n-clocks" title="mod atsamd_hal::clock::v2">above</a> for details on
+<a href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled&lt;T, N&gt;</code></a>.</li>
+<li><a href="gclk/type.Gclk0.html" title="type atsamd_hal::clock::v2::gclk::Gclk0"><code>Gclk0</code></a>, sourced by the <code>Dfll</code> and represented as
+<code>Enabled&lt;Gclk0&lt;DfllId&gt;, U1&gt;</code>. Note the use of <a href="dfll/enum.DfllId.html" title="enum atsamd_hal::clock::v2::dfll::DfllId"><code>DfllId</code></a> as an <a href="index.html#id-types" title="mod atsamd_hal::clock::v2"><code>Id</code>
+type</a> here. Although <code>Gclk0</code> is not consumed by any clock
+represented in this module, it <em>is</em> consumed by the processor’s main
+clock. We represent this by setting <code>N = U1</code>, which we use to restrict the
+available API. Specifically, <a href="gclk/type.EnabledGclk0.html" title="type atsamd_hal::clock::v2::gclk::EnabledGclk0"><code>EnabledGclk0</code></a> has special methods not
+available to other <a href="crate::pac::GCLK"><code>Gclk</code></a>s.</li>
+<li>The <a href="osculp32k/struct.OscUlp32kBase.html" title="struct atsamd_hal::clock::v2::osculp32k::OscUlp32kBase"><code>OscUlp32kBase</code></a> clock, which can act as a <a href="trait.Source.html" title="trait atsamd_hal::clock::v2::Source"><code>Source</code></a> for the
+<a href="osculp32k/struct.OscUlp1k.html" title="struct atsamd_hal::clock::v2::osculp32k::OscUlp1k"><code>OscUlp1k</code></a> and <a href="osculp32k/struct.OscUlp32k.html" title="struct atsamd_hal::clock::v2::osculp32k::OscUlp32k"><code>OscUlp32k</code></a> clocks. It has no consumers at power-on
+reset, so it is represented as <code>Enabled&lt;OscUlp32kBase, U0&gt;</code>. However, it
+can never be disabled, so we provide no <code>.disable()</code> method.</li>
+</ul>
+<p>The <a href="struct.Tokens.html" title="struct atsamd_hal::clock::v2::Tokens"><code>Tokens</code></a> struct contains all of the available <code>Token</code>s, which
+<a href="index.html#clock-state-machines" title="mod atsamd_hal::clock::v2">represent clocks that are disabled</a> at power-on
+reset. Each <code>Token</code> can be exchanged for a corresponding clock object.</p>
+<h3 id="example-clock-tree"><a class="doc-anchor" href="#example-clock-tree">§</a>Example clock tree</h3>
+<p>Finally, we will walk through the creation of a simple clock tree to
+illustrate some of the remaining concepts inherent to this module.</p>
+<p>Starting from the previous snippet, we have the <a href="struct.Buses.html" title="struct atsamd_hal::clock::v2::Buses"><code>Buses</code></a>, <a href="struct.Clocks.html" title="struct atsamd_hal::clock::v2::Clocks"><code>Clocks</code></a> and
+<a href="struct.Tokens.html" title="struct atsamd_hal::clock::v2::Tokens"><code>Tokens</code></a> to work with, and our clock tree at power-on reset looks like
+this.</p>
+<div class="example-wrap"><pre class="language-text"><code>DFLL (48 MHz)
+└── GCLK0 (48 MHz)
+    └── Main clock (48 MHz)</code></pre></div>
+<p>Our goal will be a clock tree that looks like this:</p>
+<div class="example-wrap"><pre class="language-text"><code>XOSC0 (8 MHz)
+└── DPLL0 (100 MHz)
+    └── GCLK0 (100 MHz)
+        ├── Main clock (100 MHz)
+        ├── SERCOM0 peripheral clock
+        └── Output to GPIO pin</code></pre></div>
+<p>We will use an external crystal oscillator running at 8 MHz to feed a DPLL,
+which will increase the clock frequency to 100 MHz. Then, we will
+reconfigure GCLK0 to use the 100 MHz DPLL clock instead of the 48 MHz DFLL
+clock.</p>
+<p>First, let’s import some of the necessary types. We will see what each type
+represents in turn.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::{
+    clock::v2::{
+        clock_system_at_reset,
+        dpll::Dpll,
+        pclk::Pclk,
+        xosc::Xosc,
+    },
+    gpio::Pins,
+    pac::Peripherals,
+    time::U32Ext,
+};</code></pre></div>
+<p>To create an instance of <a href="xosc/struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a>, we will first need to identify which of
+the two XOSC clocks we will use. Suppose an external crystal is attached to
+pins <code>PA14</code> and <code>PA15</code>. These pins feed the XOSC0 clock, so we will want to
+create an instance of <a href="xosc/type.Xosc0.html" title="type atsamd_hal::clock::v2::xosc::Xosc0"><code>Xosc0</code></a>. Note that <code>Xosc0&lt;M&gt;</code> is merely an alias for
+<code>Xosc&lt;Xosc0Id, M&gt;</code>. Here, <a href="xosc/enum.Xosc0Id.html" title="enum atsamd_hal::clock::v2::xosc::Xosc0Id"><code>Xosc0Id</code></a> represents the
+<a href="index.html#id-types" title="mod atsamd_hal::clock::v2"><em>identity</em></a> of the XOSC0 clock, rather than the clock
+itself, and <code>M</code> represents the XOSC <a href="xosc/trait.Mode.html" title="trait atsamd_hal::clock::v2::xosc::Mode"><code>Mode</code></a>.</p>
+<p>Next, we access the <a href="struct.Tokens.html" title="struct atsamd_hal::clock::v2::Tokens"><code>Tokens</code></a> struct to extract the corresponding
+<a href="xosc/struct.XoscToken.html" title="struct atsamd_hal::clock::v2::xosc::XoscToken"><code>XoscToken</code></a> for XOSC0, and we trade the PAC <code>PORT</code> struct for the
+<a href="../../gpio/pin/struct.Pins.html" title="struct atsamd_hal::gpio::pin::Pins"><code>gpio::Pins</code></a> struct to access the GPIO pins. We can then call
+<a href="xosc/struct.Xosc.html#method.from_crystal" title="associated function atsamd_hal::clock::v2::xosc::Xosc::from_crystal"><code>Xosc::from_crystal</code></a> to trade the token and <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>s to yield an instance
+of <a href="xosc/type.Xosc0.html" title="type atsamd_hal::clock::v2::xosc::Xosc0"><code>Xosc0</code></a>. In doing so, we also provide the oscillator frequency.</p>
+<p>Finally, we can chain a call to the <a href="xosc/struct.Xosc.html#method.enable" title="method atsamd_hal::clock::v2::xosc::Xosc::enable"><code>Xosc::enable</code></a> method to enable the
+XOSC and return an instance of <a href="xosc/type.EnabledXosc0.html" title="type atsamd_hal::clock::v2::xosc::EnabledXosc0"><code>EnabledXosc0&lt;M, N&gt;</code></a>, which is simply an
+alias for <code>Enabled&lt;Xosc0&lt;M&gt;, N&gt;</code>. In this case, we get
+<code>EnabledXosc0&lt;CrystalMode, U0&gt;</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>pins = Pins::new(pac.PORT);
+<span class="kw">let </span>xosc0 = Xosc::from_crystal(
+    tokens.xosc0,
+    pins.pa14,
+    pins.pa15,
+    <span class="number">8</span>.mhz(),
+).enable();</code></pre></div>
+<p>Next, we want to use a DPLL to multiply the 8 MHz crystal clock up to 100
+MHz. Once again, we need to decide between two instances of a clock, because
+each chip has two <a href="dpll/struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll</code></a>s. This time, however, our decision between
+<a href="dpll/type.Dpll0.html" title="type atsamd_hal::clock::v2::dpll::Dpll0"><code>Dpll0</code></a> and <a href="dpll/type.Dpll1.html" title="type atsamd_hal::clock::v2::dpll::Dpll1"><code>Dpll1</code></a> is arbitrary.</p>
+<p>Also note that, like before, <code>Dpll0&lt;I&gt;</code> and <code>Dpll1&lt;I&gt;</code> are aliases for
+<code>Dpll&lt;Dpll0Id, I&gt;</code> and <code>Dpll&lt;Dpll1Id, I&gt;</code>. <a href="dpll/enum.Dpll0Id.html" title="enum atsamd_hal::clock::v2::dpll::Dpll0Id"><code>Dpll0Id</code></a> and <a href="dpll/enum.Dpll1Id.html" title="enum atsamd_hal::clock::v2::dpll::Dpll1Id"><code>Dpll1Id</code></a>
+represent the <em>identity</em> of the respective DPLL, while <code>I</code> represents the
+<a href="index.html#id-types" title="mod atsamd_hal::clock::v2"><code>Id</code> type</a> for the <a href="trait.Source.html" title="trait atsamd_hal::clock::v2::Source"><code>Source</code></a> driving the DPLL. In this
+particular case, we aim to create an instance of <code>Dpll0&lt;Xosc0Id&gt;</code>.</p>
+<p>Only certain clocks can drive the DPLL, so <code>I</code> is constrained by the
+<a href="dpll/trait.DpllSourceId.html" title="trait atsamd_hal::clock::v2::dpll::DpllSourceId"><code>DpllSourceId</code></a> trait. Specifically, only the <a href="xosc/enum.Xosc0Id.html" title="enum atsamd_hal::clock::v2::xosc::Xosc0Id"><code>Xosc0Id</code></a>, <a href="xosc/enum.Xosc1Id.html" title="enum atsamd_hal::clock::v2::xosc::Xosc1Id"><code>Xosc1Id</code></a>,
+<a href="xosc32k/enum.Xosc32kId.html" title="enum atsamd_hal::clock::v2::xosc32k::Xosc32kId"><code>Xosc32kId</code></a> and <a href="gclk/trait.GclkId.html" title="trait atsamd_hal::clock::v2::gclk::GclkId"><code>GclkId</code></a> types implement this trait.</p>
+<p>As before, we access the <a href="struct.Tokens.html" title="struct atsamd_hal::clock::v2::Tokens"><code>Tokens</code></a> struct and use the corresponding
+<a href="dpll/struct.DpllToken.html" title="struct atsamd_hal::clock::v2::dpll::DpllToken"><code>DpllToken</code></a> when creating an instance of <code>Dpll</code>. However, unlike before,
+we are creating a new clock-tree relationship that must be tracked by the
+type system. Because DPLL0 will now consume XOSC0, we must <a href="../../typelevel/trait.Increment.html" title="trait atsamd_hal::typelevel::Increment"><code>Increment</code></a>
+the <a href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled</code></a> counter for <a href="xosc/type.EnabledXosc0.html" title="type atsamd_hal::clock::v2::xosc::EnabledXosc0"><code>EnabledXosc0</code></a>.</p>
+<p>Thus, to create an instance of <code>Dpll0&lt;XoscId0&gt;</code>, we must provide the
+<code>EnabledXosc0</code>, so that its <code>U0</code> type parameter can be incremented to <code>U1</code>.
+The <code>Dpll::from_xosc</code> method takes ownership of the <code>EnabledXosc0</code> and
+returns it with this modified type parameter.</p>
+<p>This is the essence of clock safety in this module. Once the counter type
+has been incremeneted to <code>U1</code>, the <code>EnabledXosc0</code> can no longer be modified
+or disabled. All further code can guarantee this invariant is upheld. To
+modify the <code>EnabledXosc0</code>, we would first have to use <code>Dpll::free_source</code> to
+disable the DPLL and <a href="../../typelevel/trait.Decrement.html" title="trait atsamd_hal::typelevel::Decrement"><code>Decrement</code></a> the counter back to <code>U0</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>(dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);</code></pre></div>
+<p>Next, we set the DPLL pre-divider and loop divider. We must pre-divide
+the XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid
+input frequency range for the DPLL. Then, we set the DPLL loop divider, so
+that it will multiply the 2 MHz clock by 50 for a 100 MHz output. We do not
+need fractional mutiplication here, so the fractional loop divider is zero.
+Finally, we can enable the <code>Dpll</code>, yielding an instance of
+<code>EnabledDpll0&lt;XoscId0&gt;</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>dpll0 = dpll0.prediv(<span class="number">4</span>).loop_div(<span class="number">50</span>, <span class="number">0</span>).enable();</code></pre></div>
+<p>So far, our clock tree looks like this</p>
+<div class="example-wrap"><pre class="language-text"><code>DFLL (48 MHz)
+└── GCLK0 (48 MHz)
+    └── Main clock (48 MHz)
+
+XOSC0 (8 MHz)
+└── DPLL0 (100 MHz)</code></pre></div>
+<p>Our next task will be to swap GCLK0 from the 48 MHz DFLL to the 100 MHz
+DPLL. To do that, we will use the special <a href="struct.Enabled.html#method.swap_sources" title="method atsamd_hal::clock::v2::Enabled::swap_sources"><code>swap_sources</code></a> method on
+<a href="gclk/type.EnabledGclk0.html" title="type atsamd_hal::clock::v2::gclk::EnabledGclk0"><code>EnabledGclk0</code></a> to change the base clock without disabling GCLK0 or the
+main clock.</p>
+<p>This time we will be modifying two <a href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled</code></a> counters simultaneously.
+We will <a href="../../typelevel/trait.Decrement.html" title="trait atsamd_hal::typelevel::Decrement"><code>Decrement</code></a> the <a href="dfll/type.EnabledDfll.html" title="type atsamd_hal::clock::v2::dfll::EnabledDfll"><code>EnabledDfll</code></a> count from <code>U1</code> to <code>U0</code>, and
+we will <a href="../../typelevel/trait.Increment.html" title="trait atsamd_hal::typelevel::Increment"><code>Increment</code></a> the <a href="dpll/type.EnabledDpll0.html" title="type atsamd_hal::clock::v2::dpll::EnabledDpll0"><code>EnabledDpll0</code></a> count from <code>U0</code> to <code>U1</code>.
+Again, we need to provide both the DFLL and DPLL clocks, so that their
+type parameters can be changed.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>(gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);</code></pre></div>
+<p>At this point, the DFLL is completely unused, so it can be disbled and
+deconstructed, leaving only the <a href="dfll/struct.DfllToken.html" title="struct atsamd_hal::clock::v2::dfll::DfllToken"><code>DfllToken</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>dfll_token = dfll.disable().free();</code></pre></div>
+<p>Our clock tree now looks like this:</p>
+<div class="example-wrap"><pre class="language-text"><code>XOSC0 (8 MHz)
+└── DPLL0 (100 MHz)
+    └── GCLK0 (100 MHz)
+        └── Main clock (100 MHz)</code></pre></div>
+<p>We have the clocks set up, but we’re not using them for anything other than
+the main clock. Our final steps will create SERCOM APB and peripheral
+clocks and will output the raw GCLK0 to a GPIO pin.</p>
+<p>To enable the APB clock for SERCOM0, we must access the <a href="apb/struct.Apb.html" title="struct atsamd_hal::clock::v2::apb::Apb"><code>Apb</code></a> bus struct.
+We provide an <a href="apb/struct.ApbToken.html" title="struct atsamd_hal::clock::v2::apb::ApbToken"><code>ApbToken</code></a> to the <a href="apb/struct.Apb.html#method.enable" title="method atsamd_hal::clock::v2::apb::Apb::enable"><code>Apb::enable</code></a> method and receive an
+<a href="apb/struct.ApbClk.html" title="struct atsamd_hal::clock::v2::apb::ApbClk"><code>ApbClk</code></a> in return. APB clocks are <a href="index.html#clock-relationships" title="mod atsamd_hal::clock::v2">1:1 clocks</a>,
+so the <code>ApbClk</code> is not wrapped with <a href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);</code></pre></div>
+<p>To enable a peripheral channel clock for SERCOM0, we must provide the
+corresponding <a href="pclk/struct.PclkToken.html" title="struct atsamd_hal::clock::v2::pclk::PclkToken"><code>PclkToken</code></a>, as well as the instance of <a href="gclk/type.EnabledGclk0.html" title="type atsamd_hal::clock::v2::gclk::EnabledGclk0"><code>EnabledGclk0</code></a>, so
+that its counter can be incremented. The resulting clock has the type
+<code>Pclk&lt;Sercom0, Gclk0Id&gt;</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>(pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);</code></pre></div>
+<p>Like <a href="dpll/struct.Dpll.html" title="struct atsamd_hal::clock::v2::dpll::Dpll"><code>Dpll&lt;D, I&gt;</code></a>, <a href="pclk/struct.Pclk.html" title="struct atsamd_hal::clock::v2::pclk::Pclk"><code>Pclk&lt;P, I&gt;</code></a> also takes two type parameters. The
+first represents the corresponding peripheral, while the second is again an
+<a href="index.html#id-types" title="mod atsamd_hal::clock::v2"><code>Id</code> type</a> representing the <a href="trait.Source.html" title="trait atsamd_hal::clock::v2::Source"><code>Source</code></a> driving the <a href="pclk/struct.Pclk.html" title="struct atsamd_hal::clock::v2::pclk::Pclk"><code>Pclk</code></a>,
+which is restricted by the <a href="pclk/trait.PclkSourceId.html" title="trait atsamd_hal::clock::v2::pclk::PclkSourceId"><code>PclkSourceId</code></a> trait. Because peripheral
+channel clocks can only be driven by GCLKs, <a href="pclk/trait.PclkSourceId.html" title="trait atsamd_hal::clock::v2::pclk::PclkSourceId"><code>PclkSourceId</code></a> is effectively
+synonymous with the <a href="gclk/trait.GclkId.html" title="trait atsamd_hal::clock::v2::gclk::GclkId"><code>GclkId</code></a> trait.</p>
+<p>Finally, we would like to output GCLK0 to a GPIO pin. Doing so takes a
+slightly different approach. This time, we provide a GPIO <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a> to the
+<a href="crate::pac::GCLK"><code>Gclk</code></a>, which creates a <a href="gclk/struct.GclkOut.html" title="struct atsamd_hal::clock::v2::gclk::GclkOut"><code>GclkOut</code></a> and <a href="../../typelevel/trait.Increment.html" title="trait atsamd_hal::typelevel::Increment"><code>Increment</code></a>s the consumer count
+for <a href="gclk/type.EnabledGclk0.html" title="type atsamd_hal::clock::v2::gclk::EnabledGclk0"><code>EnabledGclk0</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>(gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);</code></pre></div>
+<p>We have arrived at our final, desired clock tree. Putting the whole example
+together, we get</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::{
+    clock::v2::{
+        clock_system_at_reset,
+        dpll::Dpll,
+        pclk::Pclk,
+        xosc::Xosc,
+    },
+    gpio::Pins,
+    pac::Peripherals,
+    time::U32Ext,
+};
+
+<span class="kw">let </span><span class="kw-2">mut </span>pac = Peripherals::take().unwrap();
+<span class="kw">let </span>(<span class="kw-2">mut </span>buses, clocks, tokens) = clock_system_at_reset(
+    pac.OSCCTRL,
+    pac.OSC32KCTRL,
+    pac.GCLK,
+    pac.MCLK,
+    <span class="kw-2">&amp;mut </span>pac.NVMCTRL,
+);
+<span class="kw">let </span>pins = Pins::new(pac.PORT);
+<span class="kw">let </span>xosc0 = Xosc::from_crystal(
+    tokens.xosc0,
+    pins.pa14,
+    pins.pa15,
+    <span class="number">8</span>.mhz(),
+)
+.enable();
+<span class="kw">let </span>(dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<span class="kw">let </span>dpll0 = dpll0.prediv(<span class="number">4</span>).loop_div(<span class="number">50</span>, <span class="number">0</span>).enable();
+<span class="kw">let </span>(gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
+<span class="kw">let </span>dfll_token = dfll.disable().free();
+<span class="kw">let </span>apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
+<span class="kw">let </span>(pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
+<span class="kw">let </span>(gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);</code></pre></div>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="ahb/index.html" title="mod atsamd_hal::clock::v2::ahb">ahb</a></div><div class="desc docblock-short">Advanced high performance bus clocks</div></li><li><div class="item-name"><a class="mod" href="apb/index.html" title="mod atsamd_hal::clock::v2::apb">apb</a></div><div class="desc docblock-short">Advanced peripheral bus clocks</div></li><li><div class="item-name"><a class="mod" href="dfll/index.html" title="mod atsamd_hal::clock::v2::dfll">dfll</a></div><div class="desc docblock-short">Digital Frequency Locked Loop</div></li><li><div class="item-name"><a class="mod" href="dpll/index.html" title="mod atsamd_hal::clock::v2::dpll">dpll</a></div><div class="desc docblock-short">Digital Phase-Locked Loop</div></li><li><div class="item-name"><a class="mod" href="gclk/index.html" title="mod atsamd_hal::clock::v2::gclk">gclk</a></div><div class="desc docblock-short">Generic Clock Controllers</div></li><li><div class="item-name"><a class="mod" href="osculp32k/index.html" title="mod atsamd_hal::clock::v2::osculp32k">osculp32k</a></div><div class="desc docblock-short">Internal, ultra low power, 32 kHz oscillator</div></li><li><div class="item-name"><a class="mod" href="pclk/index.html" title="mod atsamd_hal::clock::v2::pclk">pclk</a></div><div class="desc docblock-short">Peripheral Channel Clocks</div></li><li><div class="item-name"><a class="mod" href="rtcosc/index.html" title="mod atsamd_hal::clock::v2::rtcosc">rtcosc</a></div><div class="desc docblock-short">RTC oscillator</div></li><li><div class="item-name"><a class="mod" href="types/index.html" title="mod atsamd_hal::clock::v2::types">types</a></div><div class="desc docblock-short">Module defining or exporting peripheral types for the [‘ahb’], [‘apb’] and
+[‘pclk’] modules</div></li><li><div class="item-name"><a class="mod" href="xosc/index.html" title="mod atsamd_hal::clock::v2::xosc">xosc</a></div><div class="desc docblock-short">External multipurpose crystal oscillator controller</div></li><li><div class="item-name"><a class="mod" href="xosc32k/index.html" title="mod atsamd_hal::clock::v2::xosc32k">xosc32k</a></div><div class="desc docblock-short">External, 32 kHz crystal oscillator controller</div></li></ul><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Buses.html" title="struct atsamd_hal::clock::v2::Buses">Buses</a></div><div class="desc docblock-short">Bus clock objects</div></li><li><div class="item-name"><a class="struct" href="struct.Clocks.html" title="struct atsamd_hal::clock::v2::Clocks">Clocks</a></div><div class="desc docblock-short">Enabled clocks at power-on reset</div></li><li><div class="item-name"><a class="struct" href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled">Enabled</a></div><div class="desc docblock-short">An enabled, 1:N clock with a compile-time counter for N</div></li><li><div class="item-name"><a class="struct" href="struct.Pac.html" title="struct atsamd_hal::clock::v2::Pac">Pac</a></div><div class="desc docblock-short">Collection of low-level PAC structs</div></li><li><div class="item-name"><a class="struct" href="struct.Tokens.html" title="struct atsamd_hal::clock::v2::Tokens">Tokens</a></div><div class="desc docblock-short">Type-level tokens for unused clocks at power-on reset</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.Source.html" title="trait atsamd_hal::clock::v2::Source">Source</a></div><div class="desc docblock-short">Marks <a href="struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled</code></a> 1:N producer clocks that can act as a clock source</div></li></ul><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="fn" href="fn.clock_system_at_reset.html" title="fn atsamd_hal::clock::v2::clock_system_at_reset">clock_<wbr>system_<wbr>at_<wbr>reset</a></div><div class="desc docblock-short">Consume the PAC clocking structs and return a HAL-level
+representation of the clocks at power-on reset</div></li></ul></section></div></main></body></html>

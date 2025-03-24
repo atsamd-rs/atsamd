@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["BaseaddrSpec"],"type":["BaseaddrR","BaseaddrW","R","W"]};

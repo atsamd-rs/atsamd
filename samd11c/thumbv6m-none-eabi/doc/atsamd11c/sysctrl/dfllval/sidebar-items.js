@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DfllvalSpec"],"type":["CoarseR","CoarseW","DiffR","FineR","FineW","R","W"]};

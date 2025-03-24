@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Spdconfselect"],"struct":["CtrlbSpec"],"type":["AutoresumeR","AutoresumeW","BusresetR","BusresetW","L1resumeR","L1resumeW","R","ResumeR","ResumeW","SofeR","SofeW","SpdconfR","SpdconfW","VbusokR","VbusokW","W"]};

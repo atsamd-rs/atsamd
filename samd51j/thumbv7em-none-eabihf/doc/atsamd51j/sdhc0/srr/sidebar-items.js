@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Swrstallselect","Swrstcmdselect","Swrstdatselect"],"struct":["SrrSpec"],"type":["R","SwrstallR","SwrstallW","SwrstcmdR","SwrstcmdW","SwrstdatR","SwrstdatW","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Wayselect"],"struct":["Maint1Spec"],"type":["IndexW","W","WayW"]};

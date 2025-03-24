@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["RcauseSpec"],"type":["BackupR","BodcoreR","BodvddR","ExtR","NvmR","PorR","R","SystR","WdtR"]};

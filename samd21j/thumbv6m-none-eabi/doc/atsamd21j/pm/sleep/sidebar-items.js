@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Idleselect"],"struct":["SleepSpec"],"type":["IdleR","IdleW","R","W"]};

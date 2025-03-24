@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ActlrSpec"],"type":["DisdefwbufR","DisdefwbufW","DisfoldR","DisfoldW","DisfpcaR","DisfpcaW","DismcycintR","DismcycintW","DisoofpR","DisoofpW","R","W"]};

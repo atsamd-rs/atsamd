@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CiplenSpec"],"type":["CiplenR","CiplenW","R","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Pidr2Spec"],"type":["R"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PerDith6ModeSpec"],"type":["DitherR","DitherW","PerR","PerW","R","W"]};

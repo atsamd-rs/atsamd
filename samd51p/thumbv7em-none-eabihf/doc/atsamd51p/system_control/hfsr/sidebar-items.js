@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["HfsrSpec"],"type":["DebugevtR","DebugevtW","ForcedR","ForcedW","R","VecttblR","VecttblW","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Ac","Adc0","Adc1","CM4Trace","Ccl","Dac","DfllId","Dpll0Id","Dpll1Id","Eic","EvSys0","EvSys1","EvSys10","EvSys11","EvSys2","EvSys3","EvSys4","EvSys5","EvSys6","EvSys7","EvSys8","EvSys9","FreqMMeasure","FreqMReference","I2S0","I2S1","PDec","Sdhc0","SlowClk","Tc0Tc1","Tc2Tc3","Tc4Tc5","Tcc0Tcc1","Tcc2Tcc3","Tcc4","Usb"]};

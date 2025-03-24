@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["channel","chintenclr","chintenset","chintflag","chstatus"],"struct":["Channels"],"type":["Channel","Chintenclr","Chintenset","Chintflag","Chstatus"]};

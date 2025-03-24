@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Modeselect"],"struct":["McfgSpec"],"type":["ModeR","ModeW","R","W"]};

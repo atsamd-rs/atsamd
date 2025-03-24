@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Object pool API"><title>heapless::pool::object - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="heapless" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../heapless/index.html">heapless</a><span class="version">0.8.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module object</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#example-usage" title="Example usage">Example usage</a></li><li><a href="#array-block-initialization" title="Array block initialization">Array block initialization</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#traits" title="Traits">Traits</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In heapless::<wbr>pool</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../../index.html">heapless</a>::<wbr><a href="../index.html">pool</a></span><h1>Module <span>object</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/heapless/pool/object.rs.html#1-420">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Object pool API</p>
+<h2 id="example-usage"><a class="doc-anchor" href="#example-usage">§</a>Example usage</h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>heapless::{object_pool, pool::object::{Object, ObjectBlock}};
+
+<span class="macro">object_pool!</span>(P: [u8; <span class="number">128</span>]);
+
+<span class="comment">// cannot request objects without first giving object blocks to the pool
+</span><span class="macro">assert!</span>(P.request().is_none());
+
+<span class="comment">// (some `no_std` runtimes have safe APIs to create `&amp;'static mut` references)
+</span><span class="kw">let </span>block: <span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="kw-2">mut </span>ObjectBlock&lt;[u8; <span class="number">128</span>]&gt; = <span class="kw">unsafe </span>{
+    <span class="comment">// unlike the memory pool APIs, an initial value must be specified here
+    </span><span class="kw">static </span><span class="kw-2">mut </span>B: ObjectBlock&lt;[u8; <span class="number">128</span>]&gt;= ObjectBlock::new([<span class="number">0</span>; <span class="number">128</span>]);
+    <span class="kw-2">&amp;mut </span>B
+};
+
+<span class="comment">// give object block to the pool
+</span>P.manage(block);
+
+<span class="comment">// it's now possible to request objects
+// unlike the memory pool APIs, no initial value is required here
+</span><span class="kw">let </span><span class="kw-2">mut </span>object = P.request().unwrap();
+
+<span class="comment">// mutation is possible
+</span>object.iter_mut().for_each(|byte| <span class="kw-2">*</span>byte = byte.wrapping_add(<span class="number">1</span>));
+
+<span class="comment">// the number of live objects is limited to the number of blocks managed by the pool
+</span><span class="kw">let </span>res = P.request();
+<span class="macro">assert!</span>(res.is_none());
+
+<span class="comment">// `object`'s destructor returns the object to the pool
+</span>drop(object);
+
+<span class="comment">// it's possible to request an `Object` again
+</span><span class="kw">let </span>res = P.request();
+
+<span class="macro">assert!</span>(res.is_some());</code></pre></div>
+<h2 id="array-block-initialization"><a class="doc-anchor" href="#array-block-initialization">§</a>Array block initialization</h2>
+<p>You can create a static variable that contains an array of memory blocks and give all the blocks
+to the <code>ObjectPool</code>. This requires an intermediate <code>const</code> value as shown below:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>heapless::{object_pool, pool::object::ObjectBlock};
+
+<span class="macro">object_pool!</span>(P: [u8; <span class="number">128</span>]);
+
+<span class="kw">const </span>POOL_CAPACITY: usize = <span class="number">8</span>;
+
+<span class="kw">let </span>blocks: <span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="kw-2">mut </span>[ObjectBlock&lt;[u8; <span class="number">128</span>]&gt;] = {
+    <span class="kw">const </span>BLOCK: ObjectBlock&lt;[u8; <span class="number">128</span>]&gt; = ObjectBlock::new([<span class="number">0</span>; <span class="number">128</span>]); <span class="comment">// &lt;=
+    </span><span class="kw">static </span><span class="kw-2">mut </span>BLOCKS: [ObjectBlock&lt;[u8; <span class="number">128</span>]&gt;; POOL_CAPACITY] = [BLOCK; POOL_CAPACITY];
+    <span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut </span>BLOCKS }
+};
+
+<span class="kw">for </span>block <span class="kw">in </span>blocks {
+    P.manage(block);
+}</code></pre></div>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Object.html" title="struct heapless::pool::object::Object">Object</a></div><div class="desc docblock-short">An object managed by object pool <code>P</code></div></li><li><div class="item-name"><a class="struct" href="struct.ObjectBlock.html" title="struct heapless::pool::object::ObjectBlock">Object<wbr>Block</a></div><div class="desc docblock-short">An object “block” of data type <code>T</code> that has not yet been associated to an <code>ObjectPool</code></div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.ObjectPool.html" title="trait heapless::pool::object::ObjectPool">Object<wbr>Pool</a></div><div class="desc docblock-short">A singleton that manages <code>pool::object::Object</code>s</div></li></ul></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["MenSpec"],"type":["MenableR","MenableW","R","W"]};

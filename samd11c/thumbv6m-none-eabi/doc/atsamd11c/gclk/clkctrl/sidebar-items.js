@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Genselect","Idselect"],"struct":["ClkctrlSpec"],"type":["ClkenR","ClkenW","GenR","GenW","IdR","IdW","R","W","WrtlockR","WrtlockW"]};

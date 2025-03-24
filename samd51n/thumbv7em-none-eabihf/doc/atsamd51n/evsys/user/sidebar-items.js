@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["UserSpec"],"type":["ChannelR","ChannelW","R","W"]};

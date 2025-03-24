@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["EvctrlSpec"],"type":["Compei0R","Compei0W","Compei1R","Compei1W","Compeo0R","Compeo0W","Compeo1R","Compeo1W","R","W","Wineo0R","Wineo0W"]};

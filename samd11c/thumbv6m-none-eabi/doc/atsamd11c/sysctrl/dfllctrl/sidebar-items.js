@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DfllctrlSpec"],"type":["BplckcR","BplckcW","CcdisR","CcdisW","EnableR","EnableW","LlawR","LlawW","ModeR","ModeW","OndemandR","OndemandW","QldisR","QldisW","R","RunstdbyR","RunstdbyW","StableR","StableW","UsbcrmR","UsbcrmW","W","WaitlockR","WaitlockW"]};

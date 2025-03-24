@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Prescbufselect"],"struct":["PrescbufSpec"],"type":["PrescbufR","PrescbufW","R","W"]};

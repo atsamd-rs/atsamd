@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Confselect"],"struct":["BbpsSpec"],"type":["ConfR","ConfW","R","W","WakeenR","WakeenW"]};

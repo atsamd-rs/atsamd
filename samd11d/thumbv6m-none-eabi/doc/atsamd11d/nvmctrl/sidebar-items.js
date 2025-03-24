@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["addr","ctrla","ctrlb","intenclr","intenset","intflag","lock","param","status"],"struct":["RegisterBlock"],"type":["Addr","Ctrla","Ctrlb","Intenclr","Intenset","Intflag","Lock","Param","Status"]};

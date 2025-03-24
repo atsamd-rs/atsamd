@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["BkupSpec"],"type":["BkupR","BkupW","R","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["BaudFracfpModeSpec"],"type":["BaudR","BaudW","FpR","FpW","R","W"]};

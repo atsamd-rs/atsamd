@@ -1,0 +1,494 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Module supporting type-level programming"><title>atsamd_hal::typelevel - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module typelevel</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#introduction" title="Introduction">Introduction</a><ul><li><a href="#contents" title="Contents">Contents</a></li></ul></li><li><a href="#basics-of-type-level-programming" title="Basics of type-level programming">Basics of type-level programming</a><ul><li><a href="#type-level-enums" title="Type-level enums">Type-level enums</a></li><li><a href="#type-classes" title="Type classes">Type classes</a></li><li><a href="#type-level-containers" title="Type-level containers">Type-level containers</a></li><li><a href="#type-level-functions" title="Type-level functions">Type-level functions</a></li></ul></li><li><a href="#optionalkind-trait-pattern" title="`OptionalKind` trait pattern"><code>OptionalKind</code> trait pattern</a></li><li><a href="#anykind-trait-pattern" title="`AnyKind` trait pattern"><code>AnyKind</code> trait pattern</a><ul><li><a href="#defining-an-anykind-trait" title="Defining an `AnyKind` trait">Defining an <code>AnyKind</code> trait</a></li><li><a href="#using-an-anykind-trait" title="Using an `AnyKind` trait">Using an <code>AnyKind</code> trait</a></li></ul></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate atsamd_<wbr>hal</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../index.html">atsamd_hal</a></span><h1>Module <span>typelevel</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/atsamd_hal/typelevel.rs.html#1-783">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Module supporting type-level programming</p>
+<h2 id="introduction"><a class="doc-anchor" href="#introduction">§</a>Introduction</h2>
+<p>Embedded software is often difficult to debug, so there is a strong
+motivation to catch as many bugs as possible at compile-time. However, the
+performance requirements of embedded software also make it difficult to
+justify changes that impose additional overhead in terms of size or speed.
+Ideally, we would like to add as many compile-time checks as possible, while
+also producing the fewest possible assembly instructions.</p>
+<p>The Rust type system can help accomplish this goal. By expressing software
+constraints within the type system, developers can enforce invariants at
+compile-time.</p>
+<p>Sometimes this is done using Rust macros. However, that approach can produce
+code that is difficult to read and understand. Moreover, macro-generated
+code can only be extended by <em>more</em> macros, which further spreads the
+problem. In <code>atsamd-hal</code> specifically, issue
+<a href="https://github.com/atsamd-rs/atsamd/issues/214">#214</a> discussed the extent
+to which macros were once used in the repository.</p>
+<p>Alternatively, many of the same goals can be accomplished with the Rust
+type &amp; trait system directly, which is quite powerful. In fact, it is
+<a href="https://sdleffler.github.io/RustTypeSystemTuringComplete/">turing complete</a>.
+By expressing our invariants entirely within the type system, we can encode
+the desired compile-time checks in a form that is easier to read, understand
+and document.</p>
+<p>This module documents some of the type-level programming techniques used
+throughout this HAL, and it contains a few items used to implement them.</p>
+<h3 id="contents"><a class="doc-anchor" href="#contents">§</a>Contents</h3>
+<ul>
+<li><a href="#basics-of-type-level-programming">Basics of type-level programming</a>
+<ul>
+<li><a href="#type-level-enums">Type-level enums</a></li>
+<li><a href="#type-classes">Type classes</a></li>
+<li><a href="#type-level-containers">Type-level containers</a></li>
+<li><a href="#type-level-functions">Type-level functions</a></li>
+</ul>
+</li>
+<li><a href="#optionalkind-trait-pattern"><code>OptionalKind</code> trait pattern</a></li>
+<li><a href="#anykind-trait-pattern"><code>AnyKind</code> trait pattern</a>
+<ul>
+<li><a href="#defining-an-anykind-trait">Defining an <code>AnyKind</code> trait</a></li>
+<li><a href="#using-an-anykind-trait">Using an <code>AnyKind</code> trait</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="basics-of-type-level-programming"><a class="doc-anchor" href="#basics-of-type-level-programming">§</a>Basics of type-level programming</h2>
+<p>Type-level programming aims to execute a form of compile-time computation.
+But to perform such computation, we need to map our traditional notions of
+programming to the Rust type system.</p>
+<p>In normal Rust, individual values are grouped or categorized into types. For
+example, <code>0</code>, <code>1</code>, <code>2</code>, etc. are all members of the <code>usize</code> type. Similarly,
+<code>Enum::A</code> and <code>Enum::B</code> are members of the <code>Enum</code> type, defined as</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">enum </span>Enum { A, B }</code></pre></div>
+<p>We use composite types and containers to create more complex data
+structures, and we use functions to map between values.</p>
+<p>All of these concepts can also be expressed within the Rust type system.
+However, in this case, types are grouped and categorized into traits. For
+instance, the <a href="https://docs.rs/typenum/1.13.0/typenum/index.html"><code>typenum</code></a>
+crate provides the types <code>U0</code>, <code>U1</code>, <code>U2</code>, etc., which are all members of
+the <code>Unsigned</code> trait. Similarly, the following sections will illustrate how
+to define type-level enums, containers and functions.</p>
+<h3 id="type-level-enums"><a class="doc-anchor" href="#type-level-enums">§</a>Type-level enums</h3>
+<p>Type-level enums are one of the foundational concepts of type-level
+programming used in this HAL.</p>
+<p>At the value-level, a typical Rust enum represents some set of variants that
+can be assigned to a particular variable. Similarly, a type-level enum
+represents some set of types that can be assigned to a particular type
+parameter.</p>
+<p>To lift an enum from the value level to the type level, you typically map
+the enum variants to types and the enum itself to a trait. For instance, the
+value-level enum</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">enum </span>Enum {
+    A,
+    B,
+}</code></pre></div>
+<p>would be mapped to the type level like so.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>Enum {}
+
+<span class="kw">enum </span>A {}
+<span class="kw">enum </span>B {}
+
+<span class="kw">impl </span>Enum <span class="kw">for </span>A {}
+<span class="kw">impl </span>Enum <span class="kw">for </span>B {}</code></pre></div>
+<p>At the value level, the variants <code>A</code> and <code>B</code> are grouped by the <code>Enum</code> type,
+while at the type level, the types <code>A</code> and <code>B</code> are grouped by the <code>Enum</code>
+trait.</p>
+<h3 id="type-classes"><a class="doc-anchor" href="#type-classes">§</a>Type classes</h3>
+<p>At the value-level, a type restricts the possible values that can be taken
+by some free variable. While at the type-level, a trait bound restricts the
+possible types that can be taken by some free type parameter. In effect,
+trait bounds can be used to create a kind of meta-type, or type class. The
+type-level enums in the previous section represent the most primitive
+application of the concept, but type classes can take other forms. The
+<code>OptionalKind</code> and <code>AnyKind</code> trait patterns discussed below are more
+advanced applications of the same concept.</p>
+<h3 id="type-level-containers"><a class="doc-anchor" href="#type-level-containers">§</a>Type-level containers</h3>
+<p>To represent more complex relationships, we need a way to form composite
+data structures at the type level.</p>
+<p>At the value level, a container holds an instance of a particular type. The
+exact value of that instance is usually not known to the author, it is only
+known at run-time.</p>
+<p>At the type level, we don’t have the same notion of “run-time”, but we do
+have two different notions of “compile-time” that form a similar
+relationship. There is compile time for the HAL authors, and there is a
+separate compile-time for the HAL users. We want to create a type-level
+container where the exact type is not known at author-time, but it is known
+at user-time.</p>
+<p>For example, take the following, value-level container struct. It contains
+two fields, <code>a</code> and <code>b</code>, of different types, <code>EnumOne</code> and <code>EnumTwo</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Container {
+    a: EnumOne,
+    b: EnumTwo,
+}</code></pre></div>
+<p>We can create an instance of this container with specific values.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>x = Container { a: EnumOne::VariantX, b: EnumTwo::VariantY };</code></pre></div>
+<p>Next, suppose we had already translated <code>EnumOne</code> and <code>EnumTwo</code> to the type
+level using the technique in the previous section. If we wanted to create a
+similar, composite data structure at the type level, we could use type
+parameters in place of struct fields to represent the unknown types.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Container&lt;A, B&gt;
+<span class="kw">where
+    </span>A: EnumOne,
+    B: EnumTwo,
+{
+    a: PhantomData&lt;A&gt;,
+    b: PhantomData&lt;B&gt;,
+}</code></pre></div>
+<p>And we could create an instance of this container with specific types.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">type </span>X = Container&lt;VariantX, VariantY&gt;;</code></pre></div>
+<p>You might notice the use of <code>PhantomData</code> in the definition of the
+type-level container. Because it is geared more toward value-level
+programming, Rust requires all type parameters actually be used by the
+corresponding type. However, we don’t need to “store” a type in the same way
+we store values. The compiler is responsible for tracking the concrete type
+for each type parameter. But the language still requires us to act as if we
+used each type parameter. <code>PhantomData</code> is the solution here, because it
+lets us make use of the type parameters without actually storing any values.</p>
+<p>Separately, <code>PhantomData</code> also allows us to create “instances” of types that
+normally can’t be instantiated, like empty enums. For example, instances of
+<code>Enum</code> below can never exist directly.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">enum </span>Enum {}</code></pre></div>
+<p>But instances of <code>PhantomData&lt;Enum&gt;</code> are perfectly valid. In this way,
+library authors can create types that only exist at the type level, which
+can sometimes simplify a design.</p>
+<h3 id="type-level-functions"><a class="doc-anchor" href="#type-level-functions">§</a>Type-level functions</h3>
+<p>To perform type-level computations, we need some way to map or transform
+types into other types.</p>
+<p>At the value level, functions and methods map values of the input types to
+values of the output types. The same can be accomplished at the type level
+using traits and associated types. Type-level functions are implemented as
+traits, where the implementing type and any type parameters are the inputs,
+and associated types are the outputs.</p>
+<p>For example, consider the value level <code>not</code> method below.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">enum </span>Bool {
+    False,
+    True,
+}
+
+<span class="kw">impl </span>Bool {
+    <span class="kw">fn </span>not(<span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">use </span>Bool::<span class="kw-2">*</span>;
+        <span class="kw">match </span><span class="self">self </span>{
+            True =&gt; False,
+            False =&gt; True,
+        }
+    }
+}</code></pre></div>
+<p>We can translate this example to the type level like so.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>Bool {}
+
+<span class="kw">enum </span>True {}
+<span class="kw">enum </span>False {}
+
+<span class="kw">impl </span>Bool <span class="kw">for </span>True {}
+<span class="kw">impl </span>Bool <span class="kw">for </span>False {}
+
+<span class="kw">trait </span>Not: Bool {
+    <span class="kw">type </span><span class="prelude-ty">Result</span>: Bool;
+}
+
+<span class="kw">impl </span>Not <span class="kw">for </span>True {
+    <span class="kw">type </span><span class="prelude-ty">Result</span> = False;
+}
+
+<span class="kw">impl </span>Not <span class="kw">for </span>False {
+    <span class="kw">type </span><span class="prelude-ty">Result</span> = True;
+}</code></pre></div>
+<p>We can use the <code>Not</code> trait bound to transform one type to another. For
+instance, we can create a container that accepts one type parameter but
+stores a different one.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Container&lt;B: Not&gt; {
+    not: PhantomData&lt;B::Result&gt;;
+}</code></pre></div>
+<p>Alternatively, we could redefine the trait and declar a corresponding type
+alias as</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>NotFunction: Bool {
+    <span class="kw">type </span><span class="prelude-ty">Result</span>: Bool;
+}
+
+<span class="kw">type </span>Not&lt;B&gt; = &lt;B <span class="kw">as </span>NotFunction&gt;::Result;</code></pre></div>
+<p>Doing so would allow us to us reframe the last example as</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Container&lt;B: NotFunction&gt; {
+    not: PhantomData&lt;Not&lt;B&gt;&gt;;
+}</code></pre></div>
+<p>Type-level functions can be more complicated than this example, but they
+ultimately represent a mapping from a set of input types (the implementing
+type and any type parameters) to a set of output types (the associated
+types).</p>
+<h2 id="optionalkind-trait-pattern"><a class="doc-anchor" href="#optionalkind-trait-pattern">§</a><code>OptionalKind</code> trait pattern</h2>
+<p>As mentioned above, traits can be used to define a kind of meta-type or type
+class, essentially forming a set of valid types for a given type parameter.
+They also represent the concept of types lifted from the value level to the
+type level.</p>
+<p>What if we want to define a type class representing either a set of useful
+types or some useless, null type? Essentially, how do we take the notion of
+an <a href="https://doc.rust-lang.org/1.85.0/core/option/enum.Option.html" title="enum core::option::Option"><code>Option</code></a> type and raise it to the type level?</p>
+<p>Suppose we have some existing type class, defined by the <code>Class</code> trait, that
+we want to make optional. We can define a new type class that includes all
+instances of <code>Class</code> as well as some null type. For the latter we use
+<a href="struct.NoneT.html" title="struct atsamd_hal::typelevel::NoneT"><code>NoneT</code></a>, defined in this module.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>OptionalClass {}
+
+<span class="kw">impl </span>OptionalClass <span class="kw">for </span>NoneT {}
+<span class="kw">impl</span>&lt;C: Class&gt; OptionalClass <span class="kw">for </span>C {}</code></pre></div>
+<p>We can use this new type class to store an optional instance of a <code>Class</code>
+type in a struct.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Container&lt;C: OptionalClass&gt; {
+    class: PhantomData&lt;C&gt;,
+}</code></pre></div>
+<p>And we can restrict some of its methods to only operate on instances with a
+valid <code>Class</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;C: Class&gt; Container&lt;C&gt; {
+    <span class="kw">fn </span>method(<span class="self">self</span>) { ... }
+}</code></pre></div>
+<p>Although it is not strictly necessary, we can also introduce a new type
+class to differentiate the bare usage of <code>Class</code> from instances of some
+<code>Class</code> where an <code>OptionalClass</code> is accepted.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>SomeClass: OptionalClass + Class {}
+
+<span class="kw">impl</span>&lt;C: Class&gt; SomeClass <span class="kw">for </span>C {}</code></pre></div>
+<p>This new trait doesn’t add any new information, but it can still help
+readers understand that a particular type parameter is restricted to an
+instances of <code>Class</code> when an <code>OptionalClass</code> could be accepted.</p>
+<p>Note that when <code>Class</code> and <code>OptionalClass</code> contain associated types, name
+clashes may occur when using <code>SomeClass</code> as a trait bound. This can be
+avoided by removing the <code>OptionalClass</code> super trait from <code>SomeClass</code>.
+Ultimately, it is redundant anyway, because any implementer of <code>Class</code> also
+implements <code>OptionalClass</code>.</p>
+<h2 id="anykind-trait-pattern"><a class="doc-anchor" href="#anykind-trait-pattern">§</a><code>AnyKind</code> trait pattern</h2>
+<p>The <code>AnyKind</code> trait pattern allows you to encapsulate types with multiple
+type parameters and represent them with only a single type parameter. It
+lets you introduce a layer of abstraction, which can simplify interfaces and
+make them more readable. But most of all, it does so without sacrificing any
+of our normal, type-level abilities.</p>
+<h3 id="defining-an-anykind-trait"><a class="doc-anchor" href="#defining-an-anykind-trait">§</a>Defining an <code>AnyKind</code> trait</h3>
+<p>Suppose you had a composite, type-level data structure. For example, the
+GPIO <code>Pin</code> struct contains instances of two type-level enums, a <code>PinId</code> and
+a <code>PinMode</code>. It looks something like this.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Pin&lt;I: PinId, M: PinMode&gt; {
+    <span class="comment">// ...
+</span>}</code></pre></div>
+<p>Rust does not provide any way to speak about a <code>Pin</code> generally. Any mention
+of the <code>Pin</code> type must also include its type parameters, i.e. <code>Pin&lt;I, M&gt;</code>.
+This is not a deal-breaker, but it is less than ideal for type-level
+programming. It would be nice if there were a way to succinctly refer to any
+<code>Pin</code>, regardless of its type parameters.</p>
+<p>We’ve seen above that we can use traits to form a type class. What if we
+were to introduce a new trait to label all instances of <code>Pin</code>? It would look
+something like this.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>AnyPin {}
+
+<span class="kw">impl</span>&lt;I: PinId, M: PinMode&gt; AnyPin <span class="kw">for </span>Pin&lt;I, M&gt; {}</code></pre></div>
+<p>Now, instead of refering to <code>Pin&lt;I, M&gt;</code>, we can refer to instances of the
+<code>AnyPin</code> type class.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>example&lt;P: AnyPin&gt;(pin: P) { ... }</code></pre></div>
+<p>Unfortunately, while this is more ergonomic, it is not very useful. As
+authors of the code, we know that <code>AnyPin</code> is only implemented for <code>Pin</code>
+types. But the compiler doesn’t know that. Traits in Rust are open, so the
+compiler must consider that <code>AnyPin</code> could be implemented for other types.</p>
+<p>As a consequence, the compiler knows very little about the type <code>P</code> in the
+function above. In fact, because the <code>AnyPin</code> trait is completely empty, the
+compiler knows <em>absolutely nothing</em> about the type <code>P</code>.</p>
+<p>Is there a way to make the <code>AnyPin</code> trait more useful? We can see from the
+current implementation that we are throwing away information.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;I: PinId, M: PinMode&gt; AnyPin <span class="kw">for </span>Pin&lt;I, M&gt; {}</code></pre></div>
+<p>The implementation of <code>AnyPin</code> is identical for every <code>Pin</code>, regardless of
+the type parameters <code>I</code> and <code>M</code>, which erases that information. Instead, we
+could choose to save that information in the form of associated types.</p>
+<p>Let’s redesign the <code>AnyPin</code> trait to record the <code>PinId</code> and <code>PinMode</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>AnyPin {
+    <span class="kw">type </span>Id: PinId;
+    <span class="kw">type </span>Mode: PinMode;
+}
+
+<span class="kw">impl</span>&lt;I: PinId, M: PinMode&gt; AnyPin <span class="kw">for </span>Pin&lt;I, M&gt; {
+    <span class="kw">type </span>Id = I;
+    <span class="kw">type </span>Mode = M;
+}</code></pre></div>
+<p>This is better. When <code>P</code> implements <code>AnyPin</code>, we can at least recover the
+corresponding <code>PinId</code> and <code>PinMode</code> types. However, <code>AnyPin</code> still doesn’t
+include any trait methods nor any super traits, so the compiler won’t allow
+us to do anything useful with an instances of <code>P</code>.</p>
+<p>We need some way to tell the compiler that when <code>P</code> implements <code>AnyPin</code>,
+it is equivalent to saying <code>P</code> is exactly <code>Pin&lt;P::Id, P::Mode&gt;</code>.
+Essentially, we want to take a generic type parameter <code>P</code> and treat it as if
+it were an instance of a specific <code>Pin</code> type.</p>
+<p>We can start by defining a trait alias to recover the specific <code>Pin</code> type.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">type </span>SpecificPin&lt;P&gt; = Pin&lt;&lt;P <span class="kw">as </span>AnyPin&gt;::Id, &lt;P <span class="kw">as </span>AnyPin&gt;::Mode&gt;;</code></pre></div>
+<p>With this new definition, we can rephrase our statement above. We need some
+way to tell the compiler that when <code>P</code> implements <code>AnyPin</code>,
+<code>P == SpecificPin&lt;P&gt;</code>. There’s no way to do that exactly, but we can come
+close with some useful trait bounds: <a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.From.html" title="trait core::convert::From"><code>From</code></a>, <a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.Into.html" title="trait core::convert::Into"><code>Into</code></a>, <a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.AsRef.html" title="trait core::convert::AsRef"><code>AsRef</code></a> and
+<a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.AsMut.html" title="trait core::convert::AsMut"><code>AsMut</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>AnyPin
+<span class="kw">where
+    </span><span class="self">Self</span>: From&lt;SpecificPin&lt;<span class="self">Self</span>&gt;&gt;,
+    <span class="self">Self</span>: Into&lt;SpecificPin&lt;<span class="self">Self</span>&gt;&gt;,
+    <span class="self">Self</span>: AsRef&lt;SpecificPin&lt;<span class="self">Self</span>&gt;&gt;,
+    <span class="self">Self</span>: AsMut&lt;SpecificPin&lt;<span class="self">Self</span>&gt;&gt;,
+{
+    <span class="kw">type </span>Id: PinId;
+    <span class="kw">type </span>Mode: PinMode;
+}</code></pre></div>
+<p>Now we’ve given the compiler some useful information. When a type implements
+<code>AnyPin</code>, it can be converted from and into instances of <code>Pin</code>. And
+references to types that implement <code>AnyPin</code> can be converted into references
+to <code>Pin</code>s.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>example&lt;P: AnyPin&gt;(<span class="kw-2">mut </span>any_pin: P) {
+    <span class="comment">// None of the type annotations here are necessary
+    // Everything can be inferred
+    // Remember that SpecificPin&lt;P&gt; is Pin&lt;P::Id, P::Mode&gt;
+    </span><span class="kw">let </span>pin_mut: <span class="kw-2">&amp;mut </span>SpecificPin&lt;P&gt; = any_pin.as_mut();
+    <span class="kw">let </span>pin_ref: <span class="kw-2">&amp;</span>SpecificPin&lt;P&gt; = any_pin.as_ref();
+    <span class="kw">let </span>pin: SpecificPin&lt;P&gt; = any_pin.into();
+}</code></pre></div>
+<p>Finally, to simplify this pattern, we can gather all of the super trait
+bounds into a single, reusable trait.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>Is
+<span class="kw">where
+    </span><span class="self">Self</span>: From&lt;IsType&lt;<span class="self">Self</span>&gt;&gt;,
+    <span class="self">Self</span>: Into&lt;IsType&lt;<span class="self">Self</span>&gt;&gt;,
+    <span class="self">Self</span>: AsRef&lt;IsType&lt;<span class="self">Self</span>&gt;&gt;,
+    <span class="self">Self</span>: AsMut&lt;IsType&lt;<span class="self">Self</span>&gt;&gt;,
+{
+    <span class="kw">type </span>Type;
+}
+
+<span class="kw">type </span>IsType&lt;T&gt; = &lt;T <span class="kw">as </span>Is&gt;::Type;
+
+<span class="kw">impl</span>&lt;T: AsRef&lt;T&gt; + AsMut&lt;T&gt;&gt; Is <span class="kw">for </span>T {
+    <span class="kw">type </span>Type = T;
+}</code></pre></div>
+<p>And we can rewrite our <code>AnyPin</code> trait as</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>AnyPin: Is&lt;Type = SpecificPin&lt;<span class="self">Self</span>&gt;&gt; {
+    <span class="kw">type </span>Id: PinId;
+    <span class="kw">type </span>Mode: PinMode;
+}</code></pre></div>
+<h3 id="using-an-anykind-trait"><a class="doc-anchor" href="#using-an-anykind-trait">§</a>Using an <code>AnyKind</code> trait</h3>
+<p>If a type takes multiple type parameters, storing it within a container
+requires repeating all of the corresponding type parameters. For instance,
+imagine a container that stores two completely generic <code>Pin</code> types.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>TwoPins&lt;I1, I2, M1, M2&gt;
+<span class="kw">where
+    </span>I1: PinId,
+    I2: PinId,
+    M1: PinMode,
+    M2: PinMode,
+{
+    pin1: Pin&lt;I1, M1&gt;,
+    pin2: Pin&lt;I2, M2&gt;,
+}</code></pre></div>
+<p>This struct has already ballooned to four type parameters, without even
+doing much useful work. Given its heavy use of type parameters, this
+limitation can make type-level programming tedious, cumbersome and
+error-prone.</p>
+<p>Instead, we can use the <code>AnyKind</code> trait pattern to encapsulate each <code>Pin</code>
+with a single type parameter.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>TwoPins&lt;P1, P2&gt;
+<span class="kw">where
+    </span>P1: AnyPin,
+    P2: AnyPin,
+{
+    pin1: P1,
+    pin2: P2,
+}</code></pre></div>
+<p>The result is far more readable and generally more comprehensible. Moreover,
+although we no longer have direct access to the <code>PinId</code> and <code>PinMode</code> type
+parameters, we haven’t actually lost any expressive power.</p>
+<p>In the first version of <code>TwoPins</code>, suppose we wanted to implement a method
+for pins in <code>FloatingInput</code> mode while simultaneously restricting the
+possible <code>PinId</code>s based on some type class. The result might look like
+this.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;I1, I2&gt; <span class="kw">for </span>TwoPins&lt;I1, I2, FloatingInput, FloatingInput&gt;
+<span class="kw">where
+    </span>I1: PinId + Class,
+    I2: PinId + Class,
+{
+    <span class="kw">fn </span>method(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="comment">// ...
+    </span>}
+}</code></pre></div>
+<p>The same method could be expressed with the <code>AnyPin</code> approach like so</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;P1, P2&gt; <span class="kw">for </span>TwoPins&lt;P1, P2&gt;
+<span class="kw">where
+    </span>P1: AnyPin&lt;Mode = FloatingInput&gt;,
+    P2: AnyPin&lt;Mode = FloatingInput&gt;,
+    P1::Id: Class,
+    P2::Id: Class,
+{
+    <span class="kw">fn </span>method(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="comment">// ...
+    </span>}
+}</code></pre></div>
+<p>This example demonstrates the simultaneous readability and expressive power
+of the <code>AnyKind</code> pattern.</p>
+<p>However, remember that when working with a type <code>P</code> that implements
+<code>AnyPin</code>, the compiler can only use what it knows about the <code>AnyPin</code> trait.
+But all of the functionality for GPIO pins is defined on the <code>Pin</code> type. To
+make use of a generic type <code>P</code> implementing <code>AnyPin</code>, you must first convert
+it to its corresponding <code>SpecificPin</code> using <a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.Into.html" title="trait core::convert::Into"><code>Into</code></a>, <a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.AsRef.html" title="trait core::convert::AsRef"><code>AsRef</code></a> or
+<a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.AsMut.html" title="trait core::convert::AsMut"><code>AsMut</code></a>. And, in some instances, you may also need to convert back to the
+type <code>P</code>.</p>
+<p>Suppose you wanted to store a completely generic <code>Pin</code> within a struct.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub struct </span>Example&lt;P: AnyPin&gt; {
+    pin: P,
+}</code></pre></div>
+<p>Next, suppose you want to create a method that would take the <code>Pin</code> out of
+the struct, perform some operations in different <code>PinMode</code>s, and put it back
+into the struct before returning. The <code>elided</code> method below shows such an
+example. However, it can be a bit tricky to follow all of the type
+conversions here. For clarity, the <code>expanded</code> method shows the same behavior
+with each transformation given its proper type annotation.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;P: AnyPin&gt; Example&lt;P&gt; {
+    <span class="kw">pub fn </span>elided(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>pin = <span class="self">self</span>.pin.into();
+        <span class="kw">let </span><span class="kw-2">mut </span>pin = pin.into_push_pull_output();
+        pin.set_high().ok();
+        <span class="kw">let </span>pin = pin.into_floating_input();
+        <span class="kw">let </span>_bit = pin.is_low().unwrap();
+        <span class="kw">let </span>pin = pin.into_mode();
+        <span class="self">self</span>.pin = pin.into();
+        <span class="self">self
+    </span>}
+    <span class="kw">pub fn </span>expanded(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>pin: SpecificPin&lt;P&gt; = <span class="self">self</span>.pin.into();
+        <span class="kw">let </span><span class="kw-2">mut </span>pin: Pin&lt;P::Id, PushPullOutput&gt; = pin.into_push_pull_output();
+        pin.set_high().ok();
+        <span class="kw">let </span>pin: Pin&lt;P::Id, FloatingInput&gt; = pin.into_floating_input();
+        <span class="kw">let </span>_bit = pin.is_low().unwrap();
+        <span class="kw">let </span>pin: SpecificPin&lt;P&gt; = pin.into_mode::&lt;P::Mode&gt;();
+        <span class="self">self</span>.pin = pin.into();
+        <span class="self">self
+    </span>}
+}</code></pre></div>
+<p>Notice that it is not enough to simply put back the correct <code>SpecificPin</code>.
+Even though the <code>SpecificPin</code> implements
+<code>AnyPin&lt;Id = P::Id, Mode = P::Mode&gt;</code> the compiler doesn’t understand that
+<code>SpecificPin&lt;P&gt; == P</code> for all <code>P</code>. As far as the compiler is concerned,
+there could be several different types that implement
+<code>AnyPin&lt;Id = P::Id, Mode = P::Mode&gt;</code>. Instead, the compiler requires that
+you put back an instance of <code>P</code> exactly. The final use of <a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.Into.html" title="trait core::convert::Into"><code>Into</code></a> is key
+here. It transforms the <code>SpecificPin</code> back into <code>P</code> itself.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.NoneT.html" title="struct atsamd_hal::typelevel::NoneT">NoneT</a></div><div class="desc docblock-short">Type-level version of the <a href="https://doc.rust-lang.org/1.85.0/core/option/enum.Option.html#variant.None" title="variant core::option::Option::None"><code>None</code></a> variant</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.Decrement.html" title="trait atsamd_hal::typelevel::Decrement">Decrement</a></div><div class="desc docblock-short">Trait mapping each countable type to its predecessor</div></li><li><div class="item-name"><a class="trait" href="trait.Increment.html" title="trait atsamd_hal::typelevel::Increment">Increment</a></div><div class="desc docblock-short">Trait mapping each countable type to its successor</div></li><li><div class="item-name"><a class="trait" href="trait.Is.html" title="trait atsamd_hal::typelevel::Is">Is</a></div><div class="desc docblock-short">Marker trait for type identity</div></li></ul><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.IsType.html" title="type atsamd_hal::typelevel::IsType">IsType</a></div><div class="desc docblock-short">Type alias for <a href="trait.Is.html#associatedtype.Type" title="associated type atsamd_hal::typelevel::Is::Type"><code>Is::Type</code></a></div></li></ul></section></div></main></body></html>

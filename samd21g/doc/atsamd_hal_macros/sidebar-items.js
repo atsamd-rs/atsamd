@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"attr":["hal_cfg","hal_docs","hal_macro_helper","hal_module"]};

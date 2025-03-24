@@ -1,0 +1,9 @@
+(function() {
+    var type_impls = Object.fromEntries([["atsamd_hal",[["<details class=\"toggle implementors-toggle\" open><summary><section id=\"impl-PinMode-for-Output%3CC%3E\" class=\"impl\"><a class=\"src rightside\" href=\"src/atsamd_hal/gpio/pin.rs.html#387-389\">Source</a><a href=\"#impl-PinMode-for-Output%3CC%3E\" class=\"anchor\">§</a><h3 class=\"code-header\">impl&lt;C: <a class=\"trait\" href=\"atsamd_hal/gpio/pin/trait.OutputConfig.html\" title=\"trait atsamd_hal::gpio::pin::OutputConfig\">OutputConfig</a>&gt; <a class=\"trait\" href=\"atsamd_hal/gpio/pin/trait.PinMode.html\" title=\"trait atsamd_hal::gpio::pin::PinMode\">PinMode</a> for <a class=\"struct\" href=\"atsamd_hal/gpio/pin/struct.Output.html\" title=\"struct atsamd_hal::gpio::pin::Output\">Output</a>&lt;C&gt;</h3></section></summary><div class=\"impl-items\"><details class=\"toggle\" open><summary><section id=\"associatedconstant.DYN\" class=\"associatedconstant trait-impl\"><a class=\"src rightside\" href=\"src/atsamd_hal/gpio/pin.rs.html#388\">Source</a><a href=\"#associatedconstant.DYN\" class=\"anchor\">§</a><h4 class=\"code-header\">const <a href=\"atsamd_hal/gpio/pin/trait.PinMode.html#associatedconstant.DYN\" class=\"constant\">DYN</a>: <a class=\"enum\" href=\"atsamd_hal/gpio/dynpin/enum.DynPinMode.html\" title=\"enum atsamd_hal::gpio::dynpin::DynPinMode\">DynPinMode</a></h4></section></summary><div class='docblock'>Corresponding <a href=\"atsamd_hal/gpio/dynpin/enum.DynPinMode.html\" title=\"enum atsamd_hal::gpio::dynpin::DynPinMode\"><code>DynPinMode</code></a></div></details></div></details>","PinMode","atsamd_hal::gpio::pin::PushPullOutput","atsamd_hal::gpio::pin::ReadableOutput"]]]]);
+    if (window.register_type_impls) {
+        window.register_type_impls(type_impls);
+    } else {
+        window.pending_type_impls = type_impls;
+    }
+})()
+//{"start":55,"fragment_lengths":[1642]}

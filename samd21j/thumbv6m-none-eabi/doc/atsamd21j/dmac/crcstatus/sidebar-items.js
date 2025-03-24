@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CrcstatusSpec"],"type":["CrcbusyR","CrcbusyW","CrczeroR","R","W"]};

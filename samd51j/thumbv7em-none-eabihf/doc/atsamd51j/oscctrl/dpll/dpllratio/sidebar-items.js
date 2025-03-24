@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DpllratioSpec"],"type":["LdrR","LdrW","LdrfracR","LdrfracW","R","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Mc2rSpec"],"type":["AbootW","SrespW","W"]};

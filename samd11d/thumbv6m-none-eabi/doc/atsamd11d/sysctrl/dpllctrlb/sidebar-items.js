@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Filterselect","Ltimeselect","Refclkselect"],"struct":["DpllctrlbSpec"],"type":["DivR","DivW","FilterR","FilterW","LbypassR","LbypassW","LpenR","LpenW","LtimeR","LtimeW","R","RefclkR","RefclkW","W","WufR","WufW"]};

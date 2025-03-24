@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["MAX_FILE_SIZE","MAX_OPEN_DIRS","MAX_OPEN_FILES"],"enum":["Error","FilenameError","Mode","SdMmcError","VolumeType"],"struct":["Attributes","Block","BlockCount","BlockIdx","Cluster","Controller","DirEntry","Directory","FatVolume","File","SdMmcSpi","ShortFileName","Timestamp","Volume","VolumeIdx"],"trait":["BlockDevice","TimeSource"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Prescalerselect","Prescsyncselect","Resolutionselect"],"struct":["CtrlaSpec"],"type":["AlockR","AlockW","Cpten0R","Cpten0W","Cpten1R","Cpten1W","Cpten2R","Cpten2W","Cpten3R","Cpten3W","EnableR","EnableW","PrescalerR","PrescalerW","PrescsyncR","PrescsyncW","R","ResolutionR","ResolutionW","RunstdbyR","RunstdbyW","SwrstR","SwrstW","W"]};

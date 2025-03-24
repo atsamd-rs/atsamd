@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Bmaxselect"],"struct":["AcrSpec"],"type":["BmaxR","BmaxW","R","W"]};

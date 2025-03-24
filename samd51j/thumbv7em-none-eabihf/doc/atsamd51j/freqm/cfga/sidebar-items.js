@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CfgaSpec"],"type":["R","RefnumR","RefnumW","W"]};

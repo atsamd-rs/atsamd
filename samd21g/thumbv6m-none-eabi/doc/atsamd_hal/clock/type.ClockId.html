@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `ClockId` type in crate `atsamd_hal`."><title>ClockId in atsamd_hal::clock - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc type"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">ClockId</a></h2><h3><a href="#aliased-type">Aliased type</a></h3><h3><a href="#variants">Variants</a></h3><ul class="block variant"><li><a href="#variant.AcAna" title="AcAna">AcAna</a></li><li><a href="#variant.AcDig" title="AcDig">AcDig</a></li><li><a href="#variant.Adc" title="Adc">Adc</a></li><li><a href="#variant.Dac" title="Dac">Dac</a></li><li><a href="#variant.Dfll48" title="Dfll48">Dfll48</a></li><li><a href="#variant.Eic" title="Eic">Eic</a></li><li><a href="#variant.Evsys0" title="Evsys0">Evsys0</a></li><li><a href="#variant.Evsys1" title="Evsys1">Evsys1</a></li><li><a href="#variant.Evsys10" title="Evsys10">Evsys10</a></li><li><a href="#variant.Evsys11" title="Evsys11">Evsys11</a></li><li><a href="#variant.Evsys2" title="Evsys2">Evsys2</a></li><li><a href="#variant.Evsys3" title="Evsys3">Evsys3</a></li><li><a href="#variant.Evsys4" title="Evsys4">Evsys4</a></li><li><a href="#variant.Evsys5" title="Evsys5">Evsys5</a></li><li><a href="#variant.Evsys6" title="Evsys6">Evsys6</a></li><li><a href="#variant.Evsys7" title="Evsys7">Evsys7</a></li><li><a href="#variant.Evsys8" title="Evsys8">Evsys8</a></li><li><a href="#variant.Evsys9" title="Evsys9">Evsys9</a></li><li><a href="#variant.Fdpll" title="Fdpll">Fdpll</a></li><li><a href="#variant.Fdpll32k" title="Fdpll32k">Fdpll32k</a></li><li><a href="#variant.I2s0" title="I2s0">I2s0</a></li><li><a href="#variant.I2s1" title="I2s1">I2s1</a></li><li><a href="#variant.Rtc" title="Rtc">Rtc</a></li><li><a href="#variant.Sercom0Core" title="Sercom0Core">Sercom0Core</a></li><li><a href="#variant.Sercom1Core" title="Sercom1Core">Sercom1Core</a></li><li><a href="#variant.Sercom2Core" title="Sercom2Core">Sercom2Core</a></li><li><a href="#variant.Sercom3Core" title="Sercom3Core">Sercom3Core</a></li><li><a href="#variant.Sercom4Core" title="Sercom4Core">Sercom4Core</a></li><li><a href="#variant.Sercom5Core" title="Sercom5Core">Sercom5Core</a></li><li><a href="#variant.SercomxSlow" title="SercomxSlow">SercomxSlow</a></li><li><a href="#variant.Tc4Tc5" title="Tc4Tc5">Tc4Tc5</a></li><li><a href="#variant.Tc6Tc7" title="Tc6Tc7">Tc6Tc7</a></li><li><a href="#variant.Tcc0Tcc1" title="Tcc0Tcc1">Tcc0Tcc1</a></li><li><a href="#variant.Tcc2Tc3" title="Tcc2Tc3">Tcc2Tc3</a></li><li><a href="#variant.Usb" title="Usb">Usb</a></li><li><a href="#variant.Wdt" title="Wdt">Wdt</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="index.html">In atsamd_<wbr>hal::<wbr>clock</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../index.html">atsamd_hal</a>::<wbr><a href="index.html">clock</a></span><h1>Type Alias <span class="type">ClockId</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/atsamd_hal/peripherals/clock/d11.rs.html#19">Source</a> </span></div><pre class="rust item-decl"><code>pub type ClockId = <a class="enum" href="../../atsamd21g/gclk/clkctrl/enum.Idselect.html" title="enum atsamd21g::gclk::clkctrl::Idselect">Idselect</a>;</code></pre><h2 id="aliased-type" class="section-header">Aliased Type<a href="#aliased-type" class="anchor">§</a></h2><pre class="rust item-decl"><code>enum ClockId {
+<details class="toggle type-contents-toggle"><summary class="hideme"><span>Show 36 variants</span></summary>    Dfll48 = 0,
+    Fdpll = 1,
+    Fdpll32k = 2,
+    Wdt = 3,
+    Rtc = 4,
+    Eic = 5,
+    Usb = 6,
+    Evsys0 = 7,
+    Evsys1 = 8,
+    Evsys2 = 9,
+    Evsys3 = 10,
+    Evsys4 = 11,
+    Evsys5 = 12,
+    Evsys6 = 13,
+    Evsys7 = 14,
+    Evsys8 = 15,
+    Evsys9 = 16,
+    Evsys10 = 17,
+    Evsys11 = 18,
+    SercomxSlow = 19,
+    Sercom0Core = 20,
+    Sercom1Core = 21,
+    Sercom2Core = 22,
+    Sercom3Core = 23,
+    Sercom4Core = 24,
+    Sercom5Core = 25,
+    Tcc0Tcc1 = 26,
+    Tcc2Tc3 = 27,
+    Tc4Tc5 = 28,
+    Tc6Tc7 = 29,
+    Adc = 30,
+    AcDig = 31,
+    AcAna = 32,
+    Dac = 33,
+    I2s0 = 35,
+    I2s1 = 36,
+</details>}</code></pre><h2 id="variants" class="variants section-header">Variants<a href="#variants" class="anchor">§</a></h2><div class="variants"><section id="variant.Dfll48" class="variant"><a href="#variant.Dfll48" class="anchor">§</a><h3 class="code-header">Dfll48 = 0</h3></section><div class="docblock"><p>0: DFLL48</p>
+</div><section id="variant.Fdpll" class="variant"><a href="#variant.Fdpll" class="anchor">§</a><h3 class="code-header">Fdpll = 1</h3></section><div class="docblock"><p>1: FDPLL</p>
+</div><section id="variant.Fdpll32k" class="variant"><a href="#variant.Fdpll32k" class="anchor">§</a><h3 class="code-header">Fdpll32k = 2</h3></section><div class="docblock"><p>2: FDPLL32K</p>
+</div><section id="variant.Wdt" class="variant"><a href="#variant.Wdt" class="anchor">§</a><h3 class="code-header">Wdt = 3</h3></section><div class="docblock"><p>3: WDT</p>
+</div><section id="variant.Rtc" class="variant"><a href="#variant.Rtc" class="anchor">§</a><h3 class="code-header">Rtc = 4</h3></section><div class="docblock"><p>4: RTC</p>
+</div><section id="variant.Eic" class="variant"><a href="#variant.Eic" class="anchor">§</a><h3 class="code-header">Eic = 5</h3></section><div class="docblock"><p>5: EIC</p>
+</div><section id="variant.Usb" class="variant"><a href="#variant.Usb" class="anchor">§</a><h3 class="code-header">Usb = 6</h3></section><div class="docblock"><p>6: USB</p>
+</div><section id="variant.Evsys0" class="variant"><a href="#variant.Evsys0" class="anchor">§</a><h3 class="code-header">Evsys0 = 7</h3></section><div class="docblock"><p>7: EVSYS_0</p>
+</div><section id="variant.Evsys1" class="variant"><a href="#variant.Evsys1" class="anchor">§</a><h3 class="code-header">Evsys1 = 8</h3></section><div class="docblock"><p>8: EVSYS_1</p>
+</div><section id="variant.Evsys2" class="variant"><a href="#variant.Evsys2" class="anchor">§</a><h3 class="code-header">Evsys2 = 9</h3></section><div class="docblock"><p>9: EVSYS_2</p>
+</div><section id="variant.Evsys3" class="variant"><a href="#variant.Evsys3" class="anchor">§</a><h3 class="code-header">Evsys3 = 10</h3></section><div class="docblock"><p>10: EVSYS_3</p>
+</div><section id="variant.Evsys4" class="variant"><a href="#variant.Evsys4" class="anchor">§</a><h3 class="code-header">Evsys4 = 11</h3></section><div class="docblock"><p>11: EVSYS_4</p>
+</div><section id="variant.Evsys5" class="variant"><a href="#variant.Evsys5" class="anchor">§</a><h3 class="code-header">Evsys5 = 12</h3></section><div class="docblock"><p>12: EVSYS_5</p>
+</div><section id="variant.Evsys6" class="variant"><a href="#variant.Evsys6" class="anchor">§</a><h3 class="code-header">Evsys6 = 13</h3></section><div class="docblock"><p>13: EVSYS_6</p>
+</div><section id="variant.Evsys7" class="variant"><a href="#variant.Evsys7" class="anchor">§</a><h3 class="code-header">Evsys7 = 14</h3></section><div class="docblock"><p>14: EVSYS_7</p>
+</div><section id="variant.Evsys8" class="variant"><a href="#variant.Evsys8" class="anchor">§</a><h3 class="code-header">Evsys8 = 15</h3></section><div class="docblock"><p>15: EVSYS_8</p>
+</div><section id="variant.Evsys9" class="variant"><a href="#variant.Evsys9" class="anchor">§</a><h3 class="code-header">Evsys9 = 16</h3></section><div class="docblock"><p>16: EVSYS_9</p>
+</div><section id="variant.Evsys10" class="variant"><a href="#variant.Evsys10" class="anchor">§</a><h3 class="code-header">Evsys10 = 17</h3></section><div class="docblock"><p>17: EVSYS_10</p>
+</div><section id="variant.Evsys11" class="variant"><a href="#variant.Evsys11" class="anchor">§</a><h3 class="code-header">Evsys11 = 18</h3></section><div class="docblock"><p>18: EVSYS_11</p>
+</div><section id="variant.SercomxSlow" class="variant"><a href="#variant.SercomxSlow" class="anchor">§</a><h3 class="code-header">SercomxSlow = 19</h3></section><div class="docblock"><p>19: SERCOMX_SLOW</p>
+</div><section id="variant.Sercom0Core" class="variant"><a href="#variant.Sercom0Core" class="anchor">§</a><h3 class="code-header">Sercom0Core = 20</h3></section><div class="docblock"><p>20: SERCOM0_CORE</p>
+</div><section id="variant.Sercom1Core" class="variant"><a href="#variant.Sercom1Core" class="anchor">§</a><h3 class="code-header">Sercom1Core = 21</h3></section><div class="docblock"><p>21: SERCOM1_CORE</p>
+</div><section id="variant.Sercom2Core" class="variant"><a href="#variant.Sercom2Core" class="anchor">§</a><h3 class="code-header">Sercom2Core = 22</h3></section><div class="docblock"><p>22: SERCOM2_CORE</p>
+</div><section id="variant.Sercom3Core" class="variant"><a href="#variant.Sercom3Core" class="anchor">§</a><h3 class="code-header">Sercom3Core = 23</h3></section><div class="docblock"><p>23: SERCOM3_CORE</p>
+</div><section id="variant.Sercom4Core" class="variant"><a href="#variant.Sercom4Core" class="anchor">§</a><h3 class="code-header">Sercom4Core = 24</h3></section><div class="docblock"><p>24: SERCOM4_CORE</p>
+</div><section id="variant.Sercom5Core" class="variant"><a href="#variant.Sercom5Core" class="anchor">§</a><h3 class="code-header">Sercom5Core = 25</h3></section><div class="docblock"><p>25: SERCOM5_CORE</p>
+</div><section id="variant.Tcc0Tcc1" class="variant"><a href="#variant.Tcc0Tcc1" class="anchor">§</a><h3 class="code-header">Tcc0Tcc1 = 26</h3></section><div class="docblock"><p>26: TCC0_TCC1</p>
+</div><section id="variant.Tcc2Tc3" class="variant"><a href="#variant.Tcc2Tc3" class="anchor">§</a><h3 class="code-header">Tcc2Tc3 = 27</h3></section><div class="docblock"><p>27: TCC2_TC3</p>
+</div><section id="variant.Tc4Tc5" class="variant"><a href="#variant.Tc4Tc5" class="anchor">§</a><h3 class="code-header">Tc4Tc5 = 28</h3></section><div class="docblock"><p>28: TC4_TC5</p>
+</div><section id="variant.Tc6Tc7" class="variant"><a href="#variant.Tc6Tc7" class="anchor">§</a><h3 class="code-header">Tc6Tc7 = 29</h3></section><div class="docblock"><p>29: TC6_TC7</p>
+</div><section id="variant.Adc" class="variant"><a href="#variant.Adc" class="anchor">§</a><h3 class="code-header">Adc = 30</h3></section><div class="docblock"><p>30: ADC</p>
+</div><section id="variant.AcDig" class="variant"><a href="#variant.AcDig" class="anchor">§</a><h3 class="code-header">AcDig = 31</h3></section><div class="docblock"><p>31: AC_DIG</p>
+</div><section id="variant.AcAna" class="variant"><a href="#variant.AcAna" class="anchor">§</a><h3 class="code-header">AcAna = 32</h3></section><div class="docblock"><p>32: AC_ANA</p>
+</div><section id="variant.Dac" class="variant"><a href="#variant.Dac" class="anchor">§</a><h3 class="code-header">Dac = 33</h3></section><div class="docblock"><p>33: DAC</p>
+</div><section id="variant.I2s0" class="variant"><a href="#variant.I2s0" class="anchor">§</a><h3 class="code-header">I2s0 = 35</h3></section><div class="docblock"><p>35: I2S_0</p>
+</div><section id="variant.I2s1" class="variant"><a href="#variant.I2s1" class="anchor">§</a><h3 class="code-header">I2s1 = 36</h3></section><div class="docblock"><p>36: I2S_1</p>
+</div></div><script src="../../type.impl/atsamd21g/gclk/clkctrl/enum.Idselect.js" data-self-path="atsamd_hal::peripherals::clock::ClockId" async></script></section></div></main></body></html>

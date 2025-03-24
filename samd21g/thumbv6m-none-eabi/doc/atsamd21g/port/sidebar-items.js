@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["ctrl","dir","dirclr","dirset","dirtgl","in_","out","outclr","outset","outtgl","pincfg0_","pmux0_","wrconfig"],"struct":["RegisterBlock"],"type":["Ctrl","Dir","Dirclr","Dirset","Dirtgl","In","Out","Outclr","Outset","Outtgl","Pincfg0_","Pmux0_","Wrconfig"]};

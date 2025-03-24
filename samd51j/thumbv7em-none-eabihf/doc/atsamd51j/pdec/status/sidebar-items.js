@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["StatusSpec"],"type":["Ccbufv0R","Ccbufv0W","Ccbufv1R","Ccbufv1W","DirR","DirW","FilterbufvR","FilterbufvW","HerrR","HerrW","IdxerrR","IdxerrW","MperrR","MperrW","PrescbufvR","PrescbufvW","QerrR","QerrW","R","StopR","StopW","W","WinerrR","WinerrW"]};

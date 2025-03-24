@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Boundaryselect"],"struct":["BsrSpec"],"type":["BlocksizeR","BlocksizeW","BoundaryR","BoundaryW","R","W"]};

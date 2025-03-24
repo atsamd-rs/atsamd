@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Resselselect","Winmodeselect"],"struct":["CtrlbSpec"],"type":["CorrenR","CorrenW","FreerunR","FreerunW","LeftadjR","LeftadjW","R","ResselR","ResselW","W","WinmodeR","WinmodeW","WinssR","WinssW"]};

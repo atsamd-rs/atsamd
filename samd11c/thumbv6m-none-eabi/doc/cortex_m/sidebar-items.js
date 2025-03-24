@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"macro":["iprint","iprintln","singleton"],"mod":["asm","delay","interrupt","peripheral","prelude","register"]};

@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["CELCKR","Value of the field"],["DBGPRESR","Value of the field"],["DCCD0R","Value of the field"],["DCCD1R","Value of the field"],["HPER","Value of the field"],["PROTR","Value of the field"],["R","Value read from the register"],["TDCCD0R","Value of the field"],["TDCCD1R","Value of the field"]]});

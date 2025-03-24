@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Tecr1Spec"],"type":["R","W"]};

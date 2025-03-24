@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["IntflagbSpec"],"type":["Cmcc_R","Cmcc_W","Dmac_R","Dmac_W","Dsu_R","Dsu_W","Evsys_R","Evsys_W","Nvmctrl_R","Nvmctrl_W","Port_R","Port_W","R","Ramecc_R","Ramecc_W","Sercom2_R","Sercom2_W","Sercom3_R","Sercom3_W","Tc2_R","Tc2_W","Tc3_R","Tc3_W","Tcc0_R","Tcc0_W","Tcc1_R","Tcc1_W","Usb_R","Usb_W","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ClockMode","ControlGainMode","CrystalMode","DynMode","SafeClockDiv","StartUpDelay","Xosc1kId","Xosc32kId"],"struct":["Xosc1k","Xosc1kToken","Xosc32k","Xosc32kBase","Xosc32kBaseToken","Xosc32kCfd","Xosc32kCfdToken","Xosc32kToken","Xosc32kTokens"],"trait":["Mode"],"type":["EnabledXosc1k","EnabledXosc32k","EnabledXosc32kBase","XIn32","XOut32"]};

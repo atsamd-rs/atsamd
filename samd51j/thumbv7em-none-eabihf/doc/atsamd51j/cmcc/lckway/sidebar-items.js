@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["LckwaySpec"],"type":["LckwayR","LckwayW","R","W"]};

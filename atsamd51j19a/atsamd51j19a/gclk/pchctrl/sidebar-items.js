@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["GENR","Possible values of the field `GEN`"],["GENW","Values that can be written to the field `GEN`"]],"struct":[["CHENR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["WRTLOCKR","Value of the field"],["_CHENW","Proxy"],["_GENW","Proxy"],["_WRTLOCKW","Proxy"]]});

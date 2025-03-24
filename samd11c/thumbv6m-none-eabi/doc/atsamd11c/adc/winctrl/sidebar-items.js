@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Winmodeselect"],"struct":["WinctrlSpec"],"type":["R","W","WinmodeR","WinmodeW"]};

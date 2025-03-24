@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Global logger acquire-release mechanism"><title>Logger in defmt - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="defmt" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../static.files/storage-59e33391.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button><a class="logo-container" href="../defmt/index.html"><img src="https://knurling.ferrous-systems.com/knurling_logo_light_text.svg" alt=""></a></nav><nav class="sidebar"><div class="sidebar-crate"><a class="logo-container" href="../defmt/index.html"><img src="https://knurling.ferrous-systems.com/knurling_logo_light_text.svg" alt="logo"></a><h2><a href="../defmt/index.html">defmt</a><span class="version">0.3.10</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Logger</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#safety" title="Safety">Safety</a></li></ul><h3><a href="#required-methods">Required Methods</a></h3><ul class="block"><li><a href="#tymethod.acquire" title="acquire">acquire</a></li><li><a href="#tymethod.flush" title="flush">flush</a></li><li><a href="#tymethod.release" title="release">release</a></li><li><a href="#tymethod.write" title="write">write</a></li></ul><h3><a href="#dyn-compatibility">Dyn Compatibility</a></h3><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate defmt</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="index.html">defmt</a></span><h1>Trait <span class="trait">Logger</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/defmt/traits.rs.html#90-131">Source</a> </span></div><pre class="rust item-decl"><code>pub unsafe trait Logger {
+    // Required methods
+    fn <a href="#tymethod.acquire" class="fn">acquire</a>();
+<span class="item-spacer"></span>    unsafe fn <a href="#tymethod.flush" class="fn">flush</a>();
+<span class="item-spacer"></span>    unsafe fn <a href="#tymethod.release" class="fn">release</a>();
+<span class="item-spacer"></span>    unsafe fn <a href="#tymethod.write" class="fn">write</a>(bytes: &amp;[<a class="primitive" href="https://doc.rust-lang.org/1.85.0/core/primitive.u8.html">u8</a>]);
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Global logger acquire-release mechanism</p>
+<p>This trait’s methods will be called by the defmt logging macros to transmit the
+encoded log data over the wire. The call order is:</p>
+<ul>
+<li>One <code>acquire()</code> call to start the log frame.</li>
+<li>Multiple <code>write()</code> calls, with fragments of the log frame data each.</li>
+<li>One <code>release()</code> call.</li>
+</ul>
+<p>The data passed to <code>write()</code> is <em>unencoded</em>. Implementations MUST encode it with <code>Encoder</code>
+prior to sending it over the wire. The simplest way is for <code>acquire()</code> to call <code>Encoder::start_frame()</code>,
+<code>write()</code> to call <code>Encoder::write()</code>, and <code>release()</code> to call <code>Encoder::end_frame()</code>.</p>
+<p>The global logger can be acquired once for each “execution context”. The definition
+of execution context is up to the implementation. For example, it can be:</p>
+<ul>
+<li>the entire process.</li>
+<li>one thread in std environments.</li>
+<li>one interrupt priority level in embedded devices.</li>
+</ul>
+<h2 id="safety"><a class="doc-anchor" href="#safety">§</a>Safety</h2>
+<ul>
+<li><code>acquire</code> logically acquires the global logger in the current execution context.
+The acquiring is tracked internally, no Rust object is returned representing ownership.</li>
+<li><code>acquire</code> is a safe function, therefore it must be thread-safe and interrupt-safe</li>
+</ul>
+<p>And, not safety related, the methods should never be invoked from user code. The easiest way to
+ensure this is to implement <code>Logger</code> on a <em>private</em> <code>struct</code> and mark that <code>struct</code> as the
+<code>#[global_logger]</code>.</p>
+</div></details><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.acquire" class="method"><a class="src rightside" href="../src/defmt/traits.rs.html#96">Source</a><h4 class="code-header">fn <a href="#tymethod.acquire" class="fn">acquire</a>()</h4></section></summary><div class="docblock"><p>Acquire the global logger in the current execution context.</p>
+<p>This will be called by the defmt logging macros before writing each log frame.</p>
+<p>Panics if already acquired in the current execution context. Otherwise it must never fail.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.flush" class="method"><a class="src rightside" href="../src/defmt/traits.rs.html#105">Source</a><h4 class="code-header">unsafe fn <a href="#tymethod.flush" class="fn">flush</a>()</h4></section></summary><div class="docblock"><p>Block until host has read all pending data.</p>
+<p>The flush operation must not fail. This is a “best effort” operation, I/O errors should be discarded.</p>
+<h5 id="safety-1"><a class="doc-anchor" href="#safety-1">§</a>Safety</h5>
+<p>Must only be called when the global logger is acquired in the current execution context.
+(i.e. between <code>acquire()</code> and <code>release()</code>).</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.release" class="method"><a class="src rightside" href="../src/defmt/traits.rs.html#113">Source</a><h4 class="code-header">unsafe fn <a href="#tymethod.release" class="fn">release</a>()</h4></section></summary><div class="docblock"><p>Releases the global logger in the current execution context.</p>
+<p>This will be called by the defmt logging macros after writing each log frame.</p>
+<h5 id="safety-2"><a class="doc-anchor" href="#safety-2">§</a>Safety</h5>
+<p>Must be called exactly once for each acquire(), in the same execution context.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.write" class="method"><a class="src rightside" href="../src/defmt/traits.rs.html#130">Source</a><h4 class="code-header">unsafe fn <a href="#tymethod.write" class="fn">write</a>(bytes: &amp;[<a class="primitive" href="https://doc.rust-lang.org/1.85.0/core/primitive.u8.html">u8</a>])</h4></section></summary><div class="docblock"><p>Writes <code>bytes</code> to the destination.</p>
+<p>This will be called by the defmt logging macros to transmit frame data. One log frame may cause multiple <code>write</code> calls.</p>
+<p>The write operation must not fail. This is a “best effort” operation, I/O errors should be discarded.</p>
+<p>The <code>bytes</code> are unencoded log frame data, they MUST be encoded with <code>Encoder</code> prior to
+sending over the wire.</p>
+<p>Note that a call to <code>write</code> does <em>not</em> correspond to a defmt logging macro invocation. A
+single <code>defmt::info!</code> call can result in an arbitrary number of <code>write</code> calls.</p>
+<h5 id="safety-3"><a class="doc-anchor" href="#safety-3">§</a>Safety</h5>
+<p>Must only be called when the global logger is acquired in the current execution context.
+(i.e. between <code>acquire()</code> and <code>release()</code>).</p>
+</div></details></div><h2 id="dyn-compatibility" class="section-header">Dyn Compatibility<a href="#dyn-compatibility" class="anchor">§</a></h2><div class="dyn-compatibility-info"><p>This trait is <b>not</b> <a href="https://doc.rust-lang.org/1.85.0/reference/items/traits.html#object-safety">dyn compatible</a>.</p><p><i>In older versions of Rust, dyn compatibility was called "object safety", so this trait is not object safe.</i></p></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"></div><script src="../trait.impl/defmt/traits/trait.Logger.js" async></script></section></div></main></body></html>

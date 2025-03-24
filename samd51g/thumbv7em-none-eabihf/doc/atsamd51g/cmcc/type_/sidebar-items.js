@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Clsizeselect","Csizeselect","Waynumselect"],"struct":["TypeSpec"],"type":["ClsizeR","CsizeR","GclkR","LckdownR","R","RrpR","WaynumR"]};

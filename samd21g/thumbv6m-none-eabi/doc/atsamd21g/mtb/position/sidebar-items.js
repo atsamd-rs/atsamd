@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PositionSpec"],"type":["PointerR","PointerW","R","W","WrapR","WrapW"]};

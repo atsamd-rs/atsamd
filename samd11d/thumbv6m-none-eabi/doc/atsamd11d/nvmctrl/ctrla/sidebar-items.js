@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Cmdexselect","Cmdselect"],"struct":["CtrlaSpec"],"type":["CmdR","CmdW","CmdexR","CmdexW","R","W"]};

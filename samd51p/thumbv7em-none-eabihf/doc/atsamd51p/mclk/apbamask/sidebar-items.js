@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ApbamaskSpec"],"type":["Eic_R","Eic_W","Freqm_R","Freqm_W","Gclk_R","Gclk_W","Mclk_R","Mclk_W","Osc32kctrl_R","Osc32kctrl_W","Oscctrl_R","Oscctrl_W","Pac_R","Pac_W","Pm_R","Pm_W","R","Rstc_R","Rstc_W","Rtc_R","Rtc_W","Sercom0_R","Sercom0_W","Sercom1_R","Sercom1_W","Supc_R","Supc_W","Tc0_R","Tc0_W","Tc1_R","Tc1_W","W","Wdt_R","Wdt_W"]};

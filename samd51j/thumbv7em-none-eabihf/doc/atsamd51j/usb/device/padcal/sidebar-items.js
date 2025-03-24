@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PadcalSpec"],"type":["R","TransnR","TransnW","TranspR","TranspW","TrimR","TrimW","W"]};

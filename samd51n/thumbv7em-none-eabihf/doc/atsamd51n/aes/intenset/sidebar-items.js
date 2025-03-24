@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["IntensetSpec"],"type":["EnccmpR","EnccmpW","GfmcmpR","GfmcmpW","R","W"]};

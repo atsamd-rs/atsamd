@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["channel","chstatus","ctrl","intenclr","intenset","intflag","user"],"struct":["RegisterBlock"],"type":["Channel","Chstatus","Ctrl","Intenclr","Intenset","Intflag","User"]};

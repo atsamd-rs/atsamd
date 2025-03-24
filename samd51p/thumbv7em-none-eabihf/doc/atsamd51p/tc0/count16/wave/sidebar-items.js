@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Wavegenselect"],"struct":["WaveSpec"],"type":["R","W","WavegenR","WavegenW"]};

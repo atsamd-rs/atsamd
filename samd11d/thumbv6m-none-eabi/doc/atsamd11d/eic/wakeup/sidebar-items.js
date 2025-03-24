@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["WakeupSpec"],"type":["R","W","Wakeupen0R","Wakeupen0W","Wakeupen1R","Wakeupen1W","Wakeupen2R","Wakeupen2W","Wakeupen3R","Wakeupen3W","Wakeupen4R","Wakeupen4W","Wakeupen5R","Wakeupen5W","Wakeupen6R","Wakeupen6W","Wakeupen7R","Wakeupen7W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Wintsel0select"],"struct":["WinctrlSpec"],"type":["R","W","Wen0R","Wen0W","Wintsel0R","Wintsel0W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Prescselect"],"struct":["PrescSpec"],"type":["PrescR","PrescW","R","W"]};

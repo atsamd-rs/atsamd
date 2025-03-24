@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Fastwkupselect","Ramcfgselect"],"struct":["StdbycfgSpec"],"type":["FastwkupR","FastwkupW","R","RamcfgR","RamcfgW","W"]};

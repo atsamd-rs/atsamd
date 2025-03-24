@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DatabufSpec"],"type":["DatabufW","W"]};

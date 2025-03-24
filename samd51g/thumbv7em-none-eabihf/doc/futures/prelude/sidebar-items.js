@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["future","sink","stream"],"trait":["Future","Sink","Stream","TryFuture","TryStream"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Keyselect"],"struct":["WrctrlSpec"],"type":["KeyR","KeyW","PeridR","PeridW","R","W"]};

@@ -1,0 +1,421 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Use the SERCOM peripheral for UART communications"><title>atsamd_hal::sercom::uart - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module uart</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#pads" title="`Pads`"><code>Pads</code></a></li><li><a href="#config" title="`Config`"><code>Config</code></a><ul><li><a href="#charsize" title="`CharSize`"><code>CharSize</code></a></li><li><a href="#reading-the-current-configuration" title="Reading the current configuration">Reading the current configuration</a></li></ul></li><li><a href="#uart-and-capabilities" title="`Uart` and capabilities"><code>Uart</code> and capabilities</a></li><li><a href="#uart-flow-control-ctsrts" title="UART flow control (CTS/RTS)">UART flow control (CTS/RTS)</a></li><li><a href="#splitting" title="Splitting">Splitting</a></li><li><a href="#joining" title="Joining">Joining</a></li><li><a href="#reading-the-current-configuration-1" title="Reading the current configuration">Reading the current configuration</a></li><li><a href="#disabling-and-reconfiguring" title="Disabling and reconfiguring">Disabling and reconfiguring</a></li><li><a href="#non-supported-advanced-features" title="Non-supported advanced features">Non-supported advanced features</a></li><li><a href="#using-uart-with-dma-dma" title="Using UART with DMA dma">Using UART with DMA dma</a><ul><li><a href="#non-blocking-dma-transfers" title="Non-blocking DMA transfers">Non-blocking DMA transfers</a></li></ul></li><li><a href="#async-operation-async" title="`async` operation async"><code>async</code> operation async</a><ul><li><a href="#considerations-when-using-async-uart-with-dma-span-classstab" title="Considerations when using `async` `Uart` with DMA &#60;span class=“stab">Considerations when using <code>async</code> <code>Uart</code> with DMA &lt;span class=“stab</a></li></ul></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#constants" title="Constants">Constants</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>sercom</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../../index.html">atsamd_hal</a>::<wbr><a href="../index.html">sercom</a></span><h1>Module <span>uart</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/atsamd_hal/sercom/uart.rs.html#1-1224">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Use the SERCOM peripheral for UART communications</p>
+<p>Configuring an UART peripheral occurs in three steps. First, you must create
+a set of <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a> for use by the peripheral. Next, you assemble pieces into
+a <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> struct. After configuring the peripheral, you then <a href="struct.Config.html#method.enable" title="method atsamd_hal::sercom::uart::Config::enable"><code>enable</code></a>
+it, yielding a functional <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> struct.
+Transactions are performed using the <a href="../../../embedded_io/trait.Write.html" title="trait embedded_io::Write"><code>embedded_io::Write</code></a>,
+<a href="../../../embedded_io/trait.Read.html" title="trait embedded_io::Read"><code>embedded_io::Read</code></a>, <a href="../../../embedded_hal_nb/serial/trait.Write.html" title="trait embedded_hal_nb::serial::Write"><code>embedded_hal_nb::serial::Write</code></a>, and
+<a href="../../../embedded_hal_nb/serial/trait.Read.html" title="trait embedded_hal_nb::serial::Read"><code>embedded_hal_nb::serial::Read</code></a> traits.</p>
+<h2 id="pads"><a class="doc-anchor" href="#pads">§</a><a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a></h2>
+<p>A [<code>Sercom</code>] can use up to four <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>s as peripheral [<code>Pad</code>]s, but only
+certain <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a> combinations are acceptable. In particular, all <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>s
+must be mapped to the same <code>Sercom</code> (see the datasheet). This HAL makes it
+impossible to use invalid <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>/[<code>Pad</code>] combinations, and the <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a>
+struct is responsible for enforcing these constraints.</p>
+<p>A <code>Pads</code> type takes five or six type parameters, depending on the chip.The
+first type always specifies the <code>Sercom</code>. On SAMx5x chips, the second type
+specifies the <code>IoSet</code>. The remaining four, <code>DI</code>, <code>DO</code>, <code>CK</code> and <code>SS</code>,
+represent the Data In, Data Out, Sclk and SS pads respectively. Each of the
+remaining type parameters is an [<code>OptionalPad</code>] and defaults to <a href="../../typelevel/struct.NoneT.html" title="struct atsamd_hal::typelevel::NoneT"><code>NoneT</code></a>. A
+[<code>Pad</code>] is just a <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a> configured in the correct <a href="../../gpio/pin/trait.PinMode.html" title="trait atsamd_hal::gpio::pin::PinMode"><code>PinMode</code></a> that
+implements [<code>IsPad</code>]. The <a href="../../macro.bsp_pins.html" title="macro atsamd_hal::bsp_pins"><code>bsp_pins!</code></a> macro can be
+used to define convenient type aliases for [<code>Pad</code>] types.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::gpio::{PA08, PA09, AlternateC};
+<span class="kw">use </span>atsamd_hal::sercom::{Sercom0, uart};
+<span class="kw">use </span>atsamd_hal::typelevel::NoneT;
+
+<span class="kw">type </span>Rx = Pin&lt;PA08, AlternateC&gt;;
+<span class="kw">type </span>Tx = Pin&lt;PA09, AlternateC&gt;;
+<span class="kw">type </span>Pads = uart::Pads&lt;Sercom0, Rx, Tx&gt;;</code></pre></div>
+<p>Alternatively, you can use the <a href="type.PadsFromIds.html" title="type atsamd_hal::sercom::uart::PadsFromIds"><code>PadsFromIds</code></a> alias to define a set of
+<code>Pads</code> in terms of <a href="../../gpio/pin/trait.PinId.html" title="trait atsamd_hal::gpio::pin::PinId"><code>PinId</code></a>s instead of <code>Pin</code>s. This is useful when you
+don’t have <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a> aliases pre-defined.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::gpio::{PA08, PA09};
+<span class="kw">use </span>atsamd_hal::sercom::{Sercom0, uart};
+
+<span class="kw">type </span>Pads = uart::PadsFromIds&lt;Sercom0, PA08, PA09&gt;;</code></pre></div>
+<p>Instances of <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a> are created using the builder pattern. Start by
+creating an empty set of <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a> using <a href="https://doc.rust-lang.org/1.85.0/core/default/trait.Default.html" title="trait core::default::Default"><code>Default</code></a>. Then pass each
+respective <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a> using the corresponding methods.</p>
+<p>On SAMD21 and SAMx5x chips, the builder methods automatically convert each
+pin to the correct <a href="../../gpio/pin/trait.PinMode.html" title="trait atsamd_hal::gpio::pin::PinMode"><code>PinMode</code></a>. But for SAMD11 chips, users must manually
+convert each pin before calling the builder methods. This is a consequence
+of inherent ambiguities in the SAMD11 SERCOM pad definitions. Specifically,
+the same <a href="../../gpio/pin/trait.PinId.html" title="trait atsamd_hal::gpio::pin::PinId"><code>PinId</code></a> can correspond to two different [<code>PadNum</code>]s for the
+<em>same</em> <code>Sercom</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::pac::Peripherals;
+<span class="kw">use </span>atsamd_hal::gpio::Pins;
+<span class="kw">use </span>atsamd_hal::sercom::{Sercom0, uart};
+
+<span class="kw">let </span><span class="kw-2">mut </span>peripherals = Peripherals::take().unwrap();
+<span class="kw">let </span>pins = Pins::new(peripherals.PORT);
+<span class="kw">let </span>pads = uart::Pads::&lt;Sercom0&gt;::default()
+    .rx(pins.pa09)
+    .tx(pins.pa08);</code></pre></div>
+<p>To be accepted as <a href="trait.ValidPads.html" title="trait atsamd_hal::sercom::uart::ValidPads"><code>ValidPads</code></a>, a set of <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a> must do two things:</p>
+<ul>
+<li>Specify a type for at least one of <code>RX</code> or <code>TX</code></li>
+<li>Satisfy the <code>RxpoTxpo</code> trait (SAMD11/SAMD21), or the <code>Rxpo</code> and <code>Txpo</code>
+traits (SAMx5x)</li>
+</ul>
+<h2 id="config"><a class="doc-anchor" href="#config">§</a><a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a></h2>
+<p>Next, create a <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> struct, which represents the UART peripheral in
+its disabled state. A <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> is specified with two type parameters: the
+<a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a> type; and a <a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a>, which defaults to <a href="enum.EightBit.html" title="enum atsamd_hal::sercom::uart::EightBit"><code>EightBit</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::gpio::{PA08, PA09};
+<span class="kw">use </span>atsamd_hal::sercom::{Sercom0, uart};
+<span class="kw">use </span>atsamd_hal::sercom::uart::{NineBit};
+<span class="kw">use </span>atsamd_hal::typelevel::NoneT;
+
+<span class="kw">type </span>Pads = uart::PadsFromIds&lt;Sercom0, PA08, PA09&gt;;
+<span class="kw">type </span>Config = uart::Config&lt;Pads, NineBit&gt;;</code></pre></div>
+<p>Upon creation, the <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> takes ownership of both the <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a> struct
+and the PAC [<code>Sercom</code>] struct. It takes a reference to the PM, so that it
+can enable the APB clock, and it takes a frequency to indicate the GCLK
+configuration. Users are responsible for correctly configuring the GCLK.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::time::U32Ext;
+
+<span class="kw">let </span>pm = peripherals.PM;
+<span class="kw">let </span>sercom = peripherals.SERCOM0;
+<span class="comment">// Configure GCLK for 10 MHz
+</span><span class="kw">let </span>freq = <span class="number">10</span>.mhz();
+<span class="kw">let </span>config = uart::Config::new(<span class="kw-2">&amp;</span>pm, sercom, pads, freq);</code></pre></div>
+<p>The <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> struct can configure the peripheral in one of two ways:</p>
+<ul>
+<li>A set of methods is provided to use in a builder pattern: for example
+<a href="struct.Config.html#method.baud" title="method atsamd_hal::sercom::uart::Config::baud"><code>baud</code></a>, <a href="struct.Config.html#method.stop_bits" title="method atsamd_hal::sercom::uart::Config::stop_bits"><code>stop_bits</code></a>, etc. These
+methods take <code>self</code> and return <code>Self</code>.</li>
+<li>A set of methods is provided to use as setters: for example
+<a href="struct.Config.html#method.set_baud" title="method atsamd_hal::sercom::uart::Config::set_baud"><code>set_baud</code></a>, <a href="struct.Config.html#method.set_stop_bits" title="method atsamd_hal::sercom::uart::Config::set_stop_bits"><code>set_stop_bits</code></a>,
+etc. These methods take <code>&amp;mut self</code> and return nothing.</li>
+</ul>
+<p>In any case, the peripheral setup ends with a call to <a href="struct.Config.html#method.enable" title="method atsamd_hal::sercom::uart::Config::enable"><code>enable</code></a>, which
+consumes the <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> and returns an enabled <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> peripheral.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::sercom::uart::{StopBits, NineBit, BitOrder, BaudMode, Oversampling};
+
+<span class="kw">let </span>uart = uart::Config::new(<span class="kw-2">&amp;</span>mclk, sercom, pads, freq)
+    .baud(<span class="number">1</span>.mhz(), BaudMode::Arithmetic(Oversampling::Bits16))
+    .char_size::&lt;NineBit&gt;()
+    .bit_order(BitOrder::LsbFirst)
+    .stop_bits(StopBits::TwoBits)
+    .enable();</code></pre></div>
+<p>Alternatively,</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::sercom::uart::{StopBits, NineBit, BitOrder, BaudMode, Oversampling};
+
+<span class="kw">let </span>uart = uart::Config::new(<span class="kw-2">&amp;</span>mclk, sercom, pads, freq);
+    uart.set_baud(<span class="number">1</span>.mhz(), BaudMode::Arithmetic(Oversampling::Bits16));
+    uart.set_char_size::&lt;NineBit&gt;();
+    uart.set_bit_order(BitOrder::LsbFirst);
+    uart.set_stop_bits(StopBits::TwoBits);
+    <span class="kw">let </span>uart = uart.enable();</code></pre></div>
+<p>To be accepted as a <a href="trait.ValidConfig.html" title="trait atsamd_hal::sercom::uart::ValidConfig"><code>ValidConfig</code></a>, the <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> must have at least one
+of <code>Rx</code> or <code>Tx</code> pads.</p>
+<h3 id="charsize"><a class="doc-anchor" href="#charsize">§</a><a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a></h3>
+<p>The UART peripheral can be configured to use different character sizes. By
+default, a <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> is configured with an <a href="enum.EightBit.html" title="enum atsamd_hal::sercom::uart::EightBit"><code>EightBit</code></a> character size.
+This can be changed through the <a href="struct.Config.html#method.char_size" title="method atsamd_hal::sercom::uart::Config::char_size"><code>char_size</code></a> method.
+Changing the character normally also changes the <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a>’s type.
+Alternatively, you can also use a <a href="enum.DynCharSize.html" title="enum atsamd_hal::sercom::uart::DynCharSize"><code>DynCharSize</code></a> through the
+<a href="struct.Config.html#method.dyn_char_size" title="method atsamd_hal::sercom::uart::Config::dyn_char_size"><code>dyn_char_size</code></a> method. This enables you to
+dynamically change the character size on the fly through the
+<a href="struct.Config.html#method.set_dyn_char_size" title="method atsamd_hal::sercom::uart::Config::set_dyn_char_size"><code>set_dyn_char_size</code></a> method when calling
+<a href="struct.Uart.html#method.reconfigure" title="method atsamd_hal::sercom::uart::Uart::reconfigure"><code>reconfigure</code></a>.</p>
+<h3 id="reading-the-current-configuration"><a class="doc-anchor" href="#reading-the-current-configuration">§</a>Reading the current configuration</h3>
+<p>It is possible to read the current configuration by using the getter methods
+provided: for example <a href="struct.Config.html#method.get_baud" title="method atsamd_hal::sercom::uart::Config::get_baud"><code>get_baud</code></a>,
+<a href="struct.Config.html#method.get_stop_bits" title="method atsamd_hal::sercom::uart::Config::get_stop_bits"><code>get_stop_bits</code></a>, etc.</p>
+<h2 id="uart-and-capabilities"><a class="doc-anchor" href="#uart-and-capabilities">§</a><a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> and capabilities</h2>
+<p><a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> structs can only be created from a <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a>. They have two type
+parameters: the first one represents the underlying <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a>, while the
+second represents the <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a>’s capabilities. The second type parameter can
+be one of:</p>
+<ul>
+<li><a href="enum.Rx.html" title="enum atsamd_hal::sercom::uart::Rx"><code>Rx</code></a> or <a href="enum.RxDuplex.html" title="enum atsamd_hal::sercom::uart::RxDuplex"><code>RxDuplex</code></a>: Can perform receive transactions</li>
+<li><a href="enum.Tx.html" title="enum atsamd_hal::sercom::uart::Tx"><code>Tx</code></a> or <a href="enum.TxDuplex.html" title="enum atsamd_hal::sercom::uart::TxDuplex"><code>TxDuplex</code></a>: Can perform transmit transactions</li>
+<li><a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a>: UART configured as duplex that can perform receive and
+transmit transactions. Additionally, the <a href="struct.Uart.html#method.split" title="method atsamd_hal::sercom::uart::Uart::split"><code>split</code></a> method can be called to
+return a <code>Uart&lt;C, RxDuplex&gt;, Uart&lt;C, TxDuplex&gt;)</code> tuple. See the
+<a href="index.html#Splitting" title="mod atsamd_hal::sercom::uart">Splitting</a> section for more information.</li>
+</ul>
+<p>The nature of the underlying <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a> contained inside <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> determines
+the type returned by a call to <a href="struct.Config.html#method.enable" title="method atsamd_hal::sercom::uart::Config::enable"><code>enable</code></a>. If the pads only have a <code>TX</code> pin
+specified, then <a href="struct.Config.html#method.enable" title="method atsamd_hal::sercom::uart::Config::enable"><code>enable</code></a> will return a <code>Uart&lt;C, Tx&gt;</code>. Similarly, If the
+pads only have a <code>RX</code> pin specified, then <a href="struct.Config.html#method.enable" title="method atsamd_hal::sercom::uart::Config::enable"><code>enable</code></a> will return a <code>Uart&lt;C, Rx&gt;</code>. Finally, if both <code>RX</code> and <code>TX</code> pins are specified, then <a href="struct.Config.html#method.enable" title="method atsamd_hal::sercom::uart::Config::enable"><code>enable</code></a>
+will return a <code>Uart&lt;C, Duplex&gt;</code>, which can be further split into a <code>Uart&lt;C, RxDuplex&gt;</code> and a <code>Uart&lt;C, TxDuplex&gt;</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::gpio::{PA08, PA09};
+<span class="kw">use </span>atsamd_hal::sercom::{Sercom0, uart};
+<span class="kw">use </span>atsamd_hal::sercom::uart::NineBit;
+<span class="kw">use </span>atsamd_hal::typelevel::NoneT;
+
+<span class="comment">// Assuming SAMD21 or SAMx5x
+</span><span class="kw">type </span>Pads = uart::PadsFromIds&lt;Sercom0, PA08, NoneT, PA09&gt;;
+<span class="kw">type </span>Config = uart::Config&lt;Pads, NineBit&gt;;
+<span class="kw">type </span>UartRx = uart::Uart&lt;Config, RxDuplex&gt;;
+<span class="kw">type </span>UartTx = uart::UartTx&lt;Config, RxDuples&gt;;</code></pre></div>
+<p>Only the <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> struct can actually perform
+transactions. To do so, use the embedded HAL traits, like
+<a href="../../../embedded_hal_nb/serial/trait.Read.html" title="trait embedded_hal_nb::serial::Read"><code>embedded_hal_nb::serial::Read</code></a>, <a href="../../../embedded_hal_nb/serial/trait.Write.html" title="trait embedded_hal_nb::serial::Write"><code>embedded_hal_nb::serial::Write</code></a>,
+<a href="../../../embedded_io/trait.Read.html" title="trait embedded_io::Read"><code>embedded_io::Read</code></a>, and <a href="../../../embedded_io/trait.Write.html" title="trait embedded_io::Write"><code>embedded_io::Write</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>nb::block;
+<span class="kw">use </span>atsamd_hal::embedded_hal_nb::serial::Write;
+
+<span class="macro">block!</span>(uart_tx.write(<span class="number">0x0fe</span>));</code></pre></div>
+<h2 id="uart-flow-control-ctsrts"><a class="doc-anchor" href="#uart-flow-control-ctsrts">§</a>UART flow control (CTS/RTS)</h2>
+<p>This module supports CTS and RTS pins.</p>
+<p>The <code>RTS</code> pin is a fully hardware-controlled output pin that gets deasserted
+when:</p>
+<ul>
+<li>The USART receiver is disabled;</li>
+<li>The USART’s RX buffer is full.</li>
+</ul>
+<p>The <code>CTS</code> pin is an input pin that provides an interrupt when a change
+(rising or falling edge) is detected on the corresponding Pad. This
+interrupt, <code>CTSIC</code>, can be enabled with the
+<a href="struct.Uart.html#method.enable_ctsic" title="method atsamd_hal::sercom::uart::Uart::enable_ctsic"><code>enable_ctsic</code></a> method only when the corresponding
+<a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> has a <code>CTS</code> pad specified. The
+<a href="struct.Uart.html#method.disable_ctsic" title="method atsamd_hal::sercom::uart::Uart::disable_ctsic"><code>disable_ctsic</code></a> and
+<a href="struct.Uart.html#method.clear_ctsic" title="method atsamd_hal::sercom::uart::Uart::clear_ctsic"><code>clear_ctsic</code></a> methods are also available under the same
+conditions. <a href="https://www.silabs.com/documents/public/application-notes/an0059.0-uart-flow-control.pdf">This application note</a>
+provides more information about UART hardware flow control.</p>
+<h2 id="splitting"><a class="doc-anchor" href="#splitting">§</a>Splitting</h2>
+<p>A <code>Uart&lt;C, Duplex&gt;</code> can be split into its <a href="enum.RxDuplex.html" title="enum atsamd_hal::sercom::uart::RxDuplex"><code>RxDuplex</code></a> and <a href="enum.TxDuplex.html" title="enum atsamd_hal::sercom::uart::TxDuplex"><code>TxDuplex</code></a>
+constituents:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::sercom::uart::Uart;
+<span class="comment">// Assume uart is a Uart&lt;C, Duplex&gt;
+</span><span class="kw">let </span>(rx, tx) = uart.split();</code></pre></div>
+<h2 id="joining"><a class="doc-anchor" href="#joining">§</a>Joining</h2>
+<p>When a <code>Uart&lt;C, Duplex&gt;</code> has been split into its <a href="enum.RxDuplex.html" title="enum atsamd_hal::sercom::uart::RxDuplex"><code>RxDuplex</code></a> and
+<a href="enum.TxDuplex.html" title="enum atsamd_hal::sercom::uart::TxDuplex"><code>TxDuplex</code></a> parts, these parts can be joined back into a <code>Uart&lt;C, Duplex&gt;</code>
+by calling the <a href="struct.Uart.html#method.join" title="associated function atsamd_hal::sercom::uart::Uart::join"><code>join</code></a> function for <code>Uart&lt;C, Duplex&gt;</code>. It takes a <code>Uart&lt;C, RxDuplex&gt;</code> and a <code>Uart&lt;C, TxDuplex&gt;</code> and moves them into a full <a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a>
+<a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::sercom::uart::Uart;
+
+<span class="comment">// Assume rx is a Uart&lt;C, RxDuplex&gt; and tx is a Uart&lt;C, TxDuplex&gt;
+</span><span class="kw">let </span>uart = Uart::join(rx, tx);
+<span class="comment">// uart is now a Uart&lt;C, Duplex&gt;</span></code></pre></div>
+<p>The <a href="https://doc.rust-lang.org/1.85.0/core/convert/trait.AsMut.html" title="trait core::convert::AsMut"><code>AsMut&lt;Uart&lt;C, Duplex&gt;&gt;</code></a> trait is also implemented for <code>(&amp;mut Uart&lt;C, RxDuplex&gt;, &amp;mut Uart&lt;C, TxDuplex&gt;)</code>. This is useful if you need an <code>&amp;mut Uart&lt;C, Duplex&gt;</code> but you only have a pair of <code>&amp;mut Uart&lt;C, RxDuplex&gt;</code> and
+<code>&amp;mut Uart&lt;C, TxDuplex&gt;</code>. This can be leveraged to use the <a href="struct.Uart.html#method.reconfigure" title="method atsamd_hal::sercom::uart::Uart::reconfigure"><code>reconfigure</code></a>
+method when all you have is a pair of mutable references to the <a href="enum.RxDuplex.html" title="enum atsamd_hal::sercom::uart::RxDuplex"><code>RxDuplex</code></a>
+and <a href="enum.TxDuplex.html" title="enum atsamd_hal::sercom::uart::TxDuplex"><code>TxDuplex</code></a> halves.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::sercom::uart::Uart;
+
+<span class="comment">// Assume rx is a Uart&lt;C, RxDuplex&gt; and tx is a Uart&lt;C, TxDuplex&gt;
+
+// Reconfigure peripheral from mutable references to RxDuplex
+// and TxDuplex halves
+</span>(<span class="kw-2">&amp;mut </span>rx, <span class="kw-2">&amp;mut </span>tx).as_mut().reconfigure(|c| c.set_run_in_standby(<span class="bool-val">false</span>));</code></pre></div>
+<h2 id="reading-the-current-configuration-1"><a class="doc-anchor" href="#reading-the-current-configuration-1">§</a>Reading the current configuration</h2>
+<p>The <code>AsRef&lt;Config&lt;P, C&gt;&gt;</code> trait is implemented for <code>Uart&lt;Config&lt;P, C&gt;, D&gt;</code>.
+This means you can use the <code>get_</code> methods implemented for <code>Config</code>, since
+they take an <code>&amp;self</code> argument.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// Assume uart is a Uart&lt;C, D&gt;
+</span><span class="kw">let </span>(baud, baud_mode) = uart.as_ref().get_baud();</code></pre></div>
+<h2 id="disabling-and-reconfiguring"><a class="doc-anchor" href="#disabling-and-reconfiguring">§</a>Disabling and reconfiguring</h2>
+<p>Some methods, such as <a href="struct.Uart.html#method.disable" title="method atsamd_hal::sercom::uart::Uart::disable"><code>disable</code></a> and <a href="struct.Uart.html#method.reconfigure" title="method atsamd_hal::sercom::uart::Uart::reconfigure"><code>reconfigure</code></a>, need to operate on
+all parts of a UART at once. In practice, this means that these methods
+operate on the type that was returned by <a href="struct.Config.html#method.enable" title="method atsamd_hal::sercom::uart::Config::enable"><code>enable</code></a>. This can be <code>Uart&lt;C, Rx&gt;</code>, <code>Uart&lt;C, Tx&gt;</code>, or <code>Uart&lt;C, Duplex&gt;</code>, depending on how the
+peripheral was configured.</p>
+<p>The <a href="struct.Uart.html#method.reconfigure" title="method atsamd_hal::sercom::uart::Uart::reconfigure"><code>reconfigure</code></a> method gives out an <code>&amp;mut Config</code> reference, which can
+then use the <code>set_*</code> methods.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::sercom::uart::Uart;
+<span class="kw">use </span>atsamd_hal::time::<span class="kw-2">*</span>;
+
+<span class="comment">// Assume config is a valid Duplex UART Config struct
+</span><span class="kw">let </span>(rx, tx)= config.enable().split();
+
+<span class="comment">// Send/receive data with tx/rx halves...
+
+// If the UART peripheral is configured in Duplex mode,
+// the two constituting halves need to be joined back into
+// a Uart&lt;C, Duplex&gt; before calling disable()
+</span><span class="kw">let </span>uart = Uart::join(rx, tx);
+
+<span class="comment">// Reconfigure UART peripheral
+</span>uart.reconfigure(|c| c.set_run_in_standby(<span class="bool-val">false</span>));
+
+<span class="comment">// Disable UART peripheral
+</span><span class="kw">let </span>config = uart.disable();</code></pre></div>
+<h2 id="non-supported-advanced-features"><a class="doc-anchor" href="#non-supported-advanced-features">§</a>Non-supported advanced features</h2>
+<ul>
+<li>Synchronous mode (USART) is not supported</li>
+<li>LIN mode is not supported (SAMx5x)</li>
+<li>32-bit extension mode is not supported (SAMx5x). If you need to transfer
+slices, consider using the DMA methods instead. The <span class="stab
+portability" title="Available on crate feature `dma`
+only"><code>dma</code></span> Cargo feature must be enabled.</li>
+</ul>
+<h2 id="using-uart-with-dma-dma"><a class="doc-anchor" href="#using-uart-with-dma-dma">§</a>Using UART with DMA <span class="stab portability" title="Available on crate feature `dma` only"><code>dma</code></span></h2>
+<p>This HAL includes support for DMA-enabled UART transfers. Use
+<a href="struct.Uart.html#method.with_rx_channel" title="method atsamd_hal::sercom::uart::Uart::with_rx_channel"><code>Uart::with_rx_channel</code></a> and <a href="struct.Uart.html#method.with_tx_channel" title="method atsamd_hal::sercom::uart::Uart::with_tx_channel"><code>Uart::with_tx_channel</code></a> to attach DMA
+channels to the <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> struct. A DMA-enabled <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> implements the
+blocking <a href="../../../embedded_io/trait.Write.html" title="trait embedded_io::Write"><code>embedded_io::Write</code></a> and/or <a href="../../../embedded_io/trait.Read.html" title="trait embedded_io::Read"><code>embedded_io::Read</code></a> traits, which
+can be used to perform UART read/writes which are fast, continuous and low
+jitter, even if they are preemped by a higher priority interrupt.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::dmac::channel::{AnyChannel, Ready};
+<span class="kw">use </span>atsand_hal::sercom::Uart::{I2c, ValidConfig, Error, TxDuplex};
+<span class="kw">use </span>atsamd_hal::embedded_io::Write;
+<span class="kw">fn </span>uart_send_with_dma&lt;A: ValidConfig, C: AnyChannel&lt;Status = Ready&gt;&gt;(uart: Uart&lt;A, TxDuplex&gt;, channel: C, bytes: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt;{
+    <span class="comment">// Attach a DMA channel
+    </span><span class="kw">let </span>uart = uart.with_tx_channel(channel);
+    uart.write(bytes)<span class="question-mark">?</span>;
+}</code></pre></div>
+<h3 id="non-blocking-dma-transfers"><a class="doc-anchor" href="#non-blocking-dma-transfers">§</a>Non-blocking DMA transfers</h3>
+<p>Non-blocking DMA transfers are also supported.</p>
+<p>The provided <a href="Self::send_with_dma"><code>send_with_dma</code></a> and
+<a href="Self::receive_with_dma"><code>receive_with_dma</code></a> build and begin a
+<a href="../../dmac/transfer/struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer"><code>dmac::Transfer</code></a>, thus starting the UART
+in a non-blocking way. Note that these methods require <code>'static</code> buffers in
+order to remain memory-safe.</p>
+<p>Optionally, interrupts can be enabled on the provided
+<a href="../../dmac/channel/struct.Channel.html" title="struct atsamd_hal::dmac::channel::Channel"><code>Channel</code></a>. Please refer to the <a href="../../dmac/index.html" title="mod atsamd_hal::dmac"><code>dmac</code></a> module-level
+documentation for more information.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// Assume channel0 and channel1 are configured `dmac::Channel`s,
+// rx is a Uart&lt;C, RxDuplex&gt;, and tx is a Uart&lt;C, TxDuplex&gt;.
+
+</span><span class="doccomment">/// Create data to send
+</span><span class="kw">let </span>tx_buffer: [u8; <span class="number">50</span>] = [<span class="number">0xff</span>; <span class="number">50</span>];
+<span class="kw">let </span>rx_buffer: [u8; <span class="number">100</span>] = [<span class="number">0xab</span>; <span class="number">100</span>];
+
+<span class="comment">// Launch transmit transfer
+</span><span class="kw">let </span>tx_dma = tx.send_with_dma(<span class="kw-2">&amp;mut </span>tx_buffer, channel0, |<span class="kw">_</span>| {});
+
+<span class="comment">// Launch receive transfer
+</span><span class="kw">let </span>rx_dma = rx.receive_with_dma(<span class="kw-2">&amp;mut </span>rx_buffer, channel1, |<span class="kw">_</span>| {});
+
+<span class="comment">// Wait for transfers to complete and reclaim resources
+</span><span class="kw">let </span>(chan0, tx_buffer, tx) = tx_dma.wait();
+<span class="kw">let </span>(chan1, rx, rx_buffer) = rx_dma.wait();</code></pre></div>
+<h2 id="async-operation-async"><a class="doc-anchor" href="#async-operation-async">§</a><code>async</code> operation <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span></h2>
+<p>A <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> can be used for <code>async</code> operations. Configuring a <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> in
+async mode is relatively simple:</p>
+<ul>
+<li>Bind the corresponding <code>SERCOM</code> interrupt source to the UART
+<a href="struct.InterruptHandler.html" title="struct atsamd_hal::sercom::uart::InterruptHandler"><code>InterruptHandler</code></a> (refer to the module-level <a href="../../async_hal/index.html" title="mod atsamd_hal::async_hal"><code>async_hal</code></a>
+documentation for more information).</li>
+<li>Turn a previously configured <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> into a <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a> by calling
+<a href="struct.Uart.html#method.into_future" title="method atsamd_hal::sercom::uart::Uart::into_future"><code>Uart::into_future</code></a></li>
+<li>Optionally, add DMA channels to RX, TX or both using
+<a href="struct.UartFuture.html#method.with_rx_dma_channel" title="method atsamd_hal::sercom::uart::UartFuture::with_rx_dma_channel"><code>UartFuture::with_rx_dma_channel</code></a> and
+<a href="struct.UartFuture.html#method.with_tx_dma_channel" title="method atsamd_hal::sercom::uart::UartFuture::with_tx_dma_channel"><code>UartFuture::with_tx_dma_channel</code></a>. The API is exactly the same whether
+DMA channels are used or not.</li>
+<li>Use the provided async methods for reading or writing to the UART
+peripheral.</li>
+</ul>
+<p><code>UartFuture</code> implements <code>AsRef&lt;Uart&gt;</code> and <code>AsMut&lt;Uart&gt;</code> so
+that it can be reconfigured using the regular <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> methods. It also
+exposes a <a href="struct.UartFuture.html#method.split" title="method atsamd_hal::sercom::uart::UartFuture::split"><code>split</code></a> method to split it into its RX and TX
+parts.</p>
+<h3 id="considerations-when-using-async-uart-with-dma-span-classstab"><a class="doc-anchor" href="#considerations-when-using-async-uart-with-dma-span-classstab">§</a>Considerations when using <code>async</code> <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> with DMA &lt;span class=“stab</h3>
+<p>portability“ title=“Available on crate feature <code>async</code>
+only”&gt;<code>async</code></span> <span class="stab portability"
+title="Available on crate feature `dma` only"><code>dma</code></span></p>
+<ul>
+<li>An <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> struct must be turned into an <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a> by calling
+<a href="struct.Uart.html#method.into_future" title="method atsamd_hal::sercom::uart::Uart::into_future"><code>Uart::into_future</code></a> before calling <code>with_dma_channel</code>. The DMA channel
+itself must also be configured in async mode by using
+<a href="../../dmac/dma_controller/struct.DmaController.html#method.into_future" title="method atsamd_hal::dmac::dma_controller::DmaController::into_future"><code>DmaController::into_future</code></a>.
+If a DMA channel is added to the <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a> struct before it is turned into
+an <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a>, it will not be able to use DMA in async mode.</li>
+</ul>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="comment">// This will work
+</span><span class="kw">let </span>uart = uart.into_future().with_dma_channels(rx_channel, tx_channel);
+
+<span class="comment">// This won't
+</span><span class="kw">let </span>uart = uart.with_dma_channels(rx_channel, tx_channel).into_future();</code></pre></div>
+<h4 id="safety-considerations"><a class="doc-anchor" href="#safety-considerations">§</a>Safety considerations</h4>
+<p>In <code>async</code> mode, an SPI+DMA transfer does not require <code>'static</code> source and
+destination buffers. This, in theory, makes its use <code>unsafe</code>. However it is
+marked as safe for better ergonomics.</p>
+<p>This means that, as an user, you <strong>must</strong> ensure that the <a href="https://doc.rust-lang.org/1.85.0/core/future/future/trait.Future.html" title="trait core::future::future::Future"><code>Future</code></a>s
+returned by the <a href="struct.UartFuture.html#method.read" title="method atsamd_hal::sercom::uart::UartFuture::read"><code>read</code></a> and <a href="struct.UartFuture.html#method.write" title="method atsamd_hal::sercom::uart::UartFuture::write"><code>write</code></a>
+methods may never be forgotten through <a href="https://doc.rust-lang.org/1.85.0/core/mem/fn.forget.html" title="fn core::mem::forget"><code>forget</code></a> or by wrapping them with a
+<a href="https://doc.rust-lang.org/1.85.0/core/mem/manually_drop/struct.ManuallyDrop.html" title="struct core::mem::manually_drop::ManuallyDrop"><code>ManuallyDrop</code></a>.</p>
+<p>The returned futures implement <a href="https://doc.rust-lang.org/1.85.0/core/ops/drop/trait.Drop.html" title="trait core::ops::drop::Drop"><code>Drop</code></a> and will automatically stop any
+ongoing transfers; this guarantees that the memory occupied by the
+now-dropped buffers may not be corrupted by running transfers.</p>
+<p>This means that using functions like <a href="../../../futures_util/macro.select_biased.html" title="macro futures_util::select_biased"><code>futures::select_biased</code></a> to implement
+timeouts is safe; transfers will be safely cancelled if the timeout expires.</p>
+<p>This also means that should you <a href="https://doc.rust-lang.org/1.85.0/core/mem/fn.forget.html" title="fn core::mem::forget"><code>forget</code></a> this <a href="https://doc.rust-lang.org/1.85.0/core/future/future/trait.Future.html" title="trait core::future::future::Future"><code>Future</code></a> after its
+first <a href="https://doc.rust-lang.org/1.85.0/core/future/future/trait.Future.html#tymethod.poll" title="method core::future::future::Future::poll"><code>poll</code></a> call, the transfer will keep running, ruining the
+now-reclaimed memory, as well as the rest of your day.</p>
+<ul>
+<li><code>await</code>ing is fine: the <a href="https://doc.rust-lang.org/1.85.0/core/future/future/trait.Future.html" title="trait core::future::future::Future"><code>Future</code></a> will run to completion.</li>
+<li>Dropping an incomplete transfer is also fine. Dropping can happen, for
+example, if the transfer doesn’t complete before a timeout expires.</li>
+<li>Dropping an incomplete transfer <em>without running its destructor</em> is
+<strong>unsound</strong> and will trigger undefined behavior.</li>
+</ul>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">async fn </span>always_ready() {}
+
+<span class="kw">let </span><span class="kw-2">mut </span>buffer = [<span class="number">0x00</span>; <span class="number">10</span>];
+
+<span class="comment">// This is completely safe
+</span>uart.read(<span class="kw-2">&amp;mut </span>buffer).<span class="kw">await</span><span class="question-mark">?</span>;
+
+<span class="comment">// This is also safe: we launch a transfer, which is then immediately cancelled
+</span><span class="macro">futures::select_biased!</span> {
+    <span class="kw">_ </span>= uart.read(<span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>,
+    <span class="kw">_ </span>= always_ready(),
+}
+
+<span class="comment">// This, while contrived, is also safe.
+</span>{
+    <span class="kw">use </span>core::future::Future;
+
+    <span class="kw">let </span>future = uart.read(<span class="kw-2">&amp;mut </span>buffer);
+    <span class="macro">futures::pin_mut!</span>(future);
+    <span class="comment">// Assume ctx is a `core::task::Context` given out by the executor.
+    // The future is polled, therefore starting the transfer
+    </span>future.as_mut().poll(ctx);
+
+    <span class="comment">// Future is dropped here - transfer is cancelled.
+</span>}
+
+<span class="comment">// DANGER: This is an example of undefined behavior
+</span>{
+    <span class="kw">use </span>core::future::Future;
+    <span class="kw">use </span>core::ops::DerefMut;
+
+    <span class="kw">let </span>future = core::mem::ManuallyDrop::new(uart.read(<span class="kw-2">&amp;mut </span>buffer));
+    <span class="macro">futures::pin_mut!</span>(future);
+    <span class="comment">// To actually make this example compile, we would need to wrap the returned
+    // future from `i2c.read()` in a newtype that implements Future, because we
+    // can't actually call as_mut() without being able to name the type we want
+    // to deref to.
+    </span><span class="kw">let </span>future_ref: <span class="kw-2">&amp;mut </span>SomeNewTypeFuture = <span class="kw-2">&amp;mut </span>future.as_mut();
+    future.as_mut().poll(ctx);
+
+    <span class="comment">// Future is NOT dropped here - transfer is not cancelled, resulting un UB.
+</span>}</code></pre></div>
+<p>As you can see, unsoundness is relatively hard to come by - however, caution
+should still be exercised.</p>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="impl_ehal/index.html" title="mod atsamd_hal::sercom::uart::impl_ehal">impl_<wbr>ehal</a></div><div class="desc docblock-short"><code>embedded-hal</code> trait implementations for <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a>s</div></li></ul><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config">Config</a></div><div class="desc docblock-short">A configurable, disabled UART peripheral</div></li><li><div class="item-name"><a class="struct" href="struct.Flags.html" title="struct atsamd_hal::sercom::uart::Flags">Flags</a></div><div class="desc docblock-short">Interrupt bit flags for UART Rx transactions</div></li><li><div class="item-name"><a class="struct" href="struct.InterruptHandler.html" title="struct atsamd_hal::sercom::uart::InterruptHandler">Interrupt<wbr>Handler</a></div><div class="desc docblock-short">Interrupt handler for async UART operarions</div></li><li><div class="item-name"><a class="struct" href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads">Pads</a></div><div class="desc docblock-short">Container for a set of SERCOM <a href="../pad/type.Pad.html" title="type atsamd_hal::sercom::pad::Pad"><code>Pad</code></a>s</div></li><li><div class="item-name"><a class="struct" href="struct.Status.html" title="struct atsamd_hal::sercom::uart::Status">Status</a></div><div class="desc docblock-short">Status flags for UART Rx transactions</div></li><li><div class="item-name"><a class="struct" href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart">Uart</a></div><div class="desc docblock-short">Abstraction over a UART peripheral, allowing to perform UART transactions.
+The second type parameter, <code>D</code>, denotes what the struct’s <a href="trait.Capability.html" title="trait atsamd_hal::sercom::uart::Capability"><code>Capability</code></a> is.</div></li><li><div class="item-name"><a class="struct" href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture">Uart<wbr>Future</a></div><div class="desc docblock-short"><code>async</code> version of a <a href="struct.Uart.html" title="struct atsamd_hal::sercom::uart::Uart"><code>Uart</code></a>.</div></li></ul><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.BaudMode.html" title="enum atsamd_hal::sercom::uart::BaudMode">Baud<wbr>Mode</a></div><div class="desc docblock-short">Baudrate calculation in asynchronous mode</div></li><li><div class="item-name"><a class="enum" href="enum.BitOrder.html" title="enum atsamd_hal::sercom::uart::BitOrder">BitOrder</a></div><div class="desc docblock-short">Bit order of a UART frame</div></li><li><div class="item-name"><a class="enum" href="enum.CharSizeEnum.html" title="enum atsamd_hal::sercom::uart::CharSizeEnum">Char<wbr>Size<wbr>Enum</a></div><div class="desc docblock-short"><code>enum</code> version of <a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a></div></li><li><div class="item-name"><a class="enum" href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex">Duplex</a></div><div class="desc docblock-short">Marker type representing a UART that has both transmit and receive
+capability</div></li><li><div class="item-name"><a class="enum" href="enum.DynCharSize.html" title="enum atsamd_hal::sercom::uart::DynCharSize">DynChar<wbr>Size</a></div><div class="desc docblock-short">Dynamic <a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a> that can be changed on the fly</div></li><li><div class="item-name"><a class="enum" href="enum.EightBit.html" title="enum atsamd_hal::sercom::uart::EightBit">Eight<wbr>Bit</a></div><div class="desc docblock-short"><a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a> variant for 8-bit transactions</div></li><li><div class="item-name"><a class="enum" href="enum.Error.html" title="enum atsamd_hal::sercom::uart::Error">Error</a></div><div class="desc docblock-short">Errors available for UART transactions</div></li><li><div class="item-name"><a class="enum" href="enum.FiveBit.html" title="enum atsamd_hal::sercom::uart::FiveBit">FiveBit</a></div><div class="desc docblock-short"><a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a> variant for 5-bit transactions</div></li><li><div class="item-name"><a class="enum" href="enum.NineBit.html" title="enum atsamd_hal::sercom::uart::NineBit">NineBit</a></div><div class="desc docblock-short"><a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a> variant for 9-bit transactions</div></li><li><div class="item-name"><a class="enum" href="enum.Oversampling.html" title="enum atsamd_hal::sercom::uart::Oversampling">Oversampling</a></div><div class="desc docblock-short">Baudrate oversampling values</div></li><li><div class="item-name"><a class="enum" href="enum.Parity.html" title="enum atsamd_hal::sercom::uart::Parity">Parity</a></div><div class="desc docblock-short">Parity setting of a UART frame</div></li><li><div class="item-name"><a class="enum" href="enum.Rx.html" title="enum atsamd_hal::sercom::uart::Rx">Rx</a></div><div class="desc docblock-short">Marker type representing a UART that can only receive</div></li><li><div class="item-name"><a class="enum" href="enum.RxDuplex.html" title="enum atsamd_hal::sercom::uart::RxDuplex">RxDuplex</a></div><div class="desc docblock-short">Marker type representing the Rx half of a  <a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a> UART</div></li><li><div class="item-name"><a class="enum" href="enum.SevenBit.html" title="enum atsamd_hal::sercom::uart::SevenBit">Seven<wbr>Bit</a></div><div class="desc docblock-short"><a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a> variant for 7-bit transactions</div></li><li><div class="item-name"><a class="enum" href="enum.SixBit.html" title="enum atsamd_hal::sercom::uart::SixBit">SixBit</a></div><div class="desc docblock-short"><a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a> variant for 6-bit transactions</div></li><li><div class="item-name"><a class="enum" href="enum.StopBits.html" title="enum atsamd_hal::sercom::uart::StopBits">Stop<wbr>Bits</a></div><div class="desc docblock-short">Number of stop bits in a UART frame</div></li><li><div class="item-name"><a class="enum" href="enum.Tx.html" title="enum atsamd_hal::sercom::uart::Tx">Tx</a></div><div class="desc docblock-short">Marker type representing a UART that can only transmit</div></li><li><div class="item-name"><a class="enum" href="enum.TxDuplex.html" title="enum atsamd_hal::sercom::uart::TxDuplex">TxDuplex</a></div><div class="desc docblock-short">Marker type representing a the Tx half of a <a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a> UART</div></li></ul><h2 id="constants" class="section-header">Constants<a href="#constants" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="constant" href="constant.DUPLEX_FLAG_MASK.html" title="constant atsamd_hal::sercom::uart::DUPLEX_FLAG_MASK">DUPLEX_<wbr>FLAG_<wbr>MASK</a></div><div class="desc docblock-short">Interrupt flags available for Duplex transactions</div></li><li><div class="item-name"><a class="constant" href="constant.DUPLEX_STATUS_MASK.html" title="constant atsamd_hal::sercom::uart::DUPLEX_STATUS_MASK">DUPLEX_<wbr>STATUS_<wbr>MASK</a></div><div class="desc docblock-short">Status flags available for Duplex transactions</div></li><li><div class="item-name"><a class="constant" href="constant.RX_FLAG_MASK.html" title="constant atsamd_hal::sercom::uart::RX_FLAG_MASK">RX_<wbr>FLAG_<wbr>MASK</a></div><div class="desc docblock-short">Interrupt flags available for RX transactions</div></li><li><div class="item-name"><a class="constant" href="constant.RX_STATUS_MASK.html" title="constant atsamd_hal::sercom::uart::RX_STATUS_MASK">RX_<wbr>STATUS_<wbr>MASK</a></div><div class="desc docblock-short">Status flags available for RX transactions</div></li><li><div class="item-name"><a class="constant" href="constant.TX_FLAG_MASK.html" title="constant atsamd_hal::sercom::uart::TX_FLAG_MASK">TX_<wbr>FLAG_<wbr>MASK</a></div><div class="desc docblock-short">Interrupt flags available for TX transactions</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.AnyConfig.html" title="trait atsamd_hal::sercom::uart::AnyConfig">AnyConfig</a></div><div class="desc docblock-short">Type class for all possible <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> types</div></li><li><div class="item-name"><a class="trait" href="trait.Capability.html" title="trait atsamd_hal::sercom::uart::Capability">Capability</a></div><div class="desc docblock-short">Type-level <code>enum</code> representing the capabilities of a UART peripheral</div></li><li><div class="item-name"><a class="trait" href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize">Char<wbr>Size</a></div><div class="desc docblock-short">Type-level <code>enum</code> representing the UART character size</div></li><li><div class="item-name"><a class="trait" href="trait.FixedCharSize.html" title="trait atsamd_hal::sercom::uart::FixedCharSize">Fixed<wbr>Char<wbr>Size</a></div><div class="desc docblock-short">Type-level <code>enum</code> indicating a <a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a> that is not dynamic</div></li><li><div class="item-name"><a class="trait" href="trait.PadSet.html" title="trait atsamd_hal::sercom::uart::PadSet">PadSet</a></div><div class="desc docblock-short">Type-level function to recover the <a href="../pad/trait.OptionalPad.html" title="trait atsamd_hal::sercom::pad::OptionalPad"><code>OptionalPad</code></a> types from a generic set
+of <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a></div></li><li><div class="item-name"><a class="trait" href="trait.Receive.html" title="trait atsamd_hal::sercom::uart::Receive">Receive</a></div><div class="desc docblock-short">Type-level enum representing a UART that can receive</div></li><li><div class="item-name"><a class="trait" href="trait.RxpoTxpo.html" title="trait atsamd_hal::sercom::uart::RxpoTxpo">Rxpo<wbr>Txpo</a></div><div class="desc docblock-short">Configure the <code>RXPO</code> and <code>TXPO</code> fields based on a set of <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a></div></li><li><div class="item-name"><a class="trait" href="trait.Simplex.html" title="trait atsamd_hal::sercom::uart::Simplex">Simplex</a></div><div class="desc docblock-short">Type-level enum representing a UART that has transmit or receive
+capability, but not both</div></li><li><div class="item-name"><a class="trait" href="trait.SingleOwner.html" title="trait atsamd_hal::sercom::uart::SingleOwner">Single<wbr>Owner</a></div><div class="desc docblock-short">Type-level enum representing a UART that is <em>not</em> half of a split
+<a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a></div></li><li><div class="item-name"><a class="trait" href="trait.Transmit.html" title="trait atsamd_hal::sercom::uart::Transmit">Transmit</a></div><div class="desc docblock-short">Type-level enum representing a UART that can transmit</div></li><li><div class="item-name"><a class="trait" href="trait.ValidConfig.html" title="trait atsamd_hal::sercom::uart::ValidConfig">Valid<wbr>Config</a></div><div class="desc docblock-short">Marker trait for valid UART <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a>urations</div></li><li><div class="item-name"><a class="trait" href="trait.ValidPads.html" title="trait atsamd_hal::sercom::uart::ValidPads">Valid<wbr>Pads</a></div><div class="desc docblock-short">Marker trait for valid sets of <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a></div></li></ul><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.Clock.html" title="type atsamd_hal::sercom::uart::Clock">Clock</a></div><div class="desc docblock-short">Clock type needed to create a new <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a>. <a href="../../../atsamd51n/struct.Mclk.html" title="struct atsamd51n::Mclk"><code>Mclk</code></a> for
+thumbv7em targets.</div></li><li><div class="item-name"><a class="type" href="type.ConfigSercom.html" title="type atsamd_hal::sercom::uart::ConfigSercom">Config<wbr>Sercom</a></div><div class="desc docblock-short">Type alias to recover the specific <a href="../trait.Sercom.html" title="trait atsamd_hal::sercom::Sercom"><code>Sercom</code></a> type from an implementation of
+<a href="trait.AnyConfig.html" title="trait atsamd_hal::sercom::uart::AnyConfig"><code>AnyConfig</code></a></div></li><li><div class="item-name"><a class="type" href="type.DataReg.html" title="type atsamd_hal::sercom::uart::DataReg">DataReg</a></div><div class="desc docblock-short">Size of the SERCOM’s <code>DATA</code> register</div></li><li><div class="item-name"><a class="type" href="type.PadsFromIds.html" title="type atsamd_hal::sercom::uart::PadsFromIds">Pads<wbr>From<wbr>Ids</a></div><div class="desc docblock-short">Define a set of <a href="struct.Pads.html" title="struct atsamd_hal::sercom::uart::Pads"><code>Pads</code></a> using <a href="../../gpio/pin/trait.PinId.html" title="trait atsamd_hal::gpio::pin::PinId"><code>PinId</code></a>s instead of <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>s</div></li><li><div class="item-name"><a class="type" href="type.SpecificConfig.html" title="type atsamd_hal::sercom::uart::SpecificConfig">Specific<wbr>Config</a></div><div class="desc docblock-short">Type alias to recover the specific <a href="struct.Config.html" title="struct atsamd_hal::sercom::uart::Config"><code>Config</code></a> type from an implementation of
+<a href="trait.AnyConfig.html" title="trait atsamd_hal::sercom::uart::AnyConfig"><code>AnyConfig</code></a></div></li><li><div class="item-name"><a class="type" href="type.UartFutureDuplex.html" title="type atsamd_hal::sercom::uart::UartFutureDuplex">Uart<wbr>Future<wbr>Duplex</a></div><div class="desc docblock-short">Convenience type for a <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a> with RX and TX capabilities</div></li><li><div class="item-name"><a class="type" href="type.UartFutureDuplexDma.html" title="type atsamd_hal::sercom::uart::UartFutureDuplexDma">Uart<wbr>Future<wbr>Duplex<wbr>Dma</a></div><div class="desc docblock-short">Convenience type for a <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a> with RX and TX capabilities in DMA
+mode.</div></li><li><div class="item-name"><a class="type" href="type.UartFutureRx.html" title="type atsamd_hal::sercom::uart::UartFutureRx">Uart<wbr>Future<wbr>Rx</a></div><div class="desc docblock-short">Convenience type for a RX-only <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.UartFutureRxDma.html" title="type atsamd_hal::sercom::uart::UartFutureRxDma">Uart<wbr>Future<wbr>RxDma</a></div><div class="desc docblock-short">Convenience type for a RX-only <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a> in DMA mode.</div></li><li><div class="item-name"><a class="type" href="type.UartFutureRxDuplex.html" title="type atsamd_hal::sercom::uart::UartFutureRxDuplex">Uart<wbr>Future<wbr>RxDuplex</a></div><div class="desc docblock-short">Convenience type for the RX half of a <a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a> <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.UartFutureRxDuplexDma.html" title="type atsamd_hal::sercom::uart::UartFutureRxDuplexDma">Uart<wbr>Future<wbr>RxDuplex<wbr>Dma</a></div><div class="desc docblock-short">Convenience type for the RX half of a <a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a> <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a> in DMA
+mode.</div></li><li><div class="item-name"><a class="type" href="type.UartFutureTx.html" title="type atsamd_hal::sercom::uart::UartFutureTx">Uart<wbr>Future<wbr>Tx</a></div><div class="desc docblock-short">Convenience type for a TX-only <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.UartFutureTxDma.html" title="type atsamd_hal::sercom::uart::UartFutureTxDma">Uart<wbr>Future<wbr>TxDma</a></div><div class="desc docblock-short">Convenience type for a TX-only <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a> in DMA mode.</div></li><li><div class="item-name"><a class="type" href="type.UartFutureTxDuplex.html" title="type atsamd_hal::sercom::uart::UartFutureTxDuplex">Uart<wbr>Future<wbr>TxDuplex</a></div><div class="desc docblock-short">Convenience type for the TX half of a <a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a> <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a>.</div></li><li><div class="item-name"><a class="type" href="type.UartFutureTxDuplexDma.html" title="type atsamd_hal::sercom::uart::UartFutureTxDuplexDma">Uart<wbr>Future<wbr>TxDuplex<wbr>Dma</a></div><div class="desc docblock-short">Convenience type for the TX half of a <a href="enum.Duplex.html" title="enum atsamd_hal::sercom::uart::Duplex"><code>Duplex</code></a> <a href="struct.UartFuture.html" title="struct atsamd_hal::sercom::uart::UartFuture"><code>UartFuture</code></a> in DMA
+mode.</div></li><li><div class="item-name"><a class="type" href="type.Word.html" title="type atsamd_hal::sercom::uart::Word">Word</a></div><div class="desc docblock-short">Type alias to recover the <code>Word</code> type from an implementation of <a href="trait.CharSize.html" title="trait atsamd_hal::sercom::uart::CharSize"><code>CharSize</code></a></div></li></ul></section></div></main></body></html>

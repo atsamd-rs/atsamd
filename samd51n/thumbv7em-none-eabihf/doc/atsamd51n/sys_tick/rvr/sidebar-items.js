@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["RvrSpec"],"type":["R","ReloadR","ReloadW","W"]};

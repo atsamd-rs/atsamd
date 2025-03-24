@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CalibSpec"],"type":["BiasCalR","BiasCalW","LinearityCalR","LinearityCalW","R","W"]};

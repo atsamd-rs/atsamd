@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PendchSpec"],"type":["Pendch0R","Pendch1R","Pendch2R","Pendch3R","Pendch4R","Pendch5R","R"]};

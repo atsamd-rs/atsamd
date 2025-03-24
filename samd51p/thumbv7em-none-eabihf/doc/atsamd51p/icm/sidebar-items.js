@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["cfg","ctrl","dscr","hash","idr","ier","imr","isr","sr","uasr","uihval"],"struct":["RegisterBlock"],"type":["Cfg","Ctrl","Dscr","Hash","Idr","Ier","Imr","Isr","Sr","Uasr","Uihval"]};

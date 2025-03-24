@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Xosc32kSpec"],"type":["AampenR","AampenW","En1kR","En1kW","En32kR","En32kW","EnableR","EnableW","OndemandR","OndemandW","R","RunstdbyR","RunstdbyW","StartupR","StartupW","W","WrtlockR","WrtlockW","XtalenR","XtalenW"]};

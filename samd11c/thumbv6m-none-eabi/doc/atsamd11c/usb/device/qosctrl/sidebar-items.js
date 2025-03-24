@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["QosctrlSpec"],"type":["CqosR","CqosW","DqosR","DqosW","R","W"]};

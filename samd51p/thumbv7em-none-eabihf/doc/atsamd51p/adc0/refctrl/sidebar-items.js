@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Refselselect"],"struct":["RefctrlSpec"],"type":["R","RefcompR","RefcompW","RefselR","RefselW","W"]};

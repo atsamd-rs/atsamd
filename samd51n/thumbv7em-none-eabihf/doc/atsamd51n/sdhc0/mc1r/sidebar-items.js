@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Cmdtypselect"],"struct":["Mc1rSpec"],"type":["BootaR","BootaW","CmdtypR","CmdtypW","DdrR","DdrW","FcdR","FcdW","OpdR","OpdW","R","RstnR","RstnW","W"]};

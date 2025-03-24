@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["TampidSpec"],"type":["R","TampevtR","TampevtW","Tampid0R","Tampid0W","Tampid1R","Tampid1W","Tampid2R","Tampid2W","Tampid3R","Tampid3W","Tampid4R","Tampid4W","W"]};

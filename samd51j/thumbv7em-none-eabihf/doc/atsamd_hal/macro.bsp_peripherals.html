@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Helper macro to give meaningful names to peripherals"><title>bsp_peripherals in atsamd_hal - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../static.files/storage-59e33391.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">bsp_<wbr>peripherals</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#helper-macro-to-give-meaningful-names-to-peripherals" title="Helper macro to give meaningful names to peripherals">Helper macro to give meaningful names to peripherals</a><ul><li><a href="#calling-the-macro" title="Calling the macro">Calling the macro</a></li><li><a href="#attributes-and-documentation" title="Attributes and documentation">Attributes and documentation</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate atsamd_<wbr>hal</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="index.html">atsamd_hal</a></span><h1>Macro <span class="macro">bsp_peripherals</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/atsamd_hal/bsp_peripherals_macro.rs.html#86-118">Source</a> </span></div><pre class="rust item-decl"><code>macro_rules! bsp_peripherals {
+    (
+        $(
+            $( #[$peripheral_cfg:meta] )*
+            $PERIPHERAL:ident {
+                $(
+                    $( #[$alias_cfg:meta] )*
+                    $Alias:ident $(,)?
+                )+
+            } $(,)?
+        )+
+    ) =&gt; { ... };
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="helper-macro-to-give-meaningful-names-to-peripherals"><a class="doc-anchor" href="#helper-macro-to-give-meaningful-names-to-peripherals">§</a>Helper macro to give meaningful names to peripherals</h2>
+<p>The <a href="../atsamd51j/struct.Peripherals.html" title="struct atsamd51j::Peripherals"><code>pac::Peripherals</code></a> struct refers to each
+peripheral by its datasheet name. However, in the context of a BSP,
+peripherals can often be given more meaningful names. This macro gives BSP
+authors a convenient way to provide custom names for each peripheral.</p>
+<h3 id="calling-the-macro"><a class="doc-anchor" href="#calling-the-macro">§</a>Calling the macro</h3>
+<p>The <code>bsp_peripherals!</code> macro takes a series of <code>PERIPHERAL</code> blocks. Each
+block starts with a peripheral name from the <code>pac::Peripherals</code> struct and
+is delimited by curly brackets. The brackets should contain a
+comma-separated list of alternate names for the peripheral, in <code>PascalCase</code>.
+The example below defines <code>Uart</code> as an alias for the <code>SERCOM2</code> peripheral
+and <code>DisplaySpi</code> as an alias for the <code>SERCOM4</code> peripheral.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">atsamd_hal::bsp_peripherals!</span>(
+    SERCOM2 { Uart }
+    SERCOM4 { DisplaySpi }
+);</code></pre></div>
+<p>The macro defines a type alias for each name within curly brackets. The
+example above would exand to</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub type </span>Uart = pac::SERCOM2;
+<span class="kw">pub type </span>DisplaySpi = pac::SERCOM4;</code></pre></div>
+<p>While these type aliases are useful, they do not completely separate the
+mapping of each peripheral from the corresponding code.</p>
+<p>In Rust, each struct field can only have one name. Fields of the
+<code>pac::Peripherals</code> struct are named according to their datasheet identifier.
+Consequently, you must access the peripheral using that name. For example,</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>peripherals = pac::Peripherals::take().unwrap();
+<span class="kw">let </span>uart = peripherals.SERCOM2;</code></pre></div>
+<p>To provide access to the same struct field using <em>different</em> names, the
+<code>bsp_peripherals!</code> macro defines another macro, <code>periph_alias!</code>. Based on
+the example above, we could use the <code>periph_alias!</code> macro to access the
+<code>SERCOM2</code> peripheral without ever referring to it directly.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>peripherals = pac::Peripherals::take().unwrap();
+<span class="kw">let </span>uart = <span class="macro">periph_alias!</span>(peripherals.uart);</code></pre></div>
+<p>Note that the <code>Uart</code> alias was translated to <code>snake_case</code> when accessing
+the <code>pac::Peripherals</code> field. The same is true for the <code>DisplaySpi</code> alias.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>peripherals = pac::Peripherals::take().unwrap();
+<span class="kw">let </span>display_spi = <span class="macro">periph_alias!</span>(peripherals.display_spi);</code></pre></div>
+<h3 id="attributes-and-documentation"><a class="doc-anchor" href="#attributes-and-documentation">§</a>Attributes and documentation</h3>
+<p>BSP authors can also add attributes to various parts of the macro
+declaration. Attributes can be added to the entire <code>PERIPHERAL</code> block. These
+attributes will be propagated to every use of the corresponding
+<code>PERIPHERAL</code>. Attributes applied to each alias, on the other hand, will only
+be propagated to items specific to that alias, like the corresponding type
+alias.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">atsamd_hal::bsp_peripherals!</span>(
+    SERCOM2 {
+        <span class="attr">#[cfg(feature = <span class="string">"uart"</span>)]
+        </span>Uart
+    }
+    <span class="attr">#[cfg(feature = <span class="string">"display"</span>)]
+    </span>SERCOM4 { DisplaySpi }
+);</code></pre></div>
+</div></details></section></div></main></body></html>

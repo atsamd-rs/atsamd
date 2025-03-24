@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Modeselect","Prescalerselect"],"struct":["CtrlSpec"],"type":["EnableR","EnableW","MatchclrR","MatchclrW","ModeR","ModeW","PrescalerR","PrescalerW","R","SwrstR","SwrstW","W"]};

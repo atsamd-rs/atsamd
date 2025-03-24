@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Cmdselect","Idxcmdselect"],"struct":["CtrlbsetSpec"],"type":["CmdR","CmdW","DirR","DirW","IdxcmdR","IdxcmdW","LupdR","LupdW","OneshotR","OneshotW","R","W"]};

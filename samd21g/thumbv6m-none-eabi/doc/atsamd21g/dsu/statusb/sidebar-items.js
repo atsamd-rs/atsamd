@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["StatusbSpec"],"type":["DbgpresR","Dccd0R","Dccd1R","HpeR","ProtR","R"]};

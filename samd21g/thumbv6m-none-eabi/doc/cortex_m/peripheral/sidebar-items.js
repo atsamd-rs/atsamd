@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["cpuid","dcb","dwt","icb","mpu","nvic","scb","syst"],"struct":["CBP","CPUID","DCB","DWT","FPB","FPU","ICB","ITM","MPU","NVIC","Peripherals","SAU","SCB","SYST","TPIU"]};

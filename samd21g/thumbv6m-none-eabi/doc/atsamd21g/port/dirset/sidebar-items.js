@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DirsetSpec"],"type":["DirsetR","DirsetW","R","W"]};

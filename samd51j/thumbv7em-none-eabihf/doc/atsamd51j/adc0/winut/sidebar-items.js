@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["WinutSpec"],"type":["R","W","WinutR","WinutW"]};

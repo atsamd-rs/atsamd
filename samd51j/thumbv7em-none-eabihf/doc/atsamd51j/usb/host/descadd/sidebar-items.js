@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DescaddSpec"],"type":["DescaddR","DescaddW","R","W"]};

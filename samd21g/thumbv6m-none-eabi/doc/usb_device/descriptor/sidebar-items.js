@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["capability_type","descriptor_type","lang_id"],"struct":["BosWriter","DescriptorWriter"]};

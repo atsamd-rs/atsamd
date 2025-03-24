@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Gainselect"],"struct":["XoscSpec"],"type":["AmpgcR","AmpgcW","EnableR","EnableW","GainR","GainW","OndemandR","OndemandW","R","RunstdbyR","RunstdbyW","StartupR","StartupW","W","XtalenR","XtalenW"]};

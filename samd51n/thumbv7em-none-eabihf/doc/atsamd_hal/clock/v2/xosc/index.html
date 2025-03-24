@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="External multipurpose crystal oscillator controller"><title>atsamd_hal::clock::v2::xosc - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module xosc</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#external-multipurpose-crystal-oscillator-controller" title="External multipurpose crystal oscillator controller">External multipurpose crystal oscillator controller</a><ul><li><a href="#overview" title="Overview">Overview</a></li><li><a href="#example" title="Example">Example</a></li></ul></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>clock::<wbr>v2</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../../../index.html">atsamd_hal</a>::<wbr><a href="../../index.html">clock</a>::<wbr><a href="../index.html">v2</a></span><h1>Module <span>xosc</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../../src/atsamd_hal/peripherals/clock/d5x/v2/xosc.rs.html#1-1024">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="external-multipurpose-crystal-oscillator-controller"><a class="doc-anchor" href="#external-multipurpose-crystal-oscillator-controller">§</a>External multipurpose crystal oscillator controller</h2><h3 id="overview"><a class="doc-anchor" href="#overview">§</a>Overview</h3>
+<p>The <code>xosc</code> module provides access to the two external crystal oscillator
+controllers (XOSCs) within the <code>OSCCTRL</code> peripheral.</p>
+<p>Each XOSC peripheral can operate in two <a href="trait.Mode.html" title="trait atsamd_hal::clock::v2::xosc::Mode"><code>Mode</code></a>s. It can accept an external
+clock or can interface with an crystal oscillator. In both cases, the clock
+must be in the 8-48 MHz range.</p>
+<p>When used with an external clock, only one GPIO <a href="../../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a> is required, but
+when used with a crystal oscillator, two GPIO <code>Pin</code>s are required. The
+<a href="type.XIn.html" title="type atsamd_hal::clock::v2::xosc::XIn"><code>XIn</code></a> <code>Pin</code> is used in both <code>Mode</code>s, while the <a href="type.XOut.html" title="type atsamd_hal::clock::v2::xosc::XOut"><code>XOut</code></a> <code>Pin</code> is only
+used in <a href="enum.CrystalMode.html" title="enum atsamd_hal::clock::v2::xosc::CrystalMode"><code>CrystalMode</code></a>.</p>
+<p>When operating in <a href="enum.CrystalMode.html" title="enum atsamd_hal::clock::v2::xosc::CrystalMode"><code>CrystalMode</code></a>, the XOSC peripheral provides several
+configuration options to increase stability or reduce power consumption of
+the crystal.</p>
+<p>The XOSC peripheral can also detect failure of the clock or crystal; and if
+failure occurs, it can automatically switch to a safe, backup clock derived
+from the <a href="../dfll/index.html" title="mod atsamd_hal::clock::v2::dfll">DFLL</a>.</p>
+<p>Creating and configuring an <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> proceeds according to the principles
+outlined in the <a href="../index.html" title="mod atsamd_hal::clock::v2"><code>clock</code> module documentation</a>. It is best shown with an
+example.</p>
+<h3 id="example"><a class="doc-anchor" href="#example">§</a>Example</h3>
+<p>Let’s start by using <a href="../fn.clock_system_at_reset.html" title="fn atsamd_hal::clock::v2::clock_system_at_reset"><code>clock_system_at_reset</code></a> to access the HAL clocking
+structs. We’ll also need access to the GPIO <a href="../../../gpio/pin/struct.Pins.html" title="struct atsamd_hal::gpio::pin::Pins"><code>Pins</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::{
+    clock::v2::{
+        clock_system_at_reset,
+        xosc::{CrystalCurrent, SafeClockDiv, StartUpDelay, Xosc},
+    },
+    gpio::Pins,
+    pac::Peripherals,
+    time::U32Ext,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>pac = Peripherals::take().unwrap();
+<span class="kw">let </span>pins = Pins::new(pac.port);
+<span class="kw">let </span>(buses, clocks, tokens) = clock_system_at_reset(
+    pac.oscctrl,
+    pac.osc32kctrl,
+    pac.gclk,
+    pac.mclk,
+    <span class="kw-2">&amp;mut </span>pac.nvmctrl,
+);</code></pre></div>
+<p>Next, we can create and configure the <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> in one long chain of methods,
+using the provided builder API. The final call to <a href="struct.Xosc.html#method.enable" title="method atsamd_hal::clock::v2::xosc::Xosc::enable"><code>Xosc::enable</code></a> yields an
+<a href="type.EnabledXosc.html" title="type atsamd_hal::clock::v2::xosc::EnabledXosc"><code>EnabledXosc</code></a> that can act as a clock <a href="../trait.Source.html" title="trait atsamd_hal::clock::v2::Source"><code>Source</code></a> for other clocks in the
+tree.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, <span class="number">20</span>.mhz())
+    .current(CrystalCurrent::Medium)
+    .loop_control(<span class="bool-val">true</span>)
+    .low_buf_gain(<span class="bool-val">true</span>)
+    .start_up_delay(StartUpDelay::Delay488us)
+    .enable();</code></pre></div>
+<p>We start by calling <a href="struct.Xosc.html#method.from_crystal" title="associated function atsamd_hal::clock::v2::xosc::Xosc::from_crystal"><code>Xosc::from_crystal</code></a>, and we provide the corresponding
+<a href="type.XIn.html" title="type atsamd_hal::clock::v2::xosc::XIn"><code>XIn</code></a> and <a href="type.XOut.html" title="type atsamd_hal::clock::v2::xosc::XOut"><code>XOut</code></a> <a href="../../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>s, as well as the nominal crystal frequency. We
+then set the <a href="enum.CrystalCurrent.html" title="enum atsamd_hal::clock::v2::xosc::CrystalCurrent"><code>CrystalCurrent</code></a> level to <code>Medium</code>. The default current level
+for a 20 MHz signal is actually <code>High</code>, but we opt for a lower current under
+the assumption that our crystal’s capacitive load is small. Next, we turn on
+automatic loop control, which should save power, but we also set
+<code>LOWBUFGAIN</code> to <code>1</code>. Counterintuitively, this actually <em>increases</em> the
+crystal amplitude, which increases power consumption, but it also improves
+stability. We then apply a 488 μs start up delay, to allow the clock to
+stabilize before it is applied to any logic. Finally, we enable the <code>Xosc</code>.</p>
+<p>Next, we wait until the <code>Xosc</code> is stable and ready to be used as a clock
+<a href="../trait.Source.html" title="trait atsamd_hal::clock::v2::Source"><code>Source</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">while </span>!xosc.is_ready() {}</code></pre></div>
+<p>Once the clock is stable, we can also enable failure detection. To do so, we
+must provide the <a href="../dfll/type.EnabledDfll.html" title="type atsamd_hal::clock::v2::dfll::EnabledDfll"><code>EnabledDfll</code></a> to act as the backup safe clock. We can
+also select a divider for the safe clock, so that it loosely matches the
+<code>Xosc</code> frequency. In thise case, we divide the 48 MHz <a href="../dfll/struct.Dfll.html" title="struct atsamd_hal::clock::v2::dfll::Dfll"><code>Dfll</code></a> down to
+24 MHz, which is the closest option to 20 MHz.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>xosc.enable_failure_detection(clocks.dfll, SafeClockDiv::Div2);</code></pre></div>
+<p>In the event of a clock failure, the <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> would be automatically
+switched to the safe clock, and <a href="../struct.Enabled.html#method.has_failed" title="method atsamd_hal::clock::v2::Enabled::has_failed"><code>EnabledXosc::has_failed</code></a> would return
+true. If the problem were later resolved, the <code>Xosc</code> could be switched back
+to the crystal with <a href="../struct.Enabled.html#method.switch_back" title="method atsamd_hal::clock::v2::Enabled::switch_back"><code>EnabledXosc::switch_back</code></a>.</p>
+<p>The complete example is provided below.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::{
+    clock::v2::{
+        clock_system_at_reset,
+        xosc::{CrystalCurrent, SafeClockDiv, StartUpDelay, Xosc},
+    },
+    gpio::Pins,
+    pac::Peripherals,
+    time::U32Ext,
+};
+<span class="kw">let </span><span class="kw-2">mut </span>pac = Peripherals::take().unwrap();
+<span class="kw">let </span>pins = Pins::new(pac.port);
+<span class="kw">let </span>(buses, clocks, tokens) = clock_system_at_reset(
+    pac.oscctrl,
+    pac.osc32kctrl,
+    pac.gclk,
+    pac.mclk,
+    <span class="kw-2">&amp;mut </span>pac.nvmctrl,
+);
+<span class="kw">let </span><span class="kw-2">mut </span>xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, <span class="number">20</span>.mhz())
+    .current(CrystalCurrent::Medium)
+    .loop_control(<span class="bool-val">true</span>)
+    .low_buf_gain(<span class="bool-val">true</span>)
+    .start_up_delay(StartUpDelay::Delay488us)
+    .enable();
+<span class="kw">while </span>!xosc.is_ready() {}
+xosc.enable_failure_detection(clocks.dfll, SafeClockDiv::Div2);</code></pre></div>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc">Xosc</a></div><div class="desc docblock-short">An external multipurpose crystal oscillator controller</div></li><li><div class="item-name"><a class="struct" href="struct.XoscToken.html" title="struct atsamd_hal::clock::v2::xosc::XoscToken">Xosc<wbr>Token</a></div><div class="desc docblock-short">Singleton token that can be exchanged for an <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a></div></li></ul><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.ClockMode.html" title="enum atsamd_hal::clock::v2::xosc::ClockMode">Clock<wbr>Mode</a></div><div class="desc docblock-short">Type-level variant of the <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> operating <a href="trait.Mode.html" title="trait atsamd_hal::clock::v2::xosc::Mode"><code>Mode</code></a></div></li><li><div class="item-name"><a class="enum" href="enum.CrystalCurrent.html" title="enum atsamd_hal::clock::v2::xosc::CrystalCurrent">Crystal<wbr>Current</a></div><div class="desc docblock-short">Crystal current level</div></li><li><div class="item-name"><a class="enum" href="enum.CrystalMode.html" title="enum atsamd_hal::clock::v2::xosc::CrystalMode">Crystal<wbr>Mode</a></div><div class="desc docblock-short">Type-level variant of the <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> operating <a href="trait.Mode.html" title="trait atsamd_hal::clock::v2::xosc::Mode"><code>Mode</code></a></div></li><li><div class="item-name"><a class="enum" href="enum.DynMode.html" title="enum atsamd_hal::clock::v2::xosc::DynMode">DynMode</a></div><div class="desc docblock-short">Value-level enum identifying one of two possible <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> operating modes</div></li><li><div class="item-name"><a class="enum" href="enum.SafeClockDiv.html" title="enum atsamd_hal::clock::v2::xosc::SafeClockDiv">Safe<wbr>Clock<wbr>Div</a></div><div class="desc docblock-short">Division factor for the safe clock prescaler</div></li><li><div class="item-name"><a class="enum" href="enum.StartUpDelay.html" title="enum atsamd_hal::clock::v2::xosc::StartUpDelay">Start<wbr>UpDelay</a></div><div class="desc docblock-short">Start up delay before continuous <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> monitoring takes effect</div></li><li><div class="item-name"><a class="enum" href="enum.Xosc0Id.html" title="enum atsamd_hal::clock::v2::xosc::Xosc0Id">Xosc0Id</a></div><div class="desc docblock-short">Type-level variant of <a href="trait.XoscId.html" title="trait atsamd_hal::clock::v2::xosc::XoscId"><code>XoscId</code></a> representing the identity of XOSC0</div></li><li><div class="item-name"><a class="enum" href="enum.Xosc1Id.html" title="enum atsamd_hal::clock::v2::xosc::Xosc1Id">Xosc1Id</a></div><div class="desc docblock-short">Type-level variant of <a href="trait.XoscId.html" title="trait atsamd_hal::clock::v2::xosc::XoscId"><code>XoscId</code></a> representing the identity of XOSC1</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.Mode.html" title="trait atsamd_hal::clock::v2::xosc::Mode">Mode</a></div><div class="desc docblock-short">Type-level <code>enum</code> for the <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> operating mode</div></li><li><div class="item-name"><a class="trait" href="trait.XoscId.html" title="trait atsamd_hal::clock::v2::xosc::XoscId">XoscId</a></div><div class="desc docblock-short">Type-level enum identifying one of two possible <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a>s</div></li></ul><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.EnabledXosc.html" title="type atsamd_hal::clock::v2::xosc::EnabledXosc">Enabled<wbr>Xosc</a></div><div class="desc docblock-short">An <a href="../struct.Enabled.html" title="struct atsamd_hal::clock::v2::Enabled"><code>Enabled</code></a> <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a></div></li><li><div class="item-name"><a class="type" href="type.EnabledXosc0.html" title="type atsamd_hal::clock::v2::xosc::EnabledXosc0">Enabled<wbr>Xosc0</a></div><div class="desc docblock-short">Type alias for the corresponding <a href="type.EnabledXosc.html" title="type atsamd_hal::clock::v2::xosc::EnabledXosc"><code>EnabledXosc</code></a></div></li><li><div class="item-name"><a class="type" href="type.EnabledXosc1.html" title="type atsamd_hal::clock::v2::xosc::EnabledXosc1">Enabled<wbr>Xosc1</a></div><div class="desc docblock-short">Type alias for the corresponding <a href="type.EnabledXosc.html" title="type atsamd_hal::clock::v2::xosc::EnabledXosc"><code>EnabledXosc</code></a></div></li><li><div class="item-name"><a class="type" href="type.XIn.html" title="type atsamd_hal::clock::v2::xosc::XIn">XIn</a></div><div class="desc docblock-short">Type alias for the <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> input <a href="../../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a></div></li><li><div class="item-name"><a class="type" href="type.XOut.html" title="type atsamd_hal::clock::v2::xosc::XOut">XOut</a></div><div class="desc docblock-short">Type alias for the <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a> output <a href="../../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a></div></li><li><div class="item-name"><a class="type" href="type.Xosc0.html" title="type atsamd_hal::clock::v2::xosc::Xosc0">Xosc0</a></div><div class="desc docblock-short">Type alias for the corresponding <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a></div></li><li><div class="item-name"><a class="type" href="type.Xosc1.html" title="type atsamd_hal::clock::v2::xosc::Xosc1">Xosc1</a></div><div class="desc docblock-short">Type alias for the corresponding <a href="struct.Xosc.html" title="struct atsamd_hal::clock::v2::xosc::Xosc"><code>Xosc</code></a></div></li></ul></section></div></main></body></html>

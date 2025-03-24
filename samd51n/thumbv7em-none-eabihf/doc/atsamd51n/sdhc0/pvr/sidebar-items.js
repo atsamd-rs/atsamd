@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Clkgselselect","Drvselselect"],"struct":["PvrSpec"],"type":["ClkgselR","ClkgselW","DrvselR","DrvselW","R","SdclkfselR","SdclkfselW","W"]};

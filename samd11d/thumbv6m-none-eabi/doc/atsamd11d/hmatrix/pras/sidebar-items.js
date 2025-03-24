@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PrasSpec"],"type":["M0prR","M0prW","M1prR","M1prW","M2prR","M2prW","M3prR","M3prW","M4prR","M4prW","M5prR","M5prW","M6prR","M6prW","M7prR","M7prW","R","W"]};

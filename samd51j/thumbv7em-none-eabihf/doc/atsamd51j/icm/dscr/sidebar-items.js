@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DscrSpec"],"type":["DasaR","DasaW","R","W"]};

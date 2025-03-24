@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CrcdatainSpec"],"type":["CrcdatainR","CrcdatainW","R","W"]};

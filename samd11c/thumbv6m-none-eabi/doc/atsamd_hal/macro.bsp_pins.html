@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Helper macro to give meaningful names to GPIO pins"><title>bsp_pins in atsamd_hal - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../static.files/storage-59e33391.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">bsp_<wbr>pins</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#helper-macro-to-give-meaningful-names-to-gpio-pins" title="Helper macro to give meaningful names to GPIO pins">Helper macro to give meaningful names to GPIO pins</a><ul><li><a href="#calling-the-macro" title="Calling the macro">Calling the macro</a></li><li><a href="#expanding-the-macro" title="Expanding the macro">Expanding the macro</a></li><li><a href="#attributes-and-documentation" title="Attributes and documentation">Attributes and documentation</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate atsamd_<wbr>hal</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="index.html">atsamd_hal</a></span><h1>Macro <span class="macro">bsp_pins</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/atsamd_hal/gpio/pin.rs.html#1523-1593">Source</a> </span></div><pre class="rust item-decl"><code>macro_rules! bsp_pins {
+    (
+        $(
+            $( #[$id_cfg:meta] )*
+            $Id:ident {
+                $( #[$name_doc:meta] )*
+                $( name: $name:ident $(,)? )?
+                $(
+                    aliases: {
+                        $(
+                            $( #[$alias_cfg:meta] )*
+                            $Mode:ident: $Alias:ident $(,)?
+                        )+
+                    }
+                )?
+            } $(,)?
+        )+
+    ) =&gt; { ... };
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="helper-macro-to-give-meaningful-names-to-gpio-pins"><a class="doc-anchor" href="#helper-macro-to-give-meaningful-names-to-gpio-pins">§</a>Helper macro to give meaningful names to GPIO pins</h2>
+<p>The <a href="gpio/pin/index.html" title="mod atsamd_hal::gpio::pin"><code>atsamd_hal::gpio</code></a> module generally refers to each <a href="gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a> by
+its <a href="gpio/pin/trait.PinId.html" title="trait atsamd_hal::gpio::pin::PinId"><code>PinId</code></a>. However, in the context of a BSP, pins can often be given
+more meaningful names. This macro gives BSP authors a convenient way to
+provide custom names for each pin.</p>
+<h3 id="calling-the-macro"><a class="doc-anchor" href="#calling-the-macro">§</a>Calling the macro</h3>
+<p>The <code>bsp_pins!</code> macro takes a series of <code>PinId</code> blocks. Each block starts
+with a <code>PinId</code> and is delimited by curly brackets. Within each block, there
+are two optional fields, <code>name</code> and <code>aliases</code>. The <code>name</code> field represents
+the <em>principal</em> name or function assigned to the pin and is given in
+<code>snake_case</code>. If the <code>name</code> field is absent, the pin name will default to
+its <code>PinId</code> (converted to <code>snake_case</code>). The <code>aliases</code> field represents any
+number of alternative names for the pin, where each name corresponds to the
+pin in a particular <a href="gpio/pin/trait.PinMode.html" title="trait atsamd_hal::gpio::pin::PinMode"><code>PinMode</code></a>. Note that each alias is given in
+<code>PascalCase</code>.</p>
+<p>The example below defines a <code>name</code> and two <code>aliases</code> for pin <code>PA24</code>. In
+<code>PinMode</code> <a href="gpio/pin/type.AlternateC.html" title="type atsamd_hal::gpio::pin::AlternateC"><code>AlternateC</code></a>, the pin is used as an SPI MOSI pin. In <code>PinMode</code>
+<a href="gpio/pin/type.AlternateD.html" title="type atsamd_hal::gpio::pin::AlternateD"><code>AlternateD</code></a>, it is used as a UART TX pin. In both cases, it is a serial
+output, so its <code>name</code> is <code>serial_out</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">atsamd_hal::bsp_pins!</span>(
+    PA24 {
+        name: serial_out,
+        aliases: {
+            AlternateC: SpiMosi,
+            AlternateD: UartTx,
+        }
+    }
+);</code></pre></div>
+<h3 id="expanding-the-macro"><a class="doc-anchor" href="#expanding-the-macro">§</a>Expanding the macro</h3>
+<p>When expanded, the <code>bsp_pins!</code> macro will define a number of structs, type
+aliases, constants and macros.</p>
+<h4 id="a-new-pins-struct"><a class="doc-anchor" href="#a-new-pins-struct">§</a>A new <code>Pins</code> struct</h4>
+<p>First, it will define a new, more-useful <code>Pins</code> struct. The <a href="gpio/pin/struct.Pins.html" title="struct atsamd_hal::gpio::pin::Pins"><code>Pins</code></a> struct
+defined in the <code>gpio</code> module is intended for general use. It contains <em>all</em>
+the pins for a given chip, and each pin is named according to its <code>PinId</code>.
+The <code>Pins</code> struct defined by this macro, on the other hand, contains only
+the declared pins, and each pin is named appropriately.</p>
+<p>The field name for each pin within the <code>Pins</code> struct is based on the macro
+<code>name</code> field. For example, the <code>serial_out</code> pin from the example above could
+be accessed like this:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>peripherals = pac::Peripherals::take().unwrap();
+<span class="kw">let </span>pins = bsp::Pins::new(peripherals.Port);
+<span class="kw">let </span>out = pins.serial_out;</code></pre></div>
+<p>However, that is not the only way to access each pin. While the <code>name</code> field
+represents the principal name, each pin can also be accessed using its
+corresponding <code>aliases</code>.</p>
+<p>In Rust, each struct field can only have one name. To provide access to the
+same struct field using several <em>different</em> names, the <code>bsp_pins!</code> macro
+defines another macro, <code>pin_alias!</code>. Based on the example above, we could
+use the <code>pin_alias!</code> macro to access pin <code>PA24</code> without ever referring to
+the <code>serial_out</code> field.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>peripherals = pac::Peripherals::take().unwrap();
+<span class="kw">let </span>pins = bsp::Pins::new(peripherals.Port);
+<span class="kw">let </span>mosi = <span class="macro">pin_alias!</span>(pins.spi_mosi);</code></pre></div>
+<p>Note that the <code>SpiMosi</code> alias was translated to <code>snake_case</code> when accessing
+the <code>Pins</code> field. The same is true for the <code>UartTx</code> alias.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>peripherals = pac::Peripherals::take().unwrap();
+<span class="kw">let </span>pins = bsp::Pins::new(peripherals.Port);
+<span class="kw">let </span>tx = <span class="macro">pin_alias!</span>(pins.uart_tx);</code></pre></div>
+<h4 id="type-aliases"><a class="doc-anchor" href="#type-aliases">§</a>Type aliases</h4>
+<p>Next, the macro defines several useful type aliases for each pin. It
+provides aliases for the corresponding <code>PinId</code>, <code>PinMode</code> and fully
+specified <code>Pin</code> type of each alternate name.</p>
+<p>The example above would exand to</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub type </span>SpiMosi = Pin&lt;PA24, AlternateC&gt;;
+<span class="kw">pub type </span>SpiMosiId = PA24;
+<span class="kw">pub type </span>SpiMosiMode = AlternateC;
+
+<span class="kw">pub type </span>UartTx = Pin&lt;PA24, AlternateD&gt;;
+<span class="kw">pub type </span>UartTxId = PA24;
+<span class="kw">pub type </span>UartTxMode = AlternateD;</code></pre></div>
+<p>Each <code>PascalCase</code> alias provided in the macro is used for the <code>Pin</code> type,
+and the suffixes <code>Id</code> and <code>Mode</code> are appended to for the corresponding
+<code>PinId</code> and <code>PinMode</code> types.</p>
+<h4 id="dyn-constants"><a class="doc-anchor" href="#dyn-constants">§</a><code>DYN</code> constants</h4>
+<p>Although the <a href="gpio/pin/index.html" title="mod atsamd_hal::gpio::pin"><code>pin</code></a> API is more common, there are use cases for the
+type-erased, <a href="gpio/dynpin/index.html" title="mod atsamd_hal::gpio::dynpin"><code>dyn_pin</code></a> API as well. The <code>bsp_pins!</code> macro
+also defines some useful constants for these cases. In particular, it
+defines <a href="gpio/dynpin/struct.DynPinId.html" title="struct atsamd_hal::gpio::dynpin::DynPinId"><code>DynPinId</code></a> and <a href="gpio/dynpin/enum.DynPinMode.html" title="enum atsamd_hal::gpio::dynpin::DynPinMode"><code>DynPinMode</code></a> constants for each alias.</p>
+<p>The example above would effectively expand to</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub const </span>SPI_MOSI_ID: DynPinId = DynPinId { group: DynGroup::A, num: <span class="number">24 </span>};
+<span class="kw">pub const </span>SPI_MOSI_MODE: DynPinMode = DYN_ALTERNATE_C;
+
+<span class="kw">pub const </span>UART_TX_ID: DynPinId = DynPinId { group: DynGroup::A, num: <span class="number">24 </span>};
+<span class="kw">pub const </span>UART_TX_MODE: DynPinMode = DYN_ALTERNATE_D;</code></pre></div>
+<p>The <code>PascalCase</code> alias provided in the macro is converted to
+<code>SCREAMING_CASE</code>, and the suffixes <code>_ID</code> and <code>_MODE</code> are appended for the
+corresponding <code>DynPinId</code> and <code>DynPinMode</code> constants.</p>
+<h3 id="attributes-and-documentation"><a class="doc-anchor" href="#attributes-and-documentation">§</a>Attributes and documentation</h3>
+<p>BSP authors can also add attributes and documentation to various parts of
+the macro declaration. Attributes can be added to the entire <code>PinId</code> block.
+These attributes will be propagated to every use of the corresponding
+<code>PinId</code>. Attributes applied to each alias, on the other hand, will only be
+propagated to items specific to that alias, like the corresponding <code>DYN</code>
+constants. Finally, any documentation (or other attributes) provided for the
+<code>name</code> field will be propagated to the corresponding field of the
+<code>bsp::Pins</code> struct defined by this macro.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">atsamd_hal::bsp_pins!</span>(
+    <span class="attr">#[cfg(feature = <span class="string">"has_pin_PA24"</span>)]
+    </span>PA24 {
+        <span class="doccomment">/// Documentation that will appear on the corresponding field in the
+        /// `bsp::Pins` struct
+        </span>name: serial_out,
+        aliases: {
+            <span class="attr">#[cfg(feature = <span class="string">"uses_SPI"</span>)]
+            </span>AlternateC: SpiMosi,
+            <span class="attr">#[cfg(feature = <span class="string">"uses_UART"</span>)]
+            </span>AlternateD: UartTx,
+        }
+    }
+);</code></pre></div>
+</div></details></section></div></main></body></html>

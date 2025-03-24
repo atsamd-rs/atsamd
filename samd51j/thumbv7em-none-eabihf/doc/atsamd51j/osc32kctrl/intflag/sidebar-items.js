@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["IntflagSpec"],"type":["R","W","Xosc32kfailR","Xosc32kfailW","Xosc32krdyR","Xosc32krdyW"]};

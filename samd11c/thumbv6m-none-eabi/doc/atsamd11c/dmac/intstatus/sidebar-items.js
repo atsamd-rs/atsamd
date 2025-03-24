@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["IntstatusSpec"],"type":["Chint0R","Chint1R","Chint2R","Chint3R","Chint4R","Chint5R","R"]};

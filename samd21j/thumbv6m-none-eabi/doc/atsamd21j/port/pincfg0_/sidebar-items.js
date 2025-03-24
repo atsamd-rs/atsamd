@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Pincfg0_Spec"],"type":["DrvstrR","DrvstrW","InenR","InenW","PmuxenR","PmuxenW","PullenR","PullenW","R","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Busy","Ready","ReadyFuture","Uninitialized","UninitializedFuture"],"struct":["Channel","InterruptFlags"],"trait":["AnyChannel","ReadyChannel","Status"],"type":["ChannelId","ChannelStatus","SpecificChannel"]};

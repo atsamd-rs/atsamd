@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ScrambkeySpec"],"type":["KeyW","W"]};

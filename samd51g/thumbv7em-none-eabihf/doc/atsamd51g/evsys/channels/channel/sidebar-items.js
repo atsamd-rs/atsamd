@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Edgselselect","Pathselect"],"struct":["ChannelSpec"],"type":["EdgselR","EdgselW","EvgenR","EvgenW","OndemandR","OndemandW","PathR","PathW","R","RunstdbyR","RunstdbyW","W"]};

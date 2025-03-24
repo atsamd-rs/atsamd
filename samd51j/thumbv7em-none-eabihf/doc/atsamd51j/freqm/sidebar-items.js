@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["cfga","ctrla","ctrlb","intenclr","intenset","intflag","status","syncbusy","value"],"struct":["RegisterBlock"],"type":["Cfga","Ctrla","Ctrlb","Intenclr","Intenset","Intflag","Status","Syncbusy","Value"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Cctrlselect","Osrselect","Refreshselect"],"struct":["DacctrlSpec"],"type":["CctrlR","CctrlW","DitherR","DitherW","EnableR","EnableW","FextR","FextW","LeftadjR","LeftadjW","OsrR","OsrW","R","RefreshR","RefreshW","RunstdbyR","RunstdbyW","W"]};

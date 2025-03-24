@@ -1,0 +1,12 @@
+cargo:rustc-cfg=cortex_m
+cargo:rustc-cfg=armv7m
+cargo:rustc-cfg=armv7em
+cargo:rustc-check-cfg=cfg(cortex_m)
+cargo:rustc-check-cfg=cfg(armv6m)
+cargo:rustc-check-cfg=cfg(armv7m)
+cargo:rustc-check-cfg=cfg(armv7em)
+cargo:rustc-check-cfg=cfg(armv8m)
+cargo:rustc-check-cfg=cfg(armv8m_base)
+cargo:rustc-check-cfg=cfg(armv8m_main)
+cargo:rustc-cfg=has_fpu
+cargo:rustc-check-cfg=cfg(has_fpu)

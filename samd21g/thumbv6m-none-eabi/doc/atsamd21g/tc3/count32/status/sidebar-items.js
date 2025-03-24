@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["StatusSpec"],"type":["R","SlaveR","StopR","SyncbusyR"]};

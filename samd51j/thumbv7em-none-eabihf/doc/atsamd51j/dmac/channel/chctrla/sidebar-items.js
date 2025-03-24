@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Burstlenselect","Thresholdselect","Trigactselect","Trigsrcselect"],"struct":["ChctrlaSpec"],"type":["BurstlenR","BurstlenW","EnableR","EnableW","R","RunstdbyR","RunstdbyW","SwrstR","SwrstW","ThresholdR","ThresholdW","TrigactR","TrigactW","TrigsrcR","TrigsrcW","W"]};

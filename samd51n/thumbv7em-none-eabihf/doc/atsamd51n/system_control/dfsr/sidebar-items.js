@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DfsrSpec"],"type":["BkptR","BkptW","DwttrapR","DwttrapW","ExternalR","ExternalW","HaltedR","HaltedW","R","VcatchR","VcatchW","W"]};

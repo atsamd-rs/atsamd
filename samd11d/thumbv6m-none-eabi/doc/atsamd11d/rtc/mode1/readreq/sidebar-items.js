@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ReadreqSpec"],"type":["AddrR","R","RcontR","RcontW","RreqW","W"]};

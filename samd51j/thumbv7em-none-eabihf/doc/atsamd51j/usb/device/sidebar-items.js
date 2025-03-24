@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["ctrla","ctrlb","dadd","descadd","device_endpoint","epintsmry","fnum","fsmstatus","intenclr","intenset","intflag","padcal","qosctrl","status","syncbusy"],"struct":["Device"],"type":["Ctrla","Ctrlb","Dadd","Descadd","Epintsmry","Fnum","Fsmstatus","Intenclr","Intenset","Intflag","Padcal","Qosctrl","Status","Syncbusy"]};

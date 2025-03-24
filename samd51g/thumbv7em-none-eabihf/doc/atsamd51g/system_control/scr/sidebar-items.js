@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Sevonpendselect","Sleepdeepselect","Sleeponexitselect"],"struct":["ScrSpec"],"type":["R","SevonpendR","SevonpendW","SleepdeepR","SleepdeepW","SleeponexitR","SleeponexitW","W"]};

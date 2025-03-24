@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["LockSpec"],"type":["LockR","R","W"]};

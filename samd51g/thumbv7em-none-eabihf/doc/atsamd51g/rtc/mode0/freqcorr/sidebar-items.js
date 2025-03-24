@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["FreqcorrSpec"],"type":["R","SignR","SignW","ValueR","ValueW","W"]};

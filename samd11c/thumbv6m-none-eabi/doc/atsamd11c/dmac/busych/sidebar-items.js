@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["BusychSpec"],"type":["Busych0R","Busych1R","Busych2R","Busych3R","Busych4R","Busych5R","R"]};

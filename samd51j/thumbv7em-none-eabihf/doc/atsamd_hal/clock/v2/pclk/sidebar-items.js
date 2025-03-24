@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DynPclkId"],"mod":["ids"],"struct":["Pclk","PclkToken","PclkTokens"],"trait":["PclkId","PclkSourceId"],"type":["DynPclkSourceId"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Frangeselect","Prescselect"],"struct":["Osc8mSpec"],"type":["CalibR","CalibW","EnableR","EnableW","FrangeR","FrangeW","OndemandR","OndemandW","PrescR","PrescW","R","RunstdbyR","RunstdbyW","W"]};

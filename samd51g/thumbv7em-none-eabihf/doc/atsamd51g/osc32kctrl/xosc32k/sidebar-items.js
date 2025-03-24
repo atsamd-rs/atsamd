@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Cgmselect","Startupselect"],"struct":["Xosc32kSpec"],"type":["CgmR","CgmW","En1kR","En1kW","En32kR","En32kW","EnableR","EnableW","OndemandR","OndemandW","R","RunstdbyR","RunstdbyW","StartupR","StartupW","W","WrtlockR","WrtlockW","XtalenR","XtalenW"]};

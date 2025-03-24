@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["PcfgSpec"],"type":["BkR","BkW","PtokenR","PtokenW","PtypeR","PtypeW","R","W"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["OffsetcorrSpec"],"type":["OffsetcorrR","OffsetcorrW","R","W"]};

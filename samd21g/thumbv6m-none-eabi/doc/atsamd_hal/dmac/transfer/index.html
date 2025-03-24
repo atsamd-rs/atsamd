@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="DMA transfer abstractions"><title>atsamd_hal::dmac::transfer - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module transfer</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#dma-transfer-abstractions" title="DMA transfer abstractions">DMA transfer abstractions</a></li><li><a href="#transfer-types" title="Transfer types">Transfer types</a></li><li><a href="#beat-sizes" title="Beat sizes">Beat sizes</a></li><li><a href="#one-shot-vs-circular-transfers" title="One-shot vs circular transfers">One-shot vs circular transfers</a></li><li><a href="#starting-a-transfer" title="Starting a transfer">Starting a transfer</a></li><li><a href="#waiting-for-a-transfer-to-complete" title="Waiting for a transfer to complete">Waiting for a transfer to complete</a></li><li><a href="#interrupting-stopping-a-transfer" title="Interrupting (stopping) a transfer">Interrupting (stopping) a transfer</a></li><li><a href="#trigger-sources" title="Trigger sources">Trigger sources</a></li><li><a href="#trigger-actions" title="Trigger actions">Trigger actions</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>dmac</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../../index.html">atsamd_hal</a>::<wbr><a href="../index.html">dmac</a></span><h1>Module <span>transfer</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/atsamd_hal/dmac/transfer.rs.html#1-638">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="dma-transfer-abstractions"><a class="doc-anchor" href="#dma-transfer-abstractions">§</a>DMA transfer abstractions</h2><h2 id="transfer-types"><a class="doc-anchor" href="#transfer-types">§</a>Transfer types</h2>
+<p>Four basic transfer types are supported:</p>
+<ul>
+<li>
+<p>Incrementing-source to incrementing-destination (normally used for
+memory-to-memory transfers)</p>
+</li>
+<li>
+<p>Incrementing-source to fixed-destination (normally used for
+memory-to-peripheral transfers)</p>
+</li>
+<li>
+<p>Fixed-source to incrementing-destination (normally used for
+peripheral-to-memory transfers)</p>
+</li>
+<li>
+<p>Fixed-source to fixed-destination (normally used for
+peripheral-to-peripheral transfers)</p>
+</li>
+</ul>
+<h2 id="beat-sizes"><a class="doc-anchor" href="#beat-sizes">§</a>Beat sizes</h2>
+<p>A beat is an atomic, uninterruptible transfer size.Three beat sizes are
+supported:</p>
+<ul>
+<li>
+<p>Byte-per-byte (8 bit beats);</p>
+</li>
+<li>
+<p>Halfword-per-halfword (16 bit beats);</p>
+</li>
+<li>
+<p>Word-per-word (32 bit beats);</p>
+</li>
+</ul>
+<p>The correct beat size will automatically be selected in function of the type
+of the source and destination buffers.</p>
+<h2 id="one-shot-vs-circular-transfers"><a class="doc-anchor" href="#one-shot-vs-circular-transfers">§</a>One-shot vs circular transfers</h2>
+<p>If the transfer is setup as one-shot (<code>circular == false</code>), the
+transfer will run once and stop. Otherwise, if <code>circular == true</code>, then the
+transfer will be set as circular, meaning it will restart a new, identical
+block transfer when the current block transfer is complete. This is
+particularly useful when combined with a TC/TCC trigger source, for instance
+to periodically retreive a sample from an ADC and send it to a circular
+buffer, or send a sample to a DAC.</p>
+<h2 id="starting-a-transfer"><a class="doc-anchor" href="#starting-a-transfer">§</a>Starting a transfer</h2>
+<p>A transfer is started by calling <a href="struct.Transfer.html#method.begin" title="method atsamd_hal::dmac::transfer::Transfer::begin"><code>Transfer::begin</code></a>. You will be
+required to supply a trigger source and a trigger action.</p>
+<h2 id="waiting-for-a-transfer-to-complete"><a class="doc-anchor" href="#waiting-for-a-transfer-to-complete">§</a>Waiting for a transfer to complete</h2>
+<p>A transfer can waited upon by calling <a href="struct.Transfer.html#method.wait" title="method atsamd_hal::dmac::transfer::Transfer::wait"><code>wait</code></a>. This is a
+<em>blocking</em> method, meaning it will busy-wait until the transfer is
+completed. When it returns, it will release the source and destination
+buffers, as well as the DMA channel.</p>
+<h2 id="interrupting-stopping-a-transfer"><a class="doc-anchor" href="#interrupting-stopping-a-transfer">§</a>Interrupting (stopping) a transfer</h2>
+<p>A transfer can be stopped (regardless of whether it has completed or not) by
+calling <a href="struct.Transfer.html#method.stop" title="method atsamd_hal::dmac::transfer::Transfer::stop"><code>stop</code></a>. This is <em>not</em> a blocking method,
+meaning it will stop the transfer and immediately return. When it returns,
+it will release the source and destination buffers, as well as the DMA
+channel.</p>
+<h2 id="trigger-sources"><a class="doc-anchor" href="#trigger-sources">§</a>Trigger sources</h2>
+<p>Most peripherals can issue triggers to a DMA channel. A software trigger is
+also available (see <a href="struct.Transfer.html#method.software_trigger" title="method atsamd_hal::dmac::transfer::Transfer::software_trigger"><code>trigger</code></a>). See
+ATSAMD21 datasheet, table 19-8 for all available trigger sources.</p>
+<h2 id="trigger-actions"><a class="doc-anchor" href="#trigger-actions">§</a>Trigger actions</h2>
+<p>Three trigger actions are available:</p>
+<ul>
+<li>
+<p>BLOCK: One trigger required for each block transfer. In the context of
+this driver, one Transfer is equivalent to one Block transfer.</p>
+</li>
+<li>
+<p>BEAT: One trigger required for each beat transfer. In the context of this
+driver, the beat size will depend on the type of buffer used (8, 16 or 32
+bits).</p>
+</li>
+<li>
+<p>TRANSACTION: One trigger required for a full DMA transaction. this is
+useful for circular transfers in the context of this driver. One trigger
+will set off the transaction, that will now run uninterrupted until it is
+stopped.</p>
+</li>
+</ul>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.BufferPair.html" title="struct atsamd_hal::dmac::transfer::BufferPair">Buffer<wbr>Pair</a></div><div class="desc docblock-short">Struct holding the source and destination buffers of a
+<a href="struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer"><code>Transfer</code></a>.</div></li><li><div class="item-name"><a class="struct" href="struct.Transfer.html" title="struct atsamd_hal::dmac::transfer::Transfer">Transfer</a></div><div class="desc docblock-short">DMA transfer, owning the resources until the transfer is done and
+<a href="struct.Transfer.html#method.wait" title="method atsamd_hal::dmac::transfer::Transfer::wait"><code>Transfer::wait</code></a> is called.</div></li></ul><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="enum" href="enum.BeatSize.html" title="enum atsamd_hal::dmac::transfer::BeatSize">Beat<wbr>Size</a></div><div class="desc docblock-short">Useable beat sizes for DMA transfers</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.AnyBufferPair.html" title="trait atsamd_hal::dmac::transfer::AnyBufferPair">AnyBuffer<wbr>Pair</a></div></li><li><div class="item-name"><a class="trait" href="trait.Beat.html" title="trait atsamd_hal::dmac::transfer::Beat">Beat</a></div><div class="desc docblock-short">Convert 8, 16 and 32 bit types
+into <a href="enum.BeatSize.html" title="enum atsamd_hal::dmac::transfer::BeatSize"><code>BeatSize</code></a></div></li><li><div class="item-name"><a class="trait" href="trait.Buffer.html" title="trait atsamd_hal::dmac::transfer::Buffer">Buffer</a></div><div class="desc docblock-short">Buffer useable by the DMAC.</div></li></ul><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.BufferPairBeat.html" title="type atsamd_hal::dmac::transfer::BufferPairBeat">Buffer<wbr>Pair<wbr>Beat</a></div></li><li><div class="item-name"><a class="type" href="type.BufferPairDst.html" title="type atsamd_hal::dmac::transfer::BufferPairDst">Buffer<wbr>Pair<wbr>Dst</a></div></li><li><div class="item-name"><a class="type" href="type.BufferPairSrc.html" title="type atsamd_hal::dmac::transfer::BufferPairSrc">Buffer<wbr>Pair<wbr>Src</a></div></li><li><div class="item-name"><a class="type" href="type.SpecificBufferPair.html" title="type atsamd_hal::dmac::transfer::SpecificBufferPair">Specific<wbr>Buffer<wbr>Pair</a></div></li></ul></section></div></main></body></html>

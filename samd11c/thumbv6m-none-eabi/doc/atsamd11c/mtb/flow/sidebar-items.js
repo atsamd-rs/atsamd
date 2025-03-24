@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["FlowSpec"],"type":["AutohaltR","AutohaltW","AutostopR","AutostopW","R","W","WatermarkR","WatermarkW"]};

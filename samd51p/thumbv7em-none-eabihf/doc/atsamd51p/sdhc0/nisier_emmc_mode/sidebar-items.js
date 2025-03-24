@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Blkgeselect","Brdrdyselect","Bwrrdyselect","Cmdcselect","Dmaintselect","Trfcselect"],"struct":["NisierEmmcModeSpec"],"type":["BlkgeR","BlkgeW","BootarR","BootarW","BrdrdyR","BrdrdyW","BwrrdyR","BwrrdyW","CmdcR","CmdcW","DmaintR","DmaintW","R","TrfcR","TrfcW","W"]};

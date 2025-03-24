@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Nidbgselect"],"struct":["DbgrSpec"],"type":["NidbgR","NidbgW","R","W"]};

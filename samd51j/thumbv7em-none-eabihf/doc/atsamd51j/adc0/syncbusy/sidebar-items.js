@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["SyncbusySpec"],"type":["AvgctrlR","CtrlbR","EnableR","GaincorrR","InputctrlR","OffsetcorrR","R","RefctrlR","SampctrlR","SwrstR","SwtrigR","WinltR","WinutR"]};

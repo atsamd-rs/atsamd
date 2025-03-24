@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Prilvlselect"],"struct":["ChprilvlSpec"],"type":["PrilvlR","PrilvlW","R","W"]};

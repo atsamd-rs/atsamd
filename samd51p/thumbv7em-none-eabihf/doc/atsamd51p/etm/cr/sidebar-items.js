@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["CrSpec"],"type":["BroutR","BroutW","DbgrqR","DbgrqW","EtmpdR","EtmpdW","Portmode2R","Portmode2W","PortmodeR","PortmodeW","PortselR","PortselW","Portsize3R","Portsize3W","PortsizeR","PortsizeW","ProgR","ProgW","R","StallR","StallW","TsenR","TsenW","W"]};

@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Provides macros to support bitfield structs allowing for modular use of bit-enums."><title>modular_bitfield - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="modular_bitfield" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../static.files/storage-59e33391.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../modular_bitfield/index.html">modular_<wbr>bitfield</a><span class="version">0.11.2</span></h2></div><div class="sidebar-elems"><ul class="block"><li><a id="all-types" href="all.html">All Items</a></li></ul><section id="rustdoc-toc"><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#usage" title="Usage">Usage</a><ul><li><a href="#example-constructors" title="Example: Constructors">Example: Constructors</a></li><li><a href="#example-primitive-types" title="Example: Primitive Types">Example: Primitive Types</a></li><li><a href="#example-enum-specifiers" title="Example: Enum Specifiers">Example: Enum Specifiers</a></li><li><a href="#example-extra-safety-guard" title="Example: Extra Safety Guard">Example: Extra Safety Guard</a></li><li><a href="#example-skipping-fields" title="Example: Skipping Fields">Example: Skipping Fields</a></li><li><a href="#example-unfilled-bitfields" title="Example: Unfilled Bitfields">Example: Unfilled Bitfields</a></li><li><a href="#example-recursive-bitfields" title="Example: Recursive Bitfields">Example: Recursive Bitfields</a></li><li><a href="#example-advanced-enum-specifiers" title="Example: Advanced Enum Specifiers">Example: Advanced Enum Specifiers</a></li></ul></li><li><a href="#generated-implementations" title="Generated Implementations">Generated Implementations</a></li><li><a href="#generated-structure" title="Generated Structure">Generated Structure</a><ul><li><a href="#example" title="Example">Example</a></li></ul></li></ul><h3><a href="#modules">Crate Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#attributes" title="Attribute Macros">Attribute Macros</a></li><li><a href="#derives" title="Derive Macros">Derive Macros</a></li></ul></section><div id="rustdoc-modnav"></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Crate <span>modular_bitfield</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/modular_bitfield/lib.rs.html#1-496">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Provides macros to support bitfield structs allowing for modular use of bit-enums.</p>
+<p>The mainly provided macros are <code>#[bitfield]</code> for structs and
+<code>#[derive(BitfieldSpecifier)]</code> for enums that shall be usable
+within bitfield structs.</p>
+<p>There are preset bitfield specifiers such as <code>B1</code>, <code>B2</code>,..,<code>B64</code>
+that allow for easy bitfield usage in structs very similar to how
+they work in C or C++.</p>
+<ul>
+<li>Performance of the macro generated code is as fast as its hand-written
+alternative.</li>
+<li>Compile-time checks allow for safe usage of bitfield structs and enums.</li>
+</ul>
+<h4 id="usage"><a class="doc-anchor" href="#usage">§</a>Usage</h4>
+<p>Annotate a Rust struct with the <code>#[bitfield]</code> attribute in order to convert it into a bitfield.
+The <code>B1</code>, <code>B2</code>, … <code>B128</code> prelude types can be used as primitives to declare the number of bits per field.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>PackedData {
+    header: B4,
+    body: B9,
+    is_alive: B1,
+    status: B2,
+}</code></pre></div>
+<p>This produces a <code>new</code> constructor as well as a variety of getters and setters that
+allows to interact with the bitfield in a safe fashion:</p>
+<h5 id="example-constructors"><a class="doc-anchor" href="#example-constructors">§</a>Example: Constructors</h5>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>data = PackedData::new()
+    .with_header(<span class="number">1</span>)
+    .with_body(<span class="number">2</span>)
+    .with_is_alive(<span class="number">0</span>)
+    .with_status(<span class="number">3</span>);
+<span class="macro">assert_eq!</span>(data.header(), <span class="number">1</span>);
+<span class="macro">assert_eq!</span>(data.body(), <span class="number">2</span>);
+<span class="macro">assert_eq!</span>(data.is_alive(), <span class="number">0</span>);
+<span class="macro">assert_eq!</span>(data.status(), <span class="number">3</span>);</code></pre></div>
+<h5 id="example-primitive-types"><a class="doc-anchor" href="#example-primitive-types">§</a>Example: Primitive Types</h5>
+<p>Any type that implements the <code>Specifier</code> trait can be used as a bitfield field.
+Besides the already mentioned <code>B1</code>, .. <code>B128</code> also the <code>bool</code>, <code>u8, </code>u16, <code>u32, </code>u64<code>or</code>u128` primitive types can be used from prelude.</p>
+<p>We can use this knowledge to encode our <code>is_alive</code> as <code>bool</code> type instead of <code>B1</code>:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>PackedData {
+    header: B4,
+    body: B9,
+    is_alive: bool,
+    status: B2,
+}
+
+<span class="kw">let </span><span class="kw-2">mut </span>data = PackedData::new()
+    .with_is_alive(<span class="bool-val">true</span>);
+<span class="macro">assert!</span>(data.is_alive());
+data.set_is_alive(<span class="bool-val">false</span>);
+<span class="macro">assert!</span>(!data.is_alive());</code></pre></div>
+<h5 id="example-enum-specifiers"><a class="doc-anchor" href="#example-enum-specifiers">§</a>Example: Enum Specifiers</h5>
+<p>It is possible to derive the <code>Specifier</code> trait for <code>enum</code> types very easily to make
+them also usable as a field within a bitfield type:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(BitfieldSpecifier)]
+</span><span class="kw">pub enum </span>Status {
+    Red, Green, Yellow, <span class="prelude-val">None</span>,
+}
+
+<span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>PackedData {
+    header: B4,
+    body: B9,
+    is_alive: bool,
+    status: Status,
+}</code></pre></div>
+<h5 id="example-extra-safety-guard"><a class="doc-anchor" href="#example-extra-safety-guard">§</a>Example: Extra Safety Guard</h5>
+<p>In order to make sure that our <code>Status</code> enum still requires exatly 2 bit we can add
+<code>#[bits = 2]</code> to its field:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>PackedData {
+    header: B4,
+    body: B9,
+    is_alive: bool,
+    <span class="attr">#[bits = <span class="number">2</span>]
+    </span>status: Status,
+}</code></pre></div>
+<p>Setting and getting our new <code>status</code> field is naturally as follows:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>data = PackedData::new()
+    .with_status(Status::Green);
+<span class="macro">assert_eq!</span>(data.status(), Status::Green);
+data.set_status(Status::Red);
+<span class="macro">assert_eq!</span>(data.status(), Status::Red);</code></pre></div>
+<h5 id="example-skipping-fields"><a class="doc-anchor" href="#example-skipping-fields">§</a>Example: Skipping Fields</h5>
+<p>It might make sense to only allow users to set or get information from a field or
+even to entirely disallow interaction with a bitfield. For this the <code>#[skip]</code> attribute
+can be used on a bitfield of a <code>#[bitfield]</code> annotated struct.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>SomeBitsUndefined {
+    <span class="attr">#[skip(setters)]
+    </span>read_only: bool,
+    <span class="attr">#[skip(getters)]
+    </span>write_only: bool,
+    <span class="attr">#[skip]
+    </span>unused: B6,
+}</code></pre></div>
+<p>It is possible to use <code>#[skip(getters, setters)]</code> or <code>#[skip(getters)]</code> followed by a <code>#[skip(setters)]</code>
+attribute applied on the same bitfield. The effects are the same. When skipping both, getters and setters,
+it is possible to completely avoid having to specify a name:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>SomeBitsUndefined {
+    <span class="attr">#[skip] </span>__: B2,
+    is_activ: bool,
+    <span class="attr">#[skip] </span>__: B2,
+    is_received: bool,
+    <span class="attr">#[skip] </span>__: B2,
+}</code></pre></div>
+<h5 id="example-unfilled-bitfields"><a class="doc-anchor" href="#example-unfilled-bitfields">§</a>Example: Unfilled Bitfields</h5>
+<p>Sometimes it might be useful to not be required to construct a bitfield that defines
+all bits and therefore is required to have a bit width divisible by 8. In this case
+you can use the <code>filled: bool</code> parameter of the <code>#[bitfield]</code> macro in order to toggle
+this for your respective bitfield:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield(filled = <span class="bool-val">false</span>)]
+</span><span class="kw">pub struct </span>SomeBitsUndefined {
+    is_compact: bool,
+    is_secure: bool,
+    pre_status: B3,
+}</code></pre></div>
+<p>In the above example <code>SomeBitsUndefined</code> only defines the first 5 bits and leaves the rest
+3 bits of its entire 8 bits undefined. The consequences are that its generated <code>from_bytes</code>
+method is fallible since it must guard against those undefined bits.</p>
+<h5 id="example-recursive-bitfields"><a class="doc-anchor" href="#example-recursive-bitfields">§</a>Example: Recursive Bitfields</h5>
+<p>It is possible to use <code>#[bitfield]</code> structs as fields of <code>#[bitfield]</code> structs.
+This is generally useful if there are some common fields for multiple bitfields
+and is achieved by adding the <code>#[derive(BitfieldSpecifier)]</code> attribute to the struct
+annotated with <code>#[bitfield]</code>:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield(filled = <span class="bool-val">false</span>)]
+#[derive(BitfieldSpecifier)]
+</span><span class="kw">pub struct </span>Header {
+    is_compact: bool,
+    is_secure: bool,
+    pre_status: Status,
+}
+
+<span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>PackedData {
+    header: Header,
+    body: B9,
+    is_alive: bool,
+    status: Status,
+}</code></pre></div>
+<p>With the <code>bits: int</code> parameter of the <code>#[bitfield]</code> macro on the <code>Header</code> struct and the
+<code>#[bits: int]</code> attribute of the <code>#[derive(BitfieldSpecifier)]</code> on the <code>Status</code> enum we
+can have additional compile-time guarantees about the bit widths of the resulting entities:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[derive(BitfieldSpecifier)]
+#[bits = <span class="number">2</span>]
+</span><span class="kw">pub enum </span>Status {
+    Red, Green, Yellow, <span class="prelude-val">None</span>,
+}
+
+<span class="attr">#[bitfield(bits = <span class="number">4</span>)]
+#[derive(BitfieldSpecifier)]
+</span><span class="kw">pub struct </span>Header {
+    is_compact: bool,
+    is_secure: bool,
+    <span class="attr">#[bits = <span class="number">2</span>]
+    </span>pre_status: Status,
+}
+
+<span class="attr">#[bitfield(bits = <span class="number">16</span>)]
+</span><span class="kw">pub struct </span>PackedData {
+    <span class="attr">#[bits = <span class="number">4</span>]
+    </span>header: Header,
+    body: B9,
+    is_alive: bool,
+    <span class="attr">#[bits = <span class="number">2</span>]
+    </span>status: Status,
+}</code></pre></div>
+<h5 id="example-advanced-enum-specifiers"><a class="doc-anchor" href="#example-advanced-enum-specifiers">§</a>Example: Advanced Enum Specifiers</h5>
+<p>For our <code>Status</code> enum we actually just need 3 status variants: <code>Green</code>, <code>Yellow</code> and <code>Red</code>.
+We introduced the <code>None</code> status variants because <code>Specifier</code> enums by default are required
+to have a number of variants that is a power of two. We can ship around this by specifying
+<code>#[bits = 2]</code> on the top and get rid of our placeholder <code>None</code> variant while maintaining
+the invariant of it requiring 2 bits:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>
+<span class="attr">#[derive(BitfieldSpecifier)]
+#[bits = <span class="number">2</span>]
+</span><span class="kw">pub enum </span>Status {
+    Red, Green, Yellow,
+}</code></pre></div>
+<p>However, having such enums now yields the possibility that a bitfield might contain invalid bit
+patterns for such fields. We can safely access those fields with protected getters. For the sake
+of demonstration we will use the generated <code>from_bytes</code> constructor with which we can easily
+construct bitfields that may contain invalid bit patterns:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>data = PackedData::from_bytes([<span class="number">0b0000_0000</span>, <span class="number">0b1100_0000</span>]);
+<span class="comment">//           The 2 status field bits are invalid -----^^
+//           as Red = 0x00, Green = 0x01 and Yellow = 0x10
+</span><span class="macro">assert_eq!</span>(data.status_or_err(), <span class="prelude-val">Err</span>(InvalidBitPattern { invalid_bytes: <span class="number">0b11 </span>}));
+data.set_status(Status::Green);
+<span class="macro">assert_eq!</span>(data.status_or_err(), <span class="prelude-val">Ok</span>(Status::Green));</code></pre></div>
+<h3 id="generated-implementations"><a class="doc-anchor" href="#generated-implementations">§</a>Generated Implementations</h3>
+<p>For the example <code>#[bitfield]</code> struct the following implementations are going to be generated:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>Example {
+    a: bool,
+    b: B7,
+}</code></pre></div>
+<div><table><thead><tr><th style="text-align: left">Signature</th><th style="text-align: left">Description</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>fn new() -&gt; Self</code></td><td style="text-align: left">Creates a new instance of the bitfield with all bits initialized to 0.</td></tr>
+<tr><td style="text-align: left"><code>fn from_bytes([u8; 1]) -&gt; Self</code></td><td style="text-align: left">Creates a new instance of the bitfield from the given raw bytes.</td></tr>
+<tr><td style="text-align: left"><code>fn into_bytes(self) -&gt; [u8; 1]</code></td><td style="text-align: left">Returns the underlying bytes of the bitfield.</td></tr>
+</tbody></table>
+</div>
+<p>And below the generated signatures for field <code>a</code>:</p>
+<div><table><thead><tr><th style="text-align: left">Signature</th><th style="text-align: left">Description</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>fn a() -&gt; bool</code></td><td style="text-align: left">Returns the value of <code>a</code> or panics if invalid.</td></tr>
+<tr><td style="text-align: left"><code>fn a_or_err() -&gt; Result&lt;bool, InvalidBitPattern&lt;u8&gt;&gt;</code></td><td style="text-align: left">Returns the value of <code>a</code> of an error providing information about the invalid bits.</td></tr>
+<tr><td style="text-align: left"><code>fn set_a(&amp;mut self, new_value: bool)</code></td><td style="text-align: left">Sets <code>a</code> to the new value or panics if <code>new_value</code> contains invalid bits.</td></tr>
+<tr><td style="text-align: left"><code>fn set_a_checked(&amp;mut self, new_value: bool) -&gt; Result&lt;(), OutOfBounds&gt;</code></td><td style="text-align: left">Sets <code>a</code> to the new value of returns an out of bounds error.</td></tr>
+<tr><td style="text-align: left"><code>fn with_a(self, new_value: bool) -&gt; Self</code></td><td style="text-align: left">Similar to <code>set_a</code> but useful for method chaining.</td></tr>
+<tr><td style="text-align: left"><code>fn with_a_checked(self, new_value: bool) -&gt; Result&lt;Self, OutOfBounds&gt;</code></td><td style="text-align: left">Similar to <code>set_a_checked</code> but useful for method chaining.</td></tr>
+</tbody></table>
+</div><h3 id="generated-structure"><a class="doc-anchor" href="#generated-structure">§</a>Generated Structure</h3>
+<p>From David Tolnay’s procedural macro workshop:</p>
+<p>The macro conceptualizes given structs as a sequence of bits 0..N.
+The bits are grouped into fields in the order specified by the struct written by the user.</p>
+<p>The <code>#[bitfield]</code> attribute rewrites the caller’s struct into a private byte array representation
+with public getter and setter methods for each field.
+The total number of bits N is required to be a multiple of 8: This is checked at compile time.</p>
+<h4 id="example"><a class="doc-anchor" href="#example">§</a>Example</h4>
+<p>The following invocation builds a struct with a total size of 32 bits or 4 bytes.
+It places field <code>a</code> in the least significant bit of the first byte,
+field <code>b</code> in the next three least significant bits,
+field <code>c</code> in the remaining four most significant bits of the first byte,
+and field <code>d</code> spanning the next three bytes.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>modular_bitfield::prelude::<span class="kw-2">*</span>;
+
+<span class="attr">#[bitfield]
+</span><span class="kw">pub struct </span>MyFourBytes {
+    a: B1,
+    b: B3,
+    c: B4,
+    d: B24,
+}</code></pre></div>
+<div class="example-wrap"><pre class="language-no_compile"><code>                               least significant bit of third byte
+                                 ┊           most significant
+                                 ┊             ┊
+                                 ┊             ┊
+║  first byte   ║  second byte  ║  third byte   ║  fourth byte  ║
+╟───────────────╫───────────────╫───────────────╫───────────────╢
+║▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒ ▒║
+╟─╫─────╫───────╫───────────────────────────────────────────────╢
+║a║  b  ║   c   ║                       d                       ║
+                 ┊                                             ┊
+                 ┊                                             ┊
+               least significant bit of d         most significant</code></pre></div></div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="error/index.html" title="mod modular_bitfield::error">error</a></div><div class="desc docblock-short">Errors that can occure while operating on modular bitfields.</div></li><li><div class="item-name"><a class="mod" href="prelude/index.html" title="mod modular_bitfield::prelude">prelude</a></div><div class="desc docblock-short">The prelude: <code>use modular_bitfield::prelude::*;</code></div></li><li><div class="item-name"><a class="mod" href="specifiers/index.html" title="mod modular_bitfield::specifiers">specifiers</a></div><div class="desc docblock-short">The default set of predefined specifiers.</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.Specifier.html" title="trait modular_bitfield::Specifier">Specifier</a></div><div class="desc docblock-short">Trait implemented by all bitfield specifiers.</div></li></ul><h2 id="attributes" class="section-header">Attribute Macros<a href="#attributes" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="attr" href="attr.bitfield.html" title="attr modular_bitfield::bitfield">bitfield</a></div><div class="desc docblock-short">Applicable to structs to turn their fields into compact bitfields.</div></li></ul><h2 id="derives" class="section-header">Derive Macros<a href="#derives" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="derive" href="derive.BitfieldSpecifier.html" title="derive modular_bitfield::BitfieldSpecifier">Bitfield<wbr>Specifier</a></div><div class="desc docblock-short">Derive macro for Rust <code>enums</code> to implement <code>Specifier</code> trait.</div></li></ul></section></div></main></body></html>

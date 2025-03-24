@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["NoneT"],"trait":["Decrement","Increment","Is"],"type":["IsType"]};

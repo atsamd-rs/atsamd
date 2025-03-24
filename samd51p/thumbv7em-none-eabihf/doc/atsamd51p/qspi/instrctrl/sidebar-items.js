@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["InstrctrlSpec"],"type":["InstrR","InstrW","OptcodeR","OptcodeW","R","W"]};

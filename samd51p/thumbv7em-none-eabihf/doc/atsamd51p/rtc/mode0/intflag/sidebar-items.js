@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["IntflagSpec"],"type":["Cmp0R","Cmp0W","Cmp1R","Cmp1W","OvfR","OvfW","Per0R","Per0W","Per1R","Per1W","Per2R","Per2W","Per3R","Per3W","Per4R","Per4W","Per5R","Per5W","Per6R","Per6W","Per7R","Per7W","R","TamperR","TamperW","W"]};

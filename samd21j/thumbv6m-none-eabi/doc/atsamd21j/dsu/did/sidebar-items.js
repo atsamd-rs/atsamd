@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DidSpec"],"type":["DevselR","DieR","FamilyR","ProcessorR","R","RevisionR","SeriesR"]};

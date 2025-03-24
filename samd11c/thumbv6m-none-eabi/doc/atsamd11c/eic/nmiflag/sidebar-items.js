@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["NmiflagSpec"],"type":["NmiR","NmiW","R","W"]};

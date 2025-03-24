@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Modeselect","Prescalerselect","Prescsyncselect","Wavegenselect"],"struct":["CtrlaSpec"],"type":["EnableR","EnableW","ModeR","ModeW","PrescalerR","PrescalerW","PrescsyncR","PrescsyncW","R","RunstdbyR","RunstdbyW","SwrstW","W","WavegenR","WavegenW"]};

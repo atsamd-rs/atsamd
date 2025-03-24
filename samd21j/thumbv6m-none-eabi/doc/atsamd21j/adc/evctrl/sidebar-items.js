@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["EvctrlSpec"],"type":["R","ResrdyeoR","ResrdyeoW","StarteiR","StarteiW","SynceiR","SynceiW","W","WinmoneoR","WinmoneoW"]};

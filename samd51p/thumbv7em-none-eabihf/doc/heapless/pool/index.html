@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Memory and object pools"><title>heapless::pool - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="heapless" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../heapless/index.html">heapless</a><span class="version">0.8.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module pool</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#target-support" title="Target support">Target support</a></li><li><a href="#benchmarks" title="Benchmarks">Benchmarks</a></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate heapless</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><span class="rustdoc-breadcrumbs"><a href="../index.html">heapless</a></span><h1>Module <span>pool</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/heapless/pool.rs.html#1-59">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Memory and object pools</p>
+<h2 id="target-support"><a class="doc-anchor" href="#target-support">§</a>Target support</h2>
+<p>This module / API is only available on these compilation targets:</p>
+<ul>
+<li>ARM architectures which instruction set include the LDREX, CLREX and STREX instructions, e.g.
+<code>thumbv7m-none-eabi</code> but not <code>thumbv6m-none-eabi</code></li>
+<li>32-bit x86, e.g. <code>i686-unknown-linux-gnu</code></li>
+</ul>
+<h2 id="benchmarks"><a class="doc-anchor" href="#benchmarks">§</a>Benchmarks</h2>
+<ul>
+<li>
+<p>compilation settings</p>
+<ul>
+<li><code>codegen-units = 1</code></li>
+<li><code>lto = 'fat'</code></li>
+<li><code>opt-level = 'z'</code></li>
+</ul>
+</li>
+<li>
+<p>compilation target: <code>thumbv7em-none-eabihf</code></p>
+</li>
+<li>
+<p>CPU: ARM Cortex-M4F</p>
+</li>
+<li>
+<p>test program:</p>
+</li>
+</ul>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>heapless::box_pool;
+
+<span class="macro">box_pool!</span>(P: ()); <span class="comment">// or `arc_pool!` or `object_pool!`
+
+</span>bkpt();
+<span class="kw">let </span>res = P.alloc(());
+bkpt();
+
+<span class="kw">if let </span><span class="prelude-val">Ok</span>(boxed) = res {
+    bkpt();
+    drop(boxed);
+    bkpt();
+}</code></pre></div>
+<ul>
+<li>measurement method: the cycle counter (CYCCNT) register was sampled each time a breakpoint
+(<code>bkpt</code>) was hit. the difference between the “after” and the “before” value of CYCCNT yields the
+execution time in clock cycles.</li>
+</ul>
+<div><table><thead><tr><th>API</th><th>clock cycles</th></tr></thead><tbody>
+<tr><td><code>BoxPool::alloc</code></td><td>23</td></tr>
+<tr><td><code>pool::boxed::Box::drop</code></td><td>23</td></tr>
+<tr><td><code>ArcPool::alloc</code></td><td>28</td></tr>
+<tr><td><code>pool::arc::Arc::drop</code></td><td>59</td></tr>
+<tr><td><code>ObjectPool::request</code></td><td>23</td></tr>
+<tr><td><code>pool::object::Object::drop</code></td><td>23</td></tr>
+</tbody></table>
+</div>
+<p>Note that the execution time won’t include <code>T</code>’s initialization nor <code>T</code>’s destructor which will
+be present in the general case for <code>Box</code> and <code>Arc</code>.</p>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="arc/index.html" title="mod heapless::pool::arc">arc</a></div><div class="desc docblock-short"><code>std::sync::Arc</code>-like API on top of a lock-free memory pool</div></li><li><div class="item-name"><a class="mod" href="boxed/index.html" title="mod heapless::pool::boxed">boxed</a></div><div class="desc docblock-short"><code>std::boxed::Box</code>-like API on top of a lock-free memory pool</div></li><li><div class="item-name"><a class="mod" href="object/index.html" title="mod heapless::pool::object">object</a></div><div class="desc docblock-short">Object pool API</div></li></ul></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ChintflagSpec"],"type":["EvdR","EvdW","OvrR","OvrW","R","W"]};

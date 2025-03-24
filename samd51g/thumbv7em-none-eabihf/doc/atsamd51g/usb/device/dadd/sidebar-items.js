@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DaddSpec"],"type":["AddenR","AddenW","DaddR","DaddW","R","W"]};

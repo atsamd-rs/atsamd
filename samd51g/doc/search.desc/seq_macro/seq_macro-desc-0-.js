@@ -1,0 +1,1 @@
+searchState.loadedDescShard("seq_macro", 0, "github crates-io docs-rs")

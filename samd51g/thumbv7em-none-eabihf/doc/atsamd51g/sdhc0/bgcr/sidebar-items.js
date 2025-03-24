@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Contrselect","Intbgselect","Rwctrlselect","Stpbgrselect"],"struct":["BgcrSpec"],"type":["ContrR","ContrW","IntbgR","IntbgW","R","RwctrlR","RwctrlW","StpbgrR","StpbgrW","W"]};
