@@ -17,7 +17,6 @@ jobs:
       - name: Install Rust
         run: |
           rustup set profile minimal
-          rustup override set ${{ matrix.toolchain }}
           rustup target add thumbv6m-none-eabi
           rustup target add thumbv7em-none-eabihf
 
@@ -27,7 +26,7 @@ jobs:
         run: |
           set -ex
 
-          docs_path="$(pwd)/docs_repo"
+          docs_path="$(pwd)/docs"
           mkdir -pv "${docs_path}"
           (cd "$docs_path" && git init && git checkout -b main)
 
@@ -41,10 +40,6 @@ jobs:
               cd hal
 
               cargo doc --features "${feature_str}" --target "${target}" --release --target-dir "${docs_path}/${variant}"
-
-              rm -rf "${docs_path}/${variant}/${target}/doc/typenum"
-              find "${docs_path}/${variant}/" -type f -exec sed -i 's|../typenum/|https://docs.rs/typenum/1.12.0/typenum/|g' {} +
-              sed -i '/"typenum"/d' "${docs_path}/${variant}/${target}/doc/search-index.js"
 
               rm -rf "${docs_path}/${variant}/${target}/release/deps"
               rm -rf "${docs_path}/${variant}/release"
@@ -84,37 +79,18 @@ jobs:
           echo '    </table>' >> "${docs_path}/index.html"
           echo '  </body>' >> "${docs_path}/index.html"
           echo '</html>' >> "${docs_path}/index.html"
-
-      - name: Upload
-        if: github.event.inputs.gen_hal_docs == 'yes'
-        shell: bash
+      - name: Checkout pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+      - name: Commit documentation changes
         run: |
-          set -ex
-
-          docs_path="$(pwd)/docs_repo"
-          cd "${docs_path}"
-          git add -A
-          git config author.name atsamd-bot
-          git config author.email 'atsamd-bot@users.noreply.github.com'
-          git config committer.name atsamd-bot
-          git config committer.email 'atsamd-bot@users.noreply.github.com'
-          git commit -m 'Generate HAL documentation'
-
-          git remote add upstream https://github.com/atsamd-rs/docs.git
-
-          # Disable command echoing and compute the base64 header in a wrapper
-          # function, to avoid the token or the base64-encoded token from
-          # hitting the logs.
-          set +x
-          gen_basic_header() {
-            local gat=$1
-            echo -n "$(echo -n "x-access-token:${gat}"|base64 --wrap=0)"
-          }
-          auth="$(gen_basic_header '${{ secrets.ATSAMD_BOT }}')"
-
-          git \
-            -c "http.https://github.com.extraheader=Authorization: basic ${auth}" \
-            -c 'author.name=atsamd-bot' \
-            -c 'author.email=atsamd-bot@users.noreply.github.com' \
-            push -q upstream main -f
-          set -x
+          rsync --archive --delete --exclude .git docs/ gh-pages/
+          cd gh-pages
+          touch .nojekyll
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update documentation" -a || true
+          git push

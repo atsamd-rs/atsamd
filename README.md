@@ -10,25 +10,25 @@ This repository holds various crates that support/enable working with Microchip 
 
 The Hardware Abstraction Layer (HAL - [![Crates.io](https://img.shields.io/crates/v/atsamd_hal.svg)](https://crates.io/crates/atsamd_hal)) crate encodes a type-safe layer over the raw PACs. This crate implements traits specified by the [embedded-hal](https://github.com/rust-embedded/embedded-hal) project, making it compatible with various drivers in the embedded Rust ecosystem.  Cargo features are used to enable support for specific hardware variations and features.  Online documentation for commonly-used feature sets is provided:
 
-| Chip family | Documented features   |
-|:------------|:----------------------|
-| [samd11c]   | samd11c               |
-| [samd11d]   | samd11d               |
-| [samd21g]   | samd21g usb           |
-| [samd21j]   | samd21j usb           |
-| [samd51g]   | samd51g usb           |
-| [samd51j]   | samd51j usb           |
-| [samd51n]   | samd51n usb           |
-| [samd51p]   | samd51p usb           |
+| Chip family | Documented features               |
+|:------------|:----------------------------------|
+| [samd11c]   | samd11c dma defmt async           |
+| [samd11d]   | samd11d dma defmt async           |
+| [samd21g]   | samd21g usb dma defmt async       |
+| [samd21j]   | samd21j usb dma defmt async       |
+| [samd51g]   | samd51g usb sdmmc dma defmt async |
+| [samd51j]   | samd51j usb sdmmc dma defmt async |
+| [samd51n]   | samd51n usb sdmmc dma defmt async |
+| [samd51p]   | samd51p usb sdmmc dma defmt async |
 
-[samd11c]: https://atsamd-rs.github.io/docs/samd11c/thumbv6m-none-eabi/doc/atsamd_hal/index.html
-[samd11d]: https://atsamd-rs.github.io/docs/samd11d/thumbv6m-none-eabi/doc/atsamd_hal/index.html
-[samd21g]: https://atsamd-rs.github.io/docs/samd21g/thumbv6m-none-eabi/doc/atsamd_hal/index.html
-[samd21j]: https://atsamd-rs.github.io/docs/samd21j/thumbv6m-none-eabi/doc/atsamd_hal/index.html
-[samd51g]: https://atsamd-rs.github.io/docs/samd51g/thumbv7em-none-eabihf/doc/atsamd_hal/index.html
-[samd51j]: https://atsamd-rs.github.io/docs/samd51j/thumbv7em-none-eabihf/doc/atsamd_hal/index.html
-[samd51n]: https://atsamd-rs.github.io/docs/samd51n/thumbv7em-none-eabihf/doc/atsamd_hal/index.html
-[samd51p]: https://atsamd-rs.github.io/docs/samd51p/thumbv7em-none-eabihf/doc/atsamd_hal/index.html
+[samd11c]: https://atsamd-rs.github.io/atsamd/samd11c/thumbv6m-none-eabi/doc/atsamd_hal/index.html
+[samd11d]: https://atsamd-rs.github.io/atsamd/samd11d/thumbv6m-none-eabi/doc/atsamd_hal/index.html
+[samd21g]: https://atsamd-rs.github.io/atsamd/samd21g/thumbv6m-none-eabi/doc/atsamd_hal/index.html
+[samd21j]: https://atsamd-rs.github.io/atsamd/samd21j/thumbv6m-none-eabi/doc/atsamd_hal/index.html
+[samd51g]: https://atsamd-rs.github.io/atsamd/samd51g/thumbv7em-none-eabihf/doc/atsamd_hal/index.html
+[samd51j]: https://atsamd-rs.github.io/atsamd/samd51j/thumbv7em-none-eabihf/doc/atsamd_hal/index.html
+[samd51n]: https://atsamd-rs.github.io/atsamd/samd51n/thumbv7em-none-eabihf/doc/atsamd_hal/index.html
+[samd51p]: https://atsamd-rs.github.io/atsamd/samd51p/thumbv7em-none-eabihf/doc/atsamd_hal/index.html
 
 ## PAC and BSP - Peripheral Access Crate and Board Support Package
 
