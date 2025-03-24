@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.0...atsamd-hal-0.21.1) - 2025-03-24
+
+### Added
+
+- Add ehal 1.0 InputPin impl for ExtInt ([#826](https://github.com/atsamd-rs/atsamd/pull/826))
+
 ## [0.21.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.20.2...atsamd-hal-0.21.0) - 2025-01-13
 
 ### Added
