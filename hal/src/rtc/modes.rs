@@ -75,7 +75,7 @@ macro_rules! create_rtc_interrupt {
 macro_rules! sync_wait {
     ($rtc:expr, $register:ident) => {
         while $rtc.mode0().syncbusy().read().$register().bit_is_set() {}
-    }
+    };
 }
 
 /// An abstraction of an RTC in a particular mode that provides low-level
@@ -170,7 +170,6 @@ pub trait RtcMode {
     #[inline]
     #[hal_macro_helper]
     fn start_and_initialize(rtc: &Rtc) {
-
         // Enable counter sync on SAMx5x, the counter cannot be read otherwise.
         #[hal_cfg("rtc-d5x")]
         {
@@ -254,7 +253,6 @@ pub trait RtcMode {
 
             sync_wait!(rtc, enable)
         }
-
     }
 
     /// Enables the RTC.

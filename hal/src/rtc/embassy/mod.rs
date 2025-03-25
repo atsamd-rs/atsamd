@@ -1,7 +1,7 @@
 use core::cell::RefCell;
 use core::task::Waker;
 
-use crate::pac::{interrupt, Interrupt, Rtc, NVIC, Osc32kctrl};
+use crate::pac::{interrupt, Interrupt, Osc32kctrl, Rtc, NVIC};
 use crate::rtc::modes::{
     mode0::{Compare0, RtcMode0},
     RtcMode,
@@ -46,7 +46,6 @@ fn RTC() {
             RtcMode0::clear_interrupt_flag::<Compare0>(&rtc);
         }
     });
-
 }
 
 impl Driver for AtmelDriver {
