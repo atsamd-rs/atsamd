@@ -37,7 +37,6 @@ bitflags = "2.6.0"
 cipher = "0.3"
 critical-section = "1.2.0"
 cortex-m = "0.7"
-cortex-m-semihosting = "0.5"
 embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
 embedded-hal-1 = {package = "embedded-hal", version = "1.0.0"}
 embedded-hal-nb = "1.0.0"

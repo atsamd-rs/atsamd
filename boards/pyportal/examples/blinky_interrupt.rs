@@ -29,7 +29,7 @@ static BACKLIGHT_PIN: Mutex<RefCell<bsp::TftBacklight>> = Mutex::new(RefCell::ne
 
 #[entry]
 fn main() -> ! {
-    // rtt_target::rtt_init_print!();
+    rtt_target::rtt_init_print!();
 
     let peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
@@ -89,15 +89,15 @@ fn main() -> ! {
         w
     });
     // write sync for countsync
+    let init = mode0.count().read().count().bits();
     sync_wait!(mode0, countsync);
+    // When CTRLA.COUNTSYNC is enabled, the first COUNT value is not correctly synchronized and thus it
+    // is a wrong value.
+
 
     // clear flag
     mode0.intflag().write(|w| w.cmp0().set_bit());
 
-    // Enable the RTC
-    mode0.ctrla().modify(|_, w| w.enable().set_bit());
-    // write sync for RTC enable
-    sync_wait!(mode0, enable);
 
     // wait for count to be ready
     sync_wait!(mode0, count);
@@ -105,7 +105,7 @@ fn main() -> ! {
     let count: u32 = mode0.count().read().count().bits();
     // add 5 seconds
     let next = count + (5 * 32_768);
-    // rprintln!("count is {}, waking up at {}", count, next);
+    rprintln!("count is {}, waking up at {}", count, next);
 
 
     mode0.comp(0).write(|w| unsafe { w.comp().bits(next) });
@@ -126,12 +126,22 @@ fn main() -> ! {
 
     unsafe { NVIC::unmask(Interrupt::RTC); }
 
+    // Enable the RTC
+    mode0.ctrla().modify(|_, w| w.enable().set_bit());
+
+    // Block to wait for countsync to be correct
+    while mode0.count().read().count().bits() == init {}
+    // write sync for RTC enable
+    sync_wait!(mode0, enable);
+
     loop {}
 }
 
 #[interrupt]
 fn RTC() {
     // unsafe { NVIC::mask(Interrupt::RTC) };
+
+    critical_section::with(|_cs| {
 
     let peripherals = unsafe { Peripherals::steal() };
 
@@ -150,7 +160,7 @@ fn RTC() {
         let count: u32 = mode0.count().read().count().bits();
         // add 5 seconds
         let next = count + (2 * 32_768);
-        // rprintln!("count is {}, waking up at {}", count, next);
+        rprintln!("count is {}, waking up at {}", count, next);
 
         mode0.comp(0).write(|w| unsafe { w.comp().bits(next) });
         // wait write
@@ -158,4 +168,5 @@ fn RTC() {
         mode0.intflag().write(|w| w.cmp0().set_bit());
     }
     // unsafe { NVIC::unmask(Interrupt::RTC) };
+        })
 }

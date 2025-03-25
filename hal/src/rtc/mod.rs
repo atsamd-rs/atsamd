@@ -15,7 +15,7 @@ use core::marker::PhantomData;
 use embedded_sdmmc::{TimeSource, Timestamp};
 
 #[cfg(any(feature = "rtic", feature = "embassy-time"))]
-pub mod modes;
+mod modes;
 
 #[cfg(feature = "rtic")]
 pub mod rtic;
