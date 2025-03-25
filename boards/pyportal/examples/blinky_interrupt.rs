@@ -1,31 +1,30 @@
-//! Turn on and off with an LED 
+//! Turn on and off with an LED
 #![no_std]
 #![no_main]
 
 use core::{cell::RefCell, mem};
 
-
-use rtt_target::rprintln;
 use atsamd_hal::ehal::digital::{OutputPin, StatefulOutputPin};
-use pyportal as bsp;
-use critical_section::Mutex;
 use bsp::{
     pac::{interrupt, CorePeripherals, Interrupt, Peripherals},
-    pin_alias,
-    RedLed,
+    pin_alias, RedLed,
 };
 use cortex_m::peripheral::NVIC;
 use cortex_m_rt::entry;
+use critical_section::Mutex;
+use pyportal as bsp;
+use rtt_target::rprintln;
 
 use panic_semihosting as _;
 
 macro_rules! sync_wait {
     ($mode0:expr, $register:ident) => {
         while $mode0.syncbusy().read().$register().bit_is_set() {}
-    }
+    };
 }
 
-static BACKLIGHT_PIN: Mutex<RefCell<bsp::TftBacklight>> = Mutex::new(RefCell::new(unsafe { mem::zeroed() }));
+static BACKLIGHT_PIN: Mutex<RefCell<bsp::TftBacklight>> =
+    Mutex::new(RefCell::new(unsafe { mem::zeroed() }));
 
 #[entry]
 fn main() -> ! {
@@ -62,14 +61,10 @@ fn main() -> ! {
     // Run RTC when main chip is paused
     mode0.dbgctrl().write(|w| w.dbgrun().set_bit());
 
-
-
     // disable the clock
     mode0.ctrla().write(|w| w.enable().clear_bit());
     // write sync for RTC enable
     sync_wait!(mode0, enable);
-
-
 
     // trigger a reset
     mode0.ctrla().modify(|_, w| w.swrst().set_bit());
@@ -94,10 +89,8 @@ fn main() -> ! {
     // When CTRLA.COUNTSYNC is enabled, the first COUNT value is not correctly synchronized and thus it
     // is a wrong value.
 
-
     // clear flag
     mode0.intflag().write(|w| w.cmp0().set_bit());
-
 
     // wait for count to be ready
     sync_wait!(mode0, count);
@@ -107,13 +100,10 @@ fn main() -> ! {
     let next = count + (5 * 32_768);
     rprintln!("count is {}, waking up at {}", count, next);
 
-
     mode0.comp(0).write(|w| unsafe { w.comp().bits(next) });
     // wait write
 
-
     sync_wait!(mode0, comp0);
-
 
     mode0.intflag().write(|w| w.cmp0().set_bit());
     // enable interupt
@@ -123,8 +113,9 @@ fn main() -> ! {
     //     BACKLIGHT_PIN.borrow_ref_mut(cs).set_low();
     // });
 
-
-    unsafe { NVIC::unmask(Interrupt::RTC); }
+    unsafe {
+        NVIC::unmask(Interrupt::RTC);
+    }
 
     // Enable the RTC
     mode0.ctrla().modify(|_, w| w.enable().set_bit());
@@ -142,31 +133,29 @@ fn RTC() {
     // unsafe { NVIC::mask(Interrupt::RTC) };
 
     critical_section::with(|_cs| {
+        let peripherals = unsafe { Peripherals::steal() };
 
-    let peripherals = unsafe { Peripherals::steal() };
+        let mode0 = peripherals.rtc.mode0();
 
-    let mode0 = peripherals.rtc.mode0();
+        // is this actually an RTC compare0 interrupt
+        if mode0.intflag().read().cmp0().bit_is_set() {
+            // clear the interrupt bit
 
-    // is this actually an RTC compare0 interrupt
-    if mode0.intflag().read().cmp0().bit_is_set() {
-        // clear the interrupt bit
+            critical_section::with(|cs| {
+                BACKLIGHT_PIN.borrow_ref_mut(cs).toggle();
+            });
 
-        critical_section::with(|cs| {
-            BACKLIGHT_PIN.borrow_ref_mut(cs).toggle();
-        });
+            sync_wait!(mode0, count);
+            let count: u32 = mode0.count().read().count().bits();
+            // add 5 seconds
+            let next = count + (2 * 32_768);
+            rprintln!("count is {}, waking up at {}", count, next);
 
-
-        sync_wait!(mode0, count);
-        let count: u32 = mode0.count().read().count().bits();
-        // add 5 seconds
-        let next = count + (2 * 32_768);
-        rprintln!("count is {}, waking up at {}", count, next);
-
-        mode0.comp(0).write(|w| unsafe { w.comp().bits(next) });
-        // wait write
-        sync_wait!(mode0, comp0);
-        mode0.intflag().write(|w| w.cmp0().set_bit());
-    }
-    // unsafe { NVIC::unmask(Interrupt::RTC) };
-        })
+            mode0.comp(0).write(|w| unsafe { w.comp().bits(next) });
+            // wait write
+            sync_wait!(mode0, comp0);
+            mode0.intflag().write(|w| w.cmp0().set_bit());
+        }
+        // unsafe { NVIC::unmask(Interrupt::RTC) };
+    })
 }
