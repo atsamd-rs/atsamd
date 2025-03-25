@@ -58,6 +58,9 @@ version = "0.5"
 [dev-dependencies.ws2812-timer-delay]
 version = "~0.3"
 
+[dev-dependencies.rtt-target]
+version = "0.6"
+
 [features]
 # ask the HAL to enable atsamd51j support
 default = ["rt", "atsamd-hal/samd51j"]
