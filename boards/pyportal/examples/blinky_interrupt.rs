@@ -23,12 +23,10 @@ macro_rules! sync_wait {
     };
 }
 
-static BACKLIGHT_PIN: Mutex<RefCell<RedLed>> =
-    Mutex::new(RefCell::new(unsafe { mem::zeroed() }));
+static BACKLIGHT_PIN: Mutex<RefCell<RedLed>> = Mutex::new(RefCell::new(unsafe { mem::zeroed() }));
 
 #[entry]
 fn main() -> ! {
-
     rtt_target::rtt_init_print!();
 
     let peripherals = Peripherals::take().unwrap();
@@ -79,7 +77,8 @@ fn main() -> ! {
         // Use 32 bit counter
         w.prescaler().div1();
         // The COUNT register requires synchronization when reading.
-        // Disabling the synchronization will prevent reading valid values from the COUNT register.
+        // Disabling the synchronization will prevent reading valid values from the
+        // COUNT register.
         w.countsync().set_bit();
         w.matchclr().clear_bit();
         w
@@ -87,8 +86,8 @@ fn main() -> ! {
     // write sync for countsync
     let init = mode0.count().read().count().bits();
     sync_wait!(mode0, countsync);
-    // When CTRLA.COUNTSYNC is enabled, the first COUNT value is not correctly synchronized and thus it
-    // is a wrong value.
+    // When CTRLA.COUNTSYNC is enabled, the first COUNT value is not correctly
+    // synchronized and thus it is a wrong value.
 
     // clear flag
     mode0.intflag().write(|w| w.cmp0().set_bit());
