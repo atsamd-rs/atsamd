@@ -23,25 +23,26 @@ macro_rules! sync_wait {
     };
 }
 
-static BACKLIGHT_PIN: Mutex<RefCell<bsp::TftBacklight>> =
+static BACKLIGHT_PIN: Mutex<RefCell<RedLed>> =
     Mutex::new(RefCell::new(unsafe { mem::zeroed() }));
 
 #[entry]
 fn main() -> ! {
+
     rtt_target::rtt_init_print!();
 
     let peripherals = Peripherals::take().unwrap();
-    let mut core = CorePeripherals::take().unwrap();
+    let _core = CorePeripherals::take().unwrap();
 
     let pins = bsp::Pins::new(peripherals.port);
-    let mut red_led: bsp::TftBacklight = pin_alias!(pins.tft_backlight).into();
+    let red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
     critical_section::with(|cs| {
         let _ = BACKLIGHT_PIN.replace(cs, red_led);
-        BACKLIGHT_PIN.borrow_ref_mut(cs).set_low();
+        BACKLIGHT_PIN.borrow_ref_mut(cs).set_low().unwrap();
     });
 
-    // rprintln!("starting up");
+    rprintln!("starting up");
 
     // enable global interrupts
     unsafe {
@@ -142,7 +143,7 @@ fn RTC() {
             // clear the interrupt bit
 
             critical_section::with(|cs| {
-                BACKLIGHT_PIN.borrow_ref_mut(cs).toggle();
+                BACKLIGHT_PIN.borrow_ref_mut(cs).toggle().unwrap();
             });
 
             sync_wait!(mode0, count);
