@@ -44,7 +44,6 @@ embedded-graphics = "0.8.1"
 embassy-time = "0.4"
 critical-section = "1.2.0"
 
-
 [dev-dependencies.embassy-executor]
 version = "0.7"
 features = ["arch-cortex-m", "executor-thread", "task-arena-size-256"]
