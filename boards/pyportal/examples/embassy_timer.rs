@@ -7,10 +7,8 @@ use panic_halt as _;
 use panic_semihosting as _;
 
 use bsp::{hal, pac, pin_alias};
+use hal::ehal::digital::StatefulOutputPin;
 use pyportal as bsp;
-use hal::{
-    ehal::digital::StatefulOutputPin,
-};
 
 use embassy_time::Timer;
 
