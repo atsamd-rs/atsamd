@@ -1,3 +1,6 @@
+//! This is a driver for embassy-time
+//! it must be initialized by calling `init()`
+//! which will configure the chip's RTC
 use core::cell::RefCell;
 use core::task::Waker;
 

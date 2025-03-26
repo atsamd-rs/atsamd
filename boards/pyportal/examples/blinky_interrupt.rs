@@ -9,7 +9,7 @@ use bsp::{
     pac::{interrupt, CorePeripherals, Interrupt, Peripherals},
     pin_alias, RedLed,
 };
-use cortex_m::peripheral::NVIC;
+use cortex_m::{asm, peripheral::NVIC};
 use cortex_m_rt::entry;
 use critical_section::Mutex;
 use pyportal as bsp;
@@ -125,7 +125,9 @@ fn main() -> ! {
     // write sync for RTC enable
     sync_wait!(mode0, enable);
 
-    loop {}
+    loop {
+        asm::wfi();
+    }
 }
 
 #[interrupt]
