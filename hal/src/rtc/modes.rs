@@ -54,7 +54,6 @@ macro_rules! create_rtc_interrupt {
             fn enable(rtc: &Rtc) {
                 // SYNC: write
                 rtc.$mode().intenset().write(|w| w.$bit().set_bit());
-                sync_wait!(rtc, enable)
             }
 
             #[inline]
@@ -72,6 +71,8 @@ macro_rules! create_rtc_interrupt {
     };
 }
 
+// will be unused in boards that don't use syncbusy
+#[allow(unused_macros)]
 macro_rules! sync_wait {
     ($rtc:expr, $register:ident) => {
         while $rtc.mode0().syncbusy().read().$register().bit_is_set() {}
@@ -170,6 +171,8 @@ pub trait RtcMode {
     #[inline]
     #[hal_macro_helper]
     fn start_and_initialize(rtc: &Rtc) {
+        Self::enable(rtc);
+
         // Enable counter sync on SAMx5x, the counter cannot be read otherwise.
         #[hal_cfg("rtc-d5x")]
         {
@@ -326,12 +329,14 @@ pub mod mode0 {
         }
 
         #[inline]
+        #[hal_macro_helper]
         fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
             // SYNC: Write
             unsafe {
                 rtc.mode0().comp(number).write(|w| w.comp().bits(value));
             }
 
+            #[hal_cfg("rtc-d5x")]
             match number {
                 0 => sync_wait!(rtc, comp0),
                 1 => sync_wait!(rtc, comp1),
@@ -354,8 +359,8 @@ pub mod mode0 {
                 // SYNC: None
                 rtc.mode0().readreq().modify(|_, w| w.rreq().set_bit());
             }
-
             // SYNC: Read/Write
+            #[hal_cfg("rtc-d5x")]
             sync_wait!(rtc, count);
             rtc.mode0().count().read().bits()
         }
