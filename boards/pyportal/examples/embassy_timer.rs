@@ -12,6 +12,8 @@ use pyportal as bsp;
 
 use embassy_time::Timer;
 
+hal::embassy_time!(Driver);
+
 #[embassy_executor::main]
 async fn main(_s: embassy_executor::Spawner) {
     let peripherals = pac::Peripherals::take().unwrap();
@@ -22,7 +24,7 @@ async fn main(_s: embassy_executor::Spawner) {
     // Select the 32khz source
     // SAFETY: not in a critical section
     unsafe {
-        hal::rtc::embassy::init();
+        Driver::init();
     }
 
     loop {
