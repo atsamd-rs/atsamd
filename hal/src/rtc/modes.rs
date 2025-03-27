@@ -52,7 +52,7 @@ macro_rules! create_rtc_interrupt {
         impl RtcInterrupt for $name {
             #[inline]
             fn enable(rtc: &Rtc) {
-                // SYNC: write
+                // SYNC: None
                 rtc.$mode().intenset().write(|w| w.$bit().set_bit());
             }
 
@@ -152,14 +152,10 @@ pub trait RtcMode {
         rtc.mode0().ctrla().modify(|_, w| w.swrst().set_bit());
 
         // Wait for the reset to complete
-        // SYNC: Write (we just read though)
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         while rtc.mode0().ctrl().read().swrst().bit_is_set() {}
         #[hal_cfg("rtc-d5x")]
-        {
-            while rtc.mode0().ctrla().read().swrst().bit_is_set() {}
-            sync_wait!(rtc, swrst)
-        }
+        sync_wait!(rtc, swrst)
     }
 
     /// Starts the RTC and does any required initialization for this mode.
@@ -185,8 +181,6 @@ pub trait RtcMode {
                 w
             });
             sync_wait!(rtc, countsync);
-
-            Self::enable(rtc);
 
             // Errata: The first read of the count is incorrect so we need to read it
             // then wait for it to change.
@@ -248,6 +242,7 @@ pub trait RtcMode {
     #[hal_macro_helper]
     fn disable(rtc: &Rtc) {
         // NOTE: This register and field are the same in all modes.
+        // SYNC: write
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         rtc.mode0().ctrl().modify(|_, w| w.enable().clear_bit());
         #[hal_cfg("rtc-d5x")]
@@ -267,6 +262,7 @@ pub trait RtcMode {
     #[hal_macro_helper]
     fn enable(rtc: &Rtc) {
         // NOTE: This register and field are the same in all modes.
+        // SYNC: write
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         rtc.mode0().ctrl().modify(|_, w| w.enable().set_bit());
         #[hal_cfg("rtc-d5x")]
@@ -322,6 +318,7 @@ pub mod mode0 {
         #[hal_macro_helper]
         fn set_mode(rtc: &Rtc) {
             // NOTE: This register and field are the same in all modes.
+            // SYNC: None
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
             rtc.mode0().ctrl().modify(|_, w| w.mode().count32());
             #[hal_cfg("rtc-d5x")]
