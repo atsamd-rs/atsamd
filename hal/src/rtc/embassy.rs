@@ -5,13 +5,12 @@
 use core::cell::RefCell;
 use core::task::Waker;
 
-
-use atsamd_hal_macros::hal_cfg;
 use crate::pac::{Interrupt, Rtc, NVIC};
 use crate::rtc::modes::{
     mode0::{Compare0, RtcMode0},
     RtcMode,
 };
+use atsamd_hal_macros::hal_cfg;
 use critical_section::{CriticalSection, Mutex};
 use embassy_time_driver::Driver;
 use embassy_time_queue_utils::Queue;
@@ -23,6 +22,7 @@ pub struct EmbassyBackend {
 }
 
 impl EmbassyBackend {
+    #[allow(clippy::new_without_default)]
     pub const fn new() -> Self {
         Self {
             queue: Mutex::new(RefCell::new(Queue::new())),
@@ -47,7 +47,7 @@ impl EmbassyBackend {
             // Assume the current time is the time the interrupt is set for
             let now = RtcMode0::get_compare(rtc, 0) as u64;
             let next = self.queue.borrow_ref_mut(cs).next_expiration(now);
-            self.set_alarm(&cs, next, &rtc);
+            self.set_alarm(&cs, next, rtc);
             RtcMode0::clear_interrupt_flag::<Compare0>(rtc);
         }
     }
@@ -97,7 +97,6 @@ impl Driver for EmbassyBackend {
     }
 }
 
-
 pub trait EmbassyRtcSource {}
 
 #[hal_cfg(any("clock-d11", "clock-d21"))]
@@ -105,10 +104,9 @@ mod rtc_src {
     impl super::EmbassyRtcSource for crate::clock::RtcClock {}
 }
 
-
 #[hal_cfg("clock-d5x")]
-mod rtc_src{
-    use crate::clock::v2::{rtcosc::RtcOsc, osculp32k::OscUlp32kId, xosc32k::Xosc32kId};
+mod rtc_src {
+    use crate::clock::v2::{osculp32k::OscUlp32kId, rtcosc::RtcOsc, xosc32k::Xosc32kId};
     impl super::EmbassyRtcSource for RtcOsc<OscUlp32kId> {}
     impl super::EmbassyRtcSource for RtcOsc<Xosc32kId> {}
 }
@@ -125,7 +123,7 @@ use rtc_src::*;
 ///
 /// #[embassy_executor::main]
 /// async fn main(_s: embassy_executor::Spawner) {
-///     let rtc_token = set_up_clock!(); 
+///     let rtc_token = set_up_clock!();
 ///     /// Safety: called outside a critical section
 ///     unsafe {
 ///       Driver::init(rtc_token);
@@ -136,15 +134,15 @@ use rtc_src::*;
 macro_rules! embassy_time {
     ($name: ident) => {
 
-        use crate::pac::interrupt;
-        use crate::hal::{embassy_time_driver, rtc::embassy::{EmbassyBackend, EmbassyRtcSource}};
+        use $crate::pac::interrupt;
+        use $crate::{embassy_time_driver, rtc::embassy::{EmbassyBackend, EmbassyRtcSource}};
 
         embassy_time_driver::time_driver_impl!(static DRIVER: EmbassyBackend = EmbassyBackend::new());
 
-        #[crate::pac::interrupt]
+        #[$crate::pac::interrupt]
         fn RTC() {
             critical_section::with(|cs| {
-                let rtc = unsafe { crate::pac::Rtc::steal() };
+                let rtc = unsafe { $crate::pac::Rtc::steal() };
                 DRIVER.handle_interrupt(&rtc, cs)
             });
         }
