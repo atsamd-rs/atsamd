@@ -5,7 +5,9 @@
 use core::cell::RefCell;
 use core::task::Waker;
 
-use crate::pac::{Interrupt, Osc32kctrl, Rtc, NVIC};
+
+use atsamd_hal_macros::hal_cfg;
+use crate::pac::{Interrupt, Rtc, NVIC};
 use crate::rtc::modes::{
     mode0::{Compare0, RtcMode0},
     RtcMode,
@@ -54,9 +56,6 @@ impl EmbassyBackend {
     ///
     /// This enables interrupts, which can break out of critical sections
     pub unsafe fn init() {
-        let osc32 = Osc32kctrl::steal();
-        osc32.rtcctrl().write(|w| w.rtcsel().ulp32k());
-
         let rtc = Rtc::steal();
 
         RtcMode0::disable(&rtc);
@@ -98,17 +97,38 @@ impl Driver for EmbassyBackend {
     }
 }
 
+
+pub trait EmbassyRtcSource {}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod rtc_src {
+    impl super::EmbassyRtcSource for crate::clock::RtcClock {}
+}
+
+
+#[hal_cfg("clock-d5x")]
+mod rtc_src{
+    use crate::clock::v2::{rtcosc::RtcOsc, osculp32k::OscUlp32kId, xosc32k::Xosc32kId};
+    impl super::EmbassyRtcSource for RtcOsc<OscUlp32kId> {}
+    impl super::EmbassyRtcSource for RtcOsc<Xosc32kId> {}
+}
+
+#[allow(unused_imports)]
+use rtc_src::*;
+
 /// Create an embassy-time compliant driver
 /// This driver should be called outside any function
 /// The driver must be started by calling init() on the created struct
+/// with an RTC token to indicate proper configuration
 /// ```invalid
 /// rtc::embassy::embassy_time!(Driver);
 ///
 /// #[embassy_executor::main]
 /// async fn main(_s: embassy_executor::Spawner) {
+///     let rtc_token = set_up_clock!(); 
 ///     /// Safety: called outside a critical section
 ///     unsafe {
-///       Driver::init();
+///       Driver::init(rtc_token);
 ///     }
 /// }
 /// ```
@@ -117,7 +137,7 @@ macro_rules! embassy_time {
     ($name: ident) => {
 
         use crate::pac::interrupt;
-        use crate::hal::{embassy_time_driver, rtc::embassy::EmbassyBackend};
+        use crate::hal::{embassy_time_driver, rtc::embassy::{EmbassyBackend, EmbassyRtcSource}};
 
         embassy_time_driver::time_driver_impl!(static DRIVER: EmbassyBackend = EmbassyBackend::new());
 
@@ -132,7 +152,7 @@ macro_rules! embassy_time {
         pub struct $name;
 
         impl $name {
-            unsafe fn init() {
+            unsafe fn init<SRC>(_rtc: SRC) where SRC: EmbassyRtcSource {
                 EmbassyBackend::init();
             }
         }
