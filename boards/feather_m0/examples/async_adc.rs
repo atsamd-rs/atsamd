@@ -11,17 +11,20 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use bsp::entry;
 use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc, Config, Prescaler, Resolution},
+    adc::{Accumulation, Adc, Adc0, Config, Prescaler, Resolution},
     clock::GenericClockController,
 };
 
-#[entry]
-fn main() -> ! {
+atsamd_hal::bind_interrupts!(struct Irqs {
+    ADC => atsamd_hal::adc::InterruptHandler<Adc0>;
+});
+
+#[embassy_executor::main]
+async fn main(_s: embassy_executor::Spawner) -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let _core = CorePeripherals::take().unwrap();
 
@@ -50,13 +53,13 @@ fn main() -> ! {
         &mut peripherals.pm,
         &adc_clock,
     )
-    .unwrap();
+    .unwrap()
+    .into_future(Irqs);
     let mut adc_pin = pins.a0.into_alternate();
 
     loop {
-        #[allow(dead_code)]
         let mut buffer = [0; 16];
-        let res = adc.read_buffer_blocking(&mut adc_pin, &mut buffer).unwrap();
+        let res = adc.read_buffer(&mut adc_pin, &mut buffer).await.unwrap();
         #[cfg(feature = "use_semihosting")]
         cortex_m_semihosting::hprintln!("Result: {:?}", res).unwrap();
     }
