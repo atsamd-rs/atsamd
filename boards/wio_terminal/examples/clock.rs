@@ -27,7 +27,6 @@ use wio::pac::{interrupt, CorePeripherals, Peripherals};
 use wio::prelude::*;
 
 use core::fmt::Write;
-use heapless::consts::U16;
 use heapless::String;
 use wio::hal::rtc;
 
@@ -118,7 +117,7 @@ fn main() -> ! {
         let time =
             disable_interrupts(|_| unsafe { RTC.as_mut().map(|rtc| rtc.current_time()) }).unwrap();
 
-        let mut data = String::<U16>::new();
+        let mut data = String::<16>::new();
         write!(
             data,
             "{:02}:{:02}:{:02}",

@@ -22,7 +22,7 @@ use eg::pixelcolor::Rgb565;
 use eg::prelude::*;
 use eg::text::{Baseline, Text};
 
-use heapless::{consts::U256, String};
+use heapless::String;
 
 #[entry]
 fn main() -> ! {
@@ -51,7 +51,7 @@ fn main() -> ! {
         )
         .unwrap();
     clear(&mut display);
-    let mut textbuffer = String::<U256>::new();
+    let mut textbuffer = String::<256>::new();
 
     let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_low().unwrap();

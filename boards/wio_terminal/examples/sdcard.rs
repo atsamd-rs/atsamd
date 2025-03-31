@@ -20,7 +20,6 @@ use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
 
 use core::fmt::Write;
-use heapless::consts::U128;
 use heapless::String;
 
 use embedded_sdmmc::{TimeSource, Timestamp, VolumeIdx};
@@ -74,7 +73,7 @@ fn main() -> ! {
                 // a reasonable speed.
                 cont.set_baud(20.MHz());
 
-                let mut data = String::<U128>::new();
+                let mut data = String::<128>::new();
                 write!(data, "OK! ").unwrap();
                 match cont.device().card_size_bytes() {
                     Ok(size) => writeln!(data, "{}Mb", size / 1024 / 1024).unwrap(),
@@ -86,7 +85,7 @@ fn main() -> ! {
                     .unwrap();
 
                 if let Err(e) = print_contents(&mut cont, &mut display) {
-                    let mut data = String::<U128>::new();
+                    let mut data = String::<128>::new();
                     writeln!(data, "Err: {:?}", e).unwrap();
                     Text::with_baseline(data.as_str(), Point::new(4, 20), style, Baseline::Top)
                         .draw(&mut display)
@@ -95,7 +94,7 @@ fn main() -> ! {
                 }
             }
             Err(e) => {
-                let mut data = String::<U128>::new();
+                let mut data = String::<128>::new();
                 writeln!(data, "Error!: {:?}", e).unwrap();
                 Text::with_baseline(data.as_str(), Point::new(4, 2), style, Baseline::Top)
                     .draw(&mut display)
@@ -128,7 +127,7 @@ fn print_contents(
 
     let mut count = 0;
     let out = cont.iterate_dir(&volume, &dir, |ent| {
-        let mut data = String::<U128>::new();
+        let mut data = String::<128>::new();
         writeln!(data, "{} - {:?}", ent.name, ent.attributes).unwrap();
         Text::with_baseline(
             data.as_str(),
