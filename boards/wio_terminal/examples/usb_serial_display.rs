@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 /// Makes the wio_terminal appear as a USB serial port. The screen can
 /// be written to by sending messages down the serial port.

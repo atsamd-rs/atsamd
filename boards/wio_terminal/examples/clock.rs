@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 /// Makes the wio_terminal appear as a USB serial port, and display
 /// the time on the screen.
