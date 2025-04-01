@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 use embedded_graphics as eg;
 use panic_halt as _;

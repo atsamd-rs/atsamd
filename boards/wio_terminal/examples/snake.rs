@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 use core::fmt::Debug;
 use embedded_graphics as eg;
