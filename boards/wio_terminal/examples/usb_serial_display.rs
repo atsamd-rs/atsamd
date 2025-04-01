@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 /// Makes the wio_terminal appear as a USB serial port. The screen can
 /// be written to by sending messages down the serial port.
@@ -27,7 +28,6 @@ use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 use wio::hal::usb::UsbBus;
 
-use heapless::consts::U16;
 use heapless::spsc::Queue;
 
 #[entry]
@@ -206,7 +206,7 @@ impl<'a> Terminal<'a> {
 static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
 static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
 static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
-static mut Q: Queue<TextSegment, U16> = Queue(heapless::i::Queue::new());
+static mut Q: Queue<TextSegment, 16> = Queue::new();
 
 fn poll_usb() {
     unsafe {

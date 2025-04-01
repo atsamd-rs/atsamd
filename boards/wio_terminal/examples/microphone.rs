@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 use embedded_graphics as eg;
 use panic_halt as _;
@@ -20,13 +21,12 @@ use eg::pixelcolor::Rgb565;
 use eg::prelude::*;
 use eg::primitives::{PrimitiveStyleBuilder, Rectangle};
 use eg::text::{Baseline, Text};
-use heapless::consts::*;
 use heapless::String;
 
 use heapless::spsc::Queue;
 struct Ctx {
     adc: InterruptAdc<ADC1, ConversionMode>,
-    samples: Queue<u16, U8>,
+    samples: Queue<u16, 8>,
 }
 static mut CTX: Option<Ctx> = None;
 
@@ -61,7 +61,7 @@ fn main() -> ! {
         )
         .unwrap();
     let mut terminal = Terminal::new(display);
-    let mut textbuffer = String::<U256>::new();
+    let mut textbuffer = String::<256>::new();
 
     let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_high().unwrap();

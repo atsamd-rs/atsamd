@@ -9,7 +9,6 @@ use atsamd_hal::{
     sercom::{uart, IoSet2, Sercom0},
 };
 use bbqueue::{self, BBBuffer, Consumer, Producer};
-use heapless::consts::*;
 
 use cortex_m::interrupt::CriticalSection;
 use cortex_m::peripheral::NVIC;
@@ -119,7 +118,7 @@ impl Wifi {
 
     /// Convenience function to connection an access point with the given
     /// network name and security parameters, and request an IP via DHCP.
-    pub fn connect_to_ap<S: Into<heapless::String<U64>>, P: Into<heapless::String<U64>>>(
+    pub fn connect_to_ap<S: TryInto<heapless::String<64>>, P: TryInto<heapless::String<64>>>(
         &mut self,
         delay: &mut Delay,
         ssid: S,
@@ -139,8 +138,8 @@ impl Wifi {
         })?;
 
         self.blocking_rpc(rpcs::WifiConnect {
-            ssid: ssid.into(),
-            password: pw.into(),
+            ssid: ssid.try_into().map_err(|_| erpc::Err::Unknown)?,
+            password: pw.try_into().map_err(|_| erpc::Err::Unknown)?,
             security: security,
             semaphore: 0,
         })?;
@@ -262,7 +261,7 @@ impl Wifi {
         }
     }
 
-    fn write_frame(&mut self, msg: &heapless::Vec<u8, U64>) -> Result<(), ()> {
+    fn write_frame(&mut self, msg: &heapless::Vec<u8, 64>) -> Result<(), ()> {
         let header = erpc::FrameHeader::new_from_msg(msg);
         self.tx(header.as_bytes().iter().chain(msg));
         Ok(())

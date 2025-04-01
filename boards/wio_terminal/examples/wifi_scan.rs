@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 use embedded_graphics as eg;
 use panic_halt as _;
@@ -21,7 +22,7 @@ use eg::prelude::*;
 use eg::primitives::{PrimitiveStyleBuilder, Rectangle};
 use eg::text::{Baseline, Text};
 
-use heapless::{consts::U256, String};
+use heapless::String;
 
 #[entry]
 fn main() -> ! {
@@ -50,7 +51,7 @@ fn main() -> ! {
         )
         .unwrap();
     clear(&mut display);
-    let mut textbuffer = String::<U256>::new();
+    let mut textbuffer = String::<256>::new();
 
     let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_high().unwrap();

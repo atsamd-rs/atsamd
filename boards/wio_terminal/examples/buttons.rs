@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 use embedded_graphics as eg;
 use panic_halt as _;
@@ -17,7 +18,7 @@ use wio::{button_interrupt, entry, Button, ButtonController, ButtonEvent};
 
 use cortex_m::interrupt::{free as disable_interrupts, CriticalSection};
 
-use heapless::{consts::U8, spsc::Queue};
+use heapless::spsc::Queue;
 
 #[entry]
 fn main() -> ! {
@@ -174,7 +175,7 @@ where
 }
 
 static mut BUTTON_CTRLR: Option<ButtonController> = None;
-static mut Q: Queue<ButtonEvent, U8> = Queue(heapless::i::Queue::new());
+static mut Q: Queue<ButtonEvent, 8> = Queue::new();
 
 button_interrupt!(
     BUTTON_CTRLR,
