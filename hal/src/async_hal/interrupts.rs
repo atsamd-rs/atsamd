@@ -185,6 +185,12 @@ declare_interrupts!(TC4);
 #[hal_cfg("tc5")]
 declare_interrupts!(TC5);
 
+#[hal_cfg("tc6")]
+declare_interrupts!(TC6);
+
+#[hal_cfg("tc7")]
+declare_interrupts!(TC7);
+
 // ----------  EIC Interrupt ---------- //
 #[hal_cfg(any("eic-d11", "eic-d21"))]
 declare_interrupts!(EIC);
