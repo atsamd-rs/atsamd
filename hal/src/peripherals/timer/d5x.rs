@@ -9,6 +9,8 @@ use crate::pac::tc0::Count16 as Count16Reg;
 use crate::pac::{Mclk, Tc2, Tc3};
 #[hal_cfg(all("tc4", "tc5"))]
 use crate::pac::{Tc4, Tc5};
+#[hal_cfg(all("tc6", "tc7"))]
+use crate::pac::{Tc6, Tc7};
 use crate::timer_params::TimerParams;
 use crate::timer_traits::InterruptDrivenTimer;
 
@@ -203,4 +205,10 @@ tc! {
 tc! {
     TimerCounter4: (Tc4, tc4_, Tc4Tc5Clock, apbcmask),
     TimerCounter5: (Tc5, tc5_, Tc4Tc5Clock, apbcmask),
+}
+
+#[hal_cfg(all("tc6", "tc7"))]
+tc! {
+    TimerCounter6: (Tc6, tc6_, Tc6Tc7Clock, apbdmask),
+    TimerCounter7: (Tc7, tc7_, Tc6Tc7Clock, apbdmask),
 }
