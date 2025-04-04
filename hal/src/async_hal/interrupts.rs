@@ -321,6 +321,8 @@ pub trait Interrupt: crate::typelevel::Sealed {
     /// Equivalent to [`set_priority`](Self::set_priority), except you pass a
     /// [`CriticalSection`] to prove you've already acquired a critical
     /// section. This prevents acquiring another one, which saves code size.
+    ///
+    /// [`CriticalSection`]: critical_section::CriticalSection
     #[inline]
     fn set_priority_with_cs(cs: critical_section::CriticalSection, prio: Priority) {
         Self::IRQ.set_priority_with_cs(cs, prio)

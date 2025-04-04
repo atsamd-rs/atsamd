@@ -163,6 +163,8 @@ pub trait InterruptExt: cortex_m::interrupt::InterruptNumber + Copy {
     /// Equivalent to [`set_priority`](Self::set_priority), except you pass a
     /// [`CriticalSection`] to prove you've already acquired a critical
     /// section. This prevents acquiring another one, which saves code size.
+    ///
+    /// [`CriticalSection`]: critical_section::CriticalSection
     #[inline]
     fn set_priority_with_cs(self, _cs: critical_section::CriticalSection, prio: Priority) {
         unsafe {
