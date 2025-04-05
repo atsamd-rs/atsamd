@@ -344,7 +344,8 @@ impl<D: DpllId> DpllToken<D> {
             unsafe { w.div().bits(div) };
             w.refclk().variant(id.into());
             w.lbypass().bit(settings.lock_bypass);
-            w.wuf().bit(settings.wake_up_fast)
+            w.wuf().bit(settings.wake_up_fast);
+            unsafe { w.filter().bits(settings.filter as u8) }
         });
         // Safety: The values are masked to the correct bit width by the PAC.
         // Invalid values here could produce invalid clock frequencies, but that
@@ -537,6 +538,47 @@ impl DpllSourceId for Xosc32kId {
 // Settings
 //==============================================================================
 
+/// [`Dpll`] Proportional Integral Filter
+///
+/// Filter settings affect PLL stability and jitter.  The datasheet suggests a
+/// good compromise is automatically selected, however this API allows manual
+/// selection.
+#[derive(Copy, Clone)]
+pub enum PiFilter {
+    /// PLL Bandwidth 23.2kHz, Damping Factor 0.75
+    Bw23p2kHzDf0p75 = 0xA,
+    /// PLL Bandwidth 32.8kHz, Damping Factor 0.53
+    Bw32p8kHzDf0p53 = 0xE,
+    /// PLL Bandwidth 32.8kHz, Damping Factor 1.06
+    Bw32p8kHzDf1p06 = 0xB,
+    /// PLL Bandwidth 46.4kHz, Damping Factor 0.38
+    Bw46p4kHzDf0p38 = 0x2,
+    /// PLL Bandwidth 46.4kHz, Damping Factor 0.75
+    Bw46p4kHzDf0p75 = 0xF,
+    /// PLL Bandwidth 46.4kHz, Damping Factor 1.49
+    Bw46p4kHzDf1p49 = 0x8,
+    /// PLL Bandwidth 65.6kHz, Damping Factor 0.28
+    Bw65p6kHzDf0p28 = 0x6,
+    /// PLL Bandwidth 65.6kHz, Damping Factor 0.54
+    Bw65p6kHzDf0p54 = 0x3,
+    /// PLL Bandwidth 65.6kHz, Damping Factor 1.07
+    Bw65p6kHzDf1p07 = 0xC,
+    /// PLL Bandwidth 65.6kHz, Damping Factor 2.11
+    Bw65p6kHzDf2p11 = 0x9,
+    /// PLL Bandwidth 92.7kHz, Damping Factor 0.39
+    Bw92p7kHzDf0p39 = 0x7,
+    /// PLL Bandwidth 92.7kHz, Damping Factor 0.76
+    Bw92p7kHzDf0p76 = 0x0,
+    /// PLL Bandwidth 92.7kHz, Damping Factor 1.51
+    Bw92p7kHzDf1p51 = 0xD,
+    /// PLL Bandwidth 131kHz, Damping Factor 0.56
+    Bw131kHzDf0p56 = 0x4,
+    /// PLL Bandwidth 131kHz, Damping Factor 1.08
+    Bw131kHzDf1p08 = 0x1,
+    /// PLL Bandwidth 185kHz, Damping Factor 0.79
+    Bw185kHzDf0p79 = 0x5,
+}
+
 /// [`Dpll`] settings relevant to all reference clocks
 #[derive(Copy, Clone)]
 struct Settings {
@@ -546,6 +588,7 @@ struct Settings {
     wake_up_fast: bool,
     on_demand: bool,
     run_standby: bool,
+    filter: PiFilter,
 }
 
 /// Store and retrieve [`Dpll`] settings for different reference clocks
@@ -675,6 +718,7 @@ where
             wake_up_fast: false,
             on_demand: true,
             run_standby: false,
+            filter: PiFilter::Bw92p7kHzDf0p76,
         };
         Self {
             token,
@@ -868,6 +912,17 @@ where
     #[inline]
     pub fn wake_up_fast(mut self, wuf: bool) -> Self {
         self.settings.wake_up_fast = wuf;
+        self
+    }
+
+    /// Set digital PI Filter coefficients
+    ///
+    /// Filter settings affect PLL stability and jitter.  The datasheet suggests
+    /// a good compromise is automatically selected, however this API allows
+    /// manual selection.
+    #[inline]
+    pub fn filter(mut self, filter: PiFilter) -> Self {
+        self.settings.filter = filter;
         self
     }
 
