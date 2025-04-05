@@ -382,6 +382,11 @@ impl DfllToken {
         self.dfllctrla().modify(|_, w| w.enable().clear_bit());
         self.wait_sync_enable();
     }
+
+    #[inline]
+    fn is_ready(&self) -> bool {
+        self.oscctrl().status().read().dfllrdy().bit()
+    }
 }
 
 //==============================================================================
@@ -1169,6 +1174,14 @@ where
         f(&mut dfll);
         let dfll = dfll.enable().0;
         (Enabled::new(dfll), old)
+    }
+
+    /// Test whether the [`Dfll`] is ready
+    ///
+    /// reads OSCCTRL STATUS DFLLRDY bit
+    #[inline]
+    pub fn is_ready(&self) -> bool {
+        self.0.token.is_ready()
     }
 }
 
