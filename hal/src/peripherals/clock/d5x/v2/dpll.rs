@@ -345,6 +345,12 @@ impl<D: DpllId> DpllToken<D> {
             w.refclk().variant(id.into());
             w.lbypass().bit(settings.lock_bypass);
             w.wuf().bit(settings.wake_up_fast);
+            if let Some(cap) = settings.dco_filter {
+                w.dcoen().bit(true);
+                unsafe { w.dcofilter().bits(cap as u8); }
+            } else {
+                w.dcoen().bit(false);
+            }
             unsafe { w.filter().bits(settings.filter as u8) }
         });
         // Safety: The values are masked to the correct bit width by the PAC.
@@ -579,6 +585,28 @@ pub enum PiFilter {
     Bw185kHzDf0p79 = 0x5,
 }
 
+/// Capacitor choice for DCO filter
+#[derive(Copy, Clone)]
+pub enum DcoFilter {
+    /// 0.5pF, Bandwidth Fn 3.21MHz
+    C0p5pF = 0,
+    /// 1pF, Bandwidth Fn 1.6MHz
+    C1pF = 1,
+    /// 1.5pF, Bandwidth Fn 1.1MHz
+    C1p5pF = 2,
+    /// 2pF, Bandwidth Fn 0.8MHz
+    C2pF = 3,
+    /// 2.5pF, Bandwidth Fn 0.64MHz
+    C2p5pF = 4,
+    /// 3pF, Bandwidth Fn 0.55MHz
+    C3pF = 5,
+    /// 3.5pF, Bandwidth Fn 0.45MHz
+    C3p5pF = 6,
+    /// 4pF, Bandwidth Fn 0.4MHz
+    C4pF = 7,
+}
+
+
 /// [`Dpll`] settings relevant to all reference clocks
 #[derive(Copy, Clone)]
 struct Settings {
@@ -589,6 +617,7 @@ struct Settings {
     on_demand: bool,
     run_standby: bool,
     filter: PiFilter,
+    dco_filter: Option<DcoFilter>,
 }
 
 /// Store and retrieve [`Dpll`] settings for different reference clocks
@@ -719,6 +748,7 @@ where
             on_demand: true,
             run_standby: false,
             filter: PiFilter::Bw92p7kHzDf0p76,
+            dco_filter: None,
         };
         Self {
             token,
@@ -923,6 +953,13 @@ where
     #[inline]
     pub fn filter(mut self, filter: PiFilter) -> Self {
         self.settings.filter = filter;
+        self
+    }
+
+    /// Enable sigma-delta DAC low pass filter
+    #[inline]
+    pub fn dco_filter(mut self, capacitor: DcoFilter) -> Self {
+        self.settings.dco_filter = Some(capacitor);
         self
     }
 
