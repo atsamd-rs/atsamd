@@ -1,21 +1,27 @@
 //! # Digital Frequency Locked Loop
 //!
 //! The `dfll` module provides access to the 48 MHz digital frequency locked
-//! loop (DFLL) within the `OSCCTRL` peripheral.
+//! loop (DFLL or DFLL48M) within the `OSCCTRL` peripheral.
 //!
 //! ## Operation modes
 //!
-//! The DFLL can operate in both open-loop and closed-loop modes. In open-loop
-//! mode, it uses an internal oscillator to produce an unreferenced, 48 MHz
-//! output clock. While in closed-loop mode, the DFLL multiplies a low-frequency
-//! input clock to yield a 48 MHz output clock. The reference clock can be
-//! provided by a GCLK, through the DFLL peripheral channel clock, or it can be
-//! provided by the USB start-of-frame signal.
-//!
 //! The DFLL is represented by the type [`Dfll<M>`], where `M` is one of three
-//! [`Mode`] types. The default type is [`OpenLoop`], while the other two types,
-//! [`FromPclk`] and [`FromUsb`], represent closed-loop `Mode`s with the
-//! corresponding [`Reference`] clock.
+//! operating [`Mode`] types. The default type is [`OpenLoop`], while the other
+//! two types, [`FromPclk`] and [`FromUsb`], represent closed-loop `Mode`s with
+//! the corresponding [`Reference`] clock.
+//!  
+//! ### Open-loop mode
+//! In open-loop mode, the DFLL uses an internal oscillator to produce an
+//! unreferenced, 48 MHz output clock.
+//!
+//! Open-loop mode can only be used when the main voltage regulator is operating
+//! in linear mode (the default).
+//!
+//! ### Closed-loop modes
+//! In closed-loop mode, the DFLL multiplies a low-frequency input clock to
+//! yield a 48 MHz output clock. The reference clock can be provided by a GCLK,
+//! through the DFLL peripheral channel clock, or it can be provided by the USB
+//! start-of-frame signal.
 //!
 //! ## The DFLL at power-on reset
 //!
@@ -194,8 +200,8 @@
 //! configuration (see the discussion on [`Id` types]).
 //!
 //! For this reason, we define a special [`into_mode`] function on
-//! [`EnabledDfll`]. It will consume the `EnabledDfll` and transform it to use
-//! a different [`Mode`].
+//! [`EnabledDfll`]. It will consume the `EnabledDfll` and transform it to use a
+//! different [`Mode`].
 //!
 //! While the [`Dfll`] constructors (i.e. [`open_loop`], [`from_pclk`], and
 //! [`from_usb`]) handle the [`Mode`] type for you, [`into_mode`] is generic
