@@ -218,6 +218,17 @@ impl Eic {
 
     /// Create and initialize a new [`Eic`], and wire it up to the
     /// ultra-low-power 32kHz clock source.
+    ///
+    /// Due to the way the EIC peripheral is implemented, the EIC Clock MUST
+    /// be driven by the OSC32K clock, this can be done with the V2 clocking API as follows:
+    ///
+    /// ```no_run
+    /// let (osc32k, base) = OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
+    /// let (gclk2, _osc32k) = Gclk::from_source(tokens.gclks.gclk2, osc32k);
+    /// let gclk2_32k = gclk2.enable();
+    /// let (pclk_eic, gclk2_32k) = Pclk::enable(tokens.pclks.eic, gclk2_32k);
+    /// let eic = Eic::new(&mut mclk, pclk_eic.into(), cx.device.eic).split();
+    /// ```
     #[hal_cfg("eic-d5x")]
     pub fn new(mclk: &mut pac::Mclk, _clock: EicClock, eic: pac::Eic) -> Self {
         mclk.apbamask().modify(|_, w| w.eic_().set_bit());
