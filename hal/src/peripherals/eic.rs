@@ -220,7 +220,7 @@ impl Eic {
     /// ultra-low-power 32kHz clock source.
     ///
     /// Due to the way the EIC peripheral is implemented, the EIC Clock MUST
-    /// be driven by the OSC32K clock, this can be done with the V2 clocking 
+    /// be driven by the OSC32K clock, this can be done with the V2 clocking
     /// API as follows:
     ///
     /// ```no_run
