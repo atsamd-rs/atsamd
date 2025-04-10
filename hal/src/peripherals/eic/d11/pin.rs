@@ -57,13 +57,13 @@ where
     /// Note that this function does disable the EIC peripheral briefely in order
     /// to write to the evctrl register.
     pub fn enable_event(&mut self) {
-        self.chan.eic.ctrla().write(|w| w.enable().clear_bit());
+        self.chan.eic.ctrl().write(|w| w.enable().clear_bit());
         self.sync();
         self.chan
             .eic
             .evctrl()
             .modify(|r, w| unsafe { w.bits(r.bits() | (1 << P::ChId::ID)) });
-        self.chan.eic.ctrla().write(|w| w.enable().set_bit());
+        self.chan.eic.ctrl().write(|w| w.enable().set_bit());
         self.sync();
     }
 
@@ -142,7 +142,7 @@ where
     }
 
     fn sync(&self) {
-        while self.chan.eic.syncbusy().read().bits() != 0 {
+        while self.chan.eic.status().read().syncbusy().bit_is_set() {
             core::hint::spin_loop();
         }
     }
