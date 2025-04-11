@@ -18,8 +18,17 @@ pub mod calibration {}
 )]
 pub mod timer {}
 
+#[hal_module(
+    any("clock-d11", "clock-d21") => "pulse_counter/d11.rs",
+    "clock-d5x" => "pulse_counter/d5x.rs",
+)]
+pub mod pulse_counter {}
+
 #[cfg(feature = "device")]
 pub mod eic;
+
+#[cfg(feature = "device")]
+pub mod evsys;
 
 #[cfg(feature = "usb")]
 #[hal_module(

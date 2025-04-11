@@ -1,12 +1,14 @@
 use atsamd_hal_macros::hal_cfg;
+use atsame54p::evsys;
 
-use core::convert::Infallible;
-use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::ehal::digital::{ErrorType, InputPin};
+use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
+use crate::evsys::EvSysChannel;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
+use core::convert::Infallible;
 
 /// The pad macro defines the given EIC pin and implements EicPin for the
 /// given pins. The EicPin implementation will configure the pin for the
@@ -58,6 +60,14 @@ where
     P: EicPin,
     Id: ChId,
 {
+    pub fn enable_evsys_src<EvId: crate::evsys::ChId>(
+        &mut self,
+        chan: EvSysChannel<EvId, crate::evsys::Uninitialized>,
+    ) -> EvSysChannel<EvId, crate::evsys::GenReady> {
+        // EIC External ISR 0..15 = 0x12 - 0x21
+        self.enable_event();
+        chan.register_generator((P::ChId::ID as u8) + 0x12)
+    }
 
     /// Enables event output for the event system for this channel.
     ///
@@ -248,7 +258,35 @@ mod async_impls {
             ExtInt {
                 pin: self.pin,
                 chan: self.chan.change_mode(),
+                evchan: self.evchan,
             }
+        }
+    }
+
+    impl<P, Id, EvId> ExtInt<P, Id, EvId>
+    where
+        P: EicPin,
+        Id: ChId,
+        EvId: crate::evsys::ChId,
+    {
+        /// Turn an EIC pin into a pin usable as a [`Future`](core::future::Future).
+        /// The correct interrupt source is needed.
+        pub fn remove_evchannel(
+            self,
+            ev_chan: EvSysChannel<EvId, crate::evsys::GenReady>,
+        ) -> (
+            ExtInt<P, Id, NoneT, NoneT>,
+            EvSysChannel<EvId, crate::evsys::Uninitialized>,
+        ) {
+            let free_channel = ev_chan.remove_generator();
+            (
+                ExtInt {
+                    pin: self.pin,
+                    chan: self.chan.change_mode(),
+                    evchan: PhantomData::default(),
+                },
+                free_channel,
+            )
         }
     }
 
