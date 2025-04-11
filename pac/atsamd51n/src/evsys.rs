@@ -61,13 +61,13 @@ impl RegisterBlock {
     pub fn channels_iter(&self) -> impl Iterator<Item = &Channels> {
         self.channels.iter()
     }
-    #[doc = "0x120..0x22c - User Multiplexer n"]
+    #[doc = "0x120..0x163 - User Multiplexer n"]
     #[inline(always)]
     pub const fn user(&self, n: usize) -> &User {
         &self.user[n]
     }
     #[doc = "Iterator for array of:"]
-    #[doc = "0x120..0x22c - User Multiplexer n"]
+    #[doc = "0x120..0x163 - User Multiplexer n"]
     #[inline(always)]
     pub fn user_iter(&self) -> impl Iterator<Item = &User> {
         self.user.iter()

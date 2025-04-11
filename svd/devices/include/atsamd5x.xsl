@@ -5,7 +5,18 @@
     actual values expected for this field. -->
   <xsl:template match="/device/peripherals/peripheral[name='NVMCTRL']/registers/register[name='PARAM']/fields/field[name='SEE']/enumeratedValues">
   </xsl:template>
-
+  
+  <!-- EVSYS USER[m] registers have the wrong width (4 bytes vs actual 1)-->
+  <xsl:template match="/device/peripherals/peripheral[name='EVSYS']/registers/register[name='USER[%s]']/dimIncrement">
+    <dimIncrement>1</dimIncrement>
+  </xsl:template>
+  <xsl:template match="/device/peripherals/peripheral[name='EVSYS']/registers/register[name='USER[%s]']/size">
+    <size>8</size>
+  </xsl:template>
+  <xsl:template match="/device/peripherals/peripheral[name='EVSYS']/registers/register[name='USER[%s]']/resetValue">
+    <resetValue>0x00</resetValue>
+  </xsl:template>
+  
   <!-- The SDHC0 peripheral on some devices contains reset values for certain
     fields that are wider than their corresponding storage. Replace the invalid
     values with the ones from the datasheet. -->
