@@ -135,7 +135,7 @@ impl<T: CounterInstance, EvId: crate::evsys::ChId> PulseCounter<T, EvId> {
         while instance.ctrlbset().read().cmd().bits() != 0 {
             core::hint::spin_loop();
         }
-        let res = instance.count().read().bits() + self.evsys_channel.busy() as u16;
+        let res = instance.count().read().bits();
         res
     }
 
