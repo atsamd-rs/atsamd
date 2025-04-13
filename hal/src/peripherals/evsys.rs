@@ -54,9 +54,14 @@
 use atsamd_hal_macros::hal_cfg;
 use core::marker::PhantomData;
 
-use crate::pac::{Evsys, Mclk};
+use crate::pac::Evsys;
 use crate::typelevel::Sealed;
 use seq_macro::seq;
+
+#[hal_cfg("evsys-d5x")]
+use crate::pac::Mclk;
+#[hal_cfg(any("evsys-d21", "evsys-d11"))]
+use crate::pac::Pm;
 
 pub trait Status: Sealed {}
 
@@ -120,6 +125,7 @@ impl<Id: ChId> EvSysChannel<Id, GenReady> {
         self.change_status()
     }
 
+    #[hal_cfg("evsys-d5x")]
     pub fn register_user(self, user_id: usize) -> EvSysChannel<Id, Ready> {
         // Now wire up the generator
         // Multiplexor MUST be wired before the channel
@@ -134,10 +140,39 @@ impl<Id: ChId> EvSysChannel<Id, GenReady> {
         });
         self.change_status()
     }
+
+    #[hal_cfg(any("evsys-d21", "evsys-d11"))]
+    pub fn register_user(self, user_id: usize) -> EvSysChannel<Id, Ready> {
+        // Multiplexor MUST be wired before the channel
+
+        // Select our user
+        self.evsys
+            .user()
+            .write(|w| unsafe { w.user().bits(user_id as u8) });
+
+        // Write the channel we want to connect to it
+        self.evsys
+            .user()
+            .write(|w| unsafe { w.channel().bits(Id::ID as u8 + 1) });
+
+        // Select our channel
+        self.evsys
+            .channel()
+            .write(|w| unsafe { w.channel().bits(Id::ID as u8) });
+
+        // Configure the channel
+        self.evsys.channel().write(|w| {
+            w.path().asynchronous();
+            w.edgsel().no_evt_output();
+            unsafe { w.evgen().bits(self.generator_id) }
+        });
+        self.change_status()
+    }
 }
 
 // Methods that can only be used on a channel that has both ends connected
 impl<Id: ChId> EvSysChannel<Id, Ready> {
+    #[hal_cfg("evsys-d5x")]
     pub fn deregister_user(self, user_id: usize) -> EvSysChannel<Id, GenReady> {
         // Unhook the channel generator
         let reg = self.evsys.channels(Id::ID as usize);
@@ -149,13 +184,14 @@ impl<Id: ChId> EvSysChannel<Id, Ready> {
         self.change_status()
     }
 
-    pub fn busy(&self) -> bool {
+    #[hal_cfg(any("evsys-d21", "evsys-d11"))]
+    pub fn deregister_user(self, user_id: usize) -> EvSysChannel<Id, GenReady> {
+        // Select our user
         self.evsys
-            .channels(Id::ID as usize)
-            .chstatus()
-            .read()
-            .busych()
-            .bit()
+            .user()
+            .write(|w| unsafe { w.user().bits(user_id as u8) });
+        self.evsys.user().write(|w| unsafe { w.channel().bits(0) }); // Disconnect channel
+        self.change_status()
     }
 }
 
@@ -164,6 +200,7 @@ pub struct EvSysController {
     evsys: crate::pac::Evsys,
 }
 
+#[hal_cfg("evsys-d5x")]
 impl EvSysController {
     pub fn new(mclk: &mut Mclk, evsys: crate::pac::Evsys) -> Self {
         mclk.apbbmask().write(|w| w.evsys_().set_bit()); // Enable EVSYS clock
@@ -177,21 +214,35 @@ impl EvSysController {
     }
 }
 
-#[hal_cfg("eic-d11")]
+#[hal_cfg(any("evsys-d21", "evsys-d11"))]
+impl EvSysController {
+    pub fn new(pm: &mut Pm, evsys: crate::pac::Evsys) -> Self {
+        pm.apbcmask().write(|w| w.evsys_().set_bit()); // Enable EVSYS clock
+        evsys.ctrl().write(|w| w.swrst().set_bit());
+        Self { evsys }
+    }
+
+    pub fn free(self, _channels: Channels) -> Evsys {
+        self.evsys.ctrl().write(|w| w.swrst().set_bit());
+        self.evsys
+    }
+}
+
+#[hal_cfg("evsys-d11")]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
         $some_macro! {6}
     };
 }
 
-#[hal_cfg(any("eic-d21"))]
+#[hal_cfg(any("evsys-d21"))]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
         $some_macro! {12}
     };
 }
 
-#[hal_cfg(any("eic-d5x"))]
+#[hal_cfg(any("evsys-d5x"))]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
         $some_macro! {32}
@@ -218,7 +269,7 @@ macro_rules! define_channels_struct {
                 }
             )*
 
-            /// Struct generating individual handles to each EXTINT channel
+            /// Struct generating individual handles to each EVSYS channel
             pub struct Channels(
                 #(
                     pub EvSysChannel<Ch~N, Uninitialized>,
@@ -232,7 +283,7 @@ with_num_channels!(define_channels_struct);
 macro_rules! define_split {
     ($num_channels:literal) => {
         seq!(N in 0..$num_channels {
-            /// Split the EIC into individual channels.
+            /// Split the EVSYS into individual channels.
             #[inline]
             pub fn split(self) -> Channels {
                 Channels(

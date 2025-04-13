@@ -3,6 +3,7 @@ use atsamd_hal_macros::hal_cfg;
 use crate::ehal::digital::{ErrorType, InputPin};
 use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
+use crate::evsys::EvSysChannel;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
@@ -52,6 +53,15 @@ where
     P: EicPin,
     Id: ChId,
 {
+    pub fn enable_evsys_src<EvId: crate::evsys::ChId>(
+        &mut self,
+        chan: EvSysChannel<EvId, crate::evsys::Uninitialized>,
+    ) -> EvSysChannel<EvId, crate::evsys::GenReady> {
+        // EIC External ISR 0..15 = 0x12 - 0x21
+        self.enable_event();
+        chan.register_generator((P::ChId::ID as u8) + 0x0C)
+    }
+
     /// Enables event output for the event system for this channel.
     ///
     /// Note that this function does disable the EIC peripheral briefely in order
