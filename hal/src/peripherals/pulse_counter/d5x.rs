@@ -1,10 +1,10 @@
 use core::ops::Deref;
 
-use atsamd_hal_macros::hal_cfg;
-use atsame54p::{
+use crate::pac::{
     tc0::{self, count16::evctrl::Evactselect},
     Mclk,
 };
+use atsamd_hal_macros::hal_cfg;
 
 use super::{
     clock::v2::pclk::Pclk,
