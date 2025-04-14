@@ -268,13 +268,17 @@ where
 mod ioset {
 
     use super::*;
+    use sorted_hlist::{mk_hlist, HList, Intersect, NonEmptyHList};
 
     /// Type-level enum representing a SERCOM IOSET
     ///
     /// See the [type-level enum] documentation for more details on the pattern.
+    /// Typenum unsigned integers are used to make IoSets comparable
     ///
     /// [type-level enum]: crate::typelevel#type-level-enum
-    pub trait IoSet: Sealed {}
+    pub trait IoSet: Sealed {
+        type Order;
+    }
 
     seq!(N in 1..=6 {
         paste! {
@@ -286,7 +290,16 @@ mod ioset {
             /// [type-level enum]: crate::typelevel#type-level-enum
             pub enum IoSet~N {}
             impl Sealed for IoSet~N {}
-            impl IoSet for IoSet~N {}
+            impl IoSet for IoSet~N {
+                type Order = typenum::U~N;
+            }
+        }
+    });
+
+    // Implement IoSets for NoneT, making it act as a wildcard.
+    seq!(N in 1..=6 {
+        impl IoSets for NoneT {
+            type SetList = mk_hlist! ( #(<IoSet~N as IoSet>::Order, )* <UndocIoSet1 as IoSet>::Order, <UndocIoSet2 as IoSet>::Order );
         }
     });
 
@@ -312,7 +325,9 @@ mod ioset {
     /// [type-level enum]: crate::typelevel#type-level-enum
     pub enum UndocIoSet1 {}
     impl Sealed for UndocIoSet1 {}
-    impl IoSet for UndocIoSet1 {}
+    impl IoSet for UndocIoSet1 {
+        type Order = typenum::U8;
+    }
 
     /// Type-level variant of [`IoSet`] representing an undocumented SERCOM
     /// IOSET
@@ -336,7 +351,9 @@ mod ioset {
     /// [type-level enum]: crate::typelevel#type-level-enum
     pub enum UndocIoSet2 {}
     impl Sealed for UndocIoSet2 {}
-    impl IoSet for UndocIoSet2 {}
+    impl IoSet for UndocIoSet2 {
+        type Order = typenum::U9;
+    }
 
     /// Type class for SERCOM pads in a given [`IoSet`]
     ///
@@ -350,6 +367,46 @@ mod ioset {
     where
         Self: IsPad,
         I: IoSet,
+    {
+    }
+
+    /// Type class for corresponding IoSet indices for OptionalPads, NoneT
+    /// serves as a wildcard
+    pub trait IoSets: OptionalPad {
+        type SetList: HList;
+    }
+
+    /// Type class for accessing the intersection of IoSets of OptionalPads
+    /// Currently implemented for tuples of 2 and 4 elements
+    pub trait CommonIoSets {
+        type IoSets: HList;
+    }
+
+    impl<P0: IoSets, P1: IoSets> CommonIoSets for (P0, P1)
+    where
+        P0::SetList: Intersect<P1::SetList>,
+    {
+        type IoSets = <P0::SetList as Intersect<P1::SetList>>::Output;
+    }
+
+    impl<P0: IoSets, P1: IoSets, P2: IoSets, P3: IoSets> CommonIoSets for (P0, P1, P2, P3)
+    where
+        P0::SetList: Intersect<P1::SetList>,
+        <P0::SetList as Intersect<P1::SetList>>::Output: Intersect<P2::SetList>,
+        <<P0::SetList as Intersect<P1::SetList>>::Output as Intersect<P2::SetList>>::Output:
+            Intersect<P3::SetList>,
+    {
+        type IoSets = <<<P0::SetList as Intersect<P1::SetList>>::Output as Intersect<
+            P2::SetList,
+        >>::Output as Intersect<P3::SetList>>::Output;
+    }
+
+    /// Shortcut trait for Pad tuples that share at least one IoSet
+    pub trait ShareIoSet {}
+    impl<A> ShareIoSet for A
+    where
+        A: CommonIoSets,
+        <A as CommonIoSets>::IoSets: NonEmptyHList,
     {
     }
 }

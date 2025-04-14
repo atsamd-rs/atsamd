@@ -73,14 +73,14 @@ pub trait DipoDopo: Sealed {
 
 /// Lift the implementations of [`DipoDopo`] from implementations on
 /// [`OptionalPadNum`]s to the corresponding [`Pads`] types.
-impl<S, I, DI, DO, CK, SS> DipoDopo for Pads<S, I, DI, DO, CK, SS>
+impl<S, DI, DO, CK, SS> DipoDopo for Pads<S, DI, DO, CK, SS>
 where
     S: Sercom,
-    I: IoSet,
     DI: OptionalPad,
     DO: OptionalPad,
     CK: OptionalPad,
     SS: OptionalPad,
+    (DI, DO, CK, SS): ShareIoSet,
     DI::PadNum: Dipo,
     DO::PadNum: Dopo,
 {
@@ -106,28 +106,26 @@ where
 ///
 /// See the [spi module](super) documentation for more details on declaring and
 /// instantiating a [`Pads`] type.
-pub struct Pads<S, I, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT>
+pub struct Pads<S, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT>
 where
     S: Sercom,
-    I: IoSet,
     DI: OptionalPad,
     DO: OptionalPad,
     CK: OptionalPad,
     SS: OptionalPad,
+    (DI, DO, CK, SS): ShareIoSet,
 {
     sercom: PhantomData<S>,
-    ioset: PhantomData<I>,
     data_in: DI,
     data_out: DO,
     sclk: CK,
     ss: SS,
 }
 
-impl<S: Sercom, I: IoSet> Default for Pads<S, I> {
+impl<S: Sercom> Default for Pads<S> {
     fn default() -> Self {
         Self {
             sercom: PhantomData,
-            ioset: PhantomData,
             data_in: NoneT,
             data_out: NoneT,
             sclk: NoneT,
@@ -136,14 +134,14 @@ impl<S: Sercom, I: IoSet> Default for Pads<S, I> {
     }
 }
 
-impl<S, I, DI, DO, CK, SS> Pads<S, I, DI, DO, CK, SS>
+impl<S, DI, DO, CK, SS> Pads<S, DI, DO, CK, SS>
 where
     S: Sercom,
-    I: IoSet,
     DI: OptionalPad,
     DO: OptionalPad,
     CK: OptionalPad,
     SS: OptionalPad,
+    (DI, DO, CK, SS): ShareIoSet,
 {
     /// Set the `DI` pad
     ///
@@ -154,15 +152,15 @@ where
     /// [`Slave`]: super::Slave
     /// [`OpMode`]: super::OpMode
     #[inline]
-    pub fn data_in<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, Pad<S, Id>, DO, CK, SS>
+    pub fn data_in<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, Pad<S, Id>, DO, CK, SS>
     where
         Id: GetPad<S>,
         Id::PadNum: Dipo,
-        Pad<S, Id>: InIoSet<I>,
+        (Pad<S, Id>, DO, CK, SS): ShareIoSet,
+        Pad<S, Id>: IsPad,
     {
         Pads {
             sercom: self.sercom,
-            ioset: self.ioset,
             data_in: pin.into().into_mode(),
             data_out: self.data_out,
             sclk: self.sclk,
@@ -179,15 +177,15 @@ where
     /// [`Slave`]: super::Slave
     /// [`OpMode`]: super::OpMode
     #[inline]
-    pub fn data_out<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, Pad<S, Id>, CK, SS>
+    pub fn data_out<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, DI, Pad<S, Id>, CK, SS>
     where
         Id: GetPad<S>,
         Id::PadNum: Dopo,
-        Pad<S, Id>: InIoSet<I>,
+        (DI, Pad<S, Id>, CK, SS): ShareIoSet,
+        Pad<S, Id>: IsPad,
     {
         Pads {
             sercom: self.sercom,
-            ioset: self.ioset,
             data_in: self.data_in,
             data_out: pin.into().into_mode(),
             sclk: self.sclk,
@@ -197,14 +195,14 @@ where
 
     /// Set the `SCK` pad, which is always [`Pad1`]
     #[inline]
-    pub fn sclk<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, DO, Pad<S, Id>, SS>
+    pub fn sclk<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, DI, DO, Pad<S, Id>, SS>
     where
         Id: GetPad<S, PadNum = Pad1>,
-        Pad<S, Id>: InIoSet<I>,
+        (DI, DO, Pad<S, Id>, SS): ShareIoSet,
+        Pad<S, Id>: IsPad,
     {
         Pads {
             sercom: self.sercom,
-            ioset: self.ioset,
             data_in: self.data_in,
             data_out: self.data_out,
             sclk: pin.into().into_mode(),
@@ -214,14 +212,14 @@ where
 
     /// Set the `SS` pad, which is always [`Pad2`]
     #[inline]
-    pub fn ss<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, I, DI, DO, CK, Pad<S, Id>>
+    pub fn ss<Id>(self, pin: impl AnyPin<Id = Id>) -> Pads<S, DI, DO, CK, Pad<S, Id>>
     where
         Id: GetPad<S, PadNum = Pad2>,
-        Pad<S, Id>: InIoSet<I>,
+        (DI, DO, CK, Pad<S, Id>): ShareIoSet,
+        Pad<S, Id>: IsPad,
     {
         Pads {
             sercom: self.sercom,
-            ioset: self.ioset,
             data_in: self.data_in,
             data_out: self.data_out,
             sclk: self.sclk,
@@ -246,7 +244,7 @@ where
 /// In some cases, it is more convenient to specify a set of `Pads` using
 /// `PinId`s rather than `Pin`s. This alias makes it easier to do so.
 ///
-/// The first two type parameters are the [`Sercom`] and [`IoSet`], while the
+/// The first parameter is the [`Sercom`], while the
 /// remaining four are effectively [`OptionalPinId`]s representing the
 /// corresponding type parameters of [`Pads`], i.e. `DI`, `DO`, `CK` & `SS`.
 /// Each of the remaining type parameters defaults to [`NoneT`].
@@ -255,10 +253,9 @@ where
 /// use atsamd_hal::pac::Peripherals;
 /// use atsamd_hal::gpio::{PA08, PA09, Pins};
 /// use atsamd_hal::sercom::{Sercom0, spi};
-/// use atsamd_hal::sercom::pad::IoSet1;
 /// use atsamd_hal::typelevel::NoneT;
 ///
-/// pub type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
+/// pub type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
 ///
 /// pub fn create_pads() -> Pads {
 ///     let peripherals = Peripherals::take().unwrap();
@@ -270,9 +267,8 @@ where
 /// [`Pin`]: crate::gpio::Pin
 /// [`PinId`]: crate::gpio::PinId
 /// [`OptionalPinId`]: crate::gpio::OptionalPinId
-pub type PadsFromIds<S, I, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pads<
+pub type PadsFromIds<S, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pads<
     S,
-    I,
     <DI as GetOptionalPad<S>>::Pad,
     <DO as GetOptionalPad<S>>::Pad,
     <CK as GetOptionalPad<S>>::Pad,
@@ -303,35 +299,33 @@ pub type PadsFromIds<S, I, DI = NoneT, DO = NoneT, CK = NoneT, SS = NoneT> = Pad
 /// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
-    type IoSet: IoSet;
     type DataIn: OptionalPad;
     type DataOut: OptionalPad;
     type Sclk: OptionalPad;
     type SS: OptionalPad;
 }
 
-impl<S, I, DI, DO, CK, SS> Sealed for Pads<S, I, DI, DO, CK, SS>
+impl<S, DI, DO, CK, SS> Sealed for Pads<S, DI, DO, CK, SS>
 where
     S: Sercom,
-    I: IoSet,
     DI: OptionalPad,
     DO: OptionalPad,
     CK: OptionalPad,
     SS: OptionalPad,
+    (DI, DO, CK, SS): ShareIoSet,
 {
 }
 
-impl<S, I, DI, DO, CK, SS> PadSet for Pads<S, I, DI, DO, CK, SS>
+impl<S, DI, DO, CK, SS> PadSet for Pads<S, DI, DO, CK, SS>
 where
     S: Sercom,
-    I: IoSet,
     DI: OptionalPad,
     DO: OptionalPad,
     CK: OptionalPad,
     SS: OptionalPad,
+    (DI, DO, CK, SS): ShareIoSet,
 {
     type Sercom = S;
-    type IoSet = I;
     type DataIn = DI;
     type DataOut = DO;
     type Sclk = CK;
@@ -352,39 +346,39 @@ pub trait ValidPads: PadSet + DipoDopo {
     type Capability: Capability;
 }
 
-impl<S, I, DI, CK, SS> ValidPads for Pads<S, I, DI, NoneT, CK, SS>
+impl<S, DI, CK, SS> ValidPads for Pads<S, DI, NoneT, CK, SS>
 where
     S: Sercom,
-    I: IoSet,
     DI: SomePad,
     CK: SomePad,
     SS: OptionalPad,
-    Pads<S, I, DI, NoneT, CK, SS>: DipoDopo,
+    (DI, NoneT, CK, SS): ShareIoSet,
+    Pads<S, DI, NoneT, CK, SS>: DipoDopo,
 {
     type Capability = Rx;
 }
 
-impl<S, I, DO, CK, SS> ValidPads for Pads<S, I, NoneT, DO, CK, SS>
+impl<S, DO, CK, SS> ValidPads for Pads<S, NoneT, DO, CK, SS>
 where
     S: Sercom,
-    I: IoSet,
     DO: SomePad,
     CK: SomePad,
     SS: OptionalPad,
-    Pads<S, I, NoneT, DO, CK, SS>: DipoDopo,
+    (NoneT, DO, CK, SS): ShareIoSet,
+    Pads<S, NoneT, DO, CK, SS>: DipoDopo,
 {
     type Capability = Tx;
 }
 
-impl<S, I, DI, DO, CK, SS> ValidPads for Pads<S, I, DI, DO, CK, SS>
+impl<S, DI, DO, CK, SS> ValidPads for Pads<S, DI, DO, CK, SS>
 where
     S: Sercom,
-    I: IoSet,
     DI: SomePad,
     DO: SomePad,
     CK: SomePad,
     SS: OptionalPad,
-    Pads<S, I, DI, DO, CK, SS>: DipoDopo,
+    (DI, DO, CK, SS): ShareIoSet,
+    Pads<S, DI, DO, CK, SS>: DipoDopo,
 {
     type Capability = Duplex;
 }

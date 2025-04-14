@@ -9,7 +9,6 @@ use super::pins::*;
 use hal::clock::GenericClockController;
 use hal::pac;
 use hal::sercom::{i2c, spi, uart};
-use hal::sercom::{IoSet1, IoSet2, IoSet3, IoSet4};
 use hal::time::Hertz;
 use uart::{BaudMode, Oversampling};
 
@@ -32,7 +31,7 @@ hal::bsp_peripherals!(
 );
 
 /// UART pads for the extension 1 connection
-pub type Ext1UartPads = uart::Pads<Ext1UartSercom, IoSet3, Ext1UartRx, Ext1UartTx>;
+pub type Ext1UartPads = uart::Pads<Ext1UartSercom, Ext1UartRx, Ext1UartTx>;
 
 /// Extension 1 UART device
 pub type Ext1Uart = uart::Uart<uart::Config<Ext1UartPads>, uart::Duplex>;
@@ -56,7 +55,7 @@ pub fn ext1_uart(
 
 /// UART pads for the extension 1 connection with flow control
 pub type Ext1FlowControlUartPads =
-    uart::Pads<Ext1UartSercom, IoSet3, Ext1UartRx, Ext1UartTx, Ext1UartRts, Ext1UartCts>;
+    uart::Pads<Ext1UartSercom, Ext1UartRx, Ext1UartTx, Ext1UartRts, Ext1UartCts>;
 
 /// Extension 1 UART device with flow control
 pub type Ext1FlowControlUart = uart::Uart<uart::Config<Ext1FlowControlUartPads>, uart::Duplex>;
@@ -86,7 +85,7 @@ pub fn ext1_flow_control_uart(
 }
 
 /// UART pads for the extension 3 connection
-pub type Ext3UartPads = uart::Pads<Ext3UartSercom, IoSet2, Ext3UartRx, Ext3UartTx>;
+pub type Ext3UartPads = uart::Pads<Ext3UartSercom, Ext3UartRx, Ext3UartTx>;
 
 /// Extension 3 UART device
 pub type Ext3Uart = uart::Uart<uart::Config<Ext3UartPads>, uart::Duplex>;
@@ -109,7 +108,7 @@ pub fn ext3_uart(
 }
 
 /// UART pads for the EDBG connection
-pub type EdbgUartPads = uart::Pads<EdbgUartSercom, IoSet4, EdbgUartRx, EdbgUartTx>;
+pub type EdbgUartPads = uart::Pads<EdbgUartSercom, EdbgUartRx, EdbgUartTx>;
 
 /// EDBG connection UART device
 pub type EdbgUart = uart::Uart<uart::Config<EdbgUartPads>, uart::Duplex>;
@@ -132,7 +131,7 @@ pub fn edbg_uart(
 }
 
 /// I2C pads for the extension 1 connection
-pub type Ext1I2cPads = i2c::Pads<Ext1I2cSercom, IoSet1, Ext1I2cSda, Ext1I2cScl>;
+pub type Ext1I2cPads = i2c::Pads<Ext1I2cSercom, Ext1I2cSda, Ext1I2cScl>;
 
 /// Extension 1 I2C device
 pub type Ext1I2c = i2c::I2c<i2c::Config<Ext1I2cPads>>;
@@ -156,7 +155,7 @@ pub fn ext1_i2c(
 }
 
 /// SPI pads for the extension 1 connection
-pub type Ext1SpiPads = spi::Pads<Ext1SpiSercom, IoSet4, Ext1SpiMiso, Ext1SpiMosi, Ext1SpiSck>;
+pub type Ext1SpiPads = spi::Pads<Ext1SpiSercom, Ext1SpiMiso, Ext1SpiMosi, Ext1SpiSck>;
 
 /// Extension 1 SPI device
 pub type Ext1Spi = spi::Spi<spi::Config<Ext1SpiPads>, spi::Duplex>;
@@ -183,7 +182,7 @@ pub fn ext1_spi(
 }
 
 /// UART pads for the extension 2 connection
-pub type Ext2UartPads = uart::Pads<Ext2UartSercom, IoSet1, Ext2UartRx, Ext2UartTx>;
+pub type Ext2UartPads = uart::Pads<Ext2UartSercom, Ext2UartRx, Ext2UartTx>;
 
 /// Extension 2 UART device
 pub type Ext2Uart = uart::Uart<uart::Config<Ext2UartPads>, uart::Duplex>;
@@ -206,7 +205,7 @@ pub fn ext2_uart(
 }
 
 /// SPI pads for the extension 2 connection
-pub type Ext2SpiPads = spi::Pads<Ext2SpiSercom, IoSet2, Ext2SpiMiso, Ext2SpiMosi, Ext2SpiSck>;
+pub type Ext2SpiPads = spi::Pads<Ext2SpiSercom, Ext2SpiMiso, Ext2SpiMosi, Ext2SpiSck>;
 
 /// Extension 1 SPI device
 pub type Ext2Spi = spi::Spi<spi::Config<Ext2SpiPads>, spi::Duplex>;
@@ -233,7 +232,7 @@ pub fn ext2_spi(
 }
 
 /// SPI pads for the extension 3 connection
-pub type Ext3SpiPads = spi::Pads<Ext3SpiSercom, IoSet2, Ext3SpiMiso, Ext3SpiMosi, Ext3SpiSck>;
+pub type Ext3SpiPads = spi::Pads<Ext3SpiSercom, Ext3SpiMiso, Ext3SpiMosi, Ext3SpiSck>;
 
 /// Extension 3 SPI device
 pub type Ext3Spi = spi::Spi<spi::Config<Ext3SpiPads>, spi::Duplex>;
@@ -260,7 +259,7 @@ pub fn ext3_spi(
 }
 
 /// SPI pads for the DGI connection
-pub type DgiSpiPads = spi::Pads<DgiSpiSercom, IoSet2, DgiSpiMiso, DgiSpiMosi, DgiSpiSck>;
+pub type DgiSpiPads = spi::Pads<DgiSpiSercom, DgiSpiMiso, DgiSpiMosi, DgiSpiSck>;
 
 /// DGI SPI device
 pub type DgiSpi = spi::Spi<spi::Config<DgiSpiPads>, spi::Duplex>;
@@ -287,7 +286,7 @@ pub fn dgi_spi(
 }
 
 /// I2C pads for the extension 2 connection
-pub type Ext2I2cPads = i2c::Pads<Ext2I2cSercom, IoSet2, Ext2I2cSda, Ext2I2cScl>;
+pub type Ext2I2cPads = i2c::Pads<Ext2I2cSercom, Ext2I2cSda, Ext2I2cScl>;
 
 /// Extension 2 I2C device
 pub type Ext2I2c = i2c::I2c<i2c::Config<Ext2I2cPads>>;
@@ -311,7 +310,7 @@ pub fn ext2_i2c(
 }
 
 /// I2C pads for the extension 3 connection
-pub type Ext3I2cPads = i2c::Pads<Ext3I2cSercom, IoSet2, Ext3I2cSda, Ext3I2cScl>;
+pub type Ext3I2cPads = i2c::Pads<Ext3I2cSercom, Ext3I2cSda, Ext3I2cScl>;
 
 /// Extension 3 I2C device
 pub type Ext3I2c = i2c::I2c<i2c::Config<Ext3I2cPads>>;
@@ -335,7 +334,7 @@ pub fn ext3_i2c(
 }
 
 /// I2C pads for the DGI connection
-pub type DgiI2cPads = i2c::Pads<DgiI2cSercom, IoSet2, Ext3I2cSda, Ext3I2cScl>;
+pub type DgiI2cPads = i2c::Pads<DgiI2cSercom, Ext3I2cSda, Ext3I2cScl>;
 
 /// DGI I2C device
 pub type DgiI2c = i2c::I2c<i2c::Config<DgiI2cPads>>;

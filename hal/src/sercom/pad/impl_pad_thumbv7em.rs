@@ -3,6 +3,8 @@
 use crate::gpio::*;
 use crate::sercom::*;
 
+use sorted_hlist::mk_hlist;
+
 //==============================================================================
 //  Pad definitions
 //==============================================================================
@@ -49,6 +51,9 @@ macro_rules! pad_info {
         impl IsPad for Pin<$PinId, Alternate<$Cfg>> {
             type Sercom = $Sercom;
             type PadNum = $PadNum;
+        }
+        impl IoSets for Pin<$PinId, Alternate<$Cfg>> {
+            type SetList = mk_hlist!($( <$IoSet as IoSet>::Order ),+);
         }
     };
 }
@@ -107,16 +112,24 @@ macro_rules! pad_table {
     };
 }
 
+// Implement an undocumented `IoSet` for PA16, PA17, PB22 & PB23 configured for
+// `Sercom1`. The pygamer & feather_m4 uses this combination, but it is not
+// listed as valid in the datasheet.
+
+// Implement an undocumented `IoSet` for PA00, PA01, PB22 & PB23 configured for
+// `Sercom1`. The itsybitsy_m4 uses this combination, but it is not
+// listed as valid in the datasheet.
+
 pad_table!(
     #[hal_cfg("pa00")]
     PA00 {
         #[hal_cfg("sercom1")]
-        D: (Sercom1, Pad0, IoSet4),
+        D: (Sercom1, Pad0, IoSet4, UndocIoSet2),
     }
     #[hal_cfg("pa01")]
     PA01 {
         #[hal_cfg("sercom1")]
-        D: (Sercom1, Pad1, IoSet4),
+        D: (Sercom1, Pad1, IoSet4, UndocIoSet2),
     }
     #[hal_cfg("pa04")]
     PA04 {
@@ -197,14 +210,14 @@ pad_table!(
     #[hal_cfg("pa16")]
     PA16 {
         #[hal_cfg("sercom1")]
-        C: (Sercom1, Pad0, IoSet1) + I2C,
+        C: (Sercom1, Pad0, IoSet1, UndocIoSet1) + I2C,
         #[hal_cfg("sercom3")]
         D: (Sercom3, Pad1, IoSet3) + I2C,
     }
     #[hal_cfg("pa17")]
     PA17 {
         #[hal_cfg("sercom1")]
-        C: (Sercom1, Pad1, IoSet1) + I2C,
+        C: (Sercom1, Pad1, IoSet1, UndocIoSet1) + I2C,
         #[hal_cfg("sercom3")]
         D: (Sercom3, Pad0, IoSet3) + I2C,
     }
@@ -387,14 +400,14 @@ pad_table!(
     #[hal_cfg("pb22")]
     PB22 {
         #[hal_cfg("sercom1")]
-        C: (Sercom1, Pad2, IoSet3),
+        C: (Sercom1, Pad2, IoSet3, UndocIoSet1, UndocIoSet2),
         #[hal_cfg("sercom5")]
         D: (Sercom5, Pad2, IoSet4),
     }
     #[hal_cfg("pb23")]
     PB23 {
         #[hal_cfg("sercom1")]
-        C: (Sercom1, Pad3, IoSet3),
+        C: (Sercom1, Pad3, IoSet3, UndocIoSet1, UndocIoSet2),
         #[hal_cfg("sercom5")]
         D: (Sercom5, Pad3, IoSet4),
     }
@@ -627,19 +640,3 @@ pad_table!(
         D: (Sercom3, Pad3, IoSet4),
     }
 );
-
-// Implement an undocumented `IoSet` for PA16, PA17, PB22 & PB23 configured for
-// `Sercom1`. The pygamer & feather_m4 uses this combination, but it is not
-// listed as valid in the datasheet.
-impl InIoSet<UndocIoSet1> for Pin<PA16, Alternate<C>> {}
-impl InIoSet<UndocIoSet1> for Pin<PA17, Alternate<C>> {}
-impl InIoSet<UndocIoSet1> for Pin<PB22, Alternate<C>> {}
-impl InIoSet<UndocIoSet1> for Pin<PB23, Alternate<C>> {}
-
-// Implement an undocumented `IoSet` for PA00, PA01, PB22 & PB23 configured for
-// `Sercom1`. The itsybitsy_m4 uses this combination, but it is not
-// listed as valid in the datasheet.
-impl InIoSet<UndocIoSet2> for Pin<PA00, Alternate<D>> {}
-impl InIoSet<UndocIoSet2> for Pin<PA01, Alternate<D>> {}
-impl InIoSet<UndocIoSet2> for Pin<PB22, Alternate<C>> {}
-impl InIoSet<UndocIoSet2> for Pin<PB23, Alternate<C>> {}

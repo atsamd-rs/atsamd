@@ -15,7 +15,6 @@ use hal::clock::GenericClockController;
 use hal::sercom::{
     i2c, spi,
     uart::{self, BaudMode, Oversampling},
-    IoSet1, UndocIoSet1,
 };
 use hal::time::Hertz;
 
@@ -170,7 +169,7 @@ hal::bsp_pins!(
 /// SPI pads for the labelled SPI peripheral
 ///
 /// You can use these pads with other, user-defined [`spi::Config`]urations.
-pub type SpiPads = spi::Pads<SpiSercom, UndocIoSet1, Miso, Mosi, Sclk>;
+pub type SpiPads = spi::Pads<SpiSercom, Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///
@@ -203,7 +202,7 @@ pub fn spi_master(
 /// I2C pads for the labelled I2C peripheral
 ///
 /// You can use these pads with other, user-defined [`i2c::Config`]urations.
-pub type I2cPads = i2c::Pads<I2cSercom, IoSet1, Sda, Scl>;
+pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
 
 /// I2C master for the labelled I2C peripheral
 ///
@@ -233,7 +232,7 @@ pub fn i2c_master(
 }
 
 /// UART pads for the labelled RX & TX pins
-pub type UartPads = uart::Pads<UartSercom, IoSet1, UartRx, UartTx>;
+pub type UartPads = uart::Pads<UartSercom, UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
