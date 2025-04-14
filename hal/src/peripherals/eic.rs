@@ -255,6 +255,36 @@ impl Eic {
         eic
     }
 
+    /// Create and initialize a new [`Eic`], and wire it up to a
+    /// fast GCLK (Not driven by OSC32K)
+    ///
+    /// Do not use this function if you are using the osc32k clock
+    /// for the EIC peripheral, instead use [`Eic::new`]
+    #[hal_cfg("eic-d5x")]
+    pub fn new_gclk(mclk: &mut pac::Mclk, _clock: EicClock, eic: pac::Eic) -> Self {
+        mclk.apbamask().modify(|_, w| w.eic_().set_bit());
+
+        let mut eic = Self {
+            eic,
+            _irqs: PhantomData,
+        };
+
+        // Reset the EIC
+        eic.swreset();
+
+        // Do not use OSC32K
+        eic.eic.ctrla().modify(|_, w| {
+            w.cksel().clear_bit();
+            w.enable().set_bit()
+        });
+
+        while eic.eic.syncbusy().read().enable().bit_is_set() {
+            core::hint::spin_loop();
+        }
+
+        eic
+    }
+
     /// Release the EIC and return the register block.
     ///
     /// **Note**: The [`Channels`] struct is consumed by this method. This means
