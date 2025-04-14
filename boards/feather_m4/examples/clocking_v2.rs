@@ -19,13 +19,13 @@ use atsamd_hal::{
     rtc::{ClockMode, Rtc},
     sercom::{
         uart::{self, BaudMode, Flags, Oversampling},
-        IoSet3, Sercom0,
+        Sercom0,
     },
 };
 
 use rtic::app;
 
-type Pads = uart::PadsFromIds<Sercom0, IoSet3, PA05, PA04>;
+type Pads = uart::PadsFromIds<Sercom0, PA05, PA04>;
 type Uart = uart::Uart<uart::Config<Pads>, uart::Duplex>;
 
 #[app(device = atsamd_hal::pac)]

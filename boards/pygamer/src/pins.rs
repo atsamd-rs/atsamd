@@ -10,7 +10,7 @@ use hal::gpio::PA01;
 use hal::pwm;
 use hal::qspi;
 use hal::sercom::uart::{self, BaudMode, Oversampling};
-use hal::sercom::{i2c, spi, IoSet1, Sercom1, Sercom4, UndocIoSet1};
+use hal::sercom::{i2c, spi, Sercom1, Sercom4};
 use hal::time::Hertz;
 use hal::typelevel::NoneT;
 
@@ -602,7 +602,7 @@ impl From<()> for DisplayError {
     }
 }
 
-pub type TftPads = spi::Pads<Sercom4, IoSet1, NoneT, TftMosi, TftSclk>;
+pub type TftPads = spi::Pads<Sercom4, NoneT, TftMosi, TftSclk>;
 pub type TftSpi = bspi::ExclusiveDevice<
     spi::PanicOnRead<spi::Spi<spi::Config<TftPads>, spi::Tx>>,
     TftCs,
@@ -668,7 +668,7 @@ pub struct Neopixel {
 
 /// Pads for the neopixel SPI driver
 #[cfg(feature = "neopixel-spi")]
-pub type NeopixelSpiPads = spi::Pads<hal::sercom::Sercom2, IoSet1, NoneT, NeopixelPinSpi, Scl>;
+pub type NeopixelSpiPads = spi::Pads<hal::sercom::Sercom2, NoneT, NeopixelPinSpi, Scl>;
 
 /// SPI master neopixel driver
 #[cfg(feature = "neopixel-spi")]
@@ -719,7 +719,7 @@ pub struct SPI {
 /// According to the datasheet, the combination of PA17, PB22 & PB23 shouldn't
 /// work, even though it does. We have added an undocumented `UndocIoSet1` to
 /// `Sercom1` for this combination.
-pub type SpiPads = spi::Pads<Sercom1, UndocIoSet1, SpiMiso, SpiMosi, SpiSclk>;
+pub type SpiPads = spi::Pads<Sercom1, SpiMiso, SpiMosi, SpiSclk>;
 
 /// SPI master for the labelled pins
 pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
@@ -756,7 +756,7 @@ pub struct I2C {
 /// I2C pads for the labelled I2C peripheral
 ///
 /// You can use these pads with other, user-defined [`i2c::Config`]urations.
-pub type I2cPads = i2c::Pads<I2cSercom, IoSet1, Sda, Scl>;
+pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
 
 /// I2C master for the labelled I2C peripheral
 ///
@@ -824,7 +824,7 @@ pub struct UART {
 }
 
 /// UART Pads for the labelled UART peripheral
-pub type UartPads = uart::Pads<UartSercom, IoSet1, UartRx, UartTx>;
+pub type UartPads = uart::Pads<UartSercom, UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;

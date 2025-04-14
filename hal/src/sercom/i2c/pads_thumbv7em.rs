@@ -10,44 +10,42 @@ use core::marker::PhantomData;
 ///
 /// See the [module-level](crate::sercom::i2c) documentation for more
 /// details on specifying a `Pads` type and creating instances.
-pub struct Pads<S, I, SDA, SCL>
+pub struct Pads<S, SDA, SCL>
 where
     S: Sercom,
-    I: IoSet,
-    SDA: IsI2cPad<PadNum = Pad0, Sercom = S> + InIoSet<I>,
-    SCL: IsI2cPad<PadNum = Pad1, Sercom = S> + InIoSet<I>,
+    SDA: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
+    (SDA, SCL): ShareIoSet,
 {
     sercom: PhantomData<S>,
-    ioset: PhantomData<I>,
     sda: SDA,
     scl: SCL,
 }
 
-impl<S, I, DI, CI> PadsFromIds<S, I, DI, CI>
+impl<S, DI, CI> PadsFromIds<S, DI, CI>
 where
     S: Sercom,
-    I: IoSet,
     DI: GetPad<S>,
     CI: GetPad<S>,
-    Pad<S, DI>: IsI2cPad<Sercom = S, PadNum = Pad0> + InIoSet<I>,
-    Pad<S, CI>: IsI2cPad<Sercom = S, PadNum = Pad1> + InIoSet<I>,
+    Pad<S, DI>: IsI2cPad<Sercom = S, PadNum = Pad0>,
+    Pad<S, CI>: IsI2cPad<Sercom = S, PadNum = Pad1>,
+    (Pad<S, DI>, Pad<S, CI>): ShareIoSet,
 {
     pub fn new(sda: impl AnyPin<Id = DI>, scl: impl AnyPin<Id = CI>) -> Self {
         Self {
             sercom: PhantomData,
-            ioset: PhantomData,
             sda: sda.into().into_mode(),
             scl: scl.into().into_mode(),
         }
     }
 }
 
-impl<S, I, SDA, SCL> Pads<S, I, SDA, SCL>
+impl<S, SDA, SCL> Pads<S, SDA, SCL>
 where
     S: Sercom,
-    I: IoSet,
-    SDA: IsI2cPad<PadNum = Pad0, Sercom = S> + InIoSet<I>,
-    SCL: IsI2cPad<PadNum = Pad1, Sercom = S> + InIoSet<I>,
+    SDA: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
+    (SDA, SCL): ShareIoSet,
 {
     /// Consume the [`Pads`] and return each individual
     /// [`Pin`](crate::gpio::Pin)
@@ -66,17 +64,17 @@ where
 /// In some cases, it is more convenient to specify a set of `Pads` using
 /// `PinId`s rather than `Pin`s. This alias makes it easier to do so.
 ///
-/// The first two parameters are the [`Sercom`] and [`IoSet`], while the
+/// The first parameter is the [`Sercom`], while the
 /// remaining two are [`PinId`]s representing the corresponding type
 /// parameters of [`Pads`], i.e. `SDA` & `SCL`.
 ///
 /// ```
 /// use atsamd_hal::pac::Peripherals;
 /// use atsamd_hal::gpio::{PA08, PA09, Pins};
-/// use atsamd_hal::sercom::{Sercom0, IoSet1, i2c};
+/// use atsamd_hal::sercom::{Sercom0, i2c};
 /// use atsamd_hal::typelevel::NoneT;
 ///
-/// pub type Pads = i2c::PadsFromIds<Sercom0, IoSet1, PA08, PA09>;
+/// pub type Pads = i2c::PadsFromIds<Sercom0, PA08, PA09>;
 ///
 /// pub fn create_pads() -> Pads {
 ///     let peripherals = Peripherals::take().unwrap();
@@ -87,7 +85,7 @@ where
 ///
 /// [`Pin`]: crate::gpio::Pin
 /// [`PinId`]: crate::gpio::PinId
-pub type PadsFromIds<S, I, SDA, SCL> = Pads<S, I, Pad<S, SDA>, Pad<S, SCL>>;
+pub type PadsFromIds<S, SDA, SCL> = Pads<S, Pad<S, SDA>, Pad<S, SCL>>;
 
 //=============================================================================
 // PadSet
@@ -114,29 +112,27 @@ pub type PadsFromIds<S, I, SDA, SCL> = Pads<S, I, Pad<S, SDA>, Pad<S, SCL>>;
 /// [`AnyKind`]: crate::typelevel#anykind-trait-pattern
 pub trait PadSet: Sealed {
     type Sercom: Sercom;
-    type IoSet: IoSet;
-    type Sda: IsI2cPad<PadNum = Pad0, Sercom = Self::Sercom> + InIoSet<Self::IoSet>;
-    type Scl: IsI2cPad<PadNum = Pad1, Sercom = Self::Sercom> + InIoSet<Self::IoSet>;
+    type Sda: IsI2cPad<PadNum = Pad0, Sercom = Self::Sercom>;
+    type Scl: IsI2cPad<PadNum = Pad1, Sercom = Self::Sercom>;
 }
 
-impl<S, I, SDA, SCL> Sealed for Pads<S, I, SDA, SCL>
+impl<S, SDA, SCL> Sealed for Pads<S, SDA, SCL>
 where
     S: Sercom,
-    I: IoSet,
-    SDA: IsI2cPad<PadNum = Pad0, Sercom = S> + InIoSet<I>,
-    SCL: IsI2cPad<PadNum = Pad1, Sercom = S> + InIoSet<I>,
+    SDA: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
+    (SDA, SCL): ShareIoSet,
 {
 }
 
-impl<S, I, SDA, SCL> PadSet for Pads<S, I, SDA, SCL>
+impl<S, SDA, SCL> PadSet for Pads<S, SDA, SCL>
 where
     S: Sercom,
-    I: IoSet,
-    SDA: IsI2cPad<PadNum = Pad0, Sercom = S> + InIoSet<I>,
-    SCL: IsI2cPad<PadNum = Pad1, Sercom = S> + InIoSet<I>,
+    SDA: IsI2cPad<PadNum = Pad0, Sercom = S>,
+    SCL: IsI2cPad<PadNum = Pad1, Sercom = S>,
+    (SDA, SCL): ShareIoSet,
 {
     type Sercom = S;
-    type IoSet = I;
     type Sda = SDA;
     type Scl = SCL;
 }
