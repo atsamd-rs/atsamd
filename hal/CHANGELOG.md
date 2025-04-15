@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.0...atsamd-hal-0.21.1) - 2025-04-12
+
+### Added
+
+- *(tc)* Add support for TC6/7 on applicable chips ([#835](https://github.com/atsamd-rs/atsamd/pull/835))
+- Add ehal 1.0 InputPin impl for ExtInt ([#826](https://github.com/atsamd-rs/atsamd/pull/826))
+
+### Fixed
+
+- *(tc)* Read syncbusy instead of perbufv ([#840](https://github.com/atsamd-rs/atsamd/pull/840))
+
 ## [0.21.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.20.2...atsamd-hal-0.21.0) - 2025-01-13
 
 ### Added
