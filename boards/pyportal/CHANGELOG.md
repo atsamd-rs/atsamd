@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0](https://github.com/atsamd-rs/atsamd/compare/pyportal-0.10.2...pyportal-0.11.0) - 2025-04-12
+
+### Other
+
+- Update various pyportal dependencies ([#822](https://github.com/atsamd-rs/atsamd/pull/822))
+
 ## [0.10.2](https://github.com/atsamd-rs/atsamd/compare/pyportal-0.10.1...pyportal-0.10.2) - 2024-10-17
 
 ### Refactored

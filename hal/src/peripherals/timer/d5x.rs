@@ -96,16 +96,12 @@ where
 
         // Disable the timer while we reconfigure it
         count.ctrla().modify(|_, w| w.enable().clear_bit());
-        while count.status().read().perbufv().bit_is_set() {}
+        while count.syncbusy().read().enable().bit_is_set() {}
 
         // Now that we have a clock routed to the peripheral, we
         // can ask it to perform a reset.
         count.ctrla().write(|w| w.swrst().set_bit());
-
-        while count.status().read().perbufv().bit_is_set() {}
-        // the SVD erroneously marks swrst as write-only, so we
-        // need to manually read the bit here
-        while count.ctrla().read().bits() & 1 != 0 {}
+        while count.syncbusy().read().swrst().bit_is_set() {}
 
         count.ctrlbset().write(|w| {
             // Count up when the direction bit is zero
@@ -184,7 +180,7 @@ impl TimerCounter<$TC>
 
             // Disable the timer while we reconfigure it
             count.ctrla().modify(|_, w| w.enable().clear_bit());
-            while count.status().read().perbufv().bit_is_set()  {}
+            while count.syncbusy().read().enable().bit_is_set()  {}
         }
         Self {
             freq: clock.freq(),

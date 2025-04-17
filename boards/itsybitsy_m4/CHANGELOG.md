@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1](https://github.com/atsamd-rs/atsamd/compare/itsybitsy_m4-0.9.0...itsybitsy_m4-0.9.1) - 2025-04-12
+
+### Other
+
+- Updated atsamd hal version from 0.17 to 0.21, added rust-toolchain.toml
+
 ## [0.9.0](https://github.com/atsamd-rs/atsamd/compare/itsybitsy_m4-0.8.0...itsybitsy_m4-0.9.0) - 2024-10-17
 
 ### Refactored
