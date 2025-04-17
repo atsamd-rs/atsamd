@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 use core::fmt::Debug;
 use embedded_graphics as eg;
@@ -21,10 +22,7 @@ use wio::{button_interrupt, Button, ButtonController, ButtonEvent};
 
 // Queues used for button stuff (just normal wio stuff) and then i use it for
 // managing clear queue
-use heapless::{
-    consts::{U64, U8},
-    spsc::Queue,
-};
+use heapless::spsc::Queue;
 
 // pseudo-random number generation
 use oorandom;
@@ -37,7 +35,7 @@ const GRID_WIDTH: u32 = DISPLAY_WIDTH / CELL_SIZE as u32;
 const GRID_HEIGHT: u32 = DISPLAY_HEIGHT / CELL_SIZE as u32;
 
 static mut BUTTON_CTRLR: Option<ButtonController> = None;
-static mut Q: Queue<ButtonEvent, U8> = Queue(heapless::i::Queue::new());
+static mut Q: Queue<ButtonEvent, 8> = Queue::new();
 
 button_interrupt!(
     BUTTON_CTRLR,
@@ -228,7 +226,7 @@ impl<'a> Food<'a> {
 struct Snake {
     head_sprite: Styled<Rectangle, PrimitiveStyle<Rgb565>>,
     snake_direction: Direction,
-    cells_queue: Queue<(i32, i32), U64>,
+    cells_queue: Queue<(i32, i32), 64>,
 }
 
 impl Snake {
@@ -241,7 +239,7 @@ impl Snake {
             ((GRID_HEIGHT / 2 - 1) * CELL_SIZE) as i32,
         );
         let sprite = Rectangle::new(position, Size::new(CELL_SIZE, CELL_SIZE)).into_styled(style);
-        let cells_queue: Queue<(i32, i32), U64> = Queue::new();
+        let cells_queue: Queue<(i32, i32), 64> = Queue::new();
         Self {
             head_sprite: sprite,
             snake_direction: Direction::Down,
