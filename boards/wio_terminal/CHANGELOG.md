@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.3](https://github.com/atsamd-rs/atsamd/compare/wio_terminal-0.7.2...wio_terminal-0.7.3) - 2025-04-17
+
+### Examples
+
+- *(wio_terminal)* Update wio terminal examples ([#834](https://github.com/atsamd-rs/atsamd/pull/834))
+
 ## [0.7.2](https://github.com/atsamd-rs/atsamd/compare/wio_terminal-0.7.1...wio_terminal-0.7.2) - 2025-01-20
 
 ### Fixed
