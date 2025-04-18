@@ -58,25 +58,34 @@ where
     P: EicPin,
     Id: ChId,
 {
+
+    /// Enables event output for the event system for this channel.
+    ///
+    /// Note that this function does disable the EIC peripheral briefely in order
+    /// to write to the evctrl register.
     pub fn enable_event(&mut self) {
+        self.chan.eic.ctrla().write(|w| w.enable().clear_bit());
+        self.sync();
         self.chan
             .eic
             .evctrl()
             .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
+        self.chan.eic.ctrla().write(|w| w.enable().set_bit());
+        self.sync();
     }
 
     pub fn enable_interrupt(&mut self) {
         self.chan
             .eic
             .intenset()
-            .write(|w| unsafe { w.bits(1 << P::ChId::ID) })
+            .write(|w| unsafe { w.bits(1 << P::ChId::ID) });
     }
 
     pub fn disable_interrupt(&mut self) {
         self.chan
             .eic
             .intenclr()
-            .write(|w| unsafe { w.bits(1 << P::ChId::ID) })
+            .write(|w| unsafe { w.bits(1 << P::ChId::ID) });
     }
 
     pub fn is_interrupt(&mut self) -> bool {
@@ -156,6 +165,12 @@ where
                 .modify(|_, w| unsafe { w.bits(P::ChId::ID as u32) });
         });
     }
+
+    fn sync(&self) {
+        while self.chan.eic.syncbusy().read().bits() != 0 {
+            core::hint::spin_loop();
+        }
+    }
 }
 
 impl<P, C, Id, F> InputPin_02 for ExtInt<P, Id, F>
@@ -176,7 +191,8 @@ where
 }
 
 impl<P, Id, F> InputPin for ExtInt<P, Id, F>
-where Self: ErrorType,
+where
+    Self: ErrorType,
     P: EicPin,
     Id: ChId,
 {
