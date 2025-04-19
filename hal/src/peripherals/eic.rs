@@ -146,11 +146,19 @@ where
             chan,
         }
     }
+
+    #[cfg(all(doc, feature = "async"))]
+    #[hal_cfg(not("eic-d5x"))]
+    /// This method is not present with the selected feature set, defined for
+    /// documentation only
+    pub fn into_future(self) {
+        unimplemented!()
+    }
 }
 
 /// EIC channel.
 ///
-/// Use this struct to create an [`ExtInt`](pins::ExtInt) by calling
+/// Use this struct to create an [`ExtInt`] by calling
 /// [`with_pin`](Self::with_pin).
 pub struct Channel<Id: ChId, F = NoneT> {
     eic: core::mem::ManuallyDrop<pac::Eic>,
@@ -241,6 +249,14 @@ impl Eic {
         }
 
         eic
+    }
+
+    #[cfg(all(doc, feature = "async"))]
+    #[hal_cfg(not(any("eic-d11", "eic-d21")))]
+    /// This method is not present with the selected feature set, defined for
+    /// documentation only
+    pub fn into_future(self) {
+        unimplemented!()
     }
 
     /// Release the EIC and return the register block.

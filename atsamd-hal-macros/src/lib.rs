@@ -22,6 +22,8 @@
 //!   `any("pm-d11", "pm-d21", "rstc-d5x")`.
 //! - An expression of the form `all([peripheral expression], ...)`. Example:
 //!   `all("tc4", "tc5")`.
+//! - An expression of the form `not([peripheral expression])`. Example:
+//!   `not("dmac-d5x")`.
 
 use proc_macro::{Delimiter, Group, Ident, Literal, Punct, Spacing, Span, TokenStream, TokenTree};
 
@@ -71,7 +73,7 @@ fn hal_cfg_impl(args: TokenStream) -> Result<Group, Error> {
 /// )]
 /// pub mod calibration {}
 ///
-/// #[hal_module("aes")
+/// #[hal_module("aes")]
 /// pub mod aes {}
 /// ```
 ///
