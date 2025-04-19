@@ -35,6 +35,7 @@ version = "2.1.1"
 cortex-m = "0.7"
 panic-halt = "0.2"
 panic-probe = "0.2.0"
+cortex-m-semihosting = "0.5"
 panic-semihosting = "0.5"
 rtt-target = {version = "0.3.0", features = ["cortex-m"]}
 

@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use metro_m4 as bsp;
+use feather_m4 as bsp;
 
 use bsp::hal;
 use bsp::pac;
@@ -60,6 +60,6 @@ fn main() -> ! {
         let mut buffer = [0; 16];
         let res = adc.read_buffer_blocking(&mut adc_pin, &mut buffer).unwrap();
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("Result: {:?}", res).unwrap();
+        cortex_m_semihosting::hprintln!("Result: {:?}", res);
     }
 }

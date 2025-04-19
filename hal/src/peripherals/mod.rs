@@ -1,10 +1,7 @@
 use atsamd_hal_macros::{hal_cfg, hal_module};
 
-#[hal_module(
-    any("adc-d11", "adc-d21") => "adc/d11.rs",
-    "adc-d5x" => "adc/d5x.rs",
-)]
-pub mod adc {}
+#[cfg(feature = "device")]
+pub mod adc;
 
 #[hal_module(
     any("nvmctrl-d11", "nvmctrl-d21") => "calibration/d11.rs",
