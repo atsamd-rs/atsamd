@@ -64,7 +64,7 @@
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
-//!     time::U32Ext,
+//!     fugit::RateExtU32,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
@@ -98,7 +98,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
@@ -109,7 +109,7 @@
 //! #     &mut pac.nvmctrl,
 //! # );
 //! # let pins = Pins::new(pac.port);
-//! let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.MHz());
 //! ```
 //!
 //! While we have created a [`Gclk`], we have not yet enabled it. But before
@@ -126,7 +126,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
@@ -137,7 +137,7 @@
 //! #     &mut pac.nvmctrl,
 //! # );
 //! # let pins = Pins::new(pac.port);
-//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.MHz());
 //! let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! ```
 //!
@@ -163,7 +163,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
@@ -174,7 +174,7 @@
 //! #     &mut pac.nvmctrl,
 //! # );
 //! # let pins = Pins::new(pac.port);
-//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.MHz());
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
 //! ```
@@ -193,7 +193,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
@@ -204,7 +204,7 @@
 //! #     &mut pac.nvmctrl,
 //! # );
 //! # let pins = Pins::new(pac.port);
-//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.MHz());
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
 //! let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
@@ -223,7 +223,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
@@ -234,7 +234,7 @@
 //! #     &mut pac.nvmctrl,
 //! # );
 //! # let pins = Pins::new(pac.port);
-//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.MHz());
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
 //! # let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
@@ -254,7 +254,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let (mut buses, clocks, tokens) = clock_system_at_reset(
@@ -265,7 +265,7 @@
 //! #     &mut pac.nvmctrl,
 //! # );
 //! # let pins = Pins::new(pac.port);
-//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! # let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.MHz());
 //! # let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! # let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
 //! # let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
@@ -285,7 +285,7 @@
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
-//!     time::U32Ext,
+//!     fugit::RateExtU32,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let (mut buses, clocks, tokens) = clock_system_at_reset(
@@ -296,7 +296,7 @@
 //!     &mut pac.nvmctrl,
 //! );
 //! let pins = Pins::new(pac.port);
-//! let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.mhz());
+//! let gclk1 = Gclk::from_pin(tokens.gclks.gclk1, pins.pb15, 24.MHz());
 //! let gclk1 = gclk1.div(GclkDiv16::Div(2)).enable();
 //! let (pclk_sercom0, gclk1) = Pclk::enable(tokens.pclks.sercom0, gclk1);
 //! let (gclk2, gclk1) = Gclk::from_source(tokens.gclks.gclk2, gclk1);
