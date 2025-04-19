@@ -39,7 +39,7 @@
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
-//!     time::U32Ext,
+//!     fugit::RateExtU32,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let pins = Pins::new(pac.port);
@@ -65,7 +65,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let pins = Pins::new(pac.port);
@@ -76,7 +76,7 @@
 //! #     pac.mclk,
 //! #     &mut pac.nvmctrl,
 //! # );
-//! let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
+//! let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.MHz())
 //!     .current(CrystalCurrent::Medium)
 //!     .loop_control(true)
 //!     .low_buf_gain(true)
@@ -106,7 +106,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let pins = Pins::new(pac.port);
@@ -117,7 +117,7 @@
 //! #     pac.mclk,
 //! #     &mut pac.nvmctrl,
 //! # );
-//! # let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
+//! # let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.MHz())
 //! #     .current(CrystalCurrent::Medium)
 //! #     .loop_control(true)
 //! #     .low_buf_gain(true)
@@ -140,7 +140,7 @@
 //! #     },
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let pins = Pins::new(pac.port);
@@ -151,7 +151,7 @@
 //! #     pac.mclk,
 //! #     &mut pac.nvmctrl,
 //! # );
-//! # let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
+//! # let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.MHz())
 //! #     .current(CrystalCurrent::Medium)
 //! #     .loop_control(true)
 //! #     .low_buf_gain(true)
@@ -176,7 +176,7 @@
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
-//!     time::U32Ext,
+//!     fugit::RateExtU32,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let pins = Pins::new(pac.port);
@@ -187,7 +187,7 @@
 //!     pac.mclk,
 //!     &mut pac.nvmctrl,
 //! );
-//! let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.mhz())
+//! let mut xosc = Xosc::from_crystal(tokens.xosc0, pins.pa14, pins.pa15, 20.MHz())
 //!     .current(CrystalCurrent::Medium)
 //!     .loop_control(true)
 //!     .low_buf_gain(true)

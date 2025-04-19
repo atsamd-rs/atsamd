@@ -66,7 +66,7 @@
 //!     clock::v2::{clock_system_at_reset, dfll::Dfll, xosc::Xosc},
 //!     gpio::Pins,
 //!     pac::Peripherals,
-//!     time::U32Ext,
+//!     fugit::RateExtU32,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let pins = Pins::new(pac.port);
@@ -87,7 +87,7 @@
 //! #     clock::v2::{clock_system_at_reset, dfll::Dfll, xosc::Xosc},
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let pins = Pins::new(pac.port);
@@ -98,7 +98,7 @@
 //! #     pac.mclk,
 //! #     &mut pac.nvmctrl,
 //! # );
-//! let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
+//! let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.MHz()).enable();
 //! ```
 //!
 //! We can then swap [`Gclk0`] from the [`EnabledDfll`] to the [`EnabledXosc`].
@@ -110,7 +110,7 @@
 //! #     clock::v2::{clock_system_at_reset, dfll::Dfll, xosc::Xosc},
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let pins = Pins::new(pac.port);
@@ -121,7 +121,7 @@
 //! #     pac.mclk,
 //! #     &mut pac.nvmctrl,
 //! # );
-//! # let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
+//! # let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.MHz()).enable();
 //! let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
 //! let token_dfll = dfll.disable().free();
 //! ```
@@ -137,7 +137,7 @@
 //! #     clock::v2::{clock_system_at_reset, dfll::Dfll, pclk::Pclk, xosc::Xosc},
 //! #     gpio::Pins,
 //! #     pac::Peripherals,
-//! #     time::U32Ext,
+//! #     fugit::RateExtU32,
 //! # };
 //! # let mut pac = Peripherals::take().unwrap();
 //! # let pins = Pins::new(pac.port);
@@ -148,7 +148,7 @@
 //! #     pac.mclk,
 //! #     &mut pac.nvmctrl,
 //! # );
-//! # let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
+//! # let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.MHz()).enable();
 //! # let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
 //! # let token_dfll = dfll.disable().free();
 //! let (pclk_dfll, gclk0) = Pclk::enable(tokens.pclks.dfll, gclk0);
@@ -166,7 +166,7 @@
 //!     clock::v2::{clock_system_at_reset, dfll::Dfll, pclk::Pclk, xosc::Xosc},
 //!     gpio::Pins,
 //!     pac::Peripherals,
-//!     time::U32Ext,
+//!     fugit::RateExtU32,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let pins = Pins::new(pac.port);
@@ -177,7 +177,7 @@
 //!     pac.mclk,
 //!     &mut pac.nvmctrl,
 //! );
-//! let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.mhz()).enable();
+//! let xosc0 = Xosc::from_clock(tokens.xosc0, pins.pa14, 24.MHz()).enable();
 //! let (gclk0, dfll, xosc0) = clocks.gclk0.swap_sources(clocks.dfll, xosc0);
 //! let token_dfll = dfll.disable().free();
 //! let (pclk_dfll, gclk0) = Pclk::enable(tokens.pclks.dfll, gclk0);
@@ -231,7 +231,7 @@
 //!     },
 //!     gpio::Pins,
 //!     pac::Peripherals,
-//!     time::U32Ext,
+//!     fugit::RateExtU32,
 //! };
 //! let mut pac = Peripherals::take().unwrap();
 //! let pins = Pins::new(pac.port);
