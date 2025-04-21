@@ -1,10 +1,8 @@
 use atsamd_hal::{
     clock::GenericClockController,
     delay::Delay,
-    ehal::blocking::delay::DelayMs,
-    ehal::digital::v2::OutputPin,
-    ehal::serial::{Read, Write},
-    pac::{interrupt, MCLK, SERCOM0},
+    ehal::digital::OutputPin,
+    pac::{interrupt, Mclk},
     prelude::*,
     sercom::{uart, IoSet2, Sercom0},
 };
@@ -12,6 +10,7 @@ use bbqueue::{self, BBBuffer, Consumer, Producer};
 
 use cortex_m::interrupt::CriticalSection;
 use cortex_m::peripheral::NVIC;
+use nb;
 
 pub use erpc::rpcs;
 use seeed_erpc as erpc;
@@ -55,9 +54,9 @@ pub type WifiUart = uart::Uart<uart::Config<WifiUartPads>, uart::Duplex>;
 impl Wifi {
     pub fn init(
         pins: WifiPins,
-        sercom0: SERCOM0,
+        sercom0: Sercom0,
         clocks: &mut GenericClockController,
-        mclk: &mut MCLK,
+        mclk: &mut Mclk,
         delay: &mut Delay,
         rx_buff: &'static BBBuffer<512>,
         tx_buff: &'static BBBuffer<128>,
@@ -80,9 +79,9 @@ impl Wifi {
 
         // Reset the RTL8720 MCU.
         let mut pwr: WifiPwr = pins.pwr.into();
-        pwr.set_low().ok();
+        OutputPin::set_low(&mut pwr).ok();
         delay.delay_ms(100u8);
-        pwr.set_high().ok();
+        OutputPin::set_high(&mut pwr).ok();
         delay.delay_ms(200u8);
 
         let (rx_buff_isr, rx_buff_input) = rx_buff.try_split().unwrap();
@@ -286,8 +285,8 @@ impl Wifi {
 /// Imports necessary for using `wifi_singleton`.
 pub mod wifi_prelude {
     pub use crate::wifi::*;
-    pub use atsamd_hal::pac::SERCOM0;
-    pub use atsamd_hal::pac::{interrupt, MCLK};
+    pub use atsamd_hal::pac::Sercom0;
+    pub use atsamd_hal::pac::{interrupt, Mclk};
     pub use bbqueue::{BBBuffer, Producer};
 
     pub use cortex_m::interrupt::CriticalSection;
@@ -305,9 +304,9 @@ macro_rules! wifi_singleton {
         unsafe fn wifi_init(
             _cs: &CriticalSection,
             pins: WifiPins,
-            sercom0: SERCOM0,
+            sercom0: Sercom0,
             clocks: &mut GenericClockController,
-            mclk: &mut MCLK,
+            mclk: &mut Mclk,
             delay: &mut Delay,
         ) {
             unsafe {

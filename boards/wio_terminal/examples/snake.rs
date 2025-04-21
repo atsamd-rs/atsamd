@@ -51,14 +51,14 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let sets = wio::Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.port).split();
     let mut uled = sets.user_led.into_push_pull_output();
     uled.set_low().unwrap();
     let mut consumer = unsafe { Q.split().1 };
@@ -84,8 +84,8 @@ fn main() -> ! {
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
+            peripherals.sercom7,
+            &mut peripherals.mclk,
             100.MHz(),
             &mut delay,
         )
@@ -103,7 +103,7 @@ fn main() -> ! {
     // initializing buttons
     let button_ctrlr = sets
         .buttons
-        .init(peripherals.EIC, &mut clocks, &mut peripherals.MCLK);
+        .init(peripherals.eic, &mut clocks, &mut peripherals.mclk);
     let nvic = &mut core.NVIC;
     disable_interrupts(|_| unsafe {
         button_ctrlr.enable(nvic);

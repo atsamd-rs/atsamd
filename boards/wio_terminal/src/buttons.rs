@@ -1,9 +1,7 @@
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::eic;
-use atsamd_hal::eic::pin::{
-    ExtInt10, ExtInt11, ExtInt12, ExtInt3, ExtInt4, ExtInt5, ExtInt7, ExternalInterrupt, Sense,
-};
-use atsamd_hal::pac::{interrupt, EIC, MCLK};
+use atsamd_hal::eic::{Eic, Sense};
+use atsamd_hal::pac::{interrupt, Eic as PacEic, Mclk};
 
 use cortex_m::peripheral::NVIC;
 
@@ -33,58 +31,48 @@ pub struct ButtonPins {
 impl ButtonPins {
     pub fn init(
         self,
-        eic: EIC,
+        eic: PacEic,
         clocks: &mut GenericClockController,
-        mclk: &mut MCLK,
+        mclk: &mut Mclk,
     ) -> ButtonController {
         let gclk1 = clocks.gclk1();
         let eic_clock = clocks.eic(&gclk1).unwrap();
-        let mut eic = eic::init_with_ulp32k(mclk, eic_clock, eic);
-
-        eic.button_debounce_pins(&[
-            self.button1.id(),
-            self.button2.id(),
-            self.button3.id(),
-            self.switch_x.id(),
-            self.switch_y.id(),
-            self.switch_z.id(),
-            self.switch_u.id(),
-            self.switch_b.id(),
-        ]);
+        let mut eic = eic::Eic::new(mclk, eic_clock, eic);
 
         // Unfortunately, the pin assigned to B1 shares the same
         // ExtInt line as up on the joystick. As such, we don't
         // support B1.
 
-        // let mut b1 = self.button1.into_floating_ei(port);
-        let mut b2 = ExtInt11::new(self.button2.into());
-        let mut b3 = ExtInt12::new(self.button3.into());
-        let mut x = ExtInt3::new(self.switch_x.into());
-        let mut y = ExtInt4::new(self.switch_y.into());
-        let mut z = ExtInt5::new(self.switch_z.into());
-        let mut u = ExtInt10::new(self.switch_u.into());
-        let mut b = ExtInt7::new(self.switch_b.into());
+        let eic_channels = eic.split();
 
-        // b1.sense(&mut eic, Sense::BOTH);
-        b2.sense(&mut eic, Sense::BOTH);
-        b3.sense(&mut eic, Sense::BOTH);
-        x.sense(&mut eic, Sense::BOTH);
-        y.sense(&mut eic, Sense::BOTH);
-        z.sense(&mut eic, Sense::BOTH);
-        u.sense(&mut eic, Sense::BOTH);
-        b.sense(&mut eic, Sense::BOTH);
+        // let mut b1 = eic_channels.1.with_pin(self.button1.into());
+        let mut b2 = eic_channels.11.with_pin(self.button2.into());
+        let mut b3 = eic_channels.12.with_pin(self.button3.into());
+        let mut x = eic_channels.3.with_pin(self.switch_x.into());
+        let mut y = eic_channels.4.with_pin(self.switch_y.into());
+        let mut z = eic_channels.5.with_pin(self.switch_z.into());
+        let mut u = eic_channels.10.with_pin(self.switch_u.into());
+        let mut b = eic_channels.7.with_pin(self.switch_b.into());
 
-        // b1.enable_interrupt(&mut eic);
-        b2.enable_interrupt(&mut eic);
-        b3.enable_interrupt(&mut eic);
-        x.enable_interrupt(&mut eic);
-        y.enable_interrupt(&mut eic);
-        z.enable_interrupt(&mut eic);
-        u.enable_interrupt(&mut eic);
-        b.enable_interrupt(&mut eic);
+        // b1.sense(Sense::Both);
+        b2.sense(Sense::Both);
+        b3.sense(Sense::Both);
+        x.sense(Sense::Both);
+        y.sense(Sense::Both);
+        z.sense(Sense::Both);
+        u.sense(Sense::Both);
+        b.sense(Sense::Both);
+
+        // b1.enable_interrupt();
+        b2.enable_interrupt();
+        b3.enable_interrupt();
+        x.enable_interrupt();
+        y.enable_interrupt();
+        z.enable_interrupt();
+        u.enable_interrupt();
+        b.enable_interrupt();
 
         ButtonController {
-            _eic: eic.finalize(),
             // b1,
             b2,
             b3,
@@ -116,16 +104,15 @@ pub struct ButtonEvent {
 }
 
 pub struct ButtonController {
-    _eic: eic::EIC,
     // b1: ExtInt10<Button1>,
-    b2: ExtInt11<Button2>,
-    b3: ExtInt12<Button3>,
+    b2: eic::ExtInt<Button2, eic::Ch11>,
+    b3: eic::ExtInt<Button3, eic::Ch12>,
 
-    x: ExtInt3<SwitchX>,
-    y: ExtInt4<SwitchY>,
-    z: ExtInt5<SwitchZ>,
-    u: ExtInt10<SwitchU>,
-    b: ExtInt7<SwitchB>,
+    x: eic::ExtInt<SwitchX, eic::Ch3>,
+    y: eic::ExtInt<SwitchY, eic::Ch4>,
+    z: eic::ExtInt<SwitchZ, eic::Ch5>,
+    u: eic::ExtInt<SwitchU, eic::Ch10>,
+    b: eic::ExtInt<SwitchB, eic::Ch7>,
 }
 
 macro_rules! isr {

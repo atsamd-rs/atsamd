@@ -28,22 +28,22 @@ fn main() -> ! {
     let core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
-    let sets = wio::Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.port).split();
 
     // Initialize the LIS3DH accelerometer, and create the orientation tracker.
     // The calibration value for Tracker was obtained experimentally, as directed in
     // the documentation.
     let mut lis3dh =
         sets.accelerometer
-            .init(&mut clocks, peripherals.SERCOM4, &mut peripherals.MCLK);
+            .init(&mut clocks, peripherals.sercom4, &mut peripherals.mclk);
     let mut tracker = Tracker::new(3700.0);
 
     // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
@@ -54,8 +54,8 @@ fn main() -> ! {
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
+            peripherals.sercom7,
+            &mut peripherals.mclk,
             58.MHz(),
             &mut delay,
         )

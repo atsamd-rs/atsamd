@@ -32,22 +32,22 @@ fn main() -> ! {
     let core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let sets: Sets = Pins::new(peripherals.PORT).split();
+    let sets: Sets = Pins::new(peripherals.port).split();
 
     // Set up the display so we can log our progress.
     let (display, _backlight) = sets
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
+            peripherals.sercom7,
+            &mut peripherals.mclk,
             58.MHz(),
             &mut delay,
         )
@@ -58,7 +58,7 @@ fn main() -> ! {
     let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_high().unwrap();
 
-    let mut flash = sets.flash.init(&mut peripherals.MCLK, peripherals.QSPI);
+    let mut flash = sets.flash.init(&mut peripherals.mclk, peripherals.qspi);
 
     // We don't know the current state of the chip, so lets chill out and
     // reset it.
