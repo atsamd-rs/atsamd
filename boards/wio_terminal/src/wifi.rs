@@ -1,9 +1,7 @@
 use atsamd_hal::{
     clock::GenericClockController,
     delay::Delay,
-    ehal::blocking::delay::DelayMs,
-    ehal::digital::v2::OutputPin,
-    ehal::serial::{Read, Write},
+    ehal::digital::OutputPin,
     pac::{interrupt, MCLK, SERCOM0},
     prelude::*,
     sercom::{uart, IoSet2, Sercom0},
@@ -12,6 +10,7 @@ use bbqueue::{self, BBBuffer, Consumer, Producer};
 
 use cortex_m::interrupt::CriticalSection;
 use cortex_m::peripheral::NVIC;
+use nb;
 
 pub use erpc::rpcs;
 use seeed_erpc as erpc;
@@ -80,9 +79,9 @@ impl Wifi {
 
         // Reset the RTL8720 MCU.
         let mut pwr: WifiPwr = pins.pwr.into();
-        pwr.set_low().ok();
+        OutputPin::set_low(&mut pwr).ok();
         delay.delay_ms(100u8);
-        pwr.set_high().ok();
+        OutputPin::set_high(&mut pwr).ok();
         delay.delay_ms(200u8);
 
         let (rx_buff_isr, rx_buff_input) = rx_buff.try_split().unwrap();

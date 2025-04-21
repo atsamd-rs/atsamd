@@ -1,6 +1,6 @@
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::ehal::blocking::delay::DelayMs;
-use atsamd_hal::ehal::digital::v2::OutputPin;
+use atsamd_hal::ehal::delay::DelayNs;
+use atsamd_hal::ehal::digital::OutputPin;
 use atsamd_hal::ehal::spi::{Phase, Polarity};
 use atsamd_hal::pac::{MCLK, SERCOM7};
 use atsamd_hal::sercom::spi;
@@ -48,7 +48,7 @@ impl Display {
     /// Initialize the display and its corresponding SPI bus peripheral. Return
     /// a tuple containing the configured display driver struct and backlight
     /// pin.
-    pub fn init<D: DelayMs<u16>>(
+    pub fn init<D: DelayNs>(
         self,
         clocks: &mut GenericClockController,
         sercom7: SERCOM7,
