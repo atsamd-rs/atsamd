@@ -1,2 +1,2 @@
-window.ALL_CRATES = ["atsamd_hal_macros","defmt_macros","defmt_parser","futures_macro","litrs","modular_bitfield_impl","paste","phf","phf_shared","proc_macro2","proc_macro_error2","proc_macro_error_attr2","quote","seq_macro","siphasher","syn","thiserror","thiserror_impl","unicode_ident"];
-//{"start":21,"fragment_lengths":[19,15,15,16,8,24,8,6,13,14,20,25,8,12,12,6,12,17,16]}
+window.ALL_CRATES = ["atsamd_hal_macros","futures_macro","litrs","modular_bitfield_impl","paste","phf","phf_shared","proc_macro2","quote","seq_macro","siphasher","syn","unicode_ident"];
+//{"start":21,"fragment_lengths":[19,16,8,24,8,6,13,14,8,12,12,6,16]}

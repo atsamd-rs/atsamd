@@ -1,209 +1,104 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `pac/atsamd51p/src/dmac/channel.rs`."><title>channel.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd51p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../static.files/storage-59e33391.js"></script><script defer src="../../../static.files/src-script-56102188.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">atsamd51p/dmac/</div>channel.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
-<a href="#1" id="1">1</a>
-<a href="#2" id="2">2</a>
-<a href="#3" id="3">3</a>
-<a href="#4" id="4">4</a>
-<a href="#5" id="5">5</a>
-<a href="#6" id="6">6</a>
-<a href="#7" id="7">7</a>
-<a href="#8" id="8">8</a>
-<a href="#9" id="9">9</a>
-<a href="#10" id="10">10</a>
-<a href="#11" id="11">11</a>
-<a href="#12" id="12">12</a>
-<a href="#13" id="13">13</a>
-<a href="#14" id="14">14</a>
-<a href="#15" id="15">15</a>
-<a href="#16" id="16">16</a>
-<a href="#17" id="17">17</a>
-<a href="#18" id="18">18</a>
-<a href="#19" id="19">19</a>
-<a href="#20" id="20">20</a>
-<a href="#21" id="21">21</a>
-<a href="#22" id="22">22</a>
-<a href="#23" id="23">23</a>
-<a href="#24" id="24">24</a>
-<a href="#25" id="25">25</a>
-<a href="#26" id="26">26</a>
-<a href="#27" id="27">27</a>
-<a href="#28" id="28">28</a>
-<a href="#29" id="29">29</a>
-<a href="#30" id="30">30</a>
-<a href="#31" id="31">31</a>
-<a href="#32" id="32">32</a>
-<a href="#33" id="33">33</a>
-<a href="#34" id="34">34</a>
-<a href="#35" id="35">35</a>
-<a href="#36" id="36">36</a>
-<a href="#37" id="37">37</a>
-<a href="#38" id="38">38</a>
-<a href="#39" id="39">39</a>
-<a href="#40" id="40">40</a>
-<a href="#41" id="41">41</a>
-<a href="#42" id="42">42</a>
-<a href="#43" id="43">43</a>
-<a href="#44" id="44">44</a>
-<a href="#45" id="45">45</a>
-<a href="#46" id="46">46</a>
-<a href="#47" id="47">47</a>
-<a href="#48" id="48">48</a>
-<a href="#49" id="49">49</a>
-<a href="#50" id="50">50</a>
-<a href="#51" id="51">51</a>
-<a href="#52" id="52">52</a>
-<a href="#53" id="53">53</a>
-<a href="#54" id="54">54</a>
-<a href="#55" id="55">55</a>
-<a href="#56" id="56">56</a>
-<a href="#57" id="57">57</a>
-<a href="#58" id="58">58</a>
-<a href="#59" id="59">59</a>
-<a href="#60" id="60">60</a>
-<a href="#61" id="61">61</a>
-<a href="#62" id="62">62</a>
-<a href="#63" id="63">63</a>
-<a href="#64" id="64">64</a>
-<a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
-<a href="#67" id="67">67</a>
-<a href="#68" id="68">68</a>
-<a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
-<a href="#73" id="73">73</a>
-<a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-<a href="#77" id="77">77</a>
-<a href="#78" id="78">78</a>
-<a href="#79" id="79">79</a>
-<a href="#80" id="80">80</a>
-<a href="#81" id="81">81</a>
-<a href="#82" id="82">82</a>
-<a href="#83" id="83">83</a>
-<a href="#84" id="84">84</a>
-<a href="#85" id="85">85</a>
-<a href="#86" id="86">86</a>
-<a href="#87" id="87">87</a>
-<a href="#88" id="88">88</a>
-<a href="#89" id="89">89</a>
-<a href="#90" id="90">90</a>
-<a href="#91" id="91">91</a>
-<a href="#92" id="92">92</a>
-<a href="#93" id="93">93</a>
-<a href="#94" id="94">94</a>
-<a href="#95" id="95">95</a>
-<a href="#96" id="96">96</a>
-<a href="#97" id="97">97</a>
-<a href="#98" id="98">98</a>
-<a href="#99" id="99">99</a>
-<a href="#100" id="100">100</a>
-<a href="#101" id="101">101</a>
-<a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a></pre></div><pre class="rust"><code><span class="attr">#[repr(C)]
-#[doc = <span class="string">"CHANNEL\\[%s\\]"</span>]
-#[doc(alias = <span class="string">"CHANNEL"</span>)]
-</span><span class="kw">pub struct </span>Channel {
-    chctrla: Chctrla,
-    chctrlb: Chctrlb,
-    chprilvl: Chprilvl,
-    chevctrl: Chevctrl,
-    _reserved4: [u8; <span class="number">0x05</span>],
-    chintenclr: Chintenclr,
-    chintenset: Chintenset,
-    chintflag: Chintflag,
-    chstatus: Chstatus,
-}
-<span class="kw">impl </span>Channel {
-    <span class="attr">#[doc = <span class="string">"0x00 - Channel n Control A"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub const fn </span>chctrla(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chctrla {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.chctrla
-    }
-    <span class="attr">#[doc = <span class="string">"0x04 - Channel n Control B"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub const fn </span>chctrlb(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chctrlb {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.chctrlb
-    }
-    <span class="attr">#[doc = <span class="string">"0x05 - Channel n Priority Level"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub const fn </span>chprilvl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chprilvl {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.chprilvl
-    }
-    <span class="attr">#[doc = <span class="string">"0x06 - Channel n Event Control"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub const fn </span>chevctrl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chevctrl {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.chevctrl
-    }
-    <span class="attr">#[doc = <span class="string">"0x0c - Channel n Interrupt Enable Clear"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub const fn </span>chintenclr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chintenclr {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.chintenclr
-    }
-    <span class="attr">#[doc = <span class="string">"0x0d - Channel n Interrupt Enable Set"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub const fn </span>chintenset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chintenset {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.chintenset
-    }
-    <span class="attr">#[doc = <span class="string">"0x0e - Channel n Interrupt Flag Status and Clear"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub const fn </span>chintflag(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chintflag {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.chintflag
-    }
-    <span class="attr">#[doc = <span class="string">"0x0f - Channel n Status"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub const fn </span>chstatus(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chstatus {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.chstatus
-    }
-}
-<span class="attr">#[doc = <span class="string">"CHCTRLA (rw) register accessor: Channel n Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrla::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrla::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chctrla`]
-module"</span>]
-#[doc(alias = <span class="string">"CHCTRLA"</span>)]
-</span><span class="kw">pub type </span>Chctrla = <span class="kw">crate</span>::Reg&lt;chctrla::ChctrlaSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Channel n Control A"</span>]
-</span><span class="kw">pub mod </span>chctrla;
-<span class="attr">#[doc = <span class="string">"CHCTRLB (rw) register accessor: Channel n Control B\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrlb::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrlb::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chctrlb`]
-module"</span>]
-#[doc(alias = <span class="string">"CHCTRLB"</span>)]
-</span><span class="kw">pub type </span>Chctrlb = <span class="kw">crate</span>::Reg&lt;chctrlb::ChctrlbSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Channel n Control B"</span>]
-</span><span class="kw">pub mod </span>chctrlb;
-<span class="attr">#[doc = <span class="string">"CHPRILVL (rw) register accessor: Channel n Priority Level\n\nYou can [`read`](crate::Reg::read) this register and get [`chprilvl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chprilvl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chprilvl`]
-module"</span>]
-#[doc(alias = <span class="string">"CHPRILVL"</span>)]
-</span><span class="kw">pub type </span>Chprilvl = <span class="kw">crate</span>::Reg&lt;chprilvl::ChprilvlSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Channel n Priority Level"</span>]
-</span><span class="kw">pub mod </span>chprilvl;
-<span class="attr">#[doc = <span class="string">"CHEVCTRL (rw) register accessor: Channel n Event Control\n\nYou can [`read`](crate::Reg::read) this register and get [`chevctrl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chevctrl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chevctrl`]
-module"</span>]
-#[doc(alias = <span class="string">"CHEVCTRL"</span>)]
-</span><span class="kw">pub type </span>Chevctrl = <span class="kw">crate</span>::Reg&lt;chevctrl::ChevctrlSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Channel n Event Control"</span>]
-</span><span class="kw">pub mod </span>chevctrl;
-<span class="attr">#[doc = <span class="string">"CHINTENCLR (rw) register accessor: Channel n Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`chintenclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintenclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintenclr`]
-module"</span>]
-#[doc(alias = <span class="string">"CHINTENCLR"</span>)]
-</span><span class="kw">pub type </span>Chintenclr = <span class="kw">crate</span>::Reg&lt;chintenclr::ChintenclrSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Channel n Interrupt Enable Clear"</span>]
-</span><span class="kw">pub mod </span>chintenclr;
-<span class="attr">#[doc = <span class="string">"CHINTENSET (rw) register accessor: Channel n Interrupt Enable Set\n\nYou can [`read`](crate::Reg::read) this register and get [`chintenset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintenset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintenset`]
-module"</span>]
-#[doc(alias = <span class="string">"CHINTENSET"</span>)]
-</span><span class="kw">pub type </span>Chintenset = <span class="kw">crate</span>::Reg&lt;chintenset::ChintensetSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Channel n Interrupt Enable Set"</span>]
-</span><span class="kw">pub mod </span>chintenset;
-<span class="attr">#[doc = <span class="string">"CHINTFLAG (rw) register accessor: Channel n Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`chintflag::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintflag::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintflag`]
-module"</span>]
-#[doc(alias = <span class="string">"CHINTFLAG"</span>)]
-</span><span class="kw">pub type </span>Chintflag = <span class="kw">crate</span>::Reg&lt;chintflag::ChintflagSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Channel n Interrupt Flag Status and Clear"</span>]
-</span><span class="kw">pub mod </span>chintflag;
-<span class="attr">#[doc = <span class="string">"CHSTATUS (rw) register accessor: Channel n Status\n\nYou can [`read`](crate::Reg::read) this register and get [`chstatus::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chstatus::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chstatus`]
-module"</span>]
-#[doc(alias = <span class="string">"CHSTATUS"</span>)]
-</span><span class="kw">pub type </span>Chstatus = <span class="kw">crate</span>::Reg&lt;chstatus::ChstatusSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Channel n Status"</span>]
-</span><span class="kw">pub mod </span>chstatus;
-</code></pre></div></section></main></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `pac/atsamd51p/src/dmac/channel.rs`."><title>channel.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-6c3ea77c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd51p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.86.0 (05f9846f8 2025-03-31)" data-channel="1.86.0" data-search-js="search-581efc7a.js" data-settings-js="settings-6dad6058.js" ><script src="../../../static.files/storage-3a5871a4.js"></script><script defer src="../../../static.files/src-script-b8d3f215.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-4d63596a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">atsamd51p/dmac/</div>channel.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#[repr(C)]
+<a href=#2 id=2 data-nosnippet>2</a>#[doc = <span class="string">"CHANNEL\\[%s\\]"</span>]
+<a href=#3 id=3 data-nosnippet>3</a>#[doc(alias = <span class="string">"CHANNEL"</span>)]
+<a href=#4 id=4 data-nosnippet>4</a></span><span class="kw">pub struct </span>Channel {
+<a href=#5 id=5 data-nosnippet>5</a>    chctrla: Chctrla,
+<a href=#6 id=6 data-nosnippet>6</a>    chctrlb: Chctrlb,
+<a href=#7 id=7 data-nosnippet>7</a>    chprilvl: Chprilvl,
+<a href=#8 id=8 data-nosnippet>8</a>    chevctrl: Chevctrl,
+<a href=#9 id=9 data-nosnippet>9</a>    _reserved4: [u8; <span class="number">0x05</span>],
+<a href=#10 id=10 data-nosnippet>10</a>    chintenclr: Chintenclr,
+<a href=#11 id=11 data-nosnippet>11</a>    chintenset: Chintenset,
+<a href=#12 id=12 data-nosnippet>12</a>    chintflag: Chintflag,
+<a href=#13 id=13 data-nosnippet>13</a>    chstatus: Chstatus,
+<a href=#14 id=14 data-nosnippet>14</a>}
+<a href=#15 id=15 data-nosnippet>15</a><span class="kw">impl </span>Channel {
+<a href=#16 id=16 data-nosnippet>16</a>    <span class="attr">#[doc = <span class="string">"0x00 - Channel n Control A"</span>]
+<a href=#17 id=17 data-nosnippet>17</a>    #[inline(always)]
+<a href=#18 id=18 data-nosnippet>18</a>    </span><span class="kw">pub const fn </span>chctrla(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chctrla {
+<a href=#19 id=19 data-nosnippet>19</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.chctrla
+<a href=#20 id=20 data-nosnippet>20</a>    }
+<a href=#21 id=21 data-nosnippet>21</a>    <span class="attr">#[doc = <span class="string">"0x04 - Channel n Control B"</span>]
+<a href=#22 id=22 data-nosnippet>22</a>    #[inline(always)]
+<a href=#23 id=23 data-nosnippet>23</a>    </span><span class="kw">pub const fn </span>chctrlb(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chctrlb {
+<a href=#24 id=24 data-nosnippet>24</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.chctrlb
+<a href=#25 id=25 data-nosnippet>25</a>    }
+<a href=#26 id=26 data-nosnippet>26</a>    <span class="attr">#[doc = <span class="string">"0x05 - Channel n Priority Level"</span>]
+<a href=#27 id=27 data-nosnippet>27</a>    #[inline(always)]
+<a href=#28 id=28 data-nosnippet>28</a>    </span><span class="kw">pub const fn </span>chprilvl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chprilvl {
+<a href=#29 id=29 data-nosnippet>29</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.chprilvl
+<a href=#30 id=30 data-nosnippet>30</a>    }
+<a href=#31 id=31 data-nosnippet>31</a>    <span class="attr">#[doc = <span class="string">"0x06 - Channel n Event Control"</span>]
+<a href=#32 id=32 data-nosnippet>32</a>    #[inline(always)]
+<a href=#33 id=33 data-nosnippet>33</a>    </span><span class="kw">pub const fn </span>chevctrl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chevctrl {
+<a href=#34 id=34 data-nosnippet>34</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.chevctrl
+<a href=#35 id=35 data-nosnippet>35</a>    }
+<a href=#36 id=36 data-nosnippet>36</a>    <span class="attr">#[doc = <span class="string">"0x0c - Channel n Interrupt Enable Clear"</span>]
+<a href=#37 id=37 data-nosnippet>37</a>    #[inline(always)]
+<a href=#38 id=38 data-nosnippet>38</a>    </span><span class="kw">pub const fn </span>chintenclr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chintenclr {
+<a href=#39 id=39 data-nosnippet>39</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.chintenclr
+<a href=#40 id=40 data-nosnippet>40</a>    }
+<a href=#41 id=41 data-nosnippet>41</a>    <span class="attr">#[doc = <span class="string">"0x0d - Channel n Interrupt Enable Set"</span>]
+<a href=#42 id=42 data-nosnippet>42</a>    #[inline(always)]
+<a href=#43 id=43 data-nosnippet>43</a>    </span><span class="kw">pub const fn </span>chintenset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chintenset {
+<a href=#44 id=44 data-nosnippet>44</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.chintenset
+<a href=#45 id=45 data-nosnippet>45</a>    }
+<a href=#46 id=46 data-nosnippet>46</a>    <span class="attr">#[doc = <span class="string">"0x0e - Channel n Interrupt Flag Status and Clear"</span>]
+<a href=#47 id=47 data-nosnippet>47</a>    #[inline(always)]
+<a href=#48 id=48 data-nosnippet>48</a>    </span><span class="kw">pub const fn </span>chintflag(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chintflag {
+<a href=#49 id=49 data-nosnippet>49</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.chintflag
+<a href=#50 id=50 data-nosnippet>50</a>    }
+<a href=#51 id=51 data-nosnippet>51</a>    <span class="attr">#[doc = <span class="string">"0x0f - Channel n Status"</span>]
+<a href=#52 id=52 data-nosnippet>52</a>    #[inline(always)]
+<a href=#53 id=53 data-nosnippet>53</a>    </span><span class="kw">pub const fn </span>chstatus(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Chstatus {
+<a href=#54 id=54 data-nosnippet>54</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.chstatus
+<a href=#55 id=55 data-nosnippet>55</a>    }
+<a href=#56 id=56 data-nosnippet>56</a>}
+<a href=#57 id=57 data-nosnippet>57</a><span class="attr">#[doc = <span class="string">"CHCTRLA (rw) register accessor: Channel n Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrla::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrla::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chctrla`]
+<a href=#58 id=58 data-nosnippet>58</a>module"</span>]
+<a href=#59 id=59 data-nosnippet>59</a>#[doc(alias = <span class="string">"CHCTRLA"</span>)]
+<a href=#60 id=60 data-nosnippet>60</a></span><span class="kw">pub type </span>Chctrla = <span class="kw">crate</span>::Reg&lt;chctrla::ChctrlaSpec&gt;;
+<a href=#61 id=61 data-nosnippet>61</a><span class="attr">#[doc = <span class="string">"Channel n Control A"</span>]
+<a href=#62 id=62 data-nosnippet>62</a></span><span class="kw">pub mod </span>chctrla;
+<a href=#63 id=63 data-nosnippet>63</a><span class="attr">#[doc = <span class="string">"CHCTRLB (rw) register accessor: Channel n Control B\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrlb::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrlb::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chctrlb`]
+<a href=#64 id=64 data-nosnippet>64</a>module"</span>]
+<a href=#65 id=65 data-nosnippet>65</a>#[doc(alias = <span class="string">"CHCTRLB"</span>)]
+<a href=#66 id=66 data-nosnippet>66</a></span><span class="kw">pub type </span>Chctrlb = <span class="kw">crate</span>::Reg&lt;chctrlb::ChctrlbSpec&gt;;
+<a href=#67 id=67 data-nosnippet>67</a><span class="attr">#[doc = <span class="string">"Channel n Control B"</span>]
+<a href=#68 id=68 data-nosnippet>68</a></span><span class="kw">pub mod </span>chctrlb;
+<a href=#69 id=69 data-nosnippet>69</a><span class="attr">#[doc = <span class="string">"CHPRILVL (rw) register accessor: Channel n Priority Level\n\nYou can [`read`](crate::Reg::read) this register and get [`chprilvl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chprilvl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chprilvl`]
+<a href=#70 id=70 data-nosnippet>70</a>module"</span>]
+<a href=#71 id=71 data-nosnippet>71</a>#[doc(alias = <span class="string">"CHPRILVL"</span>)]
+<a href=#72 id=72 data-nosnippet>72</a></span><span class="kw">pub type </span>Chprilvl = <span class="kw">crate</span>::Reg&lt;chprilvl::ChprilvlSpec&gt;;
+<a href=#73 id=73 data-nosnippet>73</a><span class="attr">#[doc = <span class="string">"Channel n Priority Level"</span>]
+<a href=#74 id=74 data-nosnippet>74</a></span><span class="kw">pub mod </span>chprilvl;
+<a href=#75 id=75 data-nosnippet>75</a><span class="attr">#[doc = <span class="string">"CHEVCTRL (rw) register accessor: Channel n Event Control\n\nYou can [`read`](crate::Reg::read) this register and get [`chevctrl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chevctrl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chevctrl`]
+<a href=#76 id=76 data-nosnippet>76</a>module"</span>]
+<a href=#77 id=77 data-nosnippet>77</a>#[doc(alias = <span class="string">"CHEVCTRL"</span>)]
+<a href=#78 id=78 data-nosnippet>78</a></span><span class="kw">pub type </span>Chevctrl = <span class="kw">crate</span>::Reg&lt;chevctrl::ChevctrlSpec&gt;;
+<a href=#79 id=79 data-nosnippet>79</a><span class="attr">#[doc = <span class="string">"Channel n Event Control"</span>]
+<a href=#80 id=80 data-nosnippet>80</a></span><span class="kw">pub mod </span>chevctrl;
+<a href=#81 id=81 data-nosnippet>81</a><span class="attr">#[doc = <span class="string">"CHINTENCLR (rw) register accessor: Channel n Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`chintenclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintenclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintenclr`]
+<a href=#82 id=82 data-nosnippet>82</a>module"</span>]
+<a href=#83 id=83 data-nosnippet>83</a>#[doc(alias = <span class="string">"CHINTENCLR"</span>)]
+<a href=#84 id=84 data-nosnippet>84</a></span><span class="kw">pub type </span>Chintenclr = <span class="kw">crate</span>::Reg&lt;chintenclr::ChintenclrSpec&gt;;
+<a href=#85 id=85 data-nosnippet>85</a><span class="attr">#[doc = <span class="string">"Channel n Interrupt Enable Clear"</span>]
+<a href=#86 id=86 data-nosnippet>86</a></span><span class="kw">pub mod </span>chintenclr;
+<a href=#87 id=87 data-nosnippet>87</a><span class="attr">#[doc = <span class="string">"CHINTENSET (rw) register accessor: Channel n Interrupt Enable Set\n\nYou can [`read`](crate::Reg::read) this register and get [`chintenset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintenset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintenset`]
+<a href=#88 id=88 data-nosnippet>88</a>module"</span>]
+<a href=#89 id=89 data-nosnippet>89</a>#[doc(alias = <span class="string">"CHINTENSET"</span>)]
+<a href=#90 id=90 data-nosnippet>90</a></span><span class="kw">pub type </span>Chintenset = <span class="kw">crate</span>::Reg&lt;chintenset::ChintensetSpec&gt;;
+<a href=#91 id=91 data-nosnippet>91</a><span class="attr">#[doc = <span class="string">"Channel n Interrupt Enable Set"</span>]
+<a href=#92 id=92 data-nosnippet>92</a></span><span class="kw">pub mod </span>chintenset;
+<a href=#93 id=93 data-nosnippet>93</a><span class="attr">#[doc = <span class="string">"CHINTFLAG (rw) register accessor: Channel n Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`chintflag::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintflag::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintflag`]
+<a href=#94 id=94 data-nosnippet>94</a>module"</span>]
+<a href=#95 id=95 data-nosnippet>95</a>#[doc(alias = <span class="string">"CHINTFLAG"</span>)]
+<a href=#96 id=96 data-nosnippet>96</a></span><span class="kw">pub type </span>Chintflag = <span class="kw">crate</span>::Reg&lt;chintflag::ChintflagSpec&gt;;
+<a href=#97 id=97 data-nosnippet>97</a><span class="attr">#[doc = <span class="string">"Channel n Interrupt Flag Status and Clear"</span>]
+<a href=#98 id=98 data-nosnippet>98</a></span><span class="kw">pub mod </span>chintflag;
+<a href=#99 id=99 data-nosnippet>99</a><span class="attr">#[doc = <span class="string">"CHSTATUS (rw) register accessor: Channel n Status\n\nYou can [`read`](crate::Reg::read) this register and get [`chstatus::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chstatus::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chstatus`]
+<a href=#100 id=100 data-nosnippet>100</a>module"</span>]
+<a href=#101 id=101 data-nosnippet>101</a>#[doc(alias = <span class="string">"CHSTATUS"</span>)]
+<a href=#102 id=102 data-nosnippet>102</a></span><span class="kw">pub type </span>Chstatus = <span class="kw">crate</span>::Reg&lt;chstatus::ChstatusSpec&gt;;
+<a href=#103 id=103 data-nosnippet>103</a><span class="attr">#[doc = <span class="string">"Channel n Status"</span>]
+<a href=#104 id=104 data-nosnippet>104</a></span><span class="kw">pub mod </span>chstatus;</code></pre></div></section></main></body></html>

@@ -1,3 +1,0 @@
-cargo:rustc-link-search=/home/runner/work/atsamd/atsamd/docs/samd51g/thumbv7em-none-eabihf/release/build/defmt-aa02f6dd9838baeb/out
-cargo:rustc-check-cfg=cfg(c_variadic)
-cargo:rustc-check-cfg=cfg(no_cas)

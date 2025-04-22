@@ -1,351 +1,175 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `pac/atsamd51g/src/sercom0/i2cs/status.rs`."><title>status.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="atsamd51g" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../static.files/storage-59e33391.js"></script><script defer src="../../../../static.files/src-script-56102188.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">atsamd51g/sercom0/i2cs/</div>status.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
-<a href="#1" id="1">1</a>
-<a href="#2" id="2">2</a>
-<a href="#3" id="3">3</a>
-<a href="#4" id="4">4</a>
-<a href="#5" id="5">5</a>
-<a href="#6" id="6">6</a>
-<a href="#7" id="7">7</a>
-<a href="#8" id="8">8</a>
-<a href="#9" id="9">9</a>
-<a href="#10" id="10">10</a>
-<a href="#11" id="11">11</a>
-<a href="#12" id="12">12</a>
-<a href="#13" id="13">13</a>
-<a href="#14" id="14">14</a>
-<a href="#15" id="15">15</a>
-<a href="#16" id="16">16</a>
-<a href="#17" id="17">17</a>
-<a href="#18" id="18">18</a>
-<a href="#19" id="19">19</a>
-<a href="#20" id="20">20</a>
-<a href="#21" id="21">21</a>
-<a href="#22" id="22">22</a>
-<a href="#23" id="23">23</a>
-<a href="#24" id="24">24</a>
-<a href="#25" id="25">25</a>
-<a href="#26" id="26">26</a>
-<a href="#27" id="27">27</a>
-<a href="#28" id="28">28</a>
-<a href="#29" id="29">29</a>
-<a href="#30" id="30">30</a>
-<a href="#31" id="31">31</a>
-<a href="#32" id="32">32</a>
-<a href="#33" id="33">33</a>
-<a href="#34" id="34">34</a>
-<a href="#35" id="35">35</a>
-<a href="#36" id="36">36</a>
-<a href="#37" id="37">37</a>
-<a href="#38" id="38">38</a>
-<a href="#39" id="39">39</a>
-<a href="#40" id="40">40</a>
-<a href="#41" id="41">41</a>
-<a href="#42" id="42">42</a>
-<a href="#43" id="43">43</a>
-<a href="#44" id="44">44</a>
-<a href="#45" id="45">45</a>
-<a href="#46" id="46">46</a>
-<a href="#47" id="47">47</a>
-<a href="#48" id="48">48</a>
-<a href="#49" id="49">49</a>
-<a href="#50" id="50">50</a>
-<a href="#51" id="51">51</a>
-<a href="#52" id="52">52</a>
-<a href="#53" id="53">53</a>
-<a href="#54" id="54">54</a>
-<a href="#55" id="55">55</a>
-<a href="#56" id="56">56</a>
-<a href="#57" id="57">57</a>
-<a href="#58" id="58">58</a>
-<a href="#59" id="59">59</a>
-<a href="#60" id="60">60</a>
-<a href="#61" id="61">61</a>
-<a href="#62" id="62">62</a>
-<a href="#63" id="63">63</a>
-<a href="#64" id="64">64</a>
-<a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
-<a href="#67" id="67">67</a>
-<a href="#68" id="68">68</a>
-<a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
-<a href="#73" id="73">73</a>
-<a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-<a href="#77" id="77">77</a>
-<a href="#78" id="78">78</a>
-<a href="#79" id="79">79</a>
-<a href="#80" id="80">80</a>
-<a href="#81" id="81">81</a>
-<a href="#82" id="82">82</a>
-<a href="#83" id="83">83</a>
-<a href="#84" id="84">84</a>
-<a href="#85" id="85">85</a>
-<a href="#86" id="86">86</a>
-<a href="#87" id="87">87</a>
-<a href="#88" id="88">88</a>
-<a href="#89" id="89">89</a>
-<a href="#90" id="90">90</a>
-<a href="#91" id="91">91</a>
-<a href="#92" id="92">92</a>
-<a href="#93" id="93">93</a>
-<a href="#94" id="94">94</a>
-<a href="#95" id="95">95</a>
-<a href="#96" id="96">96</a>
-<a href="#97" id="97">97</a>
-<a href="#98" id="98">98</a>
-<a href="#99" id="99">99</a>
-<a href="#100" id="100">100</a>
-<a href="#101" id="101">101</a>
-<a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a>
-<a href="#105" id="105">105</a>
-<a href="#106" id="106">106</a>
-<a href="#107" id="107">107</a>
-<a href="#108" id="108">108</a>
-<a href="#109" id="109">109</a>
-<a href="#110" id="110">110</a>
-<a href="#111" id="111">111</a>
-<a href="#112" id="112">112</a>
-<a href="#113" id="113">113</a>
-<a href="#114" id="114">114</a>
-<a href="#115" id="115">115</a>
-<a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
-<a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
-<a href="#123" id="123">123</a>
-<a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
-<a href="#131" id="131">131</a>
-<a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
-<a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
-<a href="#141" id="141">141</a>
-<a href="#142" id="142">142</a>
-<a href="#143" id="143">143</a>
-<a href="#144" id="144">144</a>
-<a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-<a href="#149" id="149">149</a>
-<a href="#150" id="150">150</a>
-<a href="#151" id="151">151</a>
-<a href="#152" id="152">152</a>
-<a href="#153" id="153">153</a>
-<a href="#154" id="154">154</a>
-<a href="#155" id="155">155</a>
-<a href="#156" id="156">156</a>
-<a href="#157" id="157">157</a>
-<a href="#158" id="158">158</a>
-<a href="#159" id="159">159</a>
-<a href="#160" id="160">160</a>
-<a href="#161" id="161">161</a>
-<a href="#162" id="162">162</a>
-<a href="#163" id="163">163</a>
-<a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-<a href="#168" id="168">168</a>
-<a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a></pre></div><pre class="rust"><code><span class="attr">#[doc = <span class="string">"Register `STATUS` reader"</span>]
-</span><span class="kw">pub type </span>R = <span class="kw">crate</span>::R&lt;StatusSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Register `STATUS` writer"</span>]
-</span><span class="kw">pub type </span>W = <span class="kw">crate</span>::W&lt;StatusSpec&gt;;
-<span class="attr">#[doc = <span class="string">"Field `BUSERR` reader - Bus Error"</span>]
-</span><span class="kw">pub type </span>BuserrR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `BUSERR` writer - Bus Error"</span>]
-</span><span class="kw">pub type </span>BuserrW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `COLL` reader - Transmit Collision"</span>]
-</span><span class="kw">pub type </span>CollR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `COLL` writer - Transmit Collision"</span>]
-</span><span class="kw">pub type </span>CollW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `RXNACK` reader - Received Not Acknowledge"</span>]
-</span><span class="kw">pub type </span>RxnackR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `RXNACK` writer - Received Not Acknowledge"</span>]
-</span><span class="kw">pub type </span>RxnackW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `DIR` reader - Read/Write Direction"</span>]
-</span><span class="kw">pub type </span>DirR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `DIR` writer - Read/Write Direction"</span>]
-</span><span class="kw">pub type </span>DirW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `SR` reader - Repeated Start"</span>]
-</span><span class="kw">pub type </span>SrR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `SR` writer - Repeated Start"</span>]
-</span><span class="kw">pub type </span>SrW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `LOWTOUT` reader - SCL Low Timeout"</span>]
-</span><span class="kw">pub type </span>LowtoutR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `LOWTOUT` writer - SCL Low Timeout"</span>]
-</span><span class="kw">pub type </span>LowtoutW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `CLKHOLD` reader - Clock Hold"</span>]
-</span><span class="kw">pub type </span>ClkholdR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `CLKHOLD` writer - Clock Hold"</span>]
-</span><span class="kw">pub type </span>ClkholdW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `SEXTTOUT` reader - Slave SCL Low Extend Timeout"</span>]
-</span><span class="kw">pub type </span>SexttoutR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `SEXTTOUT` writer - Slave SCL Low Extend Timeout"</span>]
-</span><span class="kw">pub type </span>SexttoutW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `HS` reader - High Speed"</span>]
-</span><span class="kw">pub type </span>HsR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `HS` writer - High Speed"</span>]
-</span><span class="kw">pub type </span>HsW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="attr">#[doc = <span class="string">"Field `LENERR` reader - Transaction Length Error"</span>]
-</span><span class="kw">pub type </span>LenerrR = <span class="kw">crate</span>::BitReader;
-<span class="attr">#[doc = <span class="string">"Field `LENERR` writer - Transaction Length Error"</span>]
-</span><span class="kw">pub type </span>LenerrW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
-<span class="kw">impl </span>R {
-    <span class="attr">#[doc = <span class="string">"Bit 0 - Bus Error"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>buserr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; BuserrR {
-        BuserrR::new((<span class="self">self</span>.bits &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 1 - Transmit Collision"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>coll(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; CollR {
-        CollR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">1</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 2 - Received Not Acknowledge"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>rxnack(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RxnackR {
-        RxnackR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">2</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 3 - Read/Write Direction"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>dir(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; DirR {
-        DirR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">3</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 4 - Repeated Start"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>sr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SrR {
-        SrR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">4</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 6 - SCL Low Timeout"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>lowtout(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LowtoutR {
-        LowtoutR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">6</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 7 - Clock Hold"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>clkhold(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ClkholdR {
-        ClkholdR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">7</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 9 - Slave SCL Low Extend Timeout"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>sexttout(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SexttoutR {
-        SexttoutR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">9</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 10 - High Speed"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>hs(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; HsR {
-        HsR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">10</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 11 - Transaction Length Error"</span>]
-    #[inline(always)]
-    </span><span class="kw">pub fn </span>lenerr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LenerrR {
-        LenerrR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">11</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
-    }
-}
-<span class="kw">impl </span>W {
-    <span class="attr">#[doc = <span class="string">"Bit 0 - Bus Error"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>buserr(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; BuserrW&lt;StatusSpec&gt; {
-        BuserrW::new(<span class="self">self</span>, <span class="number">0</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 1 - Transmit Collision"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>coll(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; CollW&lt;StatusSpec&gt; {
-        CollW::new(<span class="self">self</span>, <span class="number">1</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 2 - Received Not Acknowledge"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>rxnack(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; RxnackW&lt;StatusSpec&gt; {
-        RxnackW::new(<span class="self">self</span>, <span class="number">2</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 3 - Read/Write Direction"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>dir(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; DirW&lt;StatusSpec&gt; {
-        DirW::new(<span class="self">self</span>, <span class="number">3</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 4 - Repeated Start"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>sr(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; SrW&lt;StatusSpec&gt; {
-        SrW::new(<span class="self">self</span>, <span class="number">4</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 6 - SCL Low Timeout"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>lowtout(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; LowtoutW&lt;StatusSpec&gt; {
-        LowtoutW::new(<span class="self">self</span>, <span class="number">6</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 7 - Clock Hold"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>clkhold(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; ClkholdW&lt;StatusSpec&gt; {
-        ClkholdW::new(<span class="self">self</span>, <span class="number">7</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 9 - Slave SCL Low Extend Timeout"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>sexttout(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; SexttoutW&lt;StatusSpec&gt; {
-        SexttoutW::new(<span class="self">self</span>, <span class="number">9</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 10 - High Speed"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>hs(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; HsW&lt;StatusSpec&gt; {
-        HsW::new(<span class="self">self</span>, <span class="number">10</span>)
-    }
-    <span class="attr">#[doc = <span class="string">"Bit 11 - Transaction Length Error"</span>]
-    #[inline(always)]
-    #[must_use]
-    </span><span class="kw">pub fn </span>lenerr(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; LenerrW&lt;StatusSpec&gt; {
-        LenerrW::new(<span class="self">self</span>, <span class="number">11</span>)
-    }
-}
-<span class="attr">#[doc = <span class="string">"I2CS Status\n\nYou can [`read`](crate::Reg::read) this register and get [`status::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`status::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."</span>]
-</span><span class="kw">pub struct </span>StatusSpec;
-<span class="kw">impl </span><span class="kw">crate</span>::RegisterSpec <span class="kw">for </span>StatusSpec {
-    <span class="kw">type </span>Ux = u16;
-}
-<span class="attr">#[doc = <span class="string">"`read()` method returns [`status::R`](R) reader structure"</span>]
-</span><span class="kw">impl </span><span class="kw">crate</span>::Readable <span class="kw">for </span>StatusSpec {}
-<span class="attr">#[doc = <span class="string">"`write(|w| ..)` method takes [`status::W`](W) writer structure"</span>]
-</span><span class="kw">impl </span><span class="kw">crate</span>::Writable <span class="kw">for </span>StatusSpec {
-    <span class="kw">type </span>Safety = <span class="kw">crate</span>::Unsafe;
-    <span class="kw">const </span>ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = <span class="number">0</span>;
-    <span class="kw">const </span>ONE_TO_MODIFY_FIELDS_BITMAP: u16 = <span class="number">0</span>;
-}
-<span class="attr">#[doc = <span class="string">"`reset()` method sets STATUS to value 0"</span>]
-</span><span class="kw">impl </span><span class="kw">crate</span>::Resettable <span class="kw">for </span>StatusSpec {
-    <span class="kw">const </span>RESET_VALUE: u16 = <span class="number">0</span>;
-}
-</code></pre></div></section></main></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `pac/atsamd51g/src/sercom0/i2cs/status.rs`."><title>status.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-6c3ea77c.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="atsamd51g" data-themes="" data-resource-suffix="" data-rustdoc-version="1.86.0 (05f9846f8 2025-03-31)" data-channel="1.86.0" data-search-js="search-581efc7a.js" data-settings-js="settings-6dad6058.js" ><script src="../../../../static.files/storage-3a5871a4.js"></script><script defer src="../../../../static.files/src-script-b8d3f215.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-4d63596a.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">atsamd51g/sercom0/i2cs/</div>status.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#[doc = <span class="string">"Register `STATUS` reader"</span>]
+<a href=#2 id=2 data-nosnippet>2</a></span><span class="kw">pub type </span>R = <span class="kw">crate</span>::R&lt;StatusSpec&gt;;
+<a href=#3 id=3 data-nosnippet>3</a><span class="attr">#[doc = <span class="string">"Register `STATUS` writer"</span>]
+<a href=#4 id=4 data-nosnippet>4</a></span><span class="kw">pub type </span>W = <span class="kw">crate</span>::W&lt;StatusSpec&gt;;
+<a href=#5 id=5 data-nosnippet>5</a><span class="attr">#[doc = <span class="string">"Field `BUSERR` reader - Bus Error"</span>]
+<a href=#6 id=6 data-nosnippet>6</a></span><span class="kw">pub type </span>BuserrR = <span class="kw">crate</span>::BitReader;
+<a href=#7 id=7 data-nosnippet>7</a><span class="attr">#[doc = <span class="string">"Field `BUSERR` writer - Bus Error"</span>]
+<a href=#8 id=8 data-nosnippet>8</a></span><span class="kw">pub type </span>BuserrW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#9 id=9 data-nosnippet>9</a><span class="attr">#[doc = <span class="string">"Field `COLL` reader - Transmit Collision"</span>]
+<a href=#10 id=10 data-nosnippet>10</a></span><span class="kw">pub type </span>CollR = <span class="kw">crate</span>::BitReader;
+<a href=#11 id=11 data-nosnippet>11</a><span class="attr">#[doc = <span class="string">"Field `COLL` writer - Transmit Collision"</span>]
+<a href=#12 id=12 data-nosnippet>12</a></span><span class="kw">pub type </span>CollW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#13 id=13 data-nosnippet>13</a><span class="attr">#[doc = <span class="string">"Field `RXNACK` reader - Received Not Acknowledge"</span>]
+<a href=#14 id=14 data-nosnippet>14</a></span><span class="kw">pub type </span>RxnackR = <span class="kw">crate</span>::BitReader;
+<a href=#15 id=15 data-nosnippet>15</a><span class="attr">#[doc = <span class="string">"Field `RXNACK` writer - Received Not Acknowledge"</span>]
+<a href=#16 id=16 data-nosnippet>16</a></span><span class="kw">pub type </span>RxnackW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#17 id=17 data-nosnippet>17</a><span class="attr">#[doc = <span class="string">"Field `DIR` reader - Read/Write Direction"</span>]
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">pub type </span>DirR = <span class="kw">crate</span>::BitReader;
+<a href=#19 id=19 data-nosnippet>19</a><span class="attr">#[doc = <span class="string">"Field `DIR` writer - Read/Write Direction"</span>]
+<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">pub type </span>DirW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#21 id=21 data-nosnippet>21</a><span class="attr">#[doc = <span class="string">"Field `SR` reader - Repeated Start"</span>]
+<a href=#22 id=22 data-nosnippet>22</a></span><span class="kw">pub type </span>SrR = <span class="kw">crate</span>::BitReader;
+<a href=#23 id=23 data-nosnippet>23</a><span class="attr">#[doc = <span class="string">"Field `SR` writer - Repeated Start"</span>]
+<a href=#24 id=24 data-nosnippet>24</a></span><span class="kw">pub type </span>SrW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#25 id=25 data-nosnippet>25</a><span class="attr">#[doc = <span class="string">"Field `LOWTOUT` reader - SCL Low Timeout"</span>]
+<a href=#26 id=26 data-nosnippet>26</a></span><span class="kw">pub type </span>LowtoutR = <span class="kw">crate</span>::BitReader;
+<a href=#27 id=27 data-nosnippet>27</a><span class="attr">#[doc = <span class="string">"Field `LOWTOUT` writer - SCL Low Timeout"</span>]
+<a href=#28 id=28 data-nosnippet>28</a></span><span class="kw">pub type </span>LowtoutW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#29 id=29 data-nosnippet>29</a><span class="attr">#[doc = <span class="string">"Field `CLKHOLD` reader - Clock Hold"</span>]
+<a href=#30 id=30 data-nosnippet>30</a></span><span class="kw">pub type </span>ClkholdR = <span class="kw">crate</span>::BitReader;
+<a href=#31 id=31 data-nosnippet>31</a><span class="attr">#[doc = <span class="string">"Field `CLKHOLD` writer - Clock Hold"</span>]
+<a href=#32 id=32 data-nosnippet>32</a></span><span class="kw">pub type </span>ClkholdW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#33 id=33 data-nosnippet>33</a><span class="attr">#[doc = <span class="string">"Field `SEXTTOUT` reader - Slave SCL Low Extend Timeout"</span>]
+<a href=#34 id=34 data-nosnippet>34</a></span><span class="kw">pub type </span>SexttoutR = <span class="kw">crate</span>::BitReader;
+<a href=#35 id=35 data-nosnippet>35</a><span class="attr">#[doc = <span class="string">"Field `SEXTTOUT` writer - Slave SCL Low Extend Timeout"</span>]
+<a href=#36 id=36 data-nosnippet>36</a></span><span class="kw">pub type </span>SexttoutW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#37 id=37 data-nosnippet>37</a><span class="attr">#[doc = <span class="string">"Field `HS` reader - High Speed"</span>]
+<a href=#38 id=38 data-nosnippet>38</a></span><span class="kw">pub type </span>HsR = <span class="kw">crate</span>::BitReader;
+<a href=#39 id=39 data-nosnippet>39</a><span class="attr">#[doc = <span class="string">"Field `HS` writer - High Speed"</span>]
+<a href=#40 id=40 data-nosnippet>40</a></span><span class="kw">pub type </span>HsW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#41 id=41 data-nosnippet>41</a><span class="attr">#[doc = <span class="string">"Field `LENERR` reader - Transaction Length Error"</span>]
+<a href=#42 id=42 data-nosnippet>42</a></span><span class="kw">pub type </span>LenerrR = <span class="kw">crate</span>::BitReader;
+<a href=#43 id=43 data-nosnippet>43</a><span class="attr">#[doc = <span class="string">"Field `LENERR` writer - Transaction Length Error"</span>]
+<a href=#44 id=44 data-nosnippet>44</a></span><span class="kw">pub type </span>LenerrW&lt;<span class="lifetime">'a</span>, REG&gt; = <span class="kw">crate</span>::BitWriter&lt;<span class="lifetime">'a</span>, REG&gt;;
+<a href=#45 id=45 data-nosnippet>45</a><span class="kw">impl </span>R {
+<a href=#46 id=46 data-nosnippet>46</a>    <span class="attr">#[doc = <span class="string">"Bit 0 - Bus Error"</span>]
+<a href=#47 id=47 data-nosnippet>47</a>    #[inline(always)]
+<a href=#48 id=48 data-nosnippet>48</a>    </span><span class="kw">pub fn </span>buserr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; BuserrR {
+<a href=#49 id=49 data-nosnippet>49</a>        BuserrR::new((<span class="self">self</span>.bits &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#50 id=50 data-nosnippet>50</a>    }
+<a href=#51 id=51 data-nosnippet>51</a>    <span class="attr">#[doc = <span class="string">"Bit 1 - Transmit Collision"</span>]
+<a href=#52 id=52 data-nosnippet>52</a>    #[inline(always)]
+<a href=#53 id=53 data-nosnippet>53</a>    </span><span class="kw">pub fn </span>coll(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; CollR {
+<a href=#54 id=54 data-nosnippet>54</a>        CollR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">1</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#55 id=55 data-nosnippet>55</a>    }
+<a href=#56 id=56 data-nosnippet>56</a>    <span class="attr">#[doc = <span class="string">"Bit 2 - Received Not Acknowledge"</span>]
+<a href=#57 id=57 data-nosnippet>57</a>    #[inline(always)]
+<a href=#58 id=58 data-nosnippet>58</a>    </span><span class="kw">pub fn </span>rxnack(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RxnackR {
+<a href=#59 id=59 data-nosnippet>59</a>        RxnackR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">2</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#60 id=60 data-nosnippet>60</a>    }
+<a href=#61 id=61 data-nosnippet>61</a>    <span class="attr">#[doc = <span class="string">"Bit 3 - Read/Write Direction"</span>]
+<a href=#62 id=62 data-nosnippet>62</a>    #[inline(always)]
+<a href=#63 id=63 data-nosnippet>63</a>    </span><span class="kw">pub fn </span>dir(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; DirR {
+<a href=#64 id=64 data-nosnippet>64</a>        DirR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">3</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#65 id=65 data-nosnippet>65</a>    }
+<a href=#66 id=66 data-nosnippet>66</a>    <span class="attr">#[doc = <span class="string">"Bit 4 - Repeated Start"</span>]
+<a href=#67 id=67 data-nosnippet>67</a>    #[inline(always)]
+<a href=#68 id=68 data-nosnippet>68</a>    </span><span class="kw">pub fn </span>sr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SrR {
+<a href=#69 id=69 data-nosnippet>69</a>        SrR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">4</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#70 id=70 data-nosnippet>70</a>    }
+<a href=#71 id=71 data-nosnippet>71</a>    <span class="attr">#[doc = <span class="string">"Bit 6 - SCL Low Timeout"</span>]
+<a href=#72 id=72 data-nosnippet>72</a>    #[inline(always)]
+<a href=#73 id=73 data-nosnippet>73</a>    </span><span class="kw">pub fn </span>lowtout(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LowtoutR {
+<a href=#74 id=74 data-nosnippet>74</a>        LowtoutR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">6</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#75 id=75 data-nosnippet>75</a>    }
+<a href=#76 id=76 data-nosnippet>76</a>    <span class="attr">#[doc = <span class="string">"Bit 7 - Clock Hold"</span>]
+<a href=#77 id=77 data-nosnippet>77</a>    #[inline(always)]
+<a href=#78 id=78 data-nosnippet>78</a>    </span><span class="kw">pub fn </span>clkhold(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ClkholdR {
+<a href=#79 id=79 data-nosnippet>79</a>        ClkholdR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">7</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#80 id=80 data-nosnippet>80</a>    }
+<a href=#81 id=81 data-nosnippet>81</a>    <span class="attr">#[doc = <span class="string">"Bit 9 - Slave SCL Low Extend Timeout"</span>]
+<a href=#82 id=82 data-nosnippet>82</a>    #[inline(always)]
+<a href=#83 id=83 data-nosnippet>83</a>    </span><span class="kw">pub fn </span>sexttout(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SexttoutR {
+<a href=#84 id=84 data-nosnippet>84</a>        SexttoutR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">9</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#85 id=85 data-nosnippet>85</a>    }
+<a href=#86 id=86 data-nosnippet>86</a>    <span class="attr">#[doc = <span class="string">"Bit 10 - High Speed"</span>]
+<a href=#87 id=87 data-nosnippet>87</a>    #[inline(always)]
+<a href=#88 id=88 data-nosnippet>88</a>    </span><span class="kw">pub fn </span>hs(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; HsR {
+<a href=#89 id=89 data-nosnippet>89</a>        HsR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">10</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#90 id=90 data-nosnippet>90</a>    }
+<a href=#91 id=91 data-nosnippet>91</a>    <span class="attr">#[doc = <span class="string">"Bit 11 - Transaction Length Error"</span>]
+<a href=#92 id=92 data-nosnippet>92</a>    #[inline(always)]
+<a href=#93 id=93 data-nosnippet>93</a>    </span><span class="kw">pub fn </span>lenerr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; LenerrR {
+<a href=#94 id=94 data-nosnippet>94</a>        LenerrR::new(((<span class="self">self</span>.bits &gt;&gt; <span class="number">11</span>) &amp; <span class="number">1</span>) != <span class="number">0</span>)
+<a href=#95 id=95 data-nosnippet>95</a>    }
+<a href=#96 id=96 data-nosnippet>96</a>}
+<a href=#97 id=97 data-nosnippet>97</a><span class="kw">impl </span>W {
+<a href=#98 id=98 data-nosnippet>98</a>    <span class="attr">#[doc = <span class="string">"Bit 0 - Bus Error"</span>]
+<a href=#99 id=99 data-nosnippet>99</a>    #[inline(always)]
+<a href=#100 id=100 data-nosnippet>100</a>    #[must_use]
+<a href=#101 id=101 data-nosnippet>101</a>    </span><span class="kw">pub fn </span>buserr(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; BuserrW&lt;StatusSpec&gt; {
+<a href=#102 id=102 data-nosnippet>102</a>        BuserrW::new(<span class="self">self</span>, <span class="number">0</span>)
+<a href=#103 id=103 data-nosnippet>103</a>    }
+<a href=#104 id=104 data-nosnippet>104</a>    <span class="attr">#[doc = <span class="string">"Bit 1 - Transmit Collision"</span>]
+<a href=#105 id=105 data-nosnippet>105</a>    #[inline(always)]
+<a href=#106 id=106 data-nosnippet>106</a>    #[must_use]
+<a href=#107 id=107 data-nosnippet>107</a>    </span><span class="kw">pub fn </span>coll(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; CollW&lt;StatusSpec&gt; {
+<a href=#108 id=108 data-nosnippet>108</a>        CollW::new(<span class="self">self</span>, <span class="number">1</span>)
+<a href=#109 id=109 data-nosnippet>109</a>    }
+<a href=#110 id=110 data-nosnippet>110</a>    <span class="attr">#[doc = <span class="string">"Bit 2 - Received Not Acknowledge"</span>]
+<a href=#111 id=111 data-nosnippet>111</a>    #[inline(always)]
+<a href=#112 id=112 data-nosnippet>112</a>    #[must_use]
+<a href=#113 id=113 data-nosnippet>113</a>    </span><span class="kw">pub fn </span>rxnack(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; RxnackW&lt;StatusSpec&gt; {
+<a href=#114 id=114 data-nosnippet>114</a>        RxnackW::new(<span class="self">self</span>, <span class="number">2</span>)
+<a href=#115 id=115 data-nosnippet>115</a>    }
+<a href=#116 id=116 data-nosnippet>116</a>    <span class="attr">#[doc = <span class="string">"Bit 3 - Read/Write Direction"</span>]
+<a href=#117 id=117 data-nosnippet>117</a>    #[inline(always)]
+<a href=#118 id=118 data-nosnippet>118</a>    #[must_use]
+<a href=#119 id=119 data-nosnippet>119</a>    </span><span class="kw">pub fn </span>dir(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; DirW&lt;StatusSpec&gt; {
+<a href=#120 id=120 data-nosnippet>120</a>        DirW::new(<span class="self">self</span>, <span class="number">3</span>)
+<a href=#121 id=121 data-nosnippet>121</a>    }
+<a href=#122 id=122 data-nosnippet>122</a>    <span class="attr">#[doc = <span class="string">"Bit 4 - Repeated Start"</span>]
+<a href=#123 id=123 data-nosnippet>123</a>    #[inline(always)]
+<a href=#124 id=124 data-nosnippet>124</a>    #[must_use]
+<a href=#125 id=125 data-nosnippet>125</a>    </span><span class="kw">pub fn </span>sr(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; SrW&lt;StatusSpec&gt; {
+<a href=#126 id=126 data-nosnippet>126</a>        SrW::new(<span class="self">self</span>, <span class="number">4</span>)
+<a href=#127 id=127 data-nosnippet>127</a>    }
+<a href=#128 id=128 data-nosnippet>128</a>    <span class="attr">#[doc = <span class="string">"Bit 6 - SCL Low Timeout"</span>]
+<a href=#129 id=129 data-nosnippet>129</a>    #[inline(always)]
+<a href=#130 id=130 data-nosnippet>130</a>    #[must_use]
+<a href=#131 id=131 data-nosnippet>131</a>    </span><span class="kw">pub fn </span>lowtout(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; LowtoutW&lt;StatusSpec&gt; {
+<a href=#132 id=132 data-nosnippet>132</a>        LowtoutW::new(<span class="self">self</span>, <span class="number">6</span>)
+<a href=#133 id=133 data-nosnippet>133</a>    }
+<a href=#134 id=134 data-nosnippet>134</a>    <span class="attr">#[doc = <span class="string">"Bit 7 - Clock Hold"</span>]
+<a href=#135 id=135 data-nosnippet>135</a>    #[inline(always)]
+<a href=#136 id=136 data-nosnippet>136</a>    #[must_use]
+<a href=#137 id=137 data-nosnippet>137</a>    </span><span class="kw">pub fn </span>clkhold(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; ClkholdW&lt;StatusSpec&gt; {
+<a href=#138 id=138 data-nosnippet>138</a>        ClkholdW::new(<span class="self">self</span>, <span class="number">7</span>)
+<a href=#139 id=139 data-nosnippet>139</a>    }
+<a href=#140 id=140 data-nosnippet>140</a>    <span class="attr">#[doc = <span class="string">"Bit 9 - Slave SCL Low Extend Timeout"</span>]
+<a href=#141 id=141 data-nosnippet>141</a>    #[inline(always)]
+<a href=#142 id=142 data-nosnippet>142</a>    #[must_use]
+<a href=#143 id=143 data-nosnippet>143</a>    </span><span class="kw">pub fn </span>sexttout(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; SexttoutW&lt;StatusSpec&gt; {
+<a href=#144 id=144 data-nosnippet>144</a>        SexttoutW::new(<span class="self">self</span>, <span class="number">9</span>)
+<a href=#145 id=145 data-nosnippet>145</a>    }
+<a href=#146 id=146 data-nosnippet>146</a>    <span class="attr">#[doc = <span class="string">"Bit 10 - High Speed"</span>]
+<a href=#147 id=147 data-nosnippet>147</a>    #[inline(always)]
+<a href=#148 id=148 data-nosnippet>148</a>    #[must_use]
+<a href=#149 id=149 data-nosnippet>149</a>    </span><span class="kw">pub fn </span>hs(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; HsW&lt;StatusSpec&gt; {
+<a href=#150 id=150 data-nosnippet>150</a>        HsW::new(<span class="self">self</span>, <span class="number">10</span>)
+<a href=#151 id=151 data-nosnippet>151</a>    }
+<a href=#152 id=152 data-nosnippet>152</a>    <span class="attr">#[doc = <span class="string">"Bit 11 - Transaction Length Error"</span>]
+<a href=#153 id=153 data-nosnippet>153</a>    #[inline(always)]
+<a href=#154 id=154 data-nosnippet>154</a>    #[must_use]
+<a href=#155 id=155 data-nosnippet>155</a>    </span><span class="kw">pub fn </span>lenerr(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; LenerrW&lt;StatusSpec&gt; {
+<a href=#156 id=156 data-nosnippet>156</a>        LenerrW::new(<span class="self">self</span>, <span class="number">11</span>)
+<a href=#157 id=157 data-nosnippet>157</a>    }
+<a href=#158 id=158 data-nosnippet>158</a>}
+<a href=#159 id=159 data-nosnippet>159</a><span class="attr">#[doc = <span class="string">"I2CS Status\n\nYou can [`read`](crate::Reg::read) this register and get [`status::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`status::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."</span>]
+<a href=#160 id=160 data-nosnippet>160</a></span><span class="kw">pub struct </span>StatusSpec;
+<a href=#161 id=161 data-nosnippet>161</a><span class="kw">impl </span><span class="kw">crate</span>::RegisterSpec <span class="kw">for </span>StatusSpec {
+<a href=#162 id=162 data-nosnippet>162</a>    <span class="kw">type </span>Ux = u16;
+<a href=#163 id=163 data-nosnippet>163</a>}
+<a href=#164 id=164 data-nosnippet>164</a><span class="attr">#[doc = <span class="string">"`read()` method returns [`status::R`](R) reader structure"</span>]
+<a href=#165 id=165 data-nosnippet>165</a></span><span class="kw">impl </span><span class="kw">crate</span>::Readable <span class="kw">for </span>StatusSpec {}
+<a href=#166 id=166 data-nosnippet>166</a><span class="attr">#[doc = <span class="string">"`write(|w| ..)` method takes [`status::W`](W) writer structure"</span>]
+<a href=#167 id=167 data-nosnippet>167</a></span><span class="kw">impl </span><span class="kw">crate</span>::Writable <span class="kw">for </span>StatusSpec {
+<a href=#168 id=168 data-nosnippet>168</a>    <span class="kw">type </span>Safety = <span class="kw">crate</span>::Unsafe;
+<a href=#169 id=169 data-nosnippet>169</a>    <span class="kw">const </span>ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = <span class="number">0</span>;
+<a href=#170 id=170 data-nosnippet>170</a>    <span class="kw">const </span>ONE_TO_MODIFY_FIELDS_BITMAP: u16 = <span class="number">0</span>;
+<a href=#171 id=171 data-nosnippet>171</a>}
+<a href=#172 id=172 data-nosnippet>172</a><span class="attr">#[doc = <span class="string">"`reset()` method sets STATUS to value 0"</span>]
+<a href=#173 id=173 data-nosnippet>173</a></span><span class="kw">impl </span><span class="kw">crate</span>::Resettable <span class="kw">for </span>StatusSpec {
+<a href=#174 id=174 data-nosnippet>174</a>    <span class="kw">const </span>RESET_VALUE: u16 = <span class="number">0</span>;
+<a href=#175 id=175 data-nosnippet>175</a>}</code></pre></div></section></main></body></html>

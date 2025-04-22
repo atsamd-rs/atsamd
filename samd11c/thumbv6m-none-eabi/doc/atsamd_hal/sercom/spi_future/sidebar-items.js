@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["SpiFuture"],"trait":["CheckBufLen","ControlSS"]};
+window.SIDEBAR_ITEMS = {"enum":["DynLength"],"struct":["SpiFuture"],"trait":["CheckBufLen","ControlSS"]};

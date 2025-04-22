@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Dpll0Id","Dpll1Id","DynDpllId","DynDpllSourceId"],"struct":["Dpll","DpllToken"],"trait":["DpllId","DpllSourceId"],"type":["Dpll0","Dpll1","EnabledDpll","EnabledDpll0","EnabledDpll1"]};
+window.SIDEBAR_ITEMS = {"enum":["DcoFilter","Dpll0Id","Dpll1Id","DynDpllId","DynDpllSourceId","PiFilter"],"struct":["Dpll","DpllToken"],"trait":["DpllId","DpllSourceId"],"type":["Dpll0","Dpll1","EnabledDpll","EnabledDpll0","EnabledDpll1"]};

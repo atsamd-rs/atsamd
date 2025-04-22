@@ -1,877 +1,438 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/modular-bitfield-impl-0.11.2/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="modular_bitfield_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../static.files/storage-59e33391.js"></script><script defer src="../../static.files/src-script-56102188.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">modular_bitfield_impl/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
-<a href="#1" id="1">1</a>
-<a href="#2" id="2">2</a>
-<a href="#3" id="3">3</a>
-<a href="#4" id="4">4</a>
-<a href="#5" id="5">5</a>
-<a href="#6" id="6">6</a>
-<a href="#7" id="7">7</a>
-<a href="#8" id="8">8</a>
-<a href="#9" id="9">9</a>
-<a href="#10" id="10">10</a>
-<a href="#11" id="11">11</a>
-<a href="#12" id="12">12</a>
-<a href="#13" id="13">13</a>
-<a href="#14" id="14">14</a>
-<a href="#15" id="15">15</a>
-<a href="#16" id="16">16</a>
-<a href="#17" id="17">17</a>
-<a href="#18" id="18">18</a>
-<a href="#19" id="19">19</a>
-<a href="#20" id="20">20</a>
-<a href="#21" id="21">21</a>
-<a href="#22" id="22">22</a>
-<a href="#23" id="23">23</a>
-<a href="#24" id="24">24</a>
-<a href="#25" id="25">25</a>
-<a href="#26" id="26">26</a>
-<a href="#27" id="27">27</a>
-<a href="#28" id="28">28</a>
-<a href="#29" id="29">29</a>
-<a href="#30" id="30">30</a>
-<a href="#31" id="31">31</a>
-<a href="#32" id="32">32</a>
-<a href="#33" id="33">33</a>
-<a href="#34" id="34">34</a>
-<a href="#35" id="35">35</a>
-<a href="#36" id="36">36</a>
-<a href="#37" id="37">37</a>
-<a href="#38" id="38">38</a>
-<a href="#39" id="39">39</a>
-<a href="#40" id="40">40</a>
-<a href="#41" id="41">41</a>
-<a href="#42" id="42">42</a>
-<a href="#43" id="43">43</a>
-<a href="#44" id="44">44</a>
-<a href="#45" id="45">45</a>
-<a href="#46" id="46">46</a>
-<a href="#47" id="47">47</a>
-<a href="#48" id="48">48</a>
-<a href="#49" id="49">49</a>
-<a href="#50" id="50">50</a>
-<a href="#51" id="51">51</a>
-<a href="#52" id="52">52</a>
-<a href="#53" id="53">53</a>
-<a href="#54" id="54">54</a>
-<a href="#55" id="55">55</a>
-<a href="#56" id="56">56</a>
-<a href="#57" id="57">57</a>
-<a href="#58" id="58">58</a>
-<a href="#59" id="59">59</a>
-<a href="#60" id="60">60</a>
-<a href="#61" id="61">61</a>
-<a href="#62" id="62">62</a>
-<a href="#63" id="63">63</a>
-<a href="#64" id="64">64</a>
-<a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
-<a href="#67" id="67">67</a>
-<a href="#68" id="68">68</a>
-<a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
-<a href="#73" id="73">73</a>
-<a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-<a href="#77" id="77">77</a>
-<a href="#78" id="78">78</a>
-<a href="#79" id="79">79</a>
-<a href="#80" id="80">80</a>
-<a href="#81" id="81">81</a>
-<a href="#82" id="82">82</a>
-<a href="#83" id="83">83</a>
-<a href="#84" id="84">84</a>
-<a href="#85" id="85">85</a>
-<a href="#86" id="86">86</a>
-<a href="#87" id="87">87</a>
-<a href="#88" id="88">88</a>
-<a href="#89" id="89">89</a>
-<a href="#90" id="90">90</a>
-<a href="#91" id="91">91</a>
-<a href="#92" id="92">92</a>
-<a href="#93" id="93">93</a>
-<a href="#94" id="94">94</a>
-<a href="#95" id="95">95</a>
-<a href="#96" id="96">96</a>
-<a href="#97" id="97">97</a>
-<a href="#98" id="98">98</a>
-<a href="#99" id="99">99</a>
-<a href="#100" id="100">100</a>
-<a href="#101" id="101">101</a>
-<a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a>
-<a href="#105" id="105">105</a>
-<a href="#106" id="106">106</a>
-<a href="#107" id="107">107</a>
-<a href="#108" id="108">108</a>
-<a href="#109" id="109">109</a>
-<a href="#110" id="110">110</a>
-<a href="#111" id="111">111</a>
-<a href="#112" id="112">112</a>
-<a href="#113" id="113">113</a>
-<a href="#114" id="114">114</a>
-<a href="#115" id="115">115</a>
-<a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
-<a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
-<a href="#123" id="123">123</a>
-<a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
-<a href="#131" id="131">131</a>
-<a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
-<a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
-<a href="#141" id="141">141</a>
-<a href="#142" id="142">142</a>
-<a href="#143" id="143">143</a>
-<a href="#144" id="144">144</a>
-<a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-<a href="#149" id="149">149</a>
-<a href="#150" id="150">150</a>
-<a href="#151" id="151">151</a>
-<a href="#152" id="152">152</a>
-<a href="#153" id="153">153</a>
-<a href="#154" id="154">154</a>
-<a href="#155" id="155">155</a>
-<a href="#156" id="156">156</a>
-<a href="#157" id="157">157</a>
-<a href="#158" id="158">158</a>
-<a href="#159" id="159">159</a>
-<a href="#160" id="160">160</a>
-<a href="#161" id="161">161</a>
-<a href="#162" id="162">162</a>
-<a href="#163" id="163">163</a>
-<a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-<a href="#168" id="168">168</a>
-<a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
-<a href="#184" id="184">184</a>
-<a href="#185" id="185">185</a>
-<a href="#186" id="186">186</a>
-<a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
-<a href="#195" id="195">195</a>
-<a href="#196" id="196">196</a>
-<a href="#197" id="197">197</a>
-<a href="#198" id="198">198</a>
-<a href="#199" id="199">199</a>
-<a href="#200" id="200">200</a>
-<a href="#201" id="201">201</a>
-<a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
-<a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
-<a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
-<a href="#219" id="219">219</a>
-<a href="#220" id="220">220</a>
-<a href="#221" id="221">221</a>
-<a href="#222" id="222">222</a>
-<a href="#223" id="223">223</a>
-<a href="#224" id="224">224</a>
-<a href="#225" id="225">225</a>
-<a href="#226" id="226">226</a>
-<a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
-<a href="#231" id="231">231</a>
-<a href="#232" id="232">232</a>
-<a href="#233" id="233">233</a>
-<a href="#234" id="234">234</a>
-<a href="#235" id="235">235</a>
-<a href="#236" id="236">236</a>
-<a href="#237" id="237">237</a>
-<a href="#238" id="238">238</a>
-<a href="#239" id="239">239</a>
-<a href="#240" id="240">240</a>
-<a href="#241" id="241">241</a>
-<a href="#242" id="242">242</a>
-<a href="#243" id="243">243</a>
-<a href="#244" id="244">244</a>
-<a href="#245" id="245">245</a>
-<a href="#246" id="246">246</a>
-<a href="#247" id="247">247</a>
-<a href="#248" id="248">248</a>
-<a href="#249" id="249">249</a>
-<a href="#250" id="250">250</a>
-<a href="#251" id="251">251</a>
-<a href="#252" id="252">252</a>
-<a href="#253" id="253">253</a>
-<a href="#254" id="254">254</a>
-<a href="#255" id="255">255</a>
-<a href="#256" id="256">256</a>
-<a href="#257" id="257">257</a>
-<a href="#258" id="258">258</a>
-<a href="#259" id="259">259</a>
-<a href="#260" id="260">260</a>
-<a href="#261" id="261">261</a>
-<a href="#262" id="262">262</a>
-<a href="#263" id="263">263</a>
-<a href="#264" id="264">264</a>
-<a href="#265" id="265">265</a>
-<a href="#266" id="266">266</a>
-<a href="#267" id="267">267</a>
-<a href="#268" id="268">268</a>
-<a href="#269" id="269">269</a>
-<a href="#270" id="270">270</a>
-<a href="#271" id="271">271</a>
-<a href="#272" id="272">272</a>
-<a href="#273" id="273">273</a>
-<a href="#274" id="274">274</a>
-<a href="#275" id="275">275</a>
-<a href="#276" id="276">276</a>
-<a href="#277" id="277">277</a>
-<a href="#278" id="278">278</a>
-<a href="#279" id="279">279</a>
-<a href="#280" id="280">280</a>
-<a href="#281" id="281">281</a>
-<a href="#282" id="282">282</a>
-<a href="#283" id="283">283</a>
-<a href="#284" id="284">284</a>
-<a href="#285" id="285">285</a>
-<a href="#286" id="286">286</a>
-<a href="#287" id="287">287</a>
-<a href="#288" id="288">288</a>
-<a href="#289" id="289">289</a>
-<a href="#290" id="290">290</a>
-<a href="#291" id="291">291</a>
-<a href="#292" id="292">292</a>
-<a href="#293" id="293">293</a>
-<a href="#294" id="294">294</a>
-<a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
-<a href="#306" id="306">306</a>
-<a href="#307" id="307">307</a>
-<a href="#308" id="308">308</a>
-<a href="#309" id="309">309</a>
-<a href="#310" id="310">310</a>
-<a href="#311" id="311">311</a>
-<a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
-<a href="#328" id="328">328</a>
-<a href="#329" id="329">329</a>
-<a href="#330" id="330">330</a>
-<a href="#331" id="331">331</a>
-<a href="#332" id="332">332</a>
-<a href="#333" id="333">333</a>
-<a href="#334" id="334">334</a>
-<a href="#335" id="335">335</a>
-<a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
-<a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
-<a href="#342" id="342">342</a>
-<a href="#343" id="343">343</a>
-<a href="#344" id="344">344</a>
-<a href="#345" id="345">345</a>
-<a href="#346" id="346">346</a>
-<a href="#347" id="347">347</a>
-<a href="#348" id="348">348</a>
-<a href="#349" id="349">349</a>
-<a href="#350" id="350">350</a>
-<a href="#351" id="351">351</a>
-<a href="#352" id="352">352</a>
-<a href="#353" id="353">353</a>
-<a href="#354" id="354">354</a>
-<a href="#355" id="355">355</a>
-<a href="#356" id="356">356</a>
-<a href="#357" id="357">357</a>
-<a href="#358" id="358">358</a>
-<a href="#359" id="359">359</a>
-<a href="#360" id="360">360</a>
-<a href="#361" id="361">361</a>
-<a href="#362" id="362">362</a>
-<a href="#363" id="363">363</a>
-<a href="#364" id="364">364</a>
-<a href="#365" id="365">365</a>
-<a href="#366" id="366">366</a>
-<a href="#367" id="367">367</a>
-<a href="#368" id="368">368</a>
-<a href="#369" id="369">369</a>
-<a href="#370" id="370">370</a>
-<a href="#371" id="371">371</a>
-<a href="#372" id="372">372</a>
-<a href="#373" id="373">373</a>
-<a href="#374" id="374">374</a>
-<a href="#375" id="375">375</a>
-<a href="#376" id="376">376</a>
-<a href="#377" id="377">377</a>
-<a href="#378" id="378">378</a>
-<a href="#379" id="379">379</a>
-<a href="#380" id="380">380</a>
-<a href="#381" id="381">381</a>
-<a href="#382" id="382">382</a>
-<a href="#383" id="383">383</a>
-<a href="#384" id="384">384</a>
-<a href="#385" id="385">385</a>
-<a href="#386" id="386">386</a>
-<a href="#387" id="387">387</a>
-<a href="#388" id="388">388</a>
-<a href="#389" id="389">389</a>
-<a href="#390" id="390">390</a>
-<a href="#391" id="391">391</a>
-<a href="#392" id="392">392</a>
-<a href="#393" id="393">393</a>
-<a href="#394" id="394">394</a>
-<a href="#395" id="395">395</a>
-<a href="#396" id="396">396</a>
-<a href="#397" id="397">397</a>
-<a href="#398" id="398">398</a>
-<a href="#399" id="399">399</a>
-<a href="#400" id="400">400</a>
-<a href="#401" id="401">401</a>
-<a href="#402" id="402">402</a>
-<a href="#403" id="403">403</a>
-<a href="#404" id="404">404</a>
-<a href="#405" id="405">405</a>
-<a href="#406" id="406">406</a>
-<a href="#407" id="407">407</a>
-<a href="#408" id="408">408</a>
-<a href="#409" id="409">409</a>
-<a href="#410" id="410">410</a>
-<a href="#411" id="411">411</a>
-<a href="#412" id="412">412</a>
-<a href="#413" id="413">413</a>
-<a href="#414" id="414">414</a>
-<a href="#415" id="415">415</a>
-<a href="#416" id="416">416</a>
-<a href="#417" id="417">417</a>
-<a href="#418" id="418">418</a>
-<a href="#419" id="419">419</a>
-<a href="#420" id="420">420</a>
-<a href="#421" id="421">421</a>
-<a href="#422" id="422">422</a>
-<a href="#423" id="423">423</a>
-<a href="#424" id="424">424</a>
-<a href="#425" id="425">425</a>
-<a href="#426" id="426">426</a>
-<a href="#427" id="427">427</a>
-<a href="#428" id="428">428</a>
-<a href="#429" id="429">429</a>
-<a href="#430" id="430">430</a>
-<a href="#431" id="431">431</a>
-<a href="#432" id="432">432</a>
-<a href="#433" id="433">433</a>
-<a href="#434" id="434">434</a>
-<a href="#435" id="435">435</a>
-<a href="#436" id="436">436</a>
-<a href="#437" id="437">437</a>
-<a href="#438" id="438">438</a></pre></div><pre class="rust"><code><span class="attr">#![recursion_limit = <span class="string">"256"</span>]
-#![forbid(unsafe_code)]
-
-</span><span class="kw">extern crate </span>proc_macro;
-
-<span class="attr">#[macro_use]
-</span><span class="kw">mod </span>errors;
-<span class="kw">mod </span>bitfield;
-<span class="kw">mod </span>bitfield_specifier;
-<span class="kw">mod </span>define_specifiers;
-
-<span class="kw">use </span>proc_macro::TokenStream;
-
-<span class="doccomment">/// Generates the `B1`, `B2`, ..., `B128` bitfield specifiers.
-///
-/// Only of use witihn the `modular_bitfield` crate itself.
-</span><span class="attr">#[proc_macro]
-</span><span class="kw">pub fn </span>define_specifiers(input: TokenStream) -&gt; TokenStream {
-    define_specifiers::generate(input.into()).into()
-}
-
-<span class="doccomment">/// Applicable to structs to turn their fields into compact bitfields.
-///
-/// # Generated API
-///
-/// By default this generates the following API:
-///
-/// - **Constructors:**
-///
-///     1. `new()`: Initializes all bits to 0 even if 0 bits may be invalid.
-///        Note that invalid bit patterns are supported in that getters and setters will
-///        be protecting accesses.
-///
-/// - **Getters:**
-///
-///     For every field `f` we generate the following getters:
-///
-///     1. `f()`: Returns the value of `f` and might panic
-///        if the value contains an invalid bit pattern.
-///     2. `f_or_err()`: Returns the value of `f` or an error
-///        if the value contains an invalid bit pattern.
-///
-/// - **Setters:**
-///
-///     For every field `f` we generate the following setters:
-///
-///     1. `set_f(new_value)`: Sets the value of `f` to `new_value` and might panic
-///        if `new_value` is out of bounds for the bit width of `f`.
-///     2. `set_f_checked(new_value)`: Sets the value of `f` to `new` or returns an error
-///        if `new_value` if out of bounds for the bit width of `f`.
-///     3. `with_f(new_value)`: Similar to `set_f` but consumes and returns `Self`.
-///        Primarily useful for method chaining.
-///     4. `with_f_checked(new_value)`: Similar to `set_f_checked` but consumes and returns `Self`.
-///        Primarily useful for method chaining.
-///
-/// - **Conversions:**
-///
-///     - `from_bytes(bytes)`: Allows to constructor the bitfield type from a fixed array of bytes.
-///     - `into_bytes()`: Allows to convert the bitfield into its underlying byte representation.
-///
-/// # Parameters
-///
-/// The following parameters for the `#[bitfield]` macro are supported:
-///
-/// ## Parameter: `bytes = N`
-///
-/// This ensures at compilation time that the resulting `#[bitfield]` struct consists of
-/// exactly `N` bytes. Yield a compilation error if this does not hold true.
-///
-/// ### Example
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield(bytes = 2)]
-/// pub struct SingedInt {
-///     sign: bool, //  1 bit
-///     value: B15, // 15 bits
-/// }
-/// ```
-///
-/// ## Parameter: `filled: bool`
-///
-/// If `filled` is `true` ensures that the `#[bitfield]` struct defines all bits and
-/// therefore has a bitwidth that is divisible by 8. If `filled` is `false` ensures the
-/// exact opposite.
-///
-/// The default value is: `true`
-///
-/// ### Example
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield(filled = false)]
-/// pub struct Package {
-///     is_received: bool, // 1 bit
-///     is_alive: bool,    // 1 bit
-///     status: B2,        // 2 bits
-/// }
-/// ```
-///
-/// ## Parameter: `bits = N`
-///
-/// With the `bits: int` parameter it is possible to control the targeted bit width of
-/// a `#[bitfield]` annoated struct. Using `bits = N` guarantees that the resulting bitfield
-/// struct will have a bit width of exactly `N`.
-///
-/// ### Example 1
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield(bits = 16)]
-/// pub struct Package {
-///     is_received: bool, // 1 bit
-///     is_alive: bool,    // 1 bit
-///     status: B14,       // 14 bits
-/// }
-/// ```
-///
-/// ### Example 2
-///
-/// The `bits: int` parameter is especially useful when using this in conjunction with
-/// `#[derive(BitfieldSpecifier)] and `filled = false` as shown in the below example.
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield(bits = 5)]
-/// #[derive(BitfieldSpecifier)]
-/// pub struct Package {
-///     is_received: bool, // 1 bit
-///     is_alive: bool,    // 1 bit
-///     status: B3,        // 3 bits
-/// }
-/// ```
-///
-/// ## Field Parameter: `#[bits = N]`
-///
-/// To ensure at compile time that a field of a `#[bitfield]` struct has a bit width of exactly
-/// `N` a user may add `#[bits = N]` to the field in question.
-///
-/// ### Example
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// # #[bitfield(filled = false)]
-/// # #[derive(BitfieldSpecifier)]
-/// # pub struct Header {
-/// #     is_received: bool, // 1 bit
-/// #     is_alive: bool,    // 1 bit
-/// #     status: B2,        // 2 bits
-/// # }
-/// #[bitfield]
-/// pub struct Base {
-///     #[bits = 4]
-///     header: Header, //  4 bits
-///     content: B28,   // 28 bits
-/// }
-/// ```
-///
-/// ## Field Parameter: `#[skip(..)]`
-///
-/// It is possible to skip the entire code generation for getters or setters with the `#[skip]`
-/// field attribute.
-/// This is useful if a field just needs to be read or written exclusively. Skipping both
-/// setters and getters is useful if you want to have undefined blocks within your bitfields.
-///
-/// ### Example
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield]
-/// pub struct Sparse {
-///     #[skip(getters)]
-///     no_getters: B4,
-///     #[skip(setters)]
-///     no_setters: B4,
-///     #[skip]
-///     skipped_entirely: B4,
-///     #[skip(getters, setters)]
-///     skipped_entirely_2: B2,
-///     #[skip(getters)] #[skip(setters)]
-///     skipped_entirely_2: B2,
-/// }
-/// ```
-///
-/// ### Trick: Wildcards
-///
-/// If you are completely uninterested in a field of a bitfield, for example when specifying
-/// some undefined bits in your bitfield you can use double wildcards as their names:
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield]
-/// pub struct Sparse {
-///     #[skip] __: B10,
-///     a: bool,
-///     #[skip] __: B10,
-///     b: bool,
-///     #[skip] __: B10,
-/// }
-/// ```
-///
-/// # Features
-///
-/// ## Support: `#[derive(BitfieldSpecifier)]`
-///
-/// If a `#[bitfield]` struct is annotated with a `#[derive(BitfieldSpecifier)]` attribute
-/// an implementation of the `Specifier` trait will be generated for it. This has the effect
-/// that the bitfield struct itself can be used as the type of a field of another bitfield type.
-///
-/// This feature is limited to bitfield types that have a total bit width of 128 bit or fewer.
-/// This restriction is ensured at compile time.
-///
-/// ### Example
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield(filled = false)]
-/// #[derive(BitfieldSpecifier)]
-/// pub struct Header {
-///     is_received: bool, // 1 bit
-///     is_alive: bool,    // 1 bit
-///     status: B2,        // 2 bits
-/// }
-/// ```
-///
-/// Now the above `Header` bitfield type can be used in yet another `#[bitfield]` annotated type:
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// # #[bitfield(filled = false)]
-/// # #[derive(BitfieldSpecifier)]
-/// # pub struct Header {
-/// #     is_received: bool, // 1 bit
-/// #     is_alive: bool,    // 1 bit
-/// #     status: B2,        // 2 bits
-/// # }
-/// #[bitfield]
-/// pub struct Base {
-///     header: Header, //  4 bits
-///     content: B28,   // 28 bits
-/// }
-/// ```
-///
-/// ## Support: `#[derive(Debug)]`
-///
-/// If a `#[derive(Debug)]` is found by the `#[bitfield]` a naturally formatting implementation
-/// is going to be generated that clearly displays all the fields and their values as the user
-/// would expect.
-/// Also invalid bit patterns for fields are clearly displayed under this implementation.
-///
-/// ### Example
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield]
-/// #[derive(Debug)]
-/// pub struct Package {
-///     is_received: bool, // 1 bit
-///     is_alive: bool,    // 1 bit
-///     status: B6,        // 6 bits
-/// }
-///
-/// let package = Package::new()
-///     .with_is_received(false)
-///     .with_is_alive(true)
-///     .with_status(3);
-/// println!("{:?}", package);
-/// assert_eq!(
-///     format!("{:?}", package),
-///     "Package { is_received: false, is_alive: true, status: 3 }",
-/// );
-/// ```
-///
-/// ## Support: `#[repr(uN)]`
-///
-/// It is possible to additionally annotate a `#[bitfield]` annotated struct with `#[repr(uN)]`
-/// where `uN` is one of `u8`, `u16`, `u32`, `u64` or `u128` in order to make it conveniently
-/// interchangeable with such an unsigned integer value.
-///
-/// As an effect to the user this implements `From` implementations between the chosen primitive
-/// and the bitfield as well as ensuring at compile time that the bit width of the bitfield struct
-/// matches the bit width of the primitive.
-///
-/// ### Example
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #[bitfield]
-/// #[repr(u16)]
-/// pub struct SignedU16 {
-///     sign: bool,     //  1 bit
-///     abs_value: B15, // 15 bits
-/// }
-///
-/// let sint = SignedU16::from(0b0111_0001);
-/// assert_eq!(sint.sign(), true);
-/// assert_eq!(sint.abs_value(), 0b0011_1000);
-/// assert_eq!(u16::from(sint), 0b0111_0001_u16);
-/// ```
-</span><span class="attr">#[proc_macro_attribute]
-</span><span class="kw">pub fn </span>bitfield(args: TokenStream, input: TokenStream) -&gt; TokenStream {
-    bitfield::analyse_and_expand(args.into(), input.into()).into()
-}
-
-<span class="doccomment">/// Derive macro for Rust `enums` to implement `Specifier` trait.
-///
-/// This allows such an enum to be used as a field of a `#[bitfield]` struct.
-/// The annotated enum must not have any variants with associated data and
-/// by default must have a number of variants that is equal to the power of 2.
-///
-/// If a user wants to circumvent the latter restriction they can add
-/// `#[bits = N]` below the `#[derive(BitfieldSpecifier)]` line in order to
-/// signal to the code generation that the enum may have a relaxed number
-/// of variants.
-///
-/// # Example
-///
-/// ## Example: Basic Usage
-///
-/// In the following we define a `MaybeWeekday` enum that lists all weekdays
-/// as well as an invalid day so that we have a power-of-two number of variants.
-///
-/// ```
-/// use modular_bitfield::prelude::*;
-///
-/// #[derive(BitfieldSpecifier)]
-/// pub enum Weekday {
-///     Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, None
-/// }
-/// ```
-///
-/// ## Example: `#[bits = N]`
-///
-/// If we want to get rid of the `None` variant we need to add `#[bits = 3]`:
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #
-/// #[derive(BitfieldSpecifier)]
-/// #[bits = 3]
-/// pub enum Weekday {
-///     Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
-/// }
-/// ```
-///
-/// ## Example: Discriminants
-///
-/// It is possible to explicitly assign discriminants to some of the days.
-/// In our case this is useful since our week starts at sunday:
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #
-/// #[derive(BitfieldSpecifier)]
-/// #[bits = 3]
-/// pub enum Weekday {
-///     Monday = 1,
-///     Tuesday = 2,
-///     Wednesday = 3,
-///     Thursday = 4,
-///     Friday = 5,
-///     Saturday = 6,
-///     Sunday = 0,
-/// }
-/// ```
-///
-/// ## Example: Use in `#[bitfield]`
-///
-/// Given the above `Weekday` enum that starts at `Sunday` and uses 3 bits in total
-/// we can now use it in a `#[bitfield]` annotated struct as follows:
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #
-/// # #[derive(BitfieldSpecifier)]
-/// # #[bits = 3]
-/// # pub enum Weekday {
-/// #     Monday = 1,
-/// #     Tuesday = 2,
-/// #     Wednesday = 3,
-/// #     Thursday = 4,
-/// #     Friday = 5,
-/// #     Saturday = 6,
-/// #     Sunday = 0,
-/// # }
-/// #[bitfield]
-/// pub struct MeetingTimeSlot {
-///     day: Weekday,
-///     from: B6,
-///     to: B6,
-///     expired: bool,
-/// }
-/// ```
-///
-/// The above `MeetingTimeSlot` uses exactly 16 bits and defines our `Weekday` enum as
-/// compact `day` bitfield. The `from` and `to` require 6 bits each and finally the
-/// `expired` flag requires a single bit.
-///
-/// ## Example: Interacting
-///
-/// A user can interact with the above `MeetingTimeSlot` and `Weekday` definitions in
-/// the following ways:
-///
-/// ```
-/// # use modular_bitfield::prelude::*;
-/// #
-/// # #[derive(BitfieldSpecifier, Debug, PartialEq)]
-/// # #[bits = 3]
-/// # pub enum Weekday {
-/// #     Monday = 1,
-/// #     Tuesday = 2,
-/// #     Wednesday = 3,
-/// #     Thursday = 4,
-/// #     Friday = 5,
-/// #     Saturday = 6,
-/// #     Sunday = 0,
-/// # }
-/// # #[bitfield]
-/// # pub struct MeetingTimeSlot {
-/// #     day: Weekday,
-/// #     from: B6,
-/// #     to: B6,
-/// #     expired: bool,
-/// # }
-/// #
-/// let mut slot = MeetingTimeSlot::new()
-///     .with_day(Weekday::Friday)
-///     .with_from(14) // 14:00 CEST
-///     .with_to(15); // 15:00 CEST
-/// assert_eq!(slot.day(), Weekday::Friday);
-/// assert_eq!(slot.from(), 14);
-/// assert_eq!(slot.to(), 15);
-/// assert!(!slot.expired());
-/// ```
-</span><span class="attr">#[proc_macro_derive(BitfieldSpecifier, attributes(bits))]
-</span><span class="kw">pub fn </span>bitfield_specifier(input: TokenStream) -&gt; TokenStream {
-    bitfield_specifier::generate(input.into()).into()
-}
-</code></pre></div></section></main></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/modular-bitfield-impl-0.11.2/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-6c3ea77c.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="modular_bitfield_impl" data-themes="" data-resource-suffix="" data-rustdoc-version="1.86.0 (05f9846f8 2025-03-31)" data-channel="1.86.0" data-search-js="search-581efc7a.js" data-settings-js="settings-6dad6058.js" ><script src="../../static.files/storage-3a5871a4.js"></script><script defer src="../../static.files/src-script-b8d3f215.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-4d63596a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">modular_bitfield_impl/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![recursion_limit = <span class="string">"256"</span>]
+<a href=#2 id=2 data-nosnippet>2</a>#![forbid(unsafe_code)]
+<a href=#3 id=3 data-nosnippet>3</a>
+<a href=#4 id=4 data-nosnippet>4</a></span><span class="kw">extern crate </span>proc_macro;
+<a href=#5 id=5 data-nosnippet>5</a>
+<a href=#6 id=6 data-nosnippet>6</a><span class="attr">#[macro_use]
+<a href=#7 id=7 data-nosnippet>7</a></span><span class="kw">mod </span>errors;
+<a href=#8 id=8 data-nosnippet>8</a><span class="kw">mod </span>bitfield;
+<a href=#9 id=9 data-nosnippet>9</a><span class="kw">mod </span>bitfield_specifier;
+<a href=#10 id=10 data-nosnippet>10</a><span class="kw">mod </span>define_specifiers;
+<a href=#11 id=11 data-nosnippet>11</a>
+<a href=#12 id=12 data-nosnippet>12</a><span class="kw">use </span>proc_macro::TokenStream;
+<a href=#13 id=13 data-nosnippet>13</a>
+<a href=#14 id=14 data-nosnippet>14</a><span class="doccomment">/// Generates the `B1`, `B2`, ..., `B128` bitfield specifiers.
+<a href=#15 id=15 data-nosnippet>15</a>///
+<a href=#16 id=16 data-nosnippet>16</a>/// Only of use witihn the `modular_bitfield` crate itself.
+<a href=#17 id=17 data-nosnippet>17</a></span><span class="attr">#[proc_macro]
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">pub fn </span>define_specifiers(input: TokenStream) -&gt; TokenStream {
+<a href=#19 id=19 data-nosnippet>19</a>    define_specifiers::generate(input.into()).into()
+<a href=#20 id=20 data-nosnippet>20</a>}
+<a href=#21 id=21 data-nosnippet>21</a>
+<a href=#22 id=22 data-nosnippet>22</a><span class="doccomment">/// Applicable to structs to turn their fields into compact bitfields.
+<a href=#23 id=23 data-nosnippet>23</a>///
+<a href=#24 id=24 data-nosnippet>24</a>/// # Generated API
+<a href=#25 id=25 data-nosnippet>25</a>///
+<a href=#26 id=26 data-nosnippet>26</a>/// By default this generates the following API:
+<a href=#27 id=27 data-nosnippet>27</a>///
+<a href=#28 id=28 data-nosnippet>28</a>/// - **Constructors:**
+<a href=#29 id=29 data-nosnippet>29</a>///
+<a href=#30 id=30 data-nosnippet>30</a>///     1. `new()`: Initializes all bits to 0 even if 0 bits may be invalid.
+<a href=#31 id=31 data-nosnippet>31</a>///        Note that invalid bit patterns are supported in that getters and setters will
+<a href=#32 id=32 data-nosnippet>32</a>///        be protecting accesses.
+<a href=#33 id=33 data-nosnippet>33</a>///
+<a href=#34 id=34 data-nosnippet>34</a>/// - **Getters:**
+<a href=#35 id=35 data-nosnippet>35</a>///
+<a href=#36 id=36 data-nosnippet>36</a>///     For every field `f` we generate the following getters:
+<a href=#37 id=37 data-nosnippet>37</a>///
+<a href=#38 id=38 data-nosnippet>38</a>///     1. `f()`: Returns the value of `f` and might panic
+<a href=#39 id=39 data-nosnippet>39</a>///        if the value contains an invalid bit pattern.
+<a href=#40 id=40 data-nosnippet>40</a>///     2. `f_or_err()`: Returns the value of `f` or an error
+<a href=#41 id=41 data-nosnippet>41</a>///        if the value contains an invalid bit pattern.
+<a href=#42 id=42 data-nosnippet>42</a>///
+<a href=#43 id=43 data-nosnippet>43</a>/// - **Setters:**
+<a href=#44 id=44 data-nosnippet>44</a>///
+<a href=#45 id=45 data-nosnippet>45</a>///     For every field `f` we generate the following setters:
+<a href=#46 id=46 data-nosnippet>46</a>///
+<a href=#47 id=47 data-nosnippet>47</a>///     1. `set_f(new_value)`: Sets the value of `f` to `new_value` and might panic
+<a href=#48 id=48 data-nosnippet>48</a>///        if `new_value` is out of bounds for the bit width of `f`.
+<a href=#49 id=49 data-nosnippet>49</a>///     2. `set_f_checked(new_value)`: Sets the value of `f` to `new` or returns an error
+<a href=#50 id=50 data-nosnippet>50</a>///        if `new_value` if out of bounds for the bit width of `f`.
+<a href=#51 id=51 data-nosnippet>51</a>///     3. `with_f(new_value)`: Similar to `set_f` but consumes and returns `Self`.
+<a href=#52 id=52 data-nosnippet>52</a>///        Primarily useful for method chaining.
+<a href=#53 id=53 data-nosnippet>53</a>///     4. `with_f_checked(new_value)`: Similar to `set_f_checked` but consumes and returns `Self`.
+<a href=#54 id=54 data-nosnippet>54</a>///        Primarily useful for method chaining.
+<a href=#55 id=55 data-nosnippet>55</a>///
+<a href=#56 id=56 data-nosnippet>56</a>/// - **Conversions:**
+<a href=#57 id=57 data-nosnippet>57</a>///
+<a href=#58 id=58 data-nosnippet>58</a>///     - `from_bytes(bytes)`: Allows to constructor the bitfield type from a fixed array of bytes.
+<a href=#59 id=59 data-nosnippet>59</a>///     - `into_bytes()`: Allows to convert the bitfield into its underlying byte representation.
+<a href=#60 id=60 data-nosnippet>60</a>///
+<a href=#61 id=61 data-nosnippet>61</a>/// # Parameters
+<a href=#62 id=62 data-nosnippet>62</a>///
+<a href=#63 id=63 data-nosnippet>63</a>/// The following parameters for the `#[bitfield]` macro are supported:
+<a href=#64 id=64 data-nosnippet>64</a>///
+<a href=#65 id=65 data-nosnippet>65</a>/// ## Parameter: `bytes = N`
+<a href=#66 id=66 data-nosnippet>66</a>///
+<a href=#67 id=67 data-nosnippet>67</a>/// This ensures at compilation time that the resulting `#[bitfield]` struct consists of
+<a href=#68 id=68 data-nosnippet>68</a>/// exactly `N` bytes. Yield a compilation error if this does not hold true.
+<a href=#69 id=69 data-nosnippet>69</a>///
+<a href=#70 id=70 data-nosnippet>70</a>/// ### Example
+<a href=#71 id=71 data-nosnippet>71</a>///
+<a href=#72 id=72 data-nosnippet>72</a>/// ```
+<a href=#73 id=73 data-nosnippet>73</a>/// # use modular_bitfield::prelude::*;
+<a href=#74 id=74 data-nosnippet>74</a>/// #[bitfield(bytes = 2)]
+<a href=#75 id=75 data-nosnippet>75</a>/// pub struct SingedInt {
+<a href=#76 id=76 data-nosnippet>76</a>///     sign: bool, //  1 bit
+<a href=#77 id=77 data-nosnippet>77</a>///     value: B15, // 15 bits
+<a href=#78 id=78 data-nosnippet>78</a>/// }
+<a href=#79 id=79 data-nosnippet>79</a>/// ```
+<a href=#80 id=80 data-nosnippet>80</a>///
+<a href=#81 id=81 data-nosnippet>81</a>/// ## Parameter: `filled: bool`
+<a href=#82 id=82 data-nosnippet>82</a>///
+<a href=#83 id=83 data-nosnippet>83</a>/// If `filled` is `true` ensures that the `#[bitfield]` struct defines all bits and
+<a href=#84 id=84 data-nosnippet>84</a>/// therefore has a bitwidth that is divisible by 8. If `filled` is `false` ensures the
+<a href=#85 id=85 data-nosnippet>85</a>/// exact opposite.
+<a href=#86 id=86 data-nosnippet>86</a>///
+<a href=#87 id=87 data-nosnippet>87</a>/// The default value is: `true`
+<a href=#88 id=88 data-nosnippet>88</a>///
+<a href=#89 id=89 data-nosnippet>89</a>/// ### Example
+<a href=#90 id=90 data-nosnippet>90</a>///
+<a href=#91 id=91 data-nosnippet>91</a>/// ```
+<a href=#92 id=92 data-nosnippet>92</a>/// # use modular_bitfield::prelude::*;
+<a href=#93 id=93 data-nosnippet>93</a>/// #[bitfield(filled = false)]
+<a href=#94 id=94 data-nosnippet>94</a>/// pub struct Package {
+<a href=#95 id=95 data-nosnippet>95</a>///     is_received: bool, // 1 bit
+<a href=#96 id=96 data-nosnippet>96</a>///     is_alive: bool,    // 1 bit
+<a href=#97 id=97 data-nosnippet>97</a>///     status: B2,        // 2 bits
+<a href=#98 id=98 data-nosnippet>98</a>/// }
+<a href=#99 id=99 data-nosnippet>99</a>/// ```
+<a href=#100 id=100 data-nosnippet>100</a>///
+<a href=#101 id=101 data-nosnippet>101</a>/// ## Parameter: `bits = N`
+<a href=#102 id=102 data-nosnippet>102</a>///
+<a href=#103 id=103 data-nosnippet>103</a>/// With the `bits: int` parameter it is possible to control the targeted bit width of
+<a href=#104 id=104 data-nosnippet>104</a>/// a `#[bitfield]` annoated struct. Using `bits = N` guarantees that the resulting bitfield
+<a href=#105 id=105 data-nosnippet>105</a>/// struct will have a bit width of exactly `N`.
+<a href=#106 id=106 data-nosnippet>106</a>///
+<a href=#107 id=107 data-nosnippet>107</a>/// ### Example 1
+<a href=#108 id=108 data-nosnippet>108</a>///
+<a href=#109 id=109 data-nosnippet>109</a>/// ```
+<a href=#110 id=110 data-nosnippet>110</a>/// # use modular_bitfield::prelude::*;
+<a href=#111 id=111 data-nosnippet>111</a>/// #[bitfield(bits = 16)]
+<a href=#112 id=112 data-nosnippet>112</a>/// pub struct Package {
+<a href=#113 id=113 data-nosnippet>113</a>///     is_received: bool, // 1 bit
+<a href=#114 id=114 data-nosnippet>114</a>///     is_alive: bool,    // 1 bit
+<a href=#115 id=115 data-nosnippet>115</a>///     status: B14,       // 14 bits
+<a href=#116 id=116 data-nosnippet>116</a>/// }
+<a href=#117 id=117 data-nosnippet>117</a>/// ```
+<a href=#118 id=118 data-nosnippet>118</a>///
+<a href=#119 id=119 data-nosnippet>119</a>/// ### Example 2
+<a href=#120 id=120 data-nosnippet>120</a>///
+<a href=#121 id=121 data-nosnippet>121</a>/// The `bits: int` parameter is especially useful when using this in conjunction with
+<a href=#122 id=122 data-nosnippet>122</a>/// `#[derive(BitfieldSpecifier)] and `filled = false` as shown in the below example.
+<a href=#123 id=123 data-nosnippet>123</a>///
+<a href=#124 id=124 data-nosnippet>124</a>/// ```
+<a href=#125 id=125 data-nosnippet>125</a>/// # use modular_bitfield::prelude::*;
+<a href=#126 id=126 data-nosnippet>126</a>/// #[bitfield(bits = 5)]
+<a href=#127 id=127 data-nosnippet>127</a>/// #[derive(BitfieldSpecifier)]
+<a href=#128 id=128 data-nosnippet>128</a>/// pub struct Package {
+<a href=#129 id=129 data-nosnippet>129</a>///     is_received: bool, // 1 bit
+<a href=#130 id=130 data-nosnippet>130</a>///     is_alive: bool,    // 1 bit
+<a href=#131 id=131 data-nosnippet>131</a>///     status: B3,        // 3 bits
+<a href=#132 id=132 data-nosnippet>132</a>/// }
+<a href=#133 id=133 data-nosnippet>133</a>/// ```
+<a href=#134 id=134 data-nosnippet>134</a>///
+<a href=#135 id=135 data-nosnippet>135</a>/// ## Field Parameter: `#[bits = N]`
+<a href=#136 id=136 data-nosnippet>136</a>///
+<a href=#137 id=137 data-nosnippet>137</a>/// To ensure at compile time that a field of a `#[bitfield]` struct has a bit width of exactly
+<a href=#138 id=138 data-nosnippet>138</a>/// `N` a user may add `#[bits = N]` to the field in question.
+<a href=#139 id=139 data-nosnippet>139</a>///
+<a href=#140 id=140 data-nosnippet>140</a>/// ### Example
+<a href=#141 id=141 data-nosnippet>141</a>///
+<a href=#142 id=142 data-nosnippet>142</a>/// ```
+<a href=#143 id=143 data-nosnippet>143</a>/// # use modular_bitfield::prelude::*;
+<a href=#144 id=144 data-nosnippet>144</a>/// # #[bitfield(filled = false)]
+<a href=#145 id=145 data-nosnippet>145</a>/// # #[derive(BitfieldSpecifier)]
+<a href=#146 id=146 data-nosnippet>146</a>/// # pub struct Header {
+<a href=#147 id=147 data-nosnippet>147</a>/// #     is_received: bool, // 1 bit
+<a href=#148 id=148 data-nosnippet>148</a>/// #     is_alive: bool,    // 1 bit
+<a href=#149 id=149 data-nosnippet>149</a>/// #     status: B2,        // 2 bits
+<a href=#150 id=150 data-nosnippet>150</a>/// # }
+<a href=#151 id=151 data-nosnippet>151</a>/// #[bitfield]
+<a href=#152 id=152 data-nosnippet>152</a>/// pub struct Base {
+<a href=#153 id=153 data-nosnippet>153</a>///     #[bits = 4]
+<a href=#154 id=154 data-nosnippet>154</a>///     header: Header, //  4 bits
+<a href=#155 id=155 data-nosnippet>155</a>///     content: B28,   // 28 bits
+<a href=#156 id=156 data-nosnippet>156</a>/// }
+<a href=#157 id=157 data-nosnippet>157</a>/// ```
+<a href=#158 id=158 data-nosnippet>158</a>///
+<a href=#159 id=159 data-nosnippet>159</a>/// ## Field Parameter: `#[skip(..)]`
+<a href=#160 id=160 data-nosnippet>160</a>///
+<a href=#161 id=161 data-nosnippet>161</a>/// It is possible to skip the entire code generation for getters or setters with the `#[skip]`
+<a href=#162 id=162 data-nosnippet>162</a>/// field attribute.
+<a href=#163 id=163 data-nosnippet>163</a>/// This is useful if a field just needs to be read or written exclusively. Skipping both
+<a href=#164 id=164 data-nosnippet>164</a>/// setters and getters is useful if you want to have undefined blocks within your bitfields.
+<a href=#165 id=165 data-nosnippet>165</a>///
+<a href=#166 id=166 data-nosnippet>166</a>/// ### Example
+<a href=#167 id=167 data-nosnippet>167</a>///
+<a href=#168 id=168 data-nosnippet>168</a>/// ```
+<a href=#169 id=169 data-nosnippet>169</a>/// # use modular_bitfield::prelude::*;
+<a href=#170 id=170 data-nosnippet>170</a>/// #[bitfield]
+<a href=#171 id=171 data-nosnippet>171</a>/// pub struct Sparse {
+<a href=#172 id=172 data-nosnippet>172</a>///     #[skip(getters)]
+<a href=#173 id=173 data-nosnippet>173</a>///     no_getters: B4,
+<a href=#174 id=174 data-nosnippet>174</a>///     #[skip(setters)]
+<a href=#175 id=175 data-nosnippet>175</a>///     no_setters: B4,
+<a href=#176 id=176 data-nosnippet>176</a>///     #[skip]
+<a href=#177 id=177 data-nosnippet>177</a>///     skipped_entirely: B4,
+<a href=#178 id=178 data-nosnippet>178</a>///     #[skip(getters, setters)]
+<a href=#179 id=179 data-nosnippet>179</a>///     skipped_entirely_2: B2,
+<a href=#180 id=180 data-nosnippet>180</a>///     #[skip(getters)] #[skip(setters)]
+<a href=#181 id=181 data-nosnippet>181</a>///     skipped_entirely_2: B2,
+<a href=#182 id=182 data-nosnippet>182</a>/// }
+<a href=#183 id=183 data-nosnippet>183</a>/// ```
+<a href=#184 id=184 data-nosnippet>184</a>///
+<a href=#185 id=185 data-nosnippet>185</a>/// ### Trick: Wildcards
+<a href=#186 id=186 data-nosnippet>186</a>///
+<a href=#187 id=187 data-nosnippet>187</a>/// If you are completely uninterested in a field of a bitfield, for example when specifying
+<a href=#188 id=188 data-nosnippet>188</a>/// some undefined bits in your bitfield you can use double wildcards as their names:
+<a href=#189 id=189 data-nosnippet>189</a>///
+<a href=#190 id=190 data-nosnippet>190</a>/// ```
+<a href=#191 id=191 data-nosnippet>191</a>/// # use modular_bitfield::prelude::*;
+<a href=#192 id=192 data-nosnippet>192</a>/// #[bitfield]
+<a href=#193 id=193 data-nosnippet>193</a>/// pub struct Sparse {
+<a href=#194 id=194 data-nosnippet>194</a>///     #[skip] __: B10,
+<a href=#195 id=195 data-nosnippet>195</a>///     a: bool,
+<a href=#196 id=196 data-nosnippet>196</a>///     #[skip] __: B10,
+<a href=#197 id=197 data-nosnippet>197</a>///     b: bool,
+<a href=#198 id=198 data-nosnippet>198</a>///     #[skip] __: B10,
+<a href=#199 id=199 data-nosnippet>199</a>/// }
+<a href=#200 id=200 data-nosnippet>200</a>/// ```
+<a href=#201 id=201 data-nosnippet>201</a>///
+<a href=#202 id=202 data-nosnippet>202</a>/// # Features
+<a href=#203 id=203 data-nosnippet>203</a>///
+<a href=#204 id=204 data-nosnippet>204</a>/// ## Support: `#[derive(BitfieldSpecifier)]`
+<a href=#205 id=205 data-nosnippet>205</a>///
+<a href=#206 id=206 data-nosnippet>206</a>/// If a `#[bitfield]` struct is annotated with a `#[derive(BitfieldSpecifier)]` attribute
+<a href=#207 id=207 data-nosnippet>207</a>/// an implementation of the `Specifier` trait will be generated for it. This has the effect
+<a href=#208 id=208 data-nosnippet>208</a>/// that the bitfield struct itself can be used as the type of a field of another bitfield type.
+<a href=#209 id=209 data-nosnippet>209</a>///
+<a href=#210 id=210 data-nosnippet>210</a>/// This feature is limited to bitfield types that have a total bit width of 128 bit or fewer.
+<a href=#211 id=211 data-nosnippet>211</a>/// This restriction is ensured at compile time.
+<a href=#212 id=212 data-nosnippet>212</a>///
+<a href=#213 id=213 data-nosnippet>213</a>/// ### Example
+<a href=#214 id=214 data-nosnippet>214</a>///
+<a href=#215 id=215 data-nosnippet>215</a>/// ```
+<a href=#216 id=216 data-nosnippet>216</a>/// # use modular_bitfield::prelude::*;
+<a href=#217 id=217 data-nosnippet>217</a>/// #[bitfield(filled = false)]
+<a href=#218 id=218 data-nosnippet>218</a>/// #[derive(BitfieldSpecifier)]
+<a href=#219 id=219 data-nosnippet>219</a>/// pub struct Header {
+<a href=#220 id=220 data-nosnippet>220</a>///     is_received: bool, // 1 bit
+<a href=#221 id=221 data-nosnippet>221</a>///     is_alive: bool,    // 1 bit
+<a href=#222 id=222 data-nosnippet>222</a>///     status: B2,        // 2 bits
+<a href=#223 id=223 data-nosnippet>223</a>/// }
+<a href=#224 id=224 data-nosnippet>224</a>/// ```
+<a href=#225 id=225 data-nosnippet>225</a>///
+<a href=#226 id=226 data-nosnippet>226</a>/// Now the above `Header` bitfield type can be used in yet another `#[bitfield]` annotated type:
+<a href=#227 id=227 data-nosnippet>227</a>///
+<a href=#228 id=228 data-nosnippet>228</a>/// ```
+<a href=#229 id=229 data-nosnippet>229</a>/// # use modular_bitfield::prelude::*;
+<a href=#230 id=230 data-nosnippet>230</a>/// # #[bitfield(filled = false)]
+<a href=#231 id=231 data-nosnippet>231</a>/// # #[derive(BitfieldSpecifier)]
+<a href=#232 id=232 data-nosnippet>232</a>/// # pub struct Header {
+<a href=#233 id=233 data-nosnippet>233</a>/// #     is_received: bool, // 1 bit
+<a href=#234 id=234 data-nosnippet>234</a>/// #     is_alive: bool,    // 1 bit
+<a href=#235 id=235 data-nosnippet>235</a>/// #     status: B2,        // 2 bits
+<a href=#236 id=236 data-nosnippet>236</a>/// # }
+<a href=#237 id=237 data-nosnippet>237</a>/// #[bitfield]
+<a href=#238 id=238 data-nosnippet>238</a>/// pub struct Base {
+<a href=#239 id=239 data-nosnippet>239</a>///     header: Header, //  4 bits
+<a href=#240 id=240 data-nosnippet>240</a>///     content: B28,   // 28 bits
+<a href=#241 id=241 data-nosnippet>241</a>/// }
+<a href=#242 id=242 data-nosnippet>242</a>/// ```
+<a href=#243 id=243 data-nosnippet>243</a>///
+<a href=#244 id=244 data-nosnippet>244</a>/// ## Support: `#[derive(Debug)]`
+<a href=#245 id=245 data-nosnippet>245</a>///
+<a href=#246 id=246 data-nosnippet>246</a>/// If a `#[derive(Debug)]` is found by the `#[bitfield]` a naturally formatting implementation
+<a href=#247 id=247 data-nosnippet>247</a>/// is going to be generated that clearly displays all the fields and their values as the user
+<a href=#248 id=248 data-nosnippet>248</a>/// would expect.
+<a href=#249 id=249 data-nosnippet>249</a>/// Also invalid bit patterns for fields are clearly displayed under this implementation.
+<a href=#250 id=250 data-nosnippet>250</a>///
+<a href=#251 id=251 data-nosnippet>251</a>/// ### Example
+<a href=#252 id=252 data-nosnippet>252</a>///
+<a href=#253 id=253 data-nosnippet>253</a>/// ```
+<a href=#254 id=254 data-nosnippet>254</a>/// # use modular_bitfield::prelude::*;
+<a href=#255 id=255 data-nosnippet>255</a>/// #[bitfield]
+<a href=#256 id=256 data-nosnippet>256</a>/// #[derive(Debug)]
+<a href=#257 id=257 data-nosnippet>257</a>/// pub struct Package {
+<a href=#258 id=258 data-nosnippet>258</a>///     is_received: bool, // 1 bit
+<a href=#259 id=259 data-nosnippet>259</a>///     is_alive: bool,    // 1 bit
+<a href=#260 id=260 data-nosnippet>260</a>///     status: B6,        // 6 bits
+<a href=#261 id=261 data-nosnippet>261</a>/// }
+<a href=#262 id=262 data-nosnippet>262</a>///
+<a href=#263 id=263 data-nosnippet>263</a>/// let package = Package::new()
+<a href=#264 id=264 data-nosnippet>264</a>///     .with_is_received(false)
+<a href=#265 id=265 data-nosnippet>265</a>///     .with_is_alive(true)
+<a href=#266 id=266 data-nosnippet>266</a>///     .with_status(3);
+<a href=#267 id=267 data-nosnippet>267</a>/// println!("{:?}", package);
+<a href=#268 id=268 data-nosnippet>268</a>/// assert_eq!(
+<a href=#269 id=269 data-nosnippet>269</a>///     format!("{:?}", package),
+<a href=#270 id=270 data-nosnippet>270</a>///     "Package { is_received: false, is_alive: true, status: 3 }",
+<a href=#271 id=271 data-nosnippet>271</a>/// );
+<a href=#272 id=272 data-nosnippet>272</a>/// ```
+<a href=#273 id=273 data-nosnippet>273</a>///
+<a href=#274 id=274 data-nosnippet>274</a>/// ## Support: `#[repr(uN)]`
+<a href=#275 id=275 data-nosnippet>275</a>///
+<a href=#276 id=276 data-nosnippet>276</a>/// It is possible to additionally annotate a `#[bitfield]` annotated struct with `#[repr(uN)]`
+<a href=#277 id=277 data-nosnippet>277</a>/// where `uN` is one of `u8`, `u16`, `u32`, `u64` or `u128` in order to make it conveniently
+<a href=#278 id=278 data-nosnippet>278</a>/// interchangeable with such an unsigned integer value.
+<a href=#279 id=279 data-nosnippet>279</a>///
+<a href=#280 id=280 data-nosnippet>280</a>/// As an effect to the user this implements `From` implementations between the chosen primitive
+<a href=#281 id=281 data-nosnippet>281</a>/// and the bitfield as well as ensuring at compile time that the bit width of the bitfield struct
+<a href=#282 id=282 data-nosnippet>282</a>/// matches the bit width of the primitive.
+<a href=#283 id=283 data-nosnippet>283</a>///
+<a href=#284 id=284 data-nosnippet>284</a>/// ### Example
+<a href=#285 id=285 data-nosnippet>285</a>///
+<a href=#286 id=286 data-nosnippet>286</a>/// ```
+<a href=#287 id=287 data-nosnippet>287</a>/// # use modular_bitfield::prelude::*;
+<a href=#288 id=288 data-nosnippet>288</a>/// #[bitfield]
+<a href=#289 id=289 data-nosnippet>289</a>/// #[repr(u16)]
+<a href=#290 id=290 data-nosnippet>290</a>/// pub struct SignedU16 {
+<a href=#291 id=291 data-nosnippet>291</a>///     sign: bool,     //  1 bit
+<a href=#292 id=292 data-nosnippet>292</a>///     abs_value: B15, // 15 bits
+<a href=#293 id=293 data-nosnippet>293</a>/// }
+<a href=#294 id=294 data-nosnippet>294</a>///
+<a href=#295 id=295 data-nosnippet>295</a>/// let sint = SignedU16::from(0b0111_0001);
+<a href=#296 id=296 data-nosnippet>296</a>/// assert_eq!(sint.sign(), true);
+<a href=#297 id=297 data-nosnippet>297</a>/// assert_eq!(sint.abs_value(), 0b0011_1000);
+<a href=#298 id=298 data-nosnippet>298</a>/// assert_eq!(u16::from(sint), 0b0111_0001_u16);
+<a href=#299 id=299 data-nosnippet>299</a>/// ```
+<a href=#300 id=300 data-nosnippet>300</a></span><span class="attr">#[proc_macro_attribute]
+<a href=#301 id=301 data-nosnippet>301</a></span><span class="kw">pub fn </span>bitfield(args: TokenStream, input: TokenStream) -&gt; TokenStream {
+<a href=#302 id=302 data-nosnippet>302</a>    bitfield::analyse_and_expand(args.into(), input.into()).into()
+<a href=#303 id=303 data-nosnippet>303</a>}
+<a href=#304 id=304 data-nosnippet>304</a>
+<a href=#305 id=305 data-nosnippet>305</a><span class="doccomment">/// Derive macro for Rust `enums` to implement `Specifier` trait.
+<a href=#306 id=306 data-nosnippet>306</a>///
+<a href=#307 id=307 data-nosnippet>307</a>/// This allows such an enum to be used as a field of a `#[bitfield]` struct.
+<a href=#308 id=308 data-nosnippet>308</a>/// The annotated enum must not have any variants with associated data and
+<a href=#309 id=309 data-nosnippet>309</a>/// by default must have a number of variants that is equal to the power of 2.
+<a href=#310 id=310 data-nosnippet>310</a>///
+<a href=#311 id=311 data-nosnippet>311</a>/// If a user wants to circumvent the latter restriction they can add
+<a href=#312 id=312 data-nosnippet>312</a>/// `#[bits = N]` below the `#[derive(BitfieldSpecifier)]` line in order to
+<a href=#313 id=313 data-nosnippet>313</a>/// signal to the code generation that the enum may have a relaxed number
+<a href=#314 id=314 data-nosnippet>314</a>/// of variants.
+<a href=#315 id=315 data-nosnippet>315</a>///
+<a href=#316 id=316 data-nosnippet>316</a>/// # Example
+<a href=#317 id=317 data-nosnippet>317</a>///
+<a href=#318 id=318 data-nosnippet>318</a>/// ## Example: Basic Usage
+<a href=#319 id=319 data-nosnippet>319</a>///
+<a href=#320 id=320 data-nosnippet>320</a>/// In the following we define a `MaybeWeekday` enum that lists all weekdays
+<a href=#321 id=321 data-nosnippet>321</a>/// as well as an invalid day so that we have a power-of-two number of variants.
+<a href=#322 id=322 data-nosnippet>322</a>///
+<a href=#323 id=323 data-nosnippet>323</a>/// ```
+<a href=#324 id=324 data-nosnippet>324</a>/// use modular_bitfield::prelude::*;
+<a href=#325 id=325 data-nosnippet>325</a>///
+<a href=#326 id=326 data-nosnippet>326</a>/// #[derive(BitfieldSpecifier)]
+<a href=#327 id=327 data-nosnippet>327</a>/// pub enum Weekday {
+<a href=#328 id=328 data-nosnippet>328</a>///     Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, None
+<a href=#329 id=329 data-nosnippet>329</a>/// }
+<a href=#330 id=330 data-nosnippet>330</a>/// ```
+<a href=#331 id=331 data-nosnippet>331</a>///
+<a href=#332 id=332 data-nosnippet>332</a>/// ## Example: `#[bits = N]`
+<a href=#333 id=333 data-nosnippet>333</a>///
+<a href=#334 id=334 data-nosnippet>334</a>/// If we want to get rid of the `None` variant we need to add `#[bits = 3]`:
+<a href=#335 id=335 data-nosnippet>335</a>///
+<a href=#336 id=336 data-nosnippet>336</a>/// ```
+<a href=#337 id=337 data-nosnippet>337</a>/// # use modular_bitfield::prelude::*;
+<a href=#338 id=338 data-nosnippet>338</a>/// #
+<a href=#339 id=339 data-nosnippet>339</a>/// #[derive(BitfieldSpecifier)]
+<a href=#340 id=340 data-nosnippet>340</a>/// #[bits = 3]
+<a href=#341 id=341 data-nosnippet>341</a>/// pub enum Weekday {
+<a href=#342 id=342 data-nosnippet>342</a>///     Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+<a href=#343 id=343 data-nosnippet>343</a>/// }
+<a href=#344 id=344 data-nosnippet>344</a>/// ```
+<a href=#345 id=345 data-nosnippet>345</a>///
+<a href=#346 id=346 data-nosnippet>346</a>/// ## Example: Discriminants
+<a href=#347 id=347 data-nosnippet>347</a>///
+<a href=#348 id=348 data-nosnippet>348</a>/// It is possible to explicitly assign discriminants to some of the days.
+<a href=#349 id=349 data-nosnippet>349</a>/// In our case this is useful since our week starts at sunday:
+<a href=#350 id=350 data-nosnippet>350</a>///
+<a href=#351 id=351 data-nosnippet>351</a>/// ```
+<a href=#352 id=352 data-nosnippet>352</a>/// # use modular_bitfield::prelude::*;
+<a href=#353 id=353 data-nosnippet>353</a>/// #
+<a href=#354 id=354 data-nosnippet>354</a>/// #[derive(BitfieldSpecifier)]
+<a href=#355 id=355 data-nosnippet>355</a>/// #[bits = 3]
+<a href=#356 id=356 data-nosnippet>356</a>/// pub enum Weekday {
+<a href=#357 id=357 data-nosnippet>357</a>///     Monday = 1,
+<a href=#358 id=358 data-nosnippet>358</a>///     Tuesday = 2,
+<a href=#359 id=359 data-nosnippet>359</a>///     Wednesday = 3,
+<a href=#360 id=360 data-nosnippet>360</a>///     Thursday = 4,
+<a href=#361 id=361 data-nosnippet>361</a>///     Friday = 5,
+<a href=#362 id=362 data-nosnippet>362</a>///     Saturday = 6,
+<a href=#363 id=363 data-nosnippet>363</a>///     Sunday = 0,
+<a href=#364 id=364 data-nosnippet>364</a>/// }
+<a href=#365 id=365 data-nosnippet>365</a>/// ```
+<a href=#366 id=366 data-nosnippet>366</a>///
+<a href=#367 id=367 data-nosnippet>367</a>/// ## Example: Use in `#[bitfield]`
+<a href=#368 id=368 data-nosnippet>368</a>///
+<a href=#369 id=369 data-nosnippet>369</a>/// Given the above `Weekday` enum that starts at `Sunday` and uses 3 bits in total
+<a href=#370 id=370 data-nosnippet>370</a>/// we can now use it in a `#[bitfield]` annotated struct as follows:
+<a href=#371 id=371 data-nosnippet>371</a>///
+<a href=#372 id=372 data-nosnippet>372</a>/// ```
+<a href=#373 id=373 data-nosnippet>373</a>/// # use modular_bitfield::prelude::*;
+<a href=#374 id=374 data-nosnippet>374</a>/// #
+<a href=#375 id=375 data-nosnippet>375</a>/// # #[derive(BitfieldSpecifier)]
+<a href=#376 id=376 data-nosnippet>376</a>/// # #[bits = 3]
+<a href=#377 id=377 data-nosnippet>377</a>/// # pub enum Weekday {
+<a href=#378 id=378 data-nosnippet>378</a>/// #     Monday = 1,
+<a href=#379 id=379 data-nosnippet>379</a>/// #     Tuesday = 2,
+<a href=#380 id=380 data-nosnippet>380</a>/// #     Wednesday = 3,
+<a href=#381 id=381 data-nosnippet>381</a>/// #     Thursday = 4,
+<a href=#382 id=382 data-nosnippet>382</a>/// #     Friday = 5,
+<a href=#383 id=383 data-nosnippet>383</a>/// #     Saturday = 6,
+<a href=#384 id=384 data-nosnippet>384</a>/// #     Sunday = 0,
+<a href=#385 id=385 data-nosnippet>385</a>/// # }
+<a href=#386 id=386 data-nosnippet>386</a>/// #[bitfield]
+<a href=#387 id=387 data-nosnippet>387</a>/// pub struct MeetingTimeSlot {
+<a href=#388 id=388 data-nosnippet>388</a>///     day: Weekday,
+<a href=#389 id=389 data-nosnippet>389</a>///     from: B6,
+<a href=#390 id=390 data-nosnippet>390</a>///     to: B6,
+<a href=#391 id=391 data-nosnippet>391</a>///     expired: bool,
+<a href=#392 id=392 data-nosnippet>392</a>/// }
+<a href=#393 id=393 data-nosnippet>393</a>/// ```
+<a href=#394 id=394 data-nosnippet>394</a>///
+<a href=#395 id=395 data-nosnippet>395</a>/// The above `MeetingTimeSlot` uses exactly 16 bits and defines our `Weekday` enum as
+<a href=#396 id=396 data-nosnippet>396</a>/// compact `day` bitfield. The `from` and `to` require 6 bits each and finally the
+<a href=#397 id=397 data-nosnippet>397</a>/// `expired` flag requires a single bit.
+<a href=#398 id=398 data-nosnippet>398</a>///
+<a href=#399 id=399 data-nosnippet>399</a>/// ## Example: Interacting
+<a href=#400 id=400 data-nosnippet>400</a>///
+<a href=#401 id=401 data-nosnippet>401</a>/// A user can interact with the above `MeetingTimeSlot` and `Weekday` definitions in
+<a href=#402 id=402 data-nosnippet>402</a>/// the following ways:
+<a href=#403 id=403 data-nosnippet>403</a>///
+<a href=#404 id=404 data-nosnippet>404</a>/// ```
+<a href=#405 id=405 data-nosnippet>405</a>/// # use modular_bitfield::prelude::*;
+<a href=#406 id=406 data-nosnippet>406</a>/// #
+<a href=#407 id=407 data-nosnippet>407</a>/// # #[derive(BitfieldSpecifier, Debug, PartialEq)]
+<a href=#408 id=408 data-nosnippet>408</a>/// # #[bits = 3]
+<a href=#409 id=409 data-nosnippet>409</a>/// # pub enum Weekday {
+<a href=#410 id=410 data-nosnippet>410</a>/// #     Monday = 1,
+<a href=#411 id=411 data-nosnippet>411</a>/// #     Tuesday = 2,
+<a href=#412 id=412 data-nosnippet>412</a>/// #     Wednesday = 3,
+<a href=#413 id=413 data-nosnippet>413</a>/// #     Thursday = 4,
+<a href=#414 id=414 data-nosnippet>414</a>/// #     Friday = 5,
+<a href=#415 id=415 data-nosnippet>415</a>/// #     Saturday = 6,
+<a href=#416 id=416 data-nosnippet>416</a>/// #     Sunday = 0,
+<a href=#417 id=417 data-nosnippet>417</a>/// # }
+<a href=#418 id=418 data-nosnippet>418</a>/// # #[bitfield]
+<a href=#419 id=419 data-nosnippet>419</a>/// # pub struct MeetingTimeSlot {
+<a href=#420 id=420 data-nosnippet>420</a>/// #     day: Weekday,
+<a href=#421 id=421 data-nosnippet>421</a>/// #     from: B6,
+<a href=#422 id=422 data-nosnippet>422</a>/// #     to: B6,
+<a href=#423 id=423 data-nosnippet>423</a>/// #     expired: bool,
+<a href=#424 id=424 data-nosnippet>424</a>/// # }
+<a href=#425 id=425 data-nosnippet>425</a>/// #
+<a href=#426 id=426 data-nosnippet>426</a>/// let mut slot = MeetingTimeSlot::new()
+<a href=#427 id=427 data-nosnippet>427</a>///     .with_day(Weekday::Friday)
+<a href=#428 id=428 data-nosnippet>428</a>///     .with_from(14) // 14:00 CEST
+<a href=#429 id=429 data-nosnippet>429</a>///     .with_to(15); // 15:00 CEST
+<a href=#430 id=430 data-nosnippet>430</a>/// assert_eq!(slot.day(), Weekday::Friday);
+<a href=#431 id=431 data-nosnippet>431</a>/// assert_eq!(slot.from(), 14);
+<a href=#432 id=432 data-nosnippet>432</a>/// assert_eq!(slot.to(), 15);
+<a href=#433 id=433 data-nosnippet>433</a>/// assert!(!slot.expired());
+<a href=#434 id=434 data-nosnippet>434</a>/// ```
+<a href=#435 id=435 data-nosnippet>435</a></span><span class="attr">#[proc_macro_derive(BitfieldSpecifier, attributes(bits))]
+<a href=#436 id=436 data-nosnippet>436</a></span><span class="kw">pub fn </span>bitfield_specifier(input: TokenStream) -&gt; TokenStream {
+<a href=#437 id=437 data-nosnippet>437</a>    bitfield_specifier::generate(input.into()).into()
+<a href=#438 id=438 data-nosnippet>438</a>}</code></pre></div></section></main></body></html>

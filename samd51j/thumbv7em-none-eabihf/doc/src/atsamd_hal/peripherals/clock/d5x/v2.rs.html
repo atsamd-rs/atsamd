@@ -1,2033 +1,1015 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `hal/src/peripherals/clock/d5x/v2.rs`."><title>v2.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-46132b98.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.85.0 (4d91de4e4 2025-02-17)" data-channel="1.85.0" data-search-js="search-75f5ac3e.js" data-settings-js="settings-0f613d39.js" ><script src="../../../../../static.files/storage-59e33391.js"></script><script defer src="../../../../../static.files/src-script-56102188.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">atsamd_hal/peripherals/clock/d5x/</div>v2.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
-<a href="#1" id="1">1</a>
-<a href="#2" id="2">2</a>
-<a href="#3" id="3">3</a>
-<a href="#4" id="4">4</a>
-<a href="#5" id="5">5</a>
-<a href="#6" id="6">6</a>
-<a href="#7" id="7">7</a>
-<a href="#8" id="8">8</a>
-<a href="#9" id="9">9</a>
-<a href="#10" id="10">10</a>
-<a href="#11" id="11">11</a>
-<a href="#12" id="12">12</a>
-<a href="#13" id="13">13</a>
-<a href="#14" id="14">14</a>
-<a href="#15" id="15">15</a>
-<a href="#16" id="16">16</a>
-<a href="#17" id="17">17</a>
-<a href="#18" id="18">18</a>
-<a href="#19" id="19">19</a>
-<a href="#20" id="20">20</a>
-<a href="#21" id="21">21</a>
-<a href="#22" id="22">22</a>
-<a href="#23" id="23">23</a>
-<a href="#24" id="24">24</a>
-<a href="#25" id="25">25</a>
-<a href="#26" id="26">26</a>
-<a href="#27" id="27">27</a>
-<a href="#28" id="28">28</a>
-<a href="#29" id="29">29</a>
-<a href="#30" id="30">30</a>
-<a href="#31" id="31">31</a>
-<a href="#32" id="32">32</a>
-<a href="#33" id="33">33</a>
-<a href="#34" id="34">34</a>
-<a href="#35" id="35">35</a>
-<a href="#36" id="36">36</a>
-<a href="#37" id="37">37</a>
-<a href="#38" id="38">38</a>
-<a href="#39" id="39">39</a>
-<a href="#40" id="40">40</a>
-<a href="#41" id="41">41</a>
-<a href="#42" id="42">42</a>
-<a href="#43" id="43">43</a>
-<a href="#44" id="44">44</a>
-<a href="#45" id="45">45</a>
-<a href="#46" id="46">46</a>
-<a href="#47" id="47">47</a>
-<a href="#48" id="48">48</a>
-<a href="#49" id="49">49</a>
-<a href="#50" id="50">50</a>
-<a href="#51" id="51">51</a>
-<a href="#52" id="52">52</a>
-<a href="#53" id="53">53</a>
-<a href="#54" id="54">54</a>
-<a href="#55" id="55">55</a>
-<a href="#56" id="56">56</a>
-<a href="#57" id="57">57</a>
-<a href="#58" id="58">58</a>
-<a href="#59" id="59">59</a>
-<a href="#60" id="60">60</a>
-<a href="#61" id="61">61</a>
-<a href="#62" id="62">62</a>
-<a href="#63" id="63">63</a>
-<a href="#64" id="64">64</a>
-<a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
-<a href="#67" id="67">67</a>
-<a href="#68" id="68">68</a>
-<a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
-<a href="#73" id="73">73</a>
-<a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-<a href="#77" id="77">77</a>
-<a href="#78" id="78">78</a>
-<a href="#79" id="79">79</a>
-<a href="#80" id="80">80</a>
-<a href="#81" id="81">81</a>
-<a href="#82" id="82">82</a>
-<a href="#83" id="83">83</a>
-<a href="#84" id="84">84</a>
-<a href="#85" id="85">85</a>
-<a href="#86" id="86">86</a>
-<a href="#87" id="87">87</a>
-<a href="#88" id="88">88</a>
-<a href="#89" id="89">89</a>
-<a href="#90" id="90">90</a>
-<a href="#91" id="91">91</a>
-<a href="#92" id="92">92</a>
-<a href="#93" id="93">93</a>
-<a href="#94" id="94">94</a>
-<a href="#95" id="95">95</a>
-<a href="#96" id="96">96</a>
-<a href="#97" id="97">97</a>
-<a href="#98" id="98">98</a>
-<a href="#99" id="99">99</a>
-<a href="#100" id="100">100</a>
-<a href="#101" id="101">101</a>
-<a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a>
-<a href="#105" id="105">105</a>
-<a href="#106" id="106">106</a>
-<a href="#107" id="107">107</a>
-<a href="#108" id="108">108</a>
-<a href="#109" id="109">109</a>
-<a href="#110" id="110">110</a>
-<a href="#111" id="111">111</a>
-<a href="#112" id="112">112</a>
-<a href="#113" id="113">113</a>
-<a href="#114" id="114">114</a>
-<a href="#115" id="115">115</a>
-<a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
-<a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
-<a href="#123" id="123">123</a>
-<a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
-<a href="#131" id="131">131</a>
-<a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
-<a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
-<a href="#141" id="141">141</a>
-<a href="#142" id="142">142</a>
-<a href="#143" id="143">143</a>
-<a href="#144" id="144">144</a>
-<a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-<a href="#149" id="149">149</a>
-<a href="#150" id="150">150</a>
-<a href="#151" id="151">151</a>
-<a href="#152" id="152">152</a>
-<a href="#153" id="153">153</a>
-<a href="#154" id="154">154</a>
-<a href="#155" id="155">155</a>
-<a href="#156" id="156">156</a>
-<a href="#157" id="157">157</a>
-<a href="#158" id="158">158</a>
-<a href="#159" id="159">159</a>
-<a href="#160" id="160">160</a>
-<a href="#161" id="161">161</a>
-<a href="#162" id="162">162</a>
-<a href="#163" id="163">163</a>
-<a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-<a href="#168" id="168">168</a>
-<a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
-<a href="#184" id="184">184</a>
-<a href="#185" id="185">185</a>
-<a href="#186" id="186">186</a>
-<a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
-<a href="#195" id="195">195</a>
-<a href="#196" id="196">196</a>
-<a href="#197" id="197">197</a>
-<a href="#198" id="198">198</a>
-<a href="#199" id="199">199</a>
-<a href="#200" id="200">200</a>
-<a href="#201" id="201">201</a>
-<a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
-<a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
-<a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
-<a href="#219" id="219">219</a>
-<a href="#220" id="220">220</a>
-<a href="#221" id="221">221</a>
-<a href="#222" id="222">222</a>
-<a href="#223" id="223">223</a>
-<a href="#224" id="224">224</a>
-<a href="#225" id="225">225</a>
-<a href="#226" id="226">226</a>
-<a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
-<a href="#231" id="231">231</a>
-<a href="#232" id="232">232</a>
-<a href="#233" id="233">233</a>
-<a href="#234" id="234">234</a>
-<a href="#235" id="235">235</a>
-<a href="#236" id="236">236</a>
-<a href="#237" id="237">237</a>
-<a href="#238" id="238">238</a>
-<a href="#239" id="239">239</a>
-<a href="#240" id="240">240</a>
-<a href="#241" id="241">241</a>
-<a href="#242" id="242">242</a>
-<a href="#243" id="243">243</a>
-<a href="#244" id="244">244</a>
-<a href="#245" id="245">245</a>
-<a href="#246" id="246">246</a>
-<a href="#247" id="247">247</a>
-<a href="#248" id="248">248</a>
-<a href="#249" id="249">249</a>
-<a href="#250" id="250">250</a>
-<a href="#251" id="251">251</a>
-<a href="#252" id="252">252</a>
-<a href="#253" id="253">253</a>
-<a href="#254" id="254">254</a>
-<a href="#255" id="255">255</a>
-<a href="#256" id="256">256</a>
-<a href="#257" id="257">257</a>
-<a href="#258" id="258">258</a>
-<a href="#259" id="259">259</a>
-<a href="#260" id="260">260</a>
-<a href="#261" id="261">261</a>
-<a href="#262" id="262">262</a>
-<a href="#263" id="263">263</a>
-<a href="#264" id="264">264</a>
-<a href="#265" id="265">265</a>
-<a href="#266" id="266">266</a>
-<a href="#267" id="267">267</a>
-<a href="#268" id="268">268</a>
-<a href="#269" id="269">269</a>
-<a href="#270" id="270">270</a>
-<a href="#271" id="271">271</a>
-<a href="#272" id="272">272</a>
-<a href="#273" id="273">273</a>
-<a href="#274" id="274">274</a>
-<a href="#275" id="275">275</a>
-<a href="#276" id="276">276</a>
-<a href="#277" id="277">277</a>
-<a href="#278" id="278">278</a>
-<a href="#279" id="279">279</a>
-<a href="#280" id="280">280</a>
-<a href="#281" id="281">281</a>
-<a href="#282" id="282">282</a>
-<a href="#283" id="283">283</a>
-<a href="#284" id="284">284</a>
-<a href="#285" id="285">285</a>
-<a href="#286" id="286">286</a>
-<a href="#287" id="287">287</a>
-<a href="#288" id="288">288</a>
-<a href="#289" id="289">289</a>
-<a href="#290" id="290">290</a>
-<a href="#291" id="291">291</a>
-<a href="#292" id="292">292</a>
-<a href="#293" id="293">293</a>
-<a href="#294" id="294">294</a>
-<a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
-<a href="#306" id="306">306</a>
-<a href="#307" id="307">307</a>
-<a href="#308" id="308">308</a>
-<a href="#309" id="309">309</a>
-<a href="#310" id="310">310</a>
-<a href="#311" id="311">311</a>
-<a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
-<a href="#328" id="328">328</a>
-<a href="#329" id="329">329</a>
-<a href="#330" id="330">330</a>
-<a href="#331" id="331">331</a>
-<a href="#332" id="332">332</a>
-<a href="#333" id="333">333</a>
-<a href="#334" id="334">334</a>
-<a href="#335" id="335">335</a>
-<a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
-<a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
-<a href="#342" id="342">342</a>
-<a href="#343" id="343">343</a>
-<a href="#344" id="344">344</a>
-<a href="#345" id="345">345</a>
-<a href="#346" id="346">346</a>
-<a href="#347" id="347">347</a>
-<a href="#348" id="348">348</a>
-<a href="#349" id="349">349</a>
-<a href="#350" id="350">350</a>
-<a href="#351" id="351">351</a>
-<a href="#352" id="352">352</a>
-<a href="#353" id="353">353</a>
-<a href="#354" id="354">354</a>
-<a href="#355" id="355">355</a>
-<a href="#356" id="356">356</a>
-<a href="#357" id="357">357</a>
-<a href="#358" id="358">358</a>
-<a href="#359" id="359">359</a>
-<a href="#360" id="360">360</a>
-<a href="#361" id="361">361</a>
-<a href="#362" id="362">362</a>
-<a href="#363" id="363">363</a>
-<a href="#364" id="364">364</a>
-<a href="#365" id="365">365</a>
-<a href="#366" id="366">366</a>
-<a href="#367" id="367">367</a>
-<a href="#368" id="368">368</a>
-<a href="#369" id="369">369</a>
-<a href="#370" id="370">370</a>
-<a href="#371" id="371">371</a>
-<a href="#372" id="372">372</a>
-<a href="#373" id="373">373</a>
-<a href="#374" id="374">374</a>
-<a href="#375" id="375">375</a>
-<a href="#376" id="376">376</a>
-<a href="#377" id="377">377</a>
-<a href="#378" id="378">378</a>
-<a href="#379" id="379">379</a>
-<a href="#380" id="380">380</a>
-<a href="#381" id="381">381</a>
-<a href="#382" id="382">382</a>
-<a href="#383" id="383">383</a>
-<a href="#384" id="384">384</a>
-<a href="#385" id="385">385</a>
-<a href="#386" id="386">386</a>
-<a href="#387" id="387">387</a>
-<a href="#388" id="388">388</a>
-<a href="#389" id="389">389</a>
-<a href="#390" id="390">390</a>
-<a href="#391" id="391">391</a>
-<a href="#392" id="392">392</a>
-<a href="#393" id="393">393</a>
-<a href="#394" id="394">394</a>
-<a href="#395" id="395">395</a>
-<a href="#396" id="396">396</a>
-<a href="#397" id="397">397</a>
-<a href="#398" id="398">398</a>
-<a href="#399" id="399">399</a>
-<a href="#400" id="400">400</a>
-<a href="#401" id="401">401</a>
-<a href="#402" id="402">402</a>
-<a href="#403" id="403">403</a>
-<a href="#404" id="404">404</a>
-<a href="#405" id="405">405</a>
-<a href="#406" id="406">406</a>
-<a href="#407" id="407">407</a>
-<a href="#408" id="408">408</a>
-<a href="#409" id="409">409</a>
-<a href="#410" id="410">410</a>
-<a href="#411" id="411">411</a>
-<a href="#412" id="412">412</a>
-<a href="#413" id="413">413</a>
-<a href="#414" id="414">414</a>
-<a href="#415" id="415">415</a>
-<a href="#416" id="416">416</a>
-<a href="#417" id="417">417</a>
-<a href="#418" id="418">418</a>
-<a href="#419" id="419">419</a>
-<a href="#420" id="420">420</a>
-<a href="#421" id="421">421</a>
-<a href="#422" id="422">422</a>
-<a href="#423" id="423">423</a>
-<a href="#424" id="424">424</a>
-<a href="#425" id="425">425</a>
-<a href="#426" id="426">426</a>
-<a href="#427" id="427">427</a>
-<a href="#428" id="428">428</a>
-<a href="#429" id="429">429</a>
-<a href="#430" id="430">430</a>
-<a href="#431" id="431">431</a>
-<a href="#432" id="432">432</a>
-<a href="#433" id="433">433</a>
-<a href="#434" id="434">434</a>
-<a href="#435" id="435">435</a>
-<a href="#436" id="436">436</a>
-<a href="#437" id="437">437</a>
-<a href="#438" id="438">438</a>
-<a href="#439" id="439">439</a>
-<a href="#440" id="440">440</a>
-<a href="#441" id="441">441</a>
-<a href="#442" id="442">442</a>
-<a href="#443" id="443">443</a>
-<a href="#444" id="444">444</a>
-<a href="#445" id="445">445</a>
-<a href="#446" id="446">446</a>
-<a href="#447" id="447">447</a>
-<a href="#448" id="448">448</a>
-<a href="#449" id="449">449</a>
-<a href="#450" id="450">450</a>
-<a href="#451" id="451">451</a>
-<a href="#452" id="452">452</a>
-<a href="#453" id="453">453</a>
-<a href="#454" id="454">454</a>
-<a href="#455" id="455">455</a>
-<a href="#456" id="456">456</a>
-<a href="#457" id="457">457</a>
-<a href="#458" id="458">458</a>
-<a href="#459" id="459">459</a>
-<a href="#460" id="460">460</a>
-<a href="#461" id="461">461</a>
-<a href="#462" id="462">462</a>
-<a href="#463" id="463">463</a>
-<a href="#464" id="464">464</a>
-<a href="#465" id="465">465</a>
-<a href="#466" id="466">466</a>
-<a href="#467" id="467">467</a>
-<a href="#468" id="468">468</a>
-<a href="#469" id="469">469</a>
-<a href="#470" id="470">470</a>
-<a href="#471" id="471">471</a>
-<a href="#472" id="472">472</a>
-<a href="#473" id="473">473</a>
-<a href="#474" id="474">474</a>
-<a href="#475" id="475">475</a>
-<a href="#476" id="476">476</a>
-<a href="#477" id="477">477</a>
-<a href="#478" id="478">478</a>
-<a href="#479" id="479">479</a>
-<a href="#480" id="480">480</a>
-<a href="#481" id="481">481</a>
-<a href="#482" id="482">482</a>
-<a href="#483" id="483">483</a>
-<a href="#484" id="484">484</a>
-<a href="#485" id="485">485</a>
-<a href="#486" id="486">486</a>
-<a href="#487" id="487">487</a>
-<a href="#488" id="488">488</a>
-<a href="#489" id="489">489</a>
-<a href="#490" id="490">490</a>
-<a href="#491" id="491">491</a>
-<a href="#492" id="492">492</a>
-<a href="#493" id="493">493</a>
-<a href="#494" id="494">494</a>
-<a href="#495" id="495">495</a>
-<a href="#496" id="496">496</a>
-<a href="#497" id="497">497</a>
-<a href="#498" id="498">498</a>
-<a href="#499" id="499">499</a>
-<a href="#500" id="500">500</a>
-<a href="#501" id="501">501</a>
-<a href="#502" id="502">502</a>
-<a href="#503" id="503">503</a>
-<a href="#504" id="504">504</a>
-<a href="#505" id="505">505</a>
-<a href="#506" id="506">506</a>
-<a href="#507" id="507">507</a>
-<a href="#508" id="508">508</a>
-<a href="#509" id="509">509</a>
-<a href="#510" id="510">510</a>
-<a href="#511" id="511">511</a>
-<a href="#512" id="512">512</a>
-<a href="#513" id="513">513</a>
-<a href="#514" id="514">514</a>
-<a href="#515" id="515">515</a>
-<a href="#516" id="516">516</a>
-<a href="#517" id="517">517</a>
-<a href="#518" id="518">518</a>
-<a href="#519" id="519">519</a>
-<a href="#520" id="520">520</a>
-<a href="#521" id="521">521</a>
-<a href="#522" id="522">522</a>
-<a href="#523" id="523">523</a>
-<a href="#524" id="524">524</a>
-<a href="#525" id="525">525</a>
-<a href="#526" id="526">526</a>
-<a href="#527" id="527">527</a>
-<a href="#528" id="528">528</a>
-<a href="#529" id="529">529</a>
-<a href="#530" id="530">530</a>
-<a href="#531" id="531">531</a>
-<a href="#532" id="532">532</a>
-<a href="#533" id="533">533</a>
-<a href="#534" id="534">534</a>
-<a href="#535" id="535">535</a>
-<a href="#536" id="536">536</a>
-<a href="#537" id="537">537</a>
-<a href="#538" id="538">538</a>
-<a href="#539" id="539">539</a>
-<a href="#540" id="540">540</a>
-<a href="#541" id="541">541</a>
-<a href="#542" id="542">542</a>
-<a href="#543" id="543">543</a>
-<a href="#544" id="544">544</a>
-<a href="#545" id="545">545</a>
-<a href="#546" id="546">546</a>
-<a href="#547" id="547">547</a>
-<a href="#548" id="548">548</a>
-<a href="#549" id="549">549</a>
-<a href="#550" id="550">550</a>
-<a href="#551" id="551">551</a>
-<a href="#552" id="552">552</a>
-<a href="#553" id="553">553</a>
-<a href="#554" id="554">554</a>
-<a href="#555" id="555">555</a>
-<a href="#556" id="556">556</a>
-<a href="#557" id="557">557</a>
-<a href="#558" id="558">558</a>
-<a href="#559" id="559">559</a>
-<a href="#560" id="560">560</a>
-<a href="#561" id="561">561</a>
-<a href="#562" id="562">562</a>
-<a href="#563" id="563">563</a>
-<a href="#564" id="564">564</a>
-<a href="#565" id="565">565</a>
-<a href="#566" id="566">566</a>
-<a href="#567" id="567">567</a>
-<a href="#568" id="568">568</a>
-<a href="#569" id="569">569</a>
-<a href="#570" id="570">570</a>
-<a href="#571" id="571">571</a>
-<a href="#572" id="572">572</a>
-<a href="#573" id="573">573</a>
-<a href="#574" id="574">574</a>
-<a href="#575" id="575">575</a>
-<a href="#576" id="576">576</a>
-<a href="#577" id="577">577</a>
-<a href="#578" id="578">578</a>
-<a href="#579" id="579">579</a>
-<a href="#580" id="580">580</a>
-<a href="#581" id="581">581</a>
-<a href="#582" id="582">582</a>
-<a href="#583" id="583">583</a>
-<a href="#584" id="584">584</a>
-<a href="#585" id="585">585</a>
-<a href="#586" id="586">586</a>
-<a href="#587" id="587">587</a>
-<a href="#588" id="588">588</a>
-<a href="#589" id="589">589</a>
-<a href="#590" id="590">590</a>
-<a href="#591" id="591">591</a>
-<a href="#592" id="592">592</a>
-<a href="#593" id="593">593</a>
-<a href="#594" id="594">594</a>
-<a href="#595" id="595">595</a>
-<a href="#596" id="596">596</a>
-<a href="#597" id="597">597</a>
-<a href="#598" id="598">598</a>
-<a href="#599" id="599">599</a>
-<a href="#600" id="600">600</a>
-<a href="#601" id="601">601</a>
-<a href="#602" id="602">602</a>
-<a href="#603" id="603">603</a>
-<a href="#604" id="604">604</a>
-<a href="#605" id="605">605</a>
-<a href="#606" id="606">606</a>
-<a href="#607" id="607">607</a>
-<a href="#608" id="608">608</a>
-<a href="#609" id="609">609</a>
-<a href="#610" id="610">610</a>
-<a href="#611" id="611">611</a>
-<a href="#612" id="612">612</a>
-<a href="#613" id="613">613</a>
-<a href="#614" id="614">614</a>
-<a href="#615" id="615">615</a>
-<a href="#616" id="616">616</a>
-<a href="#617" id="617">617</a>
-<a href="#618" id="618">618</a>
-<a href="#619" id="619">619</a>
-<a href="#620" id="620">620</a>
-<a href="#621" id="621">621</a>
-<a href="#622" id="622">622</a>
-<a href="#623" id="623">623</a>
-<a href="#624" id="624">624</a>
-<a href="#625" id="625">625</a>
-<a href="#626" id="626">626</a>
-<a href="#627" id="627">627</a>
-<a href="#628" id="628">628</a>
-<a href="#629" id="629">629</a>
-<a href="#630" id="630">630</a>
-<a href="#631" id="631">631</a>
-<a href="#632" id="632">632</a>
-<a href="#633" id="633">633</a>
-<a href="#634" id="634">634</a>
-<a href="#635" id="635">635</a>
-<a href="#636" id="636">636</a>
-<a href="#637" id="637">637</a>
-<a href="#638" id="638">638</a>
-<a href="#639" id="639">639</a>
-<a href="#640" id="640">640</a>
-<a href="#641" id="641">641</a>
-<a href="#642" id="642">642</a>
-<a href="#643" id="643">643</a>
-<a href="#644" id="644">644</a>
-<a href="#645" id="645">645</a>
-<a href="#646" id="646">646</a>
-<a href="#647" id="647">647</a>
-<a href="#648" id="648">648</a>
-<a href="#649" id="649">649</a>
-<a href="#650" id="650">650</a>
-<a href="#651" id="651">651</a>
-<a href="#652" id="652">652</a>
-<a href="#653" id="653">653</a>
-<a href="#654" id="654">654</a>
-<a href="#655" id="655">655</a>
-<a href="#656" id="656">656</a>
-<a href="#657" id="657">657</a>
-<a href="#658" id="658">658</a>
-<a href="#659" id="659">659</a>
-<a href="#660" id="660">660</a>
-<a href="#661" id="661">661</a>
-<a href="#662" id="662">662</a>
-<a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
-<a href="#667" id="667">667</a>
-<a href="#668" id="668">668</a>
-<a href="#669" id="669">669</a>
-<a href="#670" id="670">670</a>
-<a href="#671" id="671">671</a>
-<a href="#672" id="672">672</a>
-<a href="#673" id="673">673</a>
-<a href="#674" id="674">674</a>
-<a href="#675" id="675">675</a>
-<a href="#676" id="676">676</a>
-<a href="#677" id="677">677</a>
-<a href="#678" id="678">678</a>
-<a href="#679" id="679">679</a>
-<a href="#680" id="680">680</a>
-<a href="#681" id="681">681</a>
-<a href="#682" id="682">682</a>
-<a href="#683" id="683">683</a>
-<a href="#684" id="684">684</a>
-<a href="#685" id="685">685</a>
-<a href="#686" id="686">686</a>
-<a href="#687" id="687">687</a>
-<a href="#688" id="688">688</a>
-<a href="#689" id="689">689</a>
-<a href="#690" id="690">690</a>
-<a href="#691" id="691">691</a>
-<a href="#692" id="692">692</a>
-<a href="#693" id="693">693</a>
-<a href="#694" id="694">694</a>
-<a href="#695" id="695">695</a>
-<a href="#696" id="696">696</a>
-<a href="#697" id="697">697</a>
-<a href="#698" id="698">698</a>
-<a href="#699" id="699">699</a>
-<a href="#700" id="700">700</a>
-<a href="#701" id="701">701</a>
-<a href="#702" id="702">702</a>
-<a href="#703" id="703">703</a>
-<a href="#704" id="704">704</a>
-<a href="#705" id="705">705</a>
-<a href="#706" id="706">706</a>
-<a href="#707" id="707">707</a>
-<a href="#708" id="708">708</a>
-<a href="#709" id="709">709</a>
-<a href="#710" id="710">710</a>
-<a href="#711" id="711">711</a>
-<a href="#712" id="712">712</a>
-<a href="#713" id="713">713</a>
-<a href="#714" id="714">714</a>
-<a href="#715" id="715">715</a>
-<a href="#716" id="716">716</a>
-<a href="#717" id="717">717</a>
-<a href="#718" id="718">718</a>
-<a href="#719" id="719">719</a>
-<a href="#720" id="720">720</a>
-<a href="#721" id="721">721</a>
-<a href="#722" id="722">722</a>
-<a href="#723" id="723">723</a>
-<a href="#724" id="724">724</a>
-<a href="#725" id="725">725</a>
-<a href="#726" id="726">726</a>
-<a href="#727" id="727">727</a>
-<a href="#728" id="728">728</a>
-<a href="#729" id="729">729</a>
-<a href="#730" id="730">730</a>
-<a href="#731" id="731">731</a>
-<a href="#732" id="732">732</a>
-<a href="#733" id="733">733</a>
-<a href="#734" id="734">734</a>
-<a href="#735" id="735">735</a>
-<a href="#736" id="736">736</a>
-<a href="#737" id="737">737</a>
-<a href="#738" id="738">738</a>
-<a href="#739" id="739">739</a>
-<a href="#740" id="740">740</a>
-<a href="#741" id="741">741</a>
-<a href="#742" id="742">742</a>
-<a href="#743" id="743">743</a>
-<a href="#744" id="744">744</a>
-<a href="#745" id="745">745</a>
-<a href="#746" id="746">746</a>
-<a href="#747" id="747">747</a>
-<a href="#748" id="748">748</a>
-<a href="#749" id="749">749</a>
-<a href="#750" id="750">750</a>
-<a href="#751" id="751">751</a>
-<a href="#752" id="752">752</a>
-<a href="#753" id="753">753</a>
-<a href="#754" id="754">754</a>
-<a href="#755" id="755">755</a>
-<a href="#756" id="756">756</a>
-<a href="#757" id="757">757</a>
-<a href="#758" id="758">758</a>
-<a href="#759" id="759">759</a>
-<a href="#760" id="760">760</a>
-<a href="#761" id="761">761</a>
-<a href="#762" id="762">762</a>
-<a href="#763" id="763">763</a>
-<a href="#764" id="764">764</a>
-<a href="#765" id="765">765</a>
-<a href="#766" id="766">766</a>
-<a href="#767" id="767">767</a>
-<a href="#768" id="768">768</a>
-<a href="#769" id="769">769</a>
-<a href="#770" id="770">770</a>
-<a href="#771" id="771">771</a>
-<a href="#772" id="772">772</a>
-<a href="#773" id="773">773</a>
-<a href="#774" id="774">774</a>
-<a href="#775" id="775">775</a>
-<a href="#776" id="776">776</a>
-<a href="#777" id="777">777</a>
-<a href="#778" id="778">778</a>
-<a href="#779" id="779">779</a>
-<a href="#780" id="780">780</a>
-<a href="#781" id="781">781</a>
-<a href="#782" id="782">782</a>
-<a href="#783" id="783">783</a>
-<a href="#784" id="784">784</a>
-<a href="#785" id="785">785</a>
-<a href="#786" id="786">786</a>
-<a href="#787" id="787">787</a>
-<a href="#788" id="788">788</a>
-<a href="#789" id="789">789</a>
-<a href="#790" id="790">790</a>
-<a href="#791" id="791">791</a>
-<a href="#792" id="792">792</a>
-<a href="#793" id="793">793</a>
-<a href="#794" id="794">794</a>
-<a href="#795" id="795">795</a>
-<a href="#796" id="796">796</a>
-<a href="#797" id="797">797</a>
-<a href="#798" id="798">798</a>
-<a href="#799" id="799">799</a>
-<a href="#800" id="800">800</a>
-<a href="#801" id="801">801</a>
-<a href="#802" id="802">802</a>
-<a href="#803" id="803">803</a>
-<a href="#804" id="804">804</a>
-<a href="#805" id="805">805</a>
-<a href="#806" id="806">806</a>
-<a href="#807" id="807">807</a>
-<a href="#808" id="808">808</a>
-<a href="#809" id="809">809</a>
-<a href="#810" id="810">810</a>
-<a href="#811" id="811">811</a>
-<a href="#812" id="812">812</a>
-<a href="#813" id="813">813</a>
-<a href="#814" id="814">814</a>
-<a href="#815" id="815">815</a>
-<a href="#816" id="816">816</a>
-<a href="#817" id="817">817</a>
-<a href="#818" id="818">818</a>
-<a href="#819" id="819">819</a>
-<a href="#820" id="820">820</a>
-<a href="#821" id="821">821</a>
-<a href="#822" id="822">822</a>
-<a href="#823" id="823">823</a>
-<a href="#824" id="824">824</a>
-<a href="#825" id="825">825</a>
-<a href="#826" id="826">826</a>
-<a href="#827" id="827">827</a>
-<a href="#828" id="828">828</a>
-<a href="#829" id="829">829</a>
-<a href="#830" id="830">830</a>
-<a href="#831" id="831">831</a>
-<a href="#832" id="832">832</a>
-<a href="#833" id="833">833</a>
-<a href="#834" id="834">834</a>
-<a href="#835" id="835">835</a>
-<a href="#836" id="836">836</a>
-<a href="#837" id="837">837</a>
-<a href="#838" id="838">838</a>
-<a href="#839" id="839">839</a>
-<a href="#840" id="840">840</a>
-<a href="#841" id="841">841</a>
-<a href="#842" id="842">842</a>
-<a href="#843" id="843">843</a>
-<a href="#844" id="844">844</a>
-<a href="#845" id="845">845</a>
-<a href="#846" id="846">846</a>
-<a href="#847" id="847">847</a>
-<a href="#848" id="848">848</a>
-<a href="#849" id="849">849</a>
-<a href="#850" id="850">850</a>
-<a href="#851" id="851">851</a>
-<a href="#852" id="852">852</a>
-<a href="#853" id="853">853</a>
-<a href="#854" id="854">854</a>
-<a href="#855" id="855">855</a>
-<a href="#856" id="856">856</a>
-<a href="#857" id="857">857</a>
-<a href="#858" id="858">858</a>
-<a href="#859" id="859">859</a>
-<a href="#860" id="860">860</a>
-<a href="#861" id="861">861</a>
-<a href="#862" id="862">862</a>
-<a href="#863" id="863">863</a>
-<a href="#864" id="864">864</a>
-<a href="#865" id="865">865</a>
-<a href="#866" id="866">866</a>
-<a href="#867" id="867">867</a>
-<a href="#868" id="868">868</a>
-<a href="#869" id="869">869</a>
-<a href="#870" id="870">870</a>
-<a href="#871" id="871">871</a>
-<a href="#872" id="872">872</a>
-<a href="#873" id="873">873</a>
-<a href="#874" id="874">874</a>
-<a href="#875" id="875">875</a>
-<a href="#876" id="876">876</a>
-<a href="#877" id="877">877</a>
-<a href="#878" id="878">878</a>
-<a href="#879" id="879">879</a>
-<a href="#880" id="880">880</a>
-<a href="#881" id="881">881</a>
-<a href="#882" id="882">882</a>
-<a href="#883" id="883">883</a>
-<a href="#884" id="884">884</a>
-<a href="#885" id="885">885</a>
-<a href="#886" id="886">886</a>
-<a href="#887" id="887">887</a>
-<a href="#888" id="888">888</a>
-<a href="#889" id="889">889</a>
-<a href="#890" id="890">890</a>
-<a href="#891" id="891">891</a>
-<a href="#892" id="892">892</a>
-<a href="#893" id="893">893</a>
-<a href="#894" id="894">894</a>
-<a href="#895" id="895">895</a>
-<a href="#896" id="896">896</a>
-<a href="#897" id="897">897</a>
-<a href="#898" id="898">898</a>
-<a href="#899" id="899">899</a>
-<a href="#900" id="900">900</a>
-<a href="#901" id="901">901</a>
-<a href="#902" id="902">902</a>
-<a href="#903" id="903">903</a>
-<a href="#904" id="904">904</a>
-<a href="#905" id="905">905</a>
-<a href="#906" id="906">906</a>
-<a href="#907" id="907">907</a>
-<a href="#908" id="908">908</a>
-<a href="#909" id="909">909</a>
-<a href="#910" id="910">910</a>
-<a href="#911" id="911">911</a>
-<a href="#912" id="912">912</a>
-<a href="#913" id="913">913</a>
-<a href="#914" id="914">914</a>
-<a href="#915" id="915">915</a>
-<a href="#916" id="916">916</a>
-<a href="#917" id="917">917</a>
-<a href="#918" id="918">918</a>
-<a href="#919" id="919">919</a>
-<a href="#920" id="920">920</a>
-<a href="#921" id="921">921</a>
-<a href="#922" id="922">922</a>
-<a href="#923" id="923">923</a>
-<a href="#924" id="924">924</a>
-<a href="#925" id="925">925</a>
-<a href="#926" id="926">926</a>
-<a href="#927" id="927">927</a>
-<a href="#928" id="928">928</a>
-<a href="#929" id="929">929</a>
-<a href="#930" id="930">930</a>
-<a href="#931" id="931">931</a>
-<a href="#932" id="932">932</a>
-<a href="#933" id="933">933</a>
-<a href="#934" id="934">934</a>
-<a href="#935" id="935">935</a>
-<a href="#936" id="936">936</a>
-<a href="#937" id="937">937</a>
-<a href="#938" id="938">938</a>
-<a href="#939" id="939">939</a>
-<a href="#940" id="940">940</a>
-<a href="#941" id="941">941</a>
-<a href="#942" id="942">942</a>
-<a href="#943" id="943">943</a>
-<a href="#944" id="944">944</a>
-<a href="#945" id="945">945</a>
-<a href="#946" id="946">946</a>
-<a href="#947" id="947">947</a>
-<a href="#948" id="948">948</a>
-<a href="#949" id="949">949</a>
-<a href="#950" id="950">950</a>
-<a href="#951" id="951">951</a>
-<a href="#952" id="952">952</a>
-<a href="#953" id="953">953</a>
-<a href="#954" id="954">954</a>
-<a href="#955" id="955">955</a>
-<a href="#956" id="956">956</a>
-<a href="#957" id="957">957</a>
-<a href="#958" id="958">958</a>
-<a href="#959" id="959">959</a>
-<a href="#960" id="960">960</a>
-<a href="#961" id="961">961</a>
-<a href="#962" id="962">962</a>
-<a href="#963" id="963">963</a>
-<a href="#964" id="964">964</a>
-<a href="#965" id="965">965</a>
-<a href="#966" id="966">966</a>
-<a href="#967" id="967">967</a>
-<a href="#968" id="968">968</a>
-<a href="#969" id="969">969</a>
-<a href="#970" id="970">970</a>
-<a href="#971" id="971">971</a>
-<a href="#972" id="972">972</a>
-<a href="#973" id="973">973</a>
-<a href="#974" id="974">974</a>
-<a href="#975" id="975">975</a>
-<a href="#976" id="976">976</a>
-<a href="#977" id="977">977</a>
-<a href="#978" id="978">978</a>
-<a href="#979" id="979">979</a>
-<a href="#980" id="980">980</a>
-<a href="#981" id="981">981</a>
-<a href="#982" id="982">982</a>
-<a href="#983" id="983">983</a>
-<a href="#984" id="984">984</a>
-<a href="#985" id="985">985</a>
-<a href="#986" id="986">986</a>
-<a href="#987" id="987">987</a>
-<a href="#988" id="988">988</a>
-<a href="#989" id="989">989</a>
-<a href="#990" id="990">990</a>
-<a href="#991" id="991">991</a>
-<a href="#992" id="992">992</a>
-<a href="#993" id="993">993</a>
-<a href="#994" id="994">994</a>
-<a href="#995" id="995">995</a>
-<a href="#996" id="996">996</a>
-<a href="#997" id="997">997</a>
-<a href="#998" id="998">998</a>
-<a href="#999" id="999">999</a>
-<a href="#1000" id="1000">1000</a>
-<a href="#1001" id="1001">1001</a>
-<a href="#1002" id="1002">1002</a>
-<a href="#1003" id="1003">1003</a>
-<a href="#1004" id="1004">1004</a>
-<a href="#1005" id="1005">1005</a>
-<a href="#1006" id="1006">1006</a>
-<a href="#1007" id="1007">1007</a>
-<a href="#1008" id="1008">1008</a>
-<a href="#1009" id="1009">1009</a>
-<a href="#1010" id="1010">1010</a>
-<a href="#1011" id="1011">1011</a>
-<a href="#1012" id="1012">1012</a>
-<a href="#1013" id="1013">1013</a>
-<a href="#1014" id="1014">1014</a>
-<a href="#1015" id="1015">1015</a>
-<a href="#1016" id="1016">1016</a></pre></div><pre class="rust"><code><span class="doccomment">//! # Version 2 of the `clock` module
-//!
-//! ## Overview
-//!
-//! This module provides a simple, ergonomic, and most of all **safe** API to
-//! create and manage the clock tree in ATSAMD5x and E5x devices. It uses
-//! [type-level programming techniques](crate::typelevel) to prevent users from
-//! creating invalid or unsound clocking configurations.
-//!
-//! &lt;p style="background:rgba(255,181,77,0.16);padding:0.75em;"&gt;
-//! &lt;strong&gt; Note: &lt;/strong&gt; Using a type-level API does place some limitations
-//! on how the clocks can be configured. The types must be checked at
-//! compile-time, which means the state of a given clock must also be known at
-//! compile-time. This is exceedingly reasonable for most clocking
-//! configurations, because most users set up their clocks once and never change
-//! them again. However, if you need to dynamically change the clocking
-//! configuration at run-time, you may find this API less ergonomic. A future,
-//! fully dynamic API has been discussed, but nothing has been developed so far.
-//! &lt;/p&gt;
-//!
-//! The sections that follow provide an explanation of key concepts in the
-//! module. We highly recommend users read through them to better understand the
-//! `clock` module API. A [complete example](self#getting-started) is also
-//! provided.
-//!
-//! ## Clock safety
-//!
-//! A clock tree represents dependencies among clocks, where producer clocks
-//! feed consumer clocks. Root clocks are the original producers, as they are
-//! derived from oscillators or external clocks. Branch clocks are both
-//! producers and consumers, since they modify and distribute clocks. And leaf
-//! clocks are consumers only; they drive peripherals or external clock outputs
-//! but do not feed other clocks.
-//!
-//! To safely create and use a clock tree, it is critical that producer clocks
-//! not be modified or disabled while their consumer clocks are still in active
-//! use. Stated differently, if clock `B` consumes clock `A`, then clock `A`
-//! **must not** be modified or disabled while clock `B` is still in use.
-//!
-//! Notice that this requirement mimics the principle of "aliased XOR mutable"
-//! underlying the Rust borrow checker. A producer clock can only be modified if
-//! it is not "borrowed" (consumed) by any other clocks.
-//!
-//! The following sections will review the various type-level programming
-//! techniques used to enforce this principle in the `clock` module.
-//!
-//! ## Clock state machines
-//!
-//! Each available clock is represented in Rust as a unique, singleton object.
-//! Users cannot create two instances of the same clock without using `unsafe`.
-//!
-//! However, a given clock is not always represented with the same **type**.
-//! Specifically, each clock has at least two representations, one for the
-//! configured and enabled clock, and another for the unconfigured and disabled
-//! clock.
-//!
-//! These states are represented in Rust using distinct types, forming a
-//! type-level state machine. Moreover, the disabled state is always represented
-//! by a `Token` type. As the name implies, `Token`s have no functionality on
-//! their own; they can only be exchanged for a different type representing
-//! another state.
-//!
-//! ## Clock relationships
-//!
-//! In general, there are two classes of clock in ATSAMD chips. Some clocks map
-//! one-to-one (1:1) to a specific bus or peripheral. This is true for the AHB
-//! clocks ([`AhbClk`]s), APB clocks ([`ApbClk`]s), GCLK outputs ([`GclkOut`]s),
-//! peripheral channel clocks ([`Pclk`]s), and RTC oscillator ([`RtcOsc`]).
-//! Other clocks form one-to-many (1:N) relationships, like the external crystal
-//! oscillator ([`Xosc`]), the 48 MHz DFLL ([`Dfll`]) or the two DPLLs
-//! ([`Dpll`]).
-//!
-//! The `clock` module uses a distinct approach for each class.
-//!
-//! ### 1:1 clocks
-//!
-//! One-to-one relationships are easily modelled in Rust using move semantics.
-//! For example, an enabled peripheral channel clock is represented as a
-//! [`Pclk`] object. The respective peripheral API can move the `Pclk` and take
-//! ownership of it. In that case, the `Pclk` acts as proof that the peripheral
-//! clock is enabled, and the transfer of ownership prevents users from
-//! modifying or disabling the `Pclk` while it is in use by the peripheral.
-//!
-//! One-to-one clocks generally have little to no configuration. They are
-//! typically converted directly from disabled `Token` types to fully enabled
-//! clock types. For example, the `Pclk` type has only two methods,
-//! [`Pclk::enable`] and [`Pclk::disable`], which convert [`PclkToken`]s to
-//! `Pclk`s and vice versa.
-//!
-//! ### 1:N clocks
-//!
-//! One-to-many relationships are more difficult to model in Rust.
-//!
-//! As discussed above, we are trying to create something akin to "aliased XOR
-//! mutable", where producer clocks cannot be modified while used by consumer
-//! clocks. A natural approach would be to use the Rust borrow checker directly.
-//! In that case, consumer clocks would hold `&amp;Producer` references to the
-//! `Producer` clock object. The existence of outstanding shared borrows would
-//! naturally prevent users from calling `Producer` methods taking `&amp;mut self`.
-//!
-//! Unfortunately, while this approach could work, there is a critical problem
-//! with disastrous consequences for ergonomics. To satisfy the Rust borrow
-//! checker, `Producer` clock objects *could not be moved* while `&amp;Producer`
-//! references were still held by consumer clocks.
-//!
-//! However, this restriction is unnecessary. A `Producer` clock object is
-//! merely a semantic object representing the "idea" of a producer clock. And
-//! "borrowing" the producer is not meant to protect memory from corruption.
-//! Rather, our goal is only to restrict the `Producer` API, to prevent it from
-//! being modified or disabled once it has been connected to a consumer. We
-//! don't need to permanently hold the `Producer` object in place to do that.
-//!
-//! It is possible to build a `clock` API based on the borrow checker, but it
-//! would be extremely frustrating to use in practice, because of restrictions
-//! on the movement of `Producer` objects.
-//!
-//! Instead, the `clock` module takes a different approach. It uses type-level
-//! programming to track, at compile-time, the number of consumer clocks, N,
-//! fed by a particular producer clock. With this approach, we can move
-//! `Producer` objects while still making them impossible to modify if N &gt; 0.
-//!
-//! The following sections will describe the implementation of this strategy.
-//!
-//! ## Tracking N at compile-time for 1:N clocks
-//!
-//! We have two specific goals. We need to both track the number of consumer
-//! clocks, N, that are actively using a given producer clock. And we need to
-//! restrict the producer clock API when N &gt; 0.
-//!
-//! ### A compile-time counter
-//!
-//! First, we need to develop some way to track the number of consumer clocks,
-//! N, within the type system. To accomplish this, we need both a way to
-//! represent N in the type system and a way to increase or decrease N when
-//! making or breaking connections in the clock tree.
-//!
-//! To represent N, we can use type-level, [`Unsigned`] integers from the
-//! [`typenum`] crate (i.e. [`U0`], [`U1`], etc). And we can use a type
-//! *parameter*, `N`, to represent some unknown, type-level number.
-//!
-//! Next, we need a way to increase or decrease the type parameter `N`. The
-//! [`typenum`] crate provides type aliases [`Add1`] and [`Sub1`] that map from
-//! each [`Unsigned`] integer to its successor and predecessor types,
-//! respectively. We can leverage these to create our own type with a counter
-//! that we [`Increment`] or [`Decrement`] at compile-time. These two traits
-//! form the foundation for our strategy for handling 1:N clocks in this module.
-//!
-//! ### The `Enabled` wrapper
-//!
-//! Our representation of a 1:N producer clock is [`Enabled&lt;T, N&gt;`], which is a
-//! wrapper struct that pairs some *enabled* clock type `T` with a type `N`
-//! representing a consumer count. The wrapper restricts access to the
-//! underlying clock type, `T`, allowing us to selectively define methods when
-//! `N = U0`, that is, when there are no consumers of a given producer clock.
-//!
-//! The [`Enabled`] type itself implements [`Increment`] and [`Decrement`] as
-//! well, which allows type-level transformations to increment or decrement the
-//! counter, e.g. `Enabled&lt;T, U0&gt;` to `Enabled&lt;T, U1&gt;`. Such transformations can
-//! only be performed within the HAL; so users cannot change the consumer count
-//! arbitrarily.
-//!
-//! ### Acting as a clock `Source`
-//!
-//! Finally, we need to define some generic interface for interacting with 1:N
-//! producer clocks. However, when designing this interface, we need to be
-//! careful not to lose information during type-level transformations.
-//!
-//! In particular, the `Enabled` counter type alone is not enough for proper
-//! clock safety. If we used consumer `A` to `Increment` producer `P` from
-//! `Enabled&lt;P, U0&gt;` to `Enabled&lt;P, U1&gt;`, but then used consumer `B` to
-//! `Decrement` the producer back to `Enabled&lt;P, U0&gt;`, we would leave consumer
-//! `A` dangling.
-//!
-//! To solve this problem, we need some way to guarantee that a given consumer
-//! can only `Decrement` the same producer it `Increment`ed. Stated differently,
-//! we need a way to track the identity of each consumer's clock source.
-//!
-//! The [`Source`] trait is designed for this purpose. It marks
-//! [`Enabled&lt;T, N&gt;`] producer clocks, and it's associated type, [`Id`], is the
-//! identity type that should be stored by consumers.
-//!
-//! Given that all implementers of `Source` are instances of `Enabled&lt;T, N&gt;`,
-//! the naïve choice for [`Source::Id`] would be `T`. However, in a moment, we
-//! will see why this choice is not ideal.
-//!
-//! ### `Id` types
-//!
-//! Many of the clock types in this module have additional type parameters that
-//! track the clock's configuration. For instance, [`Xosc0&lt;M&gt;`] represents one
-//! of the external crystal oscillators. Here, the type parameter `M` represents
-//! the XOSC's [`Mode`](xosc::Mode), which can either be [`CrystalMode`] or
-//! [`ClockMode`]. Accordingly, methods to adjust the crystal current, etc. are
-//! only available on `Xosc0&lt;CrystalMode&gt;`.
-//!
-//! While these type parameters are important and necessary for configuration of
-//! a given producer clock, they are not relevant to consumer clocks. A consumer
-//! clock does not need to know or care which `Mode` the XOSC is using, but
-//! it *does* need to track that its clock [`Source`] is XOSC0.
-//!
-//! From this, we can see that `Enabled&lt;Xosc0&lt;M&gt;, N&gt;` should not implement
-//! `Source` with `Source::Id = Xosc0&lt;M&gt;`, because that would require consumers
-//! to needlessly track the XOSC `Mode`.
-//!
-//! Instead, this module defines a series of `Id` types representing the
-//! *identity* of a given clock, rather than the clock itself. This is like the
-//! distinction between a passport and a person. A passport identifies a person,
-//! regardless of changes to their clothes or hair. The `Id` types serve to
-//! erase configuration information, representing only the clock's identity.
-//!
-//! For `Xosc0&lt;M&gt;`, the corresponding `Id` type is [`Xosc0Id`]. Thus,
-//! `Enabled&lt;Xosc0&lt;M&gt;, N&gt;` implements `Source` with `Source::Id = Xosc0Id`.
-//!
-//! ## Notes on memory safety
-//!
-//! ### Register interfaces
-//!
-//! Although HAL users see `Token` types as merely opaque objects, internally
-//! they serve a dual purpose as the primary register interface to control the
-//! corresponding clock. Moreover, they also fundamentally restructure the way
-//! registers are accessed relative to the [PAC].
-//!
-//! Each of the four PAC clocking structs ([`OSCCTRL`], [`OSC32KCTRL`], [`GCLK`]
-//! and [`MCLK`]) is a singleton object that controls a set of MMIO registers.
-//! It is impossible to create two instances of any PAC object without `unsafe`.
-//! However, each object controls a large set of registers that can be further
-//! sub-divided into smaller sets for individual clocks. For example, the
-//! [`GCLK`] object controls registers for 12 different clock generators and 48
-//! peripheral channel clocks.
-//!
-//! `Token` types serve to break up the large PAC objects into smaller,
-//! more-targetted pieces. And in the process, they also remove the PAC objects'
-//! [interior mutability]. But this is only possible because each `Token` is
-//! *also* a singleton, and because individual clocks are configured through
-//! *mutually exclusive* sets of registers.
-//!
-//! ### Bus clocks
-//!
-//! Bus clocks are fundamentally different from the other clock types in this
-//! module, because they do not use mutually exclusive registers for
-//! configuration. For instance, the registers that control [`Dpll0`] are
-//! mutually exclusive to those that control [`Dpll1`], but `ApbClk&lt;Sercom0&gt;`
-//! and `ApbClk&lt;Sercom1&gt;` share a single register.
-//!
-//! This presents a challenge for memory safety, because we need some way to
-//! guarantee that there are no data races. For example, if both
-//! `ApbClk&lt;Sercom0&gt;` and `ApbClk&lt;Sercom1&gt;` tried to modify the `APBAMASK`
-//! register from two different execution contexts, a read/modify/write
-//! operation could be preempted, leading to memory corruption.
-//!
-//! To prevent data races when controlling bus clocks, we introduce two new
-//! types to mediate access to the shared registers. For [`AhbClk`]s, this is
-//! the [`Ahb`] type; and for [`ApbClk`]s, this is the [`Apb`] type. In a sense,
-//! the `Ahb` and `Apb` types represent the actual corresponding buses. Thus,
-//! enabling an APB clock by converting an [`ApbToken`] into an `ApbClk`
-//! requires exclusive access to the `Apb` in the form of `&amp;mut Apb`.
-//!
-//! ## Getting started
-//!
-//! To set up a clock tree, start by trading the [PAC](crate::pac)-level
-//! clocking structs for their HAL equivalents. Right now, the only way to do so
-//! safely is using the [`clock_system_at_reset`] function, which assumes all
-//! clocks are in their default state at power-on reset. If this is not the
-//! case, because, for example, a bootloader has modified the clocks, then you
-//! may need to manually create the matching configuration using `unsafe` code.
-//!
-//! ```no_run
-//! use atsamd_hal::clock::v2::clock_system_at_reset;
-//! use atsamd_hal::pac::Peripherals;
-//! let mut pac = Peripherals::take().unwrap();
-//! let (buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &amp;mut pac.NVMCTRL,
-//! );
-//! ```
-//!
-//! At this point, you may notice that the function returned three different
-//! objects, the [`Buses`], [`Clocks`] and [`Tokens`].
-//!
-//! The [`Buses`] struct contains the [`Ahb`] and [`Apb`] objects, which
-//! represent the corresponding AHB and APB buses. See the [notes on memory
-//! safety](self#notes-on-memory-safety) for more details on these types.
-//!
-//! The [`Clocks`] struct contains all of the clocks that are enabled and
-//! running at power-on reset, specifically:
-//! - All of the [`AhbClks`]
-//! - Some of the [`ApbClks`]
-//! - The 48 MHz [`Dfll`], running in open-loop mode, represented as as
-//!   `Enabled&lt;Dfll, U1&gt;`. `N = U1` here because [`Gclk0`] consumes it. See
-//!   [above](self#tracking-n-at-compile-time-for-1n-clocks) for details on
-//!   [`Enabled&lt;T, N&gt;`].
-//! - [`Gclk0`], sourced by the `Dfll` and represented as
-//!   `Enabled&lt;Gclk0&lt;DfllId&gt;, U1&gt;`. Note the use of [`DfllId`] as an [`Id`
-//!   type](self#id-types) here. Although `Gclk0` is not consumed by any clock
-//!   represented in this module, it *is* consumed by the processor's main
-//!   clock. We represent this by setting `N = U1`, which we use to restrict the
-//!   available API. Specifically, [`EnabledGclk0`] has special methods not
-//!   available to other [`Gclk`]s.
-//! - The [`OscUlp32kBase`] clock, which can act as a [`Source`] for the
-//!   [`OscUlp1k`] and [`OscUlp32k`] clocks. It has no consumers at power-on
-//!   reset, so it is represented as `Enabled&lt;OscUlp32kBase, U0&gt;`. However, it
-//!   can never be disabled, so we provide no `.disable()` method.
-//!
-//! The [`Tokens`] struct contains all of the available `Token`s, which
-//! [represent clocks that are disabled](self#clock-state-machines) at power-on
-//! reset. Each `Token` can be exchanged for a corresponding clock object.
-//!
-//! ## Example clock tree
-//!
-//! Finally, we will walk through the creation of a simple clock tree to
-//! illustrate some of the remaining concepts inherent to this module.
-//!
-//! Starting from the previous snippet, we have the [`Buses`], [`Clocks`] and
-//! [`Tokens`] to work with, and our clock tree at power-on reset looks like
-//! this.
-//!
-//! ```text
-//! DFLL (48 MHz)
-//! └── GCLK0 (48 MHz)
-//!     └── Main clock (48 MHz)
-//! ```
-//!
-//! Our goal will be a clock tree that looks like this:
-//!
-//! ```text
-//! XOSC0 (8 MHz)
-//! └── DPLL0 (100 MHz)
-//!     └── GCLK0 (100 MHz)
-//!         ├── Main clock (100 MHz)
-//!         ├── SERCOM0 peripheral clock
-//!         └── Output to GPIO pin
-//! ```
-//!
-//! We will use an external crystal oscillator running at 8 MHz to feed a DPLL,
-//! which will increase the clock frequency to 100 MHz. Then, we will
-//! reconfigure GCLK0 to use the 100 MHz DPLL clock instead of the 48 MHz DFLL
-//! clock.
-//!
-//! First, let's import some of the necessary types. We will see what each type
-//! represents in turn.
-//!
-//! ```no_run
-//! use atsamd_hal::{
-//!     clock::v2::{
-//!         clock_system_at_reset,
-//!         dpll::Dpll,
-//!         pclk::Pclk,
-//!         xosc::Xosc,
-//!     },
-//!     gpio::Pins,
-//!     pac::Peripherals,
-//!     time::U32Ext,
-//! };
-//! ```
-//!
-//! To create an instance of [`Xosc`], we will first need to identify which of
-//! the two XOSC clocks we will use. Suppose an external crystal is attached to
-//! pins `PA14` and `PA15`. These pins feed the XOSC0 clock, so we will want to
-//! create an instance of [`Xosc0`]. Note that `Xosc0&lt;M&gt;` is merely an alias for
-//! `Xosc&lt;Xosc0Id, M&gt;`. Here, [`Xosc0Id`] represents the
-//! [*identity*](self#id-types) of the XOSC0 clock, rather than the clock
-//! itself, and `M` represents the XOSC [`Mode`](xosc::Mode).
-//!
-//! Next, we access the [`Tokens`] struct to extract the corresponding
-//! [`XoscToken`] for XOSC0, and we trade the PAC `PORT` struct for the
-//! [`gpio::Pins`] struct to access the GPIO pins. We can then call
-//! [`Xosc::from_crystal`] to trade the token and [`Pin`]s to yield an instance
-//! of [`Xosc0`]. In doing so, we also provide the oscillator frequency.
-//!
-//! Finally, we can chain a call to the [`Xosc::enable`] method to enable the
-//! XOSC and return an instance of [`EnabledXosc0&lt;M, N&gt;`], which is simply an
-//! alias for `Enabled&lt;Xosc0&lt;M&gt;, N&gt;`. In this case, we get
-//! `EnabledXosc0&lt;CrystalMode, U0&gt;`.
-//!
-//! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         xosc::Xosc,
-//! #     },
-//! #     gpio::Pins,
-//! #     pac::Peripherals,
-//! #     time::U32Ext,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &amp;mut pac.NVMCTRL,
-//! # );
-//! let pins = Pins::new(pac.PORT);
-//! let xosc0 = Xosc::from_crystal(
-//!     tokens.xosc0,
-//!     pins.pa14,
-//!     pins.pa15,
-//!     8.mhz(),
-//! ).enable();
-//! ```
-//!
-//! Next, we want to use a DPLL to multiply the 8 MHz crystal clock up to 100
-//! MHz. Once again, we need to decide between two instances of a clock, because
-//! each chip has two [`Dpll`]s. This time, however, our decision between
-//! [`Dpll0`] and [`Dpll1`] is arbitrary.
-//!
-//! Also note that, like before, `Dpll0&lt;I&gt;` and `Dpll1&lt;I&gt;` are aliases for
-//! `Dpll&lt;Dpll0Id, I&gt;` and `Dpll&lt;Dpll1Id, I&gt;`. [`Dpll0Id`] and [`Dpll1Id`]
-//! represent the *identity* of the respective DPLL, while `I` represents the
-//! [`Id` type](self#id-types) for the [`Source`] driving the DPLL. In this
-//! particular case, we aim to create an instance of `Dpll0&lt;Xosc0Id&gt;`.
-//!
-//! Only certain clocks can drive the DPLL, so `I` is constrained by the
-//! [`DpllSourceId`] trait. Specifically, only the [`Xosc0Id`], [`Xosc1Id`],
-//! [`Xosc32kId`] and [`GclkId`] types implement this trait.
-//!
-//! As before, we access the [`Tokens`] struct and use the corresponding
-//! [`DpllToken`] when creating an instance of `Dpll`. However, unlike before,
-//! we are creating a new clock-tree relationship that must be tracked by the
-//! type system. Because DPLL0 will now consume XOSC0, we must [`Increment`]
-//! the [`Enabled`] counter for [`EnabledXosc0`].
-//!
-//! Thus, to create an instance of `Dpll0&lt;XoscId0&gt;`, we must provide the
-//! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
-//! The `Dpll::from_xosc` method takes ownership of the `EnabledXosc0` and
-//! returns it with this modified type parameter.
-//!
-//! This is the essence of clock safety in this module. Once the counter type
-//! has been incremeneted to `U1`, the `EnabledXosc0` can no longer be modified
-//! or disabled. All further code can guarantee this invariant is upheld. To
-//! modify the `EnabledXosc0`, we would first have to use `Dpll::free_source` to
-//! disable the DPLL and [`Decrement`] the counter back to `U0`.
-//!
-//! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         dpll::Dpll,
-//! #         xosc::Xosc,
-//! #     },
-//! #     gpio::Pins,
-//! #     pac::Peripherals,
-//! #     time::U32Ext,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &amp;mut pac.NVMCTRL,
-//! # );
-//! # let pins = Pins::new(pac.PORT);
-//! # let xosc0 = Xosc::from_crystal(
-//! #     tokens.xosc0,
-//! #     pins.pa14,
-//! #     pins.pa15,
-//! #     8.mhz(),
-//! # ).enable();
-//! let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-//! ```
-//! Next, we set the DPLL pre-divider and loop divider. We must pre-divide
-//! the XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid
-//! input frequency range for the DPLL. Then, we set the DPLL loop divider, so
-//! that it will multiply the 2 MHz clock by 50 for a 100 MHz output. We do not
-//! need fractional mutiplication here, so the fractional loop divider is zero.
-//! Finally, we can enable the `Dpll`, yielding an instance of
-//! `EnabledDpll0&lt;XoscId0&gt;`.
-//!
-//! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         dpll::Dpll,
-//! #         xosc::Xosc,
-//! #     },
-//! #     gpio::Pins,
-//! #     pac::Peripherals,
-//! #     time::U32Ext,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &amp;mut pac.NVMCTRL,
-//! # );
-//! # let pins = Pins::new(pac.PORT);
-//! # let xosc0 = Xosc::from_crystal(
-//! #     tokens.xosc0,
-//! #     pins.pa14,
-//! #     pins.pa15,
-//! #     8.mhz(),
-//! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-//! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! ```
-//!
-//! So far, our clock tree looks like this
-//!
-//! ```text
-//! DFLL (48 MHz)
-//! └── GCLK0 (48 MHz)
-//!     └── Main clock (48 MHz)
-//!
-//! XOSC0 (8 MHz)
-//! └── DPLL0 (100 MHz)
-//! ```
-//!
-//! Our next task will be to swap GCLK0 from the 48 MHz DFLL to the 100 MHz
-//! DPLL. To do that, we will use the special [`swap_sources`] method on
-//! [`EnabledGclk0`] to change the base clock without disabling GCLK0 or the
-//! main clock.
-//!
-//! This time we will be modifying two [`Enabled`] counters simultaneously.
-//! We will [`Decrement`] the [`EnabledDfll`] count from `U1` to `U0`, and
-//! we will [`Increment`] the [`EnabledDpll0`] count from `U0` to `U1`.
-//! Again, we need to provide both the DFLL and DPLL clocks, so that their
-//! type parameters can be changed.
-//!
-//! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         dpll::Dpll,
-//! #         xosc::Xosc,
-//! #     },
-//! #     gpio::Pins,
-//! #     pac::Peripherals,
-//! #     time::U32Ext,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &amp;mut pac.NVMCTRL,
-//! # );
-//! # let pins = Pins::new(pac.PORT);
-//! # let xosc0 = Xosc::from_crystal(
-//! #     tokens.xosc0,
-//! #     pins.pa14,
-//! #     pins.pa15,
-//! #     8.mhz(),
-//! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
-//! ```
-//!
-//! At this point, the DFLL is completely unused, so it can be disbled and
-//! deconstructed, leaving only the [`DfllToken`].
-//!
-//! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         dpll::Dpll,
-//! #         xosc::Xosc,
-//! #     },
-//! #     gpio::Pins,
-//! #     pac::Peripherals,
-//! #     time::U32Ext,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &amp;mut pac.NVMCTRL,
-//! # );
-//! # let pins = Pins::new(pac.PORT);
-//! # let xosc0 = Xosc::from_crystal(
-//! #     tokens.xosc0,
-//! #     pins.pa14,
-//! #     pins.pa15,
-//! #     8.mhz(),
-//! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
-//! let dfll_token = dfll.disable().free();
-//! ```
-//!
-//! Our clock tree now looks like this:
-//!
-//! ```text
-//! XOSC0 (8 MHz)
-//! └── DPLL0 (100 MHz)
-//!     └── GCLK0 (100 MHz)
-//!         └── Main clock (100 MHz)
-//! ```
-//!
-//! We have the clocks set up, but we're not using them for anything other than
-//! the main clock. Our final steps will create SERCOM APB and peripheral
-//! clocks and will output the raw GCLK0 to a GPIO pin.
-//!
-//! To enable the APB clock for SERCOM0, we must access the [`Apb`] bus struct.
-//! We provide an [`ApbToken`] to the [`Apb::enable`] method and receive an
-//! [`ApbClk`] in return. APB clocks are [1:1 clocks](self#clock-relationships),
-//! so the `ApbClk` is not wrapped with [`Enabled`].
-//!
-//! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         dpll::Dpll,
-//! #         xosc::Xosc,
-//! #     },
-//! #     gpio::Pins,
-//! #     pac::Peripherals,
-//! #     time::U32Ext,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &amp;mut pac.NVMCTRL,
-//! # );
-//! # let pins = Pins::new(pac.PORT);
-//! # let xosc0 = Xosc::from_crystal(
-//! #     tokens.xosc0,
-//! #     pins.pa14,
-//! #     pins.pa15,
-//! #     8.mhz(),
-//! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
-//! # let dfll_token = dfll.disable().free();
-//! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
-//! ```
-//!
-//! To enable a peripheral channel clock for SERCOM0, we must provide the
-//! corresponding [`PclkToken`], as well as the instance of [`EnabledGclk0`], so
-//! that its counter can be incremented. The resulting clock has the type
-//! `Pclk&lt;Sercom0, Gclk0Id&gt;`.
-//!
-//! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         dpll::Dpll,
-//! #         pclk::Pclk,
-//! #         xosc::Xosc,
-//! #     },
-//! #     gpio::Pins,
-//! #     pac::Peripherals,
-//! #     time::U32Ext,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &amp;mut pac.NVMCTRL,
-//! # );
-//! # let pins = Pins::new(pac.PORT);
-//! # let xosc0 = Xosc::from_crystal(
-//! #     tokens.xosc0,
-//! #     pins.pa14,
-//! #     pins.pa15,
-//! #     8.mhz(),
-//! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
-//! # let dfll_token = dfll.disable().free();
-//! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
-//! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-//! ```
-//!
-//! Like [`Dpll&lt;D, I&gt;`], [`Pclk&lt;P, I&gt;`] also takes two type parameters. The
-//! first represents the corresponding peripheral, while the second is again an
-//! [`Id` type](self#id-types) representing the [`Source`] driving the [`Pclk`],
-//! which is restricted by the [`PclkSourceId`] trait. Because peripheral
-//! channel clocks can only be driven by GCLKs, [`PclkSourceId`] is effectively
-//! synonymous with the [`GclkId`] trait.
-//!
-//! Finally, we would like to output GCLK0 to a GPIO pin. Doing so takes a
-//! slightly different approach. This time, we provide a GPIO [`Pin`] to the
-//! [`Gclk`], which creates a [`GclkOut`] and [`Increment`]s the consumer count
-//! for [`EnabledGclk0`].
-//!
-//! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         dpll::Dpll,
-//! #         pclk::Pclk,
-//! #         xosc::Xosc,
-//! #     },
-//! #     gpio::Pins,
-//! #     pac::Peripherals,
-//! #     time::U32Ext,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &amp;mut pac.NVMCTRL,
-//! # );
-//! # let pins = Pins::new(pac.PORT);
-//! # let xosc0 = Xosc::from_crystal(
-//! #     tokens.xosc0,
-//! #     pins.pa14,
-//! #     pins.pa15,
-//! #     8.mhz(),
-//! # ).enable();
-//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
-//! # let dfll_token = dfll.disable().free();
-//! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
-//! # let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-//! let (gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);
-//! ```
-//!
-//! We have arrived at our final, desired clock tree. Putting the whole example
-//! together, we get
-//!
-//! ```no_run
-//! use atsamd_hal::{
-//!     clock::v2::{
-//!         clock_system_at_reset,
-//!         dpll::Dpll,
-//!         pclk::Pclk,
-//!         xosc::Xosc,
-//!     },
-//!     gpio::Pins,
-//!     pac::Peripherals,
-//!     time::U32Ext,
-//! };
-//!
-//! let mut pac = Peripherals::take().unwrap();
-//! let (mut buses, clocks, tokens) = clock_system_at_reset(
-//!     pac.OSCCTRL,
-//!     pac.OSC32KCTRL,
-//!     pac.GCLK,
-//!     pac.MCLK,
-//!     &amp;mut pac.NVMCTRL,
-//! );
-//! let pins = Pins::new(pac.PORT);
-//! let xosc0 = Xosc::from_crystal(
-//!     tokens.xosc0,
-//!     pins.pa14,
-//!     pins.pa15,
-//!     8.mhz(),
-//! )
-//! .enable();
-//! let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
-//! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
-//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
-//! let dfll_token = dfll.disable().free();
-//! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
-//! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
-//! let (gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);
-//! ```
-//!
-//! [PAC]: crate::pac
-//! [`OSCCTRL`]: crate::pac::OSCCTRL
-//! [`OSC32KCTRL`]: crate::pac::OSC32KCTRL
-//! [`GCLK`]: crate::pac::GCLK
-//! [`MCLK`]: crate::pac::MCLK
-//! [`Peripherals::steal`]: crate::pac::Peripherals::steal
-//!
-//! [`Ahb`]: ahb::Ahb
-//! [`AhbClk`]: ahb::AhbClk
-//! [`AhbClk&lt;A&gt;`]: ahb::AhbClk
-//! [`AhbClks`]: ahb::AhbClks
-//!
-//! [`Apb`]: apb::Apb
-//! [`Apb::enable`]: apb::Apb::enable
-//! [`ApbClk`]: apb::ApbClk
-//! [`ApbClk&lt;A&gt;`]: apb::ApbClk
-//! [`ApbClk::enable`]: apb::ApbClk::enable
-//! [`ApbClks`]: apb::ApbClks
-//! [`ApbToken`]: apb::ApbToken
-//!
-//! [`Dfll`]: dfll::Dfll
-//! [`Dfll&lt;M&gt;`]: dfll::Dfll
-//! [`DfllId`]: dfll::DfllId
-//! [`DfllToken`]: dfll::DfllToken
-//! [`EnabledDfll`]: dfll::EnabledDfll
-//!
-//! [`Dpll`]: dpll::Dpll
-//! [`Dpll&lt;D, I&gt;`]: dpll::Dpll
-//! [`Dpll0`]: dpll::Dpll0
-//! [`Dpll1`]: dpll::Dpll1
-//! [`Dpll0Id`]: dpll::Dpll0Id
-//! [`Dpll1Id`]: dpll::Dpll1Id
-//! [`DpllSourceId`]: dpll::DpllSourceId
-//! [`DpllToken`]: dpll::DpllToken
-//! [`EnabledDpll0`]: dpll::EnabledDpll0
-//!
-//! [`Gclk0`]: gclk::Gclk0
-//! [`GclkId`]: gclk::GclkId
-//! [`EnabledGclk0`]: gclk::EnabledGclk0
-//! [`swap_sources`]: gclk::EnabledGclk0::swap_sources
-//! [`GclkOut`]: gclk::GclkOut
-//!
-//! [`OscUlp32kBase`]: osculp32k::OscUlp32kBase
-//! [`OscUlp1k`]: osculp32k::OscUlp1k
-//! [`OscUlp32k`]: osculp32k::OscUlp32k
-//!
-//! [`Pclk`]: pclk::Pclk
-//! [`Pclk&lt;P, I&gt;`]: pclk::Pclk
-//! [`Pclk::enable`]: pclk::Pclk::enable
-//! [`Pclk::disable`]: pclk::Pclk::disable
-//! [`PclkSourceId`]: pclk::PclkSourceId
-//! [`PclkToken`]: pclk::PclkToken
-//!
-//! [`RtcOsc`]: rtcosc::RtcOsc
-//!
-//! [`Xosc`]: xosc::Xosc
-//! [`Xosc::from_crystal`]: xosc::Xosc::from_crystal
-//! [`Xosc::enable`]: xosc::Xosc::enable
-//! [`Xosc0`]: xosc::Xosc0
-//! [`Xosc0&lt;M&gt;`]: xosc::Xosc0
-//! [`Xosc0Id`]: xosc::Xosc0Id
-//! [`Xosc1Id`]: xosc::Xosc1Id
-//! [`XoscToken`]: xosc::XoscToken
-//! [`EnabledXosc0`]: xosc::EnabledXosc0
-//! [`EnabledXosc0&lt;M, N&gt;`]: xosc::EnabledXosc0
-//! [`CrystalMode`]: xosc::CrystalMode
-//! [`ClockMode`]: xosc::ClockMode
-//!
-//! [`Xosc32kId`]: xosc32k::Xosc32kId
-//!
-//! [type-level]: crate::typelevel
-//! [`Increment`]: crate::typelevel::Increment
-//! [`Decrement`]: crate::typelevel::Decrement
-//!
-//! [`Id`]: Source::Id
-//!
-//! [`gpio::Pins`]: crate::gpio::Pins
-//! [`Pin`]: crate::gpio::Pin
-//!
-//! [`U1`]: typenum::U1
-//! [`Add1`]: typenum::Add1
-//! [`Sub1`]: typenum::Sub1
-//! [`Unsigned`]: typenum::Unsigned
-//!
-//! [interior mutability]: https://doc.rust-lang.org/reference/interior-mutability.html
-
-</span><span class="attr">#![allow(clippy::manual_range_contains)]
-
-</span><span class="kw">use </span>typenum::U0;
-
-<span class="kw">use </span><span class="kw">crate</span>::time::Hertz;
-<span class="kw">use </span><span class="kw">crate</span>::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
-
-<span class="kw">pub mod </span>ahb;
-<span class="kw">pub mod </span>apb;
-<span class="kw">pub mod </span>dfll;
-<span class="kw">pub mod </span>dpll;
-<span class="kw">pub mod </span>gclk;
-<span class="kw">pub mod </span>osculp32k;
-<span class="kw">pub mod </span>pclk;
-<span class="kw">pub mod </span>rtcosc;
-<span class="kw">pub mod </span>types;
-<span class="kw">pub mod </span>xosc;
-<span class="kw">pub mod </span>xosc32k;
-
-<span class="kw">mod </span>reset;
-<span class="kw">pub use </span>reset::<span class="kw-2">*</span>;
-
-<span class="comment">// `Token` types and memory safety
-//
-// Each of the PAC [`Peripherals`] is a zero-sized, singleton struct that
-// mediates access to the MMIO hardware registers. It is not possible to create
-// two instances of any peripheral without causing a run-time panic. These
-// structs implement [`Deref`] by conjuring a pointer to the corresponding
-// register block, and each register within the block is represented by a
-// `vcell::VolatileCell`. Because each register is wrapped in a `VolatileCell`,
-// it is safe to both read and write them through shared references. However,
-// because a read/modify/write operation is not atomic, the [`Peripherals`]
-// structs do not implement [`Sync`].
-//
-// This is a reasonable approach for the PAC, since it is generated from an
-// SVD file. However, it is not the ideal structure for our HAL API. In
-// particular, each [`Peripherals`] struct represents an entire peripheral,
-// rather than a particular functional unit. In the HAL, we want our API to
-// focus on functional units, so we need to define our own abstraction for
-// registers, which will involve `unsafe` code.
-//
-// In the `clock` module, we represent each functional unit with a
-// corresponding `Token` type. Just like the [`Peripherals`], each `Token` type
-// is meant to be a singleton. However, unlike the PAC, we do not have to
-// allow users to create `Token`s directly. Instead, we can have users exchange
-// [`Peripherals`] for the `Token`s. Because each PAC struct is a singleton, we
-// can guarantee each `Token` will be a singleton as well. With this approach,
-// we don't need to implement our own run-time panicking; we simply extend the
-// existing guarantees of the PAC.
-//
-// To implement a memory safe API, we must ensure that all `Token` types access
-// mutually exclusive sets of registers. In that way, we guarantee no two
-// `Token` types can access the same register. Moreover, in contrast to the PAC
-// [`Peripherals`], we can make our `Token`s [`Sync`] if we remove all interior
-// mutability and guarantee that writing or modifying a register requires
-// ownership or an `&amp;mut` reference.
-//
-// Thus, our `Token`-based API should be memory safe if we always obey the
-// following requirements:
-//   - It should be `unsafe` to create a `Token` type unless it is created in
-//     exchange for the corresponding PAC peripheral struct.
-//   - Each `Token` type should have access to a mutually exclusive set of
-//     registers relative to the other `Token`s.
-//   - Writing or modifying a register should always require ownership of, or an
-//     `&amp;mut` reference to, the corresponding `Token`.
-//   - When conjuring references to PAC registers or register blocks, we should
-//     *only* use shared, `&amp;` references. There is no need to use exclusive,
-//     `&amp;mut` references, because each register is wrapped in a `VolatileCell`.
-//     Moreover, using `&amp;mut` references could cause UB, if we accidentally
-//     create two simultaneous references to the same register block from
-//     different `Tokens`.
-//
-// [`Peripherals`]: crate::pac::Peripherals
-// [`Deref`]: core::ops::Deref
-
-</span><span class="doccomment">/// Marks [`Enabled`] 1:N producer clocks that can act as a clock source
-///
-/// Implementers of this type act as producer clocks and feed consumer clocks in
-/// the clock tree. All implementors are [`Enabled`], 1:N clocks. The `Id`
-/// associated type maps to the corresponding [`Id` type](self#id-types) of the
-/// implementer.
-///
-/// See the documentation on [`Source` clocks](self#acting-as-a-clock-source)
-/// for more details.
-</span><span class="kw">pub trait </span>Source: Sealed {
-    <span class="doccomment">/// Corresponding `Id` type for the implementer
-    ///
-    /// A given implementer of [`Source`] might have type parameters
-    /// representing its configuration. For instance, [`EnabledXosc0&lt;M&gt;`] has a
-    /// type parameter to track its [`Mode`]. However, a consumer clock
-    /// typically does not care about such configuration. It only needs to
-    /// know *which* upstream clock is its [`Source`].
-    ///
-    /// `Id` types exist to fill this role. They represent the *identity* of a
-    /// given clock, regardless of any configuration. This is like the
-    /// distinction between a passport and a person. A passport identifies a
-    /// person, regardless of changes to their clothes or hair.
-    ///
-    /// Thus, [`EnabledXosc0&lt;M&gt;`] implements [`Source`] with `Id = `[`Xosc0Id`],
-    /// regardless of `M`.
-    ///
-    /// See the documentation on [`Id` types](self#id-types) for more details.
-    ///
-    /// [`EnabledXosc0&lt;M&gt;`]: xosc::EnabledXosc0
-    /// [`Mode`]: xosc::Mode
-    /// [`Xosc0Id`]: xosc::Xosc0Id
-    </span><span class="kw">type </span>Id;
-
-    <span class="doccomment">/// Return the frequency of the clock source
-    </span><span class="kw">fn </span>freq(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Hertz;
-}
-
-<span class="doccomment">/// An enabled, 1:N clock with a compile-time counter for N
-///
-/// This struct is a wrapper around other clock types from this module. It
-/// represents a clock, `T`, that has been enabled, and it maintains a
-/// compile-time counter, `N`, of its consumer clocks in the clock tree.
-///
-/// Compile-time counting allows the API to restrict when clocks may be modified
-/// or disabled. For example, `Enabled` clocks can only be disabled when their
-/// counter is [`U0`].
-///
-/// The type-level counter is implemented using [`Unsigned`] integers from
-/// the [`typenum`] crate, and it is modified using the [`Increment`] and
-/// [`Decrement`] traits.
-///
-/// See the [`Enabled` wrapper documentation](self#the-enabled-wrapper) for more
-/// details.
-///
-/// [`EnabledGclk0`]: gclk::EnabledGclk0
-/// [`Increment`]: crate::typelevel::Increment
-/// [`Decrement`]: crate::typelevel::Decrement
-/// [`Unsigned`]: typenum::Unsigned
-</span><span class="kw">pub struct </span>Enabled&lt;T, N = U0&gt;(<span class="kw">pub</span>(<span class="kw">crate</span>) T, N);
-
-<span class="kw">impl</span>&lt;T, N&gt; Sealed <span class="kw">for </span>Enabled&lt;T, N&gt; {}
-
-<span class="kw">impl</span>&lt;T, N: Default&gt; Enabled&lt;T, N&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(t: T) -&gt; <span class="self">Self </span>{
-        Enabled(t, N::default())
-    }
-}
-
-<span class="kw">impl</span>&lt;T, N: PrivateIncrement&gt; PrivateIncrement <span class="kw">for </span>Enabled&lt;T, N&gt; {
-    <span class="kw">type </span>Inc = Enabled&lt;T, N::Inc&gt;;
-
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>inc(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Inc {
-        Enabled(<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>.inc())
-    }
-}
-
-<span class="kw">impl</span>&lt;T, N: PrivateDecrement&gt; PrivateDecrement <span class="kw">for </span>Enabled&lt;T, N&gt; {
-    <span class="kw">type </span>Dec = Enabled&lt;T, N::Dec&gt;;
-
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>dec(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Dec {
-        Enabled(<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>.dec())
-    }
-}
-</code></pre></div></section></main></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `hal/src/peripherals/clock/d5x/v2.rs`."><title>v2.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-6c3ea77c.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.86.0 (05f9846f8 2025-03-31)" data-channel="1.86.0" data-search-js="search-581efc7a.js" data-settings-js="settings-6dad6058.js" ><script src="../../../../../static.files/storage-3a5871a4.js"></script><script defer src="../../../../../static.files/src-script-b8d3f215.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-4d63596a.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">atsamd_hal/peripherals/clock/d5x/</div>v2.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! # Version 2 of the `clock` module
+<a href=#2 id=2 data-nosnippet>2</a>//!
+<a href=#3 id=3 data-nosnippet>3</a>//! ## Overview
+<a href=#4 id=4 data-nosnippet>4</a>//!
+<a href=#5 id=5 data-nosnippet>5</a>//! This module provides a simple, ergonomic, and most of all **safe** API to
+<a href=#6 id=6 data-nosnippet>6</a>//! create and manage the clock tree in ATSAMD5x and E5x devices. It uses
+<a href=#7 id=7 data-nosnippet>7</a>//! [type-level programming techniques](crate::typelevel) to prevent users from
+<a href=#8 id=8 data-nosnippet>8</a>//! creating invalid or unsound clocking configurations.
+<a href=#9 id=9 data-nosnippet>9</a>//!
+<a href=#10 id=10 data-nosnippet>10</a>//! &lt;p style="background:rgba(255,181,77,0.16);padding:0.75em;"&gt;
+<a href=#11 id=11 data-nosnippet>11</a>//! &lt;strong&gt; Note: &lt;/strong&gt; Using a type-level API does place some limitations
+<a href=#12 id=12 data-nosnippet>12</a>//! on how the clocks can be configured. The types must be checked at
+<a href=#13 id=13 data-nosnippet>13</a>//! compile-time, which means the state of a given clock must also be known at
+<a href=#14 id=14 data-nosnippet>14</a>//! compile-time. This is exceedingly reasonable for most clocking
+<a href=#15 id=15 data-nosnippet>15</a>//! configurations, because most users set up their clocks once and never change
+<a href=#16 id=16 data-nosnippet>16</a>//! them again. However, if you need to dynamically change the clocking
+<a href=#17 id=17 data-nosnippet>17</a>//! configuration at run-time, you may find this API less ergonomic. A future,
+<a href=#18 id=18 data-nosnippet>18</a>//! fully dynamic API has been discussed, but nothing has been developed so far.
+<a href=#19 id=19 data-nosnippet>19</a>//! &lt;/p&gt;
+<a href=#20 id=20 data-nosnippet>20</a>//!
+<a href=#21 id=21 data-nosnippet>21</a>//! The sections that follow provide an explanation of key concepts in the
+<a href=#22 id=22 data-nosnippet>22</a>//! module. We highly recommend users read through them to better understand the
+<a href=#23 id=23 data-nosnippet>23</a>//! `clock` module API. A [complete example](self#getting-started) is also
+<a href=#24 id=24 data-nosnippet>24</a>//! provided.
+<a href=#25 id=25 data-nosnippet>25</a>//!
+<a href=#26 id=26 data-nosnippet>26</a>//! ## Clock safety
+<a href=#27 id=27 data-nosnippet>27</a>//!
+<a href=#28 id=28 data-nosnippet>28</a>//! A clock tree represents dependencies among clocks, where producer clocks
+<a href=#29 id=29 data-nosnippet>29</a>//! feed consumer clocks. Root clocks are the original producers, as they are
+<a href=#30 id=30 data-nosnippet>30</a>//! derived from oscillators or external clocks. Branch clocks are both
+<a href=#31 id=31 data-nosnippet>31</a>//! producers and consumers, since they modify and distribute clocks. And leaf
+<a href=#32 id=32 data-nosnippet>32</a>//! clocks are consumers only; they drive peripherals or external clock outputs
+<a href=#33 id=33 data-nosnippet>33</a>//! but do not feed other clocks.
+<a href=#34 id=34 data-nosnippet>34</a>//!
+<a href=#35 id=35 data-nosnippet>35</a>//! To safely create and use a clock tree, it is critical that producer clocks
+<a href=#36 id=36 data-nosnippet>36</a>//! not be modified or disabled while their consumer clocks are still in active
+<a href=#37 id=37 data-nosnippet>37</a>//! use. Stated differently, if clock `B` consumes clock `A`, then clock `A`
+<a href=#38 id=38 data-nosnippet>38</a>//! **must not** be modified or disabled while clock `B` is still in use.
+<a href=#39 id=39 data-nosnippet>39</a>//!
+<a href=#40 id=40 data-nosnippet>40</a>//! Notice that this requirement mimics the principle of "aliased XOR mutable"
+<a href=#41 id=41 data-nosnippet>41</a>//! underlying the Rust borrow checker. A producer clock can only be modified if
+<a href=#42 id=42 data-nosnippet>42</a>//! it is not "borrowed" (consumed) by any other clocks.
+<a href=#43 id=43 data-nosnippet>43</a>//!
+<a href=#44 id=44 data-nosnippet>44</a>//! The following sections will review the various type-level programming
+<a href=#45 id=45 data-nosnippet>45</a>//! techniques used to enforce this principle in the `clock` module.
+<a href=#46 id=46 data-nosnippet>46</a>//!
+<a href=#47 id=47 data-nosnippet>47</a>//! ## Clock state machines
+<a href=#48 id=48 data-nosnippet>48</a>//!
+<a href=#49 id=49 data-nosnippet>49</a>//! Each available clock is represented in Rust as a unique, singleton object.
+<a href=#50 id=50 data-nosnippet>50</a>//! Users cannot create two instances of the same clock without using `unsafe`.
+<a href=#51 id=51 data-nosnippet>51</a>//!
+<a href=#52 id=52 data-nosnippet>52</a>//! However, a given clock is not always represented with the same **type**.
+<a href=#53 id=53 data-nosnippet>53</a>//! Specifically, each clock has at least two representations, one for the
+<a href=#54 id=54 data-nosnippet>54</a>//! configured and enabled clock, and another for the unconfigured and disabled
+<a href=#55 id=55 data-nosnippet>55</a>//! clock.
+<a href=#56 id=56 data-nosnippet>56</a>//!
+<a href=#57 id=57 data-nosnippet>57</a>//! These states are represented in Rust using distinct types, forming a
+<a href=#58 id=58 data-nosnippet>58</a>//! type-level state machine. Moreover, the disabled state is always represented
+<a href=#59 id=59 data-nosnippet>59</a>//! by a `Token` type. As the name implies, `Token`s have no functionality on
+<a href=#60 id=60 data-nosnippet>60</a>//! their own; they can only be exchanged for a different type representing
+<a href=#61 id=61 data-nosnippet>61</a>//! another state.
+<a href=#62 id=62 data-nosnippet>62</a>//!
+<a href=#63 id=63 data-nosnippet>63</a>//! ## Clock relationships
+<a href=#64 id=64 data-nosnippet>64</a>//!
+<a href=#65 id=65 data-nosnippet>65</a>//! In general, there are two classes of clock in ATSAMD chips. Some clocks map
+<a href=#66 id=66 data-nosnippet>66</a>//! one-to-one (1:1) to a specific bus or peripheral. This is true for the AHB
+<a href=#67 id=67 data-nosnippet>67</a>//! clocks ([`AhbClk`]s), APB clocks ([`ApbClk`]s), GCLK outputs ([`GclkOut`]s),
+<a href=#68 id=68 data-nosnippet>68</a>//! peripheral channel clocks ([`Pclk`]s), and RTC oscillator ([`RtcOsc`]).
+<a href=#69 id=69 data-nosnippet>69</a>//! Other clocks form one-to-many (1:N) relationships, like the external crystal
+<a href=#70 id=70 data-nosnippet>70</a>//! oscillator ([`Xosc`]), the 48 MHz DFLL ([`Dfll`]) or the two DPLLs
+<a href=#71 id=71 data-nosnippet>71</a>//! ([`Dpll`]).
+<a href=#72 id=72 data-nosnippet>72</a>//!
+<a href=#73 id=73 data-nosnippet>73</a>//! The `clock` module uses a distinct approach for each class.
+<a href=#74 id=74 data-nosnippet>74</a>//!
+<a href=#75 id=75 data-nosnippet>75</a>//! ### 1:1 clocks
+<a href=#76 id=76 data-nosnippet>76</a>//!
+<a href=#77 id=77 data-nosnippet>77</a>//! One-to-one relationships are easily modelled in Rust using move semantics.
+<a href=#78 id=78 data-nosnippet>78</a>//! For example, an enabled peripheral channel clock is represented as a
+<a href=#79 id=79 data-nosnippet>79</a>//! [`Pclk`] object. The respective peripheral API can move the `Pclk` and take
+<a href=#80 id=80 data-nosnippet>80</a>//! ownership of it. In that case, the `Pclk` acts as proof that the peripheral
+<a href=#81 id=81 data-nosnippet>81</a>//! clock is enabled, and the transfer of ownership prevents users from
+<a href=#82 id=82 data-nosnippet>82</a>//! modifying or disabling the `Pclk` while it is in use by the peripheral.
+<a href=#83 id=83 data-nosnippet>83</a>//!
+<a href=#84 id=84 data-nosnippet>84</a>//! One-to-one clocks generally have little to no configuration. They are
+<a href=#85 id=85 data-nosnippet>85</a>//! typically converted directly from disabled `Token` types to fully enabled
+<a href=#86 id=86 data-nosnippet>86</a>//! clock types. For example, the `Pclk` type has only two methods,
+<a href=#87 id=87 data-nosnippet>87</a>//! [`Pclk::enable`] and [`Pclk::disable`], which convert [`PclkToken`]s to
+<a href=#88 id=88 data-nosnippet>88</a>//! `Pclk`s and vice versa.
+<a href=#89 id=89 data-nosnippet>89</a>//!
+<a href=#90 id=90 data-nosnippet>90</a>//! ### 1:N clocks
+<a href=#91 id=91 data-nosnippet>91</a>//!
+<a href=#92 id=92 data-nosnippet>92</a>//! One-to-many relationships are more difficult to model in Rust.
+<a href=#93 id=93 data-nosnippet>93</a>//!
+<a href=#94 id=94 data-nosnippet>94</a>//! As discussed above, we are trying to create something akin to "aliased XOR
+<a href=#95 id=95 data-nosnippet>95</a>//! mutable", where producer clocks cannot be modified while used by consumer
+<a href=#96 id=96 data-nosnippet>96</a>//! clocks. A natural approach would be to use the Rust borrow checker directly.
+<a href=#97 id=97 data-nosnippet>97</a>//! In that case, consumer clocks would hold `&amp;Producer` references to the
+<a href=#98 id=98 data-nosnippet>98</a>//! `Producer` clock object. The existence of outstanding shared borrows would
+<a href=#99 id=99 data-nosnippet>99</a>//! naturally prevent users from calling `Producer` methods taking `&amp;mut self`.
+<a href=#100 id=100 data-nosnippet>100</a>//!
+<a href=#101 id=101 data-nosnippet>101</a>//! Unfortunately, while this approach could work, there is a critical problem
+<a href=#102 id=102 data-nosnippet>102</a>//! with disastrous consequences for ergonomics. To satisfy the Rust borrow
+<a href=#103 id=103 data-nosnippet>103</a>//! checker, `Producer` clock objects *could not be moved* while `&amp;Producer`
+<a href=#104 id=104 data-nosnippet>104</a>//! references were still held by consumer clocks.
+<a href=#105 id=105 data-nosnippet>105</a>//!
+<a href=#106 id=106 data-nosnippet>106</a>//! However, this restriction is unnecessary. A `Producer` clock object is
+<a href=#107 id=107 data-nosnippet>107</a>//! merely a semantic object representing the "idea" of a producer clock. And
+<a href=#108 id=108 data-nosnippet>108</a>//! "borrowing" the producer is not meant to protect memory from corruption.
+<a href=#109 id=109 data-nosnippet>109</a>//! Rather, our goal is only to restrict the `Producer` API, to prevent it from
+<a href=#110 id=110 data-nosnippet>110</a>//! being modified or disabled once it has been connected to a consumer. We
+<a href=#111 id=111 data-nosnippet>111</a>//! don't need to permanently hold the `Producer` object in place to do that.
+<a href=#112 id=112 data-nosnippet>112</a>//!
+<a href=#113 id=113 data-nosnippet>113</a>//! It is possible to build a `clock` API based on the borrow checker, but it
+<a href=#114 id=114 data-nosnippet>114</a>//! would be extremely frustrating to use in practice, because of restrictions
+<a href=#115 id=115 data-nosnippet>115</a>//! on the movement of `Producer` objects.
+<a href=#116 id=116 data-nosnippet>116</a>//!
+<a href=#117 id=117 data-nosnippet>117</a>//! Instead, the `clock` module takes a different approach. It uses type-level
+<a href=#118 id=118 data-nosnippet>118</a>//! programming to track, at compile-time, the number of consumer clocks, N,
+<a href=#119 id=119 data-nosnippet>119</a>//! fed by a particular producer clock. With this approach, we can move
+<a href=#120 id=120 data-nosnippet>120</a>//! `Producer` objects while still making them impossible to modify if N &gt; 0.
+<a href=#121 id=121 data-nosnippet>121</a>//!
+<a href=#122 id=122 data-nosnippet>122</a>//! The following sections will describe the implementation of this strategy.
+<a href=#123 id=123 data-nosnippet>123</a>//!
+<a href=#124 id=124 data-nosnippet>124</a>//! ## Tracking N at compile-time for 1:N clocks
+<a href=#125 id=125 data-nosnippet>125</a>//!
+<a href=#126 id=126 data-nosnippet>126</a>//! We have two specific goals. We need to both track the number of consumer
+<a href=#127 id=127 data-nosnippet>127</a>//! clocks, N, that are actively using a given producer clock. And we need to
+<a href=#128 id=128 data-nosnippet>128</a>//! restrict the producer clock API when N &gt; 0.
+<a href=#129 id=129 data-nosnippet>129</a>//!
+<a href=#130 id=130 data-nosnippet>130</a>//! ### A compile-time counter
+<a href=#131 id=131 data-nosnippet>131</a>//!
+<a href=#132 id=132 data-nosnippet>132</a>//! First, we need to develop some way to track the number of consumer clocks,
+<a href=#133 id=133 data-nosnippet>133</a>//! N, within the type system. To accomplish this, we need both a way to
+<a href=#134 id=134 data-nosnippet>134</a>//! represent N in the type system and a way to increase or decrease N when
+<a href=#135 id=135 data-nosnippet>135</a>//! making or breaking connections in the clock tree.
+<a href=#136 id=136 data-nosnippet>136</a>//!
+<a href=#137 id=137 data-nosnippet>137</a>//! To represent N, we can use type-level, [`Unsigned`] integers from the
+<a href=#138 id=138 data-nosnippet>138</a>//! [`typenum`] crate (i.e. [`U0`], [`U1`], etc). And we can use a type
+<a href=#139 id=139 data-nosnippet>139</a>//! *parameter*, `N`, to represent some unknown, type-level number.
+<a href=#140 id=140 data-nosnippet>140</a>//!
+<a href=#141 id=141 data-nosnippet>141</a>//! Next, we need a way to increase or decrease the type parameter `N`. The
+<a href=#142 id=142 data-nosnippet>142</a>//! [`typenum`] crate provides type aliases [`Add1`] and [`Sub1`] that map from
+<a href=#143 id=143 data-nosnippet>143</a>//! each [`Unsigned`] integer to its successor and predecessor types,
+<a href=#144 id=144 data-nosnippet>144</a>//! respectively. We can leverage these to create our own type with a counter
+<a href=#145 id=145 data-nosnippet>145</a>//! that we [`Increment`] or [`Decrement`] at compile-time. These two traits
+<a href=#146 id=146 data-nosnippet>146</a>//! form the foundation for our strategy for handling 1:N clocks in this module.
+<a href=#147 id=147 data-nosnippet>147</a>//!
+<a href=#148 id=148 data-nosnippet>148</a>//! ### The `Enabled` wrapper
+<a href=#149 id=149 data-nosnippet>149</a>//!
+<a href=#150 id=150 data-nosnippet>150</a>//! Our representation of a 1:N producer clock is [`Enabled&lt;T, N&gt;`], which is a
+<a href=#151 id=151 data-nosnippet>151</a>//! wrapper struct that pairs some *enabled* clock type `T` with a type `N`
+<a href=#152 id=152 data-nosnippet>152</a>//! representing a consumer count. The wrapper restricts access to the
+<a href=#153 id=153 data-nosnippet>153</a>//! underlying clock type, `T`, allowing us to selectively define methods when
+<a href=#154 id=154 data-nosnippet>154</a>//! `N = U0`, that is, when there are no consumers of a given producer clock.
+<a href=#155 id=155 data-nosnippet>155</a>//!
+<a href=#156 id=156 data-nosnippet>156</a>//! The [`Enabled`] type itself implements [`Increment`] and [`Decrement`] as
+<a href=#157 id=157 data-nosnippet>157</a>//! well, which allows type-level transformations to increment or decrement the
+<a href=#158 id=158 data-nosnippet>158</a>//! counter, e.g. `Enabled&lt;T, U0&gt;` to `Enabled&lt;T, U1&gt;`. Such transformations can
+<a href=#159 id=159 data-nosnippet>159</a>//! only be performed within the HAL; so users cannot change the consumer count
+<a href=#160 id=160 data-nosnippet>160</a>//! arbitrarily.
+<a href=#161 id=161 data-nosnippet>161</a>//!
+<a href=#162 id=162 data-nosnippet>162</a>//! ### Acting as a clock `Source`
+<a href=#163 id=163 data-nosnippet>163</a>//!
+<a href=#164 id=164 data-nosnippet>164</a>//! Finally, we need to define some generic interface for interacting with 1:N
+<a href=#165 id=165 data-nosnippet>165</a>//! producer clocks. However, when designing this interface, we need to be
+<a href=#166 id=166 data-nosnippet>166</a>//! careful not to lose information during type-level transformations.
+<a href=#167 id=167 data-nosnippet>167</a>//!
+<a href=#168 id=168 data-nosnippet>168</a>//! In particular, the `Enabled` counter type alone is not enough for proper
+<a href=#169 id=169 data-nosnippet>169</a>//! clock safety. If we used consumer `A` to `Increment` producer `P` from
+<a href=#170 id=170 data-nosnippet>170</a>//! `Enabled&lt;P, U0&gt;` to `Enabled&lt;P, U1&gt;`, but then used consumer `B` to
+<a href=#171 id=171 data-nosnippet>171</a>//! `Decrement` the producer back to `Enabled&lt;P, U0&gt;`, we would leave consumer
+<a href=#172 id=172 data-nosnippet>172</a>//! `A` dangling.
+<a href=#173 id=173 data-nosnippet>173</a>//!
+<a href=#174 id=174 data-nosnippet>174</a>//! To solve this problem, we need some way to guarantee that a given consumer
+<a href=#175 id=175 data-nosnippet>175</a>//! can only `Decrement` the same producer it `Increment`ed. Stated differently,
+<a href=#176 id=176 data-nosnippet>176</a>//! we need a way to track the identity of each consumer's clock source.
+<a href=#177 id=177 data-nosnippet>177</a>//!
+<a href=#178 id=178 data-nosnippet>178</a>//! The [`Source`] trait is designed for this purpose. It marks
+<a href=#179 id=179 data-nosnippet>179</a>//! [`Enabled&lt;T, N&gt;`] producer clocks, and it's associated type, [`Id`], is the
+<a href=#180 id=180 data-nosnippet>180</a>//! identity type that should be stored by consumers.
+<a href=#181 id=181 data-nosnippet>181</a>//!
+<a href=#182 id=182 data-nosnippet>182</a>//! Given that all implementers of `Source` are instances of `Enabled&lt;T, N&gt;`,
+<a href=#183 id=183 data-nosnippet>183</a>//! the naïve choice for [`Source::Id`] would be `T`. However, in a moment, we
+<a href=#184 id=184 data-nosnippet>184</a>//! will see why this choice is not ideal.
+<a href=#185 id=185 data-nosnippet>185</a>//!
+<a href=#186 id=186 data-nosnippet>186</a>//! ### `Id` types
+<a href=#187 id=187 data-nosnippet>187</a>//!
+<a href=#188 id=188 data-nosnippet>188</a>//! Many of the clock types in this module have additional type parameters that
+<a href=#189 id=189 data-nosnippet>189</a>//! track the clock's configuration. For instance, [`Xosc0&lt;M&gt;`] represents one
+<a href=#190 id=190 data-nosnippet>190</a>//! of the external crystal oscillators. Here, the type parameter `M` represents
+<a href=#191 id=191 data-nosnippet>191</a>//! the XOSC's [`Mode`](xosc::Mode), which can either be [`CrystalMode`] or
+<a href=#192 id=192 data-nosnippet>192</a>//! [`ClockMode`]. Accordingly, methods to adjust the crystal current, etc. are
+<a href=#193 id=193 data-nosnippet>193</a>//! only available on `Xosc0&lt;CrystalMode&gt;`.
+<a href=#194 id=194 data-nosnippet>194</a>//!
+<a href=#195 id=195 data-nosnippet>195</a>//! While these type parameters are important and necessary for configuration of
+<a href=#196 id=196 data-nosnippet>196</a>//! a given producer clock, they are not relevant to consumer clocks. A consumer
+<a href=#197 id=197 data-nosnippet>197</a>//! clock does not need to know or care which `Mode` the XOSC is using, but
+<a href=#198 id=198 data-nosnippet>198</a>//! it *does* need to track that its clock [`Source`] is XOSC0.
+<a href=#199 id=199 data-nosnippet>199</a>//!
+<a href=#200 id=200 data-nosnippet>200</a>//! From this, we can see that `Enabled&lt;Xosc0&lt;M&gt;, N&gt;` should not implement
+<a href=#201 id=201 data-nosnippet>201</a>//! `Source` with `Source::Id = Xosc0&lt;M&gt;`, because that would require consumers
+<a href=#202 id=202 data-nosnippet>202</a>//! to needlessly track the XOSC `Mode`.
+<a href=#203 id=203 data-nosnippet>203</a>//!
+<a href=#204 id=204 data-nosnippet>204</a>//! Instead, this module defines a series of `Id` types representing the
+<a href=#205 id=205 data-nosnippet>205</a>//! *identity* of a given clock, rather than the clock itself. This is like the
+<a href=#206 id=206 data-nosnippet>206</a>//! distinction between a passport and a person. A passport identifies a person,
+<a href=#207 id=207 data-nosnippet>207</a>//! regardless of changes to their clothes or hair. The `Id` types serve to
+<a href=#208 id=208 data-nosnippet>208</a>//! erase configuration information, representing only the clock's identity.
+<a href=#209 id=209 data-nosnippet>209</a>//!
+<a href=#210 id=210 data-nosnippet>210</a>//! For `Xosc0&lt;M&gt;`, the corresponding `Id` type is [`Xosc0Id`]. Thus,
+<a href=#211 id=211 data-nosnippet>211</a>//! `Enabled&lt;Xosc0&lt;M&gt;, N&gt;` implements `Source` with `Source::Id = Xosc0Id`.
+<a href=#212 id=212 data-nosnippet>212</a>//!
+<a href=#213 id=213 data-nosnippet>213</a>//! ## Notes on memory safety
+<a href=#214 id=214 data-nosnippet>214</a>//!
+<a href=#215 id=215 data-nosnippet>215</a>//! ### Register interfaces
+<a href=#216 id=216 data-nosnippet>216</a>//!
+<a href=#217 id=217 data-nosnippet>217</a>//! Although HAL users see `Token` types as merely opaque objects, internally
+<a href=#218 id=218 data-nosnippet>218</a>//! they serve a dual purpose as the primary register interface to control the
+<a href=#219 id=219 data-nosnippet>219</a>//! corresponding clock. Moreover, they also fundamentally restructure the way
+<a href=#220 id=220 data-nosnippet>220</a>//! registers are accessed relative to the [PAC].
+<a href=#221 id=221 data-nosnippet>221</a>//!
+<a href=#222 id=222 data-nosnippet>222</a>//! Each of the four PAC clocking structs ([`OSCCTRL`], [`OSC32KCTRL`], [`GCLK`]
+<a href=#223 id=223 data-nosnippet>223</a>//! and [`MCLK`]) is a singleton object that controls a set of MMIO registers.
+<a href=#224 id=224 data-nosnippet>224</a>//! It is impossible to create two instances of any PAC object without `unsafe`.
+<a href=#225 id=225 data-nosnippet>225</a>//! However, each object controls a large set of registers that can be further
+<a href=#226 id=226 data-nosnippet>226</a>//! sub-divided into smaller sets for individual clocks. For example, the
+<a href=#227 id=227 data-nosnippet>227</a>//! [`GCLK`] object controls registers for 12 different clock generators and 48
+<a href=#228 id=228 data-nosnippet>228</a>//! peripheral channel clocks.
+<a href=#229 id=229 data-nosnippet>229</a>//!
+<a href=#230 id=230 data-nosnippet>230</a>//! `Token` types serve to break up the large PAC objects into smaller,
+<a href=#231 id=231 data-nosnippet>231</a>//! more-targetted pieces. And in the process, they also remove the PAC objects'
+<a href=#232 id=232 data-nosnippet>232</a>//! [interior mutability]. But this is only possible because each `Token` is
+<a href=#233 id=233 data-nosnippet>233</a>//! *also* a singleton, and because individual clocks are configured through
+<a href=#234 id=234 data-nosnippet>234</a>//! *mutually exclusive* sets of registers.
+<a href=#235 id=235 data-nosnippet>235</a>//!
+<a href=#236 id=236 data-nosnippet>236</a>//! ### Bus clocks
+<a href=#237 id=237 data-nosnippet>237</a>//!
+<a href=#238 id=238 data-nosnippet>238</a>//! Bus clocks are fundamentally different from the other clock types in this
+<a href=#239 id=239 data-nosnippet>239</a>//! module, because they do not use mutually exclusive registers for
+<a href=#240 id=240 data-nosnippet>240</a>//! configuration. For instance, the registers that control [`Dpll0`] are
+<a href=#241 id=241 data-nosnippet>241</a>//! mutually exclusive to those that control [`Dpll1`], but `ApbClk&lt;Sercom0&gt;`
+<a href=#242 id=242 data-nosnippet>242</a>//! and `ApbClk&lt;Sercom1&gt;` share a single register.
+<a href=#243 id=243 data-nosnippet>243</a>//!
+<a href=#244 id=244 data-nosnippet>244</a>//! This presents a challenge for memory safety, because we need some way to
+<a href=#245 id=245 data-nosnippet>245</a>//! guarantee that there are no data races. For example, if both
+<a href=#246 id=246 data-nosnippet>246</a>//! `ApbClk&lt;Sercom0&gt;` and `ApbClk&lt;Sercom1&gt;` tried to modify the `APBAMASK`
+<a href=#247 id=247 data-nosnippet>247</a>//! register from two different execution contexts, a read/modify/write
+<a href=#248 id=248 data-nosnippet>248</a>//! operation could be preempted, leading to memory corruption.
+<a href=#249 id=249 data-nosnippet>249</a>//!
+<a href=#250 id=250 data-nosnippet>250</a>//! To prevent data races when controlling bus clocks, we introduce two new
+<a href=#251 id=251 data-nosnippet>251</a>//! types to mediate access to the shared registers. For [`AhbClk`]s, this is
+<a href=#252 id=252 data-nosnippet>252</a>//! the [`Ahb`] type; and for [`ApbClk`]s, this is the [`Apb`] type. In a sense,
+<a href=#253 id=253 data-nosnippet>253</a>//! the `Ahb` and `Apb` types represent the actual corresponding buses. Thus,
+<a href=#254 id=254 data-nosnippet>254</a>//! enabling an APB clock by converting an [`ApbToken`] into an `ApbClk`
+<a href=#255 id=255 data-nosnippet>255</a>//! requires exclusive access to the `Apb` in the form of `&amp;mut Apb`.
+<a href=#256 id=256 data-nosnippet>256</a>//!
+<a href=#257 id=257 data-nosnippet>257</a>//! ## Getting started
+<a href=#258 id=258 data-nosnippet>258</a>//!
+<a href=#259 id=259 data-nosnippet>259</a>//! To set up a clock tree, start by trading the [PAC](crate::pac)-level
+<a href=#260 id=260 data-nosnippet>260</a>//! clocking structs for their HAL equivalents. Right now, the only way to do so
+<a href=#261 id=261 data-nosnippet>261</a>//! safely is using the [`clock_system_at_reset`] function, which assumes all
+<a href=#262 id=262 data-nosnippet>262</a>//! clocks are in their default state at power-on reset. If this is not the
+<a href=#263 id=263 data-nosnippet>263</a>//! case, because, for example, a bootloader has modified the clocks, then you
+<a href=#264 id=264 data-nosnippet>264</a>//! may need to manually create the matching configuration using `unsafe` code.
+<a href=#265 id=265 data-nosnippet>265</a>//!
+<a href=#266 id=266 data-nosnippet>266</a>//! ```no_run
+<a href=#267 id=267 data-nosnippet>267</a>//! use atsamd_hal::clock::v2::clock_system_at_reset;
+<a href=#268 id=268 data-nosnippet>268</a>//! use atsamd_hal::pac::Peripherals;
+<a href=#269 id=269 data-nosnippet>269</a>//! let mut pac = Peripherals::take().unwrap();
+<a href=#270 id=270 data-nosnippet>270</a>//! let (buses, clocks, tokens) = clock_system_at_reset(
+<a href=#271 id=271 data-nosnippet>271</a>//!     pac.OSCCTRL,
+<a href=#272 id=272 data-nosnippet>272</a>//!     pac.OSC32KCTRL,
+<a href=#273 id=273 data-nosnippet>273</a>//!     pac.GCLK,
+<a href=#274 id=274 data-nosnippet>274</a>//!     pac.MCLK,
+<a href=#275 id=275 data-nosnippet>275</a>//!     &amp;mut pac.NVMCTRL,
+<a href=#276 id=276 data-nosnippet>276</a>//! );
+<a href=#277 id=277 data-nosnippet>277</a>//! ```
+<a href=#278 id=278 data-nosnippet>278</a>//!
+<a href=#279 id=279 data-nosnippet>279</a>//! At this point, you may notice that the function returned three different
+<a href=#280 id=280 data-nosnippet>280</a>//! objects, the [`Buses`], [`Clocks`] and [`Tokens`].
+<a href=#281 id=281 data-nosnippet>281</a>//!
+<a href=#282 id=282 data-nosnippet>282</a>//! The [`Buses`] struct contains the [`Ahb`] and [`Apb`] objects, which
+<a href=#283 id=283 data-nosnippet>283</a>//! represent the corresponding AHB and APB buses. See the [notes on memory
+<a href=#284 id=284 data-nosnippet>284</a>//! safety](self#notes-on-memory-safety) for more details on these types.
+<a href=#285 id=285 data-nosnippet>285</a>//!
+<a href=#286 id=286 data-nosnippet>286</a>//! The [`Clocks`] struct contains all of the clocks that are enabled and
+<a href=#287 id=287 data-nosnippet>287</a>//! running at power-on reset, specifically:
+<a href=#288 id=288 data-nosnippet>288</a>//! - All of the [`AhbClks`]
+<a href=#289 id=289 data-nosnippet>289</a>//! - Some of the [`ApbClks`]
+<a href=#290 id=290 data-nosnippet>290</a>//! - The 48 MHz [`Dfll`], running in open-loop mode, represented as as
+<a href=#291 id=291 data-nosnippet>291</a>//!   `Enabled&lt;Dfll, U1&gt;`. `N = U1` here because [`Gclk0`] consumes it. See
+<a href=#292 id=292 data-nosnippet>292</a>//!   [above](self#tracking-n-at-compile-time-for-1n-clocks) for details on
+<a href=#293 id=293 data-nosnippet>293</a>//!   [`Enabled&lt;T, N&gt;`].
+<a href=#294 id=294 data-nosnippet>294</a>//! - [`Gclk0`], sourced by the `Dfll` and represented as
+<a href=#295 id=295 data-nosnippet>295</a>//!   `Enabled&lt;Gclk0&lt;DfllId&gt;, U1&gt;`. Note the use of [`DfllId`] as an [`Id`
+<a href=#296 id=296 data-nosnippet>296</a>//!   type](self#id-types) here. Although `Gclk0` is not consumed by any clock
+<a href=#297 id=297 data-nosnippet>297</a>//!   represented in this module, it *is* consumed by the processor's main
+<a href=#298 id=298 data-nosnippet>298</a>//!   clock. We represent this by setting `N = U1`, which we use to restrict the
+<a href=#299 id=299 data-nosnippet>299</a>//!   available API. Specifically, [`EnabledGclk0`] has special methods not
+<a href=#300 id=300 data-nosnippet>300</a>//!   available to other [`Gclk`]s.
+<a href=#301 id=301 data-nosnippet>301</a>//! - The [`OscUlp32kBase`] clock, which can act as a [`Source`] for the
+<a href=#302 id=302 data-nosnippet>302</a>//!   [`OscUlp1k`] and [`OscUlp32k`] clocks. It has no consumers at power-on
+<a href=#303 id=303 data-nosnippet>303</a>//!   reset, so it is represented as `Enabled&lt;OscUlp32kBase, U0&gt;`. However, it
+<a href=#304 id=304 data-nosnippet>304</a>//!   can never be disabled, so we provide no `.disable()` method.
+<a href=#305 id=305 data-nosnippet>305</a>//!
+<a href=#306 id=306 data-nosnippet>306</a>//! The [`Tokens`] struct contains all of the available `Token`s, which
+<a href=#307 id=307 data-nosnippet>307</a>//! [represent clocks that are disabled](self#clock-state-machines) at power-on
+<a href=#308 id=308 data-nosnippet>308</a>//! reset. Each `Token` can be exchanged for a corresponding clock object.
+<a href=#309 id=309 data-nosnippet>309</a>//!
+<a href=#310 id=310 data-nosnippet>310</a>//! ## Example clock tree
+<a href=#311 id=311 data-nosnippet>311</a>//!
+<a href=#312 id=312 data-nosnippet>312</a>//! Finally, we will walk through the creation of a simple clock tree to
+<a href=#313 id=313 data-nosnippet>313</a>//! illustrate some of the remaining concepts inherent to this module.
+<a href=#314 id=314 data-nosnippet>314</a>//!
+<a href=#315 id=315 data-nosnippet>315</a>//! Starting from the previous snippet, we have the [`Buses`], [`Clocks`] and
+<a href=#316 id=316 data-nosnippet>316</a>//! [`Tokens`] to work with, and our clock tree at power-on reset looks like
+<a href=#317 id=317 data-nosnippet>317</a>//! this.
+<a href=#318 id=318 data-nosnippet>318</a>//!
+<a href=#319 id=319 data-nosnippet>319</a>//! ```text
+<a href=#320 id=320 data-nosnippet>320</a>//! DFLL (48 MHz)
+<a href=#321 id=321 data-nosnippet>321</a>//! └── GCLK0 (48 MHz)
+<a href=#322 id=322 data-nosnippet>322</a>//!     └── Main clock (48 MHz)
+<a href=#323 id=323 data-nosnippet>323</a>//! ```
+<a href=#324 id=324 data-nosnippet>324</a>//!
+<a href=#325 id=325 data-nosnippet>325</a>//! Our goal will be a clock tree that looks like this:
+<a href=#326 id=326 data-nosnippet>326</a>//!
+<a href=#327 id=327 data-nosnippet>327</a>//! ```text
+<a href=#328 id=328 data-nosnippet>328</a>//! XOSC0 (8 MHz)
+<a href=#329 id=329 data-nosnippet>329</a>//! └── DPLL0 (100 MHz)
+<a href=#330 id=330 data-nosnippet>330</a>//!     └── GCLK0 (100 MHz)
+<a href=#331 id=331 data-nosnippet>331</a>//!         ├── Main clock (100 MHz)
+<a href=#332 id=332 data-nosnippet>332</a>//!         ├── SERCOM0 peripheral clock
+<a href=#333 id=333 data-nosnippet>333</a>//!         └── Output to GPIO pin
+<a href=#334 id=334 data-nosnippet>334</a>//! ```
+<a href=#335 id=335 data-nosnippet>335</a>//!
+<a href=#336 id=336 data-nosnippet>336</a>//! We will use an external crystal oscillator running at 8 MHz to feed a DPLL,
+<a href=#337 id=337 data-nosnippet>337</a>//! which will increase the clock frequency to 100 MHz. Then, we will
+<a href=#338 id=338 data-nosnippet>338</a>//! reconfigure GCLK0 to use the 100 MHz DPLL clock instead of the 48 MHz DFLL
+<a href=#339 id=339 data-nosnippet>339</a>//! clock.
+<a href=#340 id=340 data-nosnippet>340</a>//!
+<a href=#341 id=341 data-nosnippet>341</a>//! First, let's import some of the necessary types. We will see what each type
+<a href=#342 id=342 data-nosnippet>342</a>//! represents in turn.
+<a href=#343 id=343 data-nosnippet>343</a>//!
+<a href=#344 id=344 data-nosnippet>344</a>//! ```no_run
+<a href=#345 id=345 data-nosnippet>345</a>//! use atsamd_hal::{
+<a href=#346 id=346 data-nosnippet>346</a>//!     clock::v2::{
+<a href=#347 id=347 data-nosnippet>347</a>//!         clock_system_at_reset,
+<a href=#348 id=348 data-nosnippet>348</a>//!         dpll::Dpll,
+<a href=#349 id=349 data-nosnippet>349</a>//!         pclk::Pclk,
+<a href=#350 id=350 data-nosnippet>350</a>//!         xosc::Xosc,
+<a href=#351 id=351 data-nosnippet>351</a>//!     },
+<a href=#352 id=352 data-nosnippet>352</a>//!     gpio::Pins,
+<a href=#353 id=353 data-nosnippet>353</a>//!     pac::Peripherals,
+<a href=#354 id=354 data-nosnippet>354</a>//!     time::U32Ext,
+<a href=#355 id=355 data-nosnippet>355</a>//! };
+<a href=#356 id=356 data-nosnippet>356</a>//! ```
+<a href=#357 id=357 data-nosnippet>357</a>//!
+<a href=#358 id=358 data-nosnippet>358</a>//! To create an instance of [`Xosc`], we will first need to identify which of
+<a href=#359 id=359 data-nosnippet>359</a>//! the two XOSC clocks we will use. Suppose an external crystal is attached to
+<a href=#360 id=360 data-nosnippet>360</a>//! pins `PA14` and `PA15`. These pins feed the XOSC0 clock, so we will want to
+<a href=#361 id=361 data-nosnippet>361</a>//! create an instance of [`Xosc0`]. Note that `Xosc0&lt;M&gt;` is merely an alias for
+<a href=#362 id=362 data-nosnippet>362</a>//! `Xosc&lt;Xosc0Id, M&gt;`. Here, [`Xosc0Id`] represents the
+<a href=#363 id=363 data-nosnippet>363</a>//! [*identity*](self#id-types) of the XOSC0 clock, rather than the clock
+<a href=#364 id=364 data-nosnippet>364</a>//! itself, and `M` represents the XOSC [`Mode`](xosc::Mode).
+<a href=#365 id=365 data-nosnippet>365</a>//!
+<a href=#366 id=366 data-nosnippet>366</a>//! Next, we access the [`Tokens`] struct to extract the corresponding
+<a href=#367 id=367 data-nosnippet>367</a>//! [`XoscToken`] for XOSC0, and we trade the PAC `PORT` struct for the
+<a href=#368 id=368 data-nosnippet>368</a>//! [`gpio::Pins`] struct to access the GPIO pins. We can then call
+<a href=#369 id=369 data-nosnippet>369</a>//! [`Xosc::from_crystal`] to trade the token and [`Pin`]s to yield an instance
+<a href=#370 id=370 data-nosnippet>370</a>//! of [`Xosc0`]. In doing so, we also provide the oscillator frequency.
+<a href=#371 id=371 data-nosnippet>371</a>//!
+<a href=#372 id=372 data-nosnippet>372</a>//! Finally, we can chain a call to the [`Xosc::enable`] method to enable the
+<a href=#373 id=373 data-nosnippet>373</a>//! XOSC and return an instance of [`EnabledXosc0&lt;M, N&gt;`], which is simply an
+<a href=#374 id=374 data-nosnippet>374</a>//! alias for `Enabled&lt;Xosc0&lt;M&gt;, N&gt;`. In this case, we get
+<a href=#375 id=375 data-nosnippet>375</a>//! `EnabledXosc0&lt;CrystalMode, U0&gt;`.
+<a href=#376 id=376 data-nosnippet>376</a>//!
+<a href=#377 id=377 data-nosnippet>377</a>//! ```no_run
+<a href=#378 id=378 data-nosnippet>378</a>//! # use atsamd_hal::{
+<a href=#379 id=379 data-nosnippet>379</a>//! #     clock::v2::{
+<a href=#380 id=380 data-nosnippet>380</a>//! #         clock_system_at_reset,
+<a href=#381 id=381 data-nosnippet>381</a>//! #         xosc::Xosc,
+<a href=#382 id=382 data-nosnippet>382</a>//! #     },
+<a href=#383 id=383 data-nosnippet>383</a>//! #     gpio::Pins,
+<a href=#384 id=384 data-nosnippet>384</a>//! #     pac::Peripherals,
+<a href=#385 id=385 data-nosnippet>385</a>//! #     time::U32Ext,
+<a href=#386 id=386 data-nosnippet>386</a>//! # };
+<a href=#387 id=387 data-nosnippet>387</a>//! # let mut pac = Peripherals::take().unwrap();
+<a href=#388 id=388 data-nosnippet>388</a>//! # let (buses, clocks, tokens) = clock_system_at_reset(
+<a href=#389 id=389 data-nosnippet>389</a>//! #     pac.OSCCTRL,
+<a href=#390 id=390 data-nosnippet>390</a>//! #     pac.OSC32KCTRL,
+<a href=#391 id=391 data-nosnippet>391</a>//! #     pac.GCLK,
+<a href=#392 id=392 data-nosnippet>392</a>//! #     pac.MCLK,
+<a href=#393 id=393 data-nosnippet>393</a>//! #     &amp;mut pac.NVMCTRL,
+<a href=#394 id=394 data-nosnippet>394</a>//! # );
+<a href=#395 id=395 data-nosnippet>395</a>//! let pins = Pins::new(pac.PORT);
+<a href=#396 id=396 data-nosnippet>396</a>//! let xosc0 = Xosc::from_crystal(
+<a href=#397 id=397 data-nosnippet>397</a>//!     tokens.xosc0,
+<a href=#398 id=398 data-nosnippet>398</a>//!     pins.pa14,
+<a href=#399 id=399 data-nosnippet>399</a>//!     pins.pa15,
+<a href=#400 id=400 data-nosnippet>400</a>//!     8.mhz(),
+<a href=#401 id=401 data-nosnippet>401</a>//! ).enable();
+<a href=#402 id=402 data-nosnippet>402</a>//! ```
+<a href=#403 id=403 data-nosnippet>403</a>//!
+<a href=#404 id=404 data-nosnippet>404</a>//! Next, we want to use a DPLL to multiply the 8 MHz crystal clock up to 100
+<a href=#405 id=405 data-nosnippet>405</a>//! MHz. Once again, we need to decide between two instances of a clock, because
+<a href=#406 id=406 data-nosnippet>406</a>//! each chip has two [`Dpll`]s. This time, however, our decision between
+<a href=#407 id=407 data-nosnippet>407</a>//! [`Dpll0`] and [`Dpll1`] is arbitrary.
+<a href=#408 id=408 data-nosnippet>408</a>//!
+<a href=#409 id=409 data-nosnippet>409</a>//! Also note that, like before, `Dpll0&lt;I&gt;` and `Dpll1&lt;I&gt;` are aliases for
+<a href=#410 id=410 data-nosnippet>410</a>//! `Dpll&lt;Dpll0Id, I&gt;` and `Dpll&lt;Dpll1Id, I&gt;`. [`Dpll0Id`] and [`Dpll1Id`]
+<a href=#411 id=411 data-nosnippet>411</a>//! represent the *identity* of the respective DPLL, while `I` represents the
+<a href=#412 id=412 data-nosnippet>412</a>//! [`Id` type](self#id-types) for the [`Source`] driving the DPLL. In this
+<a href=#413 id=413 data-nosnippet>413</a>//! particular case, we aim to create an instance of `Dpll0&lt;Xosc0Id&gt;`.
+<a href=#414 id=414 data-nosnippet>414</a>//!
+<a href=#415 id=415 data-nosnippet>415</a>//! Only certain clocks can drive the DPLL, so `I` is constrained by the
+<a href=#416 id=416 data-nosnippet>416</a>//! [`DpllSourceId`] trait. Specifically, only the [`Xosc0Id`], [`Xosc1Id`],
+<a href=#417 id=417 data-nosnippet>417</a>//! [`Xosc32kId`] and [`GclkId`] types implement this trait.
+<a href=#418 id=418 data-nosnippet>418</a>//!
+<a href=#419 id=419 data-nosnippet>419</a>//! As before, we access the [`Tokens`] struct and use the corresponding
+<a href=#420 id=420 data-nosnippet>420</a>//! [`DpllToken`] when creating an instance of `Dpll`. However, unlike before,
+<a href=#421 id=421 data-nosnippet>421</a>//! we are creating a new clock-tree relationship that must be tracked by the
+<a href=#422 id=422 data-nosnippet>422</a>//! type system. Because DPLL0 will now consume XOSC0, we must [`Increment`]
+<a href=#423 id=423 data-nosnippet>423</a>//! the [`Enabled`] counter for [`EnabledXosc0`].
+<a href=#424 id=424 data-nosnippet>424</a>//!
+<a href=#425 id=425 data-nosnippet>425</a>//! Thus, to create an instance of `Dpll0&lt;XoscId0&gt;`, we must provide the
+<a href=#426 id=426 data-nosnippet>426</a>//! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
+<a href=#427 id=427 data-nosnippet>427</a>//! The `Dpll::from_xosc` method takes ownership of the `EnabledXosc0` and
+<a href=#428 id=428 data-nosnippet>428</a>//! returns it with this modified type parameter.
+<a href=#429 id=429 data-nosnippet>429</a>//!
+<a href=#430 id=430 data-nosnippet>430</a>//! This is the essence of clock safety in this module. Once the counter type
+<a href=#431 id=431 data-nosnippet>431</a>//! has been incremeneted to `U1`, the `EnabledXosc0` can no longer be modified
+<a href=#432 id=432 data-nosnippet>432</a>//! or disabled. All further code can guarantee this invariant is upheld. To
+<a href=#433 id=433 data-nosnippet>433</a>//! modify the `EnabledXosc0`, we would first have to use `Dpll::free_source` to
+<a href=#434 id=434 data-nosnippet>434</a>//! disable the DPLL and [`Decrement`] the counter back to `U0`.
+<a href=#435 id=435 data-nosnippet>435</a>//!
+<a href=#436 id=436 data-nosnippet>436</a>//! ```no_run
+<a href=#437 id=437 data-nosnippet>437</a>//! # use atsamd_hal::{
+<a href=#438 id=438 data-nosnippet>438</a>//! #     clock::v2::{
+<a href=#439 id=439 data-nosnippet>439</a>//! #         clock_system_at_reset,
+<a href=#440 id=440 data-nosnippet>440</a>//! #         dpll::Dpll,
+<a href=#441 id=441 data-nosnippet>441</a>//! #         xosc::Xosc,
+<a href=#442 id=442 data-nosnippet>442</a>//! #     },
+<a href=#443 id=443 data-nosnippet>443</a>//! #     gpio::Pins,
+<a href=#444 id=444 data-nosnippet>444</a>//! #     pac::Peripherals,
+<a href=#445 id=445 data-nosnippet>445</a>//! #     time::U32Ext,
+<a href=#446 id=446 data-nosnippet>446</a>//! # };
+<a href=#447 id=447 data-nosnippet>447</a>//! # let mut pac = Peripherals::take().unwrap();
+<a href=#448 id=448 data-nosnippet>448</a>//! # let (buses, clocks, tokens) = clock_system_at_reset(
+<a href=#449 id=449 data-nosnippet>449</a>//! #     pac.OSCCTRL,
+<a href=#450 id=450 data-nosnippet>450</a>//! #     pac.OSC32KCTRL,
+<a href=#451 id=451 data-nosnippet>451</a>//! #     pac.GCLK,
+<a href=#452 id=452 data-nosnippet>452</a>//! #     pac.MCLK,
+<a href=#453 id=453 data-nosnippet>453</a>//! #     &amp;mut pac.NVMCTRL,
+<a href=#454 id=454 data-nosnippet>454</a>//! # );
+<a href=#455 id=455 data-nosnippet>455</a>//! # let pins = Pins::new(pac.PORT);
+<a href=#456 id=456 data-nosnippet>456</a>//! # let xosc0 = Xosc::from_crystal(
+<a href=#457 id=457 data-nosnippet>457</a>//! #     tokens.xosc0,
+<a href=#458 id=458 data-nosnippet>458</a>//! #     pins.pa14,
+<a href=#459 id=459 data-nosnippet>459</a>//! #     pins.pa15,
+<a href=#460 id=460 data-nosnippet>460</a>//! #     8.mhz(),
+<a href=#461 id=461 data-nosnippet>461</a>//! # ).enable();
+<a href=#462 id=462 data-nosnippet>462</a>//! let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<a href=#463 id=463 data-nosnippet>463</a>//! ```
+<a href=#464 id=464 data-nosnippet>464</a>//! Next, we set the DPLL pre-divider and loop divider. We must pre-divide
+<a href=#465 id=465 data-nosnippet>465</a>//! the XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid
+<a href=#466 id=466 data-nosnippet>466</a>//! input frequency range for the DPLL. Then, we set the DPLL loop divider, so
+<a href=#467 id=467 data-nosnippet>467</a>//! that it will multiply the 2 MHz clock by 50 for a 100 MHz output. We do not
+<a href=#468 id=468 data-nosnippet>468</a>//! need fractional mutiplication here, so the fractional loop divider is zero.
+<a href=#469 id=469 data-nosnippet>469</a>//! Finally, we can enable the `Dpll`, yielding an instance of
+<a href=#470 id=470 data-nosnippet>470</a>//! `EnabledDpll0&lt;XoscId0&gt;`.
+<a href=#471 id=471 data-nosnippet>471</a>//!
+<a href=#472 id=472 data-nosnippet>472</a>//! ```no_run
+<a href=#473 id=473 data-nosnippet>473</a>//! # use atsamd_hal::{
+<a href=#474 id=474 data-nosnippet>474</a>//! #     clock::v2::{
+<a href=#475 id=475 data-nosnippet>475</a>//! #         clock_system_at_reset,
+<a href=#476 id=476 data-nosnippet>476</a>//! #         dpll::Dpll,
+<a href=#477 id=477 data-nosnippet>477</a>//! #         xosc::Xosc,
+<a href=#478 id=478 data-nosnippet>478</a>//! #     },
+<a href=#479 id=479 data-nosnippet>479</a>//! #     gpio::Pins,
+<a href=#480 id=480 data-nosnippet>480</a>//! #     pac::Peripherals,
+<a href=#481 id=481 data-nosnippet>481</a>//! #     time::U32Ext,
+<a href=#482 id=482 data-nosnippet>482</a>//! # };
+<a href=#483 id=483 data-nosnippet>483</a>//! # let mut pac = Peripherals::take().unwrap();
+<a href=#484 id=484 data-nosnippet>484</a>//! # let (buses, clocks, tokens) = clock_system_at_reset(
+<a href=#485 id=485 data-nosnippet>485</a>//! #     pac.OSCCTRL,
+<a href=#486 id=486 data-nosnippet>486</a>//! #     pac.OSC32KCTRL,
+<a href=#487 id=487 data-nosnippet>487</a>//! #     pac.GCLK,
+<a href=#488 id=488 data-nosnippet>488</a>//! #     pac.MCLK,
+<a href=#489 id=489 data-nosnippet>489</a>//! #     &amp;mut pac.NVMCTRL,
+<a href=#490 id=490 data-nosnippet>490</a>//! # );
+<a href=#491 id=491 data-nosnippet>491</a>//! # let pins = Pins::new(pac.PORT);
+<a href=#492 id=492 data-nosnippet>492</a>//! # let xosc0 = Xosc::from_crystal(
+<a href=#493 id=493 data-nosnippet>493</a>//! #     tokens.xosc0,
+<a href=#494 id=494 data-nosnippet>494</a>//! #     pins.pa14,
+<a href=#495 id=495 data-nosnippet>495</a>//! #     pins.pa15,
+<a href=#496 id=496 data-nosnippet>496</a>//! #     8.mhz(),
+<a href=#497 id=497 data-nosnippet>497</a>//! # ).enable();
+<a href=#498 id=498 data-nosnippet>498</a>//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<a href=#499 id=499 data-nosnippet>499</a>//! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+<a href=#500 id=500 data-nosnippet>500</a>//! ```
+<a href=#501 id=501 data-nosnippet>501</a>//!
+<a href=#502 id=502 data-nosnippet>502</a>//! So far, our clock tree looks like this
+<a href=#503 id=503 data-nosnippet>503</a>//!
+<a href=#504 id=504 data-nosnippet>504</a>//! ```text
+<a href=#505 id=505 data-nosnippet>505</a>//! DFLL (48 MHz)
+<a href=#506 id=506 data-nosnippet>506</a>//! └── GCLK0 (48 MHz)
+<a href=#507 id=507 data-nosnippet>507</a>//!     └── Main clock (48 MHz)
+<a href=#508 id=508 data-nosnippet>508</a>//!
+<a href=#509 id=509 data-nosnippet>509</a>//! XOSC0 (8 MHz)
+<a href=#510 id=510 data-nosnippet>510</a>//! └── DPLL0 (100 MHz)
+<a href=#511 id=511 data-nosnippet>511</a>//! ```
+<a href=#512 id=512 data-nosnippet>512</a>//!
+<a href=#513 id=513 data-nosnippet>513</a>//! Our next task will be to swap GCLK0 from the 48 MHz DFLL to the 100 MHz
+<a href=#514 id=514 data-nosnippet>514</a>//! DPLL. To do that, we will use the special [`swap_sources`] method on
+<a href=#515 id=515 data-nosnippet>515</a>//! [`EnabledGclk0`] to change the base clock without disabling GCLK0 or the
+<a href=#516 id=516 data-nosnippet>516</a>//! main clock.
+<a href=#517 id=517 data-nosnippet>517</a>//!
+<a href=#518 id=518 data-nosnippet>518</a>//! This time we will be modifying two [`Enabled`] counters simultaneously.
+<a href=#519 id=519 data-nosnippet>519</a>//! We will [`Decrement`] the [`EnabledDfll`] count from `U1` to `U0`, and
+<a href=#520 id=520 data-nosnippet>520</a>//! we will [`Increment`] the [`EnabledDpll0`] count from `U0` to `U1`.
+<a href=#521 id=521 data-nosnippet>521</a>//! Again, we need to provide both the DFLL and DPLL clocks, so that their
+<a href=#522 id=522 data-nosnippet>522</a>//! type parameters can be changed.
+<a href=#523 id=523 data-nosnippet>523</a>//!
+<a href=#524 id=524 data-nosnippet>524</a>//! ```no_run
+<a href=#525 id=525 data-nosnippet>525</a>//! # use atsamd_hal::{
+<a href=#526 id=526 data-nosnippet>526</a>//! #     clock::v2::{
+<a href=#527 id=527 data-nosnippet>527</a>//! #         clock_system_at_reset,
+<a href=#528 id=528 data-nosnippet>528</a>//! #         dpll::Dpll,
+<a href=#529 id=529 data-nosnippet>529</a>//! #         xosc::Xosc,
+<a href=#530 id=530 data-nosnippet>530</a>//! #     },
+<a href=#531 id=531 data-nosnippet>531</a>//! #     gpio::Pins,
+<a href=#532 id=532 data-nosnippet>532</a>//! #     pac::Peripherals,
+<a href=#533 id=533 data-nosnippet>533</a>//! #     time::U32Ext,
+<a href=#534 id=534 data-nosnippet>534</a>//! # };
+<a href=#535 id=535 data-nosnippet>535</a>//! # let mut pac = Peripherals::take().unwrap();
+<a href=#536 id=536 data-nosnippet>536</a>//! # let (buses, clocks, tokens) = clock_system_at_reset(
+<a href=#537 id=537 data-nosnippet>537</a>//! #     pac.OSCCTRL,
+<a href=#538 id=538 data-nosnippet>538</a>//! #     pac.OSC32KCTRL,
+<a href=#539 id=539 data-nosnippet>539</a>//! #     pac.GCLK,
+<a href=#540 id=540 data-nosnippet>540</a>//! #     pac.MCLK,
+<a href=#541 id=541 data-nosnippet>541</a>//! #     &amp;mut pac.NVMCTRL,
+<a href=#542 id=542 data-nosnippet>542</a>//! # );
+<a href=#543 id=543 data-nosnippet>543</a>//! # let pins = Pins::new(pac.PORT);
+<a href=#544 id=544 data-nosnippet>544</a>//! # let xosc0 = Xosc::from_crystal(
+<a href=#545 id=545 data-nosnippet>545</a>//! #     tokens.xosc0,
+<a href=#546 id=546 data-nosnippet>546</a>//! #     pins.pa14,
+<a href=#547 id=547 data-nosnippet>547</a>//! #     pins.pa15,
+<a href=#548 id=548 data-nosnippet>548</a>//! #     8.mhz(),
+<a href=#549 id=549 data-nosnippet>549</a>//! # ).enable();
+<a href=#550 id=550 data-nosnippet>550</a>//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<a href=#551 id=551 data-nosnippet>551</a>//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+<a href=#552 id=552 data-nosnippet>552</a>//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
+<a href=#553 id=553 data-nosnippet>553</a>//! ```
+<a href=#554 id=554 data-nosnippet>554</a>//!
+<a href=#555 id=555 data-nosnippet>555</a>//! At this point, the DFLL is completely unused, so it can be disbled and
+<a href=#556 id=556 data-nosnippet>556</a>//! deconstructed, leaving only the [`DfllToken`].
+<a href=#557 id=557 data-nosnippet>557</a>//!
+<a href=#558 id=558 data-nosnippet>558</a>//! ```no_run
+<a href=#559 id=559 data-nosnippet>559</a>//! # use atsamd_hal::{
+<a href=#560 id=560 data-nosnippet>560</a>//! #     clock::v2::{
+<a href=#561 id=561 data-nosnippet>561</a>//! #         clock_system_at_reset,
+<a href=#562 id=562 data-nosnippet>562</a>//! #         dpll::Dpll,
+<a href=#563 id=563 data-nosnippet>563</a>//! #         xosc::Xosc,
+<a href=#564 id=564 data-nosnippet>564</a>//! #     },
+<a href=#565 id=565 data-nosnippet>565</a>//! #     gpio::Pins,
+<a href=#566 id=566 data-nosnippet>566</a>//! #     pac::Peripherals,
+<a href=#567 id=567 data-nosnippet>567</a>//! #     time::U32Ext,
+<a href=#568 id=568 data-nosnippet>568</a>//! # };
+<a href=#569 id=569 data-nosnippet>569</a>//! # let mut pac = Peripherals::take().unwrap();
+<a href=#570 id=570 data-nosnippet>570</a>//! # let (buses, clocks, tokens) = clock_system_at_reset(
+<a href=#571 id=571 data-nosnippet>571</a>//! #     pac.OSCCTRL,
+<a href=#572 id=572 data-nosnippet>572</a>//! #     pac.OSC32KCTRL,
+<a href=#573 id=573 data-nosnippet>573</a>//! #     pac.GCLK,
+<a href=#574 id=574 data-nosnippet>574</a>//! #     pac.MCLK,
+<a href=#575 id=575 data-nosnippet>575</a>//! #     &amp;mut pac.NVMCTRL,
+<a href=#576 id=576 data-nosnippet>576</a>//! # );
+<a href=#577 id=577 data-nosnippet>577</a>//! # let pins = Pins::new(pac.PORT);
+<a href=#578 id=578 data-nosnippet>578</a>//! # let xosc0 = Xosc::from_crystal(
+<a href=#579 id=579 data-nosnippet>579</a>//! #     tokens.xosc0,
+<a href=#580 id=580 data-nosnippet>580</a>//! #     pins.pa14,
+<a href=#581 id=581 data-nosnippet>581</a>//! #     pins.pa15,
+<a href=#582 id=582 data-nosnippet>582</a>//! #     8.mhz(),
+<a href=#583 id=583 data-nosnippet>583</a>//! # ).enable();
+<a href=#584 id=584 data-nosnippet>584</a>//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<a href=#585 id=585 data-nosnippet>585</a>//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+<a href=#586 id=586 data-nosnippet>586</a>//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
+<a href=#587 id=587 data-nosnippet>587</a>//! let dfll_token = dfll.disable().free();
+<a href=#588 id=588 data-nosnippet>588</a>//! ```
+<a href=#589 id=589 data-nosnippet>589</a>//!
+<a href=#590 id=590 data-nosnippet>590</a>//! Our clock tree now looks like this:
+<a href=#591 id=591 data-nosnippet>591</a>//!
+<a href=#592 id=592 data-nosnippet>592</a>//! ```text
+<a href=#593 id=593 data-nosnippet>593</a>//! XOSC0 (8 MHz)
+<a href=#594 id=594 data-nosnippet>594</a>//! └── DPLL0 (100 MHz)
+<a href=#595 id=595 data-nosnippet>595</a>//!     └── GCLK0 (100 MHz)
+<a href=#596 id=596 data-nosnippet>596</a>//!         └── Main clock (100 MHz)
+<a href=#597 id=597 data-nosnippet>597</a>//! ```
+<a href=#598 id=598 data-nosnippet>598</a>//!
+<a href=#599 id=599 data-nosnippet>599</a>//! We have the clocks set up, but we're not using them for anything other than
+<a href=#600 id=600 data-nosnippet>600</a>//! the main clock. Our final steps will create SERCOM APB and peripheral
+<a href=#601 id=601 data-nosnippet>601</a>//! clocks and will output the raw GCLK0 to a GPIO pin.
+<a href=#602 id=602 data-nosnippet>602</a>//!
+<a href=#603 id=603 data-nosnippet>603</a>//! To enable the APB clock for SERCOM0, we must access the [`Apb`] bus struct.
+<a href=#604 id=604 data-nosnippet>604</a>//! We provide an [`ApbToken`] to the [`Apb::enable`] method and receive an
+<a href=#605 id=605 data-nosnippet>605</a>//! [`ApbClk`] in return. APB clocks are [1:1 clocks](self#clock-relationships),
+<a href=#606 id=606 data-nosnippet>606</a>//! so the `ApbClk` is not wrapped with [`Enabled`].
+<a href=#607 id=607 data-nosnippet>607</a>//!
+<a href=#608 id=608 data-nosnippet>608</a>//! ```no_run
+<a href=#609 id=609 data-nosnippet>609</a>//! # use atsamd_hal::{
+<a href=#610 id=610 data-nosnippet>610</a>//! #     clock::v2::{
+<a href=#611 id=611 data-nosnippet>611</a>//! #         clock_system_at_reset,
+<a href=#612 id=612 data-nosnippet>612</a>//! #         dpll::Dpll,
+<a href=#613 id=613 data-nosnippet>613</a>//! #         xosc::Xosc,
+<a href=#614 id=614 data-nosnippet>614</a>//! #     },
+<a href=#615 id=615 data-nosnippet>615</a>//! #     gpio::Pins,
+<a href=#616 id=616 data-nosnippet>616</a>//! #     pac::Peripherals,
+<a href=#617 id=617 data-nosnippet>617</a>//! #     time::U32Ext,
+<a href=#618 id=618 data-nosnippet>618</a>//! # };
+<a href=#619 id=619 data-nosnippet>619</a>//! # let mut pac = Peripherals::take().unwrap();
+<a href=#620 id=620 data-nosnippet>620</a>//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+<a href=#621 id=621 data-nosnippet>621</a>//! #     pac.OSCCTRL,
+<a href=#622 id=622 data-nosnippet>622</a>//! #     pac.OSC32KCTRL,
+<a href=#623 id=623 data-nosnippet>623</a>//! #     pac.GCLK,
+<a href=#624 id=624 data-nosnippet>624</a>//! #     pac.MCLK,
+<a href=#625 id=625 data-nosnippet>625</a>//! #     &amp;mut pac.NVMCTRL,
+<a href=#626 id=626 data-nosnippet>626</a>//! # );
+<a href=#627 id=627 data-nosnippet>627</a>//! # let pins = Pins::new(pac.PORT);
+<a href=#628 id=628 data-nosnippet>628</a>//! # let xosc0 = Xosc::from_crystal(
+<a href=#629 id=629 data-nosnippet>629</a>//! #     tokens.xosc0,
+<a href=#630 id=630 data-nosnippet>630</a>//! #     pins.pa14,
+<a href=#631 id=631 data-nosnippet>631</a>//! #     pins.pa15,
+<a href=#632 id=632 data-nosnippet>632</a>//! #     8.mhz(),
+<a href=#633 id=633 data-nosnippet>633</a>//! # ).enable();
+<a href=#634 id=634 data-nosnippet>634</a>//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<a href=#635 id=635 data-nosnippet>635</a>//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+<a href=#636 id=636 data-nosnippet>636</a>//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
+<a href=#637 id=637 data-nosnippet>637</a>//! # let dfll_token = dfll.disable().free();
+<a href=#638 id=638 data-nosnippet>638</a>//! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
+<a href=#639 id=639 data-nosnippet>639</a>//! ```
+<a href=#640 id=640 data-nosnippet>640</a>//!
+<a href=#641 id=641 data-nosnippet>641</a>//! To enable a peripheral channel clock for SERCOM0, we must provide the
+<a href=#642 id=642 data-nosnippet>642</a>//! corresponding [`PclkToken`], as well as the instance of [`EnabledGclk0`], so
+<a href=#643 id=643 data-nosnippet>643</a>//! that its counter can be incremented. The resulting clock has the type
+<a href=#644 id=644 data-nosnippet>644</a>//! `Pclk&lt;Sercom0, Gclk0Id&gt;`.
+<a href=#645 id=645 data-nosnippet>645</a>//!
+<a href=#646 id=646 data-nosnippet>646</a>//! ```no_run
+<a href=#647 id=647 data-nosnippet>647</a>//! # use atsamd_hal::{
+<a href=#648 id=648 data-nosnippet>648</a>//! #     clock::v2::{
+<a href=#649 id=649 data-nosnippet>649</a>//! #         clock_system_at_reset,
+<a href=#650 id=650 data-nosnippet>650</a>//! #         dpll::Dpll,
+<a href=#651 id=651 data-nosnippet>651</a>//! #         pclk::Pclk,
+<a href=#652 id=652 data-nosnippet>652</a>//! #         xosc::Xosc,
+<a href=#653 id=653 data-nosnippet>653</a>//! #     },
+<a href=#654 id=654 data-nosnippet>654</a>//! #     gpio::Pins,
+<a href=#655 id=655 data-nosnippet>655</a>//! #     pac::Peripherals,
+<a href=#656 id=656 data-nosnippet>656</a>//! #     time::U32Ext,
+<a href=#657 id=657 data-nosnippet>657</a>//! # };
+<a href=#658 id=658 data-nosnippet>658</a>//! # let mut pac = Peripherals::take().unwrap();
+<a href=#659 id=659 data-nosnippet>659</a>//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+<a href=#660 id=660 data-nosnippet>660</a>//! #     pac.OSCCTRL,
+<a href=#661 id=661 data-nosnippet>661</a>//! #     pac.OSC32KCTRL,
+<a href=#662 id=662 data-nosnippet>662</a>//! #     pac.GCLK,
+<a href=#663 id=663 data-nosnippet>663</a>//! #     pac.MCLK,
+<a href=#664 id=664 data-nosnippet>664</a>//! #     &amp;mut pac.NVMCTRL,
+<a href=#665 id=665 data-nosnippet>665</a>//! # );
+<a href=#666 id=666 data-nosnippet>666</a>//! # let pins = Pins::new(pac.PORT);
+<a href=#667 id=667 data-nosnippet>667</a>//! # let xosc0 = Xosc::from_crystal(
+<a href=#668 id=668 data-nosnippet>668</a>//! #     tokens.xosc0,
+<a href=#669 id=669 data-nosnippet>669</a>//! #     pins.pa14,
+<a href=#670 id=670 data-nosnippet>670</a>//! #     pins.pa15,
+<a href=#671 id=671 data-nosnippet>671</a>//! #     8.mhz(),
+<a href=#672 id=672 data-nosnippet>672</a>//! # ).enable();
+<a href=#673 id=673 data-nosnippet>673</a>//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<a href=#674 id=674 data-nosnippet>674</a>//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+<a href=#675 id=675 data-nosnippet>675</a>//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
+<a href=#676 id=676 data-nosnippet>676</a>//! # let dfll_token = dfll.disable().free();
+<a href=#677 id=677 data-nosnippet>677</a>//! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
+<a href=#678 id=678 data-nosnippet>678</a>//! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
+<a href=#679 id=679 data-nosnippet>679</a>//! ```
+<a href=#680 id=680 data-nosnippet>680</a>//!
+<a href=#681 id=681 data-nosnippet>681</a>//! Like [`Dpll&lt;D, I&gt;`], [`Pclk&lt;P, I&gt;`] also takes two type parameters. The
+<a href=#682 id=682 data-nosnippet>682</a>//! first represents the corresponding peripheral, while the second is again an
+<a href=#683 id=683 data-nosnippet>683</a>//! [`Id` type](self#id-types) representing the [`Source`] driving the [`Pclk`],
+<a href=#684 id=684 data-nosnippet>684</a>//! which is restricted by the [`PclkSourceId`] trait. Because peripheral
+<a href=#685 id=685 data-nosnippet>685</a>//! channel clocks can only be driven by GCLKs, [`PclkSourceId`] is effectively
+<a href=#686 id=686 data-nosnippet>686</a>//! synonymous with the [`GclkId`] trait.
+<a href=#687 id=687 data-nosnippet>687</a>//!
+<a href=#688 id=688 data-nosnippet>688</a>//! Finally, we would like to output GCLK0 to a GPIO pin. Doing so takes a
+<a href=#689 id=689 data-nosnippet>689</a>//! slightly different approach. This time, we provide a GPIO [`Pin`] to the
+<a href=#690 id=690 data-nosnippet>690</a>//! [`Gclk`], which creates a [`GclkOut`] and [`Increment`]s the consumer count
+<a href=#691 id=691 data-nosnippet>691</a>//! for [`EnabledGclk0`].
+<a href=#692 id=692 data-nosnippet>692</a>//!
+<a href=#693 id=693 data-nosnippet>693</a>//! ```no_run
+<a href=#694 id=694 data-nosnippet>694</a>//! # use atsamd_hal::{
+<a href=#695 id=695 data-nosnippet>695</a>//! #     clock::v2::{
+<a href=#696 id=696 data-nosnippet>696</a>//! #         clock_system_at_reset,
+<a href=#697 id=697 data-nosnippet>697</a>//! #         dpll::Dpll,
+<a href=#698 id=698 data-nosnippet>698</a>//! #         pclk::Pclk,
+<a href=#699 id=699 data-nosnippet>699</a>//! #         xosc::Xosc,
+<a href=#700 id=700 data-nosnippet>700</a>//! #     },
+<a href=#701 id=701 data-nosnippet>701</a>//! #     gpio::Pins,
+<a href=#702 id=702 data-nosnippet>702</a>//! #     pac::Peripherals,
+<a href=#703 id=703 data-nosnippet>703</a>//! #     time::U32Ext,
+<a href=#704 id=704 data-nosnippet>704</a>//! # };
+<a href=#705 id=705 data-nosnippet>705</a>//! # let mut pac = Peripherals::take().unwrap();
+<a href=#706 id=706 data-nosnippet>706</a>//! # let (mut buses, clocks, tokens) = clock_system_at_reset(
+<a href=#707 id=707 data-nosnippet>707</a>//! #     pac.OSCCTRL,
+<a href=#708 id=708 data-nosnippet>708</a>//! #     pac.OSC32KCTRL,
+<a href=#709 id=709 data-nosnippet>709</a>//! #     pac.GCLK,
+<a href=#710 id=710 data-nosnippet>710</a>//! #     pac.MCLK,
+<a href=#711 id=711 data-nosnippet>711</a>//! #     &amp;mut pac.NVMCTRL,
+<a href=#712 id=712 data-nosnippet>712</a>//! # );
+<a href=#713 id=713 data-nosnippet>713</a>//! # let pins = Pins::new(pac.PORT);
+<a href=#714 id=714 data-nosnippet>714</a>//! # let xosc0 = Xosc::from_crystal(
+<a href=#715 id=715 data-nosnippet>715</a>//! #     tokens.xosc0,
+<a href=#716 id=716 data-nosnippet>716</a>//! #     pins.pa14,
+<a href=#717 id=717 data-nosnippet>717</a>//! #     pins.pa15,
+<a href=#718 id=718 data-nosnippet>718</a>//! #     8.mhz(),
+<a href=#719 id=719 data-nosnippet>719</a>//! # ).enable();
+<a href=#720 id=720 data-nosnippet>720</a>//! # let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<a href=#721 id=721 data-nosnippet>721</a>//! # let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+<a href=#722 id=722 data-nosnippet>722</a>//! # let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
+<a href=#723 id=723 data-nosnippet>723</a>//! # let dfll_token = dfll.disable().free();
+<a href=#724 id=724 data-nosnippet>724</a>//! # let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
+<a href=#725 id=725 data-nosnippet>725</a>//! # let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
+<a href=#726 id=726 data-nosnippet>726</a>//! let (gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);
+<a href=#727 id=727 data-nosnippet>727</a>//! ```
+<a href=#728 id=728 data-nosnippet>728</a>//!
+<a href=#729 id=729 data-nosnippet>729</a>//! We have arrived at our final, desired clock tree. Putting the whole example
+<a href=#730 id=730 data-nosnippet>730</a>//! together, we get
+<a href=#731 id=731 data-nosnippet>731</a>//!
+<a href=#732 id=732 data-nosnippet>732</a>//! ```no_run
+<a href=#733 id=733 data-nosnippet>733</a>//! use atsamd_hal::{
+<a href=#734 id=734 data-nosnippet>734</a>//!     clock::v2::{
+<a href=#735 id=735 data-nosnippet>735</a>//!         clock_system_at_reset,
+<a href=#736 id=736 data-nosnippet>736</a>//!         dpll::Dpll,
+<a href=#737 id=737 data-nosnippet>737</a>//!         pclk::Pclk,
+<a href=#738 id=738 data-nosnippet>738</a>//!         xosc::Xosc,
+<a href=#739 id=739 data-nosnippet>739</a>//!     },
+<a href=#740 id=740 data-nosnippet>740</a>//!     gpio::Pins,
+<a href=#741 id=741 data-nosnippet>741</a>//!     pac::Peripherals,
+<a href=#742 id=742 data-nosnippet>742</a>//!     time::U32Ext,
+<a href=#743 id=743 data-nosnippet>743</a>//! };
+<a href=#744 id=744 data-nosnippet>744</a>//!
+<a href=#745 id=745 data-nosnippet>745</a>//! let mut pac = Peripherals::take().unwrap();
+<a href=#746 id=746 data-nosnippet>746</a>//! let (mut buses, clocks, tokens) = clock_system_at_reset(
+<a href=#747 id=747 data-nosnippet>747</a>//!     pac.OSCCTRL,
+<a href=#748 id=748 data-nosnippet>748</a>//!     pac.OSC32KCTRL,
+<a href=#749 id=749 data-nosnippet>749</a>//!     pac.GCLK,
+<a href=#750 id=750 data-nosnippet>750</a>//!     pac.MCLK,
+<a href=#751 id=751 data-nosnippet>751</a>//!     &amp;mut pac.NVMCTRL,
+<a href=#752 id=752 data-nosnippet>752</a>//! );
+<a href=#753 id=753 data-nosnippet>753</a>//! let pins = Pins::new(pac.PORT);
+<a href=#754 id=754 data-nosnippet>754</a>//! let xosc0 = Xosc::from_crystal(
+<a href=#755 id=755 data-nosnippet>755</a>//!     tokens.xosc0,
+<a href=#756 id=756 data-nosnippet>756</a>//!     pins.pa14,
+<a href=#757 id=757 data-nosnippet>757</a>//!     pins.pa15,
+<a href=#758 id=758 data-nosnippet>758</a>//!     8.mhz(),
+<a href=#759 id=759 data-nosnippet>759</a>//! )
+<a href=#760 id=760 data-nosnippet>760</a>//! .enable();
+<a href=#761 id=761 data-nosnippet>761</a>//! let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
+<a href=#762 id=762 data-nosnippet>762</a>//! let dpll0 = dpll0.prediv(4).loop_div(50, 0).enable();
+<a href=#763 id=763 data-nosnippet>763</a>//! let (gclk0, dfll, dpll0) = clocks.gclk0.swap_sources(clocks.dfll, dpll0);
+<a href=#764 id=764 data-nosnippet>764</a>//! let dfll_token = dfll.disable().free();
+<a href=#765 id=765 data-nosnippet>765</a>//! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
+<a href=#766 id=766 data-nosnippet>766</a>//! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
+<a href=#767 id=767 data-nosnippet>767</a>//! let (gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);
+<a href=#768 id=768 data-nosnippet>768</a>//! ```
+<a href=#769 id=769 data-nosnippet>769</a>//!
+<a href=#770 id=770 data-nosnippet>770</a>//! [PAC]: crate::pac
+<a href=#771 id=771 data-nosnippet>771</a>//! [`OSCCTRL`]: crate::pac::Oscctrl
+<a href=#772 id=772 data-nosnippet>772</a>//! [`OSC32KCTRL`]: crate::pac::Osc32kctrl
+<a href=#773 id=773 data-nosnippet>773</a>//! [`GCLK`]: crate::pac::Gclk
+<a href=#774 id=774 data-nosnippet>774</a>//! [`MCLK`]: crate::pac::Mclk
+<a href=#775 id=775 data-nosnippet>775</a>//! [`Peripherals::steal`]: crate::pac::Peripherals::steal
+<a href=#776 id=776 data-nosnippet>776</a>//!
+<a href=#777 id=777 data-nosnippet>777</a>//! [`Ahb`]: ahb::Ahb
+<a href=#778 id=778 data-nosnippet>778</a>//! [`AhbClk`]: ahb::AhbClk
+<a href=#779 id=779 data-nosnippet>779</a>//! [`AhbClk&lt;A&gt;`]: ahb::AhbClk
+<a href=#780 id=780 data-nosnippet>780</a>//! [`AhbClks`]: ahb::AhbClks
+<a href=#781 id=781 data-nosnippet>781</a>//!
+<a href=#782 id=782 data-nosnippet>782</a>//! [`Apb`]: apb::Apb
+<a href=#783 id=783 data-nosnippet>783</a>//! [`Apb::enable`]: apb::Apb::enable
+<a href=#784 id=784 data-nosnippet>784</a>//! [`ApbClk`]: apb::ApbClk
+<a href=#785 id=785 data-nosnippet>785</a>//! [`ApbClk&lt;A&gt;`]: apb::ApbClk
+<a href=#786 id=786 data-nosnippet>786</a>//! [`ApbClks`]: apb::ApbClks
+<a href=#787 id=787 data-nosnippet>787</a>//! [`ApbToken`]: apb::ApbToken
+<a href=#788 id=788 data-nosnippet>788</a>//!
+<a href=#789 id=789 data-nosnippet>789</a>//! [`Dfll`]: dfll::Dfll
+<a href=#790 id=790 data-nosnippet>790</a>//! [`Dfll&lt;M&gt;`]: dfll::Dfll
+<a href=#791 id=791 data-nosnippet>791</a>//! [`DfllId`]: dfll::DfllId
+<a href=#792 id=792 data-nosnippet>792</a>//! [`DfllToken`]: dfll::DfllToken
+<a href=#793 id=793 data-nosnippet>793</a>//! [`EnabledDfll`]: dfll::EnabledDfll
+<a href=#794 id=794 data-nosnippet>794</a>//!
+<a href=#795 id=795 data-nosnippet>795</a>//! [`Dpll`]: dpll::Dpll
+<a href=#796 id=796 data-nosnippet>796</a>//! [`Dpll&lt;D, I&gt;`]: dpll::Dpll
+<a href=#797 id=797 data-nosnippet>797</a>//! [`Dpll0`]: dpll::Dpll0
+<a href=#798 id=798 data-nosnippet>798</a>//! [`Dpll1`]: dpll::Dpll1
+<a href=#799 id=799 data-nosnippet>799</a>//! [`Dpll0Id`]: dpll::Dpll0Id
+<a href=#800 id=800 data-nosnippet>800</a>//! [`Dpll1Id`]: dpll::Dpll1Id
+<a href=#801 id=801 data-nosnippet>801</a>//! [`DpllSourceId`]: dpll::DpllSourceId
+<a href=#802 id=802 data-nosnippet>802</a>//! [`DpllToken`]: dpll::DpllToken
+<a href=#803 id=803 data-nosnippet>803</a>//! [`EnabledDpll0`]: dpll::EnabledDpll0
+<a href=#804 id=804 data-nosnippet>804</a>//!
+<a href=#805 id=805 data-nosnippet>805</a>//! [`Gclk0`]: gclk::Gclk0
+<a href=#806 id=806 data-nosnippet>806</a>//! [`GclkId`]: gclk::GclkId
+<a href=#807 id=807 data-nosnippet>807</a>//! [`EnabledGclk0`]: gclk::EnabledGclk0
+<a href=#808 id=808 data-nosnippet>808</a>//! [`swap_sources`]: gclk::EnabledGclk0::swap_sources
+<a href=#809 id=809 data-nosnippet>809</a>//! [`GclkOut`]: gclk::GclkOut
+<a href=#810 id=810 data-nosnippet>810</a>//!
+<a href=#811 id=811 data-nosnippet>811</a>//! [`OscUlp32kBase`]: osculp32k::OscUlp32kBase
+<a href=#812 id=812 data-nosnippet>812</a>//! [`OscUlp1k`]: osculp32k::OscUlp1k
+<a href=#813 id=813 data-nosnippet>813</a>//! [`OscUlp32k`]: osculp32k::OscUlp32k
+<a href=#814 id=814 data-nosnippet>814</a>//!
+<a href=#815 id=815 data-nosnippet>815</a>//! [`Pclk`]: pclk::Pclk
+<a href=#816 id=816 data-nosnippet>816</a>//! [`Pclk&lt;P, I&gt;`]: pclk::Pclk
+<a href=#817 id=817 data-nosnippet>817</a>//! [`Pclk::enable`]: pclk::Pclk::enable
+<a href=#818 id=818 data-nosnippet>818</a>//! [`Pclk::disable`]: pclk::Pclk::disable
+<a href=#819 id=819 data-nosnippet>819</a>//! [`PclkSourceId`]: pclk::PclkSourceId
+<a href=#820 id=820 data-nosnippet>820</a>//! [`PclkToken`]: pclk::PclkToken
+<a href=#821 id=821 data-nosnippet>821</a>//!
+<a href=#822 id=822 data-nosnippet>822</a>//! [`RtcOsc`]: rtcosc::RtcOsc
+<a href=#823 id=823 data-nosnippet>823</a>//!
+<a href=#824 id=824 data-nosnippet>824</a>//! [`Xosc`]: xosc::Xosc
+<a href=#825 id=825 data-nosnippet>825</a>//! [`Xosc::from_crystal`]: xosc::Xosc::from_crystal
+<a href=#826 id=826 data-nosnippet>826</a>//! [`Xosc::enable`]: xosc::Xosc::enable
+<a href=#827 id=827 data-nosnippet>827</a>//! [`Xosc0`]: xosc::Xosc0
+<a href=#828 id=828 data-nosnippet>828</a>//! [`Xosc0&lt;M&gt;`]: xosc::Xosc0
+<a href=#829 id=829 data-nosnippet>829</a>//! [`Xosc0Id`]: xosc::Xosc0Id
+<a href=#830 id=830 data-nosnippet>830</a>//! [`Xosc1Id`]: xosc::Xosc1Id
+<a href=#831 id=831 data-nosnippet>831</a>//! [`XoscToken`]: xosc::XoscToken
+<a href=#832 id=832 data-nosnippet>832</a>//! [`EnabledXosc0`]: xosc::EnabledXosc0
+<a href=#833 id=833 data-nosnippet>833</a>//! [`EnabledXosc0&lt;M, N&gt;`]: xosc::EnabledXosc0
+<a href=#834 id=834 data-nosnippet>834</a>//! [`CrystalMode`]: xosc::CrystalMode
+<a href=#835 id=835 data-nosnippet>835</a>//! [`ClockMode`]: xosc::ClockMode
+<a href=#836 id=836 data-nosnippet>836</a>//!
+<a href=#837 id=837 data-nosnippet>837</a>//! [`Xosc32kId`]: xosc32k::Xosc32kId
+<a href=#838 id=838 data-nosnippet>838</a>//!
+<a href=#839 id=839 data-nosnippet>839</a>//! [type-level]: crate::typelevel
+<a href=#840 id=840 data-nosnippet>840</a>//! [`Increment`]: crate::typelevel::Increment
+<a href=#841 id=841 data-nosnippet>841</a>//! [`Decrement`]: crate::typelevel::Decrement
+<a href=#842 id=842 data-nosnippet>842</a>//!
+<a href=#843 id=843 data-nosnippet>843</a>//! [`Id`]: Source::Id
+<a href=#844 id=844 data-nosnippet>844</a>//!
+<a href=#845 id=845 data-nosnippet>845</a>//! [`gpio::Pins`]: crate::gpio::Pins
+<a href=#846 id=846 data-nosnippet>846</a>//! [`Pin`]: crate::gpio::Pin
+<a href=#847 id=847 data-nosnippet>847</a>//!
+<a href=#848 id=848 data-nosnippet>848</a>//! [`U1`]: typenum::U1
+<a href=#849 id=849 data-nosnippet>849</a>//! [`Add1`]: typenum::Add1
+<a href=#850 id=850 data-nosnippet>850</a>//! [`Sub1`]: typenum::Sub1
+<a href=#851 id=851 data-nosnippet>851</a>//! [`Unsigned`]: typenum::Unsigned
+<a href=#852 id=852 data-nosnippet>852</a>//!
+<a href=#853 id=853 data-nosnippet>853</a>//! [interior mutability]: https://doc.rust-lang.org/reference/interior-mutability.html
+<a href=#854 id=854 data-nosnippet>854</a>
+<a href=#855 id=855 data-nosnippet>855</a></span><span class="attr">#![allow(clippy::manual_range_contains)]
+<a href=#856 id=856 data-nosnippet>856</a>
+<a href=#857 id=857 data-nosnippet>857</a></span><span class="kw">use </span>typenum::U0;
+<a href=#858 id=858 data-nosnippet>858</a>
+<a href=#859 id=859 data-nosnippet>859</a><span class="kw">use </span><span class="kw">crate</span>::time::Hertz;
+<a href=#860 id=860 data-nosnippet>860</a><span class="kw">use </span><span class="kw">crate</span>::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
+<a href=#861 id=861 data-nosnippet>861</a>
+<a href=#862 id=862 data-nosnippet>862</a><span class="kw">pub mod </span>ahb;
+<a href=#863 id=863 data-nosnippet>863</a><span class="kw">pub mod </span>apb;
+<a href=#864 id=864 data-nosnippet>864</a><span class="kw">pub mod </span>dfll;
+<a href=#865 id=865 data-nosnippet>865</a><span class="kw">pub mod </span>dpll;
+<a href=#866 id=866 data-nosnippet>866</a><span class="kw">pub mod </span>gclk;
+<a href=#867 id=867 data-nosnippet>867</a><span class="kw">pub mod </span>osculp32k;
+<a href=#868 id=868 data-nosnippet>868</a><span class="kw">pub mod </span>pclk;
+<a href=#869 id=869 data-nosnippet>869</a><span class="kw">pub mod </span>rtcosc;
+<a href=#870 id=870 data-nosnippet>870</a><span class="kw">pub mod </span>types;
+<a href=#871 id=871 data-nosnippet>871</a><span class="kw">pub mod </span>xosc;
+<a href=#872 id=872 data-nosnippet>872</a><span class="kw">pub mod </span>xosc32k;
+<a href=#873 id=873 data-nosnippet>873</a>
+<a href=#874 id=874 data-nosnippet>874</a><span class="kw">mod </span>reset;
+<a href=#875 id=875 data-nosnippet>875</a><span class="kw">pub use </span>reset::<span class="kw-2">*</span>;
+<a href=#876 id=876 data-nosnippet>876</a>
+<a href=#877 id=877 data-nosnippet>877</a><span class="comment">// `Token` types and memory safety
+<a href=#878 id=878 data-nosnippet>878</a>//
+<a href=#879 id=879 data-nosnippet>879</a>// Each of the PAC [`Peripherals`] is a zero-sized, singleton struct that
+<a href=#880 id=880 data-nosnippet>880</a>// mediates access to the MMIO hardware registers. It is not possible to create
+<a href=#881 id=881 data-nosnippet>881</a>// two instances of any peripheral without causing a run-time panic. These
+<a href=#882 id=882 data-nosnippet>882</a>// structs implement [`Deref`] by conjuring a pointer to the corresponding
+<a href=#883 id=883 data-nosnippet>883</a>// register block, and each register within the block is represented by a
+<a href=#884 id=884 data-nosnippet>884</a>// `vcell::VolatileCell`. Because each register is wrapped in a `VolatileCell`,
+<a href=#885 id=885 data-nosnippet>885</a>// it is safe to both read and write them through shared references. However,
+<a href=#886 id=886 data-nosnippet>886</a>// because a read/modify/write operation is not atomic, the [`Peripherals`]
+<a href=#887 id=887 data-nosnippet>887</a>// structs do not implement [`Sync`].
+<a href=#888 id=888 data-nosnippet>888</a>//
+<a href=#889 id=889 data-nosnippet>889</a>// This is a reasonable approach for the PAC, since it is generated from an
+<a href=#890 id=890 data-nosnippet>890</a>// SVD file. However, it is not the ideal structure for our HAL API. In
+<a href=#891 id=891 data-nosnippet>891</a>// particular, each [`Peripherals`] struct represents an entire peripheral,
+<a href=#892 id=892 data-nosnippet>892</a>// rather than a particular functional unit. In the HAL, we want our API to
+<a href=#893 id=893 data-nosnippet>893</a>// focus on functional units, so we need to define our own abstraction for
+<a href=#894 id=894 data-nosnippet>894</a>// registers, which will involve `unsafe` code.
+<a href=#895 id=895 data-nosnippet>895</a>//
+<a href=#896 id=896 data-nosnippet>896</a>// In the `clock` module, we represent each functional unit with a
+<a href=#897 id=897 data-nosnippet>897</a>// corresponding `Token` type. Just like the [`Peripherals`], each `Token` type
+<a href=#898 id=898 data-nosnippet>898</a>// is meant to be a singleton. However, unlike the PAC, we do not have to
+<a href=#899 id=899 data-nosnippet>899</a>// allow users to create `Token`s directly. Instead, we can have users exchange
+<a href=#900 id=900 data-nosnippet>900</a>// [`Peripherals`] for the `Token`s. Because each PAC struct is a singleton, we
+<a href=#901 id=901 data-nosnippet>901</a>// can guarantee each `Token` will be a singleton as well. With this approach,
+<a href=#902 id=902 data-nosnippet>902</a>// we don't need to implement our own run-time panicking; we simply extend the
+<a href=#903 id=903 data-nosnippet>903</a>// existing guarantees of the PAC.
+<a href=#904 id=904 data-nosnippet>904</a>//
+<a href=#905 id=905 data-nosnippet>905</a>// To implement a memory safe API, we must ensure that all `Token` types access
+<a href=#906 id=906 data-nosnippet>906</a>// mutually exclusive sets of registers. In that way, we guarantee no two
+<a href=#907 id=907 data-nosnippet>907</a>// `Token` types can access the same register. Moreover, in contrast to the PAC
+<a href=#908 id=908 data-nosnippet>908</a>// [`Peripherals`], we can make our `Token`s [`Sync`] if we remove all interior
+<a href=#909 id=909 data-nosnippet>909</a>// mutability and guarantee that writing or modifying a register requires
+<a href=#910 id=910 data-nosnippet>910</a>// ownership or an `&amp;mut` reference.
+<a href=#911 id=911 data-nosnippet>911</a>//
+<a href=#912 id=912 data-nosnippet>912</a>// Thus, our `Token`-based API should be memory safe if we always obey the
+<a href=#913 id=913 data-nosnippet>913</a>// following requirements:
+<a href=#914 id=914 data-nosnippet>914</a>//   - It should be `unsafe` to create a `Token` type unless it is created in
+<a href=#915 id=915 data-nosnippet>915</a>//     exchange for the corresponding PAC peripheral struct.
+<a href=#916 id=916 data-nosnippet>916</a>//   - Each `Token` type should have access to a mutually exclusive set of
+<a href=#917 id=917 data-nosnippet>917</a>//     registers relative to the other `Token`s.
+<a href=#918 id=918 data-nosnippet>918</a>//   - Writing or modifying a register should always require ownership of, or an
+<a href=#919 id=919 data-nosnippet>919</a>//     `&amp;mut` reference to, the corresponding `Token`.
+<a href=#920 id=920 data-nosnippet>920</a>//   - When conjuring references to PAC registers or register blocks, we should
+<a href=#921 id=921 data-nosnippet>921</a>//     *only* use shared, `&amp;` references. There is no need to use exclusive,
+<a href=#922 id=922 data-nosnippet>922</a>//     `&amp;mut` references, because each register is wrapped in a `VolatileCell`.
+<a href=#923 id=923 data-nosnippet>923</a>//     Moreover, using `&amp;mut` references could cause UB, if we accidentally
+<a href=#924 id=924 data-nosnippet>924</a>//     create two simultaneous references to the same register block from
+<a href=#925 id=925 data-nosnippet>925</a>//     different `Tokens`.
+<a href=#926 id=926 data-nosnippet>926</a>//
+<a href=#927 id=927 data-nosnippet>927</a>// [`Peripherals`]: crate::pac::Peripherals
+<a href=#928 id=928 data-nosnippet>928</a>// [`Deref`]: core::ops::Deref
+<a href=#929 id=929 data-nosnippet>929</a>
+<a href=#930 id=930 data-nosnippet>930</a></span><span class="doccomment">/// Marks [`Enabled`] 1:N producer clocks that can act as a clock source
+<a href=#931 id=931 data-nosnippet>931</a>///
+<a href=#932 id=932 data-nosnippet>932</a>/// Implementers of this type act as producer clocks and feed consumer clocks in
+<a href=#933 id=933 data-nosnippet>933</a>/// the clock tree. All implementors are [`Enabled`], 1:N clocks. The `Id`
+<a href=#934 id=934 data-nosnippet>934</a>/// associated type maps to the corresponding [`Id` type](self#id-types) of the
+<a href=#935 id=935 data-nosnippet>935</a>/// implementer.
+<a href=#936 id=936 data-nosnippet>936</a>///
+<a href=#937 id=937 data-nosnippet>937</a>/// See the documentation on [`Source` clocks](self#acting-as-a-clock-source)
+<a href=#938 id=938 data-nosnippet>938</a>/// for more details.
+<a href=#939 id=939 data-nosnippet>939</a></span><span class="kw">pub trait </span>Source: Sealed {
+<a href=#940 id=940 data-nosnippet>940</a>    <span class="doccomment">/// Corresponding `Id` type for the implementer
+<a href=#941 id=941 data-nosnippet>941</a>    ///
+<a href=#942 id=942 data-nosnippet>942</a>    /// A given implementer of [`Source`] might have type parameters
+<a href=#943 id=943 data-nosnippet>943</a>    /// representing its configuration. For instance, [`EnabledXosc0&lt;M&gt;`] has a
+<a href=#944 id=944 data-nosnippet>944</a>    /// type parameter to track its [`Mode`]. However, a consumer clock
+<a href=#945 id=945 data-nosnippet>945</a>    /// typically does not care about such configuration. It only needs to
+<a href=#946 id=946 data-nosnippet>946</a>    /// know *which* upstream clock is its [`Source`].
+<a href=#947 id=947 data-nosnippet>947</a>    ///
+<a href=#948 id=948 data-nosnippet>948</a>    /// `Id` types exist to fill this role. They represent the *identity* of a
+<a href=#949 id=949 data-nosnippet>949</a>    /// given clock, regardless of any configuration. This is like the
+<a href=#950 id=950 data-nosnippet>950</a>    /// distinction between a passport and a person. A passport identifies a
+<a href=#951 id=951 data-nosnippet>951</a>    /// person, regardless of changes to their clothes or hair.
+<a href=#952 id=952 data-nosnippet>952</a>    ///
+<a href=#953 id=953 data-nosnippet>953</a>    /// Thus, [`EnabledXosc0&lt;M&gt;`] implements [`Source`] with `Id = `[`Xosc0Id`],
+<a href=#954 id=954 data-nosnippet>954</a>    /// regardless of `M`.
+<a href=#955 id=955 data-nosnippet>955</a>    ///
+<a href=#956 id=956 data-nosnippet>956</a>    /// See the documentation on [`Id` types](self#id-types) for more details.
+<a href=#957 id=957 data-nosnippet>957</a>    ///
+<a href=#958 id=958 data-nosnippet>958</a>    /// [`EnabledXosc0&lt;M&gt;`]: xosc::EnabledXosc0
+<a href=#959 id=959 data-nosnippet>959</a>    /// [`Mode`]: xosc::Mode
+<a href=#960 id=960 data-nosnippet>960</a>    /// [`Xosc0Id`]: xosc::Xosc0Id
+<a href=#961 id=961 data-nosnippet>961</a>    </span><span class="kw">type </span>Id;
+<a href=#962 id=962 data-nosnippet>962</a>
+<a href=#963 id=963 data-nosnippet>963</a>    <span class="doccomment">/// Return the frequency of the clock source
+<a href=#964 id=964 data-nosnippet>964</a>    </span><span class="kw">fn </span>freq(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Hertz;
+<a href=#965 id=965 data-nosnippet>965</a>}
+<a href=#966 id=966 data-nosnippet>966</a>
+<a href=#967 id=967 data-nosnippet>967</a><span class="doccomment">/// An enabled, 1:N clock with a compile-time counter for N
+<a href=#968 id=968 data-nosnippet>968</a>///
+<a href=#969 id=969 data-nosnippet>969</a>/// This struct is a wrapper around other clock types from this module. It
+<a href=#970 id=970 data-nosnippet>970</a>/// represents a clock, `T`, that has been enabled, and it maintains a
+<a href=#971 id=971 data-nosnippet>971</a>/// compile-time counter, `N`, of its consumer clocks in the clock tree.
+<a href=#972 id=972 data-nosnippet>972</a>///
+<a href=#973 id=973 data-nosnippet>973</a>/// Compile-time counting allows the API to restrict when clocks may be modified
+<a href=#974 id=974 data-nosnippet>974</a>/// or disabled. For example, `Enabled` clocks can only be disabled when their
+<a href=#975 id=975 data-nosnippet>975</a>/// counter is [`U0`].
+<a href=#976 id=976 data-nosnippet>976</a>///
+<a href=#977 id=977 data-nosnippet>977</a>/// The type-level counter is implemented using [`Unsigned`] integers from
+<a href=#978 id=978 data-nosnippet>978</a>/// the [`typenum`] crate, and it is modified using the [`Increment`] and
+<a href=#979 id=979 data-nosnippet>979</a>/// [`Decrement`] traits.
+<a href=#980 id=980 data-nosnippet>980</a>///
+<a href=#981 id=981 data-nosnippet>981</a>/// See the [`Enabled` wrapper documentation](self#the-enabled-wrapper) for more
+<a href=#982 id=982 data-nosnippet>982</a>/// details.
+<a href=#983 id=983 data-nosnippet>983</a>///
+<a href=#984 id=984 data-nosnippet>984</a>/// [`EnabledGclk0`]: gclk::EnabledGclk0
+<a href=#985 id=985 data-nosnippet>985</a>/// [`Increment`]: crate::typelevel::Increment
+<a href=#986 id=986 data-nosnippet>986</a>/// [`Decrement`]: crate::typelevel::Decrement
+<a href=#987 id=987 data-nosnippet>987</a>/// [`Unsigned`]: typenum::Unsigned
+<a href=#988 id=988 data-nosnippet>988</a></span><span class="kw">pub struct </span>Enabled&lt;T, N = U0&gt;(<span class="kw">pub</span>(<span class="kw">crate</span>) T, N);
+<a href=#989 id=989 data-nosnippet>989</a>
+<a href=#990 id=990 data-nosnippet>990</a><span class="kw">impl</span>&lt;T, N&gt; Sealed <span class="kw">for </span>Enabled&lt;T, N&gt; {}
+<a href=#991 id=991 data-nosnippet>991</a>
+<a href=#992 id=992 data-nosnippet>992</a><span class="kw">impl</span>&lt;T, N: Default&gt; Enabled&lt;T, N&gt; {
+<a href=#993 id=993 data-nosnippet>993</a>    <span class="attr">#[inline]
+<a href=#994 id=994 data-nosnippet>994</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(t: T) -&gt; <span class="self">Self </span>{
+<a href=#995 id=995 data-nosnippet>995</a>        Enabled(t, N::default())
+<a href=#996 id=996 data-nosnippet>996</a>    }
+<a href=#997 id=997 data-nosnippet>997</a>}
+<a href=#998 id=998 data-nosnippet>998</a>
+<a href=#999 id=999 data-nosnippet>999</a><span class="kw">impl</span>&lt;T, N: PrivateIncrement&gt; PrivateIncrement <span class="kw">for </span>Enabled&lt;T, N&gt; {
+<a href=#1000 id=1000 data-nosnippet>1000</a>    <span class="kw">type </span>Inc = Enabled&lt;T, N::Inc&gt;;
+<a href=#1001 id=1001 data-nosnippet>1001</a>
+<a href=#1002 id=1002 data-nosnippet>1002</a>    <span class="attr">#[inline]
+<a href=#1003 id=1003 data-nosnippet>1003</a>    </span><span class="kw">fn </span>inc(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Inc {
+<a href=#1004 id=1004 data-nosnippet>1004</a>        Enabled(<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>.inc())
+<a href=#1005 id=1005 data-nosnippet>1005</a>    }
+<a href=#1006 id=1006 data-nosnippet>1006</a>}
+<a href=#1007 id=1007 data-nosnippet>1007</a>
+<a href=#1008 id=1008 data-nosnippet>1008</a><span class="kw">impl</span>&lt;T, N: PrivateDecrement&gt; PrivateDecrement <span class="kw">for </span>Enabled&lt;T, N&gt; {
+<a href=#1009 id=1009 data-nosnippet>1009</a>    <span class="kw">type </span>Dec = Enabled&lt;T, N::Dec&gt;;
+<a href=#1010 id=1010 data-nosnippet>1010</a>
+<a href=#1011 id=1011 data-nosnippet>1011</a>    <span class="attr">#[inline]
+<a href=#1012 id=1012 data-nosnippet>1012</a>    </span><span class="kw">fn </span>dec(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Dec {
+<a href=#1013 id=1013 data-nosnippet>1013</a>        Enabled(<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>.dec())
+<a href=#1014 id=1014 data-nosnippet>1014</a>    }
+<a href=#1015 id=1015 data-nosnippet>1015</a>}</code></pre></div></section></main></body></html>

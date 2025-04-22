@@ -1,4 +1,0 @@
-cargo:rustc-link-lib=static=cortex-m
-cargo:rustc-link-search=/home/runner/work/atsamd/atsamd/docs/samd21g/thumbv6m-none-eabi/release/build/cortex-m-805de757c1068d60/out
-cargo:rustc-cfg=cortex_m
-cargo:rustc-cfg=armv6m
