@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.4](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.3...atsamd-hal-macros-0.2.4) - 2025-04-22
+
+### Added
+
+- Add `not()` handling to atsamd-hal-macros
+
+### Fixed
+
+- Clean up example and docstring warnings
+
 ## [0.2.3](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.2...atsamd-hal-macros-0.2.3) - 2024-12-05
 
 ### Other

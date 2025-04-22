@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2](https://github.com/atsamd-rs/atsamd/compare/matrix_portal_m4-0.1.1...matrix_portal_m4-0.1.2) - 2025-04-22
+
+### Fixed
+
+- Clean up example and docstring warnings
+
 ## [0.1.1](https://github.com/atsamd-rs/atsamd/compare/matrix_portal_m4-0.1.0...matrix_portal_m4-0.1.1) - 2024-10-17
 
 ### Refactored
