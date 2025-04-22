@@ -1,0 +1,24 @@
+name: Check docs
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Install Rust
+        run: |
+          rustup set profile minimal
+      - name: rustdoc
+        run: |
+          RUSTDOCFLAGS="-Dwarnings" cargo doc --no-deps -F samd21g,dma,async,usb,defmt,rtic
+          RUSTDOCFLAGS="-Dwarnings" cargo doc --no-deps -F samd51j,dma,async,usb,defmt,rtic,can
