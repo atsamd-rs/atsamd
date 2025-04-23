@@ -33,7 +33,7 @@ chip = "ATSAMD51P19A"
 bitfield = "0.13"
 cortex-m = "0.7.3"
 cortex-m-rt = { version = "0.7", optional = true }
-display-interface-spi = "0.4"
+display-interface-spi = "0.5"
 heapless = "0.8"
 ili9341 = "0.6.0"
 lis3dh = "0.3.0"
