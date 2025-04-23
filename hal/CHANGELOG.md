@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.1...atsamd-hal-0.21.2) - 2025-04-22
+
+### Added
+
+- Ability to enable DPLL DCO filter
+- Ability to set DPLL PI filter coefficients
+- Ability to read DFLLRDY status bit
+
+### Documentation
+
+- Expand DFLL48MHz docs
+
+### Fixed
+
+- Dummy items for documentation only
+- Clean up example and docstring warnings
+- Update clock v2 docstring rate types
+
 ## [0.21.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.0...atsamd-hal-0.21.1) - 2025-04-12
 
 ### Added
