@@ -1,12 +1,12 @@
 use atsamd_hal_macros::hal_cfg;
 
-use core::convert::Infallible;
-use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::ehal::digital::{ErrorType, InputPin};
+use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
+use core::convert::Infallible;
 
 /// The pad macro defines the given EIC pin and implements EicPin for the
 /// given pins. The EicPin implementation will configure the pin for the
@@ -58,11 +58,17 @@ where
     P: EicPin,
     Id: ChId,
 {
+    /// Enables the event output of the channel for the event system.
+    ///
+    /// Note that whilst this function is executed, the EIC peripheral is disabled
+    /// in order to write to the evctrl register
     pub fn enable_event(&mut self) {
+        self.chan.eic.ctrla().write(|w| w.enable().clear_bit());
         self.chan
             .eic
             .evctrl()
             .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
+        self.chan.eic.ctrla().write(|w| w.enable().set_bit());
     }
 
     pub fn enable_interrupt(&mut self) {
@@ -176,7 +182,8 @@ where
 }
 
 impl<P, Id, F> InputPin for ExtInt<P, Id, F>
-where Self: ErrorType,
+where
+    Self: ErrorType,
     P: EicPin,
     Id: ChId,
 {
