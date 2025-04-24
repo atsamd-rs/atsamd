@@ -54,7 +54,7 @@ pub type LCD = Ili9341<SPIInterface<LcdSpiWrapper, LcdDc>, LcdReset>;
 
 pub use ili9341::Scroller;
 
-struct SpiDeviceWrapper<CS>{
+pub struct SpiDeviceWrapper<CS>{
     spi: LcdSpi,
     dc: CS,
 }
