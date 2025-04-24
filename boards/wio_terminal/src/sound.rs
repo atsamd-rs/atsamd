@@ -1,7 +1,7 @@
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::pac::gclk::pchctrl::GENSELECT_A::GCLK11;
-use atsamd_hal::pac::{ADC1, MCLK, TCC0};
+use atsamd_hal::pac::gclk::pchctrl::Genselect::Gclk11;
+use atsamd_hal::pac::{Adc1, Mclk, Tcc0};
 use atsamd_hal::prelude::*;
 use atsamd_hal::pwm::{TCC0Pinout, Tcc0Pwm};
 
@@ -19,8 +19,8 @@ impl Buzzer {
     pub fn init(
         self,
         clocks: &mut GenericClockController,
-        tcc0: TCC0,
-        mclk: &mut MCLK,
+        tcc0: Tcc0,
+        mclk: &mut Mclk,
     ) -> Tcc0Pwm<BuzzerCtrlId, BuzzerCtrlMode> {
         let pinout = TCC0Pinout::Pd11(self.ctr);
 
@@ -48,11 +48,11 @@ impl Microphone {
     /// peripheral and the configured pin.
     pub fn init(
         self,
-        adc: ADC1,
+        adc: Adc1,
         clocks: &mut GenericClockController,
-        mclk: &mut MCLK,
-    ) -> (Adc<ADC1>, MicOutput) {
-        let adc1 = Adc::adc1(adc, mclk, clocks, GCLK11);
+        mclk: &mut Mclk,
+    ) -> (Adc<Adc1>, MicOutput) {
+        let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
 
         (adc1, self.mic.into())
     }

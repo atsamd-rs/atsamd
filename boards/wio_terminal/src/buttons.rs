@@ -3,7 +3,7 @@ use atsamd_hal::eic;
 use atsamd_hal::eic::pin::{
     ExtInt10, ExtInt11, ExtInt12, ExtInt3, ExtInt4, ExtInt5, ExtInt7, ExternalInterrupt, Sense,
 };
-use atsamd_hal::pac::{interrupt, EIC, MCLK};
+use atsamd_hal::pac::{interrupt, Eic, Mclk};
 
 use cortex_m::peripheral::NVIC;
 
@@ -33,9 +33,9 @@ pub struct ButtonPins {
 impl ButtonPins {
     pub fn init(
         self,
-        eic: EIC,
+        eic: Eic,
         clocks: &mut GenericClockController,
-        mclk: &mut MCLK,
+        mclk: &mut Mclk,
     ) -> ButtonController {
         let gclk1 = clocks.gclk1();
         let eic_clock = clocks.eic(&gclk1).unwrap();
@@ -66,13 +66,13 @@ impl ButtonPins {
         let mut b = ExtInt7::new(self.switch_b.into());
 
         // b1.sense(&mut eic, Sense::BOTH);
-        b2.sense(&mut eic, Sense::BOTH);
-        b3.sense(&mut eic, Sense::BOTH);
-        x.sense(&mut eic, Sense::BOTH);
-        y.sense(&mut eic, Sense::BOTH);
-        z.sense(&mut eic, Sense::BOTH);
-        u.sense(&mut eic, Sense::BOTH);
-        b.sense(&mut eic, Sense::BOTH);
+        b2.sense(&mut eic, Sense::Both);
+        b3.sense(&mut eic, Sense::Both);
+        x.sense(&mut eic, Sense::Both);
+        y.sense(&mut eic, Sense::Both);
+        z.sense(&mut eic, Sense::Both);
+        u.sense(&mut eic, Sense::Both);
+        b.sense(&mut eic, Sense::Both);
 
         // b1.enable_interrupt(&mut eic);
         b2.enable_interrupt(&mut eic);

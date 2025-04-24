@@ -1,12 +1,12 @@
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::pac::{self, MCLK, SERCOM2};
+use atsamd_hal::pac::{self, Mclk};
 use atsamd_hal::sercom::{uart, IoSet2, Sercom2};
 use atsamd_hal::time::Hertz;
 
 #[cfg(feature = "usb")]
 use atsamd_hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 #[cfg(feature = "usb")]
-use pac::gclk::{genctrl::SRCSELECT_A, pchctrl::GENSELECT_A};
+use pac::gclk::{genctrl::Srcselect, pchctrl::Genselect};
 
 use super::pins::aliases::*;
 
@@ -32,8 +32,8 @@ impl Uart {
         self,
         clocks: &mut GenericClockController,
         baud: F,
-        sercom2: SERCOM2,
-        mclk: &mut MCLK,
+        sercom2: Sercom2,
+        mclk: &mut Mclk,
     ) -> HalUart {
         let gclk0 = clocks.gclk0();
         let pads = uart::Pads::default().rx(self.rx).tx(self.tx);
@@ -65,12 +65,12 @@ impl Usb {
     /// Create a USB allocator.
     pub fn usb_allocator(
         self,
-        usb: pac::USB,
+        usb: pac::Usb,
         clocks: &mut GenericClockController,
-        mclk: &mut MCLK,
+        mclk: &mut Mclk,
     ) -> UsbBusAllocator<UsbBus> {
-        clocks.configure_gclk_divider_and_source(GENSELECT_A::GCLK2, 1, SRCSELECT_A::DFLL, false);
-        let usb_gclk = clocks.get_gclk(GENSELECT_A::GCLK2).unwrap();
+        clocks.configure_gclk_divider_and_source(Genselect::Gclk2, 1, Srcselect::Dfll, false);
+        let usb_gclk = clocks.get_gclk(Genselect::Gclk2).unwrap();
         let usb_clock = &clocks.usb(&usb_gclk).unwrap();
 
         UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, self.dm, self.dp, usb))

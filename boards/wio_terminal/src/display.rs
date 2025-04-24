@@ -4,7 +4,7 @@ use atsamd_hal::ehal::delay::DelayNs;
 use atsamd_hal::ehal_nb::serial::Write;
 use atsamd_hal::ehal::digital::OutputPin;
 use atsamd_hal::ehal::spi::{Phase, Polarity, SpiBus, SpiDevice};
-use atsamd_hal::pac::{MCLK, SERCOM7};
+use atsamd_hal::pac::Mclk;
 use atsamd_hal::sercom::spi;
 use atsamd_hal::sercom::spi::Spi;
 use atsamd_hal::sercom::{IoSet4, Sercom7};
@@ -138,8 +138,8 @@ impl Display {
     pub fn init<D: DelayNs>(
         self,
         clocks: &mut GenericClockController,
-        sercom7: SERCOM7,
-        mclk: &mut MCLK,
+        sercom7: Sercom7,
+        mclk: &mut Mclk,
         baud: Hertz,
         delay: &mut D,
     ) -> Result<(LCD, LcdBacklight), ()> {

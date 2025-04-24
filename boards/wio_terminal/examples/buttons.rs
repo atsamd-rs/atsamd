@@ -26,11 +26,11 @@ fn main() -> ! {
     let mut core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.Gclk,
+        &mut peripherals.Mclk,
+        &mut peripherals.Osc32kctrl,
+        &mut peripherals.Oscctrl,
+        &mut peripherals.Nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
 

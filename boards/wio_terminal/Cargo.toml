@@ -51,7 +51,7 @@ features = ["critical-section-single-core"]
 version = "0.7"
 
 [dependencies.atsamd-hal]
-version = "0.17.0"
+version = "0.18.0"
 default-features = false
 
 [dev-dependencies]
