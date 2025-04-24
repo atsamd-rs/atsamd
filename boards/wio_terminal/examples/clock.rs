@@ -42,19 +42,19 @@ fn main() -> ! {
     let mut core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let sets = wio::Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.port).split();
 
     // Configure the RTC. a 1024 Hz clock is configured for us when enabling our
     // main clock
-    let rtc = rtc::Rtc::clock_mode(peripherals.RTC, 1024.Hz(), &mut peripherals.MCLK);
+    let rtc = rtc::Rtc::clock_mode(peripherals.rtc, 1024.Hz(), &mut peripherals.mclk);
 
     unsafe {
         RTC = Some(rtc);
@@ -66,8 +66,8 @@ fn main() -> ! {
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
+            peripherals.sercom7,
+            &mut peripherals.mclk,
             58.MHz(),
             &mut delay,
         )
@@ -85,9 +85,9 @@ fn main() -> ! {
     // Initialize USB.
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(sets.usb.usb_allocator(
-            peripherals.USB,
+            peripherals.usb,
             &mut clocks,
-            &mut peripherals.MCLK,
+            &mut peripherals.mclk,
         ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
