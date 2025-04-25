@@ -51,7 +51,8 @@ features = ["critical-section-single-core"]
 version = "0.7"
 
 [dependencies.atsamd-hal]
-version = "0.20.0"
+path = "../../hal"
+version = "0.21.0"
 default-features = false
 
 [dev-dependencies]
@@ -68,6 +69,9 @@ usb = ["atsamd-hal/usb", "usb-device"]
 # enable feature for RTL8720 firmware older than 2.1.2
 wifi-fw-before-212 = []
 wifi = ["bbqueue", "generic-array", "seeed-erpc"]
+
+# [patch.crates-io]
+# atsamd-hal = { version = "0.21.0", path = "../../atsamd-hal" }
 
 [[example]]
 name = "blinky"

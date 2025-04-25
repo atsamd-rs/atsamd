@@ -68,7 +68,7 @@ use atsamd_hal::ehal::spi::{Operation, ErrorType as SpiErrorType};
 impl<Cs> SpiErrorType for SpiDeviceWrapper<Cs> {
     type Error = spi::Error;
 }
-impl<Cs, Word: Copy + 'static> ehal::spi::SpiDevice<Word> for SpiDeviceWrapper<Cs> {
+impl<Cs> ehal::spi::SpiDevice<u8> for SpiDeviceWrapper<Cs> {
     /// Perform a transaction against the device.
     ///
     /// - Locks the bus
@@ -84,7 +84,7 @@ impl<Cs, Word: Copy + 'static> ehal::spi::SpiDevice<Word> for SpiDeviceWrapper<C
     ///
     /// On bus errors the implementation should try to deassert CS.
     /// If an error occurs while deasserting CS the bus error should take priority as the return value.
-    fn transaction(&mut self, operations: &mut [Operation<'_, Word>]) -> Result<(), Self::Error>{
+    fn transaction(&mut self, operations: &mut [Operation<'_, u8>]) -> Result<(), Self::Error>{
         todo!()
     }
 
@@ -94,7 +94,7 @@ impl<Cs, Word: Copy + 'static> ehal::spi::SpiDevice<Word> for SpiDeviceWrapper<C
     ///
     /// See also: [`SpiDevice::transaction`], [`SpiBus::read`]
     #[inline]
-    fn read(&mut self, buf: &mut [Word]) -> Result<(), Self::Error> {
+    fn read(&mut self, buf: &mut [u8]) -> Result<(), Self::Error> {
        // self.spi.read(buf)
        todo!() 
     }
@@ -105,9 +105,9 @@ impl<Cs, Word: Copy + 'static> ehal::spi::SpiDevice<Word> for SpiDeviceWrapper<C
     ///
     /// See also: [`SpiDevice::transaction`], [`SpiBus::write`]
     #[inline]
-    fn write(&mut self, buf: &[Word]) -> Result<(), Self::Error> {
-       //  self.spi.write(buf)
-       todo!()
+    fn write(&mut self, buf: &[u8]) -> Result<(), Self::Error> {
+       SpiBus::write(&mut self.spi, buf);
+       Ok(())
     }
 
     /// Do a transfer within a transaction.
@@ -116,7 +116,7 @@ impl<Cs, Word: Copy + 'static> ehal::spi::SpiDevice<Word> for SpiDeviceWrapper<C
     ///
     /// See also: [`SpiDevice::transaction`], [`SpiBus::transfer`]
     #[inline]
-    fn transfer(&mut self, read: &mut [Word], write: &[Word]) -> Result<(), Self::Error> {
+    fn transfer(&mut self, read: &mut [u8], write: &[u8]) -> Result<(), Self::Error> {
         todo!()
     }
 
@@ -126,7 +126,7 @@ impl<Cs, Word: Copy + 'static> ehal::spi::SpiDevice<Word> for SpiDeviceWrapper<C
     ///
     /// See also: [`SpiDevice::transaction`], [`SpiBus::transfer_in_place`]
     #[inline]
-    fn transfer_in_place(&mut self, buf: &mut [Word]) -> Result<(), Self::Error> {
+    fn transfer_in_place(&mut self, buf: &mut [u8]) -> Result<(), Self::Error> {
         todo!()
     }
 }
