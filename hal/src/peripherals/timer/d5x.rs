@@ -1,21 +1,18 @@
 //! Working with timer counter hardware
-use core::convert::Infallible;
-
 use atsamd_hal_macros::hal_cfg;
-use fugit::NanosDurationU32;
 
-use crate::ehal_02::timer::{CountDown, Periodic};
 use crate::pac::tc0::Count16 as Count16Reg;
 use crate::pac::{Mclk, Tc2, Tc3};
 #[hal_cfg(all("tc4", "tc5"))]
 use crate::pac::{Tc4, Tc5};
 #[hal_cfg(all("tc6", "tc7"))]
 use crate::pac::{Tc6, Tc7};
-use crate::timer_params::TimerParams;
-use crate::timer_traits::InterruptDrivenTimer;
 
 use crate::clock;
-use crate::time::{Hertz, Nanoseconds};
+use crate::time::Hertz;
+
+mod common;
+pub use common::Count16;
 
 #[cfg(feature = "async")]
 mod async_api;
@@ -42,61 +39,16 @@ pub struct TimerCounter<TC> {
     freq: Hertz,
     tc: TC,
 }
-
-/// This is a helper trait to make it easier to make most of the
-/// TimerCounter impl generic.  It doesn't make too much sense to
-/// to try to implement this trait outside of this module.
-pub trait Count16 {
-    fn count_16(&self) -> &Count16Reg;
-}
-
-impl<TC> Periodic for TimerCounter<TC> {}
-impl<TC> CountDown for TimerCounter<TC>
+impl<TC> TimerCounter<TC>
 where
     TC: Count16,
 {
-    type Time = Nanoseconds;
-
-    fn start<T>(&mut self, timeout: T)
-    where
-        T: Into<Self::Time>,
-    {
-        <Self as InterruptDrivenTimer>::start(self, timeout);
-    }
-
-    fn wait(&mut self) -> nb::Result<(), void::Void> {
-        nb::block! {
-            <Self as InterruptDrivenTimer>::wait(self)
-        }
-        .unwrap(); // wait() is Infallible
-        Ok(())
-    }
-}
-
-impl<TC> InterruptDrivenTimer for TimerCounter<TC>
-where
-    TC: Count16,
-{
-    /// Enable the interrupt generation for this hardware timer.
-    /// This method only sets the clock configuration to trigger
-    /// the interrupt; it does not configure the interrupt controller
-    /// or define an interrupt handler.
-    fn enable_interrupt(&mut self) {
-        self.tc.count_16().intenset().write(|w| w.ovf().set_bit());
-    }
-
-    fn start<T>(&mut self, timeout: T)
-    where
-        T: Into<NanosDurationU32>,
-    {
-        let params = TimerParams::new_ns(timeout.into(), self.freq);
-        let divider = params.divider;
-        let cycles = params.cycles;
-        let count = self.tc.count_16();
-
+    /// Starts the 16-bit timer, counting up in periodic mode.
+    fn start_timer(&mut self, divider: u16, cycles: u16) {
         // Disable the timer while we reconfigure it
-        count.ctrla().modify(|_, w| w.enable().clear_bit());
-        while count.syncbusy().read().enable().bit_is_set() {}
+        self.disable();
+
+        let count = self.tc.count_16();
 
         // Now that we have a clock routed to the peripheral, we
         // can ask it to perform a reset.
@@ -111,7 +63,7 @@ where
         });
 
         // Set TOP value for mfrq mode
-        count.cc(0).write(|w| unsafe { w.cc().bits(cycles as u16) });
+        count.cc(0).write(|w| unsafe { w.cc().bits(cycles) });
 
         // Enable Match Frequency Waveform generation
         count.wave().modify(|_, w| w.wavegen().mfrq());
@@ -133,23 +85,12 @@ where
         });
     }
 
-    fn wait(&mut self) -> nb::Result<(), Infallible> {
+    /// Disable the timer
+    fn disable(&mut self) {
         let count = self.tc.count_16();
-        if count.intflag().read().ovf().bit_is_set() {
-            // Writing a 1 clears the flag
-            count.intflag().modify(|_, w| w.ovf().set_bit());
-            Ok(())
-        } else {
-            Err(nb::Error::WouldBlock)
-        }
-    }
 
-    /// Disables interrupt generation for this hardware timer.
-    /// This method only sets the clock configuration to prevent
-    /// triggering the interrupt; it does not configure the interrupt
-    /// controller.
-    fn disable_interrupt(&mut self) {
-        self.tc.count_16().intenclr().write(|w| w.ovf().set_bit());
+        count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.syncbusy().read().enable().bit_is_set() {}
     }
 }
 
