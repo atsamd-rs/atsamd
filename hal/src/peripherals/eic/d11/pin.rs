@@ -57,12 +57,10 @@ where
     /// Note that whilst this function is executed, the EIC peripheral is disabled
     /// in order to write to the evctrl register
     pub fn enable_event(&mut self) {
-        self.chan.eic.ctrl().modify(|_, w| w.enable().clear_bit());
-        self.chan
-            .eic
-            .evctrl()
-            .modify(|r, w| unsafe { w.bits(r.bits() | (1 << P::ChId::ID)) });
-        self.chan.eic.ctrl().modify(|_, w| w.enable().set_bit());
+        self.chan.with_disable(|e| {
+            e.evctrl()
+                .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
+        });
     }
 
     pub fn enable_interrupt(&mut self) {
