@@ -118,7 +118,7 @@ struct Terminal<'a> {
     scroller: Scroller,
 }
 
-impl<'a> Terminal<'a> {
+impl Terminal<'_> {
     pub fn new(mut display: LCD) -> Self {
         // Clear the screen.
         let style = PrimitiveStyleBuilder::new()

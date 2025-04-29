@@ -11,7 +11,6 @@ use atsamd_hal::sercom::{IoSet4, Sercom7};
 use atsamd_hal::time::Hertz;
 use atsamd_hal::typelevel::NoneT;
 use display_interface_spi::SPIInterface;
-//  use display_interface::WriteOnlyDataCommand;
 use ili9341::{DisplaySize240x320, Ili9341, Orientation};
 
 use super::pins::aliases::*;
@@ -54,13 +53,13 @@ pub type LCD = Ili9341<SPIInterface<LcdSpiWrapper, LcdDc>, LcdReset>;
 
 pub use ili9341::Scroller;
 
-pub struct SpiDeviceWrapper<CS>{
+pub struct SpiDeviceWrapper<DC>{
     spi: LcdSpi,
-    dc: CS,
+    dc: DC,
 }
 
-impl<CS> SpiDeviceWrapper<CS> {
-    fn new(spi: LcdSpi, dc: CS) -> Self {
+impl<DC> SpiDeviceWrapper<DC> {
+    fn new(spi: LcdSpi, dc: DC) -> Self {
         Self { spi, dc }
     }
 }

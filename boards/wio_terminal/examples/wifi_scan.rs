@@ -142,7 +142,7 @@ fn main() -> ! {
             write_with_clear(
                 &mut display,
                 textbuffer.as_str(),
-                (150 / 6) as i32,
+                150 / 6,
                 Point::new(3, 30 + i as i32 * 12),
             );
             textbuffer.truncate(0);
