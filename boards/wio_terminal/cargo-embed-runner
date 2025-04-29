@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+# The binary is passed as the first argument
+
+ELF="$1"
+
+gdb-multiarch --batch "${ELF}" \
+  --ex "target remote localhost:3333" \
+  --ex "mon reset halt" \
+  --ex "load" \
+  --ex "mon reset" \
+  --ex "quit"
+
+  #  To spawn the semihosting
+  #  --ex "mon arm semihosting enable" \
+  #  --ex "mon arm semihosting_redirect tcp 2999" \
+
