@@ -1,4 +1,31 @@
+use super::{ChId, Channel};
+use crate::pac;
 mod pin;
+
+impl<Id: ChId, F> Channel<Id, F> {
+    /// Run the provided closure with the EIC peripheral disabled. The
+    /// enable-protected registers, such as CONFIGx, should be accessed through
+    /// this method.
+    ///
+    /// # Caution
+    ///
+    /// You should not re-enable the provided EIC PAC object inside the provided
+    /// closure.
+    fn with_disable(&mut self, fun: impl Fn(&mut pac::Eic)) {
+        self.eic.ctrl().modify(|_, w| w.enable().clear_bit());
+        self.enable_sync();
+        fun(&mut self.eic);
+        self.eic.ctrl().modify(|_, w| w.enable().set_bit());
+        self.enable_sync();
+    }
+
+    /// Busy-wait until SYNCBUSY.ENABLE clears
+    fn enable_sync(&mut self) {
+        while self.eic.status().read().syncbusy().bit_is_set() {
+            core::hint::spin_loop();
+        }
+    }
+}
 
 #[cfg(feature = "async")]
 pub(super) mod async_api {
