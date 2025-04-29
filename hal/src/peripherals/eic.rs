@@ -82,6 +82,9 @@ mod impls {}
 #[cfg(feature = "async")]
 pub use impls::async_api::*;
 
+#[hal_cfg("eic-d5x")]
+use super::clock::v2::{self, gclk::GclkId, osculp32k::OscUlp32kId, pclk::Pclk, rtcosc::RtcOsc};
+
 pub type Sense = pac::eic::config::Sense0select;
 
 /// Trait representing an EXTINT channel ID.
@@ -227,7 +230,7 @@ impl Eic {
     /// Create and initialize a new [`Eic`], and wire it up to the
     /// ultra-low-power 32kHz clock source.
     #[hal_cfg("eic-d5x")]
-    pub fn new(mclk: &mut pac::Mclk, _clock: EicClock, eic: pac::Eic) -> Self {
+    pub fn new(mclk: &mut pac::Mclk, _clock: &EicClock, eic: pac::Eic) -> Self {
         mclk.apbamask().modify(|_, w| w.eic_().set_bit());
 
         let mut eic = Self {
@@ -249,6 +252,44 @@ impl Eic {
         }
 
         eic
+    }
+
+    #[hal_cfg("eic-d5x")]
+    /// Switch the EIC to use the OSC32K clock
+    /// as a source. This enables it to run in deep-sleep
+    ///
+    /// In this mode, the maximum event frequency is limited to 16Khz
+    pub fn switch_to_osc32k(&mut self, _rtc: &RtcOsc<OscUlp32kId>) {
+        self.eic.ctrla().write(|w| w.enable().clear_bit());
+        self.sync();
+        self.eic.ctrla().write(|w| {
+            w.cksel().clk_ulp32k();
+            w.enable().set_bit()
+        });
+        self.sync();
+    }
+
+    #[hal_cfg("eic-d5x")]
+    /// Switch the EIC to use a GCLK source as its clock
+    /// source.
+    ///
+    /// In this mode, the peripheral cannot run in deep-sleep,
+    /// but its maximum event frequency is `F_GCLK/2`
+    pub fn switch_to_gclk<S: GclkId>(&mut self, _gclk: &Pclk<v2::pclk::ids::Eic, S>) {
+        self.eic.ctrla().write(|w| w.enable().clear_bit());
+        self.sync();
+        self.eic.ctrla().write(|w| {
+            w.cksel().clk_gclk();
+            w.enable().set_bit()
+        });
+        self.sync();
+    }
+
+    #[hal_cfg("eic-d5x")]
+    fn sync(&self) {
+        while self.eic.syncbusy().read().enable().bit_is_set() {
+            core::hint::spin_loop();
+        }
     }
 
     #[cfg(all(doc, feature = "async"))]
