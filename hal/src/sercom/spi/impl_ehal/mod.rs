@@ -224,8 +224,8 @@ where
     DataWidth: AsPrimitive<C::Word>,
 {
     #[inline]
-    fn read(&mut self, words: &mut [Word<C>]) -> Result<(), Self::Error> {
-        todo!()
+    fn read(&mut self, _words: &mut [Word<C>]) -> Result<(), Self::Error> {
+        Ok(())  // Nothing to do for TX only device
     }
 
     #[inline]
@@ -234,13 +234,15 @@ where
     }
 
     #[inline]
-    fn transfer(&mut self, read: &mut [Word<C>], write: &[Word<C>]) -> Result<(), Self::Error> {
-        todo!()
+    fn transfer(&mut self, _read: &mut [Word<C>], write: &[Word<C>]) -> Result<(), Self::Error> {
+        //  TODO: How to inform user about the fact that nothing was done?
+        self.write(write)
     }
 
     #[inline]
     fn transfer_in_place(&mut self, words: &mut [Word<C>]) -> Result<(), Self::Error> {
-        todo!()
+        //  TODO: How to inform user about the fact that nothing was done?
+        self.write(words)
     }
 
     #[inline]
