@@ -41,17 +41,6 @@ impl ButtonPins {
         let eic_clock = clocks.eic(&gclk1).unwrap();
         let mut eic = eic::Eic::new(mclk, eic_clock, eic);
 
-        //  eic.button_debounce_pins(&[
-        //      self.button1.id(),
-        //      self.button2.id(),
-        //      self.button3.id(),
-        //      self.switch_x.id(),
-        //      self.switch_y.id(),
-        //      self.switch_z.id(),
-        //      self.switch_u.id(),
-        //      self.switch_b.id(),
-        //  ]);
-
         // Unfortunately, the pin assigned to B1 shares the same
         // ExtInt line as up on the joystick. As such, we don't
         // support B1.
@@ -85,7 +74,6 @@ impl ButtonPins {
         b.enable_interrupt();
 
         ButtonController {
-            //  _eic: eic.finalize(),
             // b1,
             b2,
             b3,
@@ -117,7 +105,6 @@ pub struct ButtonEvent {
 }
 
 pub struct ButtonController {
-    //  _eic: eic::Eic::new(),
     // b1: ExtInt10<Button1>,
     b2: eic::ExtInt<Button2, eic::Ch11>,
     b3: eic::ExtInt<Button3, eic::Ch12>,
