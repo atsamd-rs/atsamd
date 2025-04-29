@@ -147,7 +147,7 @@ mod app {
 
         let (pclk_eic, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.eic, clocks.gclk0);
 
-        let eic_channels = Eic::new(&mut mclk, pclk_eic.into(), device.eic).split();
+        let eic_channels = Eic::new(&mut mclk, &pclk_eic.into(), device.eic).split();
         let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei(eic_channels.15);
         button.sense(Sense::Fall);
         button.debounce();
