@@ -243,7 +243,7 @@ fn load_peripheral_mapping(
                 } else {
                     peripheral.name.clone()
                 };
-                let combined_name = format!("{}-{}", name, variant);
+                let combined_name = format!("{name}-{variant}");
                 let devices = family
                     .pins
                     .keys()
