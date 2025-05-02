@@ -1,4 +1,4 @@
-name: Rust Formatting
+name: Check docs
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       - name: Install Rust
         run: |
           rustup set profile minimal
-          rustup override set nightly
-          rustup component add rustfmt
-      - name: Rustfmt
-        run: ./rustfmt.sh
+      - name: rustdoc
+        run: |
+          RUSTDOCFLAGS="-Dwarnings" cargo doc --no-deps -F samd21g,dma,async,usb,defmt,rtic
+          RUSTDOCFLAGS="-Dwarnings" cargo doc --no-deps -F samd51j,dma,async,usb,defmt,rtic,can
