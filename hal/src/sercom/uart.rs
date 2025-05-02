@@ -405,18 +405,19 @@
 //! ## Considerations when using `async` [`Uart`] with DMA <span class="stab portability" title="Available on crate feature `async` only"> <code>async</code></span> <span class="stab portability" title="Available on crate feature `dma` only"><code>dma</code></span>
 //!
 //! * An [`Uart`] struct must be turned into an [`UartFuture`] by calling
-//!   [`Uart::into_future`] before calling `with_dma_channel`. The DMA channel
-//!   itself must also be configured in async mode by using
+//!   [`Uart::into_future`] before calling `with_rx_dma_channel` or
+//!   `with_tx_dma_channel` . The DMA channel itself must also be configured in
+//!   async mode by using
 //!   [`DmaController::into_future`](crate::dmac::DmaController::into_future).
 //!   If a DMA channel is added to the [`Uart`] struct before it is turned into
 //!   an [`UartFuture`], it will not be able to use DMA in async mode.
 //!
 //! ```
 //! // This will work
-//! let uart = uart.into_future().with_dma_channels(rx_channel, tx_channel);
+//! let uart = uart.into_future().with_rx_dma_channel(rx_channel);
 //!
 //! // This won't
-//! let uart = uart.with_dma_channels(rx_channel, tx_channel).into_future();
+//! let uart = uart.with_rx_dma_channel(rx_channel).into_future();
 //! ```
 //!
 //! ### Safety considerations
