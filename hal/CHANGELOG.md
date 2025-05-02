@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.3](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.2...atsamd-hal-0.21.3) - 2025-05-02
+
+### Other
+
+- updated the following local packages: atsamd-hal-macros
+
 ## [0.21.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.1...atsamd-hal-0.21.2) - 2025-04-22
 
 ### Added
