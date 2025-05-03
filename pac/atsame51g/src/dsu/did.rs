@@ -179,7 +179,7 @@ impl crate::RegisterSpec for DidSpec {
 }
 #[doc = "`read()` method returns [`did::R`](R) reader structure"]
 impl crate::Readable for DidSpec {}
-#[doc = "`reset()` method sets DID to value 0x6181_0306"]
+#[doc = "`reset()` method sets DID to value 0x6181_0305"]
 impl crate::Resettable for DidSpec {
-    const RESET_VALUE: u32 = 0x6181_0306;
+    const RESET_VALUE: u32 = 0x6181_0305;
 }
