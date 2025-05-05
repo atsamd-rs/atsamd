@@ -1,12 +1,13 @@
 use atsamd_hal_macros::hal_cfg;
 
-use core::convert::Infallible;
-use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::ehal::digital::{ErrorType, InputPin};
+use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
+use crate::evsys::EvSysChannel;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
+use core::convert::Infallible;
 
 /// The pad macro defines the given EIC pin and implements EicPin for the
 /// given pins. The EicPin implementation will configure the pin for the
@@ -52,12 +53,28 @@ where
     P: EicPin,
     Id: ChId,
 {
-    /// Configure the eic with options for this external interrupt
+    pub fn enable_evsys_src<EvId: crate::evsys::ChId>(
+        &mut self,
+        chan: EvSysChannel<EvId, crate::evsys::Uninitialized>,
+    ) -> EvSysChannel<EvId, crate::evsys::GenReady> {
+        // EIC External ISR 0..15 = 0x12 - 0x21
+        self.enable_event();
+        chan.register_generator((P::ChId::ID as u8) + 0x0C)
+    }
+
+    /// Enables event output for the event system for this channel.
+    ///
+    /// Note that this function does disable the EIC peripheral briefely in order
+    /// to write to the evctrl register.
     pub fn enable_event(&mut self) {
+        self.chan.eic.ctrl().write(|w| w.enable().clear_bit());
+        self.sync();
         self.chan
             .eic
             .evctrl()
             .modify(|r, w| unsafe { w.bits(r.bits() | (1 << P::ChId::ID)) });
+        self.chan.eic.ctrl().write(|w| w.enable().set_bit());
+        self.sync();
     }
 
     pub fn enable_interrupt(&mut self) {
@@ -133,6 +150,12 @@ where
             }
         });
     }
+
+    fn sync(&self) {
+        while self.chan.eic.status().read().syncbusy().bit_is_set() {
+            core::hint::spin_loop();
+        }
+    }
 }
 
 impl<P, C, Id, F> InputPin_02 for ExtInt<P, Id, F>
@@ -153,7 +176,8 @@ where
 }
 
 impl<P, Id, F> InputPin for ExtInt<P, Id, F>
-where Self: ErrorType,
+where
+    Self: ErrorType,
     P: EicPin,
     Id: ChId,
 {
