@@ -42,7 +42,7 @@ async fn main(_s: embassy_executor::Spawner) {
     let gclk2 = clocks.get_gclk(ClockGenId::Gclk2).unwrap();
     let eic_clock = clocks.eic(&gclk2).unwrap();
 
-    let eic_channels = Eic::new(&mut peripherals.mclk, eic_clock, peripherals.eic).split();
+    let eic_channels = Eic::new(&mut peripherals.mclk, &eic_clock, peripherals.eic).split();
 
     let button: Pin<_, PullUpInterrupt> = pins.d0.into();
     let mut extint = eic_channels.7.with_pin(button).into_future(Irqs);

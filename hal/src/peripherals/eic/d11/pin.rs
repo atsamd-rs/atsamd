@@ -1,12 +1,12 @@
 use atsamd_hal_macros::hal_cfg;
 
-use core::convert::Infallible;
-use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::ehal::digital::{ErrorType, InputPin};
+use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
+use core::convert::Infallible;
 
 /// The pad macro defines the given EIC pin and implements EicPin for the
 /// given pins. The EicPin implementation will configure the pin for the
@@ -52,12 +52,15 @@ where
     P: EicPin,
     Id: ChId,
 {
-    /// Configure the eic with options for this external interrupt
+    /// Enables the event output of the channel for the event system.
+    ///
+    /// Note that whilst this function is executed, the EIC peripheral is disabled
+    /// in order to write to the evctrl register
     pub fn enable_event(&mut self) {
-        self.chan
-            .eic
-            .evctrl()
-            .modify(|r, w| unsafe { w.bits(r.bits() | (1 << P::ChId::ID)) });
+        self.chan.with_disable(|e| {
+            e.evctrl()
+                .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
+        });
     }
 
     pub fn enable_interrupt(&mut self) {
@@ -93,44 +96,48 @@ where
     }
 
     pub fn sense(&mut self, sense: Sense) {
-        // Which of the two config blocks this eic config is in
-        let offset = (P::ChId::ID >> 3) & 0b0001;
-        let config = &self.chan.eic.config(offset);
+        self.chan.with_disable(|e| {
+            // Which of the two config blocks this eic config is in
+            let offset = (P::ChId::ID >> 3) & 0b0001;
+            let config = &e.config(offset);
 
-        config.modify(|_, w| unsafe {
-            // Which of the eight eic configs in this config block
-            match P::ChId::ID & 0b111 {
-                0b000 => w.sense0().bits(sense as u8),
-                0b001 => w.sense1().bits(sense as u8),
-                0b010 => w.sense2().bits(sense as u8),
-                0b011 => w.sense3().bits(sense as u8),
-                0b100 => w.sense4().bits(sense as u8),
-                0b101 => w.sense5().bits(sense as u8),
-                0b110 => w.sense6().bits(sense as u8),
-                0b111 => w.sense7().bits(sense as u8),
-                _ => unreachable!(),
-            }
+            config.modify(|_, w| unsafe {
+                // Which of the eight eic configs in this config block
+                match P::ChId::ID & 0b111 {
+                    0b000 => w.sense0().bits(sense as u8),
+                    0b001 => w.sense1().bits(sense as u8),
+                    0b010 => w.sense2().bits(sense as u8),
+                    0b011 => w.sense3().bits(sense as u8),
+                    0b100 => w.sense4().bits(sense as u8),
+                    0b101 => w.sense5().bits(sense as u8),
+                    0b110 => w.sense6().bits(sense as u8),
+                    0b111 => w.sense7().bits(sense as u8),
+                    _ => unreachable!(),
+                }
+            });
         });
     }
 
     pub fn filter(&mut self, filter: bool) {
-        // Which of the two config blocks this eic config is in
-        let offset = (P::ChId::ID >> 3) & 0b0001;
-        let config = &self.chan.eic.config(offset);
+        self.chan.with_disable(|e| {
+            // Which of the two config blocks this eic config is in
+            let offset = (P::ChId::ID >> 3) & 0b0001;
+            let config = &e.config(offset);
 
-        config.modify(|_, w| {
-            // Which of the eight eic configs in this config block
-            match P::ChId::ID & 0b111 {
-                0b000 => w.filten0().bit(filter),
-                0b001 => w.filten1().bit(filter),
-                0b010 => w.filten2().bit(filter),
-                0b011 => w.filten3().bit(filter),
-                0b100 => w.filten4().bit(filter),
-                0b101 => w.filten5().bit(filter),
-                0b110 => w.filten6().bit(filter),
-                0b111 => w.filten7().bit(filter),
-                _ => unreachable!(),
-            }
+            config.modify(|_, w| {
+                // Which of the eight eic configs in this config block
+                match P::ChId::ID & 0b111 {
+                    0b000 => w.filten0().bit(filter),
+                    0b001 => w.filten1().bit(filter),
+                    0b010 => w.filten2().bit(filter),
+                    0b011 => w.filten3().bit(filter),
+                    0b100 => w.filten4().bit(filter),
+                    0b101 => w.filten5().bit(filter),
+                    0b110 => w.filten6().bit(filter),
+                    0b111 => w.filten7().bit(filter),
+                    _ => unreachable!(),
+                }
+            });
         });
     }
 }
@@ -153,7 +160,8 @@ where
 }
 
 impl<P, Id, F> InputPin for ExtInt<P, Id, F>
-where Self: ErrorType,
+where
+    Self: ErrorType,
     P: EicPin,
     Id: ChId,
 {
