@@ -476,8 +476,16 @@ impl<S: Sercom> Registers<S> {
     /// Continue a read operation that was issued before with
     /// [`do_read`](Self::do_read) or [`continue_read`](Self::continue_read)
     /// without a repeated start condition in between
+    ///
+    /// Note, that the previous read must have been non-empty, otherwise a byte
+    /// will be skipped!
     #[inline]
     pub(super) fn continue_read(&mut self, buffer: &mut [u8]) -> Result<(), Error> {
+        // The last call to `fill_buffer` did not ACK the last received byte to
+        // allow sending a NACK. Since reading is now continued, however, the
+        // last byte needs to be ACKed, otherwise it will be read twice.
+        self.cmd_read();
+
         self.fill_buffer(buffer)
     }
 
