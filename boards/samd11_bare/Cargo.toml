@@ -1,13 +1,15 @@
 [package]
 authors = ["Jesse Braham <jesse@beta7.io>"]
 description = "Support crate for the ATSAMD11C"
-edition = "2018"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
-license = "MIT OR Apache-2.0"
 name = "samd11_bare"
-readme = "README.md"
-repository = "https://github.com/atsamd-rs/atsamd"
 version = "0.14.3"
+edition = "2018"
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 # for cargo flash
 [package.metadata]

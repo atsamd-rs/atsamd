@@ -5,14 +5,16 @@ authors = [
 ]
 categories = ["embedded", "hardware-support", "no-std"]
 description = "Board Support crate for the Adafruit PyGamer"
-edition = "2021"
 exclude = ["assets"]
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
-license = "MIT OR Apache-2.0"
 name = "pygamer"
-readme = "README.md"
-repository = "https://github.com/atsamd-rs/atsamd"
 version = "0.14.3"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 cortex-m = {version = "0.7", features = ["critical-section-single-core"]}

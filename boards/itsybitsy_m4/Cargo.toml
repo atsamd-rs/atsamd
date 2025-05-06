@@ -8,10 +8,12 @@ authors = [
 description = "Board Support crate for the Adafruit ItsyBitsy M4 Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-edition = "2021"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 bitbang-hal = "0.3"

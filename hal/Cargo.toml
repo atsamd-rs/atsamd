@@ -13,14 +13,16 @@ authors = [
 categories = ["embedded", "hardware-support", "no-std"]
 description = "HAL and Peripheral access API for ATSAMD11, ATSAMD21, ATSAMD51, ATSAME51, ATSAME53 and ATSAME54 microcontrollers"
 documentation = "https://docs.rs/crate/atsamd-hal/"
-edition = "2021"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
-license = "MIT OR Apache-2.0"
 name = "atsamd-hal"
-readme = "README.md"
-repository = "https://github.com/atsamd-rs/atsamd"
-rust-version = "1.77.2"
 version = "0.21.2"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
 
 [package.metadata.docs.rs]
 features = ["samd21g", "samd21g-rt", "usb", "dma", "async", "rtic"]

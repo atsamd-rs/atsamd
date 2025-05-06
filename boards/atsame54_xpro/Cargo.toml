@@ -5,13 +5,15 @@ authors = [
 ]
 categories = ["embedded", "hardware-support", "no-std"]
 description = "Board Support crate for the SAM E54 Xplained Pro Evaluation Kit"
-edition = "2021"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
-license = "MIT OR Apache-2.0"
 name = "atsame54_xpro"
-readme = "README.md"
-repository = "https://github.com/atsamd-rs/atsamd"
 version = "0.11.3"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies.cortex-m-rt]
 optional = true

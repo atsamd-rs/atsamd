@@ -8,6 +8,20 @@ members = [
 	"boards/*",
 ]
 
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+rust-version = "1.77.2"
+
+[workspace.lints.rust]
+# TODO: add any workspace-wide rust lint configurations
+# TODO: enable to make identifier usage consistent per file
+# unused_qualifications = "warn"
+
+[workspace.lints.clippy]
+# TODO: add any workspace-wide clippy lint configurations
+
 [profile.dev]
 debug = true
 opt-level = 0

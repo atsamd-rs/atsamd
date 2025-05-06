@@ -4,10 +4,12 @@ version = "0.11.1"
 authors = ["Paul Sajna <paulsajna@gmail.com>"]
 description = "Board Support crate for the Adafruit Circuit Playground Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
 edition = "2018"
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies.cortex-m-rt]
 version = "0.7"
