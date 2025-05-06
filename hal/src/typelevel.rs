@@ -152,11 +152,7 @@
 //! parameters in place of struct fields to represent the unknown types.
 //!
 //! ```
-//! struct Container<A, B>
-//! where
-//!     A: EnumOne,
-//!     B: EnumTwo,
-//! {
+//! struct Container<A: EnumOne, B: EnumTwo> {
 //!     a: PhantomData<A>,
 //!     b: PhantomData<B>,
 //! }
@@ -503,13 +499,7 @@
 //! imagine a container that stores two completely generic `Pin` types.
 //!
 //! ```
-//! struct TwoPins<I1, I2, M1, M2>
-//! where
-//!     I1: PinId,
-//!     I2: PinId,
-//!     M1: PinMode,
-//!     M2: PinMode,
-//! {
+//! struct TwoPins<I1: PinId, I2: PinId, M1: PinMode, M2: PinMode> {
 //!     pin1: Pin<I1, M1>,
 //!     pin2: Pin<I2, M2>,
 //! }
@@ -524,11 +514,7 @@
 //! with a single type parameter.
 //!
 //! ```
-//! struct TwoPins<P1, P2>
-//! where
-//!     P1: AnyPin,
-//!     P2: AnyPin,
-//! {
+//! struct TwoPins<P1: AnyPin, P2: AnyPin> {
 //!     pin1: P1,
 //!     pin2: P2,
 //! }

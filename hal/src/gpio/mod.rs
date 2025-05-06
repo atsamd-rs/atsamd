@@ -16,7 +16,8 @@
 //!
 //! ## Features
 //!
-//! - Converting between pin modes no longer requires access to the `Port` type.
+//! - Converting between pin modes no longer requires access to the
+//!   [`Port`](crate::pac::Port) type.
 //!
 //! As a consequence, pin mode conversions can now be implemented using
 //! [`From`]/[`Into`].
