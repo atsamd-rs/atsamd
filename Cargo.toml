@@ -22,7 +22,6 @@ inherits = "dev"
 opt-level = 2
 lto = "thin"
 
-
 [profile.release]
 lto = true
 opt-level = "s"

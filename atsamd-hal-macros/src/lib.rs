@@ -4,7 +4,7 @@
 //!
 //! The main purpose of this crate is to separate the task of writing the code
 //! to support peripherals of the atsamd families from the task of figuring out
-//! which specific devices has those peripherals.
+//! which specific devices have those peripherals.
 //!
 //! The actual mapping of devices to peripherals is specified in the
 //! `devices.yaml` file. In the `atsamd-hal` crate you then only need to care
@@ -40,8 +40,8 @@ use parsing::{eat_attribute, eat_eof, eat_group, eat_hal_expr, eat_operator, eat
 /// It can be used like `#[hal_cfg([peripheral expression])]`.
 ///
 /// The macro will look up all devices that fulfill the expression and expand
-/// the macro into a cfg attribute of the form `#[cfg(any(feature = "device1",
-/// feature = "device2", ...)]`.
+/// the macro into a cfg attribute of the form
+/// `#[cfg(any(feature = "device1", feature = "device2", ...)]`.
 #[proc_macro_attribute]
 pub fn hal_cfg(args: TokenStream, input: TokenStream) -> TokenStream {
     hal_cfg_impl(args).map_or_else(
@@ -61,7 +61,7 @@ fn hal_cfg_impl(args: TokenStream) -> Result<Group, Error> {
     Ok(cfgs)
 }
 
-/// Macro which expands to a `mod foo;` item with different paths for each
+/// Macro, which expands to a `mod foo;` item with different paths for each
 /// device.
 ///
 /// It can be used like this:
@@ -92,7 +92,7 @@ fn hal_cfg_impl(args: TokenStream) -> Result<Group, Error> {
 /// ```
 ///
 /// Ideally you would be to write `pub mod calibration;` instead of
-/// `pub mod calibration {}`, but unfortunately non-inline modules are not
+/// `pub mod calibration {}`, but unfortunately, non-inline modules are not
 /// currently supposed in proc macros. See
 /// [rust#54727](https://github.com/rust-lang/rust/issues/54727) for details.
 #[proc_macro_attribute]
@@ -156,7 +156,7 @@ fn hal_module_impl(args: TokenStream, input: TokenStream) -> Result<TokenStream,
 
 /// Helper macro to allow using `#[hal_cfg(..)]` macro in more places
 ///
-/// Normally the `#[cfg(..)]` macro is allowed in many more places than
+/// Normally, the `#[cfg(..)]` macro is allowed in many more places than
 /// proc-macros, such as directly on a statement. This mitigates that
 /// restriction.
 ///
@@ -170,7 +170,7 @@ fn hal_module_impl(args: TokenStream, input: TokenStream) -> Result<TokenStream,
 /// }
 /// ```
 ///
-/// This works, because attributes are allowed on the outer item.
+/// This works because attributes are allowed on the outer item.
 ///
 /// The `#[hal_macro_helper]` will search through the item and replace all
 /// instances of the `#[hal_cfg(..)]` attribute with the corresponding
