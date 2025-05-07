@@ -13,38 +13,32 @@
 //!
 //! An SPI peripheral can use up to four [`Pin`]s as [`Sercom`] pads. However,
 //! only certain `Pin` combinations are acceptable. All `Pin`s must be mapped to
-//! the same `Sercom`, and for SAMx5x chips, they must also belong to the same
-//! `IoSet`. This HAL makes it impossible to use invalid `Pin` combinations, and
-//! the [`Pads`] struct is responsible for enforcing these constraints.
+//! the same `Sercom`, and for SAMx5x chips they must also belong to the same
+//! [`IoSet`]. This HAL makes it impossible to use invalid `Pin` combinations,
+//! and the [`Pads`] struct is responsible for enforcing these constraints.
 //!
-//! A `Pads` type takes five or six type parameters, depending on the chip. The
-//! first type always specifies the `Sercom`. On SAMx5x chips, the second type
-//! specifies the `IoSet`. The remaining four type parameters, `DI`, `DO`, `CK`
-//! and `SS`, represent the Data In, Data Out, Sclk and SS pads respectively.
-//! Each of these type parameters is an [`OptionalPad`] and defaults to
-//! [`NoneT`]. A `Pad` is just a `Pin` configured in the correct [`PinMode`]
-//! that implements [`IsPad`]. The [`bsp_pins!`](crate::bsp_pins) macro can be
-//! used to define convenient type aliases for `Pad` types.
+//! A `Pads` type takes five parameters: the first specifies the `Sercom`, and
+//! the remaining four type parameters, `DI`, `DO`, `CK` and `SS`, represent the
+//! Data In, Data Out, Sclk and SS pads respectively. Each of these type
+//! parameters is an [`OptionalPad`] and defaults to [`NoneT`]. A `Pad` is just
+//! a `Pin` configured in the correct [`PinMode`] that implements [`IsPad`]. The
+//! [`bsp_pins!`](crate::bsp_pins) macro can be used to define convenient type
+//! aliases for `Pad` types.
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09, AlternateC};
 //! use atsamd_hal::sercom::{Sercom0, spi};
 //! use atsamd_hal::typelevel::NoneT;
 //!
-//! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::pad::IoSet1;
-//!
 //! type Miso = Pin<PA08, AlternateC>;
 //! type Sclk = Pin<PA09, AlternateC>;
 //!
-//! // SAMD11/SAMD21 version
 //! type Pads = spi::Pads<Sercom0, Miso, NoneT, Sclk>;
-//! // SAMx5x version
-//! type Pads = spi::Pads<Sercom0, IoSet1, Miso, NoneT, Sclk>;
 //! ```
 //!
 //! [`enable`]: Config::enable
 //! [`gpio`]: crate::gpio
+//! [`IoSet`]: crate::sercom::pad::IoSet
 //! [`Pin`]: crate::gpio::pin::Pin
 //! [`PinId`]: crate::gpio::pin::PinId
 //! [`PinMode`]: crate::gpio::pin::PinMode
@@ -59,13 +53,7 @@
 //! use atsamd_hal::sercom::{Sercom0, spi};
 //! use atsamd_hal::typelevel::NoneT;
 //!
-//! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::pad::IoSet1;
-//!
-//! // SAMD21 version
 //! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
-//! // SAMx5x version
-//! type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! ```
 //!
 //! Instances of `Pads` are created using the builder pattern. Start by creating
@@ -80,18 +68,10 @@
 //! use atsamd_hal::gpio::Pins;
 //! use atsamd_hal::sercom::{Sercom0, spi};
 //!
-//! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::pad::IoSet1;
-//!
 //! let mut peripherals = Peripherals::take().unwrap();
 //! let pins = Pins::new(peripherals.PORT);
-//! // SAMD21 version
+//!
 //! let pads = spi::Pads::<Sercom0>::default()
-//!     .sclk(pins.pa09)
-//!     .data_in(pins.pa08)
-//!     .data_out(pins.pa11);
-//! // SAMx5x version
-//! let pads = spi::Pads::<Sercom0, IoSet1>::default()
 //!     .sclk(pins.pa09)
 //!     .data_in(pins.pa08)
 //!     .data_out(pins.pa11);
@@ -126,14 +106,13 @@
 //!
 //! // SAMx5x-specific imports
 //! use atsamd_hal::sercom::spi::lengths::U2;
-//! use atsamd_hal::sercom::pad::IoSet1;
+//!
+//! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
 //!
 //! // SAMD11/SAMD21 version
-//! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
 //! type Config = spi::Config<Pads, Master, NineBit>;
 //!
 //! // SAMx5x version
-//! type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! type Config = spi::Config<Pads, Master, U2>;
 //! ```
 //!
@@ -223,16 +202,15 @@
 //!
 //! // SAMx5x-specific imports
 //! use atsamd_hal::sercom::spi::lengths::U2;
-//! use atsamd_hal::sercom::pad::IoSet1;
+//!
+//! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
 //!
 //! // SAMD11/SAMD21 version
-//! type Pads = spi::PadsFromIds<Sercom0, PA08, NoneT, PA09>;
 //! type Config = spi::Config<Pads, Master, NineBit>;
-//! type Spi = spi::Spi<Config, Rx>;
 //!
 //! // SAMx5x version
-//! type Pads = spi::PadsFromIds<Sercom0, IoSet1, PA08, NoneT, PA09>;
 //! type Config = spi::Config<Pads, Master, U2>;
+//!
 //! type Spi = spi::Spi<Config, Rx>;
 //! ```
 //!
