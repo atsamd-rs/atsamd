@@ -11,20 +11,20 @@
 //! # [`Pads`]
 //!
 //! A [`Sercom`] can use up to four [`Pin`]s as peripheral [`Pad`]s, but only
-//! certain [`Pin`] combinations are acceptable. In particular, all [`Pin`]s
-//! must be mapped to the same `Sercom` (see the datasheet). This HAL makes it
-//! impossible to use invalid [`Pin`]/[`Pad`] combinations, and the [`Pads`]
-//! struct is responsible for enforcing these constraints.
+//! certain [`Pin`] combinations are acceptable. All [`Pin`]s must be mapped to
+//! the same `Sercom` (see the datasheet). SAMx5x chips also require that
+//! [`Pin`]s must be in the same [`IoSet`]. This HAL makes it impossible to use
+//! invalid [`Pin`]/[`Pad`] combinations, and the [`Pads`] struct is responsible
+//! for enforcing these constraints.
 //!
 //!
-//! A `Pads` type takes five or six type parameters, depending on the chip.The
-//! first type always specifies the `Sercom`. On SAMx5x chips, the second type
-//! specifies the `IoSet`. The remaining four, `DI`, `DO`, `CK` and `SS`,
-//! represent the Data In, Data Out, Sclk and SS pads respectively. Each of the
-//! remaining type parameters is an [`OptionalPad`] and defaults to [`NoneT`]. A
-//! [`Pad`] is just a [`Pin`] configured in the correct [`PinMode`] that
-//! implements [`IsPad`]. The [`bsp_pins!`](crate::bsp_pins) macro can be used
-//! to define convenient type aliases for [`Pad`] types.
+//! A `Pads` type takes five type parameters, the first type specifies the
+//! `Sercom`, `DI`, `DO`, `CK` and `SS`, represent the Data In, Data Out, Sclk
+//! and SS pads respectively. Each of the pad type parameters is an
+//! [`OptionalPad`] and defaults to [`NoneT`]. A [`Pad`] is just a [`Pin`]
+//! configured in the correct [`PinMode`] that implements [`IsPad`]. The
+//! [`bsp_pins!`](crate::bsp_pins) macro can be used to define convenient type
+//! aliases for [`Pad`] types.
 //!
 //! ```
 //! use atsamd_hal::gpio::{PA08, PA09, AlternateC};
@@ -500,7 +500,7 @@
 //! [`disable`]: Uart::disable
 //! [`reconfigure`]: Uart::reconfigure
 //! [`bsp_pins`]: crate::bsp_pins
-//! [`Pin`]: crate::gpio::pin::Pin
+//! [`IoSet`]: crate::sercom::pad::IoSet
 //! [`Pin`]: crate::gpio::pin::Pin
 //! [`PinId`]: crate::gpio::pin::PinId
 //! [`PinMode`]: crate::gpio::pin::PinMode

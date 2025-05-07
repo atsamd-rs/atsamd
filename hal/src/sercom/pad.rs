@@ -272,9 +272,21 @@ mod ioset {
 
     /// Type-level enum representing a SERCOM IOSET
     ///
+    /// The SAM D5x/E5x has particular sets of [`Pin`]s that are allowed to be
+    /// used together for each [`Sercom`], and `Pin`s from different sets cannot
+    /// be used together.  The valid combinations of `Pin`s are called IOSETs
+    /// (or IO SETs) in the datasheet.  Additionally, some undocumented sets are
+    /// used in commercially available boards (such as Adafruit's PyGamer and
+    /// Feather M4).  This `IoSet` trait is used to constrain the various `Pads`
+    /// types ([`spi::Pads`], [`uart::Pads`], and [`i2c::Pads`]) to only contain
+    /// valid documented or undocumented sets of `Pin`s.
+    ///
     /// See the [type-level enum] documentation for more details on the pattern.
     /// Typenum unsigned integers are used to make IoSets comparable
     ///
+    /// [`spi::Pads`]: crate::sercom::spi::Pads
+    /// [`uart::Pads`]: crate::sercom::uart::Pads
+    /// [`i2c::Pads`]: crate::sercom::i2c::Pads
     /// [type-level enum]: crate::typelevel#type-level-enum
     pub trait IoSet: Sealed {
         type Order;

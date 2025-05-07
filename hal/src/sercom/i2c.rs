@@ -10,36 +10,28 @@
 //! # [`Pads`]
 //!
 //! A [`Sercom`] uses two [`Pin`]s as peripheral [`Pad`]s, but only certain
-//! [`Pin`] combinations are acceptable. In particular, all [`Pin`]s must be
-//! mapped to the same [`Sercom`], and SDA is always [`Pad0`], while SCL is
-//! always [`Pad1`] (see the datasheet). This HAL makes it impossible to use
-//! invalid [`Pin`]/[`Pad`] combinations, and the [`Pads`] struct is responsible
-//! for enforcing these constraints.
+//! [`Pin`] combinations are acceptable. All [`Pin`]s must be mapped to the same
+//! [`Sercom`], and SDA is always [`Pad0`], while SCL is always [`Pad1`] (see
+//! the datasheet). SAMx5x chips have an additional constraint that [`Pin`]s
+//! must be in the same [`IoSet`].  This HAL makes it impossible to use invalid
+//! [`Pin`]/[`Pad`] combinations, and the [`Pads`] struct is responsible for
+//! enforcing these constraints.
 //!
-//!
-//! A [`Pads`] type takes three or four type parameters, depending on the chip.
-//! The first type always specifies the [`Sercom`]. On SAMx5x chips, the second
-//! type specifies the `IoSet`. The remaining two, `SDA` and `SCL` represent the
-//! SDA and SCL pads respectively. A [`Pad`] is just a [`Pin`] configured in the
-//! correct [`PinMode`] that implements [`IsPad`]. The
-//! [`bsp_pins!`](crate::bsp_pins) macro can be used to define convenient type
-//! aliases for [`Pad`] types.
+//! A [`Pads`] type takes three type parameters. The first type specifies the
+//! [`Sercom`], `SDA` and `SCL` represent the SDA and SCL pads respectively. A
+//! [`Pad`] is just a [`Pin`] configured in the correct [`PinMode`] that
+//! implements [`IsPad`]. The [`bsp_pins!`](crate::bsp_pins) macro can be used
+//! to define convenient type aliases for [`Pad`] types.
 //!
 //! ```no_run
 //! use atsamd_hal::gpio::{PA08, PA09, AlternateC};
 //! use atsamd_hal::sercom::{Sercom0, i2c};
 //! use atsamd_hal::typelevel::NoneT;
 //!
-//! // SAMx5x-specific imports
-//! use atsamd_hal::sercom::pad::IoSet1;
-//!
 //! type Sda = Pin<PA08, AlternateC>;
 //! type Scl = Pin<PA09, AlternateC>;
 //!
-//! // SAMD11/SAMD21 version
 //! type Pads = i2c::Pads<Sercom0, Sda, Scl>;
-//! // SAMx5x version
-//! type Pads = i2c::Pads<Sercom0, IoSet1, Sda, Scl>;
 //! ```
 //!
 //! Alternatively, you can use the [`PadsFromIds`] alias to define a set of
@@ -353,6 +345,7 @@
 //! [`Pad0`]: crate::sercom::pad::Pad0
 //! [`Pad1`]: crate::sercom::pad::Pad1
 //! [`Pad`]: crate::sercom::pad::Pad
+//! [`IoSet`]: crate::sercom::pad::IoSet
 //! [`IsPad`]: crate::sercom::pad::IsPad
 //! [`PadNum`]: crate::sercom::pad::PadNum
 //! [`Pin`]: crate::gpio::pin::Pin
