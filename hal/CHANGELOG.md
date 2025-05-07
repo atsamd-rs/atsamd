@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.3](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.2...atsamd-hal-0.21.3) - 2025-05-07
+
+### Documentation
+
+- Fix inconsistency in UART+async+DMA docs ([#849](https://github.com/atsamd-rs/atsamd/pull/849))
+
+### Fixed
+
+- *(i2c)* Acknowledge last byte when continuing read ([#859](https://github.com/atsamd-rs/atsamd/pull/859))
+
 ## [0.21.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.1...atsamd-hal-0.21.2) - 2025-04-22
 
 ### Added
