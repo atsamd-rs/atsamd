@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.5](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.4...atsamd-hal-macros-0.2.5) - 2025-05-07
+
+### Other
+
+- Satisfy some clippy lints
+
 ## [0.2.4](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.3...atsamd-hal-macros-0.2.4) - 2025-04-22
 
 ### Added
