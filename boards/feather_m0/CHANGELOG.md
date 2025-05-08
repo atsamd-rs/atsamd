@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.5](https://github.com/atsamd-rs/atsamd/compare/feather_m0-0.18.4...feather_m0-0.18.5) - 2025-05-08
+
+### Other
+
+- updated the following local packages: atsamd-hal
+
 ## [0.18.4](https://github.com/atsamd-rs/atsamd/compare/feather_m0-0.18.3...feather_m0-0.18.4) - 2025-05-07
 
 ### Other
