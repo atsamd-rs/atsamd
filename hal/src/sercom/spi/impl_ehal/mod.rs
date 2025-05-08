@@ -212,3 +212,41 @@ where
         Ok(())
     }
 }
+
+/// [`SpiBus`] implementation for [`Spi`], using word-by-word transfers.
+impl<P, M, C> SpiBus<Word<C>> for Spi<Config<P, M, C>, Tx>
+where
+    Config<P, M, C>: ValidConfig,
+    P: ValidPads,
+    M: MasterMode,
+    C: Size + 'static,
+    C::Word: PrimInt + AsPrimitive<DataWidth> + Copy,
+    DataWidth: AsPrimitive<C::Word>,
+{
+    #[inline]
+    fn read(&mut self, _words: &mut [Word<C>]) -> Result<(), Self::Error> {
+        //  There is nothing to do for Tx configured device
+        Ok(())
+    }
+
+    #[inline]
+    fn write(&mut self, words: &[Word<C>]) -> Result<(), Self::Error> {
+        self.write_word_by_word(words)
+    }
+
+    #[inline]
+    fn transfer(&mut self, _read: &mut [Word<C>], write: &[Word<C>]) -> Result<(), Self::Error> {
+        self.write_word_by_word(write)
+    }
+
+    #[inline]
+    fn transfer_in_place(&mut self, words: &mut [Word<C>]) -> Result<(), Self::Error> {
+        self.write_word_by_word(words)
+    }
+
+    #[inline]
+    fn flush(&mut self) -> Result<(), Error> {
+        self.flush_tx();
+        Ok(())
+    }
+}
