@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.11.5](https://github.com/atsamd-rs/atsamd/compare/atsame54_xpro-0.11.4...atsame54_xpro-0.11.5) - 2025-05-08
+## [0.12.0](https://github.com/atsamd-rs/atsamd/compare/atsame54_xpro-0.11.4...atsame54_xpro-0.12.0) - 2025-05-08
 
 ### Added
 

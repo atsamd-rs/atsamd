@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.21.4](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.3...atsamd-hal-0.21.4) - 2025-05-08
+## [0.22.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.3...atsamd-hal-0.22.0) - 2025-05-08
 
 ### Added
 
-- Refactor IoSet trait using sorted HList
+- [**breaking**] Refactor IoSet trait using sorted HList.
+
+    SERCOM peripherals no longer need to specify the IoSet inside their `Pads` type. It is checked automatically and
+    transparently by the compiler. For example,
+
+    ```diff
+    - // From this
+    - pub type I2cPads = i2c::Pads<I2cSercom, IoSet1, Sda, Scl>;
+    + // To this
+    + pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
+    ```
 
 ### Documentation
 
