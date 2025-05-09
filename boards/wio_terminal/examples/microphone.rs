@@ -94,8 +94,8 @@ fn main() -> ! {
     user_led.set_low().unwrap();
 
     loop {
-        let mut min = core::f32::INFINITY;
-        let mut max = core::f32::NEG_INFINITY;
+        let mut min = f32::INFINITY;
+        let mut max = f32::NEG_INFINITY;
         let mut sum = 0f32;
         // Though the ADC sampling rate is set to 250[kSPS] according to the comment in
         // the adc.rs, actual sampling rate seems 83.333[kSPS], which is 1/3 of
@@ -141,7 +141,7 @@ struct Terminal<'a> {
     display: wio::LCD,
 }
 
-impl<'a> Terminal<'a> {
+impl Terminal<'_> {
     pub fn new(mut display: wio::LCD) -> Self {
         // Clear the screen.
         let style = PrimitiveStyleBuilder::new()

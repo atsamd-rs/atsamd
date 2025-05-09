@@ -186,7 +186,7 @@ struct Terminal<'a> {
     display: wio::LCD,
 }
 
-impl<'a> Terminal<'a> {
+impl Terminal<'_> {
     pub fn new(mut display: wio::LCD) -> Self {
         // Clear the screen.
         let style = PrimitiveStyleBuilder::new()
