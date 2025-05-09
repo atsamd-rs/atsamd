@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.5](https://github.com/atsamd-rs/atsamd/compare/samd11_bare-0.14.4...samd11_bare-0.14.5) - 2025-05-09
+
+### Other
+
+- updated the following local packages: atsamd-hal
+
 ## [0.14.4](https://github.com/atsamd-rs/atsamd/compare/samd11_bare-0.14.3...samd11_bare-0.14.4) - 2025-05-07
 
 ### Other
