@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.4](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.3...atsamd-hal-0.21.4) - 2025-05-09
+
+### Added
+
+- Refactor IoSet trait using sorted HList
+
+### Documentation
+
+- SERCOM updates following IoSet refactor
+
 ## [0.21.3](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.2...atsamd-hal-0.21.3) - 2025-05-07
 
 ### Documentation

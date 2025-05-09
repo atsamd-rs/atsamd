@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0](https://github.com/atsamd-rs/atsamd/compare/wio_terminal-0.7.3...wio_terminal-0.8.0) - 2025-05-09
+
+### Dependencies
+
+- *(wio_terminal)* [**breaking**] Update wio_terminal to hal 0.21.0 ([#865](https://github.com/atsamd-rs/atsamd/pull/865))
+
 ## [0.7.3](https://github.com/atsamd-rs/atsamd/compare/wio_terminal-0.7.2...wio_terminal-0.7.3) - 2025-04-17
 
 ### Examples
