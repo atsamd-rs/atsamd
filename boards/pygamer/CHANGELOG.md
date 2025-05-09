@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0](https://github.com/atsamd-rs/atsamd/compare/pygamer-0.14.4...pygamer-0.15.0) - 2025-05-08
+
+### Added
+
+- Refactor IoSet trait using sorted HList
+
+### Other
+
+- updated the following local packages: atsamd-hal
+
 ## [0.14.4](https://github.com/atsamd-rs/atsamd/compare/pygamer-0.14.3...pygamer-0.14.4) - 2025-05-07
 
 ### Other

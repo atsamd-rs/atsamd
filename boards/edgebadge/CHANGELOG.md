@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0](https://github.com/atsamd-rs/atsamd/compare/edgebadge-0.9.0...edgebadge-0.10.0) - 2025-05-08
+
+### Other
+
+- Re-release `0.9.1` as `0.10.0`, as [#726](https://github.com/atsamd-rs/atsamd/pull/726) introduced a breaking
+    change, leading to a semver violation.
+
 ## [0.9.1](https://github.com/atsamd-rs/atsamd/compare/edgebadge-0.9.0...edgebadge-0.9.1) - 2024-10-17
 
 ### Refactored
