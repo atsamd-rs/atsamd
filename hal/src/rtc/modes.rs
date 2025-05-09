@@ -33,10 +33,18 @@ use crate::pac;
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use pac::Rtc;
 
+// Import prescalar divider enum
+#[hal_cfg(any("rtc-d11", "rtc-d21"))]
+use crate::pac::rtc::mode0::ctrl::Prescalerselect;
+#[hal_cfg("rtc-d5x")]
+use crate::pac::rtc::mode0::ctrla::Prescalerselect;
+
 /// Type-level enum for RTC interrupts.
 pub trait RtcInterrupt {
     /// Enable this interrupt.
     fn enable(rtc: &Rtc);
+    /// Disable this interrupt.
+    fn disable(rtc: &Rtc);
     /// Returns whether the interrupt has been triggered.
     fn check_flag(rtc: &Rtc) -> bool;
     /// Clears the interrupt flag so the ISR will not be called again
@@ -54,6 +62,12 @@ macro_rules! create_rtc_interrupt {
             fn enable(rtc: &Rtc) {
                 // SYNC: None
                 rtc.$mode().intenset().write(|w| w.$bit().set_bit());
+            }
+
+            #[inline]
+            fn disable(rtc: &Rtc) {
+                // SYNC: None
+                rtc.$mode().intenclr().write(|w| w.$bit().set_bit());
             }
 
             #[inline]
@@ -82,8 +96,8 @@ pub trait RtcMode {
     ///
     /// # Safety
     ///
-    /// This can be called any time but is typically only called once before
-    /// calling most other methods.
+    /// This should only be called when the RTC is disabled, and is typically
+    /// only called once before calling most other methods.
     fn set_mode(rtc: &Rtc);
 
     /// Sets a compare value.
@@ -100,6 +114,7 @@ pub trait RtcMode {
     ///
     /// Should be called only after setting the RTC mode using
     /// [`set_mode`](RtcMode::set_mode).
+    #[cfg(feature = "rtic")]
     fn get_compare(rtc: &Rtc, number: usize) -> Self::Count;
 
     /// Returns the current synced COUNT value.
@@ -109,6 +124,14 @@ pub trait RtcMode {
     /// Should be called only after setting the RTC mode using
     /// [`set_mode`](RtcMode::set_mode).
     fn count(rtc: &Rtc) -> Self::Count;
+
+    /// Sets the current synced COUNT value.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
+    fn set_count(rtc: &Rtc, count: Self::Count);
 
     /// Returns whether register syncing is currently happening.
     ///
@@ -152,6 +175,26 @@ pub trait RtcMode {
         while rtc.mode0().ctrla().read().swrst().bit_is_set() {}
     }
 
+    /// Sets the clock prescalar divider to lower the tick rate.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only when the RTC is disabled.
+    #[inline]
+    #[hal_macro_helper]
+    fn set_prescalar(rtc: &Rtc, divider: Prescalerselect) {
+        // NOTE: This register and field are the same in all modes.
+        // SYNC: None
+        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+        rtc.mode0()
+            .ctrl()
+            .modify(|_, w| w.prescaler().variant(divider));
+        #[hal_cfg("rtc-d5x")]
+        rtc.mode0()
+            .ctrla()
+            .modify(|_, w| w.prescaler().variant(divider));
+    }
+
     /// Starts the RTC and does any required initialization for this mode.
     ///
     /// # Safety
@@ -187,6 +230,17 @@ pub trait RtcMode {
     #[inline]
     fn enable_interrupt<I: RtcInterrupt>(rtc: &Rtc) {
         I::enable(rtc);
+    }
+
+    /// Disables an RTC interrupt.
+    ///
+    /// # Safety
+    ///
+    /// Should be called only after setting the RTC mode using
+    /// [`set_mode`](RtcMode::set_mode).
+    #[inline]
+    fn disable_interrupt<I: RtcInterrupt>(rtc: &Rtc) {
+        I::disable(rtc);
     }
 
     /// Returns whether an RTC interrupt has been triggered.
@@ -296,6 +350,24 @@ pub mod mode0 {
     /// The RTC operating in MODE0 (32-bit COUNT)
     pub struct RtcMode0;
 
+    impl RtcMode0 {
+        /// Sets or resets the match clear bit, which clears the counter when a
+        /// compare value matches.
+        ///
+        /// # Safety
+        ///
+        /// This should only be called when the RTC is disabled.
+        #[inline]
+        #[hal_macro_helper]
+        pub fn set_match_clear(rtc: &Rtc, enable: bool) {
+            // SYNC: None
+            #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+            rtc.mode0().ctrl().modify(|_, w| w.matchclr().bit(enable));
+            #[hal_cfg("rtc-d5x")]
+            rtc.mode0().ctrla().modify(|_, w| w.matchclr().bit(enable));
+        }
+    }
+
     impl RtcMode for RtcMode0 {
         type Count = u32;
 
@@ -321,6 +393,7 @@ pub mod mode0 {
         }
 
         #[inline]
+        #[cfg(feature = "rtic")]
         fn get_compare(rtc: &Rtc, number: usize) -> Self::Count {
             // SYNC: Write (we just read though)
             rtc.mode0().comp(number).read().bits()
@@ -339,6 +412,13 @@ pub mod mode0 {
             // SYNC: Read/Write
             Self::sync(rtc);
             rtc.mode0().count().read().bits()
+        }
+
+        #[inline]
+        fn set_count(rtc: &Rtc, count: Self::Count) {
+            // SYNC: Read/Write
+            Self::sync(rtc);
+            unsafe { rtc.mode0().count().write(|w| w.count().bits(count)) };
         }
     }
 }
@@ -382,6 +462,7 @@ pub mod mode1 {
         }
 
         #[inline]
+        #[cfg(feature = "rtic")]
         fn get_compare(rtc: &Rtc, number: usize) -> Self::Count {
             // SYNC: Write (we just read though)
             rtc.mode1().comp(number).read().bits()
@@ -400,6 +481,152 @@ pub mod mode1 {
             // SYNC: Read/Write
             Self::sync(rtc);
             rtc.mode1().count().read().bits()
+        }
+
+        #[inline]
+        fn set_count(rtc: &Rtc, count: Self::Count) {
+            // SYNC: Read/Write
+            Self::sync(rtc);
+            unsafe { rtc.mode1().count().write(|w| w.count().bits(count)) };
+        }
+    }
+}
+
+/// Interface for using the RTC in MODE1 (16-bit COUNT)
+pub mod mode2 {
+    use super::*;
+
+    create_rtc_interrupt!(mode2, Alarm0, alarm0);
+    #[hal_cfg("rtc-d5x")]
+    create_rtc_interrupt!(mode2, Alarm1, alarm1);
+
+    /// Datetime represents an RTC clock/calendar value.
+    #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+    pub struct Datetime {
+        pub seconds: u8,
+        pub minutes: u8,
+        pub hours: u8,
+        pub day: u8,
+        pub month: u8,
+        pub year: u8,
+    }
+
+    /// Macro to read from to the clock or alarm registers.
+    macro_rules! from_reg_datetime {
+        ($regr:ident) => {
+            impl From<pac::rtc::mode2::$regr::R> for Datetime {
+                fn from(clock: pac::rtc::mode2::$regr::R) -> Datetime {
+                    Datetime {
+                        seconds: clock.second().bits(),
+                        minutes: clock.minute().bits(),
+                        hours: clock.hour().bits(),
+                        day: clock.day().bits(),
+                        month: clock.month().bits(),
+                        year: clock.year().bits(),
+                    }
+                }
+            }
+        };
+    }
+
+    from_reg_datetime!(clock);
+    #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+    from_reg_datetime!(alarm);
+    #[hal_cfg("rtc-d5x")]
+    from_reg_datetime!(alarm0);
+    #[hal_cfg("rtc-d5x")]
+    from_reg_datetime!(alarm1);
+
+    /// Macro to write to the clock or alarm registers.
+    macro_rules! write_datetime {
+        ($regw:ident, $time:ident) => {
+            unsafe {
+                $regw
+                    .second()
+                    .bits($time.seconds)
+                    .minute()
+                    .bits($time.minutes)
+                    .hour()
+                    .bits($time.hours)
+                    .day()
+                    .bits($time.day)
+                    .month()
+                    .bits($time.month)
+                    .year()
+                    .bits($time.year)
+            }
+        };
+    }
+
+    /// The RTC operating in MODE1 (16-bit COUNT)
+    pub struct RtcMode2;
+
+    impl RtcMode for RtcMode2 {
+        type Count = Datetime;
+
+        #[inline]
+        #[hal_macro_helper]
+        fn set_mode(rtc: &Rtc) {
+            // SYNC: Write
+            Self::sync(rtc);
+            // NOTE: This register and field are the same in all modes.
+            #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+            rtc.mode0().ctrl().modify(|_, w| w.mode().clock());
+            #[hal_cfg("rtc-d5x")]
+            rtc.mode0().ctrla().modify(|_, w| w.mode().clock());
+        }
+
+        #[inline]
+        #[hal_macro_helper]
+        fn set_compare(rtc: &Rtc, _number: usize, value: Self::Count) {
+            // SYNC: Write
+            Self::sync(rtc);
+
+            #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+            rtc.mode2().alarm(0).write(|w| write_datetime!(w, value));
+            #[hal_cfg("rtc-d5x")]
+            if _number == 0 {
+                rtc.mode2().alarm0().write(|w| write_datetime!(w, value));
+            } else {
+                rtc.mode2().alarm1().write(|w| write_datetime!(w, value));
+            }
+        }
+
+        #[inline]
+        #[hal_macro_helper]
+        #[cfg(feature = "rtic")]
+        fn get_compare(rtc: &Rtc, _number: usize) -> Self::Count {
+            // SYNC: Write (we just read though)
+            #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+            return rtc.mode2().alarm(0).read().into();
+            #[hal_cfg("rtc-d5x")]
+            if _number == 0 {
+                rtc.mode2().alarm0().read().into()
+            } else {
+                rtc.mode2().alarm1().read().into()
+            }
+        }
+
+        #[inline]
+        #[hal_macro_helper]
+        fn count(rtc: &Rtc) -> Self::Count {
+            #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+            {
+                // Request syncing of the COUNT register.
+                // SYNC: None
+                rtc.mode1().readreq().modify(|_, w| w.rreq().set_bit());
+            }
+
+            // SYNC: Read/Write
+            Self::sync(rtc);
+            rtc.mode2().clock().read().into()
+        }
+
+        #[inline]
+        fn set_count(rtc: &Rtc, count: Self::Count) {
+            // SYNC: Read/Write
+            Self::sync(rtc);
+            rtc.mode2().clock().write(|w| write_datetime!(w, count));
         }
     }
 }

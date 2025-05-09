@@ -1,20 +1,24 @@
 //! Real-time clock/counter
-use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
-use fugit::NanosDurationU32;
+use atsamd_hal_macros::hal_cfg;
+use fugit::ExtU32;
 
+use crate::ehal;
 use crate::ehal_02;
 use crate::pac;
-use crate::pac::rtc::{Mode0, Mode2};
 use crate::time::{Hertz, Nanoseconds};
 use crate::timer_traits::InterruptDrivenTimer;
 use crate::typelevel::Sealed;
 use core::convert::Infallible;
 use core::marker::PhantomData;
+use modes::{
+    mode0::{Compare0, RtcMode0},
+    mode2::RtcMode2,
+    RtcMode as _,
+};
 
 #[cfg(feature = "sdmmc")]
 use embedded_sdmmc::{TimeSource, Timestamp};
 
-#[cfg(feature = "rtic")]
 mod modes;
 
 #[cfg(feature = "rtic")]
@@ -22,43 +26,13 @@ pub mod rtic;
 
 // SAMx5x imports
 #[hal_cfg("rtc-d5x")]
-use crate::pac::{
-    rtc::mode0::ctrla::Prescalerselect, rtc::mode0::Ctrla as Mode0CtrlA,
-    rtc::mode2::Ctrla as Mode2CtrlA, Mclk as Pm,
-};
+use crate::pac::{rtc::mode0::ctrla::Prescalerselect, Mclk as Pm};
 
 // SAMD11/SAMD21 imports
 #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-use crate::pac::{
-    rtc::mode0::ctrl::Prescalerselect, rtc::mode0::Ctrl as Mode0CtrlA,
-    rtc::mode2::Ctrl as Mode2CtrlA, Pm,
-};
+use crate::pac::{rtc::mode0::ctrl::Prescalerselect, Pm};
 
-/// Datetime represents an RTC clock/calendar value.
-#[derive(Debug, Clone, Copy)]
-pub struct Datetime {
-    pub seconds: u8,
-    pub minutes: u8,
-    pub hours: u8,
-    pub day: u8,
-    pub month: u8,
-    pub year: u8,
-}
-
-type ClockR = crate::pac::rtc::mode2::clock::R;
-
-impl From<ClockR> for Datetime {
-    fn from(clock: ClockR) -> Datetime {
-        Datetime {
-            seconds: clock.second().bits(),
-            minutes: clock.minute().bits(),
-            hours: clock.hour().bits(),
-            day: clock.day().bits(),
-            month: clock.month().bits(),
-            year: clock.year().bits(),
-        }
-    }
-}
+pub use modes::mode2::Datetime;
 
 /// RtcMode represents the mode of the RTC
 pub trait RtcMode: Sealed {}
@@ -93,7 +67,7 @@ impl From<Datetime> for Timestamp {
     }
 }
 
-/// Rtc represents the RTC peripheral for either clock/calendar or timer mode.
+/// Represents the RTC peripheral for either clock/calendar or timer mode.
 pub struct Rtc<Mode: RtcMode> {
     rtc: pac::Rtc,
     rtc_clock_freq: Hertz,
@@ -101,58 +75,24 @@ pub struct Rtc<Mode: RtcMode> {
 }
 
 impl<Mode: RtcMode> Rtc<Mode> {
-    // --- Helper Functions for M0 vs M4 targets
-    #[inline]
-    fn mode0(&self) -> &Mode0 {
-        self.rtc.mode0()
+    fn set_count32_mode(rtc: &pac::Rtc) {
+        RtcMode0::disable(rtc);
+        RtcMode0::reset(rtc);
+        RtcMode0::set_mode(rtc);
+        RtcMode0::start_and_initialize(rtc);
     }
 
-    #[inline]
-    fn mode2(&self) -> &Mode2 {
-        self.rtc.mode2()
-    }
+    fn set_clock_mode(rtc: &pac::Rtc, rtc_clock_freq: Hertz) {
+        let divider = TimerParams::prescaler_from_divider(rtc_clock_freq.raw() as u64)
+            .unwrap_or_else(|| {
+                panic!("cannot use clock mode with an RTC clock rate of {rtc_clock_freq}")
+            });
 
-    #[inline]
-    #[hal_macro_helper]
-    fn mode0_ctrla(&self) -> &Mode0CtrlA {
-        #[hal_cfg("rtc-d5x")]
-        return self.mode0().ctrla();
-        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-        return self.mode0().ctrl();
-    }
-
-    #[inline]
-    #[hal_macro_helper]
-    fn mode2_ctrla(&self) -> &Mode2CtrlA {
-        #[hal_cfg("rtc-d5x")]
-        return self.mode2().ctrla();
-        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-        return self.mode2().ctrl();
-    }
-
-    #[inline]
-    #[hal_macro_helper]
-    fn sync(&self) {
-        #[hal_cfg("rtc-d5x")]
-        while self.mode2().syncbusy().read().bits() != 0 {}
-        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-        while self.mode2().status().read().syncbusy().bit_is_set() {}
-    }
-
-    #[inline]
-    fn reset(&mut self) {
-        self.mode0_ctrla().modify(|_, w| w.swrst().set_bit());
-        self.sync();
-    }
-
-    #[inline]
-    fn enable(&mut self, enable: bool) {
-        if enable {
-            self.mode0_ctrla().modify(|_, w| w.enable().set_bit());
-        } else {
-            self.mode0_ctrla().modify(|_, w| w.enable().clear_bit());
-        }
-        self.sync();
+        RtcMode2::disable(rtc);
+        RtcMode2::reset(rtc);
+        RtcMode2::set_mode(rtc);
+        RtcMode2::set_prescalar(rtc, divider);
+        RtcMode2::start_and_initialize(rtc);
     }
 
     fn create(rtc: pac::Rtc, rtc_clock_freq: Hertz) -> Self {
@@ -167,65 +107,17 @@ impl<Mode: RtcMode> Rtc<Mode> {
         Rtc::create(self.rtc, self.rtc_clock_freq)
     }
 
-    /// Reonfigures the peripheral for 32bit counter mode.
-    #[hal_macro_helper]
-    pub fn into_count32_mode(mut self) -> Rtc<Count32Mode> {
-        self.enable(false);
-        self.sync();
-        self.mode0_ctrla().modify(|_, w| {
-            w.mode().count32() // enable mode2 (clock)
-            .matchclr().clear_bit()
-            .prescaler().div1() // No prescaler
-        });
-        self.sync();
-
-        // enable clock sync on SAMx5x
-        #[hal_cfg("rtc-d5x")]
-        {
-            self.mode2_ctrla().modify(|_, w| {
-                w.clocksync().set_bit() // synchronize the CLOCK register
-            });
-
-            self.sync();
-        }
-
-        self.enable(true);
+    /// Reconfigures the RTC for 32-bit counter mode with no prescaler (default
+    /// state after reset) and the counter initialized to zero and started.
+    pub fn into_count32_mode(self) -> Rtc<Count32Mode> {
+        Self::set_count32_mode(&self.rtc);
         self.into_mode()
     }
 
     /// Reconfigures the peripheral for clock/calendar mode. Requires the source
     /// clock to be running at 1024 Hz.
-    #[hal_macro_helper]
-    pub fn into_clock_mode(mut self) -> Rtc<ClockMode> {
-        // The max divisor is 1024, so to get 1 Hz, we need a 1024 Hz source.
-        assert_eq!(
-            self.rtc_clock_freq.to_Hz(),
-            1024_u32,
-            "RTC clk not 1024 Hz!"
-        );
-
-        self.sync();
-        self.enable(false);
-        self.sync();
-        self.mode2_ctrla().modify(|_, w| {
-            w.mode().clock() // enable mode2 (clock)
-            .clkrep().clear_bit()
-            .matchclr().clear_bit()
-            .prescaler().div1024() // 1.024 kHz / 1024 = 1Hz
-        });
-
-        // enable clock sync on SAMx5x
-        #[hal_cfg("rtc-d5x")]
-        {
-            self.mode2_ctrla().modify(|_, w| {
-                w.clocksync().set_bit() // synchronize the CLOCK register
-            });
-
-            self.sync();
-        }
-
-        self.sync();
-        self.enable(true);
+    pub fn into_clock_mode(self) -> Rtc<ClockMode> {
+        Self::set_clock_mode(&self.rtc, self.rtc_clock_freq);
         self.into_mode()
     }
 
@@ -237,80 +129,57 @@ impl<Mode: RtcMode> Rtc<Mode> {
 
 impl Rtc<Count32Mode> {
     /// Configures the RTC in 32-bit counter mode with no prescaler (default
-    /// state after reset) and the counter initialized to zero.
+    /// state after reset) and the counter initialized to zero and started.
     pub fn count32_mode(rtc: pac::Rtc, rtc_clock_freq: Hertz, pm: &mut Pm) -> Self {
+        RtcMode0::disable(&rtc);
+
+        // Enable the RTC clock.
+        // TODO: This will probably be done eventually using the clock v2 API instead.
+        // This should also allow automatic determination of the clock rate.
         pm.apbamask().modify(|_, w| w.rtc_().set_bit());
 
-        // TODO: This may not work properly because here the count sync bit is not set
-        // as it is in Self::into_count32_mode Maybe we can just call that to
-        // avoid code duplication
+        Self::set_count32_mode(&rtc);
 
-        let mut new_rtc = Self {
+        Self {
             rtc,
             rtc_clock_freq,
             _mode: PhantomData,
-        };
-
-        new_rtc.reset();
-        new_rtc.enable(true);
-        new_rtc
+        }
     }
 
     /// Returns the internal counter value.
     #[inline]
-    #[hal_macro_helper]
     pub fn count32(&self) -> u32 {
-        // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
-        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-        {
-            self.mode0().readreq().modify(|_, w| w.rcont().set_bit());
-            self.sync();
-        }
-        self.mode0().count().read().bits()
+        RtcMode0::count(&self.rtc)
     }
 
     /// Sets the internal counter value.
     #[inline]
     pub fn set_count32(&mut self, count: u32) {
-        self.sync();
-        self.enable(false);
-
-        self.sync();
-        self.mode0()
-            .count()
-            .write(|w| unsafe { w.count().bits(count) });
-
-        self.sync();
-        self.enable(true);
+        RtcMode0::disable(&self.rtc);
+        RtcMode0::set_count(&self.rtc, count);
+        RtcMode0::enable(&self.rtc);
     }
 
     /// This resets the internal counter and sets the prescaler to match the
-    /// provided timeout. You should configure the prescaler using the longest
-    /// timeout you plan to measure.
-    pub fn reset_and_compute_prescaler<T: Into<<Self as ehal_02::timer::CountDown>::Time>>(
-        &mut self,
-        timeout: T,
-    ) -> &Self {
+    /// provided timeout.
+    fn reset_and_set_prescaler(&mut self, divider: Prescalerselect) {
+        RtcMode0::disable(&self.rtc);
+        RtcMode0::reset(&self.rtc);
+        RtcMode0::set_mode(&self.rtc);
+        RtcMode0::set_prescalar(&self.rtc, divider);
+    }
+
+    /// This resets the internal counter, sets the prescaler to match the
+    /// provided timeout, and starts the counter. You should configure the
+    /// prescaler using the longest timeout you plan to measure.
+    pub fn reset_and_compute_prescaler<T: Into<Nanoseconds>>(&mut self, timeout: T) -> &Self {
         let params = TimerParams::new_us(timeout, self.rtc_clock_freq);
         let divider = params.divider;
 
-        // Disable the timer while we reconfigure it
-        self.sync();
-        self.enable(false);
+        self.reset_and_set_prescaler(divider);
+        RtcMode0::start_and_initialize(&self.rtc);
 
-        // Now that we have a clock routed to the peripheral, we
-        // can ask it to perform a reset.
-        self.sync();
-        self.reset();
-
-        while self.mode0_ctrla().read().swrst().bit_is_set() {}
-
-        self.mode0_ctrla().modify(|_, w| {
-            // set clock divider...
-            w.prescaler().variant(divider);
-            // and enable RTC.
-            w.enable().set_bit()
-        });
         self
     }
 }
@@ -321,43 +190,24 @@ impl Rtc<ClockMode> {
     }
 
     /// Returns the current clock/calendar value.
-    #[hal_macro_helper]
     pub fn current_time(&self) -> Datetime {
-        // synchronize this read on SAMD11/21. SAMx5x is automatically synchronized
-        #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-        {
-            self.mode2().readreq().modify(|_, w| w.rcont().set_bit());
-            self.sync();
-        }
-        self.mode2().clock().read().into()
+        RtcMode2::count(&self.rtc)
     }
 
     /// Updates the current clock/calendar value.
     pub fn set_time(&mut self, time: Datetime) {
-        self.mode2().clock().write(|w| unsafe {
-            w.second()
-                .bits(time.seconds)
-                .minute()
-                .bits(time.minutes)
-                .hour()
-                .bits(time.hours)
-                .day()
-                .bits(time.day)
-                .month()
-                .bits(time.month)
-                .year()
-                .bits(time.year)
-        });
-        self.sync();
+        RtcMode2::set_count(&self.rtc, time);
     }
 }
 
 // --- Timer / Counter Functionality
-
 impl ehal_02::timer::Periodic for Rtc<Count32Mode> {}
 impl ehal_02::timer::CountDown for Rtc<Count32Mode> {
     type Time = Nanoseconds;
 
+    /// Starts the timer and puts it in periodic mode in which the counter
+    /// counts up to the specified `timeout` and then resets repeatedly back
+    /// to zero.
     fn start<T>(&mut self, timeout: T)
     where
         T: Into<Self::Time>,
@@ -366,9 +216,15 @@ impl ehal_02::timer::CountDown for Rtc<Count32Mode> {
     }
 
     fn wait(&mut self) -> nb::Result<(), void::Void> {
-        // Unwrapping an unreacheable error is totally OK
-        <Self as InterruptDrivenTimer>::wait(self).unwrap();
-        Ok(())
+        <Self as InterruptDrivenTimer>::wait(self).map_err(|e| e.map(|_| panic!()))
+    }
+}
+
+impl ehal::delay::DelayNs for Rtc<Count32Mode> {
+    fn delay_ns(&mut self, ns: u32) {
+        <Self as InterruptDrivenTimer>::start(self, ns.nanos());
+        // Note that this cannot error since the error type is `Infallible`
+        let _ = nb::block!(<Self as InterruptDrivenTimer>::wait(self));
     }
 }
 
@@ -378,43 +234,35 @@ impl InterruptDrivenTimer for Rtc<Count32Mode> {
     /// the interrupt; it does not configure the interrupt controller
     /// or define an interrupt handler.
     fn enable_interrupt(&mut self) {
-        self.mode0().intenset().write(|w| w.cmp0().set_bit());
+        RtcMode0::enable_interrupt::<Compare0>(&self.rtc);
     }
 
+    /// Starts the timer and puts it in periodic mode in which the counter
+    /// counts up to the specified `timeout` and then resets repeatedly back
+    /// to zero.
     fn start<T>(&mut self, timeout: T)
     where
-        T: Into<NanosDurationU32>,
+        T: Into<Nanoseconds>,
     {
         let params = TimerParams::new_us(timeout, self.rtc_clock_freq);
         let divider = params.divider;
         let cycles = params.cycles;
 
-        // Disable the timer while we reconfigure it
-        self.enable(false);
+        // Reset and set prescalar, keeping the counter disabled
+        self.reset_and_set_prescaler(divider);
+        // Set the compare 0 value to the desired time
+        RtcMode0::set_compare(&self.rtc, 0, cycles);
+        // Clear on match for periodicity
+        RtcMode0::set_match_clear(&self.rtc, true);
 
-        // Now that we have a clock routed to the peripheral, we
-        // can ask it to perform a reset.
-        self.reset();
-        while self.mode0_ctrla().read().swrst().bit_is_set() {}
-
-        // set cycles to compare to...
-        self.mode0()
-            .comp(0)
-            .write(|w| unsafe { w.comp().bits(cycles) });
-        self.mode0_ctrla().modify(|_, w| {
-            // set clock divider...
-            w.prescaler().variant(divider);
-            // clear timer on match for periodicity...
-            w.matchclr().set_bit();
-            // and enable RTC.
-            w.enable().set_bit()
-        });
+        // Start the counter
+        RtcMode0::start_and_initialize(&self.rtc);
     }
 
     fn wait(&mut self) -> nb::Result<(), Infallible> {
-        if self.mode0().intflag().read().cmp0().bit_is_set() {
-            // Writing a 1 clears the flag
-            self.mode0().intflag().modify(|_, w| w.cmp0().set_bit());
+        if RtcMode0::check_interrupt_flag::<Compare0>(&self.rtc) {
+            // Clear the flag
+            RtcMode0::clear_interrupt_flag::<Compare0>(&self.rtc);
             Ok(())
         } else {
             Err(nb::Error::WouldBlock)
@@ -426,7 +274,7 @@ impl InterruptDrivenTimer for Rtc<Count32Mode> {
     /// triggering the interrupt; it does not configure the interrupt
     /// controller.
     fn disable_interrupt(&mut self) {
-        self.mode0().intenclr().write(|w| w.cmp0().set_bit());
+        RtcMode0::disable_interrupt::<Compare0>(&self.rtc);
     }
 }
 
@@ -445,45 +293,53 @@ pub struct TimerParams {
 }
 
 impl TimerParams {
-    /// calculates RTC timer paramters based on the input frequency-based
+    fn prescaler_from_divider(divider_value: u64) -> Option<Prescalerselect> {
+        match divider_value {
+            1 => Some(Prescalerselect::Div1),
+            2 => Some(Prescalerselect::Div2),
+            4 => Some(Prescalerselect::Div4),
+            8 => Some(Prescalerselect::Div8),
+            16 => Some(Prescalerselect::Div16),
+            32 => Some(Prescalerselect::Div32),
+            64 => Some(Prescalerselect::Div64),
+            128 => Some(Prescalerselect::Div128),
+            256 => Some(Prescalerselect::Div256),
+            512 => Some(Prescalerselect::Div512),
+            1024 => Some(Prescalerselect::Div1024),
+            _ => None,
+        }
+    }
+
+    /// calculates RTC timer parameters based on the input frequency-based
     /// timeout.
     pub fn new(timeout: impl Into<Hertz>, src_freq: impl Into<Hertz>) -> Self {
         let timeout = timeout.into();
         let src_freq = src_freq.into();
-        let ticks: u32 = src_freq.to_Hz() / timeout.to_Hz().max(1);
-        Self::new_from_ticks(ticks)
+        let ticks = src_freq.to_Hz() / timeout.to_Hz().max(1);
+        Self::new_from_ticks(ticks as u64)
     }
 
-    /// calculates RTC timer paramters based on the input period-based timeout.
+    /// calculates RTC timer parameters based on the input period-based timeout.
     pub fn new_us(timeout: impl Into<Nanoseconds>, src_freq: impl Into<Hertz>) -> Self {
         let timeout = timeout.into();
         let src_freq = src_freq.into();
-        let ticks: u32 =
-            (timeout.to_nanos() as u64 * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
+        let ticks = timeout.to_nanos() as u64 * src_freq.to_Hz() as u64 / 1_000_000_000;
         Self::new_from_ticks(ticks)
     }
 
     /// Common helper function that gets the best divider & calculates cycles
     /// with that divider.
-    fn new_from_ticks(ticks: u32) -> Self {
-        let divider_value = ((ticks >> 16) + 1).next_power_of_two();
-        let divider = match divider_value {
-            1 => Prescalerselect::Div1,
-            2 => Prescalerselect::Div2,
-            4 => Prescalerselect::Div4,
-            8 => Prescalerselect::Div8,
-            16 => Prescalerselect::Div16,
-            32 => Prescalerselect::Div32,
-            64 => Prescalerselect::Div64,
-            128 => Prescalerselect::Div128,
-            256 => Prescalerselect::Div256,
-            512 => Prescalerselect::Div512,
-            1024 => Prescalerselect::Div1024,
-            _ => Prescalerselect::Div1024, /* would be nice to catch this at compile time
-                                            * (rust-lang/rust#51999) */
-        };
+    fn new_from_ticks(ticks: u64) -> Self {
+        let mut divider_value = ((ticks >> 16) + 1).next_power_of_two();
+        let divider = Self::prescaler_from_divider(divider_value).unwrap_or_else(|| {
+            divider_value = 1024;
 
-        let cycles: u32 = ticks / divider_value;
+            Prescalerselect::Div1024
+        });
+
+        let cycles: u32 = (ticks / divider_value)
+            .try_into()
+            .expect("cannot achieve the timeout even with the maximum RTC prescalar");
 
         TimerParams { divider, cycles }
     }
