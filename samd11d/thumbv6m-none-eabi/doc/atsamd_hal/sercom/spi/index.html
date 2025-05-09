@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Use a SERCOM peripheral for SPI transactions"><title>atsamd_hal::sercom::spi - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-6c3ea77c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.86.0 (05f9846f8 2025-03-31)" data-channel="1.86.0" data-search-js="search-581efc7a.js" data-settings-js="settings-6dad6058.js" ><script src="../../../static.files/storage-3a5871a4.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-4d63596a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.21.1</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module spi</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#crating-a-set-of-pads" title="Crating a set of `Pads`">Crating a set of <code>Pads</code></a></li><li><a href="#configuring-the-peripheral" title="`Config`uring the peripheral"><code>Config</code>uring the peripheral</a></li><li><a href="#using-a-functional-spi-peripheral" title="Using a functional `Spi` peripheral">Using a functional <code>Spi</code> peripheral</a><ul><li><a href="#flushing-the-bus" title="Flushing the bus">Flushing the bus</a></li></ul></li><li><a href="#paniconread-and-paniconwrite" title="`PanicOnRead` and `PanicOnWrite`"><code>PanicOnRead</code> and <code>PanicOnWrite</code></a></li><li><a href="#using-spi-with-dma-dma" title="Using SPI with DMA dma">Using SPI with DMA dma</a></li><li><a href="#async-operation-async" title="`async` operation async"><code>async</code> operation async</a><ul><li><a href="#considerations-when-using-async-spi-with-dma-async-dma" title="Considerations when using `async` `Spi` with DMA async dma">Considerations when using <code>async</code> <code>Spi</code> with DMA async dma</a></li></ul></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#constants" title="Constants">Constants</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>sercom</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">atsamd_hal</a>::<wbr><a href="../index.html">sercom</a></div><h1>Module <span>spi</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/atsamd_hal/sercom/spi.rs.html#1-1893">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Use a SERCOM peripheral for SPI transactions</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Use a SERCOM peripheral for SPI transactions"><title>atsamd_hal::sercom::spi - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-6c3ea77c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.86.0 (05f9846f8 2025-03-31)" data-channel="1.86.0" data-search-js="search-581efc7a.js" data-settings-js="settings-6dad6058.js" ><script src="../../../static.files/storage-3a5871a4.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-4d63596a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../atsamd_hal/index.html">atsamd_<wbr>hal</a><span class="version">0.22.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module spi</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#crating-a-set-of-pads" title="Crating a set of `Pads`">Crating a set of <code>Pads</code></a></li><li><a href="#configuring-the-peripheral" title="`Config`uring the peripheral"><code>Config</code>uring the peripheral</a></li><li><a href="#using-a-functional-spi-peripheral" title="Using a functional `Spi` peripheral">Using a functional <code>Spi</code> peripheral</a><ul><li><a href="#flushing-the-bus" title="Flushing the bus">Flushing the bus</a></li></ul></li><li><a href="#paniconread-and-paniconwrite" title="`PanicOnRead` and `PanicOnWrite`"><code>PanicOnRead</code> and <code>PanicOnWrite</code></a></li><li><a href="#using-spi-with-dma-dma" title="Using SPI with DMA dma">Using SPI with DMA dma</a></li><li><a href="#async-operation-async" title="`async` operation async"><code>async</code> operation async</a><ul><li><a href="#considerations-when-using-async-spi-with-dma-async-dma" title="Considerations when using `async` `Spi` with DMA async dma">Considerations when using <code>async</code> <code>Spi</code> with DMA async dma</a></li></ul></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#constants" title="Constants">Constants</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In atsamd_<wbr>hal::<wbr>sercom</a></h2></div></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">atsamd_hal</a>::<wbr><a href="../index.html">sercom</a></div><h1>Module <span>spi</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/atsamd_hal/sercom/spi.rs.html#1-1871">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Use a SERCOM peripheral for SPI transactions</p>
 <p>Using an SPI peripheral occurs in three steps. First, you must supply
 <a href="../../gpio/index.html" title="mod atsamd_hal::gpio"><code>gpio</code></a> <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>s to create a set of <a href="pads/struct.Pads.html" title="struct atsamd_hal::sercom::spi::pads::Pads"><code>Pads</code></a>. Next, you combine the <code>Pads</code>
 with other pieces to form a <a href="struct.Config.html" title="struct atsamd_hal::sercom::spi::Config"><code>Config</code></a> struct. Finally, after configuring
@@ -10,32 +10,25 @@ specifically those from the <a href="../../../embedded_hal/spi/index.html" title
 <h2 id="crating-a-set-of-pads"><a class="doc-anchor" href="#crating-a-set-of-pads">§</a>Crating a set of <a href="pads/struct.Pads.html" title="struct atsamd_hal::sercom::spi::pads::Pads"><code>Pads</code></a></h2>
 <p>An SPI peripheral can use up to four <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>s as <a href="../trait.Sercom.html" title="trait atsamd_hal::sercom::Sercom"><code>Sercom</code></a> pads. However,
 only certain <code>Pin</code> combinations are acceptable. All <code>Pin</code>s must be mapped to
-the same <code>Sercom</code>, and for SAMx5x chips, they must also belong to the same
-<code>IoSet</code>. This HAL makes it impossible to use invalid <code>Pin</code> combinations, and
-the <a href="pads/struct.Pads.html" title="struct atsamd_hal::sercom::spi::pads::Pads"><code>Pads</code></a> struct is responsible for enforcing these constraints.</p>
-<p>A <code>Pads</code> type takes five or six type parameters, depending on the chip. The
-first type always specifies the <code>Sercom</code>. On SAMx5x chips, the second type
-specifies the <code>IoSet</code>. The remaining four type parameters, <code>DI</code>, <code>DO</code>, <code>CK</code>
-and <code>SS</code>, represent the Data In, Data Out, Sclk and SS pads respectively.
-Each of these type parameters is an <a href="../pad/trait.OptionalPad.html" title="trait atsamd_hal::sercom::pad::OptionalPad"><code>OptionalPad</code></a> and defaults to
-<a href="../../typelevel/struct.NoneT.html" title="struct atsamd_hal::typelevel::NoneT"><code>NoneT</code></a>. A <code>Pad</code> is just a <code>Pin</code> configured in the correct <a href="../../gpio/pin/trait.PinMode.html" title="trait atsamd_hal::gpio::pin::PinMode"><code>PinMode</code></a>
-that implements <a href="../pad/trait.IsPad.html" title="trait atsamd_hal::sercom::pad::IsPad"><code>IsPad</code></a>. The <a href="../../macro.bsp_pins.html" title="macro atsamd_hal::bsp_pins"><code>bsp_pins!</code></a> macro can be
-used to define convenient type aliases for <code>Pad</code> types.</p>
+the same <code>Sercom</code>, and for SAMx5x chips they must also belong to the same
+<a href="../pad/trait.IoSet.html" title="trait atsamd_hal::sercom::pad::IoSet"><code>IoSet</code></a>. This HAL makes it impossible to use invalid <code>Pin</code> combinations,
+and the <a href="pads/struct.Pads.html" title="struct atsamd_hal::sercom::spi::pads::Pads"><code>Pads</code></a> struct is responsible for enforcing these constraints.</p>
+<p>A <code>Pads</code> type takes five parameters: the first specifies the <code>Sercom</code>, and
+the remaining four type parameters, <code>DI</code>, <code>DO</code>, <code>CK</code> and <code>SS</code>, represent the
+Data In, Data Out, Sclk and SS pads respectively. Each of these type
+parameters is an <a href="../pad/trait.OptionalPad.html" title="trait atsamd_hal::sercom::pad::OptionalPad"><code>OptionalPad</code></a> and defaults to <a href="../../typelevel/struct.NoneT.html" title="struct atsamd_hal::typelevel::NoneT"><code>NoneT</code></a>. A <code>Pad</code> is just
+a <code>Pin</code> configured in the correct <a href="../../gpio/pin/trait.PinMode.html" title="trait atsamd_hal::gpio::pin::PinMode"><code>PinMode</code></a> that implements <a href="../pad/trait.IsPad.html" title="trait atsamd_hal::sercom::pad::IsPad"><code>IsPad</code></a>. The
+<a href="../../macro.bsp_pins.html" title="macro atsamd_hal::bsp_pins"><code>bsp_pins!</code></a> macro can be used to define convenient type
+aliases for <code>Pad</code> types.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>atsamd_hal::gpio::{PA08, PA09, AlternateC};
 <span class="kw">use </span>atsamd_hal::sercom::{Sercom0, spi};
 <span class="kw">use </span>atsamd_hal::typelevel::NoneT;
 
-<span class="comment">// SAMx5x-specific imports
-</span><span class="kw">use </span>atsamd_hal::sercom::pad::IoSet1;
-
 <span class="kw">type </span>Miso = Pin&lt;PA08, AlternateC&gt;;
 <span class="kw">type </span>Sclk = Pin&lt;PA09, AlternateC&gt;;
 
-<span class="comment">// SAMD11/SAMD21 version
-</span><span class="kw">type </span>Pads = spi::Pads&lt;Sercom0, Miso, NoneT, Sclk&gt;;
-<span class="comment">// SAMx5x version
-</span><span class="kw">type </span>Pads = spi::Pads&lt;Sercom0, IoSet1, Miso, NoneT, Sclk&gt;;</code></pre></div>
+<span class="kw">type </span>Pads = spi::Pads&lt;Sercom0, Miso, NoneT, Sclk&gt;;</code></pre></div>
 <p>Alternatively, you can use the <code>PadsFromIds</code> alias to define a set of <code>Pads</code>
 in terms of <a href="../../gpio/pin/trait.PinId.html" title="trait atsamd_hal::gpio::pin::PinId"><code>PinId</code></a>s instead of <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a>s. This is useful when you don’t
 have <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pin::Pin"><code>Pin</code></a> aliases pre-defined.</p>
@@ -44,13 +37,7 @@ have <a href="../../gpio/pin/struct.Pin.html" title="struct atsamd_hal::gpio::pi
 <span class="kw">use </span>atsamd_hal::sercom::{Sercom0, spi};
 <span class="kw">use </span>atsamd_hal::typelevel::NoneT;
 
-<span class="comment">// SAMx5x-specific imports
-</span><span class="kw">use </span>atsamd_hal::sercom::pad::IoSet1;
-
-<span class="comment">// SAMD21 version
-</span><span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, PA08, NoneT, PA09&gt;;
-<span class="comment">// SAMx5x version
-</span><span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, IoSet1, PA08, NoneT, PA09&gt;;</code></pre></div>
+<span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, PA08, NoneT, PA09&gt;;</code></pre></div>
 <p>Instances of <code>Pads</code> are created using the builder pattern. Start by creating
 an empty set of <code>Pads</code> using <a href="https://doc.rust-lang.org/1.86.0/core/default/trait.Default.html" title="trait core::default::Default"><code>Default</code></a>. Then pass each respective <code>Pin</code>
 using the corresponding methods. For SAMD21 and SAMx5x chips, the builder
@@ -62,18 +49,10 @@ SAMD11 chips.</p>
 <span class="kw">use </span>atsamd_hal::gpio::Pins;
 <span class="kw">use </span>atsamd_hal::sercom::{Sercom0, spi};
 
-<span class="comment">// SAMx5x-specific imports
-</span><span class="kw">use </span>atsamd_hal::sercom::pad::IoSet1;
-
 <span class="kw">let </span><span class="kw-2">mut </span>peripherals = Peripherals::take().unwrap();
 <span class="kw">let </span>pins = Pins::new(peripherals.PORT);
-<span class="comment">// SAMD21 version
-</span><span class="kw">let </span>pads = spi::Pads::&lt;Sercom0&gt;::default()
-    .sclk(pins.pa09)
-    .data_in(pins.pa08)
-    .data_out(pins.pa11);
-<span class="comment">// SAMx5x version
-</span><span class="kw">let </span>pads = spi::Pads::&lt;Sercom0, IoSet1&gt;::default()
+
+<span class="kw">let </span>pads = spi::Pads::&lt;Sercom0&gt;::default()
     .sclk(pins.pa09)
     .data_in(pins.pa08)
     .data_out(pins.pa11);</code></pre></div>
@@ -105,15 +84,14 @@ re-exported in the <code>lengths</code> sub-module.</p>
 
 <span class="comment">// SAMx5x-specific imports
 </span><span class="kw">use </span>atsamd_hal::sercom::spi::lengths::U2;
-<span class="kw">use </span>atsamd_hal::sercom::pad::IoSet1;
+
+<span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, PA08, NoneT, PA09&gt;;
 
 <span class="comment">// SAMD11/SAMD21 version
-</span><span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, PA08, NoneT, PA09&gt;;
-<span class="kw">type </span>Config = spi::Config&lt;Pads, Master, NineBit&gt;;
+</span><span class="kw">type </span>Config = spi::Config&lt;Pads, Master, NineBit&gt;;
 
 <span class="comment">// SAMx5x version
-</span><span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, IoSet1, PA08, NoneT, PA09&gt;;
-<span class="kw">type </span>Config = spi::Config&lt;Pads, Master, U2&gt;;</code></pre></div>
+</span><span class="kw">type </span>Config = spi::Config&lt;Pads, Master, U2&gt;;</code></pre></div>
 <p>For simplicity, this module ignores character size on SAMx5x chips. Instead,
 the SPI peripheral is always configured to use 32-bit extension mode and the
 hardware <code>LENGTH</code> counter. Note that, due to a hardware bug, <code>ICSPACE</code> must
@@ -189,16 +167,15 @@ automaically from the set of <a href="pads/trait.ValidPads.html" title="trait at
 
 <span class="comment">// SAMx5x-specific imports
 </span><span class="kw">use </span>atsamd_hal::sercom::spi::lengths::U2;
-<span class="kw">use </span>atsamd_hal::sercom::pad::IoSet1;
+
+<span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, PA08, NoneT, PA09&gt;;
 
 <span class="comment">// SAMD11/SAMD21 version
-</span><span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, PA08, NoneT, PA09&gt;;
-<span class="kw">type </span>Config = spi::Config&lt;Pads, Master, NineBit&gt;;
-<span class="kw">type </span>Spi = spi::Spi&lt;Config, Rx&gt;;
+</span><span class="kw">type </span>Config = spi::Config&lt;Pads, Master, NineBit&gt;;
 
 <span class="comment">// SAMx5x version
-</span><span class="kw">type </span>Pads = spi::PadsFromIds&lt;Sercom0, IoSet1, PA08, NoneT, PA09&gt;;
-<span class="kw">type </span>Config = spi::Config&lt;Pads, Master, U2&gt;;
+</span><span class="kw">type </span>Config = spi::Config&lt;Pads, Master, U2&gt;;
+
 <span class="kw">type </span>Spi = spi::Spi&lt;Config, Rx&gt;;</code></pre></div>
 <p>Only <a href="struct.Spi.html" title="struct atsamd_hal::sercom::spi::Spi"><code>Spi</code></a> structs can actually perform transactions. To do so, use the
 various embedded HAL traits, like <a href="../../../embedded_hal/spi/trait.SpiBus.html" title="trait embedded_hal::spi::SpiBus"><code>spi::SpiBus</code></a>,
