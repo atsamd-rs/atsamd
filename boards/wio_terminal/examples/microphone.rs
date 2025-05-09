@@ -11,7 +11,7 @@ use wio::entry;
 use wio::hal::adc::{FreeRunning, InterruptAdc};
 use wio::hal::clock::GenericClockController;
 use wio::hal::delay::Delay;
-use wio::pac::{interrupt, ADC1};
+use wio::pac::{interrupt, Adc1};
 use wio::pac::{CorePeripherals, Peripherals};
 use wio::prelude::*;
 
@@ -25,7 +25,7 @@ use heapless::String;
 
 use heapless::spsc::Queue;
 struct Ctx {
-    adc: InterruptAdc<ADC1, ConversionMode>,
+    adc: InterruptAdc<Adc1, ConversionMode>,
     samples: Queue<u16, 8>,
 }
 static mut CTX: Option<Ctx> = None;
@@ -40,22 +40,22 @@ fn main() -> ! {
     let core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let sets = wio::Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.port).split();
 
     // Set up the display so we can log our progress.
     let (display, _backlight) = sets
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
+            peripherals.sercom7,
+            &mut peripherals.mclk,
             58.MHz(),
             &mut delay,
         )
@@ -70,7 +70,7 @@ fn main() -> ! {
     let (mut microphone_adc, mut microphone_pin) = {
         let (adc, pin) = sets
             .microphone
-            .init(peripherals.ADC1, &mut clocks, &mut peripherals.MCLK);
+            .init(peripherals.adc1, &mut clocks, &mut peripherals.mclk);
         let interrupt_adc: InterruptAdc<_, ConversionMode> = InterruptAdc::from(adc);
         (interrupt_adc, pin)
     };
@@ -94,8 +94,8 @@ fn main() -> ! {
     user_led.set_low().unwrap();
 
     loop {
-        let mut min = core::f32::INFINITY;
-        let mut max = core::f32::NEG_INFINITY;
+        let mut min = f32::INFINITY;
+        let mut max = f32::NEG_INFINITY;
         let mut sum = 0f32;
         // Though the ADC sampling rate is set to 250[kSPS] according to the comment in
         // the adc.rs, actual sampling rate seems 83.333[kSPS], which is 1/3 of
@@ -141,7 +141,7 @@ struct Terminal<'a> {
     display: wio::LCD,
 }
 
-impl<'a> Terminal<'a> {
+impl Terminal<'_> {
     pub fn new(mut display: wio::LCD) -> Self {
         // Clear the screen.
         let style = PrimitiveStyleBuilder::new()

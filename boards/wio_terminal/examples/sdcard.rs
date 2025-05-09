@@ -31,22 +31,22 @@ fn main() -> ! {
     let core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
 
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let sets = wio::Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.port).split();
 
     let (mut cont, _sd_present) = sets
         .sd_card
         .init(
             &mut clocks,
-            peripherals.SERCOM6,
-            &mut peripherals.MCLK,
+            peripherals.sercom6,
+            &mut peripherals.mclk,
             Clock,
         )
         .unwrap();
@@ -57,8 +57,8 @@ fn main() -> ! {
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
+            peripherals.sercom7,
+            &mut peripherals.mclk,
             58.MHz(),
             &mut delay,
         )

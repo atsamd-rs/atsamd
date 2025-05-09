@@ -1,7 +1,7 @@
 use atsamd_hal::adc::Adc;
 use atsamd_hal::clock::GenericClockController;
-use atsamd_hal::pac::gclk::pchctrl::GEN_A::GCLK11;
-use atsamd_hal::pac::{ADC1, MCLK, SERCOM4};
+use atsamd_hal::pac::gclk::pchctrl::Genselect::Gclk11;
+use atsamd_hal::pac::{Adc1, Mclk};
 use atsamd_hal::prelude::*;
 use atsamd_hal::sercom::{i2c, IoSet3, Sercom4};
 
@@ -29,8 +29,8 @@ impl Accelerometer {
     pub fn init(
         self,
         clocks: &mut GenericClockController,
-        sercom4: SERCOM4,
-        mclk: &mut MCLK,
+        sercom4: Sercom4,
+        mclk: &mut Mclk,
     ) -> Lis3dh<i2c::I2c<i2c::Config<I2cPads>>> {
         // The accelerometer is connected to the Wio Terminal's `I2C0` bus, so
         // based on the possible padouts listed in the datasheet it must use
@@ -61,11 +61,11 @@ impl LightSensor {
     /// peripheral and the configured pin.
     pub fn init(
         self,
-        adc: ADC1,
+        adc: Adc1,
         clocks: &mut GenericClockController,
-        mclk: &mut MCLK,
-    ) -> (Adc<ADC1>, LightSensorAdc) {
-        let adc1 = Adc::adc1(adc, mclk, clocks, GCLK11);
+        mclk: &mut Mclk,
+    ) -> (Adc<Adc1>, LightSensorAdc) {
+        let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
 
         (adc1, self.pd1.into())
     }

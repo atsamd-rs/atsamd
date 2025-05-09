@@ -30,22 +30,22 @@ fn main() -> ! {
     let mut core = CorePeripherals::take().unwrap();
 
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let sets = wio::Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.port).split();
 
     // Set up the display so we can print out APs.
     let (mut display, _backlight) = sets
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
+            peripherals.sercom7,
+            &mut peripherals.mclk,
             58.MHz(),
             &mut delay,
         )
@@ -62,9 +62,9 @@ fn main() -> ! {
         wifi_init(
             cs,
             sets.wifi,
-            peripherals.SERCOM0,
+            peripherals.sercom0,
             &mut clocks,
-            &mut peripherals.MCLK,
+            &mut peripherals.mclk,
             &mut delay,
         );
 
@@ -142,7 +142,7 @@ fn main() -> ! {
             write_with_clear(
                 &mut display,
                 textbuffer.as_str(),
-                (150 / 6) as i32,
+                150 / 6,
                 Point::new(3, 30 + i as i32 * 12),
             );
             textbuffer.truncate(0);

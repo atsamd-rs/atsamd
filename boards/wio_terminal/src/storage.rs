@@ -1,6 +1,6 @@
 use atsamd_hal::{
     clock::{GenericClockController, Sercom6CoreClock},
-    pac::{MCLK, QSPI, SERCOM6},
+    pac::{Mclk, Qspi},
     prelude::*,
     qspi,
     sercom::{spi, IoSet1, Sercom6},
@@ -33,7 +33,7 @@ pub struct QSPIFlash {
 }
 
 impl QSPIFlash {
-    pub fn init(self, mclk: &mut MCLK, qspi: QSPI) -> qspi::Qspi<qspi::OneShot> {
+    pub fn init(self, mclk: &mut Mclk, qspi: Qspi) -> qspi::Qspi<qspi::OneShot> {
         qspi::Qspi::new(
             mclk, qspi, self.sck, self.cs, self.d0, self.d1, self.d2, self.d3,
         )
@@ -95,8 +95,8 @@ impl SDCard {
     pub fn init<TS: TimeSource>(
         self,
         clocks: &mut GenericClockController,
-        sercom6: SERCOM6,
-        mclk: &mut MCLK,
+        sercom6: Sercom6,
+        mclk: &mut Mclk,
         ts: TS,
     ) -> Result<(SDCardController<TS>, SdDet), ()> {
         let gclk0 = clocks.gclk0();

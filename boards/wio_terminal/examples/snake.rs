@@ -25,14 +25,13 @@ use wio::{button_interrupt, Button, ButtonController, ButtonEvent};
 use heapless::spsc::Queue;
 
 // pseudo-random number generation
-use oorandom;
 use oorandom::Rand32;
 
 const DISPLAY_WIDTH: u32 = 320;
 const DISPLAY_HEIGHT: u32 = 240;
 const CELL_SIZE: u32 = 10;
-const GRID_WIDTH: u32 = DISPLAY_WIDTH / CELL_SIZE as u32;
-const GRID_HEIGHT: u32 = DISPLAY_HEIGHT / CELL_SIZE as u32;
+const GRID_WIDTH: u32 = DISPLAY_WIDTH / CELL_SIZE;
+const GRID_HEIGHT: u32 = DISPLAY_HEIGHT / CELL_SIZE;
 
 static mut BUTTON_CTRLR: Option<ButtonController> = None;
 static mut Q: Queue<ButtonEvent, 8> = Queue::new();
@@ -45,20 +44,21 @@ button_interrupt!(
     }
 );
 
+#[allow(clippy::empty_loop)]
 #[entry]
 fn main() -> ! {
     // Initial initializations
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.MCLK,
-        &mut peripherals.OSC32KCTRL,
-        &mut peripherals.OSCCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
+        &mut peripherals.nvmctrl,
     );
     let mut delay = Delay::new(core.SYST, &mut clocks);
-    let sets = wio::Pins::new(peripherals.PORT).split();
+    let sets = wio::Pins::new(peripherals.port).split();
     let mut uled = sets.user_led.into_push_pull_output();
     uled.set_low().unwrap();
     let mut consumer = unsafe { Q.split().1 };
@@ -84,8 +84,8 @@ fn main() -> ! {
         .display
         .init(
             &mut clocks,
-            peripherals.SERCOM7,
-            &mut peripherals.MCLK,
+            peripherals.sercom7,
+            &mut peripherals.mclk,
             100.MHz(),
             &mut delay,
         )
@@ -103,7 +103,7 @@ fn main() -> ! {
     // initializing buttons
     let button_ctrlr = sets
         .buttons
-        .init(peripherals.EIC, &mut clocks, &mut peripherals.MCLK);
+        .init(peripherals.eic, &mut clocks, &mut peripherals.mclk);
     let nvic = &mut core.NVIC;
     disable_interrupts(|_| unsafe {
         button_ctrlr.enable(nvic);
