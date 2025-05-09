@@ -10,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  check:
+  check-docs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
