@@ -12,17 +12,20 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use bsp::entry;
 use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc, Prescaler, Resolution},
+    adc::{Accumulation, Adc, Adc0, Prescaler, Resolution},
     clock::v2::{clock_system_at_reset, pclk::Pclk},
 };
 
-#[entry]
-fn main() -> ! {
+atsamd_hal::bind_multiple_interrupts!(struct Irqs {
+    ADC0: [ADC0_RESRDY, ADC0_OTHER] => atsamd_hal::adc::InterruptHandler<Adc0>;
+});
+
+#[embassy_executor::main]
+async fn main(_s: embassy_executor::Spawner) -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let _core = CorePeripherals::take().unwrap();
 
@@ -53,12 +56,14 @@ fn main() -> ! {
         .with_clock_divider(Prescaler::Div32)
         .with_vref(atsamd_hal::adc::Reference::Arefa)
         .enable(peripherals.adc0, apb_adc0, &pclk_adc0)
-        .unwrap();
+        .unwrap()
+        .into_future(Irqs);
+
     let mut adc_pin = pins.a0.into_alternate();
 
     loop {
         let mut buffer = [0; 16];
-        let res = adc.read_buffer_blocking(&mut adc_pin, &mut buffer).unwrap();
+        let res = adc.read_buffer(&mut adc_pin, &mut buffer).await.unwrap();
         #[cfg(feature = "use_semihosting")]
         cortex_m_semihosting::hprintln!("Result: {:?}", res).unwrap();
     }
