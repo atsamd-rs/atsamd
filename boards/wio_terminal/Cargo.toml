@@ -31,6 +31,8 @@ chip = "ATSAMD51P19A"
 
 [dependencies]
 bitfield = "0.13"
+modular-bitfield = "0.12"
+fugit = "0.3.7"
 cortex-m-rt = { version = "0.7", optional = true }
 
 embedded-hal-bus = "0.3.0"
@@ -44,29 +46,51 @@ nb = "1.0"
 bbqueue = { version = "0.5", optional = true }
 generic-array = { version = "0.14", optional = true }
 seeed-erpc = { version = "0.1.3", optional = true }
+defmt = "0.3"
+defmt-rtt = "0.4"
+embassy-sync = { version = "0.6" }
+embassy-futures = { version = "0.1.0" }
+embassy-executor = { version = "0.7.0", features = [
+  "arch-cortex-m",
+  "executor-thread",
+  "task-arena-size-12288",
+] }
+rtic-monotonics = { version = "2.0.1", features = ["cortex-m-systick"] }
+
+# Opentherm project specific dependnecies:
+opentherm_boiler_controller_lib = { version = "0.1.0", git = "ssh://cooler1989@bitbucket.org/learn-rust/boiler_controller_ot_lib.git", branch = "passing_around_slices_instead_of_iterators", features = [
+], optional = true }
 
 [dependencies.cortex-m]
 features = ["critical-section-single-core"]
 version = "0.7"
 
 [dependencies.atsamd-hal]
-version = "0.21.0"
+path = "../../hal"
+version = "0.22.0"
 default-features = false
 
 [dev-dependencies]
 usbd-serial = "0.2"
 embedded-graphics = "0.8.1"
+panic-probe = "0.3"
 panic-halt = "0.2"
+panic-semihosting = "0.5"
+cortex-m-semihosting = "0.3"
 oorandom = "11.1.3"
 nom = { version = "8.0", default-features = false }
 
 [features]
-default = ["atsamd-hal/samd51p", "rt", "usb", "wifi"]
+default = ["atsamd-hal/samd51p", "rt", "usb", "wifi", "dma", "async", "use_opentherm"]
 rt = ["atsamd-hal/samd51p-rt", "cortex-m-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 # enable feature for RTL8720 firmware older than 2.1.2
 wifi-fw-before-212 = []
 wifi = ["bbqueue", "generic-array", "seeed-erpc"]
+dma = ["atsamd-hal/dma"]
+async = ["atsamd-hal/async"]
+use_semihosting = []
+use_opentherm = ["opentherm_boiler_controller_lib"]
 
 [[example]]
 name = "blinky"
@@ -90,6 +114,10 @@ required-features = ["usb"]
 
 [[example]]
 name = "sdcard"
+
+[[example]]
+name = "async_opentherm"
+required-features = ["async"]
 
 [[example]]
 name = "qspi"

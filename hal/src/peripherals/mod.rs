@@ -32,6 +32,16 @@ pub mod usb {}
 pub mod pwm {}
 
 #[hal_module(
+    "clock-d5x" => "pwm_waveform/d5x.rs",
+)]
+pub mod pwm_wg {}
+
+#[hal_module(
+    "clock-d5x" => "timer_capture_waveform/d5x.rs",
+)]
+pub mod timer_capture_waveform {}
+
+#[hal_module(
     any("clock-d11", "clock-d21") => "clock/d11.rs",
     "clock-d5x" => "clock/d5x/mod.rs",
 )]

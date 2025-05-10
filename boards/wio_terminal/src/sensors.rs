@@ -3,7 +3,7 @@ use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::pac::gclk::pchctrl::Genselect::Gclk11;
 use atsamd_hal::pac::{Adc1, Mclk};
 use atsamd_hal::prelude::*;
-use atsamd_hal::sercom::{i2c, IoSet3, Sercom4};
+use atsamd_hal::sercom::{i2c, Sercom4};
 
 use lis3dh::{Lis3dh, SlaveAddr};
 
@@ -21,7 +21,7 @@ pub struct Accelerometer {
 /// I2C pads for the labelled I2C peripheral
 ///
 /// You can use these pads with other, user-defined [`i2c::Config`]urations.
-pub type I2cPads = i2c::Pads<Sercom4, IoSet3, I2c0Sda, I2c0Scl>;
+pub type I2cPads = i2c::Pads<Sercom4, I2c0Sda, I2c0Scl>;
 
 impl Accelerometer {
     /// Initialize the LIS3DH accelerometer using the correct pins and
@@ -56,17 +56,18 @@ pub struct LightSensor {
     pub pd1: LightSensorAdcReset,
 }
 
-impl LightSensor {
-    /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
-    /// peripheral and the configured pin.
-    pub fn init(
-        self,
-        adc: Adc1,
-        clocks: &mut GenericClockController,
-        mclk: &mut Mclk,
-    ) -> (Adc<Adc1>, LightSensorAdc) {
-        let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
-
-        (adc1, self.pd1.into())
-    }
-}
+//  impl LightSensor {
+//      /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
+//      /// peripheral and the configured pin.
+//      pub fn init(
+//          self,
+//          adc: Adc1,
+//          clocks: &mut GenericClockController,
+//          mclk: &mut Mclk,
+//      ) -> (Adc<Adc1>, LightSensorAdc) {
+//          todo!()
+//          // let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
+//  
+//          // (adc1, self.pd1.into())
+//      }
+//  }

@@ -6,7 +6,7 @@ use atsamd_hal::{
     pac::{Mclk, Qspi},
     prelude::*,
     qspi,
-    sercom::{spi, IoSet1, Sercom6},
+    sercom::{spi, Sercom6},
     time::Hertz,
     typelevel::NoneT,
 };
@@ -62,7 +62,7 @@ pub struct SDCard {
     pub det: SdDetReset,
 }
 
-pub type SdPads = spi::Pads<Sercom6, IoSet1, SdMiso, SdMosi, SdSck>;
+pub type SdPads = spi::Pads<Sercom6, SdMiso, SdMosi, SdSck>;
 pub type SdSpi = spi::Spi<spi::Config<SdPads>, spi::Duplex>;
 
 type Controller<TS> = embedded_sdmmc::VolumeManager<

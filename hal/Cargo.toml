@@ -54,6 +54,7 @@ seq-macro = "0.3"
 sorted-hlist = "0.2.0"
 typenum = "1.12.0"
 void = {version = "1.0", default-features = false}
+pin-project = {version = "1.1.9", default-features = false}
 
 #===============================================================================
 # Optional depdendencies
