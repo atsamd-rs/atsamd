@@ -16,10 +16,7 @@
 //!
 //! ## Features
 //!
-//! - Converting between pin modes no longer requires access to the `Port` type.
-//!
-//! As a consequence, pin mode conversions can now be implemented using
-//! [`From`]/[`Into`].
+//! Pin mode conversions can be implemented using [`From`]/[`Into`].
 //! ```
 //! let pins = Pins::new(peripherals.PORT);
 //! let pa08: Pin<PA08, PushPullOutput> = pins.pa08.into();
