@@ -5,11 +5,13 @@ authors = ["Max Khardin <max.khardin@gmail.com"]
 description = "Board Support crate for the Wio Lite MG126"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/wio_lite_mg126/"
-edition = "2021"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies.cortex-m-rt]
 version = "0.7"
