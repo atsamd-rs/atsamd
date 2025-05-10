@@ -8,15 +8,17 @@ authors = [
 description = "Board Support crate for the Adafruit ItsyBitsy M4 Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-edition = "2021"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 bitbang-hal = "0.3"
 apa102-spi = "0.3"
-embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
+embedded-hal-02 = { package = "embedded-hal", version = "0.2", features = ["unproven"] }
 smart-leds = "0.3"
 
 [dependencies.cortex-m-rt]
@@ -32,7 +34,7 @@ version = "0.3.1"
 optional = true
 
 [dev-dependencies]
-cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
 usbd-serial = "0.2.2"
 panic-halt = "0.2"
 panic-semihosting = "0.6"

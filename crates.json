@@ -175,85 +175,35 @@
   },
   "hal_doc_variants": {
     "samd11c": {
-      "features": [
-        "samd11c",
-        "dma",
-        "defmt",
-        "async"
-      ],
+      "features": [ "samd11c", "dma", "defmt", "async" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd11d": {
-      "features": [
-        "samd11d",
-        "dma",
-        "defmt",
-        "async"
-      ],
+      "features": [ "samd11d", "dma", "defmt", "async" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21g": {
-      "features": [
-        "samd21g",
-        "usb",
-        "dma",
-        "defmt",
-        "async"
-      ],
+      "features": [ "samd21g", "usb", "dma", "defmt", "async" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21j": {
-      "features": [
-        "samd21j",
-        "usb",
-        "dma",
-        "defmt",
-        "async"
-      ],
+      "features": [ "samd21j", "usb", "dma", "defmt", "async" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd51g": {
-      "features": [
-        "samd51g",
-        "usb",
-        "sdmmc",
-        "dma",
-        "defmt",
-        "async"
-      ],
+      "features": [ "samd51g", "usb", "sdmmc", "dma", "defmt", "async" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51j": {
-      "features": [
-        "samd51j",
-        "usb",
-        "sdmmc",
-        "dma",
-        "defmt",
-        "async"
-      ],
+      "features": [ "samd51j", "usb", "sdmmc", "dma", "defmt", "async" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51n": {
-      "features": [
-        "samd51n",
-        "usb",
-        "sdmmc",
-        "dma",
-        "defmt",
-        "async"
-      ],
+      "features": [ "samd51n", "usb", "sdmmc", "dma", "defmt", "async" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51p": {
-      "features": [
-        "samd51p",
-        "usb",
-        "sdmmc",
-        "dma",
-        "defmt",
-        "async"
-      ],
+      "features": [ "samd51p", "usb", "sdmmc", "dma", "defmt", "async" ],
       "target": "thumbv7em-none-eabihf"
     }
   },

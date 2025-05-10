@@ -1,21 +1,23 @@
 [package]
 authors = [
-  "Paul Sajna <sajattack@gmail.com>",
-  "Wez Furlong <wez@wezfurlong.org>",
+    "Paul Sajna <sajattack@gmail.com>",
+    "Wez Furlong <wez@wezfurlong.org>",
 ]
 categories = ["embedded", "hardware-support", "no-std"]
 description = "Board Support crate for the Adafruit PyGamer"
-edition = "2021"
 exclude = ["assets"]
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
-license = "MIT OR Apache-2.0"
 name = "pygamer"
-readme = "README.md"
-repository = "https://github.com/atsamd-rs/atsamd"
 version = "0.15.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
-cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
 embedded-hal-bus = "0.3.0"
 # This version is pinned as recommended by: https://docs.rs/embedded-hal-bus/0.2.0/embedded_hal_bus/spi/struct.ExclusiveDevice.html#method.new_no_delay
 st7735-lcd = "=0.10.0"
@@ -44,7 +46,7 @@ embedded-sdmmc = "0.8.1"
 lis3dh = "0.4.3"
 micromath = "2.1"
 panic-halt = "1"
-rtic = {version = "2.1.2", features = ["thumbv7-backend"]}
+rtic = { version = "2.1.2", features = ["thumbv7-backend"] }
 smart-leds = "0.4"
 tinybmp = "0.6"
 usbd-serial = "0.2"

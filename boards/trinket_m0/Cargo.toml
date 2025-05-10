@@ -5,10 +5,12 @@ authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit Trinket M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-edition = "2021"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 bitbang-hal = "0.3"
