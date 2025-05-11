@@ -1,3 +1,5 @@
+use core::marker::PhantomData;
+
 use atsamd_hal::{
     clock::{GenericClockController, Sercom6CoreClock},
     delay::Delay,
