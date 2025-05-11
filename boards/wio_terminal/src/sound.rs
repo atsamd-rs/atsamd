@@ -43,18 +43,18 @@ pub struct Microphone {
     pub mic: MicOutputReset,
 }
 
-//  impl Microphone {
-//      /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
-//      /// peripheral and the configured pin.
-//      pub fn init(
-//          self,
-//          adc: Adc1,
-//          clocks: &mut GenericClockController,
-//          mclk: &mut Mclk,
-//      ) -> (Adc<Adc1>, MicOutput) {
-//          todo!()
-//          //  let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
-//  
-//          //  (adc1, self.mic.into())
-//      }
-//  }
+impl Microphone {
+    /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
+    /// peripheral and the configured pin.
+    pub fn init(
+        self,
+        adc: Adc1,
+        clocks: &mut GenericClockController,
+        mclk: &mut Mclk,
+    ) -> (Adc<atsamd_hal::adc::Adc1>, MicOutput) {
+        todo!()
+
+        // let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
+        // (adc1, self.mic.into())
+    }
+}

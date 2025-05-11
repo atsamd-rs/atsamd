@@ -1,4 +1,5 @@
-use atsamd_hal::adc::Adc;
+use atsamd_hal::adc::AdcBuilder;
+use atsamd_hal::adc::{Accumulation, Adc, Prescaler, Resolution};
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::pac::gclk::pchctrl::Genselect::Gclk11;
 use atsamd_hal::pac::{Adc1, Mclk};
@@ -56,18 +57,28 @@ pub struct LightSensor {
     pub pd1: LightSensorAdcReset,
 }
 
-//  impl LightSensor {
-//      /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
-//      /// peripheral and the configured pin.
-//      pub fn init(
-//          self,
-//          adc: Adc1,
-//          clocks: &mut GenericClockController,
-//          mclk: &mut Mclk,
-//      ) -> (Adc<Adc1>, LightSensorAdc) {
-//          todo!()
-//          // let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
-//  
-//          // (adc1, self.pd1.into())
-//      }
-//  }
+impl LightSensor {
+    /// Initialize Pd1 as an ADC input, and return a Tuple containing the ADC
+    /// peripheral and the configured pin.
+    pub fn init(
+        self,
+        adc: Adc1,
+        clocks: &mut GenericClockController,
+        mclk: &mut Mclk,
+    ) -> (Adc<atsamd_hal::adc::Adc1>, LightSensorAdc) {
+
+        todo!()
+        //  let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
+
+        //  let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
+        //      .with_clock_cycles_per_sample(5)
+        //      // Overruns if clock divider < 32 in debug mode
+        //      .with_clock_divider(Prescaler::Div32)
+        //      .with_vref(atsamd_hal::adc::Reference::Arefa)
+        //      .enable(adc, apb_adc0, &pclk_adc0)
+        //      .unwrap();
+        //  let mut adc_pin = pins.a0.into_alternate();
+
+        //  (adc1, self.pd1.into())
+    }
+}
