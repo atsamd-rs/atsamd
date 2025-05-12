@@ -291,7 +291,7 @@ impl DynPin {
     #[inline]
     unsafe fn new(id: DynPinId, mode: DynPinMode) -> Self {
         DynPin {
-            regs: DynRegisters::new(id),
+            regs: unsafe { DynRegisters::new(id) },
             mode,
         }
     }

@@ -32,8 +32,8 @@ use atsamd_hal_macros::hal_cfg;
 use core::ops::Deref;
 
 use crate::pac;
-use pac::sercom0;
 use pac::Peripherals;
+use pac::sercom0;
 
 #[hal_cfg("sercom0-d5x")]
 use pac::Mclk as ApbClkCtrl;

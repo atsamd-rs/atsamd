@@ -633,7 +633,7 @@
 
 use core::ops::{Add, Sub};
 
-use typenum::{Add1, Bit, Sub1, UInt, Unsigned, B1, U0};
+use typenum::{Add1, B1, Bit, Sub1, U0, UInt, Unsigned};
 
 mod private {
     /// Super trait used to mark traits with an exhaustive set of

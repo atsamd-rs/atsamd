@@ -32,7 +32,7 @@
 use core::marker::PhantomData;
 
 use super::Nvm;
-use crate::pac::{nvmctrl::ctrlb::Cmdselect, Nvmctrl};
+use crate::pac::{Nvmctrl, nvmctrl::ctrlb::Cmdselect};
 use crate::typelevel::Sealed;
 
 /// Struct representing a SmartEEPROM instance.
@@ -169,10 +169,12 @@ impl<'a, T: SmartEepromState> SmartEeprom<'a, T> {
     /// `Nvmctrl.SEESTAT.BUSY` register must be 0 before memory access can be
     /// performed.
     pub unsafe fn get_slice<TP: SmartEepromPointableSize>(&self) -> &[TP] {
-        core::slice::from_raw_parts_mut(
-            Self::SEEPROM_ADDR as _,
-            self.virtual_size / core::mem::size_of::<TP>(),
-        )
+        unsafe {
+            core::slice::from_raw_parts_mut(
+                Self::SEEPROM_ADDR as _,
+                self.virtual_size / core::mem::size_of::<TP>(),
+            )
+        }
     }
 
     /// Retrieves data stored in SmartEEPROM at `offset` location and copies it
@@ -218,10 +220,12 @@ impl<'a> SmartEeprom<'a, Unlocked> {
     /// `Nvmctrl.SEESTAT.BUSY` register must be 0 before memory access can be
     /// performed.
     pub unsafe fn get_mut_slice<TP: SmartEepromPointableSize>(&mut self) -> &mut [TP] {
-        core::slice::from_raw_parts_mut(
-            Self::SEEPROM_ADDR as _,
-            self.virtual_size / core::mem::size_of::<TP>(),
-        )
+        unsafe {
+            core::slice::from_raw_parts_mut(
+                Self::SEEPROM_ADDR as _,
+                self.virtual_size / core::mem::size_of::<TP>(),
+            )
+        }
     }
 
     /// Copies data in a `buffer` to SmartEEPROM at `offset` location

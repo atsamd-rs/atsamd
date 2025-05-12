@@ -427,8 +427,8 @@ use bitflags::bitflags;
 use num_traits::AsPrimitive;
 
 use crate::ehal;
-pub use crate::ehal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
-use crate::sercom::{pad::SomePad, ApbClkCtrl, Sercom};
+pub use crate::ehal::spi::{MODE_0, MODE_1, MODE_2, MODE_3, Phase, Polarity};
+use crate::sercom::{ApbClkCtrl, Sercom, pad::SomePad};
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
 

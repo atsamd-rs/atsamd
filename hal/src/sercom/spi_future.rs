@@ -306,11 +306,7 @@ where
     #[inline]
     fn step(&self) -> usize {
         let len = self.len();
-        if len > 4 {
-            4
-        } else {
-            len
-        }
+        if len > 4 { 4 } else { len }
     }
 }
 
