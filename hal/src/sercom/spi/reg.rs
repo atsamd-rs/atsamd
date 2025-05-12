@@ -55,12 +55,6 @@ impl<S: Sercom> Registers<S> {
         while self.spi().syncbusy().read().swrst().bit_is_set() {}
     }
 
-    #[cfg(feature = "dma")]
-    /// Get a pointer to the `DATA` register
-    pub fn data_ptr<Z: super::Size>(&self) -> *mut Z::Word {
-        self.spi().data().as_ptr() as *mut _
-    }
-
     /// Configure the DIPO and DOPO values
     #[inline]
     pub fn set_dipo_dopo(&mut self, dipo_dopo: (u8, u8)) {
