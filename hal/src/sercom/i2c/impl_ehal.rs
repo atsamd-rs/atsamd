@@ -461,36 +461,6 @@ mod dma {
     }
 }
 
-impl<C: AnyConfig> crate::ehal_02::blocking::i2c::Write for I2c<C> {
-    type Error = Error;
-
-    fn write(&mut self, addr: u8, bytes: &[u8]) -> Result<(), Self::Error> {
-        self.do_write(addr, bytes)?;
-        self.cmd_stop();
-        Ok(())
-    }
-}
-
-impl<C: AnyConfig> crate::ehal_02::blocking::i2c::Read for I2c<C> {
-    type Error = Error;
-
-    fn read(&mut self, addr: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {
-        self.do_read(addr, buffer)?;
-        self.cmd_stop();
-        Ok(())
-    }
-}
-
-impl<C: AnyConfig> crate::ehal_02::blocking::i2c::WriteRead for I2c<C> {
-    type Error = Error;
-
-    fn write_read(&mut self, addr: u8, bytes: &[u8], buffer: &mut [u8]) -> Result<(), Self::Error> {
-        self.do_write_read(addr, bytes, buffer)?;
-        self.cmd_stop();
-        Ok(())
-    }
-}
-
 /// Arrange all operations in contiguous chunks of the same R/W type
 pub(super) fn chunk_operations<'a, 'op>(
     operations: &'a mut [Operation<'op>],

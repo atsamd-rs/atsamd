@@ -3,7 +3,6 @@ use atsamd_hal_macros::hal_cfg;
 use fugit::ExtU32;
 
 use crate::ehal;
-use crate::ehal_02;
 use crate::pac;
 use crate::time::{Hertz, Nanoseconds};
 use crate::timer_traits::InterruptDrivenTimer;
@@ -201,25 +200,6 @@ impl Rtc<ClockMode> {
 }
 
 // --- Timer / Counter Functionality
-impl ehal_02::timer::Periodic for Rtc<Count32Mode> {}
-impl ehal_02::timer::CountDown for Rtc<Count32Mode> {
-    type Time = Nanoseconds;
-
-    /// Starts the timer and puts it in periodic mode in which the counter
-    /// counts up to the specified `timeout` and then resets repeatedly back
-    /// to zero.
-    fn start<T>(&mut self, timeout: T)
-    where
-        T: Into<Self::Time>,
-    {
-        <Self as InterruptDrivenTimer>::start(self, timeout);
-    }
-
-    fn wait(&mut self) -> nb::Result<(), void::Void> {
-        <Self as InterruptDrivenTimer>::wait(self).map_err(|e| e.map(|_| panic!()))
-    }
-}
-
 impl ehal::delay::DelayNs for Rtc<Count32Mode> {
     fn delay_ns(&mut self, ns: u32) {
         <Self as InterruptDrivenTimer>::start(self, ns.nanos());

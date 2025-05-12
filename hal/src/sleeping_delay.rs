@@ -4,7 +4,6 @@ use cortex_m::asm;
 use fugit::ExtU32;
 
 use crate::ehal::delay::DelayNs;
-use crate::ehal_02;
 use crate::timer_traits::InterruptDrivenTimer;
 
 const NUM_NS_IN_S: u32 = 1_000_000_000;
@@ -33,26 +32,6 @@ where
     /// Releases the timer resource
     pub fn free(self) -> TIM {
         self.timer
-    }
-}
-
-impl<TIM, TYPE> ehal_02::blocking::delay::DelayUs<TYPE> for SleepingDelay<TIM>
-where
-    TIM: InterruptDrivenTimer,
-    TYPE: Into<u32>,
-{
-    fn delay_us(&mut self, us: TYPE) {
-        <Self as DelayNs>::delay_us(self, us.into());
-    }
-}
-
-impl<TIM, TYPE> ehal_02::blocking::delay::DelayMs<TYPE> for SleepingDelay<TIM>
-where
-    TIM: InterruptDrivenTimer,
-    TYPE: Into<u32>,
-{
-    fn delay_ms(&mut self, ms: TYPE) {
-        <Self as DelayNs>::delay_ms(self, ms.into());
     }
 }
 

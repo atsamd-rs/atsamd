@@ -1,63 +1,14 @@
 //! `embedded-hal` trait implementations for [`Uart`]s
 
 use super::{
-    Capability, Config, DataReg, EightBit, Error, Error as UartError, Flags, Receive, Transmit,
-    Uart, ValidConfig, ValidPads,
+    Capability, Config, DataReg, EightBit, Error, Flags, Receive, Transmit, Uart, ValidConfig,
+    ValidPads,
 };
-use crate::{
-    ehal_02::{
-        blocking,
-        serial::{Read, Write},
-    },
-    typelevel::NoneT,
-};
+use crate::typelevel::NoneT;
 use nb::Error::WouldBlock;
 use num_traits::AsPrimitive;
 
-impl<C, D> Read<C::Word> for Uart<C, D>
-where
-    C: ValidConfig,
-    D: Receive,
-    DataReg: AsPrimitive<C::Word>,
-{
-    type Error = Error;
-
-    /// Wait for an `RXC` flag, then read the word
-    #[inline]
-    fn read(&mut self) -> nb::Result<C::Word, Error> {
-        <Self as embedded_hal_nb::serial::Read<C::Word>>::read(self)
-    }
-}
-
-impl<C, D> Write<C::Word> for Uart<C, D>
-where
-    C: ValidConfig,
-    D: Transmit,
-{
-    type Error = UartError;
-
-    /// Wait for a `DRE` flag, then write a word
-    #[inline]
-    fn write(&mut self, word: C::Word) -> nb::Result<(), Self::Error> {
-        <Self as embedded_hal_nb::serial::Write<C::Word>>::write(self, word)
-    }
-
-    /// Wait for a `TXC` flag
-    #[inline]
-    fn flush(&mut self) -> nb::Result<(), Self::Error> {
-        <Self as embedded_hal_nb::serial::Write<C::Word>>::flush(self)
-    }
-}
-
-impl<C, D> blocking::serial::write::Default<C::Word> for Uart<C, D>
-where
-    C: ValidConfig,
-    D: Transmit,
-    Uart<C, D>: Write<C::Word>,
-{
-}
-
-impl embedded_io::Error for UartError {
+impl embedded_io::Error for Error {
     #[inline]
     fn kind(&self) -> embedded_io::ErrorKind {
         embedded_io::ErrorKind::Other
@@ -69,7 +20,7 @@ where
     C: ValidConfig,
     D: Capability,
 {
-    type Error = UartError;
+    type Error = Error;
 }
 
 impl<P, D, R> embedded_io::Write for Uart<Config<P, EightBit>, D, R, NoneT>
@@ -116,7 +67,7 @@ where
     }
 }
 
-impl embedded_hal_nb::serial::Error for UartError {
+impl embedded_hal_nb::serial::Error for Error {
     #[inline]
     fn kind(&self) -> embedded_hal_nb::serial::ErrorKind {
         use embedded_hal_nb::serial::ErrorKind;
@@ -136,7 +87,7 @@ where
     W: Copy,
     D: Capability,
 {
-    type Error = UartError;
+    type Error = Error;
 }
 
 impl<C, D, R, T> embedded_hal_nb::serial::Read<C::Word> for Uart<C, D, R, T>
