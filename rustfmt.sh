@@ -6,7 +6,7 @@ echo $DIRECTORIES
 for DIR in $DIRECTORIES
 do
     pushd $(dirname $DIR)
-    rustfmt --edition 2018 --check ./src/lib.rs ./examples/*.rs
+    cargo fmt -- --check
     RET=$(($RET + $?))
     popd
 done
@@ -17,7 +17,7 @@ echo $DIRECTORIES
 for DIR in $DIRECTORIES
 do
     pushd $(dirname $DIR)
-    rustfmt --edition 2018 --check ./src/lib.rs
+    cargo fmt -- --check
     RET=$(($RET + $?))
     popd
 done
