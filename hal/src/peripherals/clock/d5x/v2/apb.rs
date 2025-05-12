@@ -566,51 +566,53 @@ impl ApbTokens {
     #[inline]
     #[hal_macro_helper]
     pub(super) unsafe fn new() -> Self {
-        Self {
-            freq_m: ApbToken::new(),
-            sercom0: ApbToken::new(),
-            sercom1: ApbToken::new(),
-            tc0: ApbToken::new(),
-            tc1: ApbToken::new(),
-            usb: ApbToken::new(),
-            ev_sys: ApbToken::new(),
-            sercom2: ApbToken::new(),
-            sercom3: ApbToken::new(),
-            tcc0: ApbToken::new(),
-            tcc1: ApbToken::new(),
-            tc2: ApbToken::new(),
-            tc3: ApbToken::new(),
-            #[hal_cfg("tc4")]
-            tc4: ApbToken::new(),
-            tcc2: ApbToken::new(),
-            #[hal_cfg("tcc3")]
-            tcc3: ApbToken::new(),
-            #[hal_cfg("tc5")]
-            tc5: ApbToken::new(),
-            p_dec: ApbToken::new(),
-            ac: ApbToken::new(),
-            aes: ApbToken::new(),
-            trng: ApbToken::new(),
-            icm: ApbToken::new(),
-            ccl: ApbToken::new(),
-            sercom4: ApbToken::new(),
-            sercom5: ApbToken::new(),
-            #[hal_cfg("sercom6")]
-            sercom6: ApbToken::new(),
-            #[hal_cfg("sercom7")]
-            sercom7: ApbToken::new(),
-            #[hal_cfg("tcc4")]
-            tcc4: ApbToken::new(),
-            #[hal_cfg("tc6")]
-            tc6: ApbToken::new(),
-            #[hal_cfg("tc7")]
-            tc7: ApbToken::new(),
-            adc0: ApbToken::new(),
-            adc1: ApbToken::new(),
-            dac: ApbToken::new(),
-            #[hal_cfg("i2s")]
-            i2s: ApbToken::new(),
-            pcc: ApbToken::new(),
+        unsafe {
+            Self {
+                freq_m: ApbToken::new(),
+                sercom0: ApbToken::new(),
+                sercom1: ApbToken::new(),
+                tc0: ApbToken::new(),
+                tc1: ApbToken::new(),
+                usb: ApbToken::new(),
+                ev_sys: ApbToken::new(),
+                sercom2: ApbToken::new(),
+                sercom3: ApbToken::new(),
+                tcc0: ApbToken::new(),
+                tcc1: ApbToken::new(),
+                tc2: ApbToken::new(),
+                tc3: ApbToken::new(),
+                #[hal_cfg("tc4")]
+                tc4: ApbToken::new(),
+                tcc2: ApbToken::new(),
+                #[hal_cfg("tcc3")]
+                tcc3: ApbToken::new(),
+                #[hal_cfg("tc5")]
+                tc5: ApbToken::new(),
+                p_dec: ApbToken::new(),
+                ac: ApbToken::new(),
+                aes: ApbToken::new(),
+                trng: ApbToken::new(),
+                icm: ApbToken::new(),
+                ccl: ApbToken::new(),
+                sercom4: ApbToken::new(),
+                sercom5: ApbToken::new(),
+                #[hal_cfg("sercom6")]
+                sercom6: ApbToken::new(),
+                #[hal_cfg("sercom7")]
+                sercom7: ApbToken::new(),
+                #[hal_cfg("tcc4")]
+                tcc4: ApbToken::new(),
+                #[hal_cfg("tc6")]
+                tc6: ApbToken::new(),
+                #[hal_cfg("tc7")]
+                tc7: ApbToken::new(),
+                adc0: ApbToken::new(),
+                adc1: ApbToken::new(),
+                dac: ApbToken::new(),
+                #[hal_cfg("i2s")]
+                i2s: ApbToken::new(),
+                pcc: ApbToken::new(),
+            }
         }
     }
 }
@@ -651,25 +653,27 @@ impl ApbClks {
     #[inline]
     #[hal_macro_helper]
     pub(super) unsafe fn new() -> Self {
-        ApbClks {
-            pac: ApbClk::new(ApbToken::new()),
-            pm: ApbClk::new(ApbToken::new()),
-            mclk: ApbClk::new(ApbToken::new()),
-            rst_c: ApbClk::new(ApbToken::new()),
-            osc_ctrl: ApbClk::new(ApbToken::new()),
-            osc32k_ctrl: ApbClk::new(ApbToken::new()),
-            sup_c: ApbClk::new(ApbToken::new()),
-            gclk: ApbClk::new(ApbToken::new()),
-            wdt: ApbClk::new(ApbToken::new()),
-            rtc: ApbClk::new(ApbToken::new()),
-            eic: ApbClk::new(ApbToken::new()),
-            dsu: ApbClk::new(ApbToken::new()),
-            nvm_ctrl: ApbClk::new(ApbToken::new()),
-            port: ApbClk::new(ApbToken::new()),
-            ram_ecc: ApbClk::new(ApbToken::new()),
-            #[hal_cfg("gmac")]
-            gmac: ApbClk::new(ApbToken::new()),
-            qspi: ApbClk::new(ApbToken::new()),
+        unsafe {
+            ApbClks {
+                pac: ApbClk::new(ApbToken::new()),
+                pm: ApbClk::new(ApbToken::new()),
+                mclk: ApbClk::new(ApbToken::new()),
+                rst_c: ApbClk::new(ApbToken::new()),
+                osc_ctrl: ApbClk::new(ApbToken::new()),
+                osc32k_ctrl: ApbClk::new(ApbToken::new()),
+                sup_c: ApbClk::new(ApbToken::new()),
+                gclk: ApbClk::new(ApbToken::new()),
+                wdt: ApbClk::new(ApbToken::new()),
+                rtc: ApbClk::new(ApbToken::new()),
+                eic: ApbClk::new(ApbToken::new()),
+                dsu: ApbClk::new(ApbToken::new()),
+                nvm_ctrl: ApbClk::new(ApbToken::new()),
+                port: ApbClk::new(ApbToken::new()),
+                ram_ecc: ApbClk::new(ApbToken::new()),
+                #[hal_cfg("gmac")]
+                gmac: ApbClk::new(ApbToken::new()),
+                qspi: ApbClk::new(ApbToken::new()),
+            }
         }
     }
 }

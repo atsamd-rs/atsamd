@@ -18,7 +18,7 @@ macro_rules! __internal_backend_methods {
         /// This should only be called from the RTC interrupt handler.
         #[inline]
         pub unsafe fn interrupt_handler() {
-            let rtc = pac::Rtc::steal();
+            let rtc = unsafe {pac::Rtc::steal() };
 
             /// Returns whether a < b, taking wrapping into account and assuming
             /// that the difference is less than a half period.
@@ -42,7 +42,7 @@ macro_rules! __internal_backend_methods {
                 while less_than_with_wrap(<$mode>::count(&rtc), compare) {}
             }
 
-            Self::timer_queue().on_monotonic_interrupt();
+            unsafe { Self::timer_queue().on_monotonic_interrupt(); }
         }
 
         /// Starts the clock.
@@ -233,18 +233,22 @@ macro_rules! __internal_half_period_counting_backend {
             type Ticks = u64;
 
             fn now() -> Self::Ticks {
+                let rtc = unsafe { pac::Rtc::steal() };
+
                 calculate_now(
                     || RTC_PERIOD_COUNT.load(Ordering::Relaxed),
-                    || TimerValue(<$mode>::count(unsafe { &pac::Rtc::steal() })),
+                    || TimerValue(<$mode>::count(&rtc)),
                 )
             }
 
             fn enable_timer() {
-                <$mode>::enable(unsafe { &pac::Rtc::steal() });
+                let rtc = unsafe { pac::Rtc::steal() };
+                <$mode>::enable(&rtc);
             }
 
             fn disable_timer() {
-                <$mode>::disable(unsafe { &pac::Rtc::steal() });
+                let rtc = unsafe { pac::Rtc::steal() };
+                <$mode>::disable(&rtc);
             }
 
             fn on_interrupt() {
@@ -308,7 +312,8 @@ macro_rules! __internal_half_period_counting_backend {
             }
 
             fn clear_compare_flag() {
-                <$mode>::clear_interrupt_flag::<$rtic_int>(unsafe { &pac::Rtc::steal() });
+                let rtc = unsafe { pac::Rtc::steal() };
+                <$mode>::clear_interrupt_flag::<$rtic_int>(&rtc);
             }
 
             fn pend_interrupt() {

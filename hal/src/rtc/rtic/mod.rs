@@ -83,7 +83,7 @@
 //! rtc_monotonic!(Mono, rtc_clock::Clock32k);
 //!
 //! // Uncomment if not using the RTIC RTOS:
-//! // #[no_mangle]
+//! // #[unsafe(no_mangle)]
 //! // static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8 = 1;
 //! //
 //! // This tells the monotonic driver the maximum interrupt
@@ -176,8 +176,8 @@ pub mod v1 {
 
 mod backends;
 
-use super::modes::{mode0::RtcMode0, mode1::RtcMode1, RtcMode};
-use crate::interrupt::{Priority, NVIC_PRIO_BITS};
+use super::modes::{RtcMode, mode0::RtcMode0, mode1::RtcMode1};
+use crate::interrupt::{NVIC_PRIO_BITS, Priority};
 use atsamd_hal_macros::hal_cfg;
 
 /// Types used to specify the RTC clock rate at compile time when creating the
@@ -259,7 +259,7 @@ pub use backend::RtcBackend;
 #[macro_export]
 macro_rules! __internal_create_rtc_interrupt {
     ($backend:ident) => {
-        #[no_mangle]
+        #[unsafe(no_mangle)]
         #[allow(non_snake_case)]
         unsafe extern "C" fn RTC() {
             $crate::rtc::rtic::$backend::interrupt_handler();
@@ -324,17 +324,19 @@ macro_rules! rtc_monotonic {
 ///
 /// See LICENSE-MIT and LICENSE-APACHE for the licenses.
 unsafe fn set_monotonic_prio(interrupt: impl cortex_m::interrupt::InterruptNumber) {
-    extern "C" {
+    unsafe extern "C" {
         static RTIC_ASYNC_MAX_LOGICAL_PRIO: u8;
     }
 
-    let max_prio = RTIC_ASYNC_MAX_LOGICAL_PRIO.clamp(1, 1 << NVIC_PRIO_BITS);
-    let hw_prio = Priority::from_numeric(max_prio).unwrap().logical2hw();
+    unsafe {
+        let max_prio = RTIC_ASYNC_MAX_LOGICAL_PRIO.clamp(1, 1 << NVIC_PRIO_BITS);
+        let hw_prio = Priority::from_numeric(max_prio).unwrap().logical2hw();
 
-    // We take ownership of the entire IRQ and all settings to it, we only change
-    // settings for the IRQ we control.
-    // This will also compile-error in case the NVIC changes in size.
-    let mut nvic: cortex_m::peripheral::NVIC = core::mem::transmute(());
+        // We take ownership of the entire IRQ and all settings to it, we only change
+        // settings for the IRQ we control.
+        // This will also compile-error in case the NVIC changes in size.
+        let mut nvic: cortex_m::peripheral::NVIC = core::mem::transmute(());
 
-    nvic.set_priority(interrupt, hw_prio);
+        nvic.set_priority(interrupt, hw_prio);
+    }
 }

@@ -9,17 +9,16 @@ use atsamd_hal_macros::hal_macro_helper;
 
 use crate::{
     dmac::{
-        self,
+        self, Beat, Buffer, Transfer, TriggerAction,
         channel::{AnyChannel, Busy, Channel, InterruptFlags, Ready},
         sram::DmacDescriptor,
         transfer::BufferPair,
-        Beat, Buffer, Transfer, TriggerAction,
     },
     sercom::{
+        Sercom,
         i2c::{self, I2c},
         spi::{self, Spi},
         uart::{self, Uart},
-        Sercom,
     },
 };
 
@@ -546,7 +545,9 @@ pub(super) unsafe fn read_dma<T, B, S>(
     B: Buffer<Beat = T>,
     S: Sercom,
 {
-    read_dma_linked::<_, _, S>(channel, sercom_ptr, buf, None);
+    unsafe {
+        read_dma_linked::<_, _, S>(channel, sercom_ptr, buf, None);
+    }
 }
 
 /// Perform a SERCOM DMA read with a provided [`Buffer`], and add an optional
@@ -575,13 +576,15 @@ pub(super) unsafe fn read_dma_linked<T, B, S>(
 
     // Safety: It is safe to bypass the buffer length check because `SercomPtr`
     // always has a buffer length of 1.
-    channel.as_mut().transfer_unchecked(
-        &mut sercom_ptr,
-        buf,
-        S::DMA_RX_TRIGGER,
-        trigger_action,
-        next,
-    );
+    unsafe {
+        channel.as_mut().transfer_unchecked(
+            &mut sercom_ptr,
+            buf,
+            S::DMA_RX_TRIGGER,
+            trigger_action,
+            next,
+        );
+    }
 }
 
 /// Perform a SERCOM DMA write with a provided [`Buffer`]
@@ -600,7 +603,9 @@ pub(super) unsafe fn write_dma<T, B, S>(
     B: Buffer<Beat = T>,
     S: Sercom,
 {
-    write_dma_linked::<_, _, S>(channel, sercom_ptr, buf, None);
+    unsafe {
+        write_dma_linked::<_, _, S>(channel, sercom_ptr, buf, None);
+    }
 }
 
 /// Perform a SERCOM DMA write with a provided [`Buffer`], and add an optional
@@ -629,13 +634,15 @@ pub(super) unsafe fn write_dma_linked<T, B, S>(
 
     // Safety: It is safe to bypass the buffer length check because `SercomPtr`
     // always has a buffer length of 1.
-    channel.as_mut().transfer_unchecked(
-        buf,
-        &mut sercom_ptr,
-        S::DMA_TX_TRIGGER,
-        trigger_action,
-        next,
-    );
+    unsafe {
+        channel.as_mut().transfer_unchecked(
+            buf,
+            &mut sercom_ptr,
+            S::DMA_TX_TRIGGER,
+            trigger_action,
+            next,
+        );
+    }
 }
 
 /// Use the DMA Controller to perform async transfers using the SERCOM
@@ -693,16 +700,18 @@ pub(crate) mod async_dma {
 
         // Safety: It is safe to bypass the buffer length check because `SercomPtr`
         // always has a buffer length of 1.
-        channel
-            .as_mut()
-            .transfer_future_linked(
-                &mut sercom_ptr,
-                buf,
-                S::DMA_RX_TRIGGER,
-                trigger_action,
-                next,
-            )
-            .await
+        unsafe {
+            channel
+                .as_mut()
+                .transfer_future_linked(
+                    &mut sercom_ptr,
+                    buf,
+                    S::DMA_RX_TRIGGER,
+                    trigger_action,
+                    next,
+                )
+                .await
+        }
     }
 
     /// Perform a SERCOM DMA write with a provided `&[T]`
@@ -749,15 +758,17 @@ pub(crate) mod async_dma {
 
         // Safety: It is safe to bypass the buffer length check because `SercomPtr`
         // always has a buffer length of 1.
-        channel
-            .as_mut()
-            .transfer_future_linked(
-                buf,
-                &mut sercom_ptr,
-                S::DMA_TX_TRIGGER,
-                trigger_action,
-                next,
-            )
-            .await
+        unsafe {
+            channel
+                .as_mut()
+                .transfer_future_linked(
+                    buf,
+                    &mut sercom_ptr,
+                    S::DMA_TX_TRIGGER,
+                    trigger_action,
+                    next,
+                )
+                .await
+        }
     }
 }

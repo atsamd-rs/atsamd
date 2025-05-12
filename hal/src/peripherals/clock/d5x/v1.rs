@@ -11,7 +11,7 @@ use atsamd_hal_macros::hal_macro_helper;
 
 use fugit::RateExtU32;
 
-use crate::clock::v2::pclk::{ids::*, Pclk, PclkSourceId};
+use crate::clock::v2::pclk::{Pclk, PclkSourceId, ids::*};
 use crate::pac::gclk::genctrl::Srcselect::*;
 use crate::pac::gclk::pchctrl::Genselect::*;
 use crate::pac::{self, Gclk, Mclk, Nvmctrl, Osc32kctrl, Oscctrl};
@@ -152,7 +152,7 @@ impl State {
         self.gclk
             .pchctrl(u8::from(clock) as usize)
             .write(|w| unsafe {
-                w.gen().bits(generator.into());
+                w.r#gen().bits(generator.into());
                 w.chen().set_bit()
             });
         self.wait_for_sync();
@@ -550,7 +550,7 @@ fn wait_for_dpllrdy(oscctrl: &mut Oscctrl) {
 fn configure_and_enable_dpll0(oscctrl: &mut Oscctrl, gclk: &mut Gclk) {
     gclk.pchctrl(ClockId::FDPLL0 as usize).write(|w| {
         w.chen().set_bit();
-        w.gen().gclk5()
+        w.r#gen().gclk5()
     });
     unsafe {
         oscctrl.dpll(0).dpllratio().write(|w| {

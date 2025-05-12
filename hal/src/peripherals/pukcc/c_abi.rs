@@ -671,13 +671,15 @@ pub trait Service: crate::typelevel::Sealed {
     /// User must ensure that [`PukclParams`] is correctly initialised
     /// according to the service being called
     unsafe fn call(pukcl_params: &mut PukclParams) {
-        pukcl_params.header.u1Service = Self::SERVICE_NUM;
-        pukcl_params.header.u2Status =
-            super::PukclReturnCode::Severe(super::PukclReturnCodeSevere::ComputationNotStarted)
-                .into();
-        core::mem::transmute::<usize, extern "C" fn(*mut PukclParams)>(Self::FUNCTION_ADDRESS)(
-            pukcl_params,
-        )
+        unsafe {
+            pukcl_params.header.u1Service = Self::SERVICE_NUM;
+            pukcl_params.header.u2Status =
+                super::PukclReturnCode::Severe(super::PukclReturnCodeSevere::ComputationNotStarted)
+                    .into();
+            core::mem::transmute::<usize, extern "C" fn(*mut PukclParams)>(Self::FUNCTION_ADDRESS)(
+                pukcl_params,
+            )
+        }
     }
 }
 
@@ -762,10 +764,12 @@ services!(
 ///
 /// Only useful for low-level ABI calls
 pub unsafe fn wait_for_crypto_ram_clear_process() {
-    const PUKCCSR: *mut u32 = 0x4200302C as _;
-    const BIT_PUKCCSR_CLRRAM_BUSY: u32 = 0x1;
+    unsafe {
+        const PUKCCSR: *mut u32 = 0x4200302C as _;
+        const BIT_PUKCCSR_CLRRAM_BUSY: u32 = 0x1;
 
-    while core::ptr::read_volatile(PUKCCSR) & BIT_PUKCCSR_CLRRAM_BUSY != 0 {}
+        while core::ptr::read_volatile(PUKCCSR) & BIT_PUKCCSR_CLRRAM_BUSY != 0 {}
+    }
 }
 
 /// Slice wrapper that provides Rust-like access to CryptoRAM memory area
@@ -783,10 +787,12 @@ impl CryptoRam {
     /// Only to be used exclusively for low-level access,
     /// never together with the high level API.
     pub unsafe fn new() -> Self {
-        Self(core::slice::from_raw_parts_mut(
-            Self::CRYPTORAM_BASE,
-            Self::CRYPTORAM_LENGTH,
-        ))
+        unsafe {
+            Self(core::slice::from_raw_parts_mut(
+                Self::CRYPTORAM_BASE,
+                Self::CRYPTORAM_LENGTH,
+            ))
+        }
     }
 }
 

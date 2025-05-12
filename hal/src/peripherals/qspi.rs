@@ -1,5 +1,5 @@
 use crate::{
-    gpio::{AlternateH, AnyPin, Pin, PA08, PA09, PA10, PA11, PB10, PB11},
+    gpio::{AlternateH, AnyPin, PA08, PA09, PA10, PA11, PB10, PB11, Pin},
     pac::qspi::instrframe,
     pac::{self, Mclk},
 };
@@ -62,7 +62,7 @@ impl Qspi<OneShot> {
             //(120_000_000u32 / 4_000_000u32) = 30 = BAUD + 1
             // BAUD = 29
             w.baud().bits(29); // 4Mhz
-                               // SPI MODE 0
+            // SPI MODE 0
             w.cpol().clear_bit();
             w.cpha().clear_bit()
         });
@@ -303,29 +303,31 @@ impl<MODE> Qspi<MODE> {
         addr: u32,
         buf: &[u8],
     ) {
-        if command == Command::EraseSector || command == Command::EraseBlock {
-            self.qspi.instraddr().write(|w| w.addr().bits(addr));
-        }
-        self.qspi
-            .instrctrl()
-            .modify(|_, w| w.instr().bits(command.bits()));
-        self.qspi.instrframe().write(|w| {
-            tfm.instrframe(
-                w,
-                if command == Command::QuadPageProgram {
-                    instrframe::Tfrtypeselect::Writememory
-                } else {
-                    instrframe::Tfrtypeselect::Write
-                },
-            )
-        });
-        self.qspi.instrframe().read().bits();
+        unsafe {
+            if command == Command::EraseSector || command == Command::EraseBlock {
+                self.qspi.instraddr().write(|w| w.addr().bits(addr));
+            }
+            self.qspi
+                .instrctrl()
+                .modify(|_, w| w.instr().bits(command.bits()));
+            self.qspi.instrframe().write(|w| {
+                tfm.instrframe(
+                    w,
+                    if command == Command::QuadPageProgram {
+                        instrframe::Tfrtypeselect::Writememory
+                    } else {
+                        instrframe::Tfrtypeselect::Write
+                    },
+                )
+            });
+            self.qspi.instrframe().read().bits();
 
-        if !buf.is_empty() {
-            core::ptr::copy(buf.as_ptr(), (QSPI_AHB + addr) as *mut u8, buf.len());
-        }
+            if !buf.is_empty() {
+                core::ptr::copy(buf.as_ptr(), (QSPI_AHB + addr) as *mut u8, buf.len());
+            }
 
-        self.finalize();
+            self.finalize();
+        }
     }
 
     unsafe fn run_read_instruction(
@@ -336,27 +338,29 @@ impl<MODE> Qspi<MODE> {
         buf: &mut [u8],
         finalize: bool,
     ) {
-        self.qspi
-            .instrctrl()
-            .modify(|_, w| w.instr().bits(command.bits()));
-        self.qspi.instrframe().write(|w| {
-            tfm.instrframe(
-                w,
-                if command == Command::QuadRead {
-                    instrframe::Tfrtypeselect::Readmemory
-                } else {
-                    instrframe::Tfrtypeselect::Read
-                },
-            )
-        });
-        self.qspi.instrframe().read().bits();
+        unsafe {
+            self.qspi
+                .instrctrl()
+                .modify(|_, w| w.instr().bits(command.bits()));
+            self.qspi.instrframe().write(|w| {
+                tfm.instrframe(
+                    w,
+                    if command == Command::QuadRead {
+                        instrframe::Tfrtypeselect::Readmemory
+                    } else {
+                        instrframe::Tfrtypeselect::Read
+                    },
+                )
+            });
+            self.qspi.instrframe().read().bits();
 
-        if !buf.is_empty() {
-            core::ptr::copy((QSPI_AHB + addr) as *mut u8, buf.as_mut_ptr(), buf.len());
-        }
+            if !buf.is_empty() {
+                core::ptr::copy((QSPI_AHB + addr) as *mut u8, buf.as_mut_ptr(), buf.len());
+            }
 
-        if finalize {
-            self.finalize();
+            if finalize {
+                self.finalize();
+            }
         }
     }
 
@@ -413,7 +417,9 @@ impl TransferMode {
         }
 
         if self.dummy_cycles > 0 {
-            instrframe.dummylen().bits(self.dummy_cycles);
+            unsafe {
+                instrframe.dummylen().bits(self.dummy_cycles);
+            }
         }
         instrframe.addrlen()._24bits();
         instrframe.optcodeen().clear_bit();

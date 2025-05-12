@@ -21,10 +21,10 @@
 pub mod c_abi;
 pub mod curves;
 
-use core::iter::{once, repeat};
+use core::iter::{once, repeat_n};
 
 use crate::pac::Mclk;
-use c_abi::{u2, u4, CryptoRamSlice, Service};
+use c_abi::{CryptoRamSlice, Service, u2, u4};
 use curves::Curve;
 
 use rand_core::{CryptoRng, RngCore};
@@ -282,11 +282,11 @@ impl Pukcc {
             (order_point, C::ORDER_POINT.iter().cloned().rev()),
             (cns, C::CNS.iter().cloned().rev()),
             (hash_cr, hash.iter().cloned().rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             (private_key_cr, private_key.iter().cloned().rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             (k_cr, k.iter().cloned().rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             // Workspace is just marked with a zero length iterator just to get its address.
             // As it is placed at the end, idea is that algorithm will use whatever amount
             // of memory it needs
@@ -428,23 +428,23 @@ impl Pukcc {
             // Signature layout:
             //   [ R: (little endian) ][ 0_u32 ]..
             (signature_cr, signature.iter().cloned().take(C::SCALAR_LENGTH.into()).rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             // ..[ S: (little endian) ][ 0_u32 ]
             (__, signature.iter().cloned().skip(C::SCALAR_LENGTH.into()).take(C::SCALAR_LENGTH.into()).rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             (hash_cr, hash.iter().cloned().rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             // Public key has to be represented as a point + padding must be added
             // Public key layout:
             //   [ X coordinate: (little endian) ][ 0_u32 ]..
             (public_key_cr, public_key.iter().cloned().take(C::MOD_LENGTH.into()).rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             // ..[ Y coordinate: (little endian) ][ 0_u32 ]
             (__, public_key.iter().cloned().skip(C::MOD_LENGTH.into()).take(C::MOD_LENGTH.into()).rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             // ..[ Z coordinate: (little endian) ][ 0_u32 ] == 1
-            (__, once(1).chain(repeat(0).take((C::MOD_LENGTH - 1).into()))),
-            (__, repeat(0).take(4)),
+            (__, once(1).chain(repeat_n(0, (C::MOD_LENGTH - 1).into()))),
+            (__, repeat_n(0, 4)),
             // Workspace is just marked with a zero length iterator just to get its address.
             // As it is placed at the end, idea is that algorithm will use whatever amount
             // of memory it needs
@@ -625,19 +625,19 @@ impl Pukcc {
         copy_to_cryptoram! {
             crypto_ram,
             (modulus_cr, modulus.iter().cloned().rev()),
-            (__, repeat(0).take(4)),
+            (__, repeat_n(0, 4)),
             (cns_cr, cns.iter().cloned().rev()),
-            (__, repeat(0).take(padding_for_cns)),
+            (__, repeat_n(0, padding_for_cns)),
             // 1. `input` is replaced with an outcome of the computation
             // 2. `input` is padded to match `len(modulus)`
-            (output, input.iter().cloned().rev().chain(repeat(0).take(modulus.len() - input.len()))),
+            (output, input.iter().cloned().rev().chain(repeat_n(0, modulus.len() - input.len()))),
             // `input` area is used for computation and requires additional 4 0_u32 on MSB side
-            (__, repeat(0).take(16)),
+            (__, repeat_n(0, 16)),
             // Exponent is required to have 0_u32 on LSB side
             // `exponent_cr` is only used to get a pointer during `pukcl_params` initialization
-            (exponent_cr, repeat(0).take(4)),
+            (exponent_cr, repeat_n(0, 4)),
             (__, exponent.iter().cloned().rev()),
-            (__, repeat(0).take(padding_for_exponent)),
+            (__, repeat_n(0, padding_for_exponent)),
             // Workspace is just marked with a zero length slice just to get its address. As
             // it is placed at the end, idea is that algorithm will use whatever amount of
             // memory it needs
@@ -720,11 +720,11 @@ impl Pukcc {
         copy_to_cryptoram! {
             crypto_ram,
             (modulus_cr, modulus.iter().cloned().rev()),
-            (__, repeat(0).take(4)),
-            (cns_cr, repeat(0).take(actual_cns_length)),
-            (__, repeat(0).take(cns_length - actual_cns_length)),
+            (__, repeat_n(0, 4)),
+            (cns_cr, repeat_n(0, actual_cns_length)),
+            (__, repeat_n(0, cns_length - actual_cns_length)),
              // GF(p) -> 64 bytes
-            (workspace_r, repeat(0).take(64)),
+            (workspace_r, repeat_n(0, 64)),
             (workspace_x, 0..0)
         };
         let mut pukcl_params = c_abi::PukclParams::default();

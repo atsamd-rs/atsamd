@@ -1,9 +1,9 @@
 [package]
 authors = ["Tethys Svensson"]
 name = "atsamd-hal-macros"
-rust-version = "1.77.2"
+rust-version = "1.85.1"
 version = "0.2.5"
-edition = "2021"
+edition = "2024"
 license = "MIT OR Apache-2.0"
 categories = ["embedded", "hardware-support", "no-std"]
 description = "Procedural macros for the atsamd-hal library"

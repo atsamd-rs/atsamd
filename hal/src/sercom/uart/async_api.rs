@@ -1,11 +1,11 @@
 use crate::{
     async_hal::interrupts::{Binding, Handler, InterruptSource},
     sercom::{
+        Sercom,
         uart::{
             Capability, DataReg, Duplex, Error, Flags, Receive, Rx, RxDuplex, SingleOwner,
             Transmit, Tx, TxDuplex, Uart, ValidConfig,
         },
-        Sercom,
     },
     typelevel::NoneT,
 };
@@ -370,8 +370,8 @@ mod dma {
     use crate::{
         dmac::{AnyChannel, Beat, Channel, ReadyFuture},
         sercom::dma::{
-            async_dma::{read_dma, write_dma},
             SharedSliceBuffer,
+            async_dma::{read_dma, write_dma},
         },
     };
 

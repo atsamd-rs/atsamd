@@ -1,6 +1,6 @@
 //! [`embedded-hal`] trait implementations for [`I2c`]s
 
-use super::{config::AnyConfig, flags::Error, I2c};
+use super::{I2c, config::AnyConfig, flags::Error};
 use crate::ehal::i2c::{self, ErrorKind, ErrorType, NoAcknowledgeSource, Operation};
 
 impl i2c::Error for Error {
@@ -104,8 +104,8 @@ impl<C: AnyConfig> i2c::I2c for I2c<C> {
 mod dma {
     use super::*;
     use crate::dmac::ReadyChannel;
-    use crate::dmac::{channel, sram::DmacDescriptor, AnyChannel, Ready};
-    use crate::sercom::dma::{read_dma_linked, write_dma_linked, SercomPtr, SharedSliceBuffer};
+    use crate::dmac::{AnyChannel, Ready, channel, sram::DmacDescriptor};
+    use crate::sercom::dma::{SercomPtr, SharedSliceBuffer, read_dma_linked, write_dma_linked};
     use crate::sercom::{self, Sercom};
 
     impl<C, D, S, R> I2c<C, D>
@@ -137,7 +137,7 @@ mod dma {
                 let mut next_ptr = next.next_descriptor();
 
                 while !next_ptr.is_null() {
-                    let next = *next_ptr;
+                    let next = unsafe { *next_ptr };
                     cnt += next.beat_count() as usize;
                     next_ptr = next.next_descriptor();
                 }
@@ -172,7 +172,7 @@ mod dma {
 
             // Calculate the total number of bytes for this transaction across all linked
             // transfers, including the first transfer.
-            let transfer_len = dest.len() + Self::linked_transfer_length(next);
+            let transfer_len = unsafe { dest.len() + Self::linked_transfer_length(next) };
 
             assert!(
                 transfer_len <= 255,
@@ -208,7 +208,7 @@ mod dma {
 
             // Calculate the total number of bytes for this transaction across all linked
             // transfers, including the first transfer.
-            let transfer_len = source.len() + Self::linked_transfer_length(next);
+            let transfer_len = unsafe { source.len() + Self::linked_transfer_length(next) };
 
             assert!(
                 transfer_len <= 255,
@@ -244,24 +244,26 @@ mod dma {
             mut dest: &mut [u8],
             next: Option<&mut DmacDescriptor>,
         ) -> Result<(), Error> {
-            self.prepare_read_linked(address, dest, &next)?;
-            let sercom_ptr = self.sercom_ptr();
-            let channel = self._dma_channel.as_mut();
+            unsafe {
+                self.prepare_read_linked(address, dest, &next)?;
+                let sercom_ptr = self.sercom_ptr();
+                let channel = self._dma_channel.as_mut();
 
-            // SAFETY: We must make sure that any DMA transfer is complete or stopped before
-            // returning.
-            read_dma_linked::<_, _, S>(channel, sercom_ptr, &mut dest, next);
+                // SAFETY: We must make sure that any DMA transfer is complete or stopped before
+                // returning.
+                read_dma_linked::<_, _, S>(channel, sercom_ptr, &mut dest, next);
 
-            while !channel.xfer_complete() {
-                core::hint::spin_loop();
+                while !channel.xfer_complete() {
+                    core::hint::spin_loop();
+                }
+
+                // Defensively disable channel
+                channel.stop();
+
+                self.read_status().check_bus_error()?;
+                self._dma_channel.as_mut().xfer_success()?;
+                Ok(())
             }
-
-            // Defensively disable channel
-            channel.stop();
-
-            self.read_status().check_bus_error()?;
-            self._dma_channel.as_mut().xfer_success()?;
-            Ok(())
         }
 
         /// Make an I2C write transaction, with the option to add in linked
@@ -282,30 +284,33 @@ mod dma {
             source: &[u8],
             next: Option<&mut DmacDescriptor>,
         ) -> Result<(), Error> {
-            self.prepare_write_linked(address, source, &next)?;
+            unsafe {
+                self.prepare_write_linked(address, source, &next)?;
 
-            let sercom_ptr = self.sercom_ptr();
-            let mut bytes = SharedSliceBuffer::from_slice(source);
-            let channel = self._dma_channel.as_mut();
+                let sercom_ptr = self.sercom_ptr();
+                let mut bytes = SharedSliceBuffer::from_slice(source);
+                let channel = self._dma_channel.as_mut();
 
-            // SAFETY: We must make sure that any DMA transfer is complete or stopped before
-            // returning.
-            write_dma_linked::<_, _, S>(channel, sercom_ptr, &mut bytes, next);
+                // SAFETY: We must make sure that any DMA transfer is complete or stopped before
+                // returning.
 
-            while !channel.xfer_complete() {
-                core::hint::spin_loop();
+                write_dma_linked::<_, _, S>(channel, sercom_ptr, &mut bytes, next);
+
+                while !channel.xfer_complete() {
+                    core::hint::spin_loop();
+                }
+
+                // Defensively disable channel
+                channel.stop();
+
+                while !self.read_status().is_idle() {
+                    core::hint::spin_loop();
+                }
+
+                self.read_status().check_bus_error()?;
+                self._dma_channel.as_mut().xfer_success()?;
+                Ok(())
             }
-
-            // Defensively disable channel
-            channel.stop();
-
-            while !self.read_status().is_idle() {
-                core::hint::spin_loop();
-            }
-
-            self.read_status().check_bus_error()?;
-            self._dma_channel.as_mut().xfer_success()?;
-            Ok(())
         }
     }
 
@@ -360,7 +365,7 @@ mod dma {
                     // transfer, and we must treat them accordingly.
                     for op in group.iter_mut().skip(1) {
                         match op {
-                            Read(ref mut buffer) => {
+                            Read(buffer) => {
                                 if buffer.is_empty() {
                                     continue;
                                 }
@@ -419,7 +424,7 @@ mod dma {
 
                     // Now setup and perform the actual transfer
                     match group.first_mut().unwrap() {
-                        Read(ref mut buffer) => unsafe {
+                        Read(buffer) => unsafe {
                             self.read_linked(address, buffer, descriptors.first_mut())?;
                         },
                         Write(bytes) => unsafe {
