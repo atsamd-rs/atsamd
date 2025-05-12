@@ -51,11 +51,6 @@ pub use pad::*;
 pub mod i2c;
 pub mod spi;
 
-#[deprecated(
-    since = "0.19.0",
-    note = "spi_future is deprecated and will be removed in a later version of atsamd_hal. Consider using the `async` APIs available in the `spi` module as a replacement."
-)]
-pub mod spi_future;
 pub mod uart;
 
 #[cfg(feature = "dma")]

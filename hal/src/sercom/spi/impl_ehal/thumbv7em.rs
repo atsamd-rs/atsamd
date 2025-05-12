@@ -45,7 +45,7 @@
 //! slices, you could use either
 #![cfg_attr(feature = "dma", doc = "[`DMA`](crate::dmac)")]
 #![cfg_attr(not(feature = "dma"), doc = "`DMA`")]
-//! or the [`spi_future`] module.
+//! .
 //!
 //! # Variations by [`Capability`]
 //!
@@ -93,16 +93,15 @@
 //! the different [`Size`] and [`Capability`] options.
 //!
 //! [`Size`]: super::Size
-//! [`spi_future`]: crate::sercom::spi_future
 
 use crate::ehal_02;
 use crate::ehal_nb;
+#[cfg(doc)]
+use crate::sercom::spi::Capability;
 use crate::sercom::spi::{
     AtomicSize, Config, DataWidth, Duplex, DynLength, Error, Flags, GreaterThan4, Length,
     MasterMode, OpMode, Receive, Rx, Slave, Spi, Status, Tx, ValidConfig, ValidPads, Word,
 };
-#[cfg(doc)]
-use crate::sercom::spi::Capability;
 use nb::Error::WouldBlock;
 use num_traits::{AsPrimitive, PrimInt};
 use typenum::{U1, U2, U3, U4};
