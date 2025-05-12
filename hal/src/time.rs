@@ -14,13 +14,13 @@ pub type MegaHertz = fugit::MegahertzU32;
 // Period based
 
 /// Seconds
-pub type Seconds = fugit::SecsDurationU32;
+pub type Seconds = fugit::SecsDurationU64;
 
 /// Milliseconds
-pub type Milliseconds = fugit::MillisDurationU32;
+pub type Milliseconds = fugit::MillisDurationU64;
 
 /// Microseconds
-pub type Microseconds = fugit::MicrosDurationU32;
+pub type Microseconds = fugit::MicrosDurationU64;
 
 /// Nanoseconds
-pub type Nanoseconds = fugit::NanosDurationU32;
+pub type Nanoseconds = fugit::NanosDurationU64;

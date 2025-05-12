@@ -2,7 +2,6 @@
 use core::convert::Infallible;
 
 use atsamd_hal_macros::hal_cfg;
-use fugit::NanosDurationU32;
 
 use crate::ehal_02::timer::{CountDown, Periodic};
 use crate::pac::Pm;
@@ -86,7 +85,7 @@ where
         self.tc.count_16().intenset().write(|w| w.ovf().set_bit());
     }
 
-    fn start<T: Into<NanosDurationU32>>(&mut self, timeout: T) {
+    fn start<T: Into<Nanoseconds>>(&mut self, timeout: T) {
         let params = TimerParams::new_ns(timeout.into(), self.freq);
         let divider = params.divider;
         let cycles = params.cycles;
