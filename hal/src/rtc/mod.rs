@@ -23,15 +23,15 @@ pub mod rtic;
 // SAMx5x imports
 #[hal_cfg("rtc-d5x")]
 use crate::pac::{
-    rtc::mode0::ctrla::Prescalerselect, rtc::mode0::Ctrla as Mode0CtrlA,
-    rtc::mode2::Ctrla as Mode2CtrlA, Mclk as Pm,
+    Mclk as Pm, rtc::mode0::Ctrla as Mode0CtrlA, rtc::mode0::ctrla::Prescalerselect,
+    rtc::mode2::Ctrla as Mode2CtrlA,
 };
 
 // SAMD11/SAMD21 imports
 #[hal_cfg(any("rtc-d11", "rtc-d21"))]
 use crate::pac::{
-    rtc::mode0::ctrl::Prescalerselect, rtc::mode0::Ctrl as Mode0CtrlA,
-    rtc::mode2::Ctrl as Mode2CtrlA, Pm,
+    Pm, rtc::mode0::Ctrl as Mode0CtrlA, rtc::mode0::ctrl::Prescalerselect,
+    rtc::mode2::Ctrl as Mode2CtrlA,
 };
 
 /// Datetime represents an RTC clock/calendar value.

@@ -91,7 +91,9 @@ macro_rules! declare_multiple_interrupts {
             $(#[$cfg])*
             impl $crate::async_hal::interrupts::InterruptSource for $name {
                 unsafe fn enable() {
-                    $($crate::pac::Interrupt::$irq.enable();)+
+                    unsafe {
+                        $($crate::pac::Interrupt::$irq.enable();)+
+                    }
                 }
 
                 fn disable() {
@@ -242,7 +244,9 @@ pub trait InterruptSource: crate::typelevel::Sealed {
 
 impl<T: Interrupt> InterruptSource for T {
     unsafe fn enable() {
-        Self::enable();
+        unsafe {
+            Self::enable();
+        }
     }
 
     fn disable() {
@@ -278,7 +282,7 @@ pub trait Interrupt: crate::typelevel::Sealed {
     /// Do not enable any interrupt inside a critical section.
     #[inline]
     unsafe fn enable() {
-        Self::IRQ.enable()
+        unsafe { Self::IRQ.enable() }
     }
 
     /// Disable the interrupt.

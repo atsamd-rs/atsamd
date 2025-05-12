@@ -1,8 +1,8 @@
 use crate::{
     async_hal::interrupts::{Binding, Handler, InterruptSource},
     sercom::{
-        i2c::{self, impl_ehal::chunk_operations, AnyConfig, Flags, I2c},
         Sercom,
+        i2c::{self, AnyConfig, Flags, I2c, impl_ehal::chunk_operations},
     },
     typelevel::NoneT,
 };
@@ -281,8 +281,8 @@ mod dma {
     use super::*;
     use crate::dmac::sram::DmacDescriptor;
     use crate::dmac::{AnyChannel, Channel, ReadyFuture};
-    use crate::sercom::dma::async_dma::{read_dma_linked, write_dma_linked};
     use crate::sercom::dma::SharedSliceBuffer;
+    use crate::sercom::dma::async_dma::{read_dma_linked, write_dma_linked};
 
     #[cfg(feature = "dma")]
     /// Convenience type for a [`I2cFuture`] in DMA mode.
@@ -327,13 +327,20 @@ mod dma {
             bytes: &[u8],
             next: Option<&mut DmacDescriptor>,
         ) -> Result<(), i2c::Error> {
-            self.i2c.prepare_write_linked(address, bytes, &next)?;
+            unsafe {
+                self.i2c.prepare_write_linked(address, bytes, &next)?;
 
-            let sercom_ptr = self.i2c.sercom_ptr();
-            let mut bytes = SharedSliceBuffer::from_slice(bytes);
+                let sercom_ptr = self.i2c.sercom_ptr();
+                let mut bytes = SharedSliceBuffer::from_slice(bytes);
 
-            write_dma_linked::<_, _, S>(&mut self.i2c._dma_channel, sercom_ptr, &mut bytes, next)
+                write_dma_linked::<_, _, S>(
+                    &mut self.i2c._dma_channel,
+                    sercom_ptr,
+                    &mut bytes,
+                    next,
+                )
                 .await?;
+            }
 
             // Unfortunately, gotta take a polling approach here as there is no interrupt
             // source that can notify us of an IDLE bus state. Fortunately, it's usually not
@@ -353,11 +360,13 @@ mod dma {
             mut buffer: &mut [u8],
             next: Option<&mut DmacDescriptor>,
         ) -> Result<(), i2c::Error> {
-            self.i2c.prepare_read_linked(address, buffer, &next)?;
-            let i2c_ptr = self.i2c.sercom_ptr();
+            unsafe {
+                self.i2c.prepare_read_linked(address, buffer, &next)?;
+                let i2c_ptr = self.i2c.sercom_ptr();
 
-            read_dma_linked::<_, _, S>(&mut self.i2c._dma_channel, i2c_ptr, &mut buffer, next)
-                .await?;
+                read_dma_linked::<_, _, S>(&mut self.i2c._dma_channel, i2c_ptr, &mut buffer, next)
+                    .await?;
+            }
 
             // Unfortunately, gotta take a polling approach here as there is no interrupt
             // source that can notify us of an IDLE bus state. Fortunately, it's usually not
@@ -466,7 +475,7 @@ mod dma {
                     // transfer, and we must treat them accordingly.
                     for op in group.iter_mut().skip(1) {
                         match op {
-                            Read(ref mut buffer) => {
+                            Read(buffer) => {
                                 if buffer.is_empty() {
                                     continue;
                                 }
@@ -525,7 +534,7 @@ mod dma {
 
                     // Now setup and perform the actual transfer
                     match group.first_mut().unwrap() {
-                        Read(ref mut buffer) => unsafe {
+                        Read(buffer) => unsafe {
                             self.read_linked(address, buffer, descriptors.first_mut())
                                 .await?;
                         },

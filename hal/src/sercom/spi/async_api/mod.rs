@@ -1,11 +1,11 @@
 use crate::{
     async_hal::interrupts::{Binding, Handler, InterruptSource},
     sercom::{
+        Sercom,
         spi::{
             Capability, Config, DataWidth, Duplex, Error, Flags, MasterMode, OpMode, Rx, Size, Spi,
             Tx, ValidConfig, ValidPads,
         },
-        Sercom,
     },
     typelevel::NoneT,
 };

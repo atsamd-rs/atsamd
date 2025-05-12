@@ -28,14 +28,15 @@ impl<A: AdcInstance> crate::typelevel::Sealed for InterruptHandler<A> {}
 
 impl<A: AdcInstance> Handler<A::Interrupt> for InterruptHandler<A> {
     unsafe fn on_interrupt() {
-        let mut peripherals = crate::pac::Peripherals::steal();
+        let mut peripherals = unsafe { crate::pac::Peripherals::steal() };
         let adc = A::peripheral_reg_block(&mut peripherals);
 
         let flags_pending = Flags::from_bits_truncate(adc.intflag().read().bits());
         let enabled_flags = Flags::from_bits_truncate(adc.intenset().read().bits());
 
         if enabled_flags.intersects(flags_pending) {
-            adc.intenclr().write(|w| w.bits(flags_pending.bits()));
+            adc.intenclr()
+                .write(|w| unsafe { w.bits(flags_pending.bits()) });
             // Wake up!
             A::waker().wake();
         }

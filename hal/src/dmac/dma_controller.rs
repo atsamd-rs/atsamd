@@ -293,11 +293,11 @@ impl<T> DmaController<T> {
     pub fn into_future<I>(self, _interrupts: I) -> DmaController<I>
     where
         I: crate::async_hal::interrupts::Binding<
-            crate::async_hal::interrupts::DMAC,
-            super::async_api::InterruptHandler,
-        >,
+                crate::async_hal::interrupts::DMAC,
+                super::async_api::InterruptHandler,
+            >,
     {
-        use crate::async_hal::interrupts::{InterruptSource, DMAC};
+        use crate::async_hal::interrupts::{DMAC, InterruptSource};
 
         DMAC::unpend();
         unsafe { DMAC::enable() };
@@ -320,9 +320,9 @@ impl<T> DmaController<T> {
 impl<I> DmaController<I>
 where
     I: crate::async_hal::interrupts::Binding<
-        crate::async_hal::interrupts::DMAC,
-        super::async_api::InterruptHandler,
-    >,
+            crate::async_hal::interrupts::DMAC,
+            super::async_api::InterruptHandler,
+        >,
 {
     /// Release the DMAC and return the register block.
     ///
@@ -390,9 +390,9 @@ macro_rules! define_split_future {
 impl<I> DmaController<I>
 where
     I: crate::async_hal::interrupts::Binding<
-        crate::async_hal::interrupts::DMAC,
-        super::async_api::InterruptHandler,
-    >,
+            crate::async_hal::interrupts::DMAC,
+            super::async_api::InterruptHandler,
+        >,
 {
     with_num_channels!(define_split_future);
 }

@@ -129,7 +129,7 @@ use core::marker::PhantomData;
 use bitflags;
 use paste::paste;
 
-use crate::pac::{mclk, Mclk};
+use crate::pac::{Mclk, mclk};
 
 use super::types::*;
 
@@ -358,13 +358,15 @@ macro_rules! define_ahb_types {
                 /// All invariants of `AhbToken::new` must be upheld here.
                 #[inline]
                 pub(super) unsafe fn new() -> Self {
-                    AhbClks {
-                        $(
-                            $( #[$( $cfg )+] )?
-                            [<$Type:snake>]: AhbClk::new(AhbToken::new()),
-                        )+
+                    unsafe {
+                            AhbClks {
+                                $(
+                                    $( #[$( $cfg )+] )?
+                                    [<$Type:snake>]: AhbClk::new(AhbToken::new()),
+                                )+
+                            }
+                        }
                     }
-                }
             }
         }
     };

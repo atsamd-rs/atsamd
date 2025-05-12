@@ -400,7 +400,9 @@ impl<S: Sercom> Registers<S> {
     /// Write to the `DATA` register
     #[inline]
     pub(super) unsafe fn write_data(&mut self, data: super::DataReg) {
-        self.usart().data().write(|w| w.data().bits(data))
+        self.usart()
+            .data()
+            .write(|w| unsafe { w.data().bits(data) })
     }
 
     /// Enable the UART peripheral

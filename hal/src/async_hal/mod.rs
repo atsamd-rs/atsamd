@@ -6,11 +6,11 @@
 //!
 //! This module provides the basis for interacting with peripherals through
 //! `async` APIs. Notably, in order to function correctly and wake an `await`ing
-//! [`Future`](core::future::Future), peripherals must be able to signal when
-//! their respective interrupts fire. Traditionally, the user manually writes
-//! their own interrupt handlers. When using `async` APIs, the peripherals
-//! effectively take control of their own interrupt handlers in order to wake
-//! tasks at the appropriate time.
+//! [`Future`], peripherals must be able to signal when their respective
+//! interrupts fire. Traditionally, the user manually writes their own interrupt
+//! handlers. When using `async` APIs, the peripherals effectively take control
+//! of their own interrupt handlers in order to wake tasks at the appropriate
+//! time.
 //!
 //! ## Using the `async` APIs
 //!
@@ -172,7 +172,7 @@ macro_rules! bind_interrupts {
 
         $(
             #[allow(non_snake_case)]
-            #[no_mangle]
+            #[unsafe(no_mangle)]
             unsafe extern "C" fn $irq() {
                 $(
                     <$handler as $crate::async_hal::interrupts::Handler<$crate::async_hal::interrupts::$irq>>::on_interrupt();
@@ -225,7 +225,7 @@ macro_rules! bind_multiple_interrupts {
 
         $(
             #[allow(non_snake_case)]
-            #[no_mangle]
+            #[unsafe(no_mangle)]
             unsafe extern "C" fn $irq() {
                 <$handler as $crate::async_hal::interrupts::Handler<$crate::async_hal::interrupts::$int_source>>::on_interrupt();
             }

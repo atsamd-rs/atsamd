@@ -1,6 +1,6 @@
 //! Primitives for manipulating interrupts
 
-use core::sync::atomic::{compiler_fence, Ordering};
+use core::sync::atomic::{Ordering, compiler_fence};
 
 use crate::pac::NVIC;
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
@@ -102,7 +102,7 @@ pub trait InterruptExt: cortex_m::interrupt::InterruptNumber + Copy {
     #[inline]
     unsafe fn enable(self) {
         compiler_fence(Ordering::SeqCst);
-        NVIC::unmask(self)
+        unsafe { NVIC::unmask(self) }
     }
 
     /// Disable the interrupt.
@@ -177,5 +177,5 @@ pub trait InterruptExt: cortex_m::interrupt::InterruptNumber + Copy {
 impl<T: cortex_m::interrupt::InterruptNumber + Copy> InterruptExt for T {}
 
 unsafe fn steal_nvic() -> NVIC {
-    cortex_m::peripheral::Peripherals::steal().NVIC
+    unsafe { cortex_m::peripheral::Peripherals::steal().NVIC }
 }

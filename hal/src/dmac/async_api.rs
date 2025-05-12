@@ -3,8 +3,8 @@
 use atsamd_hal_macros::hal_cfg;
 
 use crate::{
-    async_hal::interrupts::{Handler, DMAC},
-    dmac::{waker::WAKERS, TriggerSource},
+    async_hal::interrupts::{DMAC, Handler},
+    dmac::{TriggerSource, waker::WAKERS},
     util::BitIter,
 };
 

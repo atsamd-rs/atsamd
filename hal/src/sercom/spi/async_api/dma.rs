@@ -4,20 +4,20 @@ use num_traits::{AsPrimitive, PrimInt};
 use super::SpiFuture;
 use crate::{
     dmac::{
+        AnyChannel, Beat, Buffer, ReadyFuture,
         channel::{self, Channel},
         sram::DmacDescriptor,
-        AnyChannel, Beat, Buffer, ReadyFuture,
     },
     sercom::{
+        Sercom,
         dma::{
-            async_dma::{self, read_dma, read_dma_linked, write_dma, write_dma_linked},
             SharedSliceBuffer, SinkSourceBuffer,
+            async_dma::{self, read_dma, read_dma_linked, write_dma, write_dma_linked},
         },
         spi::{
             Capability, Config, DataWidth, Duplex, Error, MasterMode, OpMode, Receive, Rx, Size,
             Slave, Spi, Transmit, Tx, ValidConfig, ValidPads, Word,
         },
-        Sercom,
     },
     typelevel::NoneT,
 };

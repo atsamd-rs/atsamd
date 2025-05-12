@@ -2,11 +2,11 @@
 
 use num_traits::{AsPrimitive, PrimInt};
 
-use crate::dmac::{channel, sram::DmacDescriptor, AnyChannel, Beat, Buffer, Ready};
+use crate::dmac::{AnyChannel, Beat, Buffer, Ready, channel, sram::DmacDescriptor};
 use crate::ehal::spi::SpiBus;
 use crate::sercom::dma::{
-    read_dma, read_dma_linked, write_dma, write_dma_linked, SercomPtr, SharedSliceBuffer,
-    SinkSourceBuffer,
+    SercomPtr, SharedSliceBuffer, SinkSourceBuffer, read_dma, read_dma_linked, write_dma,
+    write_dma_linked,
 };
 
 use super::{

@@ -39,10 +39,10 @@ use core::sync::atomic;
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use super::{
+    Beat, Buffer, Error,
     dma_controller::{ChId, PriorityLevel, TriggerAction, TriggerSource},
     sram::{self, DmacDescriptor},
     transfer::{BufferPair, Transfer},
-    Beat, Buffer, Error,
 };
 use crate::typelevel::{Is, Sealed};
 use modular_bitfield::prelude::*;
@@ -351,7 +351,9 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
             core::ptr::null_mut()
         };
 
-        write_descriptor(descriptor, source, destination, descaddr);
+        unsafe {
+            write_descriptor(descriptor, source, destination, descaddr);
+        }
     }
 
     /// Add a linked descriptor after the first descriptor in the transfer.
@@ -524,7 +526,9 @@ impl<Id: ChId> Channel<Id, Ready> {
         D: Buffer<Beat = S::Beat>,
     {
         Transfer::<Self, BufferPair<S, D>>::check_buffer_pair(source, dest)?;
-        self.transfer_unchecked(source, dest, trig_src, trig_act, linked_descriptor);
+        unsafe {
+            self.transfer_unchecked(source, dest, trig_src, trig_act, linked_descriptor);
+        }
         Ok(())
     }
 
@@ -559,10 +563,12 @@ impl<Id: ChId> Channel<Id, Ready> {
         S: Buffer,
         D: Buffer<Beat = S::Beat>,
     {
-        self.fill_descriptor(source, dest, false);
+        unsafe {
+            self.fill_descriptor(source, dest, false);
 
-        if let Some(next) = linked_descriptor {
-            self.link_next(next as *mut _);
+            if let Some(next) = linked_descriptor {
+                self.link_next(next as *mut _);
+            }
         }
 
         self.configure_trigger(trig_src, trig_act);

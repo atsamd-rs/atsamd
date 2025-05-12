@@ -17,13 +17,12 @@ use core::marker::PhantomData;
 use paste::paste;
 
 use crate::pac::{
-    self,
+    self, Dmac, Peripherals,
+    dmac::{Busych, Intstatus, Pendch, Swtrigctrl},
     dmac::{
         busych::BusychSpec, intstatus::IntstatusSpec, pendch::PendchSpec,
         swtrigctrl::SwtrigctrlSpec,
     },
-    dmac::{Busych, Intstatus, Pendch, Swtrigctrl},
-    Dmac, Peripherals,
 };
 
 #[hal_cfg(any("dmac-d11", "dmac-d21"))]
@@ -33,13 +32,13 @@ use pac::dmac as channel_regs;
 use pac::dmac::channel as channel_regs;
 
 use channel_regs::{
-    chctrla::ChctrlaSpec, chctrlb::ChctrlbSpec, chintenclr::ChintenclrSpec,
-    chintenset::ChintensetSpec, chintflag::ChintflagSpec, chstatus::ChstatusSpec,
+    Chctrla, Chctrlb, Chintenclr, Chintenset, Chintflag, Chstatus, chctrla::ChctrlaSpec,
+    chctrlb::ChctrlbSpec, chintenclr::ChintenclrSpec, chintenset::ChintensetSpec,
+    chintflag::ChintflagSpec, chstatus::ChstatusSpec,
 };
-use channel_regs::{Chctrla, Chctrlb, Chintenclr, Chintenset, Chintflag, Chstatus};
 
 #[hal_cfg("dmac-d5x")]
-use pac::dmac::channel::{chprilvl::ChprilvlSpec, Chprilvl};
+use pac::dmac::channel::{Chprilvl, chprilvl::ChprilvlSpec};
 
 //==============================================================================
 // RegisterBlock

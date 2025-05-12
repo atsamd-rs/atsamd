@@ -1,8 +1,8 @@
 //! Delays
 
 use atsamd_hal_macros::hal_cfg;
-use cortex_m::peripheral::syst::SystClkSource;
 use cortex_m::peripheral::SYST;
+use cortex_m::peripheral::syst::SystClkSource;
 
 use crate::clock::GenericClockController;
 use crate::ehal::delay::DelayNs;
@@ -13,7 +13,7 @@ use crate::time::Hertz;
 use crate::typelevel::Increment;
 
 #[hal_cfg("rtc-d5x")]
-use crate::clock::v2::{gclk::Gclk0Id, Source};
+use crate::clock::v2::{Source, gclk::Gclk0Id};
 
 /// System timer (SysTick) as a delay provider
 pub struct Delay {

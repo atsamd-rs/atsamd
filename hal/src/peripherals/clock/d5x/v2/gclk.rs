@@ -343,12 +343,12 @@ use seq_macro::seq;
 use typenum::{U0, U1};
 
 use crate::pac;
-use crate::pac::gclk::genctrl::Divselselect;
 use crate::pac::Nvmctrl;
+use crate::pac::gclk::genctrl::Divselselect;
 
 use crate::gpio::{self, AlternateM, AnyPin, Pin, PinId};
-use crate::pac::gclk::genctrl::Srcselect;
 use crate::pac::gclk::Genctrl;
+use crate::pac::gclk::genctrl::Srcselect;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
@@ -376,7 +376,7 @@ use super::{Enabled, Source};
 /// [`GclkToken`] is generic over the [`GclkId`], where each corresponding token
 /// represents one of the 12 respective [`Gclk`]s.
 pub struct GclkToken<G: GclkId> {
-    gen: PhantomData<G>,
+    generator: PhantomData<G>,
 }
 
 impl<G: GclkId> GclkToken<G> {
@@ -389,7 +389,9 @@ impl<G: GclkId> GclkToken<G> {
     /// memory safety in the root of the `clock` module for more details.
     #[inline]
     pub(super) unsafe fn new() -> Self {
-        GclkToken { gen: PhantomData }
+        GclkToken {
+            generator: PhantomData,
+        }
     }
 
     /// SYNCBUSY register mask for the corresponding GCLK
@@ -1422,10 +1424,12 @@ seq!(N in 1..=11 {
             /// upheld here as well.
             #[inline]
             pub(super) unsafe fn new(nvmctrl: &mut Nvmctrl) -> Self {
-                // Use auto wait states
-                nvmctrl.ctrla().modify(|_, w| w.autows().set_bit());
-                GclkTokens {
-                    #( gclk~N: GclkToken::new(), )*
+                unsafe {
+                    // Use auto wait states
+                    nvmctrl.ctrla().modify(|_, w| w.autows().set_bit());
+                    GclkTokens {
+                        #( gclk~N: GclkToken::new(), )*
+                    }
                 }
             }
         }
