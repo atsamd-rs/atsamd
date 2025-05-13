@@ -191,8 +191,8 @@ mod dma {
     use crate::{
         dmac::{AnyChannel, Beat, Ready},
         sercom::{
-            dma::{read_dma, write_dma, SercomPtr, SharedSliceBuffer},
             Sercom,
+            dma::{SercomPtr, SharedSliceBuffer, read_dma, write_dma},
         },
     };
 

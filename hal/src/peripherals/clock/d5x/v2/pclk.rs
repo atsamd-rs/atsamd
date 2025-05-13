@@ -75,8 +75,8 @@ use crate::pac::gclk::pchctrl::Genselect;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
-use super::gclk::{DynGclkId, GclkId};
 use super::Source;
+use super::gclk::{DynGclkId, GclkId};
 
 //==============================================================================
 // PclkToken
@@ -124,7 +124,8 @@ impl<P: PclkId> PclkToken<P> {
     /// Set the [`Pclk`] source
     #[inline]
     fn set_source(&mut self, source: DynPclkSourceId) {
-        self.pchctrl().modify(|_, w| w.gen().variant(source.into()));
+        self.pchctrl()
+            .modify(|_, w| w.r#gen().variant(source.into()));
     }
 
     /// Enable the [`Pclk`]
@@ -167,9 +168,9 @@ pub mod ids {
     pub use super::super::dpll::{Dpll0Id, Dpll1Id};
 
     pub use super::super::types::{
-        Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys10, EvSys11, EvSys2, EvSys3,
-        EvSys4, EvSys5, EvSys6, EvSys7, EvSys8, EvSys9, FreqMMeasure, FreqMReference, PDec, Sdhc0,
-        SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Tcc2Tcc3, Usb,
+        Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5,
+        EvSys6, EvSys7, EvSys8, EvSys9, EvSys10, EvSys11, FreqMMeasure, FreqMReference, PDec,
+        Sdhc0, SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Tcc2Tcc3, Usb,
     };
 
     #[hal_cfg("can0")]

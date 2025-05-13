@@ -427,8 +427,8 @@ use bitflags::bitflags;
 use num_traits::AsPrimitive;
 
 use crate::ehal;
-pub use crate::ehal::spi::{Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
-use crate::sercom::{pad::SomePad, ApbClkCtrl, Sercom};
+pub use crate::ehal::spi::{MODE_0, MODE_1, MODE_2, MODE_3, Phase, Polarity};
+use crate::sercom::{ApbClkCtrl, Sercom, pad::SomePad};
 use crate::time::Hertz;
 use crate::typelevel::{Is, NoneT, Sealed};
 
@@ -926,13 +926,6 @@ where
         (self.regs.sercom, self.pads)
     }
 
-    /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
-    #[inline]
-    #[cfg(feature = "dma")]
-    pub(super) fn data_ptr(&self) -> *mut Z::Word {
-        self.regs.data_ptr::<Z>()
-    }
-
     /// Change the [`OpMode`]
     #[inline]
     pub fn op_mode<M2: OpMode>(mut self) -> Config<P, M2, Z> {
@@ -1363,16 +1356,6 @@ where
     C: ValidConfig,
     A: Capability,
 {
-    /// Obtain a pointer to the `DATA` register. Necessary for DMA transfers.
-    #[inline]
-    #[cfg(feature = "dma")]
-    pub(super) fn data_ptr(&self) -> *mut C::Word
-    where
-        C::Size: Size<Word = C::Word>,
-    {
-        self.config.as_ref().data_ptr()
-    }
-
     /// Change the transaction [`Length`]
     ///
     /// Changing the transaction [`Length`] while is enabled is permissible but

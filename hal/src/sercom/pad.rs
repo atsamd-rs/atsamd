@@ -268,7 +268,7 @@ where
 mod ioset {
 
     use super::*;
-    use sorted_hlist::{mk_hlist, HList, Intersect, NonEmptyHList};
+    use sorted_hlist::{HList, Intersect, NonEmptyHList, mk_hlist};
 
     /// Type-level enum representing a SERCOM IOSET
     ///

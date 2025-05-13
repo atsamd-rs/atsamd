@@ -53,11 +53,6 @@ impl RngCore for Trng {
     fn fill_bytes(&mut self, dest: &mut [u8]) {
         self.random(dest)
     }
-
-    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), rand_core::Error> {
-        self.fill_bytes(dest);
-        Ok(())
-    }
 }
 
 impl CryptoRng for Trng {}

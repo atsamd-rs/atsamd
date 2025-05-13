@@ -100,7 +100,7 @@ impl State {
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
         self.gclk.clkctrl().write(|w| unsafe {
             w.id().bits(u8::from(clock));
-            w.gen().bits(u8::from(generator));
+            w.r#gen().bits(u8::from(generator));
             w.clken().set_bit()
         });
         self.wait_for_sync();

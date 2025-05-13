@@ -251,11 +251,11 @@ fn load_peripheral_mapping(
                         peripheral
                             .only
                             .as_ref()
-                            .map_or(true, |only| only.contains(key))
+                            .is_none_or(|only| only.contains(key))
                             && peripheral
                                 .except
                                 .as_ref()
-                                .map_or(true, |except| !except.contains(key))
+                                .is_none_or(|except| !except.contains(key))
                     })
                     .cloned();
                 peripheral_mapping
@@ -271,9 +271,11 @@ fn load_peripheral_mapping(
     }
 
     for (sub_peripheral_key, sub_peripheral) in peripheral_sub_mapping {
-        assert!(peripheral_mapping
-            .insert(sub_peripheral_key, sub_peripheral)
-            .is_none());
+        assert!(
+            peripheral_mapping
+                .insert(sub_peripheral_key, sub_peripheral)
+                .is_none()
+        );
     }
 
     Ok(peripheral_mapping)

@@ -22,9 +22,9 @@
 
 pub mod smart_eeprom;
 
+use crate::pac::Nvmctrl;
 pub use crate::pac::nvmctrl::ctrla::Prmselect;
 use crate::pac::nvmctrl::ctrlb::Cmdselect;
-use crate::pac::Nvmctrl;
 use core::num::NonZeroU32;
 use core::ops::Range;
 use core::ptr::addr_of;
@@ -543,85 +543,87 @@ impl Nvm {
     /// [`Self::modify_userpage`] documentation
     #[inline]
     unsafe fn write(&mut self, op: NvmWrite) -> Result<()> {
-        let (destination_address, source_address, words, granularity) = match op {
-            NvmWrite::MainAddressSpace {
-                destination,
-                source,
-                words,
-                write_granularity,
-            } => (destination as u32, source as u32, words, write_granularity),
-            NvmWrite::Userpage(userpage) => (
-                Self::USERPAGE_ADDR as u32,
-                addr_of!(userpage.0) as u32,
-                PAGESIZE / core::mem::size_of::<u32>() as u32,
-                WriteGranularity::QuadWord,
-            ),
-        };
+        unsafe {
+            let (destination_address, source_address, words, granularity) = match op {
+                NvmWrite::MainAddressSpace {
+                    destination,
+                    source,
+                    words,
+                    write_granularity,
+                } => (destination as u32, source as u32, words, write_granularity),
+                NvmWrite::Userpage(userpage) => (
+                    Self::USERPAGE_ADDR as u32,
+                    addr_of!(userpage.0) as u32,
+                    PAGESIZE / core::mem::size_of::<u32>() as u32,
+                    WriteGranularity::QuadWord,
+                ),
+            };
 
-        // Length of memory step
-        let step_size = core::mem::size_of::<u32>() as u32;
-        // Length of data in bytes
-        let length = words * step_size;
-        let write_size = granularity.size();
+            // Length of memory step
+            let step_size = core::mem::size_of::<u32>() as u32;
+            // Length of data in bytes
+            let length = words * step_size;
+            let write_size = granularity.size();
 
-        let read_addresses = source_address..(source_address + length);
-        let write_addresses = destination_address..(destination_address + length);
+            let read_addresses = source_address..(source_address + length);
+            let write_addresses = destination_address..(destination_address + length);
 
-        if source_address % step_size != 0 {
-            return Err(Error::Alignment);
-        }
+            if source_address % step_size != 0 {
+                return Err(Error::Alignment);
+            }
 
-        if destination_address % step_size != 0 {
-            return Err(Error::Alignment);
-        }
+            if destination_address % step_size != 0 {
+                return Err(Error::Alignment);
+            }
 
-        match op {
-            NvmWrite::MainAddressSpace { .. } => {
-                if self.contains_non_flash_memory_area(&write_addresses) {
-                    return Err(Error::NonFlash);
-                } else if self.contains_bootprotected(&write_addresses) {
-                    return Err(Error::Protected);
-                } else if self.contains_smart_eeprom(&write_addresses) {
-                    return Err(Error::SmartEepromArea);
+            match op {
+                NvmWrite::MainAddressSpace { .. } => {
+                    if self.contains_non_flash_memory_area(&write_addresses) {
+                        return Err(Error::NonFlash);
+                    } else if self.contains_bootprotected(&write_addresses) {
+                        return Err(Error::Protected);
+                    } else if self.contains_smart_eeprom(&write_addresses) {
+                        return Err(Error::SmartEepromArea);
+                    }
+                }
+                NvmWrite::Userpage(_) => {
+                    // Nothing to check
                 }
             }
-            NvmWrite::Userpage(_) => {
-                // Nothing to check
+
+            self.command_sync(Cmdselect::Pbc)?;
+            // Track whether we have unwritten data in the page buffer
+            let mut dirty = false;
+            // Zip two iterators, one counter and one with the addr word aligned
+            for (destination_address, source_address) in write_addresses
+                .step_by(step_size as usize)
+                .zip(read_addresses.step_by(step_size as usize))
+            {
+                // Write to memory, 32 bits, 1 word.
+                // The data is placed in the page buffer and ADDR is updated automatically.
+                // Memory is not written until the write page command is issued later.
+                let value = core::ptr::read_volatile(source_address as *const u32);
+                core::ptr::write_volatile(destination_address as *mut u32, value);
+                dirty = true;
+
+                // If we are about to cross a page boundary (and run out of page buffer), write
+                // to flash
+                if destination_address % write_size >= write_size - step_size {
+                    // Perform a write
+                    self.command_sync(granularity.command())?;
+                    dirty = false;
+                }
             }
-        }
 
-        self.command_sync(Cmdselect::Pbc)?;
-        // Track whether we have unwritten data in the page buffer
-        let mut dirty = false;
-        // Zip two iterators, one counter and one with the addr word aligned
-        for (destination_address, source_address) in write_addresses
-            .step_by(step_size as usize)
-            .zip(read_addresses.step_by(step_size as usize))
-        {
-            // Write to memory, 32 bits, 1 word.
-            // The data is placed in the page buffer and ADDR is updated automatically.
-            // Memory is not written until the write page command is issued later.
-            let value = core::ptr::read_volatile(source_address as *const u32);
-            core::ptr::write_volatile(destination_address as *mut u32, value);
-            dirty = true;
-
-            // If we are about to cross a page boundary (and run out of page buffer), write
-            // to flash
-            if destination_address % write_size >= write_size - step_size {
-                // Perform a write
-                self.command_sync(granularity.command())?;
-                dirty = false;
+            if dirty {
+                // The dirty flag has fulfilled its role here, so we don't bother to maintain
+                // its invariant anymore. Otherwise, the compiler would warn of
+                // unused assignments. Write last page
+                self.command_sync(granularity.command())?
             }
-        }
 
-        if dirty {
-            // The dirty flag has fulfilled its role here, so we don't bother to maintain
-            // its invariant anymore. Otherwise, the compiler would warn of
-            // unused assignments. Write last page
-            self.command_sync(granularity.command())?
+            Ok(())
         }
-
-        Ok(())
     }
 
     /// Erase the portion of the main address space flash memory
