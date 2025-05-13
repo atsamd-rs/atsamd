@@ -3,8 +3,9 @@
 
 /// Makes the wio_terminal read the SD card and print the filenames
 /// of the first few entries.
-/// In case of missing SD card, it will be stuck in an infinite loop inside of the embedded-sdmmc crate
-/// trying to initialize and not giving any feedback to the user.
+/// In case of missing SD card, it will be stuck in an infinite loop inside of
+/// the embedded-sdmmc crate trying to initialize and not giving any feedback to
+/// the user.
 use embedded_graphics as eg;
 use panic_halt as _;
 use wio_terminal as wio;

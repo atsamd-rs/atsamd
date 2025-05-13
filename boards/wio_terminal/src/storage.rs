@@ -90,8 +90,8 @@ impl<TS: TimeSource> core::ops::DerefMut for SDCardController<TS> {
 
 impl SDCard {
     /// Initialize the controller and its corresponding SPI bus peripheral.
-    /// It is suggested to set higher buad rates after initialization, but it is for now
-    /// left as the user responsibility.
+    /// It is suggested to set higher buad rates after initialization, but it is
+    /// for now left as the user responsibility.
     pub fn init<TS: TimeSource>(
         self,
         clocks: &mut GenericClockController,
