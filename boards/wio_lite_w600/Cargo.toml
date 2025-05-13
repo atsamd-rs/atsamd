@@ -5,11 +5,13 @@ authors = ["Daniel Mason <daniel@danielmason.com"]
 description = "Board Support crate for the Wio Lite W600"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal", "arduino"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd21g/wio_lite_w600/"
-edition = "2021"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 cortex-m = "0.7"

@@ -5,10 +5,12 @@ version = "0.14.1"
 authors = ["Victor Koenders <oss@trangar.com>"]
 keywords = ["no-std", "arm", "cortex-m"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
-edition = "2021"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 cortex-m = "0.7"
