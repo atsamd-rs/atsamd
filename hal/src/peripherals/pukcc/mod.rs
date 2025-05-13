@@ -27,7 +27,7 @@ use crate::pac::Mclk;
 use c_abi::{CryptoRamSlice, Service, u2, u4};
 use curves::Curve;
 
-use rand_core::{CryptoRng, RngCore};
+use rand_core::CryptoRng;
 
 /// This macro linearly copies provided iterable slices/arrays to CryptoRAM and
 /// assigns slices to provided declared local variables from outer scope
@@ -129,7 +129,7 @@ impl Pukcc {
     /// - `k_buffer`: `&mut [u8]` of length [`Curve::SCALAR_LENGTH`]
     ///     - Mutable buffer that is being populated by an entropy source and
     ///       then used for signing.
-    /// - `k_entropy_source`: `&mut (impl RngCore + CryptoRng)`
+    /// - `k_entropy_source`: `&mut impl CryptoRng`
     ///     - Generic source of cryptographically secure randomness.
     ///
     /// Output parameters:
@@ -156,7 +156,7 @@ impl Pukcc {
         hash: &[u8],
         private_key: &[u8],
         k_buffer: &mut [u8],
-        k_entropy_source: &mut (impl RngCore + CryptoRng),
+        k_entropy_source: &mut impl CryptoRng,
     ) -> Result<(), EcdsaSignFailure> {
         k_entropy_source.fill_bytes(k_buffer);
         self.zp_ecdsa_sign::<C>(signature, hash, private_key, k_buffer)
