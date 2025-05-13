@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- [**breaking**] Refactor IoSet trait using sorted HList.
+- [**breaking**] Refactor IoSet trait using sorted HList ([#844](https://github.com/atsamd-rs/atsamd/pull/844)).
 
     SERCOM peripherals no longer need to specify the IoSet inside their `Pads` type. It is checked automatically and
     transparently by the compiler. For example,
@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     + // To this
     + pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
     ```
+
+### Fixed
+
+- [**breaking**] Fix bugs with EIC and allow clock provider switching (ATSAMx5x) ([#850](https://github.com/atsamd-rs/atsamd/pull/850))
 
 ### Documentation
 
