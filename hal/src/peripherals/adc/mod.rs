@@ -216,9 +216,9 @@ impl<I: AdcInstance> Adc<I> {
     ///
     /// ## Important
     ///
-    /// This function will return [Error::ClockTooFast] if the clock source provided
-    /// is faster than 48 MHz, since this is the maximum frequency for the
-    /// ADC as per the datasheet.
+    /// This function will return [Error::ClockTooFast] if the clock source
+    /// provided is faster than 48 MHz, since this is the maximum frequency
+    /// for the ADC as per the datasheet.
     #[hal_cfg(any("adc-d11", "adc-d21"))]
     #[inline]
     pub(crate) fn new(
@@ -238,9 +238,9 @@ impl<I: AdcInstance> Adc<I> {
         Ok(new_adc)
     }
 
-    /// Switch the ['Adc'] to ['FutureAdc'], allowing for the use of async reading
-    /// methods. You are required to provide the struct created by the
-    /// [`bind_interrupts`](crate::bind_interrupts) macro to prove
+    /// Switch the ['Adc'] to ['FutureAdc'], allowing for the use of async
+    /// reading methods. You are required to provide the struct created by
+    /// the [`bind_interrupts`](crate::bind_interrupts) macro to prove
     /// that the interrupt sources have been correctly configured. This function
     /// will automatically enable the relevant NVIC interrupt sources. However,
     /// you are required to configure the desired interrupt priorities prior to

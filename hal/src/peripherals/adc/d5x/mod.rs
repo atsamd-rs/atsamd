@@ -1,6 +1,6 @@
 pub mod pin;
 
-use pac::{adc0::inputctrl::Muxposselect, Supc};
+use pac::Supc;
 
 #[cfg(feature = "async")]
 use super::{async_api, FutureAdc};

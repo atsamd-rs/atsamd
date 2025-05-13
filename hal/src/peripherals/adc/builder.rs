@@ -116,15 +116,15 @@ impl From<super::Error> for BuilderError {
 /// the sample rate of the ADC
 ///
 /// To begin with, the ADC Clock is driven by the peripheral clock divided with
-/// a divider (see [Config::clock_divider]).
+/// a divider (see [`with_clock_divider`](Self::with_clock_divider)).
 ///
-/// Each sample is read by the ADC over
-/// [Config::sample_clock_cycles] clock cycles, and then transmitted
-/// to the ADC register over [Config::bit_width] clock cycles (1
-/// clock cycle per bit)
+/// Each sample is read by the ADC over `n` clock cycles (see
+/// [`with_clock_cycles_per_sample`](Self::with_clock_cycles_per_sample)), and
+/// then transmitted to the ADC register over `t` clock cycles (1
+/// clock cycle per bit, see [`AdcResolution`]).
 ///
 /// The ADC can also be configured to combine multiple simultaneous readings in
-/// either an average or summed mode (See [Accumulation]), this also affects
+/// either an average or summed mode (see [Accumulation]), this also affects
 /// the overall sample rate of the ADC as the ADC has to do multiple
 /// samples before a result is ready.
 ///
@@ -204,12 +204,13 @@ impl AdcBuilder {
 
     /// Sets the number of ADC clock cycles taken to sample a single
     /// sample. The higher this number, the longer it will take the ADC to
-    /// sample each sample. Smaller values will make the ADC perform more samples per second,
-    /// but there may be more noise in each sample leading to irratic values.
+    /// sample each sample. Smaller values will make the ADC perform more
+    /// samples per second, but there may be more noise in each sample
+    /// leading to irratic values.
     ///
     /// ## Safety
-    /// * This function will clamp input value between 1 and 63, to conform to the ADC registers
-    ///   min and max values.
+    /// * This function will clamp input value between 1 and 63, to conform to
+    ///   the ADC registers min and max values.
     pub fn with_clock_cycles_per_sample(mut self, num: u8) -> Self {
         self.sample_clock_cycles = Some(num.clamp(1, 63)); // Clamp in range
         self
