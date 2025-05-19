@@ -105,7 +105,7 @@ hal::bsp_pins! {
     PA20 {
         /// PA20: Digital pin 6, also board led
         aliases: {
-            PushPullOutput: D6
+            PushPullOutput: Led
         }
     }
     PA21 {
