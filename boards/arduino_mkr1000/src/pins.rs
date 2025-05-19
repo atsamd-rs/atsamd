@@ -75,31 +75,6 @@ hal::bsp_pins! {
             PushPullOutput: D3
         }
     }
-    PA12 {
-        /// PA12: SD Card COPI.
-        aliases: {
-            AlternateD: SdCopi
-        }
-    }
-    PA13 {
-        /// PA13: SD Card SCK.
-        aliases: {
-            AlternateD: SdSck
-        }
-    }
-    PA14 {
-        /// PA14: SD Card SS. Operated either by the peripheral or by an output GPIO pin.
-        aliases: {
-            PushPullOutput: SdSsGpio
-            AlternateD: SdSs
-        }
-    }
-    PA15 {
-        /// PA15: SD Card CIPO.
-        aliases: {
-            AlternateD: SdCipo
-        }
-    }
     PA16 {
         /// PA16: Sercom 1 SPI COPI, digital pin 8.
         aliases: {
@@ -128,7 +103,7 @@ hal::bsp_pins! {
         }
     }
     PA20 {
-        /// PA20: Digital pin 6
+        /// PA20: Digital pin 6, also board led
         aliases: {
             PushPullOutput: D6
         }
@@ -163,10 +138,6 @@ hal::bsp_pins! {
             AlternateG: UsbP
         }
     }
-    PA27 {
-        /// PA27: SD Card Detect
-        // FloatingInput: SdCd
-    }
     PB02 {
         /// PB02: Analog input 1, digital pin 16
         aliases: {
@@ -181,14 +152,10 @@ hal::bsp_pins! {
             PushPullOutput: D17
         }
     }
-    PB08 {
-        /// PB08: LED
-        aliases: {
-            PushPullOutput: Led
-        }
-    }
     PB09 {
         /// PB09: Battery voltage sensor
+        ///
+        /// This pin is not visible on MKR1000 board pinout.
         aliases: {
             AlternateB: VBatt
         }
