@@ -1,13 +1,13 @@
 #![no_std]
 #![no_main]
 
+use atsamd_hal::time::Milliseconds;
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
 use bsp::{hal, pac, pin_alias};
-use hal::fugit::MillisDurationU32;
 use hal::{
     clock::GenericClockController, ehal::digital::StatefulOutputPin, pac::Tc4, timer::TimerCounter,
 };
@@ -41,9 +41,7 @@ async fn main(_s: embassy_executor::Spawner) {
     let mut timer = timer.into_future(Irqs);
 
     loop {
-        timer
-            .delay(MillisDurationU32::from_ticks(500).convert())
-            .await;
+        timer.delay(Milliseconds::from_ticks(500).convert()).await;
         red_led.toggle().unwrap();
     }
 }

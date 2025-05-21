@@ -17,8 +17,7 @@ impl TimerParams {
 
     /// calculates TimerParams from a given period based timeout.
     pub fn new_ns(timeout: Nanoseconds, src_freq: Hertz) -> Self {
-        let ticks: u32 =
-            (timeout.to_nanos() as u64 * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
+        let ticks: u32 = (timeout.to_nanos() * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
         Self::new_from_ticks(ticks)
     }
 
@@ -51,7 +50,7 @@ impl TimerParams {
 
 #[cfg(test)]
 mod tests {
-    use crate::fugit::{ExtU32, RateExtU32};
+    use crate::fugit::{ExtU64, RateExtU32};
     use crate::timer_params::TimerParams;
 
     #[test]
