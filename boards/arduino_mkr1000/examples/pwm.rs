@@ -27,14 +27,12 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut delay = Delay::new(core.SYST, &mut clocks);
     let pins = bsp::pins::Pins::new(peripherals.PORT);
 
-    // PWM0_CH1 is A4 on the board - pin 19 or PA05
-    // see: https://github.com/arduino/ArduinoCore-samd/blob/master/variants/mkrzero/variant.cpp
-    let _a4 = pins.pa04.into_mode::<AlternateE>();
+    // PWM0_CH0 is D11 on the board - pin PA08
+    let _d11 = pins.pa08.into_mode::<AlternateE>();
+    let mut delay = Delay::new(core.SYST, &mut clocks);
     let gclk0 = clocks.gclk0();
-
     let tcc0_tcc1_clock: &Tcc0Tcc1Clock = &clocks.tcc0_tcc1(&gclk0).unwrap();
 
     let mut pwm0 = Pwm0::new(
@@ -44,11 +42,12 @@ fn main() -> ! {
         &mut peripherals.PM,
     );
     let max_duty = pwm0.get_max_duty();
-    pwm0.enable(Channel::_1);
+    let channel = Channel::_0;
+    pwm0.enable(channel);
     loop {
-        pwm0.set_duty(Channel::_1, max_duty);
+        pwm0.set_duty(channel, max_duty);
         delay.delay_ms(500u16);
-        pwm0.set_duty(Channel::_1, max_duty / 4);
+        pwm0.set_duty(channel, max_duty / 4);
         delay.delay_ms(500u16);
     }
 }

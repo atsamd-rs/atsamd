@@ -54,6 +54,7 @@ hal::bsp_pins! {
         aliases: {
             PushPullOutput: D11
             AlternateD: I2cSda
+            AlternateE: D11Pwm
         }
     }
     PA09 {
