@@ -201,7 +201,7 @@ pub use pins::*;
 /// SPI pads for the labelled SPI peripheral
 ///
 /// You can use these pads with other, user-defined [`spi::Config`]urations.
-pub type SpiPads = spi::Pads<Sercom4, Miso, Mosi, Sclk>;
+pub type SpiPads = spi::Pads<Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///
@@ -236,7 +236,7 @@ pub fn spi_master(
 }
 
 /// SPI pads for the flash chip
-pub type FlashPads = spi::Pads<Sercom5, FlashMiso, FlashMosi, FlashSclk>;
+pub type FlashPads = spi::Pads<FlashMiso, FlashMosi, FlashSclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///

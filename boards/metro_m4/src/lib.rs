@@ -237,7 +237,7 @@ hal::bsp_pins!(
 /// SPI pads for the labelled SPI peripheral
 ///
 /// You can use these pads with other, user-defined [`spi::Config`]urations.
-pub type SpiPads = spi::Pads<SpiSercom, Miso, Mosi, Sclk>;
+pub type SpiPads = spi::Pads<Miso, Mosi, Sclk>;
 
 /// SPI master for the labelled SPI peripheral
 ///

@@ -155,7 +155,7 @@ pub fn ext1_i2c(
 }
 
 /// SPI pads for the extension 1 connection
-pub type Ext1SpiPads = spi::Pads<Ext1SpiSercom, Ext1SpiMiso, Ext1SpiMosi, Ext1SpiSck>;
+pub type Ext1SpiPads = spi::Pads<Ext1SpiMiso, Ext1SpiMosi, Ext1SpiSck>;
 
 /// Extension 1 SPI device
 pub type Ext1Spi = spi::Spi<spi::Config<Ext1SpiPads>, spi::Duplex>;
@@ -205,7 +205,7 @@ pub fn ext2_uart(
 }
 
 /// SPI pads for the extension 2 connection
-pub type Ext2SpiPads = spi::Pads<Ext2SpiSercom, Ext2SpiMiso, Ext2SpiMosi, Ext2SpiSck>;
+pub type Ext2SpiPads = spi::Pads<Ext2SpiMiso, Ext2SpiMosi, Ext2SpiSck>;
 
 /// Extension 1 SPI device
 pub type Ext2Spi = spi::Spi<spi::Config<Ext2SpiPads>, spi::Duplex>;
@@ -232,7 +232,7 @@ pub fn ext2_spi(
 }
 
 /// SPI pads for the extension 3 connection
-pub type Ext3SpiPads = spi::Pads<Ext3SpiSercom, Ext3SpiMiso, Ext3SpiMosi, Ext3SpiSck>;
+pub type Ext3SpiPads = spi::Pads<Ext3SpiMiso, Ext3SpiMosi, Ext3SpiSck>;
 
 /// Extension 3 SPI device
 pub type Ext3Spi = spi::Spi<spi::Config<Ext3SpiPads>, spi::Duplex>;
@@ -259,7 +259,7 @@ pub fn ext3_spi(
 }
 
 /// SPI pads for the DGI connection
-pub type DgiSpiPads = spi::Pads<DgiSpiSercom, DgiSpiMiso, DgiSpiMosi, DgiSpiSck>;
+pub type DgiSpiPads = spi::Pads<DgiSpiMiso, DgiSpiMosi, DgiSpiSck>;
 
 /// DGI SPI device
 pub type DgiSpi = spi::Spi<spi::Config<DgiSpiPads>, spi::Duplex>;
