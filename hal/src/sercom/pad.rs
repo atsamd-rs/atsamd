@@ -425,10 +425,6 @@ mod ioset {
         >,
     {
     }
-    impl<P0: HasIoSetList, P1: HasIoSetList> ShareIoSet for (P0, P1) where
-        P0::List: Intersect<P1::List, Output: NonEmptyHList>
-    {
-    }
 }
 
 #[hal_cfg("sercom0-d5x")]

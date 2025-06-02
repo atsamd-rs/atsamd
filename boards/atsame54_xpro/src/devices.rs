@@ -131,7 +131,7 @@ pub fn edbg_uart(
 }
 
 /// I2C pads for the extension 1 connection
-pub type Ext1I2cPads = i2c::Pads<Ext1I2cSercom, Ext1I2cSda, Ext1I2cScl>;
+pub type Ext1I2cPads = i2c::Pads<Ext1I2cSda, Ext1I2cScl>;
 
 /// Extension 1 I2C device
 pub type Ext1I2c = i2c::I2c<i2c::Config<Ext1I2cPads>>;
@@ -286,7 +286,7 @@ pub fn dgi_spi(
 }
 
 /// I2C pads for the extension 2 connection
-pub type Ext2I2cPads = i2c::Pads<Ext2I2cSercom, Ext2I2cSda, Ext2I2cScl>;
+pub type Ext2I2cPads = i2c::Pads<Ext2I2cSda, Ext2I2cScl>;
 
 /// Extension 2 I2C device
 pub type Ext2I2c = i2c::I2c<i2c::Config<Ext2I2cPads>>;
@@ -310,7 +310,7 @@ pub fn ext2_i2c(
 }
 
 /// I2C pads for the extension 3 connection
-pub type Ext3I2cPads = i2c::Pads<Ext3I2cSercom, Ext3I2cSda, Ext3I2cScl>;
+pub type Ext3I2cPads = i2c::Pads<Ext3I2cSda, Ext3I2cScl>;
 
 /// Extension 3 I2C device
 pub type Ext3I2c = i2c::I2c<i2c::Config<Ext3I2cPads>>;
@@ -334,7 +334,7 @@ pub fn ext3_i2c(
 }
 
 /// I2C pads for the DGI connection
-pub type DgiI2cPads = i2c::Pads<DgiI2cSercom, Ext3I2cSda, Ext3I2cScl>;
+pub type DgiI2cPads = i2c::Pads<Ext3I2cSda, Ext3I2cScl>;
 
 /// DGI I2C device
 pub type DgiI2c = i2c::I2c<i2c::Config<DgiI2cPads>>;
