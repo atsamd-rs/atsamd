@@ -31,7 +31,7 @@ hal::bsp_peripherals!(
 );
 
 /// UART pads for the extension 1 connection
-pub type Ext1UartPads = uart::Pads<Ext1UartSercom, Ext1UartRx, Ext1UartTx>;
+pub type Ext1UartPads = uart::Pads<Ext1UartRx, Ext1UartTx>;
 
 /// Extension 1 UART device
 pub type Ext1Uart = uart::Uart<uart::Config<Ext1UartPads>, uart::Duplex>;
@@ -55,7 +55,7 @@ pub fn ext1_uart(
 
 /// UART pads for the extension 1 connection with flow control
 pub type Ext1FlowControlUartPads =
-    uart::Pads<Ext1UartSercom, Ext1UartRx, Ext1UartTx, Ext1UartRts, Ext1UartCts>;
+    uart::Pads<Ext1UartRx, Ext1UartTx, Ext1UartRts, Ext1UartCts>;
 
 /// Extension 1 UART device with flow control
 pub type Ext1FlowControlUart = uart::Uart<uart::Config<Ext1FlowControlUartPads>, uart::Duplex>;
@@ -85,7 +85,7 @@ pub fn ext1_flow_control_uart(
 }
 
 /// UART pads for the extension 3 connection
-pub type Ext3UartPads = uart::Pads<Ext3UartSercom, Ext3UartRx, Ext3UartTx>;
+pub type Ext3UartPads = uart::Pads<Ext3UartRx, Ext3UartTx>;
 
 /// Extension 3 UART device
 pub type Ext3Uart = uart::Uart<uart::Config<Ext3UartPads>, uart::Duplex>;
@@ -108,7 +108,7 @@ pub fn ext3_uart(
 }
 
 /// UART pads for the EDBG connection
-pub type EdbgUartPads = uart::Pads<EdbgUartSercom, EdbgUartRx, EdbgUartTx>;
+pub type EdbgUartPads = uart::Pads<EdbgUartRx, EdbgUartTx>;
 
 /// EDBG connection UART device
 pub type EdbgUart = uart::Uart<uart::Config<EdbgUartPads>, uart::Duplex>;
@@ -182,7 +182,7 @@ pub fn ext1_spi(
 }
 
 /// UART pads for the extension 2 connection
-pub type Ext2UartPads = uart::Pads<Ext2UartSercom, Ext2UartRx, Ext2UartTx>;
+pub type Ext2UartPads = uart::Pads<Ext2UartRx, Ext2UartTx>;
 
 /// Extension 2 UART device
 pub type Ext2Uart = uart::Uart<uart::Config<Ext2UartPads>, uart::Duplex>;

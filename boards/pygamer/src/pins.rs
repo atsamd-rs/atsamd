@@ -824,7 +824,7 @@ pub struct UART {
 }
 
 /// UART Pads for the labelled UART peripheral
-pub type UartPads = uart::Pads<UartSercom, UartRx, UartTx>;
+pub type UartPads = uart::Pads<UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;

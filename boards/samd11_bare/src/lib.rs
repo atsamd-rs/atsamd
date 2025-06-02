@@ -72,7 +72,7 @@ hal::bsp_pins! {
     }
 }
 
-pub type UartPads = uart::Pads<Sercom0, UartRx, UartTx>;
+pub type UartPads = uart::Pads<UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
