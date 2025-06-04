@@ -92,7 +92,8 @@ impl<I: AdcInstance> Adc<I> {
             // before it returns the result
             Accumulation::Summed(cnt) => (cnt, 0),
         };
-        self.adc.avgctrl().modify(|_, w| {
+        // Write so we completely overwrite the last setting
+        self.adc.avgctrl().write(|w| {
             w.samplenum().variant(sample_cnt);
             unsafe { w.adjres().bits(adjres) }
         });
@@ -218,48 +219,49 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     /// let mut peripherals = pac::Peripherals::take().unwrap();
     /// peripherals.sysctrl.vref().write(|w| w.tsen().set_bit());
     /// ```
-    pub fn read_cpu_temperature(&mut self, sysctrl: &Sysctrl) -> Result<f32, Error> {
+    pub fn read_cpu_temperature(&mut self, sysctrl: &Sysctrl, raw: &mut u16) -> Result<f32, Error> {
         let vref = sysctrl.vref().read();
         if vref.tsen().bit_is_clear() {
             return Err(Error::TemperatureSensorNotEnabled);
         }
         let room_temp = calibration::room_temp();
-        let room_reading = calibration::room_temp_adc_val() as f32;
+        let adc_room = calibration::room_temp_adc_val() as f32;
 
         let hot_temp = calibration::hot_temp();
-        let hot_reading = calibration::hot_temp_adc_val() as f32;
+        let adc_hot = calibration::hot_temp_adc_val() as f32;
 
-        let room_int1v_ref = 1.0 - (calibration::room_int1v_val() as f32 / 1000.0);
-        let hot_int1v_ref = 1.0 - (calibration::hot_int1v_val() as f32 / 1000.0);
+        let room_int1v = 1.0 - (calibration::room_int1v_val() as f32 / 1000.0);
+        let hot_int1v = 1.0 - (calibration::hot_int1v_val() as f32 / 1000.0);
 
-        let room_voltage_compensated = room_reading * room_int1v_ref / 4095.0;
-        let hot_voltage_compensated = hot_reading * hot_int1v_ref / 4095.0;
+        let v_adc_room = (adc_room * room_int1v) / 4095.0;
+        let v_adc_hot = (adc_hot * hot_int1v) / 4095.0;
 
         let adc_val = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ_D21_TEMP, |adc| {
             // IMPORTANT - We also have to modify gain, but this is not exposed in ADC Settings
             adc.adc.inputctrl().modify(|_, w| w.gain()._1x());
+            adc.discard = true;
             let res = adc.read_channel(0x18);
             // Set gain back to normal
             adc.adc.inputctrl().modify(|_, w| w.gain().div2());
+            adc.discard = true;
             res
         });
-
+        *raw = adc_val;
         // Source:
         // https://github.com/ElectronicCats/ElectronicCats_InternalTemperatureZero/blob/master/src/TemperatureZero.cpp
-        let tsen_val = adc_val as f32 / 4095.0;
+
+        let v_adc = adc_val as f32 / 4095.0; // 1.0 is ommitted here (adc_val * 1.0) - 1.0 is the INT_V1 voltage (Always 1.0V)
 
         let coarse_temp = room_temp
-            + (((hot_temp - room_temp) / (hot_voltage_compensated - room_voltage_compensated))
-                * (tsen_val - room_voltage_compensated));
-        let ref_1v = room_int1v_ref
-            + (((hot_int1v_ref - room_int1v_ref) * (coarse_temp - room_temp))
-                / (hot_temp - room_temp));
-        let measured_voltage_compensated = adc_val as f32 * ref_1v / 4095.0;
+            + (((hot_temp - room_temp) / (v_adc_hot - v_adc_room)) * (v_adc - v_adc_room));
+
+        let int1v_real = room_int1v
+            + (((hot_int1v - room_int1v) * (coarse_temp - room_temp)) / (hot_temp - room_temp));
+
+        let v_adc_real = (adc_val as f32 * int1v_real) / 4095.0;
 
         let temp = room_temp
-            + (((hot_temp - room_temp) / (hot_voltage_compensated - room_voltage_compensated))
-                * (measured_voltage_compensated - room_voltage_compensated));
-
+            + (((hot_temp - room_temp) / (v_adc_hot - v_adc_room)) * (v_adc_real - v_adc_room));
         Ok(temp)
     }
 
@@ -267,7 +269,11 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
         let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
             let res = adc.read_channel(src as u8);
-            adc.reading_to_f32(res) * 3.3 * 4.0
+            let mut res_f = adc.reading_to_f32(res) * 3.3;
+            if CpuVoltageSource::Bandgap != src {
+                res_f *= 4.0;
+            }
+            res_f
         });
         (voltage * 1000.0) as u16
     }

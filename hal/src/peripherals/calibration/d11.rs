@@ -2,6 +2,7 @@
 // For samd11, see 9.5 NVM Software Calibration Area Mapping, page 24
 // For samd21, see 10.3.2 NVM Software Calibration Area Mapping, page 46
 
+use atsamd21g::adc::calib;
 use atsamd_hal_macros::hal_cfg;
 use core::ptr;
 
@@ -16,15 +17,6 @@ const ADDR: u32 = 0x806020u32;
 fn cal(addr_offset: u32, bit_shift: u32, bit_mask: u32) -> u32 {
     unsafe {
         let addr: *const u32 = (ADDR + addr_offset) as *const _;
-        let value = ptr::read_unaligned(addr);
-
-        (value >> bit_shift) & bit_mask
-    }
-}
-
-fn cal_signed(addr_offset: u32, bit_shift: u32, bit_mask: i32) -> i32 {
-    unsafe {
-        let addr: *const i32 = (ADDR + addr_offset) as *const _;
         let value = ptr::read_unaligned(addr);
 
         (value >> bit_shift) & bit_mask
@@ -96,23 +88,23 @@ pub fn usb_trim_cal() -> u8 {
 /// Room temperature in °C
 pub fn room_temp() -> f32 {
     let int_val = cal(0x10, 0, 0b11111111);
-    let dec_val = cal(0x10 + 1, 0, 0b1111) as f32 / 10.0;
-    int_val as f32 + dec_val
+    let dec_val = cal(0x10 + 1, 0, 0b1111);
+    ((int_val * 10) + dec_val) as f32 / 10.0
 }
 
 /// Hot temperature in °C
 pub fn hot_temp() -> f32 {
     let int_val = cal(0x10 + 1, 4, 0b11111111);
-    let dec_val = cal(0x10 + 2, 4, 0b1111) as f32 / 10.0;
-    int_val as f32 + dec_val
+    let dec_val = cal(0x10 + 2, 4, 0b1111);
+    ((int_val * 10) + dec_val) as f32 / 10.0
 }
 
-pub fn room_int1v_val() -> i32 {
-    cal_signed(0x10 + 3, 0, 0b11111111)
+pub fn room_int1v_val() -> i8 {
+    cal(0x10 + 3, 0, 0b11111111) as i8
 }
 
-pub fn hot_int1v_val() -> i32 {
-    cal_signed(0x10 + 4, 0, 0b11111111)
+pub fn hot_int1v_val() -> i8 {
+    cal(0x10 + 4, 0, 0b11111111) as i8
 }
 
 /// 12-bit ADC conversion at room temperature
