@@ -114,10 +114,12 @@ pub enum CpuVoltageSource {
 #[derive(Copy, Clone, PartialEq, Eq)]
 #[repr(u8)]
 pub enum CpuVoltageSource {
-    /// Core voltage
+    /// Bandgap reference voltage - 1.1V
+    Bandgap = 0x19,
+    /// Core voltage - 1.2V
     Core = 0x1A,
-    /// VBAT supply voltage
-    Vbat = 0x1B,
+    /// IO voltage - 1.62V to 3.63V
+    Io = 0x1B,
 }
 
 bitflags::bitflags! {
