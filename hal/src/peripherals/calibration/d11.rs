@@ -48,12 +48,6 @@ fn cal_with_errata(
     }
 }
 
-// Needed for temperature calibration values stored in NVM
-fn parts_to_f32(int: u32, dec: u32, n_bits: u32) -> f32 {
-    let mul: f32 = 1f32 / (2u32.pow(n_bits) as f32);
-    int as f32 + (dec as f32 * mul)
-}
-
 /// ADC Linearity Calibration. Should be written to ADC CALIB register.
 #[allow(clippy::unusual_byte_groupings)]
 pub fn adc_linearity_cal() -> u8 {

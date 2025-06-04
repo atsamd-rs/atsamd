@@ -109,27 +109,24 @@ impl From<super::Error> for BuilderError {
     }
 }
 
-/// # ADC configuration builder
+/// # ADC Configuration Builder
 ///
-/// Multiple factors can affect the ADCs overall sampling rate, and this
-/// structure allows for the configuring of the majority of factors that affect
-/// the sample rate of the ADC
+/// This structure provides configuration of multiple factors which affect the
+/// ADC's sampling characteristics.
 ///
-/// To begin with, the ADC Clock is driven by the peripheral clock divided with
-/// a divider (see [Config::clock_divider]).
+/// The ADC clock is driven by the peripheral clock divided with a divider
+/// selected via [AdcBuilder::with_clock_divider()].
 ///
-/// Each sample is read by the ADC over
-/// [Config::sample_clock_cycles] clock cycles, and then transmitted
-/// to the ADC register over [Config::bit_width] clock cycles (1
-/// clock cycle per bit)
+/// A sample is taken over a number of ADC clock cycles configured by
+/// [AdcBuilder::with_clock_cycles_per_sample()], and then transmitted to the
+/// ADC register 1 clock cycle per bit of resolution - resolution is determined
+/// by the accumulation mode selected by [AdcBuilder::new()].
 ///
-/// The ADC can also be configured to combine multiple simultaneous readings in
-/// either an average or summed mode (See [Accumulation]), this also affects
-/// the overall sample rate of the ADC as the ADC has to do multiple
-/// samples before a result is ready.
+/// The ADC can be configured to combine multiple readings in either an average
+/// or summed mode (See [Accumulation]).
 ///
-/// Therefore, the overall formula for calculating Sample rate (SPS) can be
-/// calculated like so:
+/// The formula for calculating Sample rate (SPS) is shown below, and
+/// implemented in a helper method [AdcBuilder::calculate_sps()]:
 ///
 /// ## For single sample
 /// ```
@@ -202,14 +199,15 @@ impl AdcBuilder {
         self
     }
 
-    /// Sets the number of ADC clock cycles taken to sample a single
-    /// sample. The higher this number, the longer it will take the ADC to
-    /// sample each sample. Smaller values will make the ADC perform more samples per second,
-    /// but there may be more noise in each sample leading to irratic values.
+    /// Sets the number of ADC clock cycles taken to sample a single sample. The
+    /// higher this number, the longer it will take the ADC to sample each
+    /// sample. Smaller values will make the ADC perform more samples per
+    /// second, but there may be more noise in each sample leading to erratic
+    /// values.
     ///
     /// ## Safety
-    /// * This function will clamp input value between 1 and 63, to conform to the ADC registers
-    ///   min and max values.
+    /// * This function clamps input value between 1 and 63, to conform to the
+    ///   ADC registers min and max values.
     pub fn with_clock_cycles_per_sample(mut self, num: u8) -> Self {
         self.sample_clock_cycles = Some(num.clamp(1, 63)); // Clamp in range
         self

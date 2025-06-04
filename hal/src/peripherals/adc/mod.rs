@@ -1,4 +1,26 @@
 //! Analog-to-Digital Converter
+//!
+//! This module provides an interface to the Analog-to-Digital Converter (ADC)
+//! peripheral(s).  Support is provided for single-ended, software triggered
+//! conversions.  Async functionality can be enabled via the `async` feature.
+//!
+//! ```
+//! # use atsamd_hal::adc::{AdcResolution, Reference};
+//! let apb_adc0 = buses.apb.enable(tokens.apbs.adc0);
+//! let (pclk_adc0, _gclk0) = Pclk::enable(tokens.pclks.adc0, clocks.gclk0);
+//!
+//! let mut adc = AdcBuilder::new(Accumulation::single(AdcResolution::_12))
+//!     .with_clock_cycles_per_sample(5)
+//!     .with_clock_divider(Prescaler::Div32)
+//!     .with_vref(Reference::Arefa)
+//!     .enable(peripherals.adc0, apb_adc0, &pclk_adc0)
+//!     .unwrap();
+//!
+//! let mut adc_pin = pins.a0.into_alternate();
+//!
+//! let mut _buffer = [0; 16];
+//! adc.read_buffer(&mut adc_pin, &mut _buffer).unwrap();
+//! ```
 
 use core::ops::Deref;
 
@@ -68,9 +90,9 @@ pub enum Error {
     BufferOverrun,
     /// Temperature sensor not enabled
     ///
-    /// This is returned when attempting to read the CPU temperature, and
-    /// the SUPC peripheral has not been configured correctly to expose
-    /// the temperature sensors.
+    /// This is returned when attempting to read the CPU temperature, and the
+    /// SYSCTRL (D11/D21) / SUPC (D5x) peripheral has not enabled the
+    /// temperature sensor.
     TemperatureSensorNotEnabled,
 }
 

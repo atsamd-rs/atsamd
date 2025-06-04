@@ -155,11 +155,22 @@ impl<I: AdcInstance> Adc<I> {
 
 impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     #[inline]
-    /// Returns the CPU temperature in degrees C
+    /// Reads the CPU temperature in degrees C.  This method requires the
+    /// provided supc peripheral has the `ondemand` and `tsen` bits enabled.
     ///
-    /// This requires that the [pac::Supc] peripheral is configured with
-    /// tsen and ondemand bits enabled, otherwise this function will return
-    /// [Error::TemperatureSensorNotEnabled]
+    /// n.b. Microchip's errata document for SAM D5x/E5x states:
+    /// > Both internal temperature sensors, TSENSP and TSENSC, are not
+    /// > supported and should not be used.
+    ///
+    /// Example:
+    /// ```
+    /// let supc = peripherals.supc;
+    /// supc.vref()
+    ///     .write(|w| {
+    ///         w.ondemand().set_bit();
+    ///         w.tsen().set_bit()
+    ///     });
+    /// ```
     pub fn read_cpu_temperature(&mut self, supc: &pac::Supc) -> Result<f32, Error> {
         let vref = supc.vref().read();
         if vref.tsen().bit_is_clear() || vref.ondemand().bit_is_clear() {
@@ -292,9 +303,12 @@ impl<I: AdcInstance + PrimaryAdc, F> FutureAdc<I, F>
 where
     F: crate::async_hal::interrupts::Binding<I::Interrupt, async_api::InterruptHandler<I>>,
 {
-    /// Reads the CPU temperature. Value returned is in Celcius
-    /// This methods requires the provided supc peripheral has the ondemand and tsen
-    /// bits enabled.
+    /// Reads the CPU temperature in degrees C.  This method requires the
+    /// provided supc peripheral has the `ondemand` and `tsen` bits enabled.
+    ///
+    /// n.b. Microchip's errata document for SAM D5x/E5x states:
+    /// > Both internal temperature sensors, TSENSP and TSENSC, are not
+    /// > supported and should not be used.
     ///
     /// Example:
     /// ```

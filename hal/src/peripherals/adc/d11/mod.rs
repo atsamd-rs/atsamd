@@ -212,7 +212,12 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     ///
     /// This requires that the [pac::Sysctrl] peripheral is configured with
     /// the tsen bit enabled, otherwise this function will return an error
-    /// [Error::TemperatureSensorNotEnabled]
+    /// [Error::TemperatureSensorNotEnabled].  This can be accomplished by:
+    ///
+    /// ```
+    /// let mut peripherals = pac::Peripherals::take().unwrap();
+    /// peripherals.sysctrl.vref().write(|w| w.tsen().set_bit());
+    /// ```
     pub fn read_cpu_temperature(&mut self, sysctrl: &Sysctrl) -> Result<f32, Error> {
         let vref = sysctrl.vref().read();
         if vref.tsen().bit_is_clear() {
