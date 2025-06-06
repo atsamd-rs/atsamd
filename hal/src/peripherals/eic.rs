@@ -121,12 +121,13 @@ pub trait EicPin: AnyPin + Sealed {
 
 /// A numbered external interrupt, which can be used to sense state changes on
 /// its pin.
-pub struct ExtInt<P, Id, F = NoneT>
+pub struct ExtInt<P, Id, F = NoneT, EvId = NoneT>
 where
     P: EicPin,
     Id: ChId,
 {
     chan: Channel<Id, F>,
+    evchan: PhantomData<EvId>,
     pin: Pin<P::Id, P::Mode>,
 }
 
@@ -146,6 +147,7 @@ where
     fn new(pin: P, chan: Channel<Id, F>) -> Self {
         ExtInt {
             pin: pin.into(),
+            evchan: PhantomData::default(),
             chan,
         }
     }
@@ -184,8 +186,6 @@ impl<Id: ChId, F> Channel<Id, F> {
         }
     }
 
-    #[hal_cfg("eic-d5x")]
-    #[cfg(feature = "async")]
     fn change_mode<N>(self) -> Channel<Id, N> {
         Channel {
             eic: self.eic,
