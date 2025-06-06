@@ -105,7 +105,13 @@ where
             hooked_channel,
         )
     }
+}
 
+impl<P, Id, F, E> ExtInt<P, Id, F, E>
+where
+    P: EicPin,
+    Id: ChId,
+{
     pub fn enable_interrupt(&mut self) {
         self.chan
             .eic
@@ -185,7 +191,7 @@ where
     }
 }
 
-impl<P, C, Id, F> InputPin_02 for ExtInt<P, Id, F>
+impl<P, C, Id, F, E> InputPin_02 for ExtInt<P, Id, F, E>
 where
     P: EicPin + AnyPin<Mode = Interrupt<C>>,
     Id: ChId,
@@ -202,7 +208,7 @@ where
     }
 }
 
-impl<P, Id, F> InputPin for ExtInt<P, Id, F>
+impl<P, Id, F, E> InputPin for ExtInt<P, Id, F, E>
 where
     Self: ErrorType,
     P: EicPin,
@@ -219,7 +225,7 @@ where
     }
 }
 
-impl<P, Id, F> ErrorType for ExtInt<P, Id, F>
+impl<P, Id, F, E> ErrorType for ExtInt<P, Id, F, E>
 where
     P: EicPin,
     Id: ChId,
