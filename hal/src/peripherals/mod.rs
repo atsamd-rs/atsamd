@@ -79,3 +79,6 @@ mod serial_number {}
 
 #[hal_cfg("serial-numbers")]
 pub use serial_number::*;
+
+#[cfg(feature = "device")]
+pub mod evsys;
