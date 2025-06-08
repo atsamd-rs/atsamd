@@ -1,13 +1,14 @@
 # vim:ft=toml:
 [target.thumbv7em-none-eabihf]
-runner = 'probe-rs run --chip ATSAME54P20A'
+runner = 'arm-none-eabi-gdb'
 
 [build]
 target = "thumbv7em-none-eabihf"
 rustflags = [
+
    # This is needed if your flash or ram addresses are not aligned to 0x10000 in memory.x
    # See https://github.com/rust-embedded/cortex-m-quickstart/pull/95
    "-C", "link-arg=--nmagic",
-   "-C", "debuginfo=2",
+
    "-C", "link-arg=-Tlink.x",
 ]
