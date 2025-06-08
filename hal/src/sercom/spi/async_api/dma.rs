@@ -83,43 +83,36 @@ where
     }
 }
 
-impl<C, S, R> SpiFuture<C, Rx, R, NoneT>
+impl<C, D, S, R, T> SpiFuture<C, D, R, T>
 where
     C: ValidConfig<Sercom = S>,
+    D: Capability,
     C::Word: PrimInt + AsPrimitive<DataWidth>,
     DataWidth: AsPrimitive<C::Word>,
     S: Sercom,
 {
-    /// Add a DMA channel for receiving transactions
-    #[inline]
-    pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
-        self,
-        rx_channel: Chan,
-    ) -> SpiFuture<C, Rx, Chan, NoneT> {
-        SpiFuture {
-            spi: Spi {
-                config: self.spi.config,
-                capability: self.spi.capability,
-                _rx_channel: rx_channel,
-                _tx_channel: self.spi._tx_channel,
-            },
-        }
-    }
-}
+      /// Add a DMA channel for receiving transactions
+      #[inline]
+      pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
+          self,
+          rx_channel: Chan,
+      ) -> SpiFuture<C, D, Chan, T> {
+          SpiFuture {
+              spi: Spi {
+                  config: self.spi.config,
+                  capability: self.spi.capability,
+                  _rx_channel: rx_channel,
+                  _tx_channel: self.spi._tx_channel,
+              },
+          }
+      }
 
-impl<C, S, T> SpiFuture<C, Tx, NoneT, T>
-where
-    C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<DataWidth>,
-    DataWidth: AsPrimitive<C::Word>,
-    S: Sercom,
-{
     /// Add a DMA channel for receiving transactions
     #[inline]
     pub fn with_tx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
         self,
         tx_channel: Chan,
-    ) -> SpiFuture<C, Tx, NoneT, Chan> {
+    ) -> SpiFuture<C, D, R, Chan> {
         SpiFuture {
             spi: Spi {
                 config: self.spi.config,
@@ -129,22 +122,14 @@ where
             },
         }
     }
-}
-
-impl<C, S, R, T> SpiFuture<C, Duplex, R, T>
-where
-    C: ValidConfig<Sercom = S>,
-    C::Word: PrimInt + AsPrimitive<DataWidth>,
-    DataWidth: AsPrimitive<C::Word>,
-    S: Sercom,
-{
+    
     /// Add a DMA channel for receiving transactions
     #[inline]
     pub fn with_dma_channels<ChanRx, ChanTx>(
         self,
         rx_channel: ChanRx,
         tx_channel: ChanTx,
-    ) -> SpiFuture<C, Duplex, ChanRx, ChanTx>
+    ) -> SpiFuture<C, D, ChanRx, ChanTx>
     where
         ChanRx: AnyChannel<Status = ReadyFuture>,
         ChanTx: AnyChannel<Status = ReadyFuture>,
