@@ -30,16 +30,6 @@ version = "0.22.0"
 optional = true
 version = "0.3.1"
 
-[dependencies.embassy-executor]
-optional = true
-version = "0.6.2"
-features = ["arch-cortex-m", "executor-thread", "executor-interrupt"]
-
-[dependencies]
-defmt = "1.0"
-defmt-rtt = "1.0"
-panic-probe = { version = "1", features = ["print-defmt"] }
-
 [dev-dependencies]
 mcan = "0.2"
 panic-rtt-target = {version = "0.1", features = ["cortex-m"]}
@@ -57,7 +47,6 @@ rt = ["cortex-m-rt", "atsamd-hal/same54p-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 # Enable rtic support from atsamd-hal
 rtic = ["atsamd-hal/rtic"]
-embassy = ["dep:embassy-executor"]
 
 [[example]]
 name = "blinky_basic"
@@ -69,8 +58,3 @@ required-features = ["rtic"]
 [[example]]
 name = "mcan"
 required-features = ["can", "rtic"]
-
-[[example]]
-name = "rx_dma"
-required-features = ["embassy", "async", "dma"]
-
