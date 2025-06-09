@@ -25,6 +25,7 @@ pub struct Adc<ADC> {
     adc: ADC,
 }
 
+const CALIB_ADDR: *const u32 = 0x806020u32 as *const u32;
 impl Adc<pac::Adc> {
     /// Create a new `Adc` instance. The default configuration is:
     /// * 1/32 prescaler
@@ -54,8 +55,25 @@ impl Adc<pac::Adc> {
         while adc.status().read().syncbusy().bit_is_set() {}
 
         adc.inputctrl().modify(|_, w| w.muxneg().gnd()); // No negative input (internal gnd)
-        while adc.status().read().syncbusy().bit_is_set() {}
+        while adc.status().read().syncbusy().bit_is_set() {} 
 
+        // Read the ADC factory calibration from the NVM
+        let calib_word0 = unsafe { core::ptr::read_volatile(CALIB_ADDR)};
+        let calib_word1 = unsafe { core::ptr::read_volatile(CALIB_ADDR.add(1)) };
+        let calib_data = calib_word0 as u64 | ((calib_word1 as u64) << 32);
+        
+        // Extract ADC calibration values from Table 10-8:
+        // ADC LINEARITY: bits 34:27 (8 bits)
+        // ADC BIASCAL: bits 37:35 (3 bits)
+        let linearity = ((calib_data >> 27) & 0xFF) as u8;
+        let biascal = ((calib_data >> 35) & 0x07) as u8;
+ 
+        adc.calib().write(|w| unsafe {
+            w.linearity_cal().bits(linearity)
+                .bias_cal().bits(biascal)
+        });
+        while adc.status().read().syncbusy().bit_is_set() {}
+        
         let mut newadc = Self { adc };
         newadc.samples(adc::avgctrl::Samplenumselect::_1);
         newadc.gain(adc::inputctrl::Gainselect::Div2);
@@ -142,6 +160,7 @@ impl Adc<pac::Adc> {
 
         self.adc.result().read().result().bits()
     }
+
 }
 
 impl<WORD, PIN> OneShot<pac::Adc, WORD, PIN> for Adc<pac::Adc>
