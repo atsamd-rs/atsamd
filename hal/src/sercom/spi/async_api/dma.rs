@@ -6,7 +6,7 @@ use crate::{
     dmac::{
         channel::{self, Channel},
         sram::DmacDescriptor,
-        AnyChannel, Beat, Buffer, ReadyFuture,
+        AnyChannel, Beat, Buffer, ReadyChannel, ReadyFuture,
     },
     sercom::{
         dma::{
@@ -40,74 +40,42 @@ pub type SpiFutureRxDma<C, R> = SpiFuture<C, Rx, Channel<R, ReadyFuture>, NoneT>
 /// The type parameter `T` represents the TX DMA channel ID (`ChX`).
 pub type SpiFutureTxDma<C, T> = SpiFuture<C, Tx, NoneT, Channel<T, ReadyFuture>>;
 
-impl<C, D, RxDma, TxDma> SpiFuture<C, D, RxDma, TxDma>
+impl<C, D, T> SpiFuture<C, D, NoneT, T>
 where
-    C: ValidConfig,
-    D: Capability,
-    RxDma: AnyChannel<Status = ReadyFuture>,
-    TxDma: AnyChannel<Status = ReadyFuture>,
-{
-    /// Reclaim the DMA channels. Any subsequent SPI transaction will not
-    /// use DMA.
-    pub fn take_dma_channels(self) -> (SpiFuture<C, D, NoneT, NoneT>, RxDma, TxDma) {
-        let (spi, rx, tx) = self.spi.take_dma_channels();
-        (SpiFuture { spi }, rx, tx)
-    }
-}
-
-impl<C, D, R, T> SpiFuture<C, D, R, T>
-where
-    C: ValidConfig,
+    C: ValidConfig<Sercom: Sercom, OpMode = Slave, Word: PrimInt + AsPrimitive<DataWidth>>,
     D: Receive,
-    R: AnyChannel<Status = ReadyFuture>,
-{
-    /// Reclaim the Rx DMA channel. Any subsequent SPI transaction will not
-    /// use DMA.
-    pub fn take_rx_channel(self) -> (SpiFuture<C, D, NoneT, T>, R) {
-        let (spi, channel) = self.spi.take_rx_channel();
-        (SpiFuture { spi }, channel)
-    }
-}
-
-impl<C, D, R, T> SpiFuture<C, D, R, T>
-where
-    C: ValidConfig,
-    D: Capability,
-    T: AnyChannel<Status = ReadyFuture>,
-{
-    /// Reclaim the DMA channel. Any subsequent SPI transaction will not use
-    /// DMA.
-    pub fn take_tx_channel(self) -> (SpiFuture<C, D, R, NoneT>, T) {
-        let (spi, channel) = self.spi.take_tx_channel();
-        (SpiFuture { spi }, channel)
-    }
-}
-
-impl<C, D, S, R, T> SpiFuture<C, D, R, T>
-where
-    C: ValidConfig<Sercom = S>,
-    D: Capability,
-    C::Word: PrimInt + AsPrimitive<DataWidth>,
     DataWidth: AsPrimitive<C::Word>,
-    S: Sercom,
 {
-      /// Add a DMA channel for receiving transactions
-      #[inline]
-      pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
-          self,
-          rx_channel: Chan,
-      ) -> SpiFuture<C, D, Chan, T> {
-          SpiFuture {
-              spi: Spi {
-                  config: self.spi.config,
-                  capability: self.spi.capability,
-                  _rx_channel: rx_channel,
-                  _tx_channel: self.spi._tx_channel,
-              },
-          }
-      }
+    /// Attach a DMA channel to this [`SpiFuture`]. Its
+    /// [`SpiBus`](crate::ehal::spi::SpiBus) implementation will use DMA to
+    /// carry out its transactions. In Slave mode, a [`Rx`] [`SpiFuture`] only
+    /// needs a single DMA channel.
+    #[inline]
+    pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
+        self,
+        rx_channel: Chan,
+    ) -> SpiFuture<C, D, Chan, T> {
+        SpiFuture {
+            spi: Spi {
+                config: self.spi.config,
+                capability: self.spi.capability,
+                _rx_channel: rx_channel,
+                _tx_channel: self.spi._tx_channel,
+            },
+        }
+    }
+}
 
-    /// Add a DMA channel for receiving transactions
+impl<C, D, R> SpiFuture<C, D, R, NoneT>
+where
+    C: ValidConfig<Sercom: Sercom, Word: PrimInt + AsPrimitive<DataWidth>>,
+    D: Transmit,
+    DataWidth: AsPrimitive<C::Word>,
+{
+    /// Attach a DMA channel to this [`SpiFuture`]. Its
+    /// [`SpiBus`](crate::ehal::spi::SpiBus) implementation will use DMA to
+    /// carry out its transactions. For [`Tx`] [`SpiFuture`]s, only a single DMA
+    /// channel is necessary.
     #[inline]
     pub fn with_tx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
         self,
@@ -122,17 +90,24 @@ where
             },
         }
     }
-    
-    /// Add a DMA channel for receiving transactions
+}
+
+impl<C, D> SpiFuture<C, D, NoneT, NoneT>
+where
+    C: ValidConfig<Sercom: Sercom, OpMode: MasterMode, Word: PrimInt + AsPrimitive<DataWidth>>,
+    D: Receive,
+    DataWidth: AsPrimitive<C::Word>,
+{
+    /// Attach RX and TX DMA channels to this [`SpiFuture`]. Its
+    /// [`SpiBus`](crate::ehal::spi::SpiBus) implementation will use DMA to
+    /// carry out its transactions. In Master mode, since even read SPI
+    /// transaction necessarily involve a write to shift data in, [`Rx`]-only
+    /// must take two DMA channels, just the same as if it were [`Duplex`].
     #[inline]
-    pub fn with_dma_channels<ChanRx, ChanTx>(
-        self,
-        rx_channel: ChanRx,
-        tx_channel: ChanTx,
-    ) -> SpiFuture<C, D, ChanRx, ChanTx>
+    pub fn with_dma_channels<R, T>(self, rx_channel: R, tx_channel: T) -> SpiFuture<C, D, R, T>
     where
-        ChanRx: AnyChannel<Status = ReadyFuture>,
-        ChanTx: AnyChannel<Status = ReadyFuture>,
+        R: AnyChannel<Status = ReadyFuture>,
+        T: AnyChannel<Status = ReadyFuture>,
     {
         SpiFuture {
             spi: Spi {
@@ -142,6 +117,67 @@ where
                 _tx_channel: tx_channel,
             },
         }
+    }
+}
+
+impl<C> SpiFuture<C, Duplex>
+where
+    C: ValidConfig<OpMode = Slave>,
+{
+    /// Attach a DMA channel to this [`SpiFuture`]. Its
+    /// [`SpiBus`](crate::ehal::spi::SpiBus) implementation will use DMA to
+    /// carry out its transactions. In Slave mode, a [`Duplex`] [`SpiFuture`] needs
+    /// two DMA channels.
+    pub fn with_dma_channels_slave<R, T>(self, rx: R, tx: T) -> SpiFuture<C, Duplex, R, T>
+    where
+        R: AnyChannel<Status = ReadyFuture>,
+        T: AnyChannel<Status = ReadyFuture>,
+    {
+        SpiFuture {
+            spi: Spi {
+                capability: self.spi.capability,
+                config: self.spi.config,
+                _rx_channel: rx,
+                _tx_channel: tx,
+            },
+        }
+    }
+}
+
+impl<C, D, R, T> SpiFuture<C, D, R, T>
+where
+    C: ValidConfig,
+    D: Capability,
+{
+    /// Reclaim both RX and TX DMA channels. Any subsequent SPI transaction will
+    /// not use DMA.
+    pub fn take_dma_channels(self) -> (SpiFuture<C, D, NoneT, NoneT>, R, T)
+    where
+        R: AnyChannel<Status: ReadyChannel>,
+        T: AnyChannel<Status: ReadyChannel>,
+    {
+        let (spi, rx, tx) = self.spi.take_dma_channels();
+        (SpiFuture { spi }, rx, tx)
+    }
+
+    /// Reclaim the RX DMA channel. Any subsequent SPI RX transaction will not use
+    /// DMA.
+    pub fn take_rx_channel(self) -> (SpiFuture<C, D, NoneT, T>, R)
+    where
+        R: AnyChannel<Status: ReadyChannel>,
+    {
+        let (spi, channel) = self.spi.take_rx_channel();
+        (SpiFuture { spi }, channel)
+    }
+
+    /// Reclaim the TX DMA channel. Any subsequent SPI TX transaction will not use
+    /// DMA.
+    pub fn take_tx_channel(self) -> (SpiFuture<C, D, R, NoneT>, T)
+    where
+        T: AnyChannel<Status: ReadyChannel>,
+    {
+        let (spi, channel) = self.spi.take_tx_channel();
+        (SpiFuture { spi }, channel)
     }
 }
 
@@ -380,14 +416,13 @@ where
 
 /// [`embedded_io::Write`] implementation for [`Transmit`] [`SpiFuture`]s in
 /// either [`Slave`] or [`MasterMode`], using DMA transfers.
-impl<P, M, Z, D, R, T, S> embedded_io_async::Write for SpiFuture<Config<P, M, Z>, D, R, T>
+impl<P, M, Z, D, R, T> embedded_io_async::Write for SpiFuture<Config<P, M, Z>, D, R, T>
 where
     P: ValidPads,
     M: OpMode,
     Z: Size<Word = u8> + 'static,
-    Config<P, M, Z>: ValidConfig<Sercom = S>,
+    Config<P, M, Z>: ValidConfig<Sercom: Sercom>,
     D: Transmit,
-    S: Sercom,
     T: AnyChannel<Status = ReadyFuture>,
 {
     async fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
@@ -402,14 +437,13 @@ where
 
 /// [`embedded_io::Read`] implementation for [`Receive`] [`SpiFuture`]s in
 /// [`MasterMode`], using DMA transfers.
-impl<P, M, Z, D, R, T, S> embedded_io_async::Read for SpiFuture<Config<P, M, Z>, D, R, T>
+impl<P, M, Z, D, R, T> embedded_io_async::Read for SpiFuture<Config<P, M, Z>, D, R, T>
 where
     P: ValidPads,
     M: MasterMode,
     Z: Size<Word = u8> + 'static,
-    Config<P, M, Z>: ValidConfig<Sercom = S>,
+    Config<P, M, Z>: ValidConfig<Sercom: Sercom>,
     D: Receive,
-    S: Sercom,
     R: AnyChannel<Status = ReadyFuture>,
     T: AnyChannel<Status = ReadyFuture>,
 {
