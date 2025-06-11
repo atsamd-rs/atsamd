@@ -1636,8 +1636,8 @@ where
         )
     }
 
-    /// Reclaim the RX DMA channel. Any subsequent SPI RX transaction will not use
-    /// DMA.
+    /// Reclaim the RX DMA channel. Any subsequent SPI RX transaction will not
+    /// use DMA.
     pub fn take_rx_channel(self) -> (Spi<C, D, NoneT, T>, R)
     where
         R: crate::dmac::AnyChannel<Status: crate::dmac::ReadyChannel>,
@@ -1653,8 +1653,8 @@ where
         )
     }
 
-    /// Reclaim the TX DMA channel. Any subsequent SPI TX transaction will not use
-    /// DMA.
+    /// Reclaim the TX DMA channel. Any subsequent SPI TX transaction will not
+    /// use DMA.
     pub fn take_tx_channel(self) -> (Spi<C, D, R, NoneT>, T)
     where
         T: crate::dmac::AnyChannel<Status: crate::dmac::ReadyChannel>,

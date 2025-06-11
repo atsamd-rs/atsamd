@@ -126,8 +126,8 @@ where
 {
     /// Attach a DMA channel to this [`SpiFuture`]. Its
     /// [`SpiBus`](crate::ehal::spi::SpiBus) implementation will use DMA to
-    /// carry out its transactions. In Slave mode, a [`Duplex`] [`SpiFuture`] needs
-    /// two DMA channels.
+    /// carry out its transactions. In Slave mode, a [`Duplex`] [`SpiFuture`]
+    /// needs two DMA channels.
     pub fn with_dma_channels_slave<R, T>(self, rx: R, tx: T) -> SpiFuture<C, Duplex, R, T>
     where
         R: AnyChannel<Status = ReadyFuture>,
@@ -160,8 +160,8 @@ where
         (SpiFuture { spi }, rx, tx)
     }
 
-    /// Reclaim the RX DMA channel. Any subsequent SPI RX transaction will not use
-    /// DMA.
+    /// Reclaim the RX DMA channel. Any subsequent SPI RX transaction will not
+    /// use DMA.
     pub fn take_rx_channel(self) -> (SpiFuture<C, D, NoneT, T>, R)
     where
         R: AnyChannel<Status: ReadyChannel>,
@@ -170,8 +170,8 @@ where
         (SpiFuture { spi }, channel)
     }
 
-    /// Reclaim the TX DMA channel. Any subsequent SPI TX transaction will not use
-    /// DMA.
+    /// Reclaim the TX DMA channel. Any subsequent SPI TX transaction will not
+    /// use DMA.
     pub fn take_tx_channel(self) -> (SpiFuture<C, D, R, NoneT>, T)
     where
         T: AnyChannel<Status: ReadyChannel>,
