@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Improve watchdog start documentation ([#881](https://github.com/atsamd-rs/atsamd/pull/881))
 - Fix inconsistency in UART+async+DMA docs ([#849](https://github.com/atsamd-rs/atsamd/pull/849))
 
 ### Fixed
