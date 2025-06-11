@@ -1,7 +1,7 @@
 //! Register-level access to I2C configuration
 
-use super::flags::{BusState, Error};
 use super::InactiveTimeout;
+use super::flags::{BusState, Error};
 use super::{Flags, Status};
 use crate::pac;
 use crate::sercom::Sercom;

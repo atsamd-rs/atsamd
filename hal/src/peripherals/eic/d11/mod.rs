@@ -29,7 +29,7 @@ impl<Id: ChId, F> Channel<Id, F> {
 
 #[cfg(feature = "async")]
 pub(super) mod async_api {
-    use crate::async_hal::interrupts::{Binding, Handler, Interrupt, EIC as EicInterrupt};
+    use crate::async_hal::interrupts::{Binding, EIC as EicInterrupt, Handler, Interrupt};
     use crate::eic::{Eic, EicFuture, NUM_CHANNELS};
     use crate::pac;
     use crate::util::BitIter;
@@ -46,14 +46,14 @@ pub(super) mod async_api {
 
     impl Handler<EicInterrupt> for InterruptHandler {
         unsafe fn on_interrupt() {
-            let eic = pac::Peripherals::steal().eic;
+            let eic = unsafe { pac::Peripherals::steal().eic };
 
             let pending_interrupts = BitIter(eic.intflag().read().bits());
             for channel in pending_interrupts {
                 let mask = 1 << channel;
                 // Disable the interrupt but don't clear; will be cleared
                 // when future is next polled.
-                eic.intenclr().write(|w| w.bits(mask));
+                eic.intenclr().write(|w| unsafe { w.bits(mask) });
                 WAKERS[channel as usize].wake();
             }
         }

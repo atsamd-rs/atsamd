@@ -22,7 +22,7 @@
 //! non-blocking fashion, but this can be done using
 #![cfg_attr(feature = "dma", doc = "[`DMA`](crate::dmac)")]
 #![cfg_attr(not(feature = "dma"), doc = "`DMA`")]
-//! or using interrupts and the [`spi_future`](crate::sercom::spi_future) module.
+//! .
 //!
 //! # Variations by [`Capability`]
 //!

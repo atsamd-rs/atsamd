@@ -83,9 +83,9 @@
 //!   stopped.
 
 use super::{
+    Error, ReadyChannel, Result,
     channel::{AnyChannel, Busy, Channel, ChannelId, InterruptFlags, Ready},
     dma_controller::{TriggerAction, TriggerSource},
-    Error, ReadyChannel, Result,
 };
 use crate::typelevel::{Is, Sealed};
 use modular_bitfield::prelude::*;
@@ -394,8 +394,10 @@ where
         mut destination: D,
         circular: bool,
     ) -> Transfer<C, BufferPair<S, D>> {
-        chan.as_mut()
-            .fill_descriptor(&mut source, &mut destination, circular);
+        unsafe {
+            chan.as_mut()
+                .fill_descriptor(&mut source, &mut destination, circular);
+        }
 
         let buffers = BufferPair {
             source,
@@ -498,17 +500,20 @@ where
     /// The source buffer should never be borrowed when a transfer is in
     /// progress, as it is getting mutated or read in another context (ie,
     /// the DMAC hardware "thread").
+    #[expect(dead_code)]
     #[inline]
     pub(crate) unsafe fn borrow_source(&mut self) -> &mut S {
         &mut self.buffers.source
     }
 
     /// Unsafely and mutably borrow the destination buffer.
+    ///
     /// # Safety
     ///
     /// The destination buffer should never be borrowed when a transfer is in
     /// progress, as it is getting mutated or read in another context (ie,
     /// the DMAC hardware "thread").
+    #[expect(dead_code)]
     #[inline]
     pub(crate) unsafe fn borrow_destination(&mut self) -> &mut D {
         &mut self.buffers.destination

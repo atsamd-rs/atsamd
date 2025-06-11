@@ -519,7 +519,7 @@ where
     #[inline]
     pub(crate) unsafe fn new() -> Pin<I, M> {
         Pin {
-            regs: Registers::new(),
+            regs: unsafe { Registers::new() },
             mode: PhantomData,
         }
     }

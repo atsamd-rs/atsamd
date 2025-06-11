@@ -1163,7 +1163,7 @@ where
     /// this module.
     #[inline]
     pub unsafe fn read_data(&mut self) -> DataReg {
-        self.config.as_mut().registers.read_data()
+        unsafe { self.config.as_mut().registers.read_data() }
     }
 
     /// Read the status register and convert into a [`Result`]
@@ -1220,6 +1220,8 @@ where
     /// module.
     #[inline]
     pub unsafe fn write_data(&mut self, data: DataReg) {
-        self.config.as_mut().registers.write_data(data);
+        unsafe {
+            self.config.as_mut().registers.write_data(data);
+        }
     }
 }
