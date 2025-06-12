@@ -57,14 +57,14 @@ pub use adc0::refctrl::Refselselect as Reference;
 const ADC_SETTINGS_INTERNAL_READ: AdcSettings = AdcSettings {
     clk_divider: Prescaler::Div128,
     sample_clock_cycles: 6,
-    accumulation: Accumulation::Single(AdcResolution::_12),
+    accumulation: Accumulation::average(SampleCount::_1), //::Single(AdcResolution::_12),
     vref: Reference::Intvcc1,
 };
 
 /// Based on Temperature log row information (NVM)x
 #[hal_cfg(any("adc-d21", "adc-d11"))]
 const ADC_SETTINGS_INTERNAL_READ_D21_TEMP: AdcSettings = AdcSettings {
-    clk_divider: Prescaler::Div32,
+    clk_divider: Prescaler::Div256,
     sample_clock_cycles: 4,
     accumulation: Accumulation::average(SampleCount::_4),
     vref: Reference::Int1v,
@@ -298,7 +298,7 @@ impl<I: AdcInstance> Adc<I> {
     /// Converts our ADC Reading (0-n) to the range 0.0-1.0, where
     /// 1.0 = 2^(reading_bitwidth)
     fn reading_to_f32(&self, raw: u16) -> f32 {
-        let max = match self.cfg.accumulation.resolution() {
+        let max = match self.cfg.accumulation.output_resolution() {
             Resolution::_16bit => 65535,
             Resolution::_12bit => 4095,
             Resolution::_10bit => 1023,

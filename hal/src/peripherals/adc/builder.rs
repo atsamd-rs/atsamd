@@ -81,6 +81,16 @@ impl Accumulation {
         }
     }
 
+    pub(crate) fn output_resolution(&self) -> Resolution {
+        if let Self::Single(res) = self {
+            (*res).into()
+        } else if let Self::Average(_) = self {
+            Resolution::_12bit
+        } else {
+            Resolution::_16bit
+        }
+    }
+
     pub(crate) fn samples(&self) -> u16 {
         match self {
             Accumulation::Single(_) => 1,
