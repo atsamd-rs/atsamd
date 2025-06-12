@@ -217,8 +217,15 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     ///
     /// ```
     /// let mut peripherals = pac::Peripherals::take().unwrap();
+    /// peripherals.sysctrl.vref().modify(|_, w| w.tsen().set_bit());
+    /// 
+    /// // !!DO NOT DO THIS AS YOU CLEAR THE CALIB DATA FOR VREF!!
+    /// let mut peripherals = pac::Peripherals::take().unwrap();
     /// peripherals.sysctrl.vref().write(|w| w.tsen().set_bit());
     /// ```
+    ///
+    /// NOTE: The temperature sensor is known to be out by up to ±10C, it
+    /// therefore should not be relied on for critical temperature readings
     pub fn read_cpu_temperature(&mut self, sysctrl: &Sysctrl) -> Result<f32, Error> {
         let vref = sysctrl.vref().read();
         if vref.tsen().bit_is_clear() {
