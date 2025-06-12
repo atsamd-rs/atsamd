@@ -7,13 +7,11 @@ pub type RegwnRW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bits 0:4"]
     #[inline(always)]
-    #[must_use]
     pub fn regsel(&mut self) -> RegselW<DcrsrSpec> {
         RegselW::new(self, 0)
     }
     #[doc = "Bit 16"]
     #[inline(always)]
-    #[must_use]
     pub fn regwn_r(&mut self) -> RegwnRW<DcrsrSpec> {
         RegwnRW::new(self, 16)
     }
@@ -26,10 +24,6 @@ impl crate::RegisterSpec for DcrsrSpec {
 #[doc = "`write(|w| ..)` method takes [`dcrsr::W`](W) writer structure"]
 impl crate::Writable for DcrsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DCRSR to value 0"]
-impl crate::Resettable for DcrsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DcrsrSpec {}

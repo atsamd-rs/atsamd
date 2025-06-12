@@ -250,163 +250,136 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Stop"]
     #[inline(always)]
-    #[must_use]
     pub fn stop(&mut self) -> StopW<StatusSpec> {
         StopW::new(self, 0)
     }
     #[doc = "Bit 1 - Ramp"]
     #[inline(always)]
-    #[must_use]
     pub fn idx(&mut self) -> IdxW<StatusSpec> {
         IdxW::new(self, 1)
     }
     #[doc = "Bit 2 - Non-recoverable Update Fault State"]
     #[inline(always)]
-    #[must_use]
     pub fn ufs(&mut self) -> UfsW<StatusSpec> {
         UfsW::new(self, 2)
     }
     #[doc = "Bit 3 - Non-Recoverable Debug Fault State"]
     #[inline(always)]
-    #[must_use]
     pub fn dfs(&mut self) -> DfsW<StatusSpec> {
         DfsW::new(self, 3)
     }
     #[doc = "Bit 4 - Slave"]
     #[inline(always)]
-    #[must_use]
     pub fn slave(&mut self) -> SlaveW<StatusSpec> {
         SlaveW::new(self, 4)
     }
     #[doc = "Bit 5 - Pattern Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn pattbufv(&mut self) -> PattbufvW<StatusSpec> {
         PattbufvW::new(self, 5)
     }
     #[doc = "Bit 7 - Period Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn perbufv(&mut self) -> PerbufvW<StatusSpec> {
         PerbufvW::new(self, 7)
     }
     #[doc = "Bit 8 - Recoverable Fault A Input"]
     #[inline(always)]
-    #[must_use]
     pub fn faultain(&mut self) -> FaultainW<StatusSpec> {
         FaultainW::new(self, 8)
     }
     #[doc = "Bit 9 - Recoverable Fault B Input"]
     #[inline(always)]
-    #[must_use]
     pub fn faultbin(&mut self) -> FaultbinW<StatusSpec> {
         FaultbinW::new(self, 9)
     }
     #[doc = "Bit 10 - Non-Recoverable Fault0 Input"]
     #[inline(always)]
-    #[must_use]
     pub fn fault0in(&mut self) -> Fault0inW<StatusSpec> {
         Fault0inW::new(self, 10)
     }
     #[doc = "Bit 11 - Non-Recoverable Fault1 Input"]
     #[inline(always)]
-    #[must_use]
     pub fn fault1in(&mut self) -> Fault1inW<StatusSpec> {
         Fault1inW::new(self, 11)
     }
     #[doc = "Bit 12 - Recoverable Fault A State"]
     #[inline(always)]
-    #[must_use]
     pub fn faulta(&mut self) -> FaultaW<StatusSpec> {
         FaultaW::new(self, 12)
     }
     #[doc = "Bit 13 - Recoverable Fault B State"]
     #[inline(always)]
-    #[must_use]
     pub fn faultb(&mut self) -> FaultbW<StatusSpec> {
         FaultbW::new(self, 13)
     }
     #[doc = "Bit 14 - Non-Recoverable Fault 0 State"]
     #[inline(always)]
-    #[must_use]
     pub fn fault0(&mut self) -> Fault0W<StatusSpec> {
         Fault0W::new(self, 14)
     }
     #[doc = "Bit 15 - Non-Recoverable Fault 1 State"]
     #[inline(always)]
-    #[must_use]
     pub fn fault1(&mut self) -> Fault1W<StatusSpec> {
         Fault1W::new(self, 15)
     }
     #[doc = "Bit 16 - Compare Channel 0 Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv0(&mut self) -> Ccbufv0W<StatusSpec> {
         Ccbufv0W::new(self, 16)
     }
     #[doc = "Bit 17 - Compare Channel 1 Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv1(&mut self) -> Ccbufv1W<StatusSpec> {
         Ccbufv1W::new(self, 17)
     }
     #[doc = "Bit 18 - Compare Channel 2 Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv2(&mut self) -> Ccbufv2W<StatusSpec> {
         Ccbufv2W::new(self, 18)
     }
     #[doc = "Bit 19 - Compare Channel 3 Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv3(&mut self) -> Ccbufv3W<StatusSpec> {
         Ccbufv3W::new(self, 19)
     }
     #[doc = "Bit 20 - Compare Channel 4 Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv4(&mut self) -> Ccbufv4W<StatusSpec> {
         Ccbufv4W::new(self, 20)
     }
     #[doc = "Bit 21 - Compare Channel 5 Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv5(&mut self) -> Ccbufv5W<StatusSpec> {
         Ccbufv5W::new(self, 21)
     }
     #[doc = "Bit 24 - Compare Channel 0 Value"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp0(&mut self) -> Cmp0W<StatusSpec> {
         Cmp0W::new(self, 24)
     }
     #[doc = "Bit 25 - Compare Channel 1 Value"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp1(&mut self) -> Cmp1W<StatusSpec> {
         Cmp1W::new(self, 25)
     }
     #[doc = "Bit 26 - Compare Channel 2 Value"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp2(&mut self) -> Cmp2W<StatusSpec> {
         Cmp2W::new(self, 26)
     }
     #[doc = "Bit 27 - Compare Channel 3 Value"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp3(&mut self) -> Cmp3W<StatusSpec> {
         Cmp3W::new(self, 27)
     }
     #[doc = "Bit 28 - Compare Channel 4 Value"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp4(&mut self) -> Cmp4W<StatusSpec> {
         Cmp4W::new(self, 28)
     }
     #[doc = "Bit 29 - Compare Channel 5 Value"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp5(&mut self) -> Cmp5W<StatusSpec> {
         Cmp5W::new(self, 29)
     }
@@ -421,8 +394,6 @@ impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for StatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0x01"]
 impl crate::Resettable for StatusSpec {

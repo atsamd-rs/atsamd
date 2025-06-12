@@ -159,13 +159,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:9 - Transfer Block Size"]
     #[inline(always)]
-    #[must_use]
     pub fn blocksize(&mut self) -> BlocksizeW<BsrSpec> {
         BlocksizeW::new(self, 0)
     }
     #[doc = "Bits 12:14 - SDMA Buffer Boundary"]
     #[inline(always)]
-    #[must_use]
     pub fn boundary(&mut self) -> BoundaryW<BsrSpec> {
         BoundaryW::new(self, 12)
     }
@@ -180,10 +178,6 @@ impl crate::Readable for BsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`bsr::W`](W) writer structure"]
 impl crate::Writable for BsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets BSR to value 0"]
-impl crate::Resettable for BsrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for BsrSpec {}

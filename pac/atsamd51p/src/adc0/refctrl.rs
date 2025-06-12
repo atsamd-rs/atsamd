@@ -133,13 +133,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Reference Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn refsel(&mut self) -> RefselW<RefctrlSpec> {
         RefselW::new(self, 0)
     }
     #[doc = "Bit 7 - Reference Buffer Offset Compensation Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn refcomp(&mut self) -> RefcompW<RefctrlSpec> {
         RefcompW::new(self, 7)
     }
@@ -154,10 +152,6 @@ impl crate::Readable for RefctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`refctrl::W`](W) writer structure"]
 impl crate::Writable for RefctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets REFCTRL to value 0"]
-impl crate::Resettable for RefctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for RefctrlSpec {}

@@ -45,6 +45,4 @@ impl crate::RegisterSpec for TxefsSpec {
 #[doc = "`read()` method returns [`txefs::R`](R) reader structure"]
 impl crate::Readable for TxefsSpec {}
 #[doc = "`reset()` method sets TXEFS to value 0"]
-impl crate::Resettable for TxefsSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxefsSpec {}

@@ -16,13 +16,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Value of Timer Seconds Register Capture"]
     #[inline(always)]
-    #[must_use]
     pub fn vts(&mut self) -> VtsW<TssslSpec> {
         VtsW::new(self, 0)
     }
 }
-#[doc = "1588 Timer Sync Strobe Seconds \\[31:0\\]
-Register\n\nYou can [`read`](crate::Reg::read) this register and get [`tsssl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`tsssl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
+#[doc = "1588 Timer Sync Strobe Seconds \\[31:0\\] Register\n\nYou can [`read`](crate::Reg::read) this register and get [`tsssl::R`](R). You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`tsssl::W`](W). You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api)."]
 pub struct TssslSpec;
 impl crate::RegisterSpec for TssslSpec {
     type Ux = u32;
@@ -32,10 +30,6 @@ impl crate::Readable for TssslSpec {}
 #[doc = "`write(|w| ..)` method takes [`tsssl::W`](W) writer structure"]
 impl crate::Writable for TssslSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TSSSL to value 0"]
-impl crate::Resettable for TssslSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TssslSpec {}

@@ -220,19 +220,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Generic Clock Generator"]
     #[inline(always)]
-    #[must_use]
     pub fn gen(&mut self) -> GenW<PchctrlSpec> {
         GenW::new(self, 0)
     }
     #[doc = "Bit 6 - Channel Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn chen(&mut self) -> ChenW<PchctrlSpec> {
         ChenW::new(self, 6)
     }
     #[doc = "Bit 7 - Write Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn wrtlock(&mut self) -> WrtlockW<PchctrlSpec> {
         WrtlockW::new(self, 7)
     }
@@ -247,11 +244,6 @@ impl crate::Readable for PchctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`pchctrl::W`](W) writer structure"]
 impl crate::Writable for PchctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets PCHCTRL[%s]
-to value 0"]
-impl crate::Resettable for PchctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets PCHCTRL[%s] to value 0"]
+impl crate::Resettable for PchctrlSpec {}

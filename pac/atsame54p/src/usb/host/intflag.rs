@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 2 - Host Start Of Frame"]
     #[inline(always)]
-    #[must_use]
     pub fn hsof(&mut self) -> HsofW<IntflagSpec> {
         HsofW::new(self, 2)
     }
     #[doc = "Bit 3 - Bus Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn rst(&mut self) -> RstW<IntflagSpec> {
         RstW::new(self, 3)
     }
     #[doc = "Bit 4 - Wake Up"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeup(&mut self) -> WakeupW<IntflagSpec> {
         WakeupW::new(self, 4)
     }
     #[doc = "Bit 5 - Downstream"]
     #[inline(always)]
-    #[must_use]
     pub fn dnrsm(&mut self) -> DnrsmW<IntflagSpec> {
         DnrsmW::new(self, 5)
     }
     #[doc = "Bit 6 - Upstream Resume from the Device"]
     #[inline(always)]
-    #[must_use]
     pub fn uprsm(&mut self) -> UprsmW<IntflagSpec> {
         UprsmW::new(self, 6)
     }
     #[doc = "Bit 7 - Ram Access"]
     #[inline(always)]
-    #[must_use]
     pub fn ramacer(&mut self) -> RamacerW<IntflagSpec> {
         RamacerW::new(self, 7)
     }
     #[doc = "Bit 8 - Device Connection"]
     #[inline(always)]
-    #[must_use]
     pub fn dconn(&mut self) -> DconnW<IntflagSpec> {
         DconnW::new(self, 8)
     }
     #[doc = "Bit 9 - Device Disconnection"]
     #[inline(always)]
-    #[must_use]
     pub fn ddisc(&mut self) -> DdiscW<IntflagSpec> {
         DdiscW::new(self, 9)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

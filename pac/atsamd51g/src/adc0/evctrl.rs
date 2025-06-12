@@ -61,37 +61,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Flush Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn flushei(&mut self) -> FlusheiW<EvctrlSpec> {
         FlusheiW::new(self, 0)
     }
     #[doc = "Bit 1 - Start Conversion Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn startei(&mut self) -> StarteiW<EvctrlSpec> {
         StarteiW::new(self, 1)
     }
     #[doc = "Bit 2 - Flush Event Invert Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn flushinv(&mut self) -> FlushinvW<EvctrlSpec> {
         FlushinvW::new(self, 2)
     }
     #[doc = "Bit 3 - Start Conversion Event Invert Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn startinv(&mut self) -> StartinvW<EvctrlSpec> {
         StartinvW::new(self, 3)
     }
     #[doc = "Bit 4 - Result Ready Event Out"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdyeo(&mut self) -> ResrdyeoW<EvctrlSpec> {
         ResrdyeoW::new(self, 4)
     }
     #[doc = "Bit 5 - Window Monitor Event Out"]
     #[inline(always)]
-    #[must_use]
     pub fn winmoneo(&mut self) -> WinmoneoW<EvctrlSpec> {
         WinmoneoW::new(self, 5)
     }
@@ -106,10 +100,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

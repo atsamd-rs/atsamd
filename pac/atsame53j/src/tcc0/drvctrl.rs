@@ -241,157 +241,131 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Non-Recoverable State 0 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nre0(&mut self) -> Nre0W<DrvctrlSpec> {
         Nre0W::new(self, 0)
     }
     #[doc = "Bit 1 - Non-Recoverable State 1 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nre1(&mut self) -> Nre1W<DrvctrlSpec> {
         Nre1W::new(self, 1)
     }
     #[doc = "Bit 2 - Non-Recoverable State 2 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nre2(&mut self) -> Nre2W<DrvctrlSpec> {
         Nre2W::new(self, 2)
     }
     #[doc = "Bit 3 - Non-Recoverable State 3 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nre3(&mut self) -> Nre3W<DrvctrlSpec> {
         Nre3W::new(self, 3)
     }
     #[doc = "Bit 4 - Non-Recoverable State 4 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nre4(&mut self) -> Nre4W<DrvctrlSpec> {
         Nre4W::new(self, 4)
     }
     #[doc = "Bit 5 - Non-Recoverable State 5 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nre5(&mut self) -> Nre5W<DrvctrlSpec> {
         Nre5W::new(self, 5)
     }
     #[doc = "Bit 6 - Non-Recoverable State 6 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nre6(&mut self) -> Nre6W<DrvctrlSpec> {
         Nre6W::new(self, 6)
     }
     #[doc = "Bit 7 - Non-Recoverable State 7 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nre7(&mut self) -> Nre7W<DrvctrlSpec> {
         Nre7W::new(self, 7)
     }
     #[doc = "Bit 8 - Non-Recoverable State 0 Output Value"]
     #[inline(always)]
-    #[must_use]
     pub fn nrv0(&mut self) -> Nrv0W<DrvctrlSpec> {
         Nrv0W::new(self, 8)
     }
     #[doc = "Bit 9 - Non-Recoverable State 1 Output Value"]
     #[inline(always)]
-    #[must_use]
     pub fn nrv1(&mut self) -> Nrv1W<DrvctrlSpec> {
         Nrv1W::new(self, 9)
     }
     #[doc = "Bit 10 - Non-Recoverable State 2 Output Value"]
     #[inline(always)]
-    #[must_use]
     pub fn nrv2(&mut self) -> Nrv2W<DrvctrlSpec> {
         Nrv2W::new(self, 10)
     }
     #[doc = "Bit 11 - Non-Recoverable State 3 Output Value"]
     #[inline(always)]
-    #[must_use]
     pub fn nrv3(&mut self) -> Nrv3W<DrvctrlSpec> {
         Nrv3W::new(self, 11)
     }
     #[doc = "Bit 12 - Non-Recoverable State 4 Output Value"]
     #[inline(always)]
-    #[must_use]
     pub fn nrv4(&mut self) -> Nrv4W<DrvctrlSpec> {
         Nrv4W::new(self, 12)
     }
     #[doc = "Bit 13 - Non-Recoverable State 5 Output Value"]
     #[inline(always)]
-    #[must_use]
     pub fn nrv5(&mut self) -> Nrv5W<DrvctrlSpec> {
         Nrv5W::new(self, 13)
     }
     #[doc = "Bit 14 - Non-Recoverable State 6 Output Value"]
     #[inline(always)]
-    #[must_use]
     pub fn nrv6(&mut self) -> Nrv6W<DrvctrlSpec> {
         Nrv6W::new(self, 14)
     }
     #[doc = "Bit 15 - Non-Recoverable State 7 Output Value"]
     #[inline(always)]
-    #[must_use]
     pub fn nrv7(&mut self) -> Nrv7W<DrvctrlSpec> {
         Nrv7W::new(self, 15)
     }
     #[doc = "Bit 16 - Output Waveform 0 Inversion"]
     #[inline(always)]
-    #[must_use]
     pub fn inven0(&mut self) -> Inven0W<DrvctrlSpec> {
         Inven0W::new(self, 16)
     }
     #[doc = "Bit 17 - Output Waveform 1 Inversion"]
     #[inline(always)]
-    #[must_use]
     pub fn inven1(&mut self) -> Inven1W<DrvctrlSpec> {
         Inven1W::new(self, 17)
     }
     #[doc = "Bit 18 - Output Waveform 2 Inversion"]
     #[inline(always)]
-    #[must_use]
     pub fn inven2(&mut self) -> Inven2W<DrvctrlSpec> {
         Inven2W::new(self, 18)
     }
     #[doc = "Bit 19 - Output Waveform 3 Inversion"]
     #[inline(always)]
-    #[must_use]
     pub fn inven3(&mut self) -> Inven3W<DrvctrlSpec> {
         Inven3W::new(self, 19)
     }
     #[doc = "Bit 20 - Output Waveform 4 Inversion"]
     #[inline(always)]
-    #[must_use]
     pub fn inven4(&mut self) -> Inven4W<DrvctrlSpec> {
         Inven4W::new(self, 20)
     }
     #[doc = "Bit 21 - Output Waveform 5 Inversion"]
     #[inline(always)]
-    #[must_use]
     pub fn inven5(&mut self) -> Inven5W<DrvctrlSpec> {
         Inven5W::new(self, 21)
     }
     #[doc = "Bit 22 - Output Waveform 6 Inversion"]
     #[inline(always)]
-    #[must_use]
     pub fn inven6(&mut self) -> Inven6W<DrvctrlSpec> {
         Inven6W::new(self, 22)
     }
     #[doc = "Bit 23 - Output Waveform 7 Inversion"]
     #[inline(always)]
-    #[must_use]
     pub fn inven7(&mut self) -> Inven7W<DrvctrlSpec> {
         Inven7W::new(self, 23)
     }
     #[doc = "Bits 24:27 - Non-Recoverable Fault Input 0 Filter Value"]
     #[inline(always)]
-    #[must_use]
     pub fn filterval0(&mut self) -> Filterval0W<DrvctrlSpec> {
         Filterval0W::new(self, 24)
     }
     #[doc = "Bits 28:31 - Non-Recoverable Fault Input 1 Filter Value"]
     #[inline(always)]
-    #[must_use]
     pub fn filterval1(&mut self) -> Filterval1W<DrvctrlSpec> {
         Filterval1W::new(self, 28)
     }
@@ -406,10 +380,6 @@ impl crate::Readable for DrvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`drvctrl::W`](W) writer structure"]
 impl crate::Writable for DrvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DRVCTRL to value 0"]
-impl crate::Resettable for DrvctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DrvctrlSpec {}

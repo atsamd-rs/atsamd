@@ -133,13 +133,11 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Lock Update"]
     #[inline(always)]
-    #[must_use]
     pub fn lupd(&mut self) -> LupdW<CtrlbsetSpec> {
         LupdW::new(self, 1)
     }
     #[doc = "Bits 5:7 - Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<CtrlbsetSpec> {
         CmdW::new(self, 5)
     }
@@ -154,10 +152,6 @@ impl crate::Readable for CtrlbsetSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlbset::W`](W) writer structure"]
 impl crate::Writable for CtrlbsetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLBSET to value 0"]
-impl crate::Resettable for CtrlbsetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlbsetSpec {}

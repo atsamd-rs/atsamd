@@ -65,7 +65,6 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Non-intrusive debug enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nidbg(&mut self) -> NidbgW<DbgrSpec> {
         NidbgW::new(self, 0)
     }
@@ -80,10 +79,6 @@ impl crate::Readable for DbgrSpec {}
 #[doc = "`write(|w| ..)` method takes [`dbgr::W`](W) writer structure"]
 impl crate::Writable for DbgrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DBGR to value 0"]
-impl crate::Resettable for DbgrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DbgrSpec {}

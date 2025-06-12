@@ -61,37 +61,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Transfer Complete 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn trcpt0(&mut self) -> Trcpt0W<PintensetSpec> {
         Trcpt0W::new(self, 0)
     }
     #[doc = "Bit 1 - Transfer Complete 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn trcpt1(&mut self) -> Trcpt1W<PintensetSpec> {
         Trcpt1W::new(self, 1)
     }
     #[doc = "Bit 2 - Error Flow Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn trfail(&mut self) -> TrfailW<PintensetSpec> {
         TrfailW::new(self, 2)
     }
     #[doc = "Bit 3 - Pipe Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn perr(&mut self) -> PerrW<PintensetSpec> {
         PerrW::new(self, 3)
     }
     #[doc = "Bit 4 - Transmit Setup Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txstp(&mut self) -> TxstpW<PintensetSpec> {
         TxstpW::new(self, 4)
     }
     #[doc = "Bit 5 - Stall Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn stall(&mut self) -> StallW<PintensetSpec> {
         StallW::new(self, 5)
     }
@@ -106,10 +100,6 @@ impl crate::Readable for PintensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`pintenset::W`](W) writer structure"]
 impl crate::Writable for PintensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PINTENSET%s to value 0"]
-impl crate::Resettable for PintensetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for PintensetSpec {}

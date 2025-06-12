@@ -80,31 +80,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Bus Error"]
     #[inline(always)]
-    #[must_use]
     pub fn buserr(&mut self) -> BuserrW<StatusSpec> {
         BuserrW::new(self, 0)
     }
     #[doc = "Bit 1 - Transmit Collision"]
     #[inline(always)]
-    #[must_use]
     pub fn coll(&mut self) -> CollW<StatusSpec> {
         CollW::new(self, 1)
     }
     #[doc = "Bit 6 - SCL Low Timeout"]
     #[inline(always)]
-    #[must_use]
     pub fn lowtout(&mut self) -> LowtoutW<StatusSpec> {
         LowtoutW::new(self, 6)
     }
     #[doc = "Bit 9 - Slave SCL Low Extend Timeout"]
     #[inline(always)]
-    #[must_use]
     pub fn sexttout(&mut self) -> SexttoutW<StatusSpec> {
         SexttoutW::new(self, 9)
     }
     #[doc = "Bit 10 - High Speed"]
     #[inline(always)]
-    #[must_use]
     pub fn hs(&mut self) -> HsW<StatusSpec> {
         HsW::new(self, 10)
     }
@@ -119,10 +114,6 @@ impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for StatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0"]
-impl crate::Resettable for StatusSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for StatusSpec {}

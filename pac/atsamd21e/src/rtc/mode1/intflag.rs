@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Compare 0"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp0(&mut self) -> Cmp0W<IntflagSpec> {
         Cmp0W::new(self, 0)
     }
     #[doc = "Bit 1 - Compare 1"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp1(&mut self) -> Cmp1W<IntflagSpec> {
         Cmp1W::new(self, 1)
     }
     #[doc = "Bit 6 - Synchronization Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn syncrdy(&mut self) -> SyncrdyW<IntflagSpec> {
         SyncrdyW::new(self, 6)
     }
     #[doc = "Bit 7 - Overflow"]
     #[inline(always)]
-    #[must_use]
     pub fn ovf(&mut self) -> OvfW<IntflagSpec> {
         OvfW::new(self, 7)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

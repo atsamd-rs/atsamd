@@ -275,49 +275,41 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Source Select"]
     #[inline(always)]
-    #[must_use]
     pub fn src(&mut self) -> SrcW<GenctrlSpec> {
         SrcW::new(self, 0)
     }
     #[doc = "Bit 8 - Generic Clock Generator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn genen(&mut self) -> GenenW<GenctrlSpec> {
         GenenW::new(self, 8)
     }
     #[doc = "Bit 9 - Improve Duty Cycle"]
     #[inline(always)]
-    #[must_use]
     pub fn idc(&mut self) -> IdcW<GenctrlSpec> {
         IdcW::new(self, 9)
     }
     #[doc = "Bit 10 - Output Off Value"]
     #[inline(always)]
-    #[must_use]
     pub fn oov(&mut self) -> OovW<GenctrlSpec> {
         OovW::new(self, 10)
     }
     #[doc = "Bit 11 - Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn oe(&mut self) -> OeW<GenctrlSpec> {
         OeW::new(self, 11)
     }
     #[doc = "Bit 12 - Divide Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn divsel(&mut self) -> DivselW<GenctrlSpec> {
         DivselW::new(self, 12)
     }
     #[doc = "Bit 13 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<GenctrlSpec> {
         RunstdbyW::new(self, 13)
     }
     #[doc = "Bits 16:31 - Division Factor"]
     #[inline(always)]
-    #[must_use]
     pub fn div(&mut self) -> DivW<GenctrlSpec> {
         DivW::new(self, 16)
     }
@@ -332,11 +324,6 @@ impl crate::Readable for GenctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`genctrl::W`](W) writer structure"]
 impl crate::Writable for GenctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets GENCTRL[%s]
-to value 0"]
-impl crate::Resettable for GenctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets GENCTRL[%s] to value 0"]
+impl crate::Resettable for GenctrlSpec {}

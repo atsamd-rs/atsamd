@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - DFLL Multiply Factor"]
     #[inline(always)]
-    #[must_use]
     pub fn mul(&mut self) -> MulW<DfllmulSpec> {
         MulW::new(self, 0)
     }
     #[doc = "Bits 16:23 - Fine Maximum Step"]
     #[inline(always)]
-    #[must_use]
     pub fn fstep(&mut self) -> FstepW<DfllmulSpec> {
         FstepW::new(self, 16)
     }
     #[doc = "Bits 26:31 - Coarse Maximum Step"]
     #[inline(always)]
-    #[must_use]
     pub fn cstep(&mut self) -> CstepW<DfllmulSpec> {
         CstepW::new(self, 26)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for DfllmulSpec {}
 #[doc = "`write(|w| ..)` method takes [`dfllmul::W`](W) writer structure"]
 impl crate::Writable for DfllmulSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DFLLMUL to value 0"]
-impl crate::Resettable for DfllmulSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DfllmulSpec {}

@@ -18,10 +18,6 @@ impl crate::Readable for TriggerSpec {}
 #[doc = "`write(|w| ..)` method takes [`trigger::W`](W) writer structure"]
 impl crate::Writable for TriggerSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TRIGGER to value 0"]
-impl crate::Resettable for TriggerSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TriggerSpec {}

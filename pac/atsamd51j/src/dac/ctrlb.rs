@@ -107,13 +107,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Differential mode enable"]
     #[inline(always)]
-    #[must_use]
     pub fn diff(&mut self) -> DiffW<CtrlbSpec> {
         DiffW::new(self, 0)
     }
     #[doc = "Bits 1:2 - Reference Selection for DAC0/1"]
     #[inline(always)]
-    #[must_use]
     pub fn refsel(&mut self) -> RefselW<CtrlbSpec> {
         RefselW::new(self, 1)
     }
@@ -128,8 +126,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0x02"]
 impl crate::Resettable for CtrlbSpec {

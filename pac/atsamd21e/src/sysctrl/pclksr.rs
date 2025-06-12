@@ -115,6 +115,4 @@ impl crate::RegisterSpec for PclksrSpec {
 #[doc = "`read()` method returns [`pclksr::R`](R) reader structure"]
 impl crate::Readable for PclksrSpec {}
 #[doc = "`reset()` method sets PCLKSR to value 0"]
-impl crate::Resettable for PclksrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PclksrSpec {}

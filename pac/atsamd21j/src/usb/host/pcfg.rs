@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Pipe Token"]
     #[inline(always)]
-    #[must_use]
     pub fn ptoken(&mut self) -> PtokenW<PcfgSpec> {
         PtokenW::new(self, 0)
     }
     #[doc = "Bit 2 - Pipe Bank"]
     #[inline(always)]
-    #[must_use]
     pub fn bk(&mut self) -> BkW<PcfgSpec> {
         BkW::new(self, 2)
     }
     #[doc = "Bits 3:5 - Pipe Type"]
     #[inline(always)]
-    #[must_use]
     pub fn ptype(&mut self) -> PtypeW<PcfgSpec> {
         PtypeW::new(self, 3)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for PcfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`pcfg::W`](W) writer structure"]
 impl crate::Writable for PcfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PCFG%s to value 0"]
-impl crate::Resettable for PcfgSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for PcfgSpec {}

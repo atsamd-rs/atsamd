@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Priority Enable Vector"]
     #[inline(always)]
-    #[must_use]
     pub fn pev(&mut self) -> PevW<TpfcpSpec> {
         PevW::new(self, 0)
     }
     #[doc = "Bits 8:15 - Pause Quantum"]
     #[inline(always)]
-    #[must_use]
     pub fn pq(&mut self) -> PqW<TpfcpSpec> {
         PqW::new(self, 8)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for TpfcpSpec {}
 #[doc = "`write(|w| ..)` method takes [`tpfcp::W`](W) writer structure"]
 impl crate::Writable for TpfcpSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TPFCP to value 0"]
-impl crate::Resettable for TpfcpSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TpfcpSpec {}

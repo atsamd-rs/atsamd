@@ -52,6 +52,4 @@ impl crate::RegisterSpec for IntstatusSpec {
 #[doc = "`read()` method returns [`intstatus::R`](R) reader structure"]
 impl crate::Readable for IntstatusSpec {}
 #[doc = "`reset()` method sets INTSTATUS to value 0"]
-impl crate::Resettable for IntstatusSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntstatusSpec {}

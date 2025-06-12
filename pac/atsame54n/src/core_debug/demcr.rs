@@ -124,79 +124,66 @@ impl R {
 impl W {
     #[doc = "Bit 0"]
     #[inline(always)]
-    #[must_use]
     pub fn vc_corereset(&mut self) -> VcCoreresetW<DemcrSpec> {
         VcCoreresetW::new(self, 0)
     }
     #[doc = "Bit 4"]
     #[inline(always)]
-    #[must_use]
     pub fn vc_mmerr(&mut self) -> VcMmerrW<DemcrSpec> {
         VcMmerrW::new(self, 4)
     }
     #[doc = "Bit 5"]
     #[inline(always)]
-    #[must_use]
     pub fn vc_nocperr(&mut self) -> VcNocperrW<DemcrSpec> {
         VcNocperrW::new(self, 5)
     }
     #[doc = "Bit 6"]
     #[inline(always)]
-    #[must_use]
     pub fn vc_chkerr(&mut self) -> VcChkerrW<DemcrSpec> {
         VcChkerrW::new(self, 6)
     }
     #[doc = "Bit 7"]
     #[inline(always)]
-    #[must_use]
     pub fn vc_staterr(&mut self) -> VcStaterrW<DemcrSpec> {
         VcStaterrW::new(self, 7)
     }
     #[doc = "Bit 8"]
     #[inline(always)]
-    #[must_use]
     pub fn vc_buserr(&mut self) -> VcBuserrW<DemcrSpec> {
         VcBuserrW::new(self, 8)
     }
     #[doc = "Bit 9"]
     #[inline(always)]
-    #[must_use]
     pub fn vc_interr(&mut self) -> VcInterrW<DemcrSpec> {
         VcInterrW::new(self, 9)
     }
     #[doc = "Bit 10"]
     #[inline(always)]
-    #[must_use]
     pub fn vc_harderr(&mut self) -> VcHarderrW<DemcrSpec> {
         VcHarderrW::new(self, 10)
     }
     #[doc = "Bit 16"]
     #[inline(always)]
-    #[must_use]
     pub fn mon_en(&mut self) -> MonEnW<DemcrSpec> {
         MonEnW::new(self, 16)
     }
     #[doc = "Bit 17"]
     #[inline(always)]
-    #[must_use]
     pub fn mon_pend(&mut self) -> MonPendW<DemcrSpec> {
         MonPendW::new(self, 17)
     }
     #[doc = "Bit 18"]
     #[inline(always)]
-    #[must_use]
     pub fn mon_step(&mut self) -> MonStepW<DemcrSpec> {
         MonStepW::new(self, 18)
     }
     #[doc = "Bit 19"]
     #[inline(always)]
-    #[must_use]
     pub fn mon_req(&mut self) -> MonReqW<DemcrSpec> {
         MonReqW::new(self, 19)
     }
     #[doc = "Bit 24"]
     #[inline(always)]
-    #[must_use]
     pub fn trcena(&mut self) -> TrcenaW<DemcrSpec> {
         TrcenaW::new(self, 24)
     }
@@ -211,10 +198,6 @@ impl crate::Readable for DemcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`demcr::W`](W) writer structure"]
 impl crate::Writable for DemcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DEMCR to value 0"]
-impl crate::Resettable for DemcrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DemcrSpec {}

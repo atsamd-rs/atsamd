@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Port Data Output Value Toggle"]
     #[inline(always)]
-    #[must_use]
     pub fn outtgl(&mut self) -> OuttglW<OuttglSpec> {
         OuttglW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for OuttglSpec {}
 #[doc = "`write(|w| ..)` method takes [`outtgl::W`](W) writer structure"]
 impl crate::Writable for OuttglSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets OUTTGL%s to value 0"]
-impl crate::Resettable for OuttglSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for OuttglSpec {}

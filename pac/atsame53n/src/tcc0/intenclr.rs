@@ -151,97 +151,81 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Overflow Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovf(&mut self) -> OvfW<IntenclrSpec> {
         OvfW::new(self, 0)
     }
     #[doc = "Bit 1 - Retrigger Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn trg(&mut self) -> TrgW<IntenclrSpec> {
         TrgW::new(self, 1)
     }
     #[doc = "Bit 2 - Counter Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cnt(&mut self) -> CntW<IntenclrSpec> {
         CntW::new(self, 2)
     }
     #[doc = "Bit 3 - Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn err(&mut self) -> ErrW<IntenclrSpec> {
         ErrW::new(self, 3)
     }
     #[doc = "Bit 10 - Non-Recoverable Update Fault Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ufs(&mut self) -> UfsW<IntenclrSpec> {
         UfsW::new(self, 10)
     }
     #[doc = "Bit 11 - Non-Recoverable Debug Fault Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dfs(&mut self) -> DfsW<IntenclrSpec> {
         DfsW::new(self, 11)
     }
     #[doc = "Bit 12 - Recoverable Fault A Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn faulta(&mut self) -> FaultaW<IntenclrSpec> {
         FaultaW::new(self, 12)
     }
     #[doc = "Bit 13 - Recoverable Fault B Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn faultb(&mut self) -> FaultbW<IntenclrSpec> {
         FaultbW::new(self, 13)
     }
     #[doc = "Bit 14 - Non-Recoverable Fault 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn fault0(&mut self) -> Fault0W<IntenclrSpec> {
         Fault0W::new(self, 14)
     }
     #[doc = "Bit 15 - Non-Recoverable Fault 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn fault1(&mut self) -> Fault1W<IntenclrSpec> {
         Fault1W::new(self, 15)
     }
     #[doc = "Bit 16 - Match or Capture Channel 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mc0(&mut self) -> Mc0W<IntenclrSpec> {
         Mc0W::new(self, 16)
     }
     #[doc = "Bit 17 - Match or Capture Channel 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mc1(&mut self) -> Mc1W<IntenclrSpec> {
         Mc1W::new(self, 17)
     }
     #[doc = "Bit 18 - Match or Capture Channel 2 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mc2(&mut self) -> Mc2W<IntenclrSpec> {
         Mc2W::new(self, 18)
     }
     #[doc = "Bit 19 - Match or Capture Channel 3 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mc3(&mut self) -> Mc3W<IntenclrSpec> {
         Mc3W::new(self, 19)
     }
     #[doc = "Bit 20 - Match or Capture Channel 4 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mc4(&mut self) -> Mc4W<IntenclrSpec> {
         Mc4W::new(self, 20)
     }
     #[doc = "Bit 21 - Match or Capture Channel 5 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mc5(&mut self) -> Mc5W<IntenclrSpec> {
         Mc5W::new(self, 21)
     }
@@ -256,10 +240,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

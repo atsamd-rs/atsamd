@@ -22,10 +22,6 @@ impl crate::Readable for LockSpec {}
 #[doc = "`write(|w| ..)` method takes [`lock::W`](W) writer structure"]
 impl crate::Writable for LockSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets LOCK to value 0"]
-impl crate::Resettable for LockSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for LockSpec {}

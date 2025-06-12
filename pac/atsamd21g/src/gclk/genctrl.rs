@@ -226,49 +226,41 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Generic Clock Generator Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn id(&mut self) -> IdW<GenctrlSpec> {
         IdW::new(self, 0)
     }
     #[doc = "Bits 8:12 - Source Select"]
     #[inline(always)]
-    #[must_use]
     pub fn src(&mut self) -> SrcW<GenctrlSpec> {
         SrcW::new(self, 8)
     }
     #[doc = "Bit 16 - Generic Clock Generator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn genen(&mut self) -> GenenW<GenctrlSpec> {
         GenenW::new(self, 16)
     }
     #[doc = "Bit 17 - Improve Duty Cycle"]
     #[inline(always)]
-    #[must_use]
     pub fn idc(&mut self) -> IdcW<GenctrlSpec> {
         IdcW::new(self, 17)
     }
     #[doc = "Bit 18 - Output Off Value"]
     #[inline(always)]
-    #[must_use]
     pub fn oov(&mut self) -> OovW<GenctrlSpec> {
         OovW::new(self, 18)
     }
     #[doc = "Bit 19 - Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn oe(&mut self) -> OeW<GenctrlSpec> {
         OeW::new(self, 19)
     }
     #[doc = "Bit 20 - Divide Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn divsel(&mut self) -> DivselW<GenctrlSpec> {
         DivselW::new(self, 20)
     }
     #[doc = "Bit 21 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<GenctrlSpec> {
         RunstdbyW::new(self, 21)
     }
@@ -283,10 +275,6 @@ impl crate::Readable for GenctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`genctrl::W`](W) writer structure"]
 impl crate::Writable for GenctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets GENCTRL to value 0"]
-impl crate::Resettable for GenctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for GenctrlSpec {}

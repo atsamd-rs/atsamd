@@ -7,17 +7,17 @@ impl RegisterBlock {
     #[doc = "0x00..0x20 - 32-bit Counter Mode"]
     #[inline(always)]
     pub const fn count32(&self) -> &Count32 {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x1c - 16-bit Counter Mode"]
     #[inline(always)]
     pub const fn count16(&self) -> &Count16 {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x1a - 8-bit Counter Mode"]
     #[inline(always)]
     pub const fn count8(&self) -> &Count8 {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
 }
 #[doc = "8-bit Counter Mode"]

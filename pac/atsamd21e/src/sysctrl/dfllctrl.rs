@@ -106,67 +106,56 @@ impl R {
 impl W {
     #[doc = "Bit 1 - DFLL Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<DfllctrlSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - Operating Mode Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<DfllctrlSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bit 3 - Stable DFLL Frequency"]
     #[inline(always)]
-    #[must_use]
     pub fn stable(&mut self) -> StableW<DfllctrlSpec> {
         StableW::new(self, 3)
     }
     #[doc = "Bit 4 - Lose Lock After Wake"]
     #[inline(always)]
-    #[must_use]
     pub fn llaw(&mut self) -> LlawW<DfllctrlSpec> {
         LlawW::new(self, 4)
     }
     #[doc = "Bit 5 - USB Clock Recovery Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn usbcrm(&mut self) -> UsbcrmW<DfllctrlSpec> {
         UsbcrmW::new(self, 5)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<DfllctrlSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<DfllctrlSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bit 8 - Chill Cycle Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn ccdis(&mut self) -> CcdisW<DfllctrlSpec> {
         CcdisW::new(self, 8)
     }
     #[doc = "Bit 9 - Quick Lock Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn qldis(&mut self) -> QldisW<DfllctrlSpec> {
         QldisW::new(self, 9)
     }
     #[doc = "Bit 10 - Bypass Coarse Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn bplckc(&mut self) -> BplckcW<DfllctrlSpec> {
         BplckcW::new(self, 10)
     }
     #[doc = "Bit 11 - Wait Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn waitlock(&mut self) -> WaitlockW<DfllctrlSpec> {
         WaitlockW::new(self, 11)
     }
@@ -181,8 +170,6 @@ impl crate::Readable for DfllctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`dfllctrl::W`](W) writer structure"]
 impl crate::Writable for DfllctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets DFLLCTRL to value 0x80"]
 impl crate::Resettable for DfllctrlSpec {

@@ -17,6 +17,4 @@ impl crate::RegisterSpec for IhceSpec {
 #[doc = "`read()` method returns [`ihce::R`](R) reader structure"]
 impl crate::Readable for IhceSpec {}
 #[doc = "`reset()` method sets IHCE to value 0"]
-impl crate::Resettable for IhceSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IhceSpec {}

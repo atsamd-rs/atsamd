@@ -163,13 +163,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Ram Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn ramcfg(&mut self) -> RamcfgW<HibcfgSpec> {
         RamcfgW::new(self, 0)
     }
     #[doc = "Bits 2:3 - Backup Ram Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn bramcfg(&mut self) -> BramcfgW<HibcfgSpec> {
         BramcfgW::new(self, 2)
     }
@@ -184,10 +182,6 @@ impl crate::Readable for HibcfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`hibcfg::W`](W) writer structure"]
 impl crate::Writable for HibcfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets HIBCFG to value 0"]
-impl crate::Resettable for HibcfgSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for HibcfgSpec {}

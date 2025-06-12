@@ -295,193 +295,161 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Channel 0 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig0(&mut self) -> Swtrig0W<SwtrigctrlSpec> {
         Swtrig0W::new(self, 0)
     }
     #[doc = "Bit 1 - Channel 1 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig1(&mut self) -> Swtrig1W<SwtrigctrlSpec> {
         Swtrig1W::new(self, 1)
     }
     #[doc = "Bit 2 - Channel 2 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig2(&mut self) -> Swtrig2W<SwtrigctrlSpec> {
         Swtrig2W::new(self, 2)
     }
     #[doc = "Bit 3 - Channel 3 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig3(&mut self) -> Swtrig3W<SwtrigctrlSpec> {
         Swtrig3W::new(self, 3)
     }
     #[doc = "Bit 4 - Channel 4 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig4(&mut self) -> Swtrig4W<SwtrigctrlSpec> {
         Swtrig4W::new(self, 4)
     }
     #[doc = "Bit 5 - Channel 5 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig5(&mut self) -> Swtrig5W<SwtrigctrlSpec> {
         Swtrig5W::new(self, 5)
     }
     #[doc = "Bit 6 - Channel 6 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig6(&mut self) -> Swtrig6W<SwtrigctrlSpec> {
         Swtrig6W::new(self, 6)
     }
     #[doc = "Bit 7 - Channel 7 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig7(&mut self) -> Swtrig7W<SwtrigctrlSpec> {
         Swtrig7W::new(self, 7)
     }
     #[doc = "Bit 8 - Channel 8 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig8(&mut self) -> Swtrig8W<SwtrigctrlSpec> {
         Swtrig8W::new(self, 8)
     }
     #[doc = "Bit 9 - Channel 9 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig9(&mut self) -> Swtrig9W<SwtrigctrlSpec> {
         Swtrig9W::new(self, 9)
     }
     #[doc = "Bit 10 - Channel 10 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig10(&mut self) -> Swtrig10W<SwtrigctrlSpec> {
         Swtrig10W::new(self, 10)
     }
     #[doc = "Bit 11 - Channel 11 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig11(&mut self) -> Swtrig11W<SwtrigctrlSpec> {
         Swtrig11W::new(self, 11)
     }
     #[doc = "Bit 12 - Channel 12 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig12(&mut self) -> Swtrig12W<SwtrigctrlSpec> {
         Swtrig12W::new(self, 12)
     }
     #[doc = "Bit 13 - Channel 13 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig13(&mut self) -> Swtrig13W<SwtrigctrlSpec> {
         Swtrig13W::new(self, 13)
     }
     #[doc = "Bit 14 - Channel 14 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig14(&mut self) -> Swtrig14W<SwtrigctrlSpec> {
         Swtrig14W::new(self, 14)
     }
     #[doc = "Bit 15 - Channel 15 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig15(&mut self) -> Swtrig15W<SwtrigctrlSpec> {
         Swtrig15W::new(self, 15)
     }
     #[doc = "Bit 16 - Channel 16 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig16(&mut self) -> Swtrig16W<SwtrigctrlSpec> {
         Swtrig16W::new(self, 16)
     }
     #[doc = "Bit 17 - Channel 17 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig17(&mut self) -> Swtrig17W<SwtrigctrlSpec> {
         Swtrig17W::new(self, 17)
     }
     #[doc = "Bit 18 - Channel 18 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig18(&mut self) -> Swtrig18W<SwtrigctrlSpec> {
         Swtrig18W::new(self, 18)
     }
     #[doc = "Bit 19 - Channel 19 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig19(&mut self) -> Swtrig19W<SwtrigctrlSpec> {
         Swtrig19W::new(self, 19)
     }
     #[doc = "Bit 20 - Channel 20 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig20(&mut self) -> Swtrig20W<SwtrigctrlSpec> {
         Swtrig20W::new(self, 20)
     }
     #[doc = "Bit 21 - Channel 21 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig21(&mut self) -> Swtrig21W<SwtrigctrlSpec> {
         Swtrig21W::new(self, 21)
     }
     #[doc = "Bit 22 - Channel 22 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig22(&mut self) -> Swtrig22W<SwtrigctrlSpec> {
         Swtrig22W::new(self, 22)
     }
     #[doc = "Bit 23 - Channel 23 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig23(&mut self) -> Swtrig23W<SwtrigctrlSpec> {
         Swtrig23W::new(self, 23)
     }
     #[doc = "Bit 24 - Channel 24 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig24(&mut self) -> Swtrig24W<SwtrigctrlSpec> {
         Swtrig24W::new(self, 24)
     }
     #[doc = "Bit 25 - Channel 25 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig25(&mut self) -> Swtrig25W<SwtrigctrlSpec> {
         Swtrig25W::new(self, 25)
     }
     #[doc = "Bit 26 - Channel 26 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig26(&mut self) -> Swtrig26W<SwtrigctrlSpec> {
         Swtrig26W::new(self, 26)
     }
     #[doc = "Bit 27 - Channel 27 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig27(&mut self) -> Swtrig27W<SwtrigctrlSpec> {
         Swtrig27W::new(self, 27)
     }
     #[doc = "Bit 28 - Channel 28 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig28(&mut self) -> Swtrig28W<SwtrigctrlSpec> {
         Swtrig28W::new(self, 28)
     }
     #[doc = "Bit 29 - Channel 29 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig29(&mut self) -> Swtrig29W<SwtrigctrlSpec> {
         Swtrig29W::new(self, 29)
     }
     #[doc = "Bit 30 - Channel 30 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig30(&mut self) -> Swtrig30W<SwtrigctrlSpec> {
         Swtrig30W::new(self, 30)
     }
     #[doc = "Bit 31 - Channel 31 Software Trigger"]
     #[inline(always)]
-    #[must_use]
     pub fn swtrig31(&mut self) -> Swtrig31W<SwtrigctrlSpec> {
         Swtrig31W::new(self, 31)
     }
@@ -496,10 +464,6 @@ impl crate::Readable for SwtrigctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`swtrigctrl::W`](W) writer structure"]
 impl crate::Writable for SwtrigctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SWTRIGCTRL to value 0"]
-impl crate::Resettable for SwtrigctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SwtrigctrlSpec {}

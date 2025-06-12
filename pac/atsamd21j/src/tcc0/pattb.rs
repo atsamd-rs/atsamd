@@ -151,97 +151,81 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Pattern Generator 0 Output Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn pgeb0(&mut self) -> Pgeb0W<PattbSpec> {
         Pgeb0W::new(self, 0)
     }
     #[doc = "Bit 1 - Pattern Generator 1 Output Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn pgeb1(&mut self) -> Pgeb1W<PattbSpec> {
         Pgeb1W::new(self, 1)
     }
     #[doc = "Bit 2 - Pattern Generator 2 Output Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn pgeb2(&mut self) -> Pgeb2W<PattbSpec> {
         Pgeb2W::new(self, 2)
     }
     #[doc = "Bit 3 - Pattern Generator 3 Output Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn pgeb3(&mut self) -> Pgeb3W<PattbSpec> {
         Pgeb3W::new(self, 3)
     }
     #[doc = "Bit 4 - Pattern Generator 4 Output Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn pgeb4(&mut self) -> Pgeb4W<PattbSpec> {
         Pgeb4W::new(self, 4)
     }
     #[doc = "Bit 5 - Pattern Generator 5 Output Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn pgeb5(&mut self) -> Pgeb5W<PattbSpec> {
         Pgeb5W::new(self, 5)
     }
     #[doc = "Bit 6 - Pattern Generator 6 Output Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn pgeb6(&mut self) -> Pgeb6W<PattbSpec> {
         Pgeb6W::new(self, 6)
     }
     #[doc = "Bit 7 - Pattern Generator 7 Output Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn pgeb7(&mut self) -> Pgeb7W<PattbSpec> {
         Pgeb7W::new(self, 7)
     }
     #[doc = "Bit 8 - Pattern Generator 0 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pgvb0(&mut self) -> Pgvb0W<PattbSpec> {
         Pgvb0W::new(self, 8)
     }
     #[doc = "Bit 9 - Pattern Generator 1 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pgvb1(&mut self) -> Pgvb1W<PattbSpec> {
         Pgvb1W::new(self, 9)
     }
     #[doc = "Bit 10 - Pattern Generator 2 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pgvb2(&mut self) -> Pgvb2W<PattbSpec> {
         Pgvb2W::new(self, 10)
     }
     #[doc = "Bit 11 - Pattern Generator 3 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pgvb3(&mut self) -> Pgvb3W<PattbSpec> {
         Pgvb3W::new(self, 11)
     }
     #[doc = "Bit 12 - Pattern Generator 4 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pgvb4(&mut self) -> Pgvb4W<PattbSpec> {
         Pgvb4W::new(self, 12)
     }
     #[doc = "Bit 13 - Pattern Generator 5 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pgvb5(&mut self) -> Pgvb5W<PattbSpec> {
         Pgvb5W::new(self, 13)
     }
     #[doc = "Bit 14 - Pattern Generator 6 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pgvb6(&mut self) -> Pgvb6W<PattbSpec> {
         Pgvb6W::new(self, 14)
     }
     #[doc = "Bit 15 - Pattern Generator 7 Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pgvb7(&mut self) -> Pgvb7W<PattbSpec> {
         Pgvb7W::new(self, 15)
     }
@@ -256,10 +240,6 @@ impl crate::Readable for PattbSpec {}
 #[doc = "`write(|w| ..)` method takes [`pattb::W`](W) writer structure"]
 impl crate::Writable for PattbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets PATTB to value 0"]
-impl crate::Resettable for PattbSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for PattbSpec {}

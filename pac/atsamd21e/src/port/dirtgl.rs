@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Port Data Direction Toggle"]
     #[inline(always)]
-    #[must_use]
     pub fn dirtgl(&mut self) -> DirtglW<DirtglSpec> {
         DirtglW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for DirtglSpec {}
 #[doc = "`write(|w| ..)` method takes [`dirtgl::W`](W) writer structure"]
 impl crate::Writable for DirtglSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DIRTGL%s to value 0"]
-impl crate::Resettable for DirtglSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DirtglSpec {}

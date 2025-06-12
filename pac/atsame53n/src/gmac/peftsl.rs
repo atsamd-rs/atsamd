@@ -17,6 +17,4 @@ impl crate::RegisterSpec for PeftslSpec {
 #[doc = "`read()` method returns [`peftsl::R`](R) reader structure"]
 impl crate::Readable for PeftslSpec {}
 #[doc = "`reset()` method sets PEFTSL to value 0"]
-impl crate::Resettable for PeftslSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PeftslSpec {}

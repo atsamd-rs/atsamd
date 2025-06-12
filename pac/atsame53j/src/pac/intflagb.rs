@@ -133,85 +133,71 @@ impl R {
 impl W {
     #[doc = "Bit 0 - USB"]
     #[inline(always)]
-    #[must_use]
     pub fn usb_(&mut self) -> Usb_W<IntflagbSpec> {
         Usb_W::new(self, 0)
     }
     #[doc = "Bit 1 - DSU"]
     #[inline(always)]
-    #[must_use]
     pub fn dsu_(&mut self) -> Dsu_W<IntflagbSpec> {
         Dsu_W::new(self, 1)
     }
     #[doc = "Bit 2 - NVMCTRL"]
     #[inline(always)]
-    #[must_use]
     pub fn nvmctrl_(&mut self) -> Nvmctrl_W<IntflagbSpec> {
         Nvmctrl_W::new(self, 2)
     }
     #[doc = "Bit 3 - CMCC"]
     #[inline(always)]
-    #[must_use]
     pub fn cmcc_(&mut self) -> Cmcc_W<IntflagbSpec> {
         Cmcc_W::new(self, 3)
     }
     #[doc = "Bit 4 - PORT"]
     #[inline(always)]
-    #[must_use]
     pub fn port_(&mut self) -> Port_W<IntflagbSpec> {
         Port_W::new(self, 4)
     }
     #[doc = "Bit 5 - DMAC"]
     #[inline(always)]
-    #[must_use]
     pub fn dmac_(&mut self) -> Dmac_W<IntflagbSpec> {
         Dmac_W::new(self, 5)
     }
     #[doc = "Bit 7 - EVSYS"]
     #[inline(always)]
-    #[must_use]
     pub fn evsys_(&mut self) -> Evsys_W<IntflagbSpec> {
         Evsys_W::new(self, 7)
     }
     #[doc = "Bit 9 - SERCOM2"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom2_(&mut self) -> Sercom2_W<IntflagbSpec> {
         Sercom2_W::new(self, 9)
     }
     #[doc = "Bit 10 - SERCOM3"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom3_(&mut self) -> Sercom3_W<IntflagbSpec> {
         Sercom3_W::new(self, 10)
     }
     #[doc = "Bit 11 - TCC0"]
     #[inline(always)]
-    #[must_use]
     pub fn tcc0_(&mut self) -> Tcc0_W<IntflagbSpec> {
         Tcc0_W::new(self, 11)
     }
     #[doc = "Bit 12 - TCC1"]
     #[inline(always)]
-    #[must_use]
     pub fn tcc1_(&mut self) -> Tcc1_W<IntflagbSpec> {
         Tcc1_W::new(self, 12)
     }
     #[doc = "Bit 13 - TC2"]
     #[inline(always)]
-    #[must_use]
     pub fn tc2_(&mut self) -> Tc2_W<IntflagbSpec> {
         Tc2_W::new(self, 13)
     }
     #[doc = "Bit 14 - TC3"]
     #[inline(always)]
-    #[must_use]
     pub fn tc3_(&mut self) -> Tc3_W<IntflagbSpec> {
         Tc3_W::new(self, 14)
     }
     #[doc = "Bit 16 - RAMECC"]
     #[inline(always)]
-    #[must_use]
     pub fn ramecc_(&mut self) -> Ramecc_W<IntflagbSpec> {
         Ramecc_W::new(self, 16)
     }
@@ -226,10 +212,6 @@ impl crate::Readable for IntflagbSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflagb::W`](W) writer structure"]
 impl crate::Writable for IntflagbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAGB to value 0"]
-impl crate::Resettable for IntflagbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagbSpec {}

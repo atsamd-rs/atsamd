@@ -143,13 +143,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - SD Bus Power"]
     #[inline(always)]
-    #[must_use]
     pub fn sdbpwr(&mut self) -> SdbpwrW<PcrSpec> {
         SdbpwrW::new(self, 0)
     }
     #[doc = "Bits 1:3 - SD Bus Voltage Select"]
     #[inline(always)]
-    #[must_use]
     pub fn sdbvsel(&mut self) -> SdbvselW<PcrSpec> {
         SdbvselW::new(self, 1)
     }
@@ -164,8 +162,6 @@ impl crate::Readable for PcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`pcr::W`](W) writer structure"]
 impl crate::Writable for PcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PCR to value 0x0e"]
 impl crate::Resettable for PcrSpec {

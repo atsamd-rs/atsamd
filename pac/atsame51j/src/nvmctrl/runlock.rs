@@ -17,6 +17,4 @@ impl crate::RegisterSpec for RunlockSpec {
 #[doc = "`read()` method returns [`runlock::R`](R) reader structure"]
 impl crate::Readable for RunlockSpec {}
 #[doc = "`reset()` method sets RUNLOCK to value 0"]
-impl crate::Resettable for RunlockSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RunlockSpec {}

@@ -68,13 +68,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - User Multiplexer Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn user(&mut self) -> UserW<UserSpec> {
         UserW::new(self, 0)
     }
     #[doc = "Bits 8:12 - Channel Event Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel(&mut self) -> ChannelW<UserSpec> {
         ChannelW::new(self, 8)
     }
@@ -89,10 +87,6 @@ impl crate::Readable for UserSpec {}
 #[doc = "`write(|w| ..)` method takes [`user::W`](W) writer structure"]
 impl crate::Writable for UserSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets USER to value 0"]
-impl crate::Resettable for UserSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for UserSpec {}

@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Baud Rate Value"]
     #[inline(always)]
-    #[must_use]
     pub fn baud(&mut self) -> BaudW<BaudUsartfpModeSpec> {
         BaudW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for BaudUsartfpModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`baud_usartfp_mode::W`](W) writer structure"]
 impl crate::Writable for BaudUsartfpModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets BAUD_USARTFP_MODE to value 0"]
-impl crate::Resettable for BaudUsartfpModeSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for BaudUsartfpModeSpec {}

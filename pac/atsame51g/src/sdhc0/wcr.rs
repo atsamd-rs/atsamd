@@ -181,19 +181,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Wakeup Event Enable on Card Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn wkencint(&mut self) -> WkencintW<WcrSpec> {
         WkencintW::new(self, 0)
     }
     #[doc = "Bit 1 - Wakeup Event Enable on Card Insertion"]
     #[inline(always)]
-    #[must_use]
     pub fn wkencins(&mut self) -> WkencinsW<WcrSpec> {
         WkencinsW::new(self, 1)
     }
     #[doc = "Bit 2 - Wakeup Event Enable on Card Removal"]
     #[inline(always)]
-    #[must_use]
     pub fn wkencrem(&mut self) -> WkencremW<WcrSpec> {
         WkencremW::new(self, 2)
     }
@@ -208,10 +205,6 @@ impl crate::Readable for WcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`wcr::W`](W) writer structure"]
 impl crate::Writable for WcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets WCR to value 0"]
-impl crate::Resettable for WcrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for WcrSpec {}

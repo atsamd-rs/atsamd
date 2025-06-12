@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - Dithering Buffer Cycle Number"]
     #[inline(always)]
-    #[must_use]
     pub fn ditherbuf(&mut self) -> DitherbufW<CcbufDith5ModeSpec> {
         DitherbufW::new(self, 0)
     }
     #[doc = "Bits 5:23 - Channel Compare/Capture Buffer Value"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbuf(&mut self) -> CcbufW<CcbufDith5ModeSpec> {
         CcbufW::new(self, 5)
     }
@@ -46,11 +44,6 @@ impl crate::Readable for CcbufDith5ModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`ccbuf_dith5_mode::W`](W) writer structure"]
 impl crate::Writable for CcbufDith5ModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets CCBUF_DITH5_MODE[%s]
-to value 0"]
-impl crate::Resettable for CcbufDith5ModeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets CCBUF_DITH5_MODE[%s] to value 0"]
+impl crate::Resettable for CcbufDith5ModeSpec {}

@@ -137,7 +137,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Alarm Mask Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn sel(&mut self) -> SelW<Mask1Spec> {
         SelW::new(self, 0)
     }
@@ -152,10 +151,6 @@ impl crate::Readable for Mask1Spec {}
 #[doc = "`write(|w| ..)` method takes [`mask1::W`](W) writer structure"]
 impl crate::Writable for Mask1Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets MASK1 to value 0"]
-impl crate::Resettable for Mask1Spec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for Mask1Spec {}

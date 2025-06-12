@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - User Defined VLAN_TYPE Field"]
     #[inline(always)]
-    #[must_use]
     pub fn vlan_type(&mut self) -> VlanTypeW<SvlanSpec> {
         VlanTypeW::new(self, 0)
     }
     #[doc = "Bit 31 - Enable Stacked VLAN Processing Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn esvlan(&mut self) -> EsvlanW<SvlanSpec> {
         EsvlanW::new(self, 31)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for SvlanSpec {}
 #[doc = "`write(|w| ..)` method takes [`svlan::W`](W) writer structure"]
 impl crate::Writable for SvlanSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SVLAN to value 0"]
-impl crate::Resettable for SvlanSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SvlanSpec {}

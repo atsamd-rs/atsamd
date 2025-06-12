@@ -391,67 +391,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 5:6 - Enhanced Resolution"]
     #[inline(always)]
-    #[must_use]
     pub fn resolution(&mut self) -> ResolutionW<CtrlaSpec> {
         ResolutionW::new(self, 5)
     }
     #[doc = "Bits 8:10 - Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler(&mut self) -> PrescalerW<CtrlaSpec> {
         PrescalerW::new(self, 8)
     }
     #[doc = "Bit 11 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 11)
     }
     #[doc = "Bits 12:13 - Prescaler and Counter Synchronization Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn prescsync(&mut self) -> PrescsyncW<CtrlaSpec> {
         PrescsyncW::new(self, 12)
     }
     #[doc = "Bit 14 - Auto Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn alock(&mut self) -> AlockW<CtrlaSpec> {
         AlockW::new(self, 14)
     }
     #[doc = "Bit 24 - Capture Channel 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cpten0(&mut self) -> Cpten0W<CtrlaSpec> {
         Cpten0W::new(self, 24)
     }
     #[doc = "Bit 25 - Capture Channel 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cpten1(&mut self) -> Cpten1W<CtrlaSpec> {
         Cpten1W::new(self, 25)
     }
     #[doc = "Bit 26 - Capture Channel 2 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cpten2(&mut self) -> Cpten2W<CtrlaSpec> {
         Cpten2W::new(self, 26)
     }
     #[doc = "Bit 27 - Capture Channel 3 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cpten3(&mut self) -> Cpten3W<CtrlaSpec> {
         Cpten3W::new(self, 27)
     }
@@ -466,10 +455,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

@@ -61,37 +61,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Tamper Input 0 Detected"]
     #[inline(always)]
-    #[must_use]
     pub fn tampid0(&mut self) -> Tampid0W<TampidSpec> {
         Tampid0W::new(self, 0)
     }
     #[doc = "Bit 1 - Tamper Input 1 Detected"]
     #[inline(always)]
-    #[must_use]
     pub fn tampid1(&mut self) -> Tampid1W<TampidSpec> {
         Tampid1W::new(self, 1)
     }
     #[doc = "Bit 2 - Tamper Input 2 Detected"]
     #[inline(always)]
-    #[must_use]
     pub fn tampid2(&mut self) -> Tampid2W<TampidSpec> {
         Tampid2W::new(self, 2)
     }
     #[doc = "Bit 3 - Tamper Input 3 Detected"]
     #[inline(always)]
-    #[must_use]
     pub fn tampid3(&mut self) -> Tampid3W<TampidSpec> {
         Tampid3W::new(self, 3)
     }
     #[doc = "Bit 4 - Tamper Input 4 Detected"]
     #[inline(always)]
-    #[must_use]
     pub fn tampid4(&mut self) -> Tampid4W<TampidSpec> {
         Tampid4W::new(self, 4)
     }
     #[doc = "Bit 31 - Tamper Event Detected"]
     #[inline(always)]
-    #[must_use]
     pub fn tampevt(&mut self) -> TampevtW<TampidSpec> {
         TampevtW::new(self, 31)
     }
@@ -106,10 +100,6 @@ impl crate::Readable for TampidSpec {}
 #[doc = "`write(|w| ..)` method takes [`tampid::W`](W) writer structure"]
 impl crate::Writable for TampidSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TAMPID to value 0"]
-impl crate::Resettable for TampidSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TampidSpec {}

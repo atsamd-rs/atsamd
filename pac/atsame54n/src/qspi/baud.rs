@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Clock Polarity"]
     #[inline(always)]
-    #[must_use]
     pub fn cpol(&mut self) -> CpolW<BaudSpec> {
         CpolW::new(self, 0)
     }
     #[doc = "Bit 1 - Clock Phase"]
     #[inline(always)]
-    #[must_use]
     pub fn cpha(&mut self) -> CphaW<BaudSpec> {
         CphaW::new(self, 1)
     }
     #[doc = "Bits 8:15 - Serial Clock Baud Rate"]
     #[inline(always)]
-    #[must_use]
     pub fn baud(&mut self) -> BaudW<BaudSpec> {
         BaudW::new(self, 8)
     }
     #[doc = "Bits 16:23 - Delay Before SCK"]
     #[inline(always)]
-    #[must_use]
     pub fn dlybs(&mut self) -> DlybsW<BaudSpec> {
         DlybsW::new(self, 16)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for BaudSpec {}
 #[doc = "`write(|w| ..)` method takes [`baud::W`](W) writer structure"]
 impl crate::Writable for BaudSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets BAUD to value 0"]
-impl crate::Resettable for BaudSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BaudSpec {}

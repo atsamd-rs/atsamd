@@ -18,10 +18,6 @@ impl crate::Readable for SrSpec {}
 #[doc = "`write(|w| ..)` method takes [`sr::W`](W) writer structure"]
 impl crate::Writable for SrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SR to value 0"]
-impl crate::Resettable for SrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SrSpec {}

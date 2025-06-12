@@ -243,49 +243,41 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - Fixed Burst Length for DMA Data Operations:"]
     #[inline(always)]
-    #[must_use]
     pub fn fbldo(&mut self) -> FbldoW<DcfgrSpec> {
         FbldoW::new(self, 0)
     }
     #[doc = "Bit 6 - Endian Swap Mode Enable for Management Descriptor Accesses"]
     #[inline(always)]
-    #[must_use]
     pub fn esma(&mut self) -> EsmaW<DcfgrSpec> {
         EsmaW::new(self, 6)
     }
     #[doc = "Bit 7 - Endian Swap Mode Enable for Packet Data Accesses"]
     #[inline(always)]
-    #[must_use]
     pub fn espa(&mut self) -> EspaW<DcfgrSpec> {
         EspaW::new(self, 7)
     }
     #[doc = "Bits 8:9 - Receiver Packet Buffer Memory Size Select"]
     #[inline(always)]
-    #[must_use]
     pub fn rxbms(&mut self) -> RxbmsW<DcfgrSpec> {
         RxbmsW::new(self, 8)
     }
     #[doc = "Bit 10 - Transmitter Packet Buffer Memory Size Select"]
     #[inline(always)]
-    #[must_use]
     pub fn txpbms(&mut self) -> TxpbmsW<DcfgrSpec> {
         TxpbmsW::new(self, 10)
     }
     #[doc = "Bit 11 - Transmitter Checksum Generation Offload Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txcoen(&mut self) -> TxcoenW<DcfgrSpec> {
         TxcoenW::new(self, 11)
     }
     #[doc = "Bits 16:23 - DMA Receive Buffer Size"]
     #[inline(always)]
-    #[must_use]
     pub fn drbs(&mut self) -> DrbsW<DcfgrSpec> {
         DrbsW::new(self, 16)
     }
     #[doc = "Bit 24 - DMA Discard Receive Packets"]
     #[inline(always)]
-    #[must_use]
     pub fn ddrp(&mut self) -> DdrpW<DcfgrSpec> {
         DdrpW::new(self, 24)
     }
@@ -300,8 +292,6 @@ impl crate::Readable for DcfgrSpec {}
 #[doc = "`write(|w| ..)` method takes [`dcfgr::W`](W) writer structure"]
 impl crate::Writable for DcfgrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DCFGR to value 0x0002_0704"]
 impl crate::Resettable for DcfgrSpec {

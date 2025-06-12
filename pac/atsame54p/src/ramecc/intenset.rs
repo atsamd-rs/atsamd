@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Single Bit ECC Error Interrupt Enable Set"]
     #[inline(always)]
-    #[must_use]
     pub fn singlee(&mut self) -> SingleeW<IntensetSpec> {
         SingleeW::new(self, 0)
     }
     #[doc = "Bit 1 - Dual Bit ECC Error Interrupt Enable Set"]
     #[inline(always)]
-    #[must_use]
     pub fn duale(&mut self) -> DualeW<IntensetSpec> {
         DualeW::new(self, 1)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for IntensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for IntensetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntensetSpec {}

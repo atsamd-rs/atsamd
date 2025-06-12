@@ -70,43 +70,36 @@ impl R {
 impl W {
     #[doc = "Bit 0 - PAC0 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pac0_(&mut self) -> Pac0_W<ApbamaskSpec> {
         Pac0_W::new(self, 0)
     }
     #[doc = "Bit 1 - PM APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pm_(&mut self) -> Pm_W<ApbamaskSpec> {
         Pm_W::new(self, 1)
     }
     #[doc = "Bit 2 - SYSCTRL APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sysctrl_(&mut self) -> Sysctrl_W<ApbamaskSpec> {
         Sysctrl_W::new(self, 2)
     }
     #[doc = "Bit 3 - GCLK APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn gclk_(&mut self) -> Gclk_W<ApbamaskSpec> {
         Gclk_W::new(self, 3)
     }
     #[doc = "Bit 4 - WDT APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wdt_(&mut self) -> Wdt_W<ApbamaskSpec> {
         Wdt_W::new(self, 4)
     }
     #[doc = "Bit 5 - RTC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rtc_(&mut self) -> Rtc_W<ApbamaskSpec> {
         Rtc_W::new(self, 5)
     }
     #[doc = "Bit 6 - EIC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn eic_(&mut self) -> Eic_W<ApbamaskSpec> {
         Eic_W::new(self, 6)
     }
@@ -121,8 +114,6 @@ impl crate::Readable for ApbamaskSpec {}
 #[doc = "`write(|w| ..)` method takes [`apbamask::W`](W) writer structure"]
 impl crate::Writable for ApbamaskSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets APBAMASK to value 0x7f"]
 impl crate::Resettable for ApbamaskSpec {

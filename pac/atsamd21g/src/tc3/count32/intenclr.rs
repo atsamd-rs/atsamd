@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Overflow Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovf(&mut self) -> OvfW<IntenclrSpec> {
         OvfW::new(self, 0)
     }
     #[doc = "Bit 1 - Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn err(&mut self) -> ErrW<IntenclrSpec> {
         ErrW::new(self, 1)
     }
     #[doc = "Bit 3 - Synchronization Ready Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn syncrdy(&mut self) -> SyncrdyW<IntenclrSpec> {
         SyncrdyW::new(self, 3)
     }
     #[doc = "Bit 4 - Match or Capture Channel 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mc0(&mut self) -> Mc0W<IntenclrSpec> {
         Mc0W::new(self, 4)
     }
     #[doc = "Bit 5 - Match or Capture Channel 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mc1(&mut self) -> Mc1W<IntenclrSpec> {
         Mc1W::new(self, 5)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

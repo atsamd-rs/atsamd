@@ -56,13 +56,11 @@ where
 impl W {
     #[doc = "Bits 4:11 - Invalidate Index"]
     #[inline(always)]
-    #[must_use]
     pub fn index(&mut self) -> IndexW<Maint1Spec> {
         IndexW::new(self, 4)
     }
     #[doc = "Bits 28:31 - Invalidate Way"]
     #[inline(always)]
-    #[must_use]
     pub fn way(&mut self) -> WayW<Maint1Spec> {
         WayW::new(self, 28)
     }
@@ -75,10 +73,6 @@ impl crate::RegisterSpec for Maint1Spec {
 #[doc = "`write(|w| ..)` method takes [`maint1::W`](W) writer structure"]
 impl crate::Writable for Maint1Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MAINT1 to value 0"]
-impl crate::Resettable for Maint1Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Maint1Spec {}

@@ -529,55 +529,46 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Complete Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdc(&mut self) -> CmdcW<NisierSpec> {
         CmdcW::new(self, 0)
     }
     #[doc = "Bit 1 - Transfer Complete Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn trfc(&mut self) -> TrfcW<NisierSpec> {
         TrfcW::new(self, 1)
     }
     #[doc = "Bit 2 - Block Gap Event Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn blkge(&mut self) -> BlkgeW<NisierSpec> {
         BlkgeW::new(self, 2)
     }
     #[doc = "Bit 3 - DMA Interrupt Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaint(&mut self) -> DmaintW<NisierSpec> {
         DmaintW::new(self, 3)
     }
     #[doc = "Bit 4 - Buffer Write Ready Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bwrrdy(&mut self) -> BwrrdyW<NisierSpec> {
         BwrrdyW::new(self, 4)
     }
     #[doc = "Bit 5 - Buffer Read Ready Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn brdrdy(&mut self) -> BrdrdyW<NisierSpec> {
         BrdrdyW::new(self, 5)
     }
     #[doc = "Bit 6 - Card Insertion Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cins(&mut self) -> CinsW<NisierSpec> {
         CinsW::new(self, 6)
     }
     #[doc = "Bit 7 - Card Removal Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn crem(&mut self) -> CremW<NisierSpec> {
         CremW::new(self, 7)
     }
     #[doc = "Bit 8 - Card Interrupt Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cint(&mut self) -> CintW<NisierSpec> {
         CintW::new(self, 8)
     }
@@ -592,10 +583,6 @@ impl crate::Readable for NisierSpec {}
 #[doc = "`write(|w| ..)` method takes [`nisier::W`](W) writer structure"]
 impl crate::Writable for NisierSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets NISIER to value 0"]
-impl crate::Resettable for NisierSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for NisierSpec {}

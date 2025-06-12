@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Address that generated the MemManage fault"]
     #[inline(always)]
-    #[must_use]
     pub fn address(&mut self) -> AddressW<MmfarSpec> {
         AddressW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for MmfarSpec {}
 #[doc = "`write(|w| ..)` method takes [`mmfar::W`](W) writer structure"]
 impl crate::Writable for MmfarSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MMFAR to value 0"]
-impl crate::Resettable for MmfarSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for MmfarSpec {}

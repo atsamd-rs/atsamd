@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Output Waveform 0 Invert Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn inven0(&mut self) -> Inven0W<CtrlcSpec> {
         Inven0W::new(self, 0)
     }
     #[doc = "Bit 1 - Output Waveform 1 Invert Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn inven1(&mut self) -> Inven1W<CtrlcSpec> {
         Inven1W::new(self, 1)
     }
     #[doc = "Bit 4 - Capture Channel 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cpten0(&mut self) -> Cpten0W<CtrlcSpec> {
         Cpten0W::new(self, 4)
     }
     #[doc = "Bit 5 - Capture Channel 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cpten1(&mut self) -> Cpten1W<CtrlcSpec> {
         Cpten1W::new(self, 5)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for CtrlcSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlc::W`](W) writer structure"]
 impl crate::Writable for CtrlcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLC to value 0"]
-impl crate::Resettable for CtrlcSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlcSpec {}

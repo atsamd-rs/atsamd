@@ -81,6 +81,4 @@ impl crate::RegisterSpec for UasrSpec {
 #[doc = "`read()` method returns [`uasr::R`](R) reader structure"]
 impl crate::Readable for UasrSpec {}
 #[doc = "`reset()` method sets UASR to value 0"]
-impl crate::Resettable for UasrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for UasrSpec {}

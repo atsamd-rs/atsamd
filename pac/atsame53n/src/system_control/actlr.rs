@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Disable interruption of LDM/STM instructions"]
     #[inline(always)]
-    #[must_use]
     pub fn dismcycint(&mut self) -> DismcycintW<ActlrSpec> {
         DismcycintW::new(self, 0)
     }
     #[doc = "Bit 1 - Disable wruite buffer use during default memory map accesses"]
     #[inline(always)]
-    #[must_use]
     pub fn disdefwbuf(&mut self) -> DisdefwbufW<ActlrSpec> {
         DisdefwbufW::new(self, 1)
     }
     #[doc = "Bit 2 - Disable IT folding"]
     #[inline(always)]
-    #[must_use]
     pub fn disfold(&mut self) -> DisfoldW<ActlrSpec> {
         DisfoldW::new(self, 2)
     }
     #[doc = "Bit 8 - Disable automatic update of CONTROL.FPCA"]
     #[inline(always)]
-    #[must_use]
     pub fn disfpca(&mut self) -> DisfpcaW<ActlrSpec> {
         DisfpcaW::new(self, 8)
     }
     #[doc = "Bit 9 - Disable out-of-order FP instructions"]
     #[inline(always)]
-    #[must_use]
     pub fn disoofp(&mut self) -> DisoofpW<ActlrSpec> {
         DisoofpW::new(self, 9)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for ActlrSpec {}
 #[doc = "`write(|w| ..)` method takes [`actlr::W`](W) writer structure"]
 impl crate::Writable for ActlrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ACTLR to value 0"]
-impl crate::Resettable for ActlrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ActlrSpec {}

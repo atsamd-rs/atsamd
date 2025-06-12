@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Filter List Extended Start Address"]
     #[inline(always)]
-    #[must_use]
     pub fn flesa(&mut self) -> FlesaW<XidfcSpec> {
         FlesaW::new(self, 0)
     }
     #[doc = "Bits 16:22 - List Size Extended"]
     #[inline(always)]
-    #[must_use]
     pub fn lse(&mut self) -> LseW<XidfcSpec> {
         LseW::new(self, 16)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for XidfcSpec {}
 #[doc = "`write(|w| ..)` method takes [`xidfc::W`](W) writer structure"]
 impl crate::Writable for XidfcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets XIDFC to value 0"]
-impl crate::Resettable for XidfcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for XidfcSpec {}

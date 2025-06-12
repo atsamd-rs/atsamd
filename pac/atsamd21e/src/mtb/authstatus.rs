@@ -13,6 +13,4 @@ impl crate::RegisterSpec for AuthstatusSpec {
 #[doc = "`read()` method returns [`authstatus::R`](R) reader structure"]
 impl crate::Readable for AuthstatusSpec {}
 #[doc = "`reset()` method sets AUTHSTATUS to value 0"]
-impl crate::Resettable for AuthstatusSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for AuthstatusSpec {}

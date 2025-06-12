@@ -13,6 +13,4 @@ impl crate::RegisterSpec for Itatbctr2Spec {
 #[doc = "`read()` method returns [`itatbctr2::R`](R) reader structure"]
 impl crate::Readable for Itatbctr2Spec {}
 #[doc = "`reset()` method sets ITATBCTR2 to value 0"]
-impl crate::Resettable for Itatbctr2Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Itatbctr2Spec {}

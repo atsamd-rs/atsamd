@@ -17,6 +17,4 @@ impl crate::RegisterSpec for TlpitiSpec {
 #[doc = "`read()` method returns [`tlpiti::R`](R) reader structure"]
 impl crate::Readable for TlpitiSpec {}
 #[doc = "`reset()` method sets TLPITI to value 0"]
-impl crate::Resettable for TlpitiSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TlpitiSpec {}

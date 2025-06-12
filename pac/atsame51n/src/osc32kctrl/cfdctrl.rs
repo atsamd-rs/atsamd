@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Clock Failure Detector Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cfden(&mut self) -> CfdenW<CfdctrlSpec> {
         CfdenW::new(self, 0)
     }
     #[doc = "Bit 1 - Clock Switch Back"]
     #[inline(always)]
-    #[must_use]
     pub fn swback(&mut self) -> SwbackW<CfdctrlSpec> {
         SwbackW::new(self, 1)
     }
     #[doc = "Bit 2 - Clock Failure Detector Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn cfdpresc(&mut self) -> CfdprescW<CfdctrlSpec> {
         CfdprescW::new(self, 2)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for CfdctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`cfdctrl::W`](W) writer structure"]
 impl crate::Writable for CfdctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CFDCTRL to value 0"]
-impl crate::Resettable for CfdctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CfdctrlSpec {}

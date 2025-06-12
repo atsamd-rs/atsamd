@@ -151,97 +151,81 @@ impl R {
 impl W {
     #[doc = "Bit 0 - PAC"]
     #[inline(always)]
-    #[must_use]
     pub fn pac_(&mut self) -> Pac_W<IntflagaSpec> {
         Pac_W::new(self, 0)
     }
     #[doc = "Bit 1 - PM"]
     #[inline(always)]
-    #[must_use]
     pub fn pm_(&mut self) -> Pm_W<IntflagaSpec> {
         Pm_W::new(self, 1)
     }
     #[doc = "Bit 2 - MCLK"]
     #[inline(always)]
-    #[must_use]
     pub fn mclk_(&mut self) -> Mclk_W<IntflagaSpec> {
         Mclk_W::new(self, 2)
     }
     #[doc = "Bit 3 - RSTC"]
     #[inline(always)]
-    #[must_use]
     pub fn rstc_(&mut self) -> Rstc_W<IntflagaSpec> {
         Rstc_W::new(self, 3)
     }
     #[doc = "Bit 4 - OSCCTRL"]
     #[inline(always)]
-    #[must_use]
     pub fn oscctrl_(&mut self) -> Oscctrl_W<IntflagaSpec> {
         Oscctrl_W::new(self, 4)
     }
     #[doc = "Bit 5 - OSC32KCTRL"]
     #[inline(always)]
-    #[must_use]
     pub fn osc32kctrl_(&mut self) -> Osc32kctrl_W<IntflagaSpec> {
         Osc32kctrl_W::new(self, 5)
     }
     #[doc = "Bit 6 - SUPC"]
     #[inline(always)]
-    #[must_use]
     pub fn supc_(&mut self) -> Supc_W<IntflagaSpec> {
         Supc_W::new(self, 6)
     }
     #[doc = "Bit 7 - GCLK"]
     #[inline(always)]
-    #[must_use]
     pub fn gclk_(&mut self) -> Gclk_W<IntflagaSpec> {
         Gclk_W::new(self, 7)
     }
     #[doc = "Bit 8 - WDT"]
     #[inline(always)]
-    #[must_use]
     pub fn wdt_(&mut self) -> Wdt_W<IntflagaSpec> {
         Wdt_W::new(self, 8)
     }
     #[doc = "Bit 9 - RTC"]
     #[inline(always)]
-    #[must_use]
     pub fn rtc_(&mut self) -> Rtc_W<IntflagaSpec> {
         Rtc_W::new(self, 9)
     }
     #[doc = "Bit 10 - EIC"]
     #[inline(always)]
-    #[must_use]
     pub fn eic_(&mut self) -> Eic_W<IntflagaSpec> {
         Eic_W::new(self, 10)
     }
     #[doc = "Bit 11 - FREQM"]
     #[inline(always)]
-    #[must_use]
     pub fn freqm_(&mut self) -> Freqm_W<IntflagaSpec> {
         Freqm_W::new(self, 11)
     }
     #[doc = "Bit 12 - SERCOM0"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom0_(&mut self) -> Sercom0_W<IntflagaSpec> {
         Sercom0_W::new(self, 12)
     }
     #[doc = "Bit 13 - SERCOM1"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom1_(&mut self) -> Sercom1_W<IntflagaSpec> {
         Sercom1_W::new(self, 13)
     }
     #[doc = "Bit 14 - TC0"]
     #[inline(always)]
-    #[must_use]
     pub fn tc0_(&mut self) -> Tc0_W<IntflagaSpec> {
         Tc0_W::new(self, 14)
     }
     #[doc = "Bit 15 - TC1"]
     #[inline(always)]
-    #[must_use]
     pub fn tc1_(&mut self) -> Tc1_W<IntflagaSpec> {
         Tc1_W::new(self, 15)
     }
@@ -256,10 +240,6 @@ impl crate::Readable for IntflagaSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflaga::W`](W) writer structure"]
 impl crate::Writable for IntflagaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAGA to value 0"]
-impl crate::Resettable for IntflagaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagaSpec {}

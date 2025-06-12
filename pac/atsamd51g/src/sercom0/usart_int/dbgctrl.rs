@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Debug Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn dbgstop(&mut self) -> DbgstopW<DbgctrlSpec> {
         DbgstopW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for DbgctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`dbgctrl::W`](W) writer structure"]
 impl crate::Writable for DbgctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DBGCTRL to value 0"]
-impl crate::Resettable for DbgctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DbgctrlSpec {}

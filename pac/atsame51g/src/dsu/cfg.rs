@@ -90,19 +90,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Latency Quality Of Service"]
     #[inline(always)]
-    #[must_use]
     pub fn lqos(&mut self) -> LqosW<CfgSpec> {
         LqosW::new(self, 0)
     }
     #[doc = "Bits 2:3 - DMA Trigger Level"]
     #[inline(always)]
-    #[must_use]
     pub fn dccdmalevel(&mut self) -> DccdmalevelW<CfgSpec> {
         DccdmalevelW::new(self, 2)
     }
     #[doc = "Bit 4 - Trace Control"]
     #[inline(always)]
-    #[must_use]
     pub fn etbramen(&mut self) -> EtbramenW<CfgSpec> {
         EtbramenW::new(self, 4)
     }
@@ -117,8 +114,6 @@ impl crate::Readable for CfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`cfg::W`](W) writer structure"]
 impl crate::Writable for CfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CFG to value 0x02"]
 impl crate::Resettable for CfgSpec {

@@ -18,10 +18,6 @@ impl crate::Readable for LockaccessSpec {}
 #[doc = "`write(|w| ..)` method takes [`lockaccess::W`](W) writer structure"]
 impl crate::Writable for LockaccessSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets LOCKACCESS to value 0"]
-impl crate::Resettable for LockaccessSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for LockaccessSpec {}

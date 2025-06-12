@@ -308,7 +308,7 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     pub fn write_data(&mut self, data: DataWidth) {
         // Safety: All bit patterns are memory safe
-        self.spi().data().write(|w| unsafe { w.data().bits(data) })
+        self.spi().data().write(|w| unsafe { w.data().bits(data) });
     }
 
     /// Read the interrupt flags

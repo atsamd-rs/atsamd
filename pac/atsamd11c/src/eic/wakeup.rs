@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - External Interrupt 0 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen0(&mut self) -> Wakeupen0W<WakeupSpec> {
         Wakeupen0W::new(self, 0)
     }
     #[doc = "Bit 1 - External Interrupt 1 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen1(&mut self) -> Wakeupen1W<WakeupSpec> {
         Wakeupen1W::new(self, 1)
     }
     #[doc = "Bit 2 - External Interrupt 2 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen2(&mut self) -> Wakeupen2W<WakeupSpec> {
         Wakeupen2W::new(self, 2)
     }
     #[doc = "Bit 3 - External Interrupt 3 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen3(&mut self) -> Wakeupen3W<WakeupSpec> {
         Wakeupen3W::new(self, 3)
     }
     #[doc = "Bit 4 - External Interrupt 4 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen4(&mut self) -> Wakeupen4W<WakeupSpec> {
         Wakeupen4W::new(self, 4)
     }
     #[doc = "Bit 5 - External Interrupt 5 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen5(&mut self) -> Wakeupen5W<WakeupSpec> {
         Wakeupen5W::new(self, 5)
     }
     #[doc = "Bit 6 - External Interrupt 6 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen6(&mut self) -> Wakeupen6W<WakeupSpec> {
         Wakeupen6W::new(self, 6)
     }
     #[doc = "Bit 7 - External Interrupt 7 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen7(&mut self) -> Wakeupen7W<WakeupSpec> {
         Wakeupen7W::new(self, 7)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for WakeupSpec {}
 #[doc = "`write(|w| ..)` method takes [`wakeup::W`](W) writer structure"]
 impl crate::Writable for WakeupSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WAKEUP to value 0"]
-impl crate::Resettable for WakeupSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WakeupSpec {}

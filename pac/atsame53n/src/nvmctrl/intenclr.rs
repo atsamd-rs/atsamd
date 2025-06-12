@@ -106,67 +106,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Done Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn done(&mut self) -> DoneW<IntenclrSpec> {
         DoneW::new(self, 0)
     }
     #[doc = "Bit 1 - Address Error"]
     #[inline(always)]
-    #[must_use]
     pub fn addre(&mut self) -> AddreW<IntenclrSpec> {
         AddreW::new(self, 1)
     }
     #[doc = "Bit 2 - Programming Error Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn proge(&mut self) -> ProgeW<IntenclrSpec> {
         ProgeW::new(self, 2)
     }
     #[doc = "Bit 3 - Lock Error Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn locke(&mut self) -> LockeW<IntenclrSpec> {
         LockeW::new(self, 3)
     }
     #[doc = "Bit 4 - ECC Single Error Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn eccse(&mut self) -> EccseW<IntenclrSpec> {
         EccseW::new(self, 4)
     }
     #[doc = "Bit 5 - ECC Dual Error Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn eccde(&mut self) -> EccdeW<IntenclrSpec> {
         EccdeW::new(self, 5)
     }
     #[doc = "Bit 6 - NVM Error Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn nvme(&mut self) -> NvmeW<IntenclrSpec> {
         NvmeW::new(self, 6)
     }
     #[doc = "Bit 7 - Suspended Write Or Erase Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn susp(&mut self) -> SuspW<IntenclrSpec> {
         SuspW::new(self, 7)
     }
     #[doc = "Bit 8 - Active SEES Full Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn seesfull(&mut self) -> SeesfullW<IntenclrSpec> {
         SeesfullW::new(self, 8)
     }
     #[doc = "Bit 9 - Active SEES Overflow Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn seesovf(&mut self) -> SeesovfW<IntenclrSpec> {
         SeesovfW::new(self, 9)
     }
     #[doc = "Bit 10 - SEE Write Completed Interrupt Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn seewrc(&mut self) -> SeewrcW<IntenclrSpec> {
         SeewrcW::new(self, 10)
     }
@@ -181,10 +170,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

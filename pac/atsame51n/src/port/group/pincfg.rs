@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Peripheral Multiplexer Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pmuxen(&mut self) -> PmuxenW<PincfgSpec> {
         PmuxenW::new(self, 0)
     }
     #[doc = "Bit 1 - Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn inen(&mut self) -> InenW<PincfgSpec> {
         InenW::new(self, 1)
     }
     #[doc = "Bit 2 - Pull Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pullen(&mut self) -> PullenW<PincfgSpec> {
         PullenW::new(self, 2)
     }
     #[doc = "Bit 6 - Output Driver Strength Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn drvstr(&mut self) -> DrvstrW<PincfgSpec> {
         DrvstrW::new(self, 6)
     }
@@ -76,11 +72,6 @@ impl crate::Readable for PincfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`pincfg::W`](W) writer structure"]
 impl crate::Writable for PincfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
-#[doc = "`reset()` method sets PINCFG[%s]
-to value 0"]
-impl crate::Resettable for PincfgSpec {
-    const RESET_VALUE: u8 = 0;
-}
+#[doc = "`reset()` method sets PINCFG[%s] to value 0"]
+impl crate::Resettable for PincfgSpec {}

@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 2 - Pointer Value Wraps"]
     #[inline(always)]
-    #[must_use]
     pub fn wrap(&mut self) -> WrapW<PositionSpec> {
         WrapW::new(self, 2)
     }
     #[doc = "Bits 3:31 - Trace Packet Location Pointer"]
     #[inline(always)]
-    #[must_use]
     pub fn pointer(&mut self) -> PointerW<PositionSpec> {
         PointerW::new(self, 3)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for PositionSpec {}
 #[doc = "`write(|w| ..)` method takes [`position::W`](W) writer structure"]
 impl crate::Writable for PositionSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets POSITION to value 0"]
-impl crate::Resettable for PositionSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PositionSpec {}

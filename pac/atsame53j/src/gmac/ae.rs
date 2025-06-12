@@ -17,6 +17,4 @@ impl crate::RegisterSpec for AeSpec {
 #[doc = "`read()` method returns [`ae::R`](R) reader structure"]
 impl crate::Readable for AeSpec {}
 #[doc = "`reset()` method sets AE to value 0"]
-impl crate::Resettable for AeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for AeSpec {}

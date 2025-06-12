@@ -1594,43 +1594,36 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Channel Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<ChctrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Channel Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<ChctrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 6 - Channel Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<ChctrlaSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bits 8:14 - Trigger Source"]
     #[inline(always)]
-    #[must_use]
     pub fn trigsrc(&mut self) -> TrigsrcW<ChctrlaSpec> {
         TrigsrcW::new(self, 8)
     }
     #[doc = "Bits 20:21 - Trigger Action"]
     #[inline(always)]
-    #[must_use]
     pub fn trigact(&mut self) -> TrigactW<ChctrlaSpec> {
         TrigactW::new(self, 20)
     }
     #[doc = "Bits 24:27 - Burst Length"]
     #[inline(always)]
-    #[must_use]
     pub fn burstlen(&mut self) -> BurstlenW<ChctrlaSpec> {
         BurstlenW::new(self, 24)
     }
     #[doc = "Bits 28:29 - FIFO Threshold"]
     #[inline(always)]
-    #[must_use]
     pub fn threshold(&mut self) -> ThresholdW<ChctrlaSpec> {
         ThresholdW::new(self, 28)
     }
@@ -1645,10 +1638,6 @@ impl crate::Readable for ChctrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`chctrla::W`](W) writer structure"]
 impl crate::Writable for ChctrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CHCTRLA to value 0"]
-impl crate::Resettable for ChctrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ChctrlaSpec {}

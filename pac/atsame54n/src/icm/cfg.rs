@@ -148,49 +148,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Write Back Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn wbdis(&mut self) -> WbdisW<CfgSpec> {
         WbdisW::new(self, 0)
     }
     #[doc = "Bit 1 - End of Monitoring Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn eomdis(&mut self) -> EomdisW<CfgSpec> {
         EomdisW::new(self, 1)
     }
     #[doc = "Bit 2 - Secondary List Branching Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn slbdis(&mut self) -> SlbdisW<CfgSpec> {
         SlbdisW::new(self, 2)
     }
     #[doc = "Bits 4:7 - Bus Burden Control"]
     #[inline(always)]
-    #[must_use]
     pub fn bbc(&mut self) -> BbcW<CfgSpec> {
         BbcW::new(self, 4)
     }
     #[doc = "Bit 8 - Automatic Switch To Compare Digest"]
     #[inline(always)]
-    #[must_use]
     pub fn ascd(&mut self) -> AscdW<CfgSpec> {
         AscdW::new(self, 8)
     }
     #[doc = "Bit 9 - Dual Input Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn dualbuff(&mut self) -> DualbuffW<CfgSpec> {
         DualbuffW::new(self, 9)
     }
     #[doc = "Bit 12 - User Initial Hash Value"]
     #[inline(always)]
-    #[must_use]
     pub fn uihash(&mut self) -> UihashW<CfgSpec> {
         UihashW::new(self, 12)
     }
     #[doc = "Bits 13:15 - User SHA Algorithm"]
     #[inline(always)]
-    #[must_use]
     pub fn ualgo(&mut self) -> UalgoW<CfgSpec> {
         UalgoW::new(self, 13)
     }
@@ -205,10 +197,6 @@ impl crate::Readable for CfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`cfg::W`](W) writer structure"]
 impl crate::Writable for CfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CFG to value 0"]
-impl crate::Resettable for CfgSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CfgSpec {}

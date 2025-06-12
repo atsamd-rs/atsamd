@@ -31,6 +31,4 @@ impl crate::RegisterSpec for LsrSpec {
 #[doc = "`read()` method returns [`lsr::R`](R) reader structure"]
 impl crate::Readable for LsrSpec {}
 #[doc = "`reset()` method sets LSR to value 0"]
-impl crate::Resettable for LsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for LsrSpec {}

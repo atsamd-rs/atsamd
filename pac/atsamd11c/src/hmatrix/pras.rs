@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Master 0 Priority"]
     #[inline(always)]
-    #[must_use]
     pub fn m0pr(&mut self) -> M0prW<PrasSpec> {
         M0prW::new(self, 0)
     }
     #[doc = "Bits 4:7 - Master 1 Priority"]
     #[inline(always)]
-    #[must_use]
     pub fn m1pr(&mut self) -> M1prW<PrasSpec> {
         M1prW::new(self, 4)
     }
     #[doc = "Bits 8:11 - Master 2 Priority"]
     #[inline(always)]
-    #[must_use]
     pub fn m2pr(&mut self) -> M2prW<PrasSpec> {
         M2prW::new(self, 8)
     }
     #[doc = "Bits 12:15 - Master 3 Priority"]
     #[inline(always)]
-    #[must_use]
     pub fn m3pr(&mut self) -> M3prW<PrasSpec> {
         M3prW::new(self, 12)
     }
     #[doc = "Bits 16:19 - Master 4 Priority"]
     #[inline(always)]
-    #[must_use]
     pub fn m4pr(&mut self) -> M4prW<PrasSpec> {
         M4prW::new(self, 16)
     }
     #[doc = "Bits 20:23 - Master 5 Priority"]
     #[inline(always)]
-    #[must_use]
     pub fn m5pr(&mut self) -> M5prW<PrasSpec> {
         M5prW::new(self, 20)
     }
     #[doc = "Bits 24:27 - Master 6 Priority"]
     #[inline(always)]
-    #[must_use]
     pub fn m6pr(&mut self) -> M6prW<PrasSpec> {
         M6prW::new(self, 24)
     }
     #[doc = "Bits 28:31 - Master 7 Priority"]
     #[inline(always)]
-    #[must_use]
     pub fn m7pr(&mut self) -> M7prW<PrasSpec> {
         M7prW::new(self, 28)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for PrasSpec {}
 #[doc = "`write(|w| ..)` method takes [`pras::W`](W) writer structure"]
 impl crate::Writable for PrasSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets PRAS%s to value 0"]
-impl crate::Resettable for PrasSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PrasSpec {}

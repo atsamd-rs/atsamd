@@ -181,19 +181,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset For All"]
     #[inline(always)]
-    #[must_use]
     pub fn swrstall(&mut self) -> SwrstallW<SrrSpec> {
         SwrstallW::new(self, 0)
     }
     #[doc = "Bit 1 - Software Reset For CMD Line"]
     #[inline(always)]
-    #[must_use]
     pub fn swrstcmd(&mut self) -> SwrstcmdW<SrrSpec> {
         SwrstcmdW::new(self, 1)
     }
     #[doc = "Bit 2 - Software Reset For DAT Line"]
     #[inline(always)]
-    #[must_use]
     pub fn swrstdat(&mut self) -> SwrstdatW<SrrSpec> {
         SwrstdatW::new(self, 2)
     }
@@ -208,10 +205,6 @@ impl crate::Readable for SrrSpec {}
 #[doc = "`write(|w| ..)` method takes [`srr::W`](W) writer structure"]
 impl crate::Writable for SrrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets SRR to value 0"]
-impl crate::Resettable for SrrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for SrrSpec {}

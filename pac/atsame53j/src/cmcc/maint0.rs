@@ -5,7 +5,6 @@ pub type InvallW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - Cache Controller invalidate All"]
     #[inline(always)]
-    #[must_use]
     pub fn invall(&mut self) -> InvallW<Maint0Spec> {
         InvallW::new(self, 0)
     }
@@ -18,10 +17,6 @@ impl crate::RegisterSpec for Maint0Spec {
 #[doc = "`write(|w| ..)` method takes [`maint0::W`](W) writer structure"]
 impl crate::Writable for Maint0Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MAINT0 to value 0"]
-impl crate::Resettable for Maint0Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Maint0Spec {}

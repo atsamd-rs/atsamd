@@ -325,11 +325,11 @@ impl Bank<'_, InBank> {
         if stall {
             self.usb()
                 .epstatusset(self.index())
-                .write(|w| w.stallrq1().set_bit())
+                .write(|w| w.stallrq1().set_bit());
         } else {
             self.usb()
                 .epstatusclr(self.index())
-                .write(|w| w.stallrq1().set_bit())
+                .write(|w| w.stallrq1().set_bit());
         }
     }
 }
@@ -435,11 +435,11 @@ impl Bank<'_, OutBank> {
         if stall {
             self.usb()
                 .epstatusset(self.index())
-                .write(|w| w.stallrq0().set_bit())
+                .write(|w| w.stallrq0().set_bit());
         } else {
             self.usb()
                 .epstatusclr(self.index())
-                .write(|w| w.stallrq0().set_bit())
+                .write(|w| w.stallrq0().set_bit());
         }
     }
 }

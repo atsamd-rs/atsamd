@@ -506,109 +506,91 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Timer/counter Input Event0 Action"]
     #[inline(always)]
-    #[must_use]
     pub fn evact0(&mut self) -> Evact0W<EvctrlSpec> {
         Evact0W::new(self, 0)
     }
     #[doc = "Bits 3:5 - Timer/counter Input Event1 Action"]
     #[inline(always)]
-    #[must_use]
     pub fn evact1(&mut self) -> Evact1W<EvctrlSpec> {
         Evact1W::new(self, 3)
     }
     #[doc = "Bits 6:7 - Timer/counter Output Event Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn cntsel(&mut self) -> CntselW<EvctrlSpec> {
         CntselW::new(self, 6)
     }
     #[doc = "Bit 8 - Overflow/Underflow Output Event Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovfeo(&mut self) -> OvfeoW<EvctrlSpec> {
         OvfeoW::new(self, 8)
     }
     #[doc = "Bit 9 - Retrigger Output Event Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn trgeo(&mut self) -> TrgeoW<EvctrlSpec> {
         TrgeoW::new(self, 9)
     }
     #[doc = "Bit 10 - Timer/counter Output Event Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cnteo(&mut self) -> CnteoW<EvctrlSpec> {
         CnteoW::new(self, 10)
     }
     #[doc = "Bit 12 - Inverted Event 0 Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcinv0(&mut self) -> Tcinv0W<EvctrlSpec> {
         Tcinv0W::new(self, 12)
     }
     #[doc = "Bit 13 - Inverted Event 1 Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcinv1(&mut self) -> Tcinv1W<EvctrlSpec> {
         Tcinv1W::new(self, 13)
     }
     #[doc = "Bit 14 - Timer/counter Event 0 Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcei0(&mut self) -> Tcei0W<EvctrlSpec> {
         Tcei0W::new(self, 14)
     }
     #[doc = "Bit 15 - Timer/counter Event 1 Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcei1(&mut self) -> Tcei1W<EvctrlSpec> {
         Tcei1W::new(self, 15)
     }
     #[doc = "Bit 16 - Match or Capture Channel 0 Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mcei0(&mut self) -> Mcei0W<EvctrlSpec> {
         Mcei0W::new(self, 16)
     }
     #[doc = "Bit 17 - Match or Capture Channel 1 Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mcei1(&mut self) -> Mcei1W<EvctrlSpec> {
         Mcei1W::new(self, 17)
     }
     #[doc = "Bit 18 - Match or Capture Channel 2 Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mcei2(&mut self) -> Mcei2W<EvctrlSpec> {
         Mcei2W::new(self, 18)
     }
     #[doc = "Bit 19 - Match or Capture Channel 3 Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mcei3(&mut self) -> Mcei3W<EvctrlSpec> {
         Mcei3W::new(self, 19)
     }
     #[doc = "Bit 24 - Match or Capture Channel 0 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mceo0(&mut self) -> Mceo0W<EvctrlSpec> {
         Mceo0W::new(self, 24)
     }
     #[doc = "Bit 25 - Match or Capture Channel 1 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mceo1(&mut self) -> Mceo1W<EvctrlSpec> {
         Mceo1W::new(self, 25)
     }
     #[doc = "Bit 26 - Match or Capture Channel 2 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mceo2(&mut self) -> Mceo2W<EvctrlSpec> {
         Mceo2W::new(self, 26)
     }
     #[doc = "Bit 27 - Match or Capture Channel 3 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mceo3(&mut self) -> Mceo3W<EvctrlSpec> {
         Mceo3W::new(self, 27)
     }
@@ -623,10 +605,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

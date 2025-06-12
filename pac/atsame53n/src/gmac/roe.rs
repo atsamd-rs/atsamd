@@ -17,6 +17,4 @@ impl crate::RegisterSpec for RoeSpec {
 #[doc = "`read()` method returns [`roe::R`](R) reader structure"]
 impl crate::Readable for RoeSpec {}
 #[doc = "`reset()` method sets ROE to value 0"]
-impl crate::Resettable for RoeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RoeSpec {}

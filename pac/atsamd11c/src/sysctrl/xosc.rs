@@ -165,43 +165,36 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Oscillator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<XoscSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - Crystal Oscillator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xtalen(&mut self) -> XtalenW<XoscSpec> {
         XtalenW::new(self, 2)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<XoscSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<XoscSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bits 8:10 - Oscillator Gain"]
     #[inline(always)]
-    #[must_use]
     pub fn gain(&mut self) -> GainW<XoscSpec> {
         GainW::new(self, 8)
     }
     #[doc = "Bit 11 - Automatic Amplitude Gain Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ampgc(&mut self) -> AmpgcW<XoscSpec> {
         AmpgcW::new(self, 11)
     }
     #[doc = "Bits 12:15 - Start-Up Time"]
     #[inline(always)]
-    #[must_use]
     pub fn startup(&mut self) -> StartupW<XoscSpec> {
         StartupW::new(self, 12)
     }
@@ -216,8 +209,6 @@ impl crate::Readable for XoscSpec {}
 #[doc = "`write(|w| ..)` method takes [`xosc::W`](W) writer structure"]
 impl crate::Writable for XoscSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets XOSC to value 0x80"]
 impl crate::Resettable for XoscSpec {

@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Count Nanoseconds"]
     #[inline(always)]
-    #[must_use]
     pub fn cns(&mut self) -> CnsW<TiSpec> {
         CnsW::new(self, 0)
     }
     #[doc = "Bits 8:15 - Alternative Count Nanoseconds"]
     #[inline(always)]
-    #[must_use]
     pub fn acns(&mut self) -> AcnsW<TiSpec> {
         AcnsW::new(self, 8)
     }
     #[doc = "Bits 16:23 - Number of Increments"]
     #[inline(always)]
-    #[must_use]
     pub fn nit(&mut self) -> NitW<TiSpec> {
         NitW::new(self, 16)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for TiSpec {}
 #[doc = "`write(|w| ..)` method takes [`ti::W`](W) writer structure"]
 impl crate::Writable for TiSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TI to value 0"]
-impl crate::Resettable for TiSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TiSpec {}

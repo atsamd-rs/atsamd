@@ -36,25 +36,21 @@ impl R {
 impl W {
     #[doc = "Bit 8 - Smart Mode Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn smen(&mut self) -> SmenW<CtrlbSpec> {
         SmenW::new(self, 8)
     }
     #[doc = "Bit 9 - Quick Command Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn qcen(&mut self) -> QcenW<CtrlbSpec> {
         QcenW::new(self, 9)
     }
     #[doc = "Bits 16:17 - Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<CtrlbSpec> {
         CmdW::new(self, 16)
     }
     #[doc = "Bit 18 - Acknowledge Action"]
     #[inline(always)]
-    #[must_use]
     pub fn ackact(&mut self) -> AckactW<CtrlbSpec> {
         AckactW::new(self, 18)
     }
@@ -69,10 +65,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Data"]
     #[inline(always)]
-    #[must_use]
     pub fn data(&mut self) -> DataW<DccSpec> {
         DataW::new(self, 0)
     }
@@ -31,11 +30,6 @@ impl crate::Readable for DccSpec {}
 #[doc = "`write(|w| ..)` method takes [`dcc::W`](W) writer structure"]
 impl crate::Writable for DccSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets DCC[%s]
-to value 0"]
-impl crate::Resettable for DccSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets DCC[%s] to value 0"]
+impl crate::Resettable for DccSpec {}

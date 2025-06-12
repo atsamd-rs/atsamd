@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bits 0:10 - Address Value"]
     #[inline(always)]
-    #[must_use]
     pub fn addr(&mut self) -> AddrW<AddrSpec> {
         AddrW::new(self, 0)
     }
     #[doc = "Bit 13 - Length Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lenen(&mut self) -> LenenW<AddrSpec> {
         LenenW::new(self, 13)
     }
     #[doc = "Bit 14 - High Speed Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn hs(&mut self) -> HsW<AddrSpec> {
         HsW::new(self, 14)
     }
     #[doc = "Bit 15 - Ten Bit Addressing Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tenbiten(&mut self) -> TenbitenW<AddrSpec> {
         TenbitenW::new(self, 15)
     }
     #[doc = "Bits 16:23 - Length"]
     #[inline(always)]
-    #[must_use]
     pub fn len(&mut self) -> LenW<AddrSpec> {
         LenW::new(self, 16)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for AddrSpec {}
 #[doc = "`write(|w| ..)` method takes [`addr::W`](W) writer structure"]
 impl crate::Writable for AddrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ADDR to value 0"]
-impl crate::Resettable for AddrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for AddrSpec {}

@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Channel Transfer Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn terr(&mut self) -> TerrW<ChintenclrSpec> {
         TerrW::new(self, 0)
     }
     #[doc = "Bit 1 - Channel Transfer Complete Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcmpl(&mut self) -> TcmplW<ChintenclrSpec> {
         TcmplW::new(self, 1)
     }
     #[doc = "Bit 2 - Channel Suspend Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn susp(&mut self) -> SuspW<ChintenclrSpec> {
         SuspW::new(self, 2)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for ChintenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`chintenclr::W`](W) writer structure"]
 impl crate::Writable for ChintenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHINTENCLR to value 0"]
-impl crate::Resettable for ChintenclrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ChintenclrSpec {}

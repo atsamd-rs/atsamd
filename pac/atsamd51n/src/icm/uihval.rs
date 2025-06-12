@@ -5,7 +5,6 @@ pub type ValW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
 impl W {
     #[doc = "Bits 0:31 - Initial Hash Value"]
     #[inline(always)]
-    #[must_use]
     pub fn val(&mut self) -> ValW<UihvalSpec> {
         ValW::new(self, 0)
     }
@@ -18,11 +17,6 @@ impl crate::RegisterSpec for UihvalSpec {
 #[doc = "`write(|w| ..)` method takes [`uihval::W`](W) writer structure"]
 impl crate::Writable for UihvalSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets UIHVAL[%s]
-to value 0"]
-impl crate::Resettable for UihvalSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets UIHVAL[%s] to value 0"]
+impl crate::Resettable for UihvalSpec {}

@@ -17,6 +17,4 @@ impl crate::RegisterSpec for MftSpec {
 #[doc = "`read()` method returns [`mft::R`](R) reader structure"]
 impl crate::Readable for MftSpec {}
 #[doc = "`reset()` method sets MFT to value 0"]
-impl crate::Resettable for MftSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for MftSpec {}

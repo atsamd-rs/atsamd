@@ -133,85 +133,71 @@ impl R {
 impl W {
     #[doc = "Bit 0 - MemManage exception active bit"]
     #[inline(always)]
-    #[must_use]
     pub fn memfaultact(&mut self) -> MemfaultactW<ShcsrSpec> {
         MemfaultactW::new(self, 0)
     }
     #[doc = "Bit 1 - BusFault exception active bit"]
     #[inline(always)]
-    #[must_use]
     pub fn busfaultact(&mut self) -> BusfaultactW<ShcsrSpec> {
         BusfaultactW::new(self, 1)
     }
     #[doc = "Bit 3 - UsageFault exception active bit"]
     #[inline(always)]
-    #[must_use]
     pub fn usgfaultact(&mut self) -> UsgfaultactW<ShcsrSpec> {
         UsgfaultactW::new(self, 3)
     }
     #[doc = "Bit 7 - SVCall active bit"]
     #[inline(always)]
-    #[must_use]
     pub fn svcallact(&mut self) -> SvcallactW<ShcsrSpec> {
         SvcallactW::new(self, 7)
     }
     #[doc = "Bit 8 - DebugMonitor exception active bit"]
     #[inline(always)]
-    #[must_use]
     pub fn monitoract(&mut self) -> MonitoractW<ShcsrSpec> {
         MonitoractW::new(self, 8)
     }
     #[doc = "Bit 10 - PendSV exception active bit"]
     #[inline(always)]
-    #[must_use]
     pub fn pendsvact(&mut self) -> PendsvactW<ShcsrSpec> {
         PendsvactW::new(self, 10)
     }
     #[doc = "Bit 11 - SysTick exception active bit"]
     #[inline(always)]
-    #[must_use]
     pub fn systickact(&mut self) -> SystickactW<ShcsrSpec> {
         SystickactW::new(self, 11)
     }
     #[doc = "Bit 12 - UsageFault exception pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn usgfaultpended(&mut self) -> UsgfaultpendedW<ShcsrSpec> {
         UsgfaultpendedW::new(self, 12)
     }
     #[doc = "Bit 13 - MemManage exception pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn memfaultpended(&mut self) -> MemfaultpendedW<ShcsrSpec> {
         MemfaultpendedW::new(self, 13)
     }
     #[doc = "Bit 14 - BusFault exception pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn busfaultpended(&mut self) -> BusfaultpendedW<ShcsrSpec> {
         BusfaultpendedW::new(self, 14)
     }
     #[doc = "Bit 15 - SVCall pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn svcallpended(&mut self) -> SvcallpendedW<ShcsrSpec> {
         SvcallpendedW::new(self, 15)
     }
     #[doc = "Bit 16 - MemManage enable bit"]
     #[inline(always)]
-    #[must_use]
     pub fn memfaultena(&mut self) -> MemfaultenaW<ShcsrSpec> {
         MemfaultenaW::new(self, 16)
     }
     #[doc = "Bit 17 - BusFault enable bit"]
     #[inline(always)]
-    #[must_use]
     pub fn busfaultena(&mut self) -> BusfaultenaW<ShcsrSpec> {
         BusfaultenaW::new(self, 17)
     }
     #[doc = "Bit 18 - UsageFault enable bit"]
     #[inline(always)]
-    #[must_use]
     pub fn usgfaultena(&mut self) -> UsgfaultenaW<ShcsrSpec> {
         UsgfaultenaW::new(self, 18)
     }
@@ -226,10 +212,6 @@ impl crate::Readable for ShcsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`shcsr::W`](W) writer structure"]
 impl crate::Writable for ShcsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SHCSR to value 0"]
-impl crate::Resettable for ShcsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ShcsrSpec {}

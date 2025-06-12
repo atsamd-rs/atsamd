@@ -158,152 +158,127 @@ impl RegisterBlock {
         &self.cid3
     }
 }
-#[doc = "POSITION (rw) register accessor: MTB Position\n\nYou can [`read`](crate::Reg::read) this register and get [`position::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`position::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@position`]
-module"]
+#[doc = "POSITION (rw) register accessor: MTB Position\n\nYou can [`read`](crate::Reg::read) this register and get [`position::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`position::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@position`] module"]
 #[doc(alias = "POSITION")]
 pub type Position = crate::Reg<position::PositionSpec>;
 #[doc = "MTB Position"]
 pub mod position;
-#[doc = "MASTER (rw) register accessor: MTB Master\n\nYou can [`read`](crate::Reg::read) this register and get [`master::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`master::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@master`]
-module"]
+#[doc = "MASTER (rw) register accessor: MTB Master\n\nYou can [`read`](crate::Reg::read) this register and get [`master::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`master::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@master`] module"]
 #[doc(alias = "MASTER")]
 pub type Master = crate::Reg<master::MasterSpec>;
 #[doc = "MTB Master"]
 pub mod master;
-#[doc = "FLOW (rw) register accessor: MTB Flow\n\nYou can [`read`](crate::Reg::read) this register and get [`flow::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`flow::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@flow`]
-module"]
+#[doc = "FLOW (rw) register accessor: MTB Flow\n\nYou can [`read`](crate::Reg::read) this register and get [`flow::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`flow::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@flow`] module"]
 #[doc(alias = "FLOW")]
 pub type Flow = crate::Reg<flow::FlowSpec>;
 #[doc = "MTB Flow"]
 pub mod flow;
-#[doc = "BASE (r) register accessor: MTB Base\n\nYou can [`read`](crate::Reg::read) this register and get [`base::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@base`]
-module"]
+#[doc = "BASE (r) register accessor: MTB Base\n\nYou can [`read`](crate::Reg::read) this register and get [`base::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@base`] module"]
 #[doc(alias = "BASE")]
 pub type Base = crate::Reg<base::BaseSpec>;
 #[doc = "MTB Base"]
 pub mod base;
-#[doc = "ITCTRL (rw) register accessor: MTB Integration Mode Control\n\nYou can [`read`](crate::Reg::read) this register and get [`itctrl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`itctrl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@itctrl`]
-module"]
+#[doc = "ITCTRL (rw) register accessor: MTB Integration Mode Control\n\nYou can [`read`](crate::Reg::read) this register and get [`itctrl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`itctrl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@itctrl`] module"]
 #[doc(alias = "ITCTRL")]
 pub type Itctrl = crate::Reg<itctrl::ItctrlSpec>;
 #[doc = "MTB Integration Mode Control"]
 pub mod itctrl;
-#[doc = "CLAIMSET (rw) register accessor: MTB Claim Set\n\nYou can [`read`](crate::Reg::read) this register and get [`claimset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`claimset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@claimset`]
-module"]
+#[doc = "CLAIMSET (rw) register accessor: MTB Claim Set\n\nYou can [`read`](crate::Reg::read) this register and get [`claimset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`claimset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@claimset`] module"]
 #[doc(alias = "CLAIMSET")]
 pub type Claimset = crate::Reg<claimset::ClaimsetSpec>;
 #[doc = "MTB Claim Set"]
 pub mod claimset;
-#[doc = "CLAIMCLR (rw) register accessor: MTB Claim Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`claimclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`claimclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@claimclr`]
-module"]
+#[doc = "CLAIMCLR (rw) register accessor: MTB Claim Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`claimclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`claimclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@claimclr`] module"]
 #[doc(alias = "CLAIMCLR")]
 pub type Claimclr = crate::Reg<claimclr::ClaimclrSpec>;
 #[doc = "MTB Claim Clear"]
 pub mod claimclr;
-#[doc = "LOCKACCESS (rw) register accessor: MTB Lock Access\n\nYou can [`read`](crate::Reg::read) this register and get [`lockaccess::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`lockaccess::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@lockaccess`]
-module"]
+#[doc = "LOCKACCESS (rw) register accessor: MTB Lock Access\n\nYou can [`read`](crate::Reg::read) this register and get [`lockaccess::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`lockaccess::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@lockaccess`] module"]
 #[doc(alias = "LOCKACCESS")]
 pub type Lockaccess = crate::Reg<lockaccess::LockaccessSpec>;
 #[doc = "MTB Lock Access"]
 pub mod lockaccess;
-#[doc = "LOCKSTATUS (r) register accessor: MTB Lock Status\n\nYou can [`read`](crate::Reg::read) this register and get [`lockstatus::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@lockstatus`]
-module"]
+#[doc = "LOCKSTATUS (r) register accessor: MTB Lock Status\n\nYou can [`read`](crate::Reg::read) this register and get [`lockstatus::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@lockstatus`] module"]
 #[doc(alias = "LOCKSTATUS")]
 pub type Lockstatus = crate::Reg<lockstatus::LockstatusSpec>;
 #[doc = "MTB Lock Status"]
 pub mod lockstatus;
-#[doc = "AUTHSTATUS (r) register accessor: MTB Authentication Status\n\nYou can [`read`](crate::Reg::read) this register and get [`authstatus::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@authstatus`]
-module"]
+#[doc = "AUTHSTATUS (r) register accessor: MTB Authentication Status\n\nYou can [`read`](crate::Reg::read) this register and get [`authstatus::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@authstatus`] module"]
 #[doc(alias = "AUTHSTATUS")]
 pub type Authstatus = crate::Reg<authstatus::AuthstatusSpec>;
 #[doc = "MTB Authentication Status"]
 pub mod authstatus;
-#[doc = "DEVARCH (r) register accessor: MTB Device Architecture\n\nYou can [`read`](crate::Reg::read) this register and get [`devarch::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@devarch`]
-module"]
+#[doc = "DEVARCH (r) register accessor: MTB Device Architecture\n\nYou can [`read`](crate::Reg::read) this register and get [`devarch::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@devarch`] module"]
 #[doc(alias = "DEVARCH")]
 pub type Devarch = crate::Reg<devarch::DevarchSpec>;
 #[doc = "MTB Device Architecture"]
 pub mod devarch;
-#[doc = "DEVID (r) register accessor: MTB Device Configuration\n\nYou can [`read`](crate::Reg::read) this register and get [`devid::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@devid`]
-module"]
+#[doc = "DEVID (r) register accessor: MTB Device Configuration\n\nYou can [`read`](crate::Reg::read) this register and get [`devid::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@devid`] module"]
 #[doc(alias = "DEVID")]
 pub type Devid = crate::Reg<devid::DevidSpec>;
 #[doc = "MTB Device Configuration"]
 pub mod devid;
-#[doc = "DEVTYPE (r) register accessor: MTB Device Type\n\nYou can [`read`](crate::Reg::read) this register and get [`devtype::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@devtype`]
-module"]
+#[doc = "DEVTYPE (r) register accessor: MTB Device Type\n\nYou can [`read`](crate::Reg::read) this register and get [`devtype::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@devtype`] module"]
 #[doc(alias = "DEVTYPE")]
 pub type Devtype = crate::Reg<devtype::DevtypeSpec>;
 #[doc = "MTB Device Type"]
 pub mod devtype;
-#[doc = "PID4 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid4::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid4`]
-module"]
+#[doc = "PID4 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid4::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid4`] module"]
 #[doc(alias = "PID4")]
 pub type Pid4 = crate::Reg<pid4::Pid4Spec>;
 #[doc = "CoreSight"]
 pub mod pid4;
-#[doc = "PID5 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid5::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid5`]
-module"]
+#[doc = "PID5 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid5::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid5`] module"]
 #[doc(alias = "PID5")]
 pub type Pid5 = crate::Reg<pid5::Pid5Spec>;
 #[doc = "CoreSight"]
 pub mod pid5;
-#[doc = "PID6 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid6::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid6`]
-module"]
+#[doc = "PID6 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid6::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid6`] module"]
 #[doc(alias = "PID6")]
 pub type Pid6 = crate::Reg<pid6::Pid6Spec>;
 #[doc = "CoreSight"]
 pub mod pid6;
-#[doc = "PID7 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid7::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid7`]
-module"]
+#[doc = "PID7 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid7::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid7`] module"]
 #[doc(alias = "PID7")]
 pub type Pid7 = crate::Reg<pid7::Pid7Spec>;
 #[doc = "CoreSight"]
 pub mod pid7;
-#[doc = "PID0 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid0::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid0`]
-module"]
+#[doc = "PID0 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid0::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid0`] module"]
 #[doc(alias = "PID0")]
 pub type Pid0 = crate::Reg<pid0::Pid0Spec>;
 #[doc = "CoreSight"]
 pub mod pid0;
-#[doc = "PID1 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid1::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid1`]
-module"]
+#[doc = "PID1 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid1::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid1`] module"]
 #[doc(alias = "PID1")]
 pub type Pid1 = crate::Reg<pid1::Pid1Spec>;
 #[doc = "CoreSight"]
 pub mod pid1;
-#[doc = "PID2 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid2::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid2`]
-module"]
+#[doc = "PID2 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid2::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid2`] module"]
 #[doc(alias = "PID2")]
 pub type Pid2 = crate::Reg<pid2::Pid2Spec>;
 #[doc = "CoreSight"]
 pub mod pid2;
-#[doc = "PID3 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid3::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid3`]
-module"]
+#[doc = "PID3 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`pid3::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pid3`] module"]
 #[doc(alias = "PID3")]
 pub type Pid3 = crate::Reg<pid3::Pid3Spec>;
 #[doc = "CoreSight"]
 pub mod pid3;
-#[doc = "CID0 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`cid0::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cid0`]
-module"]
+#[doc = "CID0 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`cid0::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cid0`] module"]
 #[doc(alias = "CID0")]
 pub type Cid0 = crate::Reg<cid0::Cid0Spec>;
 #[doc = "CoreSight"]
 pub mod cid0;
-#[doc = "CID1 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`cid1::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cid1`]
-module"]
+#[doc = "CID1 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`cid1::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cid1`] module"]
 #[doc(alias = "CID1")]
 pub type Cid1 = crate::Reg<cid1::Cid1Spec>;
 #[doc = "CoreSight"]
 pub mod cid1;
-#[doc = "CID2 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`cid2::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cid2`]
-module"]
+#[doc = "CID2 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`cid2::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cid2`] module"]
 #[doc(alias = "CID2")]
 pub type Cid2 = crate::Reg<cid2::Cid2Spec>;
 #[doc = "CoreSight"]
 pub mod cid2;
-#[doc = "CID3 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`cid3::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cid3`]
-module"]
+#[doc = "CID3 (r) register accessor: CoreSight\n\nYou can [`read`](crate::Reg::read) this register and get [`cid3::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cid3`] module"]
 #[doc(alias = "CID3")]
 pub type Cid3 = crate::Reg<cid3::Cid3Spec>;
 #[doc = "CoreSight"]

@@ -17,6 +17,4 @@ impl crate::RegisterSpec for EfrslSpec {
 #[doc = "`read()` method returns [`efrsl::R`](R) reader structure"]
 impl crate::Readable for EfrslSpec {}
 #[doc = "`reset()` method sets EFRSL to value 0"]
-impl crate::Resettable for EfrslSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EfrslSpec {}

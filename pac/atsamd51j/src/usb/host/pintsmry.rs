@@ -66,6 +66,4 @@ impl crate::RegisterSpec for PintsmrySpec {
 #[doc = "`read()` method returns [`pintsmry::R`](R) reader structure"]
 impl crate::Readable for PintsmrySpec {}
 #[doc = "`reset()` method sets PINTSMRY to value 0"]
-impl crate::Resettable for PintsmrySpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for PintsmrySpec {}

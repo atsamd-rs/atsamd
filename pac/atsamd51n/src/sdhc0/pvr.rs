@@ -165,19 +165,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:9 - SDCLK Frequency Select Value for Initialization"]
     #[inline(always)]
-    #[must_use]
     pub fn sdclkfsel(&mut self) -> SdclkfselW<PvrSpec> {
         SdclkfselW::new(self, 0)
     }
     #[doc = "Bit 10 - Clock Generator Select Value for Initialization"]
     #[inline(always)]
-    #[must_use]
     pub fn clkgsel(&mut self) -> ClkgselW<PvrSpec> {
         ClkgselW::new(self, 10)
     }
     #[doc = "Bits 14:15 - Driver Strength Select Value for Initialization"]
     #[inline(always)]
-    #[must_use]
     pub fn drvsel(&mut self) -> DrvselW<PvrSpec> {
         DrvselW::new(self, 14)
     }
@@ -192,11 +189,6 @@ impl crate::Readable for PvrSpec {}
 #[doc = "`write(|w| ..)` method takes [`pvr::W`](W) writer structure"]
 impl crate::Writable for PvrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
-#[doc = "`reset()` method sets PVR[%s]
-to value 0"]
-impl crate::Resettable for PvrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+#[doc = "`reset()` method sets PVR[%s] to value 0"]
+impl crate::Resettable for PvrSpec {}

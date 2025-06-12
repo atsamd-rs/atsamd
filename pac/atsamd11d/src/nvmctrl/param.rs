@@ -117,10 +117,6 @@ impl crate::Readable for ParamSpec {}
 #[doc = "`write(|w| ..)` method takes [`param::W`](W) writer structure"]
 impl crate::Writable for ParamSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets PARAM to value 0"]
-impl crate::Resettable for ParamSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ParamSpec {}

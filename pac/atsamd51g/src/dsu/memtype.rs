@@ -17,6 +17,4 @@ impl crate::RegisterSpec for MemtypeSpec {
 #[doc = "`read()` method returns [`memtype::R`](R) reader structure"]
 impl crate::Readable for MemtypeSpec {}
 #[doc = "`reset()` method sets MEMTYPE to value 0"]
-impl crate::Resettable for MemtypeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for MemtypeSpec {}

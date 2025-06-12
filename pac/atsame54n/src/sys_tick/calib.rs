@@ -99,6 +99,4 @@ impl crate::RegisterSpec for CalibSpec {
 #[doc = "`read()` method returns [`calib::R`](R) reader structure"]
 impl crate::Readable for CalibSpec {}
 #[doc = "`reset()` method sets CALIB to value 0"]
-impl crate::Resettable for CalibSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CalibSpec {}

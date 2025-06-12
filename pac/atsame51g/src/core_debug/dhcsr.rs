@@ -96,37 +96,31 @@ impl R {
 impl W {
     #[doc = "Bit 0"]
     #[inline(always)]
-    #[must_use]
     pub fn c_debugen(&mut self) -> CDebugenW<DhcsrSpec> {
         CDebugenW::new(self, 0)
     }
     #[doc = "Bit 1"]
     #[inline(always)]
-    #[must_use]
     pub fn c_halt(&mut self) -> CHaltW<DhcsrSpec> {
         CHaltW::new(self, 1)
     }
     #[doc = "Bit 2"]
     #[inline(always)]
-    #[must_use]
     pub fn c_step(&mut self) -> CStepW<DhcsrSpec> {
         CStepW::new(self, 2)
     }
     #[doc = "Bit 3"]
     #[inline(always)]
-    #[must_use]
     pub fn c_maskints(&mut self) -> CMaskintsW<DhcsrSpec> {
         CMaskintsW::new(self, 3)
     }
     #[doc = "Bit 5"]
     #[inline(always)]
-    #[must_use]
     pub fn c_snapstall(&mut self) -> CSnapstallW<DhcsrSpec> {
         CSnapstallW::new(self, 5)
     }
     #[doc = "Bits 16:31"]
     #[inline(always)]
-    #[must_use]
     pub fn dbgkey(&mut self) -> DbgkeyW<DhcsrSpec> {
         DbgkeyW::new(self, 16)
     }
@@ -141,10 +135,6 @@ impl crate::Readable for DhcsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`dhcsr::W`](W) writer structure"]
 impl crate::Writable for DhcsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DHCSR to value 0"]
-impl crate::Resettable for DhcsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DhcsrSpec {}

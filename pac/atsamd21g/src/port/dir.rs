@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Port Data Direction"]
     #[inline(always)]
-    #[must_use]
     pub fn dir(&mut self) -> DirW<DirSpec> {
         DirW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for DirSpec {}
 #[doc = "`write(|w| ..)` method takes [`dir::W`](W) writer structure"]
 impl crate::Writable for DirSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DIR%s to value 0"]
-impl crate::Resettable for DirSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DirSpec {}

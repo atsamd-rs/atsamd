@@ -159,37 +159,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Indicates how processor enters Thread mode"]
     #[inline(always)]
-    #[must_use]
     pub fn nonbasethrdena(&mut self) -> NonbasethrdenaW<CcrSpec> {
         NonbasethrdenaW::new(self, 0)
     }
     #[doc = "Bit 1 - Enables unprivileged software access to STIR register"]
     #[inline(always)]
-    #[must_use]
     pub fn usersetmpend(&mut self) -> UsersetmpendW<CcrSpec> {
         UsersetmpendW::new(self, 1)
     }
     #[doc = "Bit 3 - Enables unaligned access traps"]
     #[inline(always)]
-    #[must_use]
     pub fn unalign_trp(&mut self) -> UnalignTrpW<CcrSpec> {
         UnalignTrpW::new(self, 3)
     }
     #[doc = "Bit 4 - Enables divide by 0 trap"]
     #[inline(always)]
-    #[must_use]
     pub fn div_0_trp(&mut self) -> Div0TrpW<CcrSpec> {
         Div0TrpW::new(self, 4)
     }
     #[doc = "Bit 8 - Ignore LDM/STM BusFault for -1/-2 priority handlers"]
     #[inline(always)]
-    #[must_use]
     pub fn bfhfnmign(&mut self) -> BfhfnmignW<CcrSpec> {
         BfhfnmignW::new(self, 8)
     }
     #[doc = "Bit 9 - Indicates stack alignment on exception entry"]
     #[inline(always)]
-    #[must_use]
     pub fn stkalign(&mut self) -> StkalignW<CcrSpec> {
         StkalignW::new(self, 9)
     }
@@ -204,8 +198,6 @@ impl crate::Readable for CcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`ccr::W`](W) writer structure"]
 impl crate::Writable for CcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CCR to value 0x0200"]
 impl crate::Resettable for CcrSpec {

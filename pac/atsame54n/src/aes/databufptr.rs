@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Input Data Pointer"]
     #[inline(always)]
-    #[must_use]
     pub fn indataptr(&mut self) -> IndataptrW<DatabufptrSpec> {
         IndataptrW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for DatabufptrSpec {}
 #[doc = "`write(|w| ..)` method takes [`databufptr::W`](W) writer structure"]
 impl crate::Writable for DatabufptrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DATABUFPTR to value 0"]
-impl crate::Resettable for DatabufptrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DatabufptrSpec {}

@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 5:23 - Counter Value"]
     #[inline(always)]
-    #[must_use]
     pub fn count(&mut self) -> CountW<CountDith5Spec> {
         CountW::new(self, 5)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for CountDith5Spec {}
 #[doc = "`write(|w| ..)` method takes [`count_dith5::W`](W) writer structure"]
 impl crate::Writable for CountDith5Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets COUNT_DITH5 to value 0"]
-impl crate::Resettable for CountDith5Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CountDith5Spec {}

@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Receive Ready 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxrdy0(&mut self) -> Rxrdy0W<IntenclrSpec> {
         Rxrdy0W::new(self, 0)
     }
     #[doc = "Bit 1 - Receive Ready 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxrdy1(&mut self) -> Rxrdy1W<IntenclrSpec> {
         Rxrdy1W::new(self, 1)
     }
     #[doc = "Bit 4 - Receive Overrun 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxor0(&mut self) -> Rxor0W<IntenclrSpec> {
         Rxor0W::new(self, 4)
     }
     #[doc = "Bit 5 - Receive Overrun 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxor1(&mut self) -> Rxor1W<IntenclrSpec> {
         Rxor1W::new(self, 5)
     }
     #[doc = "Bit 8 - Transmit Ready 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txrdy0(&mut self) -> Txrdy0W<IntenclrSpec> {
         Txrdy0W::new(self, 8)
     }
     #[doc = "Bit 9 - Transmit Ready 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txrdy1(&mut self) -> Txrdy1W<IntenclrSpec> {
         Txrdy1W::new(self, 9)
     }
     #[doc = "Bit 12 - Transmit Underrun 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txur0(&mut self) -> Txur0W<IntenclrSpec> {
         Txur0W::new(self, 12)
     }
     #[doc = "Bit 13 - Transmit Underrun 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txur1(&mut self) -> Txur1W<IntenclrSpec> {
         Txur1W::new(self, 13)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

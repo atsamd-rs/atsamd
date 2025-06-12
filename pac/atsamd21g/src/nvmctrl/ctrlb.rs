@@ -259,31 +259,26 @@ impl R {
 impl W {
     #[doc = "Bits 1:4 - NVM Read Wait States"]
     #[inline(always)]
-    #[must_use]
     pub fn rws(&mut self) -> RwsW<CtrlbSpec> {
         RwsW::new(self, 1)
     }
     #[doc = "Bit 7 - Manual Write"]
     #[inline(always)]
-    #[must_use]
     pub fn manw(&mut self) -> ManwW<CtrlbSpec> {
         ManwW::new(self, 7)
     }
     #[doc = "Bits 8:9 - Power Reduction Mode during Sleep"]
     #[inline(always)]
-    #[must_use]
     pub fn sleepprm(&mut self) -> SleepprmW<CtrlbSpec> {
         SleepprmW::new(self, 8)
     }
     #[doc = "Bits 16:17 - NVMCTRL Read Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn readmode(&mut self) -> ReadmodeW<CtrlbSpec> {
         ReadmodeW::new(self, 16)
     }
     #[doc = "Bit 18 - Cache Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn cachedis(&mut self) -> CachedisW<CtrlbSpec> {
         CachedisW::new(self, 18)
     }
@@ -298,10 +293,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

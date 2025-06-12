@@ -10,11 +10,11 @@ pub enum Winmodeselect {
     Disable = 0,
     #[doc = "1: Mode 1: RESULT > WINLT"]
     Mode1 = 1,
-    #[doc = "2: Mode 2: RESULT &lt; WINUT"]
+    #[doc = "2: Mode 2: RESULT < WINUT"]
     Mode2 = 2,
-    #[doc = "3: Mode 3: WINLT &lt; RESULT &lt; WINUT"]
+    #[doc = "3: Mode 3: WINLT < RESULT < WINUT"]
     Mode3 = 3,
-    #[doc = "4: Mode 4: !(WINLT &lt; RESULT &lt; WINUT)"]
+    #[doc = "4: Mode 4: !(WINLT < RESULT < WINUT)"]
     Mode4 = 4,
 }
 impl From<Winmodeselect> for u8 {
@@ -52,17 +52,17 @@ impl WinmodeR {
     pub fn is_mode1(&self) -> bool {
         *self == Winmodeselect::Mode1
     }
-    #[doc = "Mode 2: RESULT &lt; WINUT"]
+    #[doc = "Mode 2: RESULT < WINUT"]
     #[inline(always)]
     pub fn is_mode2(&self) -> bool {
         *self == Winmodeselect::Mode2
     }
-    #[doc = "Mode 3: WINLT &lt; RESULT &lt; WINUT"]
+    #[doc = "Mode 3: WINLT < RESULT < WINUT"]
     #[inline(always)]
     pub fn is_mode3(&self) -> bool {
         *self == Winmodeselect::Mode3
     }
-    #[doc = "Mode 4: !(WINLT &lt; RESULT &lt; WINUT)"]
+    #[doc = "Mode 4: !(WINLT < RESULT < WINUT)"]
     #[inline(always)]
     pub fn is_mode4(&self) -> bool {
         *self == Winmodeselect::Mode4
@@ -85,17 +85,17 @@ where
     pub fn mode1(self) -> &'a mut crate::W<REG> {
         self.variant(Winmodeselect::Mode1)
     }
-    #[doc = "Mode 2: RESULT &lt; WINUT"]
+    #[doc = "Mode 2: RESULT < WINUT"]
     #[inline(always)]
     pub fn mode2(self) -> &'a mut crate::W<REG> {
         self.variant(Winmodeselect::Mode2)
     }
-    #[doc = "Mode 3: WINLT &lt; RESULT &lt; WINUT"]
+    #[doc = "Mode 3: WINLT < RESULT < WINUT"]
     #[inline(always)]
     pub fn mode3(self) -> &'a mut crate::W<REG> {
         self.variant(Winmodeselect::Mode3)
     }
-    #[doc = "Mode 4: !(WINLT &lt; RESULT &lt; WINUT)"]
+    #[doc = "Mode 4: !(WINLT < RESULT < WINUT)"]
     #[inline(always)]
     pub fn mode4(self) -> &'a mut crate::W<REG> {
         self.variant(Winmodeselect::Mode4)
@@ -111,7 +111,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Window Monitor Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn winmode(&mut self) -> WinmodeW<WinctrlSpec> {
         WinmodeW::new(self, 0)
     }
@@ -126,10 +125,6 @@ impl crate::Readable for WinctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`winctrl::W`](W) writer structure"]
 impl crate::Writable for WinctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets WINCTRL to value 0"]
-impl crate::Resettable for WinctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for WinctrlSpec {}

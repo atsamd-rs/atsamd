@@ -532,25 +532,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - Positive Mux Input Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn muxpos(&mut self) -> MuxposW<InputctrlSpec> {
         MuxposW::new(self, 0)
     }
     #[doc = "Bit 7 - Differential Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn diffmode(&mut self) -> DiffmodeW<InputctrlSpec> {
         DiffmodeW::new(self, 7)
     }
     #[doc = "Bits 8:12 - Negative Mux Input Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn muxneg(&mut self) -> MuxnegW<InputctrlSpec> {
         MuxnegW::new(self, 8)
     }
     #[doc = "Bit 15 - Stop DMA Sequencing"]
     #[inline(always)]
-    #[must_use]
     pub fn dseqstop(&mut self) -> DseqstopW<InputctrlSpec> {
         DseqstopW::new(self, 15)
     }
@@ -565,10 +561,6 @@ impl crate::Readable for InputctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`inputctrl::W`](W) writer structure"]
 impl crate::Writable for InputctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INPUTCTRL to value 0"]
-impl crate::Resettable for InputctrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for InputctrlSpec {}

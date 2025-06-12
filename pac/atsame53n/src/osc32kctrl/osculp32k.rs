@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Enable Out 32k"]
     #[inline(always)]
-    #[must_use]
     pub fn en32k(&mut self) -> En32kW<Osculp32kSpec> {
         En32kW::new(self, 1)
     }
     #[doc = "Bit 2 - Enable Out 1k"]
     #[inline(always)]
-    #[must_use]
     pub fn en1k(&mut self) -> En1kW<Osculp32kSpec> {
         En1kW::new(self, 2)
     }
     #[doc = "Bit 15 - Write Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn wrtlock(&mut self) -> WrtlockW<Osculp32kSpec> {
         WrtlockW::new(self, 15)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for Osculp32kSpec {}
 #[doc = "`write(|w| ..)` method takes [`osculp32k::W`](W) writer structure"]
 impl crate::Writable for Osculp32kSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets OSCULP32K to value 0"]
-impl crate::Resettable for Osculp32kSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Osculp32kSpec {}

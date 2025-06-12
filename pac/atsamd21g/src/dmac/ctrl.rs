@@ -70,43 +70,36 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - DMA Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaenable(&mut self) -> DmaenableW<CtrlSpec> {
         DmaenableW::new(self, 1)
     }
     #[doc = "Bit 2 - CRC Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn crcenable(&mut self) -> CrcenableW<CtrlSpec> {
         CrcenableW::new(self, 2)
     }
     #[doc = "Bit 8 - Priority Level 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lvlen0(&mut self) -> Lvlen0W<CtrlSpec> {
         Lvlen0W::new(self, 8)
     }
     #[doc = "Bit 9 - Priority Level 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lvlen1(&mut self) -> Lvlen1W<CtrlSpec> {
         Lvlen1W::new(self, 9)
     }
     #[doc = "Bit 10 - Priority Level 2 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lvlen2(&mut self) -> Lvlen2W<CtrlSpec> {
         Lvlen2W::new(self, 10)
     }
     #[doc = "Bit 11 - Priority Level 3 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lvlen3(&mut self) -> Lvlen3W<CtrlSpec> {
         Lvlen3W::new(self, 11)
     }
@@ -121,10 +114,6 @@ impl crate::Readable for CtrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrl::W`](W) writer structure"]
 impl crate::Writable for CtrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRL to value 0"]
-impl crate::Resettable for CtrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlSpec {}

@@ -150,7 +150,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - APBB Prescaler Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn apbbdiv(&mut self) -> ApbbdivW<ApbbselSpec> {
         ApbbdivW::new(self, 0)
     }
@@ -165,10 +164,6 @@ impl crate::Readable for ApbbselSpec {}
 #[doc = "`write(|w| ..)` method takes [`apbbsel::W`](W) writer structure"]
 impl crate::Writable for ApbbselSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets APBBSEL to value 0"]
-impl crate::Resettable for ApbbselSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ApbbselSpec {}

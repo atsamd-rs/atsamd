@@ -436,19 +436,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Rx FIFO 0 Data Field Size"]
     #[inline(always)]
-    #[must_use]
     pub fn f0ds(&mut self) -> F0dsW<RxescSpec> {
         F0dsW::new(self, 0)
     }
     #[doc = "Bits 4:6 - Rx FIFO 1 Data Field Size"]
     #[inline(always)]
-    #[must_use]
     pub fn f1ds(&mut self) -> F1dsW<RxescSpec> {
         F1dsW::new(self, 4)
     }
     #[doc = "Bits 8:10 - Rx Buffer Data Field Size"]
     #[inline(always)]
-    #[must_use]
     pub fn rbds(&mut self) -> RbdsW<RxescSpec> {
         RbdsW::new(self, 8)
     }
@@ -463,10 +460,6 @@ impl crate::Readable for RxescSpec {}
 #[doc = "`write(|w| ..)` method takes [`rxesc::W`](W) writer structure"]
 impl crate::Writable for RxescSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RXESC to value 0"]
-impl crate::Resettable for RxescSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RxescSpec {}

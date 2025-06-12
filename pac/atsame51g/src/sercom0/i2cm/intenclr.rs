@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Master On Bus Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn mb(&mut self) -> MbW<IntenclrSpec> {
         MbW::new(self, 0)
     }
     #[doc = "Bit 1 - Slave On Bus Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn sb(&mut self) -> SbW<IntenclrSpec> {
         SbW::new(self, 1)
     }
     #[doc = "Bit 7 - Combined Error Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn error(&mut self) -> ErrorW<IntenclrSpec> {
         ErrorW::new(self, 7)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

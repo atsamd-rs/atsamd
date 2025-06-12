@@ -66,6 +66,4 @@ impl crate::RegisterSpec for RcauseSpec {
 #[doc = "`read()` method returns [`rcause::R`](R) reader structure"]
 impl crate::Readable for RcauseSpec {}
 #[doc = "`reset()` method sets RCAUSE to value 0"]
-impl crate::Resettable for RcauseSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for RcauseSpec {}

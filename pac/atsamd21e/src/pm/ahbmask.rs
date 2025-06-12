@@ -70,43 +70,36 @@ impl R {
 impl W {
     #[doc = "Bit 0 - HPB0 AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb0_(&mut self) -> Hpb0_W<AhbmaskSpec> {
         Hpb0_W::new(self, 0)
     }
     #[doc = "Bit 1 - HPB1 AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb1_(&mut self) -> Hpb1_W<AhbmaskSpec> {
         Hpb1_W::new(self, 1)
     }
     #[doc = "Bit 2 - HPB2 AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb2_(&mut self) -> Hpb2_W<AhbmaskSpec> {
         Hpb2_W::new(self, 2)
     }
     #[doc = "Bit 3 - DSU AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn dsu_(&mut self) -> Dsu_W<AhbmaskSpec> {
         Dsu_W::new(self, 3)
     }
     #[doc = "Bit 4 - NVMCTRL AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn nvmctrl_(&mut self) -> Nvmctrl_W<AhbmaskSpec> {
         Nvmctrl_W::new(self, 4)
     }
     #[doc = "Bit 5 - DMAC AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn dmac_(&mut self) -> Dmac_W<AhbmaskSpec> {
         Dmac_W::new(self, 5)
     }
     #[doc = "Bit 6 - USB AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn usb_(&mut self) -> Usb_W<AhbmaskSpec> {
         Usb_W::new(self, 6)
     }
@@ -121,8 +114,6 @@ impl crate::Readable for AhbmaskSpec {}
 #[doc = "`write(|w| ..)` method takes [`ahbmask::W`](W) writer structure"]
 impl crate::Writable for AhbmaskSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets AHBMASK to value 0x7f"]
 impl crate::Resettable for AhbmaskSpec {

@@ -568,67 +568,56 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Fault A Source"]
     #[inline(always)]
-    #[must_use]
     pub fn src(&mut self) -> SrcW<FctrlaSpec> {
         SrcW::new(self, 0)
     }
     #[doc = "Bit 3 - Fault A Keeper"]
     #[inline(always)]
-    #[must_use]
     pub fn keep(&mut self) -> KeepW<FctrlaSpec> {
         KeepW::new(self, 3)
     }
     #[doc = "Bit 4 - Fault A Qualification"]
     #[inline(always)]
-    #[must_use]
     pub fn qual(&mut self) -> QualW<FctrlaSpec> {
         QualW::new(self, 4)
     }
     #[doc = "Bits 5:6 - Fault A Blanking Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn blank(&mut self) -> BlankW<FctrlaSpec> {
         BlankW::new(self, 5)
     }
     #[doc = "Bit 7 - Fault A Restart"]
     #[inline(always)]
-    #[must_use]
     pub fn restart(&mut self) -> RestartW<FctrlaSpec> {
         RestartW::new(self, 7)
     }
     #[doc = "Bits 8:9 - Fault A Halt Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn halt(&mut self) -> HaltW<FctrlaSpec> {
         HaltW::new(self, 8)
     }
     #[doc = "Bits 10:11 - Fault A Capture Channel"]
     #[inline(always)]
-    #[must_use]
     pub fn chsel(&mut self) -> ChselW<FctrlaSpec> {
         ChselW::new(self, 10)
     }
     #[doc = "Bits 12:14 - Fault A Capture Action"]
     #[inline(always)]
-    #[must_use]
     pub fn capture(&mut self) -> CaptureW<FctrlaSpec> {
         CaptureW::new(self, 12)
     }
     #[doc = "Bit 15 - Fault A Blanking Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn blankpresc(&mut self) -> BlankprescW<FctrlaSpec> {
         BlankprescW::new(self, 15)
     }
     #[doc = "Bits 16:23 - Fault A Blanking Time"]
     #[inline(always)]
-    #[must_use]
     pub fn blankval(&mut self) -> BlankvalW<FctrlaSpec> {
         BlankvalW::new(self, 16)
     }
     #[doc = "Bits 24:27 - Fault A Filter Value"]
     #[inline(always)]
-    #[must_use]
     pub fn filterval(&mut self) -> FiltervalW<FctrlaSpec> {
         FiltervalW::new(self, 24)
     }
@@ -643,10 +632,6 @@ impl crate::Readable for FctrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`fctrla::W`](W) writer structure"]
 impl crate::Writable for FctrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets FCTRLA to value 0"]
-impl crate::Resettable for FctrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for FctrlaSpec {}

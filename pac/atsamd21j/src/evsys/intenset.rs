@@ -223,145 +223,121 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Channel 0 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr0(&mut self) -> Ovr0W<IntensetSpec> {
         Ovr0W::new(self, 0)
     }
     #[doc = "Bit 1 - Channel 1 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr1(&mut self) -> Ovr1W<IntensetSpec> {
         Ovr1W::new(self, 1)
     }
     #[doc = "Bit 2 - Channel 2 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr2(&mut self) -> Ovr2W<IntensetSpec> {
         Ovr2W::new(self, 2)
     }
     #[doc = "Bit 3 - Channel 3 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr3(&mut self) -> Ovr3W<IntensetSpec> {
         Ovr3W::new(self, 3)
     }
     #[doc = "Bit 4 - Channel 4 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr4(&mut self) -> Ovr4W<IntensetSpec> {
         Ovr4W::new(self, 4)
     }
     #[doc = "Bit 5 - Channel 5 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr5(&mut self) -> Ovr5W<IntensetSpec> {
         Ovr5W::new(self, 5)
     }
     #[doc = "Bit 6 - Channel 6 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr6(&mut self) -> Ovr6W<IntensetSpec> {
         Ovr6W::new(self, 6)
     }
     #[doc = "Bit 7 - Channel 7 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr7(&mut self) -> Ovr7W<IntensetSpec> {
         Ovr7W::new(self, 7)
     }
     #[doc = "Bit 8 - Channel 0 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd0(&mut self) -> Evd0W<IntensetSpec> {
         Evd0W::new(self, 8)
     }
     #[doc = "Bit 9 - Channel 1 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd1(&mut self) -> Evd1W<IntensetSpec> {
         Evd1W::new(self, 9)
     }
     #[doc = "Bit 10 - Channel 2 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd2(&mut self) -> Evd2W<IntensetSpec> {
         Evd2W::new(self, 10)
     }
     #[doc = "Bit 11 - Channel 3 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd3(&mut self) -> Evd3W<IntensetSpec> {
         Evd3W::new(self, 11)
     }
     #[doc = "Bit 12 - Channel 4 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd4(&mut self) -> Evd4W<IntensetSpec> {
         Evd4W::new(self, 12)
     }
     #[doc = "Bit 13 - Channel 5 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd5(&mut self) -> Evd5W<IntensetSpec> {
         Evd5W::new(self, 13)
     }
     #[doc = "Bit 14 - Channel 6 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd6(&mut self) -> Evd6W<IntensetSpec> {
         Evd6W::new(self, 14)
     }
     #[doc = "Bit 15 - Channel 7 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd7(&mut self) -> Evd7W<IntensetSpec> {
         Evd7W::new(self, 15)
     }
     #[doc = "Bit 16 - Channel 8 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr8(&mut self) -> Ovr8W<IntensetSpec> {
         Ovr8W::new(self, 16)
     }
     #[doc = "Bit 17 - Channel 9 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr9(&mut self) -> Ovr9W<IntensetSpec> {
         Ovr9W::new(self, 17)
     }
     #[doc = "Bit 18 - Channel 10 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr10(&mut self) -> Ovr10W<IntensetSpec> {
         Ovr10W::new(self, 18)
     }
     #[doc = "Bit 19 - Channel 11 Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr11(&mut self) -> Ovr11W<IntensetSpec> {
         Ovr11W::new(self, 19)
     }
     #[doc = "Bit 24 - Channel 8 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd8(&mut self) -> Evd8W<IntensetSpec> {
         Evd8W::new(self, 24)
     }
     #[doc = "Bit 25 - Channel 9 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd9(&mut self) -> Evd9W<IntensetSpec> {
         Evd9W::new(self, 25)
     }
     #[doc = "Bit 26 - Channel 10 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd10(&mut self) -> Evd10W<IntensetSpec> {
         Evd10W::new(self, 26)
     }
     #[doc = "Bit 27 - Channel 11 Event Detection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd11(&mut self) -> Evd11W<IntensetSpec> {
         Evd11W::new(self, 27)
     }
@@ -376,10 +352,6 @@ impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for IntensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for IntensetSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntensetSpec {}

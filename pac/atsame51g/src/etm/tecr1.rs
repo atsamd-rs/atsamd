@@ -18,10 +18,6 @@ impl crate::Readable for Tecr1Spec {}
 #[doc = "`write(|w| ..)` method takes [`tecr1::W`](W) writer structure"]
 impl crate::Writable for Tecr1Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TECR1 to value 0"]
-impl crate::Resettable for Tecr1Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Tecr1Spec {}

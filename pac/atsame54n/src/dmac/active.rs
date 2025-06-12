@@ -59,6 +59,4 @@ impl crate::RegisterSpec for ActiveSpec {
 #[doc = "`read()` method returns [`active::R`](R) reader structure"]
 impl crate::Readable for ActiveSpec {}
 #[doc = "`reset()` method sets ACTIVE to value 0"]
-impl crate::Resettable for ActiveSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ActiveSpec {}

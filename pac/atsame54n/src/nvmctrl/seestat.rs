@@ -59,6 +59,4 @@ impl crate::RegisterSpec for SeestatSpec {
 #[doc = "`read()` method returns [`seestat::R`](R) reader structure"]
 impl crate::Readable for SeestatSpec {}
 #[doc = "`reset()` method sets SEESTAT to value 0"]
-impl crate::Resettable for SeestatSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SeestatSpec {}
