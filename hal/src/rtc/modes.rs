@@ -172,6 +172,8 @@ pub trait RtcMode {
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         while rtc.mode0().ctrl().read().swrst().bit_is_set() {}
         #[hal_cfg("rtc-d5x")]
+        // NOTE: There is also a SWRST bit in the SYNCBUSY register but the bit CTRLA register
+        // is the one that clears when the reset is complete.
         while rtc.mode0().ctrla().read().swrst().bit_is_set() {}
     }
 
@@ -213,7 +215,12 @@ pub trait RtcMode {
             // NOTE: This register and field are the same in all modes.
             // SYNC: Write
             Self::sync(rtc);
-            rtc.mode0().ctrla().modify(|_, w| w.countsync().set_bit());
+            rtc.mode0().ctrla().modify(|_, w| {
+                // Notifications may not work with prescaler disabled
+                w.prescaler().div1();
+                w.countsync().set_bit();
+                w
+            });
 
             // Errata: The first read of the count is incorrect so we need to read it
             // then wait for it to change.
@@ -285,9 +292,9 @@ pub trait RtcMode {
     #[inline]
     #[hal_macro_helper]
     fn disable(rtc: &Rtc) {
+        // NOTE: This register and field are the same in all modes.
         // SYNC: Write
         Self::sync(rtc);
-        // NOTE: This register and field are the same in all modes.
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         rtc.mode0().ctrl().modify(|_, w| w.enable().clear_bit());
         #[hal_cfg("rtc-d5x")]
@@ -302,9 +309,10 @@ pub trait RtcMode {
     #[inline]
     #[hal_macro_helper]
     fn enable(rtc: &Rtc) {
+        // NOTE: This register and field are the same in all modes.
         // SYNC: Write
         Self::sync(rtc);
-        // NOTE: This register and field are the same in all modes.
+
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         rtc.mode0().ctrl().modify(|_, w| w.enable().set_bit());
         #[hal_cfg("rtc-d5x")]
@@ -376,9 +384,8 @@ pub mod mode0 {
         #[inline]
         #[hal_macro_helper]
         fn set_mode(rtc: &Rtc) {
-            // SYNC: Write
-            Self::sync(rtc);
             // NOTE: This register and field are the same in all modes.
+            // SYNC: None (for these bits)
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
             rtc.mode0().ctrl().modify(|_, w| w.mode().count32());
             #[hal_cfg("rtc-d5x")]
