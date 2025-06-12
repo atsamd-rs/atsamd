@@ -17,6 +17,4 @@ impl crate::RegisterSpec for ScfSpec {
 #[doc = "`read()` method returns [`scf::R`](R) reader structure"]
 impl crate::Readable for ScfSpec {}
 #[doc = "`reset()` method sets SCF to value 0"]
-impl crate::Resettable for ScfSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ScfSpec {}

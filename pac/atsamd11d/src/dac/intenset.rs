@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Underrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn underrun(&mut self) -> UnderrunW<IntensetSpec> {
         UnderrunW::new(self, 0)
     }
     #[doc = "Bit 1 - Data Buffer Empty Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn empty(&mut self) -> EmptyW<IntensetSpec> {
         EmptyW::new(self, 1)
     }
     #[doc = "Bit 2 - Synchronization Ready Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn syncrdy(&mut self) -> SyncrdyW<IntensetSpec> {
         SyncrdyW::new(self, 2)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for IntensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for IntensetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntensetSpec {}

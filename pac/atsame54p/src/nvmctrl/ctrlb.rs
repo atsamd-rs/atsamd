@@ -224,13 +224,11 @@ where
 impl W {
     #[doc = "Bits 0:6 - Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<CtrlbSpec> {
         CmdW::new(self, 0)
     }
     #[doc = "Bits 8:15 - Command Execution"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdex(&mut self) -> CmdexW<CtrlbSpec> {
         CmdexW::new(self, 8)
     }
@@ -243,10 +241,6 @@ impl crate::RegisterSpec for CtrlbSpec {
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

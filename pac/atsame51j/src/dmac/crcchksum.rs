@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - CRC Checksum"]
     #[inline(always)]
-    #[must_use]
     pub fn crcchksum(&mut self) -> CrcchksumW<CrcchksumSpec> {
         CrcchksumW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for CrcchksumSpec {}
 #[doc = "`write(|w| ..)` method takes [`crcchksum::W`](W) writer structure"]
 impl crate::Writable for CrcchksumSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CRCCHKSUM to value 0"]
-impl crate::Resettable for CrcchksumSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CrcchksumSpec {}

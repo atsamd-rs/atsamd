@@ -135,49 +135,41 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Send USB Resume"]
     #[inline(always)]
-    #[must_use]
     pub fn resume(&mut self) -> ResumeW<CtrlbSpec> {
         ResumeW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Speed Configuration for Host"]
     #[inline(always)]
-    #[must_use]
     pub fn spdconf(&mut self) -> SpdconfW<CtrlbSpec> {
         SpdconfW::new(self, 2)
     }
     #[doc = "Bit 5 - Test mode J"]
     #[inline(always)]
-    #[must_use]
     pub fn tstj(&mut self) -> TstjW<CtrlbSpec> {
         TstjW::new(self, 5)
     }
     #[doc = "Bit 6 - Test mode K"]
     #[inline(always)]
-    #[must_use]
     pub fn tstk(&mut self) -> TstkW<CtrlbSpec> {
         TstkW::new(self, 6)
     }
     #[doc = "Bit 8 - Start of Frame Generation Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sofe(&mut self) -> SofeW<CtrlbSpec> {
         SofeW::new(self, 8)
     }
     #[doc = "Bit 9 - Send USB Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn busreset(&mut self) -> BusresetW<CtrlbSpec> {
         BusresetW::new(self, 9)
     }
     #[doc = "Bit 10 - VBUS is OK"]
     #[inline(always)]
-    #[must_use]
     pub fn vbusok(&mut self) -> VbusokW<CtrlbSpec> {
         VbusokW::new(self, 10)
     }
     #[doc = "Bit 11 - Send L1 Resume"]
     #[inline(always)]
-    #[must_use]
     pub fn l1resume(&mut self) -> L1resumeW<CtrlbSpec> {
         L1resumeW::new(self, 11)
     }
@@ -192,10 +184,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

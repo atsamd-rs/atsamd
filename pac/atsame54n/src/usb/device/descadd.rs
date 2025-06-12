@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Descriptor Address Value"]
     #[inline(always)]
-    #[must_use]
     pub fn descadd(&mut self) -> DescaddW<DescaddSpec> {
         DescaddW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for DescaddSpec {}
 #[doc = "`write(|w| ..)` method takes [`descadd::W`](W) writer structure"]
 impl crate::Writable for DescaddSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DESCADD to value 0"]
-impl crate::Resettable for DescaddSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DescaddSpec {}

@@ -73,14 +73,14 @@ where
         self.chan
             .eic
             .intenset()
-            .write(|w| unsafe { w.bits(1 << P::ChId::ID) })
+            .write(|w| unsafe { w.bits(1 << P::ChId::ID) });
     }
 
     pub fn disable_interrupt(&mut self) {
         self.chan
             .eic
             .intenclr()
-            .write(|w| unsafe { w.bits(1 << P::ChId::ID) })
+            .write(|w| unsafe { w.bits(1 << P::ChId::ID) });
     }
 
     pub fn is_interrupt(&mut self) -> bool {

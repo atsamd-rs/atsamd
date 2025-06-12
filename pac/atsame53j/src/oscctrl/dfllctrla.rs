@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 1 - DFLL Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<DfllctrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<DfllctrlaSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<DfllctrlaSpec> {
         OndemandW::new(self, 7)
     }
@@ -61,8 +58,6 @@ impl crate::Readable for DfllctrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`dfllctrla::W`](W) writer structure"]
 impl crate::Writable for DfllctrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DFLLCTRLA to value 0x82"]
 impl crate::Resettable for DfllctrlaSpec {

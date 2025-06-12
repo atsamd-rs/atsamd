@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Data Register Empty Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn dre(&mut self) -> DreW<IntflagSpec> {
         DreW::new(self, 0)
     }
     #[doc = "Bit 1 - Transmit Complete Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn txc(&mut self) -> TxcW<IntflagSpec> {
         TxcW::new(self, 1)
     }
     #[doc = "Bit 2 - Receive Complete Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn rxc(&mut self) -> RxcW<IntflagSpec> {
         RxcW::new(self, 2)
     }
     #[doc = "Bit 3 - Slave Select Low Interrupt Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn ssl(&mut self) -> SslW<IntflagSpec> {
         SslW::new(self, 3)
     }
     #[doc = "Bit 7 - Combined Error Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn error(&mut self) -> ErrorW<IntflagSpec> {
         ErrorW::new(self, 7)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Comparator 0 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn compeo0(&mut self) -> Compeo0W<EvctrlSpec> {
         Compeo0W::new(self, 0)
     }
     #[doc = "Bit 1 - Comparator 1 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn compeo1(&mut self) -> Compeo1W<EvctrlSpec> {
         Compeo1W::new(self, 1)
     }
     #[doc = "Bit 4 - Window 0 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wineo0(&mut self) -> Wineo0W<EvctrlSpec> {
         Wineo0W::new(self, 4)
     }
     #[doc = "Bit 8 - Comparator 0 Event Input"]
     #[inline(always)]
-    #[must_use]
     pub fn compei0(&mut self) -> Compei0W<EvctrlSpec> {
         Compei0W::new(self, 8)
     }
     #[doc = "Bit 9 - Comparator 1 Event Input"]
     #[inline(always)]
-    #[must_use]
     pub fn compei1(&mut self) -> Compei1W<EvctrlSpec> {
         Compei1W::new(self, 9)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

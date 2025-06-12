@@ -13,6 +13,4 @@ impl crate::RegisterSpec for DevidSpec {
 #[doc = "`read()` method returns [`devid::R`](R) reader structure"]
 impl crate::Readable for DevidSpec {}
 #[doc = "`reset()` method sets DEVID to value 0"]
-impl crate::Resettable for DevidSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DevidSpec {}

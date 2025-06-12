@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - BOD33 Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn bod33rdy(&mut self) -> Bod33rdyW<IntenclrSpec> {
         Bod33rdyW::new(self, 0)
     }
     #[doc = "Bit 1 - BOD33 Detection"]
     #[inline(always)]
-    #[must_use]
     pub fn bod33det(&mut self) -> Bod33detW<IntenclrSpec> {
         Bod33detW::new(self, 1)
     }
     #[doc = "Bit 2 - BOD33 Synchronization Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn b33srdy(&mut self) -> B33srdyW<IntenclrSpec> {
         B33srdyW::new(self, 2)
     }
     #[doc = "Bit 8 - Voltage Regulator Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn vregrdy(&mut self) -> VregrdyW<IntenclrSpec> {
         VregrdyW::new(self, 8)
     }
     #[doc = "Bit 10 - VDDCORE Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn vcorerdy(&mut self) -> VcorerdyW<IntenclrSpec> {
         VcorerdyW::new(self, 10)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

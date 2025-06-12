@@ -159,37 +159,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Must write 0"]
     #[inline(always)]
-    #[must_use]
     pub fn vectreset(&mut self) -> VectresetW<AircrSpec> {
         VectresetW::new(self, 0)
     }
     #[doc = "Bit 1 - Must write 0"]
     #[inline(always)]
-    #[must_use]
     pub fn vectclractive(&mut self) -> VectclractiveW<AircrSpec> {
         VectclractiveW::new(self, 1)
     }
     #[doc = "Bit 2 - System Reset Request"]
     #[inline(always)]
-    #[must_use]
     pub fn sysresetreq(&mut self) -> SysresetreqW<AircrSpec> {
         SysresetreqW::new(self, 2)
     }
     #[doc = "Bits 8:10 - Interrupt priority grouping"]
     #[inline(always)]
-    #[must_use]
     pub fn prigroup(&mut self) -> PrigroupW<AircrSpec> {
         PrigroupW::new(self, 8)
     }
     #[doc = "Bit 15 - Data endianness, 0=little, 1=big"]
     #[inline(always)]
-    #[must_use]
     pub fn endianness(&mut self) -> EndiannessW<AircrSpec> {
         EndiannessW::new(self, 15)
     }
     #[doc = "Bits 16:31 - Register key"]
     #[inline(always)]
-    #[must_use]
     pub fn vectkey(&mut self) -> VectkeyW<AircrSpec> {
         VectkeyW::new(self, 16)
     }
@@ -204,8 +198,6 @@ impl crate::Readable for AircrSpec {}
 #[doc = "`write(|w| ..)` method takes [`aircr::W`](W) writer structure"]
 impl crate::Writable for AircrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets AIRCR to value 0xfa05_0000"]
 impl crate::Resettable for AircrSpec {

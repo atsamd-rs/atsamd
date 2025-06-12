@@ -24,6 +24,4 @@ impl crate::RegisterSpec for WpsrSpec {
 #[doc = "`read()` method returns [`wpsr::R`](R) reader structure"]
 impl crate::Readable for WpsrSpec {}
 #[doc = "`reset()` method sets WPSR to value 0"]
-impl crate::Resettable for WpsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WpsrSpec {}

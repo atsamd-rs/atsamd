@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Non-Maskable Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn nmi(&mut self) -> NmiW<NmiflagSpec> {
         NmiW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for NmiflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`nmiflag::W`](W) writer structure"]
 impl crate::Writable for NmiflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets NMIFLAG to value 0"]
-impl crate::Resettable for NmiflagSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for NmiflagSpec {}

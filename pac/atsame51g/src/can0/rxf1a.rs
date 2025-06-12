@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:5 - Rx FIFO 1 Acknowledge Index"]
     #[inline(always)]
-    #[must_use]
     pub fn f1ai(&mut self) -> F1aiW<Rxf1aSpec> {
         F1aiW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for Rxf1aSpec {}
 #[doc = "`write(|w| ..)` method takes [`rxf1a::W`](W) writer structure"]
 impl crate::Writable for Rxf1aSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RXF1A to value 0"]
-impl crate::Resettable for Rxf1aSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Rxf1aSpec {}

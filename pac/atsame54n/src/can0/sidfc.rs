@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Filter List Standard Start Address"]
     #[inline(always)]
-    #[must_use]
     pub fn flssa(&mut self) -> FlssaW<SidfcSpec> {
         FlssaW::new(self, 0)
     }
     #[doc = "Bits 16:23 - List Size Standard"]
     #[inline(always)]
-    #[must_use]
     pub fn lss(&mut self) -> LssW<SidfcSpec> {
         LssW::new(self, 16)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for SidfcSpec {}
 #[doc = "`write(|w| ..)` method takes [`sidfc::W`](W) writer structure"]
 impl crate::Writable for SidfcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SIDFC to value 0"]
-impl crate::Resettable for SidfcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SidfcSpec {}

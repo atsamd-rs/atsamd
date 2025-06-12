@@ -150,7 +150,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - APBA Prescaler Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn apbadiv(&mut self) -> ApbadivW<ApbaselSpec> {
         ApbadivW::new(self, 0)
     }
@@ -165,10 +164,6 @@ impl crate::Readable for ApbaselSpec {}
 #[doc = "`write(|w| ..)` method takes [`apbasel::W`](W) writer structure"]
 impl crate::Writable for ApbaselSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets APBASEL to value 0"]
-impl crate::Resettable for ApbaselSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ApbaselSpec {}

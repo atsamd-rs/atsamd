@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Result Ready Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdy(&mut self) -> ResrdyW<IntenclrSpec> {
         ResrdyW::new(self, 0)
     }
     #[doc = "Bit 1 - Overrun Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn overrun(&mut self) -> OverrunW<IntenclrSpec> {
         OverrunW::new(self, 1)
     }
     #[doc = "Bit 2 - Window Monitor Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn winmon(&mut self) -> WinmonW<IntenclrSpec> {
         WinmonW::new(self, 2)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

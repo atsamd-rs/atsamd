@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 6)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

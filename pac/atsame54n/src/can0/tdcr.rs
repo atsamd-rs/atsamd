@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Transmitter Delay Compensation Filter Length"]
     #[inline(always)]
-    #[must_use]
     pub fn tdcf(&mut self) -> TdcfW<TdcrSpec> {
         TdcfW::new(self, 0)
     }
     #[doc = "Bits 8:14 - Transmitter Delay Compensation Offset"]
     #[inline(always)]
-    #[must_use]
     pub fn tdco(&mut self) -> TdcoW<TdcrSpec> {
         TdcoW::new(self, 8)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for TdcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`tdcr::W`](W) writer structure"]
 impl crate::Writable for TdcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TDCR to value 0"]
-impl crate::Resettable for TdcrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TdcrSpec {}

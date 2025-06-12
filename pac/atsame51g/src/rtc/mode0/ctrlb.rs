@@ -347,49 +347,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - General Purpose 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn gp0en(&mut self) -> Gp0enW<CtrlbSpec> {
         Gp0enW::new(self, 0)
     }
     #[doc = "Bit 1 - General Purpose 2 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn gp2en(&mut self) -> Gp2enW<CtrlbSpec> {
         Gp2enW::new(self, 1)
     }
     #[doc = "Bit 4 - Debouncer Majority Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn debmaj(&mut self) -> DebmajW<CtrlbSpec> {
         DebmajW::new(self, 4)
     }
     #[doc = "Bit 5 - Debouncer Asynchronous Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn debasync(&mut self) -> DebasyncW<CtrlbSpec> {
         DebasyncW::new(self, 5)
     }
     #[doc = "Bit 6 - RTC Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rtcout(&mut self) -> RtcoutW<CtrlbSpec> {
         RtcoutW::new(self, 6)
     }
     #[doc = "Bit 7 - DMA Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaen(&mut self) -> DmaenW<CtrlbSpec> {
         DmaenW::new(self, 7)
     }
     #[doc = "Bits 8:10 - Debounce Freqnuency"]
     #[inline(always)]
-    #[must_use]
     pub fn debf(&mut self) -> DebfW<CtrlbSpec> {
         DebfW::new(self, 8)
     }
     #[doc = "Bits 12:14 - Active Layer Freqnuency"]
     #[inline(always)]
-    #[must_use]
     pub fn actf(&mut self) -> ActfW<CtrlbSpec> {
         ActfW::new(self, 12)
     }
@@ -404,10 +396,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

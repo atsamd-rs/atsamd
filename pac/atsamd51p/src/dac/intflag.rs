@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Result 0 Underrun"]
     #[inline(always)]
-    #[must_use]
     pub fn underrun0(&mut self) -> Underrun0W<IntflagSpec> {
         Underrun0W::new(self, 0)
     }
     #[doc = "Bit 1 - Result 1 Underrun"]
     #[inline(always)]
-    #[must_use]
     pub fn underrun1(&mut self) -> Underrun1W<IntflagSpec> {
         Underrun1W::new(self, 1)
     }
     #[doc = "Bit 2 - Data Buffer 0 Empty"]
     #[inline(always)]
-    #[must_use]
     pub fn empty0(&mut self) -> Empty0W<IntflagSpec> {
         Empty0W::new(self, 2)
     }
     #[doc = "Bit 3 - Data Buffer 1 Empty"]
     #[inline(always)]
-    #[must_use]
     pub fn empty1(&mut self) -> Empty1W<IntflagSpec> {
         Empty1W::new(self, 3)
     }
     #[doc = "Bit 4 - Result 0 Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdy0(&mut self) -> Resrdy0W<IntflagSpec> {
         Resrdy0W::new(self, 4)
     }
     #[doc = "Bit 5 - Result 1 Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdy1(&mut self) -> Resrdy1W<IntflagSpec> {
         Resrdy1W::new(self, 5)
     }
     #[doc = "Bit 6 - Result 0 Overrun"]
     #[inline(always)]
-    #[must_use]
     pub fn overrun0(&mut self) -> Overrun0W<IntflagSpec> {
         Overrun0W::new(self, 6)
     }
     #[doc = "Bit 7 - Result 1 Overrun"]
     #[inline(always)]
-    #[must_use]
     pub fn overrun1(&mut self) -> Overrun1W<IntflagSpec> {
         Overrun1W::new(self, 7)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

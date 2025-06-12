@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Channel Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<ChctrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Channel Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<ChctrlaSpec> {
         EnableW::new(self, 1)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for ChctrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`chctrla::W`](W) writer structure"]
 impl crate::Writable for ChctrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHCTRLA to value 0"]
-impl crate::Resettable for ChctrlaSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ChctrlaSpec {}

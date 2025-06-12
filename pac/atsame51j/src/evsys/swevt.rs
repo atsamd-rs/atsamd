@@ -67,193 +67,161 @@ pub type Channel31W<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - Channel 0 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel0(&mut self) -> Channel0W<SwevtSpec> {
         Channel0W::new(self, 0)
     }
     #[doc = "Bit 1 - Channel 1 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel1(&mut self) -> Channel1W<SwevtSpec> {
         Channel1W::new(self, 1)
     }
     #[doc = "Bit 2 - Channel 2 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel2(&mut self) -> Channel2W<SwevtSpec> {
         Channel2W::new(self, 2)
     }
     #[doc = "Bit 3 - Channel 3 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel3(&mut self) -> Channel3W<SwevtSpec> {
         Channel3W::new(self, 3)
     }
     #[doc = "Bit 4 - Channel 4 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel4(&mut self) -> Channel4W<SwevtSpec> {
         Channel4W::new(self, 4)
     }
     #[doc = "Bit 5 - Channel 5 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel5(&mut self) -> Channel5W<SwevtSpec> {
         Channel5W::new(self, 5)
     }
     #[doc = "Bit 6 - Channel 6 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel6(&mut self) -> Channel6W<SwevtSpec> {
         Channel6W::new(self, 6)
     }
     #[doc = "Bit 7 - Channel 7 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel7(&mut self) -> Channel7W<SwevtSpec> {
         Channel7W::new(self, 7)
     }
     #[doc = "Bit 8 - Channel 8 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel8(&mut self) -> Channel8W<SwevtSpec> {
         Channel8W::new(self, 8)
     }
     #[doc = "Bit 9 - Channel 9 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel9(&mut self) -> Channel9W<SwevtSpec> {
         Channel9W::new(self, 9)
     }
     #[doc = "Bit 10 - Channel 10 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel10(&mut self) -> Channel10W<SwevtSpec> {
         Channel10W::new(self, 10)
     }
     #[doc = "Bit 11 - Channel 11 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel11(&mut self) -> Channel11W<SwevtSpec> {
         Channel11W::new(self, 11)
     }
     #[doc = "Bit 12 - Channel 12 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel12(&mut self) -> Channel12W<SwevtSpec> {
         Channel12W::new(self, 12)
     }
     #[doc = "Bit 13 - Channel 13 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel13(&mut self) -> Channel13W<SwevtSpec> {
         Channel13W::new(self, 13)
     }
     #[doc = "Bit 14 - Channel 14 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel14(&mut self) -> Channel14W<SwevtSpec> {
         Channel14W::new(self, 14)
     }
     #[doc = "Bit 15 - Channel 15 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel15(&mut self) -> Channel15W<SwevtSpec> {
         Channel15W::new(self, 15)
     }
     #[doc = "Bit 16 - Channel 16 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel16(&mut self) -> Channel16W<SwevtSpec> {
         Channel16W::new(self, 16)
     }
     #[doc = "Bit 17 - Channel 17 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel17(&mut self) -> Channel17W<SwevtSpec> {
         Channel17W::new(self, 17)
     }
     #[doc = "Bit 18 - Channel 18 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel18(&mut self) -> Channel18W<SwevtSpec> {
         Channel18W::new(self, 18)
     }
     #[doc = "Bit 19 - Channel 19 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel19(&mut self) -> Channel19W<SwevtSpec> {
         Channel19W::new(self, 19)
     }
     #[doc = "Bit 20 - Channel 20 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel20(&mut self) -> Channel20W<SwevtSpec> {
         Channel20W::new(self, 20)
     }
     #[doc = "Bit 21 - Channel 21 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel21(&mut self) -> Channel21W<SwevtSpec> {
         Channel21W::new(self, 21)
     }
     #[doc = "Bit 22 - Channel 22 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel22(&mut self) -> Channel22W<SwevtSpec> {
         Channel22W::new(self, 22)
     }
     #[doc = "Bit 23 - Channel 23 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel23(&mut self) -> Channel23W<SwevtSpec> {
         Channel23W::new(self, 23)
     }
     #[doc = "Bit 24 - Channel 24 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel24(&mut self) -> Channel24W<SwevtSpec> {
         Channel24W::new(self, 24)
     }
     #[doc = "Bit 25 - Channel 25 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel25(&mut self) -> Channel25W<SwevtSpec> {
         Channel25W::new(self, 25)
     }
     #[doc = "Bit 26 - Channel 26 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel26(&mut self) -> Channel26W<SwevtSpec> {
         Channel26W::new(self, 26)
     }
     #[doc = "Bit 27 - Channel 27 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel27(&mut self) -> Channel27W<SwevtSpec> {
         Channel27W::new(self, 27)
     }
     #[doc = "Bit 28 - Channel 28 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel28(&mut self) -> Channel28W<SwevtSpec> {
         Channel28W::new(self, 28)
     }
     #[doc = "Bit 29 - Channel 29 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel29(&mut self) -> Channel29W<SwevtSpec> {
         Channel29W::new(self, 29)
     }
     #[doc = "Bit 30 - Channel 30 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel30(&mut self) -> Channel30W<SwevtSpec> {
         Channel30W::new(self, 30)
     }
     #[doc = "Bit 31 - Channel 31 Software Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn channel31(&mut self) -> Channel31W<SwevtSpec> {
         Channel31W::new(self, 31)
     }
@@ -266,10 +234,6 @@ impl crate::RegisterSpec for SwevtSpec {
 #[doc = "`write(|w| ..)` method takes [`swevt::W`](W) writer structure"]
 impl crate::Writable for SwevtSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SWEVT to value 0"]
-impl crate::Resettable for SwevtSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SwevtSpec {}

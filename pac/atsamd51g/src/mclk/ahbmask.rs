@@ -160,103 +160,86 @@ impl R {
 impl W {
     #[doc = "Bit 0 - HPB0 AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb0_(&mut self) -> Hpb0_W<AhbmaskSpec> {
         Hpb0_W::new(self, 0)
     }
     #[doc = "Bit 1 - HPB1 AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb1_(&mut self) -> Hpb1_W<AhbmaskSpec> {
         Hpb1_W::new(self, 1)
     }
     #[doc = "Bit 2 - HPB2 AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb2_(&mut self) -> Hpb2_W<AhbmaskSpec> {
         Hpb2_W::new(self, 2)
     }
     #[doc = "Bit 3 - HPB3 AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb3_(&mut self) -> Hpb3_W<AhbmaskSpec> {
         Hpb3_W::new(self, 3)
     }
     #[doc = "Bit 4 - DSU AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn dsu_(&mut self) -> Dsu_W<AhbmaskSpec> {
         Dsu_W::new(self, 4)
     }
     #[doc = "Bit 6 - NVMCTRL AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn nvmctrl_(&mut self) -> Nvmctrl_W<AhbmaskSpec> {
         Nvmctrl_W::new(self, 6)
     }
     #[doc = "Bit 8 - CMCC AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn cmcc_(&mut self) -> Cmcc_W<AhbmaskSpec> {
         Cmcc_W::new(self, 8)
     }
     #[doc = "Bit 9 - DMAC AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn dmac_(&mut self) -> Dmac_W<AhbmaskSpec> {
         Dmac_W::new(self, 9)
     }
     #[doc = "Bit 10 - USB AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn usb_(&mut self) -> Usb_W<AhbmaskSpec> {
         Usb_W::new(self, 10)
     }
     #[doc = "Bit 12 - PAC AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn pac_(&mut self) -> Pac_W<AhbmaskSpec> {
         Pac_W::new(self, 12)
     }
     #[doc = "Bit 13 - QSPI AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn qspi_(&mut self) -> Qspi_W<AhbmaskSpec> {
         Qspi_W::new(self, 13)
     }
     #[doc = "Bit 15 - SDHC0 AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn sdhc0_(&mut self) -> Sdhc0_W<AhbmaskSpec> {
         Sdhc0_W::new(self, 15)
     }
     #[doc = "Bit 19 - ICM AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn icm_(&mut self) -> Icm_W<AhbmaskSpec> {
         Icm_W::new(self, 19)
     }
     #[doc = "Bit 20 - PUKCC AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn pukcc_(&mut self) -> Pukcc_W<AhbmaskSpec> {
         Pukcc_W::new(self, 20)
     }
     #[doc = "Bit 21 - QSPI_2X AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn qspi_2x_(&mut self) -> Qspi2x_W<AhbmaskSpec> {
         Qspi2x_W::new(self, 21)
     }
     #[doc = "Bit 22 - NVMCTRL_SMEEPROM AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn nvmctrl_smeeprom_(&mut self) -> NvmctrlSmeeprom_W<AhbmaskSpec> {
         NvmctrlSmeeprom_W::new(self, 22)
     }
     #[doc = "Bit 23 - NVMCTRL_CACHE AHB Clock Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn nvmctrl_cache_(&mut self) -> NvmctrlCache_W<AhbmaskSpec> {
         NvmctrlCache_W::new(self, 23)
     }
@@ -271,8 +254,6 @@ impl crate::Readable for AhbmaskSpec {}
 #[doc = "`write(|w| ..)` method takes [`ahbmask::W`](W) writer structure"]
 impl crate::Writable for AhbmaskSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets AHBMASK to value 0x00ff_ffff"]
 impl crate::Resettable for AhbmaskSpec {

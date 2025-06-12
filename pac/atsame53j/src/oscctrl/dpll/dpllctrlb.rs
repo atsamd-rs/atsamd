@@ -628,49 +628,41 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Proportional Integral Filter Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn filter(&mut self) -> FilterW<DpllctrlbSpec> {
         FilterW::new(self, 0)
     }
     #[doc = "Bit 4 - Wake Up Fast"]
     #[inline(always)]
-    #[must_use]
     pub fn wuf(&mut self) -> WufW<DpllctrlbSpec> {
         WufW::new(self, 4)
     }
     #[doc = "Bits 5:7 - Reference Clock Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn refclk(&mut self) -> RefclkW<DpllctrlbSpec> {
         RefclkW::new(self, 5)
     }
     #[doc = "Bits 8:10 - Lock Time"]
     #[inline(always)]
-    #[must_use]
     pub fn ltime(&mut self) -> LtimeW<DpllctrlbSpec> {
         LtimeW::new(self, 8)
     }
     #[doc = "Bit 11 - Lock Bypass"]
     #[inline(always)]
-    #[must_use]
     pub fn lbypass(&mut self) -> LbypassW<DpllctrlbSpec> {
         LbypassW::new(self, 11)
     }
     #[doc = "Bits 12:14 - Sigma-Delta DCO Filter Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn dcofilter(&mut self) -> DcofilterW<DpllctrlbSpec> {
         DcofilterW::new(self, 12)
     }
     #[doc = "Bit 15 - DCO Filter Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dcoen(&mut self) -> DcoenW<DpllctrlbSpec> {
         DcoenW::new(self, 15)
     }
     #[doc = "Bits 16:26 - Clock Divider"]
     #[inline(always)]
-    #[must_use]
     pub fn div(&mut self) -> DivW<DpllctrlbSpec> {
         DivW::new(self, 16)
     }
@@ -685,8 +677,6 @@ impl crate::Readable for DpllctrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`dpllctrlb::W`](W) writer structure"]
 impl crate::Writable for DpllctrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DPLLCTRLB to value 0x20"]
 impl crate::Resettable for DpllctrlbSpec {

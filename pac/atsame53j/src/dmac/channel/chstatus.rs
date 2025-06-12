@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Channel Pending"]
     #[inline(always)]
-    #[must_use]
     pub fn pend(&mut self) -> PendW<ChstatusSpec> {
         PendW::new(self, 0)
     }
     #[doc = "Bit 1 - Channel Busy"]
     #[inline(always)]
-    #[must_use]
     pub fn busy(&mut self) -> BusyW<ChstatusSpec> {
         BusyW::new(self, 1)
     }
     #[doc = "Bit 2 - Channel Fetch Error"]
     #[inline(always)]
-    #[must_use]
     pub fn ferr(&mut self) -> FerrW<ChstatusSpec> {
         FerrW::new(self, 2)
     }
     #[doc = "Bit 3 - Channel CRC Error"]
     #[inline(always)]
-    #[must_use]
     pub fn crcerr(&mut self) -> CrcerrW<ChstatusSpec> {
         CrcerrW::new(self, 3)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for ChstatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`chstatus::W`](W) writer structure"]
 impl crate::Writable for ChstatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHSTATUS to value 0"]
-impl crate::Resettable for ChstatusSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ChstatusSpec {}

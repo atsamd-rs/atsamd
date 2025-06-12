@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Level 0 Channel Priority Number"]
     #[inline(always)]
-    #[must_use]
     pub fn lvlpri0(&mut self) -> Lvlpri0W<Prictrl0Spec> {
         Lvlpri0W::new(self, 0)
     }
     #[doc = "Bit 7 - Level 0 Round-Robin Scheduling Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rrlvlen0(&mut self) -> Rrlvlen0W<Prictrl0Spec> {
         Rrlvlen0W::new(self, 7)
     }
     #[doc = "Bits 8:11 - Level 1 Channel Priority Number"]
     #[inline(always)]
-    #[must_use]
     pub fn lvlpri1(&mut self) -> Lvlpri1W<Prictrl0Spec> {
         Lvlpri1W::new(self, 8)
     }
     #[doc = "Bit 15 - Level 1 Round-Robin Scheduling Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rrlvlen1(&mut self) -> Rrlvlen1W<Prictrl0Spec> {
         Rrlvlen1W::new(self, 15)
     }
     #[doc = "Bits 16:19 - Level 2 Channel Priority Number"]
     #[inline(always)]
-    #[must_use]
     pub fn lvlpri2(&mut self) -> Lvlpri2W<Prictrl0Spec> {
         Lvlpri2W::new(self, 16)
     }
     #[doc = "Bit 23 - Level 2 Round-Robin Scheduling Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rrlvlen2(&mut self) -> Rrlvlen2W<Prictrl0Spec> {
         Rrlvlen2W::new(self, 23)
     }
     #[doc = "Bits 24:27 - Level 3 Channel Priority Number"]
     #[inline(always)]
-    #[must_use]
     pub fn lvlpri3(&mut self) -> Lvlpri3W<Prictrl0Spec> {
         Lvlpri3W::new(self, 24)
     }
     #[doc = "Bit 31 - Level 3 Round-Robin Scheduling Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rrlvlen3(&mut self) -> Rrlvlen3W<Prictrl0Spec> {
         Rrlvlen3W::new(self, 31)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for Prictrl0Spec {}
 #[doc = "`write(|w| ..)` method takes [`prictrl0::W`](W) writer structure"]
 impl crate::Writable for Prictrl0Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets PRICTRL0 to value 0"]
-impl crate::Resettable for Prictrl0Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Prictrl0Spec {}

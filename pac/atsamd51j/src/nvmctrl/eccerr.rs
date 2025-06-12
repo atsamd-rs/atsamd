@@ -127,6 +127,4 @@ impl crate::RegisterSpec for EccerrSpec {
 #[doc = "`read()` method returns [`eccerr::R`](R) reader structure"]
 impl crate::Readable for EccerrSpec {}
 #[doc = "`reset()` method sets ECCERR to value 0"]
-impl crate::Resettable for EccerrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EccerrSpec {}

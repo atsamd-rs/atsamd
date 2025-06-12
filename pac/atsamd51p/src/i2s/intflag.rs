@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Receive Ready 0"]
     #[inline(always)]
-    #[must_use]
     pub fn rxrdy0(&mut self) -> Rxrdy0W<IntflagSpec> {
         Rxrdy0W::new(self, 0)
     }
     #[doc = "Bit 1 - Receive Ready 1"]
     #[inline(always)]
-    #[must_use]
     pub fn rxrdy1(&mut self) -> Rxrdy1W<IntflagSpec> {
         Rxrdy1W::new(self, 1)
     }
     #[doc = "Bit 4 - Receive Overrun 0"]
     #[inline(always)]
-    #[must_use]
     pub fn rxor0(&mut self) -> Rxor0W<IntflagSpec> {
         Rxor0W::new(self, 4)
     }
     #[doc = "Bit 5 - Receive Overrun 1"]
     #[inline(always)]
-    #[must_use]
     pub fn rxor1(&mut self) -> Rxor1W<IntflagSpec> {
         Rxor1W::new(self, 5)
     }
     #[doc = "Bit 8 - Transmit Ready 0"]
     #[inline(always)]
-    #[must_use]
     pub fn txrdy0(&mut self) -> Txrdy0W<IntflagSpec> {
         Txrdy0W::new(self, 8)
     }
     #[doc = "Bit 9 - Transmit Ready 1"]
     #[inline(always)]
-    #[must_use]
     pub fn txrdy1(&mut self) -> Txrdy1W<IntflagSpec> {
         Txrdy1W::new(self, 9)
     }
     #[doc = "Bit 12 - Transmit Underrun 0"]
     #[inline(always)]
-    #[must_use]
     pub fn txur0(&mut self) -> Txur0W<IntflagSpec> {
         Txur0W::new(self, 12)
     }
     #[doc = "Bit 13 - Transmit Underrun 1"]
     #[inline(always)]
-    #[must_use]
     pub fn txur1(&mut self) -> Txur1W<IntflagSpec> {
         Txur1W::new(self, 13)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

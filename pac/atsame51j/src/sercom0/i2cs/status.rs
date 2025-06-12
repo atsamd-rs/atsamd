@@ -97,61 +97,51 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Bus Error"]
     #[inline(always)]
-    #[must_use]
     pub fn buserr(&mut self) -> BuserrW<StatusSpec> {
         BuserrW::new(self, 0)
     }
     #[doc = "Bit 1 - Transmit Collision"]
     #[inline(always)]
-    #[must_use]
     pub fn coll(&mut self) -> CollW<StatusSpec> {
         CollW::new(self, 1)
     }
     #[doc = "Bit 2 - Received Not Acknowledge"]
     #[inline(always)]
-    #[must_use]
     pub fn rxnack(&mut self) -> RxnackW<StatusSpec> {
         RxnackW::new(self, 2)
     }
     #[doc = "Bit 3 - Read/Write Direction"]
     #[inline(always)]
-    #[must_use]
     pub fn dir(&mut self) -> DirW<StatusSpec> {
         DirW::new(self, 3)
     }
     #[doc = "Bit 4 - Repeated Start"]
     #[inline(always)]
-    #[must_use]
     pub fn sr(&mut self) -> SrW<StatusSpec> {
         SrW::new(self, 4)
     }
     #[doc = "Bit 6 - SCL Low Timeout"]
     #[inline(always)]
-    #[must_use]
     pub fn lowtout(&mut self) -> LowtoutW<StatusSpec> {
         LowtoutW::new(self, 6)
     }
     #[doc = "Bit 7 - Clock Hold"]
     #[inline(always)]
-    #[must_use]
     pub fn clkhold(&mut self) -> ClkholdW<StatusSpec> {
         ClkholdW::new(self, 7)
     }
     #[doc = "Bit 9 - Slave SCL Low Extend Timeout"]
     #[inline(always)]
-    #[must_use]
     pub fn sexttout(&mut self) -> SexttoutW<StatusSpec> {
         SexttoutW::new(self, 9)
     }
     #[doc = "Bit 10 - High Speed"]
     #[inline(always)]
-    #[must_use]
     pub fn hs(&mut self) -> HsW<StatusSpec> {
         HsW::new(self, 10)
     }
     #[doc = "Bit 11 - Transaction Length Error"]
     #[inline(always)]
-    #[must_use]
     pub fn lenerr(&mut self) -> LenerrW<StatusSpec> {
         LenerrW::new(self, 11)
     }
@@ -166,10 +156,6 @@ impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for StatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0"]
-impl crate::Resettable for StatusSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for StatusSpec {}

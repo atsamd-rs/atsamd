@@ -16,8 +16,7 @@ impl crate::RegisterSpec for PbldataSpec {
 }
 #[doc = "`read()` method returns [`pbldata::R`](R) reader structure"]
 impl crate::Readable for PbldataSpec {}
-#[doc = "`reset()` method sets PBLDATA[%s]
-to value 0xffff_ffff"]
+#[doc = "`reset()` method sets PBLDATA[%s] to value 0xffff_ffff"]
 impl crate::Resettable for PbldataSpec {
     const RESET_VALUE: u32 = 0xffff_ffff;
 }

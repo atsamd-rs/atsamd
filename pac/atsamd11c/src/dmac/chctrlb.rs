@@ -701,43 +701,36 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Event Input Action"]
     #[inline(always)]
-    #[must_use]
     pub fn evact(&mut self) -> EvactW<ChctrlbSpec> {
         EvactW::new(self, 0)
     }
     #[doc = "Bit 3 - Channel Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evie(&mut self) -> EvieW<ChctrlbSpec> {
         EvieW::new(self, 3)
     }
     #[doc = "Bit 4 - Channel Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evoe(&mut self) -> EvoeW<ChctrlbSpec> {
         EvoeW::new(self, 4)
     }
     #[doc = "Bits 5:6 - Channel Arbitration Level"]
     #[inline(always)]
-    #[must_use]
     pub fn lvl(&mut self) -> LvlW<ChctrlbSpec> {
         LvlW::new(self, 5)
     }
     #[doc = "Bits 8:12 - Trigger Source"]
     #[inline(always)]
-    #[must_use]
     pub fn trigsrc(&mut self) -> TrigsrcW<ChctrlbSpec> {
         TrigsrcW::new(self, 8)
     }
     #[doc = "Bits 22:23 - Trigger Action"]
     #[inline(always)]
-    #[must_use]
     pub fn trigact(&mut self) -> TrigactW<ChctrlbSpec> {
         TrigactW::new(self, 22)
     }
     #[doc = "Bits 24:25 - Software Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<ChctrlbSpec> {
         CmdW::new(self, 24)
     }
@@ -752,10 +745,6 @@ impl crate::Readable for ChctrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`chctrlb::W`](W) writer structure"]
 impl crate::Writable for ChctrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CHCTRLB to value 0"]
-impl crate::Resettable for ChctrlbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ChctrlbSpec {}

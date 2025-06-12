@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Device Address"]
     #[inline(always)]
-    #[must_use]
     pub fn dadd(&mut self) -> DaddW<DaddSpec> {
         DaddW::new(self, 0)
     }
     #[doc = "Bit 7 - Device Address Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn adden(&mut self) -> AddenW<DaddSpec> {
         AddenW::new(self, 7)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for DaddSpec {}
 #[doc = "`write(|w| ..)` method takes [`dadd::W`](W) writer structure"]
 impl crate::Writable for DaddSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DADD to value 0"]
-impl crate::Resettable for DaddSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DaddSpec {}

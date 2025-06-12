@@ -35,25 +35,13 @@ impl RegisterBlock {
     pub const fn dir(&self, n: usize) -> &Dir {
         #[allow(clippy::no_effect)]
         [(); 2][n];
-        unsafe {
-            &*(self as *const Self)
-                .cast::<u8>()
-                .add(0)
-                .add(128 * n)
-                .cast()
-        }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().add(128 * n).cast() }
     }
     #[doc = "Iterator for array of:"]
     #[doc = "0x00..0x08 - Data Direction"]
     #[inline(always)]
     pub fn dir_iter(&self) -> impl Iterator<Item = &Dir> {
-        (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
-                .cast::<u8>()
-                .add(0)
-                .add(128 * n)
-                .cast()
-        })
+        (0..2).map(move |n| unsafe { &*core::ptr::from_ref(self).cast::<u8>().add(128 * n).cast() })
     }
     #[doc = "0x04..0x0c - Data Direction Clear"]
     #[inline(always)]
@@ -61,7 +49,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(4)
                 .add(128 * n)
@@ -73,7 +61,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn dirclr_iter(&self) -> impl Iterator<Item = &Dirclr> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(4)
                 .add(128 * n)
@@ -86,7 +74,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(8)
                 .add(128 * n)
@@ -98,7 +86,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn dirset_iter(&self) -> impl Iterator<Item = &Dirset> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(8)
                 .add(128 * n)
@@ -111,7 +99,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(12)
                 .add(128 * n)
@@ -123,7 +111,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn dirtgl_iter(&self) -> impl Iterator<Item = &Dirtgl> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(12)
                 .add(128 * n)
@@ -136,7 +124,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(16)
                 .add(128 * n)
@@ -148,7 +136,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn out_iter(&self) -> impl Iterator<Item = &Out> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(16)
                 .add(128 * n)
@@ -161,7 +149,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(20)
                 .add(128 * n)
@@ -173,7 +161,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn outclr_iter(&self) -> impl Iterator<Item = &Outclr> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(20)
                 .add(128 * n)
@@ -186,7 +174,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(24)
                 .add(128 * n)
@@ -198,7 +186,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn outset_iter(&self) -> impl Iterator<Item = &Outset> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(24)
                 .add(128 * n)
@@ -211,7 +199,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(28)
                 .add(128 * n)
@@ -223,7 +211,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn outtgl_iter(&self) -> impl Iterator<Item = &Outtgl> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(28)
                 .add(128 * n)
@@ -236,7 +224,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(32)
                 .add(128 * n)
@@ -248,7 +236,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn in__iter(&self) -> impl Iterator<Item = &In> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(32)
                 .add(128 * n)
@@ -261,7 +249,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(36)
                 .add(128 * n)
@@ -273,7 +261,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn ctrl_iter(&self) -> impl Iterator<Item = &Ctrl> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(36)
                 .add(128 * n)
@@ -286,7 +274,7 @@ impl RegisterBlock {
         #[allow(clippy::no_effect)]
         [(); 2][n];
         unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(40)
                 .add(128 * n)
@@ -298,7 +286,7 @@ impl RegisterBlock {
     #[inline(always)]
     pub fn wrconfig_iter(&self) -> impl Iterator<Item = &Wrconfig> {
         (0..2).map(move |n| unsafe {
-            &*(self as *const Self)
+            &*core::ptr::from_ref(self)
                 .cast::<u8>()
                 .add(40)
                 .add(128 * n)
@@ -350,82 +338,69 @@ impl RegisterBlock {
         self.pincfg1_0.iter()
     }
 }
-#[doc = "DIR (rw) register accessor: Data Direction\n\nYou can [`read`](crate::Reg::read) this register and get [`dir::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dir::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dir`]
-module"]
+#[doc = "DIR (rw) register accessor: Data Direction\n\nYou can [`read`](crate::Reg::read) this register and get [`dir::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dir::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dir`] module"]
 #[doc(alias = "DIR")]
 pub type Dir = crate::Reg<dir::DirSpec>;
 #[doc = "Data Direction"]
 pub mod dir;
-#[doc = "DIRCLR (rw) register accessor: Data Direction Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`dirclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dirclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dirclr`]
-module"]
+#[doc = "DIRCLR (rw) register accessor: Data Direction Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`dirclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dirclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dirclr`] module"]
 #[doc(alias = "DIRCLR")]
 pub type Dirclr = crate::Reg<dirclr::DirclrSpec>;
 #[doc = "Data Direction Clear"]
 pub mod dirclr;
-#[doc = "DIRSET (rw) register accessor: Data Direction Set\n\nYou can [`read`](crate::Reg::read) this register and get [`dirset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dirset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dirset`]
-module"]
+#[doc = "DIRSET (rw) register accessor: Data Direction Set\n\nYou can [`read`](crate::Reg::read) this register and get [`dirset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dirset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dirset`] module"]
 #[doc(alias = "DIRSET")]
 pub type Dirset = crate::Reg<dirset::DirsetSpec>;
 #[doc = "Data Direction Set"]
 pub mod dirset;
-#[doc = "DIRTGL (rw) register accessor: Data Direction Toggle\n\nYou can [`read`](crate::Reg::read) this register and get [`dirtgl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dirtgl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dirtgl`]
-module"]
+#[doc = "DIRTGL (rw) register accessor: Data Direction Toggle\n\nYou can [`read`](crate::Reg::read) this register and get [`dirtgl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dirtgl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dirtgl`] module"]
 #[doc(alias = "DIRTGL")]
 pub type Dirtgl = crate::Reg<dirtgl::DirtglSpec>;
 #[doc = "Data Direction Toggle"]
 pub mod dirtgl;
-#[doc = "OUT (rw) register accessor: Data Output Value\n\nYou can [`read`](crate::Reg::read) this register and get [`out::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`out::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@out`]
-module"]
+#[doc = "OUT (rw) register accessor: Data Output Value\n\nYou can [`read`](crate::Reg::read) this register and get [`out::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`out::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@out`] module"]
 #[doc(alias = "OUT")]
 pub type Out = crate::Reg<out::OutSpec>;
 #[doc = "Data Output Value"]
 pub mod out;
-#[doc = "OUTCLR (rw) register accessor: Data Output Value Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`outclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`outclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@outclr`]
-module"]
+#[doc = "OUTCLR (rw) register accessor: Data Output Value Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`outclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`outclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@outclr`] module"]
 #[doc(alias = "OUTCLR")]
 pub type Outclr = crate::Reg<outclr::OutclrSpec>;
 #[doc = "Data Output Value Clear"]
 pub mod outclr;
-#[doc = "OUTSET (rw) register accessor: Data Output Value Set\n\nYou can [`read`](crate::Reg::read) this register and get [`outset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`outset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@outset`]
-module"]
+#[doc = "OUTSET (rw) register accessor: Data Output Value Set\n\nYou can [`read`](crate::Reg::read) this register and get [`outset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`outset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@outset`] module"]
 #[doc(alias = "OUTSET")]
 pub type Outset = crate::Reg<outset::OutsetSpec>;
 #[doc = "Data Output Value Set"]
 pub mod outset;
-#[doc = "OUTTGL (rw) register accessor: Data Output Value Toggle\n\nYou can [`read`](crate::Reg::read) this register and get [`outtgl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`outtgl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@outtgl`]
-module"]
+#[doc = "OUTTGL (rw) register accessor: Data Output Value Toggle\n\nYou can [`read`](crate::Reg::read) this register and get [`outtgl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`outtgl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@outtgl`] module"]
 #[doc(alias = "OUTTGL")]
 pub type Outtgl = crate::Reg<outtgl::OuttglSpec>;
 #[doc = "Data Output Value Toggle"]
 pub mod outtgl;
-#[doc = "IN (r) register accessor: Data Input Value\n\nYou can [`read`](crate::Reg::read) this register and get [`in_::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@in_`]
-module"]
+#[doc = "IN (r) register accessor: Data Input Value\n\nYou can [`read`](crate::Reg::read) this register and get [`in_::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@in_`] module"]
 #[doc(alias = "IN")]
 pub type In = crate::Reg<in_::InSpec>;
 #[doc = "Data Input Value"]
 pub mod in_;
-#[doc = "CTRL (rw) register accessor: Control\n\nYou can [`read`](crate::Reg::read) this register and get [`ctrl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrl`]
-module"]
+#[doc = "CTRL (rw) register accessor: Control\n\nYou can [`read`](crate::Reg::read) this register and get [`ctrl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ctrl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ctrl`] module"]
 #[doc(alias = "CTRL")]
 pub type Ctrl = crate::Reg<ctrl::CtrlSpec>;
 #[doc = "Control"]
 pub mod ctrl;
-#[doc = "WRCONFIG (w) register accessor: Write Configuration\n\nYou can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`wrconfig::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wrconfig`]
-module"]
+#[doc = "WRCONFIG (w) register accessor: Write Configuration\n\nYou can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`wrconfig::W`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@wrconfig`] module"]
 #[doc(alias = "WRCONFIG")]
 pub type Wrconfig = crate::Reg<wrconfig::WrconfigSpec>;
 #[doc = "Write Configuration"]
 pub mod wrconfig;
-#[doc = "PMUX0_ (rw) register accessor: Peripheral Multiplexing n - Group 0\n\nYou can [`read`](crate::Reg::read) this register and get [`pmux0_::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`pmux0_::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pmux0_`]
-module"]
+#[doc = "PMUX0_ (rw) register accessor: Peripheral Multiplexing n - Group 0\n\nYou can [`read`](crate::Reg::read) this register and get [`pmux0_::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`pmux0_::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pmux0_`] module"]
 #[doc(alias = "PMUX0_")]
 pub type Pmux0_ = crate::Reg<pmux0_::Pmux0_Spec>;
 #[doc = "Peripheral Multiplexing n - Group 0"]
 pub mod pmux0_;
 pub use pmux0_ as pmux1_;
 pub use Pmux0_ as Pmux1_;
-#[doc = "PINCFG0_ (rw) register accessor: Pin Configuration n - Group 0\n\nYou can [`read`](crate::Reg::read) this register and get [`pincfg0_::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`pincfg0_::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pincfg0_`]
-module"]
+#[doc = "PINCFG0_ (rw) register accessor: Pin Configuration n - Group 0\n\nYou can [`read`](crate::Reg::read) this register and get [`pincfg0_::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`pincfg0_::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@pincfg0_`] module"]
 #[doc(alias = "PINCFG0_")]
 pub type Pincfg0_ = crate::Reg<pincfg0_::Pincfg0_Spec>;
 #[doc = "Pin Configuration n - Group 0"]

@@ -17,6 +17,4 @@ impl crate::RegisterSpec for PinstateSpec {
 #[doc = "`read()` method returns [`pinstate::R`](R) reader structure"]
 impl crate::Readable for PinstateSpec {}
 #[doc = "`reset()` method sets PINSTATE to value 0"]
-impl crate::Resettable for PinstateSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PinstateSpec {}

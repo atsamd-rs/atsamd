@@ -65,7 +65,6 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Force SDCK Disabled"]
     #[inline(always)]
-    #[must_use]
     pub fn fsdclkd(&mut self) -> FsdclkdW<Cc2rSpec> {
         FsdclkdW::new(self, 0)
     }
@@ -80,10 +79,6 @@ impl crate::Readable for Cc2rSpec {}
 #[doc = "`write(|w| ..)` method takes [`cc2r::W`](W) writer structure"]
 impl crate::Writable for Cc2rSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CC2R to value 0"]
-impl crate::Resettable for Cc2rSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Cc2rSpec {}

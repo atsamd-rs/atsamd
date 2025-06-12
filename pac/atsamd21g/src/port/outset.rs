@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Port Data Output Value Set"]
     #[inline(always)]
-    #[must_use]
     pub fn outset(&mut self) -> OutsetW<OutsetSpec> {
         OutsetW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for OutsetSpec {}
 #[doc = "`write(|w| ..)` method takes [`outset::W`](W) writer structure"]
 impl crate::Writable for OutsetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets OUTSET%s to value 0"]
-impl crate::Resettable for OutsetSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for OutsetSpec {}

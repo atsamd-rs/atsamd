@@ -198,13 +198,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Number of Samples to be Collected"]
     #[inline(always)]
-    #[must_use]
     pub fn samplenum(&mut self) -> SamplenumW<AvgctrlSpec> {
         SamplenumW::new(self, 0)
     }
     #[doc = "Bits 4:6 - Adjusting Result / Division Coefficient"]
     #[inline(always)]
-    #[must_use]
     pub fn adjres(&mut self) -> AdjresW<AvgctrlSpec> {
         AdjresW::new(self, 4)
     }
@@ -219,10 +217,6 @@ impl crate::Readable for AvgctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`avgctrl::W`](W) writer structure"]
 impl crate::Writable for AvgctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets AVGCTRL to value 0"]
-impl crate::Resettable for AvgctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for AvgctrlSpec {}

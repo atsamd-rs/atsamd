@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 2 - Host Start Of Frame Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn hsof(&mut self) -> HsofW<IntenclrSpec> {
         HsofW::new(self, 2)
     }
     #[doc = "Bit 3 - BUS Reset Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rst(&mut self) -> RstW<IntenclrSpec> {
         RstW::new(self, 3)
     }
     #[doc = "Bit 4 - Wake Up Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeup(&mut self) -> WakeupW<IntenclrSpec> {
         WakeupW::new(self, 4)
     }
     #[doc = "Bit 5 - DownStream to Device Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn dnrsm(&mut self) -> DnrsmW<IntenclrSpec> {
         DnrsmW::new(self, 5)
     }
     #[doc = "Bit 6 - Upstream Resume from Device Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn uprsm(&mut self) -> UprsmW<IntenclrSpec> {
         UprsmW::new(self, 6)
     }
     #[doc = "Bit 7 - Ram Access Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn ramacer(&mut self) -> RamacerW<IntenclrSpec> {
         RamacerW::new(self, 7)
     }
     #[doc = "Bit 8 - Device Connection Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn dconn(&mut self) -> DconnW<IntenclrSpec> {
         DconnW::new(self, 8)
     }
     #[doc = "Bit 9 - Device Disconnection Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn ddisc(&mut self) -> DdiscW<IntenclrSpec> {
         DdiscW::new(self, 9)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

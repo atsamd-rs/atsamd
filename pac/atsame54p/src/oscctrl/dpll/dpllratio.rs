@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:12 - Loop Divider Ratio"]
     #[inline(always)]
-    #[must_use]
     pub fn ldr(&mut self) -> LdrW<DpllratioSpec> {
         LdrW::new(self, 0)
     }
     #[doc = "Bits 16:20 - Loop Divider Ratio Fractional Part"]
     #[inline(always)]
-    #[must_use]
     pub fn ldrfrac(&mut self) -> LdrfracW<DpllratioSpec> {
         LdrfracW::new(self, 16)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for DpllratioSpec {}
 #[doc = "`write(|w| ..)` method takes [`dpllratio::W`](W) writer structure"]
 impl crate::Writable for DpllratioSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DPLLRATIO to value 0"]
-impl crate::Resettable for DpllratioSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DpllratioSpec {}

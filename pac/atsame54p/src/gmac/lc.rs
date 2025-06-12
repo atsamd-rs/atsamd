@@ -17,6 +17,4 @@ impl crate::RegisterSpec for LcSpec {
 #[doc = "`read()` method returns [`lc::R`](R) reader structure"]
 impl crate::Readable for LcSpec {}
 #[doc = "`reset()` method sets LC to value 0"]
-impl crate::Resettable for LcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for LcSpec {}

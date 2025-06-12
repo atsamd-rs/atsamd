@@ -393,49 +393,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Serial Memory Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlbSpec> {
         ModeW::new(self, 0)
     }
     #[doc = "Bit 1 - Local Loopback Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn loopen(&mut self) -> LoopenW<CtrlbSpec> {
         LoopenW::new(self, 1)
     }
     #[doc = "Bit 2 - Wait Data Read Before Transfer"]
     #[inline(always)]
-    #[must_use]
     pub fn wdrbt(&mut self) -> WdrbtW<CtrlbSpec> {
         WdrbtW::new(self, 2)
     }
     #[doc = "Bit 3 - Serial Memory reg"]
     #[inline(always)]
-    #[must_use]
     pub fn smemreg(&mut self) -> SmemregW<CtrlbSpec> {
         SmemregW::new(self, 3)
     }
     #[doc = "Bits 4:5 - Chip Select Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn csmode(&mut self) -> CsmodeW<CtrlbSpec> {
         CsmodeW::new(self, 4)
     }
     #[doc = "Bits 8:11 - Data Length"]
     #[inline(always)]
-    #[must_use]
     pub fn datalen(&mut self) -> DatalenW<CtrlbSpec> {
         DatalenW::new(self, 8)
     }
     #[doc = "Bits 16:23 - Delay Between Consecutive Transfers"]
     #[inline(always)]
-    #[must_use]
     pub fn dlybct(&mut self) -> DlybctW<CtrlbSpec> {
         DlybctW::new(self, 16)
     }
     #[doc = "Bits 24:31 - Minimum Inactive CS Delay"]
     #[inline(always)]
-    #[must_use]
     pub fn dlycs(&mut self) -> DlycsW<CtrlbSpec> {
         DlycsW::new(self, 24)
     }
@@ -450,10 +442,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

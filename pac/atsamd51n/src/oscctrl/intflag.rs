@@ -160,103 +160,86 @@ impl R {
 impl W {
     #[doc = "Bit 0 - XOSC 0 Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn xoscrdy0(&mut self) -> Xoscrdy0W<IntflagSpec> {
         Xoscrdy0W::new(self, 0)
     }
     #[doc = "Bit 1 - XOSC 1 Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn xoscrdy1(&mut self) -> Xoscrdy1W<IntflagSpec> {
         Xoscrdy1W::new(self, 1)
     }
     #[doc = "Bit 2 - XOSC 0 Clock Failure Detector"]
     #[inline(always)]
-    #[must_use]
     pub fn xoscfail0(&mut self) -> Xoscfail0W<IntflagSpec> {
         Xoscfail0W::new(self, 2)
     }
     #[doc = "Bit 3 - XOSC 1 Clock Failure Detector"]
     #[inline(always)]
-    #[must_use]
     pub fn xoscfail1(&mut self) -> Xoscfail1W<IntflagSpec> {
         Xoscfail1W::new(self, 3)
     }
     #[doc = "Bit 8 - DFLL Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn dfllrdy(&mut self) -> DfllrdyW<IntflagSpec> {
         DfllrdyW::new(self, 8)
     }
     #[doc = "Bit 9 - DFLL Out Of Bounds"]
     #[inline(always)]
-    #[must_use]
     pub fn dflloob(&mut self) -> DflloobW<IntflagSpec> {
         DflloobW::new(self, 9)
     }
     #[doc = "Bit 10 - DFLL Lock Fine"]
     #[inline(always)]
-    #[must_use]
     pub fn dflllckf(&mut self) -> DflllckfW<IntflagSpec> {
         DflllckfW::new(self, 10)
     }
     #[doc = "Bit 11 - DFLL Lock Coarse"]
     #[inline(always)]
-    #[must_use]
     pub fn dflllckc(&mut self) -> DflllckcW<IntflagSpec> {
         DflllckcW::new(self, 11)
     }
     #[doc = "Bit 12 - DFLL Reference Clock Stopped"]
     #[inline(always)]
-    #[must_use]
     pub fn dfllrcs(&mut self) -> DfllrcsW<IntflagSpec> {
         DfllrcsW::new(self, 12)
     }
     #[doc = "Bit 16 - DPLL0 Lock Rise"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll0lckr(&mut self) -> Dpll0lckrW<IntflagSpec> {
         Dpll0lckrW::new(self, 16)
     }
     #[doc = "Bit 17 - DPLL0 Lock Fall"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll0lckf(&mut self) -> Dpll0lckfW<IntflagSpec> {
         Dpll0lckfW::new(self, 17)
     }
     #[doc = "Bit 18 - DPLL0 Lock Timeout"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll0lto(&mut self) -> Dpll0ltoW<IntflagSpec> {
         Dpll0ltoW::new(self, 18)
     }
     #[doc = "Bit 19 - DPLL0 Loop Divider Ratio Update Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll0ldrto(&mut self) -> Dpll0ldrtoW<IntflagSpec> {
         Dpll0ldrtoW::new(self, 19)
     }
     #[doc = "Bit 24 - DPLL1 Lock Rise"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll1lckr(&mut self) -> Dpll1lckrW<IntflagSpec> {
         Dpll1lckrW::new(self, 24)
     }
     #[doc = "Bit 25 - DPLL1 Lock Fall"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll1lckf(&mut self) -> Dpll1lckfW<IntflagSpec> {
         Dpll1lckfW::new(self, 25)
     }
     #[doc = "Bit 26 - DPLL1 Lock Timeout"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll1lto(&mut self) -> Dpll1ltoW<IntflagSpec> {
         Dpll1ltoW::new(self, 26)
     }
     #[doc = "Bit 27 - DPLL1 Loop Divider Ratio Update Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll1ldrto(&mut self) -> Dpll1ldrtoW<IntflagSpec> {
         Dpll1ldrtoW::new(self, 27)
     }
@@ -271,10 +254,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

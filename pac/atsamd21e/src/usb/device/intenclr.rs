@@ -97,61 +97,51 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Suspend Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn suspend(&mut self) -> SuspendW<IntenclrSpec> {
         SuspendW::new(self, 0)
     }
     #[doc = "Bit 1 - Micro Start of Frame Interrupt Enable in High Speed Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn msof(&mut self) -> MsofW<IntenclrSpec> {
         MsofW::new(self, 1)
     }
     #[doc = "Bit 2 - Start Of Frame Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sof(&mut self) -> SofW<IntenclrSpec> {
         SofW::new(self, 2)
     }
     #[doc = "Bit 3 - End of Reset Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn eorst(&mut self) -> EorstW<IntenclrSpec> {
         EorstW::new(self, 3)
     }
     #[doc = "Bit 4 - Wake Up Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeup(&mut self) -> WakeupW<IntenclrSpec> {
         WakeupW::new(self, 4)
     }
     #[doc = "Bit 5 - End Of Resume Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn eorsm(&mut self) -> EorsmW<IntenclrSpec> {
         EorsmW::new(self, 5)
     }
     #[doc = "Bit 6 - Upstream Resume Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn uprsm(&mut self) -> UprsmW<IntenclrSpec> {
         UprsmW::new(self, 6)
     }
     #[doc = "Bit 7 - Ram Access Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ramacer(&mut self) -> RamacerW<IntenclrSpec> {
         RamacerW::new(self, 7)
     }
     #[doc = "Bit 8 - Link Power Management Not Yet Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lpmnyet(&mut self) -> LpmnyetW<IntenclrSpec> {
         LpmnyetW::new(self, 8)
     }
     #[doc = "Bit 9 - Link Power Management Suspend Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lpmsusp(&mut self) -> LpmsuspW<IntenclrSpec> {
         LpmsuspW::new(self, 9)
     }
@@ -166,10 +156,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

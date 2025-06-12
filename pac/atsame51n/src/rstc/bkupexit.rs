@@ -31,6 +31,4 @@ impl crate::RegisterSpec for BkupexitSpec {
 #[doc = "`read()` method returns [`bkupexit::R`](R) reader structure"]
 impl crate::Readable for BkupexitSpec {}
 #[doc = "`reset()` method sets BKUPEXIT to value 0"]
-impl crate::Resettable for BkupexitSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for BkupexitSpec {}

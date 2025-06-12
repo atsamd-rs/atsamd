@@ -85,7 +85,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Ram Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn bramcfg(&mut self) -> BramcfgW<BkupcfgSpec> {
         BramcfgW::new(self, 0)
     }
@@ -100,10 +99,6 @@ impl crate::Readable for BkupcfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`bkupcfg::W`](W) writer structure"]
 impl crate::Writable for BkupcfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets BKUPCFG to value 0"]
-impl crate::Resettable for BkupcfgSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for BkupcfgSpec {}

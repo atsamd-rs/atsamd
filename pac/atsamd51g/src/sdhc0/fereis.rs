@@ -344,67 +344,56 @@ where
 impl W {
     #[doc = "Bit 0 - Force Event for Command Timeout Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdteo(&mut self) -> CmdteoW<FereisSpec> {
         CmdteoW::new(self, 0)
     }
     #[doc = "Bit 1 - Force Event for Command CRC Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdcrc(&mut self) -> CmdcrcW<FereisSpec> {
         CmdcrcW::new(self, 1)
     }
     #[doc = "Bit 2 - Force Event for Command End Bit Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdend(&mut self) -> CmdendW<FereisSpec> {
         CmdendW::new(self, 2)
     }
     #[doc = "Bit 3 - Force Event for Command Index Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdidx(&mut self) -> CmdidxW<FereisSpec> {
         CmdidxW::new(self, 3)
     }
     #[doc = "Bit 4 - Force Event for Data Timeout Error"]
     #[inline(always)]
-    #[must_use]
     pub fn datteo(&mut self) -> DatteoW<FereisSpec> {
         DatteoW::new(self, 4)
     }
     #[doc = "Bit 5 - Force Event for Data CRC Error"]
     #[inline(always)]
-    #[must_use]
     pub fn datcrc(&mut self) -> DatcrcW<FereisSpec> {
         DatcrcW::new(self, 5)
     }
     #[doc = "Bit 6 - Force Event for Data End Bit Error"]
     #[inline(always)]
-    #[must_use]
     pub fn datend(&mut self) -> DatendW<FereisSpec> {
         DatendW::new(self, 6)
     }
     #[doc = "Bit 7 - Force Event for Current Limit Error"]
     #[inline(always)]
-    #[must_use]
     pub fn curlim(&mut self) -> CurlimW<FereisSpec> {
         CurlimW::new(self, 7)
     }
     #[doc = "Bit 8 - Force Event for Auto CMD Error"]
     #[inline(always)]
-    #[must_use]
     pub fn acmd(&mut self) -> AcmdW<FereisSpec> {
         AcmdW::new(self, 8)
     }
     #[doc = "Bit 9 - Force Event for ADMA Error"]
     #[inline(always)]
-    #[must_use]
     pub fn adma(&mut self) -> AdmaW<FereisSpec> {
         AdmaW::new(self, 9)
     }
     #[doc = "Bit 12 - Force Event for Boot Acknowledge Error"]
     #[inline(always)]
-    #[must_use]
     pub fn bootae(&mut self) -> BootaeW<FereisSpec> {
         BootaeW::new(self, 12)
     }
@@ -417,10 +406,6 @@ impl crate::RegisterSpec for FereisSpec {
 #[doc = "`write(|w| ..)` method takes [`fereis::W`](W) writer structure"]
 impl crate::Writable for FereisSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets FEREIS to value 0"]
-impl crate::Resettable for FereisSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for FereisSpec {}

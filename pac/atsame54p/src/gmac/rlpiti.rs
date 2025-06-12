@@ -17,6 +17,4 @@ impl crate::RegisterSpec for RlpitiSpec {
 #[doc = "`read()` method returns [`rlpiti::R`](R) reader structure"]
 impl crate::Readable for RlpitiSpec {}
 #[doc = "`reset()` method sets RLPITI to value 0"]
-impl crate::Resettable for RlpitiSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RlpitiSpec {}

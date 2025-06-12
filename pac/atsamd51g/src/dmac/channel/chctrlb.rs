@@ -85,7 +85,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Software Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<ChctrlbSpec> {
         CmdW::new(self, 0)
     }
@@ -100,10 +99,6 @@ impl crate::Readable for ChctrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`chctrlb::W`](W) writer structure"]
 impl crate::Writable for ChctrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHCTRLB to value 0"]
-impl crate::Resettable for ChctrlbSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ChctrlbSpec {}

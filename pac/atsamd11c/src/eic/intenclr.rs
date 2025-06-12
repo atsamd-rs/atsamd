@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - External Interrupt 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extint0(&mut self) -> Extint0W<IntenclrSpec> {
         Extint0W::new(self, 0)
     }
     #[doc = "Bit 1 - External Interrupt 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extint1(&mut self) -> Extint1W<IntenclrSpec> {
         Extint1W::new(self, 1)
     }
     #[doc = "Bit 2 - External Interrupt 2 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extint2(&mut self) -> Extint2W<IntenclrSpec> {
         Extint2W::new(self, 2)
     }
     #[doc = "Bit 3 - External Interrupt 3 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extint3(&mut self) -> Extint3W<IntenclrSpec> {
         Extint3W::new(self, 3)
     }
     #[doc = "Bit 4 - External Interrupt 4 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extint4(&mut self) -> Extint4W<IntenclrSpec> {
         Extint4W::new(self, 4)
     }
     #[doc = "Bit 5 - External Interrupt 5 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extint5(&mut self) -> Extint5W<IntenclrSpec> {
         Extint5W::new(self, 5)
     }
     #[doc = "Bit 6 - External Interrupt 6 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extint6(&mut self) -> Extint6W<IntenclrSpec> {
         Extint6W::new(self, 6)
     }
     #[doc = "Bit 7 - External Interrupt 7 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extint7(&mut self) -> Extint7W<IntenclrSpec> {
         Extint7W::new(self, 7)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

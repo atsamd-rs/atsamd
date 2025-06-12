@@ -169,37 +169,31 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Event Action"]
     #[inline(always)]
-    #[must_use]
     pub fn evact(&mut self) -> EvactW<EvctrlSpec> {
         EvactW::new(self, 0)
     }
     #[doc = "Bit 4 - TC Inverted Event Input"]
     #[inline(always)]
-    #[must_use]
     pub fn tcinv(&mut self) -> TcinvW<EvctrlSpec> {
         TcinvW::new(self, 4)
     }
     #[doc = "Bit 5 - TC Event Input"]
     #[inline(always)]
-    #[must_use]
     pub fn tcei(&mut self) -> TceiW<EvctrlSpec> {
         TceiW::new(self, 5)
     }
     #[doc = "Bit 8 - Overflow/Underflow Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovfeo(&mut self) -> OvfeoW<EvctrlSpec> {
         OvfeoW::new(self, 8)
     }
     #[doc = "Bit 12 - Match or Capture Channel 0 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mceo0(&mut self) -> Mceo0W<EvctrlSpec> {
         Mceo0W::new(self, 12)
     }
     #[doc = "Bit 13 - Match or Capture Channel 1 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mceo1(&mut self) -> Mceo1W<EvctrlSpec> {
         Mceo1W::new(self, 13)
     }
@@ -214,10 +208,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

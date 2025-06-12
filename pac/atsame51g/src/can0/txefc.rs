@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Event FIFO Start Address"]
     #[inline(always)]
-    #[must_use]
     pub fn efsa(&mut self) -> EfsaW<TxefcSpec> {
         EfsaW::new(self, 0)
     }
     #[doc = "Bits 16:21 - Event FIFO Size"]
     #[inline(always)]
-    #[must_use]
     pub fn efs(&mut self) -> EfsW<TxefcSpec> {
         EfsW::new(self, 16)
     }
     #[doc = "Bits 24:29 - Event FIFO Watermark"]
     #[inline(always)]
-    #[must_use]
     pub fn efwm(&mut self) -> EfwmW<TxefcSpec> {
         EfwmW::new(self, 24)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for TxefcSpec {}
 #[doc = "`write(|w| ..)` method takes [`txefc::W`](W) writer structure"]
 impl crate::Writable for TxefcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TXEFC to value 0"]
-impl crate::Resettable for TxefcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxefcSpec {}

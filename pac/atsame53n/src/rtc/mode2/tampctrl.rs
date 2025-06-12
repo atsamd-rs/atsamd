@@ -552,91 +552,76 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Tamper Input 0 Action"]
     #[inline(always)]
-    #[must_use]
     pub fn in0act(&mut self) -> In0actW<TampctrlSpec> {
         In0actW::new(self, 0)
     }
     #[doc = "Bits 2:3 - Tamper Input 1 Action"]
     #[inline(always)]
-    #[must_use]
     pub fn in1act(&mut self) -> In1actW<TampctrlSpec> {
         In1actW::new(self, 2)
     }
     #[doc = "Bits 4:5 - Tamper Input 2 Action"]
     #[inline(always)]
-    #[must_use]
     pub fn in2act(&mut self) -> In2actW<TampctrlSpec> {
         In2actW::new(self, 4)
     }
     #[doc = "Bits 6:7 - Tamper Input 3 Action"]
     #[inline(always)]
-    #[must_use]
     pub fn in3act(&mut self) -> In3actW<TampctrlSpec> {
         In3actW::new(self, 6)
     }
     #[doc = "Bits 8:9 - Tamper Input 4 Action"]
     #[inline(always)]
-    #[must_use]
     pub fn in4act(&mut self) -> In4actW<TampctrlSpec> {
         In4actW::new(self, 8)
     }
     #[doc = "Bit 16 - Tamper Level Select 0"]
     #[inline(always)]
-    #[must_use]
     pub fn tamlvl0(&mut self) -> Tamlvl0W<TampctrlSpec> {
         Tamlvl0W::new(self, 16)
     }
     #[doc = "Bit 17 - Tamper Level Select 1"]
     #[inline(always)]
-    #[must_use]
     pub fn tamlvl1(&mut self) -> Tamlvl1W<TampctrlSpec> {
         Tamlvl1W::new(self, 17)
     }
     #[doc = "Bit 18 - Tamper Level Select 2"]
     #[inline(always)]
-    #[must_use]
     pub fn tamlvl2(&mut self) -> Tamlvl2W<TampctrlSpec> {
         Tamlvl2W::new(self, 18)
     }
     #[doc = "Bit 19 - Tamper Level Select 3"]
     #[inline(always)]
-    #[must_use]
     pub fn tamlvl3(&mut self) -> Tamlvl3W<TampctrlSpec> {
         Tamlvl3W::new(self, 19)
     }
     #[doc = "Bit 20 - Tamper Level Select 4"]
     #[inline(always)]
-    #[must_use]
     pub fn tamlvl4(&mut self) -> Tamlvl4W<TampctrlSpec> {
         Tamlvl4W::new(self, 20)
     }
     #[doc = "Bit 24 - Debouncer Enable 0"]
     #[inline(always)]
-    #[must_use]
     pub fn debnc0(&mut self) -> Debnc0W<TampctrlSpec> {
         Debnc0W::new(self, 24)
     }
     #[doc = "Bit 25 - Debouncer Enable 1"]
     #[inline(always)]
-    #[must_use]
     pub fn debnc1(&mut self) -> Debnc1W<TampctrlSpec> {
         Debnc1W::new(self, 25)
     }
     #[doc = "Bit 26 - Debouncer Enable 2"]
     #[inline(always)]
-    #[must_use]
     pub fn debnc2(&mut self) -> Debnc2W<TampctrlSpec> {
         Debnc2W::new(self, 26)
     }
     #[doc = "Bit 27 - Debouncer Enable 3"]
     #[inline(always)]
-    #[must_use]
     pub fn debnc3(&mut self) -> Debnc3W<TampctrlSpec> {
         Debnc3W::new(self, 27)
     }
     #[doc = "Bit 28 - Debouncer Enable 4"]
     #[inline(always)]
-    #[must_use]
     pub fn debnc4(&mut self) -> Debnc4W<TampctrlSpec> {
         Debnc4W::new(self, 28)
     }
@@ -651,10 +636,6 @@ impl crate::Readable for TampctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`tampctrl::W`](W) writer structure"]
 impl crate::Writable for TampctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TAMPCTRL to value 0"]
-impl crate::Resettable for TampctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TampctrlSpec {}

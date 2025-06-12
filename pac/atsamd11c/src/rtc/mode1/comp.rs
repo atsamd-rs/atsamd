@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Compare Value"]
     #[inline(always)]
-    #[must_use]
     pub fn comp(&mut self) -> CompW<CompSpec> {
         CompW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for CompSpec {}
 #[doc = "`write(|w| ..)` method takes [`comp::W`](W) writer structure"]
 impl crate::Writable for CompSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets COMP%s to value 0"]
-impl crate::Resettable for CompSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CompSpec {}

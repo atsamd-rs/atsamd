@@ -115,73 +115,61 @@ impl R {
 impl W {
     #[doc = "Bit 0 - PAC2 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pac2_(&mut self) -> Pac2_W<ApbcmaskSpec> {
         Pac2_W::new(self, 0)
     }
     #[doc = "Bit 1 - EVSYS APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evsys_(&mut self) -> Evsys_W<ApbcmaskSpec> {
         Evsys_W::new(self, 1)
     }
     #[doc = "Bit 2 - SERCOM0 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom0_(&mut self) -> Sercom0_W<ApbcmaskSpec> {
         Sercom0_W::new(self, 2)
     }
     #[doc = "Bit 3 - SERCOM1 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom1_(&mut self) -> Sercom1_W<ApbcmaskSpec> {
         Sercom1_W::new(self, 3)
     }
     #[doc = "Bit 4 - SERCOM2 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom2_(&mut self) -> Sercom2_W<ApbcmaskSpec> {
         Sercom2_W::new(self, 4)
     }
     #[doc = "Bit 5 - TCC0 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcc0_(&mut self) -> Tcc0_W<ApbcmaskSpec> {
         Tcc0_W::new(self, 5)
     }
     #[doc = "Bit 6 - TC1 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tc1_(&mut self) -> Tc1_W<ApbcmaskSpec> {
         Tc1_W::new(self, 6)
     }
     #[doc = "Bit 7 - TC2 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tc2_(&mut self) -> Tc2_W<ApbcmaskSpec> {
         Tc2_W::new(self, 7)
     }
     #[doc = "Bit 8 - ADC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn adc_(&mut self) -> Adc_W<ApbcmaskSpec> {
         Adc_W::new(self, 8)
     }
     #[doc = "Bit 9 - AC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ac_(&mut self) -> Ac_W<ApbcmaskSpec> {
         Ac_W::new(self, 9)
     }
     #[doc = "Bit 10 - DAC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dac_(&mut self) -> Dac_W<ApbcmaskSpec> {
         Dac_W::new(self, 10)
     }
     #[doc = "Bit 11 - PTC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ptc_(&mut self) -> Ptc_W<ApbcmaskSpec> {
         Ptc_W::new(self, 11)
     }
@@ -196,8 +184,6 @@ impl crate::Readable for ApbcmaskSpec {}
 #[doc = "`write(|w| ..)` method takes [`apbcmask::W`](W) writer structure"]
 impl crate::Writable for ApbcmaskSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets APBCMASK to value 0x0100"]
 impl crate::Resettable for ApbcmaskSpec {

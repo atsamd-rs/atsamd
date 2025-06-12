@@ -494,49 +494,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Left Adjusted Data"]
     #[inline(always)]
-    #[must_use]
     pub fn leftadj(&mut self) -> LeftadjW<DacctrlSpec> {
         LeftadjW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable DAC0"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<DacctrlSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Current Control"]
     #[inline(always)]
-    #[must_use]
     pub fn cctrl(&mut self) -> CctrlW<DacctrlSpec> {
         CctrlW::new(self, 2)
     }
     #[doc = "Bit 5 - Standalone Filter"]
     #[inline(always)]
-    #[must_use]
     pub fn fext(&mut self) -> FextW<DacctrlSpec> {
         FextW::new(self, 5)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<DacctrlSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - Dithering Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn dither(&mut self) -> DitherW<DacctrlSpec> {
         DitherW::new(self, 7)
     }
     #[doc = "Bits 8:11 - Refresh period"]
     #[inline(always)]
-    #[must_use]
     pub fn refresh(&mut self) -> RefreshW<DacctrlSpec> {
         RefreshW::new(self, 8)
     }
     #[doc = "Bits 13:15 - Sampling Rate"]
     #[inline(always)]
-    #[must_use]
     pub fn osr(&mut self) -> OsrW<DacctrlSpec> {
         OsrW::new(self, 13)
     }
@@ -551,11 +543,6 @@ impl crate::Readable for DacctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`dacctrl::W`](W) writer structure"]
 impl crate::Writable for DacctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
-#[doc = "`reset()` method sets DACCTRL[%s]
-to value 0"]
-impl crate::Resettable for DacctrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+#[doc = "`reset()` method sets DACCTRL[%s] to value 0"]
+impl crate::Resettable for DacctrlSpec {}

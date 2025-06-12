@@ -345,91 +345,76 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Waveform Generation"]
     #[inline(always)]
-    #[must_use]
     pub fn wavegen(&mut self) -> WavegenW<WaveSpec> {
         WavegenW::new(self, 0)
     }
     #[doc = "Bits 4:5 - Ramp Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn ramp(&mut self) -> RampW<WaveSpec> {
         RampW::new(self, 4)
     }
     #[doc = "Bit 7 - Circular period Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ciperen(&mut self) -> CiperenW<WaveSpec> {
         CiperenW::new(self, 7)
     }
     #[doc = "Bit 8 - Circular Channel 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ciccen0(&mut self) -> Ciccen0W<WaveSpec> {
         Ciccen0W::new(self, 8)
     }
     #[doc = "Bit 9 - Circular Channel 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ciccen1(&mut self) -> Ciccen1W<WaveSpec> {
         Ciccen1W::new(self, 9)
     }
     #[doc = "Bit 10 - Circular Channel 2 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ciccen2(&mut self) -> Ciccen2W<WaveSpec> {
         Ciccen2W::new(self, 10)
     }
     #[doc = "Bit 11 - Circular Channel 3 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ciccen3(&mut self) -> Ciccen3W<WaveSpec> {
         Ciccen3W::new(self, 11)
     }
     #[doc = "Bit 16 - Channel 0 Polarity"]
     #[inline(always)]
-    #[must_use]
     pub fn pol0(&mut self) -> Pol0W<WaveSpec> {
         Pol0W::new(self, 16)
     }
     #[doc = "Bit 17 - Channel 1 Polarity"]
     #[inline(always)]
-    #[must_use]
     pub fn pol1(&mut self) -> Pol1W<WaveSpec> {
         Pol1W::new(self, 17)
     }
     #[doc = "Bit 18 - Channel 2 Polarity"]
     #[inline(always)]
-    #[must_use]
     pub fn pol2(&mut self) -> Pol2W<WaveSpec> {
         Pol2W::new(self, 18)
     }
     #[doc = "Bit 19 - Channel 3 Polarity"]
     #[inline(always)]
-    #[must_use]
     pub fn pol3(&mut self) -> Pol3W<WaveSpec> {
         Pol3W::new(self, 19)
     }
     #[doc = "Bit 24 - Swap DTI Output Pair 0"]
     #[inline(always)]
-    #[must_use]
     pub fn swap0(&mut self) -> Swap0W<WaveSpec> {
         Swap0W::new(self, 24)
     }
     #[doc = "Bit 25 - Swap DTI Output Pair 1"]
     #[inline(always)]
-    #[must_use]
     pub fn swap1(&mut self) -> Swap1W<WaveSpec> {
         Swap1W::new(self, 25)
     }
     #[doc = "Bit 26 - Swap DTI Output Pair 2"]
     #[inline(always)]
-    #[must_use]
     pub fn swap2(&mut self) -> Swap2W<WaveSpec> {
         Swap2W::new(self, 26)
     }
     #[doc = "Bit 27 - Swap DTI Output Pair 3"]
     #[inline(always)]
-    #[must_use]
     pub fn swap3(&mut self) -> Swap3W<WaveSpec> {
         Swap3W::new(self, 27)
     }
@@ -444,10 +429,6 @@ impl crate::Readable for WaveSpec {}
 #[doc = "`write(|w| ..)` method takes [`wave::W`](W) writer structure"]
 impl crate::Writable for WaveSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WAVE to value 0"]
-impl crate::Resettable for WaveSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WaveSpec {}

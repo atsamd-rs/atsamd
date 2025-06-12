@@ -7,17 +7,17 @@ impl RegisterBlock {
     #[doc = "0x00..0x1d - Clock/Calendar with Alarm"]
     #[inline(always)]
     pub const fn mode2(&self) -> &Mode2 {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x1c - 16-bit Counter with Two 16-bit Compares"]
     #[inline(always)]
     pub const fn mode1(&self) -> &Mode1 {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x1c - 32-bit Counter with Single 32-bit Compare"]
     #[inline(always)]
     pub const fn mode0(&self) -> &Mode0 {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
 }
 #[doc = "32-bit Counter with Single 32-bit Compare"]

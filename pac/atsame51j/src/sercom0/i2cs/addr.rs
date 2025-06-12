@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - General Call Address Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn gencen(&mut self) -> GencenW<AddrSpec> {
         GencenW::new(self, 0)
     }
     #[doc = "Bits 1:10 - Address Value"]
     #[inline(always)]
-    #[must_use]
     pub fn addr(&mut self) -> AddrW<AddrSpec> {
         AddrW::new(self, 1)
     }
     #[doc = "Bit 15 - Ten Bit Addressing Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tenbiten(&mut self) -> TenbitenW<AddrSpec> {
         TenbitenW::new(self, 15)
     }
     #[doc = "Bits 17:26 - Address Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn addrmask(&mut self) -> AddrmaskW<AddrSpec> {
         AddrmaskW::new(self, 17)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for AddrSpec {}
 #[doc = "`write(|w| ..)` method takes [`addr::W`](W) writer structure"]
 impl crate::Writable for AddrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ADDR to value 0"]
-impl crate::Resettable for AddrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for AddrSpec {}

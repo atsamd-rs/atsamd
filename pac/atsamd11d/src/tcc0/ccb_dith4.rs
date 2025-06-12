@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Dithering Buffer Cycle Number"]
     #[inline(always)]
-    #[must_use]
     pub fn dithercyb(&mut self) -> DithercybW<CcbDith4Spec> {
         DithercybW::new(self, 0)
     }
     #[doc = "Bits 4:23 - Channel Compare/Capture Buffer Value"]
     #[inline(always)]
-    #[must_use]
     pub fn ccb(&mut self) -> CcbW<CcbDith4Spec> {
         CcbW::new(self, 4)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for CcbDith4Spec {}
 #[doc = "`write(|w| ..)` method takes [`ccb_dith4::W`](W) writer structure"]
 impl crate::Writable for CcbDith4Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CCB%s_DITH4 to value 0"]
-impl crate::Resettable for CcbDith4Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CcbDith4Spec {}

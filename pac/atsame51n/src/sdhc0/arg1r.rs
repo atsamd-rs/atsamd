@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Argument 1"]
     #[inline(always)]
-    #[must_use]
     pub fn arg(&mut self) -> ArgW<Arg1rSpec> {
         ArgW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for Arg1rSpec {}
 #[doc = "`write(|w| ..)` method takes [`arg1r::W`](W) writer structure"]
 impl crate::Writable for Arg1rSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ARG1R to value 0"]
-impl crate::Resettable for Arg1rSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Arg1rSpec {}

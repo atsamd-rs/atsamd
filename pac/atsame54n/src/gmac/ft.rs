@@ -17,6 +17,4 @@ impl crate::RegisterSpec for FtSpec {
 #[doc = "`read()` method returns [`ft::R`](R) reader structure"]
 impl crate::Readable for FtSpec {}
 #[doc = "`reset()` method sets FT to value 0"]
-impl crate::Resettable for FtSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for FtSpec {}

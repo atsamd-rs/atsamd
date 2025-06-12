@@ -225,37 +225,31 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Oscillator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<Osc8mSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<Osc8mSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<Osc8mSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bits 8:9 - Oscillator Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn presc(&mut self) -> PrescW<Osc8mSpec> {
         PrescW::new(self, 8)
     }
     #[doc = "Bits 16:27 - Oscillator Calibration"]
     #[inline(always)]
-    #[must_use]
     pub fn calib(&mut self) -> CalibW<Osc8mSpec> {
         CalibW::new(self, 16)
     }
     #[doc = "Bits 30:31 - Oscillator Frequency Range"]
     #[inline(always)]
-    #[must_use]
     pub fn frange(&mut self) -> FrangeW<Osc8mSpec> {
         FrangeW::new(self, 30)
     }
@@ -270,8 +264,6 @@ impl crate::Readable for Osc8mSpec {}
 #[doc = "`write(|w| ..)` method takes [`osc8m::W`](W) writer structure"]
 impl crate::Writable for Osc8mSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets OSC8M to value 0x8707_0382"]
 impl crate::Resettable for Osc8mSpec {

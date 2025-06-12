@@ -362,37 +362,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - LED Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ledctrl(&mut self) -> LedctrlW<Hc1rSpec> {
         LedctrlW::new(self, 0)
     }
     #[doc = "Bit 1 - Data Width"]
     #[inline(always)]
-    #[must_use]
     pub fn dw(&mut self) -> DwW<Hc1rSpec> {
         DwW::new(self, 1)
     }
     #[doc = "Bit 2 - High Speed Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn hsen(&mut self) -> HsenW<Hc1rSpec> {
         HsenW::new(self, 2)
     }
     #[doc = "Bits 3:4 - DMA Select"]
     #[inline(always)]
-    #[must_use]
     pub fn dmasel(&mut self) -> DmaselW<Hc1rSpec> {
         DmaselW::new(self, 3)
     }
     #[doc = "Bit 6 - Card Detect Test Level"]
     #[inline(always)]
-    #[must_use]
     pub fn carddtl(&mut self) -> CarddtlW<Hc1rSpec> {
         CarddtlW::new(self, 6)
     }
     #[doc = "Bit 7 - Card Detect Signal Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn carddsel(&mut self) -> CarddselW<Hc1rSpec> {
         CarddselW::new(self, 7)
     }
@@ -407,10 +401,6 @@ impl crate::Readable for Hc1rSpec {}
 #[doc = "`write(|w| ..)` method takes [`hc1r::W`](W) writer structure"]
 impl crate::Writable for Hc1rSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets HC1R to value 0"]
-impl crate::Resettable for Hc1rSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for Hc1rSpec {}

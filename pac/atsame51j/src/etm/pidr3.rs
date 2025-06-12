@@ -13,6 +13,4 @@ impl crate::RegisterSpec for Pidr3Spec {
 #[doc = "`read()` method returns [`pidr3::R`](R) reader structure"]
 impl crate::Readable for Pidr3Spec {}
 #[doc = "`reset()` method sets PIDR3 to value 0"]
-impl crate::Resettable for Pidr3Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Pidr3Spec {}

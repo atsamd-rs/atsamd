@@ -203,31 +203,26 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Event Generator Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn evgen(&mut self) -> EvgenW<ChannelSpec> {
         EvgenW::new(self, 0)
     }
     #[doc = "Bits 8:9 - Path Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn path(&mut self) -> PathW<ChannelSpec> {
         PathW::new(self, 8)
     }
     #[doc = "Bits 10:11 - Edge Detection Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn edgsel(&mut self) -> EdgselW<ChannelSpec> {
         EdgselW::new(self, 10)
     }
     #[doc = "Bit 14 - Run in standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<ChannelSpec> {
         RunstdbyW::new(self, 14)
     }
     #[doc = "Bit 15 - Generic Clock On Demand"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<ChannelSpec> {
         OndemandW::new(self, 15)
     }
@@ -242,8 +237,6 @@ impl crate::Readable for ChannelSpec {}
 #[doc = "`write(|w| ..)` method takes [`channel::W`](W) writer structure"]
 impl crate::Writable for ChannelSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CHANNEL to value 0x8000"]
 impl crate::Resettable for ChannelSpec {

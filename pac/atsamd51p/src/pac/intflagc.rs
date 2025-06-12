@@ -115,73 +115,61 @@ impl R {
 impl W {
     #[doc = "Bit 3 - TCC2"]
     #[inline(always)]
-    #[must_use]
     pub fn tcc2_(&mut self) -> Tcc2_W<IntflagcSpec> {
         Tcc2_W::new(self, 3)
     }
     #[doc = "Bit 4 - TCC3"]
     #[inline(always)]
-    #[must_use]
     pub fn tcc3_(&mut self) -> Tcc3_W<IntflagcSpec> {
         Tcc3_W::new(self, 4)
     }
     #[doc = "Bit 5 - TC4"]
     #[inline(always)]
-    #[must_use]
     pub fn tc4_(&mut self) -> Tc4_W<IntflagcSpec> {
         Tc4_W::new(self, 5)
     }
     #[doc = "Bit 6 - TC5"]
     #[inline(always)]
-    #[must_use]
     pub fn tc5_(&mut self) -> Tc5_W<IntflagcSpec> {
         Tc5_W::new(self, 6)
     }
     #[doc = "Bit 7 - PDEC"]
     #[inline(always)]
-    #[must_use]
     pub fn pdec_(&mut self) -> Pdec_W<IntflagcSpec> {
         Pdec_W::new(self, 7)
     }
     #[doc = "Bit 8 - AC"]
     #[inline(always)]
-    #[must_use]
     pub fn ac_(&mut self) -> Ac_W<IntflagcSpec> {
         Ac_W::new(self, 8)
     }
     #[doc = "Bit 9 - AES"]
     #[inline(always)]
-    #[must_use]
     pub fn aes_(&mut self) -> Aes_W<IntflagcSpec> {
         Aes_W::new(self, 9)
     }
     #[doc = "Bit 10 - TRNG"]
     #[inline(always)]
-    #[must_use]
     pub fn trng_(&mut self) -> Trng_W<IntflagcSpec> {
         Trng_W::new(self, 10)
     }
     #[doc = "Bit 11 - ICM"]
     #[inline(always)]
-    #[must_use]
     pub fn icm_(&mut self) -> Icm_W<IntflagcSpec> {
         Icm_W::new(self, 11)
     }
     #[doc = "Bit 12 - PUKCC"]
     #[inline(always)]
-    #[must_use]
     pub fn pukcc_(&mut self) -> Pukcc_W<IntflagcSpec> {
         Pukcc_W::new(self, 12)
     }
     #[doc = "Bit 13 - QSPI"]
     #[inline(always)]
-    #[must_use]
     pub fn qspi_(&mut self) -> Qspi_W<IntflagcSpec> {
         Qspi_W::new(self, 13)
     }
     #[doc = "Bit 14 - CCL"]
     #[inline(always)]
-    #[must_use]
     pub fn ccl_(&mut self) -> Ccl_W<IntflagcSpec> {
         Ccl_W::new(self, 14)
     }
@@ -196,10 +184,6 @@ impl crate::Readable for IntflagcSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflagc::W`](W) writer structure"]
 impl crate::Writable for IntflagcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAGC to value 0"]
-impl crate::Resettable for IntflagcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagcSpec {}

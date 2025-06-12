@@ -17,6 +17,4 @@ impl crate::RegisterSpec for IctrSpec {
 #[doc = "`read()` method returns [`ictr::R`](R) reader structure"]
 impl crate::Readable for IctrSpec {}
 #[doc = "`reset()` method sets ICTR to value 0"]
-impl crate::Resettable for IctrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IctrSpec {}

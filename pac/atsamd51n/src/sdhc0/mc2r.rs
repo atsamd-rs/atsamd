@@ -7,13 +7,11 @@ pub type AbootW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - e.MMC Abort Wait IRQ"]
     #[inline(always)]
-    #[must_use]
     pub fn sresp(&mut self) -> SrespW<Mc2rSpec> {
         SrespW::new(self, 0)
     }
     #[doc = "Bit 1 - e.MMC Abort Boot"]
     #[inline(always)]
-    #[must_use]
     pub fn aboot(&mut self) -> AbootW<Mc2rSpec> {
         AbootW::new(self, 1)
     }
@@ -26,10 +24,6 @@ impl crate::RegisterSpec for Mc2rSpec {
 #[doc = "`write(|w| ..)` method takes [`mc2r::W`](W) writer structure"]
 impl crate::Writable for Mc2rSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets MC2R to value 0"]
-impl crate::Resettable for Mc2rSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for Mc2rSpec {}

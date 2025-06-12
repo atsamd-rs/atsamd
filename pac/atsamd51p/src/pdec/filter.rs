@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Filter Value"]
     #[inline(always)]
-    #[must_use]
     pub fn filter(&mut self) -> FilterW<FilterSpec> {
         FilterW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for FilterSpec {}
 #[doc = "`write(|w| ..)` method takes [`filter::W`](W) writer structure"]
 impl crate::Writable for FilterSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets FILTER to value 0"]
-impl crate::Resettable for FilterSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for FilterSpec {}

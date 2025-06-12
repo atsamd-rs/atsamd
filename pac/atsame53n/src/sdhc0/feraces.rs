@@ -189,37 +189,31 @@ where
 impl W {
     #[doc = "Bit 0 - Force Event for Auto CMD12 Not Executed"]
     #[inline(always)]
-    #[must_use]
     pub fn acmd12ne(&mut self) -> Acmd12neW<FeracesSpec> {
         Acmd12neW::new(self, 0)
     }
     #[doc = "Bit 1 - Force Event for Auto CMD Timeout Error"]
     #[inline(always)]
-    #[must_use]
     pub fn acmdteo(&mut self) -> AcmdteoW<FeracesSpec> {
         AcmdteoW::new(self, 1)
     }
     #[doc = "Bit 2 - Force Event for Auto CMD CRC Error"]
     #[inline(always)]
-    #[must_use]
     pub fn acmdcrc(&mut self) -> AcmdcrcW<FeracesSpec> {
         AcmdcrcW::new(self, 2)
     }
     #[doc = "Bit 3 - Force Event for Auto CMD End Bit Error"]
     #[inline(always)]
-    #[must_use]
     pub fn acmdend(&mut self) -> AcmdendW<FeracesSpec> {
         AcmdendW::new(self, 3)
     }
     #[doc = "Bit 4 - Force Event for Auto CMD Index Error"]
     #[inline(always)]
-    #[must_use]
     pub fn acmdidx(&mut self) -> AcmdidxW<FeracesSpec> {
         AcmdidxW::new(self, 4)
     }
     #[doc = "Bit 7 - Force Event for Command Not Issued By Auto CMD12 Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdni(&mut self) -> CmdniW<FeracesSpec> {
         CmdniW::new(self, 7)
     }
@@ -232,10 +226,6 @@ impl crate::RegisterSpec for FeracesSpec {
 #[doc = "`write(|w| ..)` method takes [`feraces::W`](W) writer structure"]
 impl crate::Writable for FeracesSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets FERACES to value 0"]
-impl crate::Resettable for FeracesSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for FeracesSpec {}

@@ -5,7 +5,6 @@ pub type DataW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
 impl W {
     #[doc = "Bits 0:31 - DMA Sequential Data"]
     #[inline(always)]
-    #[must_use]
     pub fn data(&mut self) -> DataW<DseqdataSpec> {
         DataW::new(self, 0)
     }
@@ -18,10 +17,6 @@ impl crate::RegisterSpec for DseqdataSpec {
 #[doc = "`write(|w| ..)` method takes [`dseqdata::W`](W) writer structure"]
 impl crate::Writable for DseqdataSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DSEQDATA to value 0"]
-impl crate::Resettable for DseqdataSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DseqdataSpec {}

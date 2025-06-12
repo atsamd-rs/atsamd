@@ -492,43 +492,36 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - UHS Mode Select"]
     #[inline(always)]
-    #[must_use]
     pub fn uhsms(&mut self) -> UhsmsW<Hc2rSpec> {
         UhsmsW::new(self, 0)
     }
     #[doc = "Bit 3 - 1.8V Signaling Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn vs18en(&mut self) -> Vs18enW<Hc2rSpec> {
         Vs18enW::new(self, 3)
     }
     #[doc = "Bits 4:5 - Driver Strength Select"]
     #[inline(always)]
-    #[must_use]
     pub fn drvsel(&mut self) -> DrvselW<Hc2rSpec> {
         DrvselW::new(self, 4)
     }
     #[doc = "Bit 6 - Execute Tuning"]
     #[inline(always)]
-    #[must_use]
     pub fn extun(&mut self) -> ExtunW<Hc2rSpec> {
         ExtunW::new(self, 6)
     }
     #[doc = "Bit 7 - Sampling Clock Select"]
     #[inline(always)]
-    #[must_use]
     pub fn slcksel(&mut self) -> SlckselW<Hc2rSpec> {
         SlckselW::new(self, 7)
     }
     #[doc = "Bit 14 - Asynchronous Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn asinten(&mut self) -> AsintenW<Hc2rSpec> {
         AsintenW::new(self, 14)
     }
     #[doc = "Bit 15 - Preset Value Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pvalen(&mut self) -> PvalenW<Hc2rSpec> {
         PvalenW::new(self, 15)
     }
@@ -543,10 +536,6 @@ impl crate::Readable for Hc2rSpec {}
 #[doc = "`write(|w| ..)` method takes [`hc2r::W`](W) writer structure"]
 impl crate::Writable for Hc2rSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets HC2R to value 0"]
-impl crate::Resettable for Hc2rSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for Hc2rSpec {}

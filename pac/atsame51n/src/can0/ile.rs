@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Enable Interrupt Line 0"]
     #[inline(always)]
-    #[must_use]
     pub fn eint0(&mut self) -> Eint0W<IleSpec> {
         Eint0W::new(self, 0)
     }
     #[doc = "Bit 1 - Enable Interrupt Line 1"]
     #[inline(always)]
-    #[must_use]
     pub fn eint1(&mut self) -> Eint1W<IleSpec> {
         Eint1W::new(self, 1)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for IleSpec {}
 #[doc = "`write(|w| ..)` method takes [`ile::W`](W) writer structure"]
 impl crate::Writable for IleSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ILE to value 0"]
-impl crate::Resettable for IleSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IleSpec {}

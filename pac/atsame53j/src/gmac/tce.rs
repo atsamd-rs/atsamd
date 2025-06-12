@@ -17,6 +17,4 @@ impl crate::RegisterSpec for TceSpec {
 #[doc = "`read()` method returns [`tce::R`](R) reader structure"]
 impl crate::Readable for TceSpec {}
 #[doc = "`reset()` method sets TCE to value 0"]
-impl crate::Resettable for TceSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TceSpec {}

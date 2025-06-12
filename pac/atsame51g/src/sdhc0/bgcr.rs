@@ -239,25 +239,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Stop at Block Gap Request"]
     #[inline(always)]
-    #[must_use]
     pub fn stpbgr(&mut self) -> StpbgrW<BgcrSpec> {
         StpbgrW::new(self, 0)
     }
     #[doc = "Bit 1 - Continue Request"]
     #[inline(always)]
-    #[must_use]
     pub fn contr(&mut self) -> ContrW<BgcrSpec> {
         ContrW::new(self, 1)
     }
     #[doc = "Bit 2 - Read Wait Control"]
     #[inline(always)]
-    #[must_use]
     pub fn rwctrl(&mut self) -> RwctrlW<BgcrSpec> {
         RwctrlW::new(self, 2)
     }
     #[doc = "Bit 3 - Interrupt at Block Gap"]
     #[inline(always)]
-    #[must_use]
     pub fn intbg(&mut self) -> IntbgW<BgcrSpec> {
         IntbgW::new(self, 3)
     }
@@ -272,10 +268,6 @@ impl crate::Readable for BgcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`bgcr::W`](W) writer structure"]
 impl crate::Writable for BgcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets BGCR to value 0"]
-impl crate::Resettable for BgcrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for BgcrSpec {}

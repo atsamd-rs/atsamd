@@ -7,7 +7,6 @@ pub type ReadreqW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 7 - Read Request"]
     #[inline(always)]
-    #[must_use]
     pub fn readreq(&mut self) -> ReadreqW<DfllsyncSpec> {
         ReadreqW::new(self, 7)
     }
@@ -22,10 +21,6 @@ impl crate::Readable for DfllsyncSpec {}
 #[doc = "`write(|w| ..)` method takes [`dfllsync::W`](W) writer structure"]
 impl crate::Writable for DfllsyncSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DFLLSYNC to value 0"]
-impl crate::Resettable for DfllsyncSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DfllsyncSpec {}

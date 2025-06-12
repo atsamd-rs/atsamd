@@ -294,31 +294,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Operating Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bit 7 - Clear on Match"]
     #[inline(always)]
-    #[must_use]
     pub fn matchclr(&mut self) -> MatchclrW<CtrlSpec> {
         MatchclrW::new(self, 7)
     }
     #[doc = "Bits 8:11 - Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler(&mut self) -> PrescalerW<CtrlSpec> {
         PrescalerW::new(self, 8)
     }
@@ -333,10 +328,6 @@ impl crate::Readable for CtrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrl::W`](W) writer structure"]
 impl crate::Writable for CtrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRL to value 0"]
-impl crate::Resettable for CtrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlSpec {}

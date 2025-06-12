@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Correction Value"]
     #[inline(always)]
-    #[must_use]
     pub fn value(&mut self) -> ValueW<FreqcorrSpec> {
         ValueW::new(self, 0)
     }
     #[doc = "Bit 7 - Correction Sign"]
     #[inline(always)]
-    #[must_use]
     pub fn sign(&mut self) -> SignW<FreqcorrSpec> {
         SignW::new(self, 7)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for FreqcorrSpec {}
 #[doc = "`write(|w| ..)` method takes [`freqcorr::W`](W) writer structure"]
 impl crate::Writable for FreqcorrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets FREQCORR to value 0"]
-impl crate::Resettable for FreqcorrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for FreqcorrSpec {}

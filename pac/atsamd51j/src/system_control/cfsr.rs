@@ -178,115 +178,96 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Instruction access violation"]
     #[inline(always)]
-    #[must_use]
     pub fn iaccviol(&mut self) -> IaccviolW<CfsrSpec> {
         IaccviolW::new(self, 0)
     }
     #[doc = "Bit 1 - Data access violation"]
     #[inline(always)]
-    #[must_use]
     pub fn daccviol(&mut self) -> DaccviolW<CfsrSpec> {
         DaccviolW::new(self, 1)
     }
     #[doc = "Bit 3 - MemManage Fault on unstacking for exception return"]
     #[inline(always)]
-    #[must_use]
     pub fn munstkerr(&mut self) -> MunstkerrW<CfsrSpec> {
         MunstkerrW::new(self, 3)
     }
     #[doc = "Bit 4 - MemManage Fault on stacking for exception entry"]
     #[inline(always)]
-    #[must_use]
     pub fn mstkerr(&mut self) -> MstkerrW<CfsrSpec> {
         MstkerrW::new(self, 4)
     }
     #[doc = "Bit 5 - MemManager Fault occured during FP lazy state preservation"]
     #[inline(always)]
-    #[must_use]
     pub fn mlsperr(&mut self) -> MlsperrW<CfsrSpec> {
         MlsperrW::new(self, 5)
     }
     #[doc = "Bit 7 - MemManage Fault Address Register valid"]
     #[inline(always)]
-    #[must_use]
     pub fn mmarvalid(&mut self) -> MmarvalidW<CfsrSpec> {
         MmarvalidW::new(self, 7)
     }
     #[doc = "Bit 8 - Instruction bus error"]
     #[inline(always)]
-    #[must_use]
     pub fn ibuserr(&mut self) -> IbuserrW<CfsrSpec> {
         IbuserrW::new(self, 8)
     }
     #[doc = "Bit 9 - Precise data bus error"]
     #[inline(always)]
-    #[must_use]
     pub fn preciserr(&mut self) -> PreciserrW<CfsrSpec> {
         PreciserrW::new(self, 9)
     }
     #[doc = "Bit 10 - Imprecise data bus error"]
     #[inline(always)]
-    #[must_use]
     pub fn impreciserr(&mut self) -> ImpreciserrW<CfsrSpec> {
         ImpreciserrW::new(self, 10)
     }
     #[doc = "Bit 11 - BusFault on unstacking for exception return"]
     #[inline(always)]
-    #[must_use]
     pub fn unstkerr(&mut self) -> UnstkerrW<CfsrSpec> {
         UnstkerrW::new(self, 11)
     }
     #[doc = "Bit 12 - BusFault on stacking for exception entry"]
     #[inline(always)]
-    #[must_use]
     pub fn stkerr(&mut self) -> StkerrW<CfsrSpec> {
         StkerrW::new(self, 12)
     }
     #[doc = "Bit 13 - BusFault occured during FP lazy state preservation"]
     #[inline(always)]
-    #[must_use]
     pub fn lsperr(&mut self) -> LsperrW<CfsrSpec> {
         LsperrW::new(self, 13)
     }
     #[doc = "Bit 15 - BusFault Address Register valid"]
     #[inline(always)]
-    #[must_use]
     pub fn bfarvalid(&mut self) -> BfarvalidW<CfsrSpec> {
         BfarvalidW::new(self, 15)
     }
     #[doc = "Bit 16 - Undefined instruction UsageFault"]
     #[inline(always)]
-    #[must_use]
     pub fn undefinstr(&mut self) -> UndefinstrW<CfsrSpec> {
         UndefinstrW::new(self, 16)
     }
     #[doc = "Bit 17 - Invalid state UsageFault"]
     #[inline(always)]
-    #[must_use]
     pub fn invstate(&mut self) -> InvstateW<CfsrSpec> {
         InvstateW::new(self, 17)
     }
     #[doc = "Bit 18 - Invalid PC load UsageFault"]
     #[inline(always)]
-    #[must_use]
     pub fn invpc(&mut self) -> InvpcW<CfsrSpec> {
         InvpcW::new(self, 18)
     }
     #[doc = "Bit 19 - No coprocessor UsageFault"]
     #[inline(always)]
-    #[must_use]
     pub fn nocp(&mut self) -> NocpW<CfsrSpec> {
         NocpW::new(self, 19)
     }
     #[doc = "Bit 24 - Unaligned access UsageFault"]
     #[inline(always)]
-    #[must_use]
     pub fn unaligned(&mut self) -> UnalignedW<CfsrSpec> {
         UnalignedW::new(self, 24)
     }
     #[doc = "Bit 25 - Divide by zero UsageFault"]
     #[inline(always)]
-    #[must_use]
     pub fn divbyzero(&mut self) -> DivbyzeroW<CfsrSpec> {
         DivbyzeroW::new(self, 25)
     }
@@ -301,10 +282,6 @@ impl crate::Readable for CfsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`cfsr::W`](W) writer structure"]
 impl crate::Writable for CfsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CFSR to value 0"]
-impl crate::Resettable for CfsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CfsrSpec {}

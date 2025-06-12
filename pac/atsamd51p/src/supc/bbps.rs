@@ -74,13 +74,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Battery Backup Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn conf(&mut self) -> ConfW<BbpsSpec> {
         ConfW::new(self, 0)
     }
     #[doc = "Bit 2 - Wake Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeen(&mut self) -> WakeenW<BbpsSpec> {
         WakeenW::new(self, 2)
     }
@@ -95,10 +93,6 @@ impl crate::Readable for BbpsSpec {}
 #[doc = "`write(|w| ..)` method takes [`bbps::W`](W) writer structure"]
 impl crate::Writable for BbpsSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets BBPS to value 0"]
-impl crate::Resettable for BbpsSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BbpsSpec {}

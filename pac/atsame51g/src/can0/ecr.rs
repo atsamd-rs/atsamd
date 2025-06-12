@@ -38,6 +38,4 @@ impl crate::RegisterSpec for EcrSpec {
 #[doc = "`read()` method returns [`ecr::R`](R) reader structure"]
 impl crate::Readable for EcrSpec {}
 #[doc = "`reset()` method sets ECR to value 0"]
-impl crate::Resettable for EcrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EcrSpec {}

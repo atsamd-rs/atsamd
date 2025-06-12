@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - Watchdog Timer Window Mode Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wen(&mut self) -> WenW<CtrlSpec> {
         WenW::new(self, 2)
     }
     #[doc = "Bit 7 - Always-On"]
     #[inline(always)]
-    #[must_use]
     pub fn alwayson(&mut self) -> AlwaysonW<CtrlSpec> {
         AlwaysonW::new(self, 7)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for CtrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrl::W`](W) writer structure"]
 impl crate::Writable for CtrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRL to value 0"]
-impl crate::Resettable for CtrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlSpec {}

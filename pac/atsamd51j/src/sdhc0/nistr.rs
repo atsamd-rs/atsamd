@@ -587,61 +587,51 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdc(&mut self) -> CmdcW<NistrSpec> {
         CmdcW::new(self, 0)
     }
     #[doc = "Bit 1 - Transfer Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn trfc(&mut self) -> TrfcW<NistrSpec> {
         TrfcW::new(self, 1)
     }
     #[doc = "Bit 2 - Block Gap Event"]
     #[inline(always)]
-    #[must_use]
     pub fn blkge(&mut self) -> BlkgeW<NistrSpec> {
         BlkgeW::new(self, 2)
     }
     #[doc = "Bit 3 - DMA Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaint(&mut self) -> DmaintW<NistrSpec> {
         DmaintW::new(self, 3)
     }
     #[doc = "Bit 4 - Buffer Write Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn bwrrdy(&mut self) -> BwrrdyW<NistrSpec> {
         BwrrdyW::new(self, 4)
     }
     #[doc = "Bit 5 - Buffer Read Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn brdrdy(&mut self) -> BrdrdyW<NistrSpec> {
         BrdrdyW::new(self, 5)
     }
     #[doc = "Bit 6 - Card Insertion"]
     #[inline(always)]
-    #[must_use]
     pub fn cins(&mut self) -> CinsW<NistrSpec> {
         CinsW::new(self, 6)
     }
     #[doc = "Bit 7 - Card Removal"]
     #[inline(always)]
-    #[must_use]
     pub fn crem(&mut self) -> CremW<NistrSpec> {
         CremW::new(self, 7)
     }
     #[doc = "Bit 8 - Card Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn cint(&mut self) -> CintW<NistrSpec> {
         CintW::new(self, 8)
     }
     #[doc = "Bit 15 - Error Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn errint(&mut self) -> ErrintW<NistrSpec> {
         ErrintW::new(self, 15)
     }
@@ -656,10 +646,6 @@ impl crate::Readable for NistrSpec {}
 #[doc = "`write(|w| ..)` method takes [`nistr::W`](W) writer structure"]
 impl crate::Writable for NistrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets NISTR to value 0"]
-impl crate::Resettable for NistrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for NistrSpec {}

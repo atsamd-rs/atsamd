@@ -94,6 +94,4 @@ impl crate::RegisterSpec for BusychSpec {
 #[doc = "`read()` method returns [`busych::R`](R) reader structure"]
 impl crate::Readable for BusychSpec {}
 #[doc = "`reset()` method sets BUSYCH to value 0"]
-impl crate::Resettable for BusychSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BusychSpec {}

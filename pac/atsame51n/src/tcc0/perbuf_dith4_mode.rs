@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Dithering Buffer Cycle Number"]
     #[inline(always)]
-    #[must_use]
     pub fn ditherbuf(&mut self) -> DitherbufW<PerbufDith4ModeSpec> {
         DitherbufW::new(self, 0)
     }
     #[doc = "Bits 4:23 - Period Buffer Value"]
     #[inline(always)]
-    #[must_use]
     pub fn perbuf(&mut self) -> PerbufW<PerbufDith4ModeSpec> {
         PerbufW::new(self, 4)
     }
@@ -46,8 +44,6 @@ impl crate::Readable for PerbufDith4ModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`perbuf_dith4_mode::W`](W) writer structure"]
 impl crate::Writable for PerbufDith4ModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets PERBUF_DITH4_MODE to value 0xffff_ffff"]
 impl crate::Resettable for PerbufDith4ModeSpec {

@@ -106,6 +106,4 @@ impl crate::RegisterSpec for AesrSpec {
 #[doc = "`read()` method returns [`aesr::R`](R) reader structure"]
 impl crate::Readable for AesrSpec {}
 #[doc = "`reset()` method sets AESR to value 0"]
-impl crate::Resettable for AesrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for AesrSpec {}

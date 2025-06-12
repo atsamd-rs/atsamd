@@ -14,10 +14,6 @@ impl crate::RegisterSpec for IttrigoutSpec {
 #[doc = "`write(|w| ..)` method takes [`ittrigout::W`](W) writer structure"]
 impl crate::Writable for IttrigoutSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ITTRIGOUT to value 0"]
-impl crate::Resettable for IttrigoutSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IttrigoutSpec {}

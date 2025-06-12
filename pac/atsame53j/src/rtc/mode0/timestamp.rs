@@ -17,6 +17,4 @@ impl crate::RegisterSpec for TimestampSpec {
 #[doc = "`read()` method returns [`timestamp::R`](R) reader structure"]
 impl crate::Readable for TimestampSpec {}
 #[doc = "`reset()` method sets TIMESTAMP to value 0"]
-impl crate::Resettable for TimestampSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TimestampSpec {}

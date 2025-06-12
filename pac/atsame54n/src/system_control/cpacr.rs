@@ -163,13 +163,11 @@ impl R {
 impl W {
     #[doc = "Bits 20:21 - Access privileges for coprocessor 10"]
     #[inline(always)]
-    #[must_use]
     pub fn cp10(&mut self) -> Cp10W<CpacrSpec> {
         Cp10W::new(self, 20)
     }
     #[doc = "Bits 22:23 - Access privileges for coprocessor 11"]
     #[inline(always)]
-    #[must_use]
     pub fn cp11(&mut self) -> Cp11W<CpacrSpec> {
         Cp11W::new(self, 22)
     }
@@ -184,10 +182,6 @@ impl crate::Readable for CpacrSpec {}
 #[doc = "`write(|w| ..)` method takes [`cpacr::W`](W) writer structure"]
 impl crate::Writable for CpacrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CPACR to value 0"]
-impl crate::Resettable for CpacrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CpacrSpec {}

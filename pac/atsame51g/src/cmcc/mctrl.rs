@@ -5,7 +5,6 @@ pub type SwrstW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - Cache Controller Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<MctrlSpec> {
         SwrstW::new(self, 0)
     }
@@ -18,10 +17,6 @@ impl crate::RegisterSpec for MctrlSpec {
 #[doc = "`write(|w| ..)` method takes [`mctrl::W`](W) writer structure"]
 impl crate::Writable for MctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MCTRL to value 0"]
-impl crate::Resettable for MctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for MctrlSpec {}

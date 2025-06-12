@@ -529,55 +529,46 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Complete Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdc(&mut self) -> CmdcW<NisterSpec> {
         CmdcW::new(self, 0)
     }
     #[doc = "Bit 1 - Transfer Complete Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn trfc(&mut self) -> TrfcW<NisterSpec> {
         TrfcW::new(self, 1)
     }
     #[doc = "Bit 2 - Block Gap Event Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn blkge(&mut self) -> BlkgeW<NisterSpec> {
         BlkgeW::new(self, 2)
     }
     #[doc = "Bit 3 - DMA Interrupt Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaint(&mut self) -> DmaintW<NisterSpec> {
         DmaintW::new(self, 3)
     }
     #[doc = "Bit 4 - Buffer Write Ready Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bwrrdy(&mut self) -> BwrrdyW<NisterSpec> {
         BwrrdyW::new(self, 4)
     }
     #[doc = "Bit 5 - Buffer Read Ready Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn brdrdy(&mut self) -> BrdrdyW<NisterSpec> {
         BrdrdyW::new(self, 5)
     }
     #[doc = "Bit 6 - Card Insertion Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cins(&mut self) -> CinsW<NisterSpec> {
         CinsW::new(self, 6)
     }
     #[doc = "Bit 7 - Card Removal Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn crem(&mut self) -> CremW<NisterSpec> {
         CremW::new(self, 7)
     }
     #[doc = "Bit 8 - Card Interrupt Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cint(&mut self) -> CintW<NisterSpec> {
         CintW::new(self, 8)
     }
@@ -592,10 +583,6 @@ impl crate::Readable for NisterSpec {}
 #[doc = "`write(|w| ..)` method takes [`nister::W`](W) writer structure"]
 impl crate::Writable for NisterSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets NISTER to value 0"]
-impl crate::Resettable for NisterSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for NisterSpec {}

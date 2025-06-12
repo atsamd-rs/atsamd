@@ -315,97 +315,81 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Operation Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlaSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bits 8:10 - PDEC Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn conf(&mut self) -> ConfW<CtrlaSpec> {
         ConfW::new(self, 8)
     }
     #[doc = "Bit 11 - Auto Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn alock(&mut self) -> AlockW<CtrlaSpec> {
         AlockW::new(self, 11)
     }
     #[doc = "Bit 14 - PDEC Phase A and B Swap"]
     #[inline(always)]
-    #[must_use]
     pub fn swap(&mut self) -> SwapW<CtrlaSpec> {
         SwapW::new(self, 14)
     }
     #[doc = "Bit 15 - Period Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn peren(&mut self) -> PerenW<CtrlaSpec> {
         PerenW::new(self, 15)
     }
     #[doc = "Bit 16 - PDEC Input From Pin 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pinen0(&mut self) -> Pinen0W<CtrlaSpec> {
         Pinen0W::new(self, 16)
     }
     #[doc = "Bit 17 - PDEC Input From Pin 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pinen1(&mut self) -> Pinen1W<CtrlaSpec> {
         Pinen1W::new(self, 17)
     }
     #[doc = "Bit 18 - PDEC Input From Pin 2 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pinen2(&mut self) -> Pinen2W<CtrlaSpec> {
         Pinen2W::new(self, 18)
     }
     #[doc = "Bit 20 - IO Pin 0 Invert Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pinven0(&mut self) -> Pinven0W<CtrlaSpec> {
         Pinven0W::new(self, 20)
     }
     #[doc = "Bit 21 - IO Pin 1 Invert Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pinven1(&mut self) -> Pinven1W<CtrlaSpec> {
         Pinven1W::new(self, 21)
     }
     #[doc = "Bit 22 - IO Pin 2 Invert Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pinven2(&mut self) -> Pinven2W<CtrlaSpec> {
         Pinven2W::new(self, 22)
     }
     #[doc = "Bits 24:26 - Angular Counter Length"]
     #[inline(always)]
-    #[must_use]
     pub fn angular(&mut self) -> AngularW<CtrlaSpec> {
         AngularW::new(self, 24)
     }
     #[doc = "Bits 28:31 - Maximum Consecutive Missing Pulses"]
     #[inline(always)]
-    #[must_use]
     pub fn maxcmp(&mut self) -> MaxcmpW<CtrlaSpec> {
         MaxcmpW::new(self, 28)
     }
@@ -420,10 +404,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

@@ -13,6 +13,4 @@ impl crate::RegisterSpec for BaseSpec {
 #[doc = "`read()` method returns [`base::R`](R) reader structure"]
 impl crate::Readable for BaseSpec {}
 #[doc = "`reset()` method sets BASE to value 0"]
-impl crate::Resettable for BaseSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BaseSpec {}

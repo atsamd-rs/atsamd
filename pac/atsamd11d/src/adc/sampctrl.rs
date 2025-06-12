@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:5 - Sampling Time Length"]
     #[inline(always)]
-    #[must_use]
     pub fn samplen(&mut self) -> SamplenW<SampctrlSpec> {
         SamplenW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for SampctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`sampctrl::W`](W) writer structure"]
 impl crate::Writable for SampctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets SAMPCTRL to value 0"]
-impl crate::Resettable for SampctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for SampctrlSpec {}

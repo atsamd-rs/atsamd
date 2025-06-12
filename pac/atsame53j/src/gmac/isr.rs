@@ -232,151 +232,126 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Management Frame Sent"]
     #[inline(always)]
-    #[must_use]
     pub fn mfs(&mut self) -> MfsW<IsrSpec> {
         MfsW::new(self, 0)
     }
     #[doc = "Bit 1 - Receive Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn rcomp(&mut self) -> RcompW<IsrSpec> {
         RcompW::new(self, 1)
     }
     #[doc = "Bit 2 - RX Used Bit Read"]
     #[inline(always)]
-    #[must_use]
     pub fn rxubr(&mut self) -> RxubrW<IsrSpec> {
         RxubrW::new(self, 2)
     }
     #[doc = "Bit 3 - TX Used Bit Read"]
     #[inline(always)]
-    #[must_use]
     pub fn txubr(&mut self) -> TxubrW<IsrSpec> {
         TxubrW::new(self, 3)
     }
     #[doc = "Bit 4 - Transmit Underrun"]
     #[inline(always)]
-    #[must_use]
     pub fn tur(&mut self) -> TurW<IsrSpec> {
         TurW::new(self, 4)
     }
     #[doc = "Bit 5 - Retry Limit Exceeded"]
     #[inline(always)]
-    #[must_use]
     pub fn rlex(&mut self) -> RlexW<IsrSpec> {
         RlexW::new(self, 5)
     }
     #[doc = "Bit 6 - Transmit Frame Corruption Due to AHB Error"]
     #[inline(always)]
-    #[must_use]
     pub fn tfc(&mut self) -> TfcW<IsrSpec> {
         TfcW::new(self, 6)
     }
     #[doc = "Bit 7 - Transmit Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn tcomp(&mut self) -> TcompW<IsrSpec> {
         TcompW::new(self, 7)
     }
     #[doc = "Bit 10 - Receive Overrun"]
     #[inline(always)]
-    #[must_use]
     pub fn rovr(&mut self) -> RovrW<IsrSpec> {
         RovrW::new(self, 10)
     }
     #[doc = "Bit 11 - HRESP Not OK"]
     #[inline(always)]
-    #[must_use]
     pub fn hresp(&mut self) -> HrespW<IsrSpec> {
         HrespW::new(self, 11)
     }
     #[doc = "Bit 12 - Pause Frame with Non-zero Pause Quantum Received"]
     #[inline(always)]
-    #[must_use]
     pub fn pfnz(&mut self) -> PfnzW<IsrSpec> {
         PfnzW::new(self, 12)
     }
     #[doc = "Bit 13 - Pause Time Zero"]
     #[inline(always)]
-    #[must_use]
     pub fn ptz(&mut self) -> PtzW<IsrSpec> {
         PtzW::new(self, 13)
     }
     #[doc = "Bit 14 - Pause Frame Transmitted"]
     #[inline(always)]
-    #[must_use]
     pub fn pftr(&mut self) -> PftrW<IsrSpec> {
         PftrW::new(self, 14)
     }
     #[doc = "Bit 18 - PTP Delay Request Frame Received"]
     #[inline(always)]
-    #[must_use]
     pub fn drqfr(&mut self) -> DrqfrW<IsrSpec> {
         DrqfrW::new(self, 18)
     }
     #[doc = "Bit 19 - PTP Sync Frame Received"]
     #[inline(always)]
-    #[must_use]
     pub fn sfr(&mut self) -> SfrW<IsrSpec> {
         SfrW::new(self, 19)
     }
     #[doc = "Bit 20 - PTP Delay Request Frame Transmitted"]
     #[inline(always)]
-    #[must_use]
     pub fn drqft(&mut self) -> DrqftW<IsrSpec> {
         DrqftW::new(self, 20)
     }
     #[doc = "Bit 21 - PTP Sync Frame Transmitted"]
     #[inline(always)]
-    #[must_use]
     pub fn sft(&mut self) -> SftW<IsrSpec> {
         SftW::new(self, 21)
     }
     #[doc = "Bit 22 - PDelay Request Frame Received"]
     #[inline(always)]
-    #[must_use]
     pub fn pdrqfr(&mut self) -> PdrqfrW<IsrSpec> {
         PdrqfrW::new(self, 22)
     }
     #[doc = "Bit 23 - PDelay Response Frame Received"]
     #[inline(always)]
-    #[must_use]
     pub fn pdrsfr(&mut self) -> PdrsfrW<IsrSpec> {
         PdrsfrW::new(self, 23)
     }
     #[doc = "Bit 24 - PDelay Request Frame Transmitted"]
     #[inline(always)]
-    #[must_use]
     pub fn pdrqft(&mut self) -> PdrqftW<IsrSpec> {
         PdrqftW::new(self, 24)
     }
     #[doc = "Bit 25 - PDelay Response Frame Transmitted"]
     #[inline(always)]
-    #[must_use]
     pub fn pdrsft(&mut self) -> PdrsftW<IsrSpec> {
         PdrsftW::new(self, 25)
     }
     #[doc = "Bit 26 - TSU Seconds Register Increment"]
     #[inline(always)]
-    #[must_use]
     pub fn sri(&mut self) -> SriW<IsrSpec> {
         SriW::new(self, 26)
     }
     #[doc = "Bit 27 - Enable RX LPI Indication"]
     #[inline(always)]
-    #[must_use]
     pub fn rxlpisbc(&mut self) -> RxlpisbcW<IsrSpec> {
         RxlpisbcW::new(self, 27)
     }
     #[doc = "Bit 28 - Wake On LAN"]
     #[inline(always)]
-    #[must_use]
     pub fn wol(&mut self) -> WolW<IsrSpec> {
         WolW::new(self, 28)
     }
     #[doc = "Bit 29 - Tsu timer comparison"]
     #[inline(always)]
-    #[must_use]
     pub fn tsucmp(&mut self) -> TsucmpW<IsrSpec> {
         TsucmpW::new(self, 29)
     }
@@ -391,10 +366,6 @@ impl crate::Readable for IsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`isr::W`](W) writer structure"]
 impl crate::Writable for IsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ISR to value 0"]
-impl crate::Resettable for IsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IsrSpec {}

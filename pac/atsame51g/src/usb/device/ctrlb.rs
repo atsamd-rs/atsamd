@@ -186,37 +186,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Detach"]
     #[inline(always)]
-    #[must_use]
     pub fn detach(&mut self) -> DetachW<CtrlbSpec> {
         DetachW::new(self, 0)
     }
     #[doc = "Bit 1 - Upstream Resume"]
     #[inline(always)]
-    #[must_use]
     pub fn uprsm(&mut self) -> UprsmW<CtrlbSpec> {
         UprsmW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Speed Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn spdconf(&mut self) -> SpdconfW<CtrlbSpec> {
         SpdconfW::new(self, 2)
     }
     #[doc = "Bit 4 - No Reply"]
     #[inline(always)]
-    #[must_use]
     pub fn nreply(&mut self) -> NreplyW<CtrlbSpec> {
         NreplyW::new(self, 4)
     }
     #[doc = "Bit 9 - Global NAK"]
     #[inline(always)]
-    #[must_use]
     pub fn gnak(&mut self) -> GnakW<CtrlbSpec> {
         GnakW::new(self, 9)
     }
     #[doc = "Bits 10:11 - Link Power Management Handshake"]
     #[inline(always)]
-    #[must_use]
     pub fn lpmhdsk(&mut self) -> LpmhdskW<CtrlbSpec> {
         LpmhdskW::new(self, 10)
     }
@@ -231,8 +225,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0x01"]
 impl crate::Resettable for CtrlbSpec {

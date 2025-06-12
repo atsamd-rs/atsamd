@@ -108,11 +108,11 @@ pub enum Winmodeselect {
     Disable = 0,
     #[doc = "1: RESULT > WINLT"]
     Mode1 = 1,
-    #[doc = "2: RESULT &lt; WINUT"]
+    #[doc = "2: RESULT < WINUT"]
     Mode2 = 2,
-    #[doc = "3: WINLT &lt; RESULT &lt; WINUT"]
+    #[doc = "3: WINLT < RESULT < WINUT"]
     Mode3 = 3,
-    #[doc = "4: !(WINLT &lt; RESULT &lt; WINUT)"]
+    #[doc = "4: !(WINLT < RESULT < WINUT)"]
     Mode4 = 4,
 }
 impl From<Winmodeselect> for u8 {
@@ -150,17 +150,17 @@ impl WinmodeR {
     pub fn is_mode1(&self) -> bool {
         *self == Winmodeselect::Mode1
     }
-    #[doc = "RESULT &lt; WINUT"]
+    #[doc = "RESULT < WINUT"]
     #[inline(always)]
     pub fn is_mode2(&self) -> bool {
         *self == Winmodeselect::Mode2
     }
-    #[doc = "WINLT &lt; RESULT &lt; WINUT"]
+    #[doc = "WINLT < RESULT < WINUT"]
     #[inline(always)]
     pub fn is_mode3(&self) -> bool {
         *self == Winmodeselect::Mode3
     }
-    #[doc = "!(WINLT &lt; RESULT &lt; WINUT)"]
+    #[doc = "!(WINLT < RESULT < WINUT)"]
     #[inline(always)]
     pub fn is_mode4(&self) -> bool {
         *self == Winmodeselect::Mode4
@@ -183,17 +183,17 @@ where
     pub fn mode1(self) -> &'a mut crate::W<REG> {
         self.variant(Winmodeselect::Mode1)
     }
-    #[doc = "RESULT &lt; WINUT"]
+    #[doc = "RESULT < WINUT"]
     #[inline(always)]
     pub fn mode2(self) -> &'a mut crate::W<REG> {
         self.variant(Winmodeselect::Mode2)
     }
-    #[doc = "WINLT &lt; RESULT &lt; WINUT"]
+    #[doc = "WINLT < RESULT < WINUT"]
     #[inline(always)]
     pub fn mode3(self) -> &'a mut crate::W<REG> {
         self.variant(Winmodeselect::Mode3)
     }
-    #[doc = "!(WINLT &lt; RESULT &lt; WINUT)"]
+    #[doc = "!(WINLT < RESULT < WINUT)"]
     #[inline(always)]
     pub fn mode4(self) -> &'a mut crate::W<REG> {
         self.variant(Winmodeselect::Mode4)
@@ -238,37 +238,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Left-Adjusted Result"]
     #[inline(always)]
-    #[must_use]
     pub fn leftadj(&mut self) -> LeftadjW<CtrlbSpec> {
         LeftadjW::new(self, 0)
     }
     #[doc = "Bit 1 - Free Running Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn freerun(&mut self) -> FreerunW<CtrlbSpec> {
         FreerunW::new(self, 1)
     }
     #[doc = "Bit 2 - Digital Correction Logic Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn corren(&mut self) -> CorrenW<CtrlbSpec> {
         CorrenW::new(self, 2)
     }
     #[doc = "Bits 3:4 - Conversion Result Resolution"]
     #[inline(always)]
-    #[must_use]
     pub fn ressel(&mut self) -> ResselW<CtrlbSpec> {
         ResselW::new(self, 3)
     }
     #[doc = "Bits 8:10 - Window Monitor Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn winmode(&mut self) -> WinmodeW<CtrlbSpec> {
         WinmodeW::new(self, 8)
     }
     #[doc = "Bit 11 - Window Single Sample"]
     #[inline(always)]
-    #[must_use]
     pub fn winss(&mut self) -> WinssW<CtrlbSpec> {
         WinssW::new(self, 11)
     }
@@ -283,10 +277,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

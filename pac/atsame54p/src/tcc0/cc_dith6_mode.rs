@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:5 - Dithering Cycle Number"]
     #[inline(always)]
-    #[must_use]
     pub fn dither(&mut self) -> DitherW<CcDith6ModeSpec> {
         DitherW::new(self, 0)
     }
     #[doc = "Bits 6:23 - Channel Compare/Capture Value"]
     #[inline(always)]
-    #[must_use]
     pub fn cc(&mut self) -> CcW<CcDith6ModeSpec> {
         CcW::new(self, 6)
     }
@@ -46,11 +44,6 @@ impl crate::Readable for CcDith6ModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`cc_dith6_mode::W`](W) writer structure"]
 impl crate::Writable for CcDith6ModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets CC_DITH6_MODE[%s]
-to value 0"]
-impl crate::Resettable for CcDith6ModeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets CC_DITH6_MODE[%s] to value 0"]
+impl crate::Resettable for CcDith6ModeSpec {}

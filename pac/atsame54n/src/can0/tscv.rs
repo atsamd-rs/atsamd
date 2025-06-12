@@ -17,6 +17,4 @@ impl crate::RegisterSpec for TscvSpec {
 #[doc = "`read()` method returns [`tscv::R`](R) reader structure"]
 impl crate::Readable for TscvSpec {}
 #[doc = "`reset()` method sets TSCV to value 0"]
-impl crate::Resettable for TscvSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TscvSpec {}

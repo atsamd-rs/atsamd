@@ -150,7 +150,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Tx Buffer Data Field Size"]
     #[inline(always)]
-    #[must_use]
     pub fn tbds(&mut self) -> TbdsW<TxescSpec> {
         TbdsW::new(self, 0)
     }
@@ -165,10 +164,6 @@ impl crate::Readable for TxescSpec {}
 #[doc = "`write(|w| ..)` method takes [`txesc::W`](W) writer structure"]
 impl crate::Writable for TxescSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TXESC to value 0"]
-impl crate::Resettable for TxescSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxescSpec {}

@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Enable OUT0"]
     #[inline(always)]
-    #[must_use]
     pub fn enout0(&mut self) -> Enout0W<BkoutSpec> {
         Enout0W::new(self, 0)
     }
     #[doc = "Bit 1 - Enable OUT1"]
     #[inline(always)]
-    #[must_use]
     pub fn enout1(&mut self) -> Enout1W<BkoutSpec> {
         Enout1W::new(self, 1)
     }
     #[doc = "Bit 8 - Clear OUT0"]
     #[inline(always)]
-    #[must_use]
     pub fn clrout0(&mut self) -> Clrout0W<BkoutSpec> {
         Clrout0W::new(self, 8)
     }
     #[doc = "Bit 9 - Clear OUT1"]
     #[inline(always)]
-    #[must_use]
     pub fn clrout1(&mut self) -> Clrout1W<BkoutSpec> {
         Clrout1W::new(self, 9)
     }
     #[doc = "Bit 16 - Set OUT0"]
     #[inline(always)]
-    #[must_use]
     pub fn setout0(&mut self) -> Setout0W<BkoutSpec> {
         Setout0W::new(self, 16)
     }
     #[doc = "Bit 17 - Set OUT1"]
     #[inline(always)]
-    #[must_use]
     pub fn setout1(&mut self) -> Setout1W<BkoutSpec> {
         Setout1W::new(self, 17)
     }
     #[doc = "Bit 24 - RTC Toggle OUT0"]
     #[inline(always)]
-    #[must_use]
     pub fn rtctglout0(&mut self) -> Rtctglout0W<BkoutSpec> {
         Rtctglout0W::new(self, 24)
     }
     #[doc = "Bit 25 - RTC Toggle OUT1"]
     #[inline(always)]
-    #[must_use]
     pub fn rtctglout1(&mut self) -> Rtctglout1W<BkoutSpec> {
         Rtctglout1W::new(self, 25)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for BkoutSpec {}
 #[doc = "`write(|w| ..)` method takes [`bkout::W`](W) writer structure"]
 impl crate::Writable for BkoutSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets BKOUT to value 0"]
-impl crate::Resettable for BkoutSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BkoutSpec {}

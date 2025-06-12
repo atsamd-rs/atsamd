@@ -123,13 +123,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Stop at Block Gap Request"]
     #[inline(always)]
-    #[must_use]
     pub fn stpbgr(&mut self) -> StpbgrW<BgcrEmmcModeSpec> {
         StpbgrW::new(self, 0)
     }
     #[doc = "Bit 1 - Continue Request"]
     #[inline(always)]
-    #[must_use]
     pub fn contr(&mut self) -> ContrW<BgcrEmmcModeSpec> {
         ContrW::new(self, 1)
     }
@@ -144,10 +142,6 @@ impl crate::Readable for BgcrEmmcModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`bgcr_emmc_mode::W`](W) writer structure"]
 impl crate::Writable for BgcrEmmcModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets BGCR_EMMC_MODE to value 0"]
-impl crate::Resettable for BgcrEmmcModeSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for BgcrEmmcModeSpec {}

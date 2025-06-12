@@ -160,103 +160,86 @@ impl R {
 impl W {
     #[doc = "Bit 0 - XOSC 0 Ready Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xoscrdy0(&mut self) -> Xoscrdy0W<IntensetSpec> {
         Xoscrdy0W::new(self, 0)
     }
     #[doc = "Bit 1 - XOSC 1 Ready Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xoscrdy1(&mut self) -> Xoscrdy1W<IntensetSpec> {
         Xoscrdy1W::new(self, 1)
     }
     #[doc = "Bit 2 - XOSC 0 Clock Failure Detector Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xoscfail0(&mut self) -> Xoscfail0W<IntensetSpec> {
         Xoscfail0W::new(self, 2)
     }
     #[doc = "Bit 3 - XOSC 1 Clock Failure Detector Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xoscfail1(&mut self) -> Xoscfail1W<IntensetSpec> {
         Xoscfail1W::new(self, 3)
     }
     #[doc = "Bit 8 - DFLL Ready Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dfllrdy(&mut self) -> DfllrdyW<IntensetSpec> {
         DfllrdyW::new(self, 8)
     }
     #[doc = "Bit 9 - DFLL Out Of Bounds Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dflloob(&mut self) -> DflloobW<IntensetSpec> {
         DflloobW::new(self, 9)
     }
     #[doc = "Bit 10 - DFLL Lock Fine Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dflllckf(&mut self) -> DflllckfW<IntensetSpec> {
         DflllckfW::new(self, 10)
     }
     #[doc = "Bit 11 - DFLL Lock Coarse Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dflllckc(&mut self) -> DflllckcW<IntensetSpec> {
         DflllckcW::new(self, 11)
     }
     #[doc = "Bit 12 - DFLL Reference Clock Stopped Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dfllrcs(&mut self) -> DfllrcsW<IntensetSpec> {
         DfllrcsW::new(self, 12)
     }
     #[doc = "Bit 16 - DPLL0 Lock Rise Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll0lckr(&mut self) -> Dpll0lckrW<IntensetSpec> {
         Dpll0lckrW::new(self, 16)
     }
     #[doc = "Bit 17 - DPLL0 Lock Fall Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll0lckf(&mut self) -> Dpll0lckfW<IntensetSpec> {
         Dpll0lckfW::new(self, 17)
     }
     #[doc = "Bit 18 - DPLL0 Lock Timeout Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll0lto(&mut self) -> Dpll0ltoW<IntensetSpec> {
         Dpll0ltoW::new(self, 18)
     }
     #[doc = "Bit 19 - DPLL0 Loop Divider Ratio Update Complete Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll0ldrto(&mut self) -> Dpll0ldrtoW<IntensetSpec> {
         Dpll0ldrtoW::new(self, 19)
     }
     #[doc = "Bit 24 - DPLL1 Lock Rise Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll1lckr(&mut self) -> Dpll1lckrW<IntensetSpec> {
         Dpll1lckrW::new(self, 24)
     }
     #[doc = "Bit 25 - DPLL1 Lock Fall Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll1lckf(&mut self) -> Dpll1lckfW<IntensetSpec> {
         Dpll1lckfW::new(self, 25)
     }
     #[doc = "Bit 26 - DPLL1 Lock Timeout Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll1lto(&mut self) -> Dpll1ltoW<IntensetSpec> {
         Dpll1ltoW::new(self, 26)
     }
     #[doc = "Bit 27 - DPLL1 Loop Divider Ratio Update Complete Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dpll1ldrto(&mut self) -> Dpll1ldrtoW<IntensetSpec> {
         Dpll1ldrtoW::new(self, 27)
     }
@@ -271,10 +254,6 @@ impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for IntensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for IntensetSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntensetSpec {}

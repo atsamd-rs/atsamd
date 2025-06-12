@@ -372,37 +372,31 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Response Type"]
     #[inline(always)]
-    #[must_use]
     pub fn resptyp(&mut self) -> ResptypW<CrSpec> {
         ResptypW::new(self, 0)
     }
     #[doc = "Bit 3 - Command CRC Check Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdccen(&mut self) -> CmdccenW<CrSpec> {
         CmdccenW::new(self, 3)
     }
     #[doc = "Bit 4 - Command Index Check Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdicen(&mut self) -> CmdicenW<CrSpec> {
         CmdicenW::new(self, 4)
     }
     #[doc = "Bit 5 - Data Present Select"]
     #[inline(always)]
-    #[must_use]
     pub fn dpsel(&mut self) -> DpselW<CrSpec> {
         DpselW::new(self, 5)
     }
     #[doc = "Bits 6:7 - Command Type"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdtyp(&mut self) -> CmdtypW<CrSpec> {
         CmdtypW::new(self, 6)
     }
     #[doc = "Bits 8:13 - Command Index"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdidx(&mut self) -> CmdidxW<CrSpec> {
         CmdidxW::new(self, 8)
     }
@@ -417,10 +411,6 @@ impl crate::Readable for CrSpec {}
 #[doc = "`write(|w| ..)` method takes [`cr::W`](W) writer structure"]
 impl crate::Writable for CrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CR to value 0"]
-impl crate::Resettable for CrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CrSpec {}

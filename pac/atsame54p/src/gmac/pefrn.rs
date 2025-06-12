@@ -17,6 +17,4 @@ impl crate::RegisterSpec for PefrnSpec {
 #[doc = "`read()` method returns [`pefrn::R`](R) reader structure"]
 impl crate::Readable for PefrnSpec {}
 #[doc = "`reset()` method sets PEFRN to value 0"]
-impl crate::Resettable for PefrnSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PefrnSpec {}

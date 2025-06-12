@@ -52,6 +52,4 @@ impl crate::RegisterSpec for PendchSpec {
 #[doc = "`read()` method returns [`pendch::R`](R) reader structure"]
 impl crate::Readable for PendchSpec {}
 #[doc = "`reset()` method sets PENDCH to value 0"]
-impl crate::Resettable for PendchSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PendchSpec {}

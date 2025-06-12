@@ -13,6 +13,4 @@ impl crate::RegisterSpec for DevtypeSpec {
 #[doc = "`read()` method returns [`devtype::R`](R) reader structure"]
 impl crate::Readable for DevtypeSpec {}
 #[doc = "`reset()` method sets DEVTYPE to value 0"]
-impl crate::Resettable for DevtypeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DevtypeSpec {}

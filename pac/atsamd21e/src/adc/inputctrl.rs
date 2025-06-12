@@ -675,31 +675,26 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - Positive Mux Input Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn muxpos(&mut self) -> MuxposW<InputctrlSpec> {
         MuxposW::new(self, 0)
     }
     #[doc = "Bits 8:12 - Negative Mux Input Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn muxneg(&mut self) -> MuxnegW<InputctrlSpec> {
         MuxnegW::new(self, 8)
     }
     #[doc = "Bits 16:19 - Number of Input Channels Included in Scan"]
     #[inline(always)]
-    #[must_use]
     pub fn inputscan(&mut self) -> InputscanW<InputctrlSpec> {
         InputscanW::new(self, 16)
     }
     #[doc = "Bits 20:23 - Positive Mux Setting Offset"]
     #[inline(always)]
-    #[must_use]
     pub fn inputoffset(&mut self) -> InputoffsetW<InputctrlSpec> {
         InputoffsetW::new(self, 20)
     }
     #[doc = "Bits 24:27 - Gain Factor Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn gain(&mut self) -> GainW<InputctrlSpec> {
         GainW::new(self, 24)
     }
@@ -714,10 +709,6 @@ impl crate::Readable for InputctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`inputctrl::W`](W) writer structure"]
 impl crate::Writable for InputctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INPUTCTRL to value 0"]
-impl crate::Resettable for InputctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for InputctrlSpec {}

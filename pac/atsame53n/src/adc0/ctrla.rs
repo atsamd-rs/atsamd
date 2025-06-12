@@ -269,49 +269,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 3:4 - Dual Mode Trigger Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn dualsel(&mut self) -> DualselW<CtrlaSpec> {
         DualselW::new(self, 3)
     }
     #[doc = "Bit 5 - Slave Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn slaveen(&mut self) -> SlaveenW<CtrlaSpec> {
         SlaveenW::new(self, 5)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<CtrlaSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bits 8:10 - Prescaler Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler(&mut self) -> PrescalerW<CtrlaSpec> {
         PrescalerW::new(self, 8)
     }
     #[doc = "Bit 15 - Rail to Rail Operation Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn r2r(&mut self) -> R2rW<CtrlaSpec> {
         R2rW::new(self, 15)
     }
@@ -326,10 +318,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

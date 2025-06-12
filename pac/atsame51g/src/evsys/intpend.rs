@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Channel ID"]
     #[inline(always)]
-    #[must_use]
     pub fn id(&mut self) -> IdW<IntpendSpec> {
         IdW::new(self, 0)
     }
     #[doc = "Bit 8 - Channel Overrun"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr(&mut self) -> OvrW<IntpendSpec> {
         OvrW::new(self, 8)
     }
     #[doc = "Bit 9 - Channel Event Detected"]
     #[inline(always)]
-    #[must_use]
     pub fn evd(&mut self) -> EvdW<IntpendSpec> {
         EvdW::new(self, 9)
     }
     #[doc = "Bit 14 - Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn ready(&mut self) -> ReadyW<IntpendSpec> {
         ReadyW::new(self, 14)
     }
     #[doc = "Bit 15 - Busy"]
     #[inline(always)]
-    #[must_use]
     pub fn busy(&mut self) -> BusyW<IntpendSpec> {
         BusyW::new(self, 15)
     }
@@ -91,8 +86,6 @@ impl crate::Readable for IntpendSpec {}
 #[doc = "`write(|w| ..)` method takes [`intpend::W`](W) writer structure"]
 impl crate::Writable for IntpendSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTPEND to value 0x4000"]
 impl crate::Resettable for IntpendSpec {

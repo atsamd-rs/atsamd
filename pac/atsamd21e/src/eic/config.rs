@@ -1015,97 +1015,81 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Input Sense 0 Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn sense0(&mut self) -> Sense0W<ConfigSpec> {
         Sense0W::new(self, 0)
     }
     #[doc = "Bit 3 - Filter 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn filten0(&mut self) -> Filten0W<ConfigSpec> {
         Filten0W::new(self, 3)
     }
     #[doc = "Bits 4:6 - Input Sense 1 Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn sense1(&mut self) -> Sense1W<ConfigSpec> {
         Sense1W::new(self, 4)
     }
     #[doc = "Bit 7 - Filter 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn filten1(&mut self) -> Filten1W<ConfigSpec> {
         Filten1W::new(self, 7)
     }
     #[doc = "Bits 8:10 - Input Sense 2 Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn sense2(&mut self) -> Sense2W<ConfigSpec> {
         Sense2W::new(self, 8)
     }
     #[doc = "Bit 11 - Filter 2 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn filten2(&mut self) -> Filten2W<ConfigSpec> {
         Filten2W::new(self, 11)
     }
     #[doc = "Bits 12:14 - Input Sense 3 Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn sense3(&mut self) -> Sense3W<ConfigSpec> {
         Sense3W::new(self, 12)
     }
     #[doc = "Bit 15 - Filter 3 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn filten3(&mut self) -> Filten3W<ConfigSpec> {
         Filten3W::new(self, 15)
     }
     #[doc = "Bits 16:18 - Input Sense 4 Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn sense4(&mut self) -> Sense4W<ConfigSpec> {
         Sense4W::new(self, 16)
     }
     #[doc = "Bit 19 - Filter 4 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn filten4(&mut self) -> Filten4W<ConfigSpec> {
         Filten4W::new(self, 19)
     }
     #[doc = "Bits 20:22 - Input Sense 5 Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn sense5(&mut self) -> Sense5W<ConfigSpec> {
         Sense5W::new(self, 20)
     }
     #[doc = "Bit 23 - Filter 5 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn filten5(&mut self) -> Filten5W<ConfigSpec> {
         Filten5W::new(self, 23)
     }
     #[doc = "Bits 24:26 - Input Sense 6 Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn sense6(&mut self) -> Sense6W<ConfigSpec> {
         Sense6W::new(self, 24)
     }
     #[doc = "Bit 27 - Filter 6 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn filten6(&mut self) -> Filten6W<ConfigSpec> {
         Filten6W::new(self, 27)
     }
     #[doc = "Bits 28:30 - Input Sense 7 Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn sense7(&mut self) -> Sense7W<ConfigSpec> {
         Sense7W::new(self, 28)
     }
     #[doc = "Bit 31 - Filter 7 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn filten7(&mut self) -> Filten7W<ConfigSpec> {
         Filten7W::new(self, 31)
     }
@@ -1120,10 +1104,6 @@ impl crate::Readable for ConfigSpec {}
 #[doc = "`write(|w| ..)` method takes [`config::W`](W) writer structure"]
 impl crate::Writable for ConfigSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CONFIG%s to value 0"]
-impl crate::Resettable for ConfigSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ConfigSpec {}

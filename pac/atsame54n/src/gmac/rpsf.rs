@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:9 - RX packet buffer address"]
     #[inline(always)]
-    #[must_use]
     pub fn rpb1adr(&mut self) -> Rpb1adrW<RpsfSpec> {
         Rpb1adrW::new(self, 0)
     }
     #[doc = "Bit 31 - Enable RX partial store and forward operation"]
     #[inline(always)]
-    #[must_use]
     pub fn enrxp(&mut self) -> EnrxpW<RpsfSpec> {
         EnrxpW::new(self, 31)
     }
@@ -46,8 +44,6 @@ impl crate::Readable for RpsfSpec {}
 #[doc = "`write(|w| ..)` method takes [`rpsf::W`](W) writer structure"]
 impl crate::Writable for RpsfSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RPSF to value 0x03ff"]
 impl crate::Resettable for RpsfSpec {

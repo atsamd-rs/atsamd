@@ -24,6 +24,4 @@ impl crate::RegisterSpec for FnumSpec {
 #[doc = "`read()` method returns [`fnum::R`](R) reader structure"]
 impl crate::Readable for FnumSpec {}
 #[doc = "`reset()` method sets FNUM to value 0"]
-impl crate::Resettable for FnumSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for FnumSpec {}

@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Auto Stop Tracing"]
     #[inline(always)]
-    #[must_use]
     pub fn autostop(&mut self) -> AutostopW<FlowSpec> {
         AutostopW::new(self, 0)
     }
     #[doc = "Bit 1 - Auto Halt Request"]
     #[inline(always)]
-    #[must_use]
     pub fn autohalt(&mut self) -> AutohaltW<FlowSpec> {
         AutohaltW::new(self, 1)
     }
     #[doc = "Bits 3:31 - Watermark value"]
     #[inline(always)]
-    #[must_use]
     pub fn watermark(&mut self) -> WatermarkW<FlowSpec> {
         WatermarkW::new(self, 3)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for FlowSpec {}
 #[doc = "`write(|w| ..)` method takes [`flow::W`](W) writer structure"]
 impl crate::Writable for FlowSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets FLOW to value 0"]
-impl crate::Resettable for FlowSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for FlowSpec {}

@@ -64,25 +64,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Channel ID"]
     #[inline(always)]
-    #[must_use]
     pub fn id(&mut self) -> IdW<IntpendSpec> {
         IdW::new(self, 0)
     }
     #[doc = "Bit 8 - Transfer Error"]
     #[inline(always)]
-    #[must_use]
     pub fn terr(&mut self) -> TerrW<IntpendSpec> {
         TerrW::new(self, 8)
     }
     #[doc = "Bit 9 - Transfer Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn tcmpl(&mut self) -> TcmplW<IntpendSpec> {
         TcmplW::new(self, 9)
     }
     #[doc = "Bit 10 - Channel Suspend"]
     #[inline(always)]
-    #[must_use]
     pub fn susp(&mut self) -> SuspW<IntpendSpec> {
         SuspW::new(self, 10)
     }
@@ -97,10 +93,6 @@ impl crate::Readable for IntpendSpec {}
 #[doc = "`write(|w| ..)` method takes [`intpend::W`](W) writer structure"]
 impl crate::Writable for IntpendSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTPEND to value 0"]
-impl crate::Resettable for IntpendSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntpendSpec {}

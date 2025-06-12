@@ -61,37 +61,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - Clock Unit 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cken0(&mut self) -> Cken0W<CtrlaSpec> {
         Cken0W::new(self, 2)
     }
     #[doc = "Bit 3 - Clock Unit 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cken1(&mut self) -> Cken1W<CtrlaSpec> {
         Cken1W::new(self, 3)
     }
     #[doc = "Bit 4 - Tx Serializer Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txen(&mut self) -> TxenW<CtrlaSpec> {
         TxenW::new(self, 4)
     }
     #[doc = "Bit 5 - Rx Serializer Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxen(&mut self) -> RxenW<CtrlaSpec> {
         RxenW::new(self, 5)
     }
@@ -106,10 +100,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

@@ -17,6 +17,4 @@ impl crate::RegisterSpec for PeftnSpec {
 #[doc = "`read()` method returns [`peftn::R`](R) reader structure"]
 impl crate::Readable for PeftnSpec {}
 #[doc = "`reset()` method sets PEFTN to value 0"]
-impl crate::Resettable for PeftnSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PeftnSpec {}

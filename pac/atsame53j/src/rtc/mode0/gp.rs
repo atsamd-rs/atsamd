@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - General Purpose"]
     #[inline(always)]
-    #[must_use]
     pub fn gp(&mut self) -> GpW<GpSpec> {
         GpW::new(self, 0)
     }
@@ -31,11 +30,6 @@ impl crate::Readable for GpSpec {}
 #[doc = "`write(|w| ..)` method takes [`gp::W`](W) writer structure"]
 impl crate::Writable for GpSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets GP[%s]
-to value 0"]
-impl crate::Resettable for GpSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets GP[%s] to value 0"]
+impl crate::Resettable for GpSpec {}

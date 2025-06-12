@@ -36,32 +36,27 @@ impl Dpll {
         &self.dpllstatus
     }
 }
-#[doc = "DPLLCTRLA (rw) register accessor: DPLL Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllctrla::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dpllctrla::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllctrla`]
-module"]
+#[doc = "DPLLCTRLA (rw) register accessor: DPLL Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllctrla::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dpllctrla::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllctrla`] module"]
 #[doc(alias = "DPLLCTRLA")]
 pub type Dpllctrla = crate::Reg<dpllctrla::DpllctrlaSpec>;
 #[doc = "DPLL Control A"]
 pub mod dpllctrla;
-#[doc = "DPLLRATIO (rw) register accessor: DPLL Ratio Control\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllratio::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dpllratio::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllratio`]
-module"]
+#[doc = "DPLLRATIO (rw) register accessor: DPLL Ratio Control\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllratio::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dpllratio::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllratio`] module"]
 #[doc(alias = "DPLLRATIO")]
 pub type Dpllratio = crate::Reg<dpllratio::DpllratioSpec>;
 #[doc = "DPLL Ratio Control"]
 pub mod dpllratio;
-#[doc = "DPLLCTRLB (rw) register accessor: DPLL Control B\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllctrlb::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dpllctrlb::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllctrlb`]
-module"]
+#[doc = "DPLLCTRLB (rw) register accessor: DPLL Control B\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllctrlb::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`dpllctrlb::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllctrlb`] module"]
 #[doc(alias = "DPLLCTRLB")]
 pub type Dpllctrlb = crate::Reg<dpllctrlb::DpllctrlbSpec>;
 #[doc = "DPLL Control B"]
 pub mod dpllctrlb;
-#[doc = "DPLLSYNCBUSY (r) register accessor: DPLL Synchronization Busy\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllsyncbusy::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllsyncbusy`]
-module"]
+#[doc = "DPLLSYNCBUSY (r) register accessor: DPLL Synchronization Busy\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllsyncbusy::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllsyncbusy`] module"]
 #[doc(alias = "DPLLSYNCBUSY")]
 pub type Dpllsyncbusy = crate::Reg<dpllsyncbusy::DpllsyncbusySpec>;
 #[doc = "DPLL Synchronization Busy"]
 pub mod dpllsyncbusy;
-#[doc = "DPLLSTATUS (r) register accessor: DPLL Status\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllstatus::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllstatus`]
-module"]
+#[doc = "DPLLSTATUS (r) register accessor: DPLL Status\n\nYou can [`read`](crate::Reg::read) this register and get [`dpllstatus::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@dpllstatus`] module"]
 #[doc(alias = "DPLLSTATUS")]
 pub type Dpllstatus = crate::Reg<dpllstatus::DpllstatusSpec>;
 #[doc = "DPLL Status"]

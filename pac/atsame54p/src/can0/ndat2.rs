@@ -295,193 +295,161 @@ impl R {
 impl W {
     #[doc = "Bit 0 - New Data 32"]
     #[inline(always)]
-    #[must_use]
     pub fn nd32(&mut self) -> Nd32W<Ndat2Spec> {
         Nd32W::new(self, 0)
     }
     #[doc = "Bit 1 - New Data 33"]
     #[inline(always)]
-    #[must_use]
     pub fn nd33(&mut self) -> Nd33W<Ndat2Spec> {
         Nd33W::new(self, 1)
     }
     #[doc = "Bit 2 - New Data 34"]
     #[inline(always)]
-    #[must_use]
     pub fn nd34(&mut self) -> Nd34W<Ndat2Spec> {
         Nd34W::new(self, 2)
     }
     #[doc = "Bit 3 - New Data 35"]
     #[inline(always)]
-    #[must_use]
     pub fn nd35(&mut self) -> Nd35W<Ndat2Spec> {
         Nd35W::new(self, 3)
     }
     #[doc = "Bit 4 - New Data 36"]
     #[inline(always)]
-    #[must_use]
     pub fn nd36(&mut self) -> Nd36W<Ndat2Spec> {
         Nd36W::new(self, 4)
     }
     #[doc = "Bit 5 - New Data 37"]
     #[inline(always)]
-    #[must_use]
     pub fn nd37(&mut self) -> Nd37W<Ndat2Spec> {
         Nd37W::new(self, 5)
     }
     #[doc = "Bit 6 - New Data 38"]
     #[inline(always)]
-    #[must_use]
     pub fn nd38(&mut self) -> Nd38W<Ndat2Spec> {
         Nd38W::new(self, 6)
     }
     #[doc = "Bit 7 - New Data 39"]
     #[inline(always)]
-    #[must_use]
     pub fn nd39(&mut self) -> Nd39W<Ndat2Spec> {
         Nd39W::new(self, 7)
     }
     #[doc = "Bit 8 - New Data 40"]
     #[inline(always)]
-    #[must_use]
     pub fn nd40(&mut self) -> Nd40W<Ndat2Spec> {
         Nd40W::new(self, 8)
     }
     #[doc = "Bit 9 - New Data 41"]
     #[inline(always)]
-    #[must_use]
     pub fn nd41(&mut self) -> Nd41W<Ndat2Spec> {
         Nd41W::new(self, 9)
     }
     #[doc = "Bit 10 - New Data 42"]
     #[inline(always)]
-    #[must_use]
     pub fn nd42(&mut self) -> Nd42W<Ndat2Spec> {
         Nd42W::new(self, 10)
     }
     #[doc = "Bit 11 - New Data 43"]
     #[inline(always)]
-    #[must_use]
     pub fn nd43(&mut self) -> Nd43W<Ndat2Spec> {
         Nd43W::new(self, 11)
     }
     #[doc = "Bit 12 - New Data 44"]
     #[inline(always)]
-    #[must_use]
     pub fn nd44(&mut self) -> Nd44W<Ndat2Spec> {
         Nd44W::new(self, 12)
     }
     #[doc = "Bit 13 - New Data 45"]
     #[inline(always)]
-    #[must_use]
     pub fn nd45(&mut self) -> Nd45W<Ndat2Spec> {
         Nd45W::new(self, 13)
     }
     #[doc = "Bit 14 - New Data 46"]
     #[inline(always)]
-    #[must_use]
     pub fn nd46(&mut self) -> Nd46W<Ndat2Spec> {
         Nd46W::new(self, 14)
     }
     #[doc = "Bit 15 - New Data 47"]
     #[inline(always)]
-    #[must_use]
     pub fn nd47(&mut self) -> Nd47W<Ndat2Spec> {
         Nd47W::new(self, 15)
     }
     #[doc = "Bit 16 - New Data 48"]
     #[inline(always)]
-    #[must_use]
     pub fn nd48(&mut self) -> Nd48W<Ndat2Spec> {
         Nd48W::new(self, 16)
     }
     #[doc = "Bit 17 - New Data 49"]
     #[inline(always)]
-    #[must_use]
     pub fn nd49(&mut self) -> Nd49W<Ndat2Spec> {
         Nd49W::new(self, 17)
     }
     #[doc = "Bit 18 - New Data 50"]
     #[inline(always)]
-    #[must_use]
     pub fn nd50(&mut self) -> Nd50W<Ndat2Spec> {
         Nd50W::new(self, 18)
     }
     #[doc = "Bit 19 - New Data 51"]
     #[inline(always)]
-    #[must_use]
     pub fn nd51(&mut self) -> Nd51W<Ndat2Spec> {
         Nd51W::new(self, 19)
     }
     #[doc = "Bit 20 - New Data 52"]
     #[inline(always)]
-    #[must_use]
     pub fn nd52(&mut self) -> Nd52W<Ndat2Spec> {
         Nd52W::new(self, 20)
     }
     #[doc = "Bit 21 - New Data 53"]
     #[inline(always)]
-    #[must_use]
     pub fn nd53(&mut self) -> Nd53W<Ndat2Spec> {
         Nd53W::new(self, 21)
     }
     #[doc = "Bit 22 - New Data 54"]
     #[inline(always)]
-    #[must_use]
     pub fn nd54(&mut self) -> Nd54W<Ndat2Spec> {
         Nd54W::new(self, 22)
     }
     #[doc = "Bit 23 - New Data 55"]
     #[inline(always)]
-    #[must_use]
     pub fn nd55(&mut self) -> Nd55W<Ndat2Spec> {
         Nd55W::new(self, 23)
     }
     #[doc = "Bit 24 - New Data 56"]
     #[inline(always)]
-    #[must_use]
     pub fn nd56(&mut self) -> Nd56W<Ndat2Spec> {
         Nd56W::new(self, 24)
     }
     #[doc = "Bit 25 - New Data 57"]
     #[inline(always)]
-    #[must_use]
     pub fn nd57(&mut self) -> Nd57W<Ndat2Spec> {
         Nd57W::new(self, 25)
     }
     #[doc = "Bit 26 - New Data 58"]
     #[inline(always)]
-    #[must_use]
     pub fn nd58(&mut self) -> Nd58W<Ndat2Spec> {
         Nd58W::new(self, 26)
     }
     #[doc = "Bit 27 - New Data 59"]
     #[inline(always)]
-    #[must_use]
     pub fn nd59(&mut self) -> Nd59W<Ndat2Spec> {
         Nd59W::new(self, 27)
     }
     #[doc = "Bit 28 - New Data 60"]
     #[inline(always)]
-    #[must_use]
     pub fn nd60(&mut self) -> Nd60W<Ndat2Spec> {
         Nd60W::new(self, 28)
     }
     #[doc = "Bit 29 - New Data 61"]
     #[inline(always)]
-    #[must_use]
     pub fn nd61(&mut self) -> Nd61W<Ndat2Spec> {
         Nd61W::new(self, 29)
     }
     #[doc = "Bit 30 - New Data 62"]
     #[inline(always)]
-    #[must_use]
     pub fn nd62(&mut self) -> Nd62W<Ndat2Spec> {
         Nd62W::new(self, 30)
     }
     #[doc = "Bit 31 - New Data 63"]
     #[inline(always)]
-    #[must_use]
     pub fn nd63(&mut self) -> Nd63W<Ndat2Spec> {
         Nd63W::new(self, 31)
     }
@@ -496,10 +464,6 @@ impl crate::Readable for Ndat2Spec {}
 #[doc = "`write(|w| ..)` method takes [`ndat2::W`](W) writer structure"]
 impl crate::Writable for Ndat2Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets NDAT2 to value 0"]
-impl crate::Resettable for Ndat2Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Ndat2Spec {}

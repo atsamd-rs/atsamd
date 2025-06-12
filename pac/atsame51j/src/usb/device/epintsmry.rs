@@ -66,6 +66,4 @@ impl crate::RegisterSpec for EpintsmrySpec {
 #[doc = "`read()` method returns [`epintsmry::R`](R) reader structure"]
 impl crate::Readable for EpintsmrySpec {}
 #[doc = "`reset()` method sets EPINTSMRY to value 0"]
-impl crate::Resettable for EpintsmrySpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for EpintsmrySpec {}

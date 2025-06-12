@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Dithering Cycle Number"]
     #[inline(always)]
-    #[must_use]
     pub fn dithercy(&mut self) -> DithercyW<CcDith4Spec> {
         DithercyW::new(self, 0)
     }
     #[doc = "Bits 4:23 - Channel Compare/Capture Value"]
     #[inline(always)]
-    #[must_use]
     pub fn cc(&mut self) -> CcW<CcDith4Spec> {
         CcW::new(self, 4)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for CcDith4Spec {}
 #[doc = "`write(|w| ..)` method takes [`cc_dith4::W`](W) writer structure"]
 impl crate::Writable for CcDith4Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CC%s_DITH4 to value 0"]
-impl crate::Resettable for CcDith4Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CcDith4Spec {}

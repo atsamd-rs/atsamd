@@ -735,109 +735,91 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Serializer Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn sermode(&mut self) -> SermodeW<RxctrlSpec> {
         SermodeW::new(self, 0)
     }
     #[doc = "Bit 5 - Clock Unit Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn clksel(&mut self) -> ClkselW<RxctrlSpec> {
         ClkselW::new(self, 5)
     }
     #[doc = "Bit 7 - Data Slot Formatting Adjust"]
     #[inline(always)]
-    #[must_use]
     pub fn slotadj(&mut self) -> SlotadjW<RxctrlSpec> {
         SlotadjW::new(self, 7)
     }
     #[doc = "Bits 8:10 - Data Word Size"]
     #[inline(always)]
-    #[must_use]
     pub fn datasize(&mut self) -> DatasizeW<RxctrlSpec> {
         DatasizeW::new(self, 8)
     }
     #[doc = "Bit 12 - Data Word Formatting Adjust"]
     #[inline(always)]
-    #[must_use]
     pub fn wordadj(&mut self) -> WordadjW<RxctrlSpec> {
         WordadjW::new(self, 12)
     }
     #[doc = "Bits 13:14 - Data Formatting Bit Extension"]
     #[inline(always)]
-    #[must_use]
     pub fn extend(&mut self) -> ExtendW<RxctrlSpec> {
         ExtendW::new(self, 13)
     }
     #[doc = "Bit 15 - Data Formatting Bit Reverse"]
     #[inline(always)]
-    #[must_use]
     pub fn bitrev(&mut self) -> BitrevW<RxctrlSpec> {
         BitrevW::new(self, 15)
     }
     #[doc = "Bit 16 - Slot 0 Disabled for this Serializer"]
     #[inline(always)]
-    #[must_use]
     pub fn slotdis0(&mut self) -> Slotdis0W<RxctrlSpec> {
         Slotdis0W::new(self, 16)
     }
     #[doc = "Bit 17 - Slot 1 Disabled for this Serializer"]
     #[inline(always)]
-    #[must_use]
     pub fn slotdis1(&mut self) -> Slotdis1W<RxctrlSpec> {
         Slotdis1W::new(self, 17)
     }
     #[doc = "Bit 18 - Slot 2 Disabled for this Serializer"]
     #[inline(always)]
-    #[must_use]
     pub fn slotdis2(&mut self) -> Slotdis2W<RxctrlSpec> {
         Slotdis2W::new(self, 18)
     }
     #[doc = "Bit 19 - Slot 3 Disabled for this Serializer"]
     #[inline(always)]
-    #[must_use]
     pub fn slotdis3(&mut self) -> Slotdis3W<RxctrlSpec> {
         Slotdis3W::new(self, 19)
     }
     #[doc = "Bit 20 - Slot 4 Disabled for this Serializer"]
     #[inline(always)]
-    #[must_use]
     pub fn slotdis4(&mut self) -> Slotdis4W<RxctrlSpec> {
         Slotdis4W::new(self, 20)
     }
     #[doc = "Bit 21 - Slot 5 Disabled for this Serializer"]
     #[inline(always)]
-    #[must_use]
     pub fn slotdis5(&mut self) -> Slotdis5W<RxctrlSpec> {
         Slotdis5W::new(self, 21)
     }
     #[doc = "Bit 22 - Slot 6 Disabled for this Serializer"]
     #[inline(always)]
-    #[must_use]
     pub fn slotdis6(&mut self) -> Slotdis6W<RxctrlSpec> {
         Slotdis6W::new(self, 22)
     }
     #[doc = "Bit 23 - Slot 7 Disabled for this Serializer"]
     #[inline(always)]
-    #[must_use]
     pub fn slotdis7(&mut self) -> Slotdis7W<RxctrlSpec> {
         Slotdis7W::new(self, 23)
     }
     #[doc = "Bit 24 - Mono Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mono(&mut self) -> MonoW<RxctrlSpec> {
         MonoW::new(self, 24)
     }
     #[doc = "Bit 25 - Single or Multiple DMA Channels"]
     #[inline(always)]
-    #[must_use]
     pub fn dma(&mut self) -> DmaW<RxctrlSpec> {
         DmaW::new(self, 25)
     }
     #[doc = "Bit 26 - Loop-back Test Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn rxloop(&mut self) -> RxloopW<RxctrlSpec> {
         RxloopW::new(self, 26)
     }
@@ -852,10 +834,6 @@ impl crate::Readable for RxctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`rxctrl::W`](W) writer structure"]
 impl crate::Writable for RxctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RXCTRL to value 0"]
-impl crate::Resettable for RxctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RxctrlSpec {}

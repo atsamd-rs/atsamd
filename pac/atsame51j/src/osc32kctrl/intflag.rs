@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - XOSC32K Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn xosc32krdy(&mut self) -> Xosc32krdyW<IntflagSpec> {
         Xosc32krdyW::new(self, 0)
     }
     #[doc = "Bit 2 - XOSC32K Clock Failure Detector"]
     #[inline(always)]
-    #[must_use]
     pub fn xosc32kfail(&mut self) -> Xosc32kfailW<IntflagSpec> {
         Xosc32kfailW::new(self, 2)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

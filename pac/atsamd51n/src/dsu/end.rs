@@ -17,6 +17,4 @@ impl crate::RegisterSpec for EndSpec {
 #[doc = "`read()` method returns [`end::R`](R) reader structure"]
 impl crate::Readable for EndSpec {}
 #[doc = "`reset()` method sets END to value 0"]
-impl crate::Resettable for EndSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EndSpec {}

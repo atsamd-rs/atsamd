@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bit 0"]
     #[inline(always)]
-    #[must_use]
     pub fn halted(&mut self) -> HaltedW<DfsrSpec> {
         HaltedW::new(self, 0)
     }
     #[doc = "Bit 1"]
     #[inline(always)]
-    #[must_use]
     pub fn bkpt(&mut self) -> BkptW<DfsrSpec> {
         BkptW::new(self, 1)
     }
     #[doc = "Bit 2"]
     #[inline(always)]
-    #[must_use]
     pub fn dwttrap(&mut self) -> DwttrapW<DfsrSpec> {
         DwttrapW::new(self, 2)
     }
     #[doc = "Bit 3"]
     #[inline(always)]
-    #[must_use]
     pub fn vcatch(&mut self) -> VcatchW<DfsrSpec> {
         VcatchW::new(self, 3)
     }
     #[doc = "Bit 4"]
     #[inline(always)]
-    #[must_use]
     pub fn external(&mut self) -> ExternalW<DfsrSpec> {
         ExternalW::new(self, 4)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for DfsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`dfsr::W`](W) writer structure"]
 impl crate::Writable for DfsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DFSR to value 0"]
-impl crate::Resettable for DfsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DfsrSpec {}

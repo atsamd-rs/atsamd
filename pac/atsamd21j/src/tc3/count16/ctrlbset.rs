@@ -103,19 +103,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Counter Direction"]
     #[inline(always)]
-    #[must_use]
     pub fn dir(&mut self) -> DirW<CtrlbsetSpec> {
         DirW::new(self, 0)
     }
     #[doc = "Bit 2 - One-Shot"]
     #[inline(always)]
-    #[must_use]
     pub fn oneshot(&mut self) -> OneshotW<CtrlbsetSpec> {
         OneshotW::new(self, 2)
     }
     #[doc = "Bits 6:7 - Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<CtrlbsetSpec> {
         CmdW::new(self, 6)
     }
@@ -130,10 +127,6 @@ impl crate::Readable for CtrlbsetSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlbset::W`](W) writer structure"]
 impl crate::Writable for CtrlbsetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLBSET to value 0"]
-impl crate::Resettable for CtrlbsetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlbsetSpec {}

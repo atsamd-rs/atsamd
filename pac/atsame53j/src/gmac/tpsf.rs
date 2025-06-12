@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:9 - TX packet buffer address"]
     #[inline(always)]
-    #[must_use]
     pub fn tpb1adr(&mut self) -> Tpb1adrW<TpsfSpec> {
         Tpb1adrW::new(self, 0)
     }
     #[doc = "Bit 31 - Enable TX partial store and forward operation"]
     #[inline(always)]
-    #[must_use]
     pub fn entxp(&mut self) -> EntxpW<TpsfSpec> {
         EntxpW::new(self, 31)
     }
@@ -46,8 +44,6 @@ impl crate::Readable for TpsfSpec {}
 #[doc = "`write(|w| ..)` method takes [`tpsf::W`](W) writer structure"]
 impl crate::Writable for TpsfSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TPSF to value 0x03ff"]
 impl crate::Resettable for TpsfSpec {

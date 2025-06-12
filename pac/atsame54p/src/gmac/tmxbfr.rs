@@ -17,6 +17,4 @@ impl crate::RegisterSpec for TmxbfrSpec {
 #[doc = "`read()` method returns [`tmxbfr::R`](R) reader structure"]
 impl crate::Readable for TmxbfrSpec {}
 #[doc = "`reset()` method sets TMXBFR to value 0"]
-impl crate::Resettable for TmxbfrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TmxbfrSpec {}

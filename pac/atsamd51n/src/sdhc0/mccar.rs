@@ -199,6 +199,4 @@ impl crate::RegisterSpec for MccarSpec {
 #[doc = "`read()` method returns [`mccar::R`](R) reader structure"]
 impl crate::Readable for MccarSpec {}
 #[doc = "`reset()` method sets MCCAR to value 0"]
-impl crate::Resettable for MccarSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for MccarSpec {}

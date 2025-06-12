@@ -191,19 +191,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Non-Maskable Interrupt Sense Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn nmisense(&mut self) -> NmisenseW<NmictrlSpec> {
         NmisenseW::new(self, 0)
     }
     #[doc = "Bit 3 - Non-Maskable Interrupt Filter Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nmifilten(&mut self) -> NmifiltenW<NmictrlSpec> {
         NmifiltenW::new(self, 3)
     }
     #[doc = "Bit 4 - Asynchronous Edge Detection Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn nmiasynch(&mut self) -> NmiasynchW<NmictrlSpec> {
         NmiasynchW::new(self, 4)
     }
@@ -218,10 +215,6 @@ impl crate::Readable for NmictrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`nmictrl::W`](W) writer structure"]
 impl crate::Writable for NmictrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets NMICTRL to value 0"]
-impl crate::Resettable for NmictrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for NmictrlSpec {}
