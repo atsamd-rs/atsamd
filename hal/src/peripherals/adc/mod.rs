@@ -352,7 +352,6 @@ impl<I: AdcInstance> Adc<I> {
         while !self.read_flags().contains(Flags::RESRDY) {
             core::hint::spin_loop();
         }
-        // Do it again if we had a settings change
         let res = self.conversion_result();
         res
     }
@@ -367,7 +366,6 @@ impl<I: AdcInstance> Adc<I> {
                 core::hint::spin_loop();
             }
             self.discard = false;
-            let _ = self.conversion_result();
         }
     }
 
@@ -396,7 +394,6 @@ impl<I: AdcInstance> Adc<I> {
                 core::hint::spin_loop();
             }
             self.clear_all_flags();
-            let _ = self.conversion_result();
             self.discard = false;
         }
 
