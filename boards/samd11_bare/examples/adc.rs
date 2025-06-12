@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use atsamd_hal::adc::AdcBuilder;
+use atsamd_hal::adc::{AdcBuilder, Reference};
 use samd11_bare as bsp;
 
 use bsp::hal;
@@ -49,9 +49,8 @@ fn main() -> ! {
     let mut adc_pin = pins.d1.into_alternate();
 
     loop {
-        let mut buffer = [0; 16];
-        let res = adc.read_buffer(&mut adc_pin, &mut buffer).unwrap();
+        let res = adc.read(&mut adc_pin);
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("Result: {:?}", res);
+        cortex_m_semihosting::hprintln!("ADC Result: {}", res);
     }
 }

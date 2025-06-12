@@ -2,7 +2,7 @@
 // For samd11, see 9.5 NVM Software Calibration Area Mapping, page 24
 // For samd21, see 10.3.2 NVM Software Calibration Area Mapping, page 46
 
-use atsamd21g::adc::calib;
+
 use atsamd_hal_macros::hal_cfg;
 use core::ptr;
 
