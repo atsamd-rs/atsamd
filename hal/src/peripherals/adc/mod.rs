@@ -88,12 +88,6 @@ pub enum Error {
     ClockTooFast,
     /// Buffer overflowed
     BufferOverrun,
-    /// Temperature sensor not enabled
-    ///
-    /// This is returned when attempting to read the CPU temperature, and the
-    /// SYSCTRL (D11/D21) / SUPC (D5x) peripheral has not enabled the
-    /// temperature sensor.
-    TemperatureSensorNotEnabled,
 }
 
 /// Voltage source to use when using the ADC to measure the CPU voltage

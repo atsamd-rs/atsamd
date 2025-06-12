@@ -211,26 +211,12 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     #[inline]
     /// Returns the CPU temperature in degrees C
     ///
-    /// This requires that the [pac::Sysctrl] peripheral is configured with
-    /// the tsen bit enabled, otherwise this function will return an error
-    /// [Error::TemperatureSensorNotEnabled].  This can be accomplished by:
-    ///
-    /// ```
-    /// let mut peripherals = pac::Peripherals::take().unwrap();
-    /// peripherals.sysctrl.vref().modify(|_, w| w.tsen().set_bit());
-    /// 
-    /// // !!DO NOT DO THIS AS YOU CLEAR THE CALIB DATA FOR VREF!!
-    /// let mut peripherals = pac::Peripherals::take().unwrap();
-    /// peripherals.sysctrl.vref().write(|w| w.tsen().set_bit());
-    /// ```
-    ///
     /// NOTE: The temperature sensor is known to be out by up to ±10C, it
     /// therefore should not be relied on for critical temperature readings
-    pub fn read_cpu_temperature(&mut self, sysctrl: &Sysctrl) -> Result<f32, Error> {
-        let vref = sysctrl.vref().read();
-        if vref.tsen().bit_is_clear() {
-            return Err(Error::TemperatureSensorNotEnabled);
-        }
+    pub fn read_cpu_temperature(&mut self, sysctrl: &mut Sysctrl) -> f32 {
+        let old_state = sysctrl.vref().read().tsen().bit();
+        sysctrl.vref().modify(|_, w| w.tsen().set_bit());
+
         let room_temp = calibration::room_temp();
         let adc_room = calibration::room_temp_adc_val() as f32;
 
@@ -268,7 +254,10 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
 
         let temp = room_temp
             + (((hot_temp - room_temp) / (v_adc_hot - v_adc_room)) * (v_adc_real - v_adc_room));
-        Ok(temp)
+
+        // Set sysctrl back
+        sysctrl.vref().modify(|_, w| w.tsen().variant(old_state));
+        temp
     }
 
     #[inline]
@@ -291,7 +280,7 @@ where
     F: crate::async_hal::interrupts::Binding<I::Interrupt, async_api::InterruptHandler<I>>,
 {
     /// Reads the CPU temperature. Value returned is in Celcius
-    pub fn read_cpu_temperature(&mut self, sysctrl: &Sysctrl) -> Result<f32, super::Error> {
+    pub fn read_cpu_temperature(&mut self, sysctrl: &mut Sysctrl) -> f32 {
         self.inner.read_cpu_temperature(sysctrl)
     }
 
