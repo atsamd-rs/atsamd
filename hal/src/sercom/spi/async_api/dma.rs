@@ -6,7 +6,7 @@ use crate::{
     dmac::{
         channel::{self, Channel},
         sram::DmacDescriptor,
-        AnyChannel, Beat, Buffer, ReadyChannel, ReadyFuture,
+        AnyChannel, Beat, Buffer, ReadyFuture,
     },
     sercom::{
         dma::{
@@ -153,8 +153,8 @@ where
     /// not use DMA.
     pub fn take_dma_channels(self) -> (SpiFuture<C, D, NoneT, NoneT>, R, T)
     where
-        R: AnyChannel<Status: ReadyChannel>,
-        T: AnyChannel<Status: ReadyChannel>,
+        R: AnyChannel<Status = ReadyFuture>,
+        T: AnyChannel<Status = ReadyFuture>,
     {
         let (spi, rx, tx) = self.spi.take_dma_channels();
         (SpiFuture { spi }, rx, tx)
@@ -164,7 +164,7 @@ where
     /// use DMA.
     pub fn take_rx_channel(self) -> (SpiFuture<C, D, NoneT, T>, R)
     where
-        R: AnyChannel<Status: ReadyChannel>,
+        R: AnyChannel<Status = ReadyFuture>,
     {
         let (spi, channel) = self.spi.take_rx_channel();
         (SpiFuture { spi }, channel)
@@ -174,7 +174,7 @@ where
     /// use DMA.
     pub fn take_tx_channel(self) -> (SpiFuture<C, D, R, NoneT>, T)
     where
-        T: AnyChannel<Status: ReadyChannel>,
+        T: AnyChannel<Status = ReadyFuture>,
     {
         let (spi, channel) = self.spi.take_tx_channel();
         (SpiFuture { spi }, channel)
