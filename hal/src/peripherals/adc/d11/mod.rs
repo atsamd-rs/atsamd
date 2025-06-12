@@ -74,14 +74,14 @@ impl<I: AdcInstance> Adc<I> {
 
         self.adc
             .sampctrl()
-            .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles) }); // sample length
+            .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
         self.sync();
         self.adc.inputctrl().modify(|_, w| {
             w.muxneg().gnd();
             w.gain().variant(Gainselect::Div2)
         }); // No negative input (internal gnd)
         self.sync();
-        let (sample_cnt, adjres) = match self.cfg.accumulation {
+        let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
             Accumulation::Single(_) => (SampleCount::_1, 0),
             // A total of `adc_sample_count` elements will be averaged by the ADC
