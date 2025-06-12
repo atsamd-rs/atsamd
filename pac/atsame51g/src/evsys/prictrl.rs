@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Channel Priority Number"]
     #[inline(always)]
-    #[must_use]
     pub fn pri(&mut self) -> PriW<PrictrlSpec> {
         PriW::new(self, 0)
     }
     #[doc = "Bit 7 - Round-Robin Scheduling Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rren(&mut self) -> RrenW<PrictrlSpec> {
         RrenW::new(self, 7)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for PrictrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`prictrl::W`](W) writer structure"]
 impl crate::Writable for PrictrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PRICTRL to value 0"]
-impl crate::Resettable for PrictrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for PrictrlSpec {}

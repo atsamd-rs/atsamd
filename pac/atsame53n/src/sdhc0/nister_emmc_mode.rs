@@ -364,43 +364,36 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Complete Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdc(&mut self) -> CmdcW<NisterEmmcModeSpec> {
         CmdcW::new(self, 0)
     }
     #[doc = "Bit 1 - Transfer Complete Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn trfc(&mut self) -> TrfcW<NisterEmmcModeSpec> {
         TrfcW::new(self, 1)
     }
     #[doc = "Bit 2 - Block Gap Event Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn blkge(&mut self) -> BlkgeW<NisterEmmcModeSpec> {
         BlkgeW::new(self, 2)
     }
     #[doc = "Bit 3 - DMA Interrupt Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaint(&mut self) -> DmaintW<NisterEmmcModeSpec> {
         DmaintW::new(self, 3)
     }
     #[doc = "Bit 4 - Buffer Write Ready Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bwrrdy(&mut self) -> BwrrdyW<NisterEmmcModeSpec> {
         BwrrdyW::new(self, 4)
     }
     #[doc = "Bit 5 - Buffer Read Ready Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn brdrdy(&mut self) -> BrdrdyW<NisterEmmcModeSpec> {
         BrdrdyW::new(self, 5)
     }
     #[doc = "Bit 14 - Boot Acknowledge Received Status Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bootar(&mut self) -> BootarW<NisterEmmcModeSpec> {
         BootarW::new(self, 14)
     }
@@ -415,10 +408,6 @@ impl crate::Readable for NisterEmmcModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`nister_emmc_mode::W`](W) writer structure"]
 impl crate::Writable for NisterEmmcModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets NISTER_EMMC_MODE to value 0"]
-impl crate::Resettable for NisterEmmcModeSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for NisterEmmcModeSpec {}

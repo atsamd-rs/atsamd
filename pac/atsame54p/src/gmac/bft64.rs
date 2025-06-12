@@ -17,6 +17,4 @@ impl crate::RegisterSpec for Bft64Spec {
 #[doc = "`read()` method returns [`bft64::R`](R) reader structure"]
 impl crate::Readable for Bft64Spec {}
 #[doc = "`reset()` method sets BFT64 to value 0"]
-impl crate::Resettable for Bft64Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Bft64Spec {}

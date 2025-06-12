@@ -189,7 +189,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Early Warning Interrupt Time Offset"]
     #[inline(always)]
-    #[must_use]
     pub fn ewoffset(&mut self) -> EwoffsetW<EwctrlSpec> {
         EwoffsetW::new(self, 0)
     }
@@ -204,8 +203,6 @@ impl crate::Readable for EwctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`ewctrl::W`](W) writer structure"]
 impl crate::Writable for EwctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EWCTRL to value 0x0b"]
 impl crate::Resettable for EwctrlSpec {

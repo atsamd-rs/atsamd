@@ -17,6 +17,4 @@ impl crate::RegisterSpec for OfrSpec {
 #[doc = "`read()` method returns [`ofr::R`](R) reader structure"]
 impl crate::Readable for OfrSpec {}
 #[doc = "`reset()` method sets OFR to value 0"]
-impl crate::Resettable for OfrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for OfrSpec {}

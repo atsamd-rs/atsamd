@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Fine Value"]
     #[inline(always)]
-    #[must_use]
     pub fn fine(&mut self) -> FineW<DfllvalSpec> {
         FineW::new(self, 0)
     }
     #[doc = "Bits 10:15 - Coarse Value"]
     #[inline(always)]
-    #[must_use]
     pub fn coarse(&mut self) -> CoarseW<DfllvalSpec> {
         CoarseW::new(self, 10)
     }
     #[doc = "Bits 16:31 - Multiplication Ratio Difference"]
     #[inline(always)]
-    #[must_use]
     pub fn diff(&mut self) -> DiffW<DfllvalSpec> {
         DiffW::new(self, 16)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for DfllvalSpec {}
 #[doc = "`write(|w| ..)` method takes [`dfllval::W`](W) writer structure"]
 impl crate::Writable for DfllvalSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DFLLVAL to value 0"]
-impl crate::Resettable for DfllvalSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DfllvalSpec {}

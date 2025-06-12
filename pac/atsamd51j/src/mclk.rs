@@ -66,62 +66,52 @@ impl RegisterBlock {
         &self.apbdmask
     }
 }
-#[doc = "INTENCLR (rw) register accessor: Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intenclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`]
-module"]
+#[doc = "INTENCLR (rw) register accessor: Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intenclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenclr`] module"]
 #[doc(alias = "INTENCLR")]
 pub type Intenclr = crate::Reg<intenclr::IntenclrSpec>;
 #[doc = "Interrupt Enable Clear"]
 pub mod intenclr;
-#[doc = "INTENSET (rw) register accessor: Interrupt Enable Set\n\nYou can [`read`](crate::Reg::read) this register and get [`intenset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`]
-module"]
+#[doc = "INTENSET (rw) register accessor: Interrupt Enable Set\n\nYou can [`read`](crate::Reg::read) this register and get [`intenset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intenset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intenset`] module"]
 #[doc(alias = "INTENSET")]
 pub type Intenset = crate::Reg<intenset::IntensetSpec>;
 #[doc = "Interrupt Enable Set"]
 pub mod intenset;
-#[doc = "INTFLAG (rw) register accessor: Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intflag::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`]
-module"]
+#[doc = "INTFLAG (rw) register accessor: Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`intflag::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`intflag::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@intflag`] module"]
 #[doc(alias = "INTFLAG")]
 pub type Intflag = crate::Reg<intflag::IntflagSpec>;
 #[doc = "Interrupt Flag Status and Clear"]
 pub mod intflag;
-#[doc = "HSDIV (r) register accessor: HS Clock Division\n\nYou can [`read`](crate::Reg::read) this register and get [`hsdiv::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@hsdiv`]
-module"]
+#[doc = "HSDIV (r) register accessor: HS Clock Division\n\nYou can [`read`](crate::Reg::read) this register and get [`hsdiv::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@hsdiv`] module"]
 #[doc(alias = "HSDIV")]
 pub type Hsdiv = crate::Reg<hsdiv::HsdivSpec>;
 #[doc = "HS Clock Division"]
 pub mod hsdiv;
-#[doc = "CPUDIV (rw) register accessor: CPU Clock Division\n\nYou can [`read`](crate::Reg::read) this register and get [`cpudiv::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cpudiv::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cpudiv`]
-module"]
+#[doc = "CPUDIV (rw) register accessor: CPU Clock Division\n\nYou can [`read`](crate::Reg::read) this register and get [`cpudiv::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`cpudiv::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@cpudiv`] module"]
 #[doc(alias = "CPUDIV")]
 pub type Cpudiv = crate::Reg<cpudiv::CpudivSpec>;
 #[doc = "CPU Clock Division"]
 pub mod cpudiv;
-#[doc = "AHBMASK (rw) register accessor: AHB Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`ahbmask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ahbmask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ahbmask`]
-module"]
+#[doc = "AHBMASK (rw) register accessor: AHB Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`ahbmask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`ahbmask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@ahbmask`] module"]
 #[doc(alias = "AHBMASK")]
 pub type Ahbmask = crate::Reg<ahbmask::AhbmaskSpec>;
 #[doc = "AHB Mask"]
 pub mod ahbmask;
-#[doc = "APBAMASK (rw) register accessor: APBA Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`apbamask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbamask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apbamask`]
-module"]
+#[doc = "APBAMASK (rw) register accessor: APBA Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`apbamask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbamask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apbamask`] module"]
 #[doc(alias = "APBAMASK")]
 pub type Apbamask = crate::Reg<apbamask::ApbamaskSpec>;
 #[doc = "APBA Mask"]
 pub mod apbamask;
-#[doc = "APBBMASK (rw) register accessor: APBB Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`apbbmask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbbmask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apbbmask`]
-module"]
+#[doc = "APBBMASK (rw) register accessor: APBB Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`apbbmask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbbmask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apbbmask`] module"]
 #[doc(alias = "APBBMASK")]
 pub type Apbbmask = crate::Reg<apbbmask::ApbbmaskSpec>;
 #[doc = "APBB Mask"]
 pub mod apbbmask;
-#[doc = "APBCMASK (rw) register accessor: APBC Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`apbcmask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbcmask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apbcmask`]
-module"]
+#[doc = "APBCMASK (rw) register accessor: APBC Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`apbcmask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbcmask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apbcmask`] module"]
 #[doc(alias = "APBCMASK")]
 pub type Apbcmask = crate::Reg<apbcmask::ApbcmaskSpec>;
 #[doc = "APBC Mask"]
 pub mod apbcmask;
-#[doc = "APBDMASK (rw) register accessor: APBD Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`apbdmask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbdmask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apbdmask`]
-module"]
+#[doc = "APBDMASK (rw) register accessor: APBD Mask\n\nYou can [`read`](crate::Reg::read) this register and get [`apbdmask::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`apbdmask::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@apbdmask`] module"]
 #[doc(alias = "APBDMASK")]
 pub type Apbdmask = crate::Reg<apbdmask::ApbdmaskSpec>;
 #[doc = "APBD Mask"]

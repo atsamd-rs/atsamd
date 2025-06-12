@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<VregSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 13 - Force LDO Voltage Regulator"]
     #[inline(always)]
-    #[must_use]
     pub fn forceldo(&mut self) -> ForceldoW<VregSpec> {
         ForceldoW::new(self, 13)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for VregSpec {}
 #[doc = "`write(|w| ..)` method takes [`vreg::W`](W) writer structure"]
 impl crate::Writable for VregSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets VREG to value 0"]
-impl crate::Resettable for VregSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for VregSpec {}

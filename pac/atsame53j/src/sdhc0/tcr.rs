@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Data Timeout Counter Value"]
     #[inline(always)]
-    #[must_use]
     pub fn dtcval(&mut self) -> DtcvalW<TcrSpec> {
         DtcvalW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for TcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`tcr::W`](W) writer structure"]
 impl crate::Writable for TcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets TCR to value 0"]
-impl crate::Resettable for TcrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for TcrSpec {}

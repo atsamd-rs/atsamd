@@ -68,13 +68,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Write Protection Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wpen(&mut self) -> WpenW<WpmrSpec> {
         WpenW::new(self, 0)
     }
     #[doc = "Bits 8:31 - Write Protection Key"]
     #[inline(always)]
-    #[must_use]
     pub fn wpkey(&mut self) -> WpkeyW<WpmrSpec> {
         WpkeyW::new(self, 8)
     }
@@ -89,10 +87,6 @@ impl crate::Readable for WpmrSpec {}
 #[doc = "`write(|w| ..)` method takes [`wpmr::W`](W) writer structure"]
 impl crate::Writable for WpmrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WPMR to value 0"]
-impl crate::Resettable for WpmrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WpmrSpec {}

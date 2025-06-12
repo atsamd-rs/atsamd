@@ -596,67 +596,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Timeout Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdteo(&mut self) -> CmdteoW<EisierEmmcModeSpec> {
         CmdteoW::new(self, 0)
     }
     #[doc = "Bit 1 - Command CRC Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdcrc(&mut self) -> CmdcrcW<EisierEmmcModeSpec> {
         CmdcrcW::new(self, 1)
     }
     #[doc = "Bit 2 - Command End Bit Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdend(&mut self) -> CmdendW<EisierEmmcModeSpec> {
         CmdendW::new(self, 2)
     }
     #[doc = "Bit 3 - Command Index Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdidx(&mut self) -> CmdidxW<EisierEmmcModeSpec> {
         CmdidxW::new(self, 3)
     }
     #[doc = "Bit 4 - Data Timeout Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn datteo(&mut self) -> DatteoW<EisierEmmcModeSpec> {
         DatteoW::new(self, 4)
     }
     #[doc = "Bit 5 - Data CRC Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn datcrc(&mut self) -> DatcrcW<EisierEmmcModeSpec> {
         DatcrcW::new(self, 5)
     }
     #[doc = "Bit 6 - Data End Bit Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn datend(&mut self) -> DatendW<EisierEmmcModeSpec> {
         DatendW::new(self, 6)
     }
     #[doc = "Bit 7 - Current Limit Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn curlim(&mut self) -> CurlimW<EisierEmmcModeSpec> {
         CurlimW::new(self, 7)
     }
     #[doc = "Bit 8 - Auto CMD Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn acmd(&mut self) -> AcmdW<EisierEmmcModeSpec> {
         AcmdW::new(self, 8)
     }
     #[doc = "Bit 9 - ADMA Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn adma(&mut self) -> AdmaW<EisierEmmcModeSpec> {
         AdmaW::new(self, 9)
     }
     #[doc = "Bit 12 - Boot Acknowledge Error Signal Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bootae(&mut self) -> BootaeW<EisierEmmcModeSpec> {
         BootaeW::new(self, 12)
     }
@@ -671,10 +660,6 @@ impl crate::Readable for EisierEmmcModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`eisier_emmc_mode::W`](W) writer structure"]
 impl crate::Writable for EisierEmmcModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets EISIER_EMMC_MODE to value 0"]
-impl crate::Resettable for EisierEmmcModeSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for EisierEmmcModeSpec {}

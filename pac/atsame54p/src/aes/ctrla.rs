@@ -636,67 +636,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:4 - AES Modes of operation"]
     #[inline(always)]
-    #[must_use]
     pub fn aesmode(&mut self) -> AesmodeW<CtrlaSpec> {
         AesmodeW::new(self, 2)
     }
     #[doc = "Bits 5:7 - Cipher Feedback Block Size"]
     #[inline(always)]
-    #[must_use]
     pub fn cfbs(&mut self) -> CfbsW<CtrlaSpec> {
         CfbsW::new(self, 5)
     }
     #[doc = "Bits 8:9 - Encryption Key Size"]
     #[inline(always)]
-    #[must_use]
     pub fn keysize(&mut self) -> KeysizeW<CtrlaSpec> {
         KeysizeW::new(self, 8)
     }
     #[doc = "Bit 10 - Cipher Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn cipher(&mut self) -> CipherW<CtrlaSpec> {
         CipherW::new(self, 10)
     }
     #[doc = "Bit 11 - Start Mode Select"]
     #[inline(always)]
-    #[must_use]
     pub fn startmode(&mut self) -> StartmodeW<CtrlaSpec> {
         StartmodeW::new(self, 11)
     }
     #[doc = "Bit 12 - Last Output Data Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn lod(&mut self) -> LodW<CtrlaSpec> {
         LodW::new(self, 12)
     }
     #[doc = "Bit 13 - Last Key Generation"]
     #[inline(always)]
-    #[must_use]
     pub fn keygen(&mut self) -> KeygenW<CtrlaSpec> {
         KeygenW::new(self, 13)
     }
     #[doc = "Bit 14 - XOR Key Operation"]
     #[inline(always)]
-    #[must_use]
     pub fn xorkey(&mut self) -> XorkeyW<CtrlaSpec> {
         XorkeyW::new(self, 14)
     }
     #[doc = "Bits 16:19 - Counter Measure Type"]
     #[inline(always)]
-    #[must_use]
     pub fn ctype(&mut self) -> CtypeW<CtrlaSpec> {
         CtypeW::new(self, 16)
     }
@@ -711,10 +700,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

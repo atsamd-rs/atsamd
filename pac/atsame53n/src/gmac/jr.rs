@@ -17,6 +17,4 @@ impl crate::RegisterSpec for JrSpec {
 #[doc = "`read()` method returns [`jr::R`](R) reader structure"]
 impl crate::Readable for JrSpec {}
 #[doc = "`reset()` method sets JR to value 0"]
-impl crate::Resettable for JrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for JrSpec {}

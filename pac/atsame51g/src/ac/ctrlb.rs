@@ -7,13 +7,11 @@ pub type Start1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - Comparator 0 Start Comparison"]
     #[inline(always)]
-    #[must_use]
     pub fn start0(&mut self) -> Start0W<CtrlbSpec> {
         Start0W::new(self, 0)
     }
     #[doc = "Bit 1 - Comparator 1 Start Comparison"]
     #[inline(always)]
-    #[must_use]
     pub fn start1(&mut self) -> Start1W<CtrlbSpec> {
         Start1W::new(self, 1)
     }
@@ -26,10 +24,6 @@ impl crate::RegisterSpec for CtrlbSpec {
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

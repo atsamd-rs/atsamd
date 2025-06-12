@@ -23,7 +23,6 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Error"]
     #[inline(always)]
-    #[must_use]
     pub fn error(&mut self) -> ErrorW<IntflagSpec> {
         ErrorW::new(self, 1)
     }
@@ -38,10 +37,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

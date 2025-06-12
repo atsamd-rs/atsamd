@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:11 - Offset Correction Value"]
     #[inline(always)]
-    #[must_use]
     pub fn offsetcorr(&mut self) -> OffsetcorrW<OffsetcorrSpec> {
         OffsetcorrW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for OffsetcorrSpec {}
 #[doc = "`write(|w| ..)` method takes [`offsetcorr::W`](W) writer structure"]
 impl crate::Writable for OffsetcorrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets OFFSETCORR to value 0"]
-impl crate::Resettable for OffsetcorrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for OffsetcorrSpec {}

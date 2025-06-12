@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Hash Address"]
     #[inline(always)]
-    #[must_use]
     pub fn addr(&mut self) -> AddrW<HrtSpec> {
         AddrW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for HrtSpec {}
 #[doc = "`write(|w| ..)` method takes [`hrt::W`](W) writer structure"]
 impl crate::Writable for HrtSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets HRT to value 0"]
-impl crate::Resettable for HrtSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for HrtSpec {}

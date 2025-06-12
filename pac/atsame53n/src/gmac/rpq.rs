@@ -17,6 +17,4 @@ impl crate::RegisterSpec for RpqSpec {
 #[doc = "`read()` method returns [`rpq::R`](R) reader structure"]
 impl crate::Readable for RpqSpec {}
 #[doc = "`reset()` method sets RPQ to value 0"]
-impl crate::Resettable for RpqSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RpqSpec {}

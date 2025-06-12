@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 1 - ENABLE Synchronization Busy"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<DfllsyncSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - DFLLCTRLB Synchronization Busy"]
     #[inline(always)]
-    #[must_use]
     pub fn dfllctrlb(&mut self) -> DfllctrlbW<DfllsyncSpec> {
         DfllctrlbW::new(self, 2)
     }
     #[doc = "Bit 3 - DFLLVAL Synchronization Busy"]
     #[inline(always)]
-    #[must_use]
     pub fn dfllval(&mut self) -> DfllvalW<DfllsyncSpec> {
         DfllvalW::new(self, 3)
     }
     #[doc = "Bit 4 - DFLLMUL Synchronization Busy"]
     #[inline(always)]
-    #[must_use]
     pub fn dfllmul(&mut self) -> DfllmulW<DfllsyncSpec> {
         DfllmulW::new(self, 4)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for DfllsyncSpec {}
 #[doc = "`write(|w| ..)` method takes [`dfllsync::W`](W) writer structure"]
 impl crate::Writable for DfllsyncSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DFLLSYNC to value 0"]
-impl crate::Resettable for DfllsyncSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DfllsyncSpec {}

@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Start Encryption/Decryption"]
     #[inline(always)]
-    #[must_use]
     pub fn start(&mut self) -> StartW<CtrlbSpec> {
         StartW::new(self, 0)
     }
     #[doc = "Bit 1 - New message"]
     #[inline(always)]
-    #[must_use]
     pub fn newmsg(&mut self) -> NewmsgW<CtrlbSpec> {
         NewmsgW::new(self, 1)
     }
     #[doc = "Bit 2 - End of message"]
     #[inline(always)]
-    #[must_use]
     pub fn eom(&mut self) -> EomW<CtrlbSpec> {
         EomW::new(self, 2)
     }
     #[doc = "Bit 3 - GF Multiplication"]
     #[inline(always)]
-    #[must_use]
     pub fn gfmul(&mut self) -> GfmulW<CtrlbSpec> {
         GfmulW::new(self, 3)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

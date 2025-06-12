@@ -70,43 +70,36 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - Maximum Value of the Trace Buffer in SRAM"]
     #[inline(always)]
-    #[must_use]
     pub fn mask(&mut self) -> MaskW<MasterSpec> {
         MaskW::new(self, 0)
     }
     #[doc = "Bit 5 - Trace Start Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tstarten(&mut self) -> TstartenW<MasterSpec> {
         TstartenW::new(self, 5)
     }
     #[doc = "Bit 6 - Trace Stop Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tstopen(&mut self) -> TstopenW<MasterSpec> {
         TstopenW::new(self, 6)
     }
     #[doc = "Bit 7 - Special Function Register Write Privilege"]
     #[inline(always)]
-    #[must_use]
     pub fn sfrwpriv(&mut self) -> SfrwprivW<MasterSpec> {
         SfrwprivW::new(self, 7)
     }
     #[doc = "Bit 8 - SRAM Privilege"]
     #[inline(always)]
-    #[must_use]
     pub fn rampriv(&mut self) -> RamprivW<MasterSpec> {
         RamprivW::new(self, 8)
     }
     #[doc = "Bit 9 - Halt Request"]
     #[inline(always)]
-    #[must_use]
     pub fn haltreq(&mut self) -> HaltreqW<MasterSpec> {
         HaltreqW::new(self, 9)
     }
     #[doc = "Bit 31 - Main Trace Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn en(&mut self) -> EnW<MasterSpec> {
         EnW::new(self, 31)
     }
@@ -121,10 +114,6 @@ impl crate::Readable for MasterSpec {}
 #[doc = "`write(|w| ..)` method takes [`master::W`](W) writer structure"]
 impl crate::Writable for MasterSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MASTER to value 0"]
-impl crate::Resettable for MasterSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for MasterSpec {}

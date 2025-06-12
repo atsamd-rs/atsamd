@@ -107,13 +107,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Peripheral identifier"]
     #[inline(always)]
-    #[must_use]
     pub fn perid(&mut self) -> PeridW<WrctrlSpec> {
         PeridW::new(self, 0)
     }
     #[doc = "Bits 16:23 - Peripheral access control key"]
     #[inline(always)]
-    #[must_use]
     pub fn key(&mut self) -> KeyW<WrctrlSpec> {
         KeyW::new(self, 16)
     }
@@ -128,10 +126,6 @@ impl crate::Readable for WrctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`wrctrl::W`](W) writer structure"]
 impl crate::Writable for WrctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WRCTRL to value 0"]
-impl crate::Resettable for WrctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WrctrlSpec {}

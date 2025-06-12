@@ -117,37 +117,31 @@ impl R {
 impl W {
     #[doc = "Bits 0:5 - Second"]
     #[inline(always)]
-    #[must_use]
     pub fn second(&mut self) -> SecondW<Alarm0Spec> {
         SecondW::new(self, 0)
     }
     #[doc = "Bits 6:11 - Minute"]
     #[inline(always)]
-    #[must_use]
     pub fn minute(&mut self) -> MinuteW<Alarm0Spec> {
         MinuteW::new(self, 6)
     }
     #[doc = "Bits 12:16 - Hour"]
     #[inline(always)]
-    #[must_use]
     pub fn hour(&mut self) -> HourW<Alarm0Spec> {
         HourW::new(self, 12)
     }
     #[doc = "Bits 17:21 - Day"]
     #[inline(always)]
-    #[must_use]
     pub fn day(&mut self) -> DayW<Alarm0Spec> {
         DayW::new(self, 17)
     }
     #[doc = "Bits 22:25 - Month"]
     #[inline(always)]
-    #[must_use]
     pub fn month(&mut self) -> MonthW<Alarm0Spec> {
         MonthW::new(self, 22)
     }
     #[doc = "Bits 26:31 - Year"]
     #[inline(always)]
-    #[must_use]
     pub fn year(&mut self) -> YearW<Alarm0Spec> {
         YearW::new(self, 26)
     }
@@ -162,10 +156,6 @@ impl crate::Readable for Alarm0Spec {}
 #[doc = "`write(|w| ..)` method takes [`alarm0::W`](W) writer structure"]
 impl crate::Writable for Alarm0Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ALARM0 to value 0"]
-impl crate::Resettable for Alarm0Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Alarm0Spec {}

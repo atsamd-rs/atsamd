@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Frame Length Control"]
     #[inline(always)]
-    #[must_use]
     pub fn flenc(&mut self) -> FlencW<HsofcSpec> {
         FlencW::new(self, 0)
     }
     #[doc = "Bit 7 - Frame Length Control Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn flence(&mut self) -> FlenceW<HsofcSpec> {
         FlenceW::new(self, 7)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for HsofcSpec {}
 #[doc = "`write(|w| ..)` method takes [`hsofc::W`](W) writer structure"]
 impl crate::Writable for HsofcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets HSOFC to value 0"]
-impl crate::Resettable for HsofcSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for HsofcSpec {}

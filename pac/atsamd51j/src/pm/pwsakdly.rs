@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Delay Value"]
     #[inline(always)]
-    #[must_use]
     pub fn dlyval(&mut self) -> DlyvalW<PwsakdlySpec> {
         DlyvalW::new(self, 0)
     }
     #[doc = "Bit 7 - Ignore Acknowledge"]
     #[inline(always)]
-    #[must_use]
     pub fn ignack(&mut self) -> IgnackW<PwsakdlySpec> {
         IgnackW::new(self, 7)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for PwsakdlySpec {}
 #[doc = "`write(|w| ..)` method takes [`pwsakdly::W`](W) writer structure"]
 impl crate::Writable for PwsakdlySpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PWSAKDLY to value 0"]
-impl crate::Resettable for PwsakdlySpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for PwsakdlySpec {}

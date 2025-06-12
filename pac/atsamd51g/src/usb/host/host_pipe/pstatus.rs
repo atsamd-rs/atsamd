@@ -45,6 +45,4 @@ impl crate::RegisterSpec for PstatusSpec {
 #[doc = "`read()` method returns [`pstatus::R`](R) reader structure"]
 impl crate::Readable for PstatusSpec {}
 #[doc = "`reset()` method sets PSTATUS to value 0"]
-impl crate::Resettable for PstatusSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for PstatusSpec {}

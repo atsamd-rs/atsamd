@@ -18,10 +18,6 @@ impl crate::Readable for PrbsSpec {}
 #[doc = "`write(|w| ..)` method takes [`prbs::W`](W) writer structure"]
 impl crate::Writable for PrbsSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets PRBS%s to value 0"]
-impl crate::Resettable for PrbsSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PrbsSpec {}

@@ -116,19 +116,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Enable Timeout Counter"]
     #[inline(always)]
-    #[must_use]
     pub fn etoc(&mut self) -> EtocW<ToccSpec> {
         EtocW::new(self, 0)
     }
     #[doc = "Bits 1:2 - Timeout Select"]
     #[inline(always)]
-    #[must_use]
     pub fn tos(&mut self) -> TosW<ToccSpec> {
         TosW::new(self, 1)
     }
     #[doc = "Bits 16:31 - Timeout Period"]
     #[inline(always)]
-    #[must_use]
     pub fn top(&mut self) -> TopW<ToccSpec> {
         TopW::new(self, 16)
     }
@@ -143,8 +140,6 @@ impl crate::Readable for ToccSpec {}
 #[doc = "`write(|w| ..)` method takes [`tocc::W`](W) writer structure"]
 impl crate::Writable for ToccSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TOCC to value 0xffff_0000"]
 impl crate::Resettable for ToccSpec {

@@ -295,193 +295,161 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Cancellation Finished Interrupt Enable 0"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie0(&mut self) -> Cfie0W<TxbcieSpec> {
         Cfie0W::new(self, 0)
     }
     #[doc = "Bit 1 - Cancellation Finished Interrupt Enable 1"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie1(&mut self) -> Cfie1W<TxbcieSpec> {
         Cfie1W::new(self, 1)
     }
     #[doc = "Bit 2 - Cancellation Finished Interrupt Enable 2"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie2(&mut self) -> Cfie2W<TxbcieSpec> {
         Cfie2W::new(self, 2)
     }
     #[doc = "Bit 3 - Cancellation Finished Interrupt Enable 3"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie3(&mut self) -> Cfie3W<TxbcieSpec> {
         Cfie3W::new(self, 3)
     }
     #[doc = "Bit 4 - Cancellation Finished Interrupt Enable 4"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie4(&mut self) -> Cfie4W<TxbcieSpec> {
         Cfie4W::new(self, 4)
     }
     #[doc = "Bit 5 - Cancellation Finished Interrupt Enable 5"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie5(&mut self) -> Cfie5W<TxbcieSpec> {
         Cfie5W::new(self, 5)
     }
     #[doc = "Bit 6 - Cancellation Finished Interrupt Enable 6"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie6(&mut self) -> Cfie6W<TxbcieSpec> {
         Cfie6W::new(self, 6)
     }
     #[doc = "Bit 7 - Cancellation Finished Interrupt Enable 7"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie7(&mut self) -> Cfie7W<TxbcieSpec> {
         Cfie7W::new(self, 7)
     }
     #[doc = "Bit 8 - Cancellation Finished Interrupt Enable 8"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie8(&mut self) -> Cfie8W<TxbcieSpec> {
         Cfie8W::new(self, 8)
     }
     #[doc = "Bit 9 - Cancellation Finished Interrupt Enable 9"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie9(&mut self) -> Cfie9W<TxbcieSpec> {
         Cfie9W::new(self, 9)
     }
     #[doc = "Bit 10 - Cancellation Finished Interrupt Enable 10"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie10(&mut self) -> Cfie10W<TxbcieSpec> {
         Cfie10W::new(self, 10)
     }
     #[doc = "Bit 11 - Cancellation Finished Interrupt Enable 11"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie11(&mut self) -> Cfie11W<TxbcieSpec> {
         Cfie11W::new(self, 11)
     }
     #[doc = "Bit 12 - Cancellation Finished Interrupt Enable 12"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie12(&mut self) -> Cfie12W<TxbcieSpec> {
         Cfie12W::new(self, 12)
     }
     #[doc = "Bit 13 - Cancellation Finished Interrupt Enable 13"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie13(&mut self) -> Cfie13W<TxbcieSpec> {
         Cfie13W::new(self, 13)
     }
     #[doc = "Bit 14 - Cancellation Finished Interrupt Enable 14"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie14(&mut self) -> Cfie14W<TxbcieSpec> {
         Cfie14W::new(self, 14)
     }
     #[doc = "Bit 15 - Cancellation Finished Interrupt Enable 15"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie15(&mut self) -> Cfie15W<TxbcieSpec> {
         Cfie15W::new(self, 15)
     }
     #[doc = "Bit 16 - Cancellation Finished Interrupt Enable 16"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie16(&mut self) -> Cfie16W<TxbcieSpec> {
         Cfie16W::new(self, 16)
     }
     #[doc = "Bit 17 - Cancellation Finished Interrupt Enable 17"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie17(&mut self) -> Cfie17W<TxbcieSpec> {
         Cfie17W::new(self, 17)
     }
     #[doc = "Bit 18 - Cancellation Finished Interrupt Enable 18"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie18(&mut self) -> Cfie18W<TxbcieSpec> {
         Cfie18W::new(self, 18)
     }
     #[doc = "Bit 19 - Cancellation Finished Interrupt Enable 19"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie19(&mut self) -> Cfie19W<TxbcieSpec> {
         Cfie19W::new(self, 19)
     }
     #[doc = "Bit 20 - Cancellation Finished Interrupt Enable 20"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie20(&mut self) -> Cfie20W<TxbcieSpec> {
         Cfie20W::new(self, 20)
     }
     #[doc = "Bit 21 - Cancellation Finished Interrupt Enable 21"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie21(&mut self) -> Cfie21W<TxbcieSpec> {
         Cfie21W::new(self, 21)
     }
     #[doc = "Bit 22 - Cancellation Finished Interrupt Enable 22"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie22(&mut self) -> Cfie22W<TxbcieSpec> {
         Cfie22W::new(self, 22)
     }
     #[doc = "Bit 23 - Cancellation Finished Interrupt Enable 23"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie23(&mut self) -> Cfie23W<TxbcieSpec> {
         Cfie23W::new(self, 23)
     }
     #[doc = "Bit 24 - Cancellation Finished Interrupt Enable 24"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie24(&mut self) -> Cfie24W<TxbcieSpec> {
         Cfie24W::new(self, 24)
     }
     #[doc = "Bit 25 - Cancellation Finished Interrupt Enable 25"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie25(&mut self) -> Cfie25W<TxbcieSpec> {
         Cfie25W::new(self, 25)
     }
     #[doc = "Bit 26 - Cancellation Finished Interrupt Enable 26"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie26(&mut self) -> Cfie26W<TxbcieSpec> {
         Cfie26W::new(self, 26)
     }
     #[doc = "Bit 27 - Cancellation Finished Interrupt Enable 27"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie27(&mut self) -> Cfie27W<TxbcieSpec> {
         Cfie27W::new(self, 27)
     }
     #[doc = "Bit 28 - Cancellation Finished Interrupt Enable 28"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie28(&mut self) -> Cfie28W<TxbcieSpec> {
         Cfie28W::new(self, 28)
     }
     #[doc = "Bit 29 - Cancellation Finished Interrupt Enable 29"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie29(&mut self) -> Cfie29W<TxbcieSpec> {
         Cfie29W::new(self, 29)
     }
     #[doc = "Bit 30 - Cancellation Finished Interrupt Enable 30"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie30(&mut self) -> Cfie30W<TxbcieSpec> {
         Cfie30W::new(self, 30)
     }
     #[doc = "Bit 31 - Cancellation Finished Interrupt Enable 31"]
     #[inline(always)]
-    #[must_use]
     pub fn cfie31(&mut self) -> Cfie31W<TxbcieSpec> {
         Cfie31W::new(self, 31)
     }
@@ -496,10 +464,6 @@ impl crate::Readable for TxbcieSpec {}
 #[doc = "`write(|w| ..)` method takes [`txbcie::W`](W) writer structure"]
 impl crate::Writable for TxbcieSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TXBCIE to value 0"]
-impl crate::Resettable for TxbcieSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxbcieSpec {}

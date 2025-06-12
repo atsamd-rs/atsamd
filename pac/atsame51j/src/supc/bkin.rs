@@ -24,6 +24,4 @@ impl crate::RegisterSpec for BkinSpec {
 #[doc = "`read()` method returns [`bkin::R`](R) reader structure"]
 impl crate::Readable for BkinSpec {}
 #[doc = "`reset()` method sets BKIN to value 0"]
-impl crate::Resettable for BkinSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BkinSpec {}

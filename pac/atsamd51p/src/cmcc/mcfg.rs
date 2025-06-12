@@ -85,7 +85,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Cache Controller Monitor Counter Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<McfgSpec> {
         ModeW::new(self, 0)
     }
@@ -100,10 +99,6 @@ impl crate::Readable for McfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`mcfg::W`](W) writer structure"]
 impl crate::Writable for McfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MCFG to value 0"]
-impl crate::Resettable for McfgSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for McfgSpec {}

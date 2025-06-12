@@ -188,19 +188,16 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Data Width"]
     #[inline(always)]
-    #[must_use]
     pub fn dw(&mut self) -> DwW<Hc1rEmmcModeSpec> {
         DwW::new(self, 1)
     }
     #[doc = "Bit 2 - High Speed Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn hsen(&mut self) -> HsenW<Hc1rEmmcModeSpec> {
         HsenW::new(self, 2)
     }
     #[doc = "Bits 3:4 - DMA Select"]
     #[inline(always)]
-    #[must_use]
     pub fn dmasel(&mut self) -> DmaselW<Hc1rEmmcModeSpec> {
         DmaselW::new(self, 3)
     }
@@ -215,10 +212,6 @@ impl crate::Readable for Hc1rEmmcModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`hc1r_emmc_mode::W`](W) writer structure"]
 impl crate::Writable for Hc1rEmmcModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets HC1R_EMMC_MODE to value 0"]
-impl crate::Resettable for Hc1rEmmcModeSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for Hc1rEmmcModeSpec {}

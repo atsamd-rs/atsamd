@@ -24,6 +24,4 @@ impl crate::RegisterSpec for SyncbusySpec {
 #[doc = "`read()` method returns [`syncbusy::R`](R) reader structure"]
 impl crate::Readable for SyncbusySpec {}
 #[doc = "`reset()` method sets SYNCBUSY to value 0"]
-impl crate::Resettable for SyncbusySpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SyncbusySpec {}

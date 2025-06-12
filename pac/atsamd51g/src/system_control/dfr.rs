@@ -13,6 +13,4 @@ impl crate::RegisterSpec for DfrSpec {
 #[doc = "`read()` method returns [`dfr::R`](R) reader structure"]
 impl crate::Readable for DfrSpec {}
 #[doc = "`reset()` method sets DFR to value 0"]
-impl crate::Resettable for DfrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DfrSpec {}

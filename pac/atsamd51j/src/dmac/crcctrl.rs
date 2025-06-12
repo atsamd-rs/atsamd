@@ -709,25 +709,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - CRC Beat Size"]
     #[inline(always)]
-    #[must_use]
     pub fn crcbeatsize(&mut self) -> CrcbeatsizeW<CrcctrlSpec> {
         CrcbeatsizeW::new(self, 0)
     }
     #[doc = "Bits 2:3 - CRC Polynomial Type"]
     #[inline(always)]
-    #[must_use]
     pub fn crcpoly(&mut self) -> CrcpolyW<CrcctrlSpec> {
         CrcpolyW::new(self, 2)
     }
     #[doc = "Bits 8:13 - CRC Input Source"]
     #[inline(always)]
-    #[must_use]
     pub fn crcsrc(&mut self) -> CrcsrcW<CrcctrlSpec> {
         CrcsrcW::new(self, 8)
     }
     #[doc = "Bits 14:15 - CRC Operating Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn crcmode(&mut self) -> CrcmodeW<CrcctrlSpec> {
         CrcmodeW::new(self, 14)
     }
@@ -742,10 +738,6 @@ impl crate::Readable for CrcctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`crcctrl::W`](W) writer structure"]
 impl crate::Writable for CrcctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CRCCTRL to value 0"]
-impl crate::Resettable for CrcctrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CrcctrlSpec {}

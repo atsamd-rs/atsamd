@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Underrun 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn underrun0(&mut self) -> Underrun0W<IntensetSpec> {
         Underrun0W::new(self, 0)
     }
     #[doc = "Bit 1 - Underrun 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn underrun1(&mut self) -> Underrun1W<IntensetSpec> {
         Underrun1W::new(self, 1)
     }
     #[doc = "Bit 2 - Data Buffer 0 Empty Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn empty0(&mut self) -> Empty0W<IntensetSpec> {
         Empty0W::new(self, 2)
     }
     #[doc = "Bit 3 - Data Buffer 1 Empty Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn empty1(&mut self) -> Empty1W<IntensetSpec> {
         Empty1W::new(self, 3)
     }
     #[doc = "Bit 4 - Result 0 Ready Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdy0(&mut self) -> Resrdy0W<IntensetSpec> {
         Resrdy0W::new(self, 4)
     }
     #[doc = "Bit 5 - Result 1 Ready Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdy1(&mut self) -> Resrdy1W<IntensetSpec> {
         Resrdy1W::new(self, 5)
     }
     #[doc = "Bit 6 - Overrun 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn overrun0(&mut self) -> Overrun0W<IntensetSpec> {
         Overrun0W::new(self, 6)
     }
     #[doc = "Bit 7 - Overrun 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn overrun1(&mut self) -> Overrun1W<IntensetSpec> {
         Overrun1W::new(self, 7)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for IntensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for IntensetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntensetSpec {}

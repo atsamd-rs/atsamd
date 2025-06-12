@@ -33,7 +33,6 @@ where
 impl W {
     #[doc = "Bits 0:7 - Watchdog Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn clear(&mut self) -> ClearW<ClearSpec> {
         ClearW::new(self, 0)
     }
@@ -46,10 +45,6 @@ impl crate::RegisterSpec for ClearSpec {
 #[doc = "`write(|w| ..)` method takes [`clear::W`](W) writer structure"]
 impl crate::Writable for ClearSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CLEAR to value 0"]
-impl crate::Resettable for ClearSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ClearSpec {}

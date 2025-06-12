@@ -13,31 +13,26 @@ pub type Bk1rdyW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - Data Toggle Set"]
     #[inline(always)]
-    #[must_use]
     pub fn dtgl(&mut self) -> DtglW<PstatussetSpec> {
         DtglW::new(self, 0)
     }
     #[doc = "Bit 2 - Current Bank Set"]
     #[inline(always)]
-    #[must_use]
     pub fn curbk(&mut self) -> CurbkW<PstatussetSpec> {
         CurbkW::new(self, 2)
     }
     #[doc = "Bit 4 - Pipe Freeze Set"]
     #[inline(always)]
-    #[must_use]
     pub fn pfreeze(&mut self) -> PfreezeW<PstatussetSpec> {
         PfreezeW::new(self, 4)
     }
     #[doc = "Bit 6 - Bank 0 Ready Set"]
     #[inline(always)]
-    #[must_use]
     pub fn bk0rdy(&mut self) -> Bk0rdyW<PstatussetSpec> {
         Bk0rdyW::new(self, 6)
     }
     #[doc = "Bit 7 - Bank 1 Ready Set"]
     #[inline(always)]
-    #[must_use]
     pub fn bk1rdy(&mut self) -> Bk1rdyW<PstatussetSpec> {
         Bk1rdyW::new(self, 7)
     }
@@ -50,10 +45,6 @@ impl crate::RegisterSpec for PstatussetSpec {
 #[doc = "`write(|w| ..)` method takes [`pstatusset::W`](W) writer structure"]
 impl crate::Writable for PstatussetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PSTATUSSET%s to value 0"]
-impl crate::Resettable for PstatussetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for PstatussetSpec {}

@@ -150,7 +150,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Low-Power Clock Division Factor"]
     #[inline(always)]
-    #[must_use]
     pub fn div(&mut self) -> DivW<CpudivSpec> {
         DivW::new(self, 0)
     }
@@ -165,8 +164,6 @@ impl crate::Readable for CpudivSpec {}
 #[doc = "`write(|w| ..)` method takes [`cpudiv::W`](W) writer structure"]
 impl crate::Writable for CpudivSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CPUDIV to value 0x01"]
 impl crate::Resettable for CpudivSpec {

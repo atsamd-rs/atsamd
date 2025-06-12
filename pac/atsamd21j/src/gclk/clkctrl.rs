@@ -688,25 +688,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:5 - Generic Clock Selection ID"]
     #[inline(always)]
-    #[must_use]
     pub fn id(&mut self) -> IdW<ClkctrlSpec> {
         IdW::new(self, 0)
     }
     #[doc = "Bits 8:11 - Generic Clock Generator"]
     #[inline(always)]
-    #[must_use]
     pub fn gen(&mut self) -> GenW<ClkctrlSpec> {
         GenW::new(self, 8)
     }
     #[doc = "Bit 14 - Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn clken(&mut self) -> ClkenW<ClkctrlSpec> {
         ClkenW::new(self, 14)
     }
     #[doc = "Bit 15 - Write Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn wrtlock(&mut self) -> WrtlockW<ClkctrlSpec> {
         WrtlockW::new(self, 15)
     }
@@ -721,10 +717,6 @@ impl crate::Readable for ClkctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`clkctrl::W`](W) writer structure"]
 impl crate::Writable for ClkctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CLKCTRL to value 0"]
-impl crate::Resettable for ClkctrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for ClkctrlSpec {}

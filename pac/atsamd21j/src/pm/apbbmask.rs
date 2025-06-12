@@ -70,43 +70,36 @@ impl R {
 impl W {
     #[doc = "Bit 0 - PAC1 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pac1_(&mut self) -> Pac1_W<ApbbmaskSpec> {
         Pac1_W::new(self, 0)
     }
     #[doc = "Bit 1 - DSU APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dsu_(&mut self) -> Dsu_W<ApbbmaskSpec> {
         Dsu_W::new(self, 1)
     }
     #[doc = "Bit 2 - NVMCTRL APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nvmctrl_(&mut self) -> Nvmctrl_W<ApbbmaskSpec> {
         Nvmctrl_W::new(self, 2)
     }
     #[doc = "Bit 3 - PORT APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn port_(&mut self) -> Port_W<ApbbmaskSpec> {
         Port_W::new(self, 3)
     }
     #[doc = "Bit 4 - DMAC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dmac_(&mut self) -> Dmac_W<ApbbmaskSpec> {
         Dmac_W::new(self, 4)
     }
     #[doc = "Bit 5 - USB APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn usb_(&mut self) -> Usb_W<ApbbmaskSpec> {
         Usb_W::new(self, 5)
     }
     #[doc = "Bit 6 - HMATRIX APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn hmatrix_(&mut self) -> Hmatrix_W<ApbbmaskSpec> {
         Hmatrix_W::new(self, 6)
     }
@@ -121,8 +114,6 @@ impl crate::Readable for ApbbmaskSpec {}
 #[doc = "`write(|w| ..)` method takes [`apbbmask::W`](W) writer structure"]
 impl crate::Writable for ApbbmaskSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets APBBMASK to value 0x7f"]
 impl crate::Resettable for ApbbmaskSpec {

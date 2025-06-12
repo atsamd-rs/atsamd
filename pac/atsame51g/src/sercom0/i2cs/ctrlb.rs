@@ -130,37 +130,31 @@ impl R {
 impl W {
     #[doc = "Bit 8 - Smart Mode Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn smen(&mut self) -> SmenW<CtrlbSpec> {
         SmenW::new(self, 8)
     }
     #[doc = "Bit 9 - PMBus Group Command"]
     #[inline(always)]
-    #[must_use]
     pub fn gcmd(&mut self) -> GcmdW<CtrlbSpec> {
         GcmdW::new(self, 9)
     }
     #[doc = "Bit 10 - Automatic Address Acknowledge"]
     #[inline(always)]
-    #[must_use]
     pub fn aacken(&mut self) -> AackenW<CtrlbSpec> {
         AackenW::new(self, 10)
     }
     #[doc = "Bits 14:15 - Address Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn amode(&mut self) -> AmodeW<CtrlbSpec> {
         AmodeW::new(self, 14)
     }
     #[doc = "Bits 16:17 - Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<CtrlbSpec> {
         CmdW::new(self, 16)
     }
     #[doc = "Bit 18 - Acknowledge Action"]
     #[inline(always)]
-    #[must_use]
     pub fn ackact(&mut self) -> AckactW<CtrlbSpec> {
         AckactW::new(self, 18)
     }
@@ -175,10 +169,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

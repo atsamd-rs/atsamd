@@ -15,37 +15,31 @@ pub type RmenW<'a, REG> = crate::FieldWriter<'a, REG, 4>;
 impl W {
     #[doc = "Bit 0 - ICM Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlSpec> {
         EnableW::new(self, 0)
     }
     #[doc = "Bit 1 - ICM Disable Register"]
     #[inline(always)]
-    #[must_use]
     pub fn disable(&mut self) -> DisableW<CtrlSpec> {
         DisableW::new(self, 1)
     }
     #[doc = "Bit 2 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlSpec> {
         SwrstW::new(self, 2)
     }
     #[doc = "Bits 4:7 - Recompute Internal Hash"]
     #[inline(always)]
-    #[must_use]
     pub fn rehash(&mut self) -> RehashW<CtrlSpec> {
         RehashW::new(self, 4)
     }
     #[doc = "Bits 8:11 - Region Monitoring Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rmdis(&mut self) -> RmdisW<CtrlSpec> {
         RmdisW::new(self, 8)
     }
     #[doc = "Bits 12:15 - Region Monitoring Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rmen(&mut self) -> RmenW<CtrlSpec> {
         RmenW::new(self, 12)
     }
@@ -58,10 +52,6 @@ impl crate::RegisterSpec for CtrlSpec {
 #[doc = "`write(|w| ..)` method takes [`ctrl::W`](W) writer structure"]
 impl crate::Writable for CtrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRL to value 0"]
-impl crate::Resettable for CtrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlSpec {}

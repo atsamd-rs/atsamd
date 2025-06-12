@@ -567,7 +567,7 @@ impl Aes {
     #[inline]
     pub fn set_databufptr(&self, dataptr: Dataptr) {
         self.databufptr()
-            .modify(|_, w| unsafe { w.indataptr().bits(dataptr) })
+            .modify(|_, w| unsafe { w.indataptr().bits(dataptr) });
     }
 
     // Debug run control
@@ -578,7 +578,7 @@ impl Aes {
     #[inline]
     pub fn set_debug(&self, run_during_debug: bool) {
         self.dbgctrl()
-            .modify(|_, w| w.dbgrun().bit(run_during_debug))
+            .modify(|_, w| w.dbgrun().bit(run_during_debug));
     }
 
     // Set Keyword

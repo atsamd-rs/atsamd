@@ -17,6 +17,4 @@ impl crate::RegisterSpec for FlenhighSpec {
 #[doc = "`read()` method returns [`flenhigh::R`](R) reader structure"]
 impl crate::Readable for FlenhighSpec {}
 #[doc = "`reset()` method sets FLENHIGH to value 0"]
-impl crate::Resettable for FlenhighSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for FlenhighSpec {}

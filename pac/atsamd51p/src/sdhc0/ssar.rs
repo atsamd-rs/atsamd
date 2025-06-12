@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - SDMA System Address"]
     #[inline(always)]
-    #[must_use]
     pub fn addr(&mut self) -> AddrW<SsarSpec> {
         AddrW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for SsarSpec {}
 #[doc = "`write(|w| ..)` method takes [`ssar::W`](W) writer structure"]
 impl crate::Writable for SsarSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SSAR to value 0"]
-impl crate::Resettable for SsarSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SsarSpec {}

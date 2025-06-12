@@ -195,37 +195,31 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Temperature Sensor Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tsen(&mut self) -> TsenW<VrefSpec> {
         TsenW::new(self, 1)
     }
     #[doc = "Bit 2 - Voltage Reference Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn vrefoe(&mut self) -> VrefoeW<VrefSpec> {
         VrefoeW::new(self, 2)
     }
     #[doc = "Bit 3 - Temperature Sensor Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn tssel(&mut self) -> TsselW<VrefSpec> {
         TsselW::new(self, 3)
     }
     #[doc = "Bit 6 - Run during Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<VrefSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Contrl"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<VrefSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bits 16:19 - Voltage Reference Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn sel(&mut self) -> SelW<VrefSpec> {
         SelW::new(self, 16)
     }
@@ -240,10 +234,6 @@ impl crate::Readable for VrefSpec {}
 #[doc = "`write(|w| ..)` method takes [`vref::W`](W) writer structure"]
 impl crate::Writable for VrefSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets VREF to value 0"]
-impl crate::Resettable for VrefSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for VrefSpec {}

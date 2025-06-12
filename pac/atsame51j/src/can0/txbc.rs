@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Tx Buffers Start Address"]
     #[inline(always)]
-    #[must_use]
     pub fn tbsa(&mut self) -> TbsaW<TxbcSpec> {
         TbsaW::new(self, 0)
     }
     #[doc = "Bits 16:21 - Number of Dedicated Transmit Buffers"]
     #[inline(always)]
-    #[must_use]
     pub fn ndtb(&mut self) -> NdtbW<TxbcSpec> {
         NdtbW::new(self, 16)
     }
     #[doc = "Bits 24:29 - Transmit FIFO/Queue Size"]
     #[inline(always)]
-    #[must_use]
     pub fn tfqs(&mut self) -> TfqsW<TxbcSpec> {
         TfqsW::new(self, 24)
     }
     #[doc = "Bit 30 - Tx FIFO/Queue Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn tfqm(&mut self) -> TfqmW<TxbcSpec> {
         TfqmW::new(self, 30)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for TxbcSpec {}
 #[doc = "`write(|w| ..)` method takes [`txbc::W`](W) writer structure"]
 impl crate::Writable for TxbcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TXBC to value 0"]
-impl crate::Resettable for TxbcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxbcSpec {}

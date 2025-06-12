@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Rx Buffer Start Address"]
     #[inline(always)]
-    #[must_use]
     pub fn rbsa(&mut self) -> RbsaW<RxbcSpec> {
         RbsaW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for RxbcSpec {}
 #[doc = "`write(|w| ..)` method takes [`rxbc::W`](W) writer structure"]
 impl crate::Writable for RxbcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RXBC to value 0"]
-impl crate::Resettable for RxbcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RxbcSpec {}

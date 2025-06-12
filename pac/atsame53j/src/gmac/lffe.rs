@@ -17,6 +17,4 @@ impl crate::RegisterSpec for LffeSpec {
 #[doc = "`read()` method returns [`lffe::R`](R) reader structure"]
 impl crate::Readable for LffeSpec {}
 #[doc = "`reset()` method sets LFFE to value 0"]
-impl crate::Resettable for LffeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for LffeSpec {}

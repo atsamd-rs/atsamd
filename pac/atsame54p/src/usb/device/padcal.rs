@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - USB Pad Transp calibration"]
     #[inline(always)]
-    #[must_use]
     pub fn transp(&mut self) -> TranspW<PadcalSpec> {
         TranspW::new(self, 0)
     }
     #[doc = "Bits 6:10 - USB Pad Transn calibration"]
     #[inline(always)]
-    #[must_use]
     pub fn transn(&mut self) -> TransnW<PadcalSpec> {
         TransnW::new(self, 6)
     }
     #[doc = "Bits 12:14 - USB Pad Trim calibration"]
     #[inline(always)]
-    #[must_use]
     pub fn trim(&mut self) -> TrimW<PadcalSpec> {
         TrimW::new(self, 12)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for PadcalSpec {}
 #[doc = "`write(|w| ..)` method takes [`padcal::W`](W) writer structure"]
 impl crate::Writable for PadcalSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets PADCAL to value 0"]
-impl crate::Resettable for PadcalSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for PadcalSpec {}

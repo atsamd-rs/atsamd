@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - External Interrupt 0"]
     #[inline(always)]
-    #[must_use]
     pub fn extint0(&mut self) -> Extint0W<IntflagSpec> {
         Extint0W::new(self, 0)
     }
     #[doc = "Bit 1 - External Interrupt 1"]
     #[inline(always)]
-    #[must_use]
     pub fn extint1(&mut self) -> Extint1W<IntflagSpec> {
         Extint1W::new(self, 1)
     }
     #[doc = "Bit 2 - External Interrupt 2"]
     #[inline(always)]
-    #[must_use]
     pub fn extint2(&mut self) -> Extint2W<IntflagSpec> {
         Extint2W::new(self, 2)
     }
     #[doc = "Bit 3 - External Interrupt 3"]
     #[inline(always)]
-    #[must_use]
     pub fn extint3(&mut self) -> Extint3W<IntflagSpec> {
         Extint3W::new(self, 3)
     }
     #[doc = "Bit 4 - External Interrupt 4"]
     #[inline(always)]
-    #[must_use]
     pub fn extint4(&mut self) -> Extint4W<IntflagSpec> {
         Extint4W::new(self, 4)
     }
     #[doc = "Bit 5 - External Interrupt 5"]
     #[inline(always)]
-    #[must_use]
     pub fn extint5(&mut self) -> Extint5W<IntflagSpec> {
         Extint5W::new(self, 5)
     }
     #[doc = "Bit 6 - External Interrupt 6"]
     #[inline(always)]
-    #[must_use]
     pub fn extint6(&mut self) -> Extint6W<IntflagSpec> {
         Extint6W::new(self, 6)
     }
     #[doc = "Bit 7 - External Interrupt 7"]
     #[inline(always)]
-    #[must_use]
     pub fn extint7(&mut self) -> Extint7W<IntflagSpec> {
         Extint7W::new(self, 7)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

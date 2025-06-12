@@ -38,6 +38,4 @@ impl crate::RegisterSpec for TxfqsSpec {
 #[doc = "`read()` method returns [`txfqs::R`](R) reader structure"]
 impl crate::Readable for TxfqsSpec {}
 #[doc = "`reset()` method sets TXFQS to value 0"]
-impl crate::Resettable for TxfqsSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxfqsSpec {}

@@ -133,85 +133,71 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Periodic Interval 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn per0(&mut self) -> Per0W<IntenclrSpec> {
         Per0W::new(self, 0)
     }
     #[doc = "Bit 1 - Periodic Interval 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn per1(&mut self) -> Per1W<IntenclrSpec> {
         Per1W::new(self, 1)
     }
     #[doc = "Bit 2 - Periodic Interval 2 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn per2(&mut self) -> Per2W<IntenclrSpec> {
         Per2W::new(self, 2)
     }
     #[doc = "Bit 3 - Periodic Interval 3 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn per3(&mut self) -> Per3W<IntenclrSpec> {
         Per3W::new(self, 3)
     }
     #[doc = "Bit 4 - Periodic Interval 4 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn per4(&mut self) -> Per4W<IntenclrSpec> {
         Per4W::new(self, 4)
     }
     #[doc = "Bit 5 - Periodic Interval 5 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn per5(&mut self) -> Per5W<IntenclrSpec> {
         Per5W::new(self, 5)
     }
     #[doc = "Bit 6 - Periodic Interval 6 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn per6(&mut self) -> Per6W<IntenclrSpec> {
         Per6W::new(self, 6)
     }
     #[doc = "Bit 7 - Periodic Interval 7 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn per7(&mut self) -> Per7W<IntenclrSpec> {
         Per7W::new(self, 7)
     }
     #[doc = "Bit 8 - Compare 0 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp0(&mut self) -> Cmp0W<IntenclrSpec> {
         Cmp0W::new(self, 8)
     }
     #[doc = "Bit 9 - Compare 1 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp1(&mut self) -> Cmp1W<IntenclrSpec> {
         Cmp1W::new(self, 9)
     }
     #[doc = "Bit 10 - Compare 2 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp2(&mut self) -> Cmp2W<IntenclrSpec> {
         Cmp2W::new(self, 10)
     }
     #[doc = "Bit 11 - Compare 3 Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmp3(&mut self) -> Cmp3W<IntenclrSpec> {
         Cmp3W::new(self, 11)
     }
     #[doc = "Bit 14 - Tamper Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tamper(&mut self) -> TamperW<IntenclrSpec> {
         TamperW::new(self, 14)
     }
     #[doc = "Bit 15 - Overflow Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovf(&mut self) -> OvfW<IntenclrSpec> {
         OvfW::new(self, 15)
     }
@@ -226,10 +212,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

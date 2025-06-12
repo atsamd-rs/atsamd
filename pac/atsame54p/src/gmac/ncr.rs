@@ -160,103 +160,86 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Loop Back Local"]
     #[inline(always)]
-    #[must_use]
     pub fn lbl(&mut self) -> LblW<NcrSpec> {
         LblW::new(self, 1)
     }
     #[doc = "Bit 2 - Receive Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxen(&mut self) -> RxenW<NcrSpec> {
         RxenW::new(self, 2)
     }
     #[doc = "Bit 3 - Transmit Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txen(&mut self) -> TxenW<NcrSpec> {
         TxenW::new(self, 3)
     }
     #[doc = "Bit 4 - Management Port Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mpe(&mut self) -> MpeW<NcrSpec> {
         MpeW::new(self, 4)
     }
     #[doc = "Bit 5 - Clear Statistics Registers"]
     #[inline(always)]
-    #[must_use]
     pub fn clrstat(&mut self) -> ClrstatW<NcrSpec> {
         ClrstatW::new(self, 5)
     }
     #[doc = "Bit 6 - Increment Statistics Registers"]
     #[inline(always)]
-    #[must_use]
     pub fn incstat(&mut self) -> IncstatW<NcrSpec> {
         IncstatW::new(self, 6)
     }
     #[doc = "Bit 7 - Write Enable for Statistics Registers"]
     #[inline(always)]
-    #[must_use]
     pub fn westat(&mut self) -> WestatW<NcrSpec> {
         WestatW::new(self, 7)
     }
     #[doc = "Bit 8 - Back pressure"]
     #[inline(always)]
-    #[must_use]
     pub fn bp(&mut self) -> BpW<NcrSpec> {
         BpW::new(self, 8)
     }
     #[doc = "Bit 9 - Start Transmission"]
     #[inline(always)]
-    #[must_use]
     pub fn tstart(&mut self) -> TstartW<NcrSpec> {
         TstartW::new(self, 9)
     }
     #[doc = "Bit 10 - Transmit Halt"]
     #[inline(always)]
-    #[must_use]
     pub fn thalt(&mut self) -> ThaltW<NcrSpec> {
         ThaltW::new(self, 10)
     }
     #[doc = "Bit 11 - Transmit Pause Frame"]
     #[inline(always)]
-    #[must_use]
     pub fn txpf(&mut self) -> TxpfW<NcrSpec> {
         TxpfW::new(self, 11)
     }
     #[doc = "Bit 12 - Transmit Zero Quantum Pause Frame"]
     #[inline(always)]
-    #[must_use]
     pub fn txzqpf(&mut self) -> TxzqpfW<NcrSpec> {
         TxzqpfW::new(self, 12)
     }
     #[doc = "Bit 15 - Store Receive Time Stamp to Memory"]
     #[inline(always)]
-    #[must_use]
     pub fn srtsm(&mut self) -> SrtsmW<NcrSpec> {
         SrtsmW::new(self, 15)
     }
     #[doc = "Bit 16 - Enable PFC Priority-based Pause Reception"]
     #[inline(always)]
-    #[must_use]
     pub fn enpbpr(&mut self) -> EnpbprW<NcrSpec> {
         EnpbprW::new(self, 16)
     }
     #[doc = "Bit 17 - Transmit PFC Priority-based Pause Frame"]
     #[inline(always)]
-    #[must_use]
     pub fn txpbpf(&mut self) -> TxpbpfW<NcrSpec> {
         TxpbpfW::new(self, 17)
     }
     #[doc = "Bit 18 - Flush Next Packet"]
     #[inline(always)]
-    #[must_use]
     pub fn fnp(&mut self) -> FnpW<NcrSpec> {
         FnpW::new(self, 18)
     }
     #[doc = "Bit 19 - Low Power Idle Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lpi(&mut self) -> LpiW<NcrSpec> {
         LpiW::new(self, 19)
     }
@@ -271,10 +254,6 @@ impl crate::Readable for NcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`ncr::W`](W) writer structure"]
 impl crate::Writable for NcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets NCR to value 0"]
-impl crate::Resettable for NcrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for NcrSpec {}

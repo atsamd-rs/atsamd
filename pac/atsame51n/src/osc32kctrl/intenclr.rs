@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - XOSC32K Ready Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xosc32krdy(&mut self) -> Xosc32krdyW<IntenclrSpec> {
         Xosc32krdyW::new(self, 0)
     }
     #[doc = "Bit 2 - XOSC32K Clock Failure Detector Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xosc32kfail(&mut self) -> Xosc32kfailW<IntenclrSpec> {
         Xosc32kfailW::new(self, 2)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

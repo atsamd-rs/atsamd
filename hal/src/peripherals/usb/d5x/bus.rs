@@ -320,10 +320,10 @@ impl Bank<'_, InBank> {
     fn set_stall(&mut self, stall: bool) {
         if stall {
             self.epstatusset(self.index())
-                .write(|w| w.stallrq1().set_bit())
+                .write(|w| w.stallrq1().set_bit());
         } else {
             self.epstatusclr(self.index())
-                .write(|w| w.stallrq1().set_bit())
+                .write(|w| w.stallrq1().set_bit());
         }
     }
 }
@@ -422,10 +422,10 @@ impl Bank<'_, OutBank> {
     fn set_stall(&mut self, stall: bool) {
         if stall {
             self.epstatusset(self.index())
-                .write(|w| w.stallrq0().set_bit())
+                .write(|w| w.stallrq0().set_bit());
         } else {
             self.epstatusclr(self.index())
-                .write(|w| w.stallrq0().set_bit())
+                .write(|w| w.stallrq0().set_bit());
         }
     }
 }

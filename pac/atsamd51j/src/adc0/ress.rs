@@ -17,6 +17,4 @@ impl crate::RegisterSpec for RessSpec {
 #[doc = "`read()` method returns [`ress::R`](R) reader structure"]
 impl crate::Readable for RessSpec {}
 #[doc = "`reset()` method sets RESS to value 0"]
-impl crate::Resettable for RessSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for RessSpec {}

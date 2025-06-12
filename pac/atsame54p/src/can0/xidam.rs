@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:28 - Extended ID Mask"]
     #[inline(always)]
-    #[must_use]
     pub fn eidm(&mut self) -> EidmW<XidamSpec> {
         EidmW::new(self, 0)
     }
@@ -31,8 +30,6 @@ impl crate::Readable for XidamSpec {}
 #[doc = "`write(|w| ..)` method takes [`xidam::W`](W) writer structure"]
 impl crate::Writable for XidamSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets XIDAM to value 0x1fff_ffff"]
 impl crate::Resettable for XidamSpec {

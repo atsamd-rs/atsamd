@@ -13,6 +13,4 @@ impl crate::RegisterSpec for Cid1Spec {
 #[doc = "`read()` method returns [`cid1::R`](R) reader structure"]
 impl crate::Readable for Cid1Spec {}
 #[doc = "`reset()` method sets CID1 to value 0"]
-impl crate::Resettable for Cid1Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Cid1Spec {}

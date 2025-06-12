@@ -111,7 +111,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Sleep Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn sleepmode(&mut self) -> SleepmodeW<SleepcfgSpec> {
         SleepmodeW::new(self, 0)
     }
@@ -126,8 +125,6 @@ impl crate::Readable for SleepcfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`sleepcfg::W`](W) writer structure"]
 impl crate::Writable for SleepcfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets SLEEPCFG to value 0x02"]
 impl crate::Resettable for SleepcfgSpec {

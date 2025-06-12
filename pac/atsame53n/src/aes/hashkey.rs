@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Hash Key Value"]
     #[inline(always)]
-    #[must_use]
     pub fn hashkey(&mut self) -> HashkeyW<HashkeySpec> {
         HashkeyW::new(self, 0)
     }
@@ -31,11 +30,6 @@ impl crate::Readable for HashkeySpec {}
 #[doc = "`write(|w| ..)` method takes [`hashkey::W`](W) writer structure"]
 impl crate::Writable for HashkeySpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets HASHKEY[%s]
-to value 0"]
-impl crate::Resettable for HashkeySpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets HASHKEY[%s] to value 0"]
+impl crate::Resettable for HashkeySpec {}

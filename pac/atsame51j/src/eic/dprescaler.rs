@@ -467,31 +467,26 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Debouncer Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler0(&mut self) -> Prescaler0W<DprescalerSpec> {
         Prescaler0W::new(self, 0)
     }
     #[doc = "Bit 3 - Debouncer number of states"]
     #[inline(always)]
-    #[must_use]
     pub fn states0(&mut self) -> States0W<DprescalerSpec> {
         States0W::new(self, 3)
     }
     #[doc = "Bits 4:6 - Debouncer Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler1(&mut self) -> Prescaler1W<DprescalerSpec> {
         Prescaler1W::new(self, 4)
     }
     #[doc = "Bit 7 - Debouncer number of states"]
     #[inline(always)]
-    #[must_use]
     pub fn states1(&mut self) -> States1W<DprescalerSpec> {
         States1W::new(self, 7)
     }
     #[doc = "Bit 16 - Pin Sampler frequency selection"]
     #[inline(always)]
-    #[must_use]
     pub fn tickon(&mut self) -> TickonW<DprescalerSpec> {
         TickonW::new(self, 16)
     }
@@ -506,10 +501,6 @@ impl crate::Readable for DprescalerSpec {}
 #[doc = "`write(|w| ..)` method takes [`dprescaler::W`](W) writer structure"]
 impl crate::Writable for DprescalerSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DPRESCALER to value 0"]
-impl crate::Resettable for DprescalerSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DprescalerSpec {}

@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 1:31 - Write Protection Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn wp(&mut self) -> WpW<WpclrSpec> {
         WpW::new(self, 1)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for WpclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`wpclr::W`](W) writer structure"]
 impl crate::Writable for WpclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WPCLR to value 0"]
-impl crate::Resettable for WpclrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WpclrSpec {}

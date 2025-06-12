@@ -106,67 +106,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - ETM Power Down"]
     #[inline(always)]
-    #[must_use]
     pub fn etmpd(&mut self) -> EtmpdW<CrSpec> {
         EtmpdW::new(self, 0)
     }
     #[doc = "Bits 4:6 - Port Size bits 2:0"]
     #[inline(always)]
-    #[must_use]
     pub fn portsize(&mut self) -> PortsizeW<CrSpec> {
         PortsizeW::new(self, 4)
     }
     #[doc = "Bit 7 - Stall Processor"]
     #[inline(always)]
-    #[must_use]
     pub fn stall(&mut self) -> StallW<CrSpec> {
         StallW::new(self, 7)
     }
     #[doc = "Bit 8 - Branch Output"]
     #[inline(always)]
-    #[must_use]
     pub fn brout(&mut self) -> BroutW<CrSpec> {
         BroutW::new(self, 8)
     }
     #[doc = "Bit 9 - Debug Request Control"]
     #[inline(always)]
-    #[must_use]
     pub fn dbgrq(&mut self) -> DbgrqW<CrSpec> {
         DbgrqW::new(self, 9)
     }
     #[doc = "Bit 10 - ETM Programming"]
     #[inline(always)]
-    #[must_use]
     pub fn prog(&mut self) -> ProgW<CrSpec> {
         ProgW::new(self, 10)
     }
     #[doc = "Bit 11 - ETM Port Select"]
     #[inline(always)]
-    #[must_use]
     pub fn portsel(&mut self) -> PortselW<CrSpec> {
         PortselW::new(self, 11)
     }
     #[doc = "Bit 13 - Port Mode bit 2"]
     #[inline(always)]
-    #[must_use]
     pub fn portmode2(&mut self) -> Portmode2W<CrSpec> {
         Portmode2W::new(self, 13)
     }
     #[doc = "Bits 16:17 - Port Mode bits 1:0"]
     #[inline(always)]
-    #[must_use]
     pub fn portmode(&mut self) -> PortmodeW<CrSpec> {
         PortmodeW::new(self, 16)
     }
     #[doc = "Bit 21 - Port Size bit 3"]
     #[inline(always)]
-    #[must_use]
     pub fn portsize3(&mut self) -> Portsize3W<CrSpec> {
         Portsize3W::new(self, 21)
     }
     #[doc = "Bit 28 - TimeStamp Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tsen(&mut self) -> TsenW<CrSpec> {
         TsenW::new(self, 28)
     }
@@ -181,8 +170,6 @@ impl crate::Readable for CrSpec {}
 #[doc = "`write(|w| ..)` method takes [`cr::W`](W) writer structure"]
 impl crate::Writable for CrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CR to value 0x0411"]
 impl crate::Resettable for CrSpec {

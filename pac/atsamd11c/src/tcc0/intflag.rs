@@ -124,79 +124,66 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Overflow"]
     #[inline(always)]
-    #[must_use]
     pub fn ovf(&mut self) -> OvfW<IntflagSpec> {
         OvfW::new(self, 0)
     }
     #[doc = "Bit 1 - Retrigger"]
     #[inline(always)]
-    #[must_use]
     pub fn trg(&mut self) -> TrgW<IntflagSpec> {
         TrgW::new(self, 1)
     }
     #[doc = "Bit 2 - Counter"]
     #[inline(always)]
-    #[must_use]
     pub fn cnt(&mut self) -> CntW<IntflagSpec> {
         CntW::new(self, 2)
     }
     #[doc = "Bit 3 - Error"]
     #[inline(always)]
-    #[must_use]
     pub fn err(&mut self) -> ErrW<IntflagSpec> {
         ErrW::new(self, 3)
     }
     #[doc = "Bit 11 - Non-Recoverable Debug Fault"]
     #[inline(always)]
-    #[must_use]
     pub fn dfs(&mut self) -> DfsW<IntflagSpec> {
         DfsW::new(self, 11)
     }
     #[doc = "Bit 12 - Recoverable Fault A"]
     #[inline(always)]
-    #[must_use]
     pub fn faulta(&mut self) -> FaultaW<IntflagSpec> {
         FaultaW::new(self, 12)
     }
     #[doc = "Bit 13 - Recoverable Fault B"]
     #[inline(always)]
-    #[must_use]
     pub fn faultb(&mut self) -> FaultbW<IntflagSpec> {
         FaultbW::new(self, 13)
     }
     #[doc = "Bit 14 - Non-Recoverable Fault 0"]
     #[inline(always)]
-    #[must_use]
     pub fn fault0(&mut self) -> Fault0W<IntflagSpec> {
         Fault0W::new(self, 14)
     }
     #[doc = "Bit 15 - Non-Recoverable Fault 1"]
     #[inline(always)]
-    #[must_use]
     pub fn fault1(&mut self) -> Fault1W<IntflagSpec> {
         Fault1W::new(self, 15)
     }
     #[doc = "Bit 16 - Match or Capture 0"]
     #[inline(always)]
-    #[must_use]
     pub fn mc0(&mut self) -> Mc0W<IntflagSpec> {
         Mc0W::new(self, 16)
     }
     #[doc = "Bit 17 - Match or Capture 1"]
     #[inline(always)]
-    #[must_use]
     pub fn mc1(&mut self) -> Mc1W<IntflagSpec> {
         Mc1W::new(self, 17)
     }
     #[doc = "Bit 18 - Match or Capture 2"]
     #[inline(always)]
-    #[must_use]
     pub fn mc2(&mut self) -> Mc2W<IntflagSpec> {
         Mc2W::new(self, 18)
     }
     #[doc = "Bit 19 - Match or Capture 3"]
     #[inline(always)]
-    #[must_use]
     pub fn mc3(&mut self) -> Mc3W<IntflagSpec> {
         Mc3W::new(self, 19)
     }
@@ -211,10 +198,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

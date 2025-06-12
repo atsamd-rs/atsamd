@@ -5,7 +5,6 @@ pub type CenW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bit 0 - Cache Controller Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cen(&mut self) -> CenW<CtrlSpec> {
         CenW::new(self, 0)
     }
@@ -18,10 +17,6 @@ impl crate::RegisterSpec for CtrlSpec {
 #[doc = "`write(|w| ..)` method takes [`ctrl::W`](W) writer structure"]
 impl crate::Writable for CtrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRL to value 0"]
-impl crate::Resettable for CtrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlSpec {}

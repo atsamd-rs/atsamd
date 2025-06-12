@@ -94,6 +94,4 @@ impl crate::RegisterSpec for HpmsSpec {
 #[doc = "`read()` method returns [`hpms::R`](R) reader structure"]
 impl crate::Readable for HpmsSpec {}
 #[doc = "`reset()` method sets HPMS to value 0"]
-impl crate::Resettable for HpmsSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for HpmsSpec {}

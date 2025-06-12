@@ -13,6 +13,4 @@ impl crate::RegisterSpec for ItmiscinSpec {
 #[doc = "`read()` method returns [`itmiscin::R`](R) reader structure"]
 impl crate::Readable for ItmiscinSpec {}
 #[doc = "`reset()` method sets ITMISCIN to value 0"]
-impl crate::Resettable for ItmiscinSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ItmiscinSpec {}

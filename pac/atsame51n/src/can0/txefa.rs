@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - Event FIFO Acknowledge Index"]
     #[inline(always)]
-    #[must_use]
     pub fn efai(&mut self) -> EfaiW<TxefaSpec> {
         EfaiW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for TxefaSpec {}
 #[doc = "`write(|w| ..)` method takes [`txefa::W`](W) writer structure"]
 impl crate::Writable for TxefaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TXEFA to value 0"]
-impl crate::Resettable for TxefaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxefaSpec {}

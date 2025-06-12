@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Start Conversion Event In"]
     #[inline(always)]
-    #[must_use]
     pub fn startei(&mut self) -> StarteiW<EvctrlSpec> {
         StarteiW::new(self, 0)
     }
     #[doc = "Bit 1 - Synchronization Event In"]
     #[inline(always)]
-    #[must_use]
     pub fn syncei(&mut self) -> SynceiW<EvctrlSpec> {
         SynceiW::new(self, 1)
     }
     #[doc = "Bit 4 - Result Ready Event Out"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdyeo(&mut self) -> ResrdyeoW<EvctrlSpec> {
         ResrdyeoW::new(self, 4)
     }
     #[doc = "Bit 5 - Window Monitor Event Out"]
     #[inline(always)]
-    #[must_use]
     pub fn winmoneo(&mut self) -> WinmoneoW<EvctrlSpec> {
         WinmoneoW::new(self, 5)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

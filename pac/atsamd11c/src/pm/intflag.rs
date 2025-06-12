@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Clock Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn ckrdy(&mut self) -> CkrdyW<IntflagSpec> {
         CkrdyW::new(self, 0)
     }
     #[doc = "Bit 1 - Clock Failure Detector"]
     #[inline(always)]
-    #[must_use]
     pub fn cfd(&mut self) -> CfdW<IntflagSpec> {
         CfdW::new(self, 1)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

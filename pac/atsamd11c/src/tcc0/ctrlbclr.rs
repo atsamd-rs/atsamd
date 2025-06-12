@@ -229,31 +229,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Counter Direction"]
     #[inline(always)]
-    #[must_use]
     pub fn dir(&mut self) -> DirW<CtrlbclrSpec> {
         DirW::new(self, 0)
     }
     #[doc = "Bit 1 - Lock Update"]
     #[inline(always)]
-    #[must_use]
     pub fn lupd(&mut self) -> LupdW<CtrlbclrSpec> {
         LupdW::new(self, 1)
     }
     #[doc = "Bit 2 - One-Shot"]
     #[inline(always)]
-    #[must_use]
     pub fn oneshot(&mut self) -> OneshotW<CtrlbclrSpec> {
         OneshotW::new(self, 2)
     }
     #[doc = "Bits 3:4 - Ramp Index Command"]
     #[inline(always)]
-    #[must_use]
     pub fn idxcmd(&mut self) -> IdxcmdW<CtrlbclrSpec> {
         IdxcmdW::new(self, 3)
     }
     #[doc = "Bits 5:7 - TCC Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<CtrlbclrSpec> {
         CmdW::new(self, 5)
     }
@@ -268,10 +263,6 @@ impl crate::Readable for CtrlbclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlbclr::W`](W) writer structure"]
 impl crate::Writable for CtrlbclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLBCLR to value 0"]
-impl crate::Resettable for CtrlbclrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlbclrSpec {}

@@ -317,31 +317,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - DMA Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaen(&mut self) -> DmaenW<TmrSpec> {
         DmaenW::new(self, 0)
     }
     #[doc = "Bit 1 - Block Count Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bcen(&mut self) -> BcenW<TmrSpec> {
         BcenW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Auto Command Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn acmden(&mut self) -> AcmdenW<TmrSpec> {
         AcmdenW::new(self, 2)
     }
     #[doc = "Bit 4 - Data Transfer Direction Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn dtdsel(&mut self) -> DtdselW<TmrSpec> {
         DtdselW::new(self, 4)
     }
     #[doc = "Bit 5 - Multi/Single Block Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn msbsel(&mut self) -> MsbselW<TmrSpec> {
         MsbselW::new(self, 5)
     }
@@ -356,10 +351,6 @@ impl crate::Readable for TmrSpec {}
 #[doc = "`write(|w| ..)` method takes [`tmr::W`](W) writer structure"]
 impl crate::Writable for TmrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets TMR to value 0"]
-impl crate::Resettable for TmrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for TmrSpec {}

@@ -133,85 +133,71 @@ impl R {
 impl W {
     #[doc = "Bit 0 - FLASH"]
     #[inline(always)]
-    #[must_use]
     pub fn flash_(&mut self) -> Flash_W<IntflagahbSpec> {
         Flash_W::new(self, 0)
     }
     #[doc = "Bit 1 - FLASH_ALT"]
     #[inline(always)]
-    #[must_use]
     pub fn flash_alt_(&mut self) -> FlashAlt_W<IntflagahbSpec> {
         FlashAlt_W::new(self, 1)
     }
     #[doc = "Bit 2 - SEEPROM"]
     #[inline(always)]
-    #[must_use]
     pub fn seeprom_(&mut self) -> Seeprom_W<IntflagahbSpec> {
         Seeprom_W::new(self, 2)
     }
     #[doc = "Bit 3 - RAMCM4S"]
     #[inline(always)]
-    #[must_use]
     pub fn ramcm4s_(&mut self) -> Ramcm4s_W<IntflagahbSpec> {
         Ramcm4s_W::new(self, 3)
     }
     #[doc = "Bit 4 - RAMPPPDSU"]
     #[inline(always)]
-    #[must_use]
     pub fn rampppdsu_(&mut self) -> Rampppdsu_W<IntflagahbSpec> {
         Rampppdsu_W::new(self, 4)
     }
     #[doc = "Bit 5 - RAMDMAWR"]
     #[inline(always)]
-    #[must_use]
     pub fn ramdmawr_(&mut self) -> Ramdmawr_W<IntflagahbSpec> {
         Ramdmawr_W::new(self, 5)
     }
     #[doc = "Bit 6 - RAMDMACICM"]
     #[inline(always)]
-    #[must_use]
     pub fn ramdmacicm_(&mut self) -> Ramdmacicm_W<IntflagahbSpec> {
         Ramdmacicm_W::new(self, 6)
     }
     #[doc = "Bit 7 - HPB0"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb0_(&mut self) -> Hpb0_W<IntflagahbSpec> {
         Hpb0_W::new(self, 7)
     }
     #[doc = "Bit 8 - HPB1"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb1_(&mut self) -> Hpb1_W<IntflagahbSpec> {
         Hpb1_W::new(self, 8)
     }
     #[doc = "Bit 9 - HPB2"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb2_(&mut self) -> Hpb2_W<IntflagahbSpec> {
         Hpb2_W::new(self, 9)
     }
     #[doc = "Bit 10 - HPB3"]
     #[inline(always)]
-    #[must_use]
     pub fn hpb3_(&mut self) -> Hpb3_W<IntflagahbSpec> {
         Hpb3_W::new(self, 10)
     }
     #[doc = "Bit 11 - PUKCC"]
     #[inline(always)]
-    #[must_use]
     pub fn pukcc_(&mut self) -> Pukcc_W<IntflagahbSpec> {
         Pukcc_W::new(self, 11)
     }
     #[doc = "Bit 12 - SDHC0"]
     #[inline(always)]
-    #[must_use]
     pub fn sdhc0_(&mut self) -> Sdhc0_W<IntflagahbSpec> {
         Sdhc0_W::new(self, 12)
     }
     #[doc = "Bit 14 - QSPI"]
     #[inline(always)]
-    #[must_use]
     pub fn qspi_(&mut self) -> Qspi_W<IntflagahbSpec> {
         Qspi_W::new(self, 14)
     }
@@ -226,10 +212,6 @@ impl crate::Readable for IntflagahbSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflagahb::W`](W) writer structure"]
 impl crate::Writable for IntflagahbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAGAHB to value 0"]
-impl crate::Resettable for IntflagahbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagahbSpec {}

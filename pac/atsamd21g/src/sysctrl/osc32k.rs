@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Oscillator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<Osc32kSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - 32kHz Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn en32k(&mut self) -> En32kW<Osc32kSpec> {
         En32kW::new(self, 2)
     }
     #[doc = "Bit 3 - 1kHz Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn en1k(&mut self) -> En1kW<Osc32kSpec> {
         En1kW::new(self, 3)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<Osc32kSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<Osc32kSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bits 8:10 - Oscillator Start-Up Time"]
     #[inline(always)]
-    #[must_use]
     pub fn startup(&mut self) -> StartupW<Osc32kSpec> {
         StartupW::new(self, 8)
     }
     #[doc = "Bit 12 - Write Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn wrtlock(&mut self) -> WrtlockW<Osc32kSpec> {
         WrtlockW::new(self, 12)
     }
     #[doc = "Bits 16:22 - Oscillator Calibration"]
     #[inline(always)]
-    #[must_use]
     pub fn calib(&mut self) -> CalibW<Osc32kSpec> {
         CalibW::new(self, 16)
     }
@@ -136,8 +128,6 @@ impl crate::Readable for Osc32kSpec {}
 #[doc = "`write(|w| ..)` method takes [`osc32k::W`](W) writer structure"]
 impl crate::Writable for Osc32kSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets OSC32K to value 0x003f_0080"]
 impl crate::Resettable for Osc32kSpec {

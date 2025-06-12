@@ -74,13 +74,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Write Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn wmode(&mut self) -> WmodeW<SeecfgSpec> {
         WmodeW::new(self, 0)
     }
     #[doc = "Bit 1 - Automatic Page Reallocation Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn aprdis(&mut self) -> AprdisW<SeecfgSpec> {
         AprdisW::new(self, 1)
     }
@@ -95,10 +93,6 @@ impl crate::Readable for SeecfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`seecfg::W`](W) writer structure"]
 impl crate::Writable for SeecfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets SEECFG to value 0"]
-impl crate::Resettable for SeecfgSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for SeecfgSpec {}

@@ -449,13 +449,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Peripheral Multiplexing for Even-Numbered Pin"]
     #[inline(always)]
-    #[must_use]
     pub fn pmuxe(&mut self) -> PmuxeW<PmuxSpec> {
         PmuxeW::new(self, 0)
     }
     #[doc = "Bits 4:7 - Peripheral Multiplexing for Odd-Numbered Pin"]
     #[inline(always)]
-    #[must_use]
     pub fn pmuxo(&mut self) -> PmuxoW<PmuxSpec> {
         PmuxoW::new(self, 4)
     }
@@ -470,11 +468,6 @@ impl crate::Readable for PmuxSpec {}
 #[doc = "`write(|w| ..)` method takes [`pmux::W`](W) writer structure"]
 impl crate::Writable for PmuxSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
-#[doc = "`reset()` method sets PMUX[%s]
-to value 0"]
-impl crate::Resettable for PmuxSpec {
-    const RESET_VALUE: u8 = 0;
-}
+#[doc = "`reset()` method sets PMUX[%s] to value 0"]
+impl crate::Resettable for PmuxSpec {}

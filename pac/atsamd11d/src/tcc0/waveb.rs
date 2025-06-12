@@ -332,91 +332,76 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Waveform Generation Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn wavegenb(&mut self) -> WavegenbW<WavebSpec> {
         WavegenbW::new(self, 0)
     }
     #[doc = "Bits 4:5 - Ramp Mode Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn rampb(&mut self) -> RampbW<WavebSpec> {
         RampbW::new(self, 4)
     }
     #[doc = "Bit 7 - Circular Period Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn ciperenb(&mut self) -> CiperenbW<WavebSpec> {
         CiperenbW::new(self, 7)
     }
     #[doc = "Bit 8 - Circular Channel 0 Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn ciccenb0(&mut self) -> Ciccenb0W<WavebSpec> {
         Ciccenb0W::new(self, 8)
     }
     #[doc = "Bit 9 - Circular Channel 1 Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn ciccenb1(&mut self) -> Ciccenb1W<WavebSpec> {
         Ciccenb1W::new(self, 9)
     }
     #[doc = "Bit 10 - Circular Channel 2 Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn ciccenb2(&mut self) -> Ciccenb2W<WavebSpec> {
         Ciccenb2W::new(self, 10)
     }
     #[doc = "Bit 11 - Circular Channel 3 Enable Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn ciccenb3(&mut self) -> Ciccenb3W<WavebSpec> {
         Ciccenb3W::new(self, 11)
     }
     #[doc = "Bit 16 - Channel 0 Polarity Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn polb0(&mut self) -> Polb0W<WavebSpec> {
         Polb0W::new(self, 16)
     }
     #[doc = "Bit 17 - Channel 1 Polarity Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn polb1(&mut self) -> Polb1W<WavebSpec> {
         Polb1W::new(self, 17)
     }
     #[doc = "Bit 18 - Channel 2 Polarity Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn polb2(&mut self) -> Polb2W<WavebSpec> {
         Polb2W::new(self, 18)
     }
     #[doc = "Bit 19 - Channel 3 Polarity Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn polb3(&mut self) -> Polb3W<WavebSpec> {
         Polb3W::new(self, 19)
     }
     #[doc = "Bit 24 - Swap DTI Output Pair 0 Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn swapb0(&mut self) -> Swapb0W<WavebSpec> {
         Swapb0W::new(self, 24)
     }
     #[doc = "Bit 25 - Swap DTI Output Pair 1 Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn swapb1(&mut self) -> Swapb1W<WavebSpec> {
         Swapb1W::new(self, 25)
     }
     #[doc = "Bit 26 - Swap DTI Output Pair 2 Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn swapb2(&mut self) -> Swapb2W<WavebSpec> {
         Swapb2W::new(self, 26)
     }
     #[doc = "Bit 27 - Swap DTI Output Pair 3 Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn swapb3(&mut self) -> Swapb3W<WavebSpec> {
         Swapb3W::new(self, 27)
     }
@@ -431,10 +416,6 @@ impl crate::Readable for WavebSpec {}
 #[doc = "`write(|w| ..)` method takes [`waveb::W`](W) writer structure"]
 impl crate::Writable for WavebSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WAVEB to value 0"]
-impl crate::Resettable for WavebSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WavebSpec {}

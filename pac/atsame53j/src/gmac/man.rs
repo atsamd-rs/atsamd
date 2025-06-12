@@ -70,43 +70,36 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - PHY Data"]
     #[inline(always)]
-    #[must_use]
     pub fn data(&mut self) -> DataW<ManSpec> {
         DataW::new(self, 0)
     }
     #[doc = "Bits 16:17 - Write Ten"]
     #[inline(always)]
-    #[must_use]
     pub fn wtn(&mut self) -> WtnW<ManSpec> {
         WtnW::new(self, 16)
     }
     #[doc = "Bits 18:22 - Register Address"]
     #[inline(always)]
-    #[must_use]
     pub fn rega(&mut self) -> RegaW<ManSpec> {
         RegaW::new(self, 18)
     }
     #[doc = "Bits 23:27 - PHY Address"]
     #[inline(always)]
-    #[must_use]
     pub fn phya(&mut self) -> PhyaW<ManSpec> {
         PhyaW::new(self, 23)
     }
     #[doc = "Bits 28:29 - Operation"]
     #[inline(always)]
-    #[must_use]
     pub fn op(&mut self) -> OpW<ManSpec> {
         OpW::new(self, 28)
     }
     #[doc = "Bit 30 - Clause 22 Operation"]
     #[inline(always)]
-    #[must_use]
     pub fn cltto(&mut self) -> ClttoW<ManSpec> {
         ClttoW::new(self, 30)
     }
     #[doc = "Bit 31 - Write ZERO"]
     #[inline(always)]
-    #[must_use]
     pub fn wzo(&mut self) -> WzoW<ManSpec> {
         WzoW::new(self, 31)
     }
@@ -121,10 +114,6 @@ impl crate::Readable for ManSpec {}
 #[doc = "`write(|w| ..)` method takes [`man::W`](W) writer structure"]
 impl crate::Writable for ManSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MAN to value 0"]
-impl crate::Resettable for ManSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ManSpec {}

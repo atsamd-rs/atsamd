@@ -88,55 +88,46 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Oscillator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<Xosc32kSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - Crystal Oscillator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xtalen(&mut self) -> XtalenW<Xosc32kSpec> {
         XtalenW::new(self, 2)
     }
     #[doc = "Bit 3 - 32kHz Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn en32k(&mut self) -> En32kW<Xosc32kSpec> {
         En32kW::new(self, 3)
     }
     #[doc = "Bit 4 - 1kHz Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn en1k(&mut self) -> En1kW<Xosc32kSpec> {
         En1kW::new(self, 4)
     }
     #[doc = "Bit 5 - Automatic Amplitude Control Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn aampen(&mut self) -> AampenW<Xosc32kSpec> {
         AampenW::new(self, 5)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<Xosc32kSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<Xosc32kSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bits 8:10 - Oscillator Start-Up Time"]
     #[inline(always)]
-    #[must_use]
     pub fn startup(&mut self) -> StartupW<Xosc32kSpec> {
         StartupW::new(self, 8)
     }
     #[doc = "Bit 12 - Write Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn wrtlock(&mut self) -> WrtlockW<Xosc32kSpec> {
         WrtlockW::new(self, 12)
     }
@@ -151,8 +142,6 @@ impl crate::Readable for Xosc32kSpec {}
 #[doc = "`write(|w| ..)` method takes [`xosc32k::W`](W) writer structure"]
 impl crate::Writable for Xosc32kSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets XOSC32K to value 0x80"]
 impl crate::Resettable for Xosc32kSpec {

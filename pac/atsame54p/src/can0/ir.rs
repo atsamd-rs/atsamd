@@ -277,181 +277,151 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Rx FIFO 0 New Message"]
     #[inline(always)]
-    #[must_use]
     pub fn rf0n(&mut self) -> Rf0nW<IrSpec> {
         Rf0nW::new(self, 0)
     }
     #[doc = "Bit 1 - Rx FIFO 0 Watermark Reached"]
     #[inline(always)]
-    #[must_use]
     pub fn rf0w(&mut self) -> Rf0wW<IrSpec> {
         Rf0wW::new(self, 1)
     }
     #[doc = "Bit 2 - Rx FIFO 0 Full"]
     #[inline(always)]
-    #[must_use]
     pub fn rf0f(&mut self) -> Rf0fW<IrSpec> {
         Rf0fW::new(self, 2)
     }
     #[doc = "Bit 3 - Rx FIFO 0 Message Lost"]
     #[inline(always)]
-    #[must_use]
     pub fn rf0l(&mut self) -> Rf0lW<IrSpec> {
         Rf0lW::new(self, 3)
     }
     #[doc = "Bit 4 - Rx FIFO 1 New Message"]
     #[inline(always)]
-    #[must_use]
     pub fn rf1n(&mut self) -> Rf1nW<IrSpec> {
         Rf1nW::new(self, 4)
     }
     #[doc = "Bit 5 - Rx FIFO 1 Watermark Reached"]
     #[inline(always)]
-    #[must_use]
     pub fn rf1w(&mut self) -> Rf1wW<IrSpec> {
         Rf1wW::new(self, 5)
     }
     #[doc = "Bit 6 - Rx FIFO 1 FIFO Full"]
     #[inline(always)]
-    #[must_use]
     pub fn rf1f(&mut self) -> Rf1fW<IrSpec> {
         Rf1fW::new(self, 6)
     }
     #[doc = "Bit 7 - Rx FIFO 1 Message Lost"]
     #[inline(always)]
-    #[must_use]
     pub fn rf1l(&mut self) -> Rf1lW<IrSpec> {
         Rf1lW::new(self, 7)
     }
     #[doc = "Bit 8 - High Priority Message"]
     #[inline(always)]
-    #[must_use]
     pub fn hpm(&mut self) -> HpmW<IrSpec> {
         HpmW::new(self, 8)
     }
     #[doc = "Bit 9 - Timestamp Completed"]
     #[inline(always)]
-    #[must_use]
     pub fn tc(&mut self) -> TcW<IrSpec> {
         TcW::new(self, 9)
     }
     #[doc = "Bit 10 - Transmission Cancellation Finished"]
     #[inline(always)]
-    #[must_use]
     pub fn tcf(&mut self) -> TcfW<IrSpec> {
         TcfW::new(self, 10)
     }
     #[doc = "Bit 11 - Tx FIFO Empty"]
     #[inline(always)]
-    #[must_use]
     pub fn tfe(&mut self) -> TfeW<IrSpec> {
         TfeW::new(self, 11)
     }
     #[doc = "Bit 12 - Tx Event FIFO New Entry"]
     #[inline(always)]
-    #[must_use]
     pub fn tefn(&mut self) -> TefnW<IrSpec> {
         TefnW::new(self, 12)
     }
     #[doc = "Bit 13 - Tx Event FIFO Watermark Reached"]
     #[inline(always)]
-    #[must_use]
     pub fn tefw(&mut self) -> TefwW<IrSpec> {
         TefwW::new(self, 13)
     }
     #[doc = "Bit 14 - Tx Event FIFO Full"]
     #[inline(always)]
-    #[must_use]
     pub fn teff(&mut self) -> TeffW<IrSpec> {
         TeffW::new(self, 14)
     }
     #[doc = "Bit 15 - Tx Event FIFO Element Lost"]
     #[inline(always)]
-    #[must_use]
     pub fn tefl(&mut self) -> TeflW<IrSpec> {
         TeflW::new(self, 15)
     }
     #[doc = "Bit 16 - Timestamp Wraparound"]
     #[inline(always)]
-    #[must_use]
     pub fn tsw(&mut self) -> TswW<IrSpec> {
         TswW::new(self, 16)
     }
     #[doc = "Bit 17 - Message RAM Access Failure"]
     #[inline(always)]
-    #[must_use]
     pub fn mraf(&mut self) -> MrafW<IrSpec> {
         MrafW::new(self, 17)
     }
     #[doc = "Bit 18 - Timeout Occurred"]
     #[inline(always)]
-    #[must_use]
     pub fn too(&mut self) -> TooW<IrSpec> {
         TooW::new(self, 18)
     }
     #[doc = "Bit 19 - Message stored to Dedicated Rx Buffer"]
     #[inline(always)]
-    #[must_use]
     pub fn drx(&mut self) -> DrxW<IrSpec> {
         DrxW::new(self, 19)
     }
     #[doc = "Bit 20 - Bit Error Corrected"]
     #[inline(always)]
-    #[must_use]
     pub fn bec(&mut self) -> BecW<IrSpec> {
         BecW::new(self, 20)
     }
     #[doc = "Bit 21 - Bit Error Uncorrected"]
     #[inline(always)]
-    #[must_use]
     pub fn beu(&mut self) -> BeuW<IrSpec> {
         BeuW::new(self, 21)
     }
     #[doc = "Bit 22 - Error Logging Overflow"]
     #[inline(always)]
-    #[must_use]
     pub fn elo(&mut self) -> EloW<IrSpec> {
         EloW::new(self, 22)
     }
     #[doc = "Bit 23 - Error Passive"]
     #[inline(always)]
-    #[must_use]
     pub fn ep(&mut self) -> EpW<IrSpec> {
         EpW::new(self, 23)
     }
     #[doc = "Bit 24 - Warning Status"]
     #[inline(always)]
-    #[must_use]
     pub fn ew(&mut self) -> EwW<IrSpec> {
         EwW::new(self, 24)
     }
     #[doc = "Bit 25 - Bus_Off Status"]
     #[inline(always)]
-    #[must_use]
     pub fn bo(&mut self) -> BoW<IrSpec> {
         BoW::new(self, 25)
     }
     #[doc = "Bit 26 - Watchdog Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn wdi(&mut self) -> WdiW<IrSpec> {
         WdiW::new(self, 26)
     }
     #[doc = "Bit 27 - Protocol Error in Arbitration Phase"]
     #[inline(always)]
-    #[must_use]
     pub fn pea(&mut self) -> PeaW<IrSpec> {
         PeaW::new(self, 27)
     }
     #[doc = "Bit 28 - Protocol Error in Data Phase"]
     #[inline(always)]
-    #[must_use]
     pub fn ped(&mut self) -> PedW<IrSpec> {
         PedW::new(self, 28)
     }
     #[doc = "Bit 29 - Access to Reserved Address"]
     #[inline(always)]
-    #[must_use]
     pub fn ara(&mut self) -> AraW<IrSpec> {
         AraW::new(self, 29)
     }
@@ -466,10 +436,6 @@ impl crate::Readable for IrSpec {}
 #[doc = "`write(|w| ..)` method takes [`ir::W`](W) writer structure"]
 impl crate::Writable for IrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets IR to value 0"]
-impl crate::Resettable for IrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IrSpec {}

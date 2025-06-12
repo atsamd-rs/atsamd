@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Stop Status Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn stop(&mut self) -> StopW<StatusSpec> {
         StopW::new(self, 0)
     }
     #[doc = "Bit 1 - Slave Status Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn slave(&mut self) -> SlaveW<StatusSpec> {
         SlaveW::new(self, 1)
     }
     #[doc = "Bit 3 - Synchronization Busy Status"]
     #[inline(always)]
-    #[must_use]
     pub fn perbufv(&mut self) -> PerbufvW<StatusSpec> {
         PerbufvW::new(self, 3)
     }
     #[doc = "Bit 4 - Compare channel buffer 0 valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv0(&mut self) -> Ccbufv0W<StatusSpec> {
         Ccbufv0W::new(self, 4)
     }
     #[doc = "Bit 5 - Compare channel buffer 1 valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv1(&mut self) -> Ccbufv1W<StatusSpec> {
         Ccbufv1W::new(self, 5)
     }
@@ -91,8 +86,6 @@ impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for StatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0x01"]
 impl crate::Resettable for StatusSpec {

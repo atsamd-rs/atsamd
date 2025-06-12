@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Lockdown way Register"]
     #[inline(always)]
-    #[must_use]
     pub fn lckway(&mut self) -> LckwayW<LckwaySpec> {
         LckwayW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for LckwaySpec {}
 #[doc = "`write(|w| ..)` method takes [`lckway::W`](W) writer structure"]
 impl crate::Writable for LckwaySpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets LCKWAY to value 0"]
-impl crate::Resettable for LckwaySpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for LckwaySpec {}

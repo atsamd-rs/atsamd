@@ -106,67 +106,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Quadrature Error Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn qerr(&mut self) -> QerrW<StatusSpec> {
         QerrW::new(self, 0)
     }
     #[doc = "Bit 1 - Index Error Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn idxerr(&mut self) -> IdxerrW<StatusSpec> {
         IdxerrW::new(self, 1)
     }
     #[doc = "Bit 2 - Missing Pulse Error flag"]
     #[inline(always)]
-    #[must_use]
     pub fn mperr(&mut self) -> MperrW<StatusSpec> {
         MperrW::new(self, 2)
     }
     #[doc = "Bit 4 - Window Error Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn winerr(&mut self) -> WinerrW<StatusSpec> {
         WinerrW::new(self, 4)
     }
     #[doc = "Bit 5 - Hall Error Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn herr(&mut self) -> HerrW<StatusSpec> {
         HerrW::new(self, 5)
     }
     #[doc = "Bit 6 - Stop"]
     #[inline(always)]
-    #[must_use]
     pub fn stop(&mut self) -> StopW<StatusSpec> {
         StopW::new(self, 6)
     }
     #[doc = "Bit 7 - Direction Status Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn dir(&mut self) -> DirW<StatusSpec> {
         DirW::new(self, 7)
     }
     #[doc = "Bit 8 - Prescaler Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn prescbufv(&mut self) -> PrescbufvW<StatusSpec> {
         PrescbufvW::new(self, 8)
     }
     #[doc = "Bit 9 - Filter Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn filterbufv(&mut self) -> FilterbufvW<StatusSpec> {
         FilterbufvW::new(self, 9)
     }
     #[doc = "Bit 12 - Compare Channel 0 Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv0(&mut self) -> Ccbufv0W<StatusSpec> {
         Ccbufv0W::new(self, 12)
     }
     #[doc = "Bit 13 - Compare Channel 1 Buffer Valid"]
     #[inline(always)]
-    #[must_use]
     pub fn ccbufv1(&mut self) -> Ccbufv1W<StatusSpec> {
         Ccbufv1W::new(self, 13)
     }
@@ -181,8 +170,6 @@ impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for StatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0x40"]
 impl crate::Resettable for StatusSpec {

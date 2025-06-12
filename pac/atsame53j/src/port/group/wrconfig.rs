@@ -21,55 +21,46 @@ pub type HwselW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bits 0:15 - Pin Mask for Multiple Pin Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn pinmask(&mut self) -> PinmaskW<WrconfigSpec> {
         PinmaskW::new(self, 0)
     }
     #[doc = "Bit 16 - Peripheral Multiplexer Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pmuxen(&mut self) -> PmuxenW<WrconfigSpec> {
         PmuxenW::new(self, 16)
     }
     #[doc = "Bit 17 - Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn inen(&mut self) -> InenW<WrconfigSpec> {
         InenW::new(self, 17)
     }
     #[doc = "Bit 18 - Pull Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pullen(&mut self) -> PullenW<WrconfigSpec> {
         PullenW::new(self, 18)
     }
     #[doc = "Bit 22 - Output Driver Strength Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn drvstr(&mut self) -> DrvstrW<WrconfigSpec> {
         DrvstrW::new(self, 22)
     }
     #[doc = "Bits 24:27 - Peripheral Multiplexing"]
     #[inline(always)]
-    #[must_use]
     pub fn pmux(&mut self) -> PmuxW<WrconfigSpec> {
         PmuxW::new(self, 24)
     }
     #[doc = "Bit 28 - Write PMUX"]
     #[inline(always)]
-    #[must_use]
     pub fn wrpmux(&mut self) -> WrpmuxW<WrconfigSpec> {
         WrpmuxW::new(self, 28)
     }
     #[doc = "Bit 30 - Write PINCFG"]
     #[inline(always)]
-    #[must_use]
     pub fn wrpincfg(&mut self) -> WrpincfgW<WrconfigSpec> {
         WrpincfgW::new(self, 30)
     }
     #[doc = "Bit 31 - Half-Word Select"]
     #[inline(always)]
-    #[must_use]
     pub fn hwsel(&mut self) -> HwselW<WrconfigSpec> {
         HwselW::new(self, 31)
     }
@@ -82,10 +73,6 @@ impl crate::RegisterSpec for WrconfigSpec {
 #[doc = "`write(|w| ..)` method takes [`wrconfig::W`](W) writer structure"]
 impl crate::Writable for WrconfigSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WRCONFIG to value 0"]
-impl crate::Resettable for WrconfigSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WrconfigSpec {}

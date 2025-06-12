@@ -233,25 +233,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Channel Event Input Action"]
     #[inline(always)]
-    #[must_use]
     pub fn evact(&mut self) -> EvactW<ChevctrlSpec> {
         EvactW::new(self, 0)
     }
     #[doc = "Bits 4:5 - Channel Event Output Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn evomode(&mut self) -> EvomodeW<ChevctrlSpec> {
         EvomodeW::new(self, 4)
     }
     #[doc = "Bit 6 - Channel Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evie(&mut self) -> EvieW<ChevctrlSpec> {
         EvieW::new(self, 6)
     }
     #[doc = "Bit 7 - Channel Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evoe(&mut self) -> EvoeW<ChevctrlSpec> {
         EvoeW::new(self, 7)
     }
@@ -266,10 +262,6 @@ impl crate::Readable for ChevctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`chevctrl::W`](W) writer structure"]
 impl crate::Writable for ChevctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHEVCTRL to value 0"]
-impl crate::Resettable for ChevctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ChevctrlSpec {}

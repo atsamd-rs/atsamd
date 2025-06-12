@@ -356,61 +356,51 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:4 - Operating Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlaSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bit 7 - Run during Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 7)
     }
     #[doc = "Bit 16 - Pin Usage"]
     #[inline(always)]
-    #[must_use]
     pub fn pinout(&mut self) -> PinoutW<CtrlaSpec> {
         PinoutW::new(self, 16)
     }
     #[doc = "Bits 20:21 - SDA Hold Time"]
     #[inline(always)]
-    #[must_use]
     pub fn sdahold(&mut self) -> SdaholdW<CtrlaSpec> {
         SdaholdW::new(self, 20)
     }
     #[doc = "Bit 23 - Slave SCL Low Extend Timeout"]
     #[inline(always)]
-    #[must_use]
     pub fn sexttoen(&mut self) -> SexttoenW<CtrlaSpec> {
         SexttoenW::new(self, 23)
     }
     #[doc = "Bits 24:25 - Transfer Speed"]
     #[inline(always)]
-    #[must_use]
     pub fn speed(&mut self) -> SpeedW<CtrlaSpec> {
         SpeedW::new(self, 24)
     }
     #[doc = "Bit 27 - SCL Clock Stretch Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn sclsm(&mut self) -> SclsmW<CtrlaSpec> {
         SclsmW::new(self, 27)
     }
     #[doc = "Bit 30 - SCL Low Timeout Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lowtouten(&mut self) -> LowtoutenW<CtrlaSpec> {
         LowtoutenW::new(self, 30)
     }
@@ -425,10 +415,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

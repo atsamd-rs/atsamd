@@ -189,7 +189,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Prescaler Buffer Value"]
     #[inline(always)]
-    #[must_use]
     pub fn prescbuf(&mut self) -> PrescbufW<PrescbufSpec> {
         PrescbufW::new(self, 0)
     }
@@ -204,10 +203,6 @@ impl crate::Readable for PrescbufSpec {}
 #[doc = "`write(|w| ..)` method takes [`prescbuf::W`](W) writer structure"]
 impl crate::Writable for PrescbufSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PRESCBUF to value 0"]
-impl crate::Resettable for PrescbufSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for PrescbufSpec {}

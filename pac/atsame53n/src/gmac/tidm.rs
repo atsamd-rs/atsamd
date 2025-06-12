@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Type ID Match n"]
     #[inline(always)]
-    #[must_use]
     pub fn tid(&mut self) -> TidW<TidmSpec> {
         TidW::new(self, 0)
     }
     #[doc = "Bit 31 - Enable Copying of TID n Matched Frames"]
     #[inline(always)]
-    #[must_use]
     pub fn enid(&mut self) -> EnidW<TidmSpec> {
         EnidW::new(self, 31)
     }
@@ -46,11 +44,6 @@ impl crate::Readable for TidmSpec {}
 #[doc = "`write(|w| ..)` method takes [`tidm::W`](W) writer structure"]
 impl crate::Writable for TidmSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets TIDM[%s]
-to value 0"]
-impl crate::Resettable for TidmSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets TIDM[%s] to value 0"]
+impl crate::Resettable for TidmSpec {}

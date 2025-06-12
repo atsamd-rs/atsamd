@@ -422,49 +422,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdc(&mut self) -> CmdcW<NistrEmmcModeSpec> {
         CmdcW::new(self, 0)
     }
     #[doc = "Bit 1 - Transfer Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn trfc(&mut self) -> TrfcW<NistrEmmcModeSpec> {
         TrfcW::new(self, 1)
     }
     #[doc = "Bit 2 - Block Gap Event"]
     #[inline(always)]
-    #[must_use]
     pub fn blkge(&mut self) -> BlkgeW<NistrEmmcModeSpec> {
         BlkgeW::new(self, 2)
     }
     #[doc = "Bit 3 - DMA Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaint(&mut self) -> DmaintW<NistrEmmcModeSpec> {
         DmaintW::new(self, 3)
     }
     #[doc = "Bit 4 - Buffer Write Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn bwrrdy(&mut self) -> BwrrdyW<NistrEmmcModeSpec> {
         BwrrdyW::new(self, 4)
     }
     #[doc = "Bit 5 - Buffer Read Ready"]
     #[inline(always)]
-    #[must_use]
     pub fn brdrdy(&mut self) -> BrdrdyW<NistrEmmcModeSpec> {
         BrdrdyW::new(self, 5)
     }
     #[doc = "Bit 14 - Boot Acknowledge Received"]
     #[inline(always)]
-    #[must_use]
     pub fn bootar(&mut self) -> BootarW<NistrEmmcModeSpec> {
         BootarW::new(self, 14)
     }
     #[doc = "Bit 15 - Error Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn errint(&mut self) -> ErrintW<NistrEmmcModeSpec> {
         ErrintW::new(self, 15)
     }
@@ -479,10 +471,6 @@ impl crate::Readable for NistrEmmcModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`nistr_emmc_mode::W`](W) writer structure"]
 impl crate::Writable for NistrEmmcModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets NISTR_EMMC_MODE to value 0"]
-impl crate::Resettable for NistrEmmcModeSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for NistrEmmcModeSpec {}

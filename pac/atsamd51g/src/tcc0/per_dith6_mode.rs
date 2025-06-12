@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:5 - Dithering Cycle Number"]
     #[inline(always)]
-    #[must_use]
     pub fn dither(&mut self) -> DitherW<PerDith6ModeSpec> {
         DitherW::new(self, 0)
     }
     #[doc = "Bits 6:23 - Period Value"]
     #[inline(always)]
-    #[must_use]
     pub fn per(&mut self) -> PerW<PerDith6ModeSpec> {
         PerW::new(self, 6)
     }
@@ -46,8 +44,6 @@ impl crate::Readable for PerDith6ModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`per_dith6_mode::W`](W) writer structure"]
 impl crate::Writable for PerDith6ModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets PER_DITH6_MODE to value 0xffff_ffff"]
 impl crate::Resettable for PerDith6ModeSpec {

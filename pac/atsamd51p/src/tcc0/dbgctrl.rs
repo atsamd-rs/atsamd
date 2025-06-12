@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Debug Running Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn dbgrun(&mut self) -> DbgrunW<DbgctrlSpec> {
         DbgrunW::new(self, 0)
     }
     #[doc = "Bit 2 - Fault Detection on Debug Break Detection"]
     #[inline(always)]
-    #[must_use]
     pub fn fddbd(&mut self) -> FddbdW<DbgctrlSpec> {
         FddbdW::new(self, 2)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for DbgctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`dbgctrl::W`](W) writer structure"]
 impl crate::Writable for DbgctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DBGCTRL to value 0"]
-impl crate::Resettable for DbgctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DbgctrlSpec {}

@@ -178,115 +178,96 @@ impl R {
 impl W {
     #[doc = "Bit 0 - PAC2 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pac2_(&mut self) -> Pac2_W<ApbcmaskSpec> {
         Pac2_W::new(self, 0)
     }
     #[doc = "Bit 1 - EVSYS APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evsys_(&mut self) -> Evsys_W<ApbcmaskSpec> {
         Evsys_W::new(self, 1)
     }
     #[doc = "Bit 2 - SERCOM0 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom0_(&mut self) -> Sercom0_W<ApbcmaskSpec> {
         Sercom0_W::new(self, 2)
     }
     #[doc = "Bit 3 - SERCOM1 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom1_(&mut self) -> Sercom1_W<ApbcmaskSpec> {
         Sercom1_W::new(self, 3)
     }
     #[doc = "Bit 4 - SERCOM2 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom2_(&mut self) -> Sercom2_W<ApbcmaskSpec> {
         Sercom2_W::new(self, 4)
     }
     #[doc = "Bit 5 - SERCOM3 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom3_(&mut self) -> Sercom3_W<ApbcmaskSpec> {
         Sercom3_W::new(self, 5)
     }
     #[doc = "Bit 6 - SERCOM4 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom4_(&mut self) -> Sercom4_W<ApbcmaskSpec> {
         Sercom4_W::new(self, 6)
     }
     #[doc = "Bit 7 - SERCOM5 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sercom5_(&mut self) -> Sercom5_W<ApbcmaskSpec> {
         Sercom5_W::new(self, 7)
     }
     #[doc = "Bit 8 - TCC0 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcc0_(&mut self) -> Tcc0_W<ApbcmaskSpec> {
         Tcc0_W::new(self, 8)
     }
     #[doc = "Bit 9 - TCC1 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcc1_(&mut self) -> Tcc1_W<ApbcmaskSpec> {
         Tcc1_W::new(self, 9)
     }
     #[doc = "Bit 10 - TCC2 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcc2_(&mut self) -> Tcc2_W<ApbcmaskSpec> {
         Tcc2_W::new(self, 10)
     }
     #[doc = "Bit 11 - TC3 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tc3_(&mut self) -> Tc3_W<ApbcmaskSpec> {
         Tc3_W::new(self, 11)
     }
     #[doc = "Bit 12 - TC4 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tc4_(&mut self) -> Tc4_W<ApbcmaskSpec> {
         Tc4_W::new(self, 12)
     }
     #[doc = "Bit 13 - TC5 APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tc5_(&mut self) -> Tc5_W<ApbcmaskSpec> {
         Tc5_W::new(self, 13)
     }
     #[doc = "Bit 16 - ADC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn adc_(&mut self) -> Adc_W<ApbcmaskSpec> {
         Adc_W::new(self, 16)
     }
     #[doc = "Bit 17 - AC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ac_(&mut self) -> Ac_W<ApbcmaskSpec> {
         Ac_W::new(self, 17)
     }
     #[doc = "Bit 18 - DAC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dac_(&mut self) -> Dac_W<ApbcmaskSpec> {
         Dac_W::new(self, 18)
     }
     #[doc = "Bit 19 - PTC APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ptc_(&mut self) -> Ptc_W<ApbcmaskSpec> {
         Ptc_W::new(self, 19)
     }
     #[doc = "Bit 20 - I2S APB Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn i2s_(&mut self) -> I2s_W<ApbcmaskSpec> {
         I2s_W::new(self, 20)
     }
@@ -301,8 +282,6 @@ impl crate::Readable for ApbcmaskSpec {}
 #[doc = "`write(|w| ..)` method takes [`apbcmask::W`](W) writer structure"]
 impl crate::Writable for ApbcmaskSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets APBCMASK to value 0x0001_0000"]
 impl crate::Resettable for ApbcmaskSpec {

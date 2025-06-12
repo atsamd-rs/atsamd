@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Nominal Time segment after sample point"]
     #[inline(always)]
-    #[must_use]
     pub fn ntseg2(&mut self) -> Ntseg2W<NbtpSpec> {
         Ntseg2W::new(self, 0)
     }
     #[doc = "Bits 8:15 - Nominal Time segment before sample point"]
     #[inline(always)]
-    #[must_use]
     pub fn ntseg1(&mut self) -> Ntseg1W<NbtpSpec> {
         Ntseg1W::new(self, 8)
     }
     #[doc = "Bits 16:24 - Nominal Baud Rate Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn nbrp(&mut self) -> NbrpW<NbtpSpec> {
         NbrpW::new(self, 16)
     }
     #[doc = "Bits 25:31 - Nominal (Re)Synchronization Jump Width"]
     #[inline(always)]
-    #[must_use]
     pub fn nsjw(&mut self) -> NsjwW<NbtpSpec> {
         NsjwW::new(self, 25)
     }
@@ -76,8 +72,6 @@ impl crate::Readable for NbtpSpec {}
 #[doc = "`write(|w| ..)` method takes [`nbtp::W`](W) writer structure"]
 impl crate::Writable for NbtpSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets NBTP to value 0x0600_0a03"]
 impl crate::Resettable for NbtpSpec {

@@ -17,6 +17,4 @@ impl crate::RegisterSpec for EfrshSpec {
 #[doc = "`read()` method returns [`efrsh::R`](R) reader structure"]
 impl crate::Readable for EfrshSpec {}
 #[doc = "`reset()` method sets EFRSH to value 0"]
-impl crate::Resettable for EfrshSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EfrshSpec {}

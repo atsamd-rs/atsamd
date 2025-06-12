@@ -5,7 +5,6 @@ pub type IntvectvW<'a, REG> = crate::FieldWriter<'a, REG, 32, u32>;
 impl W {
     #[doc = "Bits 0:31 - Initialization Vector Value"]
     #[inline(always)]
-    #[must_use]
     pub fn intvectv(&mut self) -> IntvectvW<IntvectvSpec> {
         IntvectvW::new(self, 0)
     }
@@ -18,11 +17,6 @@ impl crate::RegisterSpec for IntvectvSpec {
 #[doc = "`write(|w| ..)` method takes [`intvectv::W`](W) writer structure"]
 impl crate::Writable for IntvectvSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets INTVECTV[%s]
-to value 0"]
-impl crate::Resettable for IntvectvSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets INTVECTV[%s] to value 0"]
+impl crate::Resettable for IntvectvSpec {}

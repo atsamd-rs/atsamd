@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:23 - Period Buffer Value"]
     #[inline(always)]
-    #[must_use]
     pub fn perbuf(&mut self) -> PerbufW<PerbufSpec> {
         PerbufW::new(self, 0)
     }
@@ -31,8 +30,6 @@ impl crate::Readable for PerbufSpec {}
 #[doc = "`write(|w| ..)` method takes [`perbuf::W`](W) writer structure"]
 impl crate::Writable for PerbufSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets PERBUF to value 0xffff_ffff"]
 impl crate::Resettable for PerbufSpec {

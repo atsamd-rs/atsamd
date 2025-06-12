@@ -164,7 +164,7 @@ pub mod v1 {
             unsafe {
                 self.mode0()
                     .comp(0)
-                    .write(|w| w.comp().bits(instant.ticks()))
+                    .write(|w| w.comp().bits(instant.ticks()));
             }
         }
 

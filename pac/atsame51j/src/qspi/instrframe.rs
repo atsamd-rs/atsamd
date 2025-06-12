@@ -440,67 +440,56 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Instruction Code, Address, Option Code and Data Width"]
     #[inline(always)]
-    #[must_use]
     pub fn width(&mut self) -> WidthW<InstrframeSpec> {
         WidthW::new(self, 0)
     }
     #[doc = "Bit 4 - Instruction Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn instren(&mut self) -> InstrenW<InstrframeSpec> {
         InstrenW::new(self, 4)
     }
     #[doc = "Bit 5 - Address Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn addren(&mut self) -> AddrenW<InstrframeSpec> {
         AddrenW::new(self, 5)
     }
     #[doc = "Bit 6 - Option Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn optcodeen(&mut self) -> OptcodeenW<InstrframeSpec> {
         OptcodeenW::new(self, 6)
     }
     #[doc = "Bit 7 - Data Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dataen(&mut self) -> DataenW<InstrframeSpec> {
         DataenW::new(self, 7)
     }
     #[doc = "Bits 8:9 - Option Code Length"]
     #[inline(always)]
-    #[must_use]
     pub fn optcodelen(&mut self) -> OptcodelenW<InstrframeSpec> {
         OptcodelenW::new(self, 8)
     }
     #[doc = "Bit 10 - Address Length"]
     #[inline(always)]
-    #[must_use]
     pub fn addrlen(&mut self) -> AddrlenW<InstrframeSpec> {
         AddrlenW::new(self, 10)
     }
     #[doc = "Bits 12:13 - Data Transfer Type"]
     #[inline(always)]
-    #[must_use]
     pub fn tfrtype(&mut self) -> TfrtypeW<InstrframeSpec> {
         TfrtypeW::new(self, 12)
     }
     #[doc = "Bit 14 - Continuous Read Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn crmode(&mut self) -> CrmodeW<InstrframeSpec> {
         CrmodeW::new(self, 14)
     }
     #[doc = "Bit 15 - Double Data Rate Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ddren(&mut self) -> DdrenW<InstrframeSpec> {
         DdrenW::new(self, 15)
     }
     #[doc = "Bits 16:20 - Dummy Cycles Length"]
     #[inline(always)]
-    #[must_use]
     pub fn dummylen(&mut self) -> DummylenW<InstrframeSpec> {
         DummylenW::new(self, 16)
     }
@@ -515,10 +504,6 @@ impl crate::Readable for InstrframeSpec {}
 #[doc = "`write(|w| ..)` method takes [`instrframe::W`](W) writer structure"]
 impl crate::Writable for InstrframeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INSTRFRAME to value 0"]
-impl crate::Resettable for InstrframeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for InstrframeSpec {}

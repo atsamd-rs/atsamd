@@ -314,17 +314,13 @@ where
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Rxposelect {
-    #[doc = "0: SERCOM PAD\\[0\\]
-is used for data reception"]
+    #[doc = "0: SERCOM PAD\\[0\\] is used for data reception"]
     Pad0 = 0,
-    #[doc = "1: SERCOM PAD\\[1\\]
-is used for data reception"]
+    #[doc = "1: SERCOM PAD\\[1\\] is used for data reception"]
     Pad1 = 1,
-    #[doc = "2: SERCOM PAD\\[2\\]
-is used for data reception"]
+    #[doc = "2: SERCOM PAD\\[2\\] is used for data reception"]
     Pad2 = 2,
-    #[doc = "3: SERCOM PAD\\[3\\]
-is used for data reception"]
+    #[doc = "3: SERCOM PAD\\[3\\] is used for data reception"]
     Pad3 = 3,
 }
 impl From<Rxposelect> for u8 {
@@ -351,26 +347,22 @@ impl RxpoR {
             _ => unreachable!(),
         }
     }
-    #[doc = "SERCOM PAD\\[0\\]
-is used for data reception"]
+    #[doc = "SERCOM PAD\\[0\\] is used for data reception"]
     #[inline(always)]
     pub fn is_pad0(&self) -> bool {
         *self == Rxposelect::Pad0
     }
-    #[doc = "SERCOM PAD\\[1\\]
-is used for data reception"]
+    #[doc = "SERCOM PAD\\[1\\] is used for data reception"]
     #[inline(always)]
     pub fn is_pad1(&self) -> bool {
         *self == Rxposelect::Pad1
     }
-    #[doc = "SERCOM PAD\\[2\\]
-is used for data reception"]
+    #[doc = "SERCOM PAD\\[2\\] is used for data reception"]
     #[inline(always)]
     pub fn is_pad2(&self) -> bool {
         *self == Rxposelect::Pad2
     }
-    #[doc = "SERCOM PAD\\[3\\]
-is used for data reception"]
+    #[doc = "SERCOM PAD\\[3\\] is used for data reception"]
     #[inline(always)]
     pub fn is_pad3(&self) -> bool {
         *self == Rxposelect::Pad3
@@ -383,26 +375,22 @@ where
     REG: crate::Writable + crate::RegisterSpec,
     REG::Ux: From<u8>,
 {
-    #[doc = "SERCOM PAD\\[0\\]
-is used for data reception"]
+    #[doc = "SERCOM PAD\\[0\\] is used for data reception"]
     #[inline(always)]
     pub fn pad0(self) -> &'a mut crate::W<REG> {
         self.variant(Rxposelect::Pad0)
     }
-    #[doc = "SERCOM PAD\\[1\\]
-is used for data reception"]
+    #[doc = "SERCOM PAD\\[1\\] is used for data reception"]
     #[inline(always)]
     pub fn pad1(self) -> &'a mut crate::W<REG> {
         self.variant(Rxposelect::Pad1)
     }
-    #[doc = "SERCOM PAD\\[2\\]
-is used for data reception"]
+    #[doc = "SERCOM PAD\\[2\\] is used for data reception"]
     #[inline(always)]
     pub fn pad2(self) -> &'a mut crate::W<REG> {
         self.variant(Rxposelect::Pad2)
     }
-    #[doc = "SERCOM PAD\\[3\\]
-is used for data reception"]
+    #[doc = "SERCOM PAD\\[3\\] is used for data reception"]
     #[inline(always)]
     pub fn pad3(self) -> &'a mut crate::W<REG> {
         self.variant(Rxposelect::Pad3)
@@ -845,91 +833,76 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:4 - Operating Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlaSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bit 7 - Run during Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 7)
     }
     #[doc = "Bit 8 - Immediate Buffer Overflow Notification"]
     #[inline(always)]
-    #[must_use]
     pub fn ibon(&mut self) -> IbonW<CtrlaSpec> {
         IbonW::new(self, 8)
     }
     #[doc = "Bit 9 - Transmit Data Invert"]
     #[inline(always)]
-    #[must_use]
     pub fn txinv(&mut self) -> TxinvW<CtrlaSpec> {
         TxinvW::new(self, 9)
     }
     #[doc = "Bit 10 - Receive Data Invert"]
     #[inline(always)]
-    #[must_use]
     pub fn rxinv(&mut self) -> RxinvW<CtrlaSpec> {
         RxinvW::new(self, 10)
     }
     #[doc = "Bits 13:15 - Sample"]
     #[inline(always)]
-    #[must_use]
     pub fn sampr(&mut self) -> SamprW<CtrlaSpec> {
         SamprW::new(self, 13)
     }
     #[doc = "Bits 16:17 - Transmit Data Pinout"]
     #[inline(always)]
-    #[must_use]
     pub fn txpo(&mut self) -> TxpoW<CtrlaSpec> {
         TxpoW::new(self, 16)
     }
     #[doc = "Bits 20:21 - Receive Data Pinout"]
     #[inline(always)]
-    #[must_use]
     pub fn rxpo(&mut self) -> RxpoW<CtrlaSpec> {
         RxpoW::new(self, 20)
     }
     #[doc = "Bits 22:23 - Sample Adjustment"]
     #[inline(always)]
-    #[must_use]
     pub fn sampa(&mut self) -> SampaW<CtrlaSpec> {
         SampaW::new(self, 22)
     }
     #[doc = "Bits 24:27 - Frame Format"]
     #[inline(always)]
-    #[must_use]
     pub fn form(&mut self) -> FormW<CtrlaSpec> {
         FormW::new(self, 24)
     }
     #[doc = "Bit 28 - Communication Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn cmode(&mut self) -> CmodeW<CtrlaSpec> {
         CmodeW::new(self, 28)
     }
     #[doc = "Bit 29 - Clock Polarity"]
     #[inline(always)]
-    #[must_use]
     pub fn cpol(&mut self) -> CpolW<CtrlaSpec> {
         CpolW::new(self, 29)
     }
     #[doc = "Bit 30 - Data Order"]
     #[inline(always)]
-    #[must_use]
     pub fn dord(&mut self) -> DordW<CtrlaSpec> {
         DordW::new(self, 30)
     }
@@ -944,10 +917,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

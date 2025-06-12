@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:23 - Current value at the time the register is accessed"]
     #[inline(always)]
-    #[must_use]
     pub fn current(&mut self) -> CurrentW<CvrSpec> {
         CurrentW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for CvrSpec {}
 #[doc = "`write(|w| ..)` method takes [`cvr::W`](W) writer structure"]
 impl crate::Writable for CvrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CVR to value 0"]
-impl crate::Resettable for CvrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CvrSpec {}

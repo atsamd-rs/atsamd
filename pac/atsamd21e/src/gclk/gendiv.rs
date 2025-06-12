@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Generic Clock Generator Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn id(&mut self) -> IdW<GendivSpec> {
         IdW::new(self, 0)
     }
     #[doc = "Bits 8:23 - Division Factor"]
     #[inline(always)]
-    #[must_use]
     pub fn div(&mut self) -> DivW<GendivSpec> {
         DivW::new(self, 8)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for GendivSpec {}
 #[doc = "`write(|w| ..)` method takes [`gendiv::W`](W) writer structure"]
 impl crate::Writable for GendivSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets GENDIV to value 0"]
-impl crate::Resettable for GendivSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for GendivSpec {}

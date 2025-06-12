@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Buffer Not Available"]
     #[inline(always)]
-    #[must_use]
     pub fn bna(&mut self) -> BnaW<RsrSpec> {
         BnaW::new(self, 0)
     }
     #[doc = "Bit 1 - Frame Received"]
     #[inline(always)]
-    #[must_use]
     pub fn rec(&mut self) -> RecW<RsrSpec> {
         RecW::new(self, 1)
     }
     #[doc = "Bit 2 - Receive Overrun"]
     #[inline(always)]
-    #[must_use]
     pub fn rxovr(&mut self) -> RxovrW<RsrSpec> {
         RxovrW::new(self, 2)
     }
     #[doc = "Bit 3 - HRESP Not OK"]
     #[inline(always)]
-    #[must_use]
     pub fn hno(&mut self) -> HnoW<RsrSpec> {
         HnoW::new(self, 3)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for RsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`rsr::W`](W) writer structure"]
 impl crate::Writable for RsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RSR to value 0"]
-impl crate::Resettable for RsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RsrSpec {}

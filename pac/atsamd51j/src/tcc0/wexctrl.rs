@@ -70,43 +70,36 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Output Matrix"]
     #[inline(always)]
-    #[must_use]
     pub fn otmx(&mut self) -> OtmxW<WexctrlSpec> {
         OtmxW::new(self, 0)
     }
     #[doc = "Bit 8 - Dead-time Insertion Generator 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dtien0(&mut self) -> Dtien0W<WexctrlSpec> {
         Dtien0W::new(self, 8)
     }
     #[doc = "Bit 9 - Dead-time Insertion Generator 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dtien1(&mut self) -> Dtien1W<WexctrlSpec> {
         Dtien1W::new(self, 9)
     }
     #[doc = "Bit 10 - Dead-time Insertion Generator 2 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dtien2(&mut self) -> Dtien2W<WexctrlSpec> {
         Dtien2W::new(self, 10)
     }
     #[doc = "Bit 11 - Dead-time Insertion Generator 3 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dtien3(&mut self) -> Dtien3W<WexctrlSpec> {
         Dtien3W::new(self, 11)
     }
     #[doc = "Bits 16:23 - Dead-time Low Side Outputs Value"]
     #[inline(always)]
-    #[must_use]
     pub fn dtls(&mut self) -> DtlsW<WexctrlSpec> {
         DtlsW::new(self, 16)
     }
     #[doc = "Bits 24:31 - Dead-time High Side Outputs Value"]
     #[inline(always)]
-    #[must_use]
     pub fn dths(&mut self) -> DthsW<WexctrlSpec> {
         DthsW::new(self, 24)
     }
@@ -121,10 +114,6 @@ impl crate::Readable for WexctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`wexctrl::W`](W) writer structure"]
 impl crate::Writable for WexctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WEXCTRL to value 0"]
-impl crate::Resettable for WexctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WexctrlSpec {}

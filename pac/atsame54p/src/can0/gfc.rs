@@ -181,25 +181,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Reject Remote Frames Extended"]
     #[inline(always)]
-    #[must_use]
     pub fn rrfe(&mut self) -> RrfeW<GfcSpec> {
         RrfeW::new(self, 0)
     }
     #[doc = "Bit 1 - Reject Remote Frames Standard"]
     #[inline(always)]
-    #[must_use]
     pub fn rrfs(&mut self) -> RrfsW<GfcSpec> {
         RrfsW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Accept Non-matching Frames Extended"]
     #[inline(always)]
-    #[must_use]
     pub fn anfe(&mut self) -> AnfeW<GfcSpec> {
         AnfeW::new(self, 2)
     }
     #[doc = "Bits 4:5 - Accept Non-matching Frames Standard"]
     #[inline(always)]
-    #[must_use]
     pub fn anfs(&mut self) -> AnfsW<GfcSpec> {
         AnfsW::new(self, 4)
     }
@@ -214,10 +210,6 @@ impl crate::Readable for GfcSpec {}
 #[doc = "`write(|w| ..)` method takes [`gfc::W`](W) writer structure"]
 impl crate::Writable for GfcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets GFC to value 0"]
-impl crate::Resettable for GfcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for GfcSpec {}

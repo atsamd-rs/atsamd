@@ -17,14 +17,12 @@ impl RegisterBlock {
         &self.bkupexit
     }
 }
-#[doc = "RCAUSE (r) register accessor: Reset Cause\n\nYou can [`read`](crate::Reg::read) this register and get [`rcause::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@rcause`]
-module"]
+#[doc = "RCAUSE (r) register accessor: Reset Cause\n\nYou can [`read`](crate::Reg::read) this register and get [`rcause::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@rcause`] module"]
 #[doc(alias = "RCAUSE")]
 pub type Rcause = crate::Reg<rcause::RcauseSpec>;
 #[doc = "Reset Cause"]
 pub mod rcause;
-#[doc = "BKUPEXIT (r) register accessor: Backup Exit Source\n\nYou can [`read`](crate::Reg::read) this register and get [`bkupexit::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bkupexit`]
-module"]
+#[doc = "BKUPEXIT (r) register accessor: Backup Exit Source\n\nYou can [`read`](crate::Reg::read) this register and get [`bkupexit::R`]. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@bkupexit`] module"]
 #[doc(alias = "BKUPEXIT")]
 pub type Bkupexit = crate::Reg<bkupexit::BkupexitSpec>;
 #[doc = "Backup Exit Source"]

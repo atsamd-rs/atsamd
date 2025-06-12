@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:23 - Channel Compare/Capture Buffer Value"]
     #[inline(always)]
-    #[must_use]
     pub fn ccb(&mut self) -> CcbW<CcbSpec> {
         CcbW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for CcbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ccb::W`](W) writer structure"]
 impl crate::Writable for CcbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CCB%s to value 0"]
-impl crate::Resettable for CcbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CcbSpec {}

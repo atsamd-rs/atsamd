@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 0 - CRC Module Busy"]
     #[inline(always)]
-    #[must_use]
     pub fn crcbusy(&mut self) -> CrcbusyW<CrcstatusSpec> {
         CrcbusyW::new(self, 0)
     }
     #[doc = "Bit 1 - CRC Zero"]
     #[inline(always)]
-    #[must_use]
     pub fn crczero(&mut self) -> CrczeroW<CrcstatusSpec> {
         CrczeroW::new(self, 1)
     }
     #[doc = "Bit 2 - CRC Error"]
     #[inline(always)]
-    #[must_use]
     pub fn crcerr(&mut self) -> CrcerrW<CrcstatusSpec> {
         CrcerrW::new(self, 2)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for CrcstatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`crcstatus::W`](W) writer structure"]
 impl crate::Writable for CrcstatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CRCSTATUS to value 0"]
-impl crate::Resettable for CrcstatusSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CrcstatusSpec {}

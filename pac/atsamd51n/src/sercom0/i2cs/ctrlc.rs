@@ -74,13 +74,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - SDA Setup Time"]
     #[inline(always)]
-    #[must_use]
     pub fn sdasetup(&mut self) -> SdasetupW<CtrlcSpec> {
         SdasetupW::new(self, 0)
     }
     #[doc = "Bit 24 - Data 32 Bit"]
     #[inline(always)]
-    #[must_use]
     pub fn data32b(&mut self) -> Data32bW<CtrlcSpec> {
         Data32bW::new(self, 24)
     }
@@ -95,10 +93,6 @@ impl crate::Readable for CtrlcSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlc::W`](W) writer structure"]
 impl crate::Writable for CtrlcSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLC to value 0"]
-impl crate::Resettable for CtrlcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlcSpec {}

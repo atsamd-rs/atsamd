@@ -97,61 +97,51 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Input Control"]
     #[inline(always)]
-    #[must_use]
     pub fn inputctrl(&mut self) -> InputctrlW<DseqctrlSpec> {
         InputctrlW::new(self, 0)
     }
     #[doc = "Bit 1 - Control B"]
     #[inline(always)]
-    #[must_use]
     pub fn ctrlb(&mut self) -> CtrlbW<DseqctrlSpec> {
         CtrlbW::new(self, 1)
     }
     #[doc = "Bit 2 - Reference Control"]
     #[inline(always)]
-    #[must_use]
     pub fn refctrl(&mut self) -> RefctrlW<DseqctrlSpec> {
         RefctrlW::new(self, 2)
     }
     #[doc = "Bit 3 - Average Control"]
     #[inline(always)]
-    #[must_use]
     pub fn avgctrl(&mut self) -> AvgctrlW<DseqctrlSpec> {
         AvgctrlW::new(self, 3)
     }
     #[doc = "Bit 4 - Sampling Time Control"]
     #[inline(always)]
-    #[must_use]
     pub fn sampctrl(&mut self) -> SampctrlW<DseqctrlSpec> {
         SampctrlW::new(self, 4)
     }
     #[doc = "Bit 5 - Window Monitor Lower Threshold"]
     #[inline(always)]
-    #[must_use]
     pub fn winlt(&mut self) -> WinltW<DseqctrlSpec> {
         WinltW::new(self, 5)
     }
     #[doc = "Bit 6 - Window Monitor Upper Threshold"]
     #[inline(always)]
-    #[must_use]
     pub fn winut(&mut self) -> WinutW<DseqctrlSpec> {
         WinutW::new(self, 6)
     }
     #[doc = "Bit 7 - Gain Correction"]
     #[inline(always)]
-    #[must_use]
     pub fn gaincorr(&mut self) -> GaincorrW<DseqctrlSpec> {
         GaincorrW::new(self, 7)
     }
     #[doc = "Bit 8 - Offset Correction"]
     #[inline(always)]
-    #[must_use]
     pub fn offsetcorr(&mut self) -> OffsetcorrW<DseqctrlSpec> {
         OffsetcorrW::new(self, 8)
     }
     #[doc = "Bit 31 - ADC Auto-Start Conversion"]
     #[inline(always)]
-    #[must_use]
     pub fn autostart(&mut self) -> AutostartW<DseqctrlSpec> {
         AutostartW::new(self, 31)
     }
@@ -166,10 +156,6 @@ impl crate::Readable for DseqctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`dseqctrl::W`](W) writer structure"]
 impl crate::Writable for DseqctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DSEQCTRL to value 0"]
-impl crate::Resettable for DseqctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DseqctrlSpec {}

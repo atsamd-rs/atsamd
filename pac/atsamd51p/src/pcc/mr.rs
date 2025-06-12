@@ -230,49 +230,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Parallel Capture Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pcen(&mut self) -> PcenW<MrSpec> {
         PcenW::new(self, 0)
     }
     #[doc = "Bits 4:5 - Data size"]
     #[inline(always)]
-    #[must_use]
     pub fn dsize(&mut self) -> DsizeW<MrSpec> {
         DsizeW::new(self, 4)
     }
     #[doc = "Bit 8 - Scale data"]
     #[inline(always)]
-    #[must_use]
     pub fn scale(&mut self) -> ScaleW<MrSpec> {
         ScaleW::new(self, 8)
     }
     #[doc = "Bit 9 - Always Sampling"]
     #[inline(always)]
-    #[must_use]
     pub fn alwys(&mut self) -> AlwysW<MrSpec> {
         AlwysW::new(self, 9)
     }
     #[doc = "Bit 10 - Half Sampling"]
     #[inline(always)]
-    #[must_use]
     pub fn halfs(&mut self) -> HalfsW<MrSpec> {
         HalfsW::new(self, 10)
     }
     #[doc = "Bit 11 - First sample"]
     #[inline(always)]
-    #[must_use]
     pub fn frsts(&mut self) -> FrstsW<MrSpec> {
         FrstsW::new(self, 11)
     }
     #[doc = "Bits 16:18 - Input Data Size"]
     #[inline(always)]
-    #[must_use]
     pub fn isize(&mut self) -> IsizeW<MrSpec> {
         IsizeW::new(self, 16)
     }
     #[doc = "Bits 30:31 - Clear If Disabled"]
     #[inline(always)]
-    #[must_use]
     pub fn cid(&mut self) -> CidW<MrSpec> {
         CidW::new(self, 30)
     }
@@ -287,10 +279,6 @@ impl crate::Readable for MrSpec {}
 #[doc = "`write(|w| ..)` method takes [`mr::W`](W) writer structure"]
 impl crate::Writable for MrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets MR to value 0"]
-impl crate::Resettable for MrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for MrSpec {}

@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 2 - Host Start Of Frame Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn hsof(&mut self) -> HsofW<IntensetSpec> {
         HsofW::new(self, 2)
     }
     #[doc = "Bit 3 - Bus Reset Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rst(&mut self) -> RstW<IntensetSpec> {
         RstW::new(self, 3)
     }
     #[doc = "Bit 4 - Wake Up Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeup(&mut self) -> WakeupW<IntensetSpec> {
         WakeupW::new(self, 4)
     }
     #[doc = "Bit 5 - DownStream to the Device Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dnrsm(&mut self) -> DnrsmW<IntensetSpec> {
         DnrsmW::new(self, 5)
     }
     #[doc = "Bit 6 - Upstream Resume fromthe device Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn uprsm(&mut self) -> UprsmW<IntensetSpec> {
         UprsmW::new(self, 6)
     }
     #[doc = "Bit 7 - Ram Access Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ramacer(&mut self) -> RamacerW<IntensetSpec> {
         RamacerW::new(self, 7)
     }
     #[doc = "Bit 8 - Link Power Management Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn dconn(&mut self) -> DconnW<IntensetSpec> {
         DconnW::new(self, 8)
     }
     #[doc = "Bit 9 - Device Disconnection Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ddisc(&mut self) -> DdiscW<IntensetSpec> {
         DdiscW::new(self, 9)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for IntensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for IntensetSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntensetSpec {}

@@ -350,55 +350,46 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Character Size"]
     #[inline(always)]
-    #[must_use]
     pub fn chsize(&mut self) -> ChsizeW<CtrlbSpec> {
         ChsizeW::new(self, 0)
     }
     #[doc = "Bit 6 - Stop Bit Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn sbmode(&mut self) -> SbmodeW<CtrlbSpec> {
         SbmodeW::new(self, 6)
     }
     #[doc = "Bit 8 - Collision Detection Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn colden(&mut self) -> ColdenW<CtrlbSpec> {
         ColdenW::new(self, 8)
     }
     #[doc = "Bit 9 - Start of Frame Detection Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sfde(&mut self) -> SfdeW<CtrlbSpec> {
         SfdeW::new(self, 9)
     }
     #[doc = "Bit 10 - Encoding Format"]
     #[inline(always)]
-    #[must_use]
     pub fn enc(&mut self) -> EncW<CtrlbSpec> {
         EncW::new(self, 10)
     }
     #[doc = "Bit 13 - Parity Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn pmode(&mut self) -> PmodeW<CtrlbSpec> {
         PmodeW::new(self, 13)
     }
     #[doc = "Bit 16 - Transmitter Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn txen(&mut self) -> TxenW<CtrlbSpec> {
         TxenW::new(self, 16)
     }
     #[doc = "Bit 17 - Receiver Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxen(&mut self) -> RxenW<CtrlbSpec> {
         RxenW::new(self, 17)
     }
     #[doc = "Bits 24:25 - LIN Command"]
     #[inline(always)]
-    #[must_use]
     pub fn lincmd(&mut self) -> LincmdW<CtrlbSpec> {
         LincmdW::new(self, 24)
     }
@@ -413,10 +404,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

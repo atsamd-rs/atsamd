@@ -151,97 +151,81 @@ impl R {
 impl W {
     #[doc = "Bit 0 - External Interrupt 0 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen0(&mut self) -> Wakeupen0W<WakeupSpec> {
         Wakeupen0W::new(self, 0)
     }
     #[doc = "Bit 1 - External Interrupt 1 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen1(&mut self) -> Wakeupen1W<WakeupSpec> {
         Wakeupen1W::new(self, 1)
     }
     #[doc = "Bit 2 - External Interrupt 2 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen2(&mut self) -> Wakeupen2W<WakeupSpec> {
         Wakeupen2W::new(self, 2)
     }
     #[doc = "Bit 3 - External Interrupt 3 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen3(&mut self) -> Wakeupen3W<WakeupSpec> {
         Wakeupen3W::new(self, 3)
     }
     #[doc = "Bit 4 - External Interrupt 4 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen4(&mut self) -> Wakeupen4W<WakeupSpec> {
         Wakeupen4W::new(self, 4)
     }
     #[doc = "Bit 5 - External Interrupt 5 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen5(&mut self) -> Wakeupen5W<WakeupSpec> {
         Wakeupen5W::new(self, 5)
     }
     #[doc = "Bit 6 - External Interrupt 6 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen6(&mut self) -> Wakeupen6W<WakeupSpec> {
         Wakeupen6W::new(self, 6)
     }
     #[doc = "Bit 7 - External Interrupt 7 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen7(&mut self) -> Wakeupen7W<WakeupSpec> {
         Wakeupen7W::new(self, 7)
     }
     #[doc = "Bit 8 - External Interrupt 8 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen8(&mut self) -> Wakeupen8W<WakeupSpec> {
         Wakeupen8W::new(self, 8)
     }
     #[doc = "Bit 9 - External Interrupt 9 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen9(&mut self) -> Wakeupen9W<WakeupSpec> {
         Wakeupen9W::new(self, 9)
     }
     #[doc = "Bit 10 - External Interrupt 10 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen10(&mut self) -> Wakeupen10W<WakeupSpec> {
         Wakeupen10W::new(self, 10)
     }
     #[doc = "Bit 11 - External Interrupt 11 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen11(&mut self) -> Wakeupen11W<WakeupSpec> {
         Wakeupen11W::new(self, 11)
     }
     #[doc = "Bit 12 - External Interrupt 12 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen12(&mut self) -> Wakeupen12W<WakeupSpec> {
         Wakeupen12W::new(self, 12)
     }
     #[doc = "Bit 13 - External Interrupt 13 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen13(&mut self) -> Wakeupen13W<WakeupSpec> {
         Wakeupen13W::new(self, 13)
     }
     #[doc = "Bit 14 - External Interrupt 14 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen14(&mut self) -> Wakeupen14W<WakeupSpec> {
         Wakeupen14W::new(self, 14)
     }
     #[doc = "Bit 15 - External Interrupt 15 Wake-up Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wakeupen15(&mut self) -> Wakeupen15W<WakeupSpec> {
         Wakeupen15W::new(self, 15)
     }
@@ -256,10 +240,6 @@ impl crate::Readable for WakeupSpec {}
 #[doc = "`write(|w| ..)` method takes [`wakeup::W`](W) writer structure"]
 impl crate::Writable for WakeupSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WAKEUP to value 0"]
-impl crate::Resettable for WakeupSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WakeupSpec {}

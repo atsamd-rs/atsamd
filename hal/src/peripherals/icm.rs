@@ -1050,7 +1050,7 @@ impl Icm {
     #[inline]
     pub fn set_hash_addr(&mut self, hash_addr_pointer: &HashArea) {
         self.hash()
-            .write(|w| unsafe { w.hasa().bits((hash_addr_pointer as *const _) as u32 / 128) })
+            .write(|w| unsafe { w.hasa().bits((hash_addr_pointer as *const _) as u32 / 128) });
     }
 
     /// Set the DSCR addr to a specific MainRegionDesc
@@ -1059,7 +1059,7 @@ impl Icm {
     /// [`MainRegionDesc`] but expressed as a multiple of 64
     pub fn set_dscr_addr(&self, icm_region_desc: &MainRegionDesc<Region0>) {
         self.dscr()
-            .write(|w| unsafe { w.dasa().bits((icm_region_desc as *const _) as u32 / 64) })
+            .write(|w| unsafe { w.dasa().bits((icm_region_desc as *const _) as u32 / 64) });
     }
 
     /// Set the user initial hash value
@@ -1328,7 +1328,7 @@ impl MainRegionDesc<Region0> {
     /// [`MainRegionDesc`] but expressed as a multiple of 64
     pub fn set_dscr_addr(&self, icm: &Icm) {
         icm.dscr()
-            .write(|w| unsafe { w.dasa().bits((self as *const _) as u32 / 64) })
+            .write(|w| unsafe { w.dasa().bits((self as *const _) as u32 / 64) });
     }
 }
 

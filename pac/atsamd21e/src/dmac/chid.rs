@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Channel ID"]
     #[inline(always)]
-    #[must_use]
     pub fn id(&mut self) -> IdW<ChidSpec> {
         IdW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for ChidSpec {}
 #[doc = "`write(|w| ..)` method takes [`chid::W`](W) writer structure"]
 impl crate::Writable for ChidSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHID to value 0"]
-impl crate::Resettable for ChidSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ChidSpec {}

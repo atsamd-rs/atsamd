@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:29 - Value Timer Nanoseconds Register Capture"]
     #[inline(always)]
-    #[must_use]
     pub fn vtn(&mut self) -> VtnW<TssnSpec> {
         VtnW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for TssnSpec {}
 #[doc = "`write(|w| ..)` method takes [`tssn::W`](W) writer structure"]
 impl crate::Writable for TssnSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TSSN to value 0"]
-impl crate::Resettable for TssnSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TssnSpec {}

@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 2:3 - Speed Status"]
     #[inline(always)]
-    #[must_use]
     pub fn speed(&mut self) -> SpeedW<StatusSpec> {
         SpeedW::new(self, 2)
     }
     #[doc = "Bits 6:7 - USB Line State Status"]
     #[inline(always)]
-    #[must_use]
     pub fn linestate(&mut self) -> LinestateW<StatusSpec> {
         LinestateW::new(self, 6)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for StatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0"]
-impl crate::Resettable for StatusSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for StatusSpec {}

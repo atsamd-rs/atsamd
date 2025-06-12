@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bit 0 - OVF Interrupt Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn ovf(&mut self) -> OvfW<IntflagSpec> {
         OvfW::new(self, 0)
     }
     #[doc = "Bit 1 - ERR Interrupt Flag"]
     #[inline(always)]
-    #[must_use]
     pub fn err(&mut self) -> ErrW<IntflagSpec> {
         ErrW::new(self, 1)
     }
     #[doc = "Bit 4 - MC Interrupt Flag 0"]
     #[inline(always)]
-    #[must_use]
     pub fn mc0(&mut self) -> Mc0W<IntflagSpec> {
         Mc0W::new(self, 4)
     }
     #[doc = "Bit 5 - MC Interrupt Flag 1"]
     #[inline(always)]
-    #[must_use]
     pub fn mc1(&mut self) -> Mc1W<IntflagSpec> {
         Mc1W::new(self, 5)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntflagSpec {}
