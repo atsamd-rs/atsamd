@@ -219,7 +219,7 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     /// let mut peripherals = pac::Peripherals::take().unwrap();
     /// peripherals.sysctrl.vref().write(|w| w.tsen().set_bit());
     /// ```
-    pub fn read_cpu_temperature(&mut self, sysctrl: &Sysctrl, raw: &mut u16) -> Result<f32, Error> {
+    pub fn read_cpu_temperature(&mut self, sysctrl: &Sysctrl) -> Result<f32, Error> {
         let vref = sysctrl.vref().read();
         if vref.tsen().bit_is_clear() {
             return Err(Error::TemperatureSensorNotEnabled);
@@ -246,7 +246,6 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
             adc.discard = true;
             res
         });
-        *raw = adc_val;
         // Source:
         // https://github.com/ElectronicCats/ElectronicCats_InternalTemperatureZero/blob/master/src/TemperatureZero.cpp
 
