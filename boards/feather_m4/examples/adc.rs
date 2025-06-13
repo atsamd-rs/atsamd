@@ -2,7 +2,7 @@
 #![no_main]
 
 use atsamd_hal::adc::AdcBuilder;
-use feather_m0 as bsp;
+use feather_m4 as bsp;
 
 use bsp::hal;
 use bsp::pac;
@@ -18,7 +18,7 @@ use pac::{CorePeripherals, Peripherals};
 
 use hal::{
     adc::{Accumulation, Adc, Prescaler, Resolution},
-    clock::GenericClockController,
+    clock::v2::{clock_system_at_reset, pclk::Pclk},
 };
 
 #[entry]
@@ -28,28 +28,32 @@ fn main() -> ! {
 
     let pins = Pins::new(peripherals.port);
 
-    // SAMD21 targets currently don't support clock::v2
-    let mut clocks = GenericClockController::with_external_32kosc(
+    let (mut buses, clocks, tokens) = clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.pm,
-        &mut peripherals.sysctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
-    let gclk0 = clocks.gclk0();
-    let adc_clock = clocks.adc(&gclk0).unwrap();
+
+    // Enable the ADC0 ABP clock...
+    let apb_adc0 = buses.apb.enable(tokens.apbs.adc0);
+    // ...and enable the ADC0 PCLK. Both of these are required for the
+    // ADC to run.
+    let (pclk_adc0, _gclk0) = Pclk::enable(tokens.pclks.adc0, clocks.gclk0);
 
     let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
         .with_clock_cycles_per_sample(5)
-        // Overruns if clock divider < 128 in debug mode
-        .with_clock_divider(Prescaler::Div128)
-        .with_vref(atsamd_hal::adc::Reference::Intvcc0)
-        .enable(peripherals.adc, &mut peripherals.pm, &adc_clock)
+        // Overruns if clock divider < 32 in debug mode
+        .with_clock_divider(Prescaler::Div32)
+        .with_vref(atsamd_hal::adc::Reference::Arefa)
+        .enable(peripherals.adc0, apb_adc0, &pclk_adc0)
         .unwrap();
     let mut adc_pin = pins.a0.into_alternate();
 
     loop {
         let res = adc.read(&mut adc_pin);
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("ADC value: {}", read).unwrap();
+        cortex_m_semihosting::hprintln!("ADC value: {}", res);
     }
 }
