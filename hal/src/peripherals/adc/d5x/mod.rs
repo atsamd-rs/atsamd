@@ -305,12 +305,34 @@ where
     /// > Both internal temperature sensors, TSENSP and TSENSC, are not
     /// > supported and should not be used.
     ///
-    pub fn read_cpu_temperature(&mut self, supc: &mut Supc) -> f32 {
-        self.inner.read_cpu_temperature(supc)
+    pub async fn read_cpu_temperature(&mut self, supc: &mut Supc) -> f32 {
+        // We cannot pass into an async closure yet, so settings switching
+        // has to be done manually!
+        let old_adc_settings = self.inner.cfg;
+        let old_state = supc.vref().read().bits();
+        supc.vref().modify(|_, w| {
+            w.ondemand().set_bit();
+            w.tsen().set_bit()
+        });
+
+        self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
+        let tp = self.read_channel(0x1C).await as f32;
+        let tc = self.read_channel(0x1D).await as f32;
+        // Restore vrefs old state
+        supc.vref().write(|w| unsafe { w.bits(old_state) });
+        self.inner.configure(old_adc_settings);
+        tp_tc_to_temp(tp, tc)
     }
 
     /// Reads one of the CPU voltage source. Value returnned is in millivolts (mV)
-    pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
-        self.inner.read_cpu_voltage(src)
+    pub async fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
+        let old_adc_settings = self.inner.cfg;
+        self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
+
+        let res = self.read_channel(src as u8).await;
+        let voltage = self.inner.reading_to_f32(res) * 3.3 * 4.0; // x4 since the voltages are 1/4 scaled
+
+        self.inner.configure(old_adc_settings);
+        (voltage * 1000.0) as u16
     }
 }

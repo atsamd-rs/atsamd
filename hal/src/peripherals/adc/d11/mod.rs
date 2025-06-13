@@ -205,18 +205,11 @@ impl<I: AdcInstance> Adc<I> {
             .modify(|_, w| unsafe { w.muxpos().bits(ch) });
         self.sync()
     }
-}
 
-impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     #[inline]
-    /// Returns the CPU temperature in degrees C
-    ///
-    /// NOTE: The temperature sensor is known to be out by up to ±10C, it
-    /// therefore should not be relied on for critical temperature readings
-    pub fn read_cpu_temperature(&mut self, sysctrl: &mut Sysctrl) -> f32 {
-        let old_state = sysctrl.vref().read().tsen().bit();
-        sysctrl.vref().modify(|_, w| w.tsen().set_bit());
-
+    fn cpu_raw_to_temp(&self, reading: u16) -> f32 {
+        // Source:
+        // https://github.com/ElectronicCats/ElectronicCats_InternalTemperatureZero/blob/master/src/TemperatureZero.cpp
         let room_temp = calibration::room_temp();
         let adc_room = calibration::room_temp_adc_val() as f32;
 
@@ -229,6 +222,32 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
         let v_adc_room = (adc_room * room_int1v) / 4095.0;
         let v_adc_hot = (adc_hot * hot_int1v) / 4095.0;
 
+        let v_adc = reading as f32 / 4095.0; // 1.0 is ommitted here (adc_val * 1.0) - 1.0 is the INT_V1 voltage (Always 1.0V)
+
+        let coarse_temp = room_temp
+            + (((hot_temp - room_temp) / (v_adc_hot - v_adc_room)) * (v_adc - v_adc_room));
+
+        let int1v_real = room_int1v
+            + (((hot_int1v - room_int1v) * (coarse_temp - room_temp)) / (hot_temp - room_temp));
+
+        let v_adc_real = (reading as f32 * int1v_real) / 4095.0;
+
+        let temp = room_temp
+            + (((hot_temp - room_temp) / (v_adc_hot - v_adc_room)) * (v_adc_real - v_adc_room));
+        temp
+    }
+}
+
+impl<I: AdcInstance + PrimaryAdc> Adc<I> {
+    #[inline]
+    /// Returns the CPU temperature in degrees C
+    ///
+    /// NOTE: The temperature sensor is known to be out by up to ±10C, it
+    /// therefore should not be relied on for critical temperature readings
+    pub fn read_cpu_temperature(&mut self, sysctrl: &mut Sysctrl) -> f32 {
+        let old_state = sysctrl.vref().read().tsen().bit();
+        sysctrl.vref().modify(|_, w| w.tsen().set_bit());
+
         let adc_val = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ_D21_TEMP, |adc| {
             // IMPORTANT - We also have to modify gain, but this is not exposed in ADC Settings
             adc.adc.inputctrl().modify(|_, w| w.gain()._1x());
@@ -239,25 +258,10 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
             adc.discard = true;
             res
         });
-        // Source:
-        // https://github.com/ElectronicCats/ElectronicCats_InternalTemperatureZero/blob/master/src/TemperatureZero.cpp
-
-        let v_adc = adc_val as f32 / 4095.0; // 1.0 is ommitted here (adc_val * 1.0) - 1.0 is the INT_V1 voltage (Always 1.0V)
-
-        let coarse_temp = room_temp
-            + (((hot_temp - room_temp) / (v_adc_hot - v_adc_room)) * (v_adc - v_adc_room));
-
-        let int1v_real = room_int1v
-            + (((hot_int1v - room_int1v) * (coarse_temp - room_temp)) / (hot_temp - room_temp));
-
-        let v_adc_real = (adc_val as f32 * int1v_real) / 4095.0;
-
-        let temp = room_temp
-            + (((hot_temp - room_temp) / (v_adc_hot - v_adc_room)) * (v_adc_real - v_adc_room));
 
         // Set sysctrl back
         sysctrl.vref().modify(|_, w| w.tsen().variant(old_state));
-        temp
+        self.cpu_raw_to_temp(adc_val)
     }
 
     #[inline]
@@ -280,12 +284,38 @@ where
     F: crate::async_hal::interrupts::Binding<I::Interrupt, async_api::InterruptHandler<I>>,
 {
     /// Reads the CPU temperature. Value returned is in Celcius
-    pub fn read_cpu_temperature(&mut self, sysctrl: &mut Sysctrl) -> f32 {
-        self.inner.read_cpu_temperature(sysctrl)
+    pub async fn read_cpu_temperature(&mut self, sysctrl: &mut Sysctrl) -> f32 {
+        let old_state = sysctrl.vref().read().tsen().bit();
+        sysctrl.vref().modify(|_, w| w.tsen().set_bit());
+
+        let old_adc_settings = self.inner.cfg;
+        self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
+        self.inner.adc.inputctrl().modify(|_, w| w.gain()._1x());
+        self.inner.discard = true;
+
+        let res = self.read_channel(0x18).await;
+
+        self.inner.adc.inputctrl().modify(|_, w| w.gain().div2());
+        self.inner.configure(old_adc_settings);
+        self.inner.discard = true;
+
+        // Set sysctrl back
+        sysctrl.vref().modify(|_, w| w.tsen().variant(old_state));
+        self.inner.cpu_raw_to_temp(res)
     }
 
     /// Reads one of the CPU voltage source. Value returnned is in millivolts (mV)
-    pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
-        self.inner.read_cpu_voltage(src)
+    pub async fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
+        let old_adc_settings = self.inner.cfg;
+        self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
+
+        let res = self.read_channel(src as u8).await;
+        let mut voltage = self.inner.reading_to_f32(res) * 3.3;
+        if CpuVoltageSource::Bandgap != src {
+            voltage *= 4.0;
+        }
+
+        self.inner.configure(old_adc_settings);
+        (voltage * 1000.0) as u16
     }
 }
