@@ -42,20 +42,33 @@ use crate::pac::Pm;
 
 pub trait Status: Sealed {}
 
-pub enum Uninitialized {}
+pub struct Uninitialized {}
 impl Sealed for Uninitialized {}
 impl Status for Uninitialized {}
 
-pub enum GenReady {}
-impl Sealed for GenReady {}
-impl Status for GenReady {}
+pub struct GenReady<GEN: EvSysGenerator> {
+    generator: PhantomData<GEN>,
+}
+impl<GEN: EvSysGenerator> Sealed for GenReady<GEN> {}
+impl<GEN: EvSysGenerator> Status for GenReady<GEN> {}
 
-pub enum Ready {}
-impl Sealed for Ready {}
-impl Status for Ready {}
+pub struct Ready<GEN: EvSysGenerator, USR: EvSysUser> {
+    generator: PhantomData<GEN>,
+    user: PhantomData<USR>,
+}
+impl<GEN: EvSysGenerator, USR: EvSysUser> Sealed for Ready<GEN, USR> {}
+impl<GEN: EvSysGenerator, USR: EvSysUser> Status for Ready<GEN, USR> {}
 
 pub trait ChId {
     const ID: usize;
+}
+
+pub trait EvSysGenerator {
+    const GENERATOR_ID: usize;
+}
+
+pub trait EvSysUser {
+    const USER_ID: usize;
 }
 
 pub struct EvSysChannel<Id: ChId, S: Status> {
@@ -89,25 +102,25 @@ impl<Id: ChId, S: Status> EvSysChannel<Id, S> {
 
 // Methods that can only be used on a channel that is uninitialized
 impl<Id: ChId> EvSysChannel<Id, Uninitialized> {
-    pub fn register_generator(mut self, generator_id: u8) -> EvSysChannel<Id, GenReady> {
-        self.generator_id = generator_id;
+    pub fn register_generator<GEN: EvSysGenerator>(mut self) -> EvSysChannel<Id, GenReady<GEN>> {
+        self.generator_id = GEN::GENERATOR_ID as u8;
         self.change_status()
     }
 }
 
 // Methods that can only be used on a channel with just a connected generator
-impl<Id: ChId> EvSysChannel<Id, GenReady> {
+impl<Id: ChId, GEN: EvSysGenerator> EvSysChannel<Id, GenReady<GEN>> {
     pub fn remove_generator(mut self) -> EvSysChannel<Id, Uninitialized> {
         self.generator_id = 0;
         self.change_status()
     }
 
     #[hal_cfg("evsys-d5x")]
-    pub fn register_user(self, user_id: usize) -> EvSysChannel<Id, Ready> {
+    pub fn register_user<USR: EvSysUser>(self) -> EvSysChannel<Id, Ready<GEN, USR>> {
         // Now wire up the generator
         // Multiplexor MUST be wired before the channel
         self.evsys
-            .user(user_id)
+            .user(USR::USER_ID)
             .write(|w| unsafe { w.channel().bits(Id::ID as u8 + 1) }); // +1 since 0 means no channel
 
         self.evsys.channels(Id::ID as usize).channel().write(|w| {
@@ -119,13 +132,13 @@ impl<Id: ChId> EvSysChannel<Id, GenReady> {
     }
 
     #[hal_cfg(any("evsys-d21", "evsys-d11"))]
-    pub fn register_user(self, user_id: usize) -> EvSysChannel<Id, Ready> {
+    pub fn register_user<USR: EvSysUser>(self) -> EvSysChannel<Id, Ready<GEN, USR>> {
         // Multiplexor MUST be wired before the channel
 
         // Select our user
         self.evsys
             .user()
-            .write(|w| unsafe { w.user().bits(user_id as u8) });
+            .write(|w| unsafe { w.user().bits(USR::USER_ID as u8) });
 
         // Write the channel we want to connect to it
         self.evsys
@@ -148,25 +161,25 @@ impl<Id: ChId> EvSysChannel<Id, GenReady> {
 }
 
 // Methods that can only be used on a channel that has both ends connected
-impl<Id: ChId> EvSysChannel<Id, Ready> {
+impl<Id: ChId, GEN: EvSysGenerator, USR: EvSysUser> EvSysChannel<Id, Ready<GEN, USR>> {
     #[hal_cfg("evsys-d5x")]
-    pub fn deregister_user(self, user_id: usize) -> EvSysChannel<Id, GenReady> {
+    pub fn deregister_user(self) -> EvSysChannel<Id, GenReady<GEN>> {
         // Unhook the channel generator
         let reg = self.evsys.channels(Id::ID as usize);
         reg.channel().reset();
         // Then unhook the user
         self.evsys
-            .user(user_id)
+            .user(USR::USER_ID)
             .write(|w| unsafe { w.channel().bits(0) });
         self.change_status()
     }
 
     #[hal_cfg(any("evsys-d21", "evsys-d11"))]
-    pub fn deregister_user(self, user_id: usize) -> EvSysChannel<Id, GenReady> {
+    pub fn deregister_user(self) -> EvSysChannel<Id, GenReady<GEN>> {
         // Select our user
         self.evsys
             .user()
-            .write(|w| unsafe { w.user().bits(user_id as u8) });
+            .write(|w| unsafe { w.user().bits(USR::USER_ID as u8) });
         self.evsys.user().write(|w| unsafe { w.channel().bits(0) }); // Disconnect channel
         self.change_status()
     }
