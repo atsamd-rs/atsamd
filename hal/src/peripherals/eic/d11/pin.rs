@@ -3,7 +3,7 @@ use atsamd_hal_macros::hal_cfg;
 use crate::ehal::digital::{ErrorType, InputPin};
 use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
-use crate::evsys::EvSysChannel;
+use crate::evsys::{EvSysChannel, EvSysGenerator};
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
@@ -48,6 +48,10 @@ macro_rules! ei {
     };
 }
 
+impl<T: ChId> EvSysGenerator for T {
+    const GENERATOR_ID: usize = T::ID + 0x0C;
+}
+
 impl<P, Id, EvId> ExtInt<P, Id, EvId>
 where
     P: EicPin,
@@ -58,9 +62,9 @@ where
     /// and a event-less ExtInt
     pub fn disable_event(
         self,
-        ev_chan: EvSysChannel<EvId, crate::evsys::GenReady>,
+        ev_chan: EvSysChannel<EvId, crate::evsys::GenReady<Id>>,
     ) -> (
-        ExtInt<P, Id, NoneT, NoneT>,
+        ExtInt<P, Id, NoneT>,
         EvSysChannel<EvId, crate::evsys::Uninitialized>,
     ) {
         let free_channel = ev_chan.remove_generator();
@@ -68,7 +72,6 @@ where
             ExtInt {
                 pin: self.pin,
                 chan: self.chan.change_mode(),
-                evchan: PhantomData::default(),
             },
             free_channel,
         )
@@ -88,30 +91,23 @@ where
         mut self,
         channel: EvSysChannel<EvId, crate::evsys::Uninitialized>,
     ) -> (
-        ExtInt<P, Id, NoneT, EvId>,
-        EvSysChannel<EvId, crate::evsys::GenReady>,
+        ExtInt<P, Id, NoneT>,
+        EvSysChannel<EvId, crate::evsys::GenReady<Id>>,
     ) {
         self.chan.with_disable(|e| {
             e.evctrl()
                 .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
         });
-        let hooked_channel = channel.register_generator((P::ChId::ID as u8) + 0x0C);
+        let hooked_channel = channel.register_generator();
         (
             ExtInt {
                 pin: self.pin,
                 chan: self.chan.change_mode(),
-                evchan: PhantomData::default(),
             },
             hooked_channel,
         )
     }
-}
 
-impl<P, Id, F, E> ExtInt<P, Id, F, E>
-where
-    P: EicPin,
-    Id: ChId,
-{
     pub fn enable_interrupt(&mut self) {
         self.chan
             .eic
@@ -191,7 +187,7 @@ where
     }
 }
 
-impl<P, C, Id, F, E> InputPin_02 for ExtInt<P, Id, F, E>
+impl<P, C, Id, F> InputPin_02 for ExtInt<P, Id, F>
 where
     P: EicPin + AnyPin<Mode = Interrupt<C>>,
     Id: ChId,
@@ -208,7 +204,7 @@ where
     }
 }
 
-impl<P, Id, F, E> InputPin for ExtInt<P, Id, F, E>
+impl<P, Id, F> InputPin for ExtInt<P, Id, F>
 where
     Self: ErrorType,
     P: EicPin,
@@ -225,7 +221,7 @@ where
     }
 }
 
-impl<P, Id, F, E> ErrorType for ExtInt<P, Id, F, E>
+impl<P, Id, F> ErrorType for ExtInt<P, Id, F>
 where
     P: EicPin,
     Id: ChId,

@@ -1,4 +1,4 @@
-use atsamd_hal_macros::{hal_cfg, hal_module};
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper, hal_module};
 
 #[hal_module(
     any("adc-d11", "adc-d21") => "adc/d11.rs",
@@ -82,3 +82,6 @@ pub use serial_number::*;
 
 #[cfg(feature = "device")]
 pub mod evsys;
+
+#[hal_module("nvmctrl-d5x")]
+pub mod pulse_counter {}
