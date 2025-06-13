@@ -3,6 +3,7 @@ use atsamd_hal_macros::hal_cfg;
 use crate::ehal::digital::{ErrorType, InputPin};
 use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
+use crate::evsys::{EvSysChannel, EvSysGenerator};
 use crate::gpio::{
     self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
 };
@@ -47,6 +48,36 @@ macro_rules! ei {
     };
 }
 
+impl<T: ChId> EvSysGenerator for T {
+    const GENERATOR_ID: usize = T::ID + 0x0C;
+}
+
+impl<P, Id, EvId> ExtInt<P, Id, EvId>
+where
+    P: EicPin,
+    Id: ChId,
+    EvId: crate::evsys::ChId,
+{
+    /// Disable the evsys event generator, and return a un-wired channel
+    /// and a event-less ExtInt
+    pub fn disable_event(
+        self,
+        ev_chan: EvSysChannel<EvId, crate::evsys::GenReady<Id>>,
+    ) -> (
+        ExtInt<P, Id, NoneT>,
+        EvSysChannel<EvId, crate::evsys::Uninitialized>,
+    ) {
+        let free_channel = ev_chan.remove_generator();
+        (
+            ExtInt {
+                pin: self.pin,
+                chan: self.chan.change_mode(),
+            },
+            free_channel,
+        )
+    }
+}
+
 impl<P, Id, F> ExtInt<P, Id, F>
 where
     P: EicPin,
@@ -56,11 +87,25 @@ where
     ///
     /// Note that whilst this function is executed, the EIC peripheral is disabled
     /// in order to write to the evctrl register
-    pub fn enable_event(&mut self) {
+    pub fn enable_event<EvId: crate::evsys::ChId>(
+        mut self,
+        channel: EvSysChannel<EvId, crate::evsys::Uninitialized>,
+    ) -> (
+        ExtInt<P, Id, NoneT>,
+        EvSysChannel<EvId, crate::evsys::GenReady<Id>>,
+    ) {
         self.chan.with_disable(|e| {
             e.evctrl()
                 .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
         });
+        let hooked_channel = channel.register_generator();
+        (
+            ExtInt {
+                pin: self.pin,
+                chan: self.chan.change_mode(),
+            },
+            hooked_channel,
+        )
     }
 
     pub fn enable_interrupt(&mut self) {
