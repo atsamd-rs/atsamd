@@ -133,11 +133,11 @@
 #[deprecated]
 pub mod v1 {
     use crate::rtc::{
-        modes::{
-            mode0::{Compare0, RtcMode0},
-            RtcMode,
-        },
         Count32Mode, Rtc,
+        modes::{
+            RtcMode,
+            mode0::{Compare0, RtcMode0},
+        },
     };
     use rtic_monotonic::Monotonic;
 
@@ -178,7 +178,10 @@ pub mod v1 {
 
 mod backends;
 
-use super::modes::{RtcMode, mode0::RtcMode0, mode1::RtcMode1};
+#[hal_cfg("rtc-d5x")]
+use super::modes::{RtcMode, mode0::RtcMode0};
+#[hal_cfg(any("rtc-d11", "rtc-d21"))]
+use super::modes::{RtcMode, mode1::RtcMode1};
 use crate::interrupt::{NVIC_PRIO_BITS, Priority};
 use atsamd_hal_macros::hal_cfg;
 
@@ -224,10 +227,13 @@ trait RtcModeMonotonic: RtcMode {
     /// in order to trigger.
     const MIN_COMPARE_TICKS: Self::Count;
 }
+
+#[hal_cfg("rtc-d5x")]
 impl RtcModeMonotonic for RtcMode0 {
     const HALF_PERIOD: Self::Count = 0x8000_0000;
     const MIN_COMPARE_TICKS: Self::Count = 8;
 }
+#[hal_cfg(any("rtc-d11", "rtc-d21"))]
 impl RtcModeMonotonic for RtcMode1 {
     const HALF_PERIOD: Self::Count = 0x8000;
     const MIN_COMPARE_TICKS: Self::Count = 8;

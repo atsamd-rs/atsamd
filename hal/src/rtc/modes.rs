@@ -433,10 +433,11 @@ pub mod mode0 {
 }
 
 /// Interface for using the RTC in MODE1 (16-bit COUNT)
+#[hal_cfg(any("rtc-d11", "rtc-d21"))]
+#[cfg(feature = "rtic")]
 pub mod mode1 {
     use super::*;
 
-    #[cfg(feature = "rtic")]
     create_rtc_interrupt!(mode1, Compare0, cmp0);
     #[cfg(feature = "rtic")]
     create_rtc_interrupt!(mode1, Compare1, cmp1);
@@ -508,11 +509,9 @@ pub mod mode1 {
 pub mod mode2 {
     use super::*;
 
-    #[cfg(feature = "rtic")]
-    create_rtc_interrupt!(mode2, Alarm0, alarm0);
-    #[cfg(feature = "rtic")]
-    #[hal_cfg("rtc-d5x")]
-    create_rtc_interrupt!(mode2, Alarm1, alarm1);
+    // These actually aren't needed for anything right now
+    //create_rtc_interrupt!(mode2, Alarm0, alarm0);
+    //create_rtc_interrupt!(mode2, Alarm1, alarm1);
 
     /// Datetime represents an RTC clock/calendar value.
     #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
