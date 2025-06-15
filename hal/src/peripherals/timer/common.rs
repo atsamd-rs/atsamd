@@ -34,15 +34,7 @@ where
         T: Into<NanosDurationU32>,
     {
         let params = TimerParams::new_ns(timeout.into(), self.freq);
-        self.start_timer(
-            params.divider,
-            u16::try_from(params.cycles).unwrap_or_else(|_| {
-                panic!(
-                    "cycles {} is out of range for a 16 bit counter",
-                    params.cycles
-                )
-            }),
-        );
+        self.start_timer(params.divider, params.check_cycles_u16());
     }
 
     fn wait(&mut self) -> nb::Result<(), Infallible> {
