@@ -67,13 +67,17 @@ where
     /// Disable the evsys event generator, and return a un-wired channel
     /// and a event-less ExtInt
     pub fn disable_event(
-        self,
+        mut self,
         ev_chan: EvSysChannel<EvId, crate::evsys::GenReady<Id>>,
     ) -> (
         ExtInt<P, Id, NoneT>,
         EvSysChannel<EvId, crate::evsys::Uninitialized>,
     ) {
         let free_channel = ev_chan.remove_generator();
+        self.chan.with_disable(|e| {
+            e.evctrl()
+                .modify(|r, w| unsafe { w.bits(r.bits() & !(1 << P::ChId::ID)) });
+        });
         (
             ExtInt {
                 pin: self.pin,
@@ -99,9 +103,10 @@ where
     ) {
         self.chan.with_disable(|e| {
             e.evctrl()
-                .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
+                .modify(|r, w| unsafe { w.bits(r.bits() | 1 << P::ChId::ID) });
         });
-        let hooked_channel: EvSysChannel<EvId, crate::evsys::GenReady<Id>> = channel.register_generator();
+        let hooked_channel: EvSysChannel<EvId, crate::evsys::GenReady<Id>> =
+            channel.register_generator();
         (
             ExtInt {
                 pin: self.pin,
