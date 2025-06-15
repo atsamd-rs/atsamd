@@ -227,8 +227,27 @@ impl Eic {
 
     /// Create and initialize a new [`Eic`], and wire it up to the
     /// ultra-low-power 32kHz clock source.
+    ///
+    /// This limits the maximum detection frequency to 16Khz.
+    ///
+    /// ## V2 CLOCK API Users
+    /// In order to detect faster events, you can wire EIC to a GCLK
+    /// after calling this constructor like so:
+    /// ```no_run
+    /// let (osculp32k, base) = OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
+    /// let gclk_7 = Gclk::from_source(tokens.gclks.gclk7, osculp32k).0.enable();
+    /// let (eic_clock, gclk_7) = Pclk::enable(tokens.pclks.eic, gclk_7);
+    /// // Note the (&eic_clock). This is so EIC does not consume the GCLK so we can switch it
+    /// let mut eic = Eic::new(&mut mclk, (&eic_clock).into(), pac_peripherals.eic);
+    /// // Now switch the EIC to use a faster GCLK
+    /// let (token, _) = eic_clock.disable(gclk_7);
+    /// let (pclk_eic_fast, gclk0_100mhz) = Pclk::enable(token, gclk0_100mhz);
+    /// eic.switch_to_gclk(&pclk_eic_fast);
+    /// ```
+    /// When running from a GCLK, EIC is not available in deep sleep
+    /// 
     #[hal_cfg("eic-d5x")]
-    pub fn new(mclk: &mut pac::Mclk, _clock: &EicClock, eic: pac::Eic) -> Self {
+    pub fn new(mclk: &mut pac::Mclk, _clock: EicClock, eic: pac::Eic) -> Self {
         mclk.apbamask().modify(|_, w| w.eic_().set_bit());
 
         let mut eic = Self {
