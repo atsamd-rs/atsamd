@@ -108,7 +108,7 @@ impl<T: CounterInstance, EvId: crate::evsys::ChId, EvSrc: EvSysGenerator>
                 instance.ctrlbset().write(|w| w.oneshot().set_bit()); // Set oneshhot (Stop on overflow)
             }
             while instance.syncbusy().read().bits() != 0 {}
-            instance.ctrla().write(|w| {
+            instance.ctrla().modify(|_, w| {
                 if settings.run_in_standby {
                     w.runstdby().set_bit();
                 }
@@ -167,7 +167,7 @@ impl<T: CounterInstance, EvId: crate::evsys::ChId, EvSrc: EvSysGenerator>
         self.instance
             .count16()
             .ctrla()
-            .write(|w| w.enable().clear_bit());
+            .modify(|_, w| w.enable().clear_bit());
     }
 
     /// Start pulse counting
@@ -175,7 +175,7 @@ impl<T: CounterInstance, EvId: crate::evsys::ChId, EvSrc: EvSysGenerator>
         self.instance
             .count16()
             .ctrla()
-            .write(|w| w.enable().set_bit());
+            .modify(|_, w| w.enable().set_bit());
     }
 }
 
