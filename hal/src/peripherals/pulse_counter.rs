@@ -1,3 +1,39 @@
+//! # EIC Pulse counter
+//!
+//! This module combines an EIC channel, an EVSYS channel, and a TC peripheral
+//! in order to count pulses form an EIC channel, whilst the CPU remains
+//! asleep.
+//!
+//! Theoretically, using this system, it is possible to count pulses up to 50Mhz,
+//! all without any CPU intervension.
+//!
+//! ## Example usage:
+//!
+//! ```no_run
+//! let evsys = EvSysController::new(&mut mclk, pac_peripherals.evsys);
+//! let evsys_channels = evsys.split();
+//! let mut eic = Eic::new(&mut mclk, (&eic_clock).into(), pac_peripherals.eic);
+//! let eic_channels = eic.split();
+//!
+//! let mut eic_pin = eic_channels.0.with_pin(pins.eic_pin.into_pull_down_interrupt());
+//! eic_pin.sense(pac::eic::config::Sense0select::Fall); // Count on falling edge of signal
+//! let (eic_pin, evsys_channel_eic_pin) = eic_pin.enable_event(evsys_channels.1); // Register EIC Event output
+//!
+//! let mut pulse_counter = CounterSettings::default()
+//!     .stop_on_overflow(true) // Stops counting when 16bit limit reached
+//!     .run_in_standby(true) // Continue counting when sleeping
+//!     .build(pac_peripherals.tc_2, &pclk_tc2_tc3, &mut mclk, evsys_channel_eic_pin);
+//!
+//! pulse_counter.start();
+//!
+//! loop {
+//!     let count = pulse_counter.count();
+//!     pulse_counter.clear(); // Reset count back to 0
+//! }
+//!
+//! pulse_counter.stop();
+//! ```
+
 use core::ops::Deref;
 
 use crate::{
@@ -19,12 +55,12 @@ use super::{
 ///
 /// * Stop counting on max value reached (65535), and do not overflow
 /// * Allow running in standby mode
-pub struct CounterSettings {
+pub struct PulseCounterBuilder {
     stop_on_overflow: bool,
     run_in_standby: bool,
 }
 
-impl Default for CounterSettings {
+impl Default for PulseCounterBuilder {
     fn default() -> Self {
         Self {
             stop_on_overflow: true,
@@ -33,7 +69,7 @@ impl Default for CounterSettings {
     }
 }
 
-impl CounterSettings {
+impl PulseCounterBuilder {
     pub fn run_in_standby(mut self, b: bool) -> Self {
         self.run_in_standby = b;
         self
@@ -42,6 +78,33 @@ impl CounterSettings {
     pub fn stop_on_overflow(mut self, b: bool) -> Self {
         self.stop_on_overflow = b;
         self
+    }
+
+    /// Creates a new pulse counter out of a TC peripheral
+    ///
+    /// This consumes the evsys channel that monitors the GPIO that is to be monitored
+    ///
+    /// Once created, call [`PulseCounter::start`] to start monitoring
+    ///
+    /// ## Limitations
+    /// 1. Can only work in 16 bit mode, so when monitoring very high frequency signals,
+    ///    you will need to query the counter very frequently to avoid an overflow
+    ///
+    /// Returns the pulse counter instance
+    pub fn build<PS, T, EvId, EvSrc>(
+        self,
+        tc: T::Instance,
+        clock: &Pclk<T::ClockId, PS>,
+        mclk: &mut Mclk,
+        evsys_channel: EvSysChannel<EvId, GenReady<EvSrc>>,
+    ) -> PulseCounter<T, EvId, EvSrc>
+    where
+        PS: crate::clock::v2::pclk::PclkSourceId,
+        T: CounterInstance,
+        EvId: crate::evsys::ChId,
+        EvSrc: EvSysGenerator,
+    {
+        PulseCounter::new(tc, clock, self, mclk, evsys_channel)
     }
 }
 
@@ -65,21 +128,10 @@ pub struct PulseCounter<T: CounterInstance, EvId: crate::evsys::ChId, EvSrc: EvS
 impl<T: CounterInstance, EvId: crate::evsys::ChId, EvSrc: EvSysGenerator>
     PulseCounter<T, EvId, EvSrc>
 {
-    /// Creates a new pulse counter out of a TC peripheral
-    ///
-    /// This consumes the evsys channel that monitors the GPIO that is to be monitored
-    ///
-    /// Once created, call [`PulseCounter::start`] to start monitoring
-    ///
-    /// ## Limitations
-    /// 1. Can only work in 16 bit mode, so when monitoring very high frequency signals,
-    ///    you will need to query the counter very frequently to avoid an overflow
-    ///
-    /// Returns the pulse counter instance
-    pub fn new<PS: crate::clock::v2::pclk::PclkSourceId>(
+    pub(crate) fn new<PS: crate::clock::v2::pclk::PclkSourceId>(
         tc: T::Instance,
         _clock: &Pclk<T::ClockId, PS>,
-        settings: CounterSettings,
+        settings: PulseCounterBuilder,
         mclk: &mut Mclk,
         evsys_channel: EvSysChannel<EvId, GenReady<EvSrc>>,
     ) -> Self {
