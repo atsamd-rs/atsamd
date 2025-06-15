@@ -7,6 +7,11 @@
 //! Theoretically, using this system, it is possible to count pulses up to 50Mhz,
 //! all without any CPU intervension.
 //!
+//! The Maximum pulse freqency that can be monitored can be derrived as follows:
+//! ```no_run
+//! min(GCLK_EIC, GCLK_TC_X)/2
+//! ```
+//!
 //! ## Example usage:
 //!
 //! ```no_run
