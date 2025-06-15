@@ -400,6 +400,15 @@ impl<I: PclkSourceId> core::convert::From<Pclk<$PclkId, I>> for $Type {
     }
 }
 
+$(#[$attr])*
+impl<I: PclkSourceId> core::convert::From<&Pclk<$PclkId, I>> for $Type {
+    fn from(pclk: &Pclk<$PclkId, I>) -> Self {
+        $Type {
+            freq: pclk.freq()
+        }
+    }
+}
+
 
 )+
 
