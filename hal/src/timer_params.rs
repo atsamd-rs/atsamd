@@ -38,13 +38,21 @@ impl TimerParams {
 
         let cycles: u32 = ticks / divider;
 
-        if cycles > u16::MAX as u32 {
-            panic!("cycles {} is out of range for a 16 bit counter", cycles);
-        }
-
         TimerParams {
             divider: divider as u16,
             cycles,
+        }
+    }
+
+    /// Returns the number of required `cycles` as a `u16` and panics if the
+    /// number is too high to fit.
+    pub fn check_cycles_u16(&self) -> u16 {
+        match u16::try_from(self.cycles) {
+            Ok(c) => c,
+            Err(_) => panic!(
+                "cycles {} is out of range for a 16 bit counter",
+                self.cycles
+            ),
         }
     }
 }
