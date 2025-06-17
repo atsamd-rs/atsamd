@@ -5,15 +5,17 @@ authors = ["Ben Bergman <ben@benbergman.ca>"]
 description = "Board Support crate for the Adafruit ItsyBitsy M0"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
-edition = "2021"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 bitbang-hal = "0.3"
 apa102-spi = "0.3"
-embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
+embedded-hal-02 = { package = "embedded-hal", version = "0.2", features = ["unproven"] }
 smart-leds = "0.3"
 
 [dependencies.cortex-m-rt]
@@ -34,7 +36,7 @@ optional = true
 
 [dev-dependencies]
 cortex-m-rtic = "1.0"
-cortex-m = {version = "0.7", features = ["critical-section-single-core"]}
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
 usbd-serial = "0.2.2"
 usbd-hid = "0.8.2"
 cortex-m-semihosting = "0.3"

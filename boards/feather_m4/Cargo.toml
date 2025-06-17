@@ -3,13 +3,15 @@ authors = ["Theodore DeRego <tderego94@gmail.com>"]
 categories = ["embedded", "hardware-support", "no-std"]
 description = "Board Support crate for the Adafruit Feather M4"
 documentation = "https://atsamd-rs.github.io/atsamd/atsamd51j/feather_m4/"
-edition = "2021"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
-license = "MIT OR Apache-2.0"
 name = "feather_m4"
-readme = "README.md"
-repository = "https://github.com/atsamd-rs/atsamd"
 version = "0.17.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 # for cargo flash
 [package.metadata]
@@ -37,7 +39,7 @@ heapless = "0.7"
 panic-halt = "0.2"
 cortex-m-semihosting = "0.5.0"
 panic-semihosting = "0.5"
-rtic = {version = "2.1.1", features = ["thumbv7-backend"]}
+rtic = { version = "2.1.1", features = ["thumbv7-backend"] }
 smart-leds = "0.3"
 usbd-serial = "0.2"
 ws2812-timer-delay = "0.3"

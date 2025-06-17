@@ -5,10 +5,12 @@ authors = ["Jens Andersen <jens.andersen@gmail.com>"]
 description = "Board Support crate for the Serpente board"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
-edition = "2021"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies.panic-semihosting]
 version = "0.6"

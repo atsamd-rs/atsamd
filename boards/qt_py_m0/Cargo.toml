@@ -5,10 +5,12 @@ authors = ["Garret Kelly <gkelly@gkel.ly>"]
 description = "Board Support crate for the Adafruit QT Py"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/atsamd-rs/atsamd"
-readme = "README.md"
-edition = "2018"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
 
 [dependencies]
 cortex-m-rt = { version = "0.7", optional = true }
