@@ -37,6 +37,7 @@ version = "0.3.1"
 [dev-dependencies]
 heapless = "0.7"
 panic-halt = "0.2"
+cortex-m-semihosting = "0.5.0"
 panic-semihosting = "0.5"
 rtic = { version = "2.1.1", features = ["thumbv7-backend"] }
 smart-leds = "0.3"
@@ -54,6 +55,9 @@ usb = ["atsamd-hal/usb", "usb-device"]
 # Enable async support from atsamd-hal
 async = ["atsamd-hal/async"]
 use_semihosting = []
+
+[[example]]
+name = "adc"
 
 [[example]]
 name = "blinky_basic"

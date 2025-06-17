@@ -86,26 +86,6 @@ name = "clock_out"
 name = "ferris_img"
 
 [[example]]
-name = "neopixel_adc_battery"
-required-features = ["neopixel-spi"]
-
-[[example]]
-name = "neopixel_adc_light"
-required-features = ["neopixel-spi"]
-
-[[example]]
-name = "neopixel_button"
-required-features = ["neopixel-spi"]
-
-[[example]]
-name = "neopixel_easing"
-required-features = ["neopixel-spi"]
-
-[[example]]
-name = "neopixel_rainbow"
-required-features = ["neopixel-spi"]
-
-[[example]]
 name = "pwm_tc4"
 
 [[example]]

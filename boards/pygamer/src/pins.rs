@@ -31,7 +31,6 @@ hal::bsp_peripherals!(
 pub use crate::buttons::ButtonReader;
 pub use crate::buttons::Keys;
 use hal::pwm::Pwm2;
-use pac::{Adc0, Adc1};
 
 /// Pin constants and type aliases
 pub use aliases::*;
@@ -930,13 +929,13 @@ pub struct JoystickReader {
 impl JoystickReader {
     /// returns a tuple (x,y) where values are 12 bit, between 0-4095
     /// values are NOT centered, but could be by subtracting 2048
-    pub fn read(&mut self, adc: &mut hal::adc::Adc<Adc1>) -> (u16, u16) {
+    pub fn read(&mut self, adc: &mut hal::adc::Adc<hal::adc::Adc1>) -> (u16, u16) {
         //note adafruit averages 3 readings on x and y (not inside the adc) seems
         // unnecessary? note adafruit recenters around zero.. Im not doing that
         // either atm.
 
-        let y_data: u16 = adc.read(&mut self.joy_y).unwrap();
-        let x_data: u16 = adc.read(&mut self.joy_x).unwrap();
+        let y_data: u16 = adc.read(&mut self.joy_y);
+        let x_data: u16 = adc.read(&mut self.joy_x);
 
         (x_data, y_data)
     }
@@ -969,8 +968,8 @@ pub struct BatteryReader {
 
 impl BatteryReader {
     /// Returns a float for voltage of battery
-    pub fn read(&mut self, adc: &mut hal::adc::Adc<Adc0>) -> f32 {
-        let data: u16 = adc.read(&mut self.battery).unwrap();
+    pub fn read(&mut self, adc: &mut hal::adc::Adc<hal::adc::Adc0>) -> f32 {
+        let data: u16 = adc.read(&mut self.battery);
         let result: f32 = (data as f32 / 4095.0) * 2.0 * 3.3;
         result
     }
