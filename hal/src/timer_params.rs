@@ -9,20 +9,30 @@ pub struct TimerParams {
 }
 
 impl TimerParams {
-    /// calculates TimerParams from a given frequency based timeout.
+    /// Calculates the [`TimerParams`] from a given frequency based timeout.
+    ///
+    /// Panics if the combination of `timeout` and `src_freq` cannot be done
+    /// with a 16-bit timer.
     pub fn new(timeout: Hertz, src_freq: Hertz) -> Self {
         let ticks: u32 = src_freq.to_Hz() / timeout.to_Hz().max(1);
-        Self::new_from_ticks(ticks)
+        let ret = Self::new_from_ticks(ticks);
+        ret.check_cycles_u16();
+        ret
     }
 
-    /// calculates TimerParams from a given period based timeout.
+    /// Calculates the [`TimerParams`] from a given period based timeout.
+    ///
+    /// Panics if the combination of `timeout` and `src_freq` cannot be done
+    /// with a 16-bit timer.
     pub fn new_ns(timeout: Nanoseconds, src_freq: Hertz) -> Self {
         let ticks: u32 =
             (timeout.to_nanos() as u64 * src_freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
-        Self::new_from_ticks(ticks)
+        let ret = Self::new_from_ticks(ticks);
+        ret.check_cycles_u16();
+        ret
     }
 
-    fn new_from_ticks(ticks: u32) -> Self {
+    pub(crate) fn new_from_ticks(ticks: u32) -> Self {
         let divider = ((ticks >> 16) + 1).next_power_of_two();
         let divider = match divider {
             1 | 2 | 4 | 8 | 16 | 64 | 256 | 1024 => divider,
@@ -46,7 +56,7 @@ impl TimerParams {
 
     /// Returns the number of required `cycles` as a `u16` and panics if the
     /// number is too high to fit.
-    pub fn check_cycles_u16(&self) -> u16 {
+    pub(crate) fn check_cycles_u16(&self) -> u16 {
         match u16::try_from(self.cycles) {
             Ok(c) => c,
             Err(_) => panic!(

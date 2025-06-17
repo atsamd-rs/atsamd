@@ -85,7 +85,8 @@ where
     TC: Count16,
 {
     fn delay_ns(&mut self, ns: u32) {
-        let params = TimerParams::new_ns(NanosDurationU32::nanos(ns), self.freq);
+        let ticks: u32 = (ns as u64 * self.freq.to_Hz() as u64 / 1_000_000_000_u64) as u32;
+        let params = TimerParams::new_from_ticks(ticks);
 
         // The timer is is only 16 bits, so we may need to run it multiple times.
         let mut cycles = params.cycles;

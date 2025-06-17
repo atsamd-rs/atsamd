@@ -171,7 +171,7 @@ impl<I: PinId> $TYPE<I> {
             }
         });
         count.wave().write(|w| w.wavegen().mpwm());
-        count.cc(0).write(|w| unsafe { w.cc().bits(params.check_cycles_u16()) });
+        count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
         while count.syncbusy().read().cc0().bit_is_set() {}
         count.cc(1).write(|w| unsafe { w.cc().bits(0) });
         while count.syncbusy().read().cc1().bit_is_set() {}
@@ -214,7 +214,7 @@ impl<I: PinId> $TYPE<I> {
             });
         count.ctrla().modify(|_, w| w.enable().set_bit());
         while count.syncbusy().read().enable().bit_is_set() {}
-        count.cc(0).write(|w| unsafe { w.cc().bits(params.check_cycles_u16()) });
+        count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
         while count.syncbusy().read().cc0().bit_is_set() {}
     }
 }
@@ -595,7 +595,7 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
         });
         tcc.wave().write(|w| w.wavegen().npwm());
         while tcc.syncbusy().read().wave().bit_is_set() {}
-        tcc.per().write(|w| unsafe { w.bits(params.cycles) });
+        tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
         while tcc.syncbusy().read().per().bit_is_set() {}
         tcc.ctrla().modify(|_, w| w.enable().set_bit());
         while tcc.syncbusy().read().enable().bit_is_set() {}
@@ -667,7 +667,7 @@ impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
         });
         self.tcc.ctrla().modify(|_, w| w.enable().set_bit());
         while self.tcc.syncbusy().read().enable().bit_is_set() {}
-        self.tcc.per().write(|w| unsafe { w.bits(params.cycles) });
+        self.tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
         while self.tcc.syncbusy().read().per().bit() {}
     }
 }
