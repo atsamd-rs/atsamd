@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     + pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
     ```
 
+- [**breaking] Completely rewrite ADC module with async support ([#814](https://github.com/atsamd-rs/atsamd/pull/814))
+
 ### Fixed
 
 - Relax rules for when DMA channels can be added/removed to/from `Spi` and `SpiFuture` ([#883](https://github.com/atsamd-rs/atsamd/pull/883))
@@ -30,13 +32,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Improve watchdog start documentation ([#881](https://github.com/atsamd-rs/atsamd/pull/881))
 - SERCOM updates following IoSet refactor
 
 ## [0.21.3](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.2...atsamd-hal-0.21.3) - 2025-05-07
 
 ### Documentation
 
-- Improve watchdog start documentation ([#881](https://github.com/atsamd-rs/atsamd/pull/881))
 - Fix inconsistency in UART+async+DMA docs ([#849](https://github.com/atsamd-rs/atsamd/pull/849))
 
 ### Fixed
