@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Instruction Code"]
     #[inline(always)]
-    #[must_use]
     pub fn instr(&mut self) -> InstrW<InstrctrlSpec> {
         InstrW::new(self, 0)
     }
     #[doc = "Bits 16:23 - Option Code"]
     #[inline(always)]
-    #[must_use]
     pub fn optcode(&mut self) -> OptcodeW<InstrctrlSpec> {
         OptcodeW::new(self, 16)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for InstrctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`instrctrl::W`](W) writer structure"]
 impl crate::Writable for InstrctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INSTRCTRL to value 0"]
-impl crate::Resettable for InstrctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for InstrctrlSpec {}

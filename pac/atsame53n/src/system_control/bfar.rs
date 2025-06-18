@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Address that generated the BusFault"]
     #[inline(always)]
-    #[must_use]
     pub fn address(&mut self) -> AddressW<BfarSpec> {
         AddressW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for BfarSpec {}
 #[doc = "`write(|w| ..)` method takes [`bfar::W`](W) writer structure"]
 impl crate::Writable for BfarSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets BFAR to value 0"]
-impl crate::Resettable for BfarSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BfarSpec {}

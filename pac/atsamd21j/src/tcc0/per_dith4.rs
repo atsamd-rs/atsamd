@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Dithering Cycle Number"]
     #[inline(always)]
-    #[must_use]
     pub fn dithercy(&mut self) -> DithercyW<PerDith4Spec> {
         DithercyW::new(self, 0)
     }
     #[doc = "Bits 4:23 - Period Value"]
     #[inline(always)]
-    #[must_use]
     pub fn per(&mut self) -> PerW<PerDith4Spec> {
         PerW::new(self, 4)
     }
@@ -46,8 +44,6 @@ impl crate::Readable for PerDith4Spec {}
 #[doc = "`write(|w| ..)` method takes [`per_dith4::W`](W) writer structure"]
 impl crate::Writable for PerDith4Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets PER_DITH4 to value 0xffff_ffff"]
 impl crate::Resettable for PerDith4Spec {

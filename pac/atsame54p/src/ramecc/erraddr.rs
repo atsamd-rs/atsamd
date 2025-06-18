@@ -17,6 +17,4 @@ impl crate::RegisterSpec for ErraddrSpec {
 #[doc = "`read()` method returns [`erraddr::R`](R) reader structure"]
 impl crate::Readable for ErraddrSpec {}
 #[doc = "`reset()` method sets ERRADDR to value 0"]
-impl crate::Resettable for ErraddrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ErraddrSpec {}

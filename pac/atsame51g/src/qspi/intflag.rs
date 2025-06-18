@@ -61,37 +61,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Receive Data Register Full"]
     #[inline(always)]
-    #[must_use]
     pub fn rxc(&mut self) -> RxcW<IntflagSpec> {
         RxcW::new(self, 0)
     }
     #[doc = "Bit 1 - Transmit Data Register Empty"]
     #[inline(always)]
-    #[must_use]
     pub fn dre(&mut self) -> DreW<IntflagSpec> {
         DreW::new(self, 1)
     }
     #[doc = "Bit 2 - Transmission Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn txc(&mut self) -> TxcW<IntflagSpec> {
         TxcW::new(self, 2)
     }
     #[doc = "Bit 3 - Overrun Error"]
     #[inline(always)]
-    #[must_use]
     pub fn error(&mut self) -> ErrorW<IntflagSpec> {
         ErrorW::new(self, 3)
     }
     #[doc = "Bit 8 - Chip Select Rise"]
     #[inline(always)]
-    #[must_use]
     pub fn csrise(&mut self) -> CsriseW<IntflagSpec> {
         CsriseW::new(self, 8)
     }
     #[doc = "Bit 10 - Instruction End"]
     #[inline(always)]
-    #[must_use]
     pub fn instrend(&mut self) -> InstrendW<IntflagSpec> {
         InstrendW::new(self, 10)
     }
@@ -106,10 +100,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

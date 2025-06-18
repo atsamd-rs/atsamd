@@ -257,37 +257,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Internal Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn intclken(&mut self) -> IntclkenW<CcrSpec> {
         IntclkenW::new(self, 0)
     }
     #[doc = "Bit 1 - Internal Clock Stable"]
     #[inline(always)]
-    #[must_use]
     pub fn intclks(&mut self) -> IntclksW<CcrSpec> {
         IntclksW::new(self, 1)
     }
     #[doc = "Bit 2 - SD Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sdclken(&mut self) -> SdclkenW<CcrSpec> {
         SdclkenW::new(self, 2)
     }
     #[doc = "Bit 5 - Clock Generator Select"]
     #[inline(always)]
-    #[must_use]
     pub fn clkgsel(&mut self) -> ClkgselW<CcrSpec> {
         ClkgselW::new(self, 5)
     }
     #[doc = "Bits 6:7 - Upper Bits of SDCLK Frequency Select"]
     #[inline(always)]
-    #[must_use]
     pub fn usdclkfsel(&mut self) -> UsdclkfselW<CcrSpec> {
         UsdclkfselW::new(self, 6)
     }
     #[doc = "Bits 8:15 - SDCLK Frequency Select"]
     #[inline(always)]
-    #[must_use]
     pub fn sdclkfsel(&mut self) -> SdclkfselW<CcrSpec> {
         SdclkfselW::new(self, 8)
     }
@@ -302,10 +296,6 @@ impl crate::Readable for CcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`ccr::W`](W) writer structure"]
 impl crate::Writable for CcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CCR to value 0"]
-impl crate::Resettable for CcrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CcrSpec {}

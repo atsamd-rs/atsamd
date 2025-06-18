@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Baud Rate Value"]
     #[inline(always)]
-    #[must_use]
     pub fn baud(&mut self) -> BaudW<BaudSpec> {
         BaudW::new(self, 0)
     }
     #[doc = "Bits 8:15 - Baud Rate Value Low"]
     #[inline(always)]
-    #[must_use]
     pub fn baudlow(&mut self) -> BaudlowW<BaudSpec> {
         BaudlowW::new(self, 8)
     }
     #[doc = "Bits 16:23 - High Speed Baud Rate Value"]
     #[inline(always)]
-    #[must_use]
     pub fn hsbaud(&mut self) -> HsbaudW<BaudSpec> {
         HsbaudW::new(self, 16)
     }
     #[doc = "Bits 24:31 - High Speed Baud Rate Value Low"]
     #[inline(always)]
-    #[must_use]
     pub fn hsbaudlow(&mut self) -> HsbaudlowW<BaudSpec> {
         HsbaudlowW::new(self, 24)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for BaudSpec {}
 #[doc = "`write(|w| ..)` method takes [`baud::W`](W) writer structure"]
 impl crate::Writable for BaudSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets BAUD to value 0"]
-impl crate::Resettable for BaudSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BaudSpec {}

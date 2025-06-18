@@ -239,55 +239,46 @@ impl R {
 impl W {
     #[doc = "Bit 2 - Auto Wait State Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn autows(&mut self) -> AutowsW<CtrlaSpec> {
         AutowsW::new(self, 2)
     }
     #[doc = "Bit 3 - Suspend Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn suspen(&mut self) -> SuspenW<CtrlaSpec> {
         SuspenW::new(self, 3)
     }
     #[doc = "Bits 4:5 - Write Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn wmode(&mut self) -> WmodeW<CtrlaSpec> {
         WmodeW::new(self, 4)
     }
     #[doc = "Bits 6:7 - Power Reduction Mode during Sleep"]
     #[inline(always)]
-    #[must_use]
     pub fn prm(&mut self) -> PrmW<CtrlaSpec> {
         PrmW::new(self, 6)
     }
     #[doc = "Bits 8:11 - NVM Read Wait States"]
     #[inline(always)]
-    #[must_use]
     pub fn rws(&mut self) -> RwsW<CtrlaSpec> {
         RwsW::new(self, 8)
     }
     #[doc = "Bit 12 - Force AHB0 access to NONSEQ, burst transfers are continuously rearbitrated"]
     #[inline(always)]
-    #[must_use]
     pub fn ahbns0(&mut self) -> Ahbns0W<CtrlaSpec> {
         Ahbns0W::new(self, 12)
     }
     #[doc = "Bit 13 - Force AHB1 access to NONSEQ, burst transfers are continuously rearbitrated"]
     #[inline(always)]
-    #[must_use]
     pub fn ahbns1(&mut self) -> Ahbns1W<CtrlaSpec> {
         Ahbns1W::new(self, 13)
     }
     #[doc = "Bit 14 - AHB0 Cache Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn cachedis0(&mut self) -> Cachedis0W<CtrlaSpec> {
         Cachedis0W::new(self, 14)
     }
     #[doc = "Bit 15 - AHB1 Cache Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn cachedis1(&mut self) -> Cachedis1W<CtrlaSpec> {
         Cachedis1W::new(self, 15)
     }
@@ -302,8 +293,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0x04"]
 impl crate::Resettable for CtrlaSpec {

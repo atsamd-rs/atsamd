@@ -151,97 +151,81 @@ impl R {
 impl W {
     #[doc = "Bit 0 - External Interrupt 0 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo0(&mut self) -> Extinteo0W<EvctrlSpec> {
         Extinteo0W::new(self, 0)
     }
     #[doc = "Bit 1 - External Interrupt 1 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo1(&mut self) -> Extinteo1W<EvctrlSpec> {
         Extinteo1W::new(self, 1)
     }
     #[doc = "Bit 2 - External Interrupt 2 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo2(&mut self) -> Extinteo2W<EvctrlSpec> {
         Extinteo2W::new(self, 2)
     }
     #[doc = "Bit 3 - External Interrupt 3 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo3(&mut self) -> Extinteo3W<EvctrlSpec> {
         Extinteo3W::new(self, 3)
     }
     #[doc = "Bit 4 - External Interrupt 4 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo4(&mut self) -> Extinteo4W<EvctrlSpec> {
         Extinteo4W::new(self, 4)
     }
     #[doc = "Bit 5 - External Interrupt 5 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo5(&mut self) -> Extinteo5W<EvctrlSpec> {
         Extinteo5W::new(self, 5)
     }
     #[doc = "Bit 6 - External Interrupt 6 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo6(&mut self) -> Extinteo6W<EvctrlSpec> {
         Extinteo6W::new(self, 6)
     }
     #[doc = "Bit 7 - External Interrupt 7 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo7(&mut self) -> Extinteo7W<EvctrlSpec> {
         Extinteo7W::new(self, 7)
     }
     #[doc = "Bit 8 - External Interrupt 8 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo8(&mut self) -> Extinteo8W<EvctrlSpec> {
         Extinteo8W::new(self, 8)
     }
     #[doc = "Bit 9 - External Interrupt 9 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo9(&mut self) -> Extinteo9W<EvctrlSpec> {
         Extinteo9W::new(self, 9)
     }
     #[doc = "Bit 10 - External Interrupt 10 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo10(&mut self) -> Extinteo10W<EvctrlSpec> {
         Extinteo10W::new(self, 10)
     }
     #[doc = "Bit 11 - External Interrupt 11 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo11(&mut self) -> Extinteo11W<EvctrlSpec> {
         Extinteo11W::new(self, 11)
     }
     #[doc = "Bit 12 - External Interrupt 12 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo12(&mut self) -> Extinteo12W<EvctrlSpec> {
         Extinteo12W::new(self, 12)
     }
     #[doc = "Bit 13 - External Interrupt 13 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo13(&mut self) -> Extinteo13W<EvctrlSpec> {
         Extinteo13W::new(self, 13)
     }
     #[doc = "Bit 14 - External Interrupt 14 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo14(&mut self) -> Extinteo14W<EvctrlSpec> {
         Extinteo14W::new(self, 14)
     }
     #[doc = "Bit 15 - External Interrupt 15 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn extinteo15(&mut self) -> Extinteo15W<EvctrlSpec> {
         Extinteo15W::new(self, 15)
     }
@@ -256,10 +240,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

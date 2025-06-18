@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 1 - BusFault on a Vector Table read during exception processing"]
     #[inline(always)]
-    #[must_use]
     pub fn vecttbl(&mut self) -> VecttblW<HfsrSpec> {
         VecttblW::new(self, 1)
     }
     #[doc = "Bit 30 - Forced Hard Fault"]
     #[inline(always)]
-    #[must_use]
     pub fn forced(&mut self) -> ForcedW<HfsrSpec> {
         ForcedW::new(self, 30)
     }
     #[doc = "Bit 31 - Debug: always write 0"]
     #[inline(always)]
-    #[must_use]
     pub fn debugevt(&mut self) -> DebugevtW<HfsrSpec> {
         DebugevtW::new(self, 31)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for HfsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`hfsr::W`](W) writer structure"]
 impl crate::Writable for HfsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets HFSR to value 0"]
-impl crate::Resettable for HfsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for HfsrSpec {}

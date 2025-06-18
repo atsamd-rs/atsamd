@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Channel Overrun Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovr(&mut self) -> OvrW<ChintensetSpec> {
         OvrW::new(self, 0)
     }
     #[doc = "Bit 1 - Channel Event Detected Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn evd(&mut self) -> EvdW<ChintensetSpec> {
         EvdW::new(self, 1)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for ChintensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`chintenset::W`](W) writer structure"]
 impl crate::Writable for ChintensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHINTENSET to value 0"]
-impl crate::Resettable for ChintensetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ChintensetSpec {}

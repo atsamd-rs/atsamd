@@ -103,19 +103,16 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Instruction Cache Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn icdis(&mut self) -> IcdisW<CfgSpec> {
         IcdisW::new(self, 1)
     }
     #[doc = "Bit 2 - Data Cache Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn dcdis(&mut self) -> DcdisW<CfgSpec> {
         DcdisW::new(self, 2)
     }
     #[doc = "Bits 4:6 - Cache size configured by software"]
     #[inline(always)]
-    #[must_use]
     pub fn csizesw(&mut self) -> CsizeswW<CfgSpec> {
         CsizeswW::new(self, 4)
     }
@@ -130,8 +127,6 @@ impl crate::Readable for CfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`cfg::W`](W) writer structure"]
 impl crate::Writable for CfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CFG to value 0x20"]
 impl crate::Resettable for CfgSpec {

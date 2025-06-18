@@ -59,6 +59,4 @@ impl crate::RegisterSpec for ImrSpec {
 #[doc = "`read()` method returns [`imr::R`](R) reader structure"]
 impl crate::Readable for ImrSpec {}
 #[doc = "`reset()` method sets IMR to value 0"]
-impl crate::Resettable for ImrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ImrSpec {}

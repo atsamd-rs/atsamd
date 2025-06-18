@@ -342,61 +342,51 @@ impl R {
 impl W {
     #[doc = "Bits 0:8 - Active exception number"]
     #[inline(always)]
-    #[must_use]
     pub fn vectactive(&mut self) -> VectactiveW<IcsrSpec> {
         VectactiveW::new(self, 0)
     }
     #[doc = "Bit 11 - No preempted active exceptions to execute"]
     #[inline(always)]
-    #[must_use]
     pub fn rettobase(&mut self) -> RettobaseW<IcsrSpec> {
         RettobaseW::new(self, 11)
     }
     #[doc = "Bits 12:17 - Exception number of the highest priority pending enabled exception"]
     #[inline(always)]
-    #[must_use]
     pub fn vectpending(&mut self) -> VectpendingW<IcsrSpec> {
         VectpendingW::new(self, 12)
     }
     #[doc = "Bit 22 - Interrupt pending flag"]
     #[inline(always)]
-    #[must_use]
     pub fn isrpending(&mut self) -> IsrpendingW<IcsrSpec> {
         IsrpendingW::new(self, 22)
     }
     #[doc = "Bit 23 - Debug only"]
     #[inline(always)]
-    #[must_use]
     pub fn isrpreempt(&mut self) -> IsrpreemptW<IcsrSpec> {
         IsrpreemptW::new(self, 23)
     }
     #[doc = "Bit 25 - SysTick clear-pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn pendstclr(&mut self) -> PendstclrW<IcsrSpec> {
         PendstclrW::new(self, 25)
     }
     #[doc = "Bit 26 - SysTick set-pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn pendstset(&mut self) -> PendstsetW<IcsrSpec> {
         PendstsetW::new(self, 26)
     }
     #[doc = "Bit 27 - PendSV clear-pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn pendsvclr(&mut self) -> PendsvclrW<IcsrSpec> {
         PendsvclrW::new(self, 27)
     }
     #[doc = "Bit 28 - PendSV set-pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn pendsvset(&mut self) -> PendsvsetW<IcsrSpec> {
         PendsvsetW::new(self, 28)
     }
     #[doc = "Bit 31 - NMI set-pending bit"]
     #[inline(always)]
-    #[must_use]
     pub fn nmipendset(&mut self) -> NmipendsetW<IcsrSpec> {
         NmipendsetW::new(self, 31)
     }
@@ -411,10 +401,6 @@ impl crate::Readable for IcsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`icsr::W`](W) writer structure"]
 impl crate::Writable for IcsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ICSR to value 0"]
-impl crate::Resettable for IcsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IcsrSpec {}

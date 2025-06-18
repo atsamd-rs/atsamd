@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Operating Mode Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<DfllctrlbSpec> {
         ModeW::new(self, 0)
     }
     #[doc = "Bit 1 - Stable DFLL Frequency"]
     #[inline(always)]
-    #[must_use]
     pub fn stable(&mut self) -> StableW<DfllctrlbSpec> {
         StableW::new(self, 1)
     }
     #[doc = "Bit 2 - Lose Lock After Wake"]
     #[inline(always)]
-    #[must_use]
     pub fn llaw(&mut self) -> LlawW<DfllctrlbSpec> {
         LlawW::new(self, 2)
     }
     #[doc = "Bit 3 - USB Clock Recovery Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn usbcrm(&mut self) -> UsbcrmW<DfllctrlbSpec> {
         UsbcrmW::new(self, 3)
     }
     #[doc = "Bit 4 - Chill Cycle Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn ccdis(&mut self) -> CcdisW<DfllctrlbSpec> {
         CcdisW::new(self, 4)
     }
     #[doc = "Bit 5 - Quick Lock Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn qldis(&mut self) -> QldisW<DfllctrlbSpec> {
         QldisW::new(self, 5)
     }
     #[doc = "Bit 6 - Bypass Coarse Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn bplckc(&mut self) -> BplckcW<DfllctrlbSpec> {
         BplckcW::new(self, 6)
     }
     #[doc = "Bit 7 - Wait Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn waitlock(&mut self) -> WaitlockW<DfllctrlbSpec> {
         WaitlockW::new(self, 7)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for DfllctrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`dfllctrlb::W`](W) writer structure"]
 impl crate::Writable for DfllctrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets DFLLCTRLB to value 0"]
-impl crate::Resettable for DfllctrlbSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DfllctrlbSpec {}

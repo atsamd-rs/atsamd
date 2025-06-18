@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 2:31 - Receive Buffer Queue Base Address"]
     #[inline(always)]
-    #[must_use]
     pub fn addr(&mut self) -> AddrW<RbqbSpec> {
         AddrW::new(self, 2)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for RbqbSpec {}
 #[doc = "`write(|w| ..)` method takes [`rbqb::W`](W) writer structure"]
 impl crate::Writable for RbqbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RBQB to value 0"]
-impl crate::Resettable for RbqbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RbqbSpec {}

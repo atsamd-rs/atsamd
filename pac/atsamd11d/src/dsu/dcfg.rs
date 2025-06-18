@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Device Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn dcfg(&mut self) -> DcfgW<DcfgSpec> {
         DcfgW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for DcfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`dcfg::W`](W) writer structure"]
 impl crate::Writable for DcfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DCFG%s to value 0"]
-impl crate::Resettable for DcfgSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DcfgSpec {}

@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 7:31 - Hash Area Start Address"]
     #[inline(always)]
-    #[must_use]
     pub fn hasa(&mut self) -> HasaW<HashSpec> {
         HasaW::new(self, 7)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for HashSpec {}
 #[doc = "`write(|w| ..)` method takes [`hash::W`](W) writer structure"]
 impl crate::Writable for HashSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets HASH to value 0"]
-impl crate::Resettable for HashSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for HashSpec {}

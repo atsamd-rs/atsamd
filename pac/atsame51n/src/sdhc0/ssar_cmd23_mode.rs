@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Argument 2"]
     #[inline(always)]
-    #[must_use]
     pub fn arg2(&mut self) -> Arg2W<SsarCmd23ModeSpec> {
         Arg2W::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for SsarCmd23ModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`ssar_cmd23_mode::W`](W) writer structure"]
 impl crate::Writable for SsarCmd23ModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SSAR_CMD23_MODE to value 0"]
-impl crate::Resettable for SsarCmd23ModeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for SsarCmd23ModeSpec {}

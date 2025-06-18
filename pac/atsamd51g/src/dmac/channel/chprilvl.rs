@@ -98,7 +98,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Channel Priority Level"]
     #[inline(always)]
-    #[must_use]
     pub fn prilvl(&mut self) -> PrilvlW<ChprilvlSpec> {
         PrilvlW::new(self, 0)
     }
@@ -113,10 +112,6 @@ impl crate::Readable for ChprilvlSpec {}
 #[doc = "`write(|w| ..)` method takes [`chprilvl::W`](W) writer structure"]
 impl crate::Writable for ChprilvlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHPRILVL to value 0"]
-impl crate::Resettable for ChprilvlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for ChprilvlSpec {}

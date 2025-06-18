@@ -214,67 +214,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:4 - Operating Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlaSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bit 7 - Run during Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 7)
     }
     #[doc = "Bit 8 - Immediate Buffer Overflow Notification"]
     #[inline(always)]
-    #[must_use]
     pub fn ibon(&mut self) -> IbonW<CtrlaSpec> {
         IbonW::new(self, 8)
     }
     #[doc = "Bits 16:17 - Data Out Pinout"]
     #[inline(always)]
-    #[must_use]
     pub fn dopo(&mut self) -> DopoW<CtrlaSpec> {
         DopoW::new(self, 16)
     }
     #[doc = "Bits 20:21 - Data In Pinout"]
     #[inline(always)]
-    #[must_use]
     pub fn dipo(&mut self) -> DipoW<CtrlaSpec> {
         DipoW::new(self, 20)
     }
     #[doc = "Bits 24:27 - Frame Format"]
     #[inline(always)]
-    #[must_use]
     pub fn form(&mut self) -> FormW<CtrlaSpec> {
         FormW::new(self, 24)
     }
     #[doc = "Bit 28 - Clock Phase"]
     #[inline(always)]
-    #[must_use]
     pub fn cpha(&mut self) -> CphaW<CtrlaSpec> {
         CphaW::new(self, 28)
     }
     #[doc = "Bit 29 - Clock Polarity"]
     #[inline(always)]
-    #[must_use]
     pub fn cpol(&mut self) -> CpolW<CtrlaSpec> {
         CpolW::new(self, 29)
     }
     #[doc = "Bit 30 - Data Order"]
     #[inline(always)]
-    #[must_use]
     pub fn dord(&mut self) -> DordW<CtrlaSpec> {
         DordW::new(self, 30)
     }
@@ -289,10 +278,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

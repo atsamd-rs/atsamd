@@ -17,6 +17,4 @@ impl crate::RegisterSpec for TurSpec {
 #[doc = "`read()` method returns [`tur::R`](R) reader structure"]
 impl crate::Readable for TurSpec {}
 #[doc = "`reset()` method sets TUR to value 0"]
-impl crate::Resettable for TurSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TurSpec {}

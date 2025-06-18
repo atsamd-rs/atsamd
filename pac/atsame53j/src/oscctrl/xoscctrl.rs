@@ -487,73 +487,61 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Oscillator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<XoscctrlSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - Crystal Oscillator Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn xtalen(&mut self) -> XtalenW<XoscctrlSpec> {
         XtalenW::new(self, 2)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<XoscctrlSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - On Demand Control"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<XoscctrlSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bit 8 - Low Buffer Gain Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lowbufgain(&mut self) -> LowbufgainW<XoscctrlSpec> {
         LowbufgainW::new(self, 8)
     }
     #[doc = "Bits 9:10 - Oscillator Current Reference"]
     #[inline(always)]
-    #[must_use]
     pub fn iptat(&mut self) -> IptatW<XoscctrlSpec> {
         IptatW::new(self, 9)
     }
     #[doc = "Bits 11:14 - Oscillator Current Multiplier"]
     #[inline(always)]
-    #[must_use]
     pub fn imult(&mut self) -> ImultW<XoscctrlSpec> {
         ImultW::new(self, 11)
     }
     #[doc = "Bit 15 - Automatic Loop Control Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enalc(&mut self) -> EnalcW<XoscctrlSpec> {
         EnalcW::new(self, 15)
     }
     #[doc = "Bit 16 - Clock Failure Detector Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cfden(&mut self) -> CfdenW<XoscctrlSpec> {
         CfdenW::new(self, 16)
     }
     #[doc = "Bit 17 - Xosc Clock Switch Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn swben(&mut self) -> SwbenW<XoscctrlSpec> {
         SwbenW::new(self, 17)
     }
     #[doc = "Bits 20:23 - Start-Up Time"]
     #[inline(always)]
-    #[must_use]
     pub fn startup(&mut self) -> StartupW<XoscctrlSpec> {
         StartupW::new(self, 20)
     }
     #[doc = "Bits 24:27 - Clock Failure Detector Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn cfdpresc(&mut self) -> CfdprescW<XoscctrlSpec> {
         CfdprescW::new(self, 24)
     }
@@ -568,11 +556,8 @@ impl crate::Readable for XoscctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`xoscctrl::W`](W) writer structure"]
 impl crate::Writable for XoscctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets XOSCCTRL[%s]
-to value 0x80"]
+#[doc = "`reset()` method sets XOSCCTRL[%s] to value 0x80"]
 impl crate::Resettable for XoscctrlSpec {
     const RESET_VALUE: u32 = 0x80;
 }

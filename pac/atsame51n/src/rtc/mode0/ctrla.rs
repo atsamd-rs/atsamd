@@ -334,49 +334,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Operating Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlaSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bit 7 - Clear on Match"]
     #[inline(always)]
-    #[must_use]
     pub fn matchclr(&mut self) -> MatchclrW<CtrlaSpec> {
         MatchclrW::new(self, 7)
     }
     #[doc = "Bits 8:11 - Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler(&mut self) -> PrescalerW<CtrlaSpec> {
         PrescalerW::new(self, 8)
     }
     #[doc = "Bit 13 - BKUP Registers Reset On Tamper Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bktrst(&mut self) -> BktrstW<CtrlaSpec> {
         BktrstW::new(self, 13)
     }
     #[doc = "Bit 14 - GP Registers Reset On Tamper Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn gptrst(&mut self) -> GptrstW<CtrlaSpec> {
         GptrstW::new(self, 14)
     }
     #[doc = "Bit 15 - Count Read Synchronization Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn countsync(&mut self) -> CountsyncW<CtrlaSpec> {
         CountsyncW::new(self, 15)
     }
@@ -391,10 +383,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

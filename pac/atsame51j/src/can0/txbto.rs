@@ -234,6 +234,4 @@ impl crate::RegisterSpec for TxbtoSpec {
 #[doc = "`read()` method returns [`txbto::R`](R) reader structure"]
 impl crate::Readable for TxbtoSpec {}
 #[doc = "`reset()` method sets TXBTO to value 0"]
-impl crate::Resettable for TxbtoSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxbtoSpec {}

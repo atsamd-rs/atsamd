@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:11 - Gain Correction Value"]
     #[inline(always)]
-    #[must_use]
     pub fn gaincorr(&mut self) -> GaincorrW<GaincorrSpec> {
         GaincorrW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for GaincorrSpec {}
 #[doc = "`write(|w| ..)` method takes [`gaincorr::W`](W) writer structure"]
 impl crate::Writable for GaincorrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets GAINCORR to value 0"]
-impl crate::Resettable for GaincorrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for GaincorrSpec {}

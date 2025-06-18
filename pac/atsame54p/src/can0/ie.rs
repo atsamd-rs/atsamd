@@ -277,181 +277,151 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Rx FIFO 0 New Message Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rf0ne(&mut self) -> Rf0neW<IeSpec> {
         Rf0neW::new(self, 0)
     }
     #[doc = "Bit 1 - Rx FIFO 0 Watermark Reached Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rf0we(&mut self) -> Rf0weW<IeSpec> {
         Rf0weW::new(self, 1)
     }
     #[doc = "Bit 2 - Rx FIFO 0 Full Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rf0fe(&mut self) -> Rf0feW<IeSpec> {
         Rf0feW::new(self, 2)
     }
     #[doc = "Bit 3 - Rx FIFO 0 Message Lost Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rf0le(&mut self) -> Rf0leW<IeSpec> {
         Rf0leW::new(self, 3)
     }
     #[doc = "Bit 4 - Rx FIFO 1 New Message Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rf1ne(&mut self) -> Rf1neW<IeSpec> {
         Rf1neW::new(self, 4)
     }
     #[doc = "Bit 5 - Rx FIFO 1 Watermark Reached Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rf1we(&mut self) -> Rf1weW<IeSpec> {
         Rf1weW::new(self, 5)
     }
     #[doc = "Bit 6 - Rx FIFO 1 FIFO Full Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rf1fe(&mut self) -> Rf1feW<IeSpec> {
         Rf1feW::new(self, 6)
     }
     #[doc = "Bit 7 - Rx FIFO 1 Message Lost Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rf1le(&mut self) -> Rf1leW<IeSpec> {
         Rf1leW::new(self, 7)
     }
     #[doc = "Bit 8 - High Priority Message Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn hpme(&mut self) -> HpmeW<IeSpec> {
         HpmeW::new(self, 8)
     }
     #[doc = "Bit 9 - Timestamp Completed Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tce(&mut self) -> TceW<IeSpec> {
         TceW::new(self, 9)
     }
     #[doc = "Bit 10 - Transmission Cancellation Finished Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tcfe(&mut self) -> TcfeW<IeSpec> {
         TcfeW::new(self, 10)
     }
     #[doc = "Bit 11 - Tx FIFO Empty Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tfee(&mut self) -> TfeeW<IeSpec> {
         TfeeW::new(self, 11)
     }
     #[doc = "Bit 12 - Tx Event FIFO New Entry Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tefne(&mut self) -> TefneW<IeSpec> {
         TefneW::new(self, 12)
     }
     #[doc = "Bit 13 - Tx Event FIFO Watermark Reached Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tefwe(&mut self) -> TefweW<IeSpec> {
         TefweW::new(self, 13)
     }
     #[doc = "Bit 14 - Tx Event FIFO Full Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn teffe(&mut self) -> TeffeW<IeSpec> {
         TeffeW::new(self, 14)
     }
     #[doc = "Bit 15 - Tx Event FIFO Element Lost Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tefle(&mut self) -> TefleW<IeSpec> {
         TefleW::new(self, 15)
     }
     #[doc = "Bit 16 - Timestamp Wraparound Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tswe(&mut self) -> TsweW<IeSpec> {
         TsweW::new(self, 16)
     }
     #[doc = "Bit 17 - Message RAM Access Failure Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mrafe(&mut self) -> MrafeW<IeSpec> {
         MrafeW::new(self, 17)
     }
     #[doc = "Bit 18 - Timeout Occurred Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tooe(&mut self) -> TooeW<IeSpec> {
         TooeW::new(self, 18)
     }
     #[doc = "Bit 19 - Message stored to Dedicated Rx Buffer Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn drxe(&mut self) -> DrxeW<IeSpec> {
         DrxeW::new(self, 19)
     }
     #[doc = "Bit 20 - Bit Error Corrected Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bece(&mut self) -> BeceW<IeSpec> {
         BeceW::new(self, 20)
     }
     #[doc = "Bit 21 - Bit Error Uncorrected Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn beue(&mut self) -> BeueW<IeSpec> {
         BeueW::new(self, 21)
     }
     #[doc = "Bit 22 - Error Logging Overflow Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn eloe(&mut self) -> EloeW<IeSpec> {
         EloeW::new(self, 22)
     }
     #[doc = "Bit 23 - Error Passive Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn epe(&mut self) -> EpeW<IeSpec> {
         EpeW::new(self, 23)
     }
     #[doc = "Bit 24 - Warning Status Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ewe(&mut self) -> EweW<IeSpec> {
         EweW::new(self, 24)
     }
     #[doc = "Bit 25 - Bus_Off Status Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn boe(&mut self) -> BoeW<IeSpec> {
         BoeW::new(self, 25)
     }
     #[doc = "Bit 26 - Watchdog Interrupt Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wdie(&mut self) -> WdieW<IeSpec> {
         WdieW::new(self, 26)
     }
     #[doc = "Bit 27 - Protocol Error in Arbitration Phase Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn peae(&mut self) -> PeaeW<IeSpec> {
         PeaeW::new(self, 27)
     }
     #[doc = "Bit 28 - Protocol Error in Data Phase Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pede(&mut self) -> PedeW<IeSpec> {
         PedeW::new(self, 28)
     }
     #[doc = "Bit 29 - Access to Reserved Address Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn arae(&mut self) -> AraeW<IeSpec> {
         AraeW::new(self, 29)
     }
@@ -466,10 +436,6 @@ impl crate::Readable for IeSpec {}
 #[doc = "`write(|w| ..)` method takes [`ie::W`](W) writer structure"]
 impl crate::Writable for IeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets IE to value 0"]
-impl crate::Resettable for IeSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IeSpec {}

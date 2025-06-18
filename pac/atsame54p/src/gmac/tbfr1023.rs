@@ -17,6 +17,4 @@ impl crate::RegisterSpec for Tbfr1023Spec {
 #[doc = "`read()` method returns [`tbfr1023::R`](R) reader structure"]
 impl crate::Readable for Tbfr1023Spec {}
 #[doc = "`reset()` method sets TBFR1023 to value 0"]
-impl crate::Resettable for Tbfr1023Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Tbfr1023Spec {}

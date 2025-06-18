@@ -106,67 +106,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Done"]
     #[inline(always)]
-    #[must_use]
     pub fn done(&mut self) -> DoneW<IntflagSpec> {
         DoneW::new(self, 0)
     }
     #[doc = "Bit 1 - Address Error"]
     #[inline(always)]
-    #[must_use]
     pub fn addre(&mut self) -> AddreW<IntflagSpec> {
         AddreW::new(self, 1)
     }
     #[doc = "Bit 2 - Programming Error"]
     #[inline(always)]
-    #[must_use]
     pub fn proge(&mut self) -> ProgeW<IntflagSpec> {
         ProgeW::new(self, 2)
     }
     #[doc = "Bit 3 - Lock Error"]
     #[inline(always)]
-    #[must_use]
     pub fn locke(&mut self) -> LockeW<IntflagSpec> {
         LockeW::new(self, 3)
     }
     #[doc = "Bit 4 - ECC Single Error"]
     #[inline(always)]
-    #[must_use]
     pub fn eccse(&mut self) -> EccseW<IntflagSpec> {
         EccseW::new(self, 4)
     }
     #[doc = "Bit 5 - ECC Dual Error"]
     #[inline(always)]
-    #[must_use]
     pub fn eccde(&mut self) -> EccdeW<IntflagSpec> {
         EccdeW::new(self, 5)
     }
     #[doc = "Bit 6 - NVM Error"]
     #[inline(always)]
-    #[must_use]
     pub fn nvme(&mut self) -> NvmeW<IntflagSpec> {
         NvmeW::new(self, 6)
     }
     #[doc = "Bit 7 - Suspended Write Or Erase Operation"]
     #[inline(always)]
-    #[must_use]
     pub fn susp(&mut self) -> SuspW<IntflagSpec> {
         SuspW::new(self, 7)
     }
     #[doc = "Bit 8 - Active SEES Full"]
     #[inline(always)]
-    #[must_use]
     pub fn seesfull(&mut self) -> SeesfullW<IntflagSpec> {
         SeesfullW::new(self, 8)
     }
     #[doc = "Bit 9 - Active SEES Overflow"]
     #[inline(always)]
-    #[must_use]
     pub fn seesovf(&mut self) -> SeesovfW<IntflagSpec> {
         SeesovfW::new(self, 9)
     }
     #[doc = "Bit 10 - SEE Write Completed"]
     #[inline(always)]
-    #[must_use]
     pub fn seewrc(&mut self) -> SeewrcW<IntflagSpec> {
         SeewrcW::new(self, 10)
     }
@@ -181,10 +170,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

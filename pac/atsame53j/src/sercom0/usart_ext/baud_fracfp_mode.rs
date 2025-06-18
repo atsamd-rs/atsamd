@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:12 - Baud Rate Value"]
     #[inline(always)]
-    #[must_use]
     pub fn baud(&mut self) -> BaudW<BaudFracfpModeSpec> {
         BaudW::new(self, 0)
     }
     #[doc = "Bits 13:15 - Fractional Part"]
     #[inline(always)]
-    #[must_use]
     pub fn fp(&mut self) -> FpW<BaudFracfpModeSpec> {
         FpW::new(self, 13)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for BaudFracfpModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`baud_fracfp_mode::W`](W) writer structure"]
 impl crate::Writable for BaudFracfpModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets BAUD_FRACFP_MODE to value 0"]
-impl crate::Resettable for BaudFracfpModeSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for BaudFracfpModeSpec {}

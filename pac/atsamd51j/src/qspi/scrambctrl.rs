@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Scrambling/Unscrambling Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<ScrambctrlSpec> {
         EnableW::new(self, 0)
     }
     #[doc = "Bit 1 - Scrambling/Unscrambling Random Value Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn randomdis(&mut self) -> RandomdisW<ScrambctrlSpec> {
         RandomdisW::new(self, 1)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for ScrambctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`scrambctrl::W`](W) writer structure"]
 impl crate::Writable for ScrambctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets SCRAMBCTRL to value 0"]
-impl crate::Resettable for ScrambctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ScrambctrlSpec {}

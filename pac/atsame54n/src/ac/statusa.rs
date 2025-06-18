@@ -79,6 +79,4 @@ impl crate::RegisterSpec for StatusaSpec {
 #[doc = "`read()` method returns [`statusa::R`](R) reader structure"]
 impl crate::Readable for StatusaSpec {}
 #[doc = "`reset()` method sets STATUSA to value 0"]
-impl crate::Resettable for StatusaSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for StatusaSpec {}

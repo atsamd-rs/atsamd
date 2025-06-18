@@ -106,67 +106,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Periodic Interval 0 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pereo0(&mut self) -> Pereo0W<EvctrlSpec> {
         Pereo0W::new(self, 0)
     }
     #[doc = "Bit 1 - Periodic Interval 1 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pereo1(&mut self) -> Pereo1W<EvctrlSpec> {
         Pereo1W::new(self, 1)
     }
     #[doc = "Bit 2 - Periodic Interval 2 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pereo2(&mut self) -> Pereo2W<EvctrlSpec> {
         Pereo2W::new(self, 2)
     }
     #[doc = "Bit 3 - Periodic Interval 3 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pereo3(&mut self) -> Pereo3W<EvctrlSpec> {
         Pereo3W::new(self, 3)
     }
     #[doc = "Bit 4 - Periodic Interval 4 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pereo4(&mut self) -> Pereo4W<EvctrlSpec> {
         Pereo4W::new(self, 4)
     }
     #[doc = "Bit 5 - Periodic Interval 5 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pereo5(&mut self) -> Pereo5W<EvctrlSpec> {
         Pereo5W::new(self, 5)
     }
     #[doc = "Bit 6 - Periodic Interval 6 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pereo6(&mut self) -> Pereo6W<EvctrlSpec> {
         Pereo6W::new(self, 6)
     }
     #[doc = "Bit 7 - Periodic Interval 7 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pereo7(&mut self) -> Pereo7W<EvctrlSpec> {
         Pereo7W::new(self, 7)
     }
     #[doc = "Bit 8 - Compare 0 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmpeo0(&mut self) -> Cmpeo0W<EvctrlSpec> {
         Cmpeo0W::new(self, 8)
     }
     #[doc = "Bit 9 - Compare 1 Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cmpeo1(&mut self) -> Cmpeo1W<EvctrlSpec> {
         Cmpeo1W::new(self, 9)
     }
     #[doc = "Bit 15 - Overflow Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ovfeo(&mut self) -> OvfeoW<EvctrlSpec> {
         OvfeoW::new(self, 15)
     }
@@ -181,10 +170,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

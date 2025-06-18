@@ -277,37 +277,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Differential Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn diffmode(&mut self) -> DiffmodeW<CtrlbSpec> {
         DiffmodeW::new(self, 0)
     }
     #[doc = "Bit 1 - Left-Adjusted Result"]
     #[inline(always)]
-    #[must_use]
     pub fn leftadj(&mut self) -> LeftadjW<CtrlbSpec> {
         LeftadjW::new(self, 1)
     }
     #[doc = "Bit 2 - Free Running Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn freerun(&mut self) -> FreerunW<CtrlbSpec> {
         FreerunW::new(self, 2)
     }
     #[doc = "Bit 3 - Digital Correction Logic Enabled"]
     #[inline(always)]
-    #[must_use]
     pub fn corren(&mut self) -> CorrenW<CtrlbSpec> {
         CorrenW::new(self, 3)
     }
     #[doc = "Bits 4:5 - Conversion Result Resolution"]
     #[inline(always)]
-    #[must_use]
     pub fn ressel(&mut self) -> ResselW<CtrlbSpec> {
         ResselW::new(self, 4)
     }
     #[doc = "Bits 8:10 - Prescaler Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler(&mut self) -> PrescalerW<CtrlbSpec> {
         PrescalerW::new(self, 8)
     }
@@ -322,10 +316,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

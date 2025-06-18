@@ -176,13 +176,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Ram Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn ramcfg(&mut self) -> RamcfgW<StdbycfgSpec> {
         RamcfgW::new(self, 0)
     }
     #[doc = "Bits 4:5 - Fast Wakeup"]
     #[inline(always)]
-    #[must_use]
     pub fn fastwkup(&mut self) -> FastwkupW<StdbycfgSpec> {
         FastwkupW::new(self, 4)
     }
@@ -197,10 +195,6 @@ impl crate::Readable for StdbycfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`stdbycfg::W`](W) writer structure"]
 impl crate::Writable for StdbycfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets STDBYCFG to value 0"]
-impl crate::Resettable for StdbycfgSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for StdbycfgSpec {}

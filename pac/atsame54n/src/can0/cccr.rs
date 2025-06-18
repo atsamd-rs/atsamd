@@ -124,79 +124,66 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Initialization"]
     #[inline(always)]
-    #[must_use]
     pub fn init(&mut self) -> InitW<CccrSpec> {
         InitW::new(self, 0)
     }
     #[doc = "Bit 1 - Configuration Change Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cce(&mut self) -> CceW<CccrSpec> {
         CceW::new(self, 1)
     }
     #[doc = "Bit 2 - ASM Restricted Operation Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn asm(&mut self) -> AsmW<CccrSpec> {
         AsmW::new(self, 2)
     }
     #[doc = "Bit 3 - Clock Stop Acknowledge"]
     #[inline(always)]
-    #[must_use]
     pub fn csa(&mut self) -> CsaW<CccrSpec> {
         CsaW::new(self, 3)
     }
     #[doc = "Bit 4 - Clock Stop Request"]
     #[inline(always)]
-    #[must_use]
     pub fn csr(&mut self) -> CsrW<CccrSpec> {
         CsrW::new(self, 4)
     }
     #[doc = "Bit 5 - Bus Monitoring Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mon(&mut self) -> MonW<CccrSpec> {
         MonW::new(self, 5)
     }
     #[doc = "Bit 6 - Disable Automatic Retransmission"]
     #[inline(always)]
-    #[must_use]
     pub fn dar(&mut self) -> DarW<CccrSpec> {
         DarW::new(self, 6)
     }
     #[doc = "Bit 7 - Test Mode Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn test(&mut self) -> TestW<CccrSpec> {
         TestW::new(self, 7)
     }
     #[doc = "Bit 8 - FD Operation Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn fdoe(&mut self) -> FdoeW<CccrSpec> {
         FdoeW::new(self, 8)
     }
     #[doc = "Bit 9 - Bit Rate Switch Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn brse(&mut self) -> BrseW<CccrSpec> {
         BrseW::new(self, 9)
     }
     #[doc = "Bit 12 - Protocol Exception Handling Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn pxhd(&mut self) -> PxhdW<CccrSpec> {
         PxhdW::new(self, 12)
     }
     #[doc = "Bit 13 - Edge Filtering during Bus Integration"]
     #[inline(always)]
-    #[must_use]
     pub fn efbi(&mut self) -> EfbiW<CccrSpec> {
         EfbiW::new(self, 13)
     }
     #[doc = "Bit 14 - Transmit Pause"]
     #[inline(always)]
-    #[must_use]
     pub fn txp(&mut self) -> TxpW<CccrSpec> {
         TxpW::new(self, 14)
     }
@@ -211,8 +198,6 @@ impl crate::Readable for CccrSpec {}
 #[doc = "`write(|w| ..)` method takes [`cccr::W`](W) writer structure"]
 impl crate::Writable for CccrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CCCR to value 0x01"]
 impl crate::Resettable for CccrSpec {

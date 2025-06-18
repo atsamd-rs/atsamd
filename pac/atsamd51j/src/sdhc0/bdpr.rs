@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - Buffer Data"]
     #[inline(always)]
-    #[must_use]
     pub fn bufdata(&mut self) -> BufdataW<BdprSpec> {
         BufdataW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for BdprSpec {}
 #[doc = "`write(|w| ..)` method takes [`bdpr::W`](W) writer structure"]
 impl crate::Writable for BdprSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets BDPR to value 0"]
-impl crate::Resettable for BdprSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BdprSpec {}

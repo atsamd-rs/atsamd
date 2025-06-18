@@ -295,193 +295,161 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Add Request 0"]
     #[inline(always)]
-    #[must_use]
     pub fn ar0(&mut self) -> Ar0W<TxbarSpec> {
         Ar0W::new(self, 0)
     }
     #[doc = "Bit 1 - Add Request 1"]
     #[inline(always)]
-    #[must_use]
     pub fn ar1(&mut self) -> Ar1W<TxbarSpec> {
         Ar1W::new(self, 1)
     }
     #[doc = "Bit 2 - Add Request 2"]
     #[inline(always)]
-    #[must_use]
     pub fn ar2(&mut self) -> Ar2W<TxbarSpec> {
         Ar2W::new(self, 2)
     }
     #[doc = "Bit 3 - Add Request 3"]
     #[inline(always)]
-    #[must_use]
     pub fn ar3(&mut self) -> Ar3W<TxbarSpec> {
         Ar3W::new(self, 3)
     }
     #[doc = "Bit 4 - Add Request 4"]
     #[inline(always)]
-    #[must_use]
     pub fn ar4(&mut self) -> Ar4W<TxbarSpec> {
         Ar4W::new(self, 4)
     }
     #[doc = "Bit 5 - Add Request 5"]
     #[inline(always)]
-    #[must_use]
     pub fn ar5(&mut self) -> Ar5W<TxbarSpec> {
         Ar5W::new(self, 5)
     }
     #[doc = "Bit 6 - Add Request 6"]
     #[inline(always)]
-    #[must_use]
     pub fn ar6(&mut self) -> Ar6W<TxbarSpec> {
         Ar6W::new(self, 6)
     }
     #[doc = "Bit 7 - Add Request 7"]
     #[inline(always)]
-    #[must_use]
     pub fn ar7(&mut self) -> Ar7W<TxbarSpec> {
         Ar7W::new(self, 7)
     }
     #[doc = "Bit 8 - Add Request 8"]
     #[inline(always)]
-    #[must_use]
     pub fn ar8(&mut self) -> Ar8W<TxbarSpec> {
         Ar8W::new(self, 8)
     }
     #[doc = "Bit 9 - Add Request 9"]
     #[inline(always)]
-    #[must_use]
     pub fn ar9(&mut self) -> Ar9W<TxbarSpec> {
         Ar9W::new(self, 9)
     }
     #[doc = "Bit 10 - Add Request 10"]
     #[inline(always)]
-    #[must_use]
     pub fn ar10(&mut self) -> Ar10W<TxbarSpec> {
         Ar10W::new(self, 10)
     }
     #[doc = "Bit 11 - Add Request 11"]
     #[inline(always)]
-    #[must_use]
     pub fn ar11(&mut self) -> Ar11W<TxbarSpec> {
         Ar11W::new(self, 11)
     }
     #[doc = "Bit 12 - Add Request 12"]
     #[inline(always)]
-    #[must_use]
     pub fn ar12(&mut self) -> Ar12W<TxbarSpec> {
         Ar12W::new(self, 12)
     }
     #[doc = "Bit 13 - Add Request 13"]
     #[inline(always)]
-    #[must_use]
     pub fn ar13(&mut self) -> Ar13W<TxbarSpec> {
         Ar13W::new(self, 13)
     }
     #[doc = "Bit 14 - Add Request 14"]
     #[inline(always)]
-    #[must_use]
     pub fn ar14(&mut self) -> Ar14W<TxbarSpec> {
         Ar14W::new(self, 14)
     }
     #[doc = "Bit 15 - Add Request 15"]
     #[inline(always)]
-    #[must_use]
     pub fn ar15(&mut self) -> Ar15W<TxbarSpec> {
         Ar15W::new(self, 15)
     }
     #[doc = "Bit 16 - Add Request 16"]
     #[inline(always)]
-    #[must_use]
     pub fn ar16(&mut self) -> Ar16W<TxbarSpec> {
         Ar16W::new(self, 16)
     }
     #[doc = "Bit 17 - Add Request 17"]
     #[inline(always)]
-    #[must_use]
     pub fn ar17(&mut self) -> Ar17W<TxbarSpec> {
         Ar17W::new(self, 17)
     }
     #[doc = "Bit 18 - Add Request 18"]
     #[inline(always)]
-    #[must_use]
     pub fn ar18(&mut self) -> Ar18W<TxbarSpec> {
         Ar18W::new(self, 18)
     }
     #[doc = "Bit 19 - Add Request 19"]
     #[inline(always)]
-    #[must_use]
     pub fn ar19(&mut self) -> Ar19W<TxbarSpec> {
         Ar19W::new(self, 19)
     }
     #[doc = "Bit 20 - Add Request 20"]
     #[inline(always)]
-    #[must_use]
     pub fn ar20(&mut self) -> Ar20W<TxbarSpec> {
         Ar20W::new(self, 20)
     }
     #[doc = "Bit 21 - Add Request 21"]
     #[inline(always)]
-    #[must_use]
     pub fn ar21(&mut self) -> Ar21W<TxbarSpec> {
         Ar21W::new(self, 21)
     }
     #[doc = "Bit 22 - Add Request 22"]
     #[inline(always)]
-    #[must_use]
     pub fn ar22(&mut self) -> Ar22W<TxbarSpec> {
         Ar22W::new(self, 22)
     }
     #[doc = "Bit 23 - Add Request 23"]
     #[inline(always)]
-    #[must_use]
     pub fn ar23(&mut self) -> Ar23W<TxbarSpec> {
         Ar23W::new(self, 23)
     }
     #[doc = "Bit 24 - Add Request 24"]
     #[inline(always)]
-    #[must_use]
     pub fn ar24(&mut self) -> Ar24W<TxbarSpec> {
         Ar24W::new(self, 24)
     }
     #[doc = "Bit 25 - Add Request 25"]
     #[inline(always)]
-    #[must_use]
     pub fn ar25(&mut self) -> Ar25W<TxbarSpec> {
         Ar25W::new(self, 25)
     }
     #[doc = "Bit 26 - Add Request 26"]
     #[inline(always)]
-    #[must_use]
     pub fn ar26(&mut self) -> Ar26W<TxbarSpec> {
         Ar26W::new(self, 26)
     }
     #[doc = "Bit 27 - Add Request 27"]
     #[inline(always)]
-    #[must_use]
     pub fn ar27(&mut self) -> Ar27W<TxbarSpec> {
         Ar27W::new(self, 27)
     }
     #[doc = "Bit 28 - Add Request 28"]
     #[inline(always)]
-    #[must_use]
     pub fn ar28(&mut self) -> Ar28W<TxbarSpec> {
         Ar28W::new(self, 28)
     }
     #[doc = "Bit 29 - Add Request 29"]
     #[inline(always)]
-    #[must_use]
     pub fn ar29(&mut self) -> Ar29W<TxbarSpec> {
         Ar29W::new(self, 29)
     }
     #[doc = "Bit 30 - Add Request 30"]
     #[inline(always)]
-    #[must_use]
     pub fn ar30(&mut self) -> Ar30W<TxbarSpec> {
         Ar30W::new(self, 30)
     }
     #[doc = "Bit 31 - Add Request 31"]
     #[inline(always)]
-    #[must_use]
     pub fn ar31(&mut self) -> Ar31W<TxbarSpec> {
         Ar31W::new(self, 31)
     }
@@ -496,10 +464,6 @@ impl crate::Readable for TxbarSpec {}
 #[doc = "`write(|w| ..)` method takes [`txbar::W`](W) writer structure"]
 impl crate::Writable for TxbarSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TXBAR to value 0"]
-impl crate::Resettable for TxbarSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxbarSpec {}

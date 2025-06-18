@@ -18,10 +18,6 @@ impl crate::Readable for ClaimclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`claimclr::W`](W) writer structure"]
 impl crate::Writable for ClaimclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CLAIMCLR to value 0"]
-impl crate::Resettable for ClaimclrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ClaimclrSpec {}

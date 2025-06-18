@@ -80,6 +80,4 @@ impl crate::RegisterSpec for DseqstatSpec {
 #[doc = "`read()` method returns [`dseqstat::R`](R) reader structure"]
 impl crate::Readable for DseqstatSpec {}
 #[doc = "`reset()` method sets DSEQSTAT to value 0"]
-impl crate::Resettable for DseqstatSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DseqstatSpec {}

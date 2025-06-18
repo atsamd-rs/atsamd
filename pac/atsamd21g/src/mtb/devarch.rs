@@ -13,6 +13,4 @@ impl crate::RegisterSpec for DevarchSpec {
 #[doc = "`read()` method returns [`devarch::R`](R) reader structure"]
 impl crate::Readable for DevarchSpec {}
 #[doc = "`reset()` method sets DEVARCH to value 0"]
-impl crate::Resettable for DevarchSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DevarchSpec {}

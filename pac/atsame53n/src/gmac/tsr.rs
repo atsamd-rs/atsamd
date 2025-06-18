@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Used Bit Read"]
     #[inline(always)]
-    #[must_use]
     pub fn ubr(&mut self) -> UbrW<TsrSpec> {
         UbrW::new(self, 0)
     }
     #[doc = "Bit 1 - Collision Occurred"]
     #[inline(always)]
-    #[must_use]
     pub fn col(&mut self) -> ColW<TsrSpec> {
         ColW::new(self, 1)
     }
     #[doc = "Bit 2 - Retry Limit Exceeded"]
     #[inline(always)]
-    #[must_use]
     pub fn rle(&mut self) -> RleW<TsrSpec> {
         RleW::new(self, 2)
     }
     #[doc = "Bit 3 - Transmit Go"]
     #[inline(always)]
-    #[must_use]
     pub fn txgo(&mut self) -> TxgoW<TsrSpec> {
         TxgoW::new(self, 3)
     }
     #[doc = "Bit 4 - Transmit Frame Corruption Due to AHB Error"]
     #[inline(always)]
-    #[must_use]
     pub fn tfc(&mut self) -> TfcW<TsrSpec> {
         TfcW::new(self, 4)
     }
     #[doc = "Bit 5 - Transmit Complete"]
     #[inline(always)]
-    #[must_use]
     pub fn txcomp(&mut self) -> TxcompW<TsrSpec> {
         TxcompW::new(self, 5)
     }
     #[doc = "Bit 6 - Transmit Underrun"]
     #[inline(always)]
-    #[must_use]
     pub fn und(&mut self) -> UndW<TsrSpec> {
         UndW::new(self, 6)
     }
     #[doc = "Bit 8 - HRESP Not OK"]
     #[inline(always)]
-    #[must_use]
     pub fn hresp(&mut self) -> HrespW<TsrSpec> {
         HrespW::new(self, 8)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for TsrSpec {}
 #[doc = "`write(|w| ..)` method takes [`tsr::W`](W) writer structure"]
 impl crate::Writable for TsrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TSR to value 0"]
-impl crate::Resettable for TsrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TsrSpec {}

@@ -587,61 +587,51 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Timeout Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdteo(&mut self) -> CmdteoW<EistrSpec> {
         CmdteoW::new(self, 0)
     }
     #[doc = "Bit 1 - Command CRC Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdcrc(&mut self) -> CmdcrcW<EistrSpec> {
         CmdcrcW::new(self, 1)
     }
     #[doc = "Bit 2 - Command End Bit Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdend(&mut self) -> CmdendW<EistrSpec> {
         CmdendW::new(self, 2)
     }
     #[doc = "Bit 3 - Command Index Error"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdidx(&mut self) -> CmdidxW<EistrSpec> {
         CmdidxW::new(self, 3)
     }
     #[doc = "Bit 4 - Data Timeout Error"]
     #[inline(always)]
-    #[must_use]
     pub fn datteo(&mut self) -> DatteoW<EistrSpec> {
         DatteoW::new(self, 4)
     }
     #[doc = "Bit 5 - Data CRC Error"]
     #[inline(always)]
-    #[must_use]
     pub fn datcrc(&mut self) -> DatcrcW<EistrSpec> {
         DatcrcW::new(self, 5)
     }
     #[doc = "Bit 6 - Data End Bit Error"]
     #[inline(always)]
-    #[must_use]
     pub fn datend(&mut self) -> DatendW<EistrSpec> {
         DatendW::new(self, 6)
     }
     #[doc = "Bit 7 - Current Limit Error"]
     #[inline(always)]
-    #[must_use]
     pub fn curlim(&mut self) -> CurlimW<EistrSpec> {
         CurlimW::new(self, 7)
     }
     #[doc = "Bit 8 - Auto CMD Error"]
     #[inline(always)]
-    #[must_use]
     pub fn acmd(&mut self) -> AcmdW<EistrSpec> {
         AcmdW::new(self, 8)
     }
     #[doc = "Bit 9 - ADMA Error"]
     #[inline(always)]
-    #[must_use]
     pub fn adma(&mut self) -> AdmaW<EistrSpec> {
         AdmaW::new(self, 9)
     }
@@ -656,10 +646,6 @@ impl crate::Readable for EistrSpec {}
 #[doc = "`write(|w| ..)` method takes [`eistr::W`](W) writer structure"]
 impl crate::Writable for EistrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets EISTR to value 0"]
-impl crate::Resettable for EistrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for EistrSpec {}

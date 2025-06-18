@@ -68,13 +68,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Capabilities Registers Write Enable (Required to write the correct frequencies in the Capabilities Registers)"]
     #[inline(always)]
-    #[must_use]
     pub fn capwren(&mut self) -> CapwrenW<CacrSpec> {
         CapwrenW::new(self, 0)
     }
     #[doc = "Bits 8:15 - Key (0x46)"]
     #[inline(always)]
-    #[must_use]
     pub fn key(&mut self) -> KeyW<CacrSpec> {
         KeyW::new(self, 8)
     }
@@ -89,10 +87,6 @@ impl crate::Readable for CacrSpec {}
 #[doc = "`write(|w| ..)` method takes [`cacr::W`](W) writer structure"]
 impl crate::Writable for CacrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CACR to value 0"]
-impl crate::Resettable for CacrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CacrSpec {}

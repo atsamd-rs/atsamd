@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Frame Length"]
     #[inline(always)]
-    #[must_use]
     pub fn fl(&mut self) -> FlW<IpgsSpec> {
         FlW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for IpgsSpec {}
 #[doc = "`write(|w| ..)` method takes [`ipgs::W`](W) writer structure"]
 impl crate::Writable for IpgsSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets IPGS to value 0"]
-impl crate::Resettable for IpgsSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IpgsSpec {}

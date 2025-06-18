@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 6:31 - Descriptor Area Start Address"]
     #[inline(always)]
-    #[must_use]
     pub fn dasa(&mut self) -> DasaW<DscrSpec> {
         DasaW::new(self, 6)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for DscrSpec {}
 #[doc = "`write(|w| ..)` method takes [`dscr::W`](W) writer structure"]
 impl crate::Writable for DscrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DSCR to value 0"]
-impl crate::Resettable for DscrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DscrSpec {}

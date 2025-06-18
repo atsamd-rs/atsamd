@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:5 - Scaler Value"]
     #[inline(always)]
-    #[must_use]
     pub fn value(&mut self) -> ValueW<ScalerSpec> {
         ValueW::new(self, 0)
     }
@@ -31,11 +30,6 @@ impl crate::Readable for ScalerSpec {}
 #[doc = "`write(|w| ..)` method takes [`scaler::W`](W) writer structure"]
 impl crate::Writable for ScalerSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
-#[doc = "`reset()` method sets SCALER[%s]
-to value 0"]
-impl crate::Resettable for ScalerSpec {
-    const RESET_VALUE: u8 = 0;
-}
+#[doc = "`reset()` method sets SCALER[%s] to value 0"]
+impl crate::Resettable for ScalerSpec {}

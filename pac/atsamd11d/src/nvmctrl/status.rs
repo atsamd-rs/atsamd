@@ -57,25 +57,21 @@ impl R {
 impl W {
     #[doc = "Bit 1 - NVM Page Buffer Active Loading"]
     #[inline(always)]
-    #[must_use]
     pub fn load(&mut self) -> LoadW<StatusSpec> {
         LoadW::new(self, 1)
     }
     #[doc = "Bit 2 - Programming Error Status"]
     #[inline(always)]
-    #[must_use]
     pub fn proge(&mut self) -> ProgeW<StatusSpec> {
         ProgeW::new(self, 2)
     }
     #[doc = "Bit 3 - Lock Error Status"]
     #[inline(always)]
-    #[must_use]
     pub fn locke(&mut self) -> LockeW<StatusSpec> {
         LockeW::new(self, 3)
     }
     #[doc = "Bit 4 - NVM Error"]
     #[inline(always)]
-    #[must_use]
     pub fn nvme(&mut self) -> NvmeW<StatusSpec> {
         NvmeW::new(self, 4)
     }
@@ -90,10 +86,6 @@ impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for StatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0"]
-impl crate::Resettable for StatusSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for StatusSpec {}

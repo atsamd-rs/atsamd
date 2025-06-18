@@ -7,32 +7,32 @@ impl RegisterBlock {
     #[doc = "0x00..0x31 - USART INTERNAL CLOCK Mode"]
     #[inline(always)]
     pub const fn usart_int(&self) -> &UsartInt {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x31 - USART EXTERNAL CLOCK Mode"]
     #[inline(always)]
     pub const fn usart_ext(&self) -> &UsartExt {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x31 - SPI Master Mode"]
     #[inline(always)]
     pub const fn spim(&self) -> &Spim {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x31 - SPI Slave Mode"]
     #[inline(always)]
     pub const fn spis(&self) -> &Spis {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x2c - I2C Slave Mode"]
     #[inline(always)]
     pub const fn i2cs(&self) -> &I2cs {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x31 - I2C Master Mode"]
     #[inline(always)]
     pub const fn i2cm(&self) -> &I2cm {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
 }
 #[doc = "I2C Master Mode"]

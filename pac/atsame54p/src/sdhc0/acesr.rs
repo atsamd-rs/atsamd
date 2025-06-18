@@ -256,6 +256,4 @@ impl crate::RegisterSpec for AcesrSpec {
 #[doc = "`read()` method returns [`acesr::R`](R) reader structure"]
 impl crate::Readable for AcesrSpec {}
 #[doc = "`reset()` method sets ACESR to value 0"]
-impl crate::Resettable for AcesrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for AcesrSpec {}

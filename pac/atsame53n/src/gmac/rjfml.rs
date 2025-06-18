@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:13 - Frame Max Length"]
     #[inline(always)]
-    #[must_use]
     pub fn fml(&mut self) -> FmlW<RjfmlSpec> {
         FmlW::new(self, 0)
     }
@@ -31,8 +30,6 @@ impl crate::Readable for RjfmlSpec {}
 #[doc = "`write(|w| ..)` method takes [`rjfml::W`](W) writer structure"]
 impl crate::Writable for RjfmlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RJFML to value 0x3fff"]
 impl crate::Resettable for RjfmlSpec {

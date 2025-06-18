@@ -267,13 +267,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:6 - Command"]
     #[inline(always)]
-    #[must_use]
     pub fn cmd(&mut self) -> CmdW<CtrlaSpec> {
         CmdW::new(self, 0)
     }
     #[doc = "Bits 8:15 - Command Execution"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdex(&mut self) -> CmdexW<CtrlaSpec> {
         CmdexW::new(self, 8)
     }
@@ -288,10 +286,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

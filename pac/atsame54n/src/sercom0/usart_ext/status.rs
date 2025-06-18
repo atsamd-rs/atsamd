@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Parity Error"]
     #[inline(always)]
-    #[must_use]
     pub fn perr(&mut self) -> PerrW<StatusSpec> {
         PerrW::new(self, 0)
     }
     #[doc = "Bit 1 - Frame Error"]
     #[inline(always)]
-    #[must_use]
     pub fn ferr(&mut self) -> FerrW<StatusSpec> {
         FerrW::new(self, 1)
     }
     #[doc = "Bit 2 - Buffer Overflow"]
     #[inline(always)]
-    #[must_use]
     pub fn bufovf(&mut self) -> BufovfW<StatusSpec> {
         BufovfW::new(self, 2)
     }
     #[doc = "Bit 3 - Clear To Send"]
     #[inline(always)]
-    #[must_use]
     pub fn cts(&mut self) -> CtsW<StatusSpec> {
         CtsW::new(self, 3)
     }
     #[doc = "Bit 4 - Inconsistent Sync Field"]
     #[inline(always)]
-    #[must_use]
     pub fn isf(&mut self) -> IsfW<StatusSpec> {
         IsfW::new(self, 4)
     }
     #[doc = "Bit 5 - Collision Detected"]
     #[inline(always)]
-    #[must_use]
     pub fn coll(&mut self) -> CollW<StatusSpec> {
         CollW::new(self, 5)
     }
     #[doc = "Bit 6 - Transmitter Empty"]
     #[inline(always)]
-    #[must_use]
     pub fn txe(&mut self) -> TxeW<StatusSpec> {
         TxeW::new(self, 6)
     }
     #[doc = "Bit 7 - Maximum Number of Repetitions Reached"]
     #[inline(always)]
-    #[must_use]
     pub fn iter(&mut self) -> IterW<StatusSpec> {
         IterW::new(self, 7)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for StatusSpec {}
 #[doc = "`write(|w| ..)` method takes [`status::W`](W) writer structure"]
 impl crate::Writable for StatusSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets STATUS to value 0"]
-impl crate::Resettable for StatusSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for StatusSpec {}

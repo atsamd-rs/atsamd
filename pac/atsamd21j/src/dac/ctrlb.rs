@@ -130,37 +130,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - External Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn eoen(&mut self) -> EoenW<CtrlbSpec> {
         EoenW::new(self, 0)
     }
     #[doc = "Bit 1 - Internal Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ioen(&mut self) -> IoenW<CtrlbSpec> {
         IoenW::new(self, 1)
     }
     #[doc = "Bit 2 - Left Adjusted Data"]
     #[inline(always)]
-    #[must_use]
     pub fn leftadj(&mut self) -> LeftadjW<CtrlbSpec> {
         LeftadjW::new(self, 2)
     }
     #[doc = "Bit 3 - Voltage Pump Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn vpd(&mut self) -> VpdW<CtrlbSpec> {
         VpdW::new(self, 3)
     }
     #[doc = "Bit 4 - Bypass DATABUF Write Protection"]
     #[inline(always)]
-    #[must_use]
     pub fn bdwp(&mut self) -> BdwpW<CtrlbSpec> {
         BdwpW::new(self, 4)
     }
     #[doc = "Bits 6:7 - Reference Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn refsel(&mut self) -> RefselW<CtrlbSpec> {
         RefselW::new(self, 6)
     }
@@ -175,10 +169,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

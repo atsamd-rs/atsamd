@@ -18,10 +18,6 @@ impl crate::Readable for TraceidrSpec {}
 #[doc = "`write(|w| ..)` method takes [`traceidr::W`](W) writer structure"]
 impl crate::Writable for TraceidrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TRACEIDR to value 0"]
-impl crate::Resettable for TraceidrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TraceidrSpec {}

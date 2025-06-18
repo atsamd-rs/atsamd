@@ -7,22 +7,22 @@ impl RegisterBlock {
     #[doc = "0x00..0x31 - USART Mode"]
     #[inline(always)]
     pub const fn usart(&self) -> &Usart {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x31 - SPI Mode"]
     #[inline(always)]
     pub const fn spi(&self) -> &Spi {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x29 - I2C Slave Mode"]
     #[inline(always)]
     pub const fn i2cs(&self) -> &I2cs {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
     #[doc = "0x00..0x31 - I2C Master Mode"]
     #[inline(always)]
     pub const fn i2cm(&self) -> &I2cm {
-        unsafe { &*(self as *const Self).cast::<u8>().add(0).cast() }
+        unsafe { &*core::ptr::from_ref(self).cast::<u8>().cast() }
     }
 }
 #[doc = "I2C Master Mode"]

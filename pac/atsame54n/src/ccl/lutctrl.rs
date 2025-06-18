@@ -891,61 +891,51 @@ impl R {
 impl W {
     #[doc = "Bit 1 - LUT Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<LutctrlSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 4:5 - Filter Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn filtsel(&mut self) -> FiltselW<LutctrlSpec> {
         FiltselW::new(self, 4)
     }
     #[doc = "Bit 7 - Edge Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn edgesel(&mut self) -> EdgeselW<LutctrlSpec> {
         EdgeselW::new(self, 7)
     }
     #[doc = "Bits 8:11 - Input Selection 0"]
     #[inline(always)]
-    #[must_use]
     pub fn insel0(&mut self) -> Insel0W<LutctrlSpec> {
         Insel0W::new(self, 8)
     }
     #[doc = "Bits 12:15 - Input Selection 1"]
     #[inline(always)]
-    #[must_use]
     pub fn insel1(&mut self) -> Insel1W<LutctrlSpec> {
         Insel1W::new(self, 12)
     }
     #[doc = "Bits 16:19 - Input Selection 2"]
     #[inline(always)]
-    #[must_use]
     pub fn insel2(&mut self) -> Insel2W<LutctrlSpec> {
         Insel2W::new(self, 16)
     }
     #[doc = "Bit 20 - Inverted Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn invei(&mut self) -> InveiW<LutctrlSpec> {
         InveiW::new(self, 20)
     }
     #[doc = "Bit 21 - LUT Event Input Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn lutei(&mut self) -> LuteiW<LutctrlSpec> {
         LuteiW::new(self, 21)
     }
     #[doc = "Bit 22 - LUT Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn luteo(&mut self) -> LuteoW<LutctrlSpec> {
         LuteoW::new(self, 22)
     }
     #[doc = "Bits 24:31 - Truth Value"]
     #[inline(always)]
-    #[must_use]
     pub fn truth(&mut self) -> TruthW<LutctrlSpec> {
         TruthW::new(self, 24)
     }
@@ -960,11 +950,6 @@ impl crate::Readable for LutctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`lutctrl::W`](W) writer structure"]
 impl crate::Writable for LutctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets LUTCTRL[%s]
-to value 0"]
-impl crate::Resettable for LutctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets LUTCTRL[%s] to value 0"]
+impl crate::Resettable for LutctrlSpec {}

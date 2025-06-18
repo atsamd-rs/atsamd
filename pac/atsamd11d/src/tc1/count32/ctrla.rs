@@ -417,43 +417,36 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:3 - TC Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlaSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bits 5:6 - Waveform Generation Operation"]
     #[inline(always)]
-    #[must_use]
     pub fn wavegen(&mut self) -> WavegenW<CtrlaSpec> {
         WavegenW::new(self, 5)
     }
     #[doc = "Bits 8:10 - Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler(&mut self) -> PrescalerW<CtrlaSpec> {
         PrescalerW::new(self, 8)
     }
     #[doc = "Bit 11 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 11)
     }
     #[doc = "Bits 12:13 - Prescaler and Counter Synchronization"]
     #[inline(always)]
-    #[must_use]
     pub fn prescsync(&mut self) -> PrescsyncW<CtrlaSpec> {
         PrescsyncW::new(self, 12)
     }
@@ -468,10 +461,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

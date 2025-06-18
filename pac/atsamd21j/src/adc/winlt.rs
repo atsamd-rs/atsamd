@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Window Lower Threshold"]
     #[inline(always)]
-    #[must_use]
     pub fn winlt(&mut self) -> WinltW<WinltSpec> {
         WinltW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for WinltSpec {}
 #[doc = "`write(|w| ..)` method takes [`winlt::W`](W) writer structure"]
 impl crate::Writable for WinltSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets WINLT to value 0"]
-impl crate::Resettable for WinltSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for WinltSpec {}

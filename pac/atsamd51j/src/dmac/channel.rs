@@ -54,50 +54,42 @@ impl Channel {
         &self.chstatus
     }
 }
-#[doc = "CHCTRLA (rw) register accessor: Channel n Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrla::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrla::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chctrla`]
-module"]
+#[doc = "CHCTRLA (rw) register accessor: Channel n Control A\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrla::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrla::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chctrla`] module"]
 #[doc(alias = "CHCTRLA")]
 pub type Chctrla = crate::Reg<chctrla::ChctrlaSpec>;
 #[doc = "Channel n Control A"]
 pub mod chctrla;
-#[doc = "CHCTRLB (rw) register accessor: Channel n Control B\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrlb::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrlb::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chctrlb`]
-module"]
+#[doc = "CHCTRLB (rw) register accessor: Channel n Control B\n\nYou can [`read`](crate::Reg::read) this register and get [`chctrlb::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chctrlb::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chctrlb`] module"]
 #[doc(alias = "CHCTRLB")]
 pub type Chctrlb = crate::Reg<chctrlb::ChctrlbSpec>;
 #[doc = "Channel n Control B"]
 pub mod chctrlb;
-#[doc = "CHPRILVL (rw) register accessor: Channel n Priority Level\n\nYou can [`read`](crate::Reg::read) this register and get [`chprilvl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chprilvl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chprilvl`]
-module"]
+#[doc = "CHPRILVL (rw) register accessor: Channel n Priority Level\n\nYou can [`read`](crate::Reg::read) this register and get [`chprilvl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chprilvl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chprilvl`] module"]
 #[doc(alias = "CHPRILVL")]
 pub type Chprilvl = crate::Reg<chprilvl::ChprilvlSpec>;
 #[doc = "Channel n Priority Level"]
 pub mod chprilvl;
-#[doc = "CHEVCTRL (rw) register accessor: Channel n Event Control\n\nYou can [`read`](crate::Reg::read) this register and get [`chevctrl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chevctrl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chevctrl`]
-module"]
+#[doc = "CHEVCTRL (rw) register accessor: Channel n Event Control\n\nYou can [`read`](crate::Reg::read) this register and get [`chevctrl::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chevctrl::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chevctrl`] module"]
 #[doc(alias = "CHEVCTRL")]
 pub type Chevctrl = crate::Reg<chevctrl::ChevctrlSpec>;
 #[doc = "Channel n Event Control"]
 pub mod chevctrl;
-#[doc = "CHINTENCLR (rw) register accessor: Channel n Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`chintenclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintenclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintenclr`]
-module"]
+#[doc = "CHINTENCLR (rw) register accessor: Channel n Interrupt Enable Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`chintenclr::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintenclr::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintenclr`] module"]
 #[doc(alias = "CHINTENCLR")]
 pub type Chintenclr = crate::Reg<chintenclr::ChintenclrSpec>;
 #[doc = "Channel n Interrupt Enable Clear"]
 pub mod chintenclr;
-#[doc = "CHINTENSET (rw) register accessor: Channel n Interrupt Enable Set\n\nYou can [`read`](crate::Reg::read) this register and get [`chintenset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintenset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintenset`]
-module"]
+#[doc = "CHINTENSET (rw) register accessor: Channel n Interrupt Enable Set\n\nYou can [`read`](crate::Reg::read) this register and get [`chintenset::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintenset::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintenset`] module"]
 #[doc(alias = "CHINTENSET")]
 pub type Chintenset = crate::Reg<chintenset::ChintensetSpec>;
 #[doc = "Channel n Interrupt Enable Set"]
 pub mod chintenset;
-#[doc = "CHINTFLAG (rw) register accessor: Channel n Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`chintflag::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintflag::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintflag`]
-module"]
+#[doc = "CHINTFLAG (rw) register accessor: Channel n Interrupt Flag Status and Clear\n\nYou can [`read`](crate::Reg::read) this register and get [`chintflag::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chintflag::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chintflag`] module"]
 #[doc(alias = "CHINTFLAG")]
 pub type Chintflag = crate::Reg<chintflag::ChintflagSpec>;
 #[doc = "Channel n Interrupt Flag Status and Clear"]
 pub mod chintflag;
-#[doc = "CHSTATUS (rw) register accessor: Channel n Status\n\nYou can [`read`](crate::Reg::read) this register and get [`chstatus::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chstatus::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chstatus`]
-module"]
+#[doc = "CHSTATUS (rw) register accessor: Channel n Status\n\nYou can [`read`](crate::Reg::read) this register and get [`chstatus::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`chstatus::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@chstatus`] module"]
 #[doc(alias = "CHSTATUS")]
 pub type Chstatus = crate::Reg<chstatus::ChstatusSpec>;
 #[doc = "Channel n Status"]

@@ -17,43 +17,36 @@ pub type UradW<'a, REG> = crate::BitWriter<'a, REG>;
 impl W {
     #[doc = "Bits 0:3 - Region Hash Completed Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rhc(&mut self) -> RhcW<IdrSpec> {
         RhcW::new(self, 0)
     }
     #[doc = "Bits 4:7 - Region Digest Mismatch Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rdm(&mut self) -> RdmW<IdrSpec> {
         RdmW::new(self, 4)
     }
     #[doc = "Bits 8:11 - Region Bus Error Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rbe(&mut self) -> RbeW<IdrSpec> {
         RbeW::new(self, 8)
     }
     #[doc = "Bits 12:15 - Region Wrap Condition Detected Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rwc(&mut self) -> RwcW<IdrSpec> {
         RwcW::new(self, 12)
     }
     #[doc = "Bits 16:19 - Region End bit Condition detected Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rec(&mut self) -> RecW<IdrSpec> {
         RecW::new(self, 16)
     }
     #[doc = "Bits 20:23 - Region Status Updated Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rsu(&mut self) -> RsuW<IdrSpec> {
         RsuW::new(self, 20)
     }
     #[doc = "Bit 24 - Undefined Register Access Detection Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn urad(&mut self) -> UradW<IdrSpec> {
         UradW::new(self, 24)
     }
@@ -66,10 +59,6 @@ impl crate::RegisterSpec for IdrSpec {
 #[doc = "`write(|w| ..)` method takes [`idr::W`](W) writer structure"]
 impl crate::Writable for IdrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets IDR to value 0"]
-impl crate::Resettable for IdrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IdrSpec {}

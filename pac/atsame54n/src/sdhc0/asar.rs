@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:31 - ADMA System Address"]
     #[inline(always)]
-    #[must_use]
     pub fn admasa(&mut self) -> AdmasaW<AsarSpec> {
         AdmasaW::new(self, 0)
     }
@@ -31,11 +30,6 @@ impl crate::Readable for AsarSpec {}
 #[doc = "`write(|w| ..)` method takes [`asar::W`](W) writer structure"]
 impl crate::Writable for AsarSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets ASAR[%s]
-to value 0"]
-impl crate::Resettable for AsarSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets ASAR[%s] to value 0"]
+impl crate::Resettable for AsarSpec {}

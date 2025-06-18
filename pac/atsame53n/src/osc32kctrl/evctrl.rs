@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Clock Failure Detector Event Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn cfdeo(&mut self) -> CfdeoW<EvctrlSpec> {
         CfdeoW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

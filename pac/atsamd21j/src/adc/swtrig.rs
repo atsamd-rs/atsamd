@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - ADC Conversion Flush"]
     #[inline(always)]
-    #[must_use]
     pub fn flush(&mut self) -> FlushW<SwtrigSpec> {
         FlushW::new(self, 0)
     }
     #[doc = "Bit 1 - ADC Start Conversion"]
     #[inline(always)]
-    #[must_use]
     pub fn start(&mut self) -> StartW<SwtrigSpec> {
         StartW::new(self, 1)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for SwtrigSpec {}
 #[doc = "`write(|w| ..)` method takes [`swtrig::W`](W) writer structure"]
 impl crate::Writable for SwtrigSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets SWTRIG to value 0"]
-impl crate::Resettable for SwtrigSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for SwtrigSpec {}

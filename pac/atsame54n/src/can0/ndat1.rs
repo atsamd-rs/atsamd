@@ -295,193 +295,161 @@ impl R {
 impl W {
     #[doc = "Bit 0 - New Data 0"]
     #[inline(always)]
-    #[must_use]
     pub fn nd0(&mut self) -> Nd0W<Ndat1Spec> {
         Nd0W::new(self, 0)
     }
     #[doc = "Bit 1 - New Data 1"]
     #[inline(always)]
-    #[must_use]
     pub fn nd1(&mut self) -> Nd1W<Ndat1Spec> {
         Nd1W::new(self, 1)
     }
     #[doc = "Bit 2 - New Data 2"]
     #[inline(always)]
-    #[must_use]
     pub fn nd2(&mut self) -> Nd2W<Ndat1Spec> {
         Nd2W::new(self, 2)
     }
     #[doc = "Bit 3 - New Data 3"]
     #[inline(always)]
-    #[must_use]
     pub fn nd3(&mut self) -> Nd3W<Ndat1Spec> {
         Nd3W::new(self, 3)
     }
     #[doc = "Bit 4 - New Data 4"]
     #[inline(always)]
-    #[must_use]
     pub fn nd4(&mut self) -> Nd4W<Ndat1Spec> {
         Nd4W::new(self, 4)
     }
     #[doc = "Bit 5 - New Data 5"]
     #[inline(always)]
-    #[must_use]
     pub fn nd5(&mut self) -> Nd5W<Ndat1Spec> {
         Nd5W::new(self, 5)
     }
     #[doc = "Bit 6 - New Data 6"]
     #[inline(always)]
-    #[must_use]
     pub fn nd6(&mut self) -> Nd6W<Ndat1Spec> {
         Nd6W::new(self, 6)
     }
     #[doc = "Bit 7 - New Data 7"]
     #[inline(always)]
-    #[must_use]
     pub fn nd7(&mut self) -> Nd7W<Ndat1Spec> {
         Nd7W::new(self, 7)
     }
     #[doc = "Bit 8 - New Data 8"]
     #[inline(always)]
-    #[must_use]
     pub fn nd8(&mut self) -> Nd8W<Ndat1Spec> {
         Nd8W::new(self, 8)
     }
     #[doc = "Bit 9 - New Data 9"]
     #[inline(always)]
-    #[must_use]
     pub fn nd9(&mut self) -> Nd9W<Ndat1Spec> {
         Nd9W::new(self, 9)
     }
     #[doc = "Bit 10 - New Data 10"]
     #[inline(always)]
-    #[must_use]
     pub fn nd10(&mut self) -> Nd10W<Ndat1Spec> {
         Nd10W::new(self, 10)
     }
     #[doc = "Bit 11 - New Data 11"]
     #[inline(always)]
-    #[must_use]
     pub fn nd11(&mut self) -> Nd11W<Ndat1Spec> {
         Nd11W::new(self, 11)
     }
     #[doc = "Bit 12 - New Data 12"]
     #[inline(always)]
-    #[must_use]
     pub fn nd12(&mut self) -> Nd12W<Ndat1Spec> {
         Nd12W::new(self, 12)
     }
     #[doc = "Bit 13 - New Data 13"]
     #[inline(always)]
-    #[must_use]
     pub fn nd13(&mut self) -> Nd13W<Ndat1Spec> {
         Nd13W::new(self, 13)
     }
     #[doc = "Bit 14 - New Data 14"]
     #[inline(always)]
-    #[must_use]
     pub fn nd14(&mut self) -> Nd14W<Ndat1Spec> {
         Nd14W::new(self, 14)
     }
     #[doc = "Bit 15 - New Data 15"]
     #[inline(always)]
-    #[must_use]
     pub fn nd15(&mut self) -> Nd15W<Ndat1Spec> {
         Nd15W::new(self, 15)
     }
     #[doc = "Bit 16 - New Data 16"]
     #[inline(always)]
-    #[must_use]
     pub fn nd16(&mut self) -> Nd16W<Ndat1Spec> {
         Nd16W::new(self, 16)
     }
     #[doc = "Bit 17 - New Data 17"]
     #[inline(always)]
-    #[must_use]
     pub fn nd17(&mut self) -> Nd17W<Ndat1Spec> {
         Nd17W::new(self, 17)
     }
     #[doc = "Bit 18 - New Data 18"]
     #[inline(always)]
-    #[must_use]
     pub fn nd18(&mut self) -> Nd18W<Ndat1Spec> {
         Nd18W::new(self, 18)
     }
     #[doc = "Bit 19 - New Data 19"]
     #[inline(always)]
-    #[must_use]
     pub fn nd19(&mut self) -> Nd19W<Ndat1Spec> {
         Nd19W::new(self, 19)
     }
     #[doc = "Bit 20 - New Data 20"]
     #[inline(always)]
-    #[must_use]
     pub fn nd20(&mut self) -> Nd20W<Ndat1Spec> {
         Nd20W::new(self, 20)
     }
     #[doc = "Bit 21 - New Data 21"]
     #[inline(always)]
-    #[must_use]
     pub fn nd21(&mut self) -> Nd21W<Ndat1Spec> {
         Nd21W::new(self, 21)
     }
     #[doc = "Bit 22 - New Data 22"]
     #[inline(always)]
-    #[must_use]
     pub fn nd22(&mut self) -> Nd22W<Ndat1Spec> {
         Nd22W::new(self, 22)
     }
     #[doc = "Bit 23 - New Data 23"]
     #[inline(always)]
-    #[must_use]
     pub fn nd23(&mut self) -> Nd23W<Ndat1Spec> {
         Nd23W::new(self, 23)
     }
     #[doc = "Bit 24 - New Data 24"]
     #[inline(always)]
-    #[must_use]
     pub fn nd24(&mut self) -> Nd24W<Ndat1Spec> {
         Nd24W::new(self, 24)
     }
     #[doc = "Bit 25 - New Data 25"]
     #[inline(always)]
-    #[must_use]
     pub fn nd25(&mut self) -> Nd25W<Ndat1Spec> {
         Nd25W::new(self, 25)
     }
     #[doc = "Bit 26 - New Data 26"]
     #[inline(always)]
-    #[must_use]
     pub fn nd26(&mut self) -> Nd26W<Ndat1Spec> {
         Nd26W::new(self, 26)
     }
     #[doc = "Bit 27 - New Data 27"]
     #[inline(always)]
-    #[must_use]
     pub fn nd27(&mut self) -> Nd27W<Ndat1Spec> {
         Nd27W::new(self, 27)
     }
     #[doc = "Bit 28 - New Data 28"]
     #[inline(always)]
-    #[must_use]
     pub fn nd28(&mut self) -> Nd28W<Ndat1Spec> {
         Nd28W::new(self, 28)
     }
     #[doc = "Bit 29 - New Data 29"]
     #[inline(always)]
-    #[must_use]
     pub fn nd29(&mut self) -> Nd29W<Ndat1Spec> {
         Nd29W::new(self, 29)
     }
     #[doc = "Bit 30 - New Data 30"]
     #[inline(always)]
-    #[must_use]
     pub fn nd30(&mut self) -> Nd30W<Ndat1Spec> {
         Nd30W::new(self, 30)
     }
     #[doc = "Bit 31 - New Data 31"]
     #[inline(always)]
-    #[must_use]
     pub fn nd31(&mut self) -> Nd31W<Ndat1Spec> {
         Nd31W::new(self, 31)
     }
@@ -496,10 +464,6 @@ impl crate::Readable for Ndat1Spec {}
 #[doc = "`write(|w| ..)` method takes [`ndat1::W`](W) writer structure"]
 impl crate::Writable for Ndat1Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets NDAT1 to value 0"]
-impl crate::Resettable for Ndat1Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Ndat1Spec {}

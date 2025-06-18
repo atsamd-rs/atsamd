@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - Address"]
     #[inline(always)]
-    #[must_use]
     pub fn addr(&mut self) -> AddrW<ReadreqSpec> {
         AddrW::new(self, 0)
     }
     #[doc = "Bit 14 - Read Continuously"]
     #[inline(always)]
-    #[must_use]
     pub fn rcont(&mut self) -> RcontW<ReadreqSpec> {
         RcontW::new(self, 14)
     }
     #[doc = "Bit 15 - Read Request"]
     #[inline(always)]
-    #[must_use]
     pub fn rreq(&mut self) -> RreqW<ReadreqSpec> {
         RreqW::new(self, 15)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for ReadreqSpec {}
 #[doc = "`write(|w| ..)` method takes [`readreq::W`](W) writer structure"]
 impl crate::Writable for ReadreqSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets READREQ to value 0"]
-impl crate::Resettable for ReadreqSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for ReadreqSpec {}

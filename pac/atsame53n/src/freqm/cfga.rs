@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Number of Reference Clock Cycles"]
     #[inline(always)]
-    #[must_use]
     pub fn refnum(&mut self) -> RefnumW<CfgaSpec> {
         RefnumW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for CfgaSpec {}
 #[doc = "`write(|w| ..)` method takes [`cfga::W`](W) writer structure"]
 impl crate::Writable for CfgaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CFGA to value 0"]
-impl crate::Resettable for CfgaSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for CfgaSpec {}

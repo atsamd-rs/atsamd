@@ -116,19 +116,16 @@ impl R {
 impl W {
     #[doc = "Bit 4 - Loop Back Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn lbck(&mut self) -> LbckW<TestSpec> {
         LbckW::new(self, 4)
     }
     #[doc = "Bits 5:6 - Control of Transmit Pin"]
     #[inline(always)]
-    #[must_use]
     pub fn tx(&mut self) -> TxW<TestSpec> {
         TxW::new(self, 5)
     }
     #[doc = "Bit 7 - Receive Pin"]
     #[inline(always)]
-    #[must_use]
     pub fn rx(&mut self) -> RxW<TestSpec> {
         RxW::new(self, 7)
     }
@@ -143,10 +140,6 @@ impl crate::Readable for TestSpec {}
 #[doc = "`write(|w| ..)` method takes [`test::W`](W) writer structure"]
 impl crate::Writable for TestSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TEST to value 0"]
-impl crate::Resettable for TestSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TestSpec {}

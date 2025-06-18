@@ -376,31 +376,26 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - HS200 Mode Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn hs200en(&mut self) -> Hs200enW<Hc2rEmmcModeSpec> {
         Hs200enW::new(self, 0)
     }
     #[doc = "Bits 4:5 - Driver Strength Select"]
     #[inline(always)]
-    #[must_use]
     pub fn drvsel(&mut self) -> DrvselW<Hc2rEmmcModeSpec> {
         DrvselW::new(self, 4)
     }
     #[doc = "Bit 6 - Execute Tuning"]
     #[inline(always)]
-    #[must_use]
     pub fn extun(&mut self) -> ExtunW<Hc2rEmmcModeSpec> {
         ExtunW::new(self, 6)
     }
     #[doc = "Bit 7 - Sampling Clock Select"]
     #[inline(always)]
-    #[must_use]
     pub fn slcksel(&mut self) -> SlckselW<Hc2rEmmcModeSpec> {
         SlckselW::new(self, 7)
     }
     #[doc = "Bit 15 - Preset Value Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pvalen(&mut self) -> PvalenW<Hc2rEmmcModeSpec> {
         PvalenW::new(self, 15)
     }
@@ -415,10 +410,6 @@ impl crate::Readable for Hc2rEmmcModeSpec {}
 #[doc = "`write(|w| ..)` method takes [`hc2r_emmc_mode::W`](W) writer structure"]
 impl crate::Writable for Hc2rEmmcModeSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets HC2R_EMMC_MODE to value 0"]
-impl crate::Resettable for Hc2rEmmcModeSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for Hc2rEmmcModeSpec {}

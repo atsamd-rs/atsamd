@@ -81,13 +81,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Timestamp Select"]
     #[inline(always)]
-    #[must_use]
     pub fn tss(&mut self) -> TssW<TsccSpec> {
         TssW::new(self, 0)
     }
     #[doc = "Bits 16:19 - Timestamp Counter Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn tcp(&mut self) -> TcpW<TsccSpec> {
         TcpW::new(self, 16)
     }
@@ -102,10 +100,6 @@ impl crate::Readable for TsccSpec {}
 #[doc = "`write(|w| ..)` method takes [`tscc::W`](W) writer structure"]
 impl crate::Writable for TsccSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TSCC to value 0"]
-impl crate::Resettable for TsccSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TsccSpec {}

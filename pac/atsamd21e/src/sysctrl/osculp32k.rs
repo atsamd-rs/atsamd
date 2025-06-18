@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - Oscillator Calibration"]
     #[inline(always)]
-    #[must_use]
     pub fn calib(&mut self) -> CalibW<Osculp32kSpec> {
         CalibW::new(self, 0)
     }
     #[doc = "Bit 7 - Write Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn wrtlock(&mut self) -> WrtlockW<Osculp32kSpec> {
         WrtlockW::new(self, 7)
     }
@@ -46,8 +44,6 @@ impl crate::Readable for Osculp32kSpec {}
 #[doc = "`write(|w| ..)` method takes [`osculp32k::W`](W) writer structure"]
 impl crate::Writable for Osculp32kSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets OSCULP32K to value 0x1f"]
 impl crate::Resettable for Osculp32kSpec {

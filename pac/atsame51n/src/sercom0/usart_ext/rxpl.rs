@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Receive Pulse Length"]
     #[inline(always)]
-    #[must_use]
     pub fn rxpl(&mut self) -> RxplW<RxplSpec> {
         RxplW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for RxplSpec {}
 #[doc = "`write(|w| ..)` method takes [`rxpl::W`](W) writer structure"]
 impl crate::Writable for RxplSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets RXPL to value 0"]
-impl crate::Resettable for RxplSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for RxplSpec {}

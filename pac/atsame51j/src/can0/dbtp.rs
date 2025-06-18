@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bits 0:3 - Data (Re)Synchronization Jump Width"]
     #[inline(always)]
-    #[must_use]
     pub fn dsjw(&mut self) -> DsjwW<DbtpSpec> {
         DsjwW::new(self, 0)
     }
     #[doc = "Bits 4:7 - Data time segment after sample point"]
     #[inline(always)]
-    #[must_use]
     pub fn dtseg2(&mut self) -> Dtseg2W<DbtpSpec> {
         Dtseg2W::new(self, 4)
     }
     #[doc = "Bits 8:12 - Data time segment before sample point"]
     #[inline(always)]
-    #[must_use]
     pub fn dtseg1(&mut self) -> Dtseg1W<DbtpSpec> {
         Dtseg1W::new(self, 8)
     }
     #[doc = "Bits 16:20 - Data Baud Rate Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn dbrp(&mut self) -> DbrpW<DbtpSpec> {
         DbrpW::new(self, 16)
     }
     #[doc = "Bit 23 - Tranceiver Delay Compensation"]
     #[inline(always)]
-    #[must_use]
     pub fn tdc(&mut self) -> TdcW<DbtpSpec> {
         TdcW::new(self, 23)
     }
@@ -91,8 +86,6 @@ impl crate::Readable for DbtpSpec {}
 #[doc = "`write(|w| ..)` method takes [`dbtp::W`](W) writer structure"]
 impl crate::Writable for DbtpSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets DBTP to value 0x0a33"]
 impl crate::Resettable for DbtpSpec {

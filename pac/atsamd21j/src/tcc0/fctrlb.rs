@@ -546,61 +546,51 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Fault B Source"]
     #[inline(always)]
-    #[must_use]
     pub fn src(&mut self) -> SrcW<FctrlbSpec> {
         SrcW::new(self, 0)
     }
     #[doc = "Bit 3 - Fault B Keeper"]
     #[inline(always)]
-    #[must_use]
     pub fn keep(&mut self) -> KeepW<FctrlbSpec> {
         KeepW::new(self, 3)
     }
     #[doc = "Bit 4 - Fault B Qualification"]
     #[inline(always)]
-    #[must_use]
     pub fn qual(&mut self) -> QualW<FctrlbSpec> {
         QualW::new(self, 4)
     }
     #[doc = "Bits 5:6 - Fault B Blanking Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn blank(&mut self) -> BlankW<FctrlbSpec> {
         BlankW::new(self, 5)
     }
     #[doc = "Bit 7 - Fault B Restart"]
     #[inline(always)]
-    #[must_use]
     pub fn restart(&mut self) -> RestartW<FctrlbSpec> {
         RestartW::new(self, 7)
     }
     #[doc = "Bits 8:9 - Fault B Halt Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn halt(&mut self) -> HaltW<FctrlbSpec> {
         HaltW::new(self, 8)
     }
     #[doc = "Bits 10:11 - Fault B Capture Channel"]
     #[inline(always)]
-    #[must_use]
     pub fn chsel(&mut self) -> ChselW<FctrlbSpec> {
         ChselW::new(self, 10)
     }
     #[doc = "Bits 12:14 - Fault B Capture Action"]
     #[inline(always)]
-    #[must_use]
     pub fn capture(&mut self) -> CaptureW<FctrlbSpec> {
         CaptureW::new(self, 12)
     }
     #[doc = "Bits 16:23 - Fault B Blanking Time"]
     #[inline(always)]
-    #[must_use]
     pub fn blankval(&mut self) -> BlankvalW<FctrlbSpec> {
         BlankvalW::new(self, 16)
     }
     #[doc = "Bits 24:27 - Fault B Filter Value"]
     #[inline(always)]
-    #[must_use]
     pub fn filterval(&mut self) -> FiltervalW<FctrlbSpec> {
         FiltervalW::new(self, 24)
     }
@@ -615,10 +605,6 @@ impl crate::Readable for FctrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`fctrlb::W`](W) writer structure"]
 impl crate::Writable for FctrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets FCTRLB to value 0"]
-impl crate::Resettable for FctrlbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for FctrlbSpec {}

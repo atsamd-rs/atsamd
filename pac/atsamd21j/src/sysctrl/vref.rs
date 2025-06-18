@@ -34,19 +34,16 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Temperature Sensor Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn tsen(&mut self) -> TsenW<VrefSpec> {
         TsenW::new(self, 1)
     }
     #[doc = "Bit 2 - Bandgap Output Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn bgouten(&mut self) -> BgoutenW<VrefSpec> {
         BgoutenW::new(self, 2)
     }
     #[doc = "Bits 16:26 - Bandgap Voltage Generator Calibration"]
     #[inline(always)]
-    #[must_use]
     pub fn calib(&mut self) -> CalibW<VrefSpec> {
         CalibW::new(self, 16)
     }
@@ -61,10 +58,6 @@ impl crate::Readable for VrefSpec {}
 #[doc = "`write(|w| ..)` method takes [`vref::W`](W) writer structure"]
 impl crate::Writable for VrefSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets VREF to value 0"]
-impl crate::Resettable for VrefSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for VrefSpec {}

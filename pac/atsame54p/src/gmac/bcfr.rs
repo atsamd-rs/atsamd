@@ -17,6 +17,4 @@ impl crate::RegisterSpec for BcfrSpec {
 #[doc = "`read()` method returns [`bcfr::R`](R) reader structure"]
 impl crate::Readable for BcfrSpec {}
 #[doc = "`reset()` method sets BCFR to value 0"]
-impl crate::Resettable for BcfrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for BcfrSpec {}

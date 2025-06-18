@@ -17,6 +17,4 @@ impl crate::RegisterSpec for PftSpec {
 #[doc = "`read()` method returns [`pft::R`](R) reader structure"]
 impl crate::Readable for PftSpec {}
 #[doc = "`reset()` method sets PFT to value 0"]
-impl crate::Resettable for PftSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for PftSpec {}

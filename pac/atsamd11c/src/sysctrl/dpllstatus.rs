@@ -38,6 +38,4 @@ impl crate::RegisterSpec for DpllstatusSpec {
 #[doc = "`read()` method returns [`dpllstatus::R`](R) reader structure"]
 impl crate::Readable for DpllstatusSpec {}
 #[doc = "`reset()` method sets DPLLSTATUS to value 0"]
-impl crate::Resettable for DpllstatusSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for DpllstatusSpec {}

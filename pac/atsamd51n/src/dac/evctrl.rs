@@ -79,49 +79,41 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Start Conversion Event Input DAC 0"]
     #[inline(always)]
-    #[must_use]
     pub fn startei0(&mut self) -> Startei0W<EvctrlSpec> {
         Startei0W::new(self, 0)
     }
     #[doc = "Bit 1 - Start Conversion Event Input DAC 1"]
     #[inline(always)]
-    #[must_use]
     pub fn startei1(&mut self) -> Startei1W<EvctrlSpec> {
         Startei1W::new(self, 1)
     }
     #[doc = "Bit 2 - Data Buffer Empty Event Output DAC 0"]
     #[inline(always)]
-    #[must_use]
     pub fn emptyeo0(&mut self) -> Emptyeo0W<EvctrlSpec> {
         Emptyeo0W::new(self, 2)
     }
     #[doc = "Bit 3 - Data Buffer Empty Event Output DAC 1"]
     #[inline(always)]
-    #[must_use]
     pub fn emptyeo1(&mut self) -> Emptyeo1W<EvctrlSpec> {
         Emptyeo1W::new(self, 3)
     }
     #[doc = "Bit 4 - Enable Invertion of DAC 0 input event"]
     #[inline(always)]
-    #[must_use]
     pub fn invei0(&mut self) -> Invei0W<EvctrlSpec> {
         Invei0W::new(self, 4)
     }
     #[doc = "Bit 5 - Enable Invertion of DAC 1 input event"]
     #[inline(always)]
-    #[must_use]
     pub fn invei1(&mut self) -> Invei1W<EvctrlSpec> {
         Invei1W::new(self, 5)
     }
     #[doc = "Bit 6 - Result Ready Event Output 0"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdyeo0(&mut self) -> Resrdyeo0W<EvctrlSpec> {
         Resrdyeo0W::new(self, 6)
     }
     #[doc = "Bit 7 - Result Ready Event Output 1"]
     #[inline(always)]
-    #[must_use]
     pub fn resrdyeo1(&mut self) -> Resrdyeo1W<EvctrlSpec> {
         Resrdyeo1W::new(self, 7)
     }
@@ -136,10 +128,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

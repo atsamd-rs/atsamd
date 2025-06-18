@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - COMP0/1 Bias Scaling"]
     #[inline(always)]
-    #[must_use]
     pub fn bias0(&mut self) -> Bias0W<CalibSpec> {
         Bias0W::new(self, 0)
     }
@@ -31,8 +30,6 @@ impl crate::Readable for CalibSpec {}
 #[doc = "`write(|w| ..)` method takes [`calib::W`](W) writer structure"]
 impl crate::Writable for CalibSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets CALIB to value 0x0101"]
 impl crate::Resettable for CalibSpec {

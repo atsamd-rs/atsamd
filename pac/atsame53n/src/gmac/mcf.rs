@@ -17,6 +17,4 @@ impl crate::RegisterSpec for McfSpec {
 #[doc = "`read()` method returns [`mcf::R`](R) reader structure"]
 impl crate::Readable for McfSpec {}
 #[doc = "`reset()` method sets MCF to value 0"]
-impl crate::Resettable for McfSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for McfSpec {}

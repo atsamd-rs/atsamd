@@ -70,43 +70,36 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Transfer Complete 0"]
     #[inline(always)]
-    #[must_use]
     pub fn trcpt0(&mut self) -> Trcpt0W<EpintflagSpec> {
         Trcpt0W::new(self, 0)
     }
     #[doc = "Bit 1 - Transfer Complete 1"]
     #[inline(always)]
-    #[must_use]
     pub fn trcpt1(&mut self) -> Trcpt1W<EpintflagSpec> {
         Trcpt1W::new(self, 1)
     }
     #[doc = "Bit 2 - Error Flow 0"]
     #[inline(always)]
-    #[must_use]
     pub fn trfail0(&mut self) -> Trfail0W<EpintflagSpec> {
         Trfail0W::new(self, 2)
     }
     #[doc = "Bit 3 - Error Flow 1"]
     #[inline(always)]
-    #[must_use]
     pub fn trfail1(&mut self) -> Trfail1W<EpintflagSpec> {
         Trfail1W::new(self, 3)
     }
     #[doc = "Bit 4 - Received Setup"]
     #[inline(always)]
-    #[must_use]
     pub fn rxstp(&mut self) -> RxstpW<EpintflagSpec> {
         RxstpW::new(self, 4)
     }
     #[doc = "Bit 5 - Stall 0 In/out"]
     #[inline(always)]
-    #[must_use]
     pub fn stall0(&mut self) -> Stall0W<EpintflagSpec> {
         Stall0W::new(self, 5)
     }
     #[doc = "Bit 6 - Stall 1 In/out"]
     #[inline(always)]
-    #[must_use]
     pub fn stall1(&mut self) -> Stall1W<EpintflagSpec> {
         Stall1W::new(self, 6)
     }
@@ -121,10 +114,6 @@ impl crate::Readable for EpintflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`epintflag::W`](W) writer structure"]
 impl crate::Writable for EpintflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EPINTFLAG%s to value 0"]
-impl crate::Resettable for EpintflagSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for EpintflagSpec {}

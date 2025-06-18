@@ -107,13 +107,11 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Window 0 Mode Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn wen0(&mut self) -> Wen0W<WinctrlSpec> {
         Wen0W::new(self, 0)
     }
     #[doc = "Bits 1:2 - Window 0 Interrupt Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn wintsel0(&mut self) -> Wintsel0W<WinctrlSpec> {
         Wintsel0W::new(self, 1)
     }
@@ -128,10 +126,6 @@ impl crate::Readable for WinctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`winctrl::W`](W) writer structure"]
 impl crate::Writable for WinctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets WINCTRL to value 0"]
-impl crate::Resettable for WinctrlSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for WinctrlSpec {}

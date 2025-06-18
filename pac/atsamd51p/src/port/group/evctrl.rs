@@ -197,73 +197,61 @@ impl R {
 impl W {
     #[doc = "Bits 0:4 - PORT Event Pin Identifier 0"]
     #[inline(always)]
-    #[must_use]
     pub fn pid0(&mut self) -> Pid0W<EvctrlSpec> {
         Pid0W::new(self, 0)
     }
     #[doc = "Bits 5:6 - PORT Event Action 0"]
     #[inline(always)]
-    #[must_use]
     pub fn evact0(&mut self) -> Evact0W<EvctrlSpec> {
         Evact0W::new(self, 5)
     }
     #[doc = "Bit 7 - PORT Event Input Enable 0"]
     #[inline(always)]
-    #[must_use]
     pub fn portei0(&mut self) -> Portei0W<EvctrlSpec> {
         Portei0W::new(self, 7)
     }
     #[doc = "Bits 8:12 - PORT Event Pin Identifier 1"]
     #[inline(always)]
-    #[must_use]
     pub fn pid1(&mut self) -> Pid1W<EvctrlSpec> {
         Pid1W::new(self, 8)
     }
     #[doc = "Bits 13:14 - PORT Event Action 1"]
     #[inline(always)]
-    #[must_use]
     pub fn evact1(&mut self) -> Evact1W<EvctrlSpec> {
         Evact1W::new(self, 13)
     }
     #[doc = "Bit 15 - PORT Event Input Enable 1"]
     #[inline(always)]
-    #[must_use]
     pub fn portei1(&mut self) -> Portei1W<EvctrlSpec> {
         Portei1W::new(self, 15)
     }
     #[doc = "Bits 16:20 - PORT Event Pin Identifier 2"]
     #[inline(always)]
-    #[must_use]
     pub fn pid2(&mut self) -> Pid2W<EvctrlSpec> {
         Pid2W::new(self, 16)
     }
     #[doc = "Bits 21:22 - PORT Event Action 2"]
     #[inline(always)]
-    #[must_use]
     pub fn evact2(&mut self) -> Evact2W<EvctrlSpec> {
         Evact2W::new(self, 21)
     }
     #[doc = "Bit 23 - PORT Event Input Enable 2"]
     #[inline(always)]
-    #[must_use]
     pub fn portei2(&mut self) -> Portei2W<EvctrlSpec> {
         Portei2W::new(self, 23)
     }
     #[doc = "Bits 24:28 - PORT Event Pin Identifier 3"]
     #[inline(always)]
-    #[must_use]
     pub fn pid3(&mut self) -> Pid3W<EvctrlSpec> {
         Pid3W::new(self, 24)
     }
     #[doc = "Bits 29:30 - PORT Event Action 3"]
     #[inline(always)]
-    #[must_use]
     pub fn evact3(&mut self) -> Evact3W<EvctrlSpec> {
         Evact3W::new(self, 29)
     }
     #[doc = "Bit 31 - PORT Event Input Enable 3"]
     #[inline(always)]
-    #[must_use]
     pub fn portei3(&mut self) -> Portei3W<EvctrlSpec> {
         Portei3W::new(self, 31)
     }
@@ -278,10 +266,6 @@ impl crate::Readable for EvctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`evctrl::W`](W) writer structure"]
 impl crate::Writable for EvctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets EVCTRL to value 0"]
-impl crate::Resettable for EvctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EvctrlSpec {}

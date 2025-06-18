@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - IP address"]
     #[inline(always)]
-    #[must_use]
     pub fn ip(&mut self) -> IpW<WolSpec> {
         IpW::new(self, 0)
     }
     #[doc = "Bit 16 - Event enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mag(&mut self) -> MagW<WolSpec> {
         MagW::new(self, 16)
     }
     #[doc = "Bit 17 - LAN ARP req"]
     #[inline(always)]
-    #[must_use]
     pub fn arp(&mut self) -> ArpW<WolSpec> {
         ArpW::new(self, 17)
     }
     #[doc = "Bit 18 - WOL specific address reg 1"]
     #[inline(always)]
-    #[must_use]
     pub fn sa1(&mut self) -> Sa1W<WolSpec> {
         Sa1W::new(self, 18)
     }
     #[doc = "Bit 19 - WOL LAN multicast"]
     #[inline(always)]
-    #[must_use]
     pub fn mti(&mut self) -> MtiW<WolSpec> {
         MtiW::new(self, 19)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for WolSpec {}
 #[doc = "`write(|w| ..)` method takes [`wol::W`](W) writer structure"]
 impl crate::Writable for WolSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets WOL to value 0"]
-impl crate::Resettable for WolSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for WolSpec {}

@@ -280,19 +280,16 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Write-Back Quality of Service"]
     #[inline(always)]
-    #[must_use]
     pub fn wrbqos(&mut self) -> WrbqosW<QosctrlSpec> {
         WrbqosW::new(self, 0)
     }
     #[doc = "Bits 2:3 - Fetch Quality of Service"]
     #[inline(always)]
-    #[must_use]
     pub fn fqos(&mut self) -> FqosW<QosctrlSpec> {
         FqosW::new(self, 2)
     }
     #[doc = "Bits 4:5 - Data Transfer Quality of Service"]
     #[inline(always)]
-    #[must_use]
     pub fn dqos(&mut self) -> DqosW<QosctrlSpec> {
         DqosW::new(self, 4)
     }
@@ -307,8 +304,6 @@ impl crate::Readable for QosctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`qosctrl::W`](W) writer structure"]
 impl crate::Writable for QosctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets QOSCTRL to value 0x15"]
 impl crate::Resettable for QosctrlSpec {

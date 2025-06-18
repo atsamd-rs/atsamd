@@ -17,6 +17,4 @@ impl crate::RegisterSpec for SisrSpec {
 #[doc = "`read()` method returns [`sisr::R`](R) reader structure"]
 impl crate::Readable for SisrSpec {}
 #[doc = "`reset()` method sets SISR to value 0"]
-impl crate::Resettable for SisrSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for SisrSpec {}

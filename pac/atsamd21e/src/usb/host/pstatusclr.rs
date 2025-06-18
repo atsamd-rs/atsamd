@@ -52,31 +52,26 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Data Toggle clear"]
     #[inline(always)]
-    #[must_use]
     pub fn dtgl(&mut self) -> DtglW<PstatusclrSpec> {
         DtglW::new(self, 0)
     }
     #[doc = "Bit 2 - Curren Bank clear"]
     #[inline(always)]
-    #[must_use]
     pub fn curbk(&mut self) -> CurbkW<PstatusclrSpec> {
         CurbkW::new(self, 2)
     }
     #[doc = "Bit 4 - Pipe Freeze Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn pfreeze(&mut self) -> PfreezeW<PstatusclrSpec> {
         PfreezeW::new(self, 4)
     }
     #[doc = "Bit 6 - Bank 0 Ready Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn bk0rdy(&mut self) -> Bk0rdyW<PstatusclrSpec> {
         Bk0rdyW::new(self, 6)
     }
     #[doc = "Bit 7 - Bank 1 Ready Clear"]
     #[inline(always)]
-    #[must_use]
     pub fn bk1rdy(&mut self) -> Bk1rdyW<PstatusclrSpec> {
         Bk1rdyW::new(self, 7)
     }
@@ -91,10 +86,6 @@ impl crate::Readable for PstatusclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`pstatusclr::W`](W) writer structure"]
 impl crate::Writable for PstatusclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PSTATUSCLR%s to value 0"]
-impl crate::Resettable for PstatusclrSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for PstatusclrSpec {}

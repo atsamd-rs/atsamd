@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - External Interrupt"]
     #[inline(always)]
-    #[must_use]
     pub fn extint(&mut self) -> ExtintW<IntflagSpec> {
         ExtintW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for IntflagSpec {}
 #[doc = "`write(|w| ..)` method takes [`intflag::W`](W) writer structure"]
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
-impl crate::Resettable for IntflagSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntflagSpec {}

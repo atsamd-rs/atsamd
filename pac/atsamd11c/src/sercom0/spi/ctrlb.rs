@@ -61,37 +61,31 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - Character Size"]
     #[inline(always)]
-    #[must_use]
     pub fn chsize(&mut self) -> ChsizeW<CtrlbSpec> {
         ChsizeW::new(self, 0)
     }
     #[doc = "Bit 6 - Data Preload Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ploaden(&mut self) -> PloadenW<CtrlbSpec> {
         PloadenW::new(self, 6)
     }
     #[doc = "Bit 9 - Slave Select Low Detect Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ssde(&mut self) -> SsdeW<CtrlbSpec> {
         SsdeW::new(self, 9)
     }
     #[doc = "Bit 13 - Master Slave Select Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mssen(&mut self) -> MssenW<CtrlbSpec> {
         MssenW::new(self, 13)
     }
     #[doc = "Bits 14:15 - Address Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn amode(&mut self) -> AmodeW<CtrlbSpec> {
         AmodeW::new(self, 14)
     }
     #[doc = "Bit 17 - Receiver Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxen(&mut self) -> RxenW<CtrlbSpec> {
         RxenW::new(self, 17)
     }
@@ -106,10 +100,6 @@ impl crate::Readable for CtrlbSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrlb::W`](W) writer structure"]
 impl crate::Writable for CtrlbSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLB to value 0"]
-impl crate::Resettable for CtrlbSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlbSpec {}

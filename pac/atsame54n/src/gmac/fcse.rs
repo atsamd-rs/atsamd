@@ -17,6 +17,4 @@ impl crate::RegisterSpec for FcseSpec {
 #[doc = "`read()` method returns [`fcse::R`](R) reader structure"]
 impl crate::Readable for FcseSpec {}
 #[doc = "`reset()` method sets FCSE to value 0"]
-impl crate::Resettable for FcseSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for FcseSpec {}

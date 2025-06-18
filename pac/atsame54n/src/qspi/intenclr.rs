@@ -61,37 +61,31 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Receive Data Register Full Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxc(&mut self) -> RxcW<IntenclrSpec> {
         RxcW::new(self, 0)
     }
     #[doc = "Bit 1 - Transmit Data Register Empty Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn dre(&mut self) -> DreW<IntenclrSpec> {
         DreW::new(self, 1)
     }
     #[doc = "Bit 2 - Transmission Complete Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn txc(&mut self) -> TxcW<IntenclrSpec> {
         TxcW::new(self, 2)
     }
     #[doc = "Bit 3 - Overrun Error Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn error(&mut self) -> ErrorW<IntenclrSpec> {
         ErrorW::new(self, 3)
     }
     #[doc = "Bit 8 - Chip Select Rise Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn csrise(&mut self) -> CsriseW<IntenclrSpec> {
         CsriseW::new(self, 8)
     }
     #[doc = "Bit 10 - Instruction End Interrupt Disable"]
     #[inline(always)]
-    #[must_use]
     pub fn instrend(&mut self) -> InstrendW<IntenclrSpec> {
         InstrendW::new(self, 10)
     }
@@ -106,10 +100,6 @@ impl crate::Readable for IntenclrSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenclr::W`](W) writer structure"]
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
-impl crate::Resettable for IntenclrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for IntenclrSpec {}

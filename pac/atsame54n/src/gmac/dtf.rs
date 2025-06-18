@@ -17,6 +17,4 @@ impl crate::RegisterSpec for DtfSpec {
 #[doc = "`read()` method returns [`dtf::R`](R) reader structure"]
 impl crate::Readable for DtfSpec {}
 #[doc = "`reset()` method sets DTF to value 0"]
-impl crate::Resettable for DtfSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for DtfSpec {}

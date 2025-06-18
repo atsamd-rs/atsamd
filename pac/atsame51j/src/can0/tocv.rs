@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Timeout Counter"]
     #[inline(always)]
-    #[must_use]
     pub fn toc(&mut self) -> TocW<TocvSpec> {
         TocW::new(self, 0)
     }
@@ -31,8 +30,6 @@ impl crate::Readable for TocvSpec {}
 #[doc = "`write(|w| ..)` method takes [`tocv::W`](W) writer structure"]
 impl crate::Writable for TocvSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TOCV to value 0xffff"]
 impl crate::Resettable for TocvSpec {

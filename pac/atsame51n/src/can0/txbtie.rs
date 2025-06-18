@@ -295,193 +295,161 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Transmission Interrupt Enable 0"]
     #[inline(always)]
-    #[must_use]
     pub fn tie0(&mut self) -> Tie0W<TxbtieSpec> {
         Tie0W::new(self, 0)
     }
     #[doc = "Bit 1 - Transmission Interrupt Enable 1"]
     #[inline(always)]
-    #[must_use]
     pub fn tie1(&mut self) -> Tie1W<TxbtieSpec> {
         Tie1W::new(self, 1)
     }
     #[doc = "Bit 2 - Transmission Interrupt Enable 2"]
     #[inline(always)]
-    #[must_use]
     pub fn tie2(&mut self) -> Tie2W<TxbtieSpec> {
         Tie2W::new(self, 2)
     }
     #[doc = "Bit 3 - Transmission Interrupt Enable 3"]
     #[inline(always)]
-    #[must_use]
     pub fn tie3(&mut self) -> Tie3W<TxbtieSpec> {
         Tie3W::new(self, 3)
     }
     #[doc = "Bit 4 - Transmission Interrupt Enable 4"]
     #[inline(always)]
-    #[must_use]
     pub fn tie4(&mut self) -> Tie4W<TxbtieSpec> {
         Tie4W::new(self, 4)
     }
     #[doc = "Bit 5 - Transmission Interrupt Enable 5"]
     #[inline(always)]
-    #[must_use]
     pub fn tie5(&mut self) -> Tie5W<TxbtieSpec> {
         Tie5W::new(self, 5)
     }
     #[doc = "Bit 6 - Transmission Interrupt Enable 6"]
     #[inline(always)]
-    #[must_use]
     pub fn tie6(&mut self) -> Tie6W<TxbtieSpec> {
         Tie6W::new(self, 6)
     }
     #[doc = "Bit 7 - Transmission Interrupt Enable 7"]
     #[inline(always)]
-    #[must_use]
     pub fn tie7(&mut self) -> Tie7W<TxbtieSpec> {
         Tie7W::new(self, 7)
     }
     #[doc = "Bit 8 - Transmission Interrupt Enable 8"]
     #[inline(always)]
-    #[must_use]
     pub fn tie8(&mut self) -> Tie8W<TxbtieSpec> {
         Tie8W::new(self, 8)
     }
     #[doc = "Bit 9 - Transmission Interrupt Enable 9"]
     #[inline(always)]
-    #[must_use]
     pub fn tie9(&mut self) -> Tie9W<TxbtieSpec> {
         Tie9W::new(self, 9)
     }
     #[doc = "Bit 10 - Transmission Interrupt Enable 10"]
     #[inline(always)]
-    #[must_use]
     pub fn tie10(&mut self) -> Tie10W<TxbtieSpec> {
         Tie10W::new(self, 10)
     }
     #[doc = "Bit 11 - Transmission Interrupt Enable 11"]
     #[inline(always)]
-    #[must_use]
     pub fn tie11(&mut self) -> Tie11W<TxbtieSpec> {
         Tie11W::new(self, 11)
     }
     #[doc = "Bit 12 - Transmission Interrupt Enable 12"]
     #[inline(always)]
-    #[must_use]
     pub fn tie12(&mut self) -> Tie12W<TxbtieSpec> {
         Tie12W::new(self, 12)
     }
     #[doc = "Bit 13 - Transmission Interrupt Enable 13"]
     #[inline(always)]
-    #[must_use]
     pub fn tie13(&mut self) -> Tie13W<TxbtieSpec> {
         Tie13W::new(self, 13)
     }
     #[doc = "Bit 14 - Transmission Interrupt Enable 14"]
     #[inline(always)]
-    #[must_use]
     pub fn tie14(&mut self) -> Tie14W<TxbtieSpec> {
         Tie14W::new(self, 14)
     }
     #[doc = "Bit 15 - Transmission Interrupt Enable 15"]
     #[inline(always)]
-    #[must_use]
     pub fn tie15(&mut self) -> Tie15W<TxbtieSpec> {
         Tie15W::new(self, 15)
     }
     #[doc = "Bit 16 - Transmission Interrupt Enable 16"]
     #[inline(always)]
-    #[must_use]
     pub fn tie16(&mut self) -> Tie16W<TxbtieSpec> {
         Tie16W::new(self, 16)
     }
     #[doc = "Bit 17 - Transmission Interrupt Enable 17"]
     #[inline(always)]
-    #[must_use]
     pub fn tie17(&mut self) -> Tie17W<TxbtieSpec> {
         Tie17W::new(self, 17)
     }
     #[doc = "Bit 18 - Transmission Interrupt Enable 18"]
     #[inline(always)]
-    #[must_use]
     pub fn tie18(&mut self) -> Tie18W<TxbtieSpec> {
         Tie18W::new(self, 18)
     }
     #[doc = "Bit 19 - Transmission Interrupt Enable 19"]
     #[inline(always)]
-    #[must_use]
     pub fn tie19(&mut self) -> Tie19W<TxbtieSpec> {
         Tie19W::new(self, 19)
     }
     #[doc = "Bit 20 - Transmission Interrupt Enable 20"]
     #[inline(always)]
-    #[must_use]
     pub fn tie20(&mut self) -> Tie20W<TxbtieSpec> {
         Tie20W::new(self, 20)
     }
     #[doc = "Bit 21 - Transmission Interrupt Enable 21"]
     #[inline(always)]
-    #[must_use]
     pub fn tie21(&mut self) -> Tie21W<TxbtieSpec> {
         Tie21W::new(self, 21)
     }
     #[doc = "Bit 22 - Transmission Interrupt Enable 22"]
     #[inline(always)]
-    #[must_use]
     pub fn tie22(&mut self) -> Tie22W<TxbtieSpec> {
         Tie22W::new(self, 22)
     }
     #[doc = "Bit 23 - Transmission Interrupt Enable 23"]
     #[inline(always)]
-    #[must_use]
     pub fn tie23(&mut self) -> Tie23W<TxbtieSpec> {
         Tie23W::new(self, 23)
     }
     #[doc = "Bit 24 - Transmission Interrupt Enable 24"]
     #[inline(always)]
-    #[must_use]
     pub fn tie24(&mut self) -> Tie24W<TxbtieSpec> {
         Tie24W::new(self, 24)
     }
     #[doc = "Bit 25 - Transmission Interrupt Enable 25"]
     #[inline(always)]
-    #[must_use]
     pub fn tie25(&mut self) -> Tie25W<TxbtieSpec> {
         Tie25W::new(self, 25)
     }
     #[doc = "Bit 26 - Transmission Interrupt Enable 26"]
     #[inline(always)]
-    #[must_use]
     pub fn tie26(&mut self) -> Tie26W<TxbtieSpec> {
         Tie26W::new(self, 26)
     }
     #[doc = "Bit 27 - Transmission Interrupt Enable 27"]
     #[inline(always)]
-    #[must_use]
     pub fn tie27(&mut self) -> Tie27W<TxbtieSpec> {
         Tie27W::new(self, 27)
     }
     #[doc = "Bit 28 - Transmission Interrupt Enable 28"]
     #[inline(always)]
-    #[must_use]
     pub fn tie28(&mut self) -> Tie28W<TxbtieSpec> {
         Tie28W::new(self, 28)
     }
     #[doc = "Bit 29 - Transmission Interrupt Enable 29"]
     #[inline(always)]
-    #[must_use]
     pub fn tie29(&mut self) -> Tie29W<TxbtieSpec> {
         Tie29W::new(self, 29)
     }
     #[doc = "Bit 30 - Transmission Interrupt Enable 30"]
     #[inline(always)]
-    #[must_use]
     pub fn tie30(&mut self) -> Tie30W<TxbtieSpec> {
         Tie30W::new(self, 30)
     }
     #[doc = "Bit 31 - Transmission Interrupt Enable 31"]
     #[inline(always)]
-    #[must_use]
     pub fn tie31(&mut self) -> Tie31W<TxbtieSpec> {
         Tie31W::new(self, 31)
     }
@@ -496,10 +464,6 @@ impl crate::Readable for TxbtieSpec {}
 #[doc = "`write(|w| ..)` method takes [`txbtie::W`](W) writer structure"]
 impl crate::Writable for TxbtieSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TXBTIE to value 0"]
-impl crate::Resettable for TxbtieSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxbtieSpec {}

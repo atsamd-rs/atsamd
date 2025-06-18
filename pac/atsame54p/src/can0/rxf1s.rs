@@ -108,6 +108,4 @@ impl crate::RegisterSpec for Rxf1sSpec {
 #[doc = "`read()` method returns [`rxf1s::R`](R) reader structure"]
 impl crate::Readable for Rxf1sSpec {}
 #[doc = "`reset()` method sets RXF1S to value 0"]
-impl crate::Resettable for Rxf1sSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Rxf1sSpec {}

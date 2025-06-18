@@ -432,8 +432,7 @@ impl WrpplR {
         *self == Wrpplselect::Enabled
     }
 }
-#[doc = "Field `DATLL` reader - DAT\\[3:0\\]
-Line Level"]
+#[doc = "Field `DATLL` reader - DAT\\[3:0\\] Line Level"]
 pub type DatllR = crate::FieldReader;
 #[doc = "Field `CMDLL` reader - CMD Line Level"]
 pub type CmdllR = crate::BitReader;
@@ -498,8 +497,7 @@ impl R {
     pub fn wrppl(&self) -> WrpplR {
         WrpplR::new(((self.bits >> 19) & 1) != 0)
     }
-    #[doc = "Bits 20:23 - DAT\\[3:0\\]
-Line Level"]
+    #[doc = "Bits 20:23 - DAT\\[3:0\\] Line Level"]
     #[inline(always)]
     pub fn datll(&self) -> DatllR {
         DatllR::new(((self.bits >> 20) & 0x0f) as u8)

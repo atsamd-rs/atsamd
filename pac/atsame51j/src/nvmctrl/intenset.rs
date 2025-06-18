@@ -106,67 +106,56 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Command Done Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn done(&mut self) -> DoneW<IntensetSpec> {
         DoneW::new(self, 0)
     }
     #[doc = "Bit 1 - Address Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn addre(&mut self) -> AddreW<IntensetSpec> {
         AddreW::new(self, 1)
     }
     #[doc = "Bit 2 - Programming Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn proge(&mut self) -> ProgeW<IntensetSpec> {
         ProgeW::new(self, 2)
     }
     #[doc = "Bit 3 - Lock Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn locke(&mut self) -> LockeW<IntensetSpec> {
         LockeW::new(self, 3)
     }
     #[doc = "Bit 4 - ECC Single Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn eccse(&mut self) -> EccseW<IntensetSpec> {
         EccseW::new(self, 4)
     }
     #[doc = "Bit 5 - ECC Dual Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn eccde(&mut self) -> EccdeW<IntensetSpec> {
         EccdeW::new(self, 5)
     }
     #[doc = "Bit 6 - NVM Error Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn nvme(&mut self) -> NvmeW<IntensetSpec> {
         NvmeW::new(self, 6)
     }
     #[doc = "Bit 7 - Suspended Write Or Erase Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn susp(&mut self) -> SuspW<IntensetSpec> {
         SuspW::new(self, 7)
     }
     #[doc = "Bit 8 - Active SEES Full Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn seesfull(&mut self) -> SeesfullW<IntensetSpec> {
         SeesfullW::new(self, 8)
     }
     #[doc = "Bit 9 - Active SEES Overflow Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn seesovf(&mut self) -> SeesovfW<IntensetSpec> {
         SeesovfW::new(self, 9)
     }
     #[doc = "Bit 10 - SEE Write Completed Interrupt Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn seewrc(&mut self) -> SeewrcW<IntensetSpec> {
         SeewrcW::new(self, 10)
     }
@@ -181,10 +170,6 @@ impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for IntensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for IntensetSpec {
-    const RESET_VALUE: u16 = 0;
-}
+impl crate::Resettable for IntensetSpec {}

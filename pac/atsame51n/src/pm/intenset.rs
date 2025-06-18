@@ -16,7 +16,6 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Sleep Mode Entry Ready Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn sleeprdy(&mut self) -> SleeprdyW<IntensetSpec> {
         SleeprdyW::new(self, 0)
     }
@@ -31,10 +30,6 @@ impl crate::Readable for IntensetSpec {}
 #[doc = "`write(|w| ..)` method takes [`intenset::W`](W) writer structure"]
 impl crate::Writable for IntensetSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENSET to value 0"]
-impl crate::Resettable for IntensetSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for IntensetSpec {}

@@ -43,25 +43,21 @@ impl R {
 impl W {
     #[doc = "Bits 0:15 - Rx FIFO 1 Start Address"]
     #[inline(always)]
-    #[must_use]
     pub fn f1sa(&mut self) -> F1saW<Rxf1cSpec> {
         F1saW::new(self, 0)
     }
     #[doc = "Bits 16:22 - Rx FIFO 1 Size"]
     #[inline(always)]
-    #[must_use]
     pub fn f1s(&mut self) -> F1sW<Rxf1cSpec> {
         F1sW::new(self, 16)
     }
     #[doc = "Bits 24:30 - Rx FIFO 1 Watermark"]
     #[inline(always)]
-    #[must_use]
     pub fn f1wm(&mut self) -> F1wmW<Rxf1cSpec> {
         F1wmW::new(self, 24)
     }
     #[doc = "Bit 31 - FIFO 1 Operation Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn f1om(&mut self) -> F1omW<Rxf1cSpec> {
         F1omW::new(self, 31)
     }
@@ -76,10 +72,6 @@ impl crate::Readable for Rxf1cSpec {}
 #[doc = "`write(|w| ..)` method takes [`rxf1c::W`](W) writer structure"]
 impl crate::Writable for Rxf1cSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RXF1C to value 0"]
-impl crate::Resettable for Rxf1cSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Rxf1cSpec {}

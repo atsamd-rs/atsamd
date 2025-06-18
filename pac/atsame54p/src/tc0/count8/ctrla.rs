@@ -552,91 +552,76 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Software Reset"]
     #[inline(always)]
-    #[must_use]
     pub fn swrst(&mut self) -> SwrstW<CtrlaSpec> {
         SwrstW::new(self, 0)
     }
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CtrlaSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Timer Counter Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn mode(&mut self) -> ModeW<CtrlaSpec> {
         ModeW::new(self, 2)
     }
     #[doc = "Bits 4:5 - Prescaler and Counter Synchronization"]
     #[inline(always)]
-    #[must_use]
     pub fn prescsync(&mut self) -> PrescsyncW<CtrlaSpec> {
         PrescsyncW::new(self, 4)
     }
     #[doc = "Bit 6 - Run during Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CtrlaSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bit 7 - Clock On Demand"]
     #[inline(always)]
-    #[must_use]
     pub fn ondemand(&mut self) -> OndemandW<CtrlaSpec> {
         OndemandW::new(self, 7)
     }
     #[doc = "Bits 8:10 - Prescaler"]
     #[inline(always)]
-    #[must_use]
     pub fn prescaler(&mut self) -> PrescalerW<CtrlaSpec> {
         PrescalerW::new(self, 8)
     }
     #[doc = "Bit 11 - Auto Lock"]
     #[inline(always)]
-    #[must_use]
     pub fn alock(&mut self) -> AlockW<CtrlaSpec> {
         AlockW::new(self, 11)
     }
     #[doc = "Bit 15 - DMA One-Shot Trigger Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn dmaos(&mut self) -> DmaosW<CtrlaSpec> {
         DmaosW::new(self, 15)
     }
     #[doc = "Bit 16 - Capture Channel 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn capten0(&mut self) -> Capten0W<CtrlaSpec> {
         Capten0W::new(self, 16)
     }
     #[doc = "Bit 17 - Capture Channel 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn capten1(&mut self) -> Capten1W<CtrlaSpec> {
         Capten1W::new(self, 17)
     }
     #[doc = "Bit 20 - Capture On Pin 0 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn copen0(&mut self) -> Copen0W<CtrlaSpec> {
         Copen0W::new(self, 20)
     }
     #[doc = "Bit 21 - Capture On Pin 1 Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn copen1(&mut self) -> Copen1W<CtrlaSpec> {
         Copen1W::new(self, 21)
     }
     #[doc = "Bits 24:25 - Capture Mode Channel 0"]
     #[inline(always)]
-    #[must_use]
     pub fn captmode0(&mut self) -> Captmode0W<CtrlaSpec> {
         Captmode0W::new(self, 24)
     }
     #[doc = "Bits 27:28 - Capture mode Channel 1"]
     #[inline(always)]
-    #[must_use]
     pub fn captmode1(&mut self) -> Captmode1W<CtrlaSpec> {
         Captmode1W::new(self, 27)
     }
@@ -651,10 +636,6 @@ impl crate::Readable for CtrlaSpec {}
 #[doc = "`write(|w| ..)` method takes [`ctrla::W`](W) writer structure"]
 impl crate::Writable for CtrlaSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CTRLA to value 0"]
-impl crate::Resettable for CtrlaSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for CtrlaSpec {}

@@ -493,85 +493,71 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Slot Size"]
     #[inline(always)]
-    #[must_use]
     pub fn slotsize(&mut self) -> SlotsizeW<ClkctrlSpec> {
         SlotsizeW::new(self, 0)
     }
     #[doc = "Bits 2:4 - Number of Slots in Frame"]
     #[inline(always)]
-    #[must_use]
     pub fn nbslots(&mut self) -> NbslotsW<ClkctrlSpec> {
         NbslotsW::new(self, 2)
     }
     #[doc = "Bits 5:6 - Frame Sync Width"]
     #[inline(always)]
-    #[must_use]
     pub fn fswidth(&mut self) -> FswidthW<ClkctrlSpec> {
         FswidthW::new(self, 5)
     }
     #[doc = "Bit 7 - Data Delay from Frame Sync"]
     #[inline(always)]
-    #[must_use]
     pub fn bitdelay(&mut self) -> BitdelayW<ClkctrlSpec> {
         BitdelayW::new(self, 7)
     }
     #[doc = "Bit 8 - Frame Sync Select"]
     #[inline(always)]
-    #[must_use]
     pub fn fssel(&mut self) -> FsselW<ClkctrlSpec> {
         FsselW::new(self, 8)
     }
     #[doc = "Bit 11 - Frame Sync Invert"]
     #[inline(always)]
-    #[must_use]
     pub fn fsinv(&mut self) -> FsinvW<ClkctrlSpec> {
         FsinvW::new(self, 11)
     }
     #[doc = "Bit 12 - Serial Clock Select"]
     #[inline(always)]
-    #[must_use]
     pub fn scksel(&mut self) -> SckselW<ClkctrlSpec> {
         SckselW::new(self, 12)
     }
     #[doc = "Bit 16 - Master Clock Select"]
     #[inline(always)]
-    #[must_use]
     pub fn mcksel(&mut self) -> MckselW<ClkctrlSpec> {
         MckselW::new(self, 16)
     }
     #[doc = "Bit 18 - Master Clock Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mcken(&mut self) -> MckenW<ClkctrlSpec> {
         MckenW::new(self, 18)
     }
     #[doc = "Bits 19:23 - Master Clock Division Factor"]
     #[inline(always)]
-    #[must_use]
     pub fn mckdiv(&mut self) -> MckdivW<ClkctrlSpec> {
         MckdivW::new(self, 19)
     }
     #[doc = "Bits 24:28 - Master Clock Output Division Factor"]
     #[inline(always)]
-    #[must_use]
     pub fn mckoutdiv(&mut self) -> MckoutdivW<ClkctrlSpec> {
         MckoutdivW::new(self, 24)
     }
     #[doc = "Bit 29 - Frame Sync Output Invert"]
     #[inline(always)]
-    #[must_use]
     pub fn fsoutinv(&mut self) -> FsoutinvW<ClkctrlSpec> {
         FsoutinvW::new(self, 29)
     }
     #[doc = "Bit 30 - Serial Clock Output Invert"]
     #[inline(always)]
-    #[must_use]
     pub fn sckoutinv(&mut self) -> SckoutinvW<ClkctrlSpec> {
         SckoutinvW::new(self, 30)
     }
     #[doc = "Bit 31 - Master Clock Output Invert"]
     #[inline(always)]
-    #[must_use]
     pub fn mckoutinv(&mut self) -> MckoutinvW<ClkctrlSpec> {
         MckoutinvW::new(self, 31)
     }
@@ -586,10 +572,6 @@ impl crate::Readable for ClkctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`clkctrl::W`](W) writer structure"]
 impl crate::Writable for ClkctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets CLKCTRL%s to value 0"]
-impl crate::Resettable for ClkctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for ClkctrlSpec {}

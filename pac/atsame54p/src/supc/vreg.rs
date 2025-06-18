@@ -101,31 +101,26 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<VregSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - Voltage Regulator Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn sel(&mut self) -> SelW<VregSpec> {
         SelW::new(self, 2)
     }
     #[doc = "Bit 7 - Run in Backup mode"]
     #[inline(always)]
-    #[must_use]
     pub fn runbkup(&mut self) -> RunbkupW<VregSpec> {
         RunbkupW::new(self, 7)
     }
     #[doc = "Bit 16 - Voltage Scaling Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn vsen(&mut self) -> VsenW<VregSpec> {
         VsenW::new(self, 16)
     }
     #[doc = "Bits 24:26 - Voltage Scaling Period"]
     #[inline(always)]
-    #[must_use]
     pub fn vsper(&mut self) -> VsperW<VregSpec> {
         VsperW::new(self, 24)
     }
@@ -140,8 +135,6 @@ impl crate::Readable for VregSpec {}
 #[doc = "`write(|w| ..)` method takes [`vreg::W`](W) writer structure"]
 impl crate::Writable for VregSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets VREG to value 0x02"]
 impl crate::Resettable for VregSpec {

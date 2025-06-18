@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:2 - End Point Type0"]
     #[inline(always)]
-    #[must_use]
     pub fn eptype0(&mut self) -> Eptype0W<EpcfgSpec> {
         Eptype0W::new(self, 0)
     }
     #[doc = "Bits 4:6 - End Point Type1"]
     #[inline(always)]
-    #[must_use]
     pub fn eptype1(&mut self) -> Eptype1W<EpcfgSpec> {
         Eptype1W::new(self, 4)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for EpcfgSpec {}
 #[doc = "`write(|w| ..)` method takes [`epcfg::W`](W) writer structure"]
 impl crate::Writable for EpcfgSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EPCFG to value 0"]
-impl crate::Resettable for EpcfgSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for EpcfgSpec {}

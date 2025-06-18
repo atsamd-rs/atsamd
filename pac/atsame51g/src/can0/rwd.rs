@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:7 - Watchdog Configuration"]
     #[inline(always)]
-    #[must_use]
     pub fn wdc(&mut self) -> WdcW<RwdSpec> {
         WdcW::new(self, 0)
     }
     #[doc = "Bits 8:15 - Watchdog Value"]
     #[inline(always)]
-    #[must_use]
     pub fn wdv(&mut self) -> WdvW<RwdSpec> {
         WdvW::new(self, 8)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for RwdSpec {}
 #[doc = "`write(|w| ..)` method takes [`rwd::W`](W) writer structure"]
 impl crate::Writable for RwdSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets RWD to value 0"]
-impl crate::Resettable for RwdSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for RwdSpec {}

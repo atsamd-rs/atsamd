@@ -313,61 +313,51 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<Bod33Spec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bits 2:3 - Action when Threshold Crossed"]
     #[inline(always)]
-    #[must_use]
     pub fn action(&mut self) -> ActionW<Bod33Spec> {
         ActionW::new(self, 2)
     }
     #[doc = "Bit 4 - Configuration in Standby mode"]
     #[inline(always)]
-    #[must_use]
     pub fn stdbycfg(&mut self) -> StdbycfgW<Bod33Spec> {
         StdbycfgW::new(self, 4)
     }
     #[doc = "Bit 5 - Run in Standby mode"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<Bod33Spec> {
         RunstdbyW::new(self, 5)
     }
     #[doc = "Bit 6 - Run in Hibernate mode"]
     #[inline(always)]
-    #[must_use]
     pub fn runhib(&mut self) -> RunhibW<Bod33Spec> {
         RunhibW::new(self, 6)
     }
     #[doc = "Bit 7 - Run in Backup mode"]
     #[inline(always)]
-    #[must_use]
     pub fn runbkup(&mut self) -> RunbkupW<Bod33Spec> {
         RunbkupW::new(self, 7)
     }
     #[doc = "Bits 8:11 - Hysteresis value"]
     #[inline(always)]
-    #[must_use]
     pub fn hyst(&mut self) -> HystW<Bod33Spec> {
         HystW::new(self, 8)
     }
     #[doc = "Bits 12:14 - Prescaler Select"]
     #[inline(always)]
-    #[must_use]
     pub fn psel(&mut self) -> PselW<Bod33Spec> {
         PselW::new(self, 12)
     }
     #[doc = "Bits 16:23 - Threshold Level for VDD"]
     #[inline(always)]
-    #[must_use]
     pub fn level(&mut self) -> LevelW<Bod33Spec> {
         LevelW::new(self, 16)
     }
     #[doc = "Bits 24:31 - Threshold Level in battery backup sleep mode for VBAT"]
     #[inline(always)]
-    #[must_use]
     pub fn vbatlevel(&mut self) -> VbatlevelW<Bod33Spec> {
         VbatlevelW::new(self, 24)
     }
@@ -382,10 +372,6 @@ impl crate::Readable for Bod33Spec {}
 #[doc = "`write(|w| ..)` method takes [`bod33::W`](W) writer structure"]
 impl crate::Writable for Bod33Spec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets BOD33 to value 0"]
-impl crate::Resettable for Bod33Spec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for Bod33Spec {}

@@ -689,73 +689,61 @@ impl R {
 impl W {
     #[doc = "Bit 1 - Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn enable(&mut self) -> EnableW<CompctrlSpec> {
         EnableW::new(self, 1)
     }
     #[doc = "Bit 2 - Single-Shot Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn single(&mut self) -> SingleW<CompctrlSpec> {
         SingleW::new(self, 2)
     }
     #[doc = "Bits 3:4 - Interrupt Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn intsel(&mut self) -> IntselW<CompctrlSpec> {
         IntselW::new(self, 3)
     }
     #[doc = "Bit 6 - Run in Standby"]
     #[inline(always)]
-    #[must_use]
     pub fn runstdby(&mut self) -> RunstdbyW<CompctrlSpec> {
         RunstdbyW::new(self, 6)
     }
     #[doc = "Bits 8:10 - Negative Input Mux Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn muxneg(&mut self) -> MuxnegW<CompctrlSpec> {
         MuxnegW::new(self, 8)
     }
     #[doc = "Bits 12:14 - Positive Input Mux Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn muxpos(&mut self) -> MuxposW<CompctrlSpec> {
         MuxposW::new(self, 12)
     }
     #[doc = "Bit 15 - Swap Inputs and Invert"]
     #[inline(always)]
-    #[must_use]
     pub fn swap(&mut self) -> SwapW<CompctrlSpec> {
         SwapW::new(self, 15)
     }
     #[doc = "Bits 16:17 - Speed Selection"]
     #[inline(always)]
-    #[must_use]
     pub fn speed(&mut self) -> SpeedW<CompctrlSpec> {
         SpeedW::new(self, 16)
     }
     #[doc = "Bit 19 - Hysteresis Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn hysten(&mut self) -> HystenW<CompctrlSpec> {
         HystenW::new(self, 19)
     }
     #[doc = "Bits 20:21 - Hysteresis Level"]
     #[inline(always)]
-    #[must_use]
     pub fn hyst(&mut self) -> HystW<CompctrlSpec> {
         HystW::new(self, 20)
     }
     #[doc = "Bits 24:26 - Filter Length"]
     #[inline(always)]
-    #[must_use]
     pub fn flen(&mut self) -> FlenW<CompctrlSpec> {
         FlenW::new(self, 24)
     }
     #[doc = "Bits 28:29 - Output"]
     #[inline(always)]
-    #[must_use]
     pub fn out(&mut self) -> OutW<CompctrlSpec> {
         OutW::new(self, 28)
     }
@@ -770,11 +758,6 @@ impl crate::Readable for CompctrlSpec {}
 #[doc = "`write(|w| ..)` method takes [`compctrl::W`](W) writer structure"]
 impl crate::Writable for CompctrlSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
-#[doc = "`reset()` method sets COMPCTRL[%s]
-to value 0"]
-impl crate::Resettable for CompctrlSpec {
-    const RESET_VALUE: u32 = 0;
-}
+#[doc = "`reset()` method sets COMPCTRL[%s] to value 0"]
+impl crate::Resettable for CompctrlSpec {}

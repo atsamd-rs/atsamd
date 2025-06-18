@@ -17,6 +17,4 @@ impl crate::RegisterSpec for EcSpec {
 #[doc = "`read()` method returns [`ec::R`](R) reader structure"]
 impl crate::Readable for EcSpec {}
 #[doc = "`reset()` method sets EC to value 0"]
-impl crate::Resettable for EcSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for EcSpec {}

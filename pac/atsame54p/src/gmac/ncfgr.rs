@@ -322,139 +322,116 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Speed"]
     #[inline(always)]
-    #[must_use]
     pub fn spd(&mut self) -> SpdW<NcfgrSpec> {
         SpdW::new(self, 0)
     }
     #[doc = "Bit 1 - Full Duplex"]
     #[inline(always)]
-    #[must_use]
     pub fn fd(&mut self) -> FdW<NcfgrSpec> {
         FdW::new(self, 1)
     }
     #[doc = "Bit 2 - Discard Non-VLAN FRAMES"]
     #[inline(always)]
-    #[must_use]
     pub fn dnvlan(&mut self) -> DnvlanW<NcfgrSpec> {
         DnvlanW::new(self, 2)
     }
     #[doc = "Bit 3 - Jumbo Frame Size"]
     #[inline(always)]
-    #[must_use]
     pub fn jframe(&mut self) -> JframeW<NcfgrSpec> {
         JframeW::new(self, 3)
     }
     #[doc = "Bit 4 - Copy All Frames"]
     #[inline(always)]
-    #[must_use]
     pub fn caf(&mut self) -> CafW<NcfgrSpec> {
         CafW::new(self, 4)
     }
     #[doc = "Bit 5 - No Broadcast"]
     #[inline(always)]
-    #[must_use]
     pub fn nbc(&mut self) -> NbcW<NcfgrSpec> {
         NbcW::new(self, 5)
     }
     #[doc = "Bit 6 - Multicast Hash Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn mtihen(&mut self) -> MtihenW<NcfgrSpec> {
         MtihenW::new(self, 6)
     }
     #[doc = "Bit 7 - Unicast Hash Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn unihen(&mut self) -> UnihenW<NcfgrSpec> {
         UnihenW::new(self, 7)
     }
     #[doc = "Bit 8 - 1536 Maximum Frame Size"]
     #[inline(always)]
-    #[must_use]
     pub fn maxfs(&mut self) -> MaxfsW<NcfgrSpec> {
         MaxfsW::new(self, 8)
     }
     #[doc = "Bit 12 - Retry Test"]
     #[inline(always)]
-    #[must_use]
     pub fn rty(&mut self) -> RtyW<NcfgrSpec> {
         RtyW::new(self, 12)
     }
     #[doc = "Bit 13 - Pause Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn pen(&mut self) -> PenW<NcfgrSpec> {
         PenW::new(self, 13)
     }
     #[doc = "Bits 14:15 - Receive Buffer Offset"]
     #[inline(always)]
-    #[must_use]
     pub fn rxbufo(&mut self) -> RxbufoW<NcfgrSpec> {
         RxbufoW::new(self, 14)
     }
     #[doc = "Bit 16 - Length Field Error Frame Discard"]
     #[inline(always)]
-    #[must_use]
     pub fn lferd(&mut self) -> LferdW<NcfgrSpec> {
         LferdW::new(self, 16)
     }
     #[doc = "Bit 17 - Remove FCS"]
     #[inline(always)]
-    #[must_use]
     pub fn rfcs(&mut self) -> RfcsW<NcfgrSpec> {
         RfcsW::new(self, 17)
     }
     #[doc = "Bits 18:20 - MDC CLock Division"]
     #[inline(always)]
-    #[must_use]
     pub fn clk(&mut self) -> ClkW<NcfgrSpec> {
         ClkW::new(self, 18)
     }
     #[doc = "Bits 21:22 - Data Bus Width"]
     #[inline(always)]
-    #[must_use]
     pub fn dbw(&mut self) -> DbwW<NcfgrSpec> {
         DbwW::new(self, 21)
     }
     #[doc = "Bit 23 - Disable Copy of Pause Frames"]
     #[inline(always)]
-    #[must_use]
     pub fn dcpf(&mut self) -> DcpfW<NcfgrSpec> {
         DcpfW::new(self, 23)
     }
     #[doc = "Bit 24 - Receive Checksum Offload Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn rxcoen(&mut self) -> RxcoenW<NcfgrSpec> {
         RxcoenW::new(self, 24)
     }
     #[doc = "Bit 25 - Enable Frames Received in Half Duplex"]
     #[inline(always)]
-    #[must_use]
     pub fn efrhd(&mut self) -> EfrhdW<NcfgrSpec> {
         EfrhdW::new(self, 25)
     }
     #[doc = "Bit 26 - Ignore RX FCS"]
     #[inline(always)]
-    #[must_use]
     pub fn irxfcs(&mut self) -> IrxfcsW<NcfgrSpec> {
         IrxfcsW::new(self, 26)
     }
     #[doc = "Bit 28 - IP Stretch Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn ipgsen(&mut self) -> IpgsenW<NcfgrSpec> {
         IpgsenW::new(self, 28)
     }
     #[doc = "Bit 29 - Receive Bad Preamble"]
     #[inline(always)]
-    #[must_use]
     pub fn rxbp(&mut self) -> RxbpW<NcfgrSpec> {
         RxbpW::new(self, 29)
     }
     #[doc = "Bit 30 - Ignore IPG GRXER"]
     #[inline(always)]
-    #[must_use]
     pub fn irxer(&mut self) -> IrxerW<NcfgrSpec> {
         IrxerW::new(self, 30)
     }
@@ -469,8 +446,6 @@ impl crate::Readable for NcfgrSpec {}
 #[doc = "`write(|w| ..)` method takes [`ncfgr::W`](W) writer structure"]
 impl crate::Writable for NcfgrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets NCFGR to value 0x0008_0000"]
 impl crate::Resettable for NcfgrSpec {

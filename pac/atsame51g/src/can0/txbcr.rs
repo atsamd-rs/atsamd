@@ -295,193 +295,161 @@ impl R {
 impl W {
     #[doc = "Bit 0 - Cancellation Request 0"]
     #[inline(always)]
-    #[must_use]
     pub fn cr0(&mut self) -> Cr0W<TxbcrSpec> {
         Cr0W::new(self, 0)
     }
     #[doc = "Bit 1 - Cancellation Request 1"]
     #[inline(always)]
-    #[must_use]
     pub fn cr1(&mut self) -> Cr1W<TxbcrSpec> {
         Cr1W::new(self, 1)
     }
     #[doc = "Bit 2 - Cancellation Request 2"]
     #[inline(always)]
-    #[must_use]
     pub fn cr2(&mut self) -> Cr2W<TxbcrSpec> {
         Cr2W::new(self, 2)
     }
     #[doc = "Bit 3 - Cancellation Request 3"]
     #[inline(always)]
-    #[must_use]
     pub fn cr3(&mut self) -> Cr3W<TxbcrSpec> {
         Cr3W::new(self, 3)
     }
     #[doc = "Bit 4 - Cancellation Request 4"]
     #[inline(always)]
-    #[must_use]
     pub fn cr4(&mut self) -> Cr4W<TxbcrSpec> {
         Cr4W::new(self, 4)
     }
     #[doc = "Bit 5 - Cancellation Request 5"]
     #[inline(always)]
-    #[must_use]
     pub fn cr5(&mut self) -> Cr5W<TxbcrSpec> {
         Cr5W::new(self, 5)
     }
     #[doc = "Bit 6 - Cancellation Request 6"]
     #[inline(always)]
-    #[must_use]
     pub fn cr6(&mut self) -> Cr6W<TxbcrSpec> {
         Cr6W::new(self, 6)
     }
     #[doc = "Bit 7 - Cancellation Request 7"]
     #[inline(always)]
-    #[must_use]
     pub fn cr7(&mut self) -> Cr7W<TxbcrSpec> {
         Cr7W::new(self, 7)
     }
     #[doc = "Bit 8 - Cancellation Request 8"]
     #[inline(always)]
-    #[must_use]
     pub fn cr8(&mut self) -> Cr8W<TxbcrSpec> {
         Cr8W::new(self, 8)
     }
     #[doc = "Bit 9 - Cancellation Request 9"]
     #[inline(always)]
-    #[must_use]
     pub fn cr9(&mut self) -> Cr9W<TxbcrSpec> {
         Cr9W::new(self, 9)
     }
     #[doc = "Bit 10 - Cancellation Request 10"]
     #[inline(always)]
-    #[must_use]
     pub fn cr10(&mut self) -> Cr10W<TxbcrSpec> {
         Cr10W::new(self, 10)
     }
     #[doc = "Bit 11 - Cancellation Request 11"]
     #[inline(always)]
-    #[must_use]
     pub fn cr11(&mut self) -> Cr11W<TxbcrSpec> {
         Cr11W::new(self, 11)
     }
     #[doc = "Bit 12 - Cancellation Request 12"]
     #[inline(always)]
-    #[must_use]
     pub fn cr12(&mut self) -> Cr12W<TxbcrSpec> {
         Cr12W::new(self, 12)
     }
     #[doc = "Bit 13 - Cancellation Request 13"]
     #[inline(always)]
-    #[must_use]
     pub fn cr13(&mut self) -> Cr13W<TxbcrSpec> {
         Cr13W::new(self, 13)
     }
     #[doc = "Bit 14 - Cancellation Request 14"]
     #[inline(always)]
-    #[must_use]
     pub fn cr14(&mut self) -> Cr14W<TxbcrSpec> {
         Cr14W::new(self, 14)
     }
     #[doc = "Bit 15 - Cancellation Request 15"]
     #[inline(always)]
-    #[must_use]
     pub fn cr15(&mut self) -> Cr15W<TxbcrSpec> {
         Cr15W::new(self, 15)
     }
     #[doc = "Bit 16 - Cancellation Request 16"]
     #[inline(always)]
-    #[must_use]
     pub fn cr16(&mut self) -> Cr16W<TxbcrSpec> {
         Cr16W::new(self, 16)
     }
     #[doc = "Bit 17 - Cancellation Request 17"]
     #[inline(always)]
-    #[must_use]
     pub fn cr17(&mut self) -> Cr17W<TxbcrSpec> {
         Cr17W::new(self, 17)
     }
     #[doc = "Bit 18 - Cancellation Request 18"]
     #[inline(always)]
-    #[must_use]
     pub fn cr18(&mut self) -> Cr18W<TxbcrSpec> {
         Cr18W::new(self, 18)
     }
     #[doc = "Bit 19 - Cancellation Request 19"]
     #[inline(always)]
-    #[must_use]
     pub fn cr19(&mut self) -> Cr19W<TxbcrSpec> {
         Cr19W::new(self, 19)
     }
     #[doc = "Bit 20 - Cancellation Request 20"]
     #[inline(always)]
-    #[must_use]
     pub fn cr20(&mut self) -> Cr20W<TxbcrSpec> {
         Cr20W::new(self, 20)
     }
     #[doc = "Bit 21 - Cancellation Request 21"]
     #[inline(always)]
-    #[must_use]
     pub fn cr21(&mut self) -> Cr21W<TxbcrSpec> {
         Cr21W::new(self, 21)
     }
     #[doc = "Bit 22 - Cancellation Request 22"]
     #[inline(always)]
-    #[must_use]
     pub fn cr22(&mut self) -> Cr22W<TxbcrSpec> {
         Cr22W::new(self, 22)
     }
     #[doc = "Bit 23 - Cancellation Request 23"]
     #[inline(always)]
-    #[must_use]
     pub fn cr23(&mut self) -> Cr23W<TxbcrSpec> {
         Cr23W::new(self, 23)
     }
     #[doc = "Bit 24 - Cancellation Request 24"]
     #[inline(always)]
-    #[must_use]
     pub fn cr24(&mut self) -> Cr24W<TxbcrSpec> {
         Cr24W::new(self, 24)
     }
     #[doc = "Bit 25 - Cancellation Request 25"]
     #[inline(always)]
-    #[must_use]
     pub fn cr25(&mut self) -> Cr25W<TxbcrSpec> {
         Cr25W::new(self, 25)
     }
     #[doc = "Bit 26 - Cancellation Request 26"]
     #[inline(always)]
-    #[must_use]
     pub fn cr26(&mut self) -> Cr26W<TxbcrSpec> {
         Cr26W::new(self, 26)
     }
     #[doc = "Bit 27 - Cancellation Request 27"]
     #[inline(always)]
-    #[must_use]
     pub fn cr27(&mut self) -> Cr27W<TxbcrSpec> {
         Cr27W::new(self, 27)
     }
     #[doc = "Bit 28 - Cancellation Request 28"]
     #[inline(always)]
-    #[must_use]
     pub fn cr28(&mut self) -> Cr28W<TxbcrSpec> {
         Cr28W::new(self, 28)
     }
     #[doc = "Bit 29 - Cancellation Request 29"]
     #[inline(always)]
-    #[must_use]
     pub fn cr29(&mut self) -> Cr29W<TxbcrSpec> {
         Cr29W::new(self, 29)
     }
     #[doc = "Bit 30 - Cancellation Request 30"]
     #[inline(always)]
-    #[must_use]
     pub fn cr30(&mut self) -> Cr30W<TxbcrSpec> {
         Cr30W::new(self, 30)
     }
     #[doc = "Bit 31 - Cancellation Request 31"]
     #[inline(always)]
-    #[must_use]
     pub fn cr31(&mut self) -> Cr31W<TxbcrSpec> {
         Cr31W::new(self, 31)
     }
@@ -496,10 +464,6 @@ impl crate::Readable for TxbcrSpec {}
 #[doc = "`write(|w| ..)` method takes [`txbcr::W`](W) writer structure"]
 impl crate::Writable for TxbcrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets TXBCR to value 0"]
-impl crate::Resettable for TxbcrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for TxbcrSpec {}

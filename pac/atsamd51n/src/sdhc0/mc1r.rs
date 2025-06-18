@@ -143,37 +143,31 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - e.MMC Command Type"]
     #[inline(always)]
-    #[must_use]
     pub fn cmdtyp(&mut self) -> CmdtypW<Mc1rSpec> {
         CmdtypW::new(self, 0)
     }
     #[doc = "Bit 3 - e.MMC HSDDR Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn ddr(&mut self) -> DdrW<Mc1rSpec> {
         DdrW::new(self, 3)
     }
     #[doc = "Bit 4 - e.MMC Open Drain Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn opd(&mut self) -> OpdW<Mc1rSpec> {
         OpdW::new(self, 4)
     }
     #[doc = "Bit 5 - e.MMC Boot Acknowledge Enable"]
     #[inline(always)]
-    #[must_use]
     pub fn boota(&mut self) -> BootaW<Mc1rSpec> {
         BootaW::new(self, 5)
     }
     #[doc = "Bit 6 - e.MMC Reset Signal"]
     #[inline(always)]
-    #[must_use]
     pub fn rstn(&mut self) -> RstnW<Mc1rSpec> {
         RstnW::new(self, 6)
     }
     #[doc = "Bit 7 - e.MMC Force Card Detect"]
     #[inline(always)]
-    #[must_use]
     pub fn fcd(&mut self) -> FcdW<Mc1rSpec> {
         FcdW::new(self, 7)
     }
@@ -188,10 +182,6 @@ impl crate::Readable for Mc1rSpec {}
 #[doc = "`write(|w| ..)` method takes [`mc1r::W`](W) writer structure"]
 impl crate::Writable for Mc1rSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets MC1R to value 0"]
-impl crate::Resettable for Mc1rSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for Mc1rSpec {}

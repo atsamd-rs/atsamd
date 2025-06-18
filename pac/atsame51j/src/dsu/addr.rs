@@ -25,13 +25,11 @@ impl R {
 impl W {
     #[doc = "Bits 0:1 - Access Mode"]
     #[inline(always)]
-    #[must_use]
     pub fn amod(&mut self) -> AmodW<AddrSpec> {
         AmodW::new(self, 0)
     }
     #[doc = "Bits 2:31 - Address"]
     #[inline(always)]
-    #[must_use]
     pub fn addr(&mut self) -> AddrW<AddrSpec> {
         AddrW::new(self, 2)
     }
@@ -46,10 +44,6 @@ impl crate::Readable for AddrSpec {}
 #[doc = "`write(|w| ..)` method takes [`addr::W`](W) writer structure"]
 impl crate::Writable for AddrSpec {
     type Safety = crate::Unsafe;
-    const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets ADDR to value 0"]
-impl crate::Resettable for AddrSpec {
-    const RESET_VALUE: u32 = 0;
-}
+impl crate::Resettable for AddrSpec {}

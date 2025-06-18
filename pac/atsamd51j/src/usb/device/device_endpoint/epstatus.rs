@@ -59,6 +59,4 @@ impl crate::RegisterSpec for EpstatusSpec {
 #[doc = "`read()` method returns [`epstatus::R`](R) reader structure"]
 impl crate::Readable for EpstatusSpec {}
 #[doc = "`reset()` method sets EPSTATUS to value 0"]
-impl crate::Resettable for EpstatusSpec {
-    const RESET_VALUE: u8 = 0;
-}
+impl crate::Resettable for EpstatusSpec {}
