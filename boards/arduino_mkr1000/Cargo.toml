@@ -1,6 +1,6 @@
 [package]
 name = "arduino_mkr1000"
-version = "0.5.1"
+version = "0.6.0"
 authors = [
     "Eric Rushing <rushinge@gmail.com>",
     "Joël Bourgault <ojob-info@ouvaton.org>",
