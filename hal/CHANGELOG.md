@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [**breaking] Completely rewrite ADC module with async support ([#814](https://github.com/atsamd-rs/atsamd/pull/814))
 
+- Implement the `embedded_hal::delay::DelayNs` trait for `timer::TimerCounter` ([#880](https://github.com/atsamd-rs/atsamd/pull/880))
+
 ### Fixed
 
 - Relax rules for when DMA channels can be added/removed to/from `Spi` and `SpiFuture` ([#883](https://github.com/atsamd-rs/atsamd/pull/883))
