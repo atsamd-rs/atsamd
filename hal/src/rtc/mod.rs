@@ -97,7 +97,7 @@ impl<Mode: RtcMode> Rtc<Mode> {
         RtcMode2::disable(rtc);
         RtcMode2::reset(rtc);
         RtcMode2::set_mode(rtc);
-        RtcMode2::set_prescalar(rtc, divider);
+        RtcMode2::set_prescaler(rtc, divider);
         RtcMode2::start_and_initialize(rtc);
     }
 
@@ -173,7 +173,7 @@ impl Rtc<Count32Mode> {
         RtcMode0::disable(&self.rtc);
         RtcMode0::reset(&self.rtc);
         RtcMode0::set_mode(&self.rtc);
-        RtcMode0::set_prescalar(&self.rtc, divider);
+        RtcMode0::set_prescaler(&self.rtc, divider);
     }
 
     /// This resets the internal counter, sets the prescaler to match the
@@ -254,7 +254,7 @@ impl InterruptDrivenTimer for Rtc<Count32Mode> {
         let divider = params.divider;
         let cycles = params.cycles;
 
-        // Reset and set prescalar, keeping the counter disabled
+        // Reset and set prescaler, keeping the counter disabled
         self.reset_and_set_prescaler(divider);
         // Set the compare 0 value to the desired time
         RtcMode0::set_compare(&self.rtc, 0, cycles);
@@ -345,7 +345,7 @@ impl TimerParams {
 
         let cycles: u32 = (ticks / divider_value)
             .try_into()
-            .expect("cannot achieve the timeout even with the maximum RTC prescalar");
+            .expect("cannot achieve the timeout even with the maximum RTC prescaler");
 
         TimerParams { divider, cycles }
     }

@@ -33,7 +33,7 @@ use crate::pac;
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use pac::Rtc;
 
-// Import prescalar divider enum
+// Import prescaler divider enum
 #[hal_cfg(any("rtc-d11", "rtc-d21"))]
 use crate::pac::rtc::mode0::ctrl::Prescalerselect;
 #[hal_cfg("rtc-d5x")]
@@ -177,14 +177,14 @@ pub trait RtcMode {
         while rtc.mode0().ctrla().read().swrst().bit_is_set() {}
     }
 
-    /// Sets the clock prescalar divider to lower the tick rate.
+    /// Sets the clock prescaler divider to lower the tick rate.
     ///
     /// # Safety
     ///
     /// Should be called only when the RTC is disabled.
     #[inline]
     #[hal_macro_helper]
-    fn set_prescalar(rtc: &Rtc, divider: Prescalerselect) {
+    fn set_prescaler(rtc: &Rtc, divider: Prescalerselect) {
         // NOTE: This register and field are the same in all modes.
         // SYNC: None
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
@@ -505,7 +505,7 @@ pub mod mode1 {
     }
 }
 
-/// Interface for using the RTC in MODE1 (16-bit COUNT)
+/// Interface for using the RTC in MODE2 (Clock/Calendar)
 pub mod mode2 {
     use super::*;
 
@@ -571,7 +571,7 @@ pub mod mode2 {
         };
     }
 
-    /// The RTC operating in MODE1 (16-bit COUNT)
+    /// The RTC operating in MODE2 (Clock/Calendar)
     pub struct RtcMode2;
 
     impl RtcMode for RtcMode2 {
@@ -627,7 +627,7 @@ pub mod mode2 {
             {
                 // Request syncing of the COUNT register.
                 // SYNC: None
-                rtc.mode1().readreq().modify(|_, w| w.rreq().set_bit());
+                rtc.mode2().readreq().modify(|_, w| w.rreq().set_bit());
             }
 
             // SYNC: Read/Write
