@@ -1525,8 +1525,8 @@ where
     /// Attach RX and TX DMA channels to this [`Spi`]. Its
     /// [`SpiBus`](crate::ehal::spi::SpiBus) implementation will use DMA to
     /// carry out its transactions. In Master mode, since even read SPI
-    /// transaction necessarily involve a write, [`Rx`]-only must take two
-    /// DMA channels, just the same as if it were [`Duplex`].
+    /// transaction necessarily involve a write to shift data in, [`Rx`]-only
+    /// must take two DMA channels, just the same as if it were [`Duplex`].
     #[cfg(feature = "dma")]
     pub fn with_dma_channels<R, T>(self, rx: R, tx: T) -> Spi<C, D, R, T>
     where
@@ -1542,32 +1542,6 @@ where
     }
 }
 
-#[cfg(feature = "dma")]
-impl<C, D, RxDma, TxDma, S> Spi<C, D, RxDma, TxDma>
-where
-    C: ValidConfig,
-    D: Capability,
-    RxDma: crate::dmac::AnyChannel<Status = S>,
-    TxDma: crate::dmac::AnyChannel<Status = S>,
-    S: crate::dmac::ReadyChannel,
-{
-    /// Reclaim the DMA channels. Any subsequent SPI transaction will not use
-    /// DMA.
-    pub fn take_dma_channels(self) -> (Spi<C, D, NoneT, NoneT>, RxDma, TxDma) {
-        (
-            Spi {
-                capability: self.capability,
-                config: self.config,
-                _rx_channel: NoneT,
-                _tx_channel: NoneT,
-            },
-            self._rx_channel,
-            self._tx_channel,
-        )
-    }
-}
-
-#[cfg(feature = "dma")]
 impl<C> Spi<C, Duplex>
 where
     C: ValidConfig<OpMode = Slave>,
@@ -1592,7 +1566,7 @@ where
 }
 
 #[cfg(feature = "dma")]
-impl<C> Spi<C, Rx>
+impl<C, T> Spi<C, Rx, NoneT, T>
 where
     C: ValidConfig<OpMode = Slave>,
 {
@@ -1601,7 +1575,7 @@ where
     /// carry out its transactions. In Slave mode, a [`Rx`] [`Spi`] only needs a
     /// single DMA channel.
     #[cfg(feature = "dma")]
-    pub fn with_rx_channel<R>(self, rx: R) -> Spi<C, Rx, R, NoneT>
+    pub fn with_rx_channel<R>(self, rx: R) -> Spi<C, Rx, R, T>
     where
         R: crate::dmac::AnyChannel<Status = crate::dmac::Ready>,
     {
@@ -1609,23 +1583,65 @@ where
             capability: self.capability,
             config: self.config,
             _rx_channel: rx,
-            _tx_channel: NoneT,
+            _tx_channel: self._tx_channel,
         }
     }
 }
 
 #[cfg(feature = "dma")]
-impl<C, D, R, T, S> Spi<C, D, R, T>
+impl<C, R> Spi<C, Tx, R, NoneT>
 where
     C: ValidConfig,
-    D: Receive,
-    R: crate::dmac::AnyChannel<Status = S>,
-    S: crate::dmac::ReadyChannel,
 {
-    /// Reclaim the Rx DMA channel. Any subsequent SPI transaction will not use
-    /// DMA.
+    /// Attach a DMA channel to this [`Spi`]. Its
+    /// [`SpiBus`](crate::ehal::spi::SpiBus) implementation will use DMA to
+    /// carry out its transactions. For [`Tx`] [`Spi`]s, only a single DMA
+    /// channel is necessary.
     #[cfg(feature = "dma")]
-    pub fn take_rx_channel(self) -> (Spi<C, D, NoneT, T>, R) {
+    pub fn with_tx_channel<T>(self, tx: T) -> Spi<C, Tx, R, T>
+    where
+        T: crate::dmac::AnyChannel<Status = crate::dmac::Ready>,
+    {
+        Spi {
+            capability: self.capability,
+            config: self.config,
+            _rx_channel: self._rx_channel,
+            _tx_channel: tx,
+        }
+    }
+}
+
+#[cfg(feature = "dma")]
+impl<C, D, R, T> Spi<C, D, R, T>
+where
+    C: ValidConfig,
+    D: Capability,
+{
+    /// Reclaim both RX and TX DMA channels. Any subsequent SPI transaction will
+    /// not use DMA.
+    pub fn take_dma_channels(self) -> (Spi<C, D, NoneT, NoneT>, R, T)
+    where
+        R: crate::dmac::AnyChannel<Status: crate::dmac::ReadyChannel>,
+        T: crate::dmac::AnyChannel<Status: crate::dmac::ReadyChannel>,
+    {
+        (
+            Spi {
+                capability: self.capability,
+                config: self.config,
+                _rx_channel: NoneT,
+                _tx_channel: NoneT,
+            },
+            self._rx_channel,
+            self._tx_channel,
+        )
+    }
+
+    /// Reclaim the RX DMA channel. Any subsequent SPI RX transaction will not
+    /// use DMA.
+    pub fn take_rx_channel(self) -> (Spi<C, D, NoneT, T>, R)
+    where
+        R: crate::dmac::AnyChannel<Status: crate::dmac::ReadyChannel>,
+    {
         (
             Spi {
                 capability: self.capability,
@@ -1636,42 +1652,13 @@ where
             self._rx_channel,
         )
     }
-}
 
-#[cfg(feature = "dma")]
-impl<C> Spi<C, Tx>
-where
-    C: ValidConfig,
-{
-    /// Attach a DMA channel to this [`Spi`]. Its
-    /// [`SpiBus`](crate::ehal::spi::SpiBus) implementation will use DMA to
-    /// carry out its transactions. For [`Tx`] [`Spi`]s, only a single DMA
-    /// channel is necessary.
-    #[cfg(feature = "dma")]
-    pub fn with_tx_channel<T>(self, tx: T) -> Spi<C, Tx, NoneT, T>
+    /// Reclaim the TX DMA channel. Any subsequent SPI TX transaction will not
+    /// use DMA.
+    pub fn take_tx_channel(self) -> (Spi<C, D, R, NoneT>, T)
     where
-        T: crate::dmac::AnyChannel<Status = crate::dmac::Ready>,
+        T: crate::dmac::AnyChannel<Status: crate::dmac::ReadyChannel>,
     {
-        Spi {
-            capability: self.capability,
-            config: self.config,
-            _rx_channel: NoneT,
-            _tx_channel: tx,
-        }
-    }
-}
-
-#[cfg(feature = "dma")]
-impl<C, D, R, T, S> Spi<C, D, R, T>
-where
-    C: ValidConfig,
-    D: Capability,
-    T: crate::dmac::AnyChannel<Status = S>,
-    S: crate::dmac::ReadyChannel,
-{
-    /// Reclaim the DMA channel. Any subsequent SPI transaction will not use
-    /// DMA.
-    pub fn take_tx_channel(self) -> (Spi<C, D, R, NoneT>, T) {
         (
             Spi {
                 capability: self.capability,

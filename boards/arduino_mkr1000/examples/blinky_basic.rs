@@ -1,15 +1,15 @@
 #![no_std]
 #![no_main]
 
-use arduino_mkr1000 as bsp;
-use bsp::hal;
-
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use bsp::entry;
+use arduino_mkr1000 as bsp;
+use bsp::hal;
+
+use bsp::{entry, pin_alias};
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
@@ -25,9 +25,10 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let mut pins = bsp::Pins::new(peripherals.PORT);
-    let mut led = pins.d6.into_open_drain_output(&mut pins.port);
+    let pins = bsp::pins::Pins::new(peripherals.PORT);
+    let mut led = pin_alias!(pins.led).into_push_pull_output();
     let mut delay = Delay::new(core.SYST, &mut clocks);
+
     loop {
         delay.delay_ms(200u8);
         led.set_high().unwrap();

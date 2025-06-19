@@ -2,7 +2,7 @@
 #![no_main]
 
 use atsamd_hal::adc::AdcBuilder;
-use metro_m4 as bsp;
+use feather_m4 as bsp;
 
 use bsp::hal;
 use bsp::pac;
@@ -44,6 +44,7 @@ fn main() -> ! {
 
     let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
         .with_clock_cycles_per_sample(5)
+        // Overruns if clock divider < 32 in debug mode
         .with_clock_divider(Prescaler::Div32)
         .with_vref(atsamd_hal::adc::Reference::Arefa)
         .enable(peripherals.adc0, apb_adc0, &pclk_adc0)
@@ -53,6 +54,6 @@ fn main() -> ! {
     loop {
         let res = adc.read(&mut adc_pin);
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("ADC Result: {}", res).unwrap();
+        cortex_m_semihosting::hprintln!("ADC value: {}", res);
     }
 }

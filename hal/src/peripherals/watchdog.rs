@@ -64,7 +64,13 @@ impl watchdog::WatchdogEnable for Watchdog {
     type Time = u8;
 
     /// Enables a watchdog timer to reset the processor if software is frozen
-    /// or stalled.
+    /// or stalled. Pass [`WatchdogTimeout`] as the period.
+    /// 
+    /// As WDT is driven by a 1024Hz clock, the time until timeout can be calculated
+    /// as `(1 second/1024)*period`
+    /// 
+    /// EG:
+    /// `Timeout of 2048 cycles = (1/1024)*2048 = 2 seconds`
     #[hal_macro_helper]
     fn start<T>(&mut self, period: T)
     where

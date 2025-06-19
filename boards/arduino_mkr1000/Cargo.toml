@@ -1,7 +1,10 @@
 [package]
 name = "arduino_mkr1000"
-version = "0.5.1"
-authors = ["Eric Rushing <rushinge@gmail.com>"]
+version = "0.6.0"
+authors = [
+    "Eric Rushing <rushinge@gmail.com>",
+    "Joël Bourgault <ojob-info@ouvaton.org>",
+]
 description = "Board Support crate for the Arduino MKR 1000 WiFi"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 categories = ["embedded", "hardware-support", "no-std"]
@@ -15,7 +18,7 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.16"
 default-features = false
 
 [dependencies.usb-device]
@@ -23,17 +26,39 @@ version = "0.2"
 optional = true
 
 [dev-dependencies]
+cortex-m = "0.7"
+usbd-serial = "0.1"
 panic-halt = "0.2"
 panic-semihosting = "0.5"
+cortex-m-rtic = "1.0"
 
 [features]
 # ask the HAL to enable atsamd21g support
-default = ["rt", "atsamd-hal/samd21g"]
+default = ["rt", "atsamd-hal/samd21g", "usb"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
+rtic = ["atsamd-hal/rtic"]
 
 # for cargo flash
 [package.metadata]
 chip = "ATSAMD21G18A"
+
+[dependencies]
+embedded-hal = "0.2.7"
+
+[[example]]
+name = "blinky_basic"
+
+[[example]]
+name = "blinky_rtic"
+required-features = ["rtic", "unproven"]
+
+[[example]]
+name = "usb_logging"
+required-features = ["usb"]
+
+[[example]]
+name = "pwm"
+required-features = ["unproven"]
