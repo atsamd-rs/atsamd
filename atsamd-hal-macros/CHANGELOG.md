@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.5...atsamd-hal-macros-0.3.0) - 2025-06-19
+
+### Other
+
+- *(atsamd-hal)* [**breaking**] MSRV to 1.85.1, 2024 edition
+
 ## [0.2.5](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-macros-0.2.4...atsamd-hal-macros-0.2.5) - 2025-05-07
 
 ### Other

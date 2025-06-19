@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.2](https://github.com/atsamd-rs/atsamd/compare/atsame51n-0.14.1...atsame51n-0.14.2) - 2025-06-19
+
+### Other
+
+- Temporarily allow `mismatched_lifetime_syntaxes` lint in PACs
+
 ## [0.14.1](https://github.com/atsamd-rs/atsamd/compare/atsame51n-0.14.0...atsame51n-0.14.1) - 2024-10-30
 
 ### Other
