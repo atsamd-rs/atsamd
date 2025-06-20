@@ -14,11 +14,14 @@ use core::marker::PhantomData;
 #[cfg(feature = "sdmmc")]
 use embedded_sdmmc::{TimeSource, Timestamp};
 
-#[cfg(feature = "rtic")]
+#[cfg(any(feature = "rtic", feature = "embassy-time"))]
 mod modes;
 
 #[cfg(feature = "rtic")]
 pub mod rtic;
+
+#[cfg(feature = "embassy-time")]
+pub mod embassy;
 
 // SAMx5x imports
 #[hal_cfg("rtc-d5x")]

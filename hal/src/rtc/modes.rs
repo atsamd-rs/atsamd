@@ -138,18 +138,16 @@ pub trait RtcMode {
         // Reset RTC back to initial settings, which disables it and enters mode 0.
         // NOTE: This register and field are the same in all modes.
         // SYNC: Write
-        Self::sync(rtc);
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         rtc.mode0().ctrl().modify(|_, w| w.swrst().set_bit());
         #[hal_cfg("rtc-d5x")]
         rtc.mode0().ctrla().modify(|_, w| w.swrst().set_bit());
 
         // Wait for the reset to complete
-        // SYNC: Write (we just read though)
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         while rtc.mode0().ctrl().read().swrst().bit_is_set() {}
         #[hal_cfg("rtc-d5x")]
-        while rtc.mode0().ctrla().read().swrst().bit_is_set() {}
+        while rtc.mode0().syncbusy().read().swrst().bit_is_set() {}
     }
 
     /// Starts the RTC and does any required initialization for this mode.
@@ -168,9 +166,14 @@ pub trait RtcMode {
         {
             // Enable counter synchronization
             // NOTE: This register and field are the same in all modes.
-            // SYNC: Write
+            rtc.mode0().ctrla().modify(|_, w| {
+                // Notifications may not work with prescaler disabled
+                w.prescaler().div1();
+                // SYNC: Write
+                w.countsync().set_bit();
+                w
+            });
             Self::sync(rtc);
-            rtc.mode0().ctrla().modify(|_, w| w.countsync().set_bit());
 
             // Errata: The first read of the count is incorrect so we need to read it
             // then wait for it to change.
@@ -231,13 +234,16 @@ pub trait RtcMode {
     #[inline]
     #[hal_macro_helper]
     fn disable(rtc: &Rtc) {
-        // SYNC: Write
-        Self::sync(rtc);
         // NOTE: This register and field are the same in all modes.
+        // SYNC: write
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         rtc.mode0().ctrl().modify(|_, w| w.enable().clear_bit());
         #[hal_cfg("rtc-d5x")]
-        rtc.mode0().ctrla().modify(|_, w| w.enable().clear_bit());
+        {
+            rtc.mode0().ctrla().modify(|_, w| w.enable().clear_bit());
+
+            Self::sync(rtc)
+        }
     }
 
     /// Enables the RTC.
@@ -248,13 +254,13 @@ pub trait RtcMode {
     #[inline]
     #[hal_macro_helper]
     fn enable(rtc: &Rtc) {
-        // SYNC: Write
-        Self::sync(rtc);
         // NOTE: This register and field are the same in all modes.
+        // SYNC: write
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
         rtc.mode0().ctrl().modify(|_, w| w.enable().set_bit());
         #[hal_cfg("rtc-d5x")]
         rtc.mode0().ctrla().modify(|_, w| w.enable().set_bit());
+        Self::sync(rtc);
     }
 
     /// Waits until the COUNT register changes.
@@ -302,9 +308,8 @@ pub mod mode0 {
         #[inline]
         #[hal_macro_helper]
         fn set_mode(rtc: &Rtc) {
-            // SYNC: Write
-            Self::sync(rtc);
             // NOTE: This register and field are the same in all modes.
+            // SYNC: None
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
             rtc.mode0().ctrl().modify(|_, w| w.mode().count32());
             #[hal_cfg("rtc-d5x")]
@@ -312,12 +317,13 @@ pub mod mode0 {
         }
 
         #[inline]
+        #[hal_macro_helper]
         fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
             // SYNC: Write
-            Self::sync(rtc);
             unsafe {
                 rtc.mode0().comp(number).write(|w| w.comp().bits(value));
             }
+            Self::sync(rtc);
         }
 
         #[inline]
