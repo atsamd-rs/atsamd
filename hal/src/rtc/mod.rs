@@ -26,17 +26,11 @@ pub mod rtic;
 
 // SAMx5x imports
 #[hal_cfg("rtc-d5x")]
-use crate::pac::{
-    Mclk as Pm, rtc::mode0::Ctrla as Mode0CtrlA, rtc::mode0::ctrla::Prescalerselect,
-    rtc::mode2::Ctrla as Mode2CtrlA,
-};
+use crate::pac::{Mclk as Pm, rtc::mode0::ctrla::Prescalerselect};
 
 // SAMD11/SAMD21 imports
 #[hal_cfg(any("rtc-d11", "rtc-d21"))]
-use crate::pac::{
-    Pm, rtc::mode0::Ctrl as Mode0CtrlA, rtc::mode0::ctrl::Prescalerselect,
-    rtc::mode2::Ctrl as Mode2CtrlA,
-};
+use crate::pac::{Pm, rtc::mode0::ctrl::Prescalerselect};
 
 pub use modes::mode2::Datetime;
 
