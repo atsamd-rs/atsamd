@@ -2,7 +2,7 @@
 authors = ["Tethys Svensson"]
 name = "atsamd-hal-macros"
 rust-version = "1.85.1"
-version = "0.2.5"
+version = "0.3.0"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 categories = ["embedded", "hardware-support", "no-std"]
