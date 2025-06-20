@@ -19,10 +19,7 @@ use grand_central_m4 as bsp;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::eic::{
-    self,
-    pin::{ExtInt6, ExternalInterrupt, Sense},
-};
+use hal::eic::{Eic, Sense};
 use hal::gpio::{Pin, PullUpInterrupt};
 use hal::prelude::*;
 use pac::{interrupt, CorePeripherals, Peripherals};
@@ -65,13 +62,18 @@ fn main() -> ! {
 
     let gclk0 = clocks.gclk0();
     let eic_clock = clocks.eic(&gclk0).unwrap();
-    let mut eic = eic::init_with_ulp32k(&mut peripherals.mclk, eic_clock, peripherals.eic);
+    let eic = Eic::new(&mut peripherals.mclk, eic_clock, peripherals.eic);
+    let eic_channels = eic.split();
     let button: Pin<_, PullUpInterrupt> = pins.d46.into();
-    eic.button_debounce_pins(&[button.id()]);
-    let mut extint_button = ExtInt6::new(button);
-    extint_button.sense(&mut eic, Sense::Both);
-    extint_button.enable_interrupt(&mut eic);
-    eic.finalize();
+    // eic.button_debounce_pins(&[button.id()]);
+
+    let mut extint = eic_channels.6.with_pin(button);
+    extint.sense(Sense::Both);
+    extint.enable_interrupt();
+    // let mut extint_button = ExtInt6::new(button);
+    // extint_button.sense(&mut eic, Sense::Both);
+    // extint_button.enable_interrupt(&mut eic);
+    // eic.finalize();
 
     // Enable EIC interrupt in the NVIC
     unsafe {
