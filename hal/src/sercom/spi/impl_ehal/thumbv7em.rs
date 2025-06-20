@@ -94,7 +94,6 @@
 //!
 //! [`Size`]: super::Size
 
-use crate::ehal_02;
 use crate::ehal_nb;
 #[cfg(doc)]
 use crate::sercom::spi::Capability;

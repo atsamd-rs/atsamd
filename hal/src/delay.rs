@@ -6,7 +6,6 @@ use cortex_m::peripheral::syst::SystClkSource;
 
 use crate::clock::GenericClockController;
 use crate::ehal::delay::DelayNs;
-use crate::ehal_02;
 use crate::time::Hertz;
 
 #[hal_cfg("rtc-d5x")]
@@ -92,41 +91,5 @@ impl DelayNs for Delay {
 
     fn delay_ms(&mut self, ms: u32) {
         self.delay_us(ms * 1000);
-    }
-}
-
-impl ehal_02::blocking::delay::DelayMs<u32> for Delay {
-    fn delay_ms(&mut self, ms: u32) {
-        <Self as DelayNs>::delay_us(self, ms * 1_000);
-    }
-}
-
-impl ehal_02::blocking::delay::DelayMs<u16> for Delay {
-    fn delay_ms(&mut self, ms: u16) {
-        <Self as ehal_02::blocking::delay::DelayMs<u32>>::delay_ms(self, ms as u32);
-    }
-}
-
-impl ehal_02::blocking::delay::DelayMs<u8> for Delay {
-    fn delay_ms(&mut self, ms: u8) {
-        <Self as ehal_02::blocking::delay::DelayMs<u32>>::delay_ms(self, ms as u32);
-    }
-}
-
-impl ehal_02::blocking::delay::DelayUs<u32> for Delay {
-    fn delay_us(&mut self, us: u32) {
-        <Self as DelayNs>::delay_us(self, us);
-    }
-}
-
-impl ehal_02::blocking::delay::DelayUs<u16> for Delay {
-    fn delay_us(&mut self, us: u16) {
-        <Self as ehal_02::blocking::delay::DelayUs<u32>>::delay_us(self, us as u32);
-    }
-}
-
-impl ehal_02::blocking::delay::DelayUs<u8> for Delay {
-    fn delay_us(&mut self, us: u8) {
-        <Self as ehal_02::blocking::delay::DelayUs<u32>>::delay_us(self, us as u32);
     }
 }

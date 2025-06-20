@@ -1,7 +1,5 @@
 use super::*;
 use crate::ehal::spi::{self, SpiBus};
-#[allow(unused_imports)]
-use crate::ehal_02::{blocking, serial};
 use crate::ehal_nb;
 use num_traits::PrimInt;
 
