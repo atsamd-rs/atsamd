@@ -31,7 +31,7 @@ cortex-m = "0.7"
 usbd-serial = "0.2"
 panic-halt = "1.0.0"
 panic-semihosting = "0.6"
-smart-leds = "0.4"
+smart-leds = "0.3"
 ws2812-timer-delay = "0.3"
 
 [features]
