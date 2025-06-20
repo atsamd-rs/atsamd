@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Refactor IoSet trait using sorted HList
 
+### Removed
+
+- Removed neopixel examples ([#814](https://github.com/atsamd-rs/atsamd/pull/814))
+
 ### Other
 
 - updated the following local packages: atsamd-hal

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0](https://github.com/atsamd-rs/atsamd/compare/arduino_mkr1000-0.5.1...arduino_mkr1000-0.6.0) - 2026-06-18
+
+### Dependencies
+
+- Update to HAL v0.16 ([#878](https://github.com/atsamd-rs/atsamd/pull/878))
+
 ## [0.5.1](https://github.com/atsamd-rs/atsamd/compare/arduino_mkr1000-0.5.0...arduino_mkr1000-0.5.1) - 2024-10-17
 
 ### Refactored
