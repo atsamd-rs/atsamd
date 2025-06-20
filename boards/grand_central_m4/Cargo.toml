@@ -30,9 +30,17 @@ features = ["critical-section-single-core"]
 cortex-m = "0.7"
 usbd-serial = "0.2"
 panic-halt = "1.0.0"
+panic-probe = "1.0.0"
 panic-semihosting = "0.6"
 smart-leds = "0.3"
 ws2812-timer-delay = "0.3"
+embassy-executor = { version = "0.7.0", features = [
+	"arch-cortex-m",
+	"executor-thread",
+	"task-arena-size-8192",
+] }
+defmt = "1.0.1"
+defmt-rtt = "1.0.0"
 
 [features]
 default = ["rt", "atsamd-hal/samd51p"]
@@ -41,6 +49,7 @@ max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51p-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
+async = ["atsamd-hal/async"]
 
 # for cargo flash
 [package.metadata]
@@ -62,3 +71,7 @@ name = "neopixel_rainbow"
 [[example]]
 name = "usb_serial"
 required-features = ["usb"]
+
+[[example]]
+name = "async_dmac"
+required-features = ["async", "dma"]
