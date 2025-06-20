@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixes issues with the `rtc::Rtc` abstraction, and updates it to utilize the `modes` modules abstractions used by the RTIC RTC monotonics ([#845](https://github.com/atsamd-rs/atsamd/pull/845))
 - Relax rules for when DMA channels can be added/removed to/from `Spi` and `SpiFuture` ([#883](https://github.com/atsamd-rs/atsamd/pull/883))
 - [**breaking**] Fix bugs with EIC and allow clock provider switching (ATSAMx5x) ([#850](https://github.com/atsamd-rs/atsamd/pull/850))
 
