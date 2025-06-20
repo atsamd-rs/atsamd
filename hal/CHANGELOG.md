@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.22.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.3...atsamd-hal-0.22.0) - 2025-05-08
+## [0.22.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.21.3...atsamd-hal-0.22.0) - 2025-06-20
 
 ### Added
 
-- [**breaking**] Bump MSRV to Rust 1.85.1, update to 2024 edition ([#875](https://github.com/atsamd-rs/atsamd/pull/875))
+- Implement the `embedded_hal::delay::DelayNs` trait for `timer::TimerCounter` ([#880](https://github.com/atsamd-rs/atsamd/pull/880))
 
+### Refactored
+
+- [**breaking**] Completely rewrite ADC module with async support ([#814](https://github.com/atsamd-rs/atsamd/pull/814))
+- [**breaking**] Bump MSRV to Rust 1.85.1, update to 2024 edition ([#875](https://github.com/atsamd-rs/atsamd/pull/875))
 - [**breaking**] Refactor IoSet trait using sorted HList ([#844](https://github.com/atsamd-rs/atsamd/pull/844)).
 
     SERCOM peripherals no longer need to specify the IoSet inside their `Pads` type. It is checked automatically and
@@ -24,10 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     + // To this
     + pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
     ```
-
-- [**breaking] Completely rewrite ADC module with async support ([#814](https://github.com/atsamd-rs/atsamd/pull/814))
-
-- Implement the `embedded_hal::delay::DelayNs` trait for `timer::TimerCounter` ([#880](https://github.com/atsamd-rs/atsamd/pull/880))
 
 ### Fixed
 
