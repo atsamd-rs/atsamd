@@ -132,7 +132,13 @@
 /// This will be removed in a future release, users should migrate to RTIC v2.
 #[deprecated]
 pub mod v1 {
-    use crate::rtc::{Count32Mode, Rtc};
+    use crate::rtc::{
+        Count32Mode, Rtc,
+        modes::{
+            RtcMode,
+            mode0::{Compare0, RtcMode0},
+        },
+    };
     use rtic_monotonic::Monotonic;
 
     /// The RTC clock frequency in Hz.
@@ -149,7 +155,7 @@ pub mod v1 {
         unsafe fn reset(&mut self) {
             // Since reset is only called once, we use it to enable the interrupt generation
             // bit.
-            self.mode0().intenset().write(|w| w.cmp0().set_bit());
+            RtcMode0::enable_interrupt::<Compare0>(&self.rtc);
         }
 
         fn now(&mut self) -> Self::Instant {
@@ -161,22 +167,21 @@ pub mod v1 {
         }
 
         fn set_compare(&mut self, instant: Self::Instant) {
-            unsafe {
-                self.mode0()
-                    .comp(0)
-                    .write(|w| w.comp().bits(instant.ticks()))
-            }
+            RtcMode0::set_compare(&self.rtc, 0, instant.ticks());
         }
 
         fn clear_compare_flag(&mut self) {
-            self.mode0().intflag().write(|w| w.cmp0().set_bit());
+            RtcMode0::clear_interrupt_flag::<Compare0>(&self.rtc);
         }
     }
 }
 
 mod backends;
 
-use super::modes::{RtcMode, mode0::RtcMode0, mode1::RtcMode1};
+#[hal_cfg("rtc-d5x")]
+use super::modes::{RtcMode, mode0::RtcMode0};
+#[hal_cfg(any("rtc-d11", "rtc-d21"))]
+use super::modes::{RtcMode, mode1::RtcMode1};
 use crate::interrupt::{NVIC_PRIO_BITS, Priority};
 use atsamd_hal_macros::hal_cfg;
 
@@ -222,10 +227,13 @@ trait RtcModeMonotonic: RtcMode {
     /// in order to trigger.
     const MIN_COMPARE_TICKS: Self::Count;
 }
+
+#[hal_cfg("rtc-d5x")]
 impl RtcModeMonotonic for RtcMode0 {
     const HALF_PERIOD: Self::Count = 0x8000_0000;
     const MIN_COMPARE_TICKS: Self::Count = 8;
 }
+#[hal_cfg(any("rtc-d11", "rtc-d21"))]
 impl RtcModeMonotonic for RtcMode1 {
     const HALF_PERIOD: Self::Count = 0x8000;
     const MIN_COMPARE_TICKS: Self::Count = 8;
