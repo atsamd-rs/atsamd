@@ -65,15 +65,10 @@ fn main() -> ! {
     let eic = Eic::new(&mut peripherals.mclk, eic_clock, peripherals.eic);
     let eic_channels = eic.split();
     let button: Pin<_, PullUpInterrupt> = pins.d46.into();
-    // eic.button_debounce_pins(&[button.id()]);
 
     let mut extint = eic_channels.6.with_pin(button);
     extint.sense(Sense::Both);
     extint.enable_interrupt();
-    // let mut extint_button = ExtInt6::new(button);
-    // extint_button.sense(&mut eic, Sense::Both);
-    // extint_button.enable_interrupt(&mut eic);
-    // eic.finalize();
 
     // Enable EIC interrupt in the NVIC
     unsafe {
