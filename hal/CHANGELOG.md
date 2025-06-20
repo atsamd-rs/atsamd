@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- [**breaking**] Bump MSRV to Rust 1.85.1, update to 2024 edition ([#875](https://github.com/atsamd-rs/atsamd/pull/875))
+
 - [**breaking**] Refactor IoSet trait using sorted HList ([#844](https://github.com/atsamd-rs/atsamd/pull/844)).
 
     SERCOM peripherals no longer need to specify the IoSet inside their `Pads` type. It is checked automatically and
@@ -31,6 +33,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Relax rules for when DMA channels can be added/removed to/from `Spi` and `SpiFuture` ([#883](https://github.com/atsamd-rs/atsamd/pull/883))
 - [**breaking**] Fix bugs with EIC and allow clock provider switching (ATSAMx5x) ([#850](https://github.com/atsamd-rs/atsamd/pull/850))
+
+### Removed
+
+- [**breaking**] Remove deprecated SERCOM items related to older DMA implementations ([#875](https://github.com/atsamd-rs/atsamd/pull/875))
+- [**breaking**] Remvove `spi_future` module, in favor of `async` SPI implementations ([#875](https://github.com/atsamd-rs/atsamd/pull/875))
+
+### Dependencies
+
+- [**breaking**] Update `defmt` to `1.0.1` ([#875](https://github.com/atsamd-rs/atsamd/pull/875))
+- [**breaking**] Update `rng-core` to `0.9.1` ([#875](https://github.com/atsamd-rs/atsamd/pull/875))
+- [**breaking**] Update `embedded-sdmmc` to `0.8.1` ([#875](https://github.com/atsamd-rs/atsamd/pull/875))
 
 ### Documentation
 
