@@ -16,7 +16,6 @@ optional = true
 
 [dependencies.atsamd-hal]
 default-features = false
-path = "../../hal"
 version = "0.22.0"
 
 [dependencies.usb-device]
