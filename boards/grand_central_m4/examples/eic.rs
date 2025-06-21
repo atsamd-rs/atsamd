@@ -62,7 +62,7 @@ fn main() -> ! {
 
     let gclk0 = clocks.gclk0();
     let eic_clock = clocks.eic(&gclk0).unwrap();
-    let eic = Eic::new(&mut peripherals.mclk, eic_clock, peripherals.eic);
+    let eic = Eic::new(&mut peripherals.mclk, &eic_clock, peripherals.eic);
     let eic_channels = eic.split();
     let button: Pin<_, PullUpInterrupt> = pins.d46.into();
 
