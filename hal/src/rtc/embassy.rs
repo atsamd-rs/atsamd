@@ -5,10 +5,10 @@
 use core::cell::RefCell;
 use core::task::Waker;
 
-use crate::pac::{Interrupt, Rtc, NVIC};
+use crate::pac::{Interrupt, NVIC, Rtc};
 use crate::rtc::modes::{
-    mode0::{Compare0, RtcMode0},
     RtcMode,
+    mode0::{Compare0, RtcMode0},
 };
 use atsamd_hal_macros::hal_cfg;
 use critical_section::{CriticalSection, Mutex};
@@ -56,7 +56,7 @@ impl EmbassyBackend {
     ///
     /// This enables interrupts, which can break out of critical sections
     pub unsafe fn init() {
-        let rtc = Rtc::steal();
+        let rtc = unsafe { Rtc::steal() };
 
         RtcMode0::disable(&rtc);
         RtcMode0::reset(&rtc);
