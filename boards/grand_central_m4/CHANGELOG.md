@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0](https://github.com/atsamd-rs/atsamd/compare/grand_central_m4-0.8.2...grand_central_m4-0.9.0) - 2025-06-22
+
+### Dependencies
+
+- *(grand_central_m4)* [**breaking**] Upgrade HAL to 0.22.0
+- *(grand_central_m4)* [**breaking**] Update HAL to v0.21.3
+
 ## [0.8.2](https://github.com/atsamd-rs/atsamd/compare/grand_central_m4-0.8.1...grand_central_m4-0.8.2) - 2024-11-28
 
 ### Other
