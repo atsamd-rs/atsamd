@@ -27,3 +27,13 @@ lto = "thin"
 lto = true
 opt-level = "s"
 debug = true
+
+[workspace.dependencies]
+anyhow = "1.0"
+form = "0.13.0"
+svd2rust = "=0.36.0"
+serde = "1.0"
+toml = { version = "0.8", features = ["parse", "display"] }
+libxml = "0.3"
+libxslt = "0.1"
+regex = "1.0"

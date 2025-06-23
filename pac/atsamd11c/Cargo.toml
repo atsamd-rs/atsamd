@@ -19,5 +19,14 @@ critical-section = { version = "1.1" }
 version = "0.7"
 optional = true
 
+[build-dependencies]
+anyhow.workspace = true
+form.workspace = true
+regex.workspace = true
+svd2rust.workspace = true
+toml.workspace = true
+libxml.workspace = true
+libxslt.workspace = true
+
 [features]
 rt = ["cortex-m-rt/device"]
