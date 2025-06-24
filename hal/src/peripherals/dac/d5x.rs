@@ -1,10 +1,12 @@
 //! Digital-to-Analog Converter
 
-use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+use crate::clock::v2::types;
 use core::mem::ManuallyDrop;
 use num_traits::clamp;
 use pac::dac;
-use clock::v2::types;
+
+#[cfg(feature = "dma")]
+use pac::dmac::channel::chctrla::Trigsrcselect as TriggerSource;
 
 use crate::{
     gpio::{self, AlternateB, Pin, PA02, PA05},
@@ -276,7 +278,6 @@ impl<DAC: DacInstance> DacWriteHandle<Single<DAC>> {
     /// Writes a raw value to the DAC. Input value is between
     /// 0 and 4096. If you want the DAC to output a specific
     /// voltage, use [Self::write_voltage] instead.
-    #[hal_macro_helper]
     pub fn write_val(&mut self, val: u16) {
         unsafe {
             self.reg.data(DAC::IDX).write(|w| w.bits(val));
@@ -315,7 +316,7 @@ impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<Differential<D0, D1>> {
         unsafe {
             self.reg.data(0).write(|w| w.bits(val as u16));
         }
-        while Dac0::data(&self.reg) {
+        while Dac0::data_ready(&self.reg) {
             core::hint::spin_loop();
         }
         while !Dac0::eoc(&self.reg) {
@@ -342,7 +343,6 @@ impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<Differential<D0, D1>> {
 #[cfg(feature = "dma")]
 mod dma {
     use pac::dmac::channel::chctrla::Trigactselect as TriggerAction;
-    use pac::dmac::channel::chctrla::Trigsrcselect as TriggerSource;
 
     #[cfg(feature = "async")]
     use crate::dmac::ReadyFuture;
@@ -415,7 +415,6 @@ mod dma {
         ///
         /// The samples are consumed at the sample rate of the DAC
         #[cfg(feature = "async")]
-        #[hal_macro_helper]
         pub async fn write_buffer<CH>(
             &mut self,
             buf: &[u16],
