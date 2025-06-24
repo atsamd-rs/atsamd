@@ -1,7 +1,6 @@
 //! Digital-to-Analog Converter
 
-use atsamd21g::Pm;
-use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+use pac::Pm;
 use core::mem::ManuallyDrop;
 use num_traits::clamp;
 use pac::dac;
@@ -182,7 +181,6 @@ mod dma {
         /// to the DAC
         ///
         /// The samples are consumed at the sample rate of the DAC
-        #[hal_macro_helper]
         pub fn write_buffer_blocking<CH>(
             &mut self,
             buf: &[u16],
@@ -215,7 +213,6 @@ mod dma {
         ///
         /// The samples are consumed at the sample rate of the DAC
         #[cfg(feature = "async")]
-        #[hal_macro_helper]
         pub async fn write_buffer<CH>(
             &mut self,
             buf: &[u16],
@@ -225,13 +222,7 @@ mod dma {
             CH: AnyChannel<Status = ReadyFuture>,
         {
             let bytes = SharedSliceBuffer::from_slice(buf);
-
-            #[hal_cfg(any("dac-d5x"))]
-            let trigger_action = TriggerAction::Burst;
-
-            #[hal_cfg(any("dac-d21", "dac-d11"))]
             let trigger_action = TriggerAction::Beat;
-
             let dest = DacDmaPtr::new(&self.reg);
 
             channel
