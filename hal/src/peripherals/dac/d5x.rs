@@ -1,17 +1,15 @@
 //! Digital-to-Analog Converter
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::mem::ManuallyDrop;
 use num_traits::clamp;
 use pac::dac;
+use clock::v2::types;
 
 use crate::{
-    clock::v2::types,
     gpio::{self, AlternateB, Pin, PA02, PA05},
     pac,
 };
-
-#[cfg(feature = "dma")]
-use pac::dmac::channel::chctrla::Trigsrcselect as TriggerSource;
 
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
@@ -32,7 +30,7 @@ pub trait DacInstance {
     #[cfg(feature = "dma")]
     const DMA_TX_TRIGGER: TriggerSource;
 
-    fn data(reg: &pac::Dac) -> bool;
+    fn data_ready(reg: &pac::Dac) -> bool;
     fn ready(reg: &pac::Dac) -> bool;
     fn eoc(reg: &pac::Dac) -> bool;
 
@@ -68,6 +66,7 @@ impl<M: DacMode> DacWriteHandle<M> {
 }
 
 pub struct Dac0;
+
 pub struct Dac1;
 
 impl DacInstance for Dac0 {
@@ -81,7 +80,7 @@ impl DacInstance for Dac0 {
         reg.status().read().ready0().bit_is_set()
     }
 
-    fn data(reg: &pac::Dac) -> bool {
+    fn data_ready(reg: &pac::Dac) -> bool {
         reg.syncbusy().read().data0().bit_is_set()
     }
 
@@ -106,7 +105,7 @@ impl DacInstance for Dac1 {
         reg.status().read().ready1().bit_is_set()
     }
 
-    fn data(reg: &pac::Dac) -> bool {
+    fn data_ready(reg: &pac::Dac) -> bool {
         reg.syncbusy().read().data1().bit_is_set()
     }
 
@@ -198,10 +197,10 @@ impl Dac {
     }
 
     /// Sets the DAC up in differential mode.
-    /// 
+    ///
     /// In this mode, Dac0 is output D0, and Dac1 is output D1.
-    /// 
-    /// When writing to the Differential pair, The baseline voltage 
+    ///
+    /// When writing to the Differential pair, The baseline voltage
     /// is 1.65V, with D0 writing `1.65+x`, and D1 writing `1.65-x`.
     /// This is why in differential mode, the write value is signed.
     pub fn differential(
@@ -277,11 +276,12 @@ impl<DAC: DacInstance> DacWriteHandle<Single<DAC>> {
     /// Writes a raw value to the DAC. Input value is between
     /// 0 and 4096. If you want the DAC to output a specific
     /// voltage, use [Self::write_voltage] instead.
+    #[hal_macro_helper]
     pub fn write_val(&mut self, val: u16) {
         unsafe {
             self.reg.data(DAC::IDX).write(|w| w.bits(val));
         }
-        while DAC::data(&self.reg) {
+        while DAC::data_ready(&self.reg) {
             core::hint::spin_loop();
         }
         while !DAC::eoc(&self.reg) {
@@ -342,6 +342,7 @@ impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<Differential<D0, D1>> {
 #[cfg(feature = "dma")]
 mod dma {
     use pac::dmac::channel::chctrla::Trigactselect as TriggerAction;
+    use pac::dmac::channel::chctrla::Trigsrcselect as TriggerSource;
 
     #[cfg(feature = "async")]
     use crate::dmac::ReadyFuture;
@@ -392,9 +393,7 @@ mod dma {
             CH: AnyChannel<Status = Ready>,
         {
             let mut bytes = SharedSliceBuffer::from_slice(buf);
-
             let trigger_action = TriggerAction::Burst;
-
             let mut dest = DacDmaPtr::new::<DAC>(&self.reg);
 
             unsafe {
@@ -416,6 +415,7 @@ mod dma {
         ///
         /// The samples are consumed at the sample rate of the DAC
         #[cfg(feature = "async")]
+        #[hal_macro_helper]
         pub async fn write_buffer<CH>(
             &mut self,
             buf: &[u16],
@@ -425,9 +425,7 @@ mod dma {
             CH: AnyChannel<Status = ReadyFuture>,
         {
             let bytes = SharedSliceBuffer::from_slice(buf);
-
             let trigger_action = TriggerAction::Burst;
-
             let dest = DacDmaPtr::new::<DAC>(&self.reg);
 
             channel
