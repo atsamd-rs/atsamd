@@ -3,8 +3,11 @@ use atsamd_hal_macros::{hal_cfg, hal_module};
 #[cfg(feature = "device")]
 pub mod adc;
 
-#[cfg(feature = "device")]
-pub mod dac;
+#[hal_module(
+    any("dac-d11", "dac-d21") => "dac/d11.rs",
+    "dac-d5x" => "dac/d5x.rs",
+)]
+pub mod dac {}
 
 #[hal_module(
     any("nvmctrl-d11", "nvmctrl-d21") => "calibration/d11.rs",
