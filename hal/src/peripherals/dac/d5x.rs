@@ -467,8 +467,12 @@ mod dma {
                     D0::DMA_TX_TRIGGER,
                     trigger_action,
                     None,
-                )
+                )?;
             }
+            while channel.as_mut().xfer_complete() {
+                core::hint::spin_loop();
+            }
+            channel.as_mut().xfer_success()
         }
 
         /// Writes a buffer to the DAC using DMA (Async version).
