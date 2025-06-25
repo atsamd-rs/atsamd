@@ -25,6 +25,8 @@
 use core::ops::Deref;
 
 use atsamd_hal_macros::{hal_cfg, hal_module};
+#[cfg(feature = "dma")]
+use pac::dmac;
 use pac::Peripherals;
 
 use crate::{gpio::AnyPin, pac, typelevel::Sealed};
@@ -49,6 +51,14 @@ pub use builder::*;
 use crate::pac::adc as adc0;
 #[hal_cfg("adc-d5x")]
 use crate::pac::adc0;
+
+#[cfg(feature = "dma")]
+#[hal_cfg("adc-d5x")]
+use dmac::channel::chctrla::Trigsrcselect as TriggerSelect;
+
+#[cfg(feature = "dma")]
+#[hal_cfg(any("adc-d11", "adc-d21"))]
+use dmac::chctrlb::Trigsrcselect as TriggerSelect;
 
 pub use adc0::refctrl::Refselselect as Reference;
 
@@ -88,6 +98,16 @@ pub enum Error {
     ClockTooFast,
     /// Buffer overflowed
     BufferOverrun,
+    /// DMA Error
+    #[cfg(feature = "dma")]
+    DmaError(crate::dmac::Error),
+}
+
+#[cfg(feature = "dma")]
+impl From<crate::dmac::Error> for Error {
+    fn from(value: crate::dmac::Error) -> Self {
+        Self::DmaError(value)
+    }
 }
 
 /// Voltage source to use when using the ADC to measure the CPU voltage
@@ -139,6 +159,9 @@ pub trait AdcInstance {
 
     // The Adc0 and Adc1 PAC types implement Deref
     type Instance: Deref<Target = adc0::RegisterBlock>;
+
+    #[cfg(feature = "dma")]
+    const DMA_TRIGGER: TriggerSelect;
 
     #[hal_cfg("adc-d5x")]
     type ClockId: crate::clock::v2::apb::ApbId + crate::clock::v2::pclk::PclkId;
@@ -362,56 +385,6 @@ impl<I: AdcInstance> Adc<I> {
         }
     }
 
-    /// Read into a buffer from the provided ADC pin, in a blocking fashion
-    #[inline]
-    pub fn read_buffer<P: AdcPin<I>>(
-        &mut self,
-        _pin: &mut P,
-        dst: &mut [u16],
-    ) -> Result<(), Error> {
-        self.read_buffer_channel(P::CHANNEL, dst)
-    }
-
-    /// Read into a buffer from the provided channel, in a blocking fashion
-    #[inline]
-    fn read_buffer_channel(&mut self, ch: u8, dst: &mut [u16]) -> Result<(), Error> {
-        // Clear overrun errors that might've occured before we try to read anything
-        self.clear_all_flags();
-        self.disable_interrupts(Flags::all());
-        self.mux(ch);
-        self.enable_freerunning();
-        self.start_conversion();
-        if self.discard {
-            // Discard first result
-            while !self.read_flags().contains(Flags::RESRDY) {
-                core::hint::spin_loop();
-            }
-            self.clear_all_flags();
-            self.discard = false;
-        }
-
-        for result in dst.iter_mut() {
-            while !self.read_flags().contains(Flags::RESRDY) {
-                core::hint::spin_loop();
-            }
-
-            let flags = self.read_flags();
-            self.clear_all_flags();
-            if let Err(e) = self.check_overrun(&flags) {
-                //self.power_down();
-                self.disable_freerunning();
-
-                return Err(e);
-            }
-
-            *result = self.conversion_result();
-        }
-        //self.power_down();
-        self.disable_freerunning();
-
-        Ok(())
-    }
-
     /// Return the underlying ADC PAC object.
     #[hal_cfg(any("adc-d11", "adc-d21"))]
     #[inline]
@@ -479,47 +452,164 @@ where
         self.inner.sync();
         res
     }
+}
 
-    /// Read into a buffer from the provided ADC pin
-    #[inline]
-    pub async fn read_buffer<P: AdcPin<I>>(
-        &mut self,
-        _pin: &mut P,
-        dst: &mut [u16],
-    ) -> Result<(), Error> {
-        self.read_buffer_channel(P::CHANNEL, dst).await
+#[cfg(feature = "dma")]
+mod dma {
+    use super::*;
+    #[cfg(feature = "async")]
+    use crate::dmac::ReadyFuture;
+    use crate::dmac::{AnyChannel, Buffer, Ready};
+
+    use atsamd_hal_macros::hal_macro_helper;
+    #[hal_cfg("adc-d5x")]
+    use pac::dmac::channel::chctrla::Trigactselect as TriggerAction;
+    #[hal_cfg("adc-d5x")]
+    use pac::dmac::channel::chctrla::Trigsrcselect as TriggerSelect;
+
+    #[hal_cfg(any("adc-d11", "adc-d21"))]
+    use pac::dmac::chctrlb::Trigactselect as TriggerAction;
+    #[hal_cfg(any("adc-d11", "adc-d21"))]
+    use pac::dmac::chctrlb::Trigsrcselect as TriggerSelect;
+
+    pub struct AdcDmaPtr(pub *mut u16);
+
+    unsafe impl Buffer for AdcDmaPtr {
+        type Beat = u16;
+
+        fn dma_ptr(&mut self) -> *mut Self::Beat {
+            self.0
+        }
+
+        fn incrementing(&self) -> bool {
+            false
+        }
+
+        fn buffer_len(&self) -> usize {
+            1
+        }
     }
 
-    /// Read into a buffer from the provided channel ID
-    #[inline]
-    async fn read_buffer_channel(&mut self, ch: u8, dst: &mut [u16]) -> Result<(), Error> {
-        // Clear overrun errors that might've occured before we try to read anything
-        self.inner.clear_all_flags();
-        self.inner.mux(ch);
-        self.inner.enable_freerunning();
-
-        if self.inner.discard {
-            // Discard first result
-            let _ = self.wait_flags(Flags::RESRDY).await;
-            let _ = self.inner.conversion_result();
-            self.inner.discard = false;
-            self.inner.clear_all_flags();
+    impl<I: AdcInstance> Adc<I> {
+        /// Read into a buffer from the provided ADC pin using DMA
+        /// in a blocking fashion
+        #[inline]
+        pub fn read_buffer<CH, P: AdcPin<I>>(
+            &mut self,
+            _pin: &mut P,
+            dst: &mut [u16],
+            channel: &mut CH,
+        ) -> Result<(), Error>
+        where
+            CH: AnyChannel<Status = Ready>,
+        {
+            self.read_buffer_channel(P::CHANNEL, dst, channel)
         }
 
-        // Don't re-trigger start conversion now, its already enabled in free running
-        for result in dst.iter_mut() {
-            if let Err(e) = self.wait_flags(Flags::RESRDY).await {
-                //self.inner.power_down();
-                self.inner.disable_freerunning();
-
-                return Err(e);
+        /// Read into a buffer from the provided channel, in a blocking fashion
+        #[inline]
+        #[hal_macro_helper]
+        fn read_buffer_channel<CH>(
+            &mut self,
+            ch: u8,
+            mut dst: &mut [u16],
+            channel: &mut CH,
+        ) -> Result<(), Error>
+        where
+            CH: AnyChannel<Status = Ready>,
+        {
+            // Clear overrun errors that might've occured before we try to read anything
+            self.clear_all_flags();
+            self.disable_interrupts(Flags::all());
+            self.mux(ch);
+            self.enable_freerunning();
+            self.start_conversion();
+            if self.discard {
+                // Discard first result
+                while !self.read_flags().contains(Flags::RESRDY) {
+                    core::hint::spin_loop();
+                }
+                self.clear_all_flags();
+                self.discard = false;
             }
-            *result = self.inner.conversion_result();
+            // Now read via DMA
+            let mut src = AdcDmaPtr(self.adc.result().as_ptr());
+
+            #[hal_cfg(any("adc-d5x"))]
+            let action = TriggerAction::Burst;
+            #[hal_cfg(any("adc-d11", "adc-d21"))]
+            let action = TriggerAction::Beat;
+            // SAFETY: We must make sure that any DMA transfer is complete or stopped before
+            // returning.
+            unsafe {
+                channel
+                    .as_mut()
+                    .transfer(&mut src, &mut dst, I::DMA_TRIGGER, action, None)?;
+            }
+            while !channel.as_mut().xfer_complete() {
+                core::hint::spin_loop();
+            }
+            channel.as_mut().stop();
+            channel.as_mut().xfer_success()?;
+            self.disable_freerunning();
+            Ok(())
+        }
+    }
+
+    #[cfg(feature = "async")]
+    impl<I: AdcInstance, F> FutureAdc<I, F>
+    where
+        F: crate::async_hal::interrupts::Binding<I::Interrupt, async_api::InterruptHandler<I>>,
+    {
+        /// Read into a buffer from the provided ADC pin using DMA
+        #[inline]
+        pub async fn read_buffer<CH, P: AdcPin<I>>(
+            &mut self,
+            _pin: &mut P,
+            dst: &mut [u16],
+            channel: &mut CH,
+        ) -> Result<(), Error>
+        where
+            CH: AnyChannel<Status = ReadyFuture>,
+        {
+            self.read_buffer_channel(P::CHANNEL, dst, channel).await
         }
 
-        //self.inner.power_down();
-        self.inner.disable_freerunning();
+        #[inline]
+        #[hal_macro_helper]
+        async fn read_buffer_channel<CH>(
+            &mut self,
+            ch: u8,
+            dst: &mut [u16],
+            channel: &mut CH,
+        ) -> Result<(), Error>
+        where
+            CH: AnyChannel<Status = ReadyFuture>,
+        {
+            // Clear overrun errors that might've occured before we try to read anything
+            self.inner.clear_all_flags();
+            self.inner.mux(ch);
+            self.inner.enable_freerunning();
 
-        Ok(())
+            if self.inner.discard {
+                // Discard first result
+                let _ = self.wait_flags(Flags::RESRDY).await;
+                let _ = self.inner.conversion_result();
+                self.inner.discard = false;
+                self.inner.clear_all_flags();
+            }
+            let src = AdcDmaPtr(self.inner.adc.result().as_ptr());
+            #[hal_cfg(any("adc-d5x"))]
+            let action = TriggerAction::Burst;
+            #[hal_cfg(any("adc-d11", "adc-d21"))]
+            let action = TriggerAction::Beat;
+            channel
+                .as_mut()
+                .transfer_future(src, dst, I::DMA_TRIGGER, action)
+                .await?;
+
+            self.inner.disable_freerunning();
+            Ok(())
+        }
     }
 }
