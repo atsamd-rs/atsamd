@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Prescaler","Reference","Resolution","SampleRate"],"struct":["Adc","FreeRunning","InterruptAdc","SingleConversion"],"trait":["ConversionMode"]};
+window.SIDEBAR_ITEMS = {"enum":["Accumulation","AdcResolution","BuilderError","CpuVoltageSource","Error","Prescaler","Reference","Resolution","SampleCount"],"mod":["pin"],"static":["ADC_WAKERS"],"struct":["Adc","Adc0","Adc1","AdcBuilder","Flags","FutureAdc","InterruptHandler"],"trait":["AdcInstance","AdcPin","PrimaryAdc"]};

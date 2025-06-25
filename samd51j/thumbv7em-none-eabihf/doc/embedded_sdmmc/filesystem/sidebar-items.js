@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["MAX_FILE_SIZE"],"enum":["FileError","FilenameError","Mode"],"struct":["Attributes","ClusterId","DirEntry","Directory","File","RawDirectory","RawFile","SearchId","SearchIdGenerator","ShortFileName","Timestamp"],"trait":["TimeSource","ToShortFileName"]};

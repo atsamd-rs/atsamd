@@ -1,0 +1,1 @@
+{"rustc":15597765236515928571,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[5035005548866581691,"build_script_build",false,10060328745265174613]],"local":[{"RerunIfChanged":{"output":"thumbv7em-none-eabihf/release/build/embedded-io-async-922e8dac4bd18f11/output","paths":["build.rs"]}}],"rustflags":[],"config":0,"compile_kind":0}

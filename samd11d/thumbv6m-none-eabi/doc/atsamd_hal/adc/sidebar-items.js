@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Gain","Prescaler","Reference","Resolution","SampleRate"],"struct":["Adc"]};
+window.SIDEBAR_ITEMS = {"enum":["Accumulation","AdcResolution","BuilderError","CpuVoltageSource","Error","Prescaler","Reference","Resolution","SampleCount"],"mod":["pin"],"static":["ADC_WAKERS"],"struct":["Adc","Adc0","AdcBuilder","Flags","FutureAdc","InterruptHandler"],"trait":["AdcInstance","AdcPin","PrimaryAdc"]};

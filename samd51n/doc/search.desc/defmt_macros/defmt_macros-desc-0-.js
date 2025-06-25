@@ -1,0 +1,1 @@
+searchState.loadedDescShard("defmt_macros", 0, "INTERNAL; DO NOT USE. Please use the <code>defmt</code> crate to access …")

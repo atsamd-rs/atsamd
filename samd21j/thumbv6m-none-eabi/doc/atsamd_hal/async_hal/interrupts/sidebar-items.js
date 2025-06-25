@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["DMAC","EIC","SERCOM0","SERCOM1","SERCOM2","SERCOM3","SERCOM4","SERCOM5","TC3","TC4","TC5","TC6","TC7"],"trait":["Binding","Handler","Interrupt","InterruptSource","MultipleInterruptSources","SingleInterruptSource"]};
+window.SIDEBAR_ITEMS = {"enum":["ADC","DMAC","EIC","SERCOM0","SERCOM1","SERCOM2","SERCOM3","SERCOM4","SERCOM5","TC3","TC4","TC5","TC6","TC7"],"trait":["Binding","Handler","Interrupt","InterruptSource","MultipleInterruptSources","SingleInterruptSource"]};

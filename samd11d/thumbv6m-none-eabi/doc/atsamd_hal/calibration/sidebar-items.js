@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["dfll48m_coarse_cal","osc32k_cal","usb_transn_cal","usb_transp_cal","usb_trim_cal"]};
+window.SIDEBAR_ITEMS = {"fn":["adc_bias_cal","adc_linearity_cal","dfll48m_coarse_cal","hot_int1v_val","hot_temp","hot_temp_adc_val","osc32k_cal","room_int1v_val","room_temp","room_temp_adc_val","usb_transn_cal","usb_transp_cal","usb_trim_cal"]};

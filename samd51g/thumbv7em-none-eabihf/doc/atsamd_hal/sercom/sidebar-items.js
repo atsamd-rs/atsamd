@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["dma","i2c","pad","spi","spi_future","uart"],"trait":["Sercom"],"type":["Sercom0","Sercom1","Sercom2","Sercom3","Sercom4","Sercom5"]};
+window.SIDEBAR_ITEMS = {"mod":["dma","i2c","pad","spi","uart"],"trait":["Sercom"],"type":["Sercom0","Sercom1","Sercom2","Sercom3","Sercom4","Sercom5"]};

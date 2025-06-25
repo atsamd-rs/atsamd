@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `hal/src/peripherals/watchdog.rs`."><title>watchdog.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-6c3ea77c.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.86.0 (05f9846f8 2025-03-31)" data-channel="1.86.0" data-search-js="search-581efc7a.js" data-settings-js="settings-6dad6058.js" ><script src="../../../static.files/storage-3a5871a4.js"></script><script defer src="../../../static.files/src-script-b8d3f215.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-4d63596a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">atsamd_hal/peripherals/</div>watchdog.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-2"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::ehal_02::watchdog;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `hal/src/peripherals/watchdog.rs`."><title>watchdog.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-916cea96.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="atsamd_hal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.87.0 (17067e9ac 2025-05-09)" data-channel="1.87.0" data-search-js="search-e7298875.js" data-settings-js="settings-d72f25bb.js" ><script src="../../../static.files/storage-82c7156e.js"></script><script defer src="../../../static.files/src-script-63605ae7.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-fb8c74a8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">atsamd_hal/peripherals/</div>watchdog.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-2"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::ehal_02::watchdog;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">crate</span>::pac::Wdt;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>atsamd_hal_macros::hal_macro_helper;
 <a href=#4 id=4 data-nosnippet>4</a>
@@ -64,30 +64,36 @@
 <a href=#64 id=64 data-nosnippet>64</a>    <span class="kw">type </span>Time = u8;
 <a href=#65 id=65 data-nosnippet>65</a>
 <a href=#66 id=66 data-nosnippet>66</a>    <span class="doccomment">/// Enables a watchdog timer to reset the processor if software is frozen
-<a href=#67 id=67 data-nosnippet>67</a>    /// or stalled.
-<a href=#68 id=68 data-nosnippet>68</a>    </span><span class="attr">#[hal_macro_helper]
-<a href=#69 id=69 data-nosnippet>69</a>    </span><span class="kw">fn </span>start&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, period: T)
-<a href=#70 id=70 data-nosnippet>70</a>    <span class="kw">where
-<a href=#71 id=71 data-nosnippet>71</a>        </span>T: Into&lt;<span class="self">Self</span>::Time&gt;,
-<a href=#72 id=72 data-nosnippet>72</a>    {
-<a href=#73 id=73 data-nosnippet>73</a>        <span class="comment">// Write the timeout configuration.
-<a href=#74 id=74 data-nosnippet>74</a>        </span><span class="self">self</span>.wdt
-<a href=#75 id=75 data-nosnippet>75</a>            .config()
-<a href=#76 id=76 data-nosnippet>76</a>            .write(|w| <span class="kw">unsafe </span>{ w.per().bits(period.into()) });
-<a href=#77 id=77 data-nosnippet>77</a>        <span class="attr">#[hal_cfg(any(<span class="string">"wdt-d11"</span>, <span class="string">"wdt-d21"</span>))]
-<a href=#78 id=78 data-nosnippet>78</a>        </span>{
-<a href=#79 id=79 data-nosnippet>79</a>            <span class="comment">// Enable the watchdog timer.
-<a href=#80 id=80 data-nosnippet>80</a>            </span><span class="self">self</span>.wdt.ctrl().write(|w| w.enable().set_bit());
-<a href=#81 id=81 data-nosnippet>81</a>            <span class="comment">// Wait for watchdog timer to be enabled.
-<a href=#82 id=82 data-nosnippet>82</a>            </span><span class="kw">while </span><span class="self">self</span>.wdt.status().read().syncbusy().bit_is_set() {}
-<a href=#83 id=83 data-nosnippet>83</a>        }
-<a href=#84 id=84 data-nosnippet>84</a>
-<a href=#85 id=85 data-nosnippet>85</a>        <span class="attr">#[hal_cfg(<span class="string">"wdt-d5x"</span>)]
-<a href=#86 id=86 data-nosnippet>86</a>        </span>{
-<a href=#87 id=87 data-nosnippet>87</a>            <span class="comment">// Enable the watchdog timer.
-<a href=#88 id=88 data-nosnippet>88</a>            </span><span class="self">self</span>.wdt.ctrla().write(|w| w.enable().set_bit());
-<a href=#89 id=89 data-nosnippet>89</a>            <span class="comment">// Wait for watchdog timer to be enabled.
-<a href=#90 id=90 data-nosnippet>90</a>            </span><span class="kw">while </span><span class="self">self</span>.wdt.syncbusy().read().enable().bit_is_set() {}
-<a href=#91 id=91 data-nosnippet>91</a>        }
-<a href=#92 id=92 data-nosnippet>92</a>    }
-<a href=#93 id=93 data-nosnippet>93</a>}</code></pre></div></section></main></body></html>
+<a href=#67 id=67 data-nosnippet>67</a>    /// or stalled. Pass [`WatchdogTimeout`] as the period.
+<a href=#68 id=68 data-nosnippet>68</a>    /// 
+<a href=#69 id=69 data-nosnippet>69</a>    /// As WDT is driven by a 1024Hz clock, the time until timeout can be calculated
+<a href=#70 id=70 data-nosnippet>70</a>    /// as `(1 second/1024)*period`
+<a href=#71 id=71 data-nosnippet>71</a>    /// 
+<a href=#72 id=72 data-nosnippet>72</a>    /// EG:
+<a href=#73 id=73 data-nosnippet>73</a>    /// `Timeout of 2048 cycles = (1/1024)*2048 = 2 seconds`
+<a href=#74 id=74 data-nosnippet>74</a>    </span><span class="attr">#[hal_macro_helper]
+<a href=#75 id=75 data-nosnippet>75</a>    </span><span class="kw">fn </span>start&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, period: T)
+<a href=#76 id=76 data-nosnippet>76</a>    <span class="kw">where
+<a href=#77 id=77 data-nosnippet>77</a>        </span>T: Into&lt;<span class="self">Self</span>::Time&gt;,
+<a href=#78 id=78 data-nosnippet>78</a>    {
+<a href=#79 id=79 data-nosnippet>79</a>        <span class="comment">// Write the timeout configuration.
+<a href=#80 id=80 data-nosnippet>80</a>        </span><span class="self">self</span>.wdt
+<a href=#81 id=81 data-nosnippet>81</a>            .config()
+<a href=#82 id=82 data-nosnippet>82</a>            .write(|w| <span class="kw">unsafe </span>{ w.per().bits(period.into()) });
+<a href=#83 id=83 data-nosnippet>83</a>        <span class="attr">#[hal_cfg(any(<span class="string">"wdt-d11"</span>, <span class="string">"wdt-d21"</span>))]
+<a href=#84 id=84 data-nosnippet>84</a>        </span>{
+<a href=#85 id=85 data-nosnippet>85</a>            <span class="comment">// Enable the watchdog timer.
+<a href=#86 id=86 data-nosnippet>86</a>            </span><span class="self">self</span>.wdt.ctrl().write(|w| w.enable().set_bit());
+<a href=#87 id=87 data-nosnippet>87</a>            <span class="comment">// Wait for watchdog timer to be enabled.
+<a href=#88 id=88 data-nosnippet>88</a>            </span><span class="kw">while </span><span class="self">self</span>.wdt.status().read().syncbusy().bit_is_set() {}
+<a href=#89 id=89 data-nosnippet>89</a>        }
+<a href=#90 id=90 data-nosnippet>90</a>
+<a href=#91 id=91 data-nosnippet>91</a>        <span class="attr">#[hal_cfg(<span class="string">"wdt-d5x"</span>)]
+<a href=#92 id=92 data-nosnippet>92</a>        </span>{
+<a href=#93 id=93 data-nosnippet>93</a>            <span class="comment">// Enable the watchdog timer.
+<a href=#94 id=94 data-nosnippet>94</a>            </span><span class="self">self</span>.wdt.ctrla().write(|w| w.enable().set_bit());
+<a href=#95 id=95 data-nosnippet>95</a>            <span class="comment">// Wait for watchdog timer to be enabled.
+<a href=#96 id=96 data-nosnippet>96</a>            </span><span class="kw">while </span><span class="self">self</span>.wdt.syncbusy().read().enable().bit_is_set() {}
+<a href=#97 id=97 data-nosnippet>97</a>        }
+<a href=#98 id=98 data-nosnippet>98</a>    }
+<a href=#99 id=99 data-nosnippet>99</a>}</code></pre></div></section></main></body></html>

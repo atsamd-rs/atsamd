@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["RESERVED_ENTRIES"],"enum":["FatSpecificInfo","FatType"],"fn":["parse_volume"],"struct":["Bpb","Fat16Info","Fat32Info","FatVolume","InfoSector","OnDiskDirEntry","VolumeName"]};

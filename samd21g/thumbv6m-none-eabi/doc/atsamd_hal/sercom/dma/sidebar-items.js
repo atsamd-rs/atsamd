@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["I2cBusReady"]};
+window.SIDEBAR_ITEMS = {};
