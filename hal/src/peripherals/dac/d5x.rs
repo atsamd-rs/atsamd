@@ -453,8 +453,9 @@ mod dma {
             // SAFETY - This case is safe, since it just allows
             // us to not have a new DacDmaPtr type with i16.
             // The DAC interprets the data as i16 for differential mode
-            let mut bytes =
-                SharedSliceBuffer::from_slice(unsafe { core::mem::transmute::<_, &[u16]>(buf) });
+            let mut bytes = SharedSliceBuffer::from_slice(unsafe {
+                core::mem::transmute::<&[i16], &[u16]>(buf)
+            });
 
             let trigger_action = TriggerAction::Burst;
 
@@ -494,8 +495,9 @@ mod dma {
             // SAFETY - This case is safe, since it just allows
             // us to not have a new DacDmaPtr type with i16.
             // The DAC interprets the data as i16 for differential mode
-            let bytes =
-                SharedSliceBuffer::from_slice(unsafe { core::mem::transmute::<_, &[u16]>(buf) });
+            let bytes = SharedSliceBuffer::from_slice(unsafe {
+                core::mem::transmute::<&[i16], &[u16]>(buf)
+            });
 
             let trigger_action = TriggerAction::Burst;
 
