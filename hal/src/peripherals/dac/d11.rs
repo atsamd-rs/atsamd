@@ -2,12 +2,10 @@
 
 use pac::Pm;
 use core::mem::ManuallyDrop;
-use num_traits::clamp;
-use pac::dac;
 
 use crate::{
     clock::DacClock,
-    gpio::{self, AlternateB, Pin, PA02, PA05},
+    gpio::{AlternateB, Pin, PA02},
     pac,
 };
 
@@ -52,6 +50,7 @@ impl Dac {
         if clk.freq().to_Hz() > 350_000 {
             return Err(Error::ClockTooFast);
         }
+        pm.apbcmask().modify(|_, w| w.dac_().set_bit());
         dac.ctrla().write(|w| w.swrst().set_bit());
         let s = Self { inner: dac };
         s.sync();
