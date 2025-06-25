@@ -22,14 +22,13 @@
 //! adc.read_buffer(&mut adc_pin, &mut _buffer).unwrap();
 //! ```
 
-use core::ops::Deref;
-
+use crate::{gpio::AnyPin, pac, typelevel::Sealed};
 use atsamd_hal_macros::{hal_cfg, hal_module};
-#[cfg(feature = "dma")]
-use pac::dmac;
+use core::ops::Deref;
 use pac::Peripherals;
 
-use crate::{gpio::AnyPin, pac, typelevel::Sealed};
+#[cfg(feature = "dma")]
+use pac::dmac;
 
 #[hal_module(
     any("adc-d11", "adc-d21") => "d11/mod.rs",
