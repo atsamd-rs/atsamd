@@ -464,13 +464,9 @@ mod dma {
     use atsamd_hal_macros::hal_macro_helper;
     #[hal_cfg("adc-d5x")]
     use pac::dmac::channel::chctrla::Trigactselect as TriggerAction;
-    #[hal_cfg("adc-d5x")]
-    use pac::dmac::channel::chctrla::Trigsrcselect as TriggerSelect;
 
     #[hal_cfg(any("adc-d11", "adc-d21"))]
     use pac::dmac::chctrlb::Trigactselect as TriggerAction;
-    #[hal_cfg(any("adc-d11", "adc-d21"))]
-    use pac::dmac::chctrlb::Trigsrcselect as TriggerSelect;
 
     pub struct AdcDmaPtr(pub *mut u16);
 
