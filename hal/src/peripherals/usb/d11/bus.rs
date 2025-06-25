@@ -488,7 +488,7 @@ impl UsbBus {
         pm: &mut Pm,
         dm_pad: impl AnyPin<Id = PA24>,
         dp_pad: impl AnyPin<Id = PA25>,
-        usb: Usb,
+        _usb: Usb,
     ) -> Self {
         // Note for Clock V2 implementation - Check that USB
         // Freq is 48Mhz and error out if it is not - Check
