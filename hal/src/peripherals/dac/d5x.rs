@@ -256,7 +256,7 @@ impl<'a, M: DacMode> DacWriteHandle<'a, M> {
     pub(crate) fn with_dac_disable<R, F: FnOnce(&pac::Dac) -> R>(&self, f: F) -> R {
         self.reg.ctrla().write(|w| w.enable().clear_bit());
         self.sync();
-        let ret = f(&self.reg);
+        let ret = f(self.reg);
         self.reg.ctrla().write(|w| w.enable().set_bit());
         self.sync();
         ret
