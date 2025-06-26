@@ -243,7 +243,7 @@ use fugit::RateExtU32;
 use typenum::U0;
 
 use crate::pac::oscctrl;
-use crate::pac::oscctrl::dpll::{dpllstatus, dpllsyncbusy, Dpllctrla, Dpllctrlb, Dpllratio};
+use crate::pac::oscctrl::dpll::{Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus, dpllsyncbusy};
 
 use crate::pac::oscctrl::dpll::dpllctrlb::Refclkselect;
 
@@ -347,7 +347,9 @@ impl<D: DpllId> DpllToken<D> {
             w.wuf().bit(settings.wake_up_fast);
             if let Some(cap) = settings.dco_filter {
                 w.dcoen().bit(true);
-                unsafe { w.dcofilter().bits(cap as u8); }
+                unsafe {
+                    w.dcofilter().bits(cap as u8);
+                }
             } else {
                 w.dcoen().bit(false);
             }
@@ -605,7 +607,6 @@ pub enum DcoFilter {
     /// 4pF, Bandwidth Fn 0.4MHz
     C4pF = 7,
 }
-
 
 /// [`Dpll`] settings relevant to all reference clocks
 #[derive(Copy, Clone)]
@@ -989,7 +990,17 @@ where
 
     #[inline]
     fn output_freq(&self) -> Hertz {
-        self.input_freq() * (self.settings.mult as u32 + self.settings.frac as u32 / 32)
+        // The actual formula is:
+        //      y = x * (mult + frac / 32)
+        // To avoid integer precision loss, the formula is restructured:
+        //      y = x * (mult + frac / 32) * 32 / 32
+        //      y = x * (32 * mult + 32 * frac / 32) / 32
+        //      y = x * (32 * mult + frac) / 32
+        let input = self.input_freq().to_Hz() as u64;
+        let multiplier_times_32 =
+            (32 * self.settings.mult as u32 + self.settings.frac as u32) as u64;
+        let output = (input * multiplier_times_32 / 32) as u32;
+        output.Hz()
     }
 
     /// Return the output frequency of the [`Dpll`]
