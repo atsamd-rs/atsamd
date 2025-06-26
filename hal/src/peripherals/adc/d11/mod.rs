@@ -6,6 +6,7 @@ use super::{
 #[cfg(feature = "async")]
 use super::{FutureAdc, async_api};
 
+use crate::dac::DacWriteHandle;
 use crate::{calibration, pac};
 use pac::Peripherals;
 use pac::Sysctrl;
@@ -239,6 +240,15 @@ impl<I: AdcInstance> Adc<I> {
 
 impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     #[inline]
+    /// Reads the output of DAC0
+    pub async fn read_dac0_output(
+        &mut self,
+        _channel: &DacWriteHandle<'_>,
+    ) -> u16 {
+        self.read_channel(0x1C)
+    }
+
+    #[inline]
     /// Returns the CPU temperature in degrees C
     ///
     /// NOTE: The temperature sensor is known to be out by up to ±10C, it
@@ -283,6 +293,15 @@ impl<I: AdcInstance + PrimaryAdc, F> FutureAdc<I, F>
 where
     F: crate::async_hal::interrupts::Binding<I::Interrupt, async_api::InterruptHandler<I>>,
 {
+
+    /// Reads the output of DAC0
+    pub async fn read_dac0_output(
+        &mut self,
+        _channel: &DacWriteHandle<'_>,
+    ) -> u16 {
+        self.read_channel(0x1C).await
+    }
+
     /// Reads the CPU temperature. Value returned is in Celcius
     pub async fn read_cpu_temperature(&mut self, sysctrl: &mut Sysctrl) -> f32 {
         let old_state = sysctrl.vref().read().tsen().bit();
