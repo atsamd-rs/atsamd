@@ -1,7 +1,6 @@
 //! Digital-to-Analog Converter
 
 use crate::clock::v2::types;
-use core::mem::ManuallyDrop;
 use num_traits::clamp;
 use pac::dac;
 
@@ -53,17 +52,14 @@ pub trait DacMode {}
 impl<D: DacInstance> DacMode for Single<D> {}
 impl<D0: DacInstance, D1: DacInstance> DacMode for Differential<D0, D1> {}
 
-pub struct DacWriteHandle<M: DacMode> {
-    reg: ManuallyDrop<pac::Dac>,
+pub struct DacWriteHandle<'a, M: DacMode> {
+    reg: &'a pac::Dac,
     mode: M,
 }
 
-impl<M: DacMode> DacWriteHandle<M> {
-    pub fn new(dac: pac::Dac, mode: M) -> Self {
-        Self {
-            reg: ManuallyDrop::new(dac),
-            mode,
-        }
+impl<'a, M: DacMode> DacWriteHandle<'a, M> {
+    pub fn new(dac: &'a pac::Dac, mode: M) -> Self {
+        Self { reg: dac, mode }
     }
 }
 
@@ -218,7 +214,7 @@ impl Dac {
             core::hint::spin_loop();
         }
         DacWriteHandle::new(
-            unsafe { core::ptr::read(&self.inner as *const _) },
+            &self.inner,
             Differential {
                 pin_0: d0,
                 pin_1: d1,
@@ -234,10 +230,7 @@ impl Dac {
         while !Dac0::ready(&self.inner) {
             core::hint::spin_loop();
         }
-        DacWriteHandle::new(
-            unsafe { core::ptr::read(&self.inner as *const _) },
-            Single { pin },
-        )
+        DacWriteHandle::new(&self.inner, Single { pin })
     }
 
     pub fn dac1(&self, pin: Pin<PA05, AlternateB>) -> DacWriteHandle<Single<Dac1>> {
@@ -248,15 +241,12 @@ impl Dac {
         while !Dac1::ready(&self.inner) {
             core::hint::spin_loop();
         }
-        DacWriteHandle::new(
-            unsafe { core::ptr::read(&self.inner as *const _) },
-            Single { pin },
-        )
+        DacWriteHandle::new(&self.inner, Single { pin })
     }
 }
 
 // For all modes
-impl<M: DacMode> DacWriteHandle<M> {
+impl<'a, M: DacMode> DacWriteHandle<'a, M> {
     pub fn sync(&self) {
         while self.reg.syncbusy().read().bits() != 0 {
             core::hint::spin_loop();
@@ -274,7 +264,7 @@ impl<M: DacMode> DacWriteHandle<M> {
 }
 
 // For single DAC modes (Dac0/Dac1)
-impl<DAC: DacInstance> DacWriteHandle<Single<DAC>> {
+impl<'a, DAC: DacInstance> DacWriteHandle<'a, Single<DAC>> {
     /// Writes a raw value to the DAC. Input value is between
     /// 0 and 4096. If you want the DAC to output a specific
     /// voltage, use [Self::write_voltage] instead.
@@ -307,7 +297,7 @@ impl<DAC: DacInstance> DacWriteHandle<Single<DAC>> {
 }
 
 // For differential mode
-impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<Differential<D0, D1>> {
+impl<'a, D0: DacInstance, D1: DacInstance> DacWriteHandle<'a, Differential<D0, D1>> {
     /// Writes a raw value to the DAC. Input value is between
     /// -2048 and +2048. If you want the DAC to output a specific
     /// voltage, use [Self::write_voltage] instead.
@@ -377,7 +367,7 @@ mod dma {
         }
     }
 
-    impl<DAC: DacInstance> DacWriteHandle<Single<DAC>> {
+    impl<'a, DAC: DacInstance> DacWriteHandle<'a, Single<DAC>> {
         /// Writes a buffer to the DAC using DMA. Each buffer value is DAC
         /// RAW output (0-4096). Use [Dac::voltage_to_raw] to convert
         /// between target voltage output of the DAC and the value to write
@@ -434,10 +424,10 @@ mod dma {
         }
     }
 
-    impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<Differential<D0, D1>> {
-        /// Writes a buffer to the DAC using DMA (Async version).
-        /// Each buffer value is DAC RAW output (0-4096).
-        /// Use [Dac::voltage_to_raw_signed] to convert between target
+    impl<'a, D0: DacInstance, D1: DacInstance> DacWriteHandle<'a, Differential<D0, D1>> {
+        /// Writes a buffer to the DAC using DMA
+        /// Each buffer value is DAC Differential output (-2048-+2048).
+        /// Use `[Dac::voltage_to_raw_signed]` to convert between target
         /// voltage output of the DAC and the value to write
         /// to the DAC.
         ///
@@ -477,8 +467,8 @@ mod dma {
         }
 
         /// Writes a buffer to the DAC using DMA (Async version).
-        /// Each buffer value is DAC RAW output (0-4096).
-        /// Use [Dac::voltage_to_raw_signed] to convert between target
+        /// Each buffer value is DAC Differential output (-2048-+2048).
+        /// Use `[Dac::voltage_to_raw_signed]` to convert between target
         /// voltage output of the DAC and the value to write
         /// to the DAC.
         ///

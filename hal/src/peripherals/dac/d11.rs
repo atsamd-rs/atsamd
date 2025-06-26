@@ -1,7 +1,6 @@
 //! Digital-to-Analog Converter
 
 use pac::Pm;
-use core::mem::ManuallyDrop;
 
 use crate::{
     clock::DacClock,
@@ -21,15 +20,15 @@ pub struct Dac {
     inner: pac::Dac,
 }
 
-pub struct DacWriteHandle {
+pub struct DacWriteHandle<'a> {
     pin: Pin<PA02, AlternateB>,
-    reg: ManuallyDrop<pac::Dac>,
+    reg: &'a pac::Dac,
 }
 
-impl DacWriteHandle {
-    pub fn new(dac: pac::Dac, pin: Pin<PA02, AlternateB>) -> Self {
+impl<'a> DacWriteHandle<'a> {
+    pub fn new(dac: &'a pac::Dac, pin: Pin<PA02, AlternateB>) -> Self {
         Self {
-            reg: ManuallyDrop::new(dac),
+            reg: dac,
             pin,
         }
     }
@@ -93,11 +92,11 @@ impl Dac {
     pub fn dac0(&self, pin: Pin<PA02, AlternateB>) -> DacWriteHandle {
         self.inner.ctrla().modify(|_, w| w.enable().set_bit());
         self.sync();
-        DacWriteHandle::new(unsafe { core::ptr::read(&self.inner as *const _) }, pin)
+        DacWriteHandle::new(&self.inner, pin)
     }
 }
 
-impl DacWriteHandle {
+impl<'a> DacWriteHandle<'a> {
     pub fn sync(&self) {
         while self.reg.status().read().syncbusy().bit_is_set() {
             core::hint::spin_loop();
@@ -173,7 +172,7 @@ mod dma {
         }
     }
 
-    impl DacWriteHandle {
+    impl<'a> DacWriteHandle<'a> {
         /// Writes a buffer to the DAC using DMA. Each buffer value is DAC
         /// RAW output (0-1024). Use [Dac::voltage_to_raw] to convert
         /// between target voltage output of the DAC and the value to write
