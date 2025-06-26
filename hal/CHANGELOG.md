@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.1...atsamd-hal-0.22.2) - 2025-06-26
+
+### Fixed
+
+- Maintain accuracy in DPLL frequency math
+
 ## [0.22.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.0...atsamd-hal-0.22.1) - 2025-06-22
 
 ### Other

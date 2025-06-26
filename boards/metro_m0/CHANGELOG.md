@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.2](https://github.com/atsamd-rs/atsamd/compare/metro_m0-0.19.1...metro_m0-0.19.2) - 2025-06-26
+
+### Other
+
+- updated the following local packages: atsamd-hal
+
 ## [0.19.1](https://github.com/atsamd-rs/atsamd/compare/metro_m0-0.19.0...metro_m0-0.19.1) - 2025-06-22
 
 ### Other
