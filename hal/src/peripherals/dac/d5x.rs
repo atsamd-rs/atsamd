@@ -219,7 +219,7 @@ impl Dac {
         &self,
         d0: Pin<PA02, AlternateB>,
         d1: Pin<PA05, AlternateB>,
-    ) -> DacWriteHandle<Differential<Dac0, Dac1>> {
+    ) -> DacWriteHandle<'_, Differential<Dac0, Dac1>> {
         self.with_disable(|dac| {
             dac.ctrlb().modify(|_, w| w.diff().set_bit());
             dac.dacctrl(0).modify(|_, w| w.enable().set_bit());
@@ -236,7 +236,7 @@ impl Dac {
         )
     }
 
-    pub fn dac0(&self, pin: Pin<PA02, AlternateB>) -> DacWriteHandle<Single<Dac0>> {
+    pub fn dac0(&self, pin: Pin<PA02, AlternateB>) -> DacWriteHandle<'_, Single<Dac0>> {
         self.with_disable(|dac| {
             dac.ctrlb().modify(|_, w| w.diff().clear_bit());
             dac.dacctrl(Dac0::IDX).modify(|_, w| w.enable().set_bit())
@@ -247,7 +247,7 @@ impl Dac {
         DacWriteHandle::new(&self.inner, Single { pin })
     }
 
-    pub fn dac1(&self, pin: Pin<PA05, AlternateB>) -> DacWriteHandle<Single<Dac1>> {
+    pub fn dac1(&self, pin: Pin<PA05, AlternateB>) -> DacWriteHandle<'_, Single<Dac1>> {
         self.with_disable(|dac| {
             dac.ctrlb().modify(|_, w| w.diff().clear_bit());
             dac.dacctrl(Dac1::IDX).modify(|_, w| w.enable().set_bit())
