@@ -27,10 +27,7 @@ pub struct DacWriteHandle<'a> {
 
 impl<'a> DacWriteHandle<'a> {
     pub fn new(dac: &'a pac::Dac, pin: Pin<PA02, AlternateB>) -> Self {
-        Self {
-            reg: dac,
-            pin,
-        }
+        Self { reg: dac, pin }
     }
 }
 
@@ -93,6 +90,16 @@ impl Dac {
         self.inner.ctrla().modify(|_, w| w.enable().set_bit());
         self.sync();
         DacWriteHandle::new(&self.inner, pin)
+    }
+
+    /// Destroy the DAC peripheral, returning resources.
+    /// The DAC will be disabled and reset before being released
+    pub fn release(self) -> pac::Dac {
+        self.inner.ctrla().modify(|_, w| w.enable().clear_bit());
+        self.sync();
+        self.inner.ctrla().write(|w| w.swrst().set_bit());
+        self.sync();
+        self.inner
     }
 }
 
@@ -190,7 +197,7 @@ mod dma {
             let mut bytes = SharedSliceBuffer::from_slice(buf);
             let trigger_action = TriggerAction::Beat;
 
-            let mut dest = DacDmaPtr::new(&self.reg);
+            let mut dest = DacDmaPtr::new(self.reg);
 
             unsafe {
                 channel.as_mut().transfer(
@@ -225,7 +232,7 @@ mod dma {
         {
             let bytes = SharedSliceBuffer::from_slice(buf);
             let trigger_action = TriggerAction::Beat;
-            let dest = DacDmaPtr::new(&self.reg);
+            let dest = DacDmaPtr::new(self.reg);
 
             channel
                 .as_mut()

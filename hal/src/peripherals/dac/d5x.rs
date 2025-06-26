@@ -22,6 +22,7 @@ pub enum Error {
 
 pub struct Dac {
     inner: pac::Dac,
+    clk: crate::clock::v2::apb::ApbClk<types::Dac>,
 }
 
 pub trait DacInstance {
@@ -130,21 +131,34 @@ impl Dac {
     /// * **SAMD11** - 350Khz
     pub fn new<PS: crate::clock::v2::pclk::PclkSourceId>(
         dac: pac::Dac,
-        _clk: crate::clock::v2::apb::ApbClk<types::Dac>,
+        clk: crate::clock::v2::apb::ApbClk<types::Dac>,
         pclk: &crate::clock::v2::pclk::Pclk<types::Dac, PS>,
     ) -> Result<Self, Error> {
-        if pclk.freq().to_Hz() > 12_000_000 {
+        // TODO: Ideally, the DAC struct would take ownership of the Pclk type here.
+        // However, since clock::v2 is not implemented for all chips yet, the
+        // generics for the Adc type would be different between chip families,
+        // leading to massive and unnecessary code duplication. In the meantime,
+        // we use a "lite" variation of the typelevel guarantees laid out by the
+        // clock::v2 module, meaning that we can guarantee that the clocks are enabled
+        // at the time of creation of the Adc struct; however we can't guarantee
+        // that the clock will stay enabled for the duration of its lifetime.
+        let pclk_freq = pclk.freq().to_Hz();
+        if pclk_freq > 12_000_000 {
             return Err(Error::ClockTooFast);
         }
         dac.ctrla().write(|w| w.swrst().set_bit());
-        let s = Self { inner: dac };
+
+        let s = Self {
+            inner: dac,
+            clk,
+        };
         s.sync();
         s.with_disable(|dac| {
             // Set VREF
             dac.ctrlb().modify(|_, w| w.refsel().vddana());
 
             // Setup CC size based on GCLK Freq
-            let cc = match pclk.freq().to_Hz() {
+            let cc = match pclk_freq {
                 ..1_200_000 => dac::dacctrl::Cctrlselect::Cc100k,
                 1_200_000..=6_000_000 => dac::dacctrl::Cctrlselect::Cc1m,
                 _ => dac::dacctrl::Cctrlselect::Cc12m,
@@ -242,6 +256,21 @@ impl Dac {
             core::hint::spin_loop();
         }
         DacWriteHandle::new(&self.inner, Single { pin })
+    }
+
+    /// Destroy the DAC peripheral, returning resources.
+    /// The DAC will be disabled and reset before being released
+    pub fn release(
+        self,
+    ) -> (
+        pac::Dac,
+        crate::clock::v2::apb::ApbClk<types::Dac>
+    ) {
+        self.inner.ctrla().modify(|_, w| w.enable().clear_bit());
+        self.sync();
+        self.inner.ctrla().write(|w| w.swrst().set_bit());
+        self.sync();
+        (self.inner, self.clk)
     }
 }
 
@@ -384,7 +413,7 @@ mod dma {
         {
             let mut bytes = SharedSliceBuffer::from_slice(buf);
             let trigger_action = TriggerAction::Burst;
-            let mut dest = DacDmaPtr::new::<DAC>(&self.reg);
+            let mut dest = DacDmaPtr::new::<DAC>(self.reg);
 
             unsafe {
                 channel.as_mut().transfer(
@@ -415,7 +444,7 @@ mod dma {
         {
             let bytes = SharedSliceBuffer::from_slice(buf);
             let trigger_action = TriggerAction::Burst;
-            let dest = DacDmaPtr::new::<DAC>(&self.reg);
+            let dest = DacDmaPtr::new::<DAC>(self.reg);
 
             channel
                 .as_mut()
@@ -449,7 +478,7 @@ mod dma {
 
             let trigger_action = TriggerAction::Burst;
 
-            let mut dest = DacDmaPtr::new::<D0>(&self.reg);
+            let mut dest = DacDmaPtr::new::<D0>(self.reg);
 
             unsafe {
                 channel.as_mut().transfer(
@@ -491,7 +520,7 @@ mod dma {
 
             let trigger_action = TriggerAction::Burst;
 
-            let dest = DacDmaPtr::new::<D0>(&self.reg);
+            let dest = DacDmaPtr::new::<D0>(self.reg);
 
             channel
                 .as_mut()
