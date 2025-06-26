@@ -275,7 +275,7 @@ impl Dac {
 }
 
 // For all modes
-impl<'a, M: DacMode> DacWriteHandle<'a, M> {
+impl<M: DacMode> DacWriteHandle<'_, M> {
     pub fn sync(&self) {
         while self.reg.syncbusy().read().bits() != 0 {
             core::hint::spin_loop();
@@ -293,7 +293,7 @@ impl<'a, M: DacMode> DacWriteHandle<'a, M> {
 }
 
 // For single DAC modes (Dac0/Dac1)
-impl<'a, DAC: DacInstance> DacWriteHandle<'a, Single<DAC>> {
+impl<DAC: DacInstance> DacWriteHandle<'_, Single<DAC>> {
     /// Writes a raw value to the DAC. Input value is between
     /// 0 and 4096. If you want the DAC to output a specific
     /// voltage, use [Self::write_voltage] instead.
@@ -301,10 +301,10 @@ impl<'a, DAC: DacInstance> DacWriteHandle<'a, Single<DAC>> {
         unsafe {
             self.reg.data(DAC::IDX).write(|w| w.bits(val));
         }
-        while DAC::data_ready(&self.reg) {
+        while DAC::data_ready(self.reg) {
             core::hint::spin_loop();
         }
-        while !DAC::eoc(&self.reg) {
+        while !DAC::eoc(self.reg) {
             core::hint::spin_loop();
         }
     }
@@ -326,7 +326,7 @@ impl<'a, DAC: DacInstance> DacWriteHandle<'a, Single<DAC>> {
 }
 
 // For differential mode
-impl<'a, D0: DacInstance, D1: DacInstance> DacWriteHandle<'a, Differential<D0, D1>> {
+impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<'_, Differential<D0, D1>> {
     /// Writes a raw value to the DAC. Input value is between
     /// -2048 and +2048. If you want the DAC to output a specific
     /// voltage, use [Self::write_voltage] instead.
@@ -335,10 +335,10 @@ impl<'a, D0: DacInstance, D1: DacInstance> DacWriteHandle<'a, Differential<D0, D
         unsafe {
             self.reg.data(0).write(|w| w.bits(val as u16));
         }
-        while Dac0::data_ready(&self.reg) {
+        while Dac0::data_ready(self.reg) {
             core::hint::spin_loop();
         }
-        while !Dac0::eoc(&self.reg) {
+        while !Dac0::eoc(self.reg) {
             core::hint::spin_loop();
         }
     }
@@ -396,7 +396,7 @@ mod dma {
         }
     }
 
-    impl<'a, DAC: DacInstance> DacWriteHandle<'a, Single<DAC>> {
+    impl<DAC: DacInstance> DacWriteHandle<'_, Single<DAC>> {
         /// Writes a buffer to the DAC using DMA. Each buffer value is DAC
         /// RAW output (0-4096). Use [Dac::voltage_to_raw] to convert
         /// between target voltage output of the DAC and the value to write
@@ -453,7 +453,7 @@ mod dma {
         }
     }
 
-    impl<'a, D0: DacInstance, D1: DacInstance> DacWriteHandle<'a, Differential<D0, D1>> {
+    impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<'_, Differential<D0, D1>> {
         /// Writes a buffer to the DAC using DMA
         /// Each buffer value is DAC Differential output (-2048-+2048).
         /// Use `[Dac::voltage_to_raw_signed]` to convert between target

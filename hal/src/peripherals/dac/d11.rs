@@ -86,7 +86,7 @@ impl Dac {
 
     /// Get a handle to DAC 0 output. This consumes PA02, since
     /// the DAC is now enabled and using this pin
-    pub fn dac0(&self, pin: Pin<PA02, AlternateB>) -> DacWriteHandle {
+    pub fn dac0(&self, pin: Pin<PA02, AlternateB>) -> DacWriteHandle<'_> {
         self.inner.ctrla().modify(|_, w| w.enable().set_bit());
         self.sync();
         DacWriteHandle::new(&self.inner, pin)
@@ -103,7 +103,7 @@ impl Dac {
     }
 }
 
-impl<'a> DacWriteHandle<'a> {
+impl DacWriteHandle<'_> {
     pub fn sync(&self) {
         while self.reg.status().read().syncbusy().bit_is_set() {
             core::hint::spin_loop();
@@ -179,7 +179,7 @@ mod dma {
         }
     }
 
-    impl<'a> DacWriteHandle<'a> {
+    impl DacWriteHandle<'_> {
         /// Writes a buffer to the DAC using DMA. Each buffer value is DAC
         /// RAW output (0-1024). Use [Dac::voltage_to_raw] to convert
         /// between target voltage output of the DAC and the value to write
