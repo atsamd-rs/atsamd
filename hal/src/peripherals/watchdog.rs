@@ -1,4 +1,3 @@
-use crate::ehal_02::watchdog;
 use crate::pac::Wdt;
 use atsamd_hal_macros::hal_macro_helper;
 
@@ -31,18 +30,16 @@ impl Watchdog {
     }
 }
 
-impl watchdog::Watchdog for Watchdog {
+impl Watchdog {
     /// Feeds an existing watchdog to ensure the processor isn't reset.
     /// Sometimes commonly referred to as "kicking" or "refreshing".
-    fn feed(&mut self) {
+    pub fn feed(&mut self) {
         self.wdt.clear().write(|w| unsafe { w.clear().bits(0xA5) });
     }
-}
 
-/// Disables a running watchdog timer so the processor won't be reset.
-impl watchdog::WatchdogDisable for Watchdog {
+    /// Disables a running watchdog timer so the processor won't be reset.
     #[hal_macro_helper]
-    fn disable(&mut self) {
+    pub fn disable(&mut self) {
         #[hal_cfg(any("wdt-d11", "wdt-d21"))]
         {
             // Disable the watchdog timer.
@@ -58,10 +55,6 @@ impl watchdog::WatchdogDisable for Watchdog {
             while self.wdt.syncbusy().read().enable().bit_is_set() {}
         }
     }
-}
-
-impl watchdog::WatchdogEnable for Watchdog {
-    type Time = u8;
 
     /// Enables a watchdog timer to reset the processor if software is frozen
     /// or stalled. Pass [`WatchdogTimeout`] as the period.
@@ -72,9 +65,9 @@ impl watchdog::WatchdogEnable for Watchdog {
     /// EG:
     /// `Timeout of 2048 cycles = (1/1024)*2048 = 2 seconds`
     #[hal_macro_helper]
-    fn start<T>(&mut self, period: T)
+    pub fn start<T>(&mut self, period: T)
     where
-        T: Into<Self::Time>,
+        T: Into<u8>,
     {
         // Write the timeout configuration.
         self.wdt

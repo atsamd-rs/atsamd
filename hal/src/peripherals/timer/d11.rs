@@ -3,9 +3,9 @@ use atsamd_hal_macros::hal_cfg;
 
 use crate::pac::Pm;
 #[hal_cfg("tc1-d11")]
-use crate::pac::{tc1::Count16 as Count16Reg, Tc1};
+use crate::pac::{Tc1, tc1::Count16 as Count16Reg};
 #[hal_cfg("tc3-d21")]
-use crate::pac::{tc3::Count16 as Count16Reg, Tc3, Tc4, Tc5};
+use crate::pac::{Tc3, Tc4, Tc5, tc3::Count16 as Count16Reg};
 
 use crate::clock;
 use crate::time::Hertz;

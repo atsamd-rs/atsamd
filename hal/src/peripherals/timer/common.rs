@@ -3,8 +3,6 @@ use core::convert::Infallible;
 use fugit::NanosDurationU32;
 
 use crate::ehal::delay::DelayNs;
-use crate::ehal_02::timer::{CountDown, Periodic};
-use crate::time::Nanoseconds;
 use crate::timer_params::TimerParams;
 use crate::timer_traits::InterruptDrivenTimer;
 
@@ -54,29 +52,6 @@ where
     /// controller.
     fn disable_interrupt(&mut self) {
         self.tc.count_16().intenclr().write(|w| w.ovf().set_bit());
-    }
-}
-
-impl<TC> Periodic for TimerCounter<TC> {}
-impl<TC> CountDown for TimerCounter<TC>
-where
-    TC: Count16,
-{
-    type Time = Nanoseconds;
-
-    fn start<T>(&mut self, timeout: T)
-    where
-        T: Into<Self::Time>,
-    {
-        <Self as InterruptDrivenTimer>::start(self, timeout);
-    }
-
-    fn wait(&mut self) -> nb::Result<(), void::Void> {
-        nb::block! {
-            <Self as InterruptDrivenTimer>::wait(self)
-        }
-        .unwrap(); // wait() is Infallible
-        Ok(())
     }
 }
 

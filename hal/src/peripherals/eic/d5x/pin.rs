@@ -1,11 +1,8 @@
 use atsamd_hal_macros::hal_cfg;
 
 use crate::ehal::digital::{ErrorType, InputPin};
-use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
-use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
-};
+use crate::gpio::{self, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt};
 use core::convert::Infallible;
 
 /// The pad macro defines the given EIC pin and implements EicPin for the
@@ -159,23 +156,6 @@ where
             e.debouncen()
                 .modify(|_, w| unsafe { w.bits(P::ChId::ID as u32) });
         });
-    }
-}
-
-impl<P, C, Id, F> InputPin_02 for ExtInt<P, Id, F>
-where
-    P: EicPin + AnyPin<Mode = Interrupt<C>>,
-    C: InterruptConfig,
-    Id: ChId,
-{
-    type Error = Infallible;
-    #[inline]
-    fn is_high(&self) -> Result<bool, Self::Error> {
-        self.pin.is_high()
-    }
-    #[inline]
-    fn is_low(&self) -> Result<bool, Self::Error> {
-        self.pin.is_low()
     }
 }
 

@@ -275,7 +275,7 @@ impl<C: AnyConfig> I2cTrait for I2cFuture<C> {
 
 #[cfg(feature = "dma")]
 mod dma {
-    use embedded_hal_1::i2c::Operation;
+    use embedded_hal::i2c::Operation;
     use embedded_hal_async::i2c::I2c as I2cTrait;
 
     use super::*;
