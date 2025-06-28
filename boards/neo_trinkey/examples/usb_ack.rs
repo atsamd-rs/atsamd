@@ -71,7 +71,7 @@ static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
 
 fn poll_usb() {
     unsafe {
-        if let Some(usb_dev) = USB_BUS.as_mut() { 
+        if let Some(usb_dev) = USB_BUS.as_mut() {
             if let Some(serial) = USB_SERIAL.as_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 64];
@@ -85,7 +85,8 @@ fn poll_usb() {
                         serial.write("\r\n".as_bytes()).ok();
                     }
                 }
-            } }
+            }
+        }
     };
 }
 
