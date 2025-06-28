@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+
 use panic_halt as _;
 
 use neo_trinkey as bsp;
@@ -11,6 +12,7 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
+use hal::time::Hertz;
 use hal::timer::TimerCounter;
 
 use smart_leds::{brightness, hsv::RGB8, SmartLedsWrite};
@@ -32,7 +34,7 @@ fn main() -> ! {
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tcc2_tc3(&gclk0).unwrap();
     let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.PM);
-    timer.start(3.mhz());
+    timer.start(Hertz::MHz(3).into_duration());
     let neo_pixel = pins.neo_pixel.into_push_pull_output();
     let mut ws2812 = Ws2812::new(timer, neo_pixel);
 
