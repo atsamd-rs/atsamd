@@ -56,17 +56,17 @@ hal::bsp_pins!(
 ///
 /// let mut peripherals = Peripherals::take().unwrap();
 /// let mut clocks = GenericClockController::with_internal_32kosc(
-///     peripherals.GCLK,
-///     &mut peripherals.PM,
-///     &mut peripherals.SYSCTRL,
-///     &mut peripherals.NVMCTRL,
+///     peripherals.gclk,
+///     &mut peripherals.pm,
+///     &mut peripherals.sysctrl,
+///     &mut peripherals.nvmctrl,
 /// );
-/// let pins = bsp::Pins::new(peripherals.PORT);
+/// let pins = neo_trinkey::Pins::new(peripherals.port);
 ///
-/// let bus_allocator = bsp::usb_allocator(
-///     peripherals.USB,
+/// let bus_allocator = neo_trinkey::usb_allocator(
+///     peripherals.usb,
 ///     &mut clocks,
-///     &mut peripherals.PM,
+///     &mut peripherals.pm,
 ///     pins.usb_dm,
 ///     pins.usb_dp,
 /// );
@@ -75,9 +75,9 @@ hal::bsp_pins!(
 /// rust. See the USB code examples in the `examples/` directory of the project.
 #[cfg(feature = "usb")]
 pub fn usb_allocator(
-    usb: pac::USB,
+    usb: pac::Usb,
     clocks: &mut hal::clock::GenericClockController,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
