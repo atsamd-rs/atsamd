@@ -10,10 +10,11 @@ use bsp::hal;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
+use hal::ehal::delay::DelayNs;
 use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
 use hal::time::Hertz;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 
 use smart_leds::{hsv::RGB8, SmartLedsWrite};
 use ws2812_timer_delay::Ws2812;
@@ -51,8 +52,8 @@ fn main() -> ! {
 
     loop {
         ws2812.write(off.iter().cloned()).unwrap();
-        delay.delay_ms(500u16);
+        delay.delay_ms(500);
         ws2812.write(on.iter().cloned()).unwrap();
-        delay.delay_ms(500u16);
+        delay.delay_ms(500);
     }
 }
