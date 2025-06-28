@@ -46,8 +46,8 @@ fn main() -> ! {
 
     loop {
         for j in 0..(256 * 5) {
-            for i in 0..NUM_LEDS {
-                data[i] = wheel((((i * 256) as u16 / NUM_LEDS as u16 + j as u16) & 255) as u8);
+            for (i, item) in data.iter_mut().enumerate().take(NUM_LEDS) {
+                *item = wheel((((i * 256) as u16 / NUM_LEDS as u16 + j as u16) & 255) as u8);
             }
             ws2812.write(brightness(data.iter().cloned(), 32)).unwrap();
             delay.delay_ms(5);
