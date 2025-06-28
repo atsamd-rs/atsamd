@@ -61,9 +61,9 @@ hal::bsp_pins!(
 ///     &mut peripherals.SYSCTRL,
 ///     &mut peripherals.NVMCTRL,
 /// );
-/// let pins = bsp::Pins::new(peripherals.PORT);
+/// let pins = neo_trinkey::Pins::new(peripherals.PORT);
 ///
-/// let bus_allocator = bsp::usb_allocator(
+/// let bus_allocator = neo_trinkey::usb_allocator(
 ///     peripherals.USB,
 ///     &mut clocks,
 ///     &mut peripherals.PM,
