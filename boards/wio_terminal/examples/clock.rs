@@ -225,22 +225,25 @@ fn atoi(digits: &[u8]) -> u32 {
     num
 }
 
-use nom::character::streaming::digit1 as nom_ascii_digit;
-use nom::{char, do_parse, opt, tag};
+use nom::{
+    bytes::complete::tag,
+    character::complete::{char, digit1},
+    combinator::opt,
+    sequence::{delimited, preceded, terminated},
+    IResult, Parser,
+};
 
-nom::named!(
-    pub timespec<Time>,
-    do_parse!(
-        opt!( char!('\n') ) >>
-        tag!("time=") >>
-        hour: nom_ascii_digit >>
-        char!(':') >>
-        minute: nom_ascii_digit >>
-        char!(':') >>
-        second: nom_ascii_digit >>
-        tag!("\n") >>
-        (
-            Time{ hour: atoi(hour), minute: atoi(minute), second: atoi(second) }
-        )
-    )
-);
+fn timespec(input: &[u8]) -> IResult<&[u8], Time> {
+    let (input, hour) = preceded((opt(char('\n')), tag("time=")), digit1).parse(input)?;
+    let (input, minute) = delimited(char(':'), digit1, char(':')).parse(input)?;
+    let (input, second) = terminated(digit1, char('\n')).parse(input)?;
+
+    Ok((
+        input,
+        Time {
+            hour: atoi(hour),
+            minute: atoi(minute),
+            second: atoi(second),
+        },
+    ))
+}
