@@ -87,6 +87,24 @@ impl $TYPE {
         let top = count.cc(0).read().cc().bits();
         self.clock_freq / divisor as u32 / (top + 1) as u32
     }
+
+    pub fn disable(&mut self) {
+        let count = self.tc.count16();
+        count.ctrla().modify(|_, w| w.enable().clear_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
+    }
+
+    pub fn enable(&mut self) {
+        let count = self.tc.count16();
+        count.ctrla().modify(|_, w| w.enable().set_bit());
+        while count.status().read().syncbusy().bit_is_set() {}
+    }
+
+    pub fn get_duty(&self) -> u16 {
+        let count = self.tc.count16();
+        let duty: u16 = count.cc(1).read().cc().bits();
+        duty
+    }
 }
 
 impl $crate::ehal::pwm::ErrorType for$TYPE {
@@ -104,38 +122,6 @@ impl $crate::ehal::pwm::SetDutyCycle for $TYPE {
         let count = self.tc.count16();
         unsafe { count.cc(1).write(|w| w.cc().bits(duty)); }
         Ok(())
-    }
-}
-
-impl $crate::ehal_02::PwmPin for $TYPE {
-    type Duty = u16;
-
-    fn disable(&mut self) {
-        let count = self.tc.count16();
-        count.ctrla().modify(|_, w| w.enable().clear_bit());
-        while count.status().read().syncbusy().bit_is_set() {}
-    }
-
-    fn enable(&mut self) {
-        let count = self.tc.count16();
-        count.ctrla().modify(|_, w| w.enable().set_bit());
-        while count.status().read().syncbusy().bit_is_set() {}
-    }
-
-    fn get_duty(&self) -> Self::Duty {
-        let count = self.tc.count16();
-        let duty: u16 = count.cc(1).read().cc().bits();
-        duty
-    }
-
-    fn get_max_duty(&self) -> Self::Duty {
-        use $crate::ehal::pwm::SetDutyCycle;
-        self.max_duty_cycle()
-    }
-
-    fn set_duty(&mut self, duty: Self::Duty) {
-        use $crate::ehal::pwm::SetDutyCycle;
-        let _ignore_infaillible = self.set_duty_cycle(duty);
     }
 }
 
@@ -221,48 +207,42 @@ impl $TYPE {
             tcc,
         }
     }
-}
 
-impl $crate::ehal_02::Pwm for $TYPE {
-    type Channel = Channel;
-    type Time = Hertz;
-    type Duty = u32;
-
-    fn disable(&mut self, _channel: Self::Channel) {
+    pub fn disable(&mut self, _channel: Channel) {
         self.tcc.ctrla().modify(|_, w| w.enable().clear_bit());
         while self.tcc.syncbusy().read().enable().bit_is_set() {}
     }
 
-    fn enable(&mut self, _channel: Self::Channel) {
+    pub fn enable(&mut self, _channel: Channel) {
         self.tcc.ctrla().modify(|_, w| w.enable().set_bit());
         while self.tcc.syncbusy().read().enable().bit_is_set() {}
     }
 
-    fn get_period(&self) -> Self::Time {
+    pub fn get_period(&self) -> Hertz {
         let divisor = self.tcc.ctrla().read().prescaler().bits();
         let top = self.tcc.per().read().bits();
         self.clock_freq / divisor as u32 / (top + 1) as u32
     }
 
-    fn get_duty(&self, channel: Self::Channel) -> Self::Duty {
+    pub fn get_duty(&self, channel: Channel) -> u32 {
         let cc = self.tcc.cc(channel as usize);
         let duty: u32 = cc.read().cc().bits();
         duty
     }
 
-    fn get_max_duty(&self) -> Self::Duty {
+    pub fn get_max_duty(&self) -> u32 {
         let top = self.tcc.per().read().bits();
         top
     }
 
-    fn set_duty(&mut self, channel: Self::Channel, duty: Self::Duty) {
+    pub fn set_duty(&mut self, channel: Channel, duty: u32) {
         let cc = self.tcc.cc(channel as usize);
         cc.write(|w| unsafe { w.cc().bits(duty) });
     }
 
-    fn set_period<P>(&mut self, period: P)
+    pub fn set_period<P>(&mut self, period: P)
     where
-        P: Into<Self::Time>,
+        P: Into<Hertz>,
     {
         let period = period.into();
         let params = TimerParams::new(period, self.clock_freq);

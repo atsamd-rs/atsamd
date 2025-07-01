@@ -2,8 +2,6 @@ use crate::pac::{self, Mclk};
 
 use rand_core::{CryptoRng, RngCore};
 
-use crate::ehal_02::blocking::rng::Read;
-
 pub struct Trng(pac::Trng);
 
 impl Trng {
@@ -57,10 +55,13 @@ impl RngCore for Trng {
 
 impl CryptoRng for Trng {}
 
-impl Read for Trng {
-    type Error = ();
-    fn read(&mut self, buffer: &mut [u8]) -> Result<(), Self::Error> {
+impl embedded_io::ErrorType for Trng {
+    type Error = core::convert::Infallible;
+}
+
+impl embedded_io::Read for Trng {
+    fn read(&mut self, buffer: &mut [u8]) -> Result<usize, Self::Error> {
         self.random(buffer);
-        Ok(())
+        Ok(buffer.len())
     }
 }
