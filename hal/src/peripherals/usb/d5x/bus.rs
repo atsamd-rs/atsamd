@@ -7,11 +7,16 @@
 
 use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
-use crate::clock;
+use crate::clock::v2::{
+    self as clock,
+    ahb::AhbClk,
+    apb::ApbClk,
+    pclk::{Pclk, PclkSourceId},
+};
 use crate::gpio::{AlternateH, AnyPin, PA24, PA25, Pin};
 use crate::pac;
+use crate::pac::Usb;
 use crate::pac::usb::Device;
-use crate::pac::{Mclk, Usb};
 use crate::usb::devicedesc::DeviceDescBank;
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
@@ -191,16 +196,19 @@ impl BufferAllocator {
     }
 }
 
-struct Inner {
+struct Inner<S: PclkSourceId> {
     desc: RefCell<Descriptors>,
     _dm_pad: Pin<PA24, AlternateH>,
     _dp_pad: Pin<PA25, AlternateH>,
     endpoints: RefCell<AllEndpoints>,
     buffers: RefCell<BufferAllocator>,
+    pclk: Pclk<clock::types::Usb, S>,
+    ahb_clk: AhbClk<clock::types::Usb>,
+    apb_clk: ApbClk<clock::types::Usb>,
 }
 
-pub struct UsbBus {
-    inner: Mutex<RefCell<Inner>>,
+pub struct UsbBus<S: PclkSourceId> {
+    inner: Mutex<RefCell<Inner<S>>>,
 }
 
 struct Bank<'a, T> {
@@ -469,7 +477,7 @@ impl<T> Bank<'_, T> {
     }
 }
 
-impl Inner {
+impl<S: PclkSourceId> Inner<S> {
     #[inline]
     fn epcfg(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epcfg {
         self.usb().device_endpoint(endpoint).epcfg()
@@ -524,17 +532,15 @@ impl Inner {
     }
 }
 
-impl UsbBus {
+impl<S: PclkSourceId> UsbBus<S> {
     pub fn new(
-        _clock: &clock::UsbClock,
-        mclk: &mut Mclk,
+        pclk: Pclk<clock::types::Usb, S>,
+        ahb_clk: AhbClk<clock::types::Usb>,
+        apb_clk: ApbClk<clock::types::Usb>,
         dm_pad: impl AnyPin<Id = PA24>,
         dp_pad: impl AnyPin<Id = PA25>,
         _usb: Usb,
     ) -> Self {
-        mclk.ahbmask().modify(|_, w| w.usb_().set_bit());
-        mclk.apbbmask().modify(|_, w| w.usb_().set_bit());
-
         let desc = RefCell::new(Descriptors::new());
 
         let inner = Inner {
@@ -543,15 +549,38 @@ impl UsbBus {
             desc,
             buffers: RefCell::new(BufferAllocator::new()),
             endpoints: RefCell::new(AllEndpoints::new()),
+            pclk,
+            ahb_clk,
+            apb_clk,
         };
 
         Self {
             inner: Mutex::new(RefCell::new(inner)),
         }
     }
+
+    pub fn free(
+        self,
+    ) -> (
+        Pclk<clock::types::Usb, S>,
+        AhbClk<clock::types::Usb>,
+        ApbClk<clock::types::Usb>,
+        Pin<PA24, AlternateH>,
+        Pin<PA25, AlternateH>,
+    ) {
+        // Unwrap the Mutex and RefCell to get the Inner
+        let inner = self.inner.into_inner().into_inner();
+        (
+            inner.pclk,
+            inner.ahb_clk,
+            inner.apb_clk,
+            inner._dm_pad,
+            inner._dp_pad,
+        )
+    }
 }
 
-impl Inner {
+impl<S: PclkSourceId> Inner<S> {
     fn usb(&self) -> &Device {
         unsafe { (*Usb::ptr()).device() }
     }
@@ -576,7 +605,7 @@ enum FlushConfigMode {
     ProtocolReset,
 }
 
-impl Inner {
+impl<S: PclkSourceId> Inner<S> {
     fn enable(&mut self) {
         let usb = self.usb();
         usb.ctrla().modify(|_, w| w.swrst().set_bit());
@@ -884,7 +913,7 @@ impl Inner {
     }
 }
 
-impl UsbBus {
+impl<S: PclkSourceId> UsbBus<S> {
     /// Enables the Start Of Frame (SOF) interrupt
     pub fn enable_sof_interrupt(&self) {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow_mut().sof_interrupt(true))
@@ -901,7 +930,7 @@ impl UsbBus {
     }
 }
 
-impl usb_device::bus::UsbBus for UsbBus {
+impl<S: PclkSourceId> usb_device::bus::UsbBus for UsbBus<S> {
     fn enable(&mut self) {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow_mut().enable())
     }
