@@ -1,6 +1,6 @@
 [package]
 name = "neo_trinkey"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["Daniel Mason <daniel@danielmason.com>"]
 description = "Board Support crate for the Adafruit Neo Trinkey"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
@@ -12,17 +12,20 @@ edition = "2021"
 
 [dependencies]
 cortex-m-rt = { version = "0.7", optional = true }
-usb-device = { version = "0.2", optional = true }
+usb-device = { version = "0.3.1", optional = true }
 smart-leds = { version = "0.3.0", optional = true }
 ws2812-timer-delay = { version = "0.3.0", features = ["slow"], optional = true }
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.22"
 default-features = false
 
+[dependencies.cortex-m]
+version = "0.7"
+features = ["critical-section-single-core"]
+
 [dev-dependencies]
-cortex-m = "0.7"
-usbd-serial = "0.1"
+usbd-serial = "0.2"
 panic-halt = "0.2"
 
 [features]
@@ -30,7 +33,6 @@ panic-halt = "0.2"
 default = ["rt", "atsamd-hal/samd21e"]
 leds = ["ws2812-timer-delay", "smart-leds"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21e-rt"]
-unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 usb = ["atsamd-hal/usb", "usb-device"]
 
