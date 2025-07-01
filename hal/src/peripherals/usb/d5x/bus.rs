@@ -8,7 +8,7 @@
 use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
-use crate::gpio::{AlternateH, AnyPin, Pin, PA24, PA25};
+use crate::gpio::{AlternateH, AnyPin, PA24, PA25, Pin};
 use crate::pac;
 use crate::pac::usb::Device;
 use crate::pac::{Mclk, Usb};
@@ -17,7 +17,7 @@ use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
 use core::mem;
 use cortex_m::singleton;
-use critical_section::{with as disable_interrupts, Mutex};
+use critical_section::{Mutex, with as disable_interrupts};
 use usb_device::bus::PollResult;
 use usb_device::endpoint::{EndpointAddress, EndpointType};
 use usb_device::{Result as UsbResult, UsbDirection, UsbError};
