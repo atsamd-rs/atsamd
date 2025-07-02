@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+
 use panic_halt as _;
 
 use neo_trinkey as bsp;
@@ -9,9 +10,11 @@ use bsp::hal;
 
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
+use hal::ehal::delay::DelayNs;
 use hal::pac::{CorePeripherals, Peripherals};
-use hal::prelude::*;
+use hal::time::Hertz;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 
 use smart_leds::{brightness, hsv::RGB8, SmartLedsWrite};
 use ws2812_timer_delay::Ws2812;
@@ -21,18 +24,18 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tcc2_tc3(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.PM);
-    timer.start(3.mhz());
+    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.tc3, &mut peripherals.pm);
+    timer.start(Hertz::MHz(3).into_duration());
     let neo_pixel = pins.neo_pixel.into_push_pull_output();
     let mut ws2812 = Ws2812::new(timer, neo_pixel);
 
@@ -43,11 +46,11 @@ fn main() -> ! {
 
     loop {
         for j in 0..(256 * 5) {
-            for i in 0..NUM_LEDS {
-                data[i] = wheel((((i * 256) as u16 / NUM_LEDS as u16 + j as u16) & 255) as u8);
+            for (i, item) in data.iter_mut().enumerate().take(NUM_LEDS) {
+                *item = wheel((((i * 256) as u16 / NUM_LEDS as u16 + j as u16) & 255) as u8);
             }
             ws2812.write(brightness(data.iter().cloned(), 32)).unwrap();
-            delay.delay_ms(5u8);
+            delay.delay_ms(5);
         }
     }
 }
