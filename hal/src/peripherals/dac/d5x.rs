@@ -1,6 +1,10 @@
 //! Digital-to-Analog Converter
 
-use crate::clock::v2::types;
+use crate::clock::v2::{
+    apb::ApbClk,
+    pclk::{Pclk, PclkSourceId},
+    types,
+};
 use num_traits::clamp;
 use pac::dac;
 
@@ -20,9 +24,10 @@ pub enum Error {
     ClockTooFast,
 }
 
-pub struct Dac {
+pub struct Dac<PS: PclkSourceId> {
     inner: pac::Dac,
-    clk: crate::clock::v2::apb::ApbClk<types::Dac>,
+    clk: ApbClk<types::Dac>,
+    pclk: Pclk<types::Dac, PS>,
 }
 
 pub trait DacInstance {
@@ -118,7 +123,36 @@ impl DacInstance for Dac1 {
     }
 }
 
-impl Dac {
+/// Dac voltage converter helper
+pub struct DacHelper;
+
+impl DacHelper {
+    /// Converts input voltage in millivolts to DAC output value (RAW)
+    /// The input voltage is clamped between 0 and 3300mv,
+    /// resulting in an output between 0 and 4096
+    ///
+    /// Use this function for single channel mode DAC
+    pub fn voltage_to_raw(mv: u16) -> u16 {
+        // Up to 4096 output
+        const RATIO: f32 = 4096.0 / 3300.0;
+        let targ = core::cmp::min(3300, mv) as f32;
+        (targ * RATIO) as u16
+    }
+
+    /// Converts input voltage in millivolts to DAC output value (RAW)
+    /// The input voltage is clamped between -1650mv and +1650mv,
+    /// resulting in an output between -2048 and +2048
+    ///
+    /// Use this function for differential mode DAC
+    pub fn voltage_to_raw_signed(mv: i16) -> i16 {
+        // Up to +/-2048 output
+        const RATIO: f32 = 4096.0 / 3300.0;
+        let targ = clamp(mv, -1650, 1650) as f32;
+        (targ * RATIO) as i16
+    }
+}
+
+impl<PS: PclkSourceId> Dac<PS> {
     /// Construct a new DAC. The DAC VREF is set to 3.3V
     /// (VDDANA) to allow for maximum output voltage of 3.3V
     ///
@@ -129,10 +163,10 @@ impl Dac {
     /// * **SAMD/E5x** - 12Mhz
     /// * **SAMC/D21** - 350Khz
     /// * **SAMD11** - 350Khz
-    pub fn new<PS: crate::clock::v2::pclk::PclkSourceId>(
+    pub fn new(
         dac: pac::Dac,
-        clk: crate::clock::v2::apb::ApbClk<types::Dac>,
-        pclk: &crate::clock::v2::pclk::Pclk<types::Dac, PS>,
+        clk: ApbClk<types::Dac>,
+        pclk: Pclk<types::Dac, PS>,
     ) -> Result<Self, Error> {
         // TODO: Ideally, the DAC struct would take ownership of the Pclk type here.
         // However, since clock::v2 is not implemented for all chips yet, the
@@ -151,6 +185,7 @@ impl Dac {
         let s = Self {
             inner: dac,
             clk,
+            pclk,
         };
         s.sync();
         s.with_disable(|dac| {
@@ -182,30 +217,6 @@ impl Dac {
         while self.inner.syncbusy().read().bits() != 0 {
             core::hint::spin_loop();
         }
-    }
-
-    /// Converts input voltage in millivolts to DAC output value (RAW)
-    /// The input voltage is clamped between 0 and 3300mv,
-    /// resulting in an output between 0 and 4096
-    ///
-    /// Use this function for single channel mode DAC
-    pub fn voltage_to_raw(mv: u16) -> u16 {
-        // Up to 4096 output
-        const RATIO: f32 = 4096.0 / 3300.0;
-        let targ = core::cmp::min(3300, mv) as f32;
-        (targ * RATIO) as u16
-    }
-
-    /// Converts input voltage in millivolts to DAC output value (RAW)
-    /// The input voltage is clamped between -1650mv and +1650mv,
-    /// resulting in an output between -2048 and +2048
-    ///
-    /// Use this function for differential mode DAC
-    pub fn voltage_to_raw_signed(mv: i16) -> i16 {
-        // Up to +/-2048 output
-        const RATIO: f32 = 4096.0 / 3300.0;
-        let targ = clamp(mv, -1650, 1650) as f32;
-        (targ * RATIO) as i16
     }
 
     /// Sets the DAC up in differential mode.
@@ -260,17 +271,12 @@ impl Dac {
 
     /// Destroy the DAC peripheral, returning resources.
     /// The DAC will be disabled and reset before being released
-    pub fn release(
-        self,
-    ) -> (
-        pac::Dac,
-        crate::clock::v2::apb::ApbClk<types::Dac>
-    ) {
+    pub fn release(self) -> (pac::Dac, ApbClk<types::Dac>, Pclk<types::Dac, PS>) {
         self.inner.ctrla().modify(|_, w| w.enable().clear_bit());
         self.sync();
         self.inner.ctrla().write(|w| w.swrst().set_bit());
         self.sync();
-        (self.inner, self.clk)
+        (self.inner, self.clk, self.pclk)
     }
 }
 
@@ -312,7 +318,7 @@ impl<DAC: DacInstance> DacWriteHandle<'_, Single<DAC>> {
     /// Writes a voltage to the DAC.
     #[inline]
     pub fn write_voltage(&mut self, mv: u16) {
-        let raw = Dac::voltage_to_raw(mv);
+        let raw = DacHelper::voltage_to_raw(mv);
         self.write_val(raw);
     }
 
@@ -346,7 +352,7 @@ impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<'_, Differential<D0, D1>> 
     /// Writes a voltage to the DAC.
     #[inline]
     pub fn write_voltage(&mut self, mv: i16) {
-        let raw = Dac::voltage_to_raw_signed(mv);
+        let raw = DacHelper::voltage_to_raw_signed(mv);
         self.write_val(raw);
     }
 
@@ -398,7 +404,7 @@ mod dma {
 
     impl<DAC: DacInstance> DacWriteHandle<'_, Single<DAC>> {
         /// Writes a buffer to the DAC using DMA. Each buffer value is DAC
-        /// RAW output (0-4096). Use [Dac::voltage_to_raw] to convert
+        /// RAW output (0-4096). Use [DacHelper::voltage_to_raw] to convert
         /// between target voltage output of the DAC and the value to write
         /// to the DAC
         ///
@@ -428,7 +434,7 @@ mod dma {
 
         /// Writes a buffer to the DAC using DMA (Async version).
         /// Each buffer value is DAC RAW output (0-4096).
-        /// Use [Dac::voltage_to_raw] to convert between target
+        /// Use [DacHelper::voltage_to_raw] to convert between target
         /// voltage output of the DAC and the value to write
         /// to the DAC
         ///
@@ -456,7 +462,7 @@ mod dma {
     impl<D0: DacInstance, D1: DacInstance> DacWriteHandle<'_, Differential<D0, D1>> {
         /// Writes a buffer to the DAC using DMA
         /// Each buffer value is DAC Differential output (-2048-+2048).
-        /// Use `[Dac::voltage_to_raw_signed]` to convert between target
+        /// Use `[DacHelper::voltage_to_raw_signed]` to convert between target
         /// voltage output of the DAC and the value to write
         /// to the DAC.
         ///
@@ -497,7 +503,7 @@ mod dma {
 
         /// Writes a buffer to the DAC using DMA (Async version).
         /// Each buffer value is DAC Differential output (-2048-+2048).
-        /// Use `[Dac::voltage_to_raw_signed]` to convert between target
+        /// Use `[DacHelper::voltage_to_raw_signed]` to convert between target
         /// voltage output of the DAC and the value to write
         /// to the DAC.
         ///
