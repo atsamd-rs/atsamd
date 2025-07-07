@@ -1,6 +1,6 @@
 [package]
 name = "wio_terminal"
-version = "0.8.0"
+version = "0.9.0"
 authors = [
     "Jesse Braham <jesse@beta7.io>",
     "Tom <twitchyliquid64@ciphersink.net>"
