@@ -161,8 +161,7 @@ mod app {
 
         let (pclk_can1, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.can1, gclk0);
 
-        let (dependencies, _gclk0) = hal::can::Dependencies::new(
-            gclk0,
+        let dependencies = hal::can::Dependencies::new(
             pclk_can1,
             clocks.ahbs.can1,
             can1_rx,
