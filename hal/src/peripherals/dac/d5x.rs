@@ -271,7 +271,7 @@ impl<PS: PclkSourceId> Dac<PS> {
 
     /// Destroy the DAC peripheral, returning resources.
     /// The DAC will be disabled and reset before being released
-    pub fn release(self) -> (pac::Dac, ApbClk<types::Dac>, Pclk<types::Dac, PS>) {
+    pub fn free(self) -> (pac::Dac, ApbClk<types::Dac>, Pclk<types::Dac, PS>) {
         self.inner.ctrla().modify(|_, w| w.enable().clear_bit());
         self.sync();
         self.inner.ctrla().write(|w| w.swrst().set_bit());
