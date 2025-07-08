@@ -12,13 +12,12 @@
 //! [`mcan`]: https://crates.io/crates/mcan
 use crate::{
     clock::v2::{
-        Source,
         ahb::{AhbClk, AhbId},
         pclk::{Pclk, PclkId, PclkSourceId},
         types::Can0,
     },
     gpio::*,
-    typelevel::{Decrement, Increment, Sealed},
+    typelevel::Sealed,
 };
 use atsamd_hal_macros::hal_cfg;
 
@@ -62,8 +61,7 @@ impl<ID: PclkId + AhbId, PS: PclkSourceId, RX, TX, CAN> Dependencies<ID, PS, RX,
     ///
     /// Releases all enclosed objects back to the user.
     #[allow(clippy::type_complexity)]
-    pub fn free(self) -> (Pclk<ID, PS>, HertzU32, AhbClk<ID>, RX, TX, CAN)
-    {
+    pub fn free(self) -> (Pclk<ID, PS>, HertzU32, AhbClk<ID>, RX, TX, CAN) {
         let Self {
             pclk,
             host_freq,
