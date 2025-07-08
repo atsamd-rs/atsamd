@@ -161,13 +161,8 @@ mod app {
 
         let (pclk_can1, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.can1, gclk0);
 
-        let dependencies = hal::can::Dependencies::new(
-            pclk_can1,
-            clocks.ahbs.can1,
-            can1_rx,
-            can1_tx,
-            device.can1,
-        );
+        let dependencies =
+            hal::can::Dependencies::new(pclk_can1, clocks.ahbs.can1, can1_rx, can1_tx, device.can1);
 
         let mut can =
             mcan::bus::CanConfigurable::new(375.kHz(), dependencies, ctx.local.can_memory).unwrap();
