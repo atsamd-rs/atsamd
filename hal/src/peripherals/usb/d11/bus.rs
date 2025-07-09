@@ -490,6 +490,9 @@ impl UsbBus {
         dp_pad: impl AnyPin<Id = PA25>,
         _usb: Usb,
     ) -> Self {
+        // Note for Clock V2 implementation - Check that USB
+        // Freq is 48Mhz and error out if it is not - Check
+        // the D5X implementation
         pm.apbbmask().modify(|_, w| w.usb_().set_bit());
 
         let desc = RefCell::new(Descriptors::new());

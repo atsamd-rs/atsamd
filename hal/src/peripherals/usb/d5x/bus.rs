@@ -524,13 +524,44 @@ impl Inner {
     }
 }
 
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+pub enum UsbBusErr {
+    /// USB clock freq is not valid for a stable connection
+    InvalidClockFreq,
+}
+
 impl UsbBus {
+    /// Create a new USB Bus, checking the clock frequency of the USB clock for
+    /// a stable USB link to most hosts. The `clock` freq must be 48Mhz, otherwise
+    /// [`UsbBusErr::InvalidClockFreq`] will be returned
     pub fn new(
-        _clock: &clock::UsbClock,
+        clock: &clock::UsbClock,
         mclk: &mut Mclk,
         dm_pad: impl AnyPin<Id = PA24>,
         dp_pad: impl AnyPin<Id = PA25>,
         _usb: Usb,
+    ) -> Result<Self, UsbBusErr> {
+        if clock.freq().to_Hz() != 48_000_000 {
+            Err(UsbBusErr::InvalidClockFreq)
+        } else {
+            let res = unsafe { Self::new_unchecked(clock, mclk, dm_pad, dp_pad) };
+            Ok(res)
+        }
+    }
+
+    /// Creates a new USB Bus, but does NOT perform the USB clock frequency check.
+    ///
+    /// SAFETY: For a SAMx to PC connection, the USB clock must be 48Mhz for stability.
+    /// This function allows you to bypass this check however if you intend to connect multiple SAM chips
+    /// together with faster running USB clocks for a boost in transfer rate.
+    ///
+    /// Consult the datasheet for GCLK_USB absolute maximums
+    pub unsafe fn new_unchecked(
+        _clock: &clock::UsbClock,
+        mclk: &mut Mclk,
+        dm_pad: impl AnyPin<Id = PA24>,
+        dp_pad: impl AnyPin<Id = PA25>,
     ) -> Self {
         mclk.ahbmask().modify(|_, w| w.usb_().set_bit());
         mclk.apbbmask().modify(|_, w| w.usb_().set_bit());
