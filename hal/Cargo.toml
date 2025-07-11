@@ -34,7 +34,7 @@ aes = "0.8.4"
 atsamd-hal-macros = {version = "0.3.0", path = "../atsamd-hal-macros"}
 bitfield = "0.13"
 bitflags = "2.6.0"
-cipher = "0.3"
+cipher = "0.4"
 cortex-m = "0.7"
 critical-section = "1.2.0"
 embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
@@ -192,7 +192,6 @@ async = [
 can = ["mcan-core"]
 defmt = ["dep:defmt"]
 dma = []
-enable_unsafe_aes_newblock_cipher = []
 max-channels = ["dma"]
 rtic = ["rtic-monotonic", "rtic-time", "portable-atomic"]
 sdmmc = ["embedded-sdmmc"]

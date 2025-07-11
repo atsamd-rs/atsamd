@@ -100,18 +100,21 @@
 //! // Activate the RustCrypto backend
 //! let crypto = aes.activate_rustcrypto_backend();
 //!
+//! // Set up key and data block
 //! let key = GenericArray::from_slice(&[0u8; 16]);
 //! let mut block = aes::Block::default();
 //!
 //! // Initialize cipher
-//! let cipher = crypto.new_128bit(key);
+//! let cipher = crypto.into_128bit(key);
 //!
+//! // This copies the entire block
 //! let block_copy = block;
 //!
-//! // Encrypt block in-place
+//! // Encrypt block in-place and verify that it is different
 //! cipher.encrypt_block(&mut block);
+//! assert_ne!(block, block_copy);
 //!
-//! // And decrypt it back
+//! // Decrypt it back and verify that is the same as it was
 //! cipher.decrypt_block(&mut block);
 //! assert_eq!(block, block_copy);
 //! ```
@@ -123,19 +126,13 @@ pub use pac::aes::ctrla::{
 };
 
 // Re-export Aes128 with hardware backing
-// TODO Should all these items here be reexported? (Aes*, Aes*Enc, Aes*Dec)
-#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 mod rustcrypto;
-
-#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
-pub use rustcrypto::{Aes128, Aes192, Aes256};
-
-#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 pub use cipher::{
-    BlockCipher, BlockDecrypt, BlockEncrypt, NewBlockCipher,
+    BlockCipher, BlockClosure, BlockDecrypt, BlockEncrypt, BlockSizeUser,
     consts::{U1, U8, U16, U24, U32},
     generic_array::*,
 };
+pub use rustcrypto::{Aes128, Aes192, Aes256};
 
 use crate::pac;
 use pac::aes::*;
@@ -144,7 +141,6 @@ use bitfield::BitRange;
 
 type AesApbClk = crate::clock::v2::apb::ApbClk<crate::clock::v2::types::Aes>;
 
-#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 use aes::Block;
 
 type Dataptr = u8;
@@ -218,13 +214,10 @@ bitfield::bitfield! {
 ///
 /// Apart from creating new RustCrypto
 /// there is no AES peripheral functionality exposed
-#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 pub struct AesRustCrypto {
     /// AES pac register providing hardware access
     aes: Aes,
 }
-
-#[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
 impl AesRustCrypto {
     /// Use the AES peripheral as hardware backend for RustCrypto AES
     #[inline]
@@ -233,23 +226,23 @@ impl AesRustCrypto {
     }
 
     /// Destroy the AES RustCrypto backend and return the underlying AES
-    /// register
+    /// peripheral
     #[inline]
     pub fn free(self) -> Aes {
         self.aes
     }
 
     #[inline]
-    pub fn new_128bit(&self, key: &GenericArray<u8, U16>) -> rustcrypto::Aes128 {
-        rustcrypto::Aes128::new(key)
+    pub fn into_128bit(self, key: &GenericArray<u8, U16>) -> rustcrypto::Aes128 {
+        rustcrypto::Aes128::new(self.aes, key)
     }
     #[inline]
-    pub fn new_192bit(&self, key: &GenericArray<u8, U24>) -> rustcrypto::Aes192 {
-        rustcrypto::Aes192::new(key)
+    pub fn into_192bit(self, key: &GenericArray<u8, U24>) -> rustcrypto::Aes192 {
+        rustcrypto::Aes192::new(self.aes, key)
     }
     #[inline]
-    pub fn new_256bit(&self, key: &GenericArray<u8, U32>) -> rustcrypto::Aes256 {
-        rustcrypto::Aes256::new(key)
+    pub fn into_256bit(self, key: &GenericArray<u8, U32>) -> rustcrypto::Aes256 {
+        rustcrypto::Aes256::new(self.aes, key)
     }
 }
 
@@ -272,11 +265,8 @@ impl Aes {
 
     /// Use the AES peripheral as hardware backend for RustCrypto AES
     ///
-    /// Requires the feature `enable_unsafe_aes_newblock_cipher` to be enabled
-    ///
     /// > **WARNING**
     /// > RustCrypto backend assumes full ownership of AES hardware peripheral
-    #[cfg(feature = "enable_unsafe_aes_newblock_cipher")]
     #[inline]
     pub fn activate_rustcrypto_backend(self) -> AesRustCrypto {
         AesRustCrypto::new(self)
@@ -384,7 +374,7 @@ impl Aes {
         self.ctrla().modify(|_, w| w.swrst().set_bit());
     }
 
-    /// Destroy the AES peripheral and returns the underlying AES resources.
+    /// Destroy the AES peripheral and returns the underlying AES resources
     #[inline]
     pub fn free(self) -> (pac::Aes, AesApbClk) {
         (self.aes, self._clk)

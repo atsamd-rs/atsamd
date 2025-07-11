@@ -1,15 +1,19 @@
 //! AES decryption support
 
 use crate::aes::Keysizeselect;
+use crate::pac;
 use aes::Block;
+use cipher::inout::InOut;
 
 /// Perform AES decryption using the given key.
 ///
 /// Atsamd AES Hardware does key expansion on the
 /// fly given the key
-pub(super) unsafe fn decrypt<const N: usize>(key: &[u8; N], block: &mut Block) {
-    let aes = unsafe { crate::pac::Aes::steal() };
-
+pub(super) fn decrypt<'a, const N: usize>(
+    aes: &pac::Aes,
+    key: &[u8; N],
+    mut blocks: InOut<'a, 'a, Block>,
+) {
     // Reset the AES peripheral to ensure clean slate
     aes.ctrla().write(|w| w.swrst().set_bit());
     // Wait for completion
@@ -43,13 +47,14 @@ pub(super) unsafe fn decrypt<const N: usize>(key: &[u8; N], block: &mut Block) {
     }
 
     // Provide cryptotext to AES module (little endian)
-    for (index, _) in block.iter().enumerate().step_by(4) {
+    let in_block = blocks.get_in();
+    for (index, _) in in_block.iter().enumerate().step_by(4) {
         // Combine four u8 into one u32
         let data = u32::from_le_bytes([
-            block[index],
-            block[index + 1],
-            block[index + 2],
-            block[index + 3],
+            in_block[index],
+            in_block[index + 1],
+            in_block[index + 2],
+            in_block[index + 3],
         ]);
         // Write to same indata, hardware increments DATABUFPTR.INDATPTR
         aes.indata().write(|w| unsafe { w.bits(data) });
@@ -62,11 +67,12 @@ pub(super) unsafe fn decrypt<const N: usize>(key: &[u8; N], block: &mut Block) {
     while aes.intflag().read().enccmp().bit_is_clear() {}
 
     // Read cleartext
-    for index in (0..block.len()).into_iter().step_by(4) {
+    let out_block = blocks.get_out();
+    for index in (0..out_block.len()).step_by(4) {
         // Need to split u32 into four u8
         let buf = aes.indata().read().bits();
         for (bytepos, byte) in u32::to_ne_bytes(buf).iter().enumerate() {
-            block[index + bytepos] = *byte;
+            out_block[index + bytepos] = *byte;
         }
     }
 }

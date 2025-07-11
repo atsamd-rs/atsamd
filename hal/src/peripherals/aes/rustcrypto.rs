@@ -5,6 +5,7 @@ use super::*;
 mod decrypt;
 use decrypt::decrypt;
 mod encrypt;
+use cipher::{BlockBackend, ParBlocksSizeUser, inout::InOut};
 use encrypt::encrypt;
 
 macro_rules! define_aes_impl {
@@ -18,110 +19,87 @@ macro_rules! define_aes_impl {
     ) => {
         #[doc=$doc]
         #[doc = "block cipher"]
-        #[derive(Clone)]
         pub struct $name {
-            encrypt: $name_enc,
-            decrypt: $name_dec,
+            aes: Aes,
+            key: GenericArray<u8, $key_size>,
         }
-
-        impl NewBlockCipher for $name {
-            type KeySize = $key_size;
-
+        impl $name {
             #[inline]
-            fn new(key: &GenericArray<u8, $key_size>) -> Self {
-                let encrypt = $name_enc::new(key);
-                let decrypt = $name_dec::from(&encrypt);
-                Self { encrypt, decrypt }
+            pub(super) fn new(aes: Aes, key: &GenericArray<u8, $key_size>) -> Self {
+                Self { aes, key: *key }
+            }
+
+            /// Destroy the cipher and release the AES peripheral
+            pub fn free(self) -> Aes {
+                self.aes
             }
         }
 
-        impl BlockCipher for $name {
+        impl BlockSizeUser for $name {
             type BlockSize = U16;
-            type ParBlocks = U1;
         }
+
+        impl BlockCipher for $name {}
 
         impl BlockEncrypt for $name {
             #[inline]
-            fn encrypt_block(&self, block: &mut Block) {
-                self.encrypt.encrypt_block(block)
+            fn encrypt_with_backend(&self, f: impl BlockClosure<BlockSize = Self::BlockSize>) {
+                f.call(&mut $name_enc { cipher: self })
             }
         }
 
         impl BlockDecrypt for $name {
             #[inline]
-            fn decrypt_block(&self, block: &mut Block) {
-                self.decrypt.decrypt_block(block)
+            fn decrypt_with_backend(&self, f: impl BlockClosure<BlockSize = Self::BlockSize>) {
+                f.call(&mut $name_dec { cipher: self })
             }
         }
 
         #[doc=$doc]
         #[doc = "block cipher (encrypt-only)"]
         #[derive(Clone)]
-        pub struct $name_enc {
-            key: GenericArray<u8, $key_size>,
+        pub struct $name_enc<'a> {
+            cipher: &'a $name,
         }
 
-        impl NewBlockCipher for $name_enc {
-            type KeySize = $key_size;
-
-            fn new(key: &GenericArray<u8, $key_size>) -> Self {
-                Self { key: *key }
-            }
-        }
-
-        impl BlockCipher for $name_enc {
+        impl BlockSizeUser for $name_enc<'_> {
             type BlockSize = U16;
-            type ParBlocks = U1;
         }
 
-        impl BlockEncrypt for $name_enc {
-            fn encrypt_block(&self, block: &mut Block) {
-                unsafe { encrypt(&self.key.into(), block) }
+        impl ParBlocksSizeUser for $name_enc<'_> {
+            type ParBlocksSize = U1;
+        }
+
+        impl BlockBackend for $name_enc<'_> {
+            fn proc_block(&mut self, blocks: InOut<'_, '_, Block>) {
+                encrypt(&self.cipher.aes.aes, self.cipher.key.as_ref(), blocks);
             }
         }
 
         #[doc=$doc]
         #[doc = "block cipher (decrypt-only)"]
         #[derive(Clone)]
-        pub struct $name_dec {
-            key: GenericArray<u8, $key_size>,
+        pub struct $name_dec<'a> {
+            cipher: &'a $name,
         }
 
-        impl NewBlockCipher for $name_dec {
-            type KeySize = $key_size;
-
-            fn new(key: &GenericArray<u8, $key_size>) -> Self {
-                $name_enc::new(key).into()
-            }
-        }
-
-        impl From<$name_enc> for $name_dec {
-            fn from(enc: $name_enc) -> $name_dec {
-                Self::from(&enc)
-            }
-        }
-
-        impl From<&$name_enc> for $name_dec {
-            fn from(enc: &$name_enc) -> $name_dec {
-                let key = enc.key;
-                Self { key }
-            }
-        }
-
-        impl BlockCipher for $name_dec {
+        impl BlockSizeUser for $name_dec<'_> {
             type BlockSize = U16;
-            type ParBlocks = U8;
         }
 
-        impl BlockDecrypt for $name_dec {
-            fn decrypt_block(&self, block: &mut Block) {
-                unsafe { decrypt(&self.key.into(), block) }
+        impl ParBlocksSizeUser for $name_dec<'_> {
+            type ParBlocksSize = U1;
+        }
+
+        impl BlockBackend for $name_dec<'_> {
+            fn proc_block(&mut self, blocks: InOut<'_, '_, Block>) {
+                decrypt(&self.cipher.aes.aes, self.cipher.key.as_ref(), blocks);
             }
         }
 
         opaque_debug::implement!($name);
-        opaque_debug::implement!($name_enc);
-        opaque_debug::implement!($name_dec);
+        opaque_debug::implement!($name_enc<'_>);
+        opaque_debug::implement!($name_dec<'_>);
     };
 }
 
