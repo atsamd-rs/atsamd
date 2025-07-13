@@ -15,18 +15,17 @@ use crate::{
         ahb::{AhbClk, AhbId},
         pclk::{Pclk, PclkId, PclkSourceId},
         types::Can0,
-        Source,
     },
     gpio::*,
-    typelevel::{Decrement, Increment, Sealed},
+    typelevel::Sealed,
 };
 use atsamd_hal_macros::hal_cfg;
 
 #[hal_cfg("can1")]
 use crate::clock::v2::types::Can1;
 
-use mcan_core::fugit::HertzU32;
 use mcan_core::CanId;
+use mcan_core::fugit::HertzU32;
 
 /// Struct enclosing all the dependencies required to bootstrap `ID` instance of
 /// MCAN.
@@ -47,37 +46,22 @@ impl<ID: PclkId + AhbId, PS: PclkSourceId, RX, TX, CAN> Dependencies<ID, PS, RX,
     ///
     /// This struct implements [`mcan_core::Dependencies`] trait, making it
     /// possible to construct an instance of `mcan::bus::CanConfigurable`.
-    pub fn new<S>(
-        gclk: S,
-        pclk: Pclk<ID, PS>,
-        ahbclk: AhbClk<ID>,
-        rx: RX,
-        tx: TX,
-        can: CAN,
-    ) -> (Self, S::Inc)
-    where
-        S: Source + Increment,
-    {
-        (
-            Self {
-                pclk,
-                host_freq: gclk.freq(),
-                ahbclk,
-                rx,
-                tx,
-                can,
-            },
-            gclk.inc(),
-        )
+    pub fn new(pclk: Pclk<ID, PS>, ahbclk: AhbClk<ID>, rx: RX, tx: TX, can: CAN) -> Self {
+        let host_freq = pclk.freq();
+        Self {
+            pclk,
+            host_freq,
+            ahbclk,
+            rx,
+            tx,
+            can,
+        }
     }
     /// Destroy an instance of `Dependencies` struct.
     ///
     /// Releases all enclosed objects back to the user.
     #[allow(clippy::type_complexity)]
-    pub fn free<S>(self, gclk: S) -> (Pclk<ID, PS>, HertzU32, AhbClk<ID>, RX, TX, CAN, S::Dec)
-    where
-        S: Source + Decrement,
-    {
+    pub fn free(self) -> (Pclk<ID, PS>, HertzU32, AhbClk<ID>, RX, TX, CAN) {
         let Self {
             pclk,
             host_freq,
@@ -86,7 +70,7 @@ impl<ID: PclkId + AhbId, PS: PclkSourceId, RX, TX, CAN> Dependencies<ID, PS, RX,
             tx,
             can,
         } = self;
-        (pclk, host_freq, ahbclk, rx, tx, can, gclk.dec())
+        (pclk, host_freq, ahbclk, rx, tx, can)
     }
 }
 
