@@ -7,10 +7,17 @@
 
 use crate::pac::{self, Pac};
 
+type DsuAhbClk = crate::clock::v2::ahb::AhbClk<crate::clock::v2::types::Dsu>;
+type DsuApbClk = crate::clock::v2::apb::ApbClk<crate::clock::v2::types::Dsu>;
+
 /// Device Service Unit
 pub struct Dsu {
     /// PAC peripheral
     dsu: pac::Dsu,
+    // AHB clock
+    _ahb_clk: DsuAhbClk,
+    // APB clock
+    _apb_clk: DsuApbClk,
 }
 
 /// Errors from hardware
@@ -41,7 +48,12 @@ pub type Result<T> = core::result::Result<T, Error>;
 impl Dsu {
     /// Unlock the DSU and instantiate peripheral
     #[inline]
-    pub fn new(dsu: pac::Dsu, pac: &Pac) -> Result<Self> {
+    pub fn new(
+        dsu: pac::Dsu,
+        ahb_clk: DsuAhbClk,
+        apb_clk: DsuApbClk,
+        pac: &mut Pac,
+    ) -> Result<Self> {
         // Attempt to unlock DSU
         pac.wrctrl()
             .write(|w| unsafe { w.perid().bits(33).key().clr() });
@@ -50,8 +62,21 @@ impl Dsu {
         if pac.statusb().read().dsu_().bit_is_set() {
             Err(Error::PacUnlockFailed)
         } else {
-            Ok(Self { dsu })
+            Ok(Self {
+                dsu,
+                _ahb_clk: ahb_clk,
+                _apb_clk: apb_clk,
+            })
         }
+    }
+
+    /// Lock and destroy the DSU peripheral, freeing its resources
+    pub fn free(self, pac: &mut Pac) -> (pac::Dsu, DsuAhbClk, DsuApbClk) {
+        // Attempt to lock the DSU, but if this fails there we still want to proceed
+        pac.wrctrl()
+            .write(|w| unsafe { w.perid().bits(33).key().set_() });
+
+        (self.dsu, self._ahb_clk, self._apb_clk)
     }
 
     /// Clear bus error bit
