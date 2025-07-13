@@ -10,9 +10,8 @@ use panic_halt as _;
 use panic_semihosting as _;
 
 use bsp::entry;
-use hal::clock::{GenericClockController, Tcc0Tcc1Clock};
+use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::gpio::AlternateE;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::pwm::{Channel, Pwm0};
@@ -27,23 +26,23 @@ fn main() -> ! {
         &mut peripherals.SYSCTRL,
         &mut peripherals.NVMCTRL,
     );
-    let pins = bsp::pins::Pins::new(peripherals.PORT);
-
-    // PWM0_CH0 is D11 on the board - pin PA08
-    let _d11 = pins.pa08.into_mode::<AlternateE>();
     let mut delay = Delay::new(core.SYST, &mut clocks);
+    let pins = bsp::pins::Pins::new(peripherals.PORT);
     let gclk0 = clocks.gclk0();
-    let tcc0_tcc1_clock: &Tcc0Tcc1Clock = &clocks.tcc0_tcc1(&gclk0).unwrap();
+
+    // configure target pin
+    let _pin: bsp::pins::D6PwmF = pins.led.into();
 
     let mut pwm0 = Pwm0::new(
-        &tcc0_tcc1_clock,
+        &clocks.tcc0_tcc1(&gclk0).unwrap(),
         1u32.kHz(),
         peripherals.TCC0,
         &mut peripherals.PM,
     );
-    let max_duty = pwm0.get_max_duty();
-    let channel = Channel::_0;
+    let channel = Channel::_2;
     pwm0.enable(channel);
+
+    let max_duty = pwm0.get_max_duty();
     loop {
         pwm0.set_duty(channel, max_duty);
         delay.delay_ms(500u16);

@@ -68,6 +68,6 @@ mod app {
     fn blink(mut cx: blink::Context) {
         // If the LED were a local resource, the lock would not be necessary
         let _ = cx.shared.led.lock(|led| led.toggle());
-        blink::spawn_after(Duration::secs(3)).ok();
+        blink::spawn_after(Duration::millis(750)).ok();
     }
 }
