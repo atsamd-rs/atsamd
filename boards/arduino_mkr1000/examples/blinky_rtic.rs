@@ -2,6 +2,25 @@
 //!
 //! The idle task is sleeping the CPU, so in practice this gives similar power
 //! figure as the "sleeping_timer_rtc" example.
+//!
+//! Note on imports: this example requires `cortex-m-rtic`, whih brings the
+//! `rtic` package, but also brings/selects the appropriate RTIC backend.
+//!
+//! If `rtic` package is imported instead of `cortex-m-rtic`, following message
+//! is displayed at compilation, containing `No backend feature selected.`:
+//!
+//! ```sh
+//! $ cargo build
+//! (...)
+//! error: failed to run custom build command for `rtic v2.2.0`
+//! Caused by:
+//!   process didn't exit successfully: `/home/.../dev/électronique/my-great-prj/target/debug/build/rtic-4840d1be515a89f0/build-script-build` (exit status: 101)
+//!   --- stderr
+//!   thread 'main' panicked at /home/.../.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rtic-2.2.0/build.rs:18:34:
+//!   No backend feature selected.
+//!   note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+//! ```
+
 #![no_std]
 #![no_main]
 

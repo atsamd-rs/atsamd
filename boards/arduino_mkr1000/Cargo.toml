@@ -54,6 +54,8 @@ name = "blinky_basic"
 [[example]]
 name = "blinky_rtic"
 required-features = ["rtic", "unproven"]
+# This example also requires `cortex-m-rtic`.
+# Don't import `rtic`; see `blinky_rtic` comments in code for explanation.
 
 [[example]]
 name = "usb_logging"
