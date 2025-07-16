@@ -103,6 +103,7 @@ pub struct QspiBuilder {
     io3: Pin<PA11, AlternateH>,
     freq: Option<u32>,
     mode: Option<QspiMode>,
+    scramble_mode: Option<(u32, bool)>,
 }
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -138,6 +139,7 @@ impl QspiBuilder {
             io3: io3.into(),
             freq: None,
             mode: None,
+            scramble_mode: None,
         }
     }
 
@@ -150,6 +152,20 @@ impl QspiBuilder {
     /// Sets the SPI operation mode
     pub fn with_mode(mut self, mode: QspiMode) -> Self {
         self.mode = Some(mode);
+        self
+    }
+
+    /// Enables the optional scramble feature of QSPI
+    ///
+    /// * Key - 32 bit key to use for the scramble
+    /// * Random - Enable if the hardware based extra key should be
+    /// applied - This means that a QSPI chip will appear scrambled,
+    /// even to another processor. Disabling the random mode ensures
+    /// that whilst the QSPI chip itself is scrambled, it is only using
+    /// the user provided key - Thus allowing other processors with the
+    /// same key to read the QSPI chip
+    pub fn with_scramble(mut self, key: u32, random: bool) -> Self {
+        self.scramble_mode = Some((key, random));
         self
     }
 
@@ -205,6 +221,15 @@ impl Qspi<OneShot> {
             w.csmode().lastxfer();
             w.datalen()._8bits()
         });
+
+        // Enable scrambling if the user requested it
+        if let Some((key, random_en)) = builder.scramble_mode {
+            qspi.scrambctrl().write(|w| {
+                w.enable().set_bit();
+                w.randomdis().bit(!random_en)
+            });
+            qspi.scrambkey().write(|w| unsafe { w.key().bits(key) });
+        }
 
         qspi.ctrla().modify(|_, w| w.enable().set_bit());
 
