@@ -1,16 +1,60 @@
+//! QSPI
+//!
+//! This module provides an interface to the QSPI peripheral,
+//! which is mainly used for communicating with external flash chips.
+//!
+//! The QSPI peripheral supports 2 different modes:
+//! * Oneshot (Default) - In this mode, the QSPI peripheral simply
+//!   sends and receives data to and from the flash chip. Quad-SPI
+//!   communication is only used for reading and writing data to the
+//!   flash chip. Other commands (Like erase, ID) are done in Single-SPI
+//!   mode.
+//! * XIP (eXecute In Place) - In this mode, the processor can execute
+//!   code directly off the flash chip. Quad-SPI communication is forced
+//!
+//! ## IMPORTANT
+//! When using QSPI commands, the QSPI peripheral will STALL the CPU.
+//! Therefore, you should select the highest SPI communication frequency
+//! that the flash chip supports.
+//!
+//! Erasing a chip can take sometimes up to 1-2 minutes, in which time
+//! the CPU is stalled. Bare this in mind when issuing long-running commands
+//! with the watchdog enabled!
+//!
+//! ## Using the QSPI peripheral
+//! ```
+//! let pins = Pins::new(pac_peripherals.port);
+//! let ahb_qspi = clocks.ahbs.qspi;
+//! let (qspi, gclk0) = QspiBuilder::new(
+//!     pins.sck,
+//!     pins.cs,
+//!     pins.data0,
+//!     pins.data1,
+//!     pins.data2,
+//!     pins.data3,
+//! )
+//! .with_freq(50_000_000)
+//! .with_mode(atsamd_hal::qspi::QspiMode::_0)
+//! .build(pac_peripherals.qspi, ahb_qspi, gclk0)
+//! .unwrap();
+//! // QSPI is now in oneshot mode.
+//! // ...
+//! // Switch qspi to XIP mode if required
+//! let qspi_xip = qspi.into_xip();
+//! ```
+
 use crate::{
-    gpio::{AlternateH, AnyPin, PA08, PA09, PA10, PA11, PB10, PB11, Pin},
-    pac::qspi::instrframe,
-    pac::{self, Mclk},
+    clock::v2::{
+        Enabled, Source,
+        ahb::AhbClk,
+        gclk::{EnabledGclk, EnabledGclk0, Gclk, Gclk0Id, Gclk0Io, GclkSourceId},
+        types::Qspi as QspiClock,
+    },
+    gpio::{AlternateH, PA08, PA09, PA10, PA11, PB10, PB11, Pin},
+    pac::{self, qspi::instrframe},
+    typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement},
 };
 use core::marker::PhantomData;
-
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
-#[cfg_attr(feature = "defmt", derive(defmt::Format))]
-pub enum Error {
-    /// The command you selected cannot be performed by this function
-    CommandFunctionMismatch,
-}
 
 /// Qspi used for read/write of fixed-size octet buffers
 pub struct OneShot;
@@ -19,6 +63,8 @@ pub struct XIP;
 
 pub struct Qspi<MODE> {
     qspi: pac::Qspi,
+    _ahb: AhbClk<QspiClock>,
+    gclk0_freq: u32,
     _sck: Pin<PB10, AlternateH>,
     _cs: Pin<PB11, AlternateH>,
     _io0: Pin<PA08, AlternateH>,
@@ -28,43 +74,129 @@ pub struct Qspi<MODE> {
     _mode: PhantomData<MODE>,
 }
 
-impl Qspi<OneShot> {
-    /// Enable the clocks for the qspi peripheral in single data rate mode
-    /// assuming 120mhz system clock, for 4mhz spi mode 0 operation.
-    #[allow(clippy::too_many_arguments)]
+/// QSPI signal operating modes
+pub enum QspiMode {
+    /// * Shift SCK Edge: Falling,
+    /// * Capture SCK Edge: Falling
+    /// * SCK inactive level: Low
+    _0,
+    /// * Shift SCK Edge: Rising,
+    /// * Capture SCK Edge: Rising
+    /// * SCK inactive level: Low
+    _1,
+    /// * Shift SCK Edge: Rising,
+    /// * Capture SCK Edge: Rising
+    /// * SCK inactive level: High
+    _2,
+    /// * Shift SCK Edge: Falling,
+    /// * Capture SCK Edge: Falling
+    /// * SCK inactive level: High
+    _3,
+}
+
+pub struct QspiBuilder {
+    sck: Pin<PB10, AlternateH>,
+    cs: Pin<PB11, AlternateH>,
+    io0: Pin<PA08, AlternateH>,
+    io1: Pin<PA09, AlternateH>,
+    io2: Pin<PA10, AlternateH>,
+    io3: Pin<PA11, AlternateH>,
+    freq: Option<u32>,
+    mode: Option<QspiMode>,
+}
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+pub enum QspiError {
+    /// No SPI Frequency provided
+    NoFreq,
+    /// No QSPI signal mode provided
+    NoMode,
+    /// Target SPI frequency could
+    /// not be achieved with the provided
+    /// CPU speed
+    SpiFreqNotValid,
+    /// The command you selected cannot be performed by this function
+    CommandFunctionMismatch,
+}
+
+impl QspiBuilder {
     pub fn new(
-        mclk: &mut Mclk,
+        sck: impl Into<Pin<PB10, AlternateH>>,
+        cs: impl Into<Pin<PB11, AlternateH>>,
+        io0: impl Into<Pin<PA08, AlternateH>>,
+        io1: impl Into<Pin<PA09, AlternateH>>,
+        io2: impl Into<Pin<PA10, AlternateH>>,
+        io3: impl Into<Pin<PA11, AlternateH>>,
+    ) -> Self {
+        Self {
+            sck: sck.into(),
+            cs: cs.into(),
+            io0: io0.into(),
+            io1: io1.into(),
+            io2: io2.into(),
+            io3: io3.into(),
+            freq: None,
+            mode: None,
+        }
+    }
+
+    /// Sets the target frequency of the SPI communication
+    pub fn with_freq(mut self, freq: u32) -> Self {
+        self.freq = Some(freq);
+        self
+    }
+
+    /// Sets the SPI operation mode
+    pub fn with_mode(mut self, mode: QspiMode) -> Self {
+        self.mode = Some(mode);
+        self
+    }
+
+    /// Initialize the QSPI peripheral, and start communication
+    /// in regular SPI mode
+    pub fn build<I: GclkSourceId, S: Increment>(
+        self,
         qspi: pac::Qspi,
-        _sck: impl AnyPin<Id = PB10>,
-        _cs: impl AnyPin<Id = PB11>,
-        _io0: impl AnyPin<Id = PA08>,
-        _io1: impl AnyPin<Id = PA09>,
-        _io2: impl AnyPin<Id = PA10>,
-        _io3: impl AnyPin<Id = PA11>,
-    ) -> Qspi<OneShot> {
-        mclk.apbcmask().modify(|_, w| w.qspi_().set_bit());
-        // Enable the clocks for the qspi peripheral in single data rate mode.
-        mclk.ahbmask().modify(|_, w| {
-            w.qspi_().set_bit();
-            w.qspi_2x_().clear_bit()
-        });
+        ahb: AhbClk<QspiClock>,
+        gclk0: EnabledGclk<Gclk0Id, I, S>,
+    ) -> Result<(Qspi<OneShot>, EnabledGclk<Gclk0Id, I, S::Inc>), QspiError> {
+        Qspi::new(qspi, ahb, gclk0, self)
+    }
+}
 
-        let _sck = _sck.into().into_alternate();
-        let _cs = _cs.into().into_alternate();
-        let _io0 = _io0.into().into_alternate();
-        let _io1 = _io1.into().into_alternate();
-        let _io2 = _io2.into().into_alternate();
-        let _io3 = _io3.into().into_alternate();
-
+impl Qspi<OneShot> {
+    pub(crate) fn new<I: GclkSourceId, S: Increment>(
+        qspi: pac::Qspi,
+        ahb: AhbClk<QspiClock>,
+        gclk0: Enabled<Gclk<Gclk0Id, I>, S>,
+        builder: QspiBuilder,
+    ) -> Result<(Qspi<OneShot>, Enabled<Gclk<Gclk0Id, I>, S::Inc>), QspiError> {
+        let targ_freq = builder.freq.ok_or(QspiError::NoFreq)?;
+        let mode = builder.mode.ok_or(QspiError::NoMode)?;
+        let gclk0_freq = gclk0.freq().to_Hz();
+        // Ensure that the target SPI Freq can be achieved
+        if gclk0_freq % targ_freq != 0 {
+            return Err(QspiError::SpiFreqNotValid);
+        }
+        // Divider must be 0-254
+        let div = gclk0_freq / targ_freq;
+        if div > 254 || div == 0 {
+            return Err(QspiError::SpiFreqNotValid);
+        }
         qspi.ctrla().write(|w| w.swrst().set_bit());
         qspi.baud().write(|w| unsafe {
-            // TODO get system clock value instead of hardcoding
-            //(120_000_000u32 / 4_000_000u32) = 30 = BAUD + 1
-            // BAUD = 29
-            w.baud().bits(29); // 4Mhz
-            // SPI MODE 0
-            w.cpol().clear_bit();
-            w.cpha().clear_bit()
+            w.baud().bits(div as u8 - 1);
+            let cpol = match mode {
+                QspiMode::_0 | QspiMode::_1 => false,
+                QspiMode::_2 | QspiMode::_3 => true,
+            };
+            let cpha = match mode {
+                QspiMode::_0 | QspiMode::_2 => false,
+                QspiMode::_1 | QspiMode::_3 => true,
+            };
+            w.cpol().bit(cpol);
+            w.cpha().bit(cpha)
         });
 
         qspi.ctrlb().write(|w| {
@@ -76,27 +208,32 @@ impl Qspi<OneShot> {
 
         qspi.ctrla().modify(|_, w| w.enable().set_bit());
 
-        Self {
-            qspi,
-            _sck,
-            _cs,
-            _io0,
-            _io1,
-            _io2,
-            _io3,
-            _mode: PhantomData,
-        }
+        Ok((
+            Self {
+                qspi,
+                _ahb: ahb,
+                gclk0_freq,
+                _sck: builder.sck,
+                _cs: builder.cs,
+                _io0: builder.io0,
+                _io1: builder.io1,
+                _io2: builder.io2,
+                _io3: builder.io3,
+                _mode: PhantomData,
+            },
+            gclk0.inc(),
+        ))
     }
 
     /// Run a generic command that neither takes nor receives data
-    pub fn run_command(&self, command: Command) -> Result<(), Error> {
+    pub fn run_command(&self, command: Command) -> Result<(), QspiError> {
         match command {
             //TODO verify this list of commands
             Command::WriteEnable
             | Command::WriteDisable
             | Command::Reset
             | Command::EnableReset => (),
-            _ => return Err(Error::CommandFunctionMismatch),
+            _ => return Err(QspiError::CommandFunctionMismatch),
         }
 
         let tfm = TransferMode {
@@ -110,7 +247,7 @@ impl Qspi<OneShot> {
     }
 
     /// Run one of the read commands
-    pub fn read_command(&self, command: Command, response: &mut [u8]) -> Result<(), Error> {
+    pub fn read_command(&self, command: Command, response: &mut [u8]) -> Result<(), QspiError> {
         match command {
             //TODO verify this list of commands
             Command::Read
@@ -118,7 +255,7 @@ impl Qspi<OneShot> {
             | Command::ReadId
             | Command::ReadStatus
             | Command::ReadStatus2 => (),
-            _ => return Err(Error::CommandFunctionMismatch),
+            _ => return Err(QspiError::CommandFunctionMismatch),
         }
 
         let tfm = TransferMode {
@@ -133,14 +270,14 @@ impl Qspi<OneShot> {
     }
 
     /// Run one of the write commands
-    pub fn write_command(&self, command: Command, data: &[u8]) -> Result<(), Error> {
+    pub fn write_command(&self, command: Command, data: &[u8]) -> Result<(), QspiError> {
         match command {
             //TODO verify this list of commands
             Command::PageProgram
             | Command::QuadPageProgram
             | Command::WriteStatus
             | Command::WriteStatus2 => (),
-            _ => return Err(Error::CommandFunctionMismatch),
+            _ => return Err(QspiError::CommandFunctionMismatch),
         }
 
         let tfm = TransferMode {
@@ -155,7 +292,7 @@ impl Qspi<OneShot> {
     }
 
     /// Run one of the erase commands
-    pub fn erase_command(&self, command: Command, address: u32) -> Result<(), Error> {
+    pub fn erase_command(&self, command: Command, address: u32) -> Result<(), QspiError> {
         match command {
             //TODO verify this list of commands
             Command::EraseSector | Command::EraseBlock => {
@@ -177,7 +314,7 @@ impl Qspi<OneShot> {
                     self.run_read_instruction(command, tfm, 0, &mut [], true);
                 }
             }
-            _ => return Err(Error::CommandFunctionMismatch),
+            _ => return Err(QspiError::CommandFunctionMismatch),
         }
 
         Ok(())
@@ -231,6 +368,8 @@ impl Qspi<OneShot> {
 
         Qspi::<XIP> {
             qspi: self.qspi,
+            _ahb: self._ahb,
+            gclk0_freq: self.gclk0_freq,
             _sck: self._sck,
             _cs: self._cs,
             _io0: self._io0,
@@ -243,12 +382,15 @@ impl Qspi<OneShot> {
 
     /// Return the consumed pins and the Qspi peripheral
     ///
-    /// Order: `(qspi, sck, cs, io0, io1, io2, io3)`
+    /// Order: `(qspi, apb, ahb, gclk0, sck, cs, io0, io1, io2, io3)`
     #[allow(clippy::type_complexity)]
-    pub fn free(
+    pub fn free<I: Gclk0Io, S: Source + Decrement>(
         self,
+        gclk0: EnabledGclk0<I, S>,
     ) -> (
         pac::Qspi,
+        AhbClk<QspiClock>,
+        EnabledGclk0<I, S::Dec>,
         Pin<PB10, AlternateH>,
         Pin<PB11, AlternateH>,
         Pin<PA08, AlternateH>,
@@ -257,7 +399,15 @@ impl Qspi<OneShot> {
         Pin<PA11, AlternateH>,
     ) {
         (
-            self.qspi, self._sck, self._cs, self._io0, self._io1, self._io2, self._io3,
+            self.qspi,
+            self._ahb,
+            gclk0.dec(),
+            self._sck,
+            self._cs,
+            self._io0,
+            self._io1,
+            self._io2,
+            self._io3,
         )
     }
 }
@@ -271,6 +421,8 @@ impl Qspi<XIP> {
 
         Qspi::<OneShot> {
             qspi: self.qspi,
+            _ahb: self._ahb,
+            gclk0_freq: self.gclk0_freq,
             _sck: self._sck,
             _cs: self._cs,
             _io0: self._io0,
@@ -362,22 +514,6 @@ impl<MODE> Qspi<MODE> {
                 self.finalize();
             }
         }
-    }
-
-    /// Set the clock divider, relative to the main clock
-    ///
-    /// This fn safely subtracts 1 from your input value as the underlying fn is
-    /// SCK Baud = MCKL / (value + 1)
-    ///
-    /// ex if Mclk is 120mhz
-    /// value  0 is reduced to  0 results in 120mhz clock
-    /// value  1 is reduced to  0 results in 120mhz clock
-    /// value  2 is reduced to  1 results in  60mhz clock
-    pub fn set_clk_divider(&mut self, value: u8) {
-        // The baud register is divisor - 1
-        self.qspi
-            .baud()
-            .write(|w| unsafe { w.baud().bits(value.saturating_sub(1)) });
     }
 }
 
