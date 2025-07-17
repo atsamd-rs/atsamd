@@ -12,6 +12,12 @@
 //! * XIP (eXecute In Place) - In this mode, the processor can execute
 //!   code directly off the flash chip. Quad-SPI communication is forced
 //!
+//! This module does not come with an API for easily communicating with
+//! flash chips, due to the varying differences in timings and commands.
+//!
+//! For an example of actually communicating (R/W) with a QSPI flash chip,
+//! look at the pygamer BSP QSPI example.
+//!
 //! ## IMPORTANT
 //! When using QSPI commands, the QSPI peripheral will STALL the CPU.
 //! Therefore, you should select the highest SPI communication frequency
@@ -25,6 +31,7 @@
 //! ```
 //! let pins = Pins::new(pac_peripherals.port);
 //! let ahb_qspi = clocks.ahbs.qspi;
+//! let apb_qspi = clocks.apbs.qspi;
 //! let (qspi, gclk0) = QspiBuilder::new(
 //!     pins.sck,
 //!     pins.cs,
@@ -35,7 +42,7 @@
 //! )
 //! .with_freq(50_000_000)
 //! .with_mode(atsamd_hal::qspi::QspiMode::_0)
-//! .build(pac_peripherals.qspi, ahb_qspi, gclk0)
+//! .build(pac_peripherals.qspi, ahb_qspi, apb_qspi, gclk0)
 //! .unwrap();
 //! // QSPI is now in oneshot mode.
 //! // ...
@@ -47,6 +54,7 @@ use crate::{
     clock::v2::{
         Enabled, Source,
         ahb::AhbClk,
+        apb::ApbClk,
         gclk::{EnabledGclk, EnabledGclk0, Gclk, Gclk0Id, Gclk0Io, GclkSourceId},
         types::Qspi as QspiClock,
     },
@@ -64,6 +72,7 @@ pub struct XIP;
 pub struct Qspi<MODE> {
     qspi: pac::Qspi,
     _ahb: AhbClk<QspiClock>,
+    _apb: ApbClk<QspiClock>,
     gclk0_freq: u32,
     _sck: Pin<PB10, AlternateH>,
     _cs: Pin<PB11, AlternateH>,
@@ -175,9 +184,10 @@ impl QspiBuilder {
         self,
         qspi: pac::Qspi,
         ahb: AhbClk<QspiClock>,
+        apb: ApbClk<QspiClock>,
         gclk0: EnabledGclk<Gclk0Id, I, S>,
     ) -> Result<(Qspi<OneShot>, EnabledGclk<Gclk0Id, I, S::Inc>), QspiError> {
-        Qspi::new(qspi, ahb, gclk0, self)
+        Qspi::new(qspi, ahb, apb, gclk0, self)
     }
 }
 
@@ -185,6 +195,7 @@ impl Qspi<OneShot> {
     pub(crate) fn new<I: GclkSourceId, S: Increment>(
         qspi: pac::Qspi,
         ahb: AhbClk<QspiClock>,
+        apb: ApbClk<QspiClock>,
         gclk0: Enabled<Gclk<Gclk0Id, I>, S>,
         builder: QspiBuilder,
     ) -> Result<(Qspi<OneShot>, Enabled<Gclk<Gclk0Id, I>, S::Inc>), QspiError> {
@@ -237,6 +248,7 @@ impl Qspi<OneShot> {
             Self {
                 qspi,
                 _ahb: ahb,
+                _apb: apb,
                 gclk0_freq,
                 _sck: builder.sck,
                 _cs: builder.cs,
@@ -394,6 +406,7 @@ impl Qspi<OneShot> {
         Qspi::<XIP> {
             qspi: self.qspi,
             _ahb: self._ahb,
+            _apb: self._apb,
             gclk0_freq: self.gclk0_freq,
             _sck: self._sck,
             _cs: self._cs,
@@ -415,6 +428,7 @@ impl Qspi<OneShot> {
     ) -> (
         pac::Qspi,
         AhbClk<QspiClock>,
+        ApbClk<QspiClock>,
         EnabledGclk0<I, S::Dec>,
         Pin<PB10, AlternateH>,
         Pin<PB11, AlternateH>,
@@ -426,6 +440,7 @@ impl Qspi<OneShot> {
         (
             self.qspi,
             self._ahb,
+            self._apb,
             gclk0.dec(),
             self._sck,
             self._cs,
@@ -447,6 +462,7 @@ impl Qspi<XIP> {
         Qspi::<OneShot> {
             qspi: self.qspi,
             _ahb: self._ahb,
+            _apb: self._apb,
             gclk0_freq: self.gclk0_freq,
             _sck: self._sck,
             _cs: self._cs,
