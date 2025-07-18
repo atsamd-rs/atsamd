@@ -267,32 +267,6 @@ pub fn spi_master(
         .enable()
 }
 
-/// Convenience for setting up the onboard QSPI flash.
-/// Enables the clocks for the QSPI peripheral in single data rate mode
-/// assuming 120MHz system clock, for 4MHz QSPI mode 0 operation.
-#[allow(clippy::too_many_arguments)]
-pub fn qspi_master(
-    mclk: &mut Mclk,
-    qspi: pac::Qspi,
-    sclk: impl Into<FlashSclk>,
-    cs: impl Into<FlashCs>,
-    data0: impl Into<FlashD0>,
-    data1: impl Into<FlashD1>,
-    data2: impl Into<FlashD2>,
-    data3: impl Into<FlashD3>,
-) -> Qspi<OneShot> {
-    Qspi::new(
-        mclk,
-        qspi,
-        sclk.into(),
-        cs.into(),
-        data0.into(),
-        data1.into(),
-        data2.into(),
-        data3.into(),
-    )
-}
-
 /// I2C pads for the labelled I2C peripheral
 ///
 /// You can use these pads with other, user-defined [`i2c::Config`]urations.
