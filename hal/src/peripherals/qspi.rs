@@ -55,7 +55,7 @@ use crate::{
         Enabled, Source,
         ahb::AhbClk,
         apb::ApbClk,
-        gclk::{EnabledGclk, EnabledGclk0, Gclk, Gclk0Id, Gclk0Io, GclkSourceId},
+        gclk::{EnabledGclk0, Gclk, Gclk0Id, Gclk0Io, GclkSourceId},
         types::Qspi as QspiClock,
     },
     gpio::{AlternateH, PA08, PA09, PA10, PA11, PB10, PB11, Pin},
@@ -193,8 +193,8 @@ impl QspiBuilder {
         qspi: pac::Qspi,
         ahb: AhbClk<QspiClock>,
         apb: ApbClk<QspiClock>,
-        gclk0: EnabledGclk<Gclk0Id, I, S>,
-    ) -> Result<(Qspi<OneShot>, EnabledGclk<Gclk0Id, I, S::Inc>), QspiError> {
+        gclk0: EnabledGclk0<I, S>,
+    ) -> Result<(Qspi<OneShot>, EnabledGclk0<I, S::Inc>), QspiError> {
         Qspi::new(qspi, ahb, apb, gclk0, self)
     }
 }
@@ -206,7 +206,7 @@ impl Qspi<OneShot> {
         apb: ApbClk<QspiClock>,
         gclk0: Enabled<Gclk<Gclk0Id, I>, S>,
         builder: QspiBuilder,
-    ) -> Result<(Qspi<OneShot>, Enabled<Gclk<Gclk0Id, I>, S::Inc>), QspiError> {
+    ) -> Result<(Qspi<OneShot>, EnabledGclk0<I, S::Inc>), QspiError> {
         let targ_freq = builder.freq.ok_or(QspiError::NoFreq)?;
         let mode = builder.mode.ok_or(QspiError::NoMode)?;
         let gclk0_freq = gclk0.freq().to_Hz();
