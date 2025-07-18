@@ -130,6 +130,14 @@ pub enum QspiError {
     CommandFunctionMismatch,
 }
 
+/// # QSPI Configuration Builder
+///
+/// This structure contains methods that configures the QSPI module.
+///
+/// Setting frequency [`Self::with_freq`] and SPI mode [`Self::with_mode`]
+/// are required to get QSPI running, without calling these, the [`Self::build`]
+/// function will return a [`QspiError`]. Other configuration options are
+/// optional, so are not required
 impl QspiBuilder {
     pub fn new(
         sck: impl Into<Pin<PB10, AlternateH>>,
