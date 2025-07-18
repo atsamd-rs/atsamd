@@ -57,11 +57,11 @@ fn main() -> ! {
     let ahb_qspi = clocks.ahbs.qspi;
 
     let (mut flash, gclk0) = QspiBuilder::new(
-        sets.flash.sclk, 
-        sets.flash.cs, 
-        sets.flash.data0, 
-        sets.flash.data1, 
-        sets.flash.data2, 
+        sets.flash.sclk,
+        sets.flash.cs,
+        sets.flash.data0,
+        sets.flash.data1,
+        sets.flash.data2,
         sets.flash.data3
     )
     // 48Mhz since this is as fast as the CPU runs after reset,
