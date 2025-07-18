@@ -188,6 +188,7 @@ impl QspiBuilder {
 
     /// Initialize the QSPI peripheral, and start communication
     /// in regular SPI mode
+    #[allow(clippy::type_complexity)]
     pub fn build<I: GclkSourceId, S: Increment>(
         self,
         qspi: pac::Qspi,
@@ -200,6 +201,7 @@ impl QspiBuilder {
 }
 
 impl Qspi<OneShot> {
+    #[allow(clippy::type_complexity)]
     pub(crate) fn new<I: GclkSourceId, S: Increment>(
         qspi: pac::Qspi,
         ahb: AhbClk<QspiClock>,

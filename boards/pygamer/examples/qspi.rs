@@ -40,7 +40,6 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
 
-
     let (mut buses, clocks, tokens) = clock_system_at_reset(
         peripherals.oscctrl,
         peripherals.osc32kctrl,
