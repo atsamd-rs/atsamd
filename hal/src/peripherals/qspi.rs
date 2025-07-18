@@ -176,11 +176,11 @@ impl QspiBuilder {
     ///
     /// * Key - 32 bit key to use for the scramble
     /// * Random - Enable if the hardware based extra key should be
-    /// applied - This means that a QSPI chip will appear scrambled,
-    /// even to another processor. Disabling the random mode ensures
-    /// that whilst the QSPI chip itself is scrambled, it is only using
-    /// the user provided key - Thus allowing other processors with the
-    /// same key to read the QSPI chip
+    ///   applied - This means that a QSPI chip will appear scrambled,
+    ///   even to another processor. Disabling the random mode ensures
+    ///   that whilst the QSPI chip itself is scrambled, it is only using
+    ///   the user provided key - Thus allowing other processors with the
+    ///   same key to read the QSPI chip
     pub fn with_scramble(mut self, key: u32, random: bool) -> Self {
         self.scramble_mode = Some((key, random));
         self
