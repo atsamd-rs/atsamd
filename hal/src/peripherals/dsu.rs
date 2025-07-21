@@ -15,9 +15,9 @@ pub struct Dsu {
     /// PAC peripheral
     dsu: pac::Dsu,
     // AHB clock
-    _ahb_clk: DsuAhbClk,
+    ahb_clk: DsuAhbClk,
     // APB clock
-    _apb_clk: DsuApbClk,
+    apb_clk: DsuApbClk,
 }
 
 /// Errors from hardware
@@ -64,8 +64,8 @@ impl Dsu {
         } else {
             Ok(Self {
                 dsu,
-                _ahb_clk: ahb_clk,
-                _apb_clk: apb_clk,
+                ahb_clk,
+                apb_clk,
             })
         }
     }
@@ -76,7 +76,7 @@ impl Dsu {
         pac.wrctrl()
             .write(|w| unsafe { w.perid().bits(33).key().set_() });
 
-        (self.dsu, self._ahb_clk, self._apb_clk)
+        (self.dsu, self.ahb_clk, self.apb_clk)
     }
 
     /// Clear bus error bit
