@@ -71,16 +71,16 @@ pub struct XIP;
 
 pub struct Qspi<MODE> {
     qspi: pac::Qspi,
-    _ahb: AhbClk<QspiClock>,
-    _apb: ApbClk<QspiClock>,
+    ahb: AhbClk<QspiClock>,
+    apb: ApbClk<QspiClock>,
     gclk0_freq: u32,
-    _sck: Pin<PB10, AlternateH>,
-    _cs: Pin<PB11, AlternateH>,
-    _io0: Pin<PA08, AlternateH>,
-    _io1: Pin<PA09, AlternateH>,
-    _io2: Pin<PA10, AlternateH>,
-    _io3: Pin<PA11, AlternateH>,
-    _mode: PhantomData<MODE>,
+    sck: Pin<PB10, AlternateH>,
+    cs: Pin<PB11, AlternateH>,
+    io0: Pin<PA08, AlternateH>,
+    io1: Pin<PA09, AlternateH>,
+    io2: Pin<PA10, AlternateH>,
+    io3: Pin<PA11, AlternateH>,
+    mode: PhantomData<MODE>,
 }
 
 /// QSPI signal operating modes
@@ -257,16 +257,16 @@ impl Qspi<OneShot> {
         Ok((
             Self {
                 qspi,
-                _ahb: ahb,
-                _apb: apb,
+                ahb,
+                apb,
                 gclk0_freq,
-                _sck: builder.sck,
-                _cs: builder.cs,
-                _io0: builder.io0,
-                _io1: builder.io1,
-                _io2: builder.io2,
-                _io3: builder.io3,
-                _mode: PhantomData,
+                sck: builder.sck,
+                cs: builder.cs,
+                io0: builder.io0,
+                io1: builder.io1,
+                io2: builder.io2,
+                io3: builder.io3,
+                mode: PhantomData,
             },
             gclk0.inc(),
         ))
@@ -415,16 +415,16 @@ impl Qspi<OneShot> {
 
         Qspi::<XIP> {
             qspi: self.qspi,
-            _ahb: self._ahb,
-            _apb: self._apb,
+            ahb: self.ahb,
+            apb: self.apb,
             gclk0_freq: self.gclk0_freq,
-            _sck: self._sck,
-            _cs: self._cs,
-            _io0: self._io0,
-            _io1: self._io1,
-            _io2: self._io2,
-            _io3: self._io3,
-            _mode: PhantomData,
+            sck: self.sck,
+            cs: self.cs,
+            io0: self.io0,
+            io1: self.io1,
+            io2: self.io2,
+            io3: self.io3,
+            mode: PhantomData,
         }
     }
 
@@ -449,15 +449,15 @@ impl Qspi<OneShot> {
     ) {
         (
             self.qspi,
-            self._ahb,
-            self._apb,
+            self.ahb,
+            self.apb,
             gclk0.dec(),
-            self._sck,
-            self._cs,
-            self._io0,
-            self._io1,
-            self._io2,
-            self._io3,
+            self.sck,
+            self.cs,
+            self.io0,
+            self.io1,
+            self.io2,
+            self.io3,
         )
     }
 }
@@ -471,16 +471,16 @@ impl Qspi<XIP> {
 
         Qspi::<OneShot> {
             qspi: self.qspi,
-            _ahb: self._ahb,
-            _apb: self._apb,
+            ahb: self.ahb,
+            apb: self.apb,
             gclk0_freq: self.gclk0_freq,
-            _sck: self._sck,
-            _cs: self._cs,
-            _io0: self._io0,
-            _io1: self._io1,
-            _io2: self._io2,
-            _io3: self._io3,
-            _mode: PhantomData,
+            sck: self.sck,
+            cs: self.cs,
+            io0: self.io0,
+            io1: self.io1,
+            io2: self.io2,
+            io3: self.io3,
+            mode: PhantomData,
         }
     }
 }
