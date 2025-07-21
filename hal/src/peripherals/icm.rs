@@ -910,8 +910,8 @@ impl<I: RegionNum> Region<I> {
 pub struct Icm {
     /// ICM pac register providing hardware access
     icm: crate::pac::Icm,
-    _ahb_clk: IcmAhbClk,
-    _apb_clk: IcmApbClk,
+    ahb_clk: IcmAhbClk,
+    apb_clk: IcmApbClk,
 }
 
 impl Icm {
@@ -920,8 +920,8 @@ impl Icm {
     pub fn new(icm: crate::pac::Icm, ahb_clk: IcmAhbClk, apb_clk: IcmApbClk) -> Self {
         Self {
             icm,
-            _ahb_clk: ahb_clk,
-            _apb_clk: apb_clk,
+            ahb_clk,
+            apb_clk,
         }
     }
 
@@ -1027,7 +1027,7 @@ impl Icm {
     /// Destroy the ICM peripheral and return its resources
     #[inline]
     pub fn free(self) -> (crate::pac::Icm, IcmAhbClk, IcmApbClk) {
-        (self.icm, self._ahb_clk, self._apb_clk)
+        (self.icm, self.ahb_clk, self.apb_clk)
     }
 
     // Region specifics
