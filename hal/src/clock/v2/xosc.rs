@@ -210,7 +210,7 @@ use typenum::U0;
 
 use crate::pac::oscctrl::{self, Xoscctrl};
 
-use crate::gpio::{FloatingDisabled, Pin, PinId, PA14, PA15, PB22, PB23};
+use crate::gpio::{FloatingDisabled, PA14, PA15, PB22, PB23, Pin, PinId};
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 

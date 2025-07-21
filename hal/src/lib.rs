@@ -75,6 +75,8 @@ macro_rules! dbgprint {
 pub mod async_hal;
 
 #[cfg(feature = "device")]
+pub mod clock;
+#[cfg(feature = "device")]
 pub mod delay;
 #[cfg(feature = "device")]
 pub mod gpio;
