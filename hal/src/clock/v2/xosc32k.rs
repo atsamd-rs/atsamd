@@ -345,9 +345,9 @@ use fugit::RateExtU32;
 use typenum::U0;
 
 use crate::pac::osc32kctrl::xosc32k::{Cgmselect, Startupselect};
-use crate::pac::osc32kctrl::{self, status, Cfdctrl};
+use crate::pac::osc32kctrl::{self, Cfdctrl, status};
 
-use crate::gpio::{FloatingDisabled, Pin, PA00, PA01};
+use crate::gpio::{FloatingDisabled, PA00, PA01, Pin};
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
