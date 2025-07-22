@@ -2,6 +2,7 @@
 //! from the `v2` module, which is where the corresponding documentation will
 //! appear.
 
+use atsamd_hal_macros::hal_cfg;
 use typenum::U1;
 
 use crate::pac::{Gclk, Mclk, Nvmctrl, Osc32kctrl, Oscctrl};
@@ -57,6 +58,18 @@ pub struct Buses {
     pub apb: apb::Apb,
 }
 
+#[hal_cfg("clock-d5x")]
+pub struct OscUlp32kClocks {
+    base: osculp32k::EnabledOscUlp32kBase,
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+pub struct OscUlp32kClocks {
+    base: osculp32k::EnabledOscUlp32kBase,
+    osculp1k: EnabledOscUlp1k,
+    osculp32k: EnabledOscUlp32k,
+}
+
 /// Enabled clocks at power-on reset
 ///
 /// This type is constructed using the [`clock_system_at_reset`] function, which
@@ -88,7 +101,7 @@ pub struct Clocks {
     pub dfll: Enabled<dfll::Dfll, U1>,
     /// Always-enabled base oscillator for the [`OscUlp1k`](osculp32k::OscUlp1k)
     /// and [`OscUlp32k`](osculp32k::OscUlp32k) clocks.
-    pub osculp32k_base: Enabled<osculp32k::OscUlp32kBase>,
+    pub osculp32k: OscUlp32kClocks,
 }
 
 /// Type-level tokens for unused clocks at power-on reset
@@ -100,6 +113,7 @@ pub struct Clocks {
 /// As described in the [top-level](super::super) documentation for the `clock`
 /// module, token types are used to guanrantee the uniqueness of each clock. To
 /// configure or enable a clock, you must provide the corresponding token.
+#[hal_cfg("clock-d5x")]
 pub struct Tokens {
     /// Tokens to create [`apb::ApbClk`]s
     pub apbs: apb::ApbTokens,
@@ -124,6 +138,29 @@ pub struct Tokens {
     pub osculp32k: osculp32k::OscUlp32kTokens,
 }
 
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+pub struct Tokens {
+    /// Tokens to create [`apb::ApbClk`]s
+    pub apbs: apb::ApbTokens,
+    /// Token to create [`dpll::Dpll0`]
+    pub dpll0: dpll::DpllToken<dpll::Dpll0Id>,
+    /// Token to create [`dpll::Dpll1`]
+    pub dpll1: dpll::DpllToken<dpll::Dpll1Id>,
+    /// Tokens to create [`gclk::Gclk`]
+    pub gclks: gclk::GclkTokens,
+    /// Tokens to create [`pclk::Pclk`]s
+    pub pclks: pclk::PclkTokens,
+    /// Tokens to create [`rtcosc::RtcOsc`]
+    pub rtcosc: rtcosc::RtcOscToken,
+    /// Tokens [`xosc::Xosc0`]
+    pub xosc0: xosc::XoscToken<xosc::Xosc0Id>,
+    /// Token to create [`xosc::Xosc1`]
+    pub xosc1: xosc::XoscToken<xosc::Xosc1Id>,
+    /// Tokens to create [`xosc32k::Xosc32kBase`], [`xosc32k::Xosc1k`] and
+    /// [`xosc32k::Xosc32k`]
+    pub xosc32k: xosc32k::Xosc32kTokens,
+}
+
 /// Consume the PAC clocking structs and return a HAL-level
 /// representation of the clocks at power-on reset
 ///
@@ -131,6 +168,7 @@ pub struct Tokens {
 /// [`Mclk`] PAC structs and returns the [`Buses`], [`Clocks`] and [`Tokens`].
 ///
 /// See the [module-level documentation](super) for more details.
+#[hal_cfg("clock-d5x")]
 #[inline]
 pub fn clock_system_at_reset(
     oscctrl: Oscctrl,
@@ -154,13 +192,18 @@ pub fn clock_system_at_reset(
         let dfll = Enabled::<_>::new(dfll::Dfll::open_loop(dfll::DfllToken::new()));
         let (gclk0, dfll) = gclk::Gclk0::from_source(gclk::GclkToken::new(), dfll);
         let gclk0 = Enabled::new(gclk0);
+        let osculp32k_clocks = {
+            OscUlp32kClocks {
+                base: osculp32k::OscUlp32kBase::new(),
+            }
+        };
         let clocks = Clocks {
             pac,
             ahbs: ahb::AhbClks::new(),
             apbs: apb::ApbClks::new(),
             gclk0,
             dfll,
-            osculp32k_base: osculp32k::OscUlp32kBase::new(),
+            osculp32k: osculp32k_clocks,
         };
         let tokens = Tokens {
             apbs: apb::ApbTokens::new(),
@@ -173,6 +216,60 @@ pub fn clock_system_at_reset(
             xosc1: xosc::XoscToken::new(),
             xosc32k: xosc32k::Xosc32kTokens::new(),
             osculp32k: osculp32k::OscUlp32kTokens::new(),
+        };
+        (buses, clocks, tokens)
+    }
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+#[inline]
+pub fn clock_system_at_reset(
+    oscctrl: Oscctrl,
+    osc32kctrl: Osc32kctrl,
+    gclk: Gclk,
+    mclk: Mclk,
+    nvmctrl: &mut Nvmctrl,
+) -> (Buses, Clocks, Tokens) {
+    // Safety: No bus, clock or token is instantiated more than once
+    unsafe {
+        let buses = Buses {
+            ahb: ahb::Ahb::new(),
+            apb: apb::Apb::new(),
+        };
+        let pac = Pac {
+            oscctrl,
+            osc32kctrl,
+            gclk,
+            mclk,
+        };
+        let dfll = Enabled::<_>::new(dfll::Dfll::open_loop(dfll::DfllToken::new()));
+        let (gclk0, dfll) = gclk::Gclk0::from_source(gclk::GclkToken::new(), dfll);
+        let gclk0 = Enabled::new(gclk0);
+        let osculp32k_clocks = {
+            OscUlp32kClocks {
+                base: osculp32k::OscUlp32kBase::new(),
+                osculp1k: Enabled::new(osculp32k::OscUlp1k::new()),
+                osculp32k: Enabled::new(osculp32k::OscUlp32k::new()),
+            }
+        };
+        let clocks = Clocks {
+            pac,
+            ahbs: ahb::AhbClks::new(),
+            apbs: apb::ApbClks::new(),
+            gclk0,
+            dfll,
+            osculp32k: osculp32k_clocks,
+        };
+        let tokens = Tokens {
+            apbs: apb::ApbTokens::new(),
+            dpll0: dpll::DpllToken::new(),
+            dpll1: dpll::DpllToken::new(),
+            gclks: gclk::GclkTokens::new(nvmctrl),
+            pclks: pclk::PclkTokens::new(),
+            rtcosc: rtcosc::RtcOscToken::new(),
+            xosc0: xosc::XoscToken::new(),
+            xosc1: xosc::XoscToken::new(),
+            xosc32k: xosc32k::Xosc32kTokens::new(),
         };
         (buses, clocks, tokens)
     }
