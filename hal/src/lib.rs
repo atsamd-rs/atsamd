@@ -1,4 +1,6 @@
 #![no_std]
+// TODO Allows using hal_cfg to gate clock v2 for thumbv6, nightly only
+#![feature(proc_macro_hygiene)]
 
 pub use embedded_hal_1 as ehal;
 use embedded_hal_02 as ehal_02;
