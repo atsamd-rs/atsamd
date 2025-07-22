@@ -59,11 +59,13 @@ pub struct Buses {
 }
 
 #[hal_cfg("clock-d5x")]
+#[allow(dead_code)]
 pub struct OscUlp32kClocks {
     base: osculp32k::EnabledOscUlp32kBase,
 }
 
 #[hal_cfg(any("clock-d11", "clock-d21"))]
+#[allow(dead_code)]
 pub struct OscUlp32kClocks {
     base: osculp32k::EnabledOscUlp32kBase,
     osculp1k: EnabledOscUlp1k,
