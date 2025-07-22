@@ -159,7 +159,7 @@ mod app {
 
         let _ = can1_standby.set_low();
 
-        let (pclk_can1, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.can1, gclk0);
+        let (pclk_can1, _gclk0) = clock::pclk::Pclk::enable(tokens.pclks.can1, gclk0);
 
         let dependencies =
             hal::can::Dependencies::new(pclk_can1, clocks.ahbs.can1, can1_rx, can1_tx, device.can1);
