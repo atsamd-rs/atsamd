@@ -161,13 +161,25 @@
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`Clocks`]: super::Clocks
 
+use atsamd_hal_macros::hal_cfg;
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::osc32kctrl::Osculp32k;
+#[hal_cfg("clock-d5x")]
+mod imports {
+    pub use crate::pac::osc32kctrl::Osculp32k;
+    pub use crate::typelevel::{Decrement, Increment};
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod imports {
+    pub use crate::pac::sysctrl::Osculp32k;
+}
+
+use imports::*;
 
 use crate::time::Hertz;
-use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
+use crate::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::{Enabled, Source};
 
@@ -239,27 +251,38 @@ impl OscUlp32kBaseToken {
         // Safety: The `OscUlp32kBaseToken` has exclusive access to the
         // `OSCULP32K` register. See the notes on `Token` types and memory
         // safety in the root of the `clock` module for more details.
-        unsafe { (*crate::pac::Osc32kctrl::PTR).osculp32k() }
+        #[hal_cfg("clock-d5x")]
+        unsafe {
+            &(*crate::pac::Osc32kctrl::PTR).osculp32k()
+        }
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        unsafe {
+            &(*crate::pac::Sysctrl::PTR).osculp32k()
+        }
     }
 
+    #[hal_cfg("clock-d5x")]
     /// Enable the 1 kHz output
     #[inline]
     fn enable_1k(&mut self) {
         self.osculp32k().modify(|_, w| w.en1k().set_bit());
     }
 
+    #[hal_cfg("clock-d5x")]
     /// Disable the 1 kHz output
     #[inline]
     fn disable_1k(&mut self) {
         self.osculp32k().modify(|_, w| w.en1k().clear_bit());
     }
 
+    #[hal_cfg("clock-d5x")]
     /// Enable the 32 kHz output
     #[inline]
     fn enable_32k(&mut self) {
         self.osculp32k().modify(|_, w| w.en32k().set_bit());
     }
 
+    #[hal_cfg("clock-d5x")]
     /// Disable the 32 kHz output
     #[inline]
     fn disable_32k(&mut self) {
@@ -362,6 +385,7 @@ impl Sealed for OscUlp32kId {}
 /// derived from the [`OscUlp32kBase`] clock. See the
 /// [module-level documentation](super) for details and examples.
 pub struct OscUlp1k {
+    #[allow(unused)]
     token: OscUlp1kToken,
 }
 
@@ -377,9 +401,16 @@ pub struct OscUlp1k {
 pub type EnabledOscUlp1k<N = U0> = Enabled<OscUlp1k, N>;
 
 impl OscUlp1k {
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    pub(super) unsafe fn new() -> Self {
+        let token = OscUlp1kToken(());
+        Self { token }
+    }
+
     /// Enable 1 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Increment`] the [`EnabledOscUlp32kBase`] counter.
+    #[hal_cfg("clock-d5x")]
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp1kToken,
@@ -394,6 +425,7 @@ impl EnabledOscUlp1k {
     /// Disable 1 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] counter.
+    #[hal_cfg("clock-d5x")]
     #[inline]
     pub fn disable<N: Decrement>(
         self,
@@ -425,6 +457,7 @@ impl<N> Source for EnabledOscUlp1k<N> {
 /// derived from the [`OscUlp32kBase`] clock. See the
 /// [module-level documentation](super) for details and examples.
 pub struct OscUlp32k {
+    #[allow(unused)]
     token: OscUlp32kToken,
 }
 
@@ -440,9 +473,16 @@ pub struct OscUlp32k {
 pub type EnabledOscUlp32k<N = U0> = Enabled<OscUlp32k, N>;
 
 impl OscUlp32k {
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    pub(super) unsafe fn new() -> Self {
+        let token = OscUlp32kToken(());
+        Self { token }
+    }
+
     /// Enable 32 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Increment`] the [`EnabledOscUlp32kBase`] counter.
+    #[hal_cfg("clock-d5x")]
     #[inline]
     pub fn enable<N: Increment>(
         token: OscUlp32kToken,
@@ -457,6 +497,7 @@ impl EnabledOscUlp32k {
     /// Disable 32 kHz output from the [`OscUlp32kBase`] clock
     ///
     /// This will [`Decrement`] the [`EnabledOscUlp32kBase`] counter.
+    #[hal_cfg("clock-d5x")]
     #[inline]
     pub fn disable<N: Decrement>(
         self,
