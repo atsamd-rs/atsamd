@@ -854,6 +854,8 @@
 
 #![allow(clippy::manual_range_contains)]
 
+use atsamd_hal_macros::hal_module;
+
 use typenum::U0;
 
 use crate::time::Hertz;
@@ -866,7 +868,10 @@ pub mod dpll;
 pub mod gclk;
 pub mod osculp32k;
 pub mod pclk;
-pub mod rtcosc;
+#[hal_module(
+    "clock-d5x" => "v2/rtcosc.rs",
+)]
+pub mod rtcosc {}
 pub mod types;
 pub mod xosc;
 pub mod xosc32k;
