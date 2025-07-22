@@ -122,14 +122,24 @@
 //! [`Clocks`]: super::Clocks
 //! [`Buses`]: super::Buses
 
-use atsamd_hal_macros::hal_macro_helper;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use core::marker::PhantomData;
 
 use bitflags;
 use paste::paste;
 
-use crate::pac::{Mclk, mclk};
+#[hal_cfg("clock-d5x")]
+mod imports {
+    pub use crate::pac::{Mclk as Peripheral, mclk::Ahbmask};
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod imports {
+    pub use crate::pac::{Pm as Peripheral, pm::Ahbmask};
+}
+
+use imports::*;
 
 use super::types::*;
 
@@ -160,11 +170,11 @@ impl Ahb {
     }
 
     #[inline]
-    fn ahbmask(&mut self) -> &mclk::Ahbmask {
+    fn ahbmask(&mut self) -> &Ahbmask {
         // Safety: The `Ahb` type has exclusive access to the `AHBMASK`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { (*Mclk::PTR).ahbmask() }
+        unsafe { (*Peripheral::PTR).ahbmask() }
     }
 
     #[inline]
