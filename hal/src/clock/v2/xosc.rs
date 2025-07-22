@@ -925,16 +925,17 @@ where
     #[hal_cfg("clock-d5x")]
     #[inline]
     fn new(token: XoscToken<X>, pins: M::Pins<X>, freq: Hertz) -> Self {
-        let mut settings = Settings::default();
-        if let M::DYN = DynMode::CrystalMode {
-            settings.current = match freq.to_Hz() {
-                8_000_000 => CrystalCurrent::Low,
-                8_000_001..=16_000_000 => CrystalCurrent::Medium,
-                16_000_001..=24_000_000 => CrystalCurrent::High,
-                24_000_001..=48_000_000 => CrystalCurrent::ExtraHigh,
-                _ => panic!("The XOSC input frequency must be 8-48 MHz"),
-            };
-        }
+        let settings = Settings::default();
+        // TODO this errors
+        // if let M::DYN = DynMode::CrystalMode {
+        //     settings.current = match freq.to_Hz() {
+        //         8_000_000 => CrystalCurrent::Low,
+        //         8_000_001..=16_000_000 => CrystalCurrent::Medium,
+        //         16_000_001..=24_000_000 => CrystalCurrent::High,
+        //         24_000_001..=48_000_000 => CrystalCurrent::ExtraHigh,
+        //         _ => panic!("The XOSC input frequency must be 8-48 MHz"),
+        //     };
+        // }
         Self {
             token,
             pins,
