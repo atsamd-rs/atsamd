@@ -71,15 +71,19 @@ use seq_macro::seq;
 
 use crate::pac;
 
-#[hal_cfg(any("clock-d11", "clock-d21"))]
-use crate::pac::gclk::clkctrl::Genselect;
 #[hal_cfg("clock-d5x")]
-use crate::pac::gclk::pchctrl::Genselect;
+mod imports {
+    pub use crate::pac::gclk::Pchctrl as Ctrl;
+    pub use crate::pac::gclk::pchctrl::Genselect;
+}
 
 #[hal_cfg(any("clock-d11", "clock-d21"))]
-use crate::pac::gclk::Clkctrl as Ctrl;
-#[hal_cfg("clock-d5x")]
-use crate::pac::gclk::Pchctrl as Ctrl;
+mod imports {
+    pub use crate::pac::gclk::Clkctrl as Ctrl;
+    pub use crate::pac::gclk::clkctrl::Genselect;
+}
+
+use imports::*;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
@@ -133,7 +137,7 @@ impl<P: PclkId> PclkToken<P> {
         }
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         unsafe {
-            &(*pac::Gclk::PTR).clkctrl
+            &(*pac::Gclk::PTR).clkctrl()
         }
     }
 
@@ -191,8 +195,6 @@ pub mod ids {
     pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
-    //pub struct DfllId;
-    //impl crate::typelevel::Sealed for DfllId {}
     #[hal_cfg("clock-d5x")]
     pub use super::super::dpll::{Dpll0Id, Dpll1Id};
 
