@@ -1508,6 +1508,7 @@ with_gclk_max!(N in 1..=max {
             /// All of the invariants required by `GclkToken::new` must be
             /// upheld here as well.
             #[inline]
+            #[allow(unreachable_code)] // TODO remove when todo is removed
             pub(super) unsafe fn new(_nvmctrl: &mut Nvmctrl) -> Self {
                 // Use auto wait states
                 //nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
