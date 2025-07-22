@@ -237,22 +237,38 @@
 //! [`GclkDivider`]: super::gclk::GclkDivider
 //! [`Pclk`]: super::pclk::Pclk
 
+use atsamd_hal_macros::hal_cfg;
 use core::marker::PhantomData;
 
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::oscctrl;
-use crate::pac::oscctrl::dpll::{Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus, dpllsyncbusy};
+#[hal_cfg("clock-d5x")]
+mod imports {
+    pub use super::super::xosc::Xosc1Id;
+    pub use crate::pac::oscctrl::{
+        Dpll as PacDpll,
+        dpll::dpllctrlb::Refclkselect,
+        dpll::{Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus, dpllsyncbusy},
+    };
+}
 
-use crate::pac::oscctrl::dpll::dpllctrlb::Refclkselect;
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod imports {
+    pub use crate::pac::sysctrl::{
+        dpllctrlb::Refclkselect,
+        {Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus},
+    };
+}
+
+use imports::*;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::gclk::GclkId;
 use super::pclk::{Pclk, PclkId};
-use super::xosc::{Xosc0Id, Xosc1Id, XoscId};
+use super::xosc::{Xosc0Id, XoscId};
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
@@ -292,7 +308,7 @@ impl<D: DpllId> DpllToken<D> {
 
     /// Access the corresponding PAC `DPLL` struct
     #[inline]
-    fn dpll(&self) -> &oscctrl::Dpll {
+    fn dpll(&self) -> &PacDpll {
         // Safety: Each `DpllToken` only has access to a mutually exclusive set
         // of registers for the corresponding `DpllId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
