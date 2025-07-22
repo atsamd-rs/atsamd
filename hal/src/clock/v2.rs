@@ -861,7 +861,7 @@ use typenum::U0;
 use crate::time::Hertz;
 use crate::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
 
-// pub mod ahb;
+pub mod ahb;
 // pub mod apb;
 pub mod dfll;
 // pub mod dpll;
