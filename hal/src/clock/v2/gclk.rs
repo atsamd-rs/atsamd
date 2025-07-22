@@ -356,9 +356,11 @@ use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement,
 
 use super::dfll::DfllId;
 // use super::dpll::{Dpll0Id, Dpll1Id};
-// use super::osculp32k::OscUlp32kId;
-// use super::xosc::{Xosc0Id, Xosc1Id};
-// use super::xosc32k::Xosc32kId;
+use super::osculp32k::OscUlp32kId;
+use super::xosc::Xosc0Id;
+#[hal_cfg("clock-d5x")]
+use super::xosc::Xosc1Id;
+use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
 //==============================================================================
@@ -412,14 +414,14 @@ impl<G: GclkId> GclkToken<G> {
         }
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         unsafe {
-            &(*pac::Gclk::PTR).genctrl
+            &(*pac::Gclk::PTR).genctrl()
         }
     }
 
     #[hal_cfg(any("clock-d11", "clock-d21"))]
     #[inline]
     fn gendiv(&self) -> &Gendiv {
-        unsafe { &(*pac::Gclk::PTR).gendiv }
+        unsafe { &(*pac::Gclk::PTR).gendiv() }
     }
 
     /// Block until synchronization has completed
@@ -438,7 +440,7 @@ impl<G: GclkId> GclkToken<G> {
         }
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         {
-            let status = unsafe { &(*pac::Gclk::PTR).status };
+            let status = unsafe { &(*pac::Gclk::PTR).status() };
             while status.read().syncbusy().bit() {}
         }
     }
@@ -994,30 +996,31 @@ impl GclkSourceId for DfllId {
 //    const DYN: DynGclkSourceId = DynGclkSourceId::Dpll1;
 //    type Resource = ();
 //}
-//impl GclkSourceId for Gclk1Id {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Gclk1;
-//    type Resource = ();
-//}
+impl GclkSourceId for Gclk1Id {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Gclk1;
+    type Resource = ();
+}
 impl<I: GclkIo> GclkSourceId for I {
     const DYN: DynGclkSourceId = DynGclkSourceId::GclkIn;
     type Resource = Pin<I, AlternateH>;
 }
-//impl GclkSourceId for OscUlp32kId {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::OscUlp32k;
-//    type Resource = ();
-//}
-//impl GclkSourceId for Xosc0Id {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc0;
-//    type Resource = ();
-//}
-//impl GclkSourceId for Xosc1Id {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
-//    type Resource = ();
-//}
-//impl GclkSourceId for Xosc32kId {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc32k;
-//    type Resource = ();
-//}
+impl GclkSourceId for OscUlp32kId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::OscUlp32k;
+    type Resource = ();
+}
+impl GclkSourceId for Xosc0Id {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc0;
+    type Resource = ();
+}
+#[hal_cfg("clock-d5x")]
+impl GclkSourceId for Xosc1Id {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
+    type Resource = ();
+}
+impl GclkSourceId for Xosc32kId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Xosc32k;
+    type Resource = ();
+}
 
 //==============================================================================
 // NotGclkIo
