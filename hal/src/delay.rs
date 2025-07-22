@@ -4,11 +4,15 @@ use atsamd_hal_macros::hal_cfg;
 use cortex_m::peripheral::SYST;
 use cortex_m::peripheral::syst::SystClkSource;
 
+#[hal_cfg(any("rtc-d11", "rtc-d21"))]
 use crate::clock::GenericClockController;
+
 use crate::ehal::delay::DelayNs;
 use crate::ehal_02;
 use crate::time::Hertz;
 
+#[hal_cfg("rtc-d5x")]
+use crate::typelevel::Decrement;
 #[hal_cfg("rtc-d5x")]
 use crate::typelevel::Increment;
 
@@ -22,6 +26,7 @@ pub struct Delay {
 }
 
 impl Delay {
+    #[hal_cfg(any("rtc-d11", "rtc-d21"))]
     /// Configures the system timer (SysTick) as a delay provider
     pub fn new(mut syst: SYST, clocks: &mut GenericClockController) -> Self {
         syst.set_clock_source(SystClkSource::Core);
@@ -32,10 +37,15 @@ impl Delay {
         }
     }
 
+    #[hal_cfg(any("rtc-d11", "rtc-d21"))]
+    /// Releases the system timer (SysTick) resource
+    pub fn free(self) -> SYST {
+        self.syst
+    }
+
     #[hal_cfg("rtc-d5x")]
-    /// Configures the system timer (SysTick) as a delay provide, compatible
-    /// with the V2 clocking API
-    pub fn new_with_source<S>(mut syst: SYST, gclk0: S) -> (Self, S::Inc)
+    /// Configures the system timer (SysTick) as a delay provide.
+    pub fn new<S>(mut syst: SYST, gclk0: S) -> (Self, S::Inc)
     where
         S: Source<Id = Gclk0Id> + Increment,
     {
@@ -49,9 +59,13 @@ impl Delay {
         )
     }
 
+    #[hal_cfg("rtc-d5x")]
     /// Releases the system timer (SysTick) resource
-    pub fn free(self) -> SYST {
-        self.syst
+    pub fn free<S>(self, gclk0: S) -> (SYST, S::Dec)
+    where
+        S: Source<Id = Gclk0Id> + Decrement,
+    {
+        (self.syst, gclk0.dec())
     }
 }
 
