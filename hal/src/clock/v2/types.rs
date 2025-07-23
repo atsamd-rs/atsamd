@@ -95,7 +95,7 @@ create_types!(NvmCtrl, NvmCtrlSmeeProm, NvmCtrlCache);
 create_types!(I2S, I2S0, I2S1);
 create_types!(OscCtrl);
 create_types!(Osc32kCtrl);
-create_types!(Pac);
+create_types!(Pac0);
 create_types!(Pcc);
 create_types!(PDec);
 create_types!(Pm);
