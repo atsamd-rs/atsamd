@@ -195,8 +195,9 @@ pub mod ids {
     pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
+    pub use super::super::dpll::Dpll0Id;
     #[hal_cfg("clock-d5x")]
-    pub use super::super::dpll::{Dpll0Id, Dpll1Id};
+    pub use super::super::dpll::Dpll1Id;
 
     pub use super::super::types::{
         Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5,
@@ -261,7 +262,6 @@ macro_rules! with_pclk_types_ids {
         $some_macro!(
             $( $args )*
             (DfllId = 0, dfll)
-            #[hal_cfg("clock-d5x")]
             (Dpll0Id = 1, dpll0)
             #[hal_cfg("clock-d5x")]
             (Dpll1Id = 2, dpll1)
