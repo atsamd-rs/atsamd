@@ -381,6 +381,7 @@ impl<D: DpllId> DpllToken<D> {
             w.refclk().variant(id.into());
             w.lbypass().bit(settings.lock_bypass);
             w.wuf().bit(settings.wake_up_fast);
+            #[hal_cfg("clock-d5x")]
             if let Some(cap) = settings.dco_filter {
                 w.dcoen().bit(true);
                 unsafe {
