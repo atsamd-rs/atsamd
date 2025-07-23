@@ -121,13 +121,25 @@
 //! [`Clocks`]: super::Clocks
 //! [`Buses`]: super::Buses
 
-use atsamd_hal_macros::hal_macro_helper;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::marker::PhantomData;
 
 use bitflags;
 use paste::paste;
 
-use crate::pac::{self, mclk};
+#[hal_cfg("clock-d5x")]
+mod imports {
+    pub use crate::pac::mclk::{RegisterBlock as BLOCK, Apbamask, Apbbmask, Apbcmask, Apbdmask};
+    pub use crate::pac::Mclk as Peripheral;
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod imports {
+    pub use crate::pac::pm::{RegisterBlock as BLOCK, Apbamask, Apbbmask, Apbcmask};
+    pub use crate::pac::Pm as Peripheral;
+}
+
+use imports::*;
 
 use crate::typelevel::Sealed;
 
@@ -160,35 +172,37 @@ impl Apb {
     }
 
     #[inline]
-    fn mclk(&self) -> &mclk::RegisterBlock {
+    fn mclk(&self) -> &BLOCK {
         // Safety: The `Apb` type has exclusive access to the `APBXMASK`
         // registers, and it uses a shared reference to the register block. See
         // the notes on `Token` types and memory safety in the root of the
         // `clock` module for more details.
-        unsafe { &*pac::Mclk::PTR }
+        unsafe { &*Peripheral::PTR }
     }
 
     #[inline]
-    fn apbamask(&mut self) -> &mclk::Apbamask {
+    fn apbamask(&mut self) -> &Apbamask {
         self.mclk().apbamask()
     }
 
     #[inline]
-    fn apbbmask(&mut self) -> &mclk::Apbbmask {
+    fn apbbmask(&mut self) -> &Apbbmask {
         self.mclk().apbbmask()
     }
 
     #[inline]
-    fn apbcmask(&mut self) -> &mclk::Apbcmask {
+    fn apbcmask(&mut self) -> &Apbcmask {
         self.mclk().apbcmask()
     }
 
     #[inline]
-    fn apbdmask(&mut self) -> &mclk::Apbdmask {
-        self.mclk().apbdmask()
+    #[hal_cfg("clock-d5x")]
+    fn apbdmask(&mut self) -> &Apbdmask {
+        &self.mclk().apbdmask()
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn enable_mask(&mut self, mask: ApbMask) {
         // Safety: The mask bits are derived from a `bitflags` struct, so they
         // are guaranteed to be valid.
@@ -206,6 +220,7 @@ impl Apb {
                     self.apbcmask()
                         .modify(|r, w| w.bits(r.bits() | mask.bits()));
                 }
+                #[hal_cfg("clock-d5x")]
                 ApbMask::D(mask) => {
                     self.apbdmask()
                         .modify(|r, w| w.bits(r.bits() | mask.bits()));
@@ -215,6 +230,7 @@ impl Apb {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn disable_mask(&mut self, mask: ApbMask) {
         // Safety: The mask bits are derived from a `bitflags` struct, so they
         // are guaranteed to be valid.
@@ -232,6 +248,7 @@ impl Apb {
                     self.apbcmask()
                         .modify(|r, w| w.bits(r.bits() & !mask.bits()));
                 }
+                #[hal_cfg("clock-d5x")]
                 ApbMask::D(mask) => {
                     self.apbdmask()
                         .modify(|r, w| w.bits(r.bits() & !mask.bits()));
@@ -270,10 +287,12 @@ impl Apb {
 ///
 /// Each variant is a [`bitflags`] struct with a binary representation exactly
 /// matching the corresponding APB `MASK` register.
+#[hal_macro_helper]
 enum ApbMask {
     A(ApbAMask),
     B(ApbBMask),
     C(ApbCMask),
+    #[hal_cfg("clock-d5x")]
     D(ApbDMask),
 }
 
@@ -353,9 +372,10 @@ macro_rules! define_apb_types {
 }
 
 #[hal_macro_helper]
+#[hal_cfg("clock-d5x")]
 define_apb_types!(
     A {
-        Pac = 0,
+        Pac0 = 0,
         Pm = 1,
         Mclk = 2,
         RstC = 3,
@@ -423,6 +443,52 @@ define_apb_types!(
         #[hal_cfg("i2s")]
         I2S = 10,
         Pcc = 11,
+    }
+);
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+define_apb_types!(
+    A {
+        Pac0 = 0,
+        Pm = 1,
+        SysCtrl = 2,
+        Gclk = 3,
+        Wdt = 4,
+        Rtc = 5,
+        Eic = 6,
+    }
+    B {
+        Pac1 = 0,
+        Dsu = 1,
+        NvmCtrl = 2,
+        Port = 3,
+        Dmac = 4,
+        Usb = 5,
+    }
+    C {
+        Pac2 = 0,
+        EvSys = 1,
+        Sercom0 = 2,
+        Sercom1 = 3,
+        Sercom2 = 4,
+        Sercom3 = 5,
+        Sercom4 = 6,
+        Sercom5 = 7,
+        Tcc0 = 8,
+        Tcc1 = 9,
+        Tcc2 = 10,
+        Tc3 = 11,
+        Tc4 = 12,
+        Tc5 = 13,
+        Tc6 = 14,
+        Tc7 = 15,
+        Adc0 = 16,
+        Ac = 17,
+        Dac = 18,
+        Ptc = 19,
+        I2S = 20,
+        Ac1 = 21,
+        Tcc3 = 24,
     }
 );
 
@@ -509,12 +575,16 @@ impl<A: ApbId> ApbClk<A> {
 //==============================================================================
 
 /// Set of [`ApbToken`]s for APB clocks that are disabled at power-on reset
+
 #[hal_macro_helper]
 pub struct ApbTokens {
+    #[hal_cfg("clock-d5x")]
     pub freq_m: ApbToken<FreqM>,
     pub sercom0: ApbToken<Sercom0>,
     pub sercom1: ApbToken<Sercom1>,
+    #[hal_cfg("clock-d5x")]
     pub tc0: ApbToken<Tc0>,
+    #[hal_cfg("clock-d5x")]
     pub tc1: ApbToken<Tc1>,
     pub usb: ApbToken<Usb>,
     pub ev_sys: ApbToken<EvSys>,
@@ -522,6 +592,7 @@ pub struct ApbTokens {
     pub sercom3: ApbToken<Sercom3>,
     pub tcc0: ApbToken<Tcc0>,
     pub tcc1: ApbToken<Tcc1>,
+    #[hal_cfg("clock-d5x")]
     pub tc2: ApbToken<Tc2>,
     pub tc3: ApbToken<Tc3>,
     #[hal_cfg("tc4")]
@@ -531,11 +602,16 @@ pub struct ApbTokens {
     pub tcc3: ApbToken<Tcc3>,
     #[hal_cfg("tc5")]
     pub tc5: ApbToken<Tc5>,
+    #[hal_cfg("clock-d5x")]
     pub p_dec: ApbToken<PDec>,
     pub ac: ApbToken<Ac>,
+    #[hal_cfg("clock-d5x")]
     pub aes: ApbToken<Aes>,
+    #[hal_cfg("clock-d5x")]
     pub trng: ApbToken<Trng>,
+    #[hal_cfg("clock-d5x")]
     pub icm: ApbToken<Icm>,
+    #[hal_cfg("clock-d5x")]
     pub ccl: ApbToken<Ccl>,
     pub sercom4: ApbToken<Sercom4>,
     pub sercom5: ApbToken<Sercom5>,
@@ -550,10 +626,12 @@ pub struct ApbTokens {
     #[hal_cfg("tc7")]
     pub tc7: ApbToken<Tc7>,
     pub adc0: ApbToken<Adc0>,
+    #[hal_cfg("clock-d5x")]
     pub adc1: ApbToken<Adc1>,
     pub dac: ApbToken<Dac>,
     #[hal_cfg("i2s")]
     pub i2s: ApbToken<I2S>,
+    #[hal_cfg("clock-d5x")]
     pub pcc: ApbToken<Pcc>,
 }
 
@@ -568,6 +646,7 @@ impl ApbTokens {
     pub(super) unsafe fn new() -> Self {
         unsafe {
             Self {
+            #[hal_cfg("clock-d5x")]
                 freq_m: ApbToken::new(),
                 sercom0: ApbToken::new(),
                 sercom1: ApbToken::new(),
@@ -588,11 +667,16 @@ impl ApbTokens {
                 tcc3: ApbToken::new(),
                 #[hal_cfg("tc5")]
                 tc5: ApbToken::new(),
+            #[hal_cfg("clock-d5x")]
                 p_dec: ApbToken::new(),
                 ac: ApbToken::new(),
+            #[hal_cfg("clock-d5x")]
                 aes: ApbToken::new(),
+            #[hal_cfg("clock-d5x")]
                 trng: ApbToken::new(),
+            #[hal_cfg("clock-d5x")]
                 icm: ApbToken::new(),
+            #[hal_cfg("clock-d5x")]
                 ccl: ApbToken::new(),
                 sercom4: ApbToken::new(),
                 sercom5: ApbToken::new(),
@@ -607,10 +691,12 @@ impl ApbTokens {
                 #[hal_cfg("tc7")]
                 tc7: ApbToken::new(),
                 adc0: ApbToken::new(),
+            #[hal_cfg("clock-d5x")]
                 adc1: ApbToken::new(),
                 dac: ApbToken::new(),
                 #[hal_cfg("i2s")]
                 i2s: ApbToken::new(),
+            #[hal_cfg("clock-d5x")]
                 pcc: ApbToken::new(),
             }
         }
@@ -624,12 +710,17 @@ impl ApbTokens {
 /// Set of [`ApbClk`]s for APB clocks that are enabled at power-on reset
 #[hal_macro_helper]
 pub struct ApbClks {
-    pub pac: ApbClk<Pac>,
+    pub pac: ApbClk<Pac0>,
     pub pm: ApbClk<Pm>,
+    #[hal_cfg("clock-d5x")]
     pub mclk: ApbClk<Mclk>,
+    #[hal_cfg("clock-d5x")]
     pub rst_c: ApbClk<RstC>,
+    #[hal_cfg("clock-d5x")]
     pub osc_ctrl: ApbClk<OscCtrl>,
+    #[hal_cfg("clock-d5x")]
     pub osc32k_ctrl: ApbClk<Osc32kCtrl>,
+    #[hal_cfg("clock-d5x")]
     pub sup_c: ApbClk<SupC>,
     pub gclk: ApbClk<Gclk>,
     pub wdt: ApbClk<Wdt>,
@@ -638,9 +729,11 @@ pub struct ApbClks {
     pub dsu: ApbClk<Dsu>,
     pub nvm_ctrl: ApbClk<NvmCtrl>,
     pub port: ApbClk<Port>,
+    #[hal_cfg("clock-d5x")]
     pub ram_ecc: ApbClk<RamEcc>,
     #[hal_cfg("gmac")]
     pub gmac: ApbClk<Gmac>,
+    #[hal_cfg("clock-d5x")]
     pub qspi: ApbClk<Qspi>,
 }
 
@@ -657,10 +750,15 @@ impl ApbClks {
             ApbClks {
                 pac: ApbClk::new(ApbToken::new()),
                 pm: ApbClk::new(ApbToken::new()),
+            #[hal_cfg("clock-d5x")]
                 mclk: ApbClk::new(ApbToken::new()),
+            #[hal_cfg("clock-d5x")]
                 rst_c: ApbClk::new(ApbToken::new()),
+            #[hal_cfg("clock-d5x")]
                 osc_ctrl: ApbClk::new(ApbToken::new()),
+            #[hal_cfg("clock-d5x")]
                 osc32k_ctrl: ApbClk::new(ApbToken::new()),
+            #[hal_cfg("clock-d5x")]
                 sup_c: ApbClk::new(ApbToken::new()),
                 gclk: ApbClk::new(ApbToken::new()),
                 wdt: ApbClk::new(ApbToken::new()),
@@ -669,9 +767,11 @@ impl ApbClks {
                 dsu: ApbClk::new(ApbToken::new()),
                 nvm_ctrl: ApbClk::new(ApbToken::new()),
                 port: ApbClk::new(ApbToken::new()),
+            #[hal_cfg("clock-d5x")]
                 ram_ecc: ApbClk::new(ApbToken::new()),
                 #[hal_cfg("gmac")]
                 gmac: ApbClk::new(ApbToken::new()),
+            #[hal_cfg("clock-d5x")]
                 qspi: ApbClk::new(ApbToken::new()),
             }
         }
