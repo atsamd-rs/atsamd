@@ -393,7 +393,7 @@ define_ahb_types!(
     Cmcc = 8,
     Dmac = 9,
     Usb = 10,
-    Pac = 12,
+    Pac0 = 12,
     Qspi = 13,
     #[hal_cfg("gmac")]
     Gmac = 14,
