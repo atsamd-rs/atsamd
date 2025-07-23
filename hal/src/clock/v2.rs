@@ -876,8 +876,12 @@ pub mod types;
 pub mod xosc;
 pub mod xosc32k;
 
-// mod reset;
-// pub use reset::*;
+#[hal_module(
+    any("clock-d11", "clock-d21") => "v2/reset_thumbv6m.rs",
+    "clock-d5x" => "v2/reset_thumbv7em.rs",
+)]
+mod reset {}
+pub use reset::*;
 
 // `Token` types and memory safety
 //
