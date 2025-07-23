@@ -383,6 +383,7 @@ macro_rules! define_ahb_types {
 }
 
 #[hal_macro_helper]
+#[hal_cfg("clock-d5x")]
 define_ahb_types!(
     Hpb0 = 0,
     Hpb1 = 1,
@@ -409,4 +410,15 @@ define_ahb_types!(
     Qspi2x = 21,
     NvmCtrlSmeeProm = 22,
     NvmCtrlCache = 23,
+);
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+define_ahb_types!(
+    Hpb0 = 0,
+    Hpb1 = 1,
+    Hpb2 = 2,
+    Dsu = 3,
+    NvmCtrl = 4,
+    Dmac = 5,
+    Usb = 6,
 );
