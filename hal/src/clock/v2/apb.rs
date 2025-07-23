@@ -129,14 +129,14 @@ use paste::paste;
 
 #[hal_cfg("clock-d5x")]
 mod imports {
-    pub use crate::pac::mclk::{RegisterBlock as BLOCK, Apbamask, Apbbmask, Apbcmask, Apbdmask};
     pub use crate::pac::Mclk as Peripheral;
+    pub use crate::pac::mclk::{Apbamask, Apbbmask, Apbcmask, Apbdmask, RegisterBlock as BLOCK};
 }
 
 #[hal_cfg(any("clock-d11", "clock-d21"))]
 mod imports {
-    pub use crate::pac::pm::{RegisterBlock as BLOCK, Apbamask, Apbbmask, Apbcmask};
     pub use crate::pac::Pm as Peripheral;
+    pub use crate::pac::pm::{Apbamask, Apbbmask, Apbcmask, RegisterBlock as BLOCK};
 }
 
 use imports::*;
@@ -480,15 +480,9 @@ define_apb_types!(
         Tc3 = 11,
         Tc4 = 12,
         Tc5 = 13,
-        Tc6 = 14,
-        Tc7 = 15,
         Adc0 = 16,
         Ac = 17,
         Dac = 18,
-        Ptc = 19,
-        I2S = 20,
-        Ac1 = 21,
-        Tcc3 = 24,
     }
 );
 
@@ -629,7 +623,7 @@ pub struct ApbTokens {
     #[hal_cfg("clock-d5x")]
     pub adc1: ApbToken<Adc1>,
     pub dac: ApbToken<Dac>,
-    #[hal_cfg("i2s")]
+    #[hal_cfg(all("clock-d5x", "i2s"))] // TODO
     pub i2s: ApbToken<I2S>,
     #[hal_cfg("clock-d5x")]
     pub pcc: ApbToken<Pcc>,
@@ -646,11 +640,13 @@ impl ApbTokens {
     pub(super) unsafe fn new() -> Self {
         unsafe {
             Self {
-            #[hal_cfg("clock-d5x")]
+                #[hal_cfg("clock-d5x")]
                 freq_m: ApbToken::new(),
                 sercom0: ApbToken::new(),
                 sercom1: ApbToken::new(),
+                #[hal_cfg("tc0")]
                 tc0: ApbToken::new(),
+                #[hal_cfg("tc1")]
                 tc1: ApbToken::new(),
                 usb: ApbToken::new(),
                 ev_sys: ApbToken::new(),
@@ -658,6 +654,7 @@ impl ApbTokens {
                 sercom3: ApbToken::new(),
                 tcc0: ApbToken::new(),
                 tcc1: ApbToken::new(),
+                #[hal_cfg("tc2")]
                 tc2: ApbToken::new(),
                 tc3: ApbToken::new(),
                 #[hal_cfg("tc4")]
@@ -694,7 +691,7 @@ impl ApbTokens {
             #[hal_cfg("clock-d5x")]
                 adc1: ApbToken::new(),
                 dac: ApbToken::new(),
-                #[hal_cfg("i2s")]
+                #[hal_cfg(all("clock-d5x", "i2s"))] // TODO
                 i2s: ApbToken::new(),
             #[hal_cfg("clock-d5x")]
                 pcc: ApbToken::new(),
@@ -750,15 +747,15 @@ impl ApbClks {
             ApbClks {
                 pac: ApbClk::new(ApbToken::new()),
                 pm: ApbClk::new(ApbToken::new()),
-            #[hal_cfg("clock-d5x")]
+                #[hal_cfg("clock-d5x")]
                 mclk: ApbClk::new(ApbToken::new()),
-            #[hal_cfg("clock-d5x")]
+                #[hal_cfg("clock-d5x")]
                 rst_c: ApbClk::new(ApbToken::new()),
-            #[hal_cfg("clock-d5x")]
+                #[hal_cfg("clock-d5x")]
                 osc_ctrl: ApbClk::new(ApbToken::new()),
-            #[hal_cfg("clock-d5x")]
+                #[hal_cfg("clock-d5x")]
                 osc32k_ctrl: ApbClk::new(ApbToken::new()),
-            #[hal_cfg("clock-d5x")]
+                #[hal_cfg("clock-d5x")]
                 sup_c: ApbClk::new(ApbToken::new()),
                 gclk: ApbClk::new(ApbToken::new()),
                 wdt: ApbClk::new(ApbToken::new()),
@@ -767,11 +764,11 @@ impl ApbClks {
                 dsu: ApbClk::new(ApbToken::new()),
                 nvm_ctrl: ApbClk::new(ApbToken::new()),
                 port: ApbClk::new(ApbToken::new()),
-            #[hal_cfg("clock-d5x")]
+                #[hal_cfg("clock-d5x")]
                 ram_ecc: ApbClk::new(ApbToken::new()),
                 #[hal_cfg("gmac")]
                 gmac: ApbClk::new(ApbToken::new()),
-            #[hal_cfg("clock-d5x")]
+                #[hal_cfg("clock-d5x")]
                 qspi: ApbClk::new(ApbToken::new()),
             }
         }
