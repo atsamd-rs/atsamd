@@ -518,8 +518,8 @@ define_apb_types!(
     }
 );
 
-// See SAMD21/DA1 datasheet DS40001882H, 16.6.2.6 Peripheral Clock Masking
-// TODO I2S needs to be added (disabled on startup)
+// SAMD21/DA1 datasheet DS40001882H, Table 12-1. Peripherals Configuration
+// Summary TODO I2S needs to be added (disabled on startup)
 #[hal_cfg(any("clock-d11", "clock-d21"))]
 define_apb_types!(
     A {
@@ -541,7 +541,7 @@ define_apb_types!(
     }
     C {
         Pac2 = (0, any, all)
-        EvSys = (1, all, any) // TODO presume this is HMATRIX in data sheet DS40001882H
+        EvSys = (1, any, all)
         Sercom0 = (2, any, all)
         Sercom1 = (3, any, all)
         Sercom2 = (4, any, all)
@@ -554,9 +554,9 @@ define_apb_types!(
         Tc3 = (11, any, all)
         Tc4 = (12, any, all)
         Tc5 = (13, any, all)
-        Adc0 = (16, all, any)
-        Ac = (17, all, any)
-        Dac = (18, all, any)
+        Adc0 = (16, any, all)
+        Ac = (17, any, all)
+        Dac = (18, any, all)
     }
 );
 
