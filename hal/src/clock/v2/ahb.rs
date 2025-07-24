@@ -420,5 +420,5 @@ define_ahb_types!(
     Dsu = 3,
     NvmCtrl = 4,
     Dmac = 5,
-    Usb = 6,
+    Usb = 6, // TODO this should be conditional.  Others?
 );
