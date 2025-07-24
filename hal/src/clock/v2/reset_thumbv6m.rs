@@ -119,6 +119,8 @@ pub struct Tokens {
     pub gclks: gclk::GclkTokens,
     /// Tokens to create [`pclk::Pclk`]s
     pub pclks: pclk::PclkTokens,
+    /// Tokens to create the [`osc32k::Osc1k`] and [`osc32k::Osc32k`] clocks
+    pub osc32k: osc32k::Osc32kTokens,
     /// Tokens [`xosc::Xosc0`]
     pub xosc: xosc::XoscToken<xosc::Xosc0Id>,
     /// Tokens to create [`xosc32k::Xosc32kBase`], [`xosc32k::Xosc1k`] and
@@ -172,6 +174,7 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Cl
             dpll: dpll::DpllToken::new(),
             gclks: gclk::GclkTokens::new(),
             pclks: pclk::PclkTokens::new(),
+            osc32k: osc32k::Osc32kTokens::new(),
             xosc: xosc::XoscToken::new(),
             xosc32k: xosc32k::Xosc32kTokens::new(),
         };
