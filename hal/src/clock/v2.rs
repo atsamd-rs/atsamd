@@ -870,6 +870,10 @@ pub mod gclk;
     any("clock-d11", "clock-d21") => "v2/osc.rs",
 )]
 pub mod osc {}
+#[hal_module(
+    "sysctrl" => "v2/osc32k.rs",
+)]
+pub mod osc32k {}
 pub mod osculp32k;
 pub mod pclk;
 #[hal_module(
