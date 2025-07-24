@@ -296,13 +296,22 @@ enum ApbMask {
     D(ApbDMask),
 }
 
+/// Define several APB-related types
+///
+/// Define the [`DynApbId`], `ApbXMask`, [`ApbTokens`] and [`ApbClks`] types.
+///
+/// This macro uses a slight hack to simplify its implementation. It uses
+/// `#[cfg(all())]` and `#[cfg(any())]` to represent `#[cfg(true)]` and
+/// `#[cfg(false)]`, respectively. We can use this to selectively place each
+/// APB type into the [`ApbTokens`] struct or the [`ApbClks`] struct, depending
+/// on whether or not the corresponding bit is enabled at power-on reset.
 macro_rules! define_apb_types {
     (
         $(
             $Reg:ident {
                 $(
                     $( #[$( $cfg:tt )+] )?
-                    $Type:ident = $BIT:literal,
+                    $Type:ident = ($BIT:literal, $token:ident, $clk:ident)
                 )+
             }
         )+
@@ -367,122 +376,187 @@ macro_rules! define_apb_types {
                     }
                 }
             }
+
+            /// Set of [`ApbToken`]s for APB clocks that are disabled at power-on reset
+            pub struct ApbTokens {
+                $(
+                    $(
+                        $( #[$( $cfg )+] )?
+                        #[cfg($token())]
+                        pub [<$Type:snake>]: ApbToken<$Type>,
+                    )+
+                )+
+            }
+
+            impl ApbTokens {
+                /// Create the set of [`ApbToken`]s
+                ///
+                /// # Safety
+                ///
+                /// All invariants required by `ApbToken::new` must be upheld here as well.
+                #[inline]
+                pub(super) unsafe fn new() -> Self {
+                    Self {
+                        $(
+                            $(
+                                $( #[$( $cfg )+] )?
+                                #[cfg($token())]
+                                [<$Type:snake>]: unsafe { ApbToken::new() },
+                            )+
+                        )+
+                    }
+                }
+            }
+
+            /// Set of [`ApbClk`]s for APB clocks that are enabled at power-on reset
+            pub struct ApbClks {
+                $(
+                    $(
+                        $( #[$( $cfg )+] )?
+                        #[cfg($clk())]
+                        pub [<$Type:snake>]: ApbClk<$Type>,
+                    )+
+                )+
+            }
+
+            impl ApbClks {
+                /// Create the set of [`ApbClk`]s
+                ///
+                /// # Safety
+                ///
+                /// All invariants required by `ApbToken::new` must be upheld here as well.
+                #[inline]
+                pub(super) unsafe fn new() -> Self {
+                    Self {
+                        $(
+                            $(
+                                $( #[$( $cfg )+] )?
+                                #[cfg($clk())]
+                                [<$Type:snake>]: ApbClk::new( unsafe { ApbToken::new() } ),
+                            )+
+                        )+
+                    }
+                }
+            }
         }
     };
 }
 
+// (N, all, any) => include in clocks not tokens = enabled at power-on
 #[hal_macro_helper]
 #[hal_cfg("clock-d5x")]
 define_apb_types!(
     A {
-        Pac0 = 0,
-        Pm = 1,
-        Mclk = 2,
-        RstC = 3,
-        OscCtrl = 4,
-        Osc32kCtrl = 5,
-        SupC = 6,
-        Gclk = 7,
-        Wdt = 8,
-        Rtc = 9,
-        Eic = 10,
-        FreqM = 11,
-        Sercom0 = 12,
-        Sercom1 = 13,
-        Tc0 = 14,
-        Tc1 = 15,
+        Pac0 = (0, all, any)
+        Pm = (1, all, any)
+        Mclk = (2, all, any)
+        RstC = (3, all, any)
+        OscCtrl = (4, all, any)
+        Osc32kCtrl = (5, all, any)
+        SupC = (6, all, any)
+        Gclk = (7, all, any)
+        Wdt = (8, all, any)
+        Rtc = (9, all, any)
+        Eic = (10, all, any)
+        FreqM = (11, any, all)
+        Sercom0 = (12, any, all)
+        Sercom1 = (13, any, all)
+        Tc0 = (14, any, all)
+        Tc1 = (15, any, all)
     }
     B {
-        Usb = 0,
-        Dsu = 1,
-        NvmCtrl = 2,
-        Port = 4,
-        EvSys = 7,
-        Sercom2 = 9,
-        Sercom3 = 10,
-        Tcc0 = 11,
-        Tcc1 = 12,
-        Tc2 = 13,
-        Tc3 = 14,
-        RamEcc = 16,
+        Usb = (0, any, all)
+        Dsu = (1, all, any)
+        NvmCtrl = (2, all, any)
+        Port = (4, all, any)
+        EvSys = (7, any, all)
+        Sercom2 = (9, any, all)
+        Sercom3 = (10, any, all)
+        Tcc0 = (11, any, all)
+        Tcc1 = (12, any, all)
+        Tc2 = (13, any, all)
+        Tc3 = (14, any, all)
+        RamEcc = (16, all, any)
     }
     C {
         #[hal_cfg("gmac")]
-        Gmac = 2,
-        Tcc2 = 3,
+        Gmac = (2, all, any)
+        Tcc2 = (3, any, all)
         #[hal_cfg("tcc3")]
-        Tcc3 = 4,
+        Tcc3 = (4, any, all)
         #[hal_cfg("tc4")]
-        Tc4 = 5,
+        Tc4 = (5, any, all) // TODO double check this is correct
         #[hal_cfg("tc5")]
-        Tc5 = 6,
-        PDec = 7,
-        Ac = 8,
-        Aes = 9,
-        Trng = 10,
-        Icm = 11,
-        Qspi = 13,
-        Ccl = 14,
+        Tc5 = (6, any, all)
+        PDec = (7, any, all)
+        Ac = (8, any, all)
+        Aes = (9, any, all)
+        Trng = (10, any, all)
+        Icm = (11, any, all)
+        Qspi = (13, all, any)
+        Ccl = (14, any, all)
     }
     D {
-        Sercom4 = 0,
-        Sercom5 = 1,
+        Sercom4 = (0, all, any)
+        Sercom5 = (1, all, any)
         #[hal_cfg("sercom6")]
-        Sercom6 = 2,
+        Sercom6 = (2, all, any)
         #[hal_cfg("sercom7")]
-        Sercom7 = 3,
+        Sercom7 = (3, all, any)
         #[hal_cfg("tcc4")]
-        Tcc4 = 4,
+        Tcc4 = (4, all, any)
         #[hal_cfg("tc6")]
-        Tc6 = 5,
+        Tc6 = (5, all, any)
         #[hal_cfg("tc7")]
-        Tc7 = 6,
-        Adc0 = 7,
-        Adc1 = 8,
-        Dac = 9,
+        Tc7 = (6, all, any)
+        Adc0 = (7, all, any)
+        Adc1 = (8, all, any)
+        Dac = (9, all, any)
         #[hal_cfg("i2s")]
-        I2S = 10,
-        Pcc = 11,
+        I2S = (10, all, any)
+        Pcc = (11, all, any)
     }
 );
 
+// See SAMD21/DA1 datasheet DS40001882H, 16.6.2.6 Peripheral Clock Masking
+// TODO I2S needs to be added (disabled on startup)
 #[hal_cfg(any("clock-d11", "clock-d21"))]
 define_apb_types!(
     A {
-        Pac0 = 0,
-        Pm = 1,
-        SysCtrl = 2,
-        Gclk = 3,
-        Wdt = 4,
-        Rtc = 5,
-        Eic = 6,
+        Pac0 = (0, all, any)
+        Pm = (1, all, any)
+        SysCtrl = (2, all, any)
+        Gclk = (3, all, any)
+        Wdt = (4, all, any)
+        Rtc = (5, all, any)
+        Eic = (6, all, any)
     }
     B {
-        Pac1 = 0,
-        Dsu = 1,
-        NvmCtrl = 2,
-        Port = 3,
-        Dmac = 4,
-        Usb = 5,
+        Pac1 = (0, all, any)
+        Dsu = (1, all, any)
+        NvmCtrl = (2, all, any)
+        Port = (3, all, any)
+        Dmac = (4, all, any)
+        Usb = (5, all, any) // TODO should be conditional
     }
     C {
-        Pac2 = 0,
-        EvSys = 1,
-        Sercom0 = 2,
-        Sercom1 = 3,
-        Sercom2 = 4,
-        Sercom3 = 5,
-        Sercom4 = 6,
-        Sercom5 = 7,
-        Tcc0 = 8,
-        Tcc1 = 9,
-        Tcc2 = 10,
-        Tc3 = 11,
-        Tc4 = 12,
-        Tc5 = 13,
-        Adc0 = 16,
-        Ac = 17,
-        Dac = 18,
+        Pac2 = (0, any, all)
+        EvSys = (1, all, any) // TODO presume this is HMATRIX in data sheet DS40001882H
+        Sercom0 = (2, any, all)
+        Sercom1 = (3, any, all)
+        Sercom2 = (4, any, all)
+        Sercom3 = (5, any, all)
+        Sercom4 = (6, any, all)
+        Sercom5 = (7, any, all)
+        Tcc0 = (8, any, all)
+        Tcc1 = (9, any, all)
+        Tcc2 = (10, any, all)
+        Tc3 = (11, any, all)
+        Tc4 = (12, any, all)
+        Tc5 = (13, any, all)
+        Adc0 = (16, all, any)
+        Ac = (17, all, any)
+        Dac = (18, all, any)
     }
 );
 
@@ -561,216 +635,5 @@ impl<A: ApbId> ApbClk<A> {
     #[inline]
     fn free(self) -> ApbToken<A> {
         self.token
-    }
-}
-
-//==============================================================================
-// ApbTokens
-//==============================================================================
-
-/// Set of [`ApbToken`]s for APB clocks that are disabled at power-on reset
-
-#[hal_macro_helper]
-pub struct ApbTokens {
-    #[hal_cfg("clock-d5x")]
-    pub freq_m: ApbToken<FreqM>,
-    pub sercom0: ApbToken<Sercom0>,
-    pub sercom1: ApbToken<Sercom1>,
-    #[hal_cfg("clock-d5x")]
-    pub tc0: ApbToken<Tc0>,
-    #[hal_cfg("clock-d5x")]
-    pub tc1: ApbToken<Tc1>,
-    pub usb: ApbToken<Usb>,
-    pub ev_sys: ApbToken<EvSys>,
-    pub sercom2: ApbToken<Sercom2>,
-    pub sercom3: ApbToken<Sercom3>,
-    pub tcc0: ApbToken<Tcc0>,
-    pub tcc1: ApbToken<Tcc1>,
-    #[hal_cfg("clock-d5x")]
-    pub tc2: ApbToken<Tc2>,
-    pub tc3: ApbToken<Tc3>,
-    #[hal_cfg("tc4")]
-    pub tc4: ApbToken<Tc4>,
-    pub tcc2: ApbToken<Tcc2>,
-    #[hal_cfg("tcc3")]
-    pub tcc3: ApbToken<Tcc3>,
-    #[hal_cfg("tc5")]
-    pub tc5: ApbToken<Tc5>,
-    #[hal_cfg("clock-d5x")]
-    pub p_dec: ApbToken<PDec>,
-    pub ac: ApbToken<Ac>,
-    #[hal_cfg("clock-d5x")]
-    pub aes: ApbToken<Aes>,
-    #[hal_cfg("clock-d5x")]
-    pub trng: ApbToken<Trng>,
-    #[hal_cfg("clock-d5x")]
-    pub icm: ApbToken<Icm>,
-    #[hal_cfg("clock-d5x")]
-    pub ccl: ApbToken<Ccl>,
-    pub sercom4: ApbToken<Sercom4>,
-    pub sercom5: ApbToken<Sercom5>,
-    #[hal_cfg("sercom6")]
-    pub sercom6: ApbToken<Sercom6>,
-    #[hal_cfg("sercom7")]
-    pub sercom7: ApbToken<Sercom7>,
-    #[hal_cfg("tcc4")]
-    pub tcc4: ApbToken<Tcc4>,
-    #[hal_cfg("tc6")]
-    pub tc6: ApbToken<Tc6>,
-    #[hal_cfg("tc7")]
-    pub tc7: ApbToken<Tc7>,
-    pub adc0: ApbToken<Adc0>,
-    #[hal_cfg("clock-d5x")]
-    pub adc1: ApbToken<Adc1>,
-    pub dac: ApbToken<Dac>,
-    #[hal_cfg(all("clock-d5x", "i2s"))] // TODO
-    pub i2s: ApbToken<I2S>,
-    #[hal_cfg("clock-d5x")]
-    pub pcc: ApbToken<Pcc>,
-}
-
-impl ApbTokens {
-    /// Create the set of [`ApbToken`]s
-    ///
-    /// # Safety
-    ///
-    /// All invariants required by `ApbToken::new` must be upheld here as well.
-    #[inline]
-    #[hal_macro_helper]
-    pub(super) unsafe fn new() -> Self {
-        unsafe {
-            Self {
-                #[hal_cfg("clock-d5x")]
-                freq_m: ApbToken::new(),
-                sercom0: ApbToken::new(),
-                sercom1: ApbToken::new(),
-                #[hal_cfg("tc0")]
-                tc0: ApbToken::new(),
-                #[hal_cfg("tc1")]
-                tc1: ApbToken::new(),
-                usb: ApbToken::new(),
-                ev_sys: ApbToken::new(),
-                sercom2: ApbToken::new(),
-                sercom3: ApbToken::new(),
-                tcc0: ApbToken::new(),
-                tcc1: ApbToken::new(),
-                #[hal_cfg("tc2")]
-                tc2: ApbToken::new(),
-                tc3: ApbToken::new(),
-                #[hal_cfg("tc4")]
-                tc4: ApbToken::new(),
-                tcc2: ApbToken::new(),
-                #[hal_cfg("tcc3")]
-                tcc3: ApbToken::new(),
-                #[hal_cfg("tc5")]
-                tc5: ApbToken::new(),
-            #[hal_cfg("clock-d5x")]
-                p_dec: ApbToken::new(),
-                ac: ApbToken::new(),
-            #[hal_cfg("clock-d5x")]
-                aes: ApbToken::new(),
-            #[hal_cfg("clock-d5x")]
-                trng: ApbToken::new(),
-            #[hal_cfg("clock-d5x")]
-                icm: ApbToken::new(),
-            #[hal_cfg("clock-d5x")]
-                ccl: ApbToken::new(),
-                sercom4: ApbToken::new(),
-                sercom5: ApbToken::new(),
-                #[hal_cfg("sercom6")]
-                sercom6: ApbToken::new(),
-                #[hal_cfg("sercom7")]
-                sercom7: ApbToken::new(),
-                #[hal_cfg("tcc4")]
-                tcc4: ApbToken::new(),
-                #[hal_cfg("tc6")]
-                tc6: ApbToken::new(),
-                #[hal_cfg("tc7")]
-                tc7: ApbToken::new(),
-                adc0: ApbToken::new(),
-            #[hal_cfg("clock-d5x")]
-                adc1: ApbToken::new(),
-                dac: ApbToken::new(),
-                #[hal_cfg(all("clock-d5x", "i2s"))] // TODO
-                i2s: ApbToken::new(),
-            #[hal_cfg("clock-d5x")]
-                pcc: ApbToken::new(),
-            }
-        }
-    }
-}
-
-//==============================================================================
-// ApbClks
-//==============================================================================
-
-/// Set of [`ApbClk`]s for APB clocks that are enabled at power-on reset
-#[hal_macro_helper]
-pub struct ApbClks {
-    pub pac: ApbClk<Pac0>,
-    pub pm: ApbClk<Pm>,
-    #[hal_cfg("clock-d5x")]
-    pub mclk: ApbClk<Mclk>,
-    #[hal_cfg("clock-d5x")]
-    pub rst_c: ApbClk<RstC>,
-    #[hal_cfg("clock-d5x")]
-    pub osc_ctrl: ApbClk<OscCtrl>,
-    #[hal_cfg("clock-d5x")]
-    pub osc32k_ctrl: ApbClk<Osc32kCtrl>,
-    #[hal_cfg("clock-d5x")]
-    pub sup_c: ApbClk<SupC>,
-    pub gclk: ApbClk<Gclk>,
-    pub wdt: ApbClk<Wdt>,
-    pub rtc: ApbClk<Rtc>,
-    pub eic: ApbClk<Eic>,
-    pub dsu: ApbClk<Dsu>,
-    pub nvm_ctrl: ApbClk<NvmCtrl>,
-    pub port: ApbClk<Port>,
-    #[hal_cfg("clock-d5x")]
-    pub ram_ecc: ApbClk<RamEcc>,
-    #[hal_cfg("gmac")]
-    pub gmac: ApbClk<Gmac>,
-    #[hal_cfg("clock-d5x")]
-    pub qspi: ApbClk<Qspi>,
-}
-
-impl ApbClks {
-    /// Create the set of [`ApbClk`]s
-    ///
-    /// # Safety
-    ///
-    /// All invariants required by `ApbToken::new` must be upheld here as well.
-    #[inline]
-    #[hal_macro_helper]
-    pub(super) unsafe fn new() -> Self {
-        unsafe {
-            ApbClks {
-                pac: ApbClk::new(ApbToken::new()),
-                pm: ApbClk::new(ApbToken::new()),
-                #[hal_cfg("clock-d5x")]
-                mclk: ApbClk::new(ApbToken::new()),
-                #[hal_cfg("clock-d5x")]
-                rst_c: ApbClk::new(ApbToken::new()),
-                #[hal_cfg("clock-d5x")]
-                osc_ctrl: ApbClk::new(ApbToken::new()),
-                #[hal_cfg("clock-d5x")]
-                osc32k_ctrl: ApbClk::new(ApbToken::new()),
-                #[hal_cfg("clock-d5x")]
-                sup_c: ApbClk::new(ApbToken::new()),
-                gclk: ApbClk::new(ApbToken::new()),
-                wdt: ApbClk::new(ApbToken::new()),
-                rtc: ApbClk::new(ApbToken::new()),
-                eic: ApbClk::new(ApbToken::new()),
-                dsu: ApbClk::new(ApbToken::new()),
-                nvm_ctrl: ApbClk::new(ApbToken::new()),
-                port: ApbClk::new(ApbToken::new()),
-                #[hal_cfg("clock-d5x")]
-                ram_ecc: ApbClk::new(ApbToken::new()),
-                #[hal_cfg("gmac")]
-                gmac: ApbClk::new(ApbToken::new()),
-                #[hal_cfg("clock-d5x")]
-                qspi: ApbClk::new(ApbToken::new()),
-            }
-        }
     }
 }
