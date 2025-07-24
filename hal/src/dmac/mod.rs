@@ -64,7 +64,7 @@
 //! priority (in the default, ie static, arbitration scheme).
 //!
 //! By default, all priority levels are enabled when initializing the DMAC
-//! (see [`DmaController::init`]). Levels
+//! (see [`DmaController::new`]). Levels
 //! can be enabled or disabled through the
 //! [`DmaController::enable_levels`] and
 //! [`DmaController::disable_levels`] methods. These methods must be supplied a
@@ -119,7 +119,7 @@
 //!
 //! # Example
 //! ```
-//! let mut peripherals = Peripherals::take().unwrap();
+//! let mut peripherals = Periphserals::take().unwrap();
 //! let mut dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
 //! // Get individual handles to DMA channels
 //! let channels = dmac.split();
