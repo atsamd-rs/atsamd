@@ -1,6 +1,8 @@
-use crate::pac::sysctrl::osc8m::{FRANGESELECT_A, PRESCSELECT_A};
-use crate::pac::sysctrl::OSC8M;
-use crate::pac::SYSCTRL;
+//! Open-loop 8MHz oscillator
+
+use crate::pac::sysctrl::osc8m::{Frangeselect, Prescselect};
+use crate::pac::sysctrl::Osc8m;
+use crate::pac::Sysctrl;
 
 use fugit::RateExtU32;
 use crate::time::Hertz;
@@ -15,8 +17,8 @@ impl OscToken {
         Self(())
     }
 
-    fn osc8m(&self) -> &OSC8M {
-        unsafe { &(*SYSCTRL::PTR).osc8m }
+    fn osc8m(&self) -> &Osc8m {
+        unsafe { &(*Sysctrl::PTR).osc8m() }
     }
 
     fn enable(&mut self, settings: Settings) {
@@ -51,6 +53,7 @@ struct Settings {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
+/// Frequency ranges in Megahertz
 pub enum FreqRange {
     FourToSix,
     SixToEight,
@@ -58,7 +61,7 @@ pub enum FreqRange {
     ElevenToFifteen,
 }
 
-impl From<FreqRange> for FRANGESELECT_A {
+impl From<FreqRange> for Frangeselect {
     fn from(freq_range: FreqRange) -> Self {
         match freq_range {
             FreqRange::FourToSix => Self::_0,
@@ -77,7 +80,7 @@ pub enum Prescaler {
     Eight,
 }
 
-impl From<Prescaler> for PRESCSELECT_A {
+impl From<Prescaler> for Prescselect {
     fn from(prescaler: Prescaler) -> Self {
         match prescaler {
             Prescaler::One => Self::_0,
