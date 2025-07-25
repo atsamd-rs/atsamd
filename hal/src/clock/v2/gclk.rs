@@ -335,7 +335,7 @@
 //! [`Pins`]: crate::gpio::Pins
 //! [`Sercom0`]: crate::sercom::Sercom0
 
-use atsamd_hal_macros::hal_cfg;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::cmp::max;
 use core::marker::PhantomData;
 
@@ -544,13 +544,12 @@ impl<G: GclkId> GclkToken<G> {
 // DynGclkId
 //==============================================================================
 
-/// Value-level enum identifying one of 12 possible [`Gclk`]s
+/// Value-level enum identifying one of the possible [`Gclk`]s
 ///
-/// The variants of this enum identify one of the 12 possible generic clock
-/// generators.
+/// The variants of this enum identify one generic clock generator.
 ///
 /// `DynGclkId` is the value-level equivalent of [`GclkId`].
-#[hal_cfg(any("clock-d11", "clock-d21"))]
+#[hal_macro_helper]
 pub enum DynGclkId {
     Gclk0,
     Gclk1,
@@ -558,24 +557,17 @@ pub enum DynGclkId {
     Gclk3,
     Gclk4,
     Gclk5,
+    #[hal_cfg("gclk6")]
     Gclk6,
+    #[hal_cfg("gclk7")]
     Gclk7,
+    #[hal_cfg("gclk8")]
     Gclk8,
-}
-
-#[hal_cfg("clock-d5x")]
-pub enum DynGclkId {
-    Gclk0,
-    Gclk1,
-    Gclk2,
-    Gclk3,
-    Gclk4,
-    Gclk5,
-    Gclk6,
-    Gclk7,
-    Gclk8,
+    #[hal_cfg("gclk9")]
     Gclk9,
+    #[hal_cfg("gclk10")]
     Gclk10,
+    #[hal_cfg("gclk11")]
     Gclk11,
 }
 
