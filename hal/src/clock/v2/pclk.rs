@@ -89,7 +89,7 @@ use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::Source;
-use super::gclk::{DynGclkId, GclkId, with_gclk_max_expr};
+use super::gclk::{DynGclkId, GclkId};
 
 //==============================================================================
 // PclkToken
@@ -419,15 +419,29 @@ pub trait PclkId: Sealed {
 pub type DynPclkSourceId = DynGclkId;
 
 /// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
+#[hal_macro_helper]
 impl From<DynPclkSourceId> for Genselect {
     fn from(source: DynPclkSourceId) -> Self {
-        with_gclk_max_expr!(N in 0..=max {
-            match source {
-                #(
-                    DynGclkId::Gclk~N => Genselect::Gclk~N,
-                )*
-            }
-        })
+        match source {
+            DynPclkSourceId::Gclk0 => Genselect::Gclk0,
+            DynPclkSourceId::Gclk1 => Genselect::Gclk1,
+            DynPclkSourceId::Gclk2 => Genselect::Gclk2,
+            DynPclkSourceId::Gclk3 => Genselect::Gclk3,
+            DynPclkSourceId::Gclk4 => Genselect::Gclk4,
+            DynPclkSourceId::Gclk5 => Genselect::Gclk5,
+            #[hal_cfg("gclk6")]
+            DynPclkSourceId::Gclk6 => Genselect::Gclk6,
+            #[hal_cfg("gclk7")]
+            DynPclkSourceId::Gclk7 => Genselect::Gclk7,
+            #[hal_cfg("gclk8")]
+            DynPclkSourceId::Gclk8 => Genselect::Gclk8,
+            #[hal_cfg("gclk9")]
+            DynPclkSourceId::Gclk9 => Genselect::Gclk9,
+            #[hal_cfg("gclk10")]
+            DynPclkSourceId::Gclk10 => Genselect::Gclk10,
+            #[hal_cfg("gclk11")]
+            DynPclkSourceId::Gclk11 => Genselect::Gclk11,
+        }
     }
 }
 
