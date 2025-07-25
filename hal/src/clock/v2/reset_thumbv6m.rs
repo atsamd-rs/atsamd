@@ -20,7 +20,7 @@ use super::*;
 pub struct Pac {
     gclk: Gclk,
     pm: Pm,
-    sysctrl: Syctrl,
+    sysctrl: Sysctrl,
 }
 
 impl Pac {
@@ -35,7 +35,7 @@ impl Pac {
     ///
     /// Directly configuring clocks through the PAC API can invalidate the
     /// type-level guarantees of the `clock` module API.
-    pub unsafe fn steal(self) -> (Gclk, Pm, Syctrl) {
+    pub unsafe fn steal(self) -> (Gclk, Pm, Sysctrl) {
         (self.gclk, self.pm, self.sysctrl)
     }
 }
@@ -88,9 +88,11 @@ pub struct Clocks {
     /// Enabled APB clocks
     pub apbs: apb::ApbClks,
     /// Main system clock, driven at 1 MHz by the OSC8M divided by 8
-    pub gclk0: Enabled<gclk::Gclk0<osc8m::Osc8mId>, U1>,
+    pub gclk0: Enabled<gclk::Gclk0<osc::OscId>, U1>,
     /// GCLK2, driven at 32 kHz by the OSCULP
     pub gclk2: Enabled<gclk::Gclk2<osculp32k::OscUlp32kId>, U1>,
+    /// 8 MHz internal oscillator, divided by 8 for a 1 MHz output
+    pub osc: Enabled<osc::Osc, U1>,
     /// [`Pclk`](pclk::Pclk) for the watchdog timer, sourced from [`Gclk2`](gclk::Gclk2)
     pub wdt: pclk::Pclk<types::Wdt, gclk::Gclk2Id>,
     /// Always-enabled OSCULP oscillators
@@ -132,7 +134,7 @@ pub struct Tokens {
 ///
 /// See the [module-level documentation](super) for more details.
 #[inline]
-pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Syctrl) -> (Buses, Clocks, Tokens) {
+pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Clocks, Tokens) {
     // Safety: No bus, clock or token is instantiated more than once
     unsafe {
         let buses = Buses {
@@ -140,8 +142,8 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Syctrl) -> (Buses, Clo
             apb: apb::Apb::new(),
         };
         let pac = Pac { gclk, pm, sysctrl };
-        let osc8m = Enabled::new(osc8m::Osc8m::new(osc8m::Osc8mToken::new()));
-        let (gclk0, osc8m) = gclk::Gclk0::from_source(gclk::GclkToken::new(), osc8m);
+        let osc = Enabled::<_, U0>::new(osc::Osc::new(osc::OscToken::new()));
+        let (gclk0, osc8m) = gclk::Gclk0::from_source(gclk::GclkToken::new(), osc);
         let gclk0 = Enabled::new(gclk0);
         let base = osculp32k::OscUlp32kBase::new();
         let osculp1k = Enabled::new(osculp32k::OscUlp1k::new());
@@ -160,6 +162,7 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Syctrl) -> (Buses, Clo
             apbs: apb::ApbClks::new(),
             gclk0,
             gclk2,
+            osc,
             wdt,
             osculp32k,
         };
