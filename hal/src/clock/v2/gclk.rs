@@ -340,7 +340,6 @@ use core::cmp::max;
 use core::marker::PhantomData;
 
 use paste::paste;
-use seq_macro::seq;
 use typenum::{U0, U1};
 
 use crate::pac;
@@ -629,50 +628,43 @@ impl GclkId for Gclk1Id {
     type Divider = GclkDiv16;
 }
 
-macro_rules! with_gclk_max {
-    ($N:ident in $start:literal ..= max $mac:tt) => {
-        #[hal_cfg("clock-d5x")]
-        seq!($N in $start..=11 $mac);
-        #[hal_cfg(any("clock-d11", "clock-d21"))]
-        seq!($N in $start..=8 $mac);
-    };
-}
-
-#[hal_cfg("clock-d5x")]
-macro_rules! with_gclk_max_expr {
-    ($N:ident in $start:literal ..= max $mac:tt) => {
-        seq!($N in $start..=11 $mac)
-    };
-}
-
-#[hal_cfg(any("clock-d11", "clock-d21"))]
-macro_rules! with_gclk_max_expr {
-    ($N:ident in $start:literal ..= max $mac:tt) => {
-        seq!($N in $start..=8 $mac)
-    };
-}
-
-pub(super) use with_gclk_max_expr;
-
-with_gclk_max!(N in 2..=max {
-    paste! {
-        /// Type-level variant of [`GclkId`] representing the identity of
-        #[doc = "GCLK" N]
-        ///
-        /// See the documentation on [type-level programming] and specifically
-        /// [type-level enums] for more details.
-        ///
-        /// [type-level programming]: crate::typelevel
-        /// [type-level enums]: crate::typelevel#type-level-enums
-        pub enum [<Gclk N Id>] {}
-        impl Sealed for [<Gclk N Id>] {}
-        impl GclkId for [<Gclk N Id>] {
-            const DYN: DynGclkId = DynGclkId::Gclk~N;
-            const NUM: usize = N;
-            type Divider = GclkDiv8;
+macro_rules! make_gclk_id {
+    ($num:literal) => {
+        paste! {
+            #[doc = GCLK $num]
+            ///
+            /// See the documentation on [type-level programming] and specifically
+            /// [type-level enums] for more details.
+            ///
+            /// [type-level programming]: crate::typelevel
+            /// [type-level enums]: crate::typelevel#type-level-enums
+            pub enum [<Gclk $num Id>] {}
+            impl Sealed for [<Gclk $num Id>] {}
+            impl GclkId for [<Gclk $num Id>] {
+                const DYN: DynGclkId = DynGclkId::[<Gclk $num>];
+                const NUM: usize = $num;
+                type Divider = GclkDiv8;
+            }
         }
     }
-});
+}
+
+make_gclk_id!(2);
+make_gclk_id!(3);
+make_gclk_id!(4);
+make_gclk_id!(5);
+#[hal_cfg("gclk6")]
+make_gclk_id!(6);
+#[hal_cfg("gclk7")]
+make_gclk_id!(7);
+#[hal_cfg("gclk8")]
+make_gclk_id!(8);
+#[hal_cfg("gclk9")]
+make_gclk_id!(9);
+#[hal_cfg("gclk10")]
+make_gclk_id!(10);
+#[hal_cfg("gclk11")]
+make_gclk_id!(11);
 
 //==============================================================================
 // GclkDivider
@@ -1135,15 +1127,35 @@ pub type Gclk0<I> = Gclk<Gclk0Id, I>;
 /// on [`EnabledGclk0`] to configure the `Gclk` while it is actively running.
 pub type EnabledGclk0<I, N = U1> = EnabledGclk<Gclk0Id, I, N>;
 
-with_gclk_max!(G in 1..=max {
-    paste! {
-        /// Type alias for the corresponding [`Gclk`]
-        pub type Gclk~G<I> = Gclk<[<Gclk G Id>], I>;
-
-        /// Type alias for the corresponding [`EnabledGclk`]
-        pub type EnabledGclk~G<I, N = U0> = EnabledGclk<[<Gclk G Id>], I, N>;
+macro_rules! make_gclk {
+    ($num:literal) => {
+        paste! {
+            /// Type alias for the corresponding [`Gclk`]
+            pub type [<Gclk $num>]<I> = Gclk<[<Gclk $num Id>], I>;
+            
+            /// Type alias for the corresponding [`EnabledGclk`]
+            pub type [<EnabledGclk $num>]<I, N = U0> = EnabledGclk<[<Gclk $num Id>], I, N>;
+        }
     }
-});
+}
+
+make_gclk!(1);
+make_gclk!(2);
+make_gclk!(3);
+make_gclk!(4);
+make_gclk!(5);
+#[hal_cfg("gclk6")]
+make_gclk!(6);
+#[hal_cfg("gclk7")]
+make_gclk!(7);
+#[hal_cfg("gclk8")]
+make_gclk!(8);
+#[hal_cfg("gclk9")]
+make_gclk!(9);
+#[hal_cfg("gclk10")]
+make_gclk!(10);
+#[hal_cfg("gclk11")]
+make_gclk!(11);
 
 impl<G, I> Gclk<G, I>
 where
@@ -1483,38 +1495,66 @@ where
 // Tokens
 //==============================================================================
 
-with_gclk_max!(N in 1..=max {
-    paste! {
-        /// Set of [`GclkToken`]s representing the disabled [`Gclk`]s at
-        /// power-on reset
-        pub struct GclkTokens {
-            #(
-                /// [`GclkToken`] for
-                #[doc = "[`Gclk" N "`]"]
-                pub gclk~N: GclkToken<[<Gclk N Id>]>,
-            )*
-        }
+/// Set of [`GclkToken`]s representing the disabled [`Gclk`]s at
+/// power-on reset
+#[hal_macro_helper]
+pub struct GclkTokens {
+    pub gclk0: GclkToken<Gclk0Id>,
+    pub gclk1: GclkToken<Gclk1Id>,
+    pub gclk2: GclkToken<Gclk2Id>,
+    pub gclk3: GclkToken<Gclk3Id>,
+    pub gclk4: GclkToken<Gclk4Id>,
+    pub gclk5: GclkToken<Gclk5Id>,
+    #[hal_cfg("gclk6")]
+    pub gclk6: GclkToken<Gclk6Id>,
+    #[hal_cfg("gclk7")]
+    pub gclk7: GclkToken<Gclk7Id>,
+    #[hal_cfg("gclk8")]
+    pub gclk8: GclkToken<Gclk8Id>,
+    #[hal_cfg("gclk9")]
+    pub gclk9: GclkToken<Gclk9Id>,
+    #[hal_cfg("gclk10")]
+    pub gclk10: GclkToken<Gclk10Id>,
+    #[hal_cfg("gclk11")]
+    pub gclk11: GclkToken<Gclk11Id>,
+}
 
-        impl GclkTokens {
-            /// Create the set of [`GclkToken`]s
-            ///
-            /// # Safety
-            ///
-            /// All of the invariants required by `GclkToken::new` must be
-            /// upheld here as well.
-            #[inline]
-            #[allow(unreachable_code)] // TODO remove when todo is removed
-            pub(super) unsafe fn new(_nvmctrl: &mut Nvmctrl) -> Self {
-                // Use auto wait states
-                //nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
-                todo!();
-                GclkTokens {
-                    #( gclk~N: unsafe {GclkToken::new()}, )*
-                }
-            }
+#[hal_macro_helper]
+impl GclkTokens {
+    /// Create the set of [`GclkToken`]s
+    ///
+    /// # Safety
+    ///
+    /// All of the invariants required by `GclkToken::new` must be
+    /// upheld here as well.
+    #[inline]
+    #[allow(unreachable_code)] // TODO remove when todo is removed
+    pub(super) unsafe fn new(_nvmctrl: &mut Nvmctrl) -> Self {
+        // Use auto wait states
+        //nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
+        todo!();
+        GclkTokens {
+            gclk0: unsafe {GclkToken::new()},
+            gclk1: unsafe {GclkToken::new()},
+            gclk2: unsafe {GclkToken::new()},
+            gclk3: unsafe {GclkToken::new()},
+            gclk4: unsafe {GclkToken::new()},
+            gclk5: unsafe {GclkToken::new()},
+            #[hal_cfg("gclk6")]
+            gclk6: unsafe {GclkToken::new()},
+            #[hal_cfg("gclk7")]
+            gclk7: unsafe {GclkToken::new()},
+            #[hal_cfg("gclk8")]
+            gclk8: unsafe {GclkToken::new()},
+            #[hal_cfg("gclk9")]
+            gclk9: unsafe {GclkToken::new()},
+            #[hal_cfg("gclk10")]
+            gclk10: unsafe {GclkToken::new()},
+            #[hal_cfg("gclk11")]
+            gclk11: unsafe {GclkToken::new()},
         }
     }
-});
+}
 
 //==============================================================================
 // GclkOut
