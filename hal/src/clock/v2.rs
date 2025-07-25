@@ -854,6 +854,8 @@
 
 #![allow(clippy::manual_range_contains)]
 
+use atsamd_hal_macros::hal_module;
+
 use typenum::U0;
 
 use crate::time::Hertz;
@@ -864,14 +866,25 @@ pub mod apb;
 pub mod dfll;
 pub mod dpll;
 pub mod gclk;
+#[hal_module(
+    any("clock-d11", "clock-d21") => "v2/osc.rs",
+)]
+pub mod osc {}
 pub mod osculp32k;
 pub mod pclk;
-pub mod rtcosc;
+#[hal_module(
+    "clock-d5x" => "v2/rtcosc.rs",
+)]
+pub mod rtcosc {}
 pub mod types;
 pub mod xosc;
 pub mod xosc32k;
 
-mod reset;
+#[hal_module(
+    any("clock-d11", "clock-d21") => "v2/reset_thumbv6m.rs",
+    "clock-d5x" => "v2/reset_thumbv7em.rs",
+)]
+mod reset {}
 pub use reset::*;
 
 // `Token` types and memory safety

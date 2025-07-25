@@ -62,7 +62,7 @@
 //! [`clock::v2::types`]: super::types
 //! [`Sercom`]: crate::sercom::Sercom
 
-use atsamd_hal_macros::hal_macro_helper;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use core::marker::PhantomData;
 
@@ -70,7 +70,20 @@ use paste::paste;
 use seq_macro::seq;
 
 use crate::pac;
-use crate::pac::gclk::pchctrl::Genselect;
+
+#[hal_cfg("clock-d5x")]
+mod imports {
+    pub use crate::pac::gclk::Pchctrl as Ctrl;
+    pub use crate::pac::gclk::pchctrl::Genselect;
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod imports {
+    pub use crate::pac::gclk::Clkctrl as Ctrl;
+    pub use crate::pac::gclk::clkctrl::Genselect;
+}
+
+use imports::*;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
@@ -113,31 +126,48 @@ impl<P: PclkId> PclkToken<P> {
 
     /// Access the corresponding `PCHCTRL` register
     #[inline]
-    fn pchctrl(&self) -> &pac::gclk::Pchctrl {
+    fn ctrl(&self) -> &Ctrl {
         // Safety: Each `PclkToken` only has access to a mutually exclusive set
         // of registers for the corresponding `PclkId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { (*pac::Gclk::PTR).pchctrl(P::DYN as usize) }
+        #[hal_cfg("clock-d5x")]
+        unsafe {
+            &(*pac::Gclk::PTR).pchctrl(P::DYN as usize)
+        }
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        unsafe {
+            &(*pac::Gclk::PTR).clkctrl()
+        }
     }
 
     /// Set the [`Pclk`] source
     #[inline]
-    fn set_source(&mut self, source: DynPclkSourceId) {
-        self.pchctrl()
-            .modify(|_, w| w.r#gen().variant(source.into()));
-    }
-
-    /// Enable the [`Pclk`]
-    #[inline]
-    fn enable(&mut self) {
-        self.pchctrl().modify(|_, w| w.chen().set_bit());
+    fn enable(&mut self, source: DynPclkSourceId) {
+        self.ctrl().write(|w| {
+            w.r#gen().variant(source.into());
+            #[hal_cfg(any("clock-d11", "clock-d21"))]
+            {
+                w.clken().set_bit();
+                unsafe { w.id().bits(P::DYN as u8) }
+            }
+            #[hal_cfg("clock-d5x")]
+            w.chen().set_bit()
+        });
     }
 
     /// Disable the [`Pclk`]
     #[inline]
     fn disable(&mut self) {
-        self.pchctrl().modify(|_, w| w.chen().clear_bit());
+        self.ctrl().modify(|_, w| {
+            #[hal_cfg(any("clock-d11", "clock-d21"))]
+            {
+                w.clken().clear_bit();
+                unsafe { w.id().bits(P::DYN as u8) }
+            }
+            #[hal_cfg("clock-d5x")]
+            w.chen().clear_bit()
+        });
     }
 }
 
@@ -165,12 +195,22 @@ pub mod ids {
     pub use crate::sercom::Sercom7;
 
     pub use super::super::dfll::DfllId;
-    pub use super::super::dpll::{Dpll0Id, Dpll1Id};
+    pub use super::super::dpll::Dpll0Id;
+    #[hal_cfg("clock-d5x")]
+    pub use super::super::dpll::Dpll1Id;
 
+    // TODO crude hack
+    #[hal_cfg("clock-d5x")]
     pub use super::super::types::{
         Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5,
         EvSys6, EvSys7, EvSys8, EvSys9, EvSys10, EvSys11, FreqMMeasure, FreqMReference, PDec,
         Sdhc0, SlowClk, Tc0Tc1, Tc2Tc3, Tcc0Tcc1, Tcc2Tcc3, Usb,
+    };
+
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    pub use super::super::types::{
+        Ac, Adc0, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5, EvSys6, EvSys7, EvSys8,
+        EvSys9, EvSys10, EvSys11, SlowClk, Tcc0Tcc1, Usb,
     };
 
     #[hal_cfg("can0")]
@@ -185,10 +225,10 @@ pub mod ids {
     pub use super::super::types::Tc6Tc7;
     #[hal_cfg("tcc4")]
     pub use super::super::types::Tcc4;
+    #[hal_cfg("clock-d5x")] // TODO
     #[hal_cfg("i2s")]
     pub use super::super::types::{I2S0, I2S1};
 }
-
 use ids::*;
 
 /// Append the list of all [`PclkId`] types and `snake_case` id names to the
@@ -232,13 +272,17 @@ macro_rules! with_pclk_types_ids {
             $( $args )*
             (DfllId = 0, dfll)
             (Dpll0Id = 1, dpll0)
+            #[hal_cfg("clock-d5x")]
             (Dpll1Id = 2, dpll1)
             (SlowClk = 3, slow)
             (Eic = 4, eic)
+            #[hal_cfg("clock-d5x")]
             (FreqMMeasure = 5, freq_m_measure)
+            #[hal_cfg("clock-d5x")]
             (FreqMReference = 6, freq_m_reference)
             (Sercom0 = 7, sercom0)
             (Sercom1 = 8, sercom1)
+            #[hal_cfg("clock-d5x")]
             (Tc0Tc1 = 9, tc0_tc1)
             (Usb = 10, usb)
             (EvSys0 = 11, ev_sys0)
@@ -256,16 +300,20 @@ macro_rules! with_pclk_types_ids {
             (Sercom2 = 23, sercom2)
             (Sercom3 = 24, sercom3)
             (Tcc0Tcc1 = 25, tcc0_tcc1)
+            #[hal_cfg("clock-d5x")]
             (Tc2Tc3 = 26, tc2_tc3)
             #[hal_cfg("can0")]
             (Can0 = 27, can0)
             #[hal_cfg("can1")]
             (Can1 = 28, can1)
+            #[hal_cfg("clock-d5x")]
             (Tcc2Tcc3 = 29, tcc2_tcc3)
             #[hal_cfg(all("tc4", "tc5"))]
             (Tc4Tc5 = 30, tc4_tc5)
+            #[hal_cfg("clock-d5x")]
             (PDec = 31, pdec)
             (Ac = 32, ac)
+            #[hal_cfg("clock-d5x")]
             (Ccl = 33, ccl)
             (Sercom4 = 34, sercom4)
             (Sercom5 = 35, sercom5)
@@ -278,15 +326,18 @@ macro_rules! with_pclk_types_ids {
             #[hal_cfg(all("tc6", "tc7"))]
             (Tc6Tc7 = 39, tc6_tc7)
             (Adc0 = 40, adc0)
+            #[hal_cfg("clock-d5x")]
             (Adc1 = 41, adc1)
             (Dac = 42, dac)
-            #[hal_cfg("i2s")]
+            #[hal_cfg(all("i2s", "clock-d5x"))]
             (I2S0 = 43, i2s0)
-            #[hal_cfg("i2s")]
+            #[hal_cfg(all("i2s", "clock-d5x"))]
             (I2S1 = 44, i2s1)
+            #[hal_cfg("clock-d5x")]
             (Sdhc0 = 45, sdhc0)
             #[hal_cfg("sdhc1")]
             (Sdhc1 = 46, sdhc1)
+            #[hal_cfg("clock-d5x")]
             (CM4Trace = 47, cm4_trace)
         );
     };
@@ -368,15 +419,29 @@ pub trait PclkId: Sealed {
 pub type DynPclkSourceId = DynGclkId;
 
 /// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
+#[hal_macro_helper]
 impl From<DynPclkSourceId> for Genselect {
     fn from(source: DynPclkSourceId) -> Self {
-        seq!(N in 0..=11 {
-            match source {
-                #(
-                    DynGclkId::Gclk~N => Genselect::Gclk~N,
-                )*
-            }
-        })
+        match source {
+            DynPclkSourceId::Gclk0 => Genselect::Gclk0,
+            DynPclkSourceId::Gclk1 => Genselect::Gclk1,
+            DynPclkSourceId::Gclk2 => Genselect::Gclk2,
+            DynPclkSourceId::Gclk3 => Genselect::Gclk3,
+            DynPclkSourceId::Gclk4 => Genselect::Gclk4,
+            DynPclkSourceId::Gclk5 => Genselect::Gclk5,
+            #[hal_cfg("gclk6")]
+            DynPclkSourceId::Gclk6 => Genselect::Gclk6,
+            #[hal_cfg("gclk7")]
+            DynPclkSourceId::Gclk7 => Genselect::Gclk7,
+            #[hal_cfg("gclk8")]
+            DynPclkSourceId::Gclk8 => Genselect::Gclk8,
+            #[hal_cfg("gclk9")]
+            DynPclkSourceId::Gclk9 => Genselect::Gclk9,
+            #[hal_cfg("gclk10")]
+            DynPclkSourceId::Gclk10 => Genselect::Gclk10,
+            #[hal_cfg("gclk11")]
+            DynPclkSourceId::Gclk11 => Genselect::Gclk11,
+        }
     }
 }
 
@@ -472,8 +537,7 @@ where
         S: Source<Id = I> + Increment,
     {
         let freq = gclk.freq();
-        token.set_source(I::DYN);
-        token.enable();
+        token.enable(I::DYN);
         let pclk = Pclk::new(token, freq);
         (pclk, gclk.inc())
     }

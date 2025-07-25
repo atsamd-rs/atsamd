@@ -237,22 +237,41 @@
 //! [`GclkDivider`]: super::gclk::GclkDivider
 //! [`Pclk`]: super::pclk::Pclk
 
+use atsamd_hal_macros::hal_cfg;
 use core::marker::PhantomData;
 
 use fugit::RateExtU32;
 use typenum::U0;
 
-use crate::pac::oscctrl;
-use crate::pac::oscctrl::dpll::{Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus, dpllsyncbusy};
+#[hal_cfg("clock-d5x")]
+mod imports {
+    pub use super::super::xosc::Xosc1Id;
+    pub use crate::pac::Oscctrl as Peripheral;
+    pub use crate::pac::oscctrl::{
+        Dpll as PacDpll,
+        dpll::dpllctrlb::Refclkselect,
+        dpll::{Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus, dpllsyncbusy},
+    };
+}
 
-use crate::pac::oscctrl::dpll::dpllctrlb::Refclkselect;
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod imports {
+    pub use crate::pac::Sysctrl as Peripheral;
+    pub use crate::pac::sysctrl::{
+        RegisterBlock as PacDpll,
+        dpllctrlb::Refclkselect,
+        {Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus},
+    };
+}
+
+use imports::*;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::gclk::GclkId;
 use super::pclk::{Pclk, PclkId};
-use super::xosc::{Xosc0Id, Xosc1Id, XoscId};
+use super::xosc::{Xosc0Id, XoscId};
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
@@ -292,12 +311,19 @@ impl<D: DpllId> DpllToken<D> {
 
     /// Access the corresponding PAC `DPLL` struct
     #[inline]
-    fn dpll(&self) -> &oscctrl::Dpll {
+    fn dpll(&self) -> &PacDpll {
         // Safety: Each `DpllToken` only has access to a mutually exclusive set
         // of registers for the corresponding `DpllId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        unsafe { (*crate::pac::Oscctrl::PTR).dpll(D::NUM) }
+        #[hal_cfg("clock-d5x")]
+        unsafe {
+            &(*Peripheral::PTR).dpll(D::NUM)
+        }
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        unsafe {
+            &(*Peripheral::PTR)
+        }
     }
 
     /// Access the corresponding Dpllctrla register
@@ -318,6 +344,7 @@ impl<D: DpllId> DpllToken<D> {
         self.dpll().dpllratio()
     }
 
+    #[hal_cfg("clock-d5x")]
     /// Access the corresponding DPLLSYNCBUSY register for reading only
     #[inline]
     fn syncbusy(&self) -> dpllsyncbusy::R {
@@ -331,13 +358,22 @@ impl<D: DpllId> DpllToken<D> {
     }
 
     #[inline]
-    fn configure(&mut self, id: DynDpllSourceId, settings: Settings, prediv: u16) {
+    fn enable(&mut self, id: DynDpllSourceId, settings: Settings, prediv: u16) {
         // Convert the actual predivider to the `div` register field value
+        #[hal_cfg("clock-d5x")]
         let div = match id {
-            DynDpllSourceId::Xosc0 | DynDpllSourceId::Xosc1 => prediv / 2 - 1,
+            DynDpllSourceId::Xosc0 => prediv / 2 - 1,
+            DynDpllSourceId::Xosc1 => prediv / 2 - 1,
             _ => 0,
         };
-        self.ctrlb().modify(|_, w| {
+
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        let div = match id {
+            DynDpllSourceId::Xosc0 => prediv / 2 - 1,
+            _ => 0,
+        };
+
+        self.ctrlb().write(|w| {
             // Safety: The value is masked to the correct bit width by the PAC.
             // An invalid value could produce an invalid clock frequency, but
             // that does not break memory safety.
@@ -345,6 +381,7 @@ impl<D: DpllId> DpllToken<D> {
             w.refclk().variant(id.into());
             w.lbypass().bit(settings.lock_bypass);
             w.wuf().bit(settings.wake_up_fast);
+            #[hal_cfg("clock-d5x")]
             if let Some(cap) = settings.dco_filter {
                 w.dcoen().bit(true);
                 unsafe {
@@ -362,25 +399,37 @@ impl<D: DpllId> DpllToken<D> {
             w.ldr().bits(settings.mult - 1);
             w.ldrfrac().bits(settings.frac)
         });
+        #[hal_cfg("clock-d5x")]
         while self.syncbusy().dpllratio().bit_is_set() {}
         self.ctrla().modify(|_, w| {
             w.ondemand().bit(settings.on_demand);
-            w.runstdby().bit(settings.run_standby)
+            w.runstdby().bit(settings.run_standby);
+            w.enable().set_bit()
         });
-    }
-
-    /// Enable the [`Dpll`]
-    #[inline]
-    fn enable(&mut self) {
-        self.ctrla().modify(|_, w| w.enable().set_bit());
-        while self.syncbusy().enable().bit_is_set() {}
+        self.wait_enabled();
     }
 
     /// Disable the [`Dpll`]
     #[inline]
     fn disable(&mut self) {
         self.ctrla().modify(|_, w| w.enable().clear_bit());
+        self.wait_disabled();
+    }
+
+    #[inline]
+    fn wait_enabled(&self) {
+        #[hal_cfg("clock-d5x")]
         while self.syncbusy().enable().bit_is_set() {}
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        while self.status().enable().bit_is_clear() {}
+    }
+
+    #[inline]
+    fn wait_disabled(&self) {
+        #[hal_cfg("clock-d5x")]
+        while self.syncbusy().enable().bit_is_set() {}
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        while self.status().enable().bit_is_set() {}
     }
 
     /// Check the STATUS register to see if the clock is locked
@@ -457,10 +506,13 @@ impl DpllId for Dpll0Id {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
+#[hal_cfg("clock-d5x")]
 pub enum Dpll1Id {}
 
+#[hal_cfg("clock-d5x")]
 impl Sealed for Dpll1Id {}
 
+#[hal_cfg("clock-d5x")]
 impl DpllId for Dpll1Id {
     const DYN: DynDpllId = DynDpllId::Dpll1;
     const NUM: usize = 1;
@@ -476,6 +528,7 @@ impl DpllId for Dpll1Id {
 /// a given [`Dpll`].
 ///
 /// `DynDpllSourceId` is the value-level equivalent of [`DpllSourceId`].
+#[hal_cfg("clock-d5x")]
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum DynDpllSourceId {
     /// The DPLL is driven by a [`Pclk`]
@@ -488,6 +541,7 @@ pub enum DynDpllSourceId {
     Xosc32k,
 }
 
+#[hal_cfg("clock-d5x")]
 impl From<DynDpllSourceId> for Refclkselect {
     fn from(source: DynDpllSourceId) -> Self {
         match source {
@@ -495,6 +549,28 @@ impl From<DynDpllSourceId> for Refclkselect {
             DynDpllSourceId::Xosc0 => Refclkselect::Xosc0,
             DynDpllSourceId::Xosc1 => Refclkselect::Xosc1,
             DynDpllSourceId::Xosc32k => Refclkselect::Xosc32,
+        }
+    }
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum DynDpllSourceId {
+    /// The DPLL is driven by a [`Pclk`]
+    Pclk,
+    /// The DPLL is driven by [`Xosc0`](super::xosc::Xosc0)
+    Xosc0,
+    /// The DPLL is driven by [`Xosc32k`](super::xosc32k::Xosc32k)
+    Xosc32k,
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+impl From<DynDpllSourceId> for Refclkselect {
+    fn from(source: DynDpllSourceId) -> Self {
+        match source {
+            DynDpllSourceId::Pclk => Refclkselect::Gclk,
+            DynDpllSourceId::Xosc0 => Refclkselect::Ref1,
+            DynDpllSourceId::Xosc32k => Refclkselect::Ref0,
         }
     }
 }
@@ -533,6 +609,7 @@ impl DpllSourceId for Xosc0Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc0;
     type Reference<D: DpllId> = settings::Xosc;
 }
+#[hal_cfg("clock-d5x")]
 impl DpllSourceId for Xosc1Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc1;
     type Reference<D: DpllId> = settings::Xosc;
@@ -733,6 +810,7 @@ where
 pub type Dpll0<M> = Dpll<Dpll0Id, M>;
 
 /// Type alias for the corresponding [`Dpll`]
+#[hal_cfg("clock-d5x")]
 pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 
 impl<D, I> Dpll<D, I>
@@ -1049,8 +1127,7 @@ where
     pub fn enable_unchecked(mut self) -> EnabledDpll<D, I> {
         use settings::Reference;
         let prediv = self.reference.prediv();
-        self.token.configure(I::DYN, self.settings, prediv);
-        self.token.enable();
+        self.token.enable(I::DYN, self.settings, prediv);
         Enabled::new(self)
     }
 }
@@ -1074,6 +1151,7 @@ pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
 pub type EnabledDpll0<I, N = U0> = EnabledDpll<Dpll0Id, I, N>;
 
 /// Type alias for the corresponding [`EnabledDpll`]
+#[hal_cfg("clock-d5x")]
 pub type EnabledDpll1<I, N = U0> = EnabledDpll<Dpll1Id, I, N>;
 
 impl<D, I> EnabledDpll<D, I>
