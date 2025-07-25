@@ -866,6 +866,10 @@ pub mod apb;
 pub mod dfll;
 pub mod dpll;
 pub mod gclk;
+#[hal_module(
+    any("clock-d11", "clock-d21") => "v2/osc.rs",
+)]
+pub mod osc {}
 pub mod osculp32k;
 pub mod pclk;
 #[hal_module(
