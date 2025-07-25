@@ -276,6 +276,7 @@ use atsamd_hal_macros::hal_cfg;
 
 #[hal_cfg("clock-d5x")]
 mod imports {
+    pub use crate::pac::Oscctrl as PERIPHERAL;
     pub use crate::pac::oscctrl::{
         Dfllctrla as Dfllctrl, Dfllctrlb, Dfllmul, Dfllsync, RegisterBlock,
     };
@@ -283,6 +284,7 @@ mod imports {
 
 #[hal_cfg(any("clock-d11", "clock-d21"))]
 mod imports {
+    pub use crate::pac::Sysctrl as PERIPHERAL;
     pub use crate::pac::sysctrl::{Dfllctrl, Dfllmul, Dfllsync, RegisterBlock};
 }
 
@@ -329,14 +331,7 @@ impl DfllToken {
         // of registers for the DFLL, and we use a shared reference to the
         // register block. See the notes on `Token` types and memory safety in
         // the root of the `clock` module for more details.
-        #[hal_cfg("clock-d5x")]
-        unsafe {
-            &*crate::pac::Oscctrl::PTR
-        }
-        #[hal_cfg(any("clock-d11", "clock-d21"))]
-        unsafe {
-            &*crate::pac::Sysctrl::PTR
-        }
+        unsafe { &*PERIPHERAL::PTR }
     }
 
     #[hal_cfg("clock-d5x")]
