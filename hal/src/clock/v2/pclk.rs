@@ -67,7 +67,6 @@ use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::marker::PhantomData;
 
 use paste::paste;
-use seq_macro::seq;
 
 use crate::pac;
 
@@ -184,11 +183,20 @@ impl<P: PclkId> PclkToken<P> {
 /// ```
 /// use atsamd_hal::clock::v2::pclk::ids::*;
 /// ```
+
 pub mod ids {
     use atsamd_hal_macros::hal_cfg;
 
-    pub use crate::sercom::{Sercom0, Sercom1, Sercom2, Sercom3, Sercom4, Sercom5};
+    pub use crate::sercom::{Sercom0, Sercom1};
 
+    #[hal_cfg("sercom2")]
+    pub use crate::sercom::Sercom2;
+    #[hal_cfg("sercom3")]
+    pub use crate::sercom::Sercom3;
+    #[hal_cfg("sercom4")]
+    pub use crate::sercom::Sercom4;
+    #[hal_cfg("sercom5")]
+    pub use crate::sercom::Sercom5;
     #[hal_cfg("sercom6")]
     pub use crate::sercom::Sercom6;
     #[hal_cfg("sercom7")]
@@ -209,8 +217,9 @@ pub mod ids {
 
     #[hal_cfg(any("clock-d11", "clock-d21"))]
     pub use super::super::types::{
-        Ac, Adc0, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5, EvSys6, EvSys7, EvSys8,
-        EvSys9, EvSys10, EvSys11, SlowClk, Tcc0Tcc1, Usb,
+        Ac, AcAna, AcDig, Adc0, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5, EvSys6,
+        EvSys7, EvSys8, EvSys9, EvSys10, EvSys11, Ptc, Rtc, SercomSlow, SlowClk, Tcc0Tcc1, Usb,
+        Wdt,
     };
 
     #[hal_cfg("can0")]
@@ -225,7 +234,12 @@ pub mod ids {
     pub use super::super::types::Tc6Tc7;
     #[hal_cfg("tcc4")]
     pub use super::super::types::Tcc4;
-    #[hal_cfg("clock-d5x")] // TODO
+
+    // TODO would it make sense to just pub use super::super::types::* and
+    // conditionally restrict what types we make there?
+    #[hal_cfg(all("tcc2", "tc3-d21"))]
+    pub use super::super::types::Tcc2Tc3;
+
     #[hal_cfg("i2s")]
     pub use super::super::types::{I2S0, I2S1};
 }
@@ -265,6 +279,7 @@ use ids::*;
 ///
 /// with_pclk_types_ids!(some_macro!(first, second));
 /// ```
+#[hal_cfg("clock-d5x")]
 #[hal_macro_helper]
 macro_rules! with_pclk_types_ids {
     ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
@@ -272,7 +287,6 @@ macro_rules! with_pclk_types_ids {
             $( $args )*
             (DfllId = 0, dfll)
             (Dpll0Id = 1, dpll0)
-            #[hal_cfg("clock-d5x")]
             (Dpll1Id = 2, dpll1)
             (SlowClk = 3, slow)
             (Eic = 4, eic)
@@ -329,9 +343,9 @@ macro_rules! with_pclk_types_ids {
             #[hal_cfg("clock-d5x")]
             (Adc1 = 41, adc1)
             (Dac = 42, dac)
-            #[hal_cfg(all("i2s", "clock-d5x"))]
+            #[hal_cfg("i2s")]
             (I2S0 = 43, i2s0)
-            #[hal_cfg(all("i2s", "clock-d5x"))]
+            #[hal_cfg("i2s")]
             (I2S1 = 44, i2s1)
             #[hal_cfg("clock-d5x")]
             (Sdhc0 = 45, sdhc0)
@@ -339,6 +353,95 @@ macro_rules! with_pclk_types_ids {
             (Sdhc1 = 46, sdhc1)
             #[hal_cfg("clock-d5x")]
             (CM4Trace = 47, cm4_trace)
+        );
+    };
+}
+
+#[hal_cfg("clock-d21")]
+#[hal_macro_helper]
+macro_rules! with_pclk_types_ids {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        $some_macro!(
+            $( $args )*
+            (DfllId = 0, dfll)
+            (Dpll0Id = 1, dpll)
+            (SlowClk = 2, slow)
+            (Wdt = 3, wdt)
+            (Rtc = 4, rtc)
+            (Eic = 5, eic)
+            (Usb = 6, usb)
+            (EvSys0 = 7, ev_sys0)
+            (EvSys1 = 8, ev_sys1)
+            (EvSys2 = 9, ev_sys2)
+            (EvSys3 = 10, ev_sys3)
+            (EvSys4 = 11, ev_sys4)
+            (EvSys5 = 12, ev_sys5)
+            (EvSys6 = 13, ev_sys6)
+            (EvSys7 = 14, ev_sys7)
+            (EvSys8 = 15, ev_sys8)
+            (EvSys9 = 16, ev_sys9)
+            (EvSys10 = 17, ev_sys10)
+            (EvSys11 = 18, ev_sys11)
+            (SercomSlow = 19, sercom_slow)
+            (Sercom0 = 20, sercom0)
+            (Sercom1 = 21, sercom1)
+            #[hal_cfg("sercom2")]
+            (Sercom2 = 22, sercom2)
+            #[hal_cfg("sercom3")]
+            (Sercom3 = 23, sercom3)
+            #[hal_cfg("sercom4")]
+            (Sercom4 = 24, sercom4)
+            #[hal_cfg("sercom5")]
+            (Sercom5 = 25, sercom5)
+            (Tcc0Tcc1 = 26, tcc0_tcc1)
+            (Tcc2Tc3 = 27, tcc2_tc3)
+            (Tc4Tc5 = 28, tc4_tc5)
+            #[hal_cfg(all("tc6", "tc7"))]
+            (Tc6Tc7 = 29, tc6_tc7)
+            (Adc0 = 30, adc)
+            (AcDig = 31, ac_dig)
+            (AcAna = 32, ac_ana)
+            (Dac = 33, dac)
+            (Ptc = 34, ptc)
+            #[hal_cfg("i2s")]
+            (I2S0 = 35, i2s0)
+            #[hal_cfg("i2s")]
+            (I2S1 = 36, i2s1)
+        );
+    };
+}
+
+#[hal_cfg("clock-d11")]
+#[hal_macro_helper]
+macro_rules! with_pclk_types_ids {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        $some_macro!(
+            $( $args )*
+            (DfllId = 0, dfll)
+            (Dpll0Id = 1, dpll)
+            (SlowClk = 2, slow)
+            (Wdt = 3, wdt)
+            (Rtc = 4, rtc)
+            (Eic = 5, eic)
+            (Usb = 6, usb)
+            (EvSys0 = 7, ev_sys0)
+            (EvSys1 = 8, ev_sys1)
+            (EvSys2 = 9, ev_sys2)
+            (EvSys3 = 10, ev_sys3)
+            (EvSys4 = 11, ev_sys4)
+            (EvSys5 = 12, ev_sys5)
+            (SercomSlow = 13, sercom_slow)
+            (Sercom0 = 14, sercom0)
+            (Sercom1 = 15, sercom1)
+            #[hal_cfg("sercom2")]
+            (Sercom2 = 16, sercom2)
+            (Tcc0 = 17, tcc0)
+            (Tc1Tc2 = 18, tc1_tc2)
+            (Adc0 = 19, adc)
+            (AcDig = 20, ac_dig)
+            (AcAna = 21, ac_ana)
+            (Dac = 22, dac)
+            (Ptc = 23, ptc)
         );
     };
 }
