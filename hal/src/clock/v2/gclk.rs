@@ -646,7 +646,7 @@ macro_rules! make_gclk_id {
                 type Divider = GclkDiv8;
             }
         }
-    }
+    };
 }
 
 make_gclk_id!(2);
@@ -1132,11 +1132,11 @@ macro_rules! make_gclk {
         paste! {
             /// Type alias for the corresponding [`Gclk`]
             pub type [<Gclk $num>]<I> = Gclk<[<Gclk $num Id>], I>;
-            
+
             /// Type alias for the corresponding [`EnabledGclk`]
             pub type [<EnabledGclk $num>]<I, N = U0> = EnabledGclk<[<Gclk $num Id>], I, N>;
         }
-    }
+    };
 }
 
 make_gclk!(1);
@@ -1534,24 +1534,24 @@ impl GclkTokens {
         //nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
         todo!();
         GclkTokens {
-            gclk0: unsafe {GclkToken::new()},
-            gclk1: unsafe {GclkToken::new()},
-            gclk2: unsafe {GclkToken::new()},
-            gclk3: unsafe {GclkToken::new()},
-            gclk4: unsafe {GclkToken::new()},
-            gclk5: unsafe {GclkToken::new()},
+            gclk0: unsafe { GclkToken::new() },
+            gclk1: unsafe { GclkToken::new() },
+            gclk2: unsafe { GclkToken::new() },
+            gclk3: unsafe { GclkToken::new() },
+            gclk4: unsafe { GclkToken::new() },
+            gclk5: unsafe { GclkToken::new() },
             #[hal_cfg("gclk6")]
-            gclk6: unsafe {GclkToken::new()},
+            gclk6: unsafe { GclkToken::new() },
             #[hal_cfg("gclk7")]
-            gclk7: unsafe {GclkToken::new()},
+            gclk7: unsafe { GclkToken::new() },
             #[hal_cfg("gclk8")]
-            gclk8: unsafe {GclkToken::new()},
+            gclk8: unsafe { GclkToken::new() },
             #[hal_cfg("gclk9")]
-            gclk9: unsafe {GclkToken::new()},
+            gclk9: unsafe { GclkToken::new() },
             #[hal_cfg("gclk10")]
-            gclk10: unsafe {GclkToken::new()},
+            gclk10: unsafe { GclkToken::new() },
             #[hal_cfg("gclk11")]
-            gclk11: unsafe {GclkToken::new()},
+            gclk11: unsafe { GclkToken::new() },
         }
     }
 }
