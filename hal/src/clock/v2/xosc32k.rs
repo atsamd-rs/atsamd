@@ -362,7 +362,14 @@ mod imports {
 
 use imports::*;
 
-use crate::gpio::{FloatingDisabled, PA00, PA01, Pin};
+#[hal_cfg("clock-d21")]
+pub use crate::gpio::{PA00 as XIn32Id, PA01 as XOut32Id};
+#[hal_cfg("clock-d5x")]
+pub use crate::gpio::{PA00 as XIn32Id, PA01 as XOut32Id};
+#[hal_cfg("clock-d11")]
+pub use crate::gpio::{PA08 as XIn32Id, PA09 as XOut32Id};
+
+use crate::gpio::{FloatingDisabled, Pin};
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
@@ -680,10 +687,10 @@ impl Default for Settings {
 //==============================================================================
 
 /// Type alias for the XOSC32K input [`Pin`]
-pub type XIn32 = Pin<PA00, FloatingDisabled>;
+pub type XIn32 = Pin<XIn32Id, FloatingDisabled>;
 
 /// Type alias for the XOSC32K output [`Pin`]
-pub type XOut32 = Pin<PA01, FloatingDisabled>;
+pub type XOut32 = Pin<XOut32Id, FloatingDisabled>;
 
 //==============================================================================
 // SafeClockDiv
