@@ -3,7 +3,8 @@
 //! ## Overview
 //!
 //! The `osculp32k` module provides access to the 32 kHz ultra low power
-//! internal oscillator (OSCULP32K) within the `OSC32KCTRL` peripheral.
+//! internal oscillator (OSCULP32K) within the `OSC32KCTRL` or `SYSCTRL`
+//! peripheral.
 //!
 //! The `OSCULP32K` clock is unlike most other clocks. First, it is an internal
 //! clock that is always enabled and can't be disabled. And second, it has two
@@ -13,9 +14,9 @@
 //! We can see, then, that the `OSCULP32K` peripheral forms its own, miniature
 //! clock tree. There is a 1:N producer clock that is always enabled; and there
 //! are two possible consumer clocks that can be independently and optionally
-//! enabled. In fact, this structure is illustrated by the `OSCULP32K`
-//! register, which has no regular `ENABLE` bit and two different enable bits
-//! for clock output, `EN32K` and `EN1K`.
+//! enabled. In fact, this structure is illustrated by the `OSCULP32K` register,
+//! which has no regular `ENABLE` bit and two different enable bits for clock
+//! output, `EN32K` and `EN1K`.
 //!
 //! To represent this structure in the type system, we divide the `OSCULP32K`
 //! peripheral into these three clocks. Users get access to the 1:N
@@ -165,21 +166,16 @@ use atsamd_hal_macros::hal_cfg;
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[hal_cfg("clock-d5x")]
-mod imports {
-    pub use crate::pac::osc32kctrl::Osculp32k;
-    pub use crate::typelevel::{Decrement, Increment};
-}
+#[hal_cfg("osc32kctrl")]
+use crate::pac::osc32kctrl::Osculp32k;
+#[hal_cfg("osc32kctrl")]
+use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement};
 
-#[hal_cfg(any("clock-d11", "clock-d21"))]
-mod imports {
-    pub use crate::pac::sysctrl::Osculp32k;
-}
-
-use imports::*;
+#[hal_cfg("sysctrl")]
+use crate::pac::sysctrl::Osculp32k;
 
 use crate::time::Hertz;
-use crate::typelevel::{PrivateDecrement, PrivateIncrement, Sealed};
+use crate::typelevel::Sealed;
 
 use super::{Enabled, Source};
 
@@ -223,39 +219,17 @@ pub struct OscUlp1kToken(());
 /// first exchange the token for an actual clock with [`OscUlp32k::enable`].
 pub struct OscUlp32kToken(());
 
-/// Set of tokens representing the disabled OSCULP32K clocks power-on reset
-pub struct OscUlp32kTokens {
-    pub osculp1k: OscUlp1kToken,
-    pub osculp32k: OscUlp32kToken,
-}
-
-impl OscUlp32kTokens {
-    /// Create the set of tokens
-    ///
-    /// # Safety
-    ///
-    /// There must never be more than one instance of each token at any given
-    /// time. See the notes on `Token` types and memory safety in the root of
-    /// the `clock` module for more details.
-    pub(super) unsafe fn new() -> Self {
-        Self {
-            osculp1k: OscUlp1kToken(()),
-            osculp32k: OscUlp32kToken(()),
-        }
-    }
-}
-
 impl OscUlp32kBaseToken {
     #[inline]
     fn osculp32k(&self) -> &Osculp32k {
         // Safety: The `OscUlp32kBaseToken` has exclusive access to the
         // `OSCULP32K` register. See the notes on `Token` types and memory
         // safety in the root of the `clock` module for more details.
-        #[hal_cfg("clock-d5x")]
+        #[hal_cfg("osc32kctrl")]
         unsafe {
             &(*crate::pac::Osc32kctrl::PTR).osculp32k()
         }
-        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        #[hal_cfg("sysctrl")]
         unsafe {
             &(*crate::pac::Sysctrl::PTR).osculp32k()
         }
@@ -336,9 +310,9 @@ impl OscUlp32kBase {
     /// the notes on `Token` types and memory safety in the root of the `clock`
     /// module for more details.
     #[inline]
-    pub(super) unsafe fn new() -> EnabledOscUlp32kBase {
+    pub(super) unsafe fn new() -> Self {
         let token = OscUlp32kBaseToken(());
-        Enabled::new(Self { token })
+        Self { token }
     }
 }
 
@@ -401,7 +375,15 @@ pub struct OscUlp1k {
 pub type EnabledOscUlp1k<N = U0> = Enabled<OscUlp1k, N>;
 
 impl OscUlp1k {
-    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    /// Create the ultra-low power base oscillator
+    ///
+    /// # Safety
+    ///
+    /// Because an `OscUlp1k` contains an `OscUlp1kToken`, there must never be
+    /// more than one instance of this struct at any given time. See the notes
+    /// on `Token` types and memory safety in the root of the `clock` module for
+    /// more details.
+    #[inline]
     pub(super) unsafe fn new() -> Self {
         let token = OscUlp1kToken(());
         Self { token }
@@ -473,7 +455,15 @@ pub struct OscUlp32k {
 pub type EnabledOscUlp32k<N = U0> = Enabled<OscUlp32k, N>;
 
 impl OscUlp32k {
-    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    /// Create the ultra-low power base oscillator
+    ///
+    /// # Safety
+    ///
+    /// Because an `OscUlp32k` contains an `OscUlp32kToken`, there must never be
+    /// more than one instance of this struct at any given time. See the notes
+    /// on `Token` types and memory safety in the root of the `clock` module for
+    /// more details.
+    #[inline]
     pub(super) unsafe fn new() -> Self {
         let token = OscUlp32kToken(());
         Self { token }
