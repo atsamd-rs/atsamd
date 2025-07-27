@@ -399,6 +399,7 @@ impl<G: GclkId> GclkToken<G> {
     }
 
     /// SYNCBUSY register mask for the corresponding GCLK
+    #[hal_cfg("clock-d5x")]
     const MASK: u16 = 1 << G::NUM;
 
     /// Provide a reference to the corresponding [`Genctrl`] register
@@ -814,6 +815,7 @@ pub trait GclkIo: PinId {
 
 // These implementations are much easier to read with `#[rustfmt::skip]`
 #[rustfmt::skip]
+#[hal_cfg("clock-d5x")]
 mod gclkio_impl {
     use atsamd_hal_macros::hal_cfg;
 
@@ -863,6 +865,80 @@ mod gclkio_impl {
     impl GclkIo for gpio::PB22 { type GclkId = Gclk0Id; }
     #[hal_cfg("pb23")]
     impl GclkIo for gpio::PB23 { type GclkId = Gclk1Id; }
+}
+
+#[rustfmt::skip]
+#[hal_cfg("clock-d21")]
+mod gclkio_impl {
+    use super::*;
+
+    impl GclkIo for gpio::PA10 { type GclkId = Gclk4Id; }
+    impl GclkIo for gpio::PA11 { type GclkId = Gclk5Id; }
+    impl GclkIo for gpio::PA14 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA15 { type GclkId = Gclk1Id; }
+    impl GclkIo for gpio::PA16 { type GclkId = Gclk2Id; }
+    impl GclkIo for gpio::PA17 { type GclkId = Gclk3Id; }
+    #[hal_cfg("pa20")]
+    impl GclkIo for gpio::PA20 { type GclkId = Gclk4Id; }
+    #[hal_cfg("pa21")]
+    impl GclkIo for gpio::PA21 { type GclkId = Gclk5Id; }
+    impl GclkIo for gpio::PA22 { type GclkId = Gclk6Id; }
+    impl GclkIo for gpio::PA23 { type GclkId = Gclk7Id; }
+    #[hal_cfg("pa27")]
+    impl GclkIo for gpio::PA27 { type GclkId = Gclk0Id; }
+    #[hal_cfg("pa28")]
+    impl GclkIo for gpio::PA28 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA30 { type GclkId = Gclk0Id; }
+
+    #[hal_cfg("pb10")]
+    impl GclkIo for gpio::PB10 { type GclkId = Gclk4Id; }
+    #[hal_cfg("pb11")]
+    impl GclkIo for gpio::PB11 { type GclkId = Gclk5Id; }
+    #[hal_cfg("pb12")]
+    impl GclkIo for gpio::PB12 { type GclkId = Gclk6Id; }
+    #[hal_cfg("pb13")]
+    impl GclkIo for gpio::PB13 { type GclkId = Gclk7Id; }
+    #[hal_cfg("pb14")]
+    impl GclkIo for gpio::PB14 { type GclkId = Gclk0Id; }
+    #[hal_cfg("pb15")]
+    impl GclkIo for gpio::PB15 { type GclkId = Gclk1Id; }
+    #[hal_cfg("pb16")]
+    impl GclkIo for gpio::PB16 { type GclkId = Gclk2Id; }
+    #[hal_cfg("pb17")]
+    impl GclkIo for gpio::PB17 { type GclkId = Gclk3Id; }
+    #[hal_cfg("pb22")]
+    impl GclkIo for gpio::PB22 { type GclkId = Gclk0Id; }
+    #[hal_cfg("pb23")]
+    impl GclkIo for gpio::PB23 { type GclkId = Gclk1Id; }
+}
+
+#[rustfmt::skip]
+#[hal_cfg("clock-d11")]
+mod gclkio_impl {
+    use super::*;
+
+    impl GclkIo for gpio::PA08 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA09 { type GclkId = Gclk1Id; }
+    #[hal_cfg("pa10")]
+    impl GclkIo for gpio::PA10 { type GclkId = Gclk4Id; }
+    #[hal_cfg("pa11")]
+    impl GclkIo for gpio::PA11 { type GclkId = Gclk5Id; }
+    impl GclkIo for gpio::PA14 { type GclkId = Gclk4Id; }
+    impl GclkIo for gpio::PA15 { type GclkId = Gclk5Id; }
+    #[hal_cfg("pa16")]
+    impl GclkIo for gpio::PA16 { type GclkId = Gclk2Id; }
+    #[hal_cfg("pa17")]
+    impl GclkIo for gpio::PA17 { type GclkId = Gclk3Id; }
+    #[hal_cfg("pa22")]
+    impl GclkIo for gpio::PA22 { type GclkId = Gclk1Id; }
+    #[hal_cfg("pa23")]
+    impl GclkIo for gpio::PA23 { type GclkId = Gclk2Id; }
+    impl GclkIo for gpio::PA24 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA25 { type GclkId = Gclk0Id; }
+    #[hal_cfg("pa27")]
+    impl GclkIo for gpio::PA27 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA30 { type GclkId = Gclk0Id; }
+    impl GclkIo for gpio::PA31 { type GclkId = Gclk0Id; }
 }
 
 //==============================================================================
