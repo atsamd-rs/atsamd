@@ -5,7 +5,7 @@
 use atsamd_hal_macros::hal_cfg;
 use typenum::U1;
 
-use crate::pac::{Gclk, Mclk, Nvmctrl, Osc32kctrl, Oscctrl};
+use crate::pac::{Gclk, Mclk, Osc32kctrl, Oscctrl};
 
 use super::*;
 
@@ -177,7 +177,6 @@ pub fn clock_system_at_reset(
     osc32kctrl: Osc32kctrl,
     gclk: Gclk,
     mclk: Mclk,
-    nvmctrl: &mut Nvmctrl,
 ) -> (Buses, Clocks, Tokens) {
     // Safety: No bus, clock or token is instantiated more than once
     unsafe {
@@ -211,7 +210,7 @@ pub fn clock_system_at_reset(
             apbs: apb::ApbTokens::new(),
             dpll0: dpll::DpllToken::new(),
             dpll1: dpll::DpllToken::new(),
-            gclks: gclk::GclkTokens::new(nvmctrl),
+            gclks: gclk::GclkTokens::new(),
             pclks: pclk::PclkTokens::new(),
             rtcosc: rtcosc::RtcOscToken::new(),
             xosc0: xosc::XoscToken::new(),
@@ -230,7 +229,6 @@ pub fn clock_system_at_reset(
     osc32kctrl: Osc32kctrl,
     gclk: Gclk,
     mclk: Mclk,
-    nvmctrl: &mut Nvmctrl,
 ) -> (Buses, Clocks, Tokens) {
     // Safety: No bus, clock or token is instantiated more than once
     unsafe {
@@ -266,7 +264,7 @@ pub fn clock_system_at_reset(
             apbs: apb::ApbTokens::new(),
             dpll0: dpll::DpllToken::new(),
             dpll1: dpll::DpllToken::new(),
-            gclks: gclk::GclkTokens::new(nvmctrl),
+            gclks: gclk::GclkTokens::new(),
             pclks: pclk::PclkTokens::new(),
             rtcosc: rtcosc::RtcOscToken::new(),
             xosc0: xosc::XoscToken::new(),
