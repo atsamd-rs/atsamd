@@ -212,7 +212,6 @@ use typenum::U0;
 #[hal_cfg("clock-d5x")]
 mod imports {
     pub use super::super::dfll::DfllId;
-    pub use crate::gpio::{PB22, PB23};
     pub use crate::pac::Oscctrl as Peripheral;
     pub use crate::pac::oscctrl::{Xoscctrl, status::R as STATUS_R};
     pub use crate::typelevel::{Decrement, Increment};
@@ -226,7 +225,14 @@ mod imports {
 
 use imports::*;
 
-use crate::gpio::{FloatingDisabled, PA14, PA15, Pin, PinId};
+#[hal_cfg("clock-d11")]
+pub use crate::gpio::{PA08 as XIn0Id, PA09 as XOut0Id};
+#[hal_cfg("clock-d21")]
+pub use crate::gpio::{PA14 as XIn0Id, PA15 as XOut0Id};
+#[hal_cfg("clock-d5x")]
+pub use crate::gpio::{PA14 as XIn0Id, PA15 as XOut0Id, PB22 as XIn1Id, PB23 as XOut1Id};
+
+use crate::gpio::{FloatingDisabled, Pin, PinId};
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
 
@@ -478,8 +484,8 @@ impl Sealed for Xosc0Id {}
 
 impl XoscId for Xosc0Id {
     const NUM: usize = 0;
-    type XIn = PA14;
-    type XOut = PA15;
+    type XIn = XIn0Id;
+    type XOut = XOut0Id;
 }
 
 /// Type-level variant of [`XoscId`] representing the identity of XOSC1
@@ -498,8 +504,8 @@ impl Sealed for Xosc1Id {}
 #[hal_cfg("clock-d5x")]
 impl XoscId for Xosc1Id {
     const NUM: usize = 1;
-    type XIn = PB22;
-    type XOut = PB23;
+    type XIn = XIn1Id;
+    type XOut = XOut1Id;
 }
 
 //==============================================================================
