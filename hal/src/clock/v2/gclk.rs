@@ -354,6 +354,8 @@ use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement,
 
 use super::dfll::DfllId;
 // use super::dpll::{Dpll0Id, Dpll1Id};
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+use super::osc::OscId;
 use super::osculp32k::OscUlp32kId;
 use super::xosc::Xosc0Id;
 #[hal_cfg("clock-d5x")]
@@ -893,15 +895,22 @@ impl<I: GclkIo<GclkId = Gclk0Id>> Gclk0Io for I {}
 /// a given [`Gclk`].
 ///
 /// `DynGclkSourceId` is the value-level equivalent of [`GclkSourceId`].
+#[hal_macro_helper]
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum DynGclkSourceId {
     Dfll,
     Dpll0,
+    #[hal_cfg("clock-d5x")]
     Dpll1,
     Gclk1,
     GclkIn,
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    Osc8M,
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    Osc32k,
     OscUlp32k,
     Xosc0,
+    #[hal_cfg("clock-d5x")]
     Xosc1,
     Xosc32k,
 }
@@ -909,31 +918,31 @@ pub enum DynGclkSourceId {
 impl From<DynGclkSourceId> for Srcselect {
     #[hal_cfg("clock-d5x")]
     fn from(source: DynGclkSourceId) -> Self {
-        use DynGclkSourceId::*;
         match source {
-            Dfll => Srcselect::Dfll,
-            Dpll0 => Srcselect::Dpll0,
-            Dpll1 => Srcselect::Dpll1,
-            Gclk1 => Srcselect::Gclkgen1,
-            GclkIn => Srcselect::Gclkin,
-            OscUlp32k => Srcselect::Osculp32k,
-            Xosc0 => Srcselect::Xosc0,
-            Xosc1 => Srcselect::Xosc1,
-            Xosc32k => Srcselect::Xosc32k,
+            DynGclkSourceId::Dfll => Srcselect::Dfll,
+            DynGclkSourceId::Dpll0 => Srcselect::Dpll0,
+            DynGclkSourceId::Dpll1 => Srcselect::Dpll1,
+            DynGclkSourceId::Gclk1 => Srcselect::Gclkgen1,
+            DynGclkSourceId::GclkIn => Srcselect::Gclkin,
+            DynGclkSourceId::OscUlp32k => Srcselect::Osculp32k,
+            DynGclkSourceId::Xosc0 => Srcselect::Xosc0,
+            DynGclkSourceId::Xosc1 => Srcselect::Xosc1,
+            DynGclkSourceId::Xosc32k => Srcselect::Xosc32k,
         }
     }
 
     #[hal_cfg(any("clock-d11", "clock-d21"))]
     fn from(source: DynGclkSourceId) -> Self {
-        use DynGclkSourceId::*;
         match source {
-            Dfll => Srcselect::Dfll48m,
-            Dpll => Srcselect::Dpll96m,
-            Gclk1 => Srcselect::Gclkgen1,
-            GclkIn => Srcselect::Gclkin,
-            OscUlp32k => Srcselect::Osculp32k,
-            Xosc => Srcselect::Xosc,
-            Xosc32k => Srcselect::Xosc32k,
+            DynGclkSourceId::Dfll => Srcselect::Dfll48m,
+            DynGclkSourceId::Dpll0 => Srcselect::Dpll96m,
+            DynGclkSourceId::Gclk1 => Srcselect::Gclkgen1,
+            DynGclkSourceId::GclkIn => Srcselect::Gclkin,
+            DynGclkSourceId::Osc8M => Srcselect::Osc8m,
+            DynGclkSourceId::Osc32k => Srcselect::Osc32k,
+            DynGclkSourceId::OscUlp32k => Srcselect::Osculp32k,
+            DynGclkSourceId::Xosc0 => Srcselect::Xosc,
+            DynGclkSourceId::Xosc32k => Srcselect::Xosc32k,
         }
     }
 }
@@ -989,6 +998,11 @@ impl<I: GclkIo> GclkSourceId for I {
 }
 impl GclkSourceId for OscUlp32kId {
     const DYN: DynGclkSourceId = DynGclkSourceId::OscUlp32k;
+    type Resource = ();
+}
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+impl GclkSourceId for OscId {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Osc8M;
     type Resource = ();
 }
 impl GclkSourceId for Xosc0Id {
