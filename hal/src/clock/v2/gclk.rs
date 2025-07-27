@@ -343,7 +343,6 @@ use paste::paste;
 use typenum::{U0, U1};
 
 use crate::pac;
-use crate::pac::Nvmctrl;
 
 use crate::gpio::{self, AlternateH, AnyPin, Pin, PinId};
 use crate::pac::gclk::Genctrl;
@@ -1528,11 +1527,7 @@ impl GclkTokens {
     /// All of the invariants required by `GclkToken::new` must be
     /// upheld here as well.
     #[inline]
-    #[allow(unreachable_code)] // TODO remove when todo is removed
-    pub(super) unsafe fn new(_nvmctrl: &mut Nvmctrl) -> Self {
-        // Use auto wait states
-        //nvmctrl.ctrla.modify(|_, w| w.autows().set_bit());
-        todo!();
+    pub(super) unsafe fn new() -> Self {
         GclkTokens {
             gclk0: unsafe { GclkToken::new() },
             gclk1: unsafe { GclkToken::new() },
