@@ -143,7 +143,7 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Cl
         };
         let pac = Pac { gclk, pm, sysctrl };
         let osc = Enabled::<_, U0>::new(osc::Osc::new(osc::OscToken::new()));
-        let (gclk0, osc8m) = gclk::Gclk0::from_source(gclk::GclkToken::new(), osc);
+        let (gclk0, osc) = gclk::Gclk0::from_source(gclk::GclkToken::new(), osc);
         let gclk0 = Enabled::new(gclk0);
         let base = osculp32k::OscUlp32kBase::new();
         let osculp1k = Enabled::new(osculp32k::OscUlp1k::new());
