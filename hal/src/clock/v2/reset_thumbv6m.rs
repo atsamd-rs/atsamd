@@ -56,7 +56,7 @@ pub struct Buses {
     pub apb: apb::Apb,
 }
 
-pub struct OscUlp32kClocks {
+pub struct OscUlpClocks {
     pub base: osculp32k::EnabledOscUlp32kBase,
     pub osculp1k: osculp32k::EnabledOscUlp1k,
     pub osculp32k: osculp32k::EnabledOscUlp32k<U1>,
@@ -93,10 +93,10 @@ pub struct Clocks {
     pub gclk2: Enabled<gclk::Gclk2<osculp32k::OscUlp32kId>, U1>,
     /// 8 MHz internal oscillator, divided by 8 for a 1 MHz output
     pub osc: Enabled<osc::Osc, U1>,
+    /// Always-enabled OSCULP oscillators
+    pub osculp: OscUlpClocks,
     /// [`Pclk`](pclk::Pclk) for the watchdog timer, sourced from [`Gclk2`](gclk::Gclk2)
     pub wdt: pclk::Pclk<types::Wdt, gclk::Gclk2Id>,
-    /// Always-enabled OSCULP oscillators
-    pub osculp32k: OscUlp32kClocks,
 }
 
 /// Type-level tokens for unused clocks at power-on reset
@@ -147,13 +147,13 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Cl
         let osc = Enabled::<_, U0>::new(osc::Osc::new(osc::OscToken::new()));
         let (gclk0, osc) = gclk::Gclk0::from_source(gclk::GclkToken::new(), osc);
         let gclk0 = Enabled::new(gclk0);
-        let base = osculp32k::OscUlp32kBase::new();
+        let base = Enabled::new(osculp32k::OscUlp32kBase::new());
         let osculp1k = Enabled::new(osculp32k::OscUlp1k::new());
-        let osculp32k = Enabled::new(osculp32k::OscUlp32k::new());
+        let osculp32k = Enabled::<_, U0>::new(osculp32k::OscUlp32k::new());
         let (gclk2, osculp32k) = gclk::Gclk2::from_source(gclk::GclkToken::new(), osculp32k);
         let gclk2 = Enabled::new(gclk2);
         let wdt = pclk::Pclk::new(pclk::PclkToken::new(), gclk2.freq());
-        let osculp32k = OscUlp32kClocks {
+        let osculp = OscUlpClocks {
             base,
             osculp1k,
             osculp32k,
@@ -166,7 +166,7 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Cl
             gclk2,
             osc,
             wdt,
-            osculp32k,
+            osculp,
         };
         let tokens = Tokens {
             apbs: apb::ApbTokens::new(),
