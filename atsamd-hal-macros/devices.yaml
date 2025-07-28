@@ -21,6 +21,7 @@ families:
       - serial-numbers
       - dsu
       - clock
+      - xosc32k
       - xosc: { count: 1 }
       - gclk: { count: 6 }
       - pm
@@ -54,6 +55,7 @@ families:
       - serial-numbers
       - dsu
       - clock
+      - xosc32k: { except: ["samd21el", "samd21gl"] }
       - xosc: { count: 1 }
       - gclk: { count: 8 }
       - pm
@@ -98,6 +100,7 @@ families:
       - cmcc
       - dsu
       - clock
+      - xosc32k
       - xosc: { count: 2 }
       - gclk: { count: 12 }
       - mclk

@@ -272,6 +272,7 @@ use super::pclk::{Pclk, PclkId};
 #[hal_cfg("xosc1")]
 use super::xosc::Xosc1Id;
 use super::xosc::{Xosc0Id, XoscId};
+#[hal_cfg("xosc32k")]
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
@@ -598,6 +599,7 @@ impl DpllSourceId for Xosc1Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc1;
     type Reference<D: DpllId> = settings::Xosc;
 }
+#[hal_cfg("xosc32k")]
 impl DpllSourceId for Xosc32kId {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc32k;
     type Reference<D: DpllId> = settings::Xosc32k;
@@ -693,7 +695,9 @@ struct Settings {
 /// Store and retrieve [`Dpll`] settings for different reference clocks
 mod settings {
     use super::super::pclk;
+    #[hal_cfg("xosc32k")]
     use super::RateExtU32;
+    use super::hal_cfg;
     use super::{DpllId, GclkId, Hertz};
 
     /// [`Dpll`] settings when referenced to a [`Pclk`]
@@ -717,6 +721,7 @@ mod settings {
     ///
     /// [`Dpll`]: super::Dpll
     /// [`Xosc32k`]: super::super::xosc32k::Xosc32k
+    #[hal_cfg("xosc32k")]
     pub struct Xosc32k;
 
     /// Generic interface for the frequency and predivider of a reference clock
@@ -747,6 +752,7 @@ mod settings {
         }
     }
 
+    #[hal_cfg("xosc32k")]
     impl Reference for Xosc32k {
         #[inline]
         fn freq(&self) -> Hertz {
@@ -931,6 +937,7 @@ where
     }
 }
 
+#[hal_cfg("xosc32k")]
 impl<D: DpllId> Dpll<D, Xosc32kId> {
     /// Create a [`Dpll`] from an [`Xosc32k`]
     ///
