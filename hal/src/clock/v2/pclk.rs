@@ -290,13 +290,10 @@ macro_rules! with_pclk_types_ids {
             (Dpll1Id = 2, dpll1)
             (SlowClk = 3, slow)
             (Eic = 4, eic)
-            #[hal_cfg("clock-d5x")]
             (FreqMMeasure = 5, freq_m_measure)
-            #[hal_cfg("clock-d5x")]
             (FreqMReference = 6, freq_m_reference)
             (Sercom0 = 7, sercom0)
             (Sercom1 = 8, sercom1)
-            #[hal_cfg("clock-d5x")]
             (Tc0Tc1 = 9, tc0_tc1)
             (Usb = 10, usb)
             (EvSys0 = 11, ev_sys0)
@@ -314,20 +311,16 @@ macro_rules! with_pclk_types_ids {
             (Sercom2 = 23, sercom2)
             (Sercom3 = 24, sercom3)
             (Tcc0Tcc1 = 25, tcc0_tcc1)
-            #[hal_cfg("clock-d5x")]
             (Tc2Tc3 = 26, tc2_tc3)
             #[hal_cfg("can0")]
             (Can0 = 27, can0)
             #[hal_cfg("can1")]
             (Can1 = 28, can1)
-            #[hal_cfg("clock-d5x")]
             (Tcc2Tcc3 = 29, tcc2_tcc3)
             #[hal_cfg(all("tc4", "tc5"))]
             (Tc4Tc5 = 30, tc4_tc5)
-            #[hal_cfg("clock-d5x")]
             (PDec = 31, pdec)
             (Ac = 32, ac)
-            #[hal_cfg("clock-d5x")]
             (Ccl = 33, ccl)
             (Sercom4 = 34, sercom4)
             (Sercom5 = 35, sercom5)
@@ -340,18 +333,15 @@ macro_rules! with_pclk_types_ids {
             #[hal_cfg(all("tc6", "tc7"))]
             (Tc6Tc7 = 39, tc6_tc7)
             (Adc0 = 40, adc0)
-            #[hal_cfg("clock-d5x")]
             (Adc1 = 41, adc1)
             (Dac = 42, dac)
             #[hal_cfg("i2s")]
             (I2S0 = 43, i2s0)
             #[hal_cfg("i2s")]
             (I2S1 = 44, i2s1)
-            #[hal_cfg("clock-d5x")]
             (Sdhc0 = 45, sdhc0)
             #[hal_cfg("sdhc1")]
             (Sdhc1 = 46, sdhc1)
-            #[hal_cfg("clock-d5x")]
             (CM4Trace = 47, cm4_trace)
         );
     };
