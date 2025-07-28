@@ -119,6 +119,9 @@ create_types!(Tcc0Tcc1);
 #[hal_cfg(all("tcc2", "tcc3"))]
 create_types!(Tcc2Tcc3);
 
+#[hal_cfg(all("tc1-d11", "tc2-d11"))]
+create_types!(Tc1Tc2);
+
 #[hal_cfg(all("tcc2", "tc3-d21"))]
 create_types!(Tcc2Tc3);
 
