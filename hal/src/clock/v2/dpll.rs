@@ -237,7 +237,7 @@
 //! [`GclkDivider`]: super::gclk::GclkDivider
 //! [`Pclk`]: super::pclk::Pclk
 
-use atsamd_hal_macros::hal_cfg;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::marker::PhantomData;
 
 use fugit::RateExtU32;
@@ -245,7 +245,6 @@ use typenum::U0;
 
 #[hal_cfg("clock-d5x")]
 mod imports {
-    pub use super::super::xosc::Xosc1Id;
     pub use crate::pac::Oscctrl as Peripheral;
     pub use crate::pac::oscctrl::{
         Dpll as PacDpll,
@@ -271,6 +270,8 @@ use crate::typelevel::{Decrement, Increment, Sealed};
 
 use super::gclk::GclkId;
 use super::pclk::{Pclk, PclkId};
+#[hal_cfg("xosc1")]
+use super::xosc::Xosc1Id;
 use super::xosc::{Xosc0Id, XoscId};
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
@@ -360,16 +361,11 @@ impl<D: DpllId> DpllToken<D> {
     #[inline]
     fn enable(&mut self, id: DynDpllSourceId, settings: Settings, prediv: u16) {
         // Convert the actual predivider to the `div` register field value
-        #[hal_cfg("clock-d5x")]
+        #[hal_macro_helper]
         let div = match id {
             DynDpllSourceId::Xosc0 => prediv / 2 - 1,
+            #[hal_cfg("xosc1")]
             DynDpllSourceId::Xosc1 => prediv / 2 - 1,
-            _ => 0,
-        };
-
-        #[hal_cfg(any("clock-d11", "clock-d21"))]
-        let div = match id {
-            DynDpllSourceId::Xosc0 => prediv / 2 - 1,
             _ => 0,
         };
 
@@ -528,20 +524,21 @@ impl DpllId for Dpll1Id {
 /// a given [`Dpll`].
 ///
 /// `DynDpllSourceId` is the value-level equivalent of [`DpllSourceId`].
-#[hal_cfg("clock-d5x")]
+#[hal_macro_helper]
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum DynDpllSourceId {
     /// The DPLL is driven by a [`Pclk`]
     Pclk,
     /// The DPLL is driven by [`Xosc0`](super::xosc::Xosc0)
     Xosc0,
+    #[hal_cfg("xosc1")]
     /// The DPLL is driven by [`Xosc1`](super::xosc::Xosc1)
     Xosc1,
     /// The DPLL is driven by [`Xosc32k`](super::xosc32k::Xosc32k)
     Xosc32k,
 }
 
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("oscctrl")]
 impl From<DynDpllSourceId> for Refclkselect {
     fn from(source: DynDpllSourceId) -> Self {
         match source {
@@ -553,18 +550,7 @@ impl From<DynDpllSourceId> for Refclkselect {
     }
 }
 
-#[hal_cfg(any("clock-d11", "clock-d21"))]
-#[derive(Copy, Clone, PartialEq, Eq, Debug)]
-pub enum DynDpllSourceId {
-    /// The DPLL is driven by a [`Pclk`]
-    Pclk,
-    /// The DPLL is driven by [`Xosc0`](super::xosc::Xosc0)
-    Xosc0,
-    /// The DPLL is driven by [`Xosc32k`](super::xosc32k::Xosc32k)
-    Xosc32k,
-}
-
-#[hal_cfg(any("clock-d11", "clock-d21"))]
+#[hal_cfg("sysctrl")]
 impl From<DynDpllSourceId> for Refclkselect {
     fn from(source: DynDpllSourceId) -> Self {
         match source {
@@ -574,7 +560,6 @@ impl From<DynDpllSourceId> for Refclkselect {
         }
     }
 }
-
 //==============================================================================
 // DpllSourceId
 //==============================================================================
@@ -609,7 +594,7 @@ impl DpllSourceId for Xosc0Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc0;
     type Reference<D: DpllId> = settings::Xosc;
 }
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("xosc1")]
 impl DpllSourceId for Xosc1Id {
     const DYN: DynDpllSourceId = DynDpllSourceId::Xosc1;
     type Reference<D: DpllId> = settings::Xosc;
