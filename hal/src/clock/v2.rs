@@ -882,7 +882,10 @@ pub mod pclk;
 pub mod rtcosc {}
 pub mod types;
 pub mod xosc;
-pub mod xosc32k;
+#[hal_module(
+    "xosc32k" => "v2/xosc32k.rs"
+)]
+pub mod xosc32k {}
 
 #[hal_module(
     any("clock-d11", "clock-d21") => "v2/reset_thumbv6m.rs",
