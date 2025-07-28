@@ -30,9 +30,9 @@ macro_rules! create_types {
         $(
             /// Marker type representing the corresponding peripheral
             ///
-            /// This type is defined by and used within the [`clock`](super)
-            /// module. See the the [`types`](self) module documentation for
-            /// more details.
+            /// This type is defined by and used within the
+            /// [`clock`](super::super) module. See the the [`types`](super)
+            /// module documentation for more details.
             pub enum $Type {}
             impl Sealed for $Type {}
         )+
