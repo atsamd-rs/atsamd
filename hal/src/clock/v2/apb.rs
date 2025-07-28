@@ -519,8 +519,9 @@ define_apb_types!(
 );
 
 // SAMD21/DA1 datasheet DS40001882H, Table 12-1. Peripherals Configuration
-// Summary TODO I2S needs to be added (disabled on startup)
-#[hal_cfg(any("clock-d11", "clock-d21"))]
+// Summary
+#[hal_macro_helper]
+#[hal_cfg("clock-d21")]
 define_apb_types!(
     A {
         Pac0 = (0, all, any)
@@ -537,7 +538,8 @@ define_apb_types!(
         NvmCtrl = (2, all, any)
         Port = (3, all, any)
         Dmac = (4, all, any)
-        Usb = (5, all, any) // TODO should be conditional
+        #[hal_cfg("usb")]
+        Usb = (5, all, any)
     }
     C {
         Pac2 = (0, any, all)
@@ -557,6 +559,50 @@ define_apb_types!(
         Adc0 = (16, any, all)
         Ac = (17, any, all)
         Dac = (18, any, all)
+        Ptc = (19, any, all)
+        #[hal_cfg("i2s")]
+        I2S = (20, any, all)
+        Ac1 = (21, any, all)
+    }
+);
+
+// Atmel-42363H-SAM-D11-Datasheet_09/2016, Table 11-1. Peripherals Configuration
+// Summary
+#[hal_macro_helper]
+#[hal_cfg("clock-d11")]
+define_apb_types!(
+    A {
+        Pac0 = (0, all, any)
+        Pm = (1, all, any)
+        SysCtrl = (2, all, any)
+        Gclk = (3, all, any)
+        Wdt = (4, all, any)
+        Rtc = (5, all, any)
+        Eic = (6, all, any)
+    }
+    B {
+        Pac1 = (0, all, any)
+        Dsu = (1, all, any)
+        NvmCtrl = (2, all, any)
+        Port = (3, all, any)
+        Dmac = (4, all, any)
+        #[hal_cfg("usb")]
+        Usb = (5, all, any)
+    }
+    C {
+        Pac2 = (0, any, all)
+        EvSys = (1, any, all)
+        Sercom0 = (2, any, all)
+        Sercom1 = (3, any, all)
+        #[hal_cfg("sercom2")]
+        Sercom2 = (4, any, all)
+        Tcc0 = (5, any, all)
+        Tc1 = (6, any, all)
+        Tc2 = (7, any, all)
+        Adc0 = (8, any, all)
+        Ac = (9, any, all)
+        Dac = (10, any, all)
+        Ptc = (11, any, all)
     }
 );
 
