@@ -522,7 +522,7 @@ impl<N> Source for EnabledOsc1k<N> {
 
     #[inline]
     fn freq(&self) -> Hertz {
-        Hertz(1024)
+        1_024u32.Hz()
     }
 }
 
