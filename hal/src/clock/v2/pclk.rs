@@ -212,7 +212,7 @@ pub mod ids {
     pub use super::super::types::{
         Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5,
         EvSys6, EvSys7, EvSys8, EvSys9, EvSys10, EvSys11, FreqMMeasure, FreqMReference, PDec,
-        Sdhc0, SlowClk, Tc0Tc1, Tc2Tc3, Tcc2Tcc3, Usb,
+        Sdhc0, SlowClk, Tc0Tc1, Tc2Tc3, Usb,
     };
 
     #[hal_cfg(any("clock-d11", "clock-d21"))]
@@ -236,6 +236,8 @@ pub mod ids {
     pub use super::super::types::Tc6Tc7;
     #[hal_cfg(all("tcc0", "tcc1"))]
     pub use super::super::types::Tcc0Tcc1;
+    #[hal_cfg(all("tcc2", "tcc3"))]
+    pub use super::super::types::Tcc2Tcc3;
     #[hal_cfg("tcc4")]
     pub use super::super::types::Tcc4;
 
@@ -320,6 +322,7 @@ macro_rules! with_pclk_types_ids {
             (Can0 = 27, can0)
             #[hal_cfg("can1")]
             (Can1 = 28, can1)
+            #[hal_cfg(all("tcc2", "tcc3"))]
             (Tcc2Tcc3 = 29, tcc2_tcc3)
             #[hal_cfg(all("tc4", "tc5"))]
             (Tc4Tc5 = 30, tc4_tc5)
