@@ -2,6 +2,8 @@
 //! from the `v2` module, which is where the corresponding documentation will
 //! appear.
 
+use atsamd_hal_macros::hal_macro_helper;
+
 use typenum::U1;
 
 use crate::pac::{Gclk, Pm, Sysctrl};
@@ -108,6 +110,7 @@ pub struct Clocks {
 /// As described in the [top-level](super::super) documentation for the `clock`
 /// module, token types are used to guanrantee the uniqueness of each clock. To
 /// configure or enable a clock, you must provide the corresponding token.
+#[hal_macro_helper]
 pub struct Tokens {
     /// Tokens to create [`apb::ApbClk`]s
     pub apbs: apb::ApbTokens,
@@ -125,6 +128,7 @@ pub struct Tokens {
     pub xosc: xosc::XoscToken<xosc::Xosc0Id>,
     /// Tokens to create [`xosc32k::Xosc32kBase`], [`xosc32k::Xosc1k`] and
     /// [`xosc32k::Xosc32k`]
+    #[hal_cfg("xosc32k")]
     pub xosc32k: xosc32k::Xosc32kTokens,
 }
 
@@ -168,6 +172,7 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Cl
             wdt,
             osculp,
         };
+        #[hal_macro_helper]
         let tokens = Tokens {
             apbs: apb::ApbTokens::new(),
             dfll: dfll::DfllToken::new(),
@@ -176,6 +181,7 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Cl
             pclks: pclk::PclkTokens::new(),
             osc32k: osc32k::Osc32kTokens::new(),
             xosc: xosc::XoscToken::new(),
+            #[hal_cfg("xosc32k")]
             xosc32k: xosc32k::Xosc32kTokens::new(),
         };
         (buses, clocks, tokens)
