@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.2...atsamd-hal-0.23.0) - 2025-07-28
+
+### Added
+
+- *(aes)* Updates the `cipher` dependency.
+- *(aes)* Updates the `aes` module:
+
+### Fixed
+
+- [**breaking**] Re-add GCLK0 for CAN dependencies ([#930](https://github.com/atsamd-rs/atsamd/pull/930))
+- Clippy warning about null pointers in DMAC ([#928](https://github.com/atsamd-rs/atsamd/pull/928))
+- Remove GCLK from can::Dependencies ([#919](https://github.com/atsamd-rs/atsamd/pull/919))
+
 ## [0.22.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.1...atsamd-hal-0.22.2) - 2025-06-26
 
 ### Fixed
