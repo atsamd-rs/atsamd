@@ -1,6 +1,6 @@
 [package]
 name = "wio_terminal"
-version = "0.8.0"
+version = "0.9.0"
 authors = [
     "Jesse Braham <jesse@beta7.io>",
     "Tom <twitchyliquid64@ciphersink.net>"
@@ -43,7 +43,7 @@ usb-device = { version = "0.3", optional = true }
 nb = "1.0"
 bbqueue = { version = "0.5", optional = true }
 generic-array = { version = "0.14", optional = true }
-seeed-erpc = { version = "0.1.2", optional = true }
+seeed-erpc = { version = "0.1.3", optional = true }
 
 [dependencies.cortex-m]
 features = ["critical-section-single-core"]
@@ -58,7 +58,7 @@ usbd-serial = "0.2"
 embedded-graphics = "0.8.1"
 panic-halt = "0.2"
 oorandom = "11.1.3"
-nom = { version = "6.2.2", default-features = false }
+nom = { version = "8.0", default-features = false }
 
 [features]
 default = ["atsamd-hal/samd51p", "rt", "usb", "wifi"]

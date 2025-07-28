@@ -30,13 +30,13 @@ features = ["samd21g", "samd21g-rt", "usb", "dma", "async", "rtic"]
 #===============================================================================
 
 [dependencies]
-aes = "0.7.5"
-atsamd-hal-macros = { version = "0.3.0", path = "../atsamd-hal-macros" }
+aes = "0.8.4"
+atsamd-hal-macros = {version = "0.3.0", path = "../atsamd-hal-macros"}
 bitfield = "0.13"
 bitflags = "2.6.0"
-cipher = "0.3"
-critical-section = "1.2.0"
+cipher = "0.4"
 cortex-m = "0.7"
+critical-section = "1.2.0"
 embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
 embedded-hal-1 = {package = "embedded-hal", version = "1.0.0"}
 embedded-hal-nb = "1.0.0"
@@ -59,7 +59,7 @@ void = {version = "1.0", default-features = false}
 # Optional depdendencies
 #===============================================================================
 
-defmt = { version = "1.0.1", optional = true}
+defmt = {version = "1.0.1", optional = true}
 embassy-sync = {version = "0.6.0", optional = true}
 embedded-hal-async = {version = "1.0.0", optional = true}
 embedded-io-async = {version = "0.6.1", optional = true}
@@ -68,8 +68,8 @@ futures = {version = "0.3.31", default-features = false, features = ["async-awai
 jlink_rtt = {version = "0.2", optional = true}
 mcan-core = {version = "0.2", optional = true}
 rtic-monotonic = {version = "1.0", optional = true}
-usb-device = {version = "0.3.2", optional = true}
 rtic-time = {version = "2.0", optional = true}
+usb-device = {version = "0.3.2", optional = true}
 
 #===============================================================================
 # PACs
@@ -81,27 +81,27 @@ rtic-time = {version = "2.0", optional = true}
 # users should specify a corresponding variant (see below). The variant features
 # will select the correct PAC, as well as other configuration features.
 
-atsamd11c = { version = "0.14.2", path = "../pac/atsamd11c", optional = true}
-atsamd11d = { version = "0.14.2", path = "../pac/atsamd11d", optional = true}
+atsamd11c = {version = "0.14.2", path = "../pac/atsamd11c", optional = true}
+atsamd11d = {version = "0.14.2", path = "../pac/atsamd11d", optional = true}
 
-atsamd21e = { version = "0.14.2", path = "../pac/atsamd21e", optional = true}
-atsamd21g = { version = "0.14.2", path = "../pac/atsamd21g", optional = true}
-atsamd21j = { version = "0.14.2", path = "../pac/atsamd21j", optional = true}
+atsamd21e = {version = "0.14.2", path = "../pac/atsamd21e", optional = true}
+atsamd21g = {version = "0.14.2", path = "../pac/atsamd21g", optional = true}
+atsamd21j = {version = "0.14.2", path = "../pac/atsamd21j", optional = true}
 
-atsamd51g = { version = "0.14.2", path = "../pac/atsamd51g", optional = true}
-atsamd51j = { version = "0.14.2", path = "../pac/atsamd51j", optional = true}
-atsamd51n = { version = "0.14.2", path = "../pac/atsamd51n", optional = true}
-atsamd51p = { version = "0.14.2", path = "../pac/atsamd51p", optional = true}
+atsamd51g = {version = "0.14.2", path = "../pac/atsamd51g", optional = true}
+atsamd51j = {version = "0.14.2", path = "../pac/atsamd51j", optional = true}
+atsamd51n = {version = "0.14.2", path = "../pac/atsamd51n", optional = true}
+atsamd51p = {version = "0.14.2", path = "../pac/atsamd51p", optional = true}
 
-atsame51g = { version = "0.14.2", path = "../pac/atsame51g", optional = true}
-atsame51j = { version = "0.14.2", path = "../pac/atsame51j", optional = true}
-atsame51n = { version = "0.14.2", path = "../pac/atsame51n", optional = true}
+atsame51g = {version = "0.14.2", path = "../pac/atsame51g", optional = true}
+atsame51j = {version = "0.14.2", path = "../pac/atsame51j", optional = true}
+atsame51n = {version = "0.14.2", path = "../pac/atsame51n", optional = true}
 
-atsame53j = { version = "0.14.2", path = "../pac/atsame53j", optional = true}
-atsame53n = { version = "0.14.2", path = "../pac/atsame53n", optional = true}
+atsame53j = {version = "0.14.2", path = "../pac/atsame53j", optional = true}
+atsame53n = {version = "0.14.2", path = "../pac/atsame53n", optional = true}
 
-atsame54n = { version = "0.14.2", path = "../pac/atsame54n", optional = true}
-atsame54p = { version = "0.14.2", path = "../pac/atsame54p", optional = true}
+atsame54n = {version = "0.14.2", path = "../pac/atsame54n", optional = true}
+atsame54p = {version = "0.14.2", path = "../pac/atsame54p", optional = true}
 
 #===============================================================================
 # Features
@@ -182,22 +182,21 @@ same54p-rt = ["same54p", "atsame54p/rt"]
 
 # These features are user-selectable and enable additional features within the
 # HAL, like USB or DMA support.
+async = [
+  "embassy-sync",
+  "embedded-hal-async",
+  "embedded-io-async",
+  "futures",
+  "portable-atomic",
+]
 can = ["mcan-core"]
 defmt = ["dep:defmt"]
 dma = []
-enable_unsafe_aes_newblock_cipher = []
 max-channels = ["dma"]
 rtic = ["rtic-monotonic", "rtic-time", "portable-atomic"]
 sdmmc = ["embedded-sdmmc"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
-async = [
-    "embassy-sync",
-    "embedded-hal-async",
-    "embedded-io-async",
-    "futures",
-    "portable-atomic"
-]
 
 #===============================================================================
 # Implementation-details

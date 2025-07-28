@@ -363,6 +363,7 @@ pub(crate) mod sram {
     #![allow(dead_code, unused_braces)]
 
     use core::cell::UnsafeCell;
+    use core::ptr::null_mut;
 
     use super::{BeatSize, NUM_CHANNELS};
 
@@ -441,9 +442,9 @@ pub(crate) mod sram {
             Self {
                 btctrl: BlockTransferControl::new(),
                 btcnt: 0,
-                srcaddr: 0 as *mut _,
-                dstaddr: 0 as *mut _,
-                descaddr: 0 as *mut _,
+                srcaddr: null_mut(),
+                dstaddr: null_mut(),
+                descaddr: null_mut(),
             }
         }
 
