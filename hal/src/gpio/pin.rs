@@ -341,10 +341,7 @@ macro_rules! alternate {
     };
 }
 
-alternate!(B, C, D, E, F, G);
-
-#[hal_cfg(any("port-d21", "port-d5x"))]
-alternate!(H);
+alternate!(B, C, D, E, F, G, H);
 
 #[hal_cfg("port-d5x")]
 alternate!(I, J, K, L, M, N);
@@ -752,7 +749,6 @@ impl_core_convert_from!(
     AlternateE,
     AlternateF,
     AlternateG,
-    #[hal_cfg(any("port-d21", "port-d5x"))]
     AlternateH,
     #[hal_cfg("port-d5x")]
     AlternateI,
