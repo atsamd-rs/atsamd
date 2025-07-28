@@ -358,7 +358,7 @@ use super::dfll::DfllId;
 use super::osc::OscId;
 use super::osculp32k::OscUlp32kId;
 use super::xosc::Xosc0Id;
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("xosc1")]
 use super::xosc::Xosc1Id;
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
@@ -949,7 +949,7 @@ mod gclkio_impl {
 ///
 /// This is effectively a trait alias for [`PinId`]s that implement [`GclkIo`]
 /// with a `GclkId` associated type of [`Gclk0Id`], i.e.
-/// `GclkIo<GclkId = Gclk0Id>`. The trait is useful to simply some function
+/// `GclkIo<GclkId = Gclk0Id>`. The trait is useful to simplify some function
 /// signatures and to help type inference in a few cases.
 pub trait Gclk0Io
 where
@@ -1085,7 +1085,7 @@ impl GclkSourceId for Xosc0Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc0;
     type Resource = ();
 }
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("xosc1")]
 impl GclkSourceId for Xosc1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
     type Resource = ();
