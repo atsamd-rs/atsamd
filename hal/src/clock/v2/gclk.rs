@@ -353,7 +353,9 @@ use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
 use super::dfll::DfllId;
-// use super::dpll::{Dpll0Id, Dpll1Id};
+use super::dpll::Dpll0Id;
+#[hal_cfg("oscctrl")]
+use super::dpll::Dpll1Id;
 #[hal_cfg(any("clock-d11", "clock-d21"))]
 use super::osc::OscId;
 use super::osculp32k::OscUlp32kId;
@@ -1056,14 +1058,15 @@ impl GclkSourceId for DfllId {
     const DYN: DynGclkSourceId = DynGclkSourceId::Dfll;
     type Resource = ();
 }
-//impl GclkSourceId for Dpll0Id {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Dpll0;
-//    type Resource = ();
-//}
-//impl GclkSourceId for Dpll1Id {
-//    const DYN: DynGclkSourceId = DynGclkSourceId::Dpll1;
-//    type Resource = ();
-//}
+impl GclkSourceId for Dpll0Id {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Dpll0;
+    type Resource = ();
+}
+#[hal_cfg("oscctrl")]
+impl GclkSourceId for Dpll1Id {
+    const DYN: DynGclkSourceId = DynGclkSourceId::Dpll1;
+    type Resource = ();
+}
 impl GclkSourceId for Gclk1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Gclk1;
     type Resource = ();
