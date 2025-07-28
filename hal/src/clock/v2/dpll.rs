@@ -1,9 +1,10 @@
-//! # Digital Phase-Locked Loop
+//! # Fractional Digital Phase-Locked Loop
 //!
 //! ## Overview
 //!
-//! The `dpll` module provides access to the two digital phase-locked loops
-//! (DPLLs) within the `OSCCTRL` peripheral.
+//! The `dpll` module provides access to the digital phase-locked loops (DPLLs)
+//! within the `OSCCTRL` or `SYSCTRL` peripheral, datasheets refer to these as
+//! FDPLL200M and FDPLL96M, respectively.
 //!
 //! A DPLL is used to multiply clock frequencies. It takes a lower-frequency
 //! input clock and produces a higher-frequency output clock. It works by taking
@@ -243,27 +244,25 @@ use core::marker::PhantomData;
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[hal_cfg("clock-d5x")]
-mod imports {
-    pub use crate::pac::Oscctrl as Peripheral;
-    pub use crate::pac::oscctrl::{
+#[hal_cfg("oscctrl")]
+use crate::pac::{
+    Oscctrl as Peripheral,
+    oscctrl::{
         Dpll as PacDpll,
         dpll::dpllctrlb::Refclkselect,
         dpll::{Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus, dpllsyncbusy},
-    };
-}
+    },
+};
 
-#[hal_cfg(any("clock-d11", "clock-d21"))]
-mod imports {
-    pub use crate::pac::Sysctrl as Peripheral;
-    pub use crate::pac::sysctrl::{
+#[hal_cfg("sysctrl")]
+use crate::pac::{
+    Sysctrl as Peripheral,
+    sysctrl::{
         RegisterBlock as PacDpll,
         dpllctrlb::Refclkselect,
         {Dpllctrla, Dpllctrlb, Dpllratio, dpllstatus},
-    };
-}
-
-use imports::*;
+    },
+};
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, Sealed};
@@ -317,11 +316,11 @@ impl<D: DpllId> DpllToken<D> {
         // of registers for the corresponding `DpllId`, and we use a shared
         // reference to the register block. See the notes on `Token` types and
         // memory safety in the root of the `clock` module for more details.
-        #[hal_cfg("clock-d5x")]
+        #[hal_cfg("oscctrl")]
         unsafe {
             &(*Peripheral::PTR).dpll(D::NUM)
         }
-        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        #[hal_cfg("sysctrl")]
         unsafe {
             &(*Peripheral::PTR)
         }
@@ -345,7 +344,7 @@ impl<D: DpllId> DpllToken<D> {
         self.dpll().dpllratio()
     }
 
-    #[hal_cfg("clock-d5x")]
+    #[hal_cfg("oscctrl")]
     /// Access the corresponding DPLLSYNCBUSY register for reading only
     #[inline]
     fn syncbusy(&self) -> dpllsyncbusy::R {
@@ -377,7 +376,7 @@ impl<D: DpllId> DpllToken<D> {
             w.refclk().variant(id.into());
             w.lbypass().bit(settings.lock_bypass);
             w.wuf().bit(settings.wake_up_fast);
-            #[hal_cfg("clock-d5x")]
+            #[hal_cfg("oscctrl")]
             if let Some(cap) = settings.dco_filter {
                 w.dcoen().bit(true);
                 unsafe {
@@ -395,7 +394,7 @@ impl<D: DpllId> DpllToken<D> {
             w.ldr().bits(settings.mult - 1);
             w.ldrfrac().bits(settings.frac)
         });
-        #[hal_cfg("clock-d5x")]
+        #[hal_cfg("oscctrl")]
         while self.syncbusy().dpllratio().bit_is_set() {}
         self.ctrla().modify(|_, w| {
             w.ondemand().bit(settings.on_demand);
@@ -414,17 +413,17 @@ impl<D: DpllId> DpllToken<D> {
 
     #[inline]
     fn wait_enabled(&self) {
-        #[hal_cfg("clock-d5x")]
+        #[hal_cfg("oscctrl")]
         while self.syncbusy().enable().bit_is_set() {}
-        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        #[hal_cfg("sysctrl")]
         while self.status().enable().bit_is_clear() {}
     }
 
     #[inline]
     fn wait_disabled(&self) {
-        #[hal_cfg("clock-d5x")]
+        #[hal_cfg("oscctrl")]
         while self.syncbusy().enable().bit_is_set() {}
-        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        #[hal_cfg("sysctrl")]
         while self.status().enable().bit_is_set() {}
     }
 
@@ -502,13 +501,13 @@ impl DpllId for Dpll0Id {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("oscctrl")]
 pub enum Dpll1Id {}
 
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("oscctrl")]
 impl Sealed for Dpll1Id {}
 
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("oscctrl")]
 impl DpllId for Dpll1Id {
     const DYN: DynDpllId = DynDpllId::Dpll1;
     const NUM: usize = 1;
@@ -608,6 +607,12 @@ impl DpllSourceId for Xosc32kId {
 // Settings
 //==============================================================================
 
+/// Fractional divider for the `LDRFRAC` field
+#[hal_cfg("sysctrl")]
+pub const FRAC_DIV: u8 = 16;
+#[hal_cfg("oscctrl")]
+pub const FRAC_DIV: u8 = 32;
+
 /// [`Dpll`] Proportional Integral Filter
 ///
 /// Filter settings affect PLL stability and jitter.  The datasheet suggests a
@@ -672,6 +677,7 @@ pub enum DcoFilter {
 
 /// [`Dpll`] settings relevant to all reference clocks
 #[derive(Copy, Clone)]
+#[hal_macro_helper]
 struct Settings {
     mult: u16,
     frac: u8,
@@ -680,6 +686,7 @@ struct Settings {
     on_demand: bool,
     run_standby: bool,
     filter: PiFilter,
+    #[hal_cfg("oscctrl")]
     dco_filter: Option<DcoFilter>,
 }
 
@@ -795,7 +802,7 @@ where
 pub type Dpll0<M> = Dpll<Dpll0Id, M>;
 
 /// Type alias for the corresponding [`Dpll`]
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("oscctrl")]
 pub type Dpll1<M> = Dpll<Dpll1Id, M>;
 
 impl<D, I> Dpll<D, I>
@@ -803,6 +810,7 @@ where
     D: DpllId,
     I: DpllSourceId,
 {
+    #[hal_macro_helper]
     fn new(token: DpllToken<D>, reference: I::Reference<D>) -> Self {
         let settings = Settings {
             mult: 1,
@@ -812,6 +820,7 @@ where
             on_demand: true,
             run_standby: false,
             filter: PiFilter::Bw92p7kHzDf0p76,
+            #[hal_cfg("oscctrl")]
             dco_filter: None,
         };
         Self {
@@ -971,7 +980,7 @@ where
     /// parts of the division factor, i.e. the division factor is:
     ///
     /// ```text
-    /// int + frac / 32
+    /// int + frac / FRAC_DIV
     /// ```
     ///
     /// This function will confirm that the `int` and `frac` values convert to
@@ -981,7 +990,7 @@ where
         if int < 1 || int > 0x2000 {
             panic!("Invalid integer part of the DPLL loop divider")
         }
-        if frac > 31 {
+        if frac > FRAC_DIV - 1 {
             panic!("Invalid fractional part of the DPLL loop divider")
         }
         self.settings.mult = int;
@@ -1022,6 +1031,7 @@ where
 
     /// Enable sigma-delta DAC low pass filter
     #[inline]
+    #[hal_cfg("oscctrl")]
     pub fn dco_filter(mut self, capacitor: DcoFilter) -> Self {
         self.settings.dco_filter = Some(capacitor);
         self
@@ -1054,15 +1064,15 @@ where
     #[inline]
     fn output_freq(&self) -> Hertz {
         // The actual formula is:
-        //      y = x * (mult + frac / 32)
+        //      y = x * (mult + frac / FRAC_DIV)
         // To avoid integer precision loss, the formula is restructured:
-        //      y = x * (mult + frac / 32) * 32 / 32
-        //      y = x * (32 * mult + 32 * frac / 32) / 32
-        //      y = x * (32 * mult + frac) / 32
+        //      y = x * (mult + frac / FRAC_DIV) * FRAC_DIV / FRAC_DIV
+        //      y = x * (FRAC_DIV * mult + FRAC_DIV * frac / FRAC_DIV) / FRAC_DIV
+        //      y = x * (FRAC_DIV * mult + frac) / FRAC_DIV
         let input = self.input_freq().to_Hz() as u64;
-        let multiplier_times_32 =
-            (32 * self.settings.mult as u32 + self.settings.frac as u32) as u64;
-        let output = (input * multiplier_times_32 / 32) as u32;
+        let multiplier_scaled =
+            (FRAC_DIV as u32 * self.settings.mult as u32 + self.settings.frac as u32) as u64;
+        let output = (input * multiplier_scaled / FRAC_DIV as u64) as u32;
         output.Hz()
     }
 
@@ -1091,12 +1101,29 @@ where
     /// frequency is invalid, this call will panic.
     #[inline]
     pub fn enable(self) -> EnabledDpll<D, I> {
+        const INPUT_MIN: u32 = 32_000;
+
+        #[hal_cfg("sysctrl")]
+        const INPUT_MAX: u32 = 2_000_000;
+        #[hal_cfg("oscctrl")]
+        const INPUT_MAX: u32 = 3_200_000;
+
+        #[hal_cfg("sysctrl")]
+        const OUTPUT_MIN: u32 = 48_000_000;
+        #[hal_cfg("oscctrl")]
+        const OUTPUT_MIN: u32 = 96_000_000;
+
+        #[hal_cfg("sysctrl")]
+        const OUTPUT_MAX: u32 = 96_000_000;
+        #[hal_cfg("oscctrl")]
+        const OUTPUT_MAX: u32 = 200_000_000;
+
         let input_freq = self.input_freq().to_Hz();
         let output_freq = self.output_freq().to_Hz();
-        if input_freq < 32_000 || input_freq > 3_200_000 {
+        if input_freq < INPUT_MIN || input_freq > INPUT_MAX {
             panic!("Invalid DPLL input frequency");
         }
-        if output_freq < 96_000_000 || output_freq > 200_000_000 {
+        if output_freq < OUTPUT_MIN || output_freq > OUTPUT_MAX {
             panic!("Invalid DPLL output frequency");
         }
         self.enable_unchecked()
@@ -1136,7 +1163,7 @@ pub type EnabledDpll<D, I, N = U0> = Enabled<Dpll<D, I>, N>;
 pub type EnabledDpll0<I, N = U0> = EnabledDpll<Dpll0Id, I, N>;
 
 /// Type alias for the corresponding [`EnabledDpll`]
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("oscctrl")]
 pub type EnabledDpll1<I, N = U0> = EnabledDpll<Dpll1Id, I, N>;
 
 impl<D, I> EnabledDpll<D, I>
