@@ -362,6 +362,7 @@ use super::osculp32k::OscUlp32kId;
 use super::xosc::Xosc0Id;
 #[hal_cfg("xosc1")]
 use super::xosc::Xosc1Id;
+#[hal_cfg("xosc32k")]
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
 
@@ -1093,6 +1094,7 @@ impl GclkSourceId for Xosc1Id {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc1;
     type Resource = ();
 }
+#[hal_cfg("xosc32k")]
 impl GclkSourceId for Xosc32kId {
     const DYN: DynGclkSourceId = DynGclkSourceId::Xosc32k;
     type Resource = ();
