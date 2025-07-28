@@ -548,7 +548,9 @@ define_apb_types!(
         Sercom1 = (3, any, all)
         Sercom2 = (4, any, all)
         Sercom3 = (5, any, all)
+        #[hal_cfg("sercom4")]
         Sercom4 = (6, any, all)
+        #[hal_cfg("sercom5")]
         Sercom5 = (7, any, all)
         Tcc0 = (8, any, all)
         Tcc1 = (9, any, all)
