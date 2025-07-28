@@ -21,6 +21,7 @@ families:
       - serial-numbers
       - dsu
       - clock
+      - xosc: { count: 1 }
       - gclk: { count: 6 }
       - pm
       - sysctrl
@@ -53,6 +54,7 @@ families:
       - serial-numbers
       - dsu
       - clock
+      - xosc: { count: 1 }
       - gclk: { count: 8 }
       - pm
       - sysctrl
@@ -96,6 +98,7 @@ families:
       - cmcc
       - dsu
       - clock
+      - xosc: { count: 2 }
       - gclk: { count: 12 }
       - mclk
       - rstc
