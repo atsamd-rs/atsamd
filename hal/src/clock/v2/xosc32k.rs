@@ -341,32 +341,28 @@
 //! [`is_switched`]: Xosc32kCfd::is_switched
 //! [`switch_back`]: Xosc32kCfd::switch_back
 
-use atsamd_hal_macros::hal_cfg;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use fugit::RateExtU32;
 use typenum::U0;
 
-#[hal_cfg("clock-d5x")]
-mod imports {
-    pub use super::super::osculp32k::OscUlp32kId;
-    pub use crate::pac::Osc32kctrl as PERIPHERAL;
-    pub use crate::pac::osc32kctrl::xosc32k::Cgmselect;
-    pub use crate::pac::osc32kctrl::{Cfdctrl, Xosc32k as PacXosc32k, status::R as STATUS_R};
-}
+#[hal_cfg("osc32kctrl")]
+use crate::{
+    clock::v2::osculp32k::OscUlp32kId,
+    pac::{
+        Osc32kctrl as PERIPHERAL,
+        osc32kctrl::{Cfdctrl, Xosc32k as PacXosc32k, status::R as STATUS_R, xosc32k::Cgmselect},
+    },
+};
 
-#[hal_cfg(any("clock-d11", "clock-d21"))]
-mod imports {
-    pub use crate::pac::Sysctrl as PERIPHERAL;
-    pub use crate::pac::sysctrl::Xosc32k as PacXosc32k;
-    pub use crate::pac::sysctrl::pclksr::R as STATUS_R;
-}
+#[hal_cfg("sysctrl")]
+use crate::pac::{
+    Sysctrl as PERIPHERAL,
+    sysctrl::{Xosc32k as PacXosc32k, pclksr::R as STATUS_R},
+};
 
-use imports::*;
-
-#[hal_cfg("clock-d21")]
+#[hal_cfg(any("port-d21", "port-d5x"))]
 pub use crate::gpio::{PA00 as XIn32Id, PA01 as XOut32Id};
-#[hal_cfg("clock-d5x")]
-pub use crate::gpio::{PA00 as XIn32Id, PA01 as XOut32Id};
-#[hal_cfg("clock-d11")]
+#[hal_cfg("port-d11")]
 pub use crate::gpio::{PA08 as XIn32Id, PA09 as XOut32Id};
 
 use crate::gpio::{FloatingDisabled, Pin};
@@ -398,6 +394,7 @@ pub struct Xosc32kBaseToken(());
 ///
 /// The [`Xosc1k`] clock is disabled at power-on reset. To use it, you must
 /// first exchange the token for an actual clock with [`Xosc1k::enable`].
+#[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
 pub struct Xosc1kToken(());
 
 /// Singleton token that can be exchanged for [`Xosc32k`]
@@ -419,19 +416,21 @@ pub struct Xosc32kToken(());
 ///
 /// Clock failure detection is disabled at power-on reset. To use it, you must
 /// first enable it by exchanging the token with [`Xosc32kCfd::enable`].
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("osc32kctrl")]
 pub struct Xosc32kCfdToken(());
 
-#[hal_cfg("clock-d5x")]
+#[hal_macro_helper]
 /// Set of tokens representing the disabled XOSC32K clocks power-on reset
 pub struct Xosc32kTokens {
     pub base: Xosc32kBaseToken,
+    #[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
     pub xosc1k: Xosc1kToken,
     pub xosc32k: Xosc32kToken,
+    #[hal_cfg("osc32kctrl")]
     pub cfd: Xosc32kCfdToken,
 }
 
-#[hal_cfg("clock-d5x")]
+#[hal_macro_helper]
 impl Xosc32kTokens {
     /// Create the set of tokens
     ///
@@ -443,36 +442,11 @@ impl Xosc32kTokens {
     pub(super) unsafe fn new() -> Self {
         Self {
             base: Xosc32kBaseToken(()),
+            #[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
             xosc1k: Xosc1kToken(()),
             xosc32k: Xosc32kToken(()),
+            #[hal_cfg("osc32kctrl")]
             cfd: Xosc32kCfdToken(()),
-        }
-    }
-}
-
-#[hal_cfg(any("clock-d11", "clock-d21"))]
-
-/// Set of tokens representing the disabled XOSC32K clocks power-on reset
-pub struct Xosc32kTokens {
-    pub base: Xosc32kBaseToken,
-    pub xosc1k: Xosc1kToken,
-    pub xosc32k: Xosc32kToken,
-}
-
-#[hal_cfg(any("clock-d11", "clock-d21"))]
-impl Xosc32kTokens {
-    /// Create the set of tokens
-    ///
-    /// # Safety
-    ///
-    /// There must never be more than one instance of these tokens at any given
-    /// time. See the notes on `Token` types and memory safety in the root of
-    /// the `clock` module for more details.
-    pub(super) unsafe fn new() -> Self {
-        Self {
-            base: Xosc32kBaseToken(()),
-            xosc1k: Xosc1kToken(()),
-            xosc32k: Xosc32kToken(()),
         }
     }
 }
@@ -482,11 +456,11 @@ impl Xosc32kBaseToken {
     fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
-        #[hal_cfg("clock-d5x")]
+        #[hal_cfg("osc32kctrl")]
         unsafe {
             (*PERIPHERAL::PTR).status().read()
         }
-        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        #[hal_cfg("sysctrl")]
         unsafe {
             (*PERIPHERAL::PTR).pclksr().read()
         }
@@ -514,24 +488,13 @@ impl Xosc32kBaseToken {
 
     /// Set most of the fields in the XOSC32K register
     #[inline]
-    #[hal_cfg("clock-d5x")]
+    #[hal_macro_helper]
     fn enable(&mut self, mode: DynMode, settings: Settings) {
         let xtalen = mode == DynMode::CrystalMode;
         self.xosc32k().write(|w| {
+            #[hal_cfg("osc32kctrl")]
             w.cgm().variant(settings.cgm.into());
-            unsafe { w.startup().bits(settings.start_up as u8) };
-            w.ondemand().bit(settings.on_demand);
-            w.runstdby().bit(settings.run_standby);
-            w.xtalen().bit(xtalen);
-            w.enable().set_bit()
-        });
-    }
-
-    #[inline]
-    #[hal_cfg(any("clock-d11", "clock-d21"))]
-    fn enable(&mut self, mode: DynMode, settings: Settings) {
-        let xtalen = mode == DynMode::CrystalMode;
-        self.xosc32k().write(|w| {
+            #[hal_cfg("sysctrl")]
             w.aampen().bit(settings.aampen);
             unsafe { w.startup().bits(settings.start_up as u8) };
             w.ondemand().bit(settings.on_demand);
@@ -549,12 +512,14 @@ impl Xosc32kBaseToken {
 
     /// Enable the 1 kHz output
     #[inline]
+    #[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
     fn enable_1k(&mut self) {
         self.xosc32k().modify(|_, w| w.en1k().set_bit());
     }
 
     /// Disable the 1 kHz output
     #[inline]
+    #[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
     fn disable_1k(&mut self) {
         self.xosc32k().modify(|_, w| w.en1k().clear_bit());
     }
@@ -578,7 +543,7 @@ impl Xosc32kBaseToken {
     }
 }
 
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("osc32kctrl")]
 impl Xosc32kCfdToken {
     #[inline]
     fn status(&self) -> STATUS_R {
@@ -1097,12 +1062,12 @@ impl<M: Mode, N> EnabledXosc32kBase<M, N> {
 ///
 /// [`OscUlp32k`]: super::osculp32k::OscUlp32k
 /// [`EnabledOscUlp32k`]: super::osculp32k::EnabledOscUlp32k
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("osc32kctrl")]
 pub struct Xosc32kCfd {
     token: Xosc32kCfdToken,
 }
 
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("osc32kctrl")]
 impl Xosc32kCfd {
     /// Enable continuous monitoring of the XOSC32K for clock failure
     ///
@@ -1202,6 +1167,7 @@ impl Sealed for Xosc32kId {}
 /// of three clocks forming a small clock tree. The [`Xosc1k`] clock is derived
 /// from the [`Xosc32kBase`] clock. See the [module-level documentation](super)
 /// for details and examples.
+#[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
 pub struct Xosc1k {
     token: Xosc1kToken,
 }
@@ -1215,8 +1181,10 @@ pub struct Xosc1k {
 ///
 /// As with [`Enabled`], the default value for `N` is `U0`; if left unspecified,
 /// the counter is assumed to be zero.
+#[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
 pub type EnabledXosc1k<N = U0> = Enabled<Xosc1k, N>;
 
+#[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
 impl Xosc1k {
     /// Enable 1 kHz output from the [`Xosc32kBase`] clock
     ///
@@ -1235,6 +1203,7 @@ impl Xosc1k {
     }
 }
 
+#[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
 impl EnabledXosc1k {
     /// Disable 1 kHz output from the [`Xosc32kBase`] clock
     ///
@@ -1253,6 +1222,7 @@ impl EnabledXosc1k {
     }
 }
 
+#[hal_cfg(any("sysctrl-d11", "osc32kctrl"))]
 impl<N> Source for EnabledXosc1k<N> {
     type Id = Xosc1kId;
 
