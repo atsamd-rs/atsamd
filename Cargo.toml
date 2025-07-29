@@ -8,6 +8,8 @@ members = [
     "pac/*",
     "boards/*",
 ]
+# Fragments of example files, referenced by `include!()` from BSP examples
+exclude = ["boards/examples"]
 
 [profile.dev]
 debug = true
