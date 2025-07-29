@@ -8,7 +8,6 @@ use atsamd_hal::{
         self as clock,
         dpll::Dpll,
         gclk::{Gclk, GclkDiv16, GclkDiv8},
-        osculp32k::OscUlp32k,
         pclk::Pclk,
         rtcosc::RtcOsc,
         xosc32k::{ControlGainMode, Xosc1k, Xosc32k, Xosc32kBase},
@@ -43,7 +42,7 @@ mod app {
 
     #[init]
     fn init(cx: init::Context) -> (SharedResources, LocalResources) {
-        let mut device = cx.device;
+        let device = cx.device;
 
         // Get the clocks & tokens
         let (_buses, clocks, tokens) = clock::clock_system_at_reset(
@@ -51,7 +50,6 @@ mod app {
             device.osc32kctrl,
             device.gclk,
             device.mclk,
-            &mut device.nvmctrl,
         );
 
         // This is required because the `sercom` and `rtc` modules have not yet
