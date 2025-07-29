@@ -140,6 +140,7 @@ pub struct Tokens {
 ///
 /// See the [module-level documentation](super) for more details.
 #[inline]
+#[hal_macro_helper]
 pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Clocks, Tokens) {
     // Safety: No bus, clock or token is instantiated more than once
     unsafe {
@@ -172,7 +173,6 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Cl
             wdt,
             osculp,
         };
-        #[hal_macro_helper]
         let tokens = Tokens {
             apbs: apb::ApbTokens::new(),
             dfll: dfll::DfllToken::new(),
