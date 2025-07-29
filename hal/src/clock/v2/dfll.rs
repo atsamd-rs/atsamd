@@ -272,7 +272,7 @@
 //! [`from_usb`]: Dfll::from_usb
 //! [`into_mode`]: EnabledDfll::into_mode
 
-use atsamd_hal_macros::hal_cfg;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 #[hal_cfg("clock-d5x")]
 mod imports {
@@ -433,6 +433,7 @@ impl DfllToken {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn disable(&mut self) {
         self.dfllctrl().write(|w| w.enable().clear_bit());
         #[hal_cfg("clock-d5x")]
