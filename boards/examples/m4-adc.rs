@@ -1,8 +1,13 @@
-#![no_std]
-#![no_main]
+// This file is included by one or more BSP examples.  In normal usage, firmware
+// source code needs to start with something like:
+//
+// ```
+// #![no_std]
+// #![no_main]
+// use feather_m4 as bsp;
+//```
 
 use atsamd_hal::adc::AdcBuilder;
-use metro_m4 as bsp;
 
 use bsp::hal;
 use bsp::pac;
@@ -12,20 +17,17 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
+use bsp::entry;
 use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc0, Prescaler},
+    adc::{Accumulation, Prescaler},
     clock::v2::{clock_system_at_reset, pclk::Pclk},
 };
 
-atsamd_hal::bind_multiple_interrupts!(struct Irqs {
-    ADC0: [ADC0_RESRDY, ADC0_OTHER] => atsamd_hal::adc::InterruptHandler<Adc0>;
-});
-
-#[embassy_executor::main]
-async fn main(_s: embassy_executor::Spawner) -> ! {
+#[entry]
+fn main() -> ! {
     let peripherals = Peripherals::take().unwrap();
     let _core = CorePeripherals::take().unwrap();
 
@@ -46,17 +48,16 @@ async fn main(_s: embassy_executor::Spawner) -> ! {
 
     let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
         .with_clock_cycles_per_sample(5)
+        // Overruns if clock divider < 32 in debug mode
         .with_clock_divider(Prescaler::Div32)
         .with_vref(atsamd_hal::adc::Reference::Arefa)
         .enable(peripherals.adc0, apb_adc0, &pclk_adc0)
-        .unwrap()
-        .into_future(Irqs);
-
+        .unwrap();
     let mut adc_pin = pins.a0.into_alternate();
 
     loop {
-        let res = adc.read(&mut adc_pin).await;
+        let res = adc.read(&mut adc_pin);
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("ADC Result: {}", res).unwrap();
+        let _ = cortex_m_semihosting::hprintln!("ADC value: {}", res);
     }
 }
