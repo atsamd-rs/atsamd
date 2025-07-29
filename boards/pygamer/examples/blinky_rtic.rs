@@ -8,7 +8,7 @@ use bsp::{hal, Pins, RedLed};
 use panic_halt as _;
 use pygamer as bsp;
 
-use hal::clock::v2::{clock_system_at_reset, osculp32k::OscUlp1k, rtcosc::RtcOsc};
+use hal::clock::v2::{clock_system_at_reset, rtcosc::RtcOsc};
 use hal::prelude::*;
 use hal::rtc::rtic::rtc_clock;
 use rtic::app;
@@ -31,25 +31,17 @@ mod app {
 
     #[init]
     fn init(cx: init::Context) -> (Shared, Resources) {
-        let mut device = cx.device;
+        let device = cx.device;
         let mut core: rtic::export::Peripherals = cx.core;
 
         // Use v2 of the clocks API so that we can set the RTC clock source
-        let (_, clocks, tokens) = clock_system_at_reset(
-            device.oscctrl,
-            device.osc32kctrl,
-            device.gclk,
-            device.mclk,
-            &mut device.nvmctrl,
-        );
+        let (_, clocks, tokens) =
+            clock_system_at_reset(device.oscctrl, device.osc32kctrl, device.gclk, device.mclk);
 
-        // Enable the 1 kHz clock from the internal 32 kHz source
-        let (osculp1k, _) = OscUlp1k::enable(tokens.osculp32k.osculp1k, clocks.osculp32k_base);
-
-        // Enable the RTC clock with the 1 kHz source.
+        // Enable the RTC clock with the internal 1 kHz source.
         // Note that currently the proof of this (the `RtcOsc` instance) is not
         // required to start the monotonic.
-        let _ = RtcOsc::enable(tokens.rtcosc, osculp1k);
+        let _ = RtcOsc::enable(tokens.rtcosc, clocks.osculp.osculp1k);
 
         // Start the monotonic
         Mono::start(device.rtc);
