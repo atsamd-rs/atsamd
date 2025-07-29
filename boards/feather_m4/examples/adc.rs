@@ -17,13 +17,13 @@ use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc, Prescaler, Resolution},
+    adc::{Accumulation, Prescaler},
     clock::v2::{clock_system_at_reset, pclk::Pclk},
 };
 
 #[entry]
 fn main() -> ! {
-    let mut peripherals = Peripherals::take().unwrap();
+    let peripherals = Peripherals::take().unwrap();
     let _core = CorePeripherals::take().unwrap();
 
     let pins = Pins::new(peripherals.port);
@@ -33,7 +33,6 @@ fn main() -> ! {
         peripherals.osc32kctrl,
         peripherals.gclk,
         peripherals.mclk,
-        &mut peripherals.nvmctrl,
     );
 
     // Enable the ADC0 ABP clock...
