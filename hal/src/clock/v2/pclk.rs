@@ -125,6 +125,7 @@ impl<P: PclkId> PclkToken<P> {
 
     /// Access the corresponding `PCHCTRL` register
     #[inline]
+    #[hal_macro_helper]
     fn ctrl(&self) -> &Ctrl {
         // Safety: Each `PclkToken` only has access to a mutually exclusive set
         // of registers for the corresponding `PclkId`, and we use a shared
@@ -142,6 +143,7 @@ impl<P: PclkId> PclkToken<P> {
 
     /// Set the [`Pclk`] source
     #[inline]
+    #[hal_macro_helper]
     fn enable(&mut self, source: DynPclkSourceId) {
         self.ctrl().write(|w| {
             w.r#gen().variant(source.into());
@@ -157,6 +159,7 @@ impl<P: PclkId> PclkToken<P> {
 
     /// Disable the [`Pclk`]
     #[inline]
+    #[hal_macro_helper]
     fn disable(&mut self) {
         self.ctrl().modify(|_, w| {
             #[hal_cfg(any("clock-d11", "clock-d21"))]

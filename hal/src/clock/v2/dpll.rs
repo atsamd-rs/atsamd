@@ -312,6 +312,7 @@ impl<D: DpllId> DpllToken<D> {
 
     /// Access the corresponding PAC `DPLL` struct
     #[inline]
+    #[hal_macro_helper]
     fn dpll(&self) -> &PacDpll {
         // Safety: Each `DpllToken` only has access to a mutually exclusive set
         // of registers for the corresponding `DpllId`, and we use a shared
@@ -359,9 +360,9 @@ impl<D: DpllId> DpllToken<D> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn enable(&mut self, id: DynDpllSourceId, settings: Settings, prediv: u16) {
         // Convert the actual predivider to the `div` register field value
-        #[hal_macro_helper]
         let div = match id {
             DynDpllSourceId::Xosc0 => prediv / 2 - 1,
             #[hal_cfg("xosc1")]
@@ -413,6 +414,7 @@ impl<D: DpllId> DpllToken<D> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn wait_enabled(&self) {
         #[hal_cfg("oscctrl")]
         while self.syncbusy().enable().bit_is_set() {}
@@ -421,6 +423,7 @@ impl<D: DpllId> DpllToken<D> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn wait_disabled(&self) {
         #[hal_cfg("oscctrl")]
         while self.syncbusy().enable().bit_is_set() {}

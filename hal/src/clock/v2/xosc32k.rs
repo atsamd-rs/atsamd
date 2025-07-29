@@ -453,6 +453,7 @@ impl Xosc32kTokens {
 
 impl Xosc32kBaseToken {
     #[inline]
+    #[hal_macro_helper]
     fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
