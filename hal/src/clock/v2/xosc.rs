@@ -204,7 +204,7 @@
 //! [`Dfll`]: super::dfll::Dfll
 //! [`EnabledDfll`]: super::dfll::EnabledDfll
 
-use atsamd_hal_macros::hal_cfg;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::marker::PhantomData;
 
 use typenum::U0;
@@ -273,6 +273,7 @@ impl<X: XoscId> XoscToken<X> {
 
     /// Return a reference to the corresponding XOSCCTRL register
     #[inline]
+    #[hal_macro_helper]
     fn xoscctrl(&self) -> &Xoscctrl {
         // Safety: Each `XoscToken` only has access to a mutually exclusive set
         // of registers for the corresponding `XoscId`, and we use a shared
@@ -290,6 +291,7 @@ impl<X: XoscId> XoscToken<X> {
 
     /// Read the STATUS register
     #[inline]
+    #[hal_macro_helper]
     fn status(&self) -> STATUS_R {
         // Safety: We are only reading from the `STATUS` register, so there is
         // no risk of memory corruption.
@@ -358,6 +360,7 @@ impl<X: XoscId> XoscToken<X> {
 
     /// Set most of the fields in the XOSCCTRL register
     #[inline]
+    #[hal_macro_helper]
     fn enable(&mut self, mode: DynMode, settings: Settings) {
         let xtalen = mode == DynMode::CrystalMode;
         // Safety: The `IMULT` and `IPTAT` values come from the
