@@ -162,7 +162,7 @@
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`Clocks`]: super::Clocks
 
-use atsamd_hal_macros::hal_cfg;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use fugit::RateExtU32;
 use typenum::U0;
 
@@ -221,6 +221,7 @@ pub struct OscUlp32kToken(());
 
 impl OscUlp32kBaseToken {
     #[inline]
+    #[hal_macro_helper]
     fn osculp32k(&self) -> &Osculp32k {
         // Safety: The `OscUlp32kBaseToken` has exclusive access to the
         // `OSCULP32K` register. See the notes on `Token` types and memory

@@ -407,6 +407,7 @@ impl<G: GclkId> GclkToken<G> {
 
     /// Provide a reference to the corresponding [`Genctrl`] register
     #[inline]
+    #[hal_macro_helper]
     fn genctrl(&self) -> &Genctrl {
         // Safety: Each `GclkToken` only has access to a mutually exclusive set
         // of registers for the corresponding `GclkId`, and we use a shared
@@ -433,6 +434,7 @@ impl<G: GclkId> GclkToken<G> {
     /// Reads or writes to synchronized fields must be accompanied by a check of
     /// the `SYNCBUSY` register. See the datasheet for more details.
     #[inline]
+    #[hal_macro_helper]
     fn wait_syncbusy(&self) {
         // Safety: We are only reading from the `SYNCBUSY` register, and we are
         // only observing the bit corresponding to this particular `GclkId`, so
@@ -461,6 +463,7 @@ impl<G: GclkId> GclkToken<G> {
     /// Use the internal interface of [`GclkDivider`] to set the `DIV` and
     /// `DIVSEL` fields of the `GENCTRL` register.
     #[inline]
+    #[hal_macro_helper]
     fn set_div(&mut self, div: G::Divider) {
         let (divsel, div) = div.divsel_div();
         // Safety: The `DIVSEL` and `DIV` values are derived from the
@@ -515,6 +518,7 @@ impl<G: GclkId> GclkToken<G> {
     }
 
     #[inline]
+    #[hal_macro_helper]
     fn enable(&mut self, id: DynGclkSourceId, settings: Settings<G>) {
         let (divsel, div) = settings.div.divsel_div();
         self.genctrl().write(|w| {
