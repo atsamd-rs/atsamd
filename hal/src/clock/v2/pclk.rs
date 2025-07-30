@@ -133,11 +133,11 @@ impl<P: PclkId> PclkToken<P> {
         // memory safety in the root of the `clock` module for more details.
         #[hal_cfg("clock-d5x")]
         unsafe {
-            &(*pac::Gclk::PTR).pchctrl(P::DYN as usize)
+            (*pac::Gclk::PTR).pchctrl(P::DYN as usize)
         }
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         unsafe {
-            &(*pac::Gclk::PTR).clkctrl()
+            (*pac::Gclk::PTR).clkctrl()
         }
     }
 
@@ -186,7 +186,6 @@ impl<P: PclkId> PclkToken<P> {
 /// ```
 /// use atsamd_hal::clock::v2::pclk::ids::*;
 /// ```
-
 pub mod ids {
     use atsamd_hal_macros::hal_cfg;
 

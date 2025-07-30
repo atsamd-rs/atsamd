@@ -198,7 +198,7 @@ impl Apb {
     #[inline]
     #[hal_cfg("clock-d5x")]
     fn apbdmask(&mut self) -> &Apbdmask {
-        &self.mclk().apbdmask()
+        self.mclk().apbdmask()
     }
 
     #[inline]
