@@ -254,7 +254,7 @@ impl Osc32kBaseToken {
         // Safety: The `Osc32kBaseToken` has exclusive access to the
         // `OSC32K` register. See the notes on `Token` types and memory
         // safety in the root of the `clock` module for more details.
-        unsafe { &(*crate::pac::Sysctrl::PTR).osc32k() }
+        unsafe { (*crate::pac::Sysctrl::PTR).osc32k() }
     }
 
     /// Set the calibration
