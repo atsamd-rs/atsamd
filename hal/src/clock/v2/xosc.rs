@@ -281,11 +281,11 @@ impl<X: XoscId> XoscToken<X> {
         // memory safety in the root of the `clock` module for more details.
         #[hal_cfg("clock-d5x")]
         unsafe {
-            &(*Peripheral::PTR).xoscctrl(X::NUM)
+            (*Peripheral::PTR).xoscctrl(X::NUM)
         }
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         unsafe {
-            &(*Peripheral::PTR).xosc()
+            (*Peripheral::PTR).xosc()
         }
     }
 
