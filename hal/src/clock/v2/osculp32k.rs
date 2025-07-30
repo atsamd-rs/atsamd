@@ -228,11 +228,11 @@ impl OscUlp32kBaseToken {
         // safety in the root of the `clock` module for more details.
         #[hal_cfg("osc32kctrl")]
         unsafe {
-            &(*crate::pac::Osc32kctrl::PTR).osculp32k()
+            (*crate::pac::Osc32kctrl::PTR).osculp32k()
         }
         #[hal_cfg("sysctrl")]
         unsafe {
-            &(*crate::pac::Sysctrl::PTR).osculp32k()
+            (*crate::pac::Sysctrl::PTR).osculp32k()
         }
     }
 

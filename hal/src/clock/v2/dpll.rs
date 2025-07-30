@@ -320,7 +320,7 @@ impl<D: DpllId> DpllToken<D> {
         // memory safety in the root of the `clock` module for more details.
         #[hal_cfg("oscctrl")]
         unsafe {
-            &(*Peripheral::PTR).dpll(D::NUM)
+            (*Peripheral::PTR).dpll(D::NUM)
         }
         #[hal_cfg("sysctrl")]
         unsafe {

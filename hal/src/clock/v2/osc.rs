@@ -18,7 +18,7 @@ impl OscToken {
     }
 
     fn osc8m(&self) -> &Osc8m {
-        unsafe { &(*Sysctrl::PTR).osc8m() }
+        unsafe { (*Sysctrl::PTR).osc8m() }
     }
 
     fn enable(&mut self, settings: Settings) {
