@@ -415,18 +415,18 @@ impl<G: GclkId> GclkToken<G> {
         // memory safety in the root of the `clock` module for more details.
         #[hal_cfg("clock-d5x")]
         unsafe {
-            &(*pac::Gclk::PTR).genctrl(G::NUM)
+            (*pac::Gclk::PTR).genctrl(G::NUM)
         }
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         unsafe {
-            &(*pac::Gclk::PTR).genctrl()
+            (*pac::Gclk::PTR).genctrl()
         }
     }
 
     #[hal_cfg(any("clock-d11", "clock-d21"))]
     #[inline]
     fn gendiv(&self) -> &Gendiv {
-        unsafe { &(*pac::Gclk::PTR).gendiv() }
+        unsafe { (*pac::Gclk::PTR).gendiv() }
     }
 
     /// Block until synchronization has completed

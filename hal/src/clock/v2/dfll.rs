@@ -337,13 +337,13 @@ impl DfllToken {
     #[hal_cfg("clock-d5x")]
     #[inline]
     fn dfllctrl(&self) -> &Dfllctrl {
-        &self.reg_block().dfllctrla()
+        self.reg_block().dfllctrla()
     }
 
     #[hal_cfg(any("clock-d11", "clock-d21"))]
     #[inline]
     fn dfllctrl(&self) -> &Dfllctrl {
-        &self.reg_block().dfllctrl()
+        self.reg_block().dfllctrl()
     }
 
     #[hal_cfg("clock-d5x")]
@@ -354,13 +354,13 @@ impl DfllToken {
 
     #[inline]
     fn dfllmul(&self) -> &Dfllmul {
-        &self.reg_block().dfllmul()
+        self.reg_block().dfllmul()
     }
 
     #[hal_cfg("clock-d5x")]
     #[inline]
     fn dfllsync(&self) -> &Dfllsync {
-        &self.reg_block().dfllsync()
+        self.reg_block().dfllsync()
     }
 
     #[hal_cfg("clock-d5x")]

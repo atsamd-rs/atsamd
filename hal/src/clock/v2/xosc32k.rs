@@ -478,7 +478,7 @@ impl Xosc32kBaseToken {
         // Safety: The `Xosc32kBaseToken` has exclusive access to the `XOSC32K`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*PERIPHERAL::PTR).xosc32k() }
+        unsafe { (*PERIPHERAL::PTR).xosc32k() }
     }
 
     /// Reset the XOSC32K register
@@ -570,7 +570,7 @@ impl Xosc32kCfdToken {
         // Safety: The `Xosc32kCfdToken` has exclusive access to the `Cfdctrl`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { &(*PERIPHERAL::PTR).cfdctrl() }
+        unsafe { (*PERIPHERAL::PTR).cfdctrl() }
     }
 
     /// Enable clock failure detection and set the safe clock divider
