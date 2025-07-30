@@ -21,7 +21,7 @@
 
 use atsame54_xpro as bsp;
 use bsp::hal;
-use clock::{osculp32k::OscUlp1k, rtcosc::RtcOsc};
+use clock::rtcosc::RtcOsc;
 use hal::clock::v2 as clock;
 use hal::eic::{Ch15, Eic, ExtInt, Sense};
 use hal::gpio::{Interrupt as GpioInterrupt, *};
@@ -115,7 +115,7 @@ mod app {
         can_memory: SharedMemory<Capacities> = SharedMemory::new()
     ])]
     fn init(ctx: init::Context) -> (Shared, Local) {
-        let mut device = ctx.device;
+        let device = ctx.device;
 
         rtt_init_print!();
         rprintln!("Application up!");
@@ -125,16 +125,12 @@ mod app {
             device.osc32kctrl,
             device.gclk,
             device.mclk,
-            &mut device.nvmctrl,
         );
-
-        // Enable the 1 kHz clock from the internal 32 kHz source
-        let (osculp1k, _) = OscUlp1k::enable(tokens.osculp32k.osculp1k, clocks.osculp32k_base);
 
         // Enable the RTC clock with the 1 kHz source.
         // Note that currently the proof of this (the `RtcOsc` instance) is not
         // required to start the monotonic.
-        let _ = RtcOsc::enable(tokens.rtcosc, osculp1k);
+        let _ = RtcOsc::enable(tokens.rtcosc, clocks.osculp.osculp1k);
 
         // Start the monotonic
         Mono::start(device.rtc);
@@ -159,7 +155,7 @@ mod app {
 
         let _ = can1_standby.set_low();
 
-        let (pclk_can1, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.can1, gclk0);
+        let (pclk_can1, _gclk0) = clock::pclk::Pclk::enable(tokens.pclks.can1, gclk0);
 
         let (dependencies, _gclk0) = hal::can::Dependencies::new(
             gclk0,
