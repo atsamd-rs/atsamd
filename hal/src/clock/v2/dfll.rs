@@ -274,7 +274,7 @@
 
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
-#[hal_cfg("clock-d5x")]
+#[hal_cfg("oscctrl")]
 mod imports {
     pub use crate::pac::Oscctrl as PERIPHERAL;
     pub use crate::pac::oscctrl::{
@@ -282,10 +282,10 @@ mod imports {
     };
 }
 
-#[hal_cfg(any("clock-d11", "clock-d21"))]
+#[hal_cfg("sysctrl")]
 mod imports {
     pub use crate::pac::Sysctrl as PERIPHERAL;
-    pub use crate::pac::sysctrl::{Dfllctrl, Dfllmul, Dfllsync, RegisterBlock};
+    pub use crate::pac::sysctrl::{Dfllctrl, Dfllmul, RegisterBlock};
 }
 
 use fugit::RateExtU32;
