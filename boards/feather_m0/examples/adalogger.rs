@@ -11,7 +11,8 @@ use core::sync::atomic;
 
 use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
-use embedded_sdmmc::{Controller, SdMmcSpi, VolumeIdx};
+use embedded_hal_bus::spi::ExclusiveDevice;
+use embedded_sdmmc::{SdCard, VolumeIdx, VolumeManager};
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
@@ -26,6 +27,7 @@ use hal::fugit::RateExtU32;
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::rtc;
+use hal::timer::TimerCounter;
 use hal::usb::UsbBus;
 
 use heapless::String;
@@ -48,8 +50,21 @@ fn main() -> ! {
     let timer_clock = clocks
         .configure_gclk_divider_and_source(ClockGenId::Gclk3, 32, ClockSource::Osc32k, true)
         .unwrap();
+
+    // Setup timer clock from
+    let tc45 = &clocks.tc4_tc5(&timer_clock).unwrap();
+
+    // Setup a timer for the SPI driver delay source
+    let timer_spi = TimerCounter::tc4_(tc45, peripherals.tc4, &mut peripherals.pm);
+
+    // Setup a timer for the SPI driver delay source
+    let timer_sdcard = TimerCounter::tc5_(tc45, peripherals.tc5, &mut peripherals.pm);
+
+    // Setup the RTC for the SD card volume time source
     let rtc_clock = clocks.rtc(&timer_clock).unwrap();
-    let timer = rtc::Rtc::clock_mode(peripherals.rtc, rtc_clock.freq(), &mut peripherals.pm);
+    let rtc = rtc::Rtc::clock_mode(peripherals.rtc, rtc_clock.freq(), &mut peripherals.pm);
+
+    // Setup red led
     let pins = bsp::Pins::new(peripherals.port);
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
@@ -91,9 +106,9 @@ fn main() -> ! {
 
     // Now work on the SD peripherals. Slow SPI speed required on init
     let spi_sercom = periph_alias!(peripherals.spi_sercom);
-    let spi = bsp::spi_master(
+    let spi_bus = bsp::spi_master(
         &mut clocks,
-        400_u32.kHz(),
+        4.MHz(),
         spi_sercom,
         &mut peripherals.pm,
         pins.sclk,
@@ -125,32 +140,31 @@ fn main() -> ! {
     usbserial_write!("Card inserted!\r\n");
     delay.delay_ms(250_u32);
 
-    let mut controller = Controller::new(SdMmcSpi::new(spi, sd_cs), timer);
+    let spi_device = ExclusiveDevice::new(spi_bus, sd_cs, timer_spi).unwrap();
+    let sdcard = SdCard::new(spi_device, timer_sdcard);
 
-    match controller.device().init() {
-        Ok(_) => {
-            // speed up SPI and read out some info
-            controller
-                .device()
-                .spi()
-                .reconfigure(|c| c.set_baud(4.MHz()));
+    match sdcard.num_bytes() {
+        Ok(num_bytes) => {
             usbserial_write!("OK!\r\nCard size...\r\n");
-            match controller.device().card_size_bytes() {
-                Ok(size) => usbserial_write!("{} bytes\r\n", size),
-                Err(e) => usbserial_write!("Err: {:?}\r\n", e),
-            }
+            usbserial_write!("{} bytes\r\n", num_bytes);
+
+            let volume_manager = VolumeManager::new(sdcard, rtc);
 
             for i in 0..=3 {
-                let volume = controller.get_volume(VolumeIdx(i));
+                let volume = volume_manager.open_volume(VolumeIdx(i));
                 usbserial_write!("volume {:?}\r\n", volume);
                 if let Ok(volume) = volume {
-                    let root_dir = controller.open_root_dir(&volume).unwrap();
-                    usbserial_write!("Listing root directory:\r\n");
-                    controller
-                        .iterate_dir(&volume, &root_dir, |x| {
-                            usbserial_write!("\tFound: {:?}\r\n", x);
-                        })
-                        .unwrap();
+                    match volume.open_root_dir() {
+                        Ok(root_dir) => {
+                            usbserial_write!("Listing root directory:\r\n");
+                            root_dir
+                                .iterate_dir(|x| {
+                                    usbserial_write!("\tFound: {:?}\r\n", x);
+                                })
+                                .unwrap();
+                        }
+                        Err(e) => usbserial_write!("Directory err: {:?}!\r\n", e),
+                    }
                 }
             }
         }
