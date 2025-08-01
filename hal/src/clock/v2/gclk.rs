@@ -521,6 +521,13 @@ impl<G: GclkId> GclkToken<G> {
     #[hal_macro_helper]
     fn enable(&mut self, id: DynGclkSourceId, settings: Settings<G>) {
         let (divsel, div) = settings.div.divsel_div();
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        self.gendiv().write(|w| unsafe {
+            w.id().bits(G::NUM as u8);
+            w.div().bits(div)
+        });
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        self.wait_syncbusy();
         self.genctrl().write(|w| {
             // Safety: The `DIVSEL` and `DIV` values are derived from the
             // `GclkDivider` type, so they are guaranteed to be valid.
