@@ -403,7 +403,7 @@ impl<D: DpllId> DpllToken<D> {
             w.runstdby().bit(settings.run_standby);
             w.enable().set_bit()
         });
-        self.wait_enabled();
+        // self.wait_enabled(); // TODO unclear if we want this
     }
 
     /// Disable the [`Dpll`]
