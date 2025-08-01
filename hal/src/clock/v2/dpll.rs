@@ -413,13 +413,14 @@ impl<D: DpllId> DpllToken<D> {
         self.wait_disabled();
     }
 
+    /// Waits for the enable bit to synchronize in the enabled state
     #[inline]
     #[hal_macro_helper]
     fn wait_enabled(&self) {
         #[hal_cfg("oscctrl")]
         while self.syncbusy().enable().bit_is_set() {}
         #[hal_cfg("sysctrl")]
-        while self.status().enable().bit_is_clear() {}
+        while self.status().enable().bit_is_set() {}
     }
 
     #[inline]
