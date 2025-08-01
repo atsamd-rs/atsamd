@@ -8,7 +8,6 @@ use atsamd_hal::{
         self as clock,
         dpll::Dpll,
         gclk::{Gclk, GclkDiv16, GclkDiv8},
-        osculp32k::OscUlp32k,
         pclk::Pclk,
         rtcosc::RtcOsc,
         xosc32k::{ControlGainMode, Xosc1k, Xosc32k, Xosc32kBase},
@@ -43,7 +42,7 @@ mod app {
 
     #[init]
     fn init(cx: init::Context) -> (SharedResources, LocalResources) {
-        let mut device = cx.device;
+        let device = cx.device;
 
         // Get the clocks & tokens
         let (_buses, clocks, tokens) = clock::clock_system_at_reset(
@@ -51,7 +50,6 @@ mod app {
             device.osc32kctrl,
             device.gclk,
             device.mclk,
-            &mut device.nvmctrl,
         );
 
         // This is required because the `sercom` and `rtc` modules have not yet
@@ -113,8 +111,7 @@ mod app {
 
         // Output `OscUlp32k` on PB11 pin via `Gclk5`, without any division resulting in
         // 32 kHz output frequency
-        let (osculp32k, _osculp_base) =
-            OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
+        let osculp32k = clocks.osculp.osculp32k;
         let (gclk5, _osculp32k) = Gclk::from_source(tokens.gclks.gclk5, osculp32k);
         let gclk5 = gclk5.enable();
         let (_gclk5, _gclk5_out) = gclk5.enable_gclk_out(pins.pb11);
