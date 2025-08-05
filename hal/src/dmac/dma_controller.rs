@@ -246,7 +246,7 @@ impl DmaController {
     }
 
     #[hal_cfg("dmac-d5x")]
-    /// Release the DMAC and return the register block.
+    /// Release the DMAC and return the underlying resources.
     ///
     /// **Note**: The [`Channels`] struct is consumed by this method. This means
     /// that any [`Channel`] obtained by [`split`](DmaController::split) must be
@@ -388,7 +388,7 @@ where
     }
 
     #[hal_cfg("dmac-d5x")]
-    /// Release the DMAC and return the register block.
+    /// Release the DMAC and return the underlying resources.
     ///
     /// **Note**: The [`Channels`] struct is consumed by this method. This means
     /// that any [`Channel`] obtained by [`split`](DmaController::split) must be
