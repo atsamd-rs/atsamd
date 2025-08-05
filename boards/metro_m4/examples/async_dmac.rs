@@ -9,10 +9,7 @@ use panic_probe as _;
 
 use bsp::hal;
 use bsp::pac;
-use hal::{
-    clock::GenericClockController,
-    dmac::{DmaController, PriorityLevel, TriggerAction, TriggerSource},
-};
+use hal::dmac::{DmaController, PriorityLevel, TriggerAction, TriggerSource};
 use metro_m4 as bsp;
 
 atsamd_hal::bind_multiple_interrupts!(struct Irqs {
@@ -22,18 +19,16 @@ atsamd_hal::bind_multiple_interrupts!(struct Irqs {
 #[embassy_executor::main]
 async fn main(_s: embassy_executor::Spawner) {
     let mut peripherals = pac::Peripherals::take().unwrap();
-    let _core = pac::CorePeripherals::take().unwrap();
-
-    let _clocks = GenericClockController::with_external_32kosc(
+    let (mut _buses, clocks, _tokens) = hal::clock::v2::clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
 
     // Initialize DMA Controller
-    let dmac = DmaController::init(peripherals.dmac, &mut peripherals.pm);
+    let dmac = DmaController::new(peripherals.dmac, clocks.ahbs.dmac);
 
     // Turn dmac into an async controller
     let mut dmac = dmac.into_future(crate::Irqs);
