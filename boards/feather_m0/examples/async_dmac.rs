@@ -32,7 +32,7 @@ async fn main(_s: embassy_executor::Spawner) {
     );
 
     // Initialize DMA Controller
-    let dmac = DmaController::init(peripherals.dmac, &mut peripherals.pm);
+    let dmac = DmaController::new(peripherals.dmac, &mut peripherals.pm);
 
     // Turn dmac into an async controller
     let mut dmac = dmac.into_future(crate::Irqs);

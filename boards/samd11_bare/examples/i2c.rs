@@ -46,7 +46,7 @@ fn main() -> ! {
     let (sda, scl) = (pins.d4, pins.d5);
 
     // Setup DMA channels for later use
-    let mut dmac = DmaController::init(dmac, &mut pm);
+    let mut dmac = DmaController::new(dmac, &mut pm);
     let channels = dmac.split();
     let chan0 = channels.0.init(PriorityLevel::Lvl0);
 
