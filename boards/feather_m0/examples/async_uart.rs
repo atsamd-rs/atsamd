@@ -41,7 +41,7 @@ async fn main(spawner: embassy_executor::Spawner) {
     let uart_sercom = periph_alias!(peripherals.uart_sercom);
 
     // Initialize DMA Controller
-    let dmac = DmaController::init(peripherals.dmac, &mut peripherals.pm);
+    let dmac = DmaController::new(peripherals.dmac, &mut peripherals.pm);
     // Turn dmac into an async controller
     let mut dmac = dmac.into_future(Irqs);
     // Get individual handles to DMA channels

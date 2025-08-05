@@ -119,29 +119,42 @@
 //!
 //! # Example
 //! ```
-//! let mut peripherals = Periphserals::take().unwrap();
-//! let mut dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
-//! // Get individual handles to DMA channels
-//! let channels = dmac.split();
-//!
-//! // Initialize DMA Channel 0
-//! let chan0 = channels.0.init(PriorityLevel::LVL0, false, &mut dmac);
-//!
-//! // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing destination)
-//! // NOTE: buf_src and buf_dest should be either:
-//! // &'static mut T, &'static mut [T], or &'static mut [T; N] where T: BeatSize
-//! let xfer = Transfer::new(chan0, buf_src, buf_dest, false).begin(
-//!     &mut dmac,
-//!     TriggerSource::DISABLE,
-//!     TriggerAction::BLOCK,
+//! let mut peripherals = Peripherals::take().unwrap();
+//! let (mut _buses, clocks, _tokens) = hal::clock::v2::clock_system_at_reset(
+//!     peripherals.oscctrl,
+//!     peripherals.osc32kctrl,
+//!     peripherals.gclk,
+//!     peripherals.mclk,
+//!     &mut peripherals.nvmctrl,
 //! );
 //!
-//! // Wait for transfer to complete and grab resulting buffers
-//! let (chan0, buf_src, buf_dest, _) = xfer.wait(&mut dmac);
+//! let mut dmac = DmaController::new(peripherals.dmac, clocks.ahbs.dmac);
+//! // Get individual handles to DMA channels
+//! let mut channels = dmac.split();
 //!
-//! // (Optional) free the [`DmaController`] struct and return the underlying PAC struct
+//!  // Initialize DMA Channel 0
+//! let chan0 = channels.0.init(PriorityLevel::Lvl0);
+//!
+//!  // Initialize buffers
+//! const LENGTH: usize = 50;
+//! let buf_src: &'static mut [u8; LENGTH] =
+//!     cortex_m::singleton!(: [u8; LENGTH] = [0xff; LENGTH]).unwrap();
+//! let buf_dest: &'static mut [u8; LENGTH] =
+//!     cortex_m::singleton!(: [u8; LENGTH] = [0x00; LENGTH]).unwrap();
+//!
+//!  // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing destination)
+//! // NOTE: buf_src and buf_dest should be either:
+//! // &'static mut T, &'static mut [T], or &'static mut [T; N] where T: BeatSize
+//! let xfer = Transfer::new(chan0, buf_src, buf_dest, false)
+//!     .unwrap()
+//!     .begin(TriggerSource::Disable, TriggerAction::Block);
+//!
+//!  // Wait for transfer to complete and grab resulting buffers
+//! let (chan0, _buf_src, _buf_dest) = xfer.wait();
+//!
+//!  // (Optional) free the [`DmaController`] struct and return the underlying resources
 //! channels.0 = chan0.into();
-//! let dmac = dmac.free(channels, &mut peripherals.PM);
+//! let (dmac, ahb_clk) = dmac.free(channels);
 //! ```
 //!
 //! # [`Transfer`] recycling
@@ -153,98 +166,112 @@
 //! then call [`begin`](Transfer::begin), a [`Transfer::recycle`] method
 //! is provided. If the buffer lengths match and the previous transfer is
 //! completed, a new transfer will immediately be triggered using the provided
-//! source and destination buffers. If the recycling operation is succesful,
+//! source and destination buffers. If the recycling operation is successful,
 //! `Ok((source, destination))` containing the old source and destination
 //! buffers is returned. Otherwise, `Err(_)` is returned.
 //!
 //! ```
-//! let new_source = produce_source();
-//! let new_destination = produce_destination();
+//! const LENGTH: usize = 50;
+//! let new_source: &'static mut [u8; LENGTH] =
+//!     cortex_m::singleton!(: [u8; LENGTH] = [0xff; LENGTH]).unwrap();
+//! let new_destination: &'static mut [u8; LENGTH] =
+//!     cortex_m::singleton!(: [u8; LENGTH] = [0x00; LENGTH]).unwrap();
 //!
 //! // Assume xfer is a `Busy` `Transfer`
-//! let (old_source, old_dest) = xfer.recycle(new_source, new_destination).unwrap();
+//! let (_old_source, _old_dest) = xfer.recycle(
+//!     new_source,
+//!     new_destination
+//! ).unwrap();
 //! ```
 //!
-//! # Waker operation
+//! # Async transfers
 //!
-//! A [`Transfer`] can also accept a function or closure that will be called on
-//! completion of the transaction, acting like a waker.
-//!
-//! ```
-//! fn wake_up() {
-//!     //...
-//! }
-//!
-//! fn use_waker<const N: usize>(dmac: DmaController,
-//!     source: &'static mut [u8; N],
-//!     destination: &'static mut [u8; N]
-//! ){
-//!     let chan0 = dmac.split().0;
-//!     let xfer = Transfer::new_from_arrays(chan0, source, destination, false)
-//!         .with_waker(wake_up)
-//!         .begin();
-//!     //...
-//! }
-//! ```
-//!
-//! ## RTIC example
-//!
-//! The [RTIC] framework provides a convenient way to store a `static`ally
-//! allocated [`Transfer`], so that it can be accessed by both the interrupt
-//! handlers and user code. The following example shows how [`Transfer`]s might
-//! be used for a series of transactions. It uses features from the latest
-//! release of [RTIC], `v0.6-alpha.4`.
+//! By enabling the `async` feature, DMA transfers can be completed
+//! asynchronously using [`Channel::transfer_future`]. The [`DmaController`]
+//! must first be converted into async mode by calling
+//! [`into_future`](DmaController::into_future) before splitting the channels.
+//! The following example illustrates this using [RTIC](https://rtic.rs/) v2.x.
 //!
 //! ```
 //! use atsamd_hal::dmac::*;
 //!
-//! const LENGTH: usize = 50;
-//! type TransferBuffer = &'static mut [u8; LENGTH];
-//! type Xfer = Transfer<Channel<Ch0, Busy>, TransferBuffer, TransferBuffer>;
+//! atsamd_hal::bind_multiple_interrupts!(struct Irqs {
+//!     DMAC: [DMAC_0] => InterruptHandler;
+//! });
 //!
-//! #[resources]
-//! struct Resources {
-//!     #[lock_free]
-//!     #[init(None)]
-//!     opt_xfer: Option<Xfer>,
+//! #[rtic::app(device = pac, dispatchers = [EVSYS_0])]
+//! mod app {
+//!     use super::*;
 //!
-//!     #[lock_free]
-//!     #[init(None)]
-//!     opt_channel: Option<Channel<Ch0, Ready>>,
-//! }
+//!     #[shared]
+//!     struct Shared {}
 //!
-//! // Note: Assume interrupts have already been enabled for the concerned channel
-//! #[task(resources = [opt_xfer, opt_channel])]
-//! fn task(ctx: task::Context) {
-//!     let task::Context { opt_xfer } = ctx;
-//!     match opt_xfer {
-//!         Some(xfer) => {
-//!             if xfer.complete() {
-//!                 let (chan0, _source, dest, _payload) = xfer.take().unwrap().stop();
-//!                 *opt_channel = Some(chan0);
-//!                 consume_data(buf);
-//!             }
-//!         }
-//!         None => {
-//!             if let Some(chan0) = opt_channel.take() {
-//!                 let source: [u8; 50] = produce_source();
-//!                 let dest: [u8; 50] = produce_destination();
-//!                 let xfer = opt_xfer.get_or_insert(
-//!                     Transfer::new_from_arrays(channel0, source, destination)
-//!                         .with_waker(|| { task::spawn().ok(); })
-//!                         .begin()
-//!                 );
-//!             }
+//!     #[local]
+//!     struct Local {
+//!         other_stuff: OtherStuff,
+//!         channel: Channel<Ch0, ReadyFuture>,
+//!     }
+//!
+//!     #[init]
+//!     fn init(cx: init::Context) -> (Shared, Local) {
+//!         let mut peripherals = cx.device;
+//!         let (_buses, clocks, tokens) = atsamd_hal::clock::v2::clock_system_at_reset(
+//!             peripherals.oscctrl,
+//!             peripherals.osc32kctrl,
+//!             peripherals.gclk,
+//!             peripherals.mclk,
+//!             &mut peripherals.nvmctrl,
+//!         );
+//!
+//!         // Setup the DMA controller
+//!         let mut dmac = DmaController::new(peripherals.dmac, clocks.ahbs.dmac).into_future(Irqs);
+//!
+//!         // Get individual handles to DMA channels
+//!         let channels = dmac.split();
+//!
+//!         // Initialize DMA Channel 0
+//!         let channel = channels.0.init(PriorityLevel::Lvl0);
+//!
+//!         task::spawn().ok().unwrap();
+//!
+//!         (
+//!             Shared {},
+//!             Local {
+//!                 other_stuff: OtherStuff::new(
+//!                     peripherals.rtc,
+//!                     peripherals.port,
+//!                     clocks.osculp32k_base,
+//!                     tokens,
+//!                 ),
+//!                 channel,
+//!             },
+//!         )
+//!     }
+//!
+//!     #[task(priority = 1, local=[other_stuff, channel])]
+//!     async fn task(cx: task::Context) {
+//!         const LENGTH: usize = 50;
+//!         let mut source = [0xff; LENGTH];
+//!         let mut dest = [0x00; LENGTH];
+//!
+//!         // Just do a transfer repeatedly and then other stuff
+//!         loop {
+//!             cx.local
+//!                 .channel
+//!                 .transfer_future(
+//!                     &mut source,
+//!                     &mut dest,
+//!                     TriggerSource::Disable,
+//!                     TriggerAction::Block,
+//!                 )
+//!                 .await
+//!                 .unwrap();
+//!
+//!             cx.local.other_stuff.do_other_stuff().await;
 //!         }
 //!     }
 //! }
-//!
-//! #[task(binds = DMAC, resources = [opt_future])]
-//! fn tcmpl(ctx: tcmpl::Context) {
-//!     ctx.resources.opt_xfer.as_mut().unwrap().callback();
-//! }
 //! ```
-//! [RTIC]: https://rtic.rs
 
 // This is necessary until modular_bitfield fixes all their identity_op warnings
 #![allow(clippy::identity_op)]
