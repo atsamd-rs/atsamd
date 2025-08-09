@@ -348,7 +348,7 @@ use crate::gpio::{self, AlternateH, AnyPin, Pin, PinId};
 use crate::pac::gclk::Genctrl;
 #[hal_cfg(any("clock-d11", "clock-d21"))]
 use crate::pac::gclk::Gendiv;
-use crate::pac::gclk::genctrl::{self, Srcselect};
+use crate::pac::gclk::genctrl::Srcselect;
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement, Sealed};
 
@@ -1255,31 +1255,49 @@ where
     G: GclkId,
     I: GclkSourceId,
 {
+    /// Updates the GENCTRL register based on self.settings
+    ///
+    /// The thumbv7em chips use one GENCTRL per clock generator and are capable
+    /// of read-modify-write operations, but the thumbv6 chips share one GENCTRL
+    /// register among the clock generators so only support writes.  To
+    /// accommodate both, this implementation maintains a [`Settings`] struct
+    /// containing the GENCTRL settings, and this method is called after
+    /// updating it to apply them.
     #[hal_macro_helper]
-    fn update_genctrl<F: FnOnce(&mut genctrl::W)>(&self, writer: F, genen: bool) {
+    fn update_genctrl(&self, genen: bool) {
+        let (divsel, div) = self.settings.div.divsel_div();
+
         #[hal_cfg("clock-d5x")]
         self.token.genctrl().modify(|_, w| {
-            let _ = genen; // Suppress warning on d5x builds
-            writer(w);
-            w
+            w.divsel().bit(divsel);
+            // Safety: The `DIVSEL` and `DIV` values are derived from the
+            // `GclkDivider` type, so they are guaranteed to be valid.
+            unsafe {
+                w.div().bits(div);
+            }
+            w.oe().bit(self.settings.output_enable);
+            w.oov().bit(self.settings.output_off_value);
+            w.idc().bit(self.settings.improve_duty_cycle);
+            w.genen().bit(genen);
+            w.src().variant(I::DYN.into())
         });
 
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         {
-            let (divsel, _div) = self.settings.div.divsel_div();
+            // Suppress warning for thumbv7em builds
+            let _ = div;
 
             self.token.genctrl().write(|w| {
-                unsafe { w.id().bits(G::NUM as u8) };
-                w.src().variant(I::DYN.into());
                 w.divsel().bit(divsel);
                 w.oe().bit(self.settings.output_enable);
                 w.oov().bit(self.settings.output_off_value);
                 w.idc().bit(self.settings.improve_duty_cycle);
                 w.genen().bit(genen);
-                writer(w);
-                w
+                w.src().variant(I::DYN.into());
+                unsafe { w.id().bits(G::NUM as u8) }
             });
         }
+
         self.token.wait_syncbusy();
     }
 
@@ -1300,9 +1318,6 @@ where
 
         // Call update_genctrl() on object that has the correct source type
         gclk.update_genctrl(
-            |w| {
-                w.src().variant(N::DYN.into());
-            },
             // This method is always called on Gclk0, which is always enabled
             true,
         );
@@ -1361,9 +1376,6 @@ where
     pub fn output_off_value(mut self, high: bool) -> Self {
         self.settings.output_off_value = high;
         self.update_genctrl(
-            |w| {
-                w.oov().bit(high);
-            },
             // This method is only accessible via disabled GCLKs
             false,
         );
@@ -1373,20 +1385,14 @@ where
 
     /// Enable the [`Gclk`], so that it can be used as a clock [`Source`]
     ///
-    /// As mentioned in the [`Gclk`] documentation, no hardware registers are
-    /// actually modified until this call. Rather, the desired configuration is
-    /// stored internally, and the [`Gclk`] is initialized and configured here
-    /// according to the datasheet.
-    ///
     /// The returned value is an [`EnabledGclk`] that can be used as a clock
     /// [`Source`] for other clocks.
     #[inline]
     #[hal_macro_helper]
     pub fn enable(self) -> EnabledGclk<G, I> {
-        let (divsel, div) = self.settings.div.divsel_div();
-
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         {
+            let (_divsel, div) = self.settings.div.divsel_div();
             self.token.gendiv().write(|w| unsafe {
                 w.id().bits(G::NUM as u8);
                 w.div().bits(div)
@@ -1394,23 +1400,7 @@ where
             self.token.wait_syncbusy();
         }
 
-        self.token.genctrl().write(|w| {
-            // Safety: The `DIVSEL` and `DIV` values are derived from the
-            // `GclkDivider` type, so they are guaranteed to be valid.
-            unsafe {
-                #[hal_cfg("clock-d5x")]
-                w.div().bits(div);
-                #[hal_cfg(any("clock-d11", "clock-d21"))]
-                w.id().bits(G::NUM as u8);
-            };
-            w.divsel().bit(divsel);
-            w.src().variant(I::DYN.into());
-            w.idc().bit(self.settings.improve_duty_cycle);
-            w.oe().bit(self.settings.output_enable);
-            w.oov().bit(self.settings.output_off_value);
-            w.genen().set_bit()
-        });
-        self.token.wait_syncbusy();
+        self.update_genctrl(true);
 
         Enabled::new(self)
     }
@@ -1427,12 +1417,7 @@ where
     /// only be disabled when no other clocks consume this [`Gclk`].
     #[inline]
     pub fn disable(self) -> Gclk<G, I> {
-        self.0.update_genctrl(
-            |w| {
-                w.genen().clear_bit();
-            },
-            false,
-        );
+        self.0.update_genctrl(false);
         self.0
     }
 }
@@ -1540,11 +1525,12 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     pub fn div(&mut self, divider: GclkDiv8) {
         self.0.settings.div = divider;
 
-        let (divsel, div) = divider.divsel_div();
-
         // D5x div is in the GENCTRL register, smaller chips keep it separate
         #[hal_cfg(any("clock-d11", "clock-d21"))]
         {
+            let (_divsel, div) = divider.divsel_div();
+            // Safety: The `DIVSEL` and `DIV` values are derived from the
+            // `GclkDivider` type, so they are guaranteed to be valid.
             self.0.token.gendiv().write(|w| unsafe {
                 w.id().bits(0);
                 w.div().bits(div)
@@ -1552,30 +1538,14 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
             self.0.token.wait_syncbusy();
         }
 
-        self.0.update_genctrl(
-            |w| {
-                // Safety: The `DIVSEL` and `DIV` values are derived from the
-                // `GclkDivider` type, so they are guaranteed to be valid.
-                #[hal_cfg("clock-d5x")]
-                unsafe {
-                    w.div().bits(div);
-                }
-                w.divsel().bit(divsel);
-            },
-            true,
-        );
+        self.0.update_genctrl(true);
     }
 
     /// Output a 50-50 duty cycle clock when using an odd [`GclkDivider`]
     #[inline]
     pub fn improve_duty_cycle(&mut self, flag: bool) {
         self.0.settings.improve_duty_cycle = flag;
-        self.0.update_genctrl(
-            |w| {
-                w.idc().bit(flag);
-            },
-            true,
-        );
+        self.0.update_genctrl(true);
     }
 
     /// Return the [`Gclk0`] frequency
@@ -1592,12 +1562,7 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     #[inline]
     pub fn output_off_value(&mut self, high: bool) {
         self.0.settings.output_off_value = high;
-        self.0.update_genctrl(
-            |w| {
-                w.oov().bit(high);
-            },
-            true,
-        );
+        self.0.update_genctrl(true);
     }
 }
 
@@ -1734,12 +1699,7 @@ where
     {
         let pin = pin.into().into_mode();
         self.0.settings.output_enable = true;
-        self.0.update_genctrl(
-            |w| {
-                w.oe().set_bit();
-            },
-            true,
-        );
+        self.0.update_genctrl(true);
 
         let gclk_out = GclkOut {
             pin,
@@ -1764,12 +1724,7 @@ where
         I: GclkIo<GclkId = G>,
     {
         self.0.settings.output_enable = false;
-        self.0.update_genctrl(
-            |w| {
-                w.oe().clear_bit();
-            },
-            true,
-        );
+        self.0.update_genctrl(true);
 
         (self.dec(), gclk_out.pin)
     }
