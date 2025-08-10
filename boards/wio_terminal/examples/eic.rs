@@ -18,7 +18,7 @@ use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::eic::{Eic, Sense};
-use hal::gpio::{Pins, Pin, PullUpInterrupt};
+use hal::gpio::{Pin, Pins, PullUpInterrupt};
 use hal::prelude::*;
 use pac::{interrupt, CorePeripherals, Peripherals};
 use wio_terminal::aliases::UserLed;
@@ -47,7 +47,7 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let eic_clock = clocks.eic(&gclk0).unwrap();
-    let eic_channels = Eic::new(&mut peripherals.mclk, eic_clock, peripherals.eic).split();
+    let eic_channels = Eic::new(&mut peripherals.mclk, &eic_clock, peripherals.eic).split();
 
     let button: Pin<_, PullUpInterrupt> = pins.pd10.into();
     let mut extint = eic_channels.5.with_pin(button);

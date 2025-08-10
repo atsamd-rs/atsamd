@@ -102,9 +102,9 @@ name = "buttons"
 name = "clock"
 required-features = ["usb"]
 
-[[example]]
-name = "microphone"
-
+# [[example]]
+# name = "microphone"
+ 
 [[example]]
 name = "orientation"
 
