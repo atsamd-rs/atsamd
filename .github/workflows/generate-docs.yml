@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Rust
         run: |
@@ -80,7 +80,7 @@ jobs:
           echo '  </body>' >> "${docs_path}/index.html"
           echo '</html>' >> "${docs_path}/index.html"
       - name: Checkout pages branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: gh-pages
           path: gh-pages
