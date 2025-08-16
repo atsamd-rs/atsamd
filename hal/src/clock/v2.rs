@@ -220,8 +220,8 @@
 //! registers are accessed relative to the [PAC].
 //!
 //! Each of the PAC clocking structs (which vary between targets, including
-//! `OSCCTRL`, `SYSCTRL`, `OSC32KCTRL`, [`GCLK`] and `MCLK`) is a singleton object
-//! that controls a set of MMIO registers. It is impossible to create two
+//! `OSCCTRL`, `SYSCTRL`, `OSC32KCTRL`, [`GCLK`] and `MCLK`) is a singleton
+//! object that controls a set of MMIO registers. It is impossible to create two
 //! instances of any PAC object without `unsafe`. However, each object controls
 //! a large set of registers that can be further sub-divided into smaller sets
 //! for individual clocks. For example, the [`GCLK`] object controls registers
