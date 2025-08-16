@@ -65,7 +65,7 @@
 //! In general, there are two classes of clock in ATSAMD chips. Some clocks map
 //! one-to-one (1:1) to a specific bus or peripheral. This is true for the AHB
 //! clocks ([`AhbClk`]s), APB clocks ([`ApbClk`]s), GCLK outputs ([`GclkOut`]s),
-//! peripheral channel clocks ([`Pclk`]s), and RTC oscillator ([`RtcOsc`]).
+//! peripheral channel clocks ([`Pclk`]s), and RTC oscillator (`RtcOsc`).
 //! Other clocks form one-to-many (1:N) relationships, like the external crystal
 //! oscillator ([`Xosc`]), the 48 MHz DFLL ([`Dfll`]) or the two DPLLs
 //! ([`Dpll`]).
@@ -115,9 +115,9 @@
 //! on the movement of `Producer` objects.
 //!
 //! Instead, the `clock` module takes a different approach. It uses type-level
-//! programming to track, at compile-time, the number of consumer clocks, N,
-//! fed by a particular producer clock. With this approach, we can move
-//! `Producer` objects while still making them impossible to modify if N > 0.
+//! programming to track, at compile-time, the number of consumer clocks, N, fed
+//! by a particular producer clock. With this approach, we can move `Producer`
+//! objects while still making them impossible to modify if N > 0.
 //!
 //! The following sections will describe the implementation of this strategy.
 //!
@@ -175,9 +175,9 @@
 //! can only `Decrement` the same producer it `Increment`ed. Stated differently,
 //! we need a way to track the identity of each consumer's clock source.
 //!
-//! The [`Source`] trait is designed for this purpose. It marks
-//! [`Enabled<T, N>`] producer clocks, and it's associated type, [`Id`], is the
-//! identity type that should be stored by consumers.
+//! The [`Source`] trait is designed for this purpose. It marks [`Enabled<T,
+//! N>`] producer clocks, and it's associated type, [`Id`], is the identity type
+//! that should be stored by consumers.
 //!
 //! Given that all implementers of `Source` are instances of `Enabled<T, N>`,
 //! the naïve choice for [`Source::Id`] would be `T`. However, in a moment, we
@@ -194,8 +194,8 @@
 //!
 //! While these type parameters are important and necessary for configuration of
 //! a given producer clock, they are not relevant to consumer clocks. A consumer
-//! clock does not need to know or care which `Mode` the XOSC is using, but
-//! it *does* need to track that its clock [`Source`] is XOSC0.
+//! clock does not need to know or care which `Mode` the XOSC is using, but it
+//! *does* need to track that its clock [`Source`] is XOSC0.
 //!
 //! From this, we can see that `Enabled<Xosc0<M>, N>` should not implement
 //! `Source` with `Source::Id = Xosc0<M>`, because that would require consumers
@@ -219,13 +219,13 @@
 //! corresponding clock. Moreover, they also fundamentally restructure the way
 //! registers are accessed relative to the [PAC].
 //!
-//! Each of the four PAC clocking structs ([`OSCCTRL`], [`OSC32KCTRL`], [`GCLK`]
-//! and [`MCLK`]) is a singleton object that controls a set of MMIO registers.
-//! It is impossible to create two instances of any PAC object without `unsafe`.
-//! However, each object controls a large set of registers that can be further
-//! sub-divided into smaller sets for individual clocks. For example, the
-//! [`GCLK`] object controls registers for 12 different clock generators and 48
-//! peripheral channel clocks.
+//! Each of the PAC clocking structs (which vary between targets, including
+//! `OSCCTRL`, `SYSCTRL`, `OSC32KCTRL`, [`GCLK`] and `MCLK`) is a singleton object
+//! that controls a set of MMIO registers. It is impossible to create two
+//! instances of any PAC object without `unsafe`. However, each object controls
+//! a large set of registers that can be further sub-divided into smaller sets
+//! for individual clocks. For example, the [`GCLK`] object controls registers
+//! for 12 different clock generators and 48 peripheral channel clocks.
 //!
 //! `Token` types serve to break up the large PAC objects into smaller,
 //! more-targetted pieces. And in the process, they also remove the PAC objects'
@@ -238,8 +238,8 @@
 //! Bus clocks are fundamentally different from the other clock types in this
 //! module, because they do not use mutually exclusive registers for
 //! configuration. For instance, the registers that control [`Dpll0`] are
-//! mutually exclusive to those that control [`Dpll1`], but `ApbClk<Sercom0>`
-//! and `ApbClk<Sercom1>` share a single register.
+//! mutually exclusive to those that control `Dpll1`, but `ApbClk<Sercom0>` and
+//! `ApbClk<Sercom1>` share a single register.
 //!
 //! This presents a challenge for memory safety, because we need some way to
 //! guarantee that there are no data races. For example, if both
@@ -403,24 +403,24 @@
 //!
 //! Next, we want to use a DPLL to multiply the 8 MHz crystal clock up to 100
 //! MHz. Once again, we need to decide between two instances of a clock, because
-//! each chip has two [`Dpll`]s. This time, however, our decision between
-//! [`Dpll0`] and [`Dpll1`] is arbitrary.
+//! this chip has two [`Dpll`]s. This time, however, our decision between
+//! [`Dpll0`] and `Dpll1` is arbitrary.
 //!
 //! Also note that, like before, `Dpll0<I>` and `Dpll1<I>` are aliases for
-//! `Dpll<Dpll0Id, I>` and `Dpll<Dpll1Id, I>`. [`Dpll0Id`] and [`Dpll1Id`]
+//! `Dpll<Dpll0Id, I>` and `Dpll<Dpll1Id, I>`. [`Dpll0Id`] and `Dpll1Id`
 //! represent the *identity* of the respective DPLL, while `I` represents the
 //! [`Id` type](self#id-types) for the [`Source`] driving the DPLL. In this
 //! particular case, we aim to create an instance of `Dpll0<Xosc0Id>`.
 //!
 //! Only certain clocks can drive the DPLL, so `I` is constrained by the
-//! [`DpllSourceId`] trait. Specifically, only the [`Xosc0Id`], [`Xosc1Id`],
-//! [`Xosc32kId`] and [`GclkId`] types implement this trait.
+//! [`DpllSourceId`] trait. Specifically, only the [`Xosc0Id`], `Xosc1Id` (only
+//! some targets), [`Xosc32kId`] and [`GclkId`] types implement this trait.
 //!
 //! As before, we access the [`Tokens`] struct and use the corresponding
 //! [`DpllToken`] when creating an instance of `Dpll`. However, unlike before,
 //! we are creating a new clock-tree relationship that must be tracked by the
-//! type system. Because DPLL0 will now consume XOSC0, we must [`Increment`]
-//! the [`Enabled`] counter for [`EnabledXosc0`].
+//! type system. Because DPLL0 will now consume XOSC0, we must [`Increment`] the
+//! [`Enabled`] counter for [`EnabledXosc0`].
 //!
 //! Thus, to create an instance of `Dpll0<XoscId0>`, we must provide the
 //! `EnabledXosc0`, so that its `U0` type parameter can be incremented to `U1`.
@@ -461,11 +461,11 @@
 //! # ).enable();
 //! let (dpll0, xosc0) = Dpll::from_xosc(tokens.dpll0, xosc0);
 //! ```
-//! Next, we set the DPLL pre-divider and loop divider. We must pre-divide
-//! the XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid
-//! input frequency range for the DPLL. Then, we set the DPLL loop divider, so
-//! that it will multiply the 2 MHz clock by 50 for a 100 MHz output. We do not
-//! need fractional mutiplication here, so the fractional loop divider is zero.
+//! Next, we set the DPLL pre-divider and loop divider. We must pre-divide the
+//! XOSC clock down from 8 MHz to 2 MHz, so that it is within the valid input
+//! frequency range for the DPLL. Then, we set the DPLL loop divider, so that it
+//! will multiply the 2 MHz clock by 50 for a 100 MHz output. We do not need
+//! fractional mutiplication here, so the fractional loop divider is zero.
 //! Finally, we can enable the `Dpll`, yielding an instance of
 //! `EnabledDpll0<XoscId0>`.
 //!
@@ -515,11 +515,11 @@
 //! [`EnabledGclk0`] to change the base clock without disabling GCLK0 or the
 //! main clock.
 //!
-//! This time we will be modifying two [`Enabled`] counters simultaneously.
-//! We will [`Decrement`] the [`EnabledDfll`] count from `U1` to `U0`, and
-//! we will [`Increment`] the [`EnabledDpll0`] count from `U0` to `U1`.
-//! Again, we need to provide both the DFLL and DPLL clocks, so that their
-//! type parameters can be changed.
+//! This time we will be modifying two [`Enabled`] counters simultaneously. We
+//! will [`Decrement`] the [`EnabledDfll`] count from `U1` to `U0`, and we will
+//! [`Increment`] the [`EnabledDpll0`] count from `U0` to `U1`. Again, we need
+//! to provide both the DFLL and DPLL clocks, so that their type parameters can
+//! be changed.
 //!
 //! ```no_run
 //! # use atsamd_hal::{
@@ -597,8 +597,8 @@
 //! ```
 //!
 //! We have the clocks set up, but we're not using them for anything other than
-//! the main clock. Our final steps will create SERCOM APB and peripheral
-//! clocks and will output the raw GCLK0 to a GPIO pin.
+//! the main clock. Our final steps will create SERCOM APB and peripheral clocks
+//! and will output the raw GCLK0 to a GPIO pin.
 //!
 //! To enable the APB clock for SERCOM0, we must access the [`Apb`] bus struct.
 //! We provide an [`ApbToken`] to the [`Apb::enable`] method and receive an
@@ -768,10 +768,7 @@
 //! ```
 //!
 //! [PAC]: crate::pac
-//! [`OSCCTRL`]: crate::pac::Oscctrl
-//! [`OSC32KCTRL`]: crate::pac::Osc32kctrl
 //! [`GCLK`]: crate::pac::Gclk
-//! [`MCLK`]: crate::pac::Mclk
 //! [`Peripherals::steal`]: crate::pac::Peripherals::steal
 //!
 //! [`Ahb`]: ahb::Ahb
@@ -795,9 +792,7 @@
 //! [`Dpll`]: dpll::Dpll
 //! [`Dpll<D, I>`]: dpll::Dpll
 //! [`Dpll0`]: dpll::Dpll0
-//! [`Dpll1`]: dpll::Dpll1
 //! [`Dpll0Id`]: dpll::Dpll0Id
-//! [`Dpll1Id`]: dpll::Dpll1Id
 //! [`DpllSourceId`]: dpll::DpllSourceId
 //! [`DpllToken`]: dpll::DpllToken
 //! [`EnabledDpll0`]: dpll::EnabledDpll0
@@ -819,15 +814,12 @@
 //! [`PclkSourceId`]: pclk::PclkSourceId
 //! [`PclkToken`]: pclk::PclkToken
 //!
-//! [`RtcOsc`]: rtcosc::RtcOsc
-//!
 //! [`Xosc`]: xosc::Xosc
 //! [`Xosc::from_crystal`]: xosc::Xosc::from_crystal
 //! [`Xosc::enable`]: xosc::Xosc::enable
 //! [`Xosc0`]: xosc::Xosc0
 //! [`Xosc0<M>`]: xosc::Xosc0
 //! [`Xosc0Id`]: xosc::Xosc0Id
-//! [`Xosc1Id`]: xosc::Xosc1Id
 //! [`XoscToken`]: xosc::XoscToken
 //! [`EnabledXosc0`]: xosc::EnabledXosc0
 //! [`EnabledXosc0<M, N>`]: xosc::EnabledXosc0
@@ -850,7 +842,8 @@
 //! [`Sub1`]: typenum::Sub1
 //! [`Unsigned`]: typenum::Unsigned
 //!
-//! [interior mutability]: https://doc.rust-lang.org/reference/interior-mutability.html
+//! [interior mutability]:
+//!     https://doc.rust-lang.org/reference/interior-mutability.html
 
 #![allow(clippy::manual_range_contains)]
 

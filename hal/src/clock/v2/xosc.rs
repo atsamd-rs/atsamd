@@ -11,8 +11,8 @@
 //!
 //! When used with an external clock, only one GPIO [`Pin`] is required, but
 //! when used with a crystal oscillator, two GPIO `Pin`s are required. The
-//! [`XIn`] `Pin` is used in both `Mode`s, while the [`XOut`] `Pin` is only
-//! used in [`CrystalMode`].
+//! [`XIn`] `Pin` is used in both `Mode`s, while the [`XOut`] `Pin` is only used
+//! in [`CrystalMode`].
 //!
 //! When operating in [`CrystalMode`], the XOSC peripheral provides several
 //! configuration options to increase stability or reduce power consumption of
@@ -86,14 +86,15 @@
 //!
 //! We start by calling [`Xosc::from_crystal`], and we provide the corresponding
 //! [`XIn`] and [`XOut`] [`Pin`]s, as well as the nominal crystal frequency. We
-//! then set the [`CrystalCurrent`] level to `Medium`. The default current level
-//! for a 20 MHz signal is actually `High`, but we opt for a lower current under
-//! the assumption that our crystal's capacitive load is small. Next, we turn on
-//! automatic loop control, which should save power, but we also set
-//! `LOWBUFGAIN` to `1`. Counterintuitively, this actually _increases_ the
-//! crystal amplitude, which increases power consumption, but it also improves
-//! stability. We then apply a 488 μs start up delay, to allow the clock to
-//! stabilize before it is applied to any logic. Finally, we enable the `Xosc`.
+//! then set the `CrystalCurrent` level to `Medium` (supported only on some
+//! targets). The default current level for a 20 MHz signal is actually `High`,
+//! but we opt for a lower current under the assumption that our crystal's
+//! capacitive load is small. Next, we turn on automatic loop control, which
+//! should save power, but we also set `LOWBUFGAIN` to `1`. Counterintuitively,
+//! this actually _increases_ the crystal amplitude, which increases power
+//! consumption, but it also improves stability. We then apply a 488 μs start up
+//! delay, to allow the clock to stabilize before it is applied to any logic.
+//! Finally, we enable the `Xosc`.
 //!
 //! Next, we wait until the `Xosc` is stable and ready to be used as a clock
 //! [`Source`].
@@ -126,11 +127,11 @@
 //! while !xosc.is_ready() {}
 //! ```
 //!
-//! Once the clock is stable, we can also enable failure detection. To do so, we
-//! must provide the [`EnabledDfll`] to act as the backup safe clock. We can
-//! also select a divider for the safe clock, so that it loosely matches the
-//! `Xosc` frequency. In thise case, we divide the 48 MHz [`Dfll`] down to
-//! 24 MHz, which is the closest option to 20 MHz.
+//! Once the clock is stable, we can also enable failure detection on targets
+//! that support it. To do so, we must provide the [`EnabledDfll`] to act as the
+//! backup safe clock. We can also select a divider for the safe clock, so that
+//! it loosely matches the `Xosc` frequency. In thise case, we divide the 48 MHz
+//! [`Dfll`] down to 24 MHz, which is the closest option to 20 MHz.
 //!
 //! ```no_run
 //! # use atsamd_hal::{
@@ -454,11 +455,11 @@ impl Default for Settings {
 // XoscId
 //==============================================================================
 
-/// Type-level enum identifying one of two possible [`Xosc`]s
+/// Type-level enum identifying [`Xosc`]s
 ///
-/// The types implementing this trait, i.e. [`Xosc0Id`] and [`Xosc1Id`], are
-/// type-level variants of `XoscId`, and they identify one of two possible
-/// external crystal oscillators.
+/// The types implementing this trait, i.e. [`Xosc0Id`] and `Xosc1Id` on
+/// supporting targets, are type-level variants of `XoscId`, and they identify
+/// one of two possible external crystal oscillators.
 ///
 /// See the documentation on [type-level programming] and specifically
 /// [type-level enums] for more details.
@@ -770,8 +771,8 @@ impl Mode for CrystalMode {
 /// oscillator and delivers the resulting clock to the rest of the clock system.
 ///
 /// The type parameter `X` is a [`XoscId`] that determines which of the two
-/// instances this `Xosc` represents ([`Xosc0`] or [`Xosc1`]). The type
-/// parameter `M` represents the operating [`Mode`], either [`ClockMode`] or
+/// instances this `Xosc` represents ([`Xosc0`] or `Xosc1`). The type parameter
+/// `M` represents the operating [`Mode`], either [`ClockMode`] or
 /// [`CrystalMode`].
 ///
 /// On its own, an instance of `Xosc` does not represent an enabled XOSC.
@@ -1037,6 +1038,7 @@ where
     }
 }
 
+#[hal_macro_helper]
 impl<X, M, N> EnabledXosc<X, M, N>
 where
     X: XoscId,
@@ -1048,6 +1050,16 @@ where
     pub fn is_ready(&self) -> bool {
         self.0.token.is_ready()
     }
+
+    /// XOSC failure detection is not supported by the currently-documented target
+    #[cfg(doc)]
+    #[hal_cfg(not("clock-d5x"))]
+    pub fn has_failed(&self) {}
+
+    /// XOSC failure detection is not supported by the currently-documented target
+    #[cfg(doc)]
+    #[hal_cfg(not("clock-d5x"))]
+    pub fn switch_back(&self) {}
 }
 
 #[hal_cfg("clock-d5x")]
