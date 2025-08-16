@@ -30,8 +30,7 @@ impl Pac {
     ///
     /// Consume the [`Pac`] and return the low-level PAC structs. This is
     /// useful when the `clock::v2` API does not provide a necessary feature, or
-    /// when dealing with the legacy `clock::v1` API. For example, many of the
-    /// `clock::v1` functions require access to the [`MCLK`] peripheral.
+    /// when dealing with the legacy `clock::v1` API.
     ///
     /// # Safety
     ///
@@ -122,21 +121,20 @@ pub struct Tokens {
     pub gclks: gclk::GclkTokens,
     /// Tokens to create [`pclk::Pclk`]s
     pub pclks: pclk::PclkTokens,
-    /// Tokens to create the [`osc32k::Osc1k`] and [`osc32k::Osc32k`] clocks
+    /// Tokens to create the [`osc32k`] clocks
     pub osc32k: osc32k::Osc32kTokens,
     /// Tokens [`xosc::Xosc0`]
     pub xosc: xosc::XoscToken<xosc::Xosc0Id>,
-    /// Tokens to create [`xosc32k::Xosc32kBase`], [`xosc32k::Xosc1k`] and
-    /// [`xosc32k::Xosc32k`]
+    /// Tokens to create [`xosc32k`] clocks
     #[hal_cfg("xosc32k")]
     pub xosc32k: xosc32k::Xosc32kTokens,
 }
 
-/// Consume the PAC clocking structs and return a HAL-level
-/// representation of the clocks at power-on reset
+/// Consume the PAC clocking structs and return a HAL-level representation of
+/// the clocks at power-on reset
 ///
-/// This function consumes the [`OSCCTRL`], [`OSC32KCTRL`], [`Gclk`] and
-/// [`MCLK`] PAC structs and returns the [`Buses`], [`Clocks`] and [`Tokens`].
+/// This function consumes the [`Gclk`], [`Pm`], and [`Sysctrl``] PAC structs
+/// and returns the [`Buses`], [`Clocks`] and [`Tokens`].
 ///
 /// See the [module-level documentation](super) for more details.
 #[inline]
