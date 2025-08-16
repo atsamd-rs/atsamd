@@ -32,12 +32,8 @@ mod app {
 
         rtt_init_print!();
 
-        let (_buses, clocks, tokens) = clock_system_at_reset(
-            device.oscctrl,
-            device.osc32kctrl,
-            device.gclk,
-            device.mclk,
-        );
+        let (_buses, clocks, tokens) =
+            clock_system_at_reset(device.oscctrl, device.osc32kctrl, device.gclk, device.mclk);
 
         // Enable the RTC clock with the 1 kHz source.
         // Note that currently the proof of this (the `RtcOsc` instance) is not
