@@ -83,10 +83,10 @@
 //!
 //! At this point, notice that [`Gclk<G, I>`] takes two type parameters. `G` is
 //! a [`GclkId`] identifying which of the 12 generators this `Gclk` represents.
-//! [`Gclk1<I>`] is simply an alias for `Gclk<Gclk1Id, I>`. `I` is an
-//! [`Id` type](super#id-types) identifying the input clock, which must be a
-//! valid [`GclkSourceId`]. In this case, `I` is [`PB14`](gpio::PB14), which is
-//! a `GclkSourceId` for `Gclk1`, because it implements [`GclkIo`] with
+//! [`Gclk1<I>`] is simply an alias for `Gclk<Gclk1Id, I>`. `I` is an [`Id`
+//! type](super#id-types) identifying the input clock, which must be a valid
+//! [`GclkSourceId`]. In this case, `I` is `PB14`, which is a `GclkSourceId` for
+//! `Gclk1` on this target, because it implements [`GclkIo`] with
 //! [`GclkIo::GclkId`]` = Gclk1Id`.
 //!
 //! ```no_run
@@ -488,15 +488,15 @@ pub enum DynGclkId {
 // GclkId
 //==============================================================================
 
-/// Type-level enum identifying one of 12 possible [`Gclk`]s
+/// Type-level enum identifying one of possible [`Gclk`]s
 ///
-/// The types implementing this trait, i.e. [`Gclk0Id`] - [`Gclk11Id`], are
-/// type-level variants of `GclkId`, and they identify one of the 12 possible
+/// The types implementing this trait, i.e. [`Gclk0Id`] - `Gclk11Id`, are
+/// type-level variants of `GclkId`, and they identify one of the possible
 /// generic clock generators.
 ///
 /// `GclkId` is the type-level equivalent of [`DynGclkId`]. See the
-/// documentation on [type-level programming] and specifically
-/// [type-level enums] for more details.
+/// documentation on [type-level programming] and specifically [type-level
+/// enums] for more details.
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
@@ -1072,13 +1072,13 @@ impl<G: GclkId> Default for Settings<G> {
 /// a root or branch clock to other branch or leaf clocks. In particular, all
 /// peripheral [`Pclk`]s must be derived from a `Gclk`.
 ///
-/// The type parameter `G` is a [`GclkId`] that determines which of the 12
-/// generators this [`Gclk`] represents ([`Gclk0`] - [`Gclk11`]). The type
-/// parameter `I` represents the `Id` type for the clock [`Source`] driving this
-/// `Gclk`. It must be one of the valid [`GclkSourceId`]s. Alternatively, if the
-/// `Gclk` is driven by a [GPIO](gpio) [`Pin`], then `I` is a [`PinId`]
-/// implementing [`GclkIo`]. See the [`clock` module documentation](super) for
-/// more detail on `Id` types.
+/// The type parameter `G` is a [`GclkId`] that determines which of the
+/// generators this [`Gclk`] represents ([`Gclk0`] - `Gclk11` on the largest
+/// targets). The type parameter `I` represents the `Id` type for the clock
+/// [`Source`] driving this `Gclk`. It must be one of the valid
+/// [`GclkSourceId`]s. Alternatively, if the `Gclk` is driven by a [GPIO](gpio)
+/// [`Pin`], then `I` is a [`PinId`] implementing [`GclkIo`]. See the [`clock`
+/// module documentation](super) for more detail on `Id` types.
 ///
 /// On its own, an instance of `Gclk` does not represent an enabled clock
 /// generator. Instead, it must first be wrapped with [`Enabled`], which

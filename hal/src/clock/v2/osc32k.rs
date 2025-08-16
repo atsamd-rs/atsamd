@@ -2,35 +2,27 @@
 //!
 //! ## Overview
 //!
-//! TODO this documentation is for the SAMD51 version, not the SYSCTRL sub-peripheral
+//! The `osc32k` module provides access to the 32 kHz oscillator (OSC32K),
+//! provided by the `SYSCTRL` peripheral.  Depending on the target, it has one
+//! or two outputs: one at 32 kHz and another divided down to 1 kHz. These
+//! outputs can be disabled or enabled independently at any given time.
 //!
-//! The `osc32k` module provides access to the 32 kHz ultra low power
-//! internal oscillator (OSC32K) within the `OSC32KCTRL` peripheral.
-//!
-//! The `OSC32K` clock is unlike most other clocks. First, it is an internal
-//! clock that is always enabled and can't be disabled. And second, it has two
-//! separate outputs, one at 32 kHz and another divided down to 1 kHz. Moreover,
-//! none, either or both of these outputs can be enabled at any given time.
-//!
-//! We can see, then, that the `OSC32K` peripheral forms its own, miniature
-//! clock tree. There is a 1:N producer clock that is always enabled; and there
-//! are two possible consumer clocks that can be independently and optionally
-//! enabled. In fact, this structure is illustrated by the `OSC32K`
-//! register, which has no regular `ENABLE` bit and two different enable bits
-//! for clock output, `EN32K` and `EN1K`.
+//! We can see, that the `OSC32K` peripheral forms its own, miniature clock
+//! tree. There is a 1:N producer clock; and there are one or two possible
+//! consumer clocks that can be independently and optionally enabled.
 //!
 //! To represent this structure in the type system, we divide the `OSC32K`
 //! peripheral into these three clocks. Users get access to the 1:N
-//! [`EnabledOsc32kBase`] clock [`Source`] at power-on reset, which can be
-//! consumed by both the [`Osc32k`] and [`Osc1k`] clocks. Note that
-//! `Osc32k` and `Osc1k` are themselves 1:N clocks as well.
+//! [`EnabledOsc32kBase`] clock [`Source`], which can be consumed by both the
+//! [`Osc32k`] and [`Osc1k`] clocks. Note that `Osc32k` and `Osc1k` are
+//! themselves 1:N clocks as well.
 //!
 //! ## Write lock
 //!
-//! Rhe `OSC32K` register has a dedicated write lock bit that will freeze its
+//! The `OSC32K` register has a dedicated write lock bit that will freeze its
 //! configuration until the next power-on reset. We implement this by simply
-//! dropping the [`Osc32kBase`] clock, which prevents any further access to
-//! the `OSC32K` register.
+//! dropping the [`Osc32kBase`] clock, which prevents any further access to the
+//! `OSC32K` register.
 //!
 //! ## Example
 //!
@@ -108,8 +100,7 @@
 //! ```
 //!
 //! And finally, we can set the write lock bit to freeze the configuation until
-//! the next power-on reset. Doing so also drops the `EnabledOsc32kBase`
-//! clock.
+//! the next power-on reset. Doing so also drops the `EnabledOsc32kBase` clock.
 //!
 //! ```no_run
 //! # use atsamd_hal::{
@@ -473,6 +464,11 @@ pub struct Osc1k {
     #[allow(unused)]
     token: Osc1kToken,
 }
+
+/// OSC1K is not available on the currently-documented target
+#[cfg(doc)]
+#[hal_cfg(not("sysctrl-d11"))]
+pub struct Osc1k {}
 
 /// The [`Enabled`] [`Osc1k`] clock
 ///
