@@ -490,7 +490,8 @@ impl OscUlp32k {
         (Enabled::new(Self { token }), base.inc())
     }
 
-    /// The OSCULP32K 32.768kHz output is always enabled on the documented target
+    /// The OSCULP32K 32.768kHz output is always enabled on the documented
+    /// target
     #[cfg(doc)]
     #[hal_cfg(not("clock-d5x"))]
     pub fn enable(_token: OscUlp32kToken) {}

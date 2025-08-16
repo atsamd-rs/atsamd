@@ -1051,12 +1051,14 @@ where
         self.0.token.is_ready()
     }
 
-    /// XOSC failure detection is not supported by the currently-documented target
+    /// XOSC failure detection is not supported by the currently-documented
+    /// target
     #[cfg(doc)]
     #[hal_cfg(not("clock-d5x"))]
     pub fn has_failed(&self) {}
 
-    /// XOSC failure detection is not supported by the currently-documented target
+    /// XOSC failure detection is not supported by the currently-documented
+    /// target
     #[cfg(doc)]
     #[hal_cfg(not("clock-d5x"))]
     pub fn switch_back(&self) {}
