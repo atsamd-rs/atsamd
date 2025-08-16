@@ -464,15 +464,14 @@ pub enum DynDpllId {
 // DpllId
 //==============================================================================
 
-/// Type-level enum identifying one of two possible [`Dpll`]s
+/// Type-level enum identifying a [`Dpll`]
 ///
-/// The types implementing this trait, i.e. [`Dpll0Id`] and [`Dpll1Id`], are
-/// type-level variants of `DpllId`, and they identify one of the two possible
-/// digital phase-locked loops.
+/// The types implementing this trait, i.e. [`Dpll0Id`] (and `Dpll1Id`, on
+/// targets with two DPLLs), identify a specific digital phase-locked loop.
 ///
 /// `DpllId` is the type-level equivalent of [`DynDpllId`]. See the
-/// documentation on [type-level programming] and specifically
-/// [type-level enums] for more details.
+/// documentation on [type-level programming] and specifically [type-level
+/// enums] for more details.
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
@@ -778,12 +777,12 @@ mod settings {
 /// A DPLL is used to multiply clock frequencies, taking a lower-frequency input
 /// clock and producing a higher-frequency output clock.
 ///
-/// The type parameter `D` is a [`DpllId`] that determines which of the two
-/// instances this `Dpll` represents ([`Dpll0`] or [`Dpll1`]). The type
-/// parameter `I` represents the `Id` type for the clock [`Source`] driving this
-/// `Dpll`. It must be one of the valid [`DpllSourceId`]s. See the
-/// [`clock` module documentation](super) for more detail on
-/// [`Id` types](super#id-types).
+/// The type parameter `D` is a [`DpllId`] that determines which of the one or
+/// two (depending on the target) instances this `Dpll` represents ([`Dpll0`] or
+/// `Dpll1`). The type parameter `I` represents the `Id` type for the clock
+/// [`Source`] driving this `Dpll`. It must be one of the valid
+/// [`DpllSourceId`]s. See the [`clock` module documentation](super) for more
+/// detail on [`Id` types](super#id-types).
 ///
 /// On its own, an instance of `Dpll` does not represent an enabled DPLL.
 /// Instead, it must first be wrapped with [`Enabled`], which implements

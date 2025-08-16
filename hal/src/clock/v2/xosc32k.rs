@@ -33,20 +33,20 @@
 //! `ENABLE` bit. The call to [`Xosc32kBase::enable`] returns a 1:N [`Enabled`]
 //! clock [`Source`], which can be consumed by both the [`Xosc32k`] and
 //! [`Xosc1k`] clocks. Enabling either of these two clocks will [`Increment`]
-//! the [`EnabledXosc32kBase`] counter, preventing it from being disabled.
-//! Note that `Xosc32k` and `Xosc1k` are themselves 1:N clocks as well.
+//! the [`EnabledXosc32kBase`] counter, preventing it from being disabled. Note
+//! that `Xosc32k` and `Xosc1k` are themselves 1:N clocks as well.
 //!
 //! ## Clock failure detection and write lock
 //!
-//! Like the [`Xosc`] clocks, the XOSC32K peripheral also has clock failure
-//! detection. However, unlike the `XOSCCTRL` registers, the `XOSC32K` register
-//! has a dedicated write lock bit that will freeze its configuration until the
-//! next power-on reset.
+//! The XOSC32K peripheral on some microcontrollers supports Clock Failure
+//! Detection (CFD), like the [`Xosc`] clocks.  However, unlike the `XOSCCTRL`
+//! registers, the `XOSC32K` register has a dedicated write lock bit that will
+//! freeze its configuration until the next power-on reset.
 //!
 //! While `Xosc` clock failure detection is configured directly in the
-//! `XOSCCTRL` register, the XOSC32K peripheral has a separate, dedicated
-//! clock failure detection register (`Cfdctrl`). This difference likely exists
-//! to provide control of clock failure detection *after* write lock has been
+//! `XOSCCTRL` register, the XOSC32K peripheral has a separate, dedicated clock
+//! failure detection register (`Cfdctrl`). This difference likely exists to
+//! provide control of clock failure detection *after* write lock has been
 //! enabled.
 //!
 //! In this module, write lock is implemented by simply dropping the
@@ -71,7 +71,6 @@
 //!         osculp32k::OscUlp32k,
 //!         xosc32k::{
 //!             ControlGainMode, SafeClockDiv, StartUpDelay, Xosc1k, Xosc32k, Xosc32kBase,
-//!             Xosc32kCfd,
 //!         },
 //!     },
 //!     gpio::Pins,
@@ -91,8 +90,8 @@
 //! Next, we create the [`Xosc32kBase`] clock from a 32 kHz oscillator using its
 //! corresponding [`Xosc32kBaseToken`] and the [`XIn32`] and [`XOut32`] `Pin`s.
 //! We then set the delay before the clock is unmasked by providing a desired
-//! [`StartUpDelay`]. Finally, we select a [`ControlGainMode`] for the crystal
-//! before enabling it.
+//! [`StartUpDelay`]. Finally, on supported targets, we select a
+//! `ControlGainMode` for the crystal before enabling it.
 //!
 //! ```no_run
 //! # use atsamd_hal::{
@@ -101,7 +100,6 @@
 //! #         osculp32k::OscUlp32k,
 //! #         xosc32k::{
 //! #             ControlGainMode, SafeClockDiv, StartUpDelay, Xosc1k, Xosc32k, Xosc32kBase,
-//! #             Xosc32kCfd,
 //! #         },
 //! #     },
 //! #     gpio::Pins,
@@ -118,6 +116,7 @@
 //! # );
 //! let xosc32k_base = Xosc32kBase::from_crystal(tokens.xosc32k.base, pins.pa00, pins.pa01)
 //!     .start_up_delay(StartUpDelay::Delay1s)
+//!     // n.b. only some targets support this setting
 //!     .control_gain_mode(ControlGainMode::HighSpeed)
 //!     .enable();
 //! ```
@@ -132,7 +131,6 @@
 //! #         osculp32k::OscUlp32k,
 //! #         xosc32k::{
 //! #             ControlGainMode, SafeClockDiv, StartUpDelay, Xosc1k, Xosc32k, Xosc32kBase,
-//! #             Xosc32kCfd,
 //! #         },
 //! #     },
 //! #     gpio::Pins,
@@ -155,10 +153,10 @@
 //! ```
 //!
 //! With the [`EnabledXosc32kBase`] clock in hand, we can enable the [`Xosc1k`]
-//! and [`Xosc32k`], each of which [`Increment`]s the [`Enabled`] counter.
-//! Once we are satisfied with the configuration, we can call `write_lock` to
-//! lock the XOSC32K configuration at the hardware level. Doing so also consumes
-//! the `EnabledXosc32kBase` clock, which eliminates any ability to change the
+//! and [`Xosc32k`], each of which [`Increment`]s the [`Enabled`] counter. Once
+//! we are satisfied with the configuration, we can call `write_lock` to lock
+//! the XOSC32K configuration at the hardware level. Doing so also consumes the
+//! `EnabledXosc32kBase` clock, which eliminates any ability to change the
 //! configuration at the API level.
 //!
 //! ```no_run
@@ -168,7 +166,6 @@
 //! #         osculp32k::OscUlp32k,
 //! #         xosc32k::{
 //! #             ControlGainMode, SafeClockDiv, StartUpDelay, Xosc1k, Xosc32k, Xosc32kBase,
-//! #             Xosc32kCfd,
 //! #         },
 //! #     },
 //! #     gpio::Pins,
@@ -1139,6 +1136,22 @@ impl Xosc32kCfd {
     }
 }
 
+/// Clock failure detection is not supported by the currently-documented target
+#[cfg(doc)]
+#[hal_cfg(not("osc32kctrl"))]
+pub struct Xosc32kCfd;
+
+#[cfg(doc)]
+#[hal_cfg(not("osc32kctrl"))]
+impl Xosc32kCfd {
+    /// Clock failure detection is not supported by the currently-documented target
+    pub fn has_failed() {}
+    /// Clock failure detection is not supported by the currently-documented target
+    pub fn is_switched() {}
+    /// Clock failure detection is not supported by the currently-documented target
+    pub fn switch_back() {}
+}
+
 //==============================================================================
 // Ids
 //==============================================================================
@@ -1172,6 +1185,13 @@ impl Sealed for Xosc32kId {}
 pub struct Xosc1k {
     token: Xosc1kToken,
 }
+
+
+/// XOSC1K is not available on the currently-documented target
+#[cfg(doc)]
+#[hal_cfg(not(any("sysctrl-d11", "osc32kctrl")))]
+pub struct Xosc1k;
+
 
 /// The [`Enabled`] [`Xosc1k`] clock
 ///

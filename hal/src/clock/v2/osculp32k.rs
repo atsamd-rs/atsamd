@@ -205,8 +205,9 @@ struct OscUlp32kBaseToken(());
 /// various `Token` types can be exchanged for actual clock types. They
 /// typically represent clocks that are disabled at power-on reset.
 ///
-/// The [`OscUlp1k`] clock is disabled at power-on reset. To use it, you must
-/// first exchange the token for an actual clock with [`OscUlp1k::enable`].
+/// On some targets, the [`OscUlp1k`] clock is disabled at power-on reset, and
+/// to use it the token must first be exchanged for an actual clock with
+/// [`OscUlp1k::enable`].
 pub struct OscUlp1kToken(());
 
 /// Singleton token that can be exchanged for [`OscUlp32k`]
@@ -215,8 +216,9 @@ pub struct OscUlp1kToken(());
 /// various `Token` types can be exchanged for actual clock types. They
 /// typically represent clocks that are disabled at power-on reset.
 ///
-/// The [`OscUlp32k`] clock is disabled at power-on reset. To use it, you must
-/// first exchange the token for an actual clock with [`OscUlp32k::enable`].
+/// On some targets, the [`OscUlp32k`] clock is disabled at power-on reset, and
+/// to use it the token must first be exchanged for an actual clock with
+/// [`OscUlp32k::enable`].
 pub struct OscUlp32kToken(());
 
 impl OscUlp32kBaseToken {
@@ -402,6 +404,11 @@ impl OscUlp1k {
         base.0.token.enable_1k();
         (Enabled::new(Self { token }), base.inc())
     }
+
+    /// The OSCULP32K 1.024kHz output is always enabled on the documented target
+    #[cfg(doc)]
+    #[hal_cfg(not("clock-d5x"))]
+    pub fn enable(_token: OscUlp1kToken) {}
 }
 
 impl EnabledOscUlp1k {
@@ -482,6 +489,11 @@ impl OscUlp32k {
         base.0.token.enable_32k();
         (Enabled::new(Self { token }), base.inc())
     }
+
+    /// The OSCULP32K 32.768kHz output is always enabled on the documented target
+    #[cfg(doc)]
+    #[hal_cfg(not("clock-d5x"))]
+    pub fn enable(_token: OscUlp32kToken) {}
 }
 
 impl EnabledOscUlp32k {
