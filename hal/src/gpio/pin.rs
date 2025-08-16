@@ -1084,8 +1084,7 @@ macro_rules! pins{
                 )+
             }
             impl Pins {
-                /// Take ownership of the PAC
-                /// [`Port`] and split it into
+                /// Take ownership of the PAC [`Port`] and split it into
                 /// discrete [`Pin`]s
                 #[inline]
                 pub fn new(port: Port) -> Pins {
