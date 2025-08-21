@@ -99,5 +99,5 @@ name = "sd_card"
 name = "timer"
 
 [[example]]
-name = "usb_poll"
+name = "usb_echo"
 required-features = ["usb"]
