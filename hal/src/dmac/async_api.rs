@@ -51,7 +51,7 @@ impl Handler<DMAC> for InterruptHandler {
                     dmac.chctrlb()
                         .modify(|_, w| w.trigsrc().variant(TriggerSource::Disable));
 
-                    while dmac.channel(channel).chctrla().read().enable().bit_is_set() {
+                    while dmac.chctrla().read().enable().bit_is_set() {
                         core::hint::spin_loop();
                     }
 
