@@ -1,6 +1,7 @@
 //! APIs for async DMAC operations.
 
 use atsamd_hal_macros::hal_cfg;
+use core::sync::atomic;
 
 use crate::{
     async_hal::interrupts::{DMAC, Handler},
@@ -96,6 +97,16 @@ impl Handler<DMAC> for InterruptHandler {
                     w.enable().clear_bit();
                     w.trigsrc().variant(TriggerSource::Disable)
                 });
+
+                while dmac.channel(channel).chctrla().read().enable().bit_is_set() {
+                    core::hint::spin_loop();
+                }
+
+                // Prevent the compiler from re-ordering read/write
+                // operations beyond this fence.
+                // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+                atomic::fence(atomic::Ordering::Acquire); // ▼
+
                 WAKERS[channel].wake();
             }
         }
