@@ -721,11 +721,12 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
 
         transfer_future::TransferFuture::new(self, trig_src).await
 
-        // No need to defensively disable channel here; it's automatically stopped when
-        // TransferFuture is dropped. Even though `stop()` is implicitly called
-        // through TransferFuture::drop, it *absolutely* must be called before
-        // this function is returned, because it emits the compiler fence which ensures
-        // memory operations aren't reordered beyond the DMA transfer's bounds.
+        // No need to defensively disable channel here; it's automatically
+        // stopped when TransferFuture is dropped. Even though `stop()`
+        // is implicitly called through TransferFuture::drop, it
+        // *absolutely* must be called before this function is returned,
+        // because it emits the compiler fence which ensures memory operations
+        // aren't reordered beyond the DMA transfer's bounds.
     }
 }
 
