@@ -719,17 +719,14 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
 
         self.configure_trigger(trig_src, trig_act);
 
-        transfer_future::TransferFuture::new(self, trig_src).await;
+        transfer_future::TransferFuture::new(self, trig_src).await
 
-        // No need to defensively disable channel here; it's automatically stopped when
-        // TransferFuture is dropped. Even though `stop()` is implicitly called
-        // through TransferFuture::drop, it *absolutely* must be called before
-        // this function is returned, because it emits the compiler fence which ensures
-        // memory operations aren't reordered beyond the DMA transfer's bounds.
-
-        // TODO currently this will always return Ok(()) since we unconditionally clear
-        // ERROR
-        self.xfer_success()
+        // No need to defensively disable channel here; it's automatically
+        // stopped when TransferFuture is dropped. Even though `stop()`
+        // is implicitly called through TransferFuture::drop, it
+        // *absolutely* must be called before this function is returned,
+        // because it emits the compiler fence which ensures memory operations
+        // aren't reordered beyond the DMA transfer's bounds.
     }
 }
 
@@ -769,7 +766,7 @@ mod transfer_future {
     }
 
     impl<Id: ChId> core::future::Future for TransferFuture<'_, Id> {
-        type Output = ();
+        type Output = Result<(), super::Error>;
 
         fn poll(
             mut self: core::pin::Pin<&mut Self>,
@@ -778,29 +775,25 @@ mod transfer_future {
             use crate::dmac::waker::WAKERS;
             use core::task::Poll;
 
-            self.chan._enable_private();
-
-            if !self.triggered && self.trig_src == TriggerSource::Disable {
-                self.triggered = true;
-                self.chan._trigger_private();
-            }
-
             let flags_to_check = InterruptFlags::new().with_tcmpl(true).with_terr(true);
+            let triggered_flags = self.chan.check_and_clear_interrupts(flags_to_check);
 
-            if self.chan.check_and_clear_interrupts(flags_to_check).tcmpl() {
-                return Poll::Ready(());
+            if triggered_flags.tcmpl() {
+                Poll::Ready(Ok(()))
+            } else if triggered_flags.terr() {
+                Poll::Ready(Err(super::Error::TransferError))
+            } else {
+                WAKERS[Id::USIZE].register(cx.waker());
+                self.chan.enable_interrupts(flags_to_check);
+                self.chan._enable_private();
+
+                if !self.triggered && self.trig_src == TriggerSource::Disable {
+                    self.triggered = true;
+                    self.chan._trigger_private();
+                }
+
+                Poll::Pending
             }
-
-            WAKERS[Id::USIZE].register(cx.waker());
-            self.chan.enable_interrupts(flags_to_check);
-
-            if self.chan.check_and_clear_interrupts(flags_to_check).tcmpl() {
-                self.chan.disable_interrupts(flags_to_check);
-
-                return Poll::Ready(());
-            }
-
-            Poll::Pending
         }
     }
 }
