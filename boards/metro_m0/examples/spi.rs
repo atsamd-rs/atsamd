@@ -40,7 +40,7 @@ fn main() -> ! {
     let (miso, mosi, sclk) = (pins.miso, pins.mosi, pins.sck);
 
     // Setup DMA channels for later use
-    let mut dmac = DmaController::init(dmac, &mut pm);
+    let mut dmac = DmaController::new(dmac, &mut pm);
     let channels = dmac.split();
     let chan0 = channels.0.init(PriorityLevel::Lvl0);
     let chan1 = channels.1.init(PriorityLevel::Lvl0);
