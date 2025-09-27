@@ -1,5 +1,10 @@
 # `wio-terminal`
 
+High Level TODOs:
+
+- Implement capture timer driver, capable of timeouts of around 800ms, best to return after 10ms of idle activity but only if some activity has been detected.
+- Add confugiration option to use second Grove port to realize Master version of the OpenTherm protocol
+
 [![Crates.io](https://img.shields.io/crates/v/wio-terminal.svg)](https://crates.io/crates/wio-terminal)
 [![Docs](https://docs.rs/wio-terminal/badge.svg)](https://docs.rs/wio-terminal/)
 ![License](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue)
@@ -8,11 +13,11 @@
 
 This project is made possible thanks to the following crates:
 
-* [atsamd-hal](https://github.com/atsamd-rs/atsamd)
-* [ili9341-rs](https://github.com/yuri91/ili9341-rs)
-* [lis3dh-rs](https://github.com/BenBergman/lis3dh-rs)
-* [embedded-sdmmc](https://github.com/rust-embedded-community/embedded-sdmmc-rs)
-* [seeed-erpc-rs](https://github.com/twitchyliquid64/seeed-erpc-rs)
+- [atsamd-hal](https://github.com/atsamd-rs/atsamd)
+- [ili9341-rs](https://github.com/yuri91/ili9341-rs)
+- [lis3dh-rs](https://github.com/BenBergman/lis3dh-rs)
+- [embedded-sdmmc](https://github.com/rust-embedded-community/embedded-sdmmc-rs)
+- [seeed-erpc-rs](https://github.com/twitchyliquid64/seeed-erpc-rs)
 
 ## [Documentation]
 
@@ -20,9 +25,9 @@ This project is made possible thanks to the following crates:
 
 ## Resources
 
-* [Wio Terminal product page](https://www.seeedstudio.com/Wio-Terminal-p-4509.html)
-* [Wio Terminal wiki](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
-* [Wio Terminal user manual](https://files.seeedstudio.com/wiki/Wio-Terminal/res/Wio-Terminal-User-Manual.pdf)
+- [Wio Terminal product page](https://www.seeedstudio.com/Wio-Terminal-p-4509.html)
+- [Wio Terminal wiki](https://wiki.seeedstudio.com/Wio-Terminal-Getting-Started/)
+- [Wio Terminal user manual](https://files.seeedstudio.com/wiki/Wio-Terminal/res/Wio-Terminal-User-Manual.pdf)
 
 ## Display
 
@@ -42,9 +47,9 @@ For information on building and flashing the examples to your device, as well as
 
 Licensed under either of:
 
-* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
-  http://www.apache.org/licenses/LICENSE-2.0)
-* MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
+  <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
@@ -53,3 +58,10 @@ at your option.
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in
 the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without
 any additional terms or conditions.
+
+### Lessons learned
+
+If you want to expand macro for hal drivers go to hal/ and use:
+
+cargo install cargo-expand
+CARGO_NET_GIT_FETCH_WITH_CLI=true cargo expand --features "samd51p, async, dma" peripherals::timer_capture_waveform > peripherals_timer_capture_waveform.rs

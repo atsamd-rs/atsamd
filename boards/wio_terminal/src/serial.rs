@@ -1,6 +1,6 @@
 use atsamd_hal::clock::GenericClockController;
 use atsamd_hal::pac::{self, Mclk};
-use atsamd_hal::sercom::{uart, IoSet2, Sercom2};
+use atsamd_hal::sercom::{uart, Sercom2};
 use atsamd_hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -20,7 +20,7 @@ pub struct Uart {
 }
 
 /// UART pads for the labelled RX & TX pins
-pub type UartPads = uart::Pads<Sercom2, IoSet2, UartRx, UartTx>;
+pub type UartPads = uart::Pads<Sercom2, UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type HalUart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;

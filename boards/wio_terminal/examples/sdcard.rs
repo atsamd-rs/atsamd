@@ -28,6 +28,7 @@ use heapless::String;
 use embedded_sdmmc::{sdcard::Error as SdCardError, TimeSource, Timestamp, VolumeIdx};
 use wio::SDCardController;
 
+#[allow(clippy::empty_loop)]
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();

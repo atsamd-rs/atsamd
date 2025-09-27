@@ -11,6 +11,19 @@ use crate::timer_params::TimerParams;
 
 // Timer/Counter (TCx)
 
+pub trait PinoutCollapse {
+    type PinId : PinId;
+    //  type Pin = Pin<I, AlternateE>;
+
+    fn collapse(self) -> Pin<Self::PinId, AlternateE>;
+    //  fn new_pin(pin: impl AnyPin) -> Self;
+}
+pub trait PinoutNewTrait<T: PinId> {
+    fn new_pin(pin: Pin<T, Alternate<E>>) -> Self;
+}
+pub trait PinoutReadLevel {
+    fn read_level(&self) -> bool;
+}
 /// This is a major syntax hack.
 ///
 /// The previous Pinout types were enums that took specific v1::Pin types. As a
@@ -40,15 +53,46 @@ macro_rules! impl_tc_pinout {
             _pin: Pin<I, AlternateE>,
         }
 
+        impl<I: PinId> PinoutReadLevel for $Type<I> {
+            fn read_level(&self) -> bool {
+                self._pin._is_high()
+            }
+        }
+
+        impl<I: PinId> PinoutCollapse for $Type<I> {
+            type PinId = I;
+            fn collapse(self) -> Pin<I, AlternateE> {
+                self._pin
+            } 
+        }
+
         $(
+            //  $( #[$attr] )?
+            //  impl $Type<$Id> {  // those are specializations similar to C++ template specializations 
+            //      #[inline]
+            //      pub fn new_pin(pin: impl AnyPin<Id = $Id>) -> Self {
+            //          let _pin = pin.into().into_alternate();
+            //          Self { _pin }
+            //      }
+            //  }
+
+
             $( #[$attr] )?
-            impl $Type<$Id> {
+            impl PinoutNewTrait<$Id> for $Type<$Id> {  // those are specializations similar to C++ template specializations 
                 #[inline]
-                pub fn $func(pin: impl AnyPin<Id = $Id>) -> Self {
-                    let _pin = pin.into().into_alternate();
-                    Self { _pin }
+                fn new_pin(pin: Pin<$Id, Alternate<E>>) -> Self {
+                    Self { _pin: pin }
                 }
             }
+
+
+            //  Where should this be implemented? TODO:
+            //  $( #[$attr] )?
+            //  impl PinoutCollapse for $Type<$Id> {  // those are specializations similar to C++ template specializations 
+            //      fn collapse(self) -> Pin<$Id, AlternateE> {
+            //          self._pin
+            //      }
+            //  }
         )+
     };
 }
@@ -78,7 +122,9 @@ impl_tc_pinout!(TC2Pinout: [
     #[hal_cfg("pa13")]
     (Pa13, PA13),
     #[hal_cfg("pa17")]
-    (Pa17, PA17)
+    (Pa17, PA17),
+    #[hal_cfg("pa16")]
+    (Pa16, PA16)
 ]);
 
 #[hal_cfg("tc3")]
@@ -93,6 +139,8 @@ impl_tc_pinout!(TC3Pinout: [
 impl_tc_pinout!(TC4Pinout: [
     #[hal_cfg("pa23")]
     (Pa23, PA23),
+    #[hal_cfg("pb08")]
+    (Pb8, PB08),
     #[hal_cfg("pb09")]
     (Pb9, PB09),
     #[hal_cfg("pb13")]

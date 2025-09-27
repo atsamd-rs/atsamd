@@ -37,7 +37,7 @@ impl ButtonPins {
     ) -> ButtonController {
         let gclk1 = clocks.gclk1();
         let eic_clock = clocks.eic(&gclk1).unwrap();
-        let mut eic = eic::Eic::new(mclk, eic_clock, eic);
+        let mut eic = eic::Eic::new(mclk, &eic_clock, eic);
 
         // Unfortunately, the pin assigned to B1 shares the same
         // ExtInt line as up on the joystick. As such, we don't

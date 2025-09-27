@@ -4,7 +4,7 @@ use atsamd_hal::{
     ehal::digital::OutputPin,
     pac::{interrupt, Mclk},
     prelude::*,
-    sercom::{uart, IoSet2, Sercom0},
+    sercom::{uart, Sercom0},
 };
 use bbqueue::{self, BBBuffer, Consumer, Producer};
 
@@ -46,7 +46,7 @@ pub struct Wifi {
 }
 
 /// UART pads for the labelled RX & TX pins
-pub type WifiUartPads = uart::Pads<Sercom0, IoSet2, WifiRx, WifiTx>;
+pub type WifiUartPads = uart::Pads<Sercom0, WifiRx, WifiTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type WifiUart = uart::Uart<uart::Config<WifiUartPads>, uart::Duplex>;
