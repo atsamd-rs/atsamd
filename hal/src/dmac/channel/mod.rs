@@ -195,7 +195,7 @@ pub(super) fn new_chan_future<Id: ChId>(_id: PhantomData<Id>) -> Channel<Id, Uni
 /// These methods may be used on any DMA channel in any configuration
 impl<Id: ChId, S: Status> Channel<Id, S> {
     /// Configure the DMA channel so that it is ready to be used by a
-    /// [`Transfer`](super::transfer::Transfer).
+    /// [`Transfer`].
     ///
     /// # Return
     ///
