@@ -177,7 +177,7 @@ where
     ///
     /// In order to be (safely) non-blocking, his method has to take a `'static`
     /// buffer. If you'd rather use DMA with the blocking
-    /// [`embedded_io::Read`](crate::embedded_io::Read) trait, and avoid having
+    /// [`embedded_io::Read`] trait, and avoid having
     /// to use static buffers,
     /// use [`Uart::with_rx_channel`](Self::with_tx_channel) instead.
     #[inline]
@@ -219,7 +219,7 @@ where
     ///
     /// In order to be (safely) non-blocking, his method takes a `'static`
     /// buffer. If you'd rather use DMA with the blocking
-    /// [`embedded_io::Write`](crate::embedded_io::Write) trait, and avoid
+    /// [`embedded_io::Write`] trait, and avoid
     /// having to use static buffers,
     /// use[`Uart::with_tx_channel`](Self::with_tx_channel) instead.
     #[inline]
