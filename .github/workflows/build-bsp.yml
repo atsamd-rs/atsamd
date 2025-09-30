@@ -55,7 +55,7 @@ jobs:
       run: |
         set -ex
         build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .build')
-        clippy_invocation=$(echo ${build_invocation} | sed 's/cargo build/cargo clippy/g')
+        clippy_invocation=$(echo ${build_invocation} | sed 's/cargo build/cargo +nightly clippy/g')
         cd boards/${{ matrix.bsp.name }}
         $(${clippy_invocation})
 
