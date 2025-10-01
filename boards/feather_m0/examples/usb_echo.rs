@@ -1,11 +1,13 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
+use core::cell::OnceCell;
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
 use usb_device::bus::UsbBusAllocator;
@@ -36,19 +38,19 @@ fn main() -> ! {
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(bsp::usb_allocator(
+        let _ = USB_ALLOCATOR.set(bsp::usb_allocator(
             peripherals.usb,
             &mut clocks,
             &mut peripherals.pm,
             pins.usb_dm,
             pins.usb_dp,
         ));
-        USB_ALLOCATOR.as_ref().unwrap()
+        USB_ALLOCATOR.get().unwrap()
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(bus_allocator));
-        USB_BUS = Some(
+        let _ = USB_SERIAL.set(SerialPort::new(bus_allocator));
+        let _ = USB_BUS.set(
             UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .strings(&[StringDescriptors::new(LangID::EN)
                     .manufacturer("Fake company")
@@ -58,9 +60,8 @@ fn main() -> ! {
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
-    }
 
-    unsafe {
+        // Enable USB interrupt
         core.NVIC.set_priority(interrupt::USB, 1);
         NVIC::unmask(interrupt::USB);
     }
@@ -73,14 +74,15 @@ fn main() -> ! {
     }
 }
 
-static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
-static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
-static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
+static mut USB_ALLOCATOR: OnceCell<UsbBusAllocator<UsbBus>> = OnceCell::new();
+static mut USB_BUS: OnceCell<UsbDevice<UsbBus>> = OnceCell::new();
+static mut USB_SERIAL: OnceCell<SerialPort<UsbBus>> = OnceCell::new();
 
+#[inline]
 fn poll_usb() {
     unsafe {
-        if let Some(usb_dev) = USB_BUS.as_mut() {
-            if let Some(serial) = USB_SERIAL.as_mut() {
+        if let Some(usb_dev) = USB_BUS.get_mut() {
+            if let Some(serial) = USB_SERIAL.get_mut() {
                 usb_dev.poll(&mut [serial]);
                 let mut buf = [0u8; 64];
 
