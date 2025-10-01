@@ -1,15 +1,15 @@
 #![no_std]
 #![no_main]
+#![allow(static_mut_refs)]
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use core::fmt::Write;
+use core::cell::OnceCell;
 use core::sync::atomic;
 
-use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
 use embedded_hal_bus::spi::ExclusiveDevice;
 use embedded_sdmmc::{SdCard, VolumeIdx, VolumeManager};
@@ -29,8 +29,6 @@ use hal::prelude::*;
 use hal::rtc;
 use hal::timer::TimerCounter;
 use hal::usb::UsbBus;
-
-use heapless::String;
 
 #[entry]
 fn main() -> ! {
@@ -72,19 +70,19 @@ fn main() -> ! {
     delay.delay_ms(500_u32);
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(bsp::usb_allocator(
+        let _ = USB_ALLOCATOR.set(bsp::usb_allocator(
             peripherals.usb,
             &mut clocks,
             &mut peripherals.pm,
             pins.usb_dm,
             pins.usb_dp,
         ));
-        USB_ALLOCATOR.as_ref().unwrap()
+        USB_ALLOCATOR.get().unwrap()
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(bus_allocator));
-        USB_BUS = Some(
+        let _ = USB_SERIAL.set(SerialPort::new(bus_allocator));
+        let _ = USB_BUS.set(
             UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .strings(&[StringDescriptors::new(LangID::EN)
                     .manufacturer("Fake company")
@@ -94,9 +92,8 @@ fn main() -> ! {
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
-    }
 
-    unsafe {
+        // Enable USB interrupt
         core.NVIC.set_priority(interrupt::USB, 1);
         NVIC::unmask(interrupt::USB);
     }
@@ -132,12 +129,12 @@ fn main() -> ! {
     }
 
     if sd_cd.is_low().unwrap() {
-        usbserial_write!("No card detected. Waiting...\r\n");
+        serial_writeln!("No card detected. Waiting...");
         while sd_cd.is_low().unwrap() {
             delay.delay_ms(250_u32);
         }
     }
-    usbserial_write!("Card inserted!\r\n");
+    serial_writeln!("Card inserted!");
     delay.delay_ms(250_u32);
 
     let spi_device = ExclusiveDevice::new(spi_bus, sd_cs, timer_spi).unwrap();
@@ -145,73 +142,121 @@ fn main() -> ! {
 
     match sdcard.num_bytes() {
         Ok(num_bytes) => {
-            usbserial_write!("OK!\r\nCard size...\r\n");
-            usbserial_write!("{} bytes\r\n", num_bytes);
+            serial_writeln!("OK!\r\nCard size...");
+            serial_writeln!("{} bytes", num_bytes);
 
             let volume_manager = VolumeManager::new(sdcard, rtc);
 
             for i in 0..=3 {
                 let volume = volume_manager.open_volume(VolumeIdx(i));
-                usbserial_write!("volume {:?}\r\n", volume);
+                serial_writeln!("volume {:?}", volume);
                 if let Ok(volume) = volume {
                     match volume.open_root_dir() {
                         Ok(root_dir) => {
-                            usbserial_write!("Listing root directory:\r\n");
+                            serial_writeln!("Listing root directory:");
                             root_dir
                                 .iterate_dir(|x| {
-                                    usbserial_write!("\tFound: {:?}\r\n", x);
+                                    serial_writeln!("\tFound: {:?}", x);
                                 })
                                 .unwrap();
                         }
-                        Err(e) => usbserial_write!("Directory err: {:?}!\r\n", e),
+                        Err(e) => serial_writeln!("Directory err: {:?}!", e),
                     }
                 }
             }
         }
-        Err(e) => usbserial_write!("Init err: {:?}!\r\n", e),
+        Err(e) => serial_writeln!("Init err: {:?}!", e),
     }
 
-    usbserial_write!("Done!\r\n");
+    serial_writeln!("Done!");
     loop {
         delay.delay_ms(1_000_u32);
         red_led.toggle().unwrap();
     }
 }
 
-/// Writes the given message out over USB serial.
-#[macro_export]
-macro_rules! usbserial_write {
-    ($($tt:tt)*) => {{
-        let mut s: String<1024> = String::new();
-        write!(s, $($tt)*).unwrap();
-        let message_bytes = s.as_bytes();
-        let mut total_written = 0;
-        while total_written < message_bytes.len() {
-            let bytes_written = disable_interrupts(|_| unsafe {
-                match USB_SERIAL.as_mut().unwrap().write(
-                    &message_bytes[total_written..]
-                ) {
-                    Ok(count) => count,
-                    Err(_) => 0,
-                }
-            });
-            total_written += bytes_written;
-        }
-    }};
+static mut USB_ALLOCATOR: OnceCell<UsbBusAllocator<UsbBus>> = OnceCell::new();
+static mut USB_BUS: OnceCell<UsbDevice<UsbBus>> = OnceCell::new();
+static mut USB_SERIAL: OnceCell<SerialPort<UsbBus>> = OnceCell::new();
+static USB_DATA_RECEIVED: atomic::AtomicBool = atomic::AtomicBool::new(false);
+
+/// Borrows the global singleton `UsbSerial` for a brief period with interrupts
+/// disabled
+///
+/// # Arguments
+/// `borrower`: The closure that gets run borrowing the global `UsbSerial`
+///
+/// # Safety
+/// the global singleton `UsbSerial` can be safely borrowed because we disable
+/// interrupts while it is being borrowed, guaranteeing that interrupt handlers
+/// like `USB` cannot mutate `UsbSerial` while we are as well.
+///
+/// # Panic
+/// If `init` has not been called and we haven't initialized our global
+/// singleton `UsbSerial`, we will panic.
+fn usbserial_get<T, R>(borrower: T) -> R
+where
+    T: Fn(&mut SerialPort<UsbBus>) -> R,
+{
+    usb_free(|_| unsafe {
+        let usb_serial = USB_SERIAL.get_mut().expect("UsbSerial not initialized");
+        borrower(usb_serial)
+    })
 }
 
-static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
-static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
-static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
-static USB_DATA_RECEIVED: atomic::AtomicBool = atomic::AtomicBool::new(false);
+/// Execute closure `f` in an interrupt-free context.
+///
+/// This as also known as a "critical section".
+#[inline]
+fn usb_free<F, R>(f: F) -> R
+where
+    F: FnOnce(&cortex_m::interrupt::CriticalSection) -> R,
+{
+    NVIC::mask(interrupt::USB);
+
+    let r = f(&unsafe { cortex_m::interrupt::CriticalSection::new() });
+
+    unsafe {
+        NVIC::unmask(interrupt::USB);
+    };
+
+    r
+}
+
+/// Writes the given message out over USB serial.
+///
+/// # Arguments
+/// * println args: variable arguments passed along to `core::write!`
+///
+/// # Warning
+/// as this function deals with a static mut, and it is also accessed in the
+/// USB interrupt handler, we both have unsafe code for unwrapping a static mut
+/// as well as disabling of interrupts while we do so.
+///
+/// # Safety
+/// the only time the static mut is used, we have interrupts disabled so we know
+/// we have sole access
+#[macro_export]
+macro_rules! serial_writeln {
+    ($($tt:tt)+) => {{
+        use core::fmt::Write;
+
+        let mut s: heapless::String<256> = heapless::String::new();
+        core::write!(&mut s, $($tt)*).unwrap();
+        usbserial_get(|usbserial| {
+            usbserial.write(s.as_bytes()).ok();
+            usbserial.write("\r\n".as_bytes()).ok();
+        });
+    }};
+}
 
 #[interrupt]
 fn USB() {
     unsafe {
-        if let Some(usb_dev) = USB_BUS.as_mut() {
-            if let Some(serial) = USB_SERIAL.as_mut() {
+        if let Some(usb_dev) = USB_BUS.get_mut() {
+            if let Some(serial) = USB_SERIAL.get_mut() {
                 usb_dev.poll(&mut [serial]);
-                let mut buf = [0u8; 16];
+                let mut buf = [0u8; 64];
                 if let Ok(count) = serial.read(&mut buf) {
                     if count > 0 {
                         USB_DATA_RECEIVED.store(true, atomic::Ordering::Relaxed);
