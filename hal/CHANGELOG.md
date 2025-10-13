@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.2...atsamd-hal-0.23.0) - 2025-10-13
+
+### Added
+
+- *(aes)* Updates the `cipher` dependency.
+- *(aes)* Updates the `aes` module:
+
+### Fixed
+
+- *(ci)* silence deprecation warning we have no power over ([#943](https://github.com/atsamd-rs/atsamd/pull/943))
+- *(dmac)* DMAC handler now waits for channel to report as disabled ([#938](https://github.com/atsamd-rs/atsamd/pull/938))
+- [**breaking**] Re-add GCLK0 for CAN dependencies ([#930](https://github.com/atsamd-rs/atsamd/pull/930))
+- Clippy warning about null pointers in DMAC ([#928](https://github.com/atsamd-rs/atsamd/pull/928))
+- Remove GCLK from can::Dependencies ([#919](https://github.com/atsamd-rs/atsamd/pull/919))
+
+### Other
+
+- Document order of calling enable_interrupt for interrupt timer ([#942](https://github.com/atsamd-rs/atsamd/pull/942))
+- *(ci)* Remove explicit link targets from docs
+
 ## [0.22.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.1...atsamd-hal-0.22.2) - 2025-06-26
 
 ### Fixed

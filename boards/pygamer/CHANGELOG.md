@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.3](https://github.com/atsamd-rs/atsamd/compare/pygamer-0.15.2...pygamer-0.15.3) - 2025-10-13
+
+### Other
+
+- updated the following local packages: atsamd-hal
+
 ## [0.15.2](https://github.com/atsamd-rs/atsamd/compare/pygamer-0.15.1...pygamer-0.15.2) - 2025-06-26
 
 ### Other
