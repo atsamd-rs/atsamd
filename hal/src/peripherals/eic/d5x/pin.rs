@@ -69,6 +69,14 @@ where
         });
     }
 
+    /// Disables the event output of the channel for the event system.
+    ///
+    /// Note that whilst this function is executed, the EIC peripheral is disabled
+    /// in order to write to the evctrl register
+    pub fn disable_event(&mut self) {
+        self.chan.with_disable(|e| {
+            e.evctrl()
+                .modify(|r, w| unsafe { w.bits(r.bits() & !(1 << P::ChId::ID)) });
         });
     }
 
