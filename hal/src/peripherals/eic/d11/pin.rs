@@ -59,7 +59,9 @@ where
     pub fn enable_event(&mut self) {
         self.chan.with_disable(|e| {
             e.evctrl()
-                .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
+                .modify(|r, w| unsafe { w.bits(r.bits() | 1 << P::ChId::ID) });
+        });
+    }
         });
     }
 
