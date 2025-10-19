@@ -5,7 +5,7 @@ use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
 use crate::evsys::{EvSysChannel, EvSysGenerator};
 use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
+    self, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt, pin::*,
 };
 use core::convert::Infallible;
 
@@ -49,7 +49,7 @@ macro_rules! ei {
 }
 
 impl<T: ChId> EvSysGenerator for T {
-    const GENERATOR_ID: usize = T::ID + 0x0C;
+    const GENERATOR_ID: u8 = 0x0C + T::ID as u8;
 }
 
 impl<P, Id, EvId> ExtInt<P, Id, EvId>

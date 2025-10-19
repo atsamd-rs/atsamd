@@ -55,7 +55,7 @@ macro_rules! ei {
 }
 
 impl<T: ChId> EvSysGenerator for T {
-    const GENERATOR_ID: usize = 0x12 + T::ID; // EIC_EXTINT = 0x12 - 0x21
+    const GENERATOR_ID: u8 = 0x12 + T::ID as u8; // EIC_EXTINT = 0x12 - 0x21
 }
 
 impl<P, Id, EvId> ExtInt<P, Id, EvId>
