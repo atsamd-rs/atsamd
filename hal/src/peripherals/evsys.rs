@@ -193,7 +193,7 @@ pub struct EvSysController {
 #[hal_cfg("evsys-d5x")]
 impl EvSysController {
     pub fn new(mclk: &mut Mclk, evsys: crate::pac::Evsys) -> Self {
-        mclk.apbbmask().write(|w| w.evsys_().set_bit()); // Enable EVSYS clock
+        mclk.apbbmask().modify(|_, w| w.evsys_().set_bit()); // Enable EVSYS clock
         evsys.ctrla().write(|w| w.swrst().set_bit());
         Self { evsys }
     }
@@ -207,7 +207,7 @@ impl EvSysController {
 #[hal_cfg(any("evsys-d21", "evsys-d11"))]
 impl EvSysController {
     pub fn new(pm: &mut Pm, evsys: crate::pac::Evsys) -> Self {
-        pm.apbcmask().write(|w| w.evsys_().set_bit()); // Enable EVSYS clock
+        pm.apbcmask().modify(|_, w| w.evsys_().set_bit()); // Enable EVSYS clock
         evsys.ctrl().write(|w| w.swrst().set_bit());
         Self { evsys }
     }
