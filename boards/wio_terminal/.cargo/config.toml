@@ -1,5 +1,7 @@
 [target.thumbv7em-none-eabihf]
-runner = "arm-none-eabi-gdb"
+runner = "/home/cooler1989/programs/cgdb/cgdb/cgdb -d gdb-multiarch -x openocd.gdb"
+# -ex "mon reset halt" --ex "load" -ex "mon reset halt"
+#runner = "arm-none-eabi-gdb"
 #runner = 'probe-run --chip ATSAMD51P19A'
 
 [build]

@@ -51,9 +51,10 @@ impl Microphone {
         adc: Adc1,
         clocks: &mut GenericClockController,
         mclk: &mut Mclk,
-    ) -> (Adc<Adc1>, MicOutput) {
-        let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
+    ) -> (Adc<atsamd_hal::adc::Adc1>, MicOutput) {
+        todo!()
 
-        (adc1, self.mic.into())
+        // let adc1 = Adc::adc1(adc, mclk, clocks, Gclk11);
+        // (adc1, self.mic.into())
     }
 }

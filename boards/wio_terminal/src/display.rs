@@ -7,7 +7,7 @@ use atsamd_hal::ehal_nb::serial::Write;
 use atsamd_hal::pac::Mclk;
 use atsamd_hal::sercom::spi;
 use atsamd_hal::sercom::spi::Spi;
-use atsamd_hal::sercom::{IoSet4, Sercom7};
+use atsamd_hal::sercom::Sercom7;
 use atsamd_hal::time::Hertz;
 use atsamd_hal::typelevel::NoneT;
 use display_interface_spi::SPIInterface;
@@ -40,7 +40,7 @@ pub struct Display {
     pub backlight: LcdBacklightReset,
 }
 
-pub type LcdPads = spi::Pads<Sercom7, IoSet4, NoneT, LcdMosi, LcdSck>;
+pub type LcdPads = spi::Pads<Sercom7, NoneT, LcdMosi, LcdSck>;
 pub type LcdSpi = spi::PanicOnRead<spi::Spi<spi::Config<LcdPads>, spi::Tx>>;
 pub type LcdDevice<LcdCs> = bspi::ExclusiveDevice<LcdSpi, LcdCs, bspi::NoDelay>;
 
