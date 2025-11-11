@@ -60,7 +60,7 @@ jobs:
         $(${clippy_invocation})
 
     - name: Done
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         # name needs to be unique in the workspace
         name: "${{ matrix.bsp.name }}-${{ matrix.toolchain }}"
@@ -71,7 +71,7 @@ jobs:
     needs: [setup, build]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: successful-jobs
       - name: Do checks
