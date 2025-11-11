@@ -113,7 +113,7 @@ use the async APIs.
 
 ### PIC32CX SG note
 
-The PIC32CX SG series can be used with this crate as these are direct 1:1 replacements for the SAME53/4 series of chips, only coming in 1MB flash variants, with both 2x CAN modules and Ethernet. 
+The PIC32CX SG series can be used with this crate as these are direct 1:1 replacements for the SAME53/4 series of chips, only coming in 1MB flash + 256KB RAM variants, with both 2x CAN modules and Ethernet. 
 
 It is important to note however, that on the SG60 and SG61 varients (With the HSM module), that some IOs (`PB26`, `PB27`, `PB28`, `PB29`, `PC04`) and Sercom2 cannot be used via external pads, as these are hard-wired internally to the HSM module.
 
