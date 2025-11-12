@@ -1,6 +1,5 @@
 {
   "boards": {
-    
     "atsame54_xpro": {
       "tier": 1,
       "build": "cargo build --examples --all-features",
@@ -36,7 +35,6 @@
       "build": "cargo build --profile dev-optimized --examples --all-features",
       "target": "thumbv6m-none-eabi"
     },
-
     "arduino_mkr1000": {
       "tier": 2,
       "build": "cargo build --examples --all-features",

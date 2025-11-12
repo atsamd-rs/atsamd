@@ -31,45 +31,51 @@ features = ["samd21g", "samd21g-rt", "usb", "dma", "async", "rtic"]
 
 [dependencies]
 aes = "0.8.4"
-atsamd-hal-macros = {version = "0.3.0", path = "../atsamd-hal-macros"}
+atsamd-hal-macros = { version = "0.3.0", path = "../atsamd-hal-macros" }
 bitfield = "0.13"
 bitflags = "2.6.0"
 cipher = "0.4"
 cortex-m = "0.7"
 critical-section = "1.2.0"
-embedded-hal-02 = {package = "embedded-hal", version = "0.2", features = ["unproven"]}
-embedded-hal-1 = {package = "embedded-hal", version = "1.0.0"}
+embedded-hal-02 = { package = "embedded-hal", version = "0.2", features = [
+  "unproven",
+] }
+embedded-hal-1 = { package = "embedded-hal", version = "1.0.0" }
 embedded-hal-nb = "1.0.0"
 embedded-io = "0.6"
 fugit = "0.3"
 heapless = "0.8"
 modular-bitfield = "0.11"
 nb = "1.1"
-num-traits = {version = "0.2.19", default-features = false}
+num-traits = { version = "0.2.19", default-features = false }
 opaque-debug = "0.3.0"
 paste = "1.0.15"
-portable-atomic = {version = "1.10.0", optional = true, features = ["critical-section"]}
+portable-atomic = { version = "1.10.0", optional = true, features = [
+  "critical-section",
+] }
 rand_core = "0.9.1"
 seq-macro = "0.3"
 sorted-hlist = "0.2.0"
 typenum = "1.12.0"
-void = {version = "1.0", default-features = false}
+void = { version = "1.0", default-features = false }
 
 #===============================================================================
 # Optional depdendencies
 #===============================================================================
 
-defmt = {version = "1.0.1", optional = true}
-embassy-sync = {version = "0.6.0", optional = true}
-embedded-hal-async = {version = "1.0.0", optional = true}
-embedded-io-async = {version = "0.6.1", optional = true}
-embedded-sdmmc = {version = "0.8.1", optional = true}
-futures = {version = "0.3.31", default-features = false, features = ["async-await"], optional = true}
-jlink_rtt = {version = "0.2", optional = true}
-mcan-core = {version = "0.2", optional = true}
-rtic-monotonic = {version = "1.0", optional = true}
-rtic-time = {version = "2.0", optional = true}
-usb-device = {version = "0.3.2", optional = true}
+defmt = { version = "1.0.1", optional = true }
+embassy-sync = { version = "0.6.0", optional = true }
+embedded-hal-async = { version = "1.0.0", optional = true }
+embedded-io-async = { version = "0.6.1", optional = true }
+embedded-sdmmc = { version = "0.8.1", optional = true }
+futures = { version = "0.3.31", default-features = false, features = [
+  "async-await",
+], optional = true }
+jlink_rtt = { version = "0.2", optional = true }
+mcan-core = { version = "0.2", optional = true }
+rtic-monotonic = { version = "1.0", optional = true }
+rtic-time = { version = "2.0", optional = true }
+usb-device = { version = "0.3.2", optional = true }
 
 #===============================================================================
 # PACs
@@ -81,27 +87,27 @@ usb-device = {version = "0.3.2", optional = true}
 # users should specify a corresponding variant (see below). The variant features
 # will select the correct PAC, as well as other configuration features.
 
-atsamd11c = {version = "0.14.2", path = "../pac/atsamd11c", optional = true}
-atsamd11d = {version = "0.14.2", path = "../pac/atsamd11d", optional = true}
+atsamd11c = { version = "0.14.2", path = "../pac/atsamd11c", optional = true }
+atsamd11d = { version = "0.14.2", path = "../pac/atsamd11d", optional = true }
 
-atsamd21e = {version = "0.14.2", path = "../pac/atsamd21e", optional = true}
-atsamd21g = {version = "0.14.2", path = "../pac/atsamd21g", optional = true}
-atsamd21j = {version = "0.14.2", path = "../pac/atsamd21j", optional = true}
+atsamd21e = { version = "0.14.2", path = "../pac/atsamd21e", optional = true }
+atsamd21g = { version = "0.14.2", path = "../pac/atsamd21g", optional = true }
+atsamd21j = { version = "0.14.2", path = "../pac/atsamd21j", optional = true }
 
-atsamd51g = {version = "0.14.2", path = "../pac/atsamd51g", optional = true}
-atsamd51j = {version = "0.14.2", path = "../pac/atsamd51j", optional = true}
-atsamd51n = {version = "0.14.2", path = "../pac/atsamd51n", optional = true}
-atsamd51p = {version = "0.14.2", path = "../pac/atsamd51p", optional = true}
+atsamd51g = { version = "0.14.2", path = "../pac/atsamd51g", optional = true }
+atsamd51j = { version = "0.14.2", path = "../pac/atsamd51j", optional = true }
+atsamd51n = { version = "0.14.2", path = "../pac/atsamd51n", optional = true }
+atsamd51p = { version = "0.14.2", path = "../pac/atsamd51p", optional = true }
 
-atsame51g = {version = "0.14.2", path = "../pac/atsame51g", optional = true}
-atsame51j = {version = "0.14.2", path = "../pac/atsame51j", optional = true}
-atsame51n = {version = "0.14.2", path = "../pac/atsame51n", optional = true}
+atsame51g = { version = "0.14.2", path = "../pac/atsame51g", optional = true }
+atsame51j = { version = "0.14.2", path = "../pac/atsame51j", optional = true }
+atsame51n = { version = "0.14.2", path = "../pac/atsame51n", optional = true }
 
-atsame53j = {version = "0.14.2", path = "../pac/atsame53j", optional = true}
-atsame53n = {version = "0.14.2", path = "../pac/atsame53n", optional = true}
+atsame53j = { version = "0.14.2", path = "../pac/atsame53j", optional = true }
+atsame53n = { version = "0.14.2", path = "../pac/atsame53n", optional = true }
 
-atsame54n = {version = "0.14.2", path = "../pac/atsame54n", optional = true}
-atsame54p = {version = "0.14.2", path = "../pac/atsame54p", optional = true}
+atsame54n = { version = "0.14.2", path = "../pac/atsame54n", optional = true }
+atsame54p = { version = "0.14.2", path = "../pac/atsame54p", optional = true }
 
 #===============================================================================
 # Features
@@ -144,6 +150,11 @@ same53n = ["device", "dep:atsame53n"]
 same54n = ["device", "dep:atsame54n"]
 same54p = ["device", "dep:atsame54p"]
 
+pic32cx1025sgxx064 = ["device", "dep:atsame54p"]
+pic32cx1025sgxx080 = ["device", "dep:atsame54p"]
+pic32cx1025sgxx100 = ["device", "dep:atsame54p"]
+pic32cx1025sgxx128 = ["device", "dep:atsame54p"]
+
 #-------------------------------------------------------------------------------
 # RT features
 #-------------------------------------------------------------------------------
@@ -175,6 +186,11 @@ same53n-rt = ["same53n", "atsame53n/rt"]
 
 same54n-rt = ["same54n", "atsame54n/rt"]
 same54p-rt = ["same54p", "atsame54p/rt"]
+
+pic32cx1025sgxx064-rt = ["device", "atsame54p/rt"]
+pic32cx1025sgxx080-rt = ["device", "atsame54p/rt"]
+pic32cx1025sgxx100-rt = ["device", "atsame54p/rt"]
+pic32cx1025sgxx128-rt = ["device", "atsame54p/rt"]
 
 #-------------------------------------------------------------------------------
 # User-selectable features
