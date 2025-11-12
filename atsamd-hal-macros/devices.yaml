@@ -8,6 +8,7 @@ pin-groups:
   pins-48a: ["pins-48", "pa00", "pa01", "pb22", "pb23"]
   pins-48l: ["pins-48", "pb00", "pb01", "pb04", "pb05"]
   pins-64: ["pins-48a", "pins-48l", "pb06", "pb07", "pb12", "pb13", "pb14", "pb15", "pb16", "pb17", "pb30", "pb31"]
+  pins-80: ["pins-64", "pc06", "pc07", "pc12", "pc13", "pc14", "pc15", "pc16", "pc17", "pb18", "pb19", "pb20", "pb21", "pc27", "pc28"]
   pins-100: ["pins-64", "pb18", "pb19", "pb20", "pb21", "pb24", "pb25", "pc00", "pc01", "pc02", "pc03", "pc05", "pc06", "pc07", "pc10", "pc11", "pc12", "pc13", "pc14", "pc15", "pc16", "pc17", "pc18", "pc19", "pc20", "pc21", "pc24", "pc25", "pc26", "pc27", "pc28"]
   pins-128: ["pins-100", "pb26", "pb27", "pb28", "pb29", "pc04", "pc22", "pc23", "pc30", "pc31", "pd00", "pd01", "pd08", "pd09", "pd10", "pd11", "pd12", "pd20", "pd21"]
 
@@ -138,5 +139,59 @@ families:
       - tcc: { count: 5, only: ["samd51j", "samd51n", "samd51p", "same51j", "same51n", "same53j", "same53n", "same54n", "same54p"] }
       - ptc
       - i2s: { except: ["samd51g"] }
+      - pcc
+      - pdec
+
+  pic32cxsg:
+    pins:
+      pic32cx1025sgxx064: ["pins-64"]
+      pic32cx1025sgxx080: ["pins-80"]
+      pic32cx1025sgxx100: ["pins-100"]
+      pic32cx1025sgxx128: ["pins-128"]
+    peripherals:
+      - nvic
+      - serial-numbers
+      - cmcc
+      - dsu
+      - clock
+      - gclk
+      - mclk
+      - rstc
+      - ramecc
+      - pm
+      - supc
+      - wdt
+      - rtc
+      - dmac
+      - eic
+      - gmac
+      - nvmctrl
+      - icm
+      - pac
+      - oscctrl
+      - osc32kctrl
+      - freqm
+      - evsys
+      - port
+      - sercom: { count: 6, only: ["pic32cx1025sgxx064"] }
+      - sercom: { count: 8, only: ["pic32cx1025sgxx100", "pic32cx1025sgxx128", "pic32cx1025sgxx080"] }
+      - qspi
+      - usb
+      - can: { count: 2 }
+      - sdhc: { count: 1, only: ["pic32cx1025sgxx064"] }
+      - sdhc: { count: 2, only: ["pic32cx1025sgxx100", "pic32cx1025sgxx128", "pic32cx1025sgxx080"] }
+      - ccl
+      - aes
+      - pukcc
+      - pukcl
+      - trng
+      - adc
+      - ac
+      - dac
+      - tc: { count: 6, only: ["pic32cx1025sgxx064", "pic32cx1025sgxx080"] }
+      - tc: { count: 8, only: [pic32cx1025sgxx100", "pic32cx1025sgxx128"] }
+      - tcc: { count: 5 }
+      - ptc
+      - i2s
       - pcc
       - pdec
