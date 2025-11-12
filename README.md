@@ -1,6 +1,6 @@
 # atsamd & atsame support for Rust
 
-This repository holds various crates that support/enable working with Microchip (nee Atmel) `samd11`, `samd21`, `samd51` and `same5x` based devices using Rust, and also the newer Microchip `PIC32CX SG` series (See below)
+This repository holds various crates that support/enable working with Microchip (nee Atmel) `samd11`, `samd21`, `samd51` and `same5x` based devices using Rust, and also the newer Microchip `PIC32CX SG` series
 
 ![CI Build](https://github.com/atsamd-rs/atsamd/workflows/Build%20BSPs/badge.svg)
 
@@ -110,17 +110,6 @@ use the async APIs.
 * EIC (GPIO interrupts)
 * Timers
 * ADC
-
-### PIC32CX SG note
-
-The PIC32CX SG series can be used with this crate as these are direct 1:1 replacements for the SAME53/4 series of chips, only coming in 1MB flash + 256KB RAM variants, with both 2x CAN modules and Ethernet. 
-
-It is important to note however, that on the SG60 and SG61 varients (With the HSM module), that some IOs (`PB26`, `PB27`, `PB28`, `PB29`, `PC04`) and Sercom2 cannot be used via external pads, as these are hard-wired internally to the HSM module.
-
-To use this crate with these chips, select the following rt feature flag, depending on the chips pin count:
-
-* 64 pin - `same53j-rt`
-* 100/128 pin - `same54p-rt`
 
 #### Flashing
 

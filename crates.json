@@ -466,9 +466,9 @@
       ],
       "target": "thumbv7em-none-eabihf"
     },
-    "pic32cx1025sgxx064": {
+    "pic32cx1025sg41064": {
       "features": [
-        "pic32cx1025sgxx064",
+        "pic32cx1025sg41064",
         "usb",
         "dma",
         "sdmmc",
@@ -479,9 +479,9 @@
       ],
       "target": "thumbv7em-none-eabihf"
     },
-    "pic32cx1025sgxx100": {
+    "pic32cx1025sg41080": {
       "features": [
-        "pic32cx1025sgxx100",
+        "pic32cx1025sg41080",
         "usb",
         "dma",
         "sdmmc",
@@ -492,9 +492,9 @@
       ],
       "target": "thumbv7em-none-eabihf"
     },
-    "pic32cx1025sgxx128": {
+    "pic32cx1025sg41100": {
       "features": [
-        "pic32cx1025sgxx128",
+        "pic32cx1025sg41100",
         "usb",
         "dma",
         "sdmmc",
@@ -505,9 +505,35 @@
       ],
       "target": "thumbv7em-none-eabihf"
     },
-    "pic32cx1025sgxx080": {
+    "pic32cx1025sg41128": {
       "features": [
-        "pic32cx1025sgxx080",
+        "pic32cx1025sg41128",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cx1025sg6x100": {
+      "features": [
+        "pic32cx1025sg6x100",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cx1025sg6x128": {
+      "features": [
+        "pic32cx1025sg6x128",
         "usb",
         "dma",
         "sdmmc",
