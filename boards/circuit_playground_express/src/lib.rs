@@ -8,15 +8,23 @@ pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
+use hal::fugit::RateExtU32;
 use hal::prelude::*;
-use hal::sercom::v2::spi;
-use hal::sercom::v2::uart::{self, BaudMode, Oversampling};
-use hal::sercom::v2::{Sercom0, Sercom3, Sercom4};
-use hal::sercom::I2CMaster5;
-use hal::time::{Hertz, MegaHertz};
+use hal::sercom::i2c;
+use hal::sercom::spi;
+use hal::sercom::uart::{self, BaudMode, Oversampling};
+use hal::sercom::{Sercom0, Sercom3, Sercom4};
+use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
+
+hal::bsp_peripherals!(
+    Sercom0 { SpiSercom }
+    Sercom1 { AccelSercom }
+    Sercom4 { UartSercom }
+    Sercom5 { I2cSercom }
+);
 
 /// Definitions related to pins and pin aliases
 pub mod pins {
@@ -186,9 +194,9 @@ pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 /// any OutputPin, or even a pulled up line on the slave.
 pub fn spi_master(
     clocks: &mut GenericClockController,
-    baud: impl Into<Hertz>,
-    sercom0: pac::SERCOM0,
-    pm: &mut pac::PM,
+    baud: Hertz,
+    sercom0: pac::Sercom0,
+    pm: &mut pac::Pm,
     sck: impl Into<Sck>,
     mosi: impl Into<Mosi>,
     miso: impl Into<Miso>,
@@ -217,8 +225,8 @@ pub type FlashSpi = spi::Spi<spi::Config<FlashPads>, spi::Duplex>;
 /// SPI Master.
 pub fn flash_spi_master(
     clocks: &mut GenericClockController,
-    sercom3: pac::SERCOM3,
-    pm: &mut pac::PM,
+    sercom3: pac::Sercom3,
+    pm: &mut pac::Pm,
     sck: impl Into<FlashSck>,
     mosi: impl Into<FlashMosi>,
     miso: impl Into<FlashMiso>,
@@ -230,7 +238,7 @@ pub fn flash_spi_master(
     let (sck, mosi, miso, mut cs) = (sck.into(), mosi.into(), miso.into(), cs.into());
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sck);
     let spi = spi::Config::new(pm, sercom3, pads, freq)
-        .baud(MegaHertz(48))
+        .baud(48.MHz())
         .spi_mode(spi::MODE_0)
         .enable();
 
@@ -239,25 +247,34 @@ pub fn flash_spi_master(
     (spi, cs)
 }
 
-/// I2C master for the labelled SDA & SCL pins
-pub type I2C = I2CMaster5<Sda, Scl>;
+/// I2C pads for the labelled I2C peripheral
+///
+/// You can use these pads with other, user-defined [`i2c::Config`]urations.
+pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
+
+/// I2C master for the labelled I2C peripheral
+///
+/// This type implements [`Read`](ehal::blocking::i2c::Read),
+/// [`Write`](ehal::blocking::i2c::Write) and
+/// [`WriteRead`](ehal::blocking::i2c::WriteRead).
+pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
 
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master(
     clocks: &mut GenericClockController,
-    baud: impl Into<Hertz>,
-    sercom5: pac::SERCOM5,
-    pm: &mut pac::PM,
+    baud: Hertz,
+    sercom: I2cSercom,
+    pm: &mut pac::Pm,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
-) -> I2C {
+) -> I2c {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom5_core(&gclk0).unwrap();
-    let baud = baud.into();
-    let sda = sda.into();
-    let scl = scl.into();
-    I2CMaster5::new(clock, baud, sercom5, pm, sda, scl)
+    let freq = clock.freq();
+    let baud = baud;
+    let pads = i2c::Pads::new(sda.into(), scl.into());
+    i2c::Config::new(pm, sercom, pads, freq).baud(baud).enable()
 }
 
 /// UART pads for the labelled RX & TX pins
@@ -270,9 +287,9 @@ pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 /// operate as a UART device running at the specified baud.
 pub fn uart(
     clocks: &mut GenericClockController,
-    baud: impl Into<Hertz>,
-    sercom4: pac::SERCOM4,
-    pm: &mut pac::PM,
+    baud: Hertz,
+    sercom4: pac::Sercom4,
+    pm: &mut pac::Pm,
     uart_rx: impl Into<UartRx>,
     uart_tx: impl Into<UartTx>,
 ) -> Uart {
@@ -288,9 +305,9 @@ pub fn uart(
 #[cfg(feature = "usb")]
 /// Convenience function for setting up USB
 pub fn usb_allocator(
-    usb: pac::USB,
+    usb: pac::Usb,
     clocks: &mut GenericClockController,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
