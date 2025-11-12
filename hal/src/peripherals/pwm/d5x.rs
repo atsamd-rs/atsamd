@@ -421,7 +421,7 @@ impl_tcc_pinout!(TCC0Pinout: [
     (Pc20, PC20, AlternateF),
     #[hal_cfg("pc21")]
     (Pc21, PC21, AlternateF),
-    #[hal_cfg("pc04")]
+    #[hal_cfg(all("pc04", not("hsm")))]
     (Pc4, PC04, AlternateF),
     #[hal_cfg("pc22")]
     (Pc22, PC22, AlternateF),
