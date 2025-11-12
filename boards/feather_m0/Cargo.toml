@@ -35,7 +35,7 @@ version = "2.1.1"
 
 [dependencies.usb-device]
 optional = true
-version = "0.3.1"
+version = "0.3.2"
 
 [dependencies.embedded-sdmmc]
 optional = true
