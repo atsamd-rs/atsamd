@@ -91,10 +91,12 @@ families:
       same53n: ["pins-100"]
       same54n: ["pins-100"]
       same54p: ["pins-128"]
-      pic32cx1025sgxx064: ["pins-64"]
-      pic32cx1025sgxx080: ["pins-80"]
-      pic32cx1025sgxx100: ["pins-100"]
-      pic32cx1025sgxx128: ["pins-128"]
+      pic32cx1025sg41064: ["pins-64"]
+      pic32cx1025sg41080: ["pins-80"]
+      pic32cx1025sg41100: ["pins-100"]
+      pic32cx1025sg41128: ["pins-128"]
+      pic32cx1025sg6x100: ["pins-100"]
+      pic32cx1025sg6x128: ["pins-128"]
     peripherals:
       - nvic
       - serial-numbers
@@ -111,7 +113,7 @@ families:
       - rtc
       - dmac
       - eic
-      - gmac: { only: ["same53j", "same53n", "same54n", "same54p", "pic32cx1025sgxx064", "pic32cx1025sgxx080", pic32cx1025sgxx100, pic32cx1025sgxx128] }
+      - gmac: { only: ["same53j", "same53n", "same54n", "same54p", "pic32cx1025sg41064", "pic32cx1025sg41080", pic32cx1025sg41100, pic32cx1025sg41128, pic32cx1025sg6x100, pic32cx1025sg6x128] }
       - nvmctrl
       - icm
       - pac
@@ -120,14 +122,14 @@ families:
       - freqm
       - evsys
       - port
-      - sercom: { count: 6, only: ["samd51g", "samd51j", "same51g", "same51j", "same53j", "pic32cx1025sgxx064"] }
-      - sercom: { count: 8, only: ["samd51n", "samd51p", "same51n", "same53n", "same54n", "same54p", "pic32cx1025sgxx100", "pic32cx1025sgxx128", "pic32cx1025sgxx080"] }
+      - sercom: { count: 6, only: ["samd51g", "samd51j", "same51g", "same51j", "same53j", "pic32cx1025sg41064"] }
+      - sercom: { count: 8, only: ["samd51n", "samd51p", "same51n", "same53n", "same54n", "same54p", "pic32cx1025sg41080", "pic32cx1025sg41100", "pic32cx1025sg41128", "pic32cx1025sg6x100", "pic32cx1025sg6x128"] }
       - qspi
       - usb
       - can: { count: 1, only: ["same51g"]}
-      - can: { count: 2, only: ["same51j", "same51n", "same54n", "same54p", "pic32cx1025sgxx064", "pic32cx1025sgxx080", pic32cx1025sgxx100, pic32cx1025sgxx128"] }
-      - sdhc: { count: 1, only: ["samd51g", "samd51j", "same51g", "same51n", "same51j", "same53j", "pic32cx1025sgxx064"] }
-      - sdhc: { count: 2, only: ["samd51n", "samd51p", "same53n", "same54n", "same54p", "pic32cx1025sgxx100", "pic32cx1025sgxx128", "pic32cx1025sgxx080"] }
+      - can: { count: 2, only: ["same51j", "same51n", "same54n", "same54p", "pic32cx1025sg41064", "pic32cx1025sg41080", pic32cx1025sg41100, pic32cx1025sg41128, pic32cx1025sg6x100, pic32cx1025sg6x128] }
+      - sdhc: { count: 1, only: ["samd51g", "samd51j", "same51g", "same51n", "same51j", "same53j", "pic32cx1025sg41064"] }
+      - sdhc: { count: 2, only: ["samd51n", "samd51p", "same53n", "same54n", "same54p", "pic32cx1025sg41080", "pic32cx1025sg41100", "pic32cx1025sg41128", "pic32cx1025sg6x100", "pic32cx1025sg6x128"] }
       - ccl
       - aes
       - pukcc
@@ -145,3 +147,4 @@ families:
       - i2s: { except: ["samd51g"] }
       - pcc
       - pdec
+      - hsm: {only: ["pic32cx1025sg6x100, pic32cx1025sg6x128"] }
