@@ -113,7 +113,7 @@ families:
       - rtc
       - dmac
       - eic
-      - gmac: { only: ["same53j", "same53n", "same54n", "same54p", "pic32cx1025sg41064", "pic32cx1025sg41080", pic32cx1025sg41100, pic32cx1025sg41128, pic32cx1025sg6x100, pic32cx1025sg6x128] }
+      - gmac: { only: ["same53j", "same53n", "same54n", "same54p", "pic32cx1025sg41064", "pic32cx1025sg41080", "pic32cx1025sg41100", "pic32cx1025sg41128", "pic32cx1025sg6x100", "pic32cx1025sg6x128"] }
       - nvmctrl
       - icm
       - pac
@@ -127,7 +127,7 @@ families:
       - qspi
       - usb
       - can: { count: 1, only: ["same51g"]}
-      - can: { count: 2, only: ["same51j", "same51n", "same54n", "same54p", "pic32cx1025sg41064", "pic32cx1025sg41080", pic32cx1025sg41100, pic32cx1025sg41128, pic32cx1025sg6x100, pic32cx1025sg6x128] }
+      - can: { count: 2, only: ["same51j", "same51n", "same54n", "same54p", "pic32cx1025sg41064", "pic32cx1025sg41080", "pic32cx1025sg41100", "pic32cx1025sg41128", "pic32cx1025sg6x100", "pic32cx1025sg6x128"] }
       - sdhc: { count: 1, only: ["samd51g", "samd51j", "same51g", "same51n", "same51j", "same53j", "pic32cx1025sg41064"] }
       - sdhc: { count: 2, only: ["samd51n", "samd51p", "same53n", "same54n", "same54p", "pic32cx1025sg41080", "pic32cx1025sg41100", "pic32cx1025sg41128", "pic32cx1025sg6x100", "pic32cx1025sg6x128"] }
       - ccl
@@ -139,10 +139,10 @@ families:
       - ac
       - dac
       - tc: { count: 4, only: ["samd51g", "same51g"] }
-      - tc: { count: 6, only: ["samd51j", "same51j", "same53j", "pic32cx1025sgxx064", "pic32cx1025sgxx080"] }
-      - tc: { count: 8, only: ["same53n", "same54p", "same54n", "samd51p", "samd51n", "same51n", "pic32cx1025sgxx100", "pic32cx1025sgxx128"] }
+      - tc: { count: 6, only: ["samd51j", "same51j", "same53j", "pic32cx1025sg41064", "pic32cx1025sg41080"] }
+      - tc: { count: 8, only: ["same53n", "same54p", "same54n", "samd51p", "samd51n", "same51n", "pic32cx1025sg41100", "pic32cx1025sg41128", "pic32cx1025sg6x100", "pic32cx1025sg6x128"] }
       - tcc: { count: 3, only: ["samd51g", "same51g"] }
-      - tcc: { count: 5, only: ["samd51j", "samd51n", "samd51p", "same51j", "same51n", "same53j", "same53n", "same54n", "same54p", "pic32cx1025sgxx064", "pic32cx1025sgxx080", pic32cx1025sgxx100, pic32cx1025sgxx128] }
+      - tcc: { count: 5, only: ["samd51j", "samd51n", "samd51p", "same51j", "same51n", "same53j", "same53n", "same54n", "same54p", "pic32cx1025sg41064", "pic32cx1025sg41080", "pic32cx1025sg41100", "pic32cx1025sg41128", "pic32cx1025sg6x100", "pic32cx1025sg6x128"] }
       - ptc
       - i2s: { except: ["samd51g"] }
       - pcc
