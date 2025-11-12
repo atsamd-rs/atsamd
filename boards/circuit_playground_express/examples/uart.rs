@@ -1,3 +1,6 @@
+//! This example shows how to use the UART to perform transfers using the
+//! embedded-hal-nb traits.
+
 #![no_std]
 #![no_main]
 
@@ -9,58 +12,62 @@ use panic_semihosting as _;
 use bsp::hal;
 use bsp::pac;
 use circuit_playground_express as bsp;
+use hal::nb;
 
-use bsp::entry;
+use bsp::{entry, periph_alias, pin_alias};
 use hal::clock::GenericClockController;
-use hal::prelude::*;
+use hal::ehal_nb::serial::{Read, Write};
+use hal::fugit::RateExtU32;
 
-use pac::{CorePeripherals, Peripherals};
+use pac::Peripherals;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let mut pm = peripherals.PM;
-    let pins = bsp::Pins::new(peripherals.PORT);
-    let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
+    let mut pm = peripherals.pm;
+    let pins = bsp::Pins::new(peripherals.port);
 
-    let mut red_led = pins.d13.into_push_pull_output();
+    // Take peripheral and pins
+    let uart_sercom = periph_alias!(peripherals.uart_sercom);
+    let uart_rx = pin_alias!(pins.uart_rx);
+    let uart_tx = pin_alias!(pins.uart_tx);
 
-    // Setup UART peripheral.
-    let (rx_pin, tx_pin) = (pins.a6, pins.a7);
-    let mut uart = bsp::uart(
+    // Setup UART peripheral
+    let uart = bsp::uart(
         &mut clocks,
-        9600.hz(),
-        peripherals.SERCOM4,
+        9600.Hz(),
+        uart_sercom,
         &mut pm,
-        rx_pin,
-        tx_pin,
+        uart_rx,
+        uart_tx,
     );
 
-    // Write out a message on start up.
-    for byte in b"Hello world!\r\n" {
-        nb::block!(uart.write(*byte)).unwrap();
-    }
+    // Split uart in rx + tx halves
+    let (mut rx, mut tx) = uart.split();
+
+    // Make buffers to store data to send/receive
+    let mut rx_buffer = [0x00; 50];
+    let tx_buffer = b"Hello, world!";
 
     loop {
-        match uart.read() {
-            Ok(byte) => {
-                // Echo all received characters.
-                nb::block!(uart.write(byte)).unwrap();
+        // Send data. We block on each byte, but we could also perform some tasks while
+        // waiting for the byte to finish sending.
+        for c in tx_buffer.iter() {
+            nb::block!(tx.write(*c)).unwrap();
+        }
 
-                // Blink the red led to show that a character has arrived.
-                red_led.set_high().unwrap();
-                delay.delay_ms(2u16);
-                red_led.set_low().unwrap();
-            }
-            Err(_) => delay.delay_ms(5u16),
-        };
+        // Receive data. We block on each byte, but we could also perform some tasks
+        // while waiting for the byte to finish sending.
+        rx.flush_rx_buffer();
+        for c in rx_buffer.iter_mut() {
+            *c = nb::block!(rx.read()).unwrap();
+        }
     }
 }
