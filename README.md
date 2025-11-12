@@ -111,15 +111,6 @@ use the async APIs.
 * Timers
 * ADC
 
-#### Flashing
-
-At the moment, probe-rs does not support these newer chips, however, this can be overriden by forcing probe-rs to treat the chips as ATSAME5x chips. This can be done with the `--chip` argument
-
-**Example:**
-
-* 64 pin - `cargo flash --chip ATSAME53J20A`
-* 100/128 pin - `cargo flash --chip ATSAME54P20A`
-
 ### Examples
 
 The BSPs include examples to quickly get up and running with the board. Building the examples
