@@ -150,12 +150,12 @@ same53n = ["device", "dep:atsame53n"]
 same54n = ["device", "dep:atsame54n"]
 same54p = ["device", "dep:atsame54p"]
 
-pic32cx1025sg41064 = ["device", "dep:atsame54p"]
-pic32cx1025sg41080 = ["device", "dep:atsame54p"]
-pic32cx1025sg41100 = ["device", "dep:atsame54p"]
-pic32cx1025sg41128 = ["device", "dep:atsame54p"]
-pic32cx1025sg6x100 = ["device", "dep:atsame54p"]
-pic32cx1025sg6x128 = ["device", "dep:atsame54p"]
+pic32cxsg41064 = ["device", "dep:atsame54p"]
+pic32cxsg41080 = ["device", "dep:atsame54p"]
+pic32cxsg41100 = ["device", "dep:atsame54p"]
+pic32cxsg41128 = ["device", "dep:atsame54p"]
+pic32cxsg6x100 = ["device", "dep:atsame54p"]
+pic32cxsg6x128 = ["device", "dep:atsame54p"]
 
 #-------------------------------------------------------------------------------
 # RT features
@@ -189,12 +189,12 @@ same53n-rt = ["same53n", "atsame53n/rt"]
 same54n-rt = ["same54n", "atsame54n/rt"]
 same54p-rt = ["same54p", "atsame54p/rt"]
 
-pic32cx1025sg41064-rt = ["device", "atsame54p/rt"]
-pic32cx1025sg41080-rt = ["device", "atsame54p/rt"]
-pic32cx1025sg41100-rt = ["device", "atsame54p/rt"]
-pic32cx1025sg41128-rt = ["device", "atsame54p/rt"]
-pic32cx1025sg6x100-rt = ["device", "atsame54p/rt"]
-pic32cx1025sg6x128-rt = ["device", "atsame54p/rt"]
+pic32cxsg41064-rt = ["device", "atsame54p/rt"]
+pic32cxsg41080-rt = ["device", "atsame54p/rt"]
+pic32cxsg41100-rt = ["device", "atsame54p/rt"]
+pic32cxsg41128-rt = ["device", "atsame54p/rt"]
+pic32cxsg6x100-rt = ["device", "atsame54p/rt"]
+pic32cxsg6x128-rt = ["device", "atsame54p/rt"]
 
 
 
