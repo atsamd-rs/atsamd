@@ -8,7 +8,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - id: set-matrix
       uses: ./.github/actions/list-BSPs
 
@@ -26,7 +26,7 @@ jobs:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Install Rust
       run: |
@@ -55,12 +55,12 @@ jobs:
       run: |
         set -ex
         build_invocation=$(cat ./crates.json | jq -Mr --arg board '${{ matrix.bsp.name }}' -c '.boards | .[$board] | .build')
-        clippy_invocation=$(echo ${build_invocation} | sed 's/cargo build/cargo clippy/g')
+        clippy_invocation=$(echo ${build_invocation} | sed 's/cargo build/cargo +nightly clippy/g')
         cd boards/${{ matrix.bsp.name }}
         $(${clippy_invocation})
 
     - name: Done
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         # name needs to be unique in the workspace
         name: "${{ matrix.bsp.name }}-${{ matrix.toolchain }}"
@@ -71,7 +71,7 @@ jobs:
     needs: [setup, build]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           path: successful-jobs
       - name: Do checks

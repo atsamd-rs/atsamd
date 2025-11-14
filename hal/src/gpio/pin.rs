@@ -1089,7 +1089,7 @@ macro_rules! pins{
             }
             impl Pins {
                 /// Take ownership of the PAC
-                /// [`Port`](crate::pac::Port) and split it into
+                /// [`Port`] and split it into
                 /// discrete [`Pin`]s
                 #[inline]
                 pub fn new(port: Port) -> Pins {
@@ -1112,7 +1112,7 @@ macro_rules! pins{
                 /// Direct access to the [`Port`] could allow you to invalidate
                 /// the compiler's type-level tracking, so it is unsafe.
                 ///
-                /// [`Port`](crate::pac::Port)
+                /// [`Port`]
                 #[inline]
                 pub unsafe fn port(&mut self) -> Port {
                     self.port.take().unwrap()

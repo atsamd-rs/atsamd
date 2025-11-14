@@ -29,6 +29,10 @@ where
         self.tc.count_16().intenset().write(|w| w.ovf().set_bit());
     }
 
+    /// Starts the countdown of the timer.
+    ///
+    /// You should call [Self::enable_interrupt] after calling start
+    /// in order to enable the interrupt generation
     fn start<T>(&mut self, timeout: T)
     where
         T: Into<NanosDurationU32>,

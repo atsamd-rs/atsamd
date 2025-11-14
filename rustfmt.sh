@@ -6,7 +6,7 @@ echo $DIRECTORIES
 for DIR in $DIRECTORIES
 do
     pushd $(dirname $DIR)
-    cargo fmt -- --check
+    cargo +nightly fmt -- --check
     RET=$(($RET + $?))
     popd
 done
@@ -17,7 +17,7 @@ echo $DIRECTORIES
 for DIR in $DIRECTORIES
 do
     pushd $(dirname $DIR)
-    cargo fmt -- --check
+    cargo +nightly fmt -- --check
     RET=$(($RET + $?))
     popd
 done
