@@ -609,6 +609,7 @@ pub fn uart(
 
 #[cfg(feature = "usb")]
 /// Convenience function for setting up USB
+/// Switches the DFLL into USB clock recovery mode
 pub fn usb_allocator<G: GclkId>(
     usb: pac::Usb,
     dfll: Enabled<Dfll, U1>,
@@ -619,7 +620,6 @@ pub fn usb_allocator<G: GclkId>(
     dm: impl AnyPin<Id = PA24>,
     dp: impl AnyPin<Id = PA25>,
 ) -> UsbBusAllocator<UsbBus<G>> {
-    // SWITCH DFLL INTO USB CLOCK RECOVERY MODE - THIS ALLOWS FOR MORE ACCURATE USB
     let (dfll_usb, _) = dfll.into_mode(dfll::FromUsb, |_| {});
     // GCLK3 comes from DFLL, outputs to USB
     let (gclk_n, _) = Gclk::from_source(gclk_token, dfll_usb);
