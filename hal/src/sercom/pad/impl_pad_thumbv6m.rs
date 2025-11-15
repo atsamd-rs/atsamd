@@ -251,12 +251,12 @@ pad_table!(
     #[hal_cfg("pa00")]
     PA00 {
         #[hal_cfg("sercom1")]
-        D: (Sercom1, Pad0),
+        D: (Sercom1, Pad0) + I2C,
     }
     #[hal_cfg("pa01")]
     PA01 {
         #[hal_cfg("sercom1")]
-        D: (Sercom1, Pad1),
+        D: (Sercom1, Pad1) + I2C,
     }
     #[hal_cfg("pa04")]
     PA04 {
@@ -427,12 +427,12 @@ pad_table!(
     #[hal_cfg("pb02")]
     PB02 {
         #[hal_cfg("sercom5")]
-        D: (Sercom5, Pad0),
+        D: (Sercom5, Pad0) + I2C,
     }
     #[hal_cfg("pb03")]
     PB03 {
         #[hal_cfg("sercom5")]
-        D: (Sercom5, Pad1),
+        D: (Sercom5, Pad1) + I2C,
     }
     #[hal_cfg("pb08")]
     PB08 {
