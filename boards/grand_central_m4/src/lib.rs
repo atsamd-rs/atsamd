@@ -626,5 +626,5 @@ pub fn usb_allocator<G: GclkId>(
     let gclk_n_48mhz = gclk_n.enable();
     let (pclk_usb, _) = Pclk::enable(pclk_token, gclk_n_48mhz);
 
-    return UsbBusAllocator::new(UsbBus::new(pclk_usb, ahb_clk, apb_clk, dm, dp, usb));
+    return UsbBusAllocator::new(UsbBus::new(pclk_usb, ahb_clk, apb_clk, dm, dp, usb).unwrap());
 }
