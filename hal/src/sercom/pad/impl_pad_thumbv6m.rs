@@ -10,23 +10,12 @@ use crate::sercom::*;
 //==============================================================================
 
 macro_rules! pad_info {
-    // This is the entry pattern when the pad is not I2C enabled.
-    (
-        $PinId:ident,
-        $Cfg:ident,
-        $Sercom:ident,
-        $PadNum:ident
-    ) => {
-        pad_info!(@impl_pad, $PinId, $Cfg, $Sercom, $PadNum);
-    };
-
     // This is the entry pattern when the pad is I2C enabled.
     (
         $PinId:ident,
         $Cfg:ident,
         $Sercom:ident,
         $PadNum:ident
-        + I2C
     ) => {
         impl IsI2cPad for Pin<$PinId, Alternate<$Cfg>> {}
         pad_info!(@impl_pad, $PinId, $Cfg, $Sercom, $PadNum);
@@ -64,14 +53,14 @@ macro_rules! pad_table {
         $PinId:ident {
             $(
                 $( #[$sercom_cfg:meta] )?
-                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
+                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
             )+
         }
     ) => {
         $(
             #[$id_cfg]
             $( #[$sercom_cfg] )?
-            pad_info!( $PinId, $Cfg, $Sercom, $PadNum $( + $I2C )? );
+            pad_info!( $PinId, $Cfg, $Sercom, $PadNum);
         )+
     };
 
@@ -79,13 +68,13 @@ macro_rules! pad_table {
         $PinId:ident {
             $(
                 $( #[$sercom_cfg:meta] )?
-                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
+                $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
             )+
         }
     ) => {
         $(
             $( #[$sercom_cfg] )?
-            pad_info!( $PinId, $Cfg, $Sercom, $PadNum $( + $I2C )?  );
+            pad_info!( $PinId, $Cfg, $Sercom, $PadNum);
         )+
     };
 
@@ -95,7 +84,7 @@ macro_rules! pad_table {
             $PinId:ident {
                 $(
                     $( #[$sercom_cfg:meta] )?
-                    $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
+                    $Cfg:ident: ( $Sercom:ident, $PadNum:ident ),
                 )+
             }
         )+
@@ -106,7 +95,7 @@ macro_rules! pad_table {
                 $PinId {
                     $(
                         $( #[$sercom_cfg] )?
-                        $Cfg: ( $Sercom, $PadNum ) $( + $I2C )?,
+                        $Cfg: ( $Sercom, $PadNum ),
                     )+
                 }
             );
@@ -176,16 +165,16 @@ pad_table!(
     #[hal_cfg("pa14")]
     PA14 {
         #[hal_cfg("sercom0")]
-        C: (Sercom0, Pad0) + I2C,
+        C: (Sercom0, Pad0),
         #[hal_cfg("sercom2")]
-        D: (Sercom2, Pad0) + I2C,
+        D: (Sercom2, Pad0),
     }
     #[hal_cfg("pa15")]
     PA15 {
         #[hal_cfg("sercom0")]
-        C: (Sercom0, Pad1) + I2C,
+        C: (Sercom0, Pad1),
         #[hal_cfg("sercom2")]
-        D: (Sercom2, Pad1) + I2C,
+        D: (Sercom2, Pad1),
     }
     #[hal_cfg("pa16")]
     PA16 {
@@ -204,16 +193,16 @@ pad_table!(
     #[hal_cfg("pa22")]
     PA22 {
         #[hal_cfg("sercom1")]
-        C: (Sercom1, Pad0) + I2C,
+        C: (Sercom1, Pad0),
         #[hal_cfg("sercom2")]
-        D: (Sercom2, Pad0) + I2C,
+        D: (Sercom2, Pad0),
     }
     #[hal_cfg("pa23")]
     PA23 {
         #[hal_cfg("sercom1")]
-        C: (Sercom1, Pad1) + I2C,
+        C: (Sercom1, Pad1),
         #[hal_cfg("sercom2")]
-        D: (Sercom2, Pad1) + I2C,
+        D: (Sercom2, Pad1),
     }
     #[hal_cfg("pa24")]
     PA24 {
@@ -281,16 +270,16 @@ pad_table!(
     #[hal_cfg("pa08")]
     PA08 {
         #[hal_cfg("sercom0")]
-        C: (Sercom0, Pad0) + I2C,
+        C: (Sercom0, Pad0),
         #[hal_cfg("sercom2")]
-        D: (Sercom2, Pad0) + I2C,
+        D: (Sercom2, Pad0),
     }
     #[hal_cfg("pa09")]
     PA09 {
         #[hal_cfg("sercom0")]
-        C: (Sercom0, Pad1) + I2C,
+        C: (Sercom0, Pad1),
         #[hal_cfg("sercom2")]
-        D: (Sercom2, Pad1) + I2C,
+        D: (Sercom2, Pad1),
     }
     #[hal_cfg("pa10")]
     PA10 {
@@ -309,16 +298,16 @@ pad_table!(
     #[hal_cfg("pa12")]
     PA12 {
         #[hal_cfg("sercom2")]
-        C: (Sercom2, Pad0) + I2C,
+        C: (Sercom2, Pad0),
         #[hal_cfg("sercom4")]
-        D: (Sercom4, Pad0) + I2C,
+        D: (Sercom4, Pad0),
     }
     #[hal_cfg("pa13")]
     PA13 {
         #[hal_cfg("sercom2")]
-        C: (Sercom2, Pad1) + I2C,
+        C: (Sercom2, Pad1),
         #[hal_cfg("sercom4")]
-        D: (Sercom4, Pad1) + I2C,
+        D: (Sercom4, Pad1),
     }
     #[hal_cfg("pa14")]
     PA14 {
@@ -337,16 +326,16 @@ pad_table!(
     #[hal_cfg("pa16")]
     PA16 {
         #[hal_cfg("sercom1")]
-        C: (Sercom1, Pad0) + I2C,
+        C: (Sercom1, Pad0),
         #[hal_cfg("sercom3")]
-        D: (Sercom3, Pad0) + I2C,
+        D: (Sercom3, Pad0),
     }
     #[hal_cfg("pa17")]
     PA17 {
         #[hal_cfg("sercom1")]
-        C: (Sercom1, Pad1) + I2C,
+        C: (Sercom1, Pad1),
         #[hal_cfg("sercom3")]
-        D: (Sercom3, Pad1) + I2C,
+        D: (Sercom3, Pad1),
     }
     #[hal_cfg("pa18")]
     PA18 {
@@ -379,16 +368,16 @@ pad_table!(
     #[hal_cfg("pa22")]
     PA22 {
         #[hal_cfg("sercom3")]
-        C: (Sercom3, Pad0) + I2C,
+        C: (Sercom3, Pad0),
         #[hal_cfg("sercom5")]
-        D: (Sercom5, Pad0) + I2C,
+        D: (Sercom5, Pad0),
     }
     #[hal_cfg("pa23")]
     PA23 {
         #[hal_cfg("sercom3")]
-        C: (Sercom3, Pad1) + I2C,
+        C: (Sercom3, Pad1),
         #[hal_cfg("sercom5")]
-        D: (Sercom5, Pad1) + I2C,
+        D: (Sercom5, Pad1),
     }
     #[hal_cfg("pa24")]
     PA24 {
@@ -457,12 +446,12 @@ pad_table!(
     #[hal_cfg("pb12")]
     PB12 {
         #[hal_cfg("sercom4")]
-        C: (Sercom4, Pad0) + I2C,
+        C: (Sercom4, Pad0),
     }
     #[hal_cfg("pb13")]
     PB13 {
         #[hal_cfg("sercom4")]
-        C: (Sercom4, Pad1) + I2C,
+        C: (Sercom4, Pad1),
     }
     #[hal_cfg("pb14")]
     PB14 {
@@ -477,12 +466,12 @@ pad_table!(
     #[hal_cfg("pb16")]
     PB16 {
         #[hal_cfg("sercom5")]
-        C: (Sercom5, Pad0) + I2C,
+        C: (Sercom5, Pad0),
     }
     #[hal_cfg("pb17")]
     PB17 {
         #[hal_cfg("sercom5")]
-        C: (Sercom5, Pad1) + I2C,
+        C: (Sercom5, Pad1),
     }
     #[hal_cfg("pb22")]
     PB22 {
@@ -497,11 +486,11 @@ pad_table!(
     #[hal_cfg("pb30")]
     PB30 {
         #[hal_cfg("sercom5")]
-        D: (Sercom5, Pad0) + I2C,
+        D: (Sercom5, Pad0),
     }
     #[hal_cfg("pb31")]
     PB31 {
         #[hal_cfg("sercom5")]
-        D: (Sercom5, Pad1) + I2C,
+        D: (Sercom5, Pad1),
     }
 );
