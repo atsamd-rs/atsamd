@@ -429,28 +429,28 @@ pad_table!(
     PB26 {
         #[hal_cfg("sercom2")]
         C: (Sercom2, Pad0, IoSet2),
-        #[hal_cfg("sercom4")]
+        #[hal_cfg(all("sercom4", not("hsm")))]
         D: (Sercom4, Pad1, IoSet4),
     }
     #[hal_cfg("pb27")]
     PB27 {
         #[hal_cfg("sercom2")]
         C: (Sercom2, Pad1, IoSet2),
-        #[hal_cfg("sercom4")]
+        #[hal_cfg(all("sercom4", not("hsm")))]
         D: (Sercom4, Pad0, IoSet4),
     }
     #[hal_cfg("pb28")]
     PB28 {
         #[hal_cfg("sercom2")]
         C: (Sercom2, Pad2, IoSet2),
-        #[hal_cfg("sercom4")]
+        #[hal_cfg(all("sercom4", not("hsm")))]
         D: (Sercom4, Pad2, IoSet4),
     }
     #[hal_cfg("pb29")]
     PB29 {
         #[hal_cfg("sercom2")]
         C: (Sercom2, Pad3, IoSet2),
-        #[hal_cfg("sercom4")]
+        #[hal_cfg(all("sercom4", not("hsm")))]
         D: (Sercom4, Pad3, IoSet4),
     }
     #[hal_cfg("pb30")]
@@ -471,7 +471,7 @@ pad_table!(
     }
     #[hal_cfg("pc04")]
     PC04 {
-        #[hal_cfg("sercom6")]
+        #[hal_cfg(all("sercom6", not("hsm")))]
         C: (Sercom6, Pad0, IoSet2),
     }
     #[hal_cfg("pc05")]

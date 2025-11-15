@@ -8,6 +8,7 @@ pin-groups:
   pins-48a: ["pins-48", "pa00", "pa01", "pb22", "pb23"]
   pins-48l: ["pins-48", "pb00", "pb01", "pb04", "pb05"]
   pins-64: ["pins-48a", "pins-48l", "pb06", "pb07", "pb12", "pb13", "pb14", "pb15", "pb16", "pb17", "pb30", "pb31"]
+  pins-80: ["pins-64", "pc06", "pc07", "pc12", "pc13", "pc14", "pc15", "pc16", "pc17", "pb18", "pb19", "pb20", "pb21", "pc27", "pc28"]
   pins-100: ["pins-64", "pb18", "pb19", "pb20", "pb21", "pb24", "pb25", "pc00", "pc01", "pc02", "pc03", "pc05", "pc06", "pc07", "pc10", "pc11", "pc12", "pc13", "pc14", "pc15", "pc16", "pc17", "pc18", "pc19", "pc20", "pc21", "pc24", "pc25", "pc26", "pc27", "pc28"]
   pins-128: ["pins-100", "pb26", "pb27", "pb28", "pb29", "pc04", "pc22", "pc23", "pc30", "pc31", "pd00", "pd01", "pd08", "pd09", "pd10", "pd11", "pd12", "pd20", "pd21"]
 
@@ -90,6 +91,12 @@ families:
       same53n: ["pins-100"]
       same54n: ["pins-100"]
       same54p: ["pins-128"]
+      pic32cxsg41064: ["pins-64"]
+      pic32cxsg41080: ["pins-80"]
+      pic32cxsg41100: ["pins-100"]
+      pic32cxsg41128: ["pins-128"]
+      pic32cxsg6x100: ["pins-100"]
+      pic32cxsg6x128: ["pins-128"]
     peripherals:
       - nvic
       - serial-numbers
@@ -106,7 +113,7 @@ families:
       - rtc
       - dmac
       - eic
-      - gmac: { only: ["same53j", "same53n", "same54n", "same54p"] }
+      - gmac: { only: ["same53j", "same53n", "same54n", "same54p", "pic32cxsg41064", "pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
       - nvmctrl
       - icm
       - pac
@@ -115,14 +122,14 @@ families:
       - freqm
       - evsys
       - port
-      - sercom: { count: 6, only: ["samd51g", "samd51j", "same51g", "same51j", "same53j"] }
-      - sercom: { count: 8, only: ["samd51n", "samd51p", "same51n", "same53n", "same54n", "same54p"] }
+      - sercom: { count: 6, only: ["samd51g", "samd51j", "same51g", "same51j", "same53j", "pic32cxsg41064"] }
+      - sercom: { count: 8, only: ["samd51n", "samd51p", "same51n", "same53n", "same54n", "same54p", "pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
       - qspi
       - usb
       - can: { count: 1, only: ["same51g"]}
-      - can: { count: 2, only: ["same51j", "same51n", "same54n", "same54p"] }
-      - sdhc: { count: 1, only: ["samd51g", "samd51j", "same51g", "same51n", "same51j", "same53j"] }
-      - sdhc: { count: 2, only: ["samd51n", "samd51p", "same53n", "same54n", "same54p"] }
+      - can: { count: 2, only: ["same51j", "same51n", "same54n", "same54p", "pic32cxsg41064", "pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
+      - sdhc: { count: 1, only: ["samd51g", "samd51j", "same51g", "same51n", "same51j", "same53j", "pic32cxsg41064"] }
+      - sdhc: { count: 2, only: ["samd51n", "samd51p", "same53n", "same54n", "same54p", "pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
       - ccl
       - aes
       - pukcc
@@ -132,11 +139,12 @@ families:
       - ac
       - dac
       - tc: { count: 4, only: ["samd51g", "same51g"] }
-      - tc: { count: 6, only: ["samd51j", "same51j", "same53j"] }
-      - tc: { count: 8, only: ["same53n", "same54p", "same54n", "samd51p", "samd51n", "same51n"] }
+      - tc: { count: 6, only: ["samd51j", "same51j", "same53j", "pic32cxsg41064", "pic32cxsg41080"] }
+      - tc: { count: 8, only: ["same53n", "same54p", "same54n", "samd51p", "samd51n", "same51n", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
       - tcc: { count: 3, only: ["samd51g", "same51g"] }
-      - tcc: { count: 5, only: ["samd51j", "samd51n", "samd51p", "same51j", "same51n", "same53j", "same53n", "same54n", "same54p"] }
+      - tcc: { count: 5, only: ["samd51j", "samd51n", "samd51p", "same51j", "same51n", "same53j", "same53n", "same54n", "same54p", "pic32cxsg41064", "pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
       - ptc
       - i2s: { except: ["samd51g"] }
       - pcc
       - pdec
+      - hsm: {only: ["pic32cxsg6x100, pic32cxsg6x128"] }
