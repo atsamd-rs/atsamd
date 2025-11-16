@@ -63,12 +63,13 @@ macro_rules! pad_table {
         #[$id_cfg:meta]
         $PinId:ident {
             $(
-                $( #[$sercom_cfg:meta] )?
+                $( #[$sercom_cfg:meta] )*
                 $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
             )+
         }
     ) => {
         $(
+
             #[$id_cfg]
             $( #[$sercom_cfg] )?
             pad_info!( $PinId, $Cfg, $Sercom, $PadNum $( + $I2C )? );
@@ -78,13 +79,13 @@ macro_rules! pad_table {
     (
         $PinId:ident {
             $(
-                $( #[$sercom_cfg:meta] )?
+                $( #[$sercom_cfg:meta] )*
                 $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
             )+
         }
     ) => {
         $(
-            $( #[$sercom_cfg] )?
+            $( #[$sercom_cfg] )*
             pad_info!( $PinId, $Cfg, $Sercom, $PadNum $( + $I2C )?  );
         )+
     };
@@ -94,7 +95,7 @@ macro_rules! pad_table {
             $( #[$id_cfg:meta] )?
             $PinId:ident {
                 $(
-                    $( #[$sercom_cfg:meta] )?
+                    $( #[$sercom_cfg:meta] )*
                     $Cfg:ident: ( $Sercom:ident, $PadNum:ident ) $( + $I2C:ident )?,
                 )+
             }
@@ -105,7 +106,7 @@ macro_rules! pad_table {
                 $( #[$id_cfg] )?
                 $PinId {
                     $(
-                        $( #[$sercom_cfg] )?
+                        $( #[$sercom_cfg] )*
                         $Cfg: ( $Sercom, $PadNum ) $( + $I2C )?,
                     )+
                 }
@@ -250,13 +251,23 @@ pad_table!(
 pad_table!(
     #[hal_cfg("pa00")]
     PA00 {
+        #[cfg(not(feature = "undoc-features"))]
         #[hal_cfg("sercom1")]
         D: (Sercom1, Pad0),
+
+        #[cfg(feature = "undoc-features")]
+        #[hal_cfg("sercom1")]
+        D: (Sercom1, Pad0) + I2C,
     }
     #[hal_cfg("pa01")]
     PA01 {
+        #[cfg(not(feature = "undoc-features"))]
         #[hal_cfg("sercom1")]
         D: (Sercom1, Pad1),
+
+        #[cfg(feature = "undoc-features")]
+        #[hal_cfg("sercom1")]
+        D: (Sercom1, Pad1) + I2C,
     }
     #[hal_cfg("pa04")]
     PA04 {

@@ -197,6 +197,7 @@ rtic = ["rtic-monotonic", "rtic-time", "portable-atomic"]
 sdmmc = ["embedded-sdmmc"]
 usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
+undoc-features = []
 
 #===============================================================================
 # Implementation-details
