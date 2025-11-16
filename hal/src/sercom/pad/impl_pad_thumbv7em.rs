@@ -325,13 +325,21 @@ pad_table!(
     }
     #[hal_cfg("pb02")]
     PB02 {
-        // According to Metro M4, PB02 is I2C-capable. This disagrees with datasheet table 6-8.
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad0, IoSet6),
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom5")]
         D: (Sercom5, Pad0, IoSet6) + I2C,
     }
     #[hal_cfg("pb03")]
     PB03 {
-        // According to Metro M4, PB03 is I2C-capable. This disagrees with datasheet table 6-8.
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad1, IoSet6),
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom5")]
         D: (Sercom5, Pad1, IoSet6) + I2C,
     }

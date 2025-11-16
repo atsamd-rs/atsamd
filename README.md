@@ -162,8 +162,24 @@ provide any guarantees with respect to those.
 
 Currently, we provide these features undocumented features:
 
-* `UndocIoSet1` and `UndocIoSet2` for SAMx5x devices
-* SAMD21: PA00 and PA01 may be used for SERCOM I2C
+### SAMD21:
+
+* Mark `PA00` as I2C-capable according to `circuit_playground_express`.
+
+* Mark `PA01` as I2C-capable according to `circuit_playground_express`.
+
+### SAMx5x devices:
+* `UndocIoSet1`: Implement an undocumented `IoSet` for PA16, PA17, PB22 &
+  PB23 configured for `Sercom1`. The `pygamer` & `feather_m4` use this
+  combination, but it is not listed as valid in the datasheet.
+
+* `UndocIoSet2`: Implement an undocumented `IoSet` for PA00, PA01, PB22 &
+  PB23 configured for `Sercom1`. The `itsybitsy_m4` uses this combination,
+  but it is not listed as valid in the datasheet.
+
+* Mark `PB02` as I2C-capable according to `metro_m4`.
+
+* Mark `PB03` as I2C-capable according to `metro_m4`.
 
 ## Running and debugging firmware on target hardware
 
