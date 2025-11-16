@@ -593,7 +593,7 @@ impl<S: PclkSourceId> UsbBus<S> {
         }
     }
 
-    pub fn free(
+    pub fn into_inner(
         self,
     ) -> (
         Pclk<clock::types::Usb, S>,
