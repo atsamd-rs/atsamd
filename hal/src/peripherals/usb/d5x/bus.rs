@@ -205,6 +205,7 @@ struct Inner<S: PclkSourceId> {
     pclk: Pclk<clock::types::Usb, S>,
     ahb_clk: AhbClk<clock::types::Usb>,
     apb_clk: ApbClk<clock::types::Usb>,
+    _usb: Usb,
 }
 
 pub struct UsbBus<S: PclkSourceId> {
@@ -586,6 +587,7 @@ impl<S: PclkSourceId> UsbBus<S> {
             pclk,
             ahb_clk,
             apb_clk,
+            _usb,
         };
 
         Self {
@@ -601,6 +603,7 @@ impl<S: PclkSourceId> UsbBus<S> {
         ApbClk<clock::types::Usb>,
         Pin<PA24, AlternateH>,
         Pin<PA25, AlternateH>,
+        Usb,
     ) {
         // Unwrap the Mutex and RefCell to get the Inner
         let inner = self.inner.into_inner().into_inner();
@@ -610,6 +613,7 @@ impl<S: PclkSourceId> UsbBus<S> {
             inner.apb_clk,
             inner._dm_pad,
             inner._dp_pad,
+            inner._usb,
         )
     }
 }
