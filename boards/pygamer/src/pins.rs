@@ -883,14 +883,6 @@ pub struct QSPIFlash {
     pub data3: QspiD3Reset,
 }
 
-impl QSPIFlash {
-    pub fn init(self, mclk: &mut pac::Mclk, qspi: pac::Qspi) -> qspi::Qspi<qspi::OneShot> {
-        qspi::Qspi::new(
-            mclk, qspi, self.sclk, self.cs, self.data0, self.data1, self.data2, self.data3,
-        )
-    }
-}
-
 /// Button pins
 pub struct Buttons {
     /// Button Latch
