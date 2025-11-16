@@ -179,7 +179,8 @@
         "samd11c",
         "dma",
         "defmt",
-        "async"
+        "async",
+        "undoc-features"
       ],
       "target": "thumbv6m-none-eabi"
     },
@@ -188,7 +189,8 @@
         "samd11d",
         "dma",
         "defmt",
-        "async"
+        "async",
+        "undoc-features"
       ],
       "target": "thumbv6m-none-eabi"
     },
@@ -198,7 +200,8 @@
         "usb",
         "dma",
         "defmt",
-        "async"
+        "async",
+        "undoc-features"
       ],
       "target": "thumbv6m-none-eabi"
     },
@@ -208,7 +211,8 @@
         "usb",
         "dma",
         "defmt",
-        "async"
+        "async",
+        "undoc-features"
       ],
       "target": "thumbv6m-none-eabi"
     },
@@ -219,7 +223,8 @@
         "sdmmc",
         "dma",
         "defmt",
-        "async"
+        "async",
+        "undoc-features"
       ],
       "target": "thumbv7em-none-eabihf"
     },
@@ -230,7 +235,8 @@
         "sdmmc",
         "dma",
         "defmt",
-        "async"
+        "async",
+        "undoc-features"
       ],
       "target": "thumbv7em-none-eabihf"
     },
@@ -241,7 +247,8 @@
         "sdmmc",
         "dma",
         "defmt",
-        "async"
+        "async",
+        "undoc-features"
       ],
       "target": "thumbv7em-none-eabihf"
     },
@@ -252,82 +259,83 @@
         "sdmmc",
         "dma",
         "defmt",
-        "async"
+        "async",
+        "undoc-features"
       ],
       "target": "thumbv7em-none-eabihf"
     }
   },
   "hal_build_variants": {
     "samd11c":  {
-      "features": [ "samd11c", "dma", "rtic", "defmt", "async" ],
+      "features": [ "samd11c", "dma", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd11d":  {
-      "features": [ "samd11d", "dma", "rtic", "defmt", "async" ],
+      "features": [ "samd11d", "dma", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21e":  {
-      "features": [ "samd21e", "usb", "dma", "rtic", "defmt", "async" ],
+      "features": [ "samd21e", "usb", "dma", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21el":  {
-      "features": [ "samd21el", "dma", "rtic", "defmt", "async" ],
+      "features": [ "samd21el", "dma", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21g":  {
-      "features": [ "samd21g", "usb", "dma", "rtic", "defmt", "async" ],
+      "features": [ "samd21g", "usb", "dma", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21gl":  {
-      "features": [ "samd21gl", "dma", "rtic", "defmt", "async" ],
+      "features": [ "samd21gl", "dma", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd21j":  {
-      "features": [ "samd21j", "usb", "dma", "rtic", "defmt", "async" ],
+      "features": [ "samd21j", "usb", "dma", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv6m-none-eabi"
     },
     "samd51g":  {
-      "features": [ "samd51g", "usb", "dma", "sdmmc", "rtic", "defmt", "async" ],
+      "features": [ "samd51g", "usb", "dma", "sdmmc", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51j": {
-      "features": [ "samd51j", "usb", "dma", "sdmmc", "rtic", "defmt", "async" ],
+      "features": [ "samd51j", "usb", "dma", "sdmmc", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51n": {
-      "features": [ "samd51n", "usb", "dma", "sdmmc", "rtic", "defmt", "async" ],
+      "features": [ "samd51n", "usb", "dma", "sdmmc", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "samd51p": {
-      "features": [ "samd51p", "usb", "dma", "sdmmc", "rtic", "defmt", "async" ],
+      "features": [ "samd51p", "usb", "dma", "sdmmc", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same51g": {
-      "features": [ "same51g", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async" ],
+      "features": [ "same51g", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same51j": {
-      "features": [ "same51j", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async" ],
+      "features": [ "same51j", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same51n": {
-      "features": [ "same51n", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async" ],
+      "features": [ "same51n", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async" , "undoc-features"],
       "target": "thumbv7em-none-eabihf"
     },
     "same53j": {
-      "features": [ "same53j", "usb", "dma", "sdmmc", "rtic", "defmt", "async" ],
+      "features": [ "same53j", "usb", "dma", "sdmmc", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same53n": {
-      "features": [ "same53n", "usb", "dma", "sdmmc", "rtic", "defmt", "async" ],
+      "features": [ "same53n", "usb", "dma", "sdmmc", "rtic", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same54n": {
-      "features": [ "same54n", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async" ],
+      "features": [ "same54n", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     },
     "same54p": {
-      "features": [ "same54p", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async" ],
+      "features": [ "same54p", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async", "undoc-features" ],
       "target": "thumbv7em-none-eabihf"
     }
   }

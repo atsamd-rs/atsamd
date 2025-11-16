@@ -10,16 +10,16 @@ This repository holds various crates that support/enable working with Microchip 
 
 The Hardware Abstraction Layer (HAL - [![Crates.io](https://img.shields.io/crates/v/atsamd_hal.svg)](https://crates.io/crates/atsamd_hal)) crate encodes a type-safe layer over the raw PACs. This crate implements traits specified by the [embedded-hal](https://github.com/rust-embedded/embedded-hal) project, making it compatible with various drivers in the embedded Rust ecosystem.  Cargo features are used to enable support for specific hardware variations and features.  Online documentation for commonly-used feature sets is provided:
 
-| Chip family | Documented features               |
-|:------------|:----------------------------------|
-| [samd11c]   | samd11c dma defmt async           |
-| [samd11d]   | samd11d dma defmt async           |
-| [samd21g]   | samd21g usb dma defmt async       |
-| [samd21j]   | samd21j usb dma defmt async       |
-| [samd51g]   | samd51g usb sdmmc dma defmt async |
-| [samd51j]   | samd51j usb sdmmc dma defmt async |
-| [samd51n]   | samd51n usb sdmmc dma defmt async |
-| [samd51p]   | samd51p usb sdmmc dma defmt async |
+| Chip family | Documented features                              |
+|:------------|:-------------------------------------------------|
+| [samd11c]   | samd11c dma defmt async undoc-features           |
+| [samd11d]   | samd11d dma defmt async undoc-features           |
+| [samd21g]   | samd21g usb dma defmt async undoc-features       |
+| [samd21j]   | samd21j usb dma defmt async undoc-features       |
+| [samd51g]   | samd51g usb sdmmc dma defmt async undoc-features |
+| [samd51j]   | samd51j usb sdmmc dma defmt async undoc-features |
+| [samd51n]   | samd51n usb sdmmc dma defmt async undoc-features |
+| [samd51p]   | samd51p usb sdmmc dma defmt async undoc-features |
 
 [samd11c]: https://atsamd-rs.github.io/atsamd/samd11c/thumbv6m-none-eabi/doc/atsamd_hal/index.html
 [samd11d]: https://atsamd-rs.github.io/atsamd/samd11d/thumbv6m-none-eabi/doc/atsamd_hal/index.html
@@ -152,6 +152,18 @@ If you'd like to build all the same things that the CI would build but on your l
 ```bash
 $ ./build-all.py
 ```
+
+## Undocumented chip features
+
+Some development board manufacturers, such as Adafruit, sell some boards with pin multiplexing configurations that aren't
+explicitly allowed by the datasheet. As a convenience, we offer the option to enable these undocumented features by opting
+into the `undoc-features` Cargo feature. Note that even though these have shown to work in at least some situations, we do not
+provide any guarantees with respect to those.
+
+Currently, we provide these features undocumented features:
+
+* `UndocIoSet1` and `UndocIoSet2` for SAMx5x devices
+* SAMD21: PA00 and PA01 may be used for SERCOM I2C
 
 ## Running and debugging firmware on target hardware
 
