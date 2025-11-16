@@ -23,6 +23,7 @@ use core::marker::PhantomData;
 use core::mem;
 use cortex_m::singleton;
 use critical_section::{Mutex, with as disable_interrupts};
+use fugit::HertzU32;
 use usb_device::bus::PollResult;
 use usb_device::endpoint::{EndpointAddress, EndpointType};
 use usb_device::{Result as UsbResult, UsbDirection, UsbError};
@@ -552,7 +553,7 @@ impl<S: PclkSourceId> UsbBus<S> {
         dp_pad: impl AnyPin<Id = PA25>,
         _usb: Usb,
     ) -> Result<Self, UsbBusErr> {
-        if pclk.freq().to_Hz() != 48_000_000 {
+        if pclk.freq() != HertzU32::MHz(48) {
             return Err(UsbBusErr::InvalidClockFreq);
         } else {
             Ok(unsafe { Self::new_unchecked(pclk, ahb_clk, apb_clk, dm_pad, dp_pad, _usb) })
