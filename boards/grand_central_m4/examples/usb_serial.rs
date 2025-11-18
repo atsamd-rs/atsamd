@@ -78,7 +78,7 @@ fn main() -> ! {
     unsafe {
         USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x2222, 0x3333))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x1209, 0x0001))
                 .strings(&[StringDescriptors::new(LangID::EN)
                     .manufacturer("Fake company")
                     .product("Serial port")
