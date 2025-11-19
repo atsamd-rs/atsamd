@@ -79,7 +79,7 @@ fn main() -> ! {
         USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
             UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x1209, 0x0001))
-                .strings(&[StringDescriptors::new(LangID::EN)
+                .strings(&[StringDescriptors::new(LangID::EN_US)
                     .manufacturer("Fake company")
                     .product("Serial port")
                     .serial_number("TEST")])
