@@ -168,6 +168,10 @@ Currently, we provide these features undocumented features:
 
 * Mark `PA01` as I2C-capable according to `circuit_playground_express`.
 
+* Mark `PB02` as I2C-capable according to `circuit_playground_express`.
+
+* Mark `PB03` as I2C-capable according to `circuit_playground_express`.
+
 ### SAMx5x devices:
 * `UndocIoSet1`: Implement an undocumented `IoSet` for PA16, PA17, PB22 &
   PB23 configured for `Sercom1`. The `pygamer` & `feather_m4` use this
