@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.2...atsamd-hal-0.23.0) - 2025-11-19
+
+### Added
+
+- Add PB02 and PB03 as undocumented I2C pads for SAMD21 ([#958](https://github.com/atsamd-rs/atsamd/pull/958))
+- *(aes)* Updates the `cipher` dependency.
+- *(aes)* Updates the `aes` module:
+
+### Changed
+
+- [**breaking**] Gate undocumented chip features behind the `undoc-features` Cargo feature ([#956](https://github.com/atsamd-rs/atsamd/pull/956))
+
+### Documentation
+
+- Document newly undoc I2C-capable pins (PB02,PB03) ([#960](https://github.com/atsamd-rs/atsamd/pull/960))
+
+### Fixed
+
+- *(ci)* silence deprecation warning we have no power over ([#943](https://github.com/atsamd-rs/atsamd/pull/943))
+- *(dmac)* DMAC handler now waits for channel to report as disabled ([#938](https://github.com/atsamd-rs/atsamd/pull/938))
+- [**breaking**] Re-add GCLK0 for CAN dependencies ([#930](https://github.com/atsamd-rs/atsamd/pull/930))
+- Clippy warning about null pointers in DMAC ([#928](https://github.com/atsamd-rs/atsamd/pull/928))
+- Remove GCLK from can::Dependencies ([#919](https://github.com/atsamd-rs/atsamd/pull/919))
+
+### Other
+
+- Remove deprecated warning in aes module ([#957](https://github.com/atsamd-rs/atsamd/pull/957))
+- fix off-by-one Pwm period ([#949](https://github.com/atsamd-rs/atsamd/pull/949))
+- Fix and improve EIC Event control ([#944](https://github.com/atsamd-rs/atsamd/pull/944))
+- Document order of calling enable_interrupt for interrupt timer ([#942](https://github.com/atsamd-rs/atsamd/pull/942))
+- *(ci)* Remove explicit link targets from docs
+
 ## [0.22.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.1...atsamd-hal-0.22.2) - 2025-06-26
 
 ### Fixed
