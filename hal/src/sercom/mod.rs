@@ -18,6 +18,12 @@
 //! * `PA01` is I2C-capable according to `circuit_playground_express`. As such,
 //!   PA01 implements [`IsI2cPad`].
 //!
+//! * `PB02` is I2C-capable according to `circuit_playground_express`. As such,
+//!   PB02 implements [`IsI2cPad`].
+//!
+//! * `PB03` is I2C-capable according to `circuit_playground_express`. As such,
+//!   PB03 implements [`IsI2cPad`].
+//!
 //! ## SAMx5x devices:
 //! * `UndocIoSet1`: Implement an undocumented `IoSet` for PA16, PA17, PB22 &
 //!   PB23 configured for [`Sercom1`]. The `pygamer` & `feather_m4` use this
