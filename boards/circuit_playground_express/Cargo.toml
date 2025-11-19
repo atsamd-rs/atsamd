@@ -8,7 +8,7 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-edition = "2021"
+edition = "2024"
 
 [dependencies.cortex-m-rt]
 version = "0.7"
@@ -59,3 +59,4 @@ name = "uart"
 [[example]]
 name = "usb_serial"
 required-features = ["usb"]
+edition = "2021"
