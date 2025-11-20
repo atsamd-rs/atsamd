@@ -7,7 +7,7 @@ license = "MIT OR Apache-2.0"
 name = "samd11_bare"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
-version = "0.15.3"
+version = "0.16.0"
 
 # for cargo flash
 [package.metadata]
