@@ -26,8 +26,8 @@ use hal::timer_traits::InterruptDrivenTimer;
 use pac::{CorePeripherals, Peripherals};
 
 use smart_leds::{
-    hsv::{hsv2rgb, Hsv},
     SmartLedsWrite,
+    hsv::{Hsv, hsv2rgb},
 };
 use ws2812_timer_delay as ws2812;
 

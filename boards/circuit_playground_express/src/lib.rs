@@ -17,7 +17,7 @@ use hal::sercom::{Sercom0, Sercom3, Sercom4};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
-use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
+use hal::usb::{UsbBus, usb_device::bus::UsbBusAllocator};
 
 hal::bsp_peripherals!(
     Sercom0 { SpiSercom }
