@@ -146,8 +146,29 @@ impl AllEndpoints {
     }
 }
 
-// FIXME: replace with more general heap?
-const BUFFER_SIZE: usize = 2048;
+pub const BUFFER_SIZE: usize = {
+    #[cfg(feature = "usb-buffer-1k")]
+    {
+        1024
+    }
+    #[cfg(feature = "usb-buffer-4k")]
+    {
+        4098
+    }
+    #[cfg(feature = "usb-buffer-8k")]
+    {
+        8192
+    }
+    #[cfg(not(any(
+        feature = "usb-buffer-1k",
+        feature = "usb-buffer-4k",
+        feature = "usb-buffer-8k"
+    )))]
+    {
+        2048 // Default
+    }
+};
+
 fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
     singleton!(: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE] ).unwrap()
 }

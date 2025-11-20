@@ -195,9 +195,16 @@ dma = []
 max-channels = ["dma"]
 rtic = ["rtic-monotonic", "rtic-time", "portable-atomic"]
 sdmmc = ["embedded-sdmmc"]
-usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
 undoc-features = []
+
+# USB features
+usb = ["usb-device"] # Default with 2048 byte buffer
+usb-buffer-1k = []   # 1024 byte buffer
+usb-buffer-2k = []   # 2048 byte buffer (Default)
+usb-buffer-4k = []   # 4096 byte buffer
+usb-buffer-8k = []   # 4096 byte buffer
+
 
 #===============================================================================
 # Implementation-details
@@ -210,3 +217,12 @@ undoc-features = []
 # The `device` feature tells the HAL that a device has been selected from the
 # feature list. It exists mostly to provide better error messages.
 device = []
+
+
+[package.metadata.feature-groups]
+usb-buffer.exactly-one = { features = [
+  "usb-buffer-1k",
+  "usb-buffer-2k",
+  "usb-buffer-4k",
+  "usb-buffer-8k",
+] }
