@@ -22,6 +22,11 @@ default-features = false
 features = ["critical-section-single-core"]
 version = "0.7"
 
+[dependencies.rtic]
+features = ["thumbv6-backend"]
+optional = true
+version = "2.1.1"
+
 [dependencies.usb-device]
 version = "0.3.2"
 optional = true
@@ -30,6 +35,8 @@ optional = true
 panic-halt = "0.2"
 panic-semihosting = "0.6"
 usbd-serial = "0.2"
+nom = {version = "5", default-features = false}
+rtic-monotonics = {version = "1.3.0", features = ["cortex-m-systick", "systick-10khz"]}
 smart-leds = "0.3.0"
 heapless = "0.9.2"
 
@@ -45,6 +52,7 @@ dma = ["atsamd-hal/dma"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
+rtic = ["dep:rtic", "atsamd-hal/rtic"]
 
 # for cargo flash
 [package.metadata]
@@ -54,9 +62,12 @@ chip = "ATSAMD21G18A"
 name = "blinky_basic"
 
 [[example]]
+name = "blinky_rtic"
+required-features = ["rtic"]
+
+[[example]]
 name = "uart"
 
 [[example]]
 name = "usb_serial"
-required-features = ["usb"]
-edition = "2021"
+required-features = ["rtic", "usb"]
