@@ -1,5 +1,6 @@
 [package]
 name = "circuit_playground_express"
+categories = ["embedded", "hardware-support", "no-std"]
 version = "0.11.1"
 authors = ["Paul Sajna <paulsajna@gmail.com>"]
 description = "Board Support crate for the Adafruit Circuit Playground Express"
@@ -7,26 +8,30 @@ keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/atsamd-rs/atsamd"
 readme = "README.md"
-edition = "2018"
+edition = "2024"
 
 [dependencies.cortex-m-rt]
 version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.23.0"
 default-features = false
 
+[dependencies.cortex-m]
+features = ["critical-section-single-core"]
+version = "0.7"
+
 [dependencies.usb-device]
-version = "0.2"
+version = "0.3.2"
 optional = true
 
 [dev-dependencies]
-cortex-m = "0.7"
 panic-halt = "0.2"
-panic-semihosting = "0.5"
-usbd-serial = "0.1"
+panic-semihosting = "0.6"
+usbd-serial = "0.2"
 smart-leds = "0.3.0"
+heapless = "0.9.2"
 
 [dev-dependencies.ws2812-timer-delay]
 features = ["slow"]
@@ -34,9 +39,10 @@ version = "0.3.0"
 
 [features]
 # ask the HAL to enable atsamd21g support
-default = ["rt", "atsamd-hal/samd21g"]
+# CPE uses all kinds of undoc'd i2c functionality.
+default = ["rt", "atsamd-hal/samd21g", "atsamd-hal/undoc-features"]
+dma = ["atsamd-hal/dma"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
-unproven = ["atsamd-hal/unproven"]
 usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
 
@@ -53,3 +59,4 @@ name = "uart"
 [[example]]
 name = "usb_serial"
 required-features = ["usb"]
+edition = "2021"
