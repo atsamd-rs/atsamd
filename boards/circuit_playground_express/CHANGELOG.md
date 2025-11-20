@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.11.2](https://github.com/atsamd-rs/atsamd/compare/circuit_playground_express-0.11.1...circuit_playground_express-0.11.2) - 2025-11-20
+## [0.12.0](https://github.com/atsamd-rs/atsamd/compare/circuit_playground_express-0.11.1...circuit_playground_express-0.12.0) - 2025-11-20
 
 ### Dependencies
 
