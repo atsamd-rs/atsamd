@@ -495,7 +495,7 @@ impl UsbBus {
             _dm_pad: dm_pad.into().into_mode::<AlternateH>(),
             _dp_pad: dp_pad.into().into_mode::<AlternateH>(),
             desc,
-            buffers: RefCell::new(BufferAllocator::new()),
+            buffers: RefCell::new(BufferAllocator::default()),
             endpoints: RefCell::new(AllEndpoints::new()),
         };
 
