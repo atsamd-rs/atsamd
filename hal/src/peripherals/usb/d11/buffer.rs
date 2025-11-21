@@ -35,8 +35,8 @@ pub struct Buffer {
     inner: [u8; BUFFER_SIZE],
 }
 
-impl Buffer {
-    pub const fn new() -> Self {
+impl Default for Buffer {
+    fn default() -> Self {
         Self {
             inner: [0; BUFFER_SIZE],
         }
@@ -57,7 +57,7 @@ impl DerefMut for Buffer {
 }
 
 fn buffer() -> &'static mut Buffer {
-    singleton!(: Buffer = Buffer::new() ).unwrap()
+    singleton!(: Buffer = Buffer::default() ).unwrap()
 }
 
 pub struct BufferAllocator {
