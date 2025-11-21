@@ -7,7 +7,9 @@ use crate::gpio::{
 
 pub use usb_device;
 
+mod buffer;
 mod bus;
+pub use self::buffer::*;
 pub use self::bus::UsbBus;
 
 mod devicedesc;
