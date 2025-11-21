@@ -200,11 +200,15 @@ undoc-features = []
 
 # USB features
 usb = ["usb-device"] # Default with 2048 byte buffer
-usb-buffer-1k = []   # 1024 byte buffer
-usb-buffer-2k = []   # 2048 byte buffer (Default)
-usb-buffer-4k = []   # 4096 byte buffer
-usb-buffer-8k = []   # 4096 byte buffer
 
+# USB buffer sizes
+# These denote the size of the global buffer for all USB endpoints.
+# The buffer is split between all device endpoints equally
+
+usb-buffer-1k = [] # 1024 byte buffer shared between all USB endpoints
+usb-buffer-2k = [] # 2048 byte buffer shared between all USB endpoints (Default)
+usb-buffer-4k = [] # 4096 byte buffer shared between all USB endpoints
+usb-buffer-8k = [] # 8192 byte buffer shared between all USB endpoints
 
 #===============================================================================
 # Implementation-details
