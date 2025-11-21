@@ -65,13 +65,16 @@ pub struct BufferAllocator {
     next_buf: usize,
 }
 
-impl BufferAllocator {
-    pub fn new() -> Self {
+impl Default for BufferAllocator {
+    fn default() -> Self {
         Self {
             next_buf: 0,
             buffers: buffer(),
         }
     }
+}
+
+impl BufferAllocator {
 
     /// Allocates a fixed buffer of [`ALLOC_SIZE_MAX_PER_EP`]
     pub fn allocate_buffer(&mut self) -> UsbResult<*mut u8> {
