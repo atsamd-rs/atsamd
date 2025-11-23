@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 RET=0
 
 # first, all boards & their examples
