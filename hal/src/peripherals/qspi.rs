@@ -213,7 +213,10 @@ impl Qspi<OneShot> {
         let mode = builder.mode.ok_or(QspiError::NoMode)?;
         let gclk0_freq = gclk0.freq().to_Hz();
         // Ensure that the target SPI Freq can be achieved
-        if gclk0_freq % targ_freq != 0 {
+        // The second check is done to ensure the CPU can R/W from QSPI.
+        // If QSPI signal is at the same freq as the CPU's, then the CPU
+        // can never distinguish bits coming from QSPI
+        if gclk0_freq % targ_freq != 0 || targ_freq > gclk0_freq / 2 {
             return Err(QspiError::SpiFreqNotValid);
         }
         // Divider must be 0-254
@@ -270,6 +273,27 @@ impl Qspi<OneShot> {
             },
             gclk0.inc(),
         ))
+    }
+
+    pub fn change_freq<I: GclkSourceId, S: Increment>(
+        &mut self,
+        gclk0: &EnabledGclk0<I, S>,
+        freq: u32,
+    ) -> Result<(), QspiError> {
+        let gclk0_freq = gclk0.freq().to_Hz();
+        // Ensure that the target SPI Freq can be achieved
+        if gclk0_freq % freq != 0 || freq > gclk0_freq / 2 {
+            return Err(QspiError::SpiFreqNotValid);
+        }
+        // Divider must be 0-254
+        let div = gclk0_freq / freq;
+        if div > 254 || div == 0 {
+            return Err(QspiError::SpiFreqNotValid);
+        }
+        self.qspi
+            .baud()
+            .write(|w| unsafe { w.baud().bits(div as u8 - 1) });
+        Ok(())
     }
 
     /// Run a generic command that neither takes nor receives data
