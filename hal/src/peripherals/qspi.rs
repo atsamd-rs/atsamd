@@ -52,10 +52,10 @@
 
 use crate::{
     clock::v2::{
-        Enabled, Source,
+        Source,
         ahb::AhbClk,
         apb::ApbClk,
-        gclk::{EnabledGclk0, Gclk, Gclk0Id, Gclk0Io, GclkSourceId},
+        gclk::{EnabledGclk0, Gclk0Io, GclkSourceId},
         types::Qspi as QspiClock,
     },
     gpio::{AlternateH, PA08, PA09, PA10, PA11, PB10, PB11, Pin},
