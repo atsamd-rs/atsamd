@@ -206,7 +206,7 @@ impl Qspi<OneShot> {
         qspi: pac::Qspi,
         ahb: AhbClk<QspiClock>,
         apb: ApbClk<QspiClock>,
-        gclk0: Enabled<Gclk<Gclk0Id, I>, S>,
+        gclk0: EnabledGclk0<I, S>,
         builder: QspiBuilder,
     ) -> Result<(Qspi<OneShot>, EnabledGclk0<I, S::Inc>), QspiError> {
         let targ_freq = builder.freq.ok_or(QspiError::NoFreq)?;
