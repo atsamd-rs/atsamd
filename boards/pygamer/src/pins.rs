@@ -8,7 +8,6 @@ use embedded_hal_bus::spi as bspi;
 use hal::clock::GenericClockController;
 use hal::gpio::PA01;
 use hal::pwm;
-use hal::qspi;
 use hal::sercom::uart::{self, BaudMode, Oversampling};
 use hal::sercom::{i2c, spi, Sercom1, Sercom4};
 use hal::time::Hertz;

@@ -24,12 +24,11 @@
 
 use atsamd_hal::qspi::QspiBuilder;
 use bsp::{entry, hal, pac, Pins};
-use hal::clock::v2::{clock_system_at_reset, pclk::Pclk};
+use hal::clock::v2::clock_system_at_reset;
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
 use pygamer as bsp;
 
-use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
 use hal::qspi::{self, Command};
@@ -40,7 +39,7 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
 
-    let (mut buses, clocks, tokens) = clock_system_at_reset(
+    let (_buses, clocks, _tokens) = clock_system_at_reset(
         peripherals.oscctrl,
         peripherals.osc32kctrl,
         peripherals.gclk,
@@ -55,7 +54,7 @@ fn main() -> ! {
     let apb_qspi = clocks.apbs.qspi;
     let ahb_qspi = clocks.ahbs.qspi;
 
-    let (mut flash, gclk0) = QspiBuilder::new(
+    let (mut flash, _gclk0) = QspiBuilder::new(
         sets.flash.sclk,
         sets.flash.cs,
         sets.flash.data0,
@@ -63,8 +62,10 @@ fn main() -> ! {
         sets.flash.data2,
         sets.flash.data3
     )
-    // 48Mhz since this is as fast as the CPU runs after reset,
-    .with_freq(48_000_000)
+    // QSPI freq can never be more than 1/2 of the CPU freq.
+    // CPU is running at 48Mhz by default, so max QSPI speed
+    // like this is 24Mhz
+    .with_freq(24_000_000)
     .with_mode(qspi::QspiMode::_0)
     .build(peripherals.qspi, ahb_qspi, apb_qspi, gclk0)
     .unwrap();
