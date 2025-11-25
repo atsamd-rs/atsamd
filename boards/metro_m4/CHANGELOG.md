@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0](https://github.com/atsamd-rs/atsamd/compare/metro_m4-0.18.2...metro_m4-0.19.0) - 2025-11-19
+
+### Changed
+
+- [**breaking**] Gate undocumented chip features behind the `undoc-features` Cargo feature ([#956](https://github.com/atsamd-rs/atsamd/pull/956))
+
 ## [0.18.2](https://github.com/atsamd-rs/atsamd/compare/metro_m4-0.18.1...metro_m4-0.18.2) - 2025-06-26
 
 ### Other

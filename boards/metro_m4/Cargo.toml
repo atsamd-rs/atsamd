@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 name = "metro_m4"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
-version = "0.18.2"
+version = "0.19.0"
 
 # for cargo flash
 [package.metadata]
@@ -21,7 +21,8 @@ version = "0.7"
 [dependencies.atsamd-hal]
 default-features = false
 path = "../../hal"
-version = "0.22.2"
+version = "0.23.0"
+features = ["undoc-features"]
 
 [dependencies.usb-device]
 optional = true
