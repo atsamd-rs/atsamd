@@ -22,6 +22,11 @@ default-features = false
 features = ["critical-section-single-core"]
 version = "0.7"
 
+[dependencies.rtic]
+features = ["thumbv6-backend"]
+optional = true
+version = "2.1.1"
+
 [dependencies.usb-device]
 version = "0.3.2"
 optional = true
@@ -43,6 +48,7 @@ version = "0.3.0"
 default = ["rt", "atsamd-hal/samd21g", "atsamd-hal/undoc-features"]
 dma = ["atsamd-hal/dma"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
+rtic = ["dep:rtic", "atsamd-hal/rtic"]
 usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
 
