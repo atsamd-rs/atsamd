@@ -177,17 +177,18 @@ impl<I: AdcInstance> Adc<I> {
     /// ## Important
     ///
     /// This function will return `Err` if the clock source provided
-    /// is faster than 100 MHz, since this is the maximum frequency for
-    /// GCLK_ADCx as per the datasheet.
+    /// is faster than 100 MHz (D5x) or 48Mhz (D21/D11), since this
+    /// is the maximum frequency for GCLK_ADCx as per the datasheet.
     ///
     /// The [`new`](Self::new) function currently takes an `&` reference to a
     /// [`Pclk`](crate::clock::v2::pclk::Pclk). In the future this will likely
     /// change to taking full ownership of it; in the meantime, you must ensure
     /// that the PCLK is enabled for the `Adc` struct's lifetime.
     ///
-    /// NOTE: If you plan to run the chip above 100°C, then the maximum GCLK
+    /// NOTE (D5x specific): If you plan to run the chip above 100°C, then the maximum GCLK
     /// frequency for the ADC is restricted to 90Mhz for stable performance.
     #[inline]
+    #[atsamd_hal_macros::hal_macro_helper]
     pub(crate) fn new<PS: crate::clock::v2::pclk::PclkSourceId>(
         adc: I::Instance,
         settings: AdcSettings,
@@ -203,7 +204,13 @@ impl<I: AdcInstance> Adc<I> {
         // at the time of creation of the Adc struct; however we can't guarantee
         // that the clock will stay enabled for the duration of its lifetime.
 
+        #[hal_cfg("adc-d5x")]
         if pclk.freq() > fugit::HertzU32::from_raw(100_000_000) {
+            // Clock source is too fast
+            return Err(Error::ClockTooFast);
+        }
+        #[hal_cfg(any("adc-d21", "adc-d11"))]
+        if pclk.freq() > fugit::HertzU32::from_raw(48_000_000) {
             // Clock source is too fast
             return Err(Error::ClockTooFast);
         }
