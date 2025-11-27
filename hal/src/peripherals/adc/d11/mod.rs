@@ -22,17 +22,14 @@ impl PrimaryAdc for Adc0 {}
 impl AdcInstance for Adc0 {
     type Instance = pac::Adc;
 
+    type ClockId = crate::clock::v2::pclk::ids::Adc0;
+
     #[cfg(feature = "async")]
     type Interrupt = crate::async_hal::interrupts::ADC;
 
     #[inline]
     fn peripheral_reg_block(p: &mut Peripherals) -> &pac::adc::RegisterBlock {
         &p.adc
-    }
-
-    #[inline]
-    fn enable_pm(pm: &mut pac::Pm) {
-        pm.apbcmask().modify(|_, w| w.adc_().set_bit());
     }
 
     #[inline]

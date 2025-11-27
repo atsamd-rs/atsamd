@@ -245,7 +245,6 @@ impl AdcBuilder {
     }
 
     /// Turn the builder into an ADC
-    #[hal_cfg("adc-d5x")]
     #[inline]
     pub fn enable<I: AdcInstance, PS: crate::clock::v2::pclk::PclkSourceId>(
         self,
@@ -255,17 +254,5 @@ impl AdcBuilder {
     ) -> Result<Adc<I>, BuilderError> {
         let settings = self.to_settings()?;
         Adc::new(adc, settings, clk, pclk).map_err(|e| e.into())
-    }
-
-    #[hal_cfg(any("adc-d11", "adc-d21"))]
-    #[inline]
-    pub fn enable<I: AdcInstance>(
-        self,
-        adc: I::Instance,
-        pm: &mut crate::pac::Pm,
-        clock: &crate::clock::AdcClock,
-    ) -> Result<Adc<I>, BuilderError> {
-        let settings = self.to_settings()?;
-        Adc::new(adc, settings, pm, clock).map_err(|e| e.into())
     }
 }
