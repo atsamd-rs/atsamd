@@ -140,13 +140,9 @@ pub trait AdcInstance {
     // The Adc0 and Adc1 PAC types implement Deref
     type Instance: Deref<Target = adc0::RegisterBlock>;
 
-    #[hal_cfg("adc-d5x")]
     type ClockId: crate::clock::v2::apb::ApbId + crate::clock::v2::pclk::PclkId;
 
     fn peripheral_reg_block(p: &mut Peripherals) -> &adc0::RegisterBlock;
-
-    #[hal_cfg(any("adc-d11", "adc-d21"))]
-    fn enable_pm(pm: &mut pac::Pm);
 
     fn calibrate(instance: &Self::Instance);
 
@@ -162,16 +158,6 @@ where
     const CHANNEL: u8;
 }
 
-/// ADC Instance
-#[hal_cfg(any("adc-d11", "adc-d21"))]
-pub struct Adc<I: AdcInstance> {
-    adc: I::Instance,
-    cfg: AdcSettings,
-    discard: bool,
-}
-
-/// ADC Instance
-#[hal_cfg("adc-d5x")]
 pub struct Adc<I: AdcInstance> {
     adc: I::Instance,
     _apbclk: crate::clock::v2::apb::ApbClk<I::ClockId>,
@@ -201,7 +187,6 @@ impl<I: AdcInstance> Adc<I> {
     ///
     /// NOTE: If you plan to run the chip above 100°C, then the maximum GCLK
     /// frequency for the ADC is restricted to 90Mhz for stable performance.
-    #[hal_cfg("adc-d5x")]
     #[inline]
     pub(crate) fn new<PS: crate::clock::v2::pclk::PclkSourceId>(
         adc: I::Instance,
@@ -226,36 +211,6 @@ impl<I: AdcInstance> Adc<I> {
         let mut new_adc = Self {
             adc,
             _apbclk: clk,
-            cfg: settings,
-            discard: true,
-        };
-        new_adc.configure(settings);
-        Ok(new_adc)
-    }
-
-    /// Construct a new ADC instance
-    ///
-    /// ## Important
-    ///
-    /// This function will return [Error::ClockTooFast] if the clock source
-    /// provided is faster than 48 MHz, since this is the maximum frequency
-    /// for the ADC as per the datasheet.
-    #[hal_cfg(any("adc-d11", "adc-d21"))]
-    #[inline]
-    pub(crate) fn new(
-        adc: I::Instance,
-        settings: AdcSettings,
-        pm: &mut pac::Pm,
-        clock: &crate::clock::AdcClock,
-    ) -> Result<Self, Error> {
-        if (clock.freq() as crate::time::Hertz).to_Hz() > 48_000_000 {
-            // Clock source is too fast
-            return Err(Error::ClockTooFast);
-        }
-
-        I::enable_pm(pm);
-        let mut new_adc = Self {
-            adc,
             cfg: settings,
             discard: true,
         };
@@ -412,16 +367,7 @@ impl<I: AdcInstance> Adc<I> {
         Ok(())
     }
 
-    /// Return the underlying ADC PAC object.
-    #[hal_cfg(any("adc-d11", "adc-d21"))]
-    #[inline]
-    pub fn free(mut self) -> I::Instance {
-        self.software_reset();
-        self.adc
-    }
-
     /// Return the underlying ADC PAC object and the enabled APB ADC clock.
-    #[hal_cfg("adc-d5x")]
     #[inline]
     pub fn free(mut self) -> (I::Instance, crate::clock::v2::apb::ApbClk<I::ClockId>) {
         self.software_reset();
