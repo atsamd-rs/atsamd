@@ -13,7 +13,7 @@ use samd11_bare as bsp;
 
 use bsp::entry;
 use bsp::hal;
-use bsp::pac;
+use bsp::{pac, Scl, Sda};
 
 use cortex_m::asm;
 use pac::Peripherals;
@@ -43,7 +43,7 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.port);
 
     // Take SDA and SCL
-    let (sda, scl) = (pins.d4, pins.d5);
+    let (sda, scl): (Sda, Scl) = (pins.d4.into(), pins.d5.into());
 
     // Setup DMA channels for later use
     let mut dmac = DmaController::init(dmac, &mut pm);
