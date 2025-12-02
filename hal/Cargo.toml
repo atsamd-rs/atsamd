@@ -195,9 +195,20 @@ dma = []
 max-channels = ["dma"]
 rtic = ["rtic-monotonic", "rtic-time", "portable-atomic"]
 sdmmc = ["embedded-sdmmc"]
-usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
 undoc-features = []
+
+# USB features
+usb = ["usb-device"] # Default with 2048 byte buffer
+
+# USB buffer sizes
+# These denote the size of the global buffer for all USB endpoints.
+# The buffer is split between all device endpoints equally
+
+usb-buffer-1k = [] # 1024 byte buffer shared between all USB endpoints
+usb-buffer-2k = [] # 2048 byte buffer shared between all USB endpoints (Default)
+usb-buffer-4k = [] # 4096 byte buffer shared between all USB endpoints
+usb-buffer-8k = [] # 8192 byte buffer shared between all USB endpoints
 
 #===============================================================================
 # Implementation-details
@@ -210,3 +221,12 @@ undoc-features = []
 # The `device` feature tells the HAL that a device has been selected from the
 # feature list. It exists mostly to provide better error messages.
 device = []
+
+
+[package.metadata.feature-groups]
+usb-buffer.exactly-one = { features = [
+  "usb-buffer-1k",
+  "usb-buffer-2k",
+  "usb-buffer-4k",
+  "usb-buffer-8k",
+] }

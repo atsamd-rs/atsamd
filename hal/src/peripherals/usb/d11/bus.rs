@@ -11,13 +11,12 @@ use crate::clock;
 use crate::gpio::{AlternateG, AnyPin, Pin, PA24, PA25};
 use crate::pac::usb::Device;
 use crate::pac::{Pm, Usb};
+use crate::usb::buffer::*;
 use crate::usb::devicedesc::DeviceDescBank;
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
-use core::mem;
-use cortex_m::singleton;
-use critical_section::{with as disable_interrupts, Mutex};
+use critical_section::{Mutex, with as disable_interrupts};
 use usb_device::bus::PollResult;
 use usb_device::endpoint::{EndpointAddress, EndpointType};
 use usb_device::{Result as UsbResult, UsbDirection, UsbError};
@@ -143,51 +142,6 @@ impl AllEndpoints {
         *bank = EPConfig::new(ep_type, allocated_size, max_packet_size, buffer_addr);
 
         Ok(EndpointAddress::from_parts(idx, dir))
-    }
-}
-
-// FIXME: replace with more general heap?
-const BUFFER_SIZE: usize = 2048;
-fn buffer() -> &'static mut [u8; BUFFER_SIZE] {
-    singleton!(: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE] ).unwrap()
-}
-
-struct BufferAllocator {
-    buffers: &'static mut [u8; BUFFER_SIZE],
-    next_buf: u16,
-}
-
-impl BufferAllocator {
-    fn new() -> Self {
-        Self {
-            next_buf: 0,
-            buffers: buffer(),
-        }
-    }
-
-    fn allocate_buffer(&mut self, size: u16) -> UsbResult<*mut u8> {
-        debug_assert!(size & 1 == 0);
-
-        let start_addr = &mut self.buffers[self.next_buf as usize] as *mut u8;
-        let buf_end = unsafe { start_addr.add(BUFFER_SIZE) };
-
-        // The address must be 32-bit aligned, so allow for that here
-        // by offsetting by an appropriate alignment.
-        let offset = start_addr.align_offset(mem::align_of::<u32>());
-        let start_addr = unsafe { start_addr.add(offset) };
-
-        if start_addr >= buf_end {
-            return Err(UsbError::EndpointMemoryOverflow);
-        }
-
-        let end_addr = unsafe { start_addr.offset(size as isize) };
-        if end_addr > buf_end {
-            return Err(UsbError::EndpointMemoryOverflow);
-        }
-
-        self.next_buf = unsafe { end_addr.sub(self.buffers.as_ptr() as usize) as u16 };
-
-        Ok(start_addr)
     }
 }
 
@@ -498,7 +452,7 @@ impl UsbBus {
             _dm_pad: dm_pad.into().into_mode::<AlternateG>(),
             _dp_pad: dp_pad.into().into_mode::<AlternateG>(),
             desc,
-            buffers: RefCell::new(BufferAllocator::new()),
+            buffers: RefCell::new(BufferAllocator::default()),
             endpoints: RefCell::new(AllEndpoints::new()),
         };
 
@@ -695,7 +649,12 @@ impl Inner {
             _ => return Err(UsbError::Unsupported),
         };
 
-        let buffer = self.buffers.borrow_mut().allocate_buffer(allocated_size)?;
+        // packet size is too big to fit into an endpoint buffer
+        if allocated_size > ALLOC_SIZE_MAX_PER_EP as u16 {
+            return Err(UsbError::EndpointMemoryOverflow);
+        }
+
+        let buffer = self.buffers.borrow_mut().allocate_buffer()?;
 
         let mut endpoints = self.endpoints.borrow_mut();
 
