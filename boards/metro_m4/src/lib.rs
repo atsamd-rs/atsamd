@@ -24,9 +24,6 @@ use hal::{
 
 use pac::Mclk;
 
-#[cfg(feature = "usb")]
-use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
-
 hal::bsp_peripherals!(
     Sercom2 { SpiSercom }
     Sercom3 { UartSercom }
@@ -348,22 +345,4 @@ pub fn uart(
     uart::Config::new(mclk, sercom, pads, clock.freq())
         .baud(baud, BaudMode::Fractional(Oversampling::Bits16))
         .enable()
-}
-
-#[cfg(feature = "usb")]
-/// Convenience function for setting up USB
-pub fn usb_allocator(
-    usb: pac::Usb,
-    clocks: &mut GenericClockController,
-    mclk: &mut pac::Mclk,
-    dm: impl Into<UsbDm>,
-    dp: impl Into<UsbDp>,
-) -> UsbBusAllocator<UsbBus> {
-    use pac::gclk::{genctrl::Srcselect, pchctrl::Genselect};
-
-    clocks.configure_gclk_divider_and_source(Genselect::Gclk2, 1, Srcselect::Dfll, false);
-    let usb_gclk = clocks.get_gclk(Genselect::Gclk2).unwrap();
-    let usb_clock = &clocks.usb(&usb_gclk).unwrap();
-    let (dm, dp) = (dm.into(), dp.into());
-    UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
 }
