@@ -1,8 +1,8 @@
 //! USB Device support
 
 use crate::gpio::{
-    pin::{Pin, PA23, PA24, PA25},
     AlternateH,
+    pin::{PA23, PA24, PA25, Pin},
 };
 
 pub use usb_device;
