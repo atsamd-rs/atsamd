@@ -9,9 +9,11 @@ use bsp::{entry, hal, pac, Pins, RedLed};
 use panic_halt as _;
 use pygamer as bsp;
 
-use hal::clock::GenericClockController;
+use hal::clock::v2::{clock_system_at_reset, dfll, gclk::Gclk, pclk::Pclk};
 use hal::prelude::*;
+use hal::usb::UsbBus;
 use pac::{CorePeripherals, Peripherals};
+use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
@@ -19,24 +21,39 @@ use usbd_serial::{SerialPort, USB_CLASS_CDC};
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut _core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_internal_32kosc(
+    let (mut buses, clocks, tokens) = clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
 
     let pins = Pins::new(peripherals.port).split();
 
-    let usb_bus = pins
-        .usb
-        .init(peripherals.usb, &mut clocks, &mut peripherals.mclk);
+    // Set up USB clocking
+    let (dfll_usb, _) = clocks.dfll.into_mode(dfll::FromUsb, |_| {});
+    // GCLK1 comes from DFLL, outputs to USB
+    let (gclk_1, _) = Gclk::from_source(tokens.gclks.gclk1, dfll_usb);
+    let gclk_1_48mhz = gclk_1.enable();
+    let (pclk_usb, _) = Pclk::enable(tokens.pclks.usb, gclk_1_48mhz);
 
-    let mut serial = SerialPort::new(&usb_bus);
+    let usb_bus = UsbBus::new(
+        pclk_usb,
+        clocks.ahbs.usb,
+        buses.apb.enable(tokens.apbs.usb),
+        pins.usb.dm,
+        pins.usb.dp,
+        peripherals.usb,
+    )
+    .unwrap();
+
+    let bus_allocator = UsbBusAllocator::new(usb_bus);
+
+    let mut serial = SerialPort::new(&bus_allocator);
     let mut led: RedLed = pins.led_pin.into();
 
-    let mut usb_dev = UsbDeviceBuilder::new(&usb_bus, UsbVidPid(0x16c0, 0x27dd))
+    let mut usb_dev = UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x1209, 0x0001))
         .strings(&[StringDescriptors::new(LangID::EN)
             .manufacturer("Fake company")
             .product("Serial port")

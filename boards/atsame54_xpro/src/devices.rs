@@ -12,9 +12,6 @@ use hal::sercom::{i2c, spi, uart};
 use hal::time::Hertz;
 use uart::{BaudMode, Oversampling};
 
-#[cfg(feature = "usb")]
-use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
-
 hal::bsp_peripherals!(
     Sercom0 { Ext1UartSercom }
     Sercom1 { Ext3UartSercom }
@@ -355,22 +352,4 @@ pub fn dgi_i2c(
     i2c::Config::new(mclk, dgi_i2c_sercom, pads, freq)
         .baud(baud)
         .enable()
-}
-
-/// Convenience for setting up the USB
-#[cfg(feature = "usb")]
-pub fn usb_allocator(
-    usb: pac::Usb,
-    clocks: &mut GenericClockController,
-    mclk: &mut pac::Mclk,
-    dm: impl Into<UsbDm>,
-    dp: impl Into<UsbDp>,
-) -> UsbBusAllocator<UsbBus> {
-    use pac::gclk::{genctrl::Srcselect, pchctrl::Genselect};
-
-    clocks.configure_gclk_divider_and_source(Genselect::Gclk2, 1, Srcselect::Dfll, false);
-    let usb_gclk = clocks.get_gclk(Genselect::Gclk2).unwrap();
-    let usb_clock = &clocks.usb(&usb_gclk).unwrap();
-    let (dm, dp) = (dm.into(), dp.into());
-    UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
 }

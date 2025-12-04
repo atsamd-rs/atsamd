@@ -7,17 +7,23 @@
 
 use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
-use crate::clock;
-use crate::gpio::{AlternateH, AnyPin, Pin, PA24, PA25};
+use crate::clock::v2::{
+    self as clock,
+    ahb::AhbClk,
+    apb::ApbClk,
+    pclk::{Pclk, PclkSourceId},
+};
+use crate::gpio::{AlternateH, AnyPin, PA24, PA25, Pin};
 use crate::pac;
+use crate::pac::Usb;
 use crate::pac::usb::Device;
-use crate::pac::{Mclk, Usb};
 use crate::usb::devicedesc::DeviceDescBank;
 use core::cell::{Ref, RefCell, RefMut};
 use core::marker::PhantomData;
 use core::mem;
 use cortex_m::singleton;
-use critical_section::{with as disable_interrupts, Mutex};
+use critical_section::{Mutex, with as disable_interrupts};
+use fugit::HertzU32;
 use usb_device::bus::PollResult;
 use usb_device::endpoint::{EndpointAddress, EndpointType};
 use usb_device::{Result as UsbResult, UsbDirection, UsbError};
@@ -191,16 +197,20 @@ impl BufferAllocator {
     }
 }
 
-struct Inner {
+struct Inner<S: PclkSourceId> {
     desc: RefCell<Descriptors>,
     _dm_pad: Pin<PA24, AlternateH>,
     _dp_pad: Pin<PA25, AlternateH>,
     endpoints: RefCell<AllEndpoints>,
     buffers: RefCell<BufferAllocator>,
+    pclk: Pclk<clock::types::Usb, S>,
+    ahb_clk: AhbClk<clock::types::Usb>,
+    apb_clk: ApbClk<clock::types::Usb>,
+    _usb: Usb,
 }
 
-pub struct UsbBus {
-    inner: Mutex<RefCell<Inner>>,
+pub struct UsbBus<S: PclkSourceId> {
+    inner: Mutex<RefCell<Inner<S>>>,
 }
 
 struct Bank<'a, T> {
@@ -469,7 +479,7 @@ impl<T> Bank<'_, T> {
     }
 }
 
-impl Inner {
+impl<S: PclkSourceId> Inner<S> {
     #[inline]
     fn epcfg(&self, endpoint: usize) -> &pac::usb::device::device_endpoint::Epcfg {
         self.usb().device_endpoint(endpoint).epcfg()
@@ -524,17 +534,59 @@ impl Inner {
     }
 }
 
-impl UsbBus {
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+pub enum UsbBusErr {
+    /// USB clock freq is not valid for a stable connection
+    InvalidClockFreq,
+}
+
+/// The individual resources returned when consuming a `UsbBus`.
+pub type UsbBusParts<S> = (
+    Pclk<clock::types::Usb, S>,
+    AhbClk<clock::types::Usb>,
+    ApbClk<clock::types::Usb>,
+    Pin<PA24, AlternateH>,
+    Pin<PA25, AlternateH>,
+    Usb,
+);
+
+impl<S: PclkSourceId> UsbBus<S> {
+    /// Create a new USB Bus, checking the clock frequency of the USB clock for
+    /// a stable USB link to most hosts. The `clock` freq must be 48Mhz,
+    /// otherwise [`UsbBusErr::InvalidClockFreq`] will be returned
     pub fn new(
-        _clock: &clock::UsbClock,
-        mclk: &mut Mclk,
+        pclk: Pclk<clock::types::Usb, S>,
+        ahb_clk: AhbClk<clock::types::Usb>,
+        apb_clk: ApbClk<clock::types::Usb>,
+        dm_pad: impl AnyPin<Id = PA24>,
+        dp_pad: impl AnyPin<Id = PA25>,
+        _usb: Usb,
+    ) -> Result<Self, UsbBusErr> {
+        if pclk.freq() != HertzU32::MHz(48) {
+            Err(UsbBusErr::InvalidClockFreq)
+        } else {
+            Ok(unsafe { Self::new_unchecked(pclk, ahb_clk, apb_clk, dm_pad, dp_pad, _usb) })
+        }
+    }
+
+    /// Creates a new USB Bus, but does NOT perform the USB clock frequency
+    /// check.
+    ///
+    /// SAFETY: For a SAMx to PC connection, the USB clock must be 48Mhz for
+    /// stability. This function allows you to bypass this check however if you
+    /// intend to connect multiple SAM chips together with faster running USB
+    /// clocks for a boost in transfer rate.
+    ///
+    /// Consult the datasheet for GCLK_USB absolute maximums
+    pub unsafe fn new_unchecked(
+        pclk: Pclk<clock::types::Usb, S>,
+        ahb_clk: AhbClk<clock::types::Usb>,
+        apb_clk: ApbClk<clock::types::Usb>,
         dm_pad: impl AnyPin<Id = PA24>,
         dp_pad: impl AnyPin<Id = PA25>,
         _usb: Usb,
     ) -> Self {
-        mclk.ahbmask().modify(|_, w| w.usb_().set_bit());
-        mclk.apbbmask().modify(|_, w| w.usb_().set_bit());
-
         let desc = RefCell::new(Descriptors::new());
 
         let inner = Inner {
@@ -543,15 +595,32 @@ impl UsbBus {
             desc,
             buffers: RefCell::new(BufferAllocator::new()),
             endpoints: RefCell::new(AllEndpoints::new()),
+            pclk,
+            ahb_clk,
+            apb_clk,
+            _usb,
         };
 
         Self {
             inner: Mutex::new(RefCell::new(inner)),
         }
     }
+
+    pub fn into_inner(self) -> UsbBusParts<S> {
+        // Unwrap the Mutex and RefCell to get the Inner
+        let inner = self.inner.into_inner().into_inner();
+        (
+            inner.pclk,
+            inner.ahb_clk,
+            inner.apb_clk,
+            inner._dm_pad,
+            inner._dp_pad,
+            inner._usb,
+        )
+    }
 }
 
-impl Inner {
+impl<S: PclkSourceId> Inner<S> {
     fn usb(&self) -> &Device {
         unsafe { (*Usb::ptr()).device() }
     }
@@ -576,7 +645,7 @@ enum FlushConfigMode {
     ProtocolReset,
 }
 
-impl Inner {
+impl<S: PclkSourceId> Inner<S> {
     fn enable(&mut self) {
         let usb = self.usb();
         usb.ctrla().modify(|_, w| w.swrst().set_bit());
@@ -884,7 +953,7 @@ impl Inner {
     }
 }
 
-impl UsbBus {
+impl<S: PclkSourceId> UsbBus<S> {
     /// Enables the Start Of Frame (SOF) interrupt
     pub fn enable_sof_interrupt(&self) {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow_mut().sof_interrupt(true))
@@ -901,7 +970,7 @@ impl UsbBus {
     }
 }
 
-impl usb_device::bus::UsbBus for UsbBus {
+impl<S: PclkSourceId> usb_device::bus::UsbBus for UsbBus<S> {
     fn enable(&mut self) {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow_mut().enable())
     }
