@@ -62,7 +62,3 @@ name = "neopixel_rainbow"
 [[example]]
 name = "usb_serial"
 required-features = ["usb"]
-
-[[example]]
-name = "usb_light"
-required-features = ["usb"]
