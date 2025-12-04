@@ -18,6 +18,10 @@ optional = true
 default-features = false
 version = "0.22.0"
 
+[dependencies.usb-device]
+version = "0.3.2"
+optional = true
+
 [dependencies.cortex-m]
 version = "0.7"
 features = ["critical-section-single-core"]
@@ -29,14 +33,13 @@ panic-halt = "1.0.0"
 panic-semihosting = "0.6"
 smart-leds = "0.3"
 ws2812-timer-delay = "0.3"
-usb-device = "0.3.2"
 
 [features]
 default = ["rt", "atsamd-hal/samd51p"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51p-rt"]
-usb = ["atsamd-hal/usb"]
+usb = ["atsamd-hal/usb", "usb-device"]
 use_semihosting = []
 
 # for cargo flash
