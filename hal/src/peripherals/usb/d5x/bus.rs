@@ -554,7 +554,7 @@ impl<S: PclkSourceId> UsbBus<S> {
         _usb: Usb,
     ) -> Result<Self, UsbBusErr> {
         if pclk.freq() != HertzU32::MHz(48) {
-            return Err(UsbBusErr::InvalidClockFreq);
+            Err(UsbBusErr::InvalidClockFreq)
         } else {
             Ok(unsafe { Self::new_unchecked(pclk, ahb_clk, apb_clk, dm_pad, dp_pad, _usb) })
         }
