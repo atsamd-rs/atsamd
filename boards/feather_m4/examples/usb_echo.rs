@@ -10,7 +10,12 @@ use panic_halt as _;
 use panic_semihosting as _;
 
 use bsp::entry;
-use hal::clock::GenericClockController;
+use bsp::pin_alias;
+use hal::clock::v2::{
+    clock_system_at_reset, dfll,
+    gclk::{Gclk, Gclk1Id},
+    pclk::Pclk,
+};
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::prelude::*;
 use hal::usb::UsbBus;
@@ -26,31 +31,42 @@ use cortex_m::peripheral::NVIC;
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_external_32kosc(
+    let (mut buses, clocks, tokens) = clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
     let pins = bsp::Pins::new(peripherals.port);
-    let mut red_led: bsp::RedLed = pins.d13.into();
+    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
+
+    // Set up USB clocking
+    let (dfll_usb, _) = clocks.dfll.into_mode(dfll::FromUsb, |_| {});
+    // GCLK1 comes from DFLL, outputs to USB
+    let (gclk_1, _) = Gclk::from_source(tokens.gclks.gclk1, dfll_usb);
+    let gclk_1_48mhz = gclk_1.enable();
+    let (pclk_usb, _) = Pclk::enable(tokens.pclks.usb, gclk_1_48mhz);
+
+    let usb_bus = UsbBus::new(
+        pclk_usb,
+        clocks.ahbs.usb,
+        buses.apb.enable(tokens.apbs.usb),
+        pins.usb_dm,
+        pins.usb_dp,
+        peripherals.usb,
+    )
+    .unwrap();
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(bsp::usb_allocator(
-            pins.usb_dm,
-            pins.usb_dp,
-            peripherals.usb,
-            &mut clocks,
-            &mut peripherals.mclk,
-        ));
+        USB_ALLOCATOR = Some(UsbBusAllocator::new(usb_bus));
         USB_ALLOCATOR.as_ref().unwrap()
     };
 
     unsafe {
         USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x16c0, 0x27dd))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x1209, 0x0001))
                 .strings(&[StringDescriptors::new(LangID::EN)
                     .manufacturer("Fake company")
                     .product("Serial port")
@@ -78,9 +94,9 @@ fn main() -> ! {
     }
 }
 
-static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
-static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
-static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
+static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus<Gclk1Id>>> = None;
+static mut USB_BUS: Option<UsbDevice<UsbBus<Gclk1Id>>> = None;
+static mut USB_SERIAL: Option<SerialPort<UsbBus<Gclk1Id>>> = None;
 
 fn poll_usb() {
     unsafe {
