@@ -23,21 +23,19 @@ use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use bsp::entry;
-use bsp::pin_alias;
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
-use hal::clock::v2::{
-    clock_system_at_reset, dfll,
-    gclk::{Gclk, Gclk1Id},
-    pclk::Pclk,
-};
-use hal::pac::{interrupt, CorePeripherals, Peripherals};
-use hal::prelude::*;
-use hal::usb::UsbBus;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
+
+use bsp::clock::gclk::Gclk1Id;
+use bsp::entry;
+use bsp::pin_alias;
+use hal::clock::v2::clock_system_at_reset;
+use hal::pac::{interrupt, CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::usb::UsbBus;
 
 #[entry]
 fn main() -> ! {
@@ -54,24 +52,17 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.port);
     let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
 
-    // Set up USB clocking
-    let (dfll_usb, _) = clocks.dfll.into_mode(dfll::FromUsb, |_| {});
-    // GCLK1 comes from DFLL, outputs to USB
-    let (gclk_1, _) = Gclk::from_source(tokens.gclks.gclk1, dfll_usb);
-    let gclk_1_48mhz = gclk_1.enable();
-    let (pclk_usb, _) = Pclk::enable(tokens.pclks.usb, gclk_1_48mhz);
-
-    let usb_bus = UsbBus::new(
-        pclk_usb,
-        clocks.ahbs.usb,
-        buses.apb.enable(tokens.apbs.usb),
-        pins.usb_dm,
-        pins.usb_dp,
-        peripherals.usb,
-    )
-    .unwrap();
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(UsbBusAllocator::new(usb_bus));
+        USB_ALLOCATOR = Some(bsp::usb_allocator(
+            peripherals.usb,
+            clocks.dfll,
+            tokens.gclks.gclk1,
+            tokens.pclks.usb,
+            clocks.ahbs.usb,
+            buses.apb.enable(tokens.apbs.usb),
+            pins.usb_dm,
+            pins.usb_dp,
+        ));
         USB_ALLOCATOR.as_ref().unwrap()
     };
 
