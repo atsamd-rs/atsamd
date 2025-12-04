@@ -5,22 +5,8 @@
 //! an ATSAMD51-based board in an Arduino Mega form factor.
 
 pub use atsamd_hal as hal;
-pub use hal::{
-    clock::v2::{
-        self as clock,
-        ahb::{AhbClk, AhbToken},
-        apb::{ApbClk, ApbToken},
-        dfll::{self, Dfll},
-        gclk::{Gclk, GclkId, GclkToken},
-        pclk::{Pclk, PclkToken},
-        types::Usb,
-        Enabled,
-    },
-    ehal,
-    gpio::{AnyPin, PA24, PA25},
-    pac,
-    sercom::spi::lengths::U1,
-};
+pub use hal::ehal;
+pub use hal::pac;
 
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
@@ -609,22 +595,18 @@ pub fn uart(
 
 #[cfg(feature = "usb")]
 /// Convenience function for setting up USB
-/// Switches the DFLL into USB clock recovery mode
-pub fn usb_allocator<G: GclkId>(
+pub fn usb_allocator(
     usb: pac::Usb,
-    dfll: Enabled<Dfll, U1>,
-    gclk_token: GclkToken<G>,
-    pclk_token: PclkToken<Usb>,
-    ahb_clk: AhbClk<clock::types::Usb>,
-    apb_clk: ApbClk<clock::types::Usb>,
-    dm: impl AnyPin<Id = PA24>,
-    dp: impl AnyPin<Id = PA25>,
-) -> UsbBusAllocator<UsbBus<G>> {
-    let (dfll_usb, _) = dfll.into_mode(dfll::FromUsb, |_| {});
-    // GCLK3 comes from DFLL, outputs to USB
-    let (gclk_n, _) = Gclk::from_source(gclk_token, dfll_usb);
-    let gclk_n_48mhz = gclk_n.enable();
-    let (pclk_usb, _) = Pclk::enable(pclk_token, gclk_n_48mhz);
+    clocks: &mut GenericClockController,
+    mclk: &mut pac::Mclk,
+    dm: impl Into<UsbDm>,
+    dp: impl Into<UsbDp>,
+) -> UsbBusAllocator<UsbBus> {
+    use pac::gclk::{genctrl::Srcselect, pchctrl::Genselect};
 
-    return UsbBusAllocator::new(UsbBus::new(pclk_usb, ahb_clk, apb_clk, dm, dp, usb).unwrap());
+    clocks.configure_gclk_divider_and_source(Genselect::Gclk2, 1, Srcselect::Dfll, false);
+    let usb_gclk = clocks.get_gclk(Genselect::Gclk2).unwrap();
+    let usb_clock = &clocks.usb(&usb_gclk).unwrap();
+    let (dm, dp) = (dm.into(), dp.into());
+    UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
 }

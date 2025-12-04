@@ -14,52 +14,56 @@
 //! Note leds may appear white during debug. Either build for release or add
 //! opt-level = 2 to profile.dev in Cargo.toml
 
-use grand_central_m4 as bsp;
-
 use bsp::hal;
+use grand_central_m4 as bsp;
 
 #[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
 #[cfg(feature = "use_semihosting")]
 use panic_semihosting as _;
 
-use cortex_m::asm::delay as cycle_delay;
+use bsp::entry;
+use cortex_m::interrupt::free as disable_interrupts;
 use cortex_m::peripheral::NVIC;
+use hal::clock::GenericClockController;
+use hal::pac::{interrupt, CorePeripherals, Peripherals};
+use hal::prelude::*;
+use hal::time::Hertz;
+use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
+use hal::usb::UsbBus;
+use smart_leds::{colors, hsv::RGB8, SmartLedsWrite};
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
-
-use bsp::clock::gclk::Gclk1Id;
-use bsp::entry;
-use bsp::pin_alias;
-use hal::clock::v2::clock_system_at_reset;
-use hal::pac::{interrupt, CorePeripherals, Peripherals};
-use hal::prelude::*;
-use hal::usb::UsbBus;
+use ws2812_timer_delay as ws2812;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
-    let (mut buses, clocks, tokens) = clock_system_at_reset(
-        peripherals.oscctrl,
-        peripherals.osc32kctrl,
+    let mut clocks = GenericClockController::with_internal_32kosc(
         peripherals.gclk,
-        peripherals.mclk,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
         &mut peripherals.nvmctrl,
     );
+    let gclk0 = clocks.gclk0();
+    let tc2_3 = clocks.tc2_tc3(&gclk0).unwrap();
+    let mut timer = TimerCounter::tc3_(&tc2_3, peripherals.tc3, &mut peripherals.mclk);
+    InterruptDrivenTimer::start(&mut timer, Hertz::MHz(3).into_duration());
 
     let pins = bsp::Pins::new(peripherals.port);
-    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
+    let neopixel_pin = pins.neopixel.into_push_pull_output();
+    let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
+    let _ = neopixel.write((0..5).map(|_| RGB8::default()));
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(
             peripherals.usb,
-            clocks.dfll,
-            tokens.gclks.gclk1,
-            tokens.pclks.usb,
-            clocks.ahbs.usb,
-            buses.apb.enable(tokens.apbs.usb),
+            &mut clocks,
+            &mut peripherals.mclk,
             pins.usb_dm,
             pins.usb_dp,
         ));
@@ -67,9 +71,9 @@ fn main() -> ! {
     };
 
     unsafe {
-        USB_SERIAL = Some(SerialPort::new(bus_allocator));
+        USB_SERIAL = Some(SerialPort::new(&bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x1209, 0x0001))
+            UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x16c0, 0x27dd))
                 .strings(&[StringDescriptors::new(LangID::EN_US)
                     .manufacturer("Fake company")
                     .product("Serial port")
@@ -81,48 +85,58 @@ fn main() -> ! {
     }
 
     unsafe {
-        core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
-        NVIC::unmask(interrupt::USB_TRCPT0);
-        core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
-        NVIC::unmask(interrupt::USB_TRCPT1);
-        core.NVIC.set_priority(interrupt::USB_SOF_HSOF, 1);
-        NVIC::unmask(interrupt::USB_SOF_HSOF);
         core.NVIC.set_priority(interrupt::USB_OTHER, 1);
+        core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
+        core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
         NVIC::unmask(interrupt::USB_OTHER);
+        NVIC::unmask(interrupt::USB_TRCPT0);
+        NVIC::unmask(interrupt::USB_TRCPT1);
     }
 
-    // Flash the LED in a spin loop to demonstrate that USB is
-    // entirely interrupt driven.
     loop {
-        cycle_delay(5 * 1024 * 1024);
-        red_led.toggle().unwrap();
-        // Turn off interrupts so we don't fight with the interrupt
-        cortex_m::interrupt::free(|_| unsafe {
-            if USB_BUS.as_mut().is_some() {
-                if let Some(serial) = USB_SERIAL.as_mut() {
-                    let _ = serial.write("Hello USB\n".as_bytes());
-                }
-            }
+        let pending = disable_interrupts(|_| unsafe {
+            let pending = PENDING_COLOR;
+            PENDING_COLOR = None;
+            pending
         });
+        if let Some(color) = pending {
+            let _ = neopixel.write((0..5).map(|_| color));
+        }
     }
 }
 
-static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus<Gclk1Id>>> = None;
-static mut USB_BUS: Option<UsbDevice<UsbBus<Gclk1Id>>> = None;
-static mut USB_SERIAL: Option<SerialPort<UsbBus<Gclk1Id>>> = None;
+static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
+static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
+static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
+static mut PENDING_COLOR: Option<RGB8> = None;
 
 fn poll_usb() {
     unsafe {
-        if let Some(usb_dev) = USB_BUS.as_mut() {
-            if let Some(serial) = USB_SERIAL.as_mut() {
+        USB_BUS.as_mut().map(|usb_dev| {
+            USB_SERIAL.as_mut().map(|serial| {
                 usb_dev.poll(&mut [serial]);
 
-                // Make the other side happy
-                let mut buf = [0u8; 16];
-                let _ = serial.read(&mut buf);
-            };
-        }
+                let mut buf = [0u8; 64];
+
+                if let Ok(count) = serial.read(&mut buf) {
+                    let last = buf[count - 1] as char;
+                    let color = match last {
+                        'R' => colors::RED,
+                        'G' => colors::GREEN,
+                        'O' => colors::ORANGE,
+                        _ => RGB8::default(),
+                    };
+
+                    PENDING_COLOR = Some(color);
+                };
+            });
+        });
     };
+}
+
+#[interrupt]
+fn USB_OTHER() {
+    poll_usb();
 }
 
 #[interrupt]
@@ -132,15 +146,5 @@ fn USB_TRCPT0() {
 
 #[interrupt]
 fn USB_TRCPT1() {
-    poll_usb();
-}
-
-#[interrupt]
-fn USB_SOF_HSOF() {
-    poll_usb();
-}
-
-#[interrupt]
-fn USB_OTHER() {
     poll_usb();
 }
