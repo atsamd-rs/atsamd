@@ -541,6 +541,16 @@ pub enum UsbBusErr {
     InvalidClockFreq,
 }
 
+/// The individual resources returned when consuming a `UsbBus`.
+pub type UsbBusParts<S> = (
+    Pclk<clock::types::Usb, S>,
+    AhbClk<clock::types::Usb>,
+    ApbClk<clock::types::Usb>,
+    Pin<PA24, AlternateH>,
+    Pin<PA25, AlternateH>,
+    Usb,
+);
+
 impl<S: PclkSourceId> UsbBus<S> {
     /// Create a new USB Bus, checking the clock frequency of the USB clock for
     /// a stable USB link to most hosts. The `clock` freq must be 48Mhz,
@@ -596,16 +606,7 @@ impl<S: PclkSourceId> UsbBus<S> {
         }
     }
 
-    pub fn into_inner(
-        self,
-    ) -> (
-        Pclk<clock::types::Usb, S>,
-        AhbClk<clock::types::Usb>,
-        ApbClk<clock::types::Usb>,
-        Pin<PA24, AlternateH>,
-        Pin<PA25, AlternateH>,
-        Usb,
-    ) {
+    pub fn into_inner(self) -> UsbBusParts<S> {
         // Unwrap the Mutex and RefCell to get the Inner
         let inner = self.inner.into_inner().into_inner();
         (
