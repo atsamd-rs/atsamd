@@ -85,6 +85,8 @@ fn main() -> ! {
         NVIC::unmask(interrupt::USB_TRCPT0);
         core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
         NVIC::unmask(interrupt::USB_TRCPT1);
+        core.NVIC.set_priority(interrupt::USB_SOF_HSOF, 1);
+        NVIC::unmask(interrupt::USB_SOF_HSOF);
         core.NVIC.set_priority(interrupt::USB_OTHER, 1);
         NVIC::unmask(interrupt::USB_OTHER);
     }
@@ -130,6 +132,11 @@ fn USB_TRCPT0() {
 
 #[interrupt]
 fn USB_TRCPT1() {
+    poll_usb();
+}
+
+#[interrupt]
+fn USB_SOF_HSOF() {
     poll_usb();
 }
 
