@@ -32,6 +32,9 @@ use cortex_m::peripheral::NVIC;
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
+
+    let pukcc = Pukcc::enable(&mut peripherals.mclk).unwrap();
+
     let (mut buses, clocks, tokens) = clock_system_at_reset(
         peripherals.oscctrl,
         peripherals.osc32kctrl,
@@ -86,8 +89,6 @@ fn main() -> ! {
         NVIC::unmask(interrupt::USB_TRCPT0);
         NVIC::unmask(interrupt::USB_TRCPT1);
     }
-
-    let pukcc = Pukcc::enable(&mut peripherals.mclk).unwrap();
 
     loop {
         serial_writeln!("ECDSA Test");
@@ -255,7 +256,7 @@ static mut USB_SERIAL: Option<SerialPort<UsbBus<Gclk1Id>>> = None;
 /// singleton `UsbSerial`, we will panic.
 fn usbserial_get<T, R>(borrower: T) -> R
 where
-    T: Fn(&mut SerialPort<UsbBus>) -> R,
+    T: Fn(&mut SerialPort<UsbBus<Gclk1Id>>) -> R,
 {
     usb_free(|_| unsafe {
         let usb_serial = USB_SERIAL.as_mut().expect("UsbSerial not initialized");
