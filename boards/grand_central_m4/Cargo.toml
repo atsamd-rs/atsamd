@@ -1,6 +1,6 @@
 [package]
 name = "grand_central_m4"
-version = "0.9.0"
+version = "0.9.1"
 authors = ["Dustin Little <dlittle@toyatech.net>"]
 description = "Board Support crate for the Adafruit Grand Central M4 Express"
 keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
