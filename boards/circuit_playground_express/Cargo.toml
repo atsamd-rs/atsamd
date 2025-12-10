@@ -65,4 +65,3 @@ name = "uart"
 [[example]]
 name = "usb_serial"
 required-features = ["usb"]
-edition = "2021"

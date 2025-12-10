@@ -364,7 +364,7 @@ impl I2c {
         let clock = &clocks.sercom1_core(&gclk0).unwrap();
         let freq = clock.freq();
         let pads = i2c::Pads::new(self.sda, self.scl);
-        i2c::Config::new(&pm, sercom, pads, freq).baud(baud).enable()
+        i2c::Config::new(pm, sercom, pads, freq).baud(baud).enable()
     }
 }
 
