@@ -15,11 +15,11 @@ version = "0.7"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.14"
+version = "0.23.0"
 default-features = false
 
 [dependencies.usb-device]
-version = "0.2"
+version = "0.3.2"
 optional = true
 
 [dependencies.rand]
@@ -28,10 +28,10 @@ default-features = false
 features = ["small_rng"]
 
 [dev-dependencies]
-cortex-m = "0.7"
-usbd-serial = "0.1"
-panic-halt = "0.2"
-panic-semihosting = "0.5"
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
+usbd-serial = "0.2.2"
+panic-halt = "1.0.0"
+panic-semihosting = "0.6"
 embedded-graphics = "0.7"
 st7735-lcd = "0.8"
 ssd1306 = { version = "0.7", features = ["graphics"] }
@@ -41,7 +41,6 @@ ssd1306 = { version = "0.7", features = ["graphics"] }
 default = ["rt", "atsamd-hal/samd21g"]
 rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
-unproven = ["atsamd-hal/unproven"]
 use_semihosting = []
 
 # for cargo flash
@@ -53,7 +52,7 @@ name = "blinky_basic"
 
 [[example]]
 name = "usb_logging"
-required-features = ["usb", "unproven"]
+required-features = ["usb"]
 
 [[example]]
 name = "serial"

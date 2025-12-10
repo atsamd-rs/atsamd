@@ -8,8 +8,7 @@ pub use hal::ehal;
 pub use hal::pac;
 
 use hal::clock::GenericClockController;
-use hal::sercom::v2::{spi, uart, Sercom1, Sercom2, Sercom5};
-use hal::sercom::I2CMaster4;
+use hal::sercom::{i2c, spi, uart, Sercom1, Sercom2, Sercom4, Sercom5};
 use hal::time::Hertz;
 
 #[cfg(feature = "usb")]
@@ -213,9 +212,9 @@ hal::bsp_pins!(
 
 #[cfg(feature = "usb")]
 pub fn usb_allocator(
-    usb: pac::USB,
+    usb: pac::Usb,
     clocks: &mut GenericClockController,
-    pm: &mut pac::PM,
+    pm: &mut pac::Pm,
     dm: impl Into<UsbDm>,
     dp: impl Into<UsbDp>,
 ) -> UsbBusAllocator<UsbBus> {
@@ -225,21 +224,29 @@ pub fn usb_allocator(
     UsbBusAllocator::new(UsbBus::new(usb_clock, pm, dm, dp, usb))
 }
 
+/// I2C Pads
+pub type I2cPads = i2c::Pads<Sercom4, Sda, Scl>;
+
+/// I2C device for labelled SDA & SCL pads
+pub type I2c = i2c::I2c<i2c::Config<I2cPads>>;
+
 /// Convenience for setting up the labelled SDA, SCL pins to
 /// operate as an I2C master running at the specified frequency.
 pub fn i2c_master(
     clocks: &mut GenericClockController,
-    bus_speed: impl Into<Hertz>,
-    sercom4: pac::SERCOM4,
-    pm: &mut pac::PM,
+    baud: impl Into<Hertz>,
+    sercom: pac::Sercom4,
+    pm: &mut pac::Pm,
     sda: impl Into<Sda>,
     scl: impl Into<Scl>,
-) -> I2CMaster4<Sda, Scl> {
+) -> I2c {
     let gclk0 = &clocks.gclk0();
     let clock = &clocks.sercom4_core(&gclk0).unwrap();
-    let (bus_speed, sda, scl) = (bus_speed.into(), sda.into(), scl.into());
+    let freq = clock.freq();
+    let baud = baud.into();
+    let pads = I2cPads::new(sda.into(), scl.into());
 
-    I2CMaster4::new(clock, bus_speed, sercom4, pm, sda, scl)
+    i2c::Config::new(pm, sercom, pads, freq).baud(baud).enable()
 }
 
 /// UART pads
@@ -252,8 +259,8 @@ pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
 pub fn uart(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom5: pac::SERCOM5,
-    pm: &mut pac::PM,
+    sercom5: pac::Sercom5,
+    pm: &mut pac::Pm,
     rx: impl Into<Rx>,
     tx: impl Into<Tx>,
 ) -> Uart {
@@ -283,8 +290,8 @@ pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 pub fn spi_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom1: pac::SERCOM1,
-    pm: &mut pac::PM,
+    sercom1: pac::Sercom1,
+    pm: &mut pac::Pm,
     sck: impl Into<Sck>,
     mosi: impl Into<Mosi>,
     miso: impl Into<Miso>,
@@ -295,7 +302,7 @@ pub fn spi_master(
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
 
     spi::Config::new(pm, sercom1, pads, clock.freq())
-        .baud(baud)
+        .baud(baud.into())
         .spi_mode(spi::MODE_0)
         .enable()
 }
@@ -316,8 +323,8 @@ pub type NinaSpi = spi::Spi<spi::Config<NinaSpiPads>, spi::Duplex>;
 pub fn nina_spi_master(
     clocks: &mut GenericClockController,
     baud: impl Into<Hertz>,
-    sercom2: pac::SERCOM2,
-    pm: &mut pac::PM,
+    sercom2: pac::Sercom2,
+    pm: &mut pac::Pm,
     sck: impl Into<NinaSck>,
     mosi: impl Into<NinaMosi>,
     miso: impl Into<NinaMiso>,
@@ -328,7 +335,7 @@ pub fn nina_spi_master(
     let pads = spi::Pads::default().data_in(miso).data_out(mosi).sclk(sclk);
 
     spi::Config::new(pm, sercom2, pads, clock.freq())
-        .baud(baud)
+        .baud(baud.into())
         .spi_mode(spi::MODE_0)
         .enable()
 }
