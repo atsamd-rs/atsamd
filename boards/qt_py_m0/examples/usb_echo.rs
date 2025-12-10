@@ -29,7 +29,9 @@ fn main() -> ! {
     );
     let pins = bsp::Pins::new(peripherals.port).split();
 
-    let usb_bus = pins.usb.init(peripherals.usb, &mut clocks, &mut peripherals.pm);
+    let usb_bus = pins
+        .usb
+        .init(peripherals.usb, &mut clocks, &mut peripherals.pm);
 
     let mut serial = SerialPort::new(&usb_bus);
     let mut usb_device = UsbDeviceBuilder::new(&usb_bus, UsbVidPid(0x239a, 0x00cb))

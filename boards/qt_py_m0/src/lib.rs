@@ -24,8 +24,8 @@ pub use hal::pac;
 
 use hal::bsp_pins;
 use hal::clock::GenericClockController;
-use hal::sercom::spi;
 use hal::sercom::i2c;
+use hal::sercom::spi;
 use hal::sercom::uart::{self, BaudMode, Oversampling};
 use hal::sercom::{Sercom0, Sercom2};
 use hal::time::Hertz;

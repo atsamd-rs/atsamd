@@ -4,7 +4,8 @@
 //! Neopixel example for the Adafruit QT Py board. Demonstrates powering up the
 //! neopixel using the attached GPIO line.
 //!
-//! *NOTE*: This example needs to be compiled with --release for the timing to be correct.
+//! *NOTE*: This example needs to be compiled with --release for the timing to
+//! be correct.
 
 use atsamd_hal::prelude::InterruptDrivenTimer;
 use panic_halt as _;
@@ -12,18 +13,18 @@ use panic_halt as _;
 use bsp::hal;
 use qt_py_m0 as bsp;
 
-use bsp::entry;
 use bsp::Pins;
-use hal::prelude::*;
+use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::CorePeripherals;
 use hal::pac::Peripherals;
+use hal::prelude::*;
 use hal::timer::TimerCounter;
 
-use smart_leds::hsv::hsv2rgb;
-use smart_leds::hsv::Hsv;
 use smart_leds::SmartLedsWrite;
+use smart_leds::hsv::Hsv;
+use smart_leds::hsv::hsv2rgb;
 use ws2812_timer_delay::Ws2812;
 
 #[entry]
