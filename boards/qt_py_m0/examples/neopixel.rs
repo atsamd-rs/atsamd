@@ -4,43 +4,46 @@
 //! Neopixel example for the Adafruit QT Py board. Demonstrates powering up the
 //! neopixel using the attached GPIO line.
 //!
-//! *NOTE*: This example currently only works in release mode.
+//! *NOTE*: This example needs to be compiled with --release for the timing to be correct.
 
-use hal::ehal::digital::v1_compat::OldOutputPin;
+use atsamd_hal::prelude::InterruptDrivenTimer;
 use panic_halt as _;
-use smart_leds::hsv::hsv2rgb;
-use smart_leds::hsv::Hsv;
-use smart_leds::SmartLedsWrite;
-use ws2812_timer_delay::Ws2812;
+
+use bsp::hal;
+use qt_py_m0 as bsp;
 
 use bsp::entry;
-use bsp::hal;
 use bsp::Pins;
+use hal::prelude::*;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::CorePeripherals;
 use hal::pac::Peripherals;
-use hal::prelude::*;
 use hal::timer::TimerCounter;
-use qt_py_m0 as bsp;
+
+use smart_leds::hsv::hsv2rgb;
+use smart_leds::hsv::Hsv;
+use smart_leds::SmartLedsWrite;
+use ws2812_timer_delay::Ws2812;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_8mhz(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
 
-    let pins = Pins::new(peripherals.PORT).split();
+    let pins = Pins::new(peripherals.port).split();
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tcc2_tc3(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.PM);
-    timer.start(3.mhz());
+    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.tc3, &mut peripherals.pm);
+    InterruptDrivenTimer::start(&mut timer, 300.nanos());
+    InterruptDrivenTimer::enable_interrupt(&mut timer);
 
     // The neopixel sources power from a GPIO pin. It must be driven high to power
     // up the neopixel before it can be used.
@@ -50,7 +53,7 @@ fn main() -> ! {
         .set_high()
         .unwrap();
 
-    let neopixel_data: OldOutputPin<_> = pins.neopixel.data.into_push_pull_output().into();
+    let neopixel_data: bsp::NeopixelData = pins.neopixel.data.into();
     let mut neopixel = Ws2812::new(timer, neopixel_data);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
