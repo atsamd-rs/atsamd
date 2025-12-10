@@ -30,19 +30,19 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut led: bsp::Led = pins.led_sck.into();
 
     let bus_allocator = unsafe {
         USB_ALLOCATOR = Some(bsp::usb_allocator(
-            peripherals.USB,
+            peripherals.usb,
             &mut clocks,
-            &mut peripherals.PM,
+            &mut peripherals.pm,
             pins.usb_dm,
             pins.usb_dp,
         ));
@@ -53,9 +53,11 @@ fn main() -> ! {
         USB_SERIAL = Some(SerialPort::new(&bus_allocator));
         USB_BUS = Some(
             UsbDeviceBuilder::new(&bus_allocator, UsbVidPid(0x2222, 0x3333))
-                .manufacturer("Fake company")
-                .product("Serial port")
-                .serial_number("TEST")
+                .strings(&[StringDescriptors::new(LangID::EN_US)
+                    .manufacturer("Fake company")
+                    .product("Serial port")
+                    .serial_number("TEST")])
+                .unwrap()
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
