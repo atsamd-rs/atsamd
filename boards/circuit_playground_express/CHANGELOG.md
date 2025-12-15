@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.1](https://github.com/atsamd-rs/atsamd/compare/circuit_playground_express-0.12.0...circuit_playground_express-0.12.1) - 2025-12-15
+
+### Dependencies
+
+- *(circuit-playground-express)* Add RTIC support for CPE ([#966](https://github.com/atsamd-rs/atsamd/pull/966))
+
 ## [0.12.0](https://github.com/atsamd-rs/atsamd/compare/circuit_playground_express-0.11.1...circuit_playground_express-0.12.0) - 2025-11-20
 
 ### Dependencies
