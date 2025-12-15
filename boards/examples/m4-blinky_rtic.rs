@@ -1,12 +1,19 @@
-//! Blink an led using an RTIC software task and the RTC-based monotonic.
-
-#![no_std]
-#![no_main]
+// Blink an led using an RTIC software task and the RTC-based monotonic.
+//
+// This file is included by one or more BSP examples.  In normal usage, firmware
+// source code needs to start with something like:
+//
+// ```
+// #![no_std]
+// #![no_main]
+// use feather_m4 as bsp;
+//```
 
 use bsp::{hal, Pins, RedLed};
-#[cfg(not(feature = "panic_led"))]
+#[cfg(not(feature = "use_semihosting"))]
 use panic_halt as _;
-use pygamer as bsp;
+#[cfg(feature = "use_semihosting")]
+use panic_semihosting as _;
 
 use hal::clock::v2::{clock_system_at_reset, rtcosc::RtcOsc};
 use hal::prelude::*;
@@ -46,7 +53,7 @@ mod app {
         // Start the monotonic
         Mono::start(device.rtc);
 
-        let pins = Pins::new(device.port).split();
+        let pins = Pins::new(device.port);
 
         // We can use the RTC in standby for maximum power savings
         core.SCB.set_sleepdeep();
@@ -55,7 +62,7 @@ mod app {
 
         (
             Shared {
-                red_led: pins.led_pin.into(),
+                red_led: pins.d13.into_push_pull_output(),
             },
             Resources {},
         )
