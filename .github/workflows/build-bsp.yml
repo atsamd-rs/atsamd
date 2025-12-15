@@ -71,7 +71,7 @@ jobs:
     needs: [setup, build]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           path: successful-jobs
       - name: Do checks
