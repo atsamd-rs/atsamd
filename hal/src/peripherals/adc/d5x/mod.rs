@@ -3,11 +3,14 @@ pub mod pin;
 use pac::Supc;
 
 #[cfg(feature = "async")]
-use super::{FutureAdc, async_api};
+use super::{async_api, FutureAdc};
+
+#[cfg(feature = "dma")]
+use pac::dmac::channel::chctrla::Trigsrcselect as TriggerSelect;
 
 use super::{
-    ADC_SETTINGS_INTERNAL_READ, Accumulation, Adc, AdcInstance, AdcSettings, CpuVoltageSource,
-    Error, Flags, PrimaryAdc, SampleCount,
+    Accumulation, Adc, AdcInstance, AdcSettings, CpuVoltageSource, Error, Flags, PrimaryAdc,
+    SampleCount, ADC_SETTINGS_INTERNAL_READ,
 };
 use crate::{calibration, pac};
 
@@ -20,6 +23,9 @@ impl PrimaryAdc for Adc0 {}
 
 impl AdcInstance for Adc0 {
     type Instance = pac::Adc0;
+
+    #[cfg(feature = "dma")]
+    const DMA_TRIGGER: TriggerSelect = TriggerSelect::Adc0Resrdy;
 
     type ClockId = crate::clock::v2::pclk::ids::Adc0;
 
@@ -71,6 +77,9 @@ impl AdcInstance for Adc1 {
     type Instance = pac::Adc1;
 
     type ClockId = crate::clock::v2::pclk::ids::Adc1;
+
+    #[cfg(feature = "dma")]
+    const DMA_TRIGGER: TriggerSelect = TriggerSelect::Adc1Resrdy;
 
     #[cfg(feature = "async")]
     type Interrupt = crate::async_hal::interrupts::ADC1;
@@ -235,7 +244,7 @@ impl<I: AdcInstance> Adc<I> {
         Flags::from_bits_truncate(bits)
     }
 
-    #[cfg(feature="async")]
+    #[cfg(feature = "async")]
     /// Clear the specified interrupt flags
     #[inline]
     pub(super) fn clear_flags(&mut self, flags: &Flags) {
