@@ -42,6 +42,8 @@ rtt-target = {version = "0.3.0", features = ["cortex-m"]}
 [features]
 # ask the HAL to enable atsamd11c support
 default = ["rt", "atsamd-hal/samd11c"]
+# Use DEFMT_LOG environment variable to set logging level, defaults to `error`
+defmt = ["atsamd-hal/defmt"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable async support from atsamd-hal
