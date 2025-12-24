@@ -28,7 +28,6 @@ use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::pac::{CorePeripherals, Peripherals};
 use hal::prelude::*;
-use hal::time::KiloHertz;
 
 use ssd1306::{prelude::*, I2CDisplayInterface, Ssd1306};
 
@@ -42,21 +41,21 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     delay.delay_ms(BOOT_DELAY_MS);
 
     let i2c = bsp::i2c_master(
         &mut clocks,
-        KiloHertz(400),
-        peripherals.SERCOM4,
-        &mut peripherals.PM,
+        400.kHz(),
+        peripherals.sercom4,
+        &mut peripherals.pm,
         pins.sda,
         pins.scl,
     );
