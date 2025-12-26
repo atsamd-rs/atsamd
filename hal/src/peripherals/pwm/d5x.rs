@@ -227,7 +227,7 @@ impl<I: PinId> $crate::ehal::pwm::SetDutyCycle for $TYPE<I> {
     fn max_duty_cycle(&self) -> u16 {
         let count = self.tc.count16();
         let top = count.cc(0).read().cc().bits();
-        top
+        top + 1
     }
 
     fn set_duty_cycle(&mut self, duty: u16) -> Result<(), Self::Error> {
@@ -637,7 +637,7 @@ impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
 
     fn get_max_duty(&self) -> Self::Duty {
         let top = self.tcc.per().read().bits();
-        top
+        top + 1
     }
 
     fn set_duty(&mut self, channel: Self::Channel, duty: Self::Duty) {
