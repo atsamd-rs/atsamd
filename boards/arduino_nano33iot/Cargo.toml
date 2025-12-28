@@ -17,6 +17,7 @@ optional = true
 [dependencies.atsamd-hal]
 version = "0.23.0"
 default-features = false
+features = ["undoc-features"]
 
 [dependencies.usb-device]
 version = "0.3.2"
