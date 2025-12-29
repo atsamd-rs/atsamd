@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.9.1](https://github.com/atsamd-rs/atsamd/compare/grand_central_m4-0.9.0...grand_central_m4-0.9.1) - 2025-12-29
+## [0.10.0](https://github.com/atsamd-rs/atsamd/compare/grand_central_m4-0.9.0...grand_central_m4-0.10.0) - 2025-12-29
 
 ### Dependencies
 
