@@ -83,7 +83,7 @@
 //!   stopped.
 
 use super::{
-    Error, ReadyChannel, Result,
+    Error, Result,
     channel::{AnyChannel, Busy, Channel, ChannelId, InterruptFlags, Ready},
     dma_controller::{TriggerAction, TriggerSource},
 };
@@ -311,12 +311,11 @@ where
     complete: bool,
 }
 
-impl<C, S, D, R> Transfer<C, BufferPair<S, D>>
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer + 'static,
     D: Buffer<Beat = S::Beat> + 'static,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Safely construct a new `Transfer`. To guarantee memory safety, both
     /// buffers are required to be `'static`.
@@ -366,12 +365,11 @@ where
     }
 }
 
-impl<C, S, D, R> Transfer<C, BufferPair<S, D>>
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Construct a new `Transfer` without checking for memory safety.
     ///
@@ -410,14 +408,7 @@ where
             complete: false,
         }
     }
-}
 
-impl<C, S, D> Transfer<C, BufferPair<S, D>>
-where
-    S: Buffer,
-    D: Buffer<Beat = S::Beat>,
-    C: AnyChannel<Status = Ready>,
-{
     /// Begin DMA transfer in blocking mode. If [`TriggerSource::Disable`] is
     /// used, a software trigger will be issued to the DMA channel to launch
     /// the transfer. Is is therefore not necessary, in most cases, to manually
@@ -456,11 +447,11 @@ where
     }
 }
 
-impl<B, C, R, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
+
+impl<B, C, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
 where
     B: 'static + Beat,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Create a new `Transfer` from static array references of the same type
     /// and length. When two array references are available (instead of slice
@@ -639,5 +630,154 @@ where
         // compiler fence.
         let chan = self.chan.into().free();
         (chan, self.buffers.source, self.buffers.destination)
+    }
+}
+
+#[cfg(feature = "async")]
+pub mod circular_future {
+    use super::*;
+    use crate::dmac::ReadyFuture;
+
+    impl<C, S, D> Transfer<C, BufferPair<S, D>>
+    where
+        S: Buffer + 'static,
+        D: Buffer<Beat = S::Beat> + 'static,
+        C: AnyChannel<Status = ReadyFuture>,
+    {
+        /// Safely construct a new circular `Transfer`. To guarantee memory safety, both
+        /// buffers are required to be `'static`.
+        /// Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget) or
+        /// [here](https://blog.japaric.io/safe-dma/) for more information.
+        ///
+        /// This method exists to permit the use of [`ReadyFuture`] channels in a circular manner.
+        /// Circular transfers do not fire TCMPL, so do not get disabled by the DMAC interrupt
+        /// handler. It is therefore valid to use a `Channel<C, ReadyFuture>` like a `Channel<C, Ready>` 
+        /// in this case
+        ///
+        /// If two array references can be used as source and destination buffers
+        /// (as opposed to slices), then it is recommended to use the
+        /// [`Transfer::new_circular_from_arrays`] method instead.
+        ///
+        /// # Errors
+        ///
+        /// Returns [`Error::LengthMismatch`] if both
+        /// buffers have a length > 1 and are not of equal length.
+        #[allow(clippy::new_ret_no_self)]
+        #[inline]
+        pub fn new_circular(
+            chan: C,
+            source: S,
+            destination: D,
+        ) -> Result<Transfer<C, BufferPair<S, D>>> {
+            Self::check_buffer_pair(&source, &destination)?;
+
+            // SAFETY: The safety checks are done by the function signature and the buffer
+            // length verification
+            Ok(unsafe { Self::new_unchecked_circular(chan, source, destination) })
+        }
+    }
+
+    impl<B, C, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
+    where
+        B: 'static + Beat,
+        C: AnyChannel<Status = ReadyFuture>,
+    {
+        /// Create a new circualr `Transfer` from static array references of the same type
+        /// and length. When two array references are available (instead of slice
+        /// references), it is recommended to use this function over
+        /// [`Transfer::new_circular`](Transfer::new_circular), because it provides compile-time
+        /// checking that the array lengths match. It therefore does not panic, and
+        /// saves some runtime checking of the array lengths.
+        #[inline]
+        pub fn new_circular_from_arrays(
+            chan: C,
+            source: &'static mut [B; N],
+            destination: &'static mut [B; N],
+        ) -> Self {
+            unsafe { Self::new_unchecked_circular(chan, source, destination) }
+        }
+    }
+
+    impl<C, S, D> Transfer<C, BufferPair<S, D>>
+    where
+        S: Buffer,
+        D: Buffer<Beat = S::Beat>,
+        C: AnyChannel<Status = ReadyFuture>,
+    {
+        /// Construct a new circular `Transfer` without checking for memory safety.
+        ///
+        /// # Safety
+        ///
+        /// To guarantee the safety of creating a `Transfer` using this method, you
+        /// must uphold some invariants:
+        ///
+        /// * A `Transfer` holding a `Channel<Id, Running>` must *never* be dropped.
+        ///   It should *always* be explicitly be `wait`ed upon or `stop`ped.
+        ///
+        /// * The size in bytes or the source and destination buffers should be
+        ///   exacly the same, unless one or both buffers are of length 1. The
+        ///   transfer length will be set to the longest of both buffers if they are
+        ///   not of equal size.
+        #[inline]
+        pub unsafe fn new_unchecked_circular(
+            mut chan: C,
+            mut source: S,
+            mut destination: D,
+        ) -> Transfer<C, BufferPair<S, D>> {
+            unsafe {
+                chan.as_mut()
+                    .fill_descriptor(&mut source, &mut destination, true);
+            }
+
+            let buffers = BufferPair {
+                source,
+                destination,
+            };
+
+            Transfer {
+                buffers,
+                chan,
+                complete: false,
+            }
+        }
+
+        /// Begin circular DMA transfer in blocking mode. If [`TriggerSource::Disable`] is
+        /// used, a software trigger will be issued to the DMA channel to launch
+        /// the transfer. Is is therefore not necessary, in most cases, to manually
+        /// issue a software trigger to the channel.
+        #[inline]
+        pub fn begin_circular(
+            mut self,
+            trig_src: TriggerSource,
+            trig_act: TriggerAction,
+        ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>> {
+            // Reset the complete flag before triggering the transfer.
+            // This way an interrupt handler could set complete to true
+            // before this function returns.
+            self.complete = false;
+
+            let mut chan = self.chan.into();
+            unsafe { chan._start_private(trig_src, trig_act) };
+            let chan: Channel<ChannelId<C>, Busy> = chan.change_status();
+
+            Transfer {
+                buffers: self.buffers,
+                chan,
+                complete: self.complete,
+            }
+        }
+
+        /// Free the [`Transfer`] and return the resources it holds.
+        ///
+        /// Similar to [`stop`](Transfer::stop), but it acts on a [`Transfer`]
+        /// holding a [`Ready`] channel, so there is no need to explicitly stop the
+        /// transfer.
+        pub fn free_circular_future(self) -> (Channel<ChannelId<C>, ReadyFuture>, S, D) {
+            (
+                self.chan.into(),
+                self.buffers.source,
+                self.buffers.destination,
+            )
+        }
     }
 }
