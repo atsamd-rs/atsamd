@@ -447,7 +447,6 @@ where
     }
 }
 
-
 impl<B, C, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
 where
     B: 'static + Beat,
@@ -644,19 +643,21 @@ pub mod circular_future {
         D: Buffer<Beat = S::Beat> + 'static,
         C: AnyChannel<Status = ReadyFuture>,
     {
-        /// Safely construct a new circular `Transfer`. To guarantee memory safety, both
-        /// buffers are required to be `'static`.
+        /// Safely construct a new circular `Transfer`. To guarantee memory
+        /// safety, both buffers are required to be `'static`.
         /// Refer [here](https://docs.rust-embedded.org/embedonomicon/dma.html#memforget) or
         /// [here](https://blog.japaric.io/safe-dma/) for more information.
         ///
-        /// This method exists to permit the use of [`ReadyFuture`] channels in a circular manner.
-        /// Circular transfers do not fire TCMPL, so do not get disabled by the DMAC interrupt
-        /// handler. It is therefore valid to use a `Channel<C, ReadyFuture>` like a `Channel<C, Ready>` 
-        /// in this case
+        /// This method exists to permit the use of [`ReadyFuture`] channels in
+        /// a circular manner. Circular transfers do not fire TCMPL, so
+        /// do not get disabled by the DMAC interrupt handler. It is
+        /// therefore valid to use a `Channel<C, ReadyFuture>` like a
+        /// `Channel<C, Ready>` in this case
         ///
-        /// If two array references can be used as source and destination buffers
-        /// (as opposed to slices), then it is recommended to use the
-        /// [`Transfer::new_circular_from_arrays`] method instead.
+        /// If two array references can be used as source and destination
+        /// buffers (as opposed to slices), then it is recommended to
+        /// use the [`Transfer::new_circular_from_arrays`] method
+        /// instead.
         ///
         /// # Errors
         ///
@@ -682,12 +683,14 @@ pub mod circular_future {
         B: 'static + Beat,
         C: AnyChannel<Status = ReadyFuture>,
     {
-        /// Create a new circualr `Transfer` from static array references of the same type
-        /// and length. When two array references are available (instead of slice
-        /// references), it is recommended to use this function over
-        /// [`Transfer::new_circular`](Transfer::new_circular), because it provides compile-time
-        /// checking that the array lengths match. It therefore does not panic, and
-        /// saves some runtime checking of the array lengths.
+        /// Create a new circualr `Transfer` from static array references of the
+        /// same type and length. When two array references are
+        /// available (instead of slice references), it is recommended
+        /// to use this function over
+        /// [`Transfer::new_circular`](Transfer::new_circular), because it
+        /// provides compile-time checking that the array lengths match.
+        /// It therefore does not panic, and saves some runtime checking
+        /// of the array lengths.
         #[inline]
         pub fn new_circular_from_arrays(
             chan: C,
@@ -704,20 +707,22 @@ pub mod circular_future {
         D: Buffer<Beat = S::Beat>,
         C: AnyChannel<Status = ReadyFuture>,
     {
-        /// Construct a new circular `Transfer` without checking for memory safety.
+        /// Construct a new circular `Transfer` without checking for memory
+        /// safety.
         ///
         /// # Safety
         ///
-        /// To guarantee the safety of creating a `Transfer` using this method, you
-        /// must uphold some invariants:
+        /// To guarantee the safety of creating a `Transfer` using this method,
+        /// you must uphold some invariants:
         ///
-        /// * A `Transfer` holding a `Channel<Id, Running>` must *never* be dropped.
-        ///   It should *always* be explicitly be `wait`ed upon or `stop`ped.
+        /// * A `Transfer` holding a `Channel<Id, Running>` must *never* be
+        ///   dropped. It should *always* be explicitly be `wait`ed upon or
+        ///   `stop`ped.
         ///
         /// * The size in bytes or the source and destination buffers should be
         ///   exacly the same, unless one or both buffers are of length 1. The
-        ///   transfer length will be set to the longest of both buffers if they are
-        ///   not of equal size.
+        ///   transfer length will be set to the longest of both buffers if they
+        ///   are not of equal size.
         #[inline]
         pub unsafe fn new_unchecked_circular(
             mut chan: C,
@@ -741,9 +746,10 @@ pub mod circular_future {
             }
         }
 
-        /// Begin circular DMA transfer in blocking mode. If [`TriggerSource::Disable`] is
-        /// used, a software trigger will be issued to the DMA channel to launch
-        /// the transfer. Is is therefore not necessary, in most cases, to manually
+        /// Begin circular DMA transfer in blocking mode. If
+        /// [`TriggerSource::Disable`] is used, a software trigger will
+        /// be issued to the DMA channel to launch the transfer. Is is
+        /// therefore not necessary, in most cases, to manually
         /// issue a software trigger to the channel.
         #[inline]
         pub fn begin_circular(
@@ -770,8 +776,8 @@ pub mod circular_future {
         /// Free the [`Transfer`] and return the resources it holds.
         ///
         /// Similar to [`stop`](Transfer::stop), but it acts on a [`Transfer`]
-        /// holding a [`Ready`] channel, so there is no need to explicitly stop the
-        /// transfer.
+        /// holding a [`Ready`] channel, so there is no need to explicitly stop
+        /// the transfer.
         pub fn free_circular_future(self) -> (Channel<ChannelId<C>, ReadyFuture>, S, D) {
             (
                 self.chan.into(),
