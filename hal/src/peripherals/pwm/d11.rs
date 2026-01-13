@@ -97,7 +97,7 @@ impl $crate::ehal::pwm::SetDutyCycle for $TYPE {
     fn max_duty_cycle(&self) -> u16 {
         let count = self.tc.count16();
         let top = count.cc(0).read().cc().bits();
-        top + 1
+        top.saturating_add(1)
     }
 
     fn set_duty_cycle(&mut self, duty: u16) -> Result<(), Self::Error> {
