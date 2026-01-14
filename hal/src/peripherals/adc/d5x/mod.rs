@@ -290,6 +290,12 @@ impl<I: AdcInstance> Adc<I> {
         });
         self.sync()
     }
+
+    #[inline]
+    pub(super) fn flush(&mut self) {
+        self.adc.swtrig().modify(|_,w| w.flush().set_bit());
+        self.sync();
+    }
 }
 
 #[cfg(feature = "async")]
