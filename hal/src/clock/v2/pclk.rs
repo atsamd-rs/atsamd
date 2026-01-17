@@ -547,6 +547,28 @@ impl From<DynPclkSourceId> for Genselect {
     }
 }
 
+impl PclkSourceId for DynPclkSourceId {
+    fn source_id(&self) -> DynGclkId {
+        *self
+    }
+}
+
+impl Sealed for DynPclkSourceId {}
+
+//==============================================================================
+// PclkSourceId
+//==============================================================================
+
+pub struct PclkSource<G: GclkId> {
+    _src: PhantomData<G>,
+}
+
+impl<G: GclkId> GclkId for PclkSource<G> {
+    const DYN: DynGclkId = G::DYN;
+    const NUM: usize = G::NUM;
+    type Divider = G::Divider;
+}
+
 //==============================================================================
 // PclkSourceId
 //==============================================================================
@@ -566,9 +588,19 @@ impl From<DynPclkSourceId> for Genselect {
 /// [`Gclk`]: super::gclk::Gclk
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
-pub trait PclkSourceId: GclkId {}
+pub trait PclkSourceId: Sealed {
+    fn source_id(&self) -> DynGclkId;
+}
 
-impl<G: GclkId> PclkSourceId for G {}
+// PclkSource implements PclkSourceId via its GclkId implementation
+impl<G: GclkId> PclkSourceId for G {
+    #[inline]
+    fn source_id(&self) -> DynGclkId {
+        Self::DYN
+    }
+}
+
+impl<G: GclkId> Sealed for PclkSource<G> {}
 
 //==============================================================================
 // Pclk
@@ -606,24 +638,41 @@ where
     I: PclkSourceId,
 {
     token: PclkToken<P>,
-    src: PhantomData<I>,
+    src: I,
     freq: Hertz,
 }
 
-impl<P, I> Pclk<P, I>
+/// [`Pclk`] with a dynamic source ID ([`DynPclkSourceId`]).
+pub type DynPclk<P> = Pclk<P, DynPclkSourceId>;
+
+impl<P, G> From<Pclk<P, PclkSource<G>>> for DynPclk<P>
 where
     P: PclkId,
-    I: PclkSourceId,
+    G: GclkId,
+{
+    fn from(value: Pclk<P, PclkSource<G>>) -> Self {
+        Pclk {
+            token: value.token,
+            freq: value.freq,
+            src: G::DYN,
+        }
+    }
+}
+
+impl<P, G> Pclk<P, PclkSource<G>>
+where
+    P: PclkId,
+    G: GclkId,
 {
     pub(super) fn new(token: PclkToken<P>, freq: Hertz) -> Self {
         Self {
             token,
-            src: PhantomData,
+            src: PclkSource { _src: PhantomData },
             freq,
         }
     }
 
-    /// Create and enable a [`Pclk`]
+    /// Create and enable a [`Pclk`] with a type-checked source ID.
     ///
     /// Creating a [`Pclk`] immediately enables the corresponding peripheral
     /// channel clock. It also [`Increment`]s the [`Source`]'s [`Enabled`]
@@ -636,15 +685,15 @@ where
     #[inline]
     pub fn enable<S>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
     where
-        S: Source<Id = I> + Increment,
+        S: Source<Id = G> + Increment,
     {
         let freq = gclk.freq();
-        token.enable(I::DYN);
-        let pclk = Pclk::new(token, freq);
+        token.enable(G::DYN);
+        let pclk = Self::new(token, freq);
         (pclk, gclk.inc())
     }
 
-    /// Disable and destroy a [`Pclk`]
+    /// Disable and destroy a [`Pclk`].
     ///
     /// Consume the [`Pclk`], release the [`PclkToken`], and [`Decrement`] the
     /// [`EnabledGclk`]'s counter
@@ -654,12 +703,87 @@ where
     #[inline]
     pub fn disable<S>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)
     where
-        S: Source<Id = I> + Decrement,
+        S: Source<Id = G> + Decrement,
     {
         self.token.disable();
         (self.token, gclk.dec())
     }
+}
 
+impl<P> DynPclk<P>
+where
+    P: PclkId,
+{
+    pub(super) fn new<G: GclkId>(token: PclkToken<P>, freq: Hertz) -> Self {
+        Self {
+            token,
+            src: G::DYN,
+            freq,
+        }
+    }
+
+    /// Create and enable a [`Pclk`] with an underlying [`DynPclkSourceId`]
+    /// source ID type.
+    ///
+    /// Some peripherals require a dynamic PCLK source ID type parameter; use
+    /// this method to create a [`Pclk`] where this type parameter is
+    /// type-erased.
+    ///
+    /// Creating a [`Pclk`] immediately enables the corresponding peripheral
+    /// channel clock. It also [`Increment`]s the [`Source`]'s [`Enabled`]
+    /// counter.
+    ///
+    /// Note that the [`Source`] will always be an [`EnabledGclk`].
+    ///
+    /// [`Enabled`]: super::Enabled
+    /// [`EnabledGclk`]: super::gclk::EnabledGclk
+    #[inline]
+    pub fn enable_dyn<S, G: GclkId>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
+    where
+        S: Source<Id = G> + Increment,
+    {
+        let freq = gclk.freq();
+        token.enable(G::DYN);
+        let pclk = Self::new::<G>(token, freq);
+        (pclk, gclk.inc())
+    }
+
+    /// Disable and destroy a [`Pclk`].
+    ///
+    /// Consume the [`Pclk`], release the [`PclkToken`], and [`Decrement`] the
+    /// [`EnabledGclk`]'s counter.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the [`Pclk`]'s underlying GCLK source ID does not match the ID
+    /// of the provided [`Source`].
+    ///
+    /// [`Enabled`]: super::Enabled
+    /// [`EnabledGclk`]: super::gclk::EnabledGclk
+    #[inline]
+    pub fn disable<S, G: GclkId>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)
+    where
+        S: Source<Id = G> + Decrement,
+    {
+        // Make sure that we can only decrement the source we are actually using
+        assert_eq!(
+            G::DYN,
+            self.src,
+            "Expected GCLK ID {:?}, found {:?}",
+            G::DYN,
+            self.src
+        );
+
+        self.token.disable();
+        (self.token, gclk.dec())
+    }
+}
+
+impl<P, I> Pclk<P, I>
+where
+    P: PclkId,
+    I: PclkSourceId,
+{
     /// Return the [`Pclk`] frequency
     #[inline]
     pub fn freq(&self) -> Hertz {

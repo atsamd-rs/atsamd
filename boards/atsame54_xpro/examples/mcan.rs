@@ -83,7 +83,7 @@ type Aux = mcan::bus::Aux<
     clock::types::Can1,
     hal::can::Dependencies<
         clock::types::Can1,
-        clock::gclk::Gclk0Id,
+        clock::pclk::PclkSource<clock::gclk::Gclk0Id>,
         bsp::Ata6561Rx,
         bsp::Ata6561Tx,
         bsp::pac::Can1,

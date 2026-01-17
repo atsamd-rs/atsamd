@@ -42,21 +42,21 @@ async fn main(_s: embassy_executor::Spawner) -> ! {
     let apb_adc0 = buses.apb.enable(tokens.apbs.adc0);
     // ...and enable the ADC0 PCLK. Both of these are required for the
     // ADC to run.
-    let (pclk_adc0, _gclk0) = Pclk::enable(tokens.pclks.adc0, clocks.gclk0);
+    let (pclk_adc0, _gclk0) = Pclk::enable_dyn(tokens.pclks.adc0, clocks.gclk0);
 
     let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
         .with_clock_cycles_per_sample(5)
         .with_clock_divider(Prescaler::Div32)
         .with_vref(atsamd_hal::adc::Reference::Arefa)
-        .enable(peripherals.adc0, apb_adc0, &pclk_adc0)
+        .enable(peripherals.adc0, apb_adc0, pclk_adc0)
         .unwrap()
         .into_future(Irqs);
 
     let mut adc_pin = pins.a0.into_alternate();
 
     loop {
-        let res = adc.read(&mut adc_pin).await;
+        let _res = adc.read(&mut adc_pin).await;
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("ADC Result: {}", res).unwrap();
+        cortex_m_semihosting::hprintln!("ADC Result: {}", _res).unwrap();
     }
 }
