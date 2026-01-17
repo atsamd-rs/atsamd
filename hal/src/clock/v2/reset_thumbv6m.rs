@@ -6,7 +6,10 @@ use atsamd_hal_macros::hal_macro_helper;
 
 use typenum::U1;
 
-use crate::pac::{Gclk, Pm, Sysctrl};
+use crate::{
+    clock::v2::pclk::PclkSource,
+    pac::{Gclk, Pm, Sysctrl},
+};
 
 use super::*;
 
@@ -97,7 +100,7 @@ pub struct Clocks {
     /// Always-enabled OSCULP oscillators
     pub osculp: OscUlpClocks,
     /// [`Pclk`](pclk::Pclk) for the watchdog timer, sourced from [`Gclk2`](gclk::Gclk2)
-    pub wdt: pclk::Pclk<types::Wdt, gclk::Gclk2Id>,
+    pub wdt: pclk::Pclk<types::Wdt, PclkSource<gclk::Gclk2Id>>,
 }
 
 /// Type-level tokens for unused clocks at power-on reset
@@ -155,7 +158,7 @@ pub fn clock_system_at_reset(gclk: Gclk, pm: Pm, sysctrl: Sysctrl) -> (Buses, Cl
         let osculp32k = Enabled::<_, U0>::new(osculp32k::OscUlp32k::new());
         let (gclk2, osculp32k) = gclk::Gclk2::from_source(gclk::GclkToken::new(), osculp32k);
         let gclk2 = Enabled::new(gclk2);
-        let wdt = pclk::Pclk::new(pclk::PclkToken::new(), gclk2.freq());
+        let wdt = pclk::Pclk::<_, PclkSource<_>>::new(pclk::PclkToken::new(), gclk2.freq());
         let osculp = OscUlpClocks {
             base,
             osculp1k,

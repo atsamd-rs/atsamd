@@ -1585,6 +1585,7 @@ macro_rules! make_all_gclks {
             ///
             /// `DynGclkId` is the value-level equivalent of [`GclkId`].
             #[hal_macro_helper]
+            #[derive(Clone, Copy, Debug, PartialEq)]
             pub enum DynGclkId {
                 #(
                     Gclk~N,
