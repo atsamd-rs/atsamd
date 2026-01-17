@@ -462,6 +462,7 @@ impl<G: GclkId> GclkToken<G> {
 /// The variants of this enum identify one generic clock generator.
 ///
 /// `DynGclkId` is the value-level equivalent of [`GclkId`].
+#[derive(Clone, Copy, PartialEq, Eq)]
 #[hal_macro_helper]
 pub enum DynGclkId {
     Gclk0,
@@ -482,6 +483,32 @@ pub enum DynGclkId {
     Gclk10,
     #[hal_cfg("gclk11")]
     Gclk11,
+}
+
+impl core::fmt::Debug for DynGclkId {
+    #[hal_macro_helper]
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            Self::Gclk0 => write!(f, "Gclk0"),
+            Self::Gclk1 => write!(f, "Gclk1"),
+            Self::Gclk2 => write!(f, "Gclk2"),
+            Self::Gclk3 => write!(f, "Gclk3"),
+            Self::Gclk4 => write!(f, "Gclk4"),
+            Self::Gclk5 => write!(f, "Gclk5"),
+            #[hal_cfg("gclk6")]
+            Self::Gclk6 => write!(f, "Gclk6"),
+            #[hal_cfg("gclk7")]
+            Self::Gclk7 => write!(f, "Gclk7"),
+            #[hal_cfg("gclk8")]
+            Self::Gclk8 => write!(f, "Gclk8"),
+            #[hal_cfg("gclk9")]
+            Self::Gclk9 => write!(f, "Gclk9"),
+            #[hal_cfg("gclk10")]
+            Self::Gclk10 => write!(f, "Gclk10"),
+            #[hal_cfg("gclk11")]
+            Self::Gclk11 => write!(f, "Gclk11"),
+        }
+    }
 }
 
 //==============================================================================

@@ -51,13 +51,13 @@ fn main() -> ! {
         // Overruns if clock divider < 32 in debug mode
         .with_clock_divider(Prescaler::Div32)
         .with_vref(atsamd_hal::adc::Reference::Arefa)
-        .enable(peripherals.adc0, apb_adc0, &pclk_adc0)
+        .enable(peripherals.adc0, apb_adc0, pclk_adc0)
         .unwrap();
     let mut adc_pin = pins.a0.into_alternate();
 
     loop {
-        let res = adc.read(&mut adc_pin);
+        let _res = adc.read(&mut adc_pin);
         #[cfg(feature = "use_semihosting")]
-        let _ = cortex_m_semihosting::hprintln!("ADC value: {}", res);
+        let _ = cortex_m_semihosting::hprintln!("ADC value: {}", _res);
     }
 }
