@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.0...atsamd-hal-0.23.1) - 2025-12-29
+
+### Added
+
+- *(i2c)* add I2C capabilities to labelled pins for arduino_nano33iot ([#975](https://github.com/atsamd-rs/atsamd/pull/975))
+
 ## [0.23.0](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.22.2...atsamd-hal-0.23.0) - 2025-11-19
 
 ### Added
