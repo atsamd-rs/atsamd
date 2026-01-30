@@ -27,7 +27,7 @@ use core::ops::Deref;
 use atsamd_hal_macros::{hal_cfg, hal_module};
 use pac::Peripherals;
 
-use crate::{gpio::AnyPin, pac, typelevel::Sealed};
+use crate::pac;
 
 #[hal_module(
     any("adc-d11", "adc-d21") => "d11/mod.rs",
@@ -45,12 +45,17 @@ pub use async_api::*;
 mod builder;
 pub use builder::*;
 
+mod input;
+pub use input::*;
+
 #[hal_cfg(any("adc-d11", "adc-d21"))]
 use crate::pac::adc as adc0;
 #[hal_cfg("adc-d5x")]
 use crate::pac::adc0;
 
 pub use adc0::refctrl::Refselselect as Reference;
+
+use channel::*;
 
 /// ADC Settings when reading Internal sensors (Like VREF and Temperatures)
 /// These settings are based on the minimums suggested in the datasheet
@@ -154,13 +159,6 @@ pub trait AdcInstance {
     fn waker() -> &'static embassy_sync::waitqueue::AtomicWaker;
 }
 
-/// Trait representing a GPIO pin which can be used as an input for an ADC
-pub trait AdcPin<I>: AnyPin<Mode = crate::gpio::AlternateB> + Sealed
-where
-    I: AdcInstance,
-{
-    const CHANNEL: u8;
-}
 
 /// ADC Instance
 #[hal_cfg(any("adc-d11", "adc-d21"))]
@@ -328,19 +326,24 @@ impl<I: AdcInstance> Adc<I> {
 
     /// Read a single value from the provided ADC pin.
     #[inline]
-    pub fn read<P: AdcPin<I>>(&mut self, _pin: &mut P) -> u16 {
-        self.read_channel(P::CHANNEL)
+    pub fn read<IN: AdcInput<I>>(&mut self, _input: &mut IN) -> u16 {
+        self.read_channel(IN::Pos::MUXVAL, IN::Neg::MUXVAL, IN::SAMPLE_MODE)
     }
 
     /// Read a single value from the provided channel, in a blocking fashion
     #[inline]
-    fn read_channel(&mut self, ch: u8) -> u16 {
+    fn read_channel(
+        &mut self,
+        pos_ch: adc0::inputctrl::Muxposselect,
+        neg_ch: adc0::inputctrl::Muxnegselect,
+        sample_mode: SampleMode,
+    ) -> u16 {
         // Clear overrun errors that might've occured before we try to read anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
         self.disable_freerunning();
         self.sync();
-        self.mux(ch);
+        self.mux(pos_ch, neg_ch, sample_mode);
         self.check_read_discard();
         self.start_conversion();
         while !self.read_flags().contains(Flags::RESRDY) {
@@ -365,21 +368,27 @@ impl<I: AdcInstance> Adc<I> {
 
     /// Read into a buffer from the provided ADC pin, in a blocking fashion
     #[inline]
-    pub fn read_buffer<P: AdcPin<I>>(
+    pub fn read_buffer<IN: AdcInput<I>>(
         &mut self,
-        _pin: &mut P,
+        _input: &mut IN,
         dst: &mut [u16],
     ) -> Result<(), Error> {
-        self.read_buffer_channel(P::CHANNEL, dst)
+        self.read_buffer_channel(IN::Pos::MUXVAL, IN::Neg::MUXVAL, IN::SAMPLE_MODE, dst)
     }
 
     /// Read into a buffer from the provided channel, in a blocking fashion
     #[inline]
-    fn read_buffer_channel(&mut self, ch: u8, dst: &mut [u16]) -> Result<(), Error> {
+    fn read_buffer_channel(
+        &mut self,
+        pos_ch: adc0::inputctrl::Muxposselect,
+        neg_ch: adc0::inputctrl::Muxnegselect,
+        sample_mode: SampleMode,
+        dst: &mut [u16],
+    ) -> Result<(), Error> {
         // Clear overrun errors that might've occured before we try to read anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
-        self.mux(ch);
+        self.mux(pos_ch, neg_ch, sample_mode);
         self.enable_freerunning();
         self.start_conversion();
         if self.discard {

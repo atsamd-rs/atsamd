@@ -1,4 +1,5 @@
 pub mod pin;
+pub mod channel;
 
 use pac::Supc;
 
@@ -7,7 +8,7 @@ use super::{FutureAdc, async_api};
 
 use super::{
     ADC_SETTINGS_INTERNAL_READ, Accumulation, Adc, AdcInstance, AdcSettings, CpuVoltageSource,
-    Error, Flags, PrimaryAdc, SampleCount,
+    Error, Flags, PrimaryAdc, SampleCount, SampleMode,
 };
 use crate::{calibration, pac};
 
@@ -110,9 +111,7 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
         I::calibrate(&self.adc);
         self.sync();
-        self.adc
-            .ctrla()
-            .modify(|_, w| w.prescaler().variant(cfg.clk_divider));
+        self.adc.ctrla().modify(|_, w| { w.prescaler().variant(cfg.clk_divider) });
         self.sync();
         self.adc
             .ctrlb()
@@ -123,11 +122,14 @@ impl<I: AdcInstance> Adc<I> {
             .sampctrl()
             .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
         self.sync();
-        self.adc.inputctrl().modify(|_, w| {
-            w.muxneg().gnd();
-            w.diffmode().clear_bit()
-        }); // No negative input (internal gnd)
-        self.sync();
+//        let diffmode = match cfg.sample_mode {
+//            SampleMode::SingleEnded => false,
+//            SampleMode::Differential => true,
+//        };
+//        self.adc.inputctrl().modify(|_, w| {
+//            w.diffmode().bit(diffmode)
+//        });
+//        self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
             Accumulation::Single(_) => (SampleCount::_1, 0),
@@ -169,8 +171,14 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
 
         let (tp, tc) = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
             (
-                adc.read_channel(0x1C) as f32, // Tp
-                adc.read_channel(0x1D) as f32, // Tc
+                adc.read_channel(
+                    pac::adc0::inputctrl::Muxposselect::Ptat,
+                    pac::adc0::inputctrl::Muxnegselect::Gnd,
+                    SampleMode::SingleEnded) as f32, // Tp
+                adc.read_channel(
+                    pac::adc0::inputctrl::Muxposselect::Ctat,
+                    pac::adc0::inputctrl::Muxnegselect::Gnd,
+                    SampleMode::SingleEnded) as f32, // Tc
             )
         });
         // Restore vrefs old state
@@ -181,11 +189,12 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
 
     #[inline]
     pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
-        let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-            let res = adc.read_channel(src as u8);
-            adc.reading_to_f32(res) * 3.3 * 4.0 // x4 since the voltages are 1/4 scaled
-        });
-        (voltage * 1000.0) as u16
+        //let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
+        //    let res = adc.read_channel(src as u8, None);
+        //    adc.reading_to_f32(res) * 3.3 * 4.0 // x4 since the voltages are 1/4 scaled
+        //});
+        //(voltage * 1000.0) as u16
+        0
     }
 }
 
@@ -281,12 +290,30 @@ impl<I: AdcInstance> Adc<I> {
     }
 
     #[inline]
-    pub(super) fn mux(&mut self, ch: u8) {
+    pub(super) fn mux(
+        &mut self,
+        pos_ch: pac::adc0::inputctrl::Muxposselect,
+        neg_ch: pac::adc0::inputctrl::Muxnegselect,
+        sample_mode: SampleMode,
+    ) {
         self.adc.inputctrl().modify(|r, w| {
-            if r.muxpos().bits() != ch {
+            if r.muxpos().bits() != pos_ch.into() {
                 self.discard = true;
             }
-            unsafe { w.muxpos().bits(ch) }
+            if r.muxneg().bits() != neg_ch.into() {
+                self.discard = true;
+            }
+
+            // Safe as pos_ch and neg_ch are derived from Muxposselect and Muxnegselect PAC enums
+            unsafe {
+                w.muxpos().bits(pos_ch.into());
+                w.muxneg().bits(neg_ch.into());
+            }
+
+            match sample_mode {
+                SampleMode::SingleEnded => w.diffmode().clear_bit(),
+                SampleMode::Differential => w.diffmode().set_bit(),
+            }
         });
         self.sync()
     }
