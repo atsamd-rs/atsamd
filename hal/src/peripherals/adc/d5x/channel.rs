@@ -68,32 +68,3 @@ channel! {
     CTAT: (Muxposselect::Ctat, ),
     GND: (, Muxnegselect::Gnd),
 }
-
-macro_rules! primary_channel {
-    (
-        $(
-            $CH:ident: ($($PMUX:path)?, $($NMUX:path)?)
-        ),+
-        $(,)?
-    ) => {
-        $(
-            pub struct $CH<I: AdcInstance> {
-                adc: PhantomData<I>,
-            }
-
-            impl<I: AdcInstance> Sealed for $CH<I> {}
-
-            $(
-                impl<I: AdcInstance + PrimaryAdc> PosChannel<I> for $CH<I> {
-                    const MUXVAL: Muxposselect = $PMUX;
-                }
-            )?
-            $(
-                impl<I: AdcInstance + PrimaryAdc> PosChannel<I> for $CH<I> {
-                    const MUXVAL: Muxnegselect = $NMUX;
-                }
-            )?
-        )+
-    };
-}
-
