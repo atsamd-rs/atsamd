@@ -66,5 +66,6 @@ channel! {
     BANDGAP: (Muxposselect::Bandgap, ),
     PTAT: (Muxposselect::Ptat, ),
     CTAT: (Muxposselect::Ctat, ),
+    DAC0: (Muxposselect::Dac0, ),
     GND: (, Muxnegselect::Gnd),
 }
