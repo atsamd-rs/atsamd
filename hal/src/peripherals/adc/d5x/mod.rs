@@ -122,14 +122,6 @@ impl<I: AdcInstance> Adc<I> {
             .sampctrl()
             .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
         self.sync();
-//        let diffmode = match cfg.sample_mode {
-//            SampleMode::SingleEnded => false,
-//            SampleMode::Differential => true,
-//        };
-//        self.adc.inputctrl().modify(|_, w| {
-//            w.diffmode().bit(diffmode)
-//        });
-//        self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
             Accumulation::Single(_) => (SampleCount::_1, 0),
@@ -189,12 +181,14 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
 
     #[inline]
     pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
-        //let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-        //    let res = adc.read_channel(src as u8, None);
-        //    adc.reading_to_f32(res) * 3.3 * 4.0 // x4 since the voltages are 1/4 scaled
-        //});
-        //(voltage * 1000.0) as u16
-        0
+        let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
+            let res = adc.read_channel(
+                src.into(),
+                pac::adc0::inputctrl::Muxnegselect::Gnd,
+                SampleMode::SingleEnded);
+            adc.reading_to_f32(res) * 3.3 * 4.0 // x4 since the voltages are 1/4 scaled
+        });
+        (voltage * 1000.0) as u16
     }
 }
 
