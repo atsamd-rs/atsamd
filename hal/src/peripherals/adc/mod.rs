@@ -96,6 +96,7 @@ pub enum Error {
 }
 
 /// Voltage source to use when using the ADC to measure the CPU voltage
+#[hal_cfg("adc-d5x")]
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum CpuVoltageSource {
     /// Core voltage
@@ -108,6 +109,7 @@ pub enum CpuVoltageSource {
     Bandgap,
 }
 
+#[hal_cfg("adc-d5x")]
 impl Into<adc0::inputctrl::Muxposselect> for CpuVoltageSource {
     fn into(self) -> adc0::inputctrl::Muxposselect {
         match self {
@@ -119,18 +121,28 @@ impl Into<adc0::inputctrl::Muxposselect> for CpuVoltageSource {
     }
 }
 
-///// Voltage source to use when using the ADC to measure the CPU voltage
-//#[hal_cfg(any("adc-d21", "adc-d11"))]
-//#[derive(Copy, Clone, PartialEq, Eq)]
-//#[repr(u8)]
-//pub enum CpuVoltageSource {
-//    /// Bandgap reference voltage - 1.1V
-//    Bandgap = 0x19,
-//    /// Core voltage - 1.2V
-//    Core = 0x1A,
-//    /// IO voltage - 1.62V to 3.63V
-//    Io = 0x1B,
-//}
+/// Voltage source to use when using the ADC to measure the CPU voltage
+#[hal_cfg(any("adc-d21", "adc-d11"))]
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum CpuVoltageSource {
+    /// Bandgap reference voltage - 1.1V
+    Bandgap,
+    /// Core voltage - 1.2V
+    Core,
+    /// IO voltage - 1.62V to 3.63V
+    Io,
+}
+
+#[hal_cfg(any("adc-d21", "adc-d11"))]
+impl Into<adc0::inputctrl::Muxposselect> for CpuVoltageSource {
+    fn into(self) -> adc0::inputctrl::Muxposselect {
+        match self {
+            CpuVoltageSource::Core => adc0::inputctrl::Muxposselect::Scaledcorevcc,
+            CpuVoltageSource::Io => adc0::inputctrl::Muxposselect::Scalediovcc,
+            CpuVoltageSource::Bandgap => adc0::inputctrl::Muxposselect::Bandgap,
+        }
+    }
+}
 
 bitflags::bitflags! {
     /// ADC interrupt flags

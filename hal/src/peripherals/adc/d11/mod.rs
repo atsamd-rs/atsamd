@@ -1,7 +1,10 @@
 use super::{
     ADC_SETTINGS_INTERNAL_READ, ADC_SETTINGS_INTERNAL_READ_D21_TEMP, Accumulation, Adc,
     AdcInstance, AdcSettings, CpuVoltageSource, Error, Flags, PrimaryAdc, SampleCount,
+    SampleMode
 };
+
+use atsamd_hal_macros::{hal_macro_helper};
 
 #[cfg(feature = "async")]
 use super::{FutureAdc, async_api};
@@ -11,6 +14,7 @@ use pac::Peripherals;
 use pac::Sysctrl;
 use pac::adc::inputctrl::Gainselect;
 pub mod pin;
+pub mod channel;
 
 /// Wrapper around the ADC instance
 pub struct Adc0 {
@@ -196,12 +200,51 @@ impl<I: AdcInstance> Adc<I> {
     }
 
     #[inline]
-    pub(super) fn mux(&mut self, ch: u8) {
+    #[hal_macro_helper]
+    pub(super) fn mux(
+        &mut self,
+        pos_ch: pac::adc::inputctrl::Muxposselect,
+        neg_ch: pac::adc::inputctrl::Muxnegselect,
+        sample_mode: SampleMode,
+    ) {
+        let active_sample_mode = match self.adc.ctrlb().read().diffmode().bit() {
+            true => SampleMode::Differential,
+            false => SampleMode::SingleEnded,
+        };
+
+        if active_sample_mode != sample_mode {
+            // Disable the ADC if chip is SAMD11 family
+            // SAMD11 datasheet section 31.8.5 states that the ADC must be disabled to modify
+            // the DIFFMODE bit.
+            #[hal_cfg("adc-d11")]
+            self.power_down();
+
+            self.adc.ctrlb().write(|w| {
+                match sample_mode {
+                    SampleMode::SingleEnded => w.diffmode().clear_bit(),
+                    SampleMode::Differential => w.diffmode().set_bit(),
+                }
+            });
+            self.sync();
+
+            // Re-enable the ADC if chip is SAMD11 family
+            #[hal_cfg("adc-d11")]
+            self.power_up();
+        }
+
         self.adc.inputctrl().modify(|r, w| {
-            if r.muxpos().bits() != ch {
+            if r.muxpos().bits() != pos_ch.into() {
                 self.discard = true;
             }
-            unsafe { w.muxpos().bits(ch) }
+            if r.muxneg().bits() != neg_ch.into() {
+                self.discard = true;
+            }
+
+            // Safe as pos_ch and neg_ch are derived from Muxposselect and Muxnegselect PAC enums
+            unsafe {
+                w.muxpos().bits(pos_ch.into());
+                w.muxpos().bits(neg_ch.into())
+            }
         });
         self.sync()
     }
@@ -252,7 +295,10 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
             // Settings
             adc.adc.inputctrl().modify(|_, w| w.gain()._1x());
             adc.discard = true;
-            let res = adc.read_channel(0x18);
+            let res = adc.read_channel(
+                pac::adc::inputctrl::Muxposselect::Temp,
+                pac::adc::inputctrl::Muxnegselect::Gnd,
+                SampleMode::SingleEnded);
             // Set gain back to normal
             adc.adc.inputctrl().modify(|_, w| w.gain().div2());
             adc.discard = true;
@@ -267,7 +313,10 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     #[inline]
     pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
         let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-            let res = adc.read_channel(src as u8);
+            let res = adc.read_channel(
+                src.into(),
+                pac::adc::inputctrl::Muxnegselect::Gnd,
+                SampleMode::SingleEnded);
             let mut res_f = adc.reading_to_f32(res) * 3.3;
             if CpuVoltageSource::Bandgap != src {
                 res_f *= 4.0;
