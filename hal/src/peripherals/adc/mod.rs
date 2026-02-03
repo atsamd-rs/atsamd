@@ -417,8 +417,8 @@ impl<I: AdcInstance> Adc<I> {
     pub fn get_resolution(&self) -> Resolution {
         match self.cfg.accumulation {
             Accumulation::Single(res) => res.into(),
-            Accumulation::Average => Resolution::_12bit,
-            Accumulation::Summed => Resolution::_16bit,
+            Accumulation::Average(_) => Resolution::_12bit,
+            Accumulation::Summed(_) => Resolution::_16bit,
         }
     }
 
