@@ -221,12 +221,3 @@ usb-buffer-8k = ["usb"] # 8192 byte buffer shared between all USB endpoints
 # The `device` feature tells the HAL that a device has been selected from the
 # feature list. It exists mostly to provide better error messages.
 device = []
-
-
-[package.metadata.feature-groups]
-usb-buffer.exactly-one = { features = [
-  "usb-buffer-1k",
-  "usb-buffer-2k",
-  "usb-buffer-4k",
-  "usb-buffer-8k",
-] }
