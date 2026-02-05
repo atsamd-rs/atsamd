@@ -43,6 +43,10 @@ pub trait AdcInput<I: AdcInstance> {
     const SAMPLE_MODE: SampleMode;
     type Pos: PosChannel<I>;
     type Neg: NegChannel<I>;
+    type Output;
+
+    /// Cast the ADC result to the appropriate output type
+    fn cast_result(result: u16) -> Self::Output;
 }
 
 /// Type representing a single ended input.
@@ -64,6 +68,12 @@ where
     type Pos = P;
     /// Single ended inputs always referenced to internal ADC GND
     type Neg = GND<I>;
+    type Output = u16;
+
+    #[inline]
+    fn cast_result(result: u16) -> Self::Output {
+        result
+    }
 }
 
 impl<I, P> SingleEndedInput<I, P>
@@ -111,6 +121,12 @@ where
     const SAMPLE_MODE: SampleMode = SampleMode::Differential;
     type Pos = P;
     type Neg = N;
+    type Output = i16;
+
+    #[inline]
+    fn cast_result(result: u16) -> Self::Output {
+        result as i16
+    }
 }
 
 impl<I, P, N> DifferentialInput<I, P, N>

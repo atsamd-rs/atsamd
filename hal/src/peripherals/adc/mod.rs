@@ -349,8 +349,8 @@ impl<I: AdcInstance> Adc<I> {
 
     /// Read a single value from the provided ADC pin.
     #[inline]
-    pub fn read<IN: AdcInput<I>>(&mut self, _input: &mut IN) -> u16 {
-        self.read_channel(IN::Pos::MUXVAL, IN::Neg::MUXVAL, IN::SAMPLE_MODE)
+    pub fn read<IN: AdcInput<I>>(&mut self, _input: &mut IN) -> IN::Output {
+        IN::cast_result(self.read_channel(IN::Pos::MUXVAL, IN::Neg::MUXVAL, IN::SAMPLE_MODE))
     }
 
     /// Read a single value from the provided channel, in a blocking fashion
