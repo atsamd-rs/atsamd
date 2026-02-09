@@ -280,7 +280,10 @@ impl<I: AdcInstance> Adc<I> {
 
     #[inline]
     pub(super) fn conversion_result(&self) -> u16 {
-        self.adc.result().read().result().bits()
+        match self.adc.ctrlb().read().leftadj().bit_is_clear() {
+            true => self.adc.result().read().result().bits(),
+            false => ((self.adc.result().read().result().bits() as i16) >> 4) as u16,
+        }
     }
 
     #[inline]
@@ -309,6 +312,12 @@ impl<I: AdcInstance> Adc<I> {
                 SampleMode::Differential => w.diffmode().set_bit(),
             }
         });
+        self.sync();
+
+        match sample_mode {
+            SampleMode::SingleEnded => self.adc.ctrlb().write(|w| w.leftadj().clear_bit()),
+            SampleMode::Differential => self.adc.ctrlb().write(|w| w.leftadj().set_bit()),
+        }
         self.sync()
     }
 
