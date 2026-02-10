@@ -8,9 +8,38 @@ use super::{FutureAdc, async_api};
 
 use super::{
     ADC_SETTINGS_INTERNAL_READ, Accumulation, Adc, AdcInstance, AdcSettings, CpuVoltageSource,
-    Error, Flags, PrimaryAdc, SampleCount, SampleMode,
+    Error, Flags, PrimaryAdc, SampleCount, SampleMode, Resolution,
 };
 use crate::{calibration, pac};
+
+enum ResultShift {
+    _8bit,
+    _10bit,
+    _12bit,
+    _16bit,
+}
+
+impl From<Resolution> for ResultShift {
+    fn from(item: Resolution) -> Self {
+        match item {
+            Resolution::_8bit => ResultShift::_8bit,
+            Resolution::_10bit => ResultShift::_10bit,
+            Resolution::_12bit => ResultShift::_12bit,
+            Resolution::_16bit => ResultShift::_16bit,
+        }
+    }
+}
+
+impl ResultShift {
+    fn shift_amount(self) -> u8 {
+        match self {
+            ResultShift::_8bit => 7,
+            ResultShift::_10bit => 5,
+            ResultShift::_12bit => 3,
+            ResultShift::_16bit => 0,
+        }
+    }
+}
 
 /// ADC instance 0
 pub struct Adc0 {
@@ -282,7 +311,11 @@ impl<I: AdcInstance> Adc<I> {
     pub(super) fn conversion_result(&self) -> u16 {
         match self.adc.ctrlb().read().leftadj().bit_is_clear() {
             true => self.adc.result().read().result().bits(),
-            false => ((self.adc.result().read().result().bits() as i16) >> 4) as u16,
+            false =>
+                ((self.adc.result().read().result().bits() as i16) >>
+                    ResultShift::from(self.cfg.accumulation.output_resolution())
+                    .shift_amount())
+                as u16,
         }
     }
 
