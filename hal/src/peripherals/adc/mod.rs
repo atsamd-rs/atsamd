@@ -64,6 +64,8 @@ const ADC_SETTINGS_INTERNAL_READ: AdcSettings = AdcSettings {
     sample_clock_cycles: 32,
     accumulation: Accumulation::average(SampleCount::_4),
     vref: Reference::Intvcc1,
+    offset_compensation: false,
+    reference_compensation: false,
 };
 
 /// Based on Temperature log row information (NVM)x
@@ -73,6 +75,8 @@ const ADC_SETTINGS_INTERNAL_READ_D21_TEMP: AdcSettings = AdcSettings {
     sample_clock_cycles: 32,
     accumulation: Accumulation::average(SampleCount::_4),
     vref: Reference::Int1v,
+    offset_compensation: false,
+    reference_compensation: false,
 };
 
 /// Errors that may occur when operating the ADC

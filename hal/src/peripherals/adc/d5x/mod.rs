@@ -147,9 +147,16 @@ impl<I: AdcInstance> Adc<I> {
             .modify(|_, w| w.ressel().variant(cfg.accumulation.resolution()));
         self.sync();
 
+        let samplen = match cfg.offset_compensation {
+            true => 0,  // As per datasheet, SAMPLEN must be set to 0 when offset compensation is enabled
+            false => cfg.sample_clock_cycles.saturating_sub(1),
+        };
         self.adc
             .sampctrl()
-            .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
+            .modify(|_, w| {
+                unsafe { w.samplen().bits(samplen) };
+                w.offcomp().bit(cfg.offset_compensation)
+            });
         self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
@@ -168,6 +175,8 @@ impl<I: AdcInstance> Adc<I> {
         });
         self.sync();
         self.set_reference(cfg.vref);
+        self.sync();
+        self.adc.refctrl().write(|w| w.refcomp().bit(cfg.reference_compensation));
         self.sync();
         self.adc.ctrla().modify(|_, w| w.enable().set_bit());
         self.sync();

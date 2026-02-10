@@ -152,6 +152,8 @@ pub struct AdcBuilder {
     pub sample_clock_cycles: Option<u8>,
     pub accumulation: Accumulation,
     pub vref: Option<Reference>,
+    pub offset_compensation: Option<bool>,
+    pub reference_compensation: Option<bool>,
 }
 
 /// Version of [AdcBuilder] without any optional settings.
@@ -162,6 +164,8 @@ pub(crate) struct AdcSettings {
     pub sample_clock_cycles: u8,
     pub accumulation: Accumulation,
     pub vref: Reference,
+    pub offset_compensation: bool,
+    pub reference_compensation: bool,
 }
 
 impl AdcBuilder {
@@ -172,6 +176,8 @@ impl AdcBuilder {
             sample_clock_cycles: None,
             accumulation: accumulation_method,
             vref: None,
+            offset_compensation: None,
+            reference_compensation: None,
         }
     }
 
@@ -190,6 +196,8 @@ impl AdcBuilder {
             sample_clock_cycles: self.sample_clock_cycles.unwrap(),
             accumulation: self.accumulation,
             vref: self.vref.unwrap(),
+            offset_compensation: self.offset_compensation.unwrap_or(false),
+            reference_compensation: self.reference_compensation.unwrap_or(false),
         })
     }
 
@@ -242,6 +250,22 @@ impl AdcBuilder {
         let samples = self.accumulation.samples();
         clocks_per_sample *= samples as u32;
         Ok(adc_clk_freq / clocks_per_sample)
+    }
+
+    /// Configure the ADC offset compensation
+    ///
+    /// ## Important
+    /// * Enabling offset compesation forces the clock cycles per sample to be 4 GCLK cycles, any change
+    ///   to the cycles per sample via [`with_clock_cycles_per_sample()`] will be ignored.
+    pub fn enable_offset_compensation(mut self, enabled: bool) -> Self {
+        self.offset_compensation = Some(enabled);
+        self
+    }
+
+    /// Configure the ADC reference compensation
+    pub fn enable_reference_compensation(mut self, enabled: bool) -> Self {
+        self.reference_compensation = Some(enabled);
+        self
     }
 
     /// Turn the builder into an ADC
