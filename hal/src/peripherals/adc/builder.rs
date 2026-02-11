@@ -154,6 +154,8 @@ pub struct AdcBuilder {
     pub vref: Option<Reference>,
     pub offset_compensation: Option<bool>,
     pub reference_compensation: Option<bool>,
+    pub auto_left_adjust: Option<bool>,
+    pub auto_rail_to_rail: Option<bool>,
 }
 
 /// Version of [AdcBuilder] without any optional settings.
@@ -166,6 +168,8 @@ pub(crate) struct AdcSettings {
     pub vref: Reference,
     pub offset_compensation: bool,
     pub reference_compensation: bool,
+    pub auto_left_adjust: bool,
+    pub auto_rail_to_rail: bool,
 }
 
 impl AdcBuilder {
@@ -178,6 +182,8 @@ impl AdcBuilder {
             vref: None,
             offset_compensation: None,
             reference_compensation: None,
+            auto_left_adjust: None,
+            auto_rail_to_rail: None,
         }
     }
 
@@ -198,6 +204,8 @@ impl AdcBuilder {
             vref: self.vref.unwrap(),
             offset_compensation: self.offset_compensation.unwrap_or(false),
             reference_compensation: self.reference_compensation.unwrap_or(false),
+            auto_left_adjust: self.auto_left_adjust.unwrap_or(false),
+            auto_rail_to_rail: self.auto_rail_to_rail.unwrap_or(false),
         })
     }
 
@@ -256,15 +264,35 @@ impl AdcBuilder {
     ///
     /// ## Important
     /// * Enabling offset compesation forces the clock cycles per sample to be 4 GCLK cycles, any change
-    ///   to the cycles per sample via [`with_clock_cycles_per_sample()`] will be ignored.
-    pub fn enable_offset_compensation(mut self, enabled: bool) -> Self {
-        self.offset_compensation = Some(enabled);
+    ///   to the cycles per sample via [`Self::with_clock_cycles_per_sample()`] will be ignored.
+    pub fn enable_offset_compensation(mut self, enable: bool) -> Self {
+        self.offset_compensation = Some(enable);
         self
     }
 
     /// Configure the ADC reference compensation
-    pub fn enable_reference_compensation(mut self, enabled: bool) -> Self {
-        self.reference_compensation = Some(enabled);
+    pub fn enable_reference_compensation(mut self, enable: bool) -> Self {
+        self.reference_compensation = Some(enable);
+        self
+    }
+
+    /// Enables automatic left-adjustment when measuring differential inputs. This allows
+    /// use of the ADC summation or averaging hardware with negative result values. Results are
+    /// automatically right-shifted back appropriately.
+    pub fn enable_auto_left_adjust(mut self, enable: bool) -> Self {
+        self.auto_left_adjust = Some(enable);
+        self
+    }
+
+    /// Automatically enables rail-to-rail operation when measuring a differential input. This 
+    /// relaxes common-mode input requirements on differential inputs and allows measurments closer
+    /// to supply rails.
+    ///
+    /// ## Important
+    /// * Enabling auto rail-to-rail incurs a slight runtime performance hit as the CTRLA.R2R bit is
+    ///   enable-protected, meaning the ADC must be shut down and re-enabled to enable/disable rail-to-rail mode.
+    pub fn enable_auto_rail_to_rail(mut self, enable: bool) -> Self {
+        self.auto_rail_to_rail = Some(enable);
         self
     }
 

@@ -66,6 +66,8 @@ const ADC_SETTINGS_INTERNAL_READ: AdcSettings = AdcSettings {
     vref: Reference::Intvcc1,
     offset_compensation: false,
     reference_compensation: false,
+    auto_left_adjust: false,
+    auto_rail_to_rail: false,
 };
 
 /// Based on Temperature log row information (NVM)x
@@ -77,6 +79,8 @@ const ADC_SETTINGS_INTERNAL_READ_D21_TEMP: AdcSettings = AdcSettings {
     vref: Reference::Int1v,
     offset_compensation: false,
     reference_compensation: false,
+    auto_left_adjust: false,
+    auto_rail_to_rail: false,
 };
 
 /// Errors that may occur when operating the ADC
@@ -370,7 +374,8 @@ impl<I: AdcInstance> Adc<I> {
         self.disable_interrupts(Flags::all());
         self.disable_freerunning();
         self.sync();
-        self.mux(pos_ch, neg_ch, sample_mode);
+        self.set_sample_mode(sample_mode);
+        self.mux(pos_ch, neg_ch);
         self.check_read_discard();
         self.start_conversion();
         while !self.read_flags().contains(Flags::RESRDY) {
@@ -415,7 +420,8 @@ impl<I: AdcInstance> Adc<I> {
         // Clear overrun errors that might've occured before we try to read anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
-        self.mux(pos_ch, neg_ch, sample_mode);
+        self.set_sample_mode(sample_mode);
+        self.mux(pos_ch, neg_ch);
         self.enable_freerunning();
         self.start_conversion();
         if self.discard {

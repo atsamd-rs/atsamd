@@ -333,7 +333,6 @@ impl<I: AdcInstance> Adc<I> {
         &mut self,
         pos_ch: pac::adc0::inputctrl::Muxposselect,
         neg_ch: pac::adc0::inputctrl::Muxnegselect,
-        sample_mode: SampleMode,
     ) {
         self.adc.inputctrl().modify(|r, w| {
             if r.muxpos().bits() != pos_ch.into() {
@@ -346,9 +345,15 @@ impl<I: AdcInstance> Adc<I> {
             // Safe as pos_ch and neg_ch are derived from Muxposselect and Muxnegselect PAC enums
             unsafe {
                 w.muxpos().bits(pos_ch.into());
-                w.muxneg().bits(neg_ch.into());
+                w.muxneg().bits(neg_ch.into())
             }
+        });
+        self.sync();
+    }
 
+    #[inline]
+    pub(super) fn set_sample_mode(&mut self, sample_mode: SampleMode) {
+        self.adc.inputctrl().write(|w| {
             match sample_mode {
                 SampleMode::SingleEnded => w.diffmode().clear_bit(),
                 SampleMode::Differential => w.diffmode().set_bit(),
@@ -356,11 +361,36 @@ impl<I: AdcInstance> Adc<I> {
         });
         self.sync();
 
-        match sample_mode {
-            SampleMode::SingleEnded => self.adc.ctrlb().write(|w| w.leftadj().clear_bit()),
-            SampleMode::Differential => self.adc.ctrlb().write(|w| w.leftadj().set_bit()),
+        if self.cfg.auto_left_adjust == true {
+            self.adc.ctrlb().write(|w| {
+                match sample_mode {
+                    SampleMode::SingleEnded => w.leftadj().clear_bit(),
+                    SampleMode::Differential => w.leftadj().set_bit(),
+                }
+            });
+            self.sync();
         }
-        self.sync()
+
+        if self.cfg.auto_rail_to_rail == true {
+            match sample_mode {
+                SampleMode::SingleEnded => {
+                    if self.adc.ctrla().read().r2r().bit_is_set() {
+                        self.power_down();
+                        self.adc.ctrla().write(|w| w.r2r().clear_bit());
+                        self.sync();
+                        self.power_up();
+                    }
+                },
+                SampleMode::Differential => {
+                    if self.adc.ctrla().read().r2r().bit_is_clear() {
+                        self.power_down();
+                        self.adc.ctrla().write(|w| w.r2r().set_bit());
+                        self.sync();
+                        self.power_up();
+                    }
+                }
+            }
+        }
     }
 
     #[inline]
