@@ -358,6 +358,7 @@ impl<I: AdcInstance> Adc<I> {
             while !self.read_flags().contains(Flags::RESRDY) {
                 core::hint::spin_loop();
             }
+            let _ = self.conversion_result();
             self.discard = false;
         }
     }
