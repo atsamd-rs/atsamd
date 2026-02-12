@@ -176,7 +176,7 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
         self.set_reference(cfg.vref);
         self.sync();
-        self.adc.refctrl().write(|w| w.refcomp().bit(cfg.reference_compensation));
+        self.adc.refctrl().modify(|_, w| w.refcomp().bit(cfg.reference_compensation));
         self.sync();
         self.adc.ctrla().modify(|_, w| w.enable().set_bit());
         self.sync();
@@ -353,7 +353,7 @@ impl<I: AdcInstance> Adc<I> {
 
     #[inline]
     pub(super) fn set_sample_mode(&mut self, sample_mode: SampleMode) {
-        self.adc.inputctrl().write(|w| {
+        self.adc.inputctrl().modify(|_, w| {
             match sample_mode {
                 SampleMode::SingleEnded => w.diffmode().clear_bit(),
                 SampleMode::Differential => w.diffmode().set_bit(),
@@ -362,7 +362,7 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
 
         if self.cfg.auto_left_adjust == true {
-            self.adc.ctrlb().write(|w| {
+            self.adc.ctrlb().modify(|_, w| {
                 match sample_mode {
                     SampleMode::SingleEnded => w.leftadj().clear_bit(),
                     SampleMode::Differential => w.leftadj().set_bit(),
@@ -376,7 +376,7 @@ impl<I: AdcInstance> Adc<I> {
                 SampleMode::SingleEnded => {
                     if self.adc.ctrla().read().r2r().bit_is_set() {
                         self.power_down();
-                        self.adc.ctrla().write(|w| w.r2r().clear_bit());
+                        self.adc.ctrla().modify(|_, w| w.r2r().clear_bit());
                         self.sync();
                         self.power_up();
                     }
@@ -395,7 +395,7 @@ impl<I: AdcInstance> Adc<I> {
                 SampleMode::Differential => {
                     if self.adc.ctrla().read().r2r().bit_is_clear() {
                         self.power_down();
-                        self.adc.ctrla().write(|w| w.r2r().set_bit());
+                        self.adc.ctrla().modify(|_, w| w.r2r().set_bit());
                         self.sync();
                         self.power_up();
                     }
