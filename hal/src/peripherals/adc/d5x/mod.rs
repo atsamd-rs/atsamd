@@ -12,35 +12,6 @@ use super::{
 };
 use crate::{calibration, pac};
 
-enum ResultShift {
-    _8bit,
-    _10bit,
-    _12bit,
-    _16bit,
-}
-
-impl From<Resolution> for ResultShift {
-    fn from(item: Resolution) -> Self {
-        match item {
-            Resolution::_8bit => ResultShift::_8bit,
-            Resolution::_10bit => ResultShift::_10bit,
-            Resolution::_12bit => ResultShift::_12bit,
-            Resolution::_16bit => ResultShift::_16bit,
-        }
-    }
-}
-
-impl ResultShift {
-    fn shift_amount(self) -> u8 {
-        match self {
-            ResultShift::_8bit => 7,
-            ResultShift::_10bit => 5,
-            ResultShift::_12bit => 3,
-            ResultShift::_16bit => 0,
-        }
-    }
-}
-
 /// ADC instance 0
 pub struct Adc0 {
     _adc: pac::Adc0,
@@ -318,13 +289,24 @@ impl<I: AdcInstance> Adc<I> {
 
     #[inline]
     pub(super) fn conversion_result(&self) -> u16 {
-        match self.adc.ctrlb().read().leftadj().bit_is_clear() {
-            true => self.adc.result().read().result().bits(),
-            false =>
-                ((self.adc.result().read().result().bits() as i16) >>
-                    ResultShift::from(self.cfg.accumulation.output_resolution())
-                    .shift_amount())
-                as u16,
+        let shift_amt = if self.cfg.auto_left_adjust == true
+                && self.adc.ctrlb().read().leftadj().bit_is_set() {
+            match self.cfg.accumulation.output_resolution() {
+                Resolution::_8bit => 8,
+                Resolution::_10bit => 6,
+                Resolution::_12bit => 4,
+                Resolution::_16bit => 0,
+            }
+        } else {
+            0
+        };
+
+        // If the result is signed (a.k.a. differential input), cast as signed value before shift
+        // to use the proper arithemtic shift
+        if self.adc.inputctrl().read().diffmode().bit_is_set() {
+            ((self.adc.result().read().result().bits() as i16) >> shift_amt) as u16
+        } else {
+            self.adc.result().read().result().bits() >> shift_amt
         }
     }
 
