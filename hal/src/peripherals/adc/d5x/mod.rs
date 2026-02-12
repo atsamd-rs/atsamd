@@ -380,6 +380,17 @@ impl<I: AdcInstance> Adc<I> {
                         self.sync();
                         self.power_up();
                     }
+
+                    // Disable offset compenstation only if it was enabled earlier for auto rail-to-rail
+                    if self.cfg.offset_compensation == false {
+                        self.adc.sampctrl().modify(|r, w| {
+                            if r.offcomp().bit_is_set() {
+                                w.offcomp().clear_bit()
+                            } else {
+                                w
+                            }
+                        });
+                    }
                 },
                 SampleMode::Differential => {
                     if self.adc.ctrla().read().r2r().bit_is_clear() {
@@ -387,6 +398,18 @@ impl<I: AdcInstance> Adc<I> {
                         self.adc.ctrla().write(|w| w.r2r().set_bit());
                         self.sync();
                         self.power_up();
+                    }
+
+                    // It is required to enable offset compensation during rail-to-rail operation
+                    // per SAM D5x/E5x datasheet section 45.6.3.2
+                    if self.cfg.offset_compensation == false {
+                        self.adc.sampctrl().modify(|r, w| {
+                            if r.offcomp().bit_is_clear() {
+                                w.offcomp().set_bit()
+                            } else {
+                                w
+                            }
+                        });
                     }
                 }
             }
