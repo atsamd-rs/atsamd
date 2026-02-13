@@ -290,7 +290,8 @@ impl<I: AdcInstance> Adc<I> {
     #[inline]
     pub(super) fn conversion_result(&self) -> u16 {
         let shift_amt = if self.cfg.auto_left_adjust == true
-                && self.adc.ctrlb().read().leftadj().bit_is_set() {
+                && self.adc.ctrlb().read().leftadj().bit_is_set()
+                && let Accumulation::Single(_) = self.cfg.accumulation {
             match self.cfg.accumulation.output_resolution() {
                 Resolution::_8bit => 8,
                 Resolution::_10bit => 6,

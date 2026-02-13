@@ -459,11 +459,7 @@ impl<I: AdcInstance> Adc<I> {
     /// Retrieve the configured ADC sample resolution
     #[inline]
     pub fn get_resolution(&self) -> Resolution {
-        match self.cfg.accumulation {
-            Accumulation::Single(res) => res.into(),
-            Accumulation::Average(_) => Resolution::_12bit,
-            Accumulation::Summed(_) => Resolution::_16bit,
-        }
+        self.cfg.accumulation.output_resolution()
     }
 
     /// Return the underlying ADC PAC object.
