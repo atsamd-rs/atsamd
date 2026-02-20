@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.1...atsamd-hal-0.23.2) - 2026-02-20
+
+### Added
+
+- *(usb)* USB allocation rework and simplification ([#963](https://github.com/atsamd-rs/atsamd/pull/963))
+
+### Fixed
+
+- *(uart)* Fix embedded_io::Read::read impl ([#983](https://github.com/atsamd-rs/atsamd/pull/983))
+- *(dmac)* Check+document that the DMAC transfers are smaller than u16::MAX long ([#984](https://github.com/atsamd-rs/atsamd/pull/984))
+- *(pwm)* Fix for off-by-one in get_max_duty() ([#959](https://github.com/atsamd-rs/atsamd/pull/959))
+
 ## [0.23.1](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.0...atsamd-hal-0.23.1) - 2025-12-29
 
 ### Added
