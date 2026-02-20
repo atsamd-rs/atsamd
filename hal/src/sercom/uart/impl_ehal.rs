@@ -107,12 +107,36 @@ where
             return Ok(0);
         }
 
+        while !self.read_flags_errors()?.contains(Flags::RXC) {
+            core::hint::spin_loop();
+        }
+
+        let mut bytes_read = 0;
+
+        while self.read_flags_errors()?.contains(Flags::RXC) {
+            let w = nb::block!(<Self as embedded_hal_nb::serial::Read<u8>>::read(self))?;
+            buf[bytes_read] = w;
+            bytes_read += 1;
+        }
+
+        Ok(bytes_read)
+    }
+
+    #[inline]
+    fn read_exact(
+        &mut self,
+        buf: &mut [u8],
+    ) -> Result<(), embedded_io::ReadExactError<Self::Error>> {
+        if buf.is_empty() {
+            return Ok(());
+        }
+
         for byte in buf.iter_mut() {
             let w = nb::block!(<Self as embedded_hal_nb::serial::Read<u8>>::read(self))?;
             *byte = w;
         }
 
-        Ok(buf.len())
+        Ok(())
     }
 }
 
