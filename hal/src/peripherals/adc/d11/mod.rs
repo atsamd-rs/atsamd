@@ -6,6 +6,9 @@ use super::{
 #[cfg(feature = "async")]
 use super::{FutureAdc, async_api};
 
+#[cfg(feature = "dma")]
+use pac::dmac::chctrlb::Trigsrcselect as TriggerSelect;
+
 use crate::{calibration, pac};
 use pac::Peripherals;
 use pac::Sysctrl;
@@ -21,6 +24,8 @@ impl PrimaryAdc for Adc0 {}
 
 impl AdcInstance for Adc0 {
     type Instance = pac::Adc;
+
+    const DMA_TRIGGER: TriggerSelect = TriggerSelect::AdcResrdy;
 
     #[cfg(feature = "async")]
     type Interrupt = crate::async_hal::interrupts::ADC;
