@@ -95,7 +95,7 @@ required-features = ["rtic", "leds"]
 
 [[example]]
 name = "i2c"
-required-features = ["dma"]
+required-features = ["dma", "usb"]
 
 [[example]]
 name = "pwm"
