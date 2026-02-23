@@ -139,7 +139,7 @@ macro_rules! define_channels_struct_future {
             /// Struct generating individual handles to each DMA channel for `async` operation
             pub struct FutureChannels(
                 #(
-                    pub Channel<Ch~N, super::channel::UninitializedFuture>,
+                    pub Channel<Ch~N, super::channel::UninitializedFuture, super::channel::Blocked>,
                 )*
             );
         });

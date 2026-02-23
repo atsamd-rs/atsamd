@@ -108,7 +108,12 @@ where
 
     /// Use a DMA channel for reads/writes
     #[cfg(feature = "dma")]
-    pub fn with_dma_channel<D: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
+    pub fn with_dma_channel<
+        D: crate::dmac::AnyChannel<
+                Status = crate::dmac::ReadyFuture,
+                Interrupts = crate::dmac::Blocked,
+            >,
+    >(
         self,
         dma_channel: D,
     ) -> I2cFuture<C, D> {
@@ -280,7 +285,7 @@ mod dma {
 
     use super::*;
     use crate::dmac::sram::DmacDescriptor;
-    use crate::dmac::{AnyChannel, Channel, ReadyFuture};
+    use crate::dmac::{AnyChannel, Blocked, Channel, ReadyFuture};
     use crate::sercom::dma::SharedSliceBuffer;
     use crate::sercom::dma::async_dma::{read_dma_linked, write_dma_linked};
 
@@ -288,12 +293,12 @@ mod dma {
     /// Convenience type for a [`I2cFuture`] in DMA mode.
     ///
     /// The type parameter `I` represents the DMA channel ID (`ChX`).
-    pub type I2cFutureDma<C, I> = I2cFuture<C, Channel<I, ReadyFuture>>;
+    pub type I2cFutureDma<C, I> = I2cFuture<C, Channel<I, ReadyFuture, Blocked>>;
 
     impl<C, D> I2cFuture<C, D>
     where
         C: AnyConfig,
-        D: AnyChannel<Status = ReadyFuture>,
+        D: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         /// Reclaim the DMA channel. Any subsequent I2C operations will no
         /// longer use DMA.
@@ -307,7 +312,7 @@ mod dma {
     where
         C: AnyConfig<Sercom = S>,
         S: Sercom,
-        D: AnyChannel<Status = ReadyFuture>,
+        D: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         /// Make an async I2C write transaction, with the option to add in
         /// linked transfers after this first transaction.
@@ -402,7 +407,7 @@ mod dma {
     impl<C, D> I2cTrait for I2cFuture<C, D>
     where
         C: AnyConfig,
-        D: AnyChannel<Status = ReadyFuture>,
+        D: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         #[inline]
         async fn read(&mut self, address: u8, buffer: &mut [u8]) -> Result<(), Self::Error> {

@@ -80,12 +80,17 @@
 //!
 //! # Interrupts
 //!
-//! This driver does not use or manage interrupts issued by the DMAC. Individual
-//! channels can be configured to generate interrupts when the transfer is
-//! complete, an error is detected or the channel is suspended. However, these
-//! interrupts will not be triggered unless the DMAC interrupt is unmasked in
-//! the NVIC. You will be responsible for clearing the interrupt flags in the
-//! ISR.
+//! This driver does not use or manage interrupts issued by the DMAC in blocking
+//! mode. Individual channels can be configured to generate interrupts when the
+//! transfer is complete, an error is detected or the channel is suspended.
+//! However, these interrupts will not be triggered unless the DMAC interrupt is
+//! unmasked in the NVIC. You will be responsible for clearing the interrupt
+//! flags in the ISR.
+//!
+//! In `async` mode, interrupts are managed by the async runtime. Channels
+//! obtained from the async [`DmaController`] carry [`Blocked`]
+//! interrupts, preventing user code from enabling or disabling channel
+//! interrupts directly.
 //!
 //! # About static lifetimes
 //!

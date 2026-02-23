@@ -10,7 +10,7 @@ use atsamd_hal_macros::hal_macro_helper;
 
 use crate::dmac::{
     self, Beat, Buffer, Transfer, TriggerAction,
-    channel::{AnyChannel, Busy, Channel, InterruptFlags, Ready},
+    channel::{AnyChannel, Available, Busy, Channel, InterruptFlags, Ready},
     sram::DmacDescriptor,
     transfer::BufferPair,
 };
@@ -186,9 +186,9 @@ where
         self,
         buf: B,
         mut channel: Ch,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<Self, B>>
+    ) -> Transfer<Channel<Ch::Id, Busy, Ch::Interrupts>, BufferPair<Self, B>>
     where
-        Ch: AnyChannel<Status = Ready>,
+        Ch: AnyChannel<Status = Ready, Interrupts = Available>,
         B: Buffer<Beat = C::Word> + 'static,
     {
         channel
@@ -228,9 +228,9 @@ where
         self,
         buf: B,
         mut channel: Ch,
-    ) -> Transfer<Channel<Ch::Id, Busy>, BufferPair<B, Self>>
+    ) -> Transfer<Channel<Ch::Id, Busy, Ch::Interrupts>, BufferPair<B, Self>>
     where
-        Ch: AnyChannel<Status = Ready>,
+        Ch: AnyChannel<Status = Ready, Interrupts = Available>,
         B: Buffer<Beat = C::Word> + 'static,
     {
         channel
@@ -373,14 +373,14 @@ pub(super) unsafe fn write_dma_linked<T, B, S>(
 /// corresponding DMA transfer implementations.
 #[cfg(feature = "async")]
 pub(crate) mod async_dma {
-    use dmac::{Error, ReadyFuture};
+    use dmac::{Blocked, Error, ReadyFuture};
 
     use super::*;
 
     /// Perform a SERCOM DMA read with a provided `&mut [T]`
     #[inline]
     pub(in super::super) async fn read_dma<T, B, S>(
-        channel: &mut impl AnyChannel<Status = ReadyFuture>,
+        channel: &mut impl AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
         sercom_ptr: SercomPtr<T>,
         buf: &mut B,
     ) -> Result<(), Error>
@@ -403,7 +403,7 @@ pub(crate) mod async_dma {
     #[inline]
     #[hal_macro_helper]
     pub(in super::super) async unsafe fn read_dma_linked<T, B, S>(
-        channel: &mut impl AnyChannel<Status = ReadyFuture>,
+        channel: &mut impl AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
         mut sercom_ptr: SercomPtr<T>,
         buf: &mut B,
         next: Option<&mut DmacDescriptor>,
@@ -438,7 +438,7 @@ pub(crate) mod async_dma {
     /// Perform a SERCOM DMA write with a provided `&[T]`
     #[inline]
     pub(in super::super) async fn write_dma<T, B, S>(
-        channel: &mut impl AnyChannel<Status = ReadyFuture>,
+        channel: &mut impl AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
         sercom_ptr: SercomPtr<T>,
         buf: &mut B,
     ) -> Result<(), Error>
@@ -461,7 +461,7 @@ pub(crate) mod async_dma {
     #[inline]
     #[hal_macro_helper]
     pub(in super::super) async unsafe fn write_dma_linked<T, B, S>(
-        channel: &mut impl AnyChannel<Status = ReadyFuture>,
+        channel: &mut impl AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
         mut sercom_ptr: SercomPtr<T>,
         buf: &mut B,
         next: Option<&mut DmacDescriptor>,

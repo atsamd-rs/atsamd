@@ -84,7 +84,7 @@
 
 use super::{
     Error, ReadyChannel, Result,
-    channel::{AnyChannel, Busy, Channel, ChannelId, InterruptFlags, Ready},
+    channel::{AnyChannel, Busy, Channel, ChannelId, ChannelInterrupts, InterruptFlags, Ready},
     dma_controller::{TriggerAction, TriggerSource},
 };
 use crate::typelevel::{Is, Sealed};
@@ -427,7 +427,7 @@ where
         mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>> {
+    ) -> Transfer<Channel<ChannelId<C>, Busy, ChannelInterrupts<C>>, BufferPair<S, D>> {
         // Reset the complete flag before triggering the transfer.
         // This way an interrupt handler could set complete to true
         // before this function returns.
@@ -447,7 +447,7 @@ where
     /// Similar to [`stop`](Transfer::stop), but it acts on a [`Transfer`]
     /// holding a [`Ready`] channel, so there is no need to explicitly stop the
     /// transfer.
-    pub fn free(self) -> (Channel<ChannelId<C>, Ready>, S, D) {
+    pub fn free(self) -> (Channel<ChannelId<C>, Ready, ChannelInterrupts<C>>, S, D) {
         (
             self.chan.into(),
             self.buffers.source,
@@ -524,7 +524,7 @@ where
     ///
     /// # Blocking: This method may block
     #[inline]
-    pub fn wait(mut self) -> (Channel<ChannelId<C>, Ready>, S, D) {
+    pub fn wait(mut self) -> (Channel<ChannelId<C>, Ready, ChannelInterrupts<C>>, S, D) {
         // Wait for transfer to complete
         while !self.complete() {}
         self.stop()
@@ -634,7 +634,7 @@ where
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
     #[inline]
-    pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D) {
+    pub fn stop(self) -> (Channel<ChannelId<C>, Ready, ChannelInterrupts<C>>, S, D) {
         // `free()` stops the transfer, waits for the burst to finish, and emits a
         // compiler fence.
         let chan = self.chan.into().free();
