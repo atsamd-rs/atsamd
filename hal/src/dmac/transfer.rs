@@ -311,12 +311,11 @@ where
     complete: bool,
 }
 
-impl<C, S, D, R> Transfer<C, BufferPair<S, D>>
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer + 'static,
     D: Buffer<Beat = S::Beat> + 'static,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Safely construct a new `Transfer`. To guarantee memory safety, both
     /// buffers are required to be `'static`.
@@ -366,12 +365,11 @@ where
     }
 }
 
-impl<C, S, D, R> Transfer<C, BufferPair<S, D>>
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Construct a new `Transfer` without checking for memory safety.
     ///
@@ -456,11 +454,10 @@ where
     }
 }
 
-impl<B, C, R, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
+impl<B, C, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
 where
     B: 'static + Beat,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Create a new `Transfer` from static array references of the same type
     /// and length. When two array references are available (instead of slice
