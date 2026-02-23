@@ -90,7 +90,8 @@
 //! In `async` mode, interrupts are managed by the async runtime. Channels
 //! obtained from the async [`DmaController`] carry [`Blocked`]
 //! interrupts, preventing user code from enabling or disabling channel
-//! interrupts directly.
+//! interrupts directly. See the [`channel`] module documentation for details
+//! on converting between async and blocking channel modes.
 //!
 //! # About static lifetimes
 //!

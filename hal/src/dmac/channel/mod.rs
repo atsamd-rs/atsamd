@@ -25,11 +25,57 @@
 //! [`Busy`]. These statuses are checked at compile time to ensure they are
 //! properly initialized before launching DMA transfers.
 //!
-//! # Channel Interrupt availability
+//! # Interrupt availability
 //!
-//! Channels carry either [`Available`] (by default) or [`Blocked`], depending on their source.
-//! When [`Blocked`], interrupts cannot be anabled or disabled, so as not to conflict with internal
-//! implementation details of the async interface.
+//! Channels carry an [`Interrupts`] type parameter — either [`Available`] or
+//! [`Blocked`] — that controls access to interrupt configuration.
+//!
+//! Channels from [`DmaController::split`](super::DmaController::split) are
+//! [`Available`], allowing [`enable_interrupts`](Channel::enable_interrupts)
+//! and [`disable_interrupts`](Channel::disable_interrupts) to be called freely.
+//!
+//! Channels from the async
+//! [`DmaController::split`](super::DmaController::split) are [`Blocked`],
+//! because the async runtime manages interrupts internally. [`Blocked`]
+//! channels can be converted between async and blocking statuses via [`From`]
+//! impls, for use with the [`Transfer`] API, while retaining the interrupt
+//! restriction.
+//!
+//! # Converting between async and blocking channels
+//!
+//! [`Blocked`] channels support [`From`] conversions between their async
+//! (`ReadyFuture`, `UninitializedFuture`) and blocking ([`Ready`],
+//! [`Uninitialized`]) statuses. This enables using the [`Transfer`] API
+//! with channels obtained from the async
+//! [`DmaController`](super::DmaController).
+//!
+//! ```no_run
+//! // Assume `async_chan` is a Channel<Id, ReadyFuture, Blocked> from the
+//! // async DmaController.
+//!
+//! // Convert to a blocking-mode channel
+//! let blocking_chan: Channel<_, Ready, Blocked> = async_chan.into();
+//!
+//! // Use with the Transfer API — for example, a circular transfer,
+//! // which is not available through the async channel API.
+//! let xfer = Transfer::new(blocking_chan, buf_src, buf_dest, true)
+//!     .unwrap()
+//!     .begin(TriggerSource::Disable, TriggerAction::Block);
+//!
+//! // ... do work while the circular transfer runs ...
+//!
+//! let (chan, src, dest) = xfer.stop();
+//!
+//! // Convert back to async when done
+//! let async_chan: Channel<_, ReadyFuture, Blocked> = chan.into();
+//! ```
+//!
+//! Note that [`Blocked`] channels cannot call
+//! [`enable_interrupts`](Channel::enable_interrupts) or
+//! [`disable_interrupts`](Channel::disable_interrupts). Blocking DMA methods
+//! that enable interrupts internally (such as
+//! [`Uart::receive_with_dma`](crate::sercom::uart::Uart::receive_with_dma))
+//! require [`Available`] channels.
 //!
 //! # Resetting
 //!
@@ -118,7 +164,8 @@ impl ReadyChannel for Ready {}
 #[cfg(feature = "async")]
 impl ReadyChannel for ReadyFuture {}
 
-/// Tracks whether the channel can use interrupts, or if they're in use already by the Async impl
+/// Tracks whether the channel can use interrupts, or if they're in use already
+/// by the Async impl
 pub trait Interrupts: Sealed {}
 
 /// Interrupts are available
@@ -126,7 +173,8 @@ pub enum Available {}
 impl Sealed for Available {}
 impl Interrupts for Available {}
 
-/// Interrupts are in use
+/// Interrupts are managed by the `async` runtime and cannot be directly
+/// configured
 pub enum Blocked {}
 impl Sealed for Blocked {}
 impl Interrupts for Blocked {}
@@ -196,8 +244,8 @@ where
 
 /// DMA channel, capable of executing
 /// [`Transfer`]s. Ongoing DMA transfers are automatically stopped when a
-/// [`Channel`] is dropped. ['Interrupts'] are either ['Available'] or ['Blocked'], depending on
-/// whether the async controller is used
+/// [`Channel`] is dropped. ['Interrupts'] are either ['Available'] or
+/// ['Blocked'], depending on whether the async controller is used
 pub struct Channel<Id: ChId, S: Status, I: Interrupts = Available> {
     regs: RegisterBlock<Id>,
     _status: PhantomData<S>,
@@ -393,16 +441,23 @@ impl<Id: ChId, S: Status, I: Interrupts> Channel<Id, S, I> {
     }
 }
 
-/// Gate interrupt enable public methods by Available type parameter
+/// Interrupt configuration methods, only available on channels with
+/// [`Available`] interrupts. Channels from the async
+/// [`DmaController`](super::DmaController) are [`Blocked`] and cannot use these
+/// methods.
 impl<Id: ChId, S: Status> Channel<Id, S, Available> {
-    /// Selectively enable interrupts
+    /// Selectively enable interrupts.
+    ///
+    /// Only available on channels with [`Available`] interrupts.
     #[inline]
     pub fn enable_interrupts(&mut self, flags: InterruptFlags) {
         // SAFETY: Type parameters ensure this is valid for this channel
         unsafe { self._enable_interrupts_unchecked(flags) }
     }
 
-    /// Selectively disable interrupts
+    /// Selectively disable interrupts.
+    ///
+    /// Only available on channels with [`Available`] interrupts.
     #[inline]
     pub fn disable_interrupts(&mut self, flags: InterruptFlags) {
         // SAFETY: Type parameters ensure this is valid for this channel
@@ -415,7 +470,8 @@ impl<Id: ChId, S: Status, I: Interrupts> Channel<Id, S, I> {
     /// Selectively enable interrupts.
     ///
     /// # Safety
-    /// Ensure the channel is Interrupts=Available, or you're correctly enabling TCMPL for Async
+    /// Ensure the channel is Interrupts=Available, or you're correctly enabling
+    /// TCMPL for Async
     #[inline]
     pub(crate) unsafe fn _enable_interrupts_unchecked(&mut self, flags: InterruptFlags) {
         // SAFETY: This is safe as InterruptFlags is only capable of writing in
@@ -428,7 +484,8 @@ impl<Id: ChId, S: Status, I: Interrupts> Channel<Id, S, I> {
     /// Selectively disable interrupts
     ///
     /// # Safety
-    /// Ensure the channel is Interrupts=Available, or you're correctly disabling TCMPL for Async
+    /// Ensure the channel is Interrupts=Available, or you're correctly
+    /// disabling TCMPL for Async
     #[inline]
     pub(crate) unsafe fn _disable_interrupts_unchecked(&mut self, flags: InterruptFlags) {
         // SAFETY: This is safe as InterruptFlags is only capable of writing in
@@ -794,6 +851,9 @@ impl<Id: ChId> Channel<Id, ReadyFuture, Blocked> {
     }
 }
 
+/// Convert an async [`ReadyFuture`] channel to a blocking [`Ready`] channel,
+/// enabling use with the [`Transfer`] API. The channel retains [`Blocked`]
+/// interrupts. The channel hardware is reset during conversion.
 #[cfg(feature = "async")]
 impl<Id: ChId> From<Channel<Id, ReadyFuture, Blocked>> for Channel<Id, Ready, Blocked> {
     fn from(mut item: Channel<Id, ReadyFuture, Blocked>) -> Self {
@@ -812,6 +872,8 @@ impl<Id: ChId> From<Channel<Id, UninitializedFuture, Blocked>>
     }
 }
 
+/// Restore a blocking [`Ready`] channel to async [`ReadyFuture`] status.
+/// The channel hardware is reset during conversion.
 #[cfg(feature = "async")]
 impl<Id: ChId> From<Channel<Id, Ready, Blocked>> for Channel<Id, ReadyFuture, Blocked> {
     fn from(mut item: Channel<Id, Ready, Blocked>) -> Self {

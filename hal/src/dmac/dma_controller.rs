@@ -373,7 +373,10 @@ impl DmaController {
 macro_rules! define_split_future {
     ($num_channels:literal) => {
         seq!(N in 0..$num_channels {
-            /// Split the DMAC into individual channels
+            /// Split the DMAC into individual channels for `async` operation.
+            ///
+            /// Returned channels have [`Blocked`](super::channel::Blocked)
+            /// interrupts, managed by the async runtime.
             #[inline]
             pub fn split(&mut self) -> FutureChannels {
                 FutureChannels(
