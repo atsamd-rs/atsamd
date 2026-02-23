@@ -83,7 +83,7 @@
 //!   stopped.
 
 use super::{
-    Error, ReadyChannel, Result,
+    Error, Result,
     channel::{AnyChannel, Busy, Channel, ChannelId, ChannelInterrupts, InterruptFlags, Ready},
     dma_controller::{TriggerAction, TriggerSource},
 };
