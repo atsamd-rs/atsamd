@@ -49,12 +49,21 @@
 //! with channels obtained from the async
 //! [`DmaController`](super::DmaController).
 //!
-//! ```no_run
+//! Each conversion performs a hardware channel reset (SWRST), which clears
+//! all channel register configuration back to defaults. This includes the
+//! priority level set by [`Channel::init`], which resets to
+//! `PriorityLevel::LVL0`. If you need a non-default priority level after
+//! conversion, call [`init`](Channel::init) again.
+//!
+//! ```
 //! // Assume `async_chan` is a Channel<Id, ReadyFuture, Blocked> from the
 //! // async DmaController.
 //!
-//! // Convert to a blocking-mode channel
-//! let blocking_chan: Channel<_, Ready, Blocked> = async_chan.into();
+//! // Convert to a blocking-mode channel. The channel hardware is reset,
+//! // so priority returns to LVL0. We want a higher priority for this
+//! // circular transfer, so we chain .init() to set LVL3.
+//! let blocking_chan: Channel<_, Ready, Blocked> =
+//!     Channel::from(async_chan).init(PriorityLevel::LVL3);
 //!
 //! // Use with the Transfer API — for example, a circular transfer,
 //! // which is not available through the async channel API.
@@ -66,7 +75,8 @@
 //!
 //! let (chan, src, dest) = xfer.stop();
 //!
-//! // Convert back to async when done
+//! // Convert back to async when done. The channel is reset again;
+//! // LVL0 is fine for async use, so no .init() call needed.
 //! let async_chan: Channel<_, ReadyFuture, Blocked> = chan.into();
 //! ```
 //!
@@ -244,8 +254,8 @@ where
 
 /// DMA channel, capable of executing
 /// [`Transfer`]s. Ongoing DMA transfers are automatically stopped when a
-/// [`Channel`] is dropped. ['Interrupts'] are either ['Available'] or
-/// ['Blocked'], depending on whether the async controller is used
+/// [`Channel`] is dropped. [`Interrupts`] are either [`Available`] or
+/// [`Blocked`], depending on whether the async controller is used.
 pub struct Channel<Id: ChId, S: Status, I: Interrupts = Available> {
     regs: RegisterBlock<Id>,
     _status: PhantomData<S>,
@@ -853,7 +863,11 @@ impl<Id: ChId> Channel<Id, ReadyFuture, Blocked> {
 
 /// Convert an async [`ReadyFuture`] channel to a blocking [`Ready`] channel,
 /// enabling use with the [`Transfer`] API. The channel retains [`Blocked`]
-/// interrupts. The channel hardware is reset during conversion.
+/// interrupts.
+///
+/// The channel hardware is reset during conversion, which clears all channel
+/// configuration including the priority level. If you need a non-default
+/// priority level, call [`init`](Channel::init) again after conversion.
 #[cfg(feature = "async")]
 impl<Id: ChId> From<Channel<Id, ReadyFuture, Blocked>> for Channel<Id, Ready, Blocked> {
     fn from(mut item: Channel<Id, ReadyFuture, Blocked>) -> Self {
@@ -873,7 +887,10 @@ impl<Id: ChId> From<Channel<Id, UninitializedFuture, Blocked>>
 }
 
 /// Restore a blocking [`Ready`] channel to async [`ReadyFuture`] status.
-/// The channel hardware is reset during conversion.
+///
+/// The channel hardware is reset during conversion, which clears all channel
+/// configuration including the priority level. If you need a non-default
+/// priority level, call [`init`](Channel::init) again after conversion.
 #[cfg(feature = "async")]
 impl<Id: ChId> From<Channel<Id, Ready, Blocked>> for Channel<Id, ReadyFuture, Blocked> {
     fn from(mut item: Channel<Id, Ready, Blocked>) -> Self {

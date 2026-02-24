@@ -318,7 +318,7 @@ where
 /// [`wait`](Transfer::wait), or stopped with [`stop`](Transfer::stop).
 pub type BusyTransfer<C, S, D> =
     Transfer<Channel<ChannelId<C>, Busy, ChannelInterrupts<C>>, BufferPair<S, D>>;
-///
+
 /// A [`Transfer`] with a [`Ready`] channel that has not yet been started.
 ///
 /// Constructed via [`Transfer::new`], [`Transfer::new_unchecked`], or
