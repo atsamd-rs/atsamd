@@ -9,10 +9,10 @@ use core::{marker::PhantomData, ops::Range};
 use atsamd_hal_macros::hal_macro_helper;
 
 use crate::dmac::{
-    self, Beat, Buffer, Transfer, TriggerAction,
-    channel::{AnyChannel, Available, Busy, Channel, InterruptFlags, Ready},
+    self, Beat, Buffer, TriggerAction,
+    channel::{AnyChannel, Available, InterruptFlags, Ready},
     sram::DmacDescriptor,
-    transfer::BufferPair,
+    transfer::BusyTransfer,
 };
 use crate::sercom::{
     Sercom,
@@ -182,11 +182,7 @@ where
     /// use [`Uart::with_rx_channel`](Self::with_tx_channel) instead.
     #[inline]
     #[hal_macro_helper]
-    pub fn receive_with_dma<Ch, B>(
-        self,
-        buf: B,
-        mut channel: Ch,
-    ) -> Transfer<Channel<Ch::Id, Busy, Ch::Interrupts>, BufferPair<Self, B>>
+    pub fn receive_with_dma<Ch, B>(self, buf: B, mut channel: Ch) -> BusyTransfer<Ch, Self, B>
     where
         Ch: AnyChannel<Status = Ready, Interrupts = Available>,
         B: Buffer<Beat = C::Word> + 'static,
@@ -224,11 +220,7 @@ where
     /// use[`Uart::with_tx_channel`](Self::with_tx_channel) instead.
     #[inline]
     #[hal_macro_helper]
-    pub fn send_with_dma<Ch, B>(
-        self,
-        buf: B,
-        mut channel: Ch,
-    ) -> Transfer<Channel<Ch::Id, Busy, Ch::Interrupts>, BufferPair<B, Self>>
+    pub fn send_with_dma<Ch, B>(self, buf: B, mut channel: Ch) -> BusyTransfer<Ch, B, Self>
     where
         Ch: AnyChannel<Status = Ready, Interrupts = Available>,
         B: Buffer<Beat = C::Word> + 'static,

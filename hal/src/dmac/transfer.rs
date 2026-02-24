@@ -311,6 +311,22 @@ where
     complete: bool,
 }
 
+/// A [`Transfer`] with a [`Busy`] channel that is actively running.
+///
+/// This is the return type of [`Transfer::begin`]. The transfer can be
+/// polled with [`complete`](Transfer::complete), waited on with
+/// [`wait`](Transfer::wait), or stopped with [`stop`](Transfer::stop).
+pub type BusyTransfer<C, S, D> =
+    Transfer<Channel<ChannelId<C>, Busy, ChannelInterrupts<C>>, BufferPair<S, D>>;
+///
+/// A [`Transfer`] with a [`Ready`] channel that has not yet been started.
+///
+/// Constructed via [`Transfer::new`], [`Transfer::new_unchecked`], or
+/// [`Transfer::new_from_arrays`]. Call [`begin`](Transfer::begin) to
+/// start the transfer.
+pub type ReadyTransfer<C, S, D> =
+    Transfer<Channel<ChannelId<C>, Ready, ChannelInterrupts<C>>, BufferPair<S, D>>;
+
 impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer + 'static,
@@ -425,7 +441,7 @@ where
         mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Transfer<Channel<ChannelId<C>, Busy, ChannelInterrupts<C>>, BufferPair<S, D>> {
+    ) -> BusyTransfer<C, S, D> {
         // Reset the complete flag before triggering the transfer.
         // This way an interrupt handler could set complete to true
         // before this function returns.
