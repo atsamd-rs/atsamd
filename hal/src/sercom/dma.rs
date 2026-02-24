@@ -172,7 +172,7 @@ where
     C: uart::ValidConfig,
     D: uart::Receive,
 {
-    /// Transform an [`Uart`] into a DMA [`Transfer`]) and start reveiving into
+    /// Transform an [`Uart`] into a DMA [`Transfer`](crate::dmac::Transfer)) and start reveiving into
     /// the provided buffer.
     ///
     /// In order to be (safely) non-blocking, his method has to take a `'static`
@@ -210,7 +210,7 @@ where
     C: uart::ValidConfig,
     D: uart::Transmit,
 {
-    /// Transform an [`Uart`] into a DMA [`Transfer`]) and start sending the
+    /// Transform an [`Uart`] into a DMA [`Transfer`](crate::dmac::Transfer)) and start sending the
     /// provided buffer.
     ///
     /// In order to be (safely) non-blocking, his method takes a `'static`
