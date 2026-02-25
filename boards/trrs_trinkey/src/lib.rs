@@ -17,6 +17,7 @@ use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 hal::bsp_peripherals!(
     /// I2c Put on Sercom2 since we want to leave Sercom0 for user defined operations with the TRRS Jack
     Sercom2 { I2cSercom }
+    Sercom0 {TrrsSercom}
 );
 
 /// Definitions related to pins and pin aliases
@@ -31,6 +32,9 @@ pub mod pins {
         PA03 {
             /// TRRS Tip Switch Pin
             name: tip_switch
+            aliases: {
+                PullUpInput: TipSwitchSense
+            }
         }
         PA06 {
             /// TRRS First Ring Pin
@@ -39,6 +43,9 @@ pub mod pins {
         PA07 {
             /// TRRS First Ring Pin Switch
             name: ring_1_switch
+            aliases: {
+                PullUpInput: Ring1SwitchSense
+            }
         }
         PA04 {
             /// TRRS Second Ring Pin
