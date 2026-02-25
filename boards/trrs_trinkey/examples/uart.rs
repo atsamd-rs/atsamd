@@ -6,6 +6,7 @@
 #![no_std]
 #![no_main]
 
+use atsamd_hal::ehal::digital::OutputPin;
 use atsamd_hal::ehal::digital::StatefulOutputPin;
 use atsamd_hal::fugit::Rate;
 use atsamd_hal::gpio::AlternateD;
@@ -54,7 +55,7 @@ fn main() -> ! {
 
     // Need to set a pin as ground
     let mut sleeve_gnd = pins.sleeve.into_push_pull_output();
-    sleeve_gnd.is_set_low();
+    sleeve_gnd.set_low();
 
     let uart = {
         let gclk0 = clocks.gclk0();
