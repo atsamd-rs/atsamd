@@ -381,7 +381,6 @@ impl<I: AdcInstance> Adc<I> {
         while !self.read_flags().contains(Flags::RESRDY) {
             core::hint::spin_loop();
         }
-        self.flush();
         self.conversion_result()
     }
 
