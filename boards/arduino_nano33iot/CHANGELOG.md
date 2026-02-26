@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0](https://github.com/atsamd-rs/atsamd/compare/arduino_nano33iot-0.7.2...arduino_nano33iot-0.8.0) - 2025-12-29
+
+### Dependencies
+
+- *(nano33iot)* [**breaking**] Update nano33iot HAL dependency to 0.23.0 ([#971](https://github.com/atsamd-rs/atsamd/pull/971))
+
 ## [0.7.2](https://github.com/atsamd-rs/atsamd/compare/arduino_nano33iot-0.7.1...arduino_nano33iot-0.7.2) - 2024-10-17
 
 ### Refactored

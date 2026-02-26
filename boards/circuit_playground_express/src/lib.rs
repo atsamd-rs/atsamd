@@ -272,7 +272,6 @@ pub fn i2c_master(
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom5_core(&gclk0).unwrap();
     let freq = clock.freq();
-    let baud = baud;
     let pads = i2c::Pads::new(sda.into(), scl.into());
     i2c::Config::new(pm, sercom, pads, freq).baud(baud).enable()
 }
@@ -295,7 +294,6 @@ pub fn uart(
 ) -> Uart {
     let gclk0 = clocks.gclk0();
     let clock = &clocks.sercom4_core(&gclk0).unwrap();
-    let baud = baud.into();
     let pads = uart::Pads::default().rx(uart_rx.into()).tx(uart_tx.into());
     uart::Config::new(pm, sercom4, pads, clock.freq())
         .baud(baud, BaudMode::Fractional(Oversampling::Bits16))

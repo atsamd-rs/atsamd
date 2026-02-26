@@ -543,6 +543,8 @@ impl<Id: ChId> Channel<Id, Ready> {
     ///   compatible lengths. You must guarantee that:
     ///   - Either `source` or `dest` has a buffer length of 1, or
     ///   - Both buffers have the same length.
+    /// * The source and destination buffers must have a length smaller or equal
+    ///   to `u16::MAX`.
     /// * You must ensure that the transfer is completed or stopped before
     ///   returning the [`Channel`]. Doing otherwise breaks type safety, because
     ///   a [`Ready`] channel would still be in the middle of a transfer.
@@ -676,10 +678,6 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
     ///
     /// # Safety
     ///
-    /// * This method does not check that the two provided buffers have
-    ///   compatible lengths. You must guarantee that:
-    ///   - Either `source` or `dest` has a buffer length of 1, or
-    ///   - Both buffers have the same length.
     /// * You must ensure that the transfer is completed or stopped before
     ///   returning the [`Channel`]. Doing otherwise breaks type safety, because
     ///   a [`ReadyFuture`] channel would still be in the middle of a transfer.
@@ -841,6 +839,13 @@ impl Default for InterruptFlags {
 ///   location, or be null. They must not be circular (ie, points to itself).
 ///   Any linked transfer must strictly be a read transaction (destination
 ///   pointer is a byte buffer, source pointer is the SERCOM DATA register).
+///
+/// * The length of both the source and destination buffers must be smaller or
+///   equal to `u16::MAX`.
+///
+/// * Either:
+///      - `source` or `dest` has a buffer length of 1, or
+///      - Both buffers have the same length.
 #[inline]
 pub(crate) unsafe fn write_descriptor<Src: Buffer, Dst: Buffer<Beat = Src::Beat>>(
     descriptor: &mut DmacDescriptor,
@@ -856,6 +861,8 @@ pub(crate) unsafe fn write_descriptor<Src: Buffer, Dst: Buffer<Beat = Src::Beat>
     let dst_inc = destination.incrementing();
     let dst_len = destination.buffer_len();
 
+    // This is sufficient since buffers of unequal lengths breaks the safety
+    // contract if neither buffer has a length of 1.
     let length = core::cmp::max(src_len, dst_len);
 
     // Channel::xfer_complete() tests the channel enable bit, which indicates

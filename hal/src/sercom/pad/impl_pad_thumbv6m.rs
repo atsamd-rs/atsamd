@@ -457,13 +457,23 @@ pad_table!(
     }
     #[hal_cfg("pb08")]
     PB08 {
+        #[cfg(not(feature = "undoc-features"))]
         #[hal_cfg("sercom4")]
         D: (Sercom4, Pad0),
+
+        #[cfg(feature = "undoc-features")]
+        #[hal_cfg("sercom4")]
+        D: (Sercom4, Pad0) + I2C,
     }
     #[hal_cfg("pb09")]
     PB09 {
+        #[cfg(not(feature = "undoc-features"))]
         #[hal_cfg("sercom4")]
         D: (Sercom4, Pad1),
+
+        #[cfg(feature = "undoc-features")]
+        #[hal_cfg("sercom4")]
+        D: (Sercom4, Pad1) + I2C,
     }
     #[hal_cfg("pb10")]
     PB10 {

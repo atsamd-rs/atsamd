@@ -264,12 +264,16 @@ pub enum Error {
     /// Buffers need to either have the same length in beats, or one should have
     /// length == 1.  In cases where one buffer is length 1, that buffer will be
     /// the source or destination of each beat in the transfer.  If both buffers
-    /// had length >1, but not equal to each other, then it would not be clear
+    /// had length > 1, but not equal to each other, then it would not be clear
     /// how to structure the transfer.
     LengthMismatch,
 
+    /// The DMAC only supports up to `u16::MAX` beats in a single transfer.
+    TooManyBeats,
+
     /// Operation is not valid in the current state of the object.
     InvalidState,
+
     /// Chip reported an error during transfer
     TransferError,
 }
