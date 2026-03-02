@@ -473,6 +473,28 @@ impl<Id: ChId, S: Status> Channel<Id, S, Available> {
         // SAFETY: Type parameters ensure this is valid for this channel
         unsafe { self._disable_interrupts_unchecked(flags) }
     }
+
+    /// Irreversibly consider this channel to be [`Blocked`]. For API
+    /// compatibility, this will promise that this channel will never have
+    /// interrupts enabled.
+    ///
+    /// Be aware that calling `.into::<Channel<ID, ReadyFuture, Blocked>>()` on
+    /// a [`Blocked`] channel you got from `into_blocked()` will produce
+    /// a nonfunctional channel - Async channels don't work if the DMAC wasn't
+    /// initialized as Async.
+    pub fn into_blocked(mut self) -> Channel<Id, S, Blocked> {
+        self.disable_interrupts(
+            InterruptFlags::new()
+                .with_tcmpl(true)
+                .with_terr(true)
+                .with_susp(true),
+        );
+        Channel {
+            _interrupts: PhantomData,
+            _status: self._status,
+            regs: self.regs,
+        }
+    }
 }
 
 /// Unsafe internals for async impl
@@ -891,6 +913,10 @@ impl<Id: ChId> From<Channel<Id, UninitializedFuture, Blocked>>
 /// The channel hardware is reset during conversion, which clears all channel
 /// configuration including the priority level. If you need a non-default
 /// priority level, call [`init`](Channel::init) again after conversion.
+///
+/// Be aware that calling this on a [`Blocked`] channel you got from
+/// `into_blocked()` will produce a nonfunctional channel - Async channels don't
+/// work if the DMAC wasn't initialized as Async.
 #[cfg(feature = "async")]
 impl<Id: ChId> From<Channel<Id, Ready, Blocked>> for Channel<Id, ReadyFuture, Blocked> {
     fn from(mut item: Channel<Id, Ready, Blocked>) -> Self {
