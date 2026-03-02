@@ -344,8 +344,10 @@ where
     ///
     /// # Errors
     ///
-    /// Returns [`Error::LengthMismatch`] if both
-    /// buffers have a length > 1 and are not of equal length.
+    /// * Returns [`Error::LengthMismatch`] if both buffers have a length > 1
+    ///   and are not of equal length.
+    /// * Returns [`Error::TooManyBeats`] if the number of beats are greater
+    ///   than `u16::MAX``.
     #[allow(clippy::new_ret_no_self)]
     #[inline]
     pub fn new(
@@ -375,6 +377,8 @@ where
 
         if src_len > 1 && dst_len > 1 && src_len != dst_len {
             Err(Error::LengthMismatch)
+        } else if src_len.max(dst_len) > u16::MAX.into() {
+            Err(Error::TooManyBeats)
         } else {
             Ok(())
         }
@@ -401,6 +405,9 @@ where
     ///   exacly the same, unless one or both buffers are of length 1. The
     ///   transfer length will be set to the longest of both buffers if they are
     ///   not of equal size.
+    ///
+    /// * The source and destination buffers should have a length smaller or
+    ///   equal to `u16::MAX`.
     #[inline]
     pub unsafe fn new_unchecked(
         mut chan: C,
