@@ -54,6 +54,11 @@ impl Dsu {
         }
     }
 
+    /// Releases the DSU peripheral
+    pub fn free(self) -> pac::Dsu {
+        self.dsu
+    }
+
     /// Clear bus error bit
     fn clear_bus_error(&mut self) {
         self.dsu.statusa().write(|w| w.berr().set_bit());

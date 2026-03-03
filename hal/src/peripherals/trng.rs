@@ -13,6 +13,11 @@ impl Trng {
         Self(trng)
     }
 
+    /// Releases the Trng peripheral
+    pub fn free(self) -> pac::Trng {
+        self.0
+    }
+
     pub fn random(&self, buf: &mut [u8]) {
         for chunk in buf.chunks_mut(4) {
             chunk.copy_from_slice(&self.random_u32().to_le_bytes()[..chunk.len()]);

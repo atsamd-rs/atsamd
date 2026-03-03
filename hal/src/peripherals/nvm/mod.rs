@@ -176,6 +176,11 @@ impl Nvm {
         Self { nvm }
     }
 
+    /// Release the NVM Controller, return the NvmCtrl registers
+    pub fn free(self) -> Nvmctrl {
+        self.nvm
+    }
+
     /// Raw access to the registers.
     ///
     /// # Safety
