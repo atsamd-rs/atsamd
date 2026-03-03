@@ -104,6 +104,8 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
         self.set_reference(cfg.vref);
         self.sync();
+        self.adc.refctrl().modify(|_, w| w.refcomp().bit(cfg.reference_compensation));
+        self.sync();
         self.adc.ctrla().modify(|_, w| w.enable().set_bit());
         self.sync();
         self.cfg = cfg;
@@ -207,31 +209,6 @@ impl<I: AdcInstance> Adc<I> {
         neg_ch: pac::adc::inputctrl::Muxnegselect,
         sample_mode: SampleMode,
     ) {
-        let active_sample_mode = match self.adc.ctrlb().read().diffmode().bit() {
-            true => SampleMode::Differential,
-            false => SampleMode::SingleEnded,
-        };
-
-        if active_sample_mode != sample_mode {
-            // Disable the ADC if chip is SAMD11 family
-            // SAMD11 datasheet section 31.8.5 states that the ADC must be disabled to modify
-            // the DIFFMODE bit.
-            #[hal_cfg("adc-d11")]
-            self.power_down();
-
-            self.adc.ctrlb().write(|w| {
-                match sample_mode {
-                    SampleMode::SingleEnded => w.diffmode().clear_bit(),
-                    SampleMode::Differential => w.diffmode().set_bit(),
-                }
-            });
-            self.sync();
-
-            // Re-enable the ADC if chip is SAMD11 family
-            #[hal_cfg("adc-d11")]
-            self.power_up();
-        }
-
         self.adc.inputctrl().modify(|r, w| {
             if r.muxpos().bits() != pos_ch.into() {
                 self.discard = true;
@@ -247,6 +224,36 @@ impl<I: AdcInstance> Adc<I> {
             }
         });
         self.sync()
+    }
+
+
+    #[inline]
+    #[hal_macro_helper]
+    pub(super) fn set_sample_mode(&mut self, sample_mode: SampleMode) {
+        // Disable the ADC if chip is SAMD11 family
+        // SAMD11 datasheet section 31.8.5 states that the ADC must be disabled to modify
+        // the DIFFMODE and LEFTADJ bits.
+        #[hal_cfg("adc-d11")]
+        self.power_down();
+
+        self.adc.ctrlb().modify(|_, w| {
+            match sample_mode {
+                SampleMode::SingleEnded => w.diffmode().clear_bit(),
+                SampleMode::Differential => w.diffmode().set_bit(),
+            }
+
+            if self.cfg.auto_left_adjust == true {
+                match sample_mode {
+                    SampleMode::SingleEnded => w.leftadj().clear_bit(),
+                    SampleMode::Differential => w.leftadj().set_bit(),
+                }
+            }
+        });
+        self.sync();
+
+        // Re-enable the ADC if chip is SAMD11 family
+        #[hal_cfg("adc-d11")]
+        self.power_up();
     }
 
     #[inline]

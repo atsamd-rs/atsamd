@@ -1,4 +1,4 @@
-use atsamd_hal_macros::hal_cfg;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 #[hal_cfg("adc-d5x")]
 use crate::pac::adc0;
@@ -161,14 +161,17 @@ pub struct AdcBuilder {
 /// Version of [AdcBuilder] without any optional settings.
 /// [AdcBuilder] is converted to this when passed to the ADC
 #[derive(Copy, Clone, PartialEq)]
+#[hal_macro_helper]
 pub(crate) struct AdcSettings {
     pub clk_divider: Prescaler,
     pub sample_clock_cycles: u8,
     pub accumulation: Accumulation,
     pub vref: Reference,
-    pub offset_compensation: bool,
     pub reference_compensation: bool,
     pub auto_left_adjust: bool,
+    #[hal_cfg("adc-d5x")]
+    pub offset_compensation: bool,
+    #[hal_cfg("adc-d5x")]
     pub auto_rail_to_rail: bool,
 }
 

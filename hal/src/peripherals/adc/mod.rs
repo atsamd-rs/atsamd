@@ -24,7 +24,7 @@
 
 use core::ops::Deref;
 
-use atsamd_hal_macros::{hal_cfg, hal_module};
+use atsamd_hal_macros::{hal_cfg, hal_module, hal_macro_helper};
 use pac::Peripherals;
 
 use crate::pac;
@@ -59,14 +59,17 @@ use channel::*;
 
 /// ADC Settings when reading Internal sensors (Like VREF and Temperatures)
 /// These settings are based on the minimums suggested in the datasheet
+#[hal_macro_helper]
 const ADC_SETTINGS_INTERNAL_READ: AdcSettings = AdcSettings {
     clk_divider: Prescaler::Div64,
     sample_clock_cycles: 32,
     accumulation: Accumulation::average(SampleCount::_4),
     vref: Reference::Intvcc1,
-    offset_compensation: false,
     reference_compensation: false,
     auto_left_adjust: false,
+    #[hal_cfg("adc-d5x")]
+    offset_compensation: false,
+    #[hal_cfg("adc-d5x")]
     auto_rail_to_rail: false,
 };
 
@@ -77,10 +80,8 @@ const ADC_SETTINGS_INTERNAL_READ_D21_TEMP: AdcSettings = AdcSettings {
     sample_clock_cycles: 32,
     accumulation: Accumulation::average(SampleCount::_4),
     vref: Reference::Int1v,
-    offset_compensation: false,
     reference_compensation: false,
     auto_left_adjust: false,
-    auto_rail_to_rail: false,
 };
 
 /// Errors that may occur when operating the ADC
