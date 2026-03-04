@@ -244,17 +244,20 @@ impl AdcBuilder {
         Ok(adc_clk_freq / clocks_per_sample)
     }
 
-    /// Turn the builder into an ADC
+    /// Turn the builder into an ADC.
+    ///
+    /// This function will convert the provided
+    /// [`Pclk`](crate::clock::v2::pclk::Pclk) into a [`DynPclk`](crate::clock::v2::pclk::DynPclk).
     #[hal_cfg("adc-d5x")]
     #[inline]
-    pub fn enable<I: AdcInstance, PS: crate::clock::v2::pclk::PclkSourceId>(
+    pub fn enable<I: AdcInstance>(
         self,
         adc: I::Instance,
         clk: crate::clock::v2::apb::ApbClk<I::ClockId>,
-        pclk: &crate::clock::v2::pclk::Pclk<I::ClockId, PS>,
+        pclk: impl Into<crate::clock::v2::pclk::DynPclk<I::ClockId>>,
     ) -> Result<Adc<I>, BuilderError> {
         let settings = self.to_settings()?;
-        Adc::new(adc, settings, clk, pclk).map_err(|e| e.into())
+        Adc::new(adc, settings, clk, pclk.into()).map_err(|e| e.into())
     }
 
     #[hal_cfg(any("adc-d11", "adc-d21"))]

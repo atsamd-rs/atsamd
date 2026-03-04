@@ -83,7 +83,7 @@ mod impls {}
 pub use impls::async_api::*;
 
 #[hal_cfg("eic-d5x")]
-use super::clock::v2::{self, gclk::GclkId, osculp32k::OscUlp32kId, pclk::Pclk, rtcosc::RtcOsc};
+use crate::clock::v2::{self, gclk::GclkId, osculp32k::OscUlp32kId, pclk::Pclk, rtcosc::RtcOsc};
 
 pub type Sense = pac::eic::config::Sense0select;
 

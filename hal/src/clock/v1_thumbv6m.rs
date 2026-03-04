@@ -488,7 +488,7 @@ fn enable_gclk_apb(pm: &mut Pm) {
 
 /// Turn on the internal 32hkz oscillator
 pub fn enable_internal_32kosc(sysctrl: &mut Sysctrl) {
-    let calibration = super::calibration::osc32k_cal();
+    let calibration = crate::calibration::osc32k_cal();
     sysctrl.osc32k().write(|w| {
         unsafe {
             w.ondemand().clear_bit();
@@ -562,7 +562,7 @@ fn configure_and_enable_dfll48m(sysctrl: &mut Sysctrl, use_external_crystal: boo
         });
     } else {
         // Apply calibration
-        let coarse = super::calibration::dfll48m_coarse_cal();
+        let coarse = crate::calibration::dfll48m_coarse_cal();
         let fine = 0x1ff;
 
         sysctrl.dfllval().write(|w| unsafe {
