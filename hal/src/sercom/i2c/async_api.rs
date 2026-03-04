@@ -434,6 +434,7 @@ mod dma {
             use crate::dmac::{channel, sram::DmacDescriptor};
             use crate::sercom::dma::SharedSliceBuffer;
             use Operation::{Read, Write};
+            use core::ptr::{self, NonNull};
 
             const NUM_LINKED_TRANSFERS: usize = 16;
 
@@ -485,7 +486,7 @@ mod dma {
                                     .unwrap_or_else(|_| panic!("BUG: DMAC descriptors overflow"));
                                 let last_descriptor = descriptors.last_mut().unwrap();
                                 let next_ptr =
-                                    (last_descriptor as *mut DmacDescriptor).wrapping_add(1);
+                                    NonNull::new((ptr::from_mut(last_descriptor)).wrapping_add(1));
 
                                 unsafe {
                                     channel::write_descriptor(
@@ -509,7 +510,7 @@ mod dma {
                                     .unwrap_or_else(|_| panic!("BUG: DMAC descriptors overflow"));
                                 let last_descriptor = descriptors.last_mut().unwrap();
                                 let next_ptr =
-                                    (last_descriptor as *mut DmacDescriptor).wrapping_add(1);
+                                    NonNull::new((ptr::from_mut(last_descriptor)).wrapping_add(1));
 
                                 let mut bytes = SharedSliceBuffer::from_slice(bytes);
                                 unsafe {

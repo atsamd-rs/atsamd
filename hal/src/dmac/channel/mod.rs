@@ -33,8 +33,7 @@
 
 #![allow(unused_braces)]
 
-use core::marker::PhantomData;
-use core::sync::atomic;
+use core::{marker::PhantomData, ptr::NonNull};
 
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
@@ -44,7 +43,10 @@ use super::{
     sram::{self, DmacDescriptor},
     transfer::{BufferPair, Transfer},
 };
-use crate::typelevel::{Is, Sealed};
+use crate::{
+    dmac::asm_fence,
+    typelevel::{Is, Sealed},
+};
 use modular_bitfield::prelude::*;
 
 mod reg;
@@ -271,10 +273,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// Enable the transfer, and emit a compiler fence.
     #[inline]
     fn _enable_private(&mut self) {
-        // Prevent the compiler from re-ordering read/write
-        // operations beyond this fence.
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        atomic::fence(atomic::Ordering::Release); // ▲
+        asm_fence(); // ▲
         self.regs.chctrla.modify(|_, w| w.enable().set_bit());
     }
 
@@ -288,10 +287,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
             core::hint::spin_loop();
         }
 
-        // Prevent the compiler from re-ordering read/write
-        // operations beyond this fence.
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        atomic::fence(atomic::Ordering::Acquire); // ▼
+        asm_fence(); // ▼
     }
 
     /// Returns whether or not the transfer is complete.
@@ -346,9 +342,9 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
             // SAFETY This is safe as we are only reading the descriptor's address,
             // and not actually writing any data to it. We also assume the descriptor
             // will never be moved.
-            descriptor as *mut _
+            NonNull::new(descriptor)
         } else {
-            core::ptr::null_mut()
+            None
         };
 
         unsafe {
@@ -851,7 +847,7 @@ pub(crate) unsafe fn write_descriptor<Src: Buffer, Dst: Buffer<Beat = Src::Beat>
     descriptor: &mut DmacDescriptor,
     source: &mut Src,
     destination: &mut Dst,
-    next: *mut DmacDescriptor,
+    next: Option<NonNull<DmacDescriptor>>,
 ) {
     let src_ptr = source.dma_ptr();
     let src_inc = source.incrementing();
@@ -875,17 +871,26 @@ pub(crate) unsafe fn write_descriptor<Src: Buffer, Dst: Buffer<Beat = Src::Beat>
         .with_beatsize(Src::Beat::BEATSIZE)
         .with_valid(true);
 
-    *descriptor = DmacDescriptor {
-        // Next descriptor address:  0x0 terminates the transaction (no linked list),
-        // any other address points to the next block descriptor
-        descaddr: next,
-        // Source address: address of the last beat transfer source in block
-        srcaddr: src_ptr as *mut _,
-        // Destination address: address of the last beat transfer destination in block
-        dstaddr: dst_ptr as *mut _,
-        // Block transfer count: number of beats in block transfer
-        btcnt: length as u16,
-        // Block transfer control: Datasheet  section 19.8.2.1 p.329
-        btctrl,
-    };
+    // Seems like we need a fence before the buffer pointer "escapes" the current
+    // function. I don't claim to fully understand why, or what the gnarly LLVM
+    // optimization details might be. But seems like the buffer pointers must be
+    // written somewhere with a _volatile_ access, _after_ an (asm) compiler
+    // fence: https://users.rust-lang.org/t/compiler-fence-dma/132027/40
+    asm_fence();
+
+    unsafe {
+        core::ptr::from_mut(descriptor).write_volatile(DmacDescriptor {
+            // Next descriptor address:  0x0 terminates the transaction (no linked list),
+            // any other address points to the next block descriptor
+            descaddr: next.map(|n| n.as_ptr()).unwrap_or(core::ptr::null_mut()),
+            // Source address: address of the last beat transfer source in block
+            srcaddr: src_ptr as *mut _,
+            // Destination address: address of the last beat transfer destination in block
+            dstaddr: dst_ptr as *mut _,
+            // Block transfer count: number of beats in block transfer
+            btcnt: length as u16,
+            // Block transfer control: Datasheet  section 19.8.2.1 p.329
+            btctrl,
+        });
+    }
 }
