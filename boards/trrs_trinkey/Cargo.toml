@@ -1,0 +1,112 @@
+[package]
+authors = ["Erik Fong <quantumerikfong@gmail.com>"]
+categories = ["embedded", "hardware-support", "no-std"]
+description = "Board Support crate for the Adafruit TRRS Trinkey"
+edition = "2021"
+keywords = ["no-std", "arm", "cortex-m", "embedded-hal"]
+license = "MIT OR Apache-2.0"
+name = "trrs_trinkey"
+readme = "README.md"
+repository = "https://github.com/atsamd-rs/atsamd"
+resolver = "2"
+version = "0.20.1"
+
+# for cargo flash
+[package.metadata]
+chip = "ATSAMD21G18A"
+
+[dependencies.cortex-m-rt]
+optional = true
+version = "0.7"
+
+[dependencies.atsamd-hal]
+default-features = false
+path = "../../hal"
+version = "0.23.1"
+
+[dependencies.cortex-m]
+features = ["critical-section-single-core"]
+version = "0.7"
+
+[dependencies.rtic]
+features = ["thumbv6-backend"]
+optional = true
+version = "2.1.1"
+
+[dependencies.usb-device]
+optional = true
+version = "0.3.1"
+
+[dependencies.embedded-sdmmc]
+optional = true
+version = "0.3"
+
+[dependencies]
+smart-leds = { version = "0.3.0", optional = true }
+ws2812-timer-delay = { version = "0.3.0", features = ["slow"], optional = true }
+
+[dev-dependencies]
+cortex-m = "0.7"
+cortex-m-semihosting = "0.3"
+defmt = "0.3"
+defmt-rtt = "0.4"
+drogue-nom-utils = "0.1"
+embassy-executor = { version = "0.6.2", features = [
+    "arch-cortex-m",
+    "executor-thread",
+    "task-arena-size-64",
+] }
+embedded-graphics = "0.7.1"
+heapless = "0.8"
+nom = { version = "5", default-features = false }
+panic-halt = "0.2"
+panic-probe = "0.3"
+panic-semihosting = "0.6"
+rtic-monotonics = { version = "1.3.0", features = [
+    "cortex-m-systick",
+    "systick-10khz",
+] }
+ssd1306 = "0.7"
+usbd-hid = "0.9.0"
+usbd-serial = "0.2"
+
+[features]
+# ask the HAL to enable atsamd21g support
+default = ["rt", "atsamd-hal/samd21g"]
+leds = ["ws2812-timer-delay", "smart-leds"]
+rt = ["cortex-m-rt", "atsamd-hal/samd21g-rt"]
+usb = ["atsamd-hal/usb", "usb-device"]
+use_rtt = ["atsamd-hal/use_rtt"]
+dma = ["atsamd-hal/dma"]
+max-channels = ["dma", "atsamd-hal/max-channels"]
+# Enable async support from atsamd-hal
+async = ["atsamd-hal/async"]
+rtic = ["dep:rtic", "atsamd-hal/rtic"]
+sdmmc = ["embedded-sdmmc", "atsamd-hal/sdmmc"]
+use_semihosting = []
+
+[[example]]
+name = "blinky_basic"
+required-features = ["leds"]
+
+[[example]]
+name = "blinky_embassy"
+required-features = ["rtic", "leds"]
+
+[[example]]
+name = "i2c"
+required-features = ["dma", "usb"]
+
+[[example]]
+name = "pwm"
+
+[[example]]
+name = "uart"
+
+[[example]]
+name = "usb_echo"
+required-features = ["usb"]
+
+[[example]]
+name = "usb_hid"
+required-features = ["usb"]
