@@ -1,7 +1,7 @@
 use super::{
     ADC_SETTINGS_INTERNAL_READ, ADC_SETTINGS_INTERNAL_READ_D21_TEMP, Accumulation, Adc,
     AdcInstance, AdcSettings, CpuVoltageSource, Error, Flags, PrimaryAdc, SampleCount,
-    SampleMode
+    SampleMode, SingleEndedInput, TEMP, input::CpuVoltageSource,
 };
 
 use atsamd_hal_macros::{hal_macro_helper};
@@ -79,11 +79,6 @@ impl<I: AdcInstance> Adc<I> {
         self.adc
             .sampctrl()
             .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
-        self.sync();
-        self.adc.inputctrl().modify(|_, w| {
-            w.muxneg().gnd();
-            w.gain().variant(Gainselect::Div2)
-        }); // No negative input (internal gnd)
         self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
@@ -207,7 +202,6 @@ impl<I: AdcInstance> Adc<I> {
         &mut self,
         pos_ch: pac::adc::inputctrl::Muxposselect,
         neg_ch: pac::adc::inputctrl::Muxnegselect,
-        sample_mode: SampleMode,
     ) {
         self.adc.inputctrl().modify(|r, w| {
             if r.muxpos().bits() != pos_ch.into() {
@@ -302,10 +296,7 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
             // Settings
             adc.adc.inputctrl().modify(|_, w| w.gain()._1x());
             adc.discard = true;
-            let res = adc.read_channel(
-                pac::adc::inputctrl::Muxposselect::Temp,
-                pac::adc::inputctrl::Muxnegselect::Gnd,
-                SampleMode::SingleEnded);
+            let res = adc.read(&mut SingleEndedInput::from_channel(TEMP::get_channel()));
             // Set gain back to normal
             adc.adc.inputctrl().modify(|_, w| w.gain().div2());
             adc.discard = true;
@@ -318,12 +309,9 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     }
 
     #[inline]
-    pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
+    pub fn read_cpu_voltage<C: CpuVoltageSource>(&mut self, src: C) -> u16 {
         let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-            let res = adc.read_channel(
-                src.into(),
-                pac::adc::inputctrl::Muxnegselect::Gnd,
-                SampleMode::SingleEnded);
+            let res = adc.read(&mut SingleEndedInput::from_channel(src));
             let mut res_f = adc.reading_to_f32(res) * 3.3;
             if CpuVoltageSource::Bandgap != src {
                 res_f *= 4.0;
@@ -349,7 +337,7 @@ where
         self.inner.adc.inputctrl().modify(|_, w| w.gain()._1x());
         self.inner.discard = true;
 
-        let res = self.read_channel(0x18).await;
+        let res = self.read(&mut SingleEndedInput::from_channel(TEMP::get_channel())).await;
 
         self.inner.adc.inputctrl().modify(|_, w| w.gain().div2());
         self.inner.configure(old_adc_settings);
@@ -361,11 +349,11 @@ where
     }
 
     /// Reads a CPU voltage source. Value returned is in millivolts (mV)
-    pub async fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
+    pub async fn read_cpu_voltage<C: CpuVoltageSource>(&mut self, src: C) -> u16 {
         let old_adc_settings = self.inner.cfg;
         self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
 
-        let res = self.read_channel(src as u8).await;
+        let res = self.read(&mut SingleEndedInput::from_channel(src)).await;
         let mut voltage = self.inner.reading_to_f32(res) * 3.3;
         if CpuVoltageSource::Bandgap != src {
             voltage *= 4.0;

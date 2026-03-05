@@ -1,5 +1,6 @@
 use core::marker::PhantomData;
 use crate::adc::*;
+use crate::adc::input::CpuVoltageSource;
 use crate::{
     pac::adc0::inputctrl::{Muxposselect, Muxnegselect},
     typelevel::Sealed,
@@ -8,7 +9,7 @@ use crate::{
 macro_rules! channel {
     (
         $(
-            $CH:ident: ($($PMUX:path)?, $($NMUX:path)?)
+            $CH:ident: ($($PMUX:path)?, $($NMUX:path)?) $(+ $MARKER:ident)*
         ),+
         $(,)?
     ) => {
@@ -30,6 +31,9 @@ macro_rules! channel {
                         const MUXVAL: Muxnegselect = $NMUX;
                     }
                 )?
+                $(
+                    impl<I: AdcInstance> $MARKER<I> for $CH<I> {}
+                )*
 
                 impl<I: AdcInstance> $CH<I> {
                     pub fn get_channel() -> Self {
@@ -60,10 +64,10 @@ channel! {
     AIN13: (Muxposselect::Ain13, ),
     AIN14: (Muxposselect::Ain14, ),
     AIN15: (Muxposselect::Ain15, ),
-    SCALEDCOREVCC: (Muxposselect::Scaledcorevcc, ),
-    SCALEDVBAT: (Muxposselect::Scaledvbat, ),
-    SCALEDIOVCC: (Muxposselect::Scalediovcc, ),
-    BANDGAP: (Muxposselect::Bandgap, ),
+    SCALEDCOREVCC: (Muxposselect::Scaledcorevcc, ) + CpuVoltageSource,
+    SCALEDVBAT: (Muxposselect::Scaledvbat, ) + CpuVoltageSource,
+    SCALEDIOVCC: (Muxposselect::Scalediovcc, ) + CpuVoltageSource,
+    BANDGAP: (Muxposselect::Bandgap, ) + CpuVoltageSource,
     PTAT: (Muxposselect::Ptat, ),
     CTAT: (Muxposselect::Ctat, ),
     DAC0: (Muxposselect::Dac, ),

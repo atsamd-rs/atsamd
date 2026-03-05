@@ -1,5 +1,6 @@
 use core::marker::PhantomData;
 use atsamd_hal_macros::hal_cfg;
+use num_traits::int::PrimInt;
 use crate::{
     gpio::AnyPin,
     typelevel::Sealed,
@@ -31,6 +32,9 @@ pub trait PosAdcPin<I: AdcInstance, P: PosChannel<I>>: AnyPin<Mode = crate::gpio
 /// Marker trait for ADC pins which can be used as negative ADC inputs
 pub trait NegAdcPin<I: AdcInstance, N: NegChannel<I>>: AnyPin<Mode = crate::gpio::AlternateB> + Sealed {}
 
+/// Marker trait representing [`PosChannel`]'s which measures one of the various CPU voltages
+pub trait CpuVoltageSource<I: AdcInstance>: PosChannel<I> {}
+
 /// Sampling mode for the ADC
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum SampleMode {
@@ -43,7 +47,7 @@ pub trait AdcInput<I: AdcInstance> {
     const SAMPLE_MODE: SampleMode;
     type Pos: PosChannel<I>;
     type Neg: NegChannel<I>;
-    type Output;
+    type Output: PrimInt;
 
     /// Cast the ADC result to the appropriate output type
     fn cast_result(result: u16) -> Self::Output;
@@ -125,7 +129,7 @@ where
 
     #[inline]
     fn cast_result(result: u16) -> Self::Output {
-        result as i16
+        result as Self::Output
     }
 }
 

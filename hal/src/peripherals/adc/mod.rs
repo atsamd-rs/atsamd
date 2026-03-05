@@ -104,55 +104,6 @@ pub enum Error {
     BufferOverrun,
 }
 
-/// Voltage source to use when using the ADC to measure the CPU voltage
-#[hal_cfg("adc-d5x")]
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum CpuVoltageSource {
-    /// Core voltage
-    Core,
-    /// VBAT supply voltage
-    Vbat,
-    /// IO supply voltage
-    Io,
-    /// Bandgap reference voltage
-    Bandgap,
-}
-
-#[hal_cfg("adc-d5x")]
-impl Into<adc0::inputctrl::Muxposselect> for CpuVoltageSource {
-    fn into(self) -> adc0::inputctrl::Muxposselect {
-        match self {
-            CpuVoltageSource::Core => adc0::inputctrl::Muxposselect::Scaledcorevcc,
-            CpuVoltageSource::Vbat => adc0::inputctrl::Muxposselect::Scaledvbat,
-            CpuVoltageSource::Io => adc0::inputctrl::Muxposselect::Scalediovcc,
-            CpuVoltageSource::Bandgap => adc0::inputctrl::Muxposselect::Bandgap,
-        }
-    }
-}
-
-/// Voltage source to use when using the ADC to measure the CPU voltage
-#[hal_cfg(any("adc-d21", "adc-d11"))]
-#[derive(Copy, Clone, PartialEq, Eq)]
-pub enum CpuVoltageSource {
-    /// Bandgap reference voltage - 1.1V
-    Bandgap,
-    /// Core voltage - 1.2V
-    Core,
-    /// IO voltage - 1.62V to 3.63V
-    Io,
-}
-
-#[hal_cfg(any("adc-d21", "adc-d11"))]
-impl Into<adc0::inputctrl::Muxposselect> for CpuVoltageSource {
-    fn into(self) -> adc0::inputctrl::Muxposselect {
-        match self {
-            CpuVoltageSource::Core => adc0::inputctrl::Muxposselect::Scaledcorevcc,
-            CpuVoltageSource::Io => adc0::inputctrl::Muxposselect::Scalediovcc,
-            CpuVoltageSource::Bandgap => adc0::inputctrl::Muxposselect::Bandgap,
-        }
-    }
-}
-
 bitflags::bitflags! {
     /// ADC interrupt flags
     #[derive(Clone, Copy)]
@@ -356,33 +307,22 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
     }
 
-    /// Read a single value from the provided ADC pin.
+    /// Read a single value from the provided ADC input.
     #[inline]
-    pub fn read<IN: AdcInput<I>>(&mut self, _input: &mut IN) -> IN::Output {
-        IN::cast_result(self.read_channel(IN::Pos::MUXVAL, IN::Neg::MUXVAL, IN::SAMPLE_MODE))
-    }
-
-    /// Read a single value from the provided channel, in a blocking fashion
-    #[inline]
-    fn read_channel(
-        &mut self,
-        pos_ch: adc0::inputctrl::Muxposselect,
-        neg_ch: adc0::inputctrl::Muxnegselect,
-        sample_mode: SampleMode,
-    ) -> u16 {
+    pub fn read<P: AdcInput<I>>(&mut self, _input: &mut P) -> P::Output {
         // Clear overrun errors that might've occured before we try to read anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
         self.disable_freerunning();
         self.sync();
-        self.set_sample_mode(sample_mode);
-        self.mux(pos_ch, neg_ch);
+        self.set_sample_mode(P::SAMPLE_MODE);
+        self.mux(P::Pos::MUXVAL, P::Neg::MUXVAL);
         self.check_read_discard();
         self.start_conversion();
         while !self.read_flags().contains(Flags::RESRDY) {
             core::hint::spin_loop();
         }
-        self.conversion_result()
+        P::cast_result(self.conversion_result())
     }
 
     // If the ADC has to discard the next value, then we try to read it
@@ -399,30 +339,18 @@ impl<I: AdcInstance> Adc<I> {
         }
     }
 
-    /// Read into a buffer from the provided ADC pin, in a blocking fashion
-    #[inline]
-    pub fn read_buffer<IN: AdcInput<I>>(
-        &mut self,
-        _input: &mut IN,
-        dst: &mut [u16],
-    ) -> Result<(), Error> {
-        self.read_buffer_channel(IN::Pos::MUXVAL, IN::Neg::MUXVAL, IN::SAMPLE_MODE, dst)
-    }
-
     /// Read into a buffer from the provided channel, in a blocking fashion
     #[inline]
-    fn read_buffer_channel(
+    pub fn read_buffer<P: AdcInput<I>>(
         &mut self,
-        pos_ch: adc0::inputctrl::Muxposselect,
-        neg_ch: adc0::inputctrl::Muxnegselect,
-        sample_mode: SampleMode,
-        dst: &mut [u16],
+        _input: &mut P,
+        dst: &mut [P::Output],
     ) -> Result<(), Error> {
         // Clear overrun errors that might've occured before we try to read anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
-        self.set_sample_mode(sample_mode);
-        self.mux(pos_ch, neg_ch);
+        self.set_sample_mode(P::SAMPLE_MODE);
+        self.mux(P::Pos::MUXVAL, P::Neg::MUXVAL);
         self.enable_freerunning();
         self.start_conversion();
         self.check_read_discard();
@@ -440,7 +368,7 @@ impl<I: AdcInstance> Adc<I> {
                 return Err(e);
             }
 
-            *result = self.conversion_result();
+            *result = P::cast_result(self.conversion_result());
         }
         //self.power_down();
         self.disable_freerunning();
@@ -492,19 +420,14 @@ where
         (self.inner, self.irqs)
     }
 
-    /// Read a single value from the provided ADC pin.
+    /// Read a single value from the provided ADC input
     #[inline]
-    pub async fn read<P: AdcPin<I>>(&mut self, _pin: &mut P) -> u16 {
-        self.read_channel(P::CHANNEL).await
-    }
-
-    /// Read a single value from the provided channel ID
-    #[inline]
-    async fn read_channel(&mut self, ch: u8) -> u16 {
+    pub async fn read<P: AdcInput<I>>(&mut self, _input: &mut P) -> P::Output {
         // Clear overrun errors that might've occured before we try to read anything
         self.inner.clear_all_flags();
         self.inner.disable_freerunning();
-        self.inner.mux(ch);
+        self.inner.set_sample_mode(P::SAMPLE_MODE);
+        self.inner.mux(P::Pos::MUXVAL, P::Neg::MUXVAL);
         if self.inner.discard {
             // Read and discard if something was changed
             self.inner.start_conversion();
@@ -516,28 +439,23 @@ where
         // Here we explicitly ignore the result, because we know that
         // overrun errors are impossible since the ADC is configured in one-shot mode.
         let _ = self.wait_flags(Flags::RESRDY).await;
-        let res = self.inner.conversion_result();
+        let res = P::cast_result(self.inner.conversion_result());
         //self.inner.power_down();
         self.inner.sync();
         res
     }
 
-    /// Read into a buffer from the provided ADC pin
+    /// Read into a buffer from the provided ADC input
     #[inline]
-    pub async fn read_buffer<P: AdcPin<I>>(
+    pub async fn read_buffer<P: AdcInput<I>>(
         &mut self,
         _pin: &mut P,
-        dst: &mut [u16],
+        dst: &mut [P::Output],
     ) -> Result<(), Error> {
-        self.read_buffer_channel(P::CHANNEL, dst).await
-    }
-
-    /// Read into a buffer from the provided channel ID
-    #[inline]
-    async fn read_buffer_channel(&mut self, ch: u8, dst: &mut [u16]) -> Result<(), Error> {
         // Clear overrun errors that might've occured before we try to read anything
         self.inner.clear_all_flags();
-        self.inner.mux(ch);
+        self.inner.set_sample_mode(P::SAMPLE_MODE);
+        self.inner.mux(P::Pos::MUXVAL, P::Neg::MUXVAL);
         self.inner.enable_freerunning();
 
         if self.inner.discard {
@@ -556,7 +474,7 @@ where
 
                 return Err(e);
             }
-            *result = self.inner.conversion_result();
+            *result = P::cast_result(self.inner.conversion_result());
         }
 
         //self.inner.power_down();

@@ -9,7 +9,7 @@ use crate::{
 macro_rules! channel {
     (
         $(
-            $CH:ident: ($($PMUX:path)?, $($NMUX:path)?)
+            $CH:ident: ($($PMUX:path)?, $($NMUX:path)?) $(+ $MARKER:ident)*
         ),+
         $(,)?
     ) => {
@@ -31,6 +31,9 @@ macro_rules! channel {
                         const MUXVAL: Muxnegselect = $NMUX;
                     }
                 )?
+                $(
+                    impl<I: AdcInstance> $MARKER<I> for $CH<I> {}
+                )*
 
                 impl<I: AdcInstance> $CH<I> {
                     pub fn get_channel() -> Self {
@@ -67,9 +70,9 @@ channel! {
     AIN18: (Muxposselect::Pin15, ),
     AIN19: (Muxposselect::Pin15, ),
     TEMP: (Muxposselect::Temp, ),
-    SCALEDCOREVCC: (Muxposselect::Scaledcorevcc, ),
-    SCALEDIOVCC: (Muxposselect::Scalediovcc, ),
-    BANDGAP: (Muxposselect::Bandgap, ),
+    SCALEDCOREVCC: (Muxposselect::Scaledcorevcc, ) + CpuVoltageSource,
+    SCALEDIOVCC: (Muxposselect::Scalediovcc, ) + CpuVoltageSource,
+    BANDGAP: (Muxposselect::Bandgap, ) + CpuVoltageSource,
     DAC: (Muxposselect::Dac, ),
     GND: (, Muxnegselect::Gnd),
     IOGND: (, Muxnegselect::Iognd),
@@ -88,9 +91,9 @@ channel! {
     AIN8: (Muxposselect::Pin8, ),
     AIN9: (Muxposselect::Pin9, ),
     TEMP: (Muxposselect::Temp, ),
-    SCALEDCOREVCC: (Muxposselect::Scaledcorevcc, ),
-    SCALEDIOVCC: (Muxposselect::Scalediovcc, ),
-    BANDGAP: (Muxposselect::Bandgap, ),
+    SCALEDCOREVCC: (Muxposselect::Scaledcorevcc, ) + CpuVoltageSource,
+    SCALEDIOVCC: (Muxposselect::Scalediovcc, ) + CpuVoltageSource,
+    BANDGAP: (Muxposselect::Bandgap, ) + CpuVoltageSource,
     DAC: (Muxposselect::Dac, ),
     GND: (, Muxnegselect::Gnd),
     IOGND: (, Muxnegselect::Iognd),
