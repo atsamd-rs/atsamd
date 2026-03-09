@@ -83,8 +83,8 @@
 //!   stopped.
 
 use super::{
-    Error, ReadyChannel, Result,
-    channel::{AnyChannel, Busy, Channel, ChannelId, InterruptFlags, Ready},
+    Error, Result,
+    channel::{AnyChannel, Busy, Channel, ChannelId, ChannelInterrupts, InterruptFlags, Ready},
     dma_controller::{TriggerAction, TriggerSource},
 };
 use crate::typelevel::{Is, Sealed};
@@ -311,12 +311,27 @@ where
     complete: bool,
 }
 
-impl<C, S, D, R> Transfer<C, BufferPair<S, D>>
+/// A [`Transfer`] with a [`Busy`] channel that is actively running.
+///
+/// This is the return type of [`Transfer::begin`]. The transfer can be
+/// polled with [`complete`](Transfer::complete), waited on with
+/// [`wait`](Transfer::wait), or stopped with [`stop`](Transfer::stop).
+pub type BusyTransfer<C, S, D> =
+    Transfer<Channel<ChannelId<C>, Busy, ChannelInterrupts<C>>, BufferPair<S, D>>;
+
+/// A [`Transfer`] with a [`Ready`] channel that has not yet been started.
+///
+/// Constructed via [`Transfer::new`], [`Transfer::new_unchecked`], or
+/// [`Transfer::new_from_arrays`]. Call [`begin`](Transfer::begin) to
+/// start the transfer.
+pub type ReadyTransfer<C, S, D> =
+    Transfer<Channel<ChannelId<C>, Ready, ChannelInterrupts<C>>, BufferPair<S, D>>;
+
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer + 'static,
     D: Buffer<Beat = S::Beat> + 'static,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Safely construct a new `Transfer`. To guarantee memory safety, both
     /// buffers are required to be `'static`.
@@ -370,12 +385,11 @@ where
     }
 }
 
-impl<C, S, D, R> Transfer<C, BufferPair<S, D>>
+impl<C, S, D> Transfer<C, BufferPair<S, D>>
 where
     S: Buffer,
     D: Buffer<Beat = S::Beat>,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Construct a new `Transfer` without checking for memory safety.
     ///
@@ -434,7 +448,7 @@ where
         mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Transfer<Channel<ChannelId<C>, Busy>, BufferPair<S, D>> {
+    ) -> BusyTransfer<C, S, D> {
         // Reset the complete flag before triggering the transfer.
         // This way an interrupt handler could set complete to true
         // before this function returns.
@@ -454,7 +468,7 @@ where
     /// Similar to [`stop`](Transfer::stop), but it acts on a [`Transfer`]
     /// holding a [`Ready`] channel, so there is no need to explicitly stop the
     /// transfer.
-    pub fn free(self) -> (Channel<ChannelId<C>, Ready>, S, D) {
+    pub fn free(self) -> (Channel<ChannelId<C>, Ready, ChannelInterrupts<C>>, S, D) {
         (
             self.chan.into(),
             self.buffers.source,
@@ -463,11 +477,10 @@ where
     }
 }
 
-impl<B, C, R, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
+impl<B, C, const N: usize> Transfer<C, BufferPair<&'static mut [B; N]>>
 where
     B: 'static + Beat,
-    C: AnyChannel<Status = R>,
-    R: ReadyChannel,
+    C: AnyChannel<Status = Ready>,
 {
     /// Create a new `Transfer` from static array references of the same type
     /// and length. When two array references are available (instead of slice
@@ -531,7 +544,7 @@ where
     ///
     /// # Blocking: This method may block
     #[inline]
-    pub fn wait(mut self) -> (Channel<ChannelId<C>, Ready>, S, D) {
+    pub fn wait(mut self) -> (Channel<ChannelId<C>, Ready, ChannelInterrupts<C>>, S, D) {
         // Wait for transfer to complete
         while !self.complete() {}
         self.stop()
@@ -641,7 +654,7 @@ where
     /// Non-blocking; Immediately stop the DMA transfer and release all owned
     /// resources
     #[inline]
-    pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D) {
+    pub fn stop(self) -> (Channel<ChannelId<C>, Ready, ChannelInterrupts<C>>, S, D) {
         // `free()` stops the transfer, waits for the burst to finish, and emits a
         // compiler fence.
         let chan = self.chan.into().free();

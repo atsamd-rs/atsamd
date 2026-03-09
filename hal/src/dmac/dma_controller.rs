@@ -139,7 +139,7 @@ macro_rules! define_channels_struct_future {
             /// Struct generating individual handles to each DMA channel for `async` operation
             pub struct FutureChannels(
                 #(
-                    pub Channel<Ch~N, super::channel::UninitializedFuture>,
+                    pub Channel<Ch~N, super::channel::UninitializedFuture, super::channel::Blocked>,
                 )*
             );
         });
@@ -373,7 +373,10 @@ impl DmaController {
 macro_rules! define_split_future {
     ($num_channels:literal) => {
         seq!(N in 0..$num_channels {
-            /// Split the DMAC into individual channels
+            /// Split the DMAC into individual channels for `async` operation.
+            ///
+            /// Returned channels have [`Blocked`](super::channel::Blocked)
+            /// interrupts, managed by the async runtime.
             #[inline]
             pub fn split(&mut self) -> FutureChannels {
                 FutureChannels(
