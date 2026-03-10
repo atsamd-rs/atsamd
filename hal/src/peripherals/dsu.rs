@@ -3,6 +3,8 @@
 //! This module allows users to interact with a DSU peripheral.
 //!
 //! - Run a CRC32 checksum over memory
+//! - Run a memory test on RAM
+//! - Check if a debugger is connected
 #![warn(missing_docs)]
 
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
@@ -141,9 +143,10 @@ impl Dsu {
 
     /// Calculate CRC32 of a memory region
     ///
-    /// - `address` is an address within the CPUs memory space; must be word-aligned
-    /// - `length` is a length of memory region that is being processed. Must be
-    ///   word-aligned
+    /// - `address` is an address within the CPUs memory space; must be
+    ///     word-aligned
+    /// - `length` is a length of memory region that is being processed.
+    ///     Must be word-aligned
     #[hal_macro_helper]
     pub fn crc32(&mut self, address: u32, length: u32) -> Result<u32> {
         // The algorithm employed is the industry standard CRC32 algorithm using the
@@ -225,22 +228,27 @@ impl Dsu {
         }
     }
 
-    /// Performs a memory test on a section of RAM using "March LR" algorithm.
+    /// Performs a memory test on a section of RAM using "March LR"
+    /// algorithm.
     ///
-    /// **CAUTION** This can overwrite critical data in RAM, use with caution
+    /// **CAUTION** This can overwrite critical data in RAM, use
+    /// with caution
     ///
     /// ## Algorithm:
     /// 1. Write entire memory to '0', in any order.
     /// 2. Bit by bit read '0', write '1', in descending order.
-    /// 3. Bit by bit read '1', write '0', read '0', write '1', in ascending order.
+    /// 3. Bit by bit read '1', write '0', read '0', write '1',
+    ///     in ascending order.
     /// 4. Bit by bit read '1', write '0', in ascending order.
-    /// 5. Bit by bit read '0', write '1', read '1', write '0', in ascending order.
+    /// 5. Bit by bit read '0', write '1', read '1', write '0',
+    ///     in ascending order.
     /// 6. Read '0' from entire memory, in ascending order.
     ///
     ///
-    /// - `address` is an address within the CPUs RAM space; must be word-aligned
-    /// - `length` is a length of memory region that is being tested. Must be
-    ///   word-aligned
+    /// - `address` is an address within the CPUs RAM space; must be
+    ///     word-aligned
+    /// - `length` is a length of memory region that is being tested.
+    ///     Must be word-aligned
     pub unsafe fn memory_test(&mut self, address: u32, length: u32) -> Result<()> {
         if address % 4 != 0 {
             return Err(Error::AlignmentError);
