@@ -94,12 +94,12 @@ where
     }
 
     /// Creates a [`SingleEndedInput`] from a [`PosChannel`]
-    pub fn from_channel(_pos: P) -> Self {
+    pub fn from_channel(_pos: &P) -> Self {
         Self::new()
     }
 
     /// Creates a [`SingleEndedInput`] from a [`PosAdcPin`]
-    pub fn from_pin<PP: PosAdcPin<I, P>>(_pin: PP) -> Self {
+    pub fn from_pin<PP: PosAdcPin<I, P>>(_pin: &mut PP) -> Self {
         Self::new()
     }
 }
@@ -149,12 +149,12 @@ where
     }
 
     /// Create a [`DifferentialInput`] from two ADC channels
-    pub fn from_channels(_pos: P, _neg: N) -> Self {
+    pub fn from_channels(_pos: &P, _neg: &N) -> Self {
         Self::new()
     }
 
     /// Create a [`DifferentialInput`] from two GPIO pins
-    pub fn from_pins<PP, PN>(_pos: PP, _neg: PN) -> Self
+    pub fn from_pins<PP, PN>(_pos: &mut PP, _neg: &mut PN) -> Self
     where
         PP: PosAdcPin<I, P>,
         PN: NegAdcPin<I, N>,
@@ -164,7 +164,7 @@ where
 
     /// Create a [`DifferentialInput`] from a single GPIO pin and
     /// a negative ADC channel
-    pub fn from_pos_pin<PP>(_pos: PP, _neg: N) -> Self
+    pub fn from_pos_pin<PP>(_pos: &mut PP, _neg: &N) -> Self
     where
         PP: PosAdcPin<I, P>,
     {
