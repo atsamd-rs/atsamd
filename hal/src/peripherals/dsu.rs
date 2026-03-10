@@ -6,7 +6,7 @@
 //! - Run a memory test on RAM
 //! - Check if a debugger is connected
 #![warn(missing_docs)]
-
+#![allow(clippy::doc_lazy_continuation)]
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 #[hal_cfg("dsu-d5x")]
@@ -237,18 +237,16 @@ impl Dsu {
     /// ## Algorithm:
     /// 1. Write entire memory to '0', in any order.
     /// 2. Bit by bit read '0', write '1', in descending order.
-    /// 3. Bit by bit read '1', write '0', read '0', write '1',
-    ///   in ascending order.
+    /// 3. Bit by bit read '1', write '0', read '0', write '1', in ascending order.
     /// 4. Bit by bit read '1', write '0', in ascending order.
-    /// 5. Bit by bit read '0', write '1', read '1', write '0',
-    ///   in ascending order.
+    /// 5. Bit by bit read '0', write '1', read '1', write '0', in ascending order.
     /// 6. Read '0' from entire memory, in ascending order.
     ///
     ///
     /// - `address` is an address within the CPUs RAM space; must be
-    ///  word-aligned
+    ///   word-aligned
     /// - `length` is a length of memory region that is being tested.
-    ///  Must be word-aligned
+    ///   Must be word-aligned
     pub unsafe fn memory_test(&mut self, address: u32, length: u32) -> Result<()> {
         if address % 4 != 0 {
             return Err(Error::AlignmentError);
