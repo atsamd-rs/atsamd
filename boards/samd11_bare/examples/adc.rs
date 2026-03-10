@@ -17,7 +17,7 @@ use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc, Prescaler, Resolution},
+    adc::{Accumulation, Adc, Prescaler, Resolution, SingleEndedInput},
     clock::GenericClockController,
 };
 
@@ -45,9 +45,10 @@ fn main() -> ! {
         .unwrap();
 
     let mut adc_pin = pins.d1.into_alternate();
+    let mut adc_input = SingleEndedInput::from_pin(&mut adc_pin);
 
     loop {
-        let res = adc.read(&mut adc_pin);
+        let res = adc.read(&mut adc_input);
         #[cfg(feature = "use_semihosting")]
         cortex_m_semihosting::hprintln!("ADC Result: {}", res);
     }
