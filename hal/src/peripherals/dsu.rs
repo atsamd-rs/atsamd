@@ -10,7 +10,7 @@ use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 #[hal_cfg("dsu-d5x")]
 use crate::pac::{self, Pac};
 
-#[hal_cfg("dsu-d21")]
+#[hal_cfg(any("dsu-d21", "dsu-d11"))]
 use crate::pac::{self, Pac1};
 
 /// Device Service Unit
@@ -72,7 +72,7 @@ impl Dsu {
 
     /// Unlock the DSU and instantiate peripheral
     #[inline]
-    #[hal_cfg("dsu-d21")]
+    #[hal_cfg(any("dsu-d21", "dsu-d11"))]
     pub fn new(dsu: pac::Dsu, pac1: &Pac1) -> Result<Self> {
         // Attempt to unlock DSU
         pac1.wpclr().modify(|_, w| unsafe { w.bits(1 << 1) }); // Clear DSU protection
