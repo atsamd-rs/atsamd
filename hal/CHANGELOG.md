@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.3](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.2...atsamd-hal-0.23.3) - 2026-03-02
+
+### Fixed
+
+- *(adc)* ADC clearing flags when reading value & make it somewhat consistent ([#989](https://github.com/atsamd-rs/atsamd/pull/989))
+
+### Other
+
+- *(clippy)* New lint doesn't like nesting if in match ([#993](https://github.com/atsamd-rs/atsamd/pull/993))
+
 ## [0.23.2](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.1...atsamd-hal-0.23.2) - 2026-02-20
 
 ### Added
