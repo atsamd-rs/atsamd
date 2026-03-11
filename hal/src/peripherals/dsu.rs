@@ -230,7 +230,7 @@ impl Dsu {
         }
 
         if self.has_failed() {
-            return Err(Error::CrcFailed);
+            Err(Error::CrcFailed)
         } else if self.bus_error() {
             Err(Error::Peripheral(PeripheralError::BusError))
         } else if self.protection_error() {
@@ -279,7 +279,7 @@ impl Dsu {
             let data = self.dsu.data().read().data().bits();
             let bit = (data & 0b11111) as u8;
             let phase = ((data >> 8) & 0b111) as u8;
-            return Err(Error::RamTestFailed { addr, phase, bit });
+            Err(Error::RamTestFailed { addr, phase, bit })
         } else if self.bus_error() {
             Err(Error::Peripheral(PeripheralError::BusError))
         } else if self.protection_error() {
