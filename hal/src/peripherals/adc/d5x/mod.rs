@@ -295,7 +295,7 @@ impl<I: AdcInstance> Adc<I> {
         };
 
         // If the result is signed (a.k.a. differential input), cast as signed value before shift
-        // to use the proper arithemtic shift
+        // to use the proper (arithemtic) shift
         if self.adc.inputctrl().read().diffmode().bit_is_set() {
             ((self.adc.result().read().result().bits() as i16) >> shift_amt) as u16
         } else {
@@ -310,10 +310,7 @@ impl<I: AdcInstance> Adc<I> {
         neg_ch: pac::adc0::inputctrl::Muxnegselect,
     ) {
         self.adc.inputctrl().modify(|r, w| {
-            if r.muxpos().bits() != pos_ch.into() {
-                self.discard = true;
-            }
-            if r.muxneg().bits() != neg_ch.into() {
+            if (r.muxpos().bits() != pos_ch.into()) || (r.muxneg().bits() != neg_ch.into()) {
                 self.discard = true;
             }
 

@@ -208,10 +208,7 @@ impl<I: AdcInstance> Adc<I> {
         neg_ch: pac::adc::inputctrl::Muxnegselect,
     ) {
         self.adc.inputctrl().modify(|r, w| {
-            if r.muxpos().bits() != pos_ch.into() {
-                self.discard = true;
-            }
-            if r.muxneg().bits() != neg_ch.into() {
+            if (r.muxpos().bits() != pos_ch.into()) || (r.muxneg().bits() != neg_ch.into()) {
                 self.discard = true;
             }
 
