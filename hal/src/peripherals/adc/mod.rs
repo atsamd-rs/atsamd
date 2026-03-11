@@ -5,7 +5,7 @@
 //! conversions.  Async functionality can be enabled via the `async` feature.
 //!
 //! ```
-//! # use atsamd_hal::adc::{AdcResolution, Reference};
+//! # use atsamd_hal::adc::{AdcResolution, Reference, SingleEndedInput};
 //! let apb_adc0 = buses.apb.enable(tokens.apbs.adc0);
 //! let (pclk_adc0, _gclk0) = Pclk::enable(tokens.pclks.adc0, clocks.gclk0);
 //!
@@ -17,9 +17,10 @@
 //!     .unwrap();
 //!
 //! let mut adc_pin = pins.a0.into_alternate();
+//! let mut adc_input = SingleEndedInput::from_pin(adc_pin);
 //!
 //! let mut _buffer = [0; 16];
-//! adc.read_buffer(&mut adc_pin, &mut _buffer).unwrap();
+//! adc.read_buffer(&mut adc_input, &mut _buffer).unwrap();
 //! ```
 
 use core::ops::Deref;
