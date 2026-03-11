@@ -348,7 +348,7 @@ impl Dsu {
 ///             if let Some(mut lock) = ctx.shared.dsu.try_access() {
 ///                 unsafe {
 ///                     // Copy RAM to temp buffer
-///                     let ram_ptr = ((0x2000_0000+ram_offset) as *const u8);
+///                     let ram_ptr = ((0x2000_0000+ram_offset) as *mut u8);
 ///                     ram_ptr.copy_to(ram_buf_ptr, RAM_TEST_SIZE);
 ///
 ///                     // Guaranteed alignment (So unwrap)
@@ -358,7 +358,7 @@ impl Dsu {
 ///                     // CPU woke up, abort running test, and check our results
 ///                     let test_res = test.finish_now();
 ///                     // Copy ram back
-///                     ram_buf_ptr.copy_to(ram_buf_ptr, RAM_TEST_SIZE);
+///                     ram_buf_ptr.copy_to(ram_ptr, RAM_TEST_SIZE);
 ///                     match test_res {
 ///                         MemoryTestResult::Ok=> {
 ///                             ram_offset += 128;
