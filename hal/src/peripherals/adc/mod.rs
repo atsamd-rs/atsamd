@@ -24,7 +24,7 @@
 
 use core::ops::Deref;
 
-use atsamd_hal_macros::{hal_cfg, hal_module, hal_macro_helper};
+use atsamd_hal_macros::{hal_cfg, hal_module};
 use pac::Peripherals;
 
 use crate::pac;

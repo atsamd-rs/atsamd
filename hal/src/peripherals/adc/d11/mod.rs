@@ -12,7 +12,7 @@ use super::{FutureAdc, async_api};
 use crate::{calibration, pac};
 use pac::Peripherals;
 use pac::Sysctrl;
-use pac::adc::inputctrl::Muxposselect;
+use pac::adc::inputctrl::{Gainselect, Muxposselect};
 pub mod pin;
 pub mod channel;
 
@@ -79,6 +79,10 @@ impl<I: AdcInstance> Adc<I> {
         self.adc
             .sampctrl()
             .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
+        self.sync();
+        self.adc
+            .inputctrl()
+            .modify(|_, w| w.gain().variant(Gainselect::Div2));
         self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
