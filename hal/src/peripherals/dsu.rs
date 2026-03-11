@@ -27,6 +27,8 @@ pub struct Dsu {
 pub enum PeripheralError {
     /// Usually misaligned address of length
     BusError,
+    /// Command not allowed whilst in protected state
+    ProtectionError,
 }
 
 /// Error from within the DSU
@@ -91,16 +93,27 @@ impl Dsu {
         self.dsu
     }
 
-    /// Clear bus error bit
+    /// Clear statusa bits (all errors and done flag)
     #[inline]
-    fn clear_bus_error(&mut self) {
-        self.dsu.statusa().write(|w| w.berr().set_bit());
+    fn clear_status_a(&mut self) {
+        self.dsu.statusa().write(|w| {
+            w.berr().set_bit();
+            w.perr().set_bit();
+            w.done().set_bit();
+            w.fail().set_bit()
+        });
     }
 
     /// Read bus error bit
     #[inline]
     fn bus_error(&mut self) -> bool {
         self.dsu.statusa().read().berr().bit()
+    }
+
+    /// Read protection error bit
+    #[inline]
+    fn protection_error(&mut self) -> bool {
+        self.dsu.statusa().read().perr().bit()
     }
 
     /// Check if operation is done
@@ -141,6 +154,28 @@ impl Dsu {
         self.dsu.statusb().read().dbgpres().bit_is_set()
     }
 
+    /// Abort a current DSU operation (CRC32 or MBIST)
+    #[inline]
+    fn abort_operation(&self) {
+        self.dsu.ctrl().write(|w| w.swrst().set_bit());
+    }
+
+    /// Setup memory length and address data, checking for word alignment
+    #[inline]
+    fn setup_mem_addr_regs(&mut self, address: u32, length: u32) -> Result<()> {
+        if address % 4 != 0 {
+            return Err(Error::AlignmentError);
+        }
+
+        if length % 4 != 0 {
+            return Err(Error::AlignmentError);
+        }
+
+        self.set_address(address / 4);
+        self.set_length(length / 4);
+        Ok(())
+    }
+
     /// Calculate CRC32 of a memory region
     ///
     /// - `address` is an address within the CPUs memory space; must be
@@ -156,24 +191,7 @@ impl Dsu {
         // https://crccalc.com/, Hex input same as memory contents, Calc CRC-32
         // but output is reversed
 
-        if address % 4 != 0 {
-            return Err(Error::AlignmentError);
-        }
-
-        if length % 4 != 0 {
-            return Err(Error::AlignmentError);
-        }
-
-        let num_words = length / 4;
-
-        // Calculate target flash address
-        let word_address = address / 4;
-
-        // Set the ADDR of where to start calculation, as number of words
-        self.set_address(word_address);
-
-        // Amount of words to check
-        self.set_length(num_words);
+        self.setup_mem_addr_regs(address, length)?;
 
         // Set CRC32 seed
         self.seed(0xffff_ffff);
@@ -189,20 +207,15 @@ impl Dsu {
             }
         }
 
-        // Clear the status flags indicating termination of the operation
-        self.dsu
-            .statusa()
-            .write(|w| w.done().set_bit().fail().set_bit());
+        // Clear previous done/error status
+        self.clear_status_a();
 
         // Initialize CRC calculation
         self.dsu.ctrl().write(|w| w.crc().set_bit());
 
         // Wait until done or failed
-        while !self.is_done() && !self.has_failed() {
+        while !self.is_done() {
             core::hint::spin_loop();
-        }
-        if self.has_failed() {
-            return Err(Error::CrcFailed);
         }
 
         #[hal_cfg("dsu-d21")]
@@ -216,12 +229,12 @@ impl Dsu {
             }
         }
 
-        // CRC startup generated a bus error
-        // Generally misaligned length or address
-        if self.bus_error() {
-            // Return the reported bus error and clear it
-            self.clear_bus_error();
+        if self.has_failed() {
+            return Err(Error::CrcFailed);
+        } else if self.bus_error() {
             Err(Error::Peripheral(PeripheralError::BusError))
+        } else if self.protection_error() {
+            Err(Error::Peripheral(PeripheralError::ProtectionError))
         } else {
             // Return the calculated CRC32 (complement of data register)
             Ok(!self.dsu.data().read().data().bits())
@@ -229,7 +242,7 @@ impl Dsu {
     }
 
     /// Performs a memory test on a section of RAM using "March LR"
-    /// algorithm.
+    /// algorithm, blocking until the test is completed.
     ///
     /// **CAUTION** This can overwrite critical data in RAM, use
     /// with caution
@@ -250,32 +263,15 @@ impl Dsu {
     /// - `length` is a length of memory region that is being tested. Must be
     ///   word-aligned
     pub unsafe fn memory_test(&mut self, address: u32, length: u32) -> Result<()> {
-        if address % 4 != 0 {
-            return Err(Error::AlignmentError);
-        }
+        self.setup_mem_addr_regs(address, length)?;
 
-        if length % 4 != 0 {
-            return Err(Error::AlignmentError);
-        }
-
-        let num_words = length / 4;
-
-        // Calculate target flash address
-        let word_address = address / 4;
-
-        self.set_address(word_address);
-        self.set_length(num_words);
-
-        // Clear the status flags indicating termination of the operation
-        self.dsu
-            .statusa()
-            .write(|w| w.done().set_bit().fail().set_bit());
+        self.clear_status_a();
 
         // Initialize RAM Test
         self.dsu.ctrl().write(|w| w.mbist().set_bit());
 
-        // Wait until done or failed
-        while !self.is_done() && !self.has_failed() {
+        // Wait until done
+        while !self.is_done() {
             core::hint::spin_loop();
         }
         if self.has_failed() {
@@ -284,14 +280,158 @@ impl Dsu {
             let bit = (data & 0b11111) as u8;
             let phase = ((data >> 8) & 0b111) as u8;
             return Err(Error::RamTestFailed { addr, phase, bit });
-        }
-
-        if self.bus_error() {
-            // Return the reported bus error and clear it
-            self.clear_bus_error();
+        } else if self.bus_error() {
             Err(Error::Peripheral(PeripheralError::BusError))
+        } else if self.protection_error() {
+            Err(Error::Peripheral(PeripheralError::ProtectionError))
         } else {
             Ok(())
         }
+    }
+
+    /// Begins a DSU Memory test on a section of memory, returning
+    /// a handle that can be polled for the result of the test.
+    ///
+    /// **CAUTION** This can overwrite critical data in RAM, use
+    /// with caution
+    ///
+    /// This is useful for background memory check tasks when the
+    /// CPU is at idle, as the test can be aborted immediately
+    /// using the handle once the CPU receives an incomming
+    /// interrupt.
+    ///
+    /// This should always be ran inside a critical-section
+    /// to avoid the CPU context-switching mid memory test.
+    ///
+    /// (See [Self::memory_test] for how the algorithm works)
+    ///
+    /// - `address` is an address within the CPUs RAM space; must be
+    ///   word-aligned
+    /// - `length` is a length of memory region that is being tested. Must be
+    ///   word-aligned
+    pub unsafe fn polling_memory_test(
+        &mut self,
+        address: u32,
+        length: u32,
+    ) -> Result<PollingMemoryTest<'_>> {
+        self.setup_mem_addr_regs(address, length)?;
+        self.clear_status_a();
+        // Initialize RAM Test
+        self.dsu.ctrl().write(|w| w.mbist().set_bit());
+        Ok(PollingMemoryTest { dsu: self })
+    }
+}
+
+/// Handle to an ongoing background memory test
+/// that can be aborted at any time
+///
+/// An example usage in an RTIC idle task
+/// may look like the following:
+///
+/// ```
+/// // dsu = rtic_sync::arbiter::Arbiter<Dsu>
+/// #[idle(shared=[&dsu])]
+/// fn idle(ctx: idle::Context) -> ! {
+///     let mut ram_offset = 0;
+///     // Important that this NEVER overwrites idle task stack
+///
+///     // Size of each RAM test (Per cycle)
+///     const RAM_TEST_SIZE: usize = 128;
+///     // Max address in RAM to test (Ensuring it doesn't
+///     // overwrite the idle task stack)
+///     const RAM_TEST_LEN: usize = 0xFFFF;
+///     let mut ram_offset = 0;
+///     let mut ram_buf = [0u8; RAM_TEST_SIZE];
+///     let ram_buf_ptr = ram_buf.as_mut_ptr();
+///     loop {
+///         cortex_m::interrupt::free(|_| {
+///             if let Some(mut lock) = ctx.shared.dsu.try_access() {
+///                 unsafe {
+///                     // Copy RAM to temp buffer
+///                     let ram_ptr = ((0x2000_0000+ram_offset) as *const u8);
+///                     ram_ptr.copy_to(ram_buf_ptr, RAM_TEST_SIZE);
+///
+///                     // Guaranteed alignment (So unwrap)
+///                     let test = lock.polling_memory_test(0x2000_0000+ram_offset, RAM_TEST_LEN as u32).unwrap();
+///                     // DSU does ram test whilst CPU is waiting
+///                     wfi();
+///                     // CPU woke up, abort running test, and check our results
+///                     let test_res = test.finish_now();
+///                     // Copy ram back
+///                     ram_buf_ptr.copy_to(ram_buf_ptr, RAM_TEST_SIZE);
+///                     match test_res {
+///                         MemoryTestResult::Ok=> {
+///                             ram_offset += 128;
+///                             if (ram_offset > RAM_TEST_LEN) {
+///                                 ram_offset = 0;
+///                             }
+///                         }
+///                         MemoryTestResult::Aborted => {
+///                             // Aborted, so don't increase counter
+///                             // since the test wasn't finished
+///                         },
+///                         MemoryTestResult::Error(error) => {
+///                             if let atsamd_hal::dsu::Error::RamTestFailed { addr, phase, bit } = error {
+///                                 // Handle what happens when RAM test fails (Probably panic)
+///                             }
+///                         },
+///                     }
+///                 }
+///             } else {
+///                 // DSU not available so we just wait
+///                 wfi();
+///             }
+///         })
+///     }
+/// }
+///
+/// ```
+pub struct PollingMemoryTest<'a> {
+    dsu: &'a mut Dsu,
+}
+
+/// Tri-state result for [PollingMemoryTest]
+pub enum MemoryTestResult {
+    /// Memory test OK
+    Ok,
+    /// Memory test aborted
+    Aborted,
+    /// Memory test error
+    Error(Error),
+}
+
+impl<'a> PollingMemoryTest<'a> {
+    /// Attempts to get the result of a memory test currently running,
+    /// If the memory test is not yet completed when called,
+    /// it is aborted, and the returned result will show this.
+    pub fn finish_now(self) -> MemoryTestResult {
+        if self.dsu.is_done() {
+            if self.dsu.has_failed() {
+                let addr = self.dsu.dsu.addr().read().addr().bits();
+                let data = self.dsu.dsu.data().read().data().bits();
+                let bit = (data & 0b11111) as u8;
+                let phase = ((data >> 8) & 0b111) as u8;
+                MemoryTestResult::Error(Error::RamTestFailed { addr, phase, bit })
+            } else if self.dsu.bus_error() {
+                MemoryTestResult::Error(Error::Peripheral(PeripheralError::BusError))
+            } else if self.dsu.protection_error() {
+                MemoryTestResult::Error(Error::Peripheral(PeripheralError::ProtectionError))
+            } else {
+                MemoryTestResult::Ok
+            }
+        } else {
+            self.dsu.abort_operation();
+            MemoryTestResult::Aborted
+        }
+    }
+
+    /// Polls to see if the memory test is completed, without
+    /// aborting it.
+    ///
+    /// Use [Self::finish_now] to obtain the result of the
+    /// memory test
+    #[inline]
+    pub fn is_completed(&self) -> bool {
+        self.dsu.is_done()
     }
 }
