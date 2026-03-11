@@ -384,7 +384,6 @@ impl Dsu {
 ///         })
 ///     }
 /// }
-///
 /// ```
 pub struct PollingMemoryTest<'a> {
     dsu: &'a mut Dsu,
