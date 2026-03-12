@@ -281,7 +281,7 @@ impl<I: AdcInstance> Adc<I> {
 
     #[inline]
     pub(super) fn conversion_result(&self) -> u16 {
-        let shift_amt = if self.cfg.auto_left_adjust == true
+        let shift_amt = if self.cfg.auto_left_adjust
                 && self.adc.ctrlb().read().leftadj().bit_is_set()
                 && let Accumulation::Single(_) = self.cfg.accumulation {
             match self.cfg.accumulation.output_resolution() {
@@ -335,7 +335,7 @@ impl<I: AdcInstance> Adc<I> {
         });
         self.sync();
 
-        if self.cfg.auto_left_adjust == true {
+        if self.cfg.auto_left_adjust {
             self.adc.ctrlb().modify(|_, w| {
                 match sample_mode {
                     SampleMode::SingleEnded => w.leftadj().clear_bit(),
@@ -345,7 +345,7 @@ impl<I: AdcInstance> Adc<I> {
             self.sync();
         }
 
-        if self.cfg.auto_rail_to_rail == true {
+        if self.cfg.auto_rail_to_rail {
             match sample_mode {
                 SampleMode::SingleEnded => {
                     if self.adc.ctrla().read().r2r().bit_is_set() {
@@ -356,7 +356,7 @@ impl<I: AdcInstance> Adc<I> {
                     }
 
                     // Disable offset compenstation only if it was enabled earlier for auto rail-to-rail
-                    if self.cfg.offset_compensation == false {
+                    if !self.cfg.offset_compensation {
                         self.adc.sampctrl().modify(|r, w| {
                             if r.offcomp().bit_is_set() {
                                 w.offcomp().clear_bit()
@@ -376,7 +376,7 @@ impl<I: AdcInstance> Adc<I> {
 
                     // It is required to enable offset compensation during rail-to-rail operation
                     // per SAM D5x/E5x datasheet section 45.6.3.2
-                    if self.cfg.offset_compensation == false {
+                    if !self.cfg.offset_compensation {
                         self.adc.sampctrl().modify(|r, w| {
                             if r.offcomp().bit_is_clear() {
                                 w.offcomp().set_bit()
