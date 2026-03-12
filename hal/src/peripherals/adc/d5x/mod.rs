@@ -1,4 +1,5 @@
 pub mod pin;
+pub mod channel;
 
 use pac::Supc;
 
@@ -6,8 +7,9 @@ use pac::Supc;
 use super::{FutureAdc, async_api};
 
 use super::{
-    ADC_SETTINGS_INTERNAL_READ, Accumulation, Adc, AdcInstance, AdcSettings, CpuVoltageSource,
-    Error, Flags, PrimaryAdc, SampleCount,
+    ADC_SETTINGS_INTERNAL_READ, Accumulation, Adc, AdcInstance, AdcSettings, Error, Flags,
+    PrimaryAdc, SampleCount, SampleMode, Resolution, SingleEndedInput, PTAT, CTAT,
+    input::CpuVoltageSource,
 };
 use crate::{calibration, pac};
 
@@ -110,23 +112,23 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
         I::calibrate(&self.adc);
         self.sync();
-        self.adc
-            .ctrla()
-            .modify(|_, w| w.prescaler().variant(cfg.clk_divider));
+        self.adc.ctrla().modify(|_, w| { w.prescaler().variant(cfg.clk_divider) });
         self.sync();
         self.adc
             .ctrlb()
             .modify(|_, w| w.ressel().variant(cfg.accumulation.resolution()));
         self.sync();
 
+        let samplen = match cfg.offset_compensation {
+            true => 0,  // As per datasheet, SAMPLEN must be set to 0 when offset compensation is enabled
+            false => cfg.sample_clock_cycles.saturating_sub(1),
+        };
         self.adc
             .sampctrl()
-            .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
-        self.sync();
-        self.adc.inputctrl().modify(|_, w| {
-            w.muxneg().gnd();
-            w.diffmode().clear_bit()
-        }); // No negative input (internal gnd)
+            .modify(|_, w| {
+                unsafe { w.samplen().bits(samplen) };
+                w.offcomp().bit(cfg.offset_compensation)
+            });
         self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
@@ -145,6 +147,8 @@ impl<I: AdcInstance> Adc<I> {
         });
         self.sync();
         self.set_reference(cfg.vref);
+        self.sync();
+        self.adc.refctrl().modify(|_, w| w.refcomp().bit(cfg.reference_compensation));
         self.sync();
         self.adc.ctrla().modify(|_, w| w.enable().set_bit());
         self.sync();
@@ -169,8 +173,8 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
 
         let (tp, tc) = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
             (
-                adc.read_channel(0x1C) as f32, // Tp
-                adc.read_channel(0x1D) as f32, // Tc
+                adc.read(&mut SingleEndedInput::from_channel(&PTAT::get_channel())) as f32, // Tp
+                adc.read(&mut SingleEndedInput::from_channel(&CTAT::get_channel())) as f32, // Tc
             )
         });
         // Restore vrefs old state
@@ -180,9 +184,9 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     }
 
     #[inline]
-    pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
+    pub fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: &C) -> u16 {
         let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-            let res = adc.read_channel(src as u8);
+            let res = adc.read(&mut SingleEndedInput::from_channel(src));
             adc.reading_to_f32(res) * 3.3 * 4.0 // x4 since the voltages are 1/4 scaled
         });
         (voltage * 1000.0) as u16
@@ -277,18 +281,113 @@ impl<I: AdcInstance> Adc<I> {
 
     #[inline]
     pub(super) fn conversion_result(&self) -> u16 {
-        self.adc.result().read().result().bits()
+        let shift_amt = if self.cfg.auto_left_adjust
+                && self.adc.ctrlb().read().leftadj().bit_is_set()
+                && let Accumulation::Single(_) = self.cfg.accumulation {
+            match self.cfg.accumulation.output_resolution() {
+                Resolution::_8bit => 8,
+                Resolution::_10bit => 6,
+                Resolution::_12bit => 4,
+                Resolution::_16bit => 0,
+            }
+        } else {
+            0
+        };
+
+        // If the result is signed (a.k.a. differential input), cast as signed value before shift
+        // to use the proper (arithemtic) shift
+        if self.adc.inputctrl().read().diffmode().bit_is_set() {
+            ((self.adc.result().read().result().bits() as i16) >> shift_amt) as u16
+        } else {
+            self.adc.result().read().result().bits() >> shift_amt
+        }
     }
 
     #[inline]
-    pub(super) fn mux(&mut self, ch: u8) {
+    pub(super) fn mux(
+        &mut self,
+        pos_ch: pac::adc0::inputctrl::Muxposselect,
+        neg_ch: pac::adc0::inputctrl::Muxnegselect,
+    ) {
         self.adc.inputctrl().modify(|r, w| {
-            if r.muxpos().bits() != ch {
+            if (r.muxpos().bits() != pos_ch.into()) || (r.muxneg().bits() != neg_ch.into()) {
                 self.discard = true;
             }
-            unsafe { w.muxpos().bits(ch) }
+
+            // Safe as pos_ch and neg_ch are derived from Muxposselect and Muxnegselect PAC enums
+            unsafe {
+                w.muxpos().bits(pos_ch.into());
+                w.muxneg().bits(neg_ch.into())
+            }
         });
-        self.sync()
+        self.sync();
+    }
+
+    /// Sets the sample mode and various ADC settings based on sample mode & the user supplied
+    /// [`AdcSettings`].
+    #[inline]
+    pub(super) fn set_sample_mode(&mut self, sample_mode: SampleMode) {
+        self.adc.inputctrl().modify(|_, w| {
+            match sample_mode {
+                SampleMode::SingleEnded => w.diffmode().clear_bit(),
+                SampleMode::Differential => w.diffmode().set_bit(),
+            }
+        });
+        self.sync();
+
+        if self.cfg.auto_left_adjust {
+            self.adc.ctrlb().modify(|_, w| {
+                match sample_mode {
+                    SampleMode::SingleEnded => w.leftadj().clear_bit(),
+                    SampleMode::Differential => w.leftadj().set_bit(),
+                }
+            });
+            self.sync();
+        }
+
+        if self.cfg.auto_rail_to_rail {
+            match sample_mode {
+                SampleMode::SingleEnded => {
+                    if self.adc.ctrla().read().r2r().bit_is_set() {
+                        self.power_down();
+                        self.adc.ctrla().modify(|_, w| w.r2r().clear_bit());
+                        self.sync();
+                        self.power_up();
+                    }
+
+                    // Disable offset compenstation only if it was enabled earlier for auto rail-to-rail
+                    if !self.cfg.offset_compensation {
+                        self.adc.sampctrl().modify(|r, w| {
+                            if r.offcomp().bit_is_set() {
+                                w.offcomp().clear_bit()
+                            } else {
+                                w
+                            }
+                        });
+                    }
+                },
+                SampleMode::Differential => {
+                    if self.adc.ctrla().read().r2r().bit_is_clear() {
+                        self.power_down();
+                        self.adc.ctrla().modify(|_, w| w.r2r().set_bit());
+                        self.sync();
+                        self.power_up();
+                    }
+
+                    // It is required to enable offset compensation during rail-to-rail operation
+                    // per SAM D5x/E5x datasheet section 45.6.3.2
+                    if !self.cfg.offset_compensation {
+                        self.adc.sampctrl().modify(|r, w| {
+                            if r.offcomp().bit_is_clear() {
+                                w.offcomp().set_bit()
+                            } else {
+                                w
+                            }
+                        });
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -313,8 +412,8 @@ where
         });
 
         self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
-        let tp = self.read_channel(0x1C).await as f32;
-        let tc = self.read_channel(0x1D).await as f32;
+        let tp = self.read(&mut SingleEndedInput::from_channel(&PTAT::get_channel())).await as f32;
+        let tc = self.read(&mut SingleEndedInput::from_channel(&CTAT::get_channel())).await as f32;
         // Restore vrefs old state
         supc.vref().write(|w| unsafe { w.bits(old_state) });
         self.inner.configure(old_adc_settings);
@@ -322,11 +421,11 @@ where
     }
 
     /// Reads a CPU voltage source. Value returned is in millivolts (mV)
-    pub async fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
+    pub async fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: &C) -> u16 {
         let old_adc_settings = self.inner.cfg;
         self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
 
-        let res = self.read_channel(src as u8).await;
+        let res = self.read(&mut SingleEndedInput::from_channel(src)).await;
 
         // x4 since the voltages are 1/4 scaled
         let voltage = self.inner.reading_to_f32(res) * 3.3 * 4.0;

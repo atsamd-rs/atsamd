@@ -17,7 +17,7 @@ use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc, Prescaler, Resolution},
+    adc::{Accumulation, Adc, Prescaler, Resolution, SingleEndedInput},
     clock::v2::{clock_system_at_reset, pclk::Pclk},
 };
 
@@ -50,9 +50,10 @@ fn main() -> ! {
         .enable(peripherals.adc0, apb_adc0, &pclk_adc0)
         .unwrap();
     let mut adc_pin = pins.a0.into_alternate();
+    let mut adc_input = SingleEndedInput::from_pin(&mut adc_pin);
 
     loop {
-        let res = adc.read(&mut adc_pin);
+        let res = adc.read(&mut adc_input);
         #[cfg(feature = "use_semihosting")]
         cortex_m_semihosting::hprintln!("ADC value: {}", res);
     }
