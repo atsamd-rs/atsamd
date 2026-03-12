@@ -1,20 +1,13 @@
-use core::marker::PhantomData;
+use super::{AdcInstance, channel::*};
+use crate::{gpio::AnyPin, typelevel::Sealed};
 use atsamd_hal_macros::hal_cfg;
+use core::marker::PhantomData;
 use num_traits::int::PrimInt;
-use crate::{
-    gpio::AnyPin,
-    typelevel::Sealed,
-};
-use super::{
-    AdcInstance,
-    channel::*,
-};
 
 #[hal_cfg(any("adc-d11", "adc-d21"))]
 use crate::pac::adc as adc0;
 #[hal_cfg("adc-d5x")]
 use crate::pac::adc0;
-
 
 /// Trait for positive ADC channels
 pub trait PosChannel<I: AdcInstance>: Sealed {
@@ -27,12 +20,19 @@ pub trait NegChannel<I: AdcInstance>: Sealed {
 }
 
 /// Marker trait for ADC pins which can be used as positive ADC inputs
-pub trait PosAdcPin<I: AdcInstance, P: PosChannel<I>>: AnyPin<Mode = crate::gpio::AlternateB> + Sealed {}
+pub trait PosAdcPin<I: AdcInstance, P: PosChannel<I>>:
+    AnyPin<Mode = crate::gpio::AlternateB> + Sealed
+{
+}
 
 /// Marker trait for ADC pins which can be used as negative ADC inputs
-pub trait NegAdcPin<I: AdcInstance, N: NegChannel<I>>: AnyPin<Mode = crate::gpio::AlternateB> + Sealed {}
+pub trait NegAdcPin<I: AdcInstance, N: NegChannel<I>>:
+    AnyPin<Mode = crate::gpio::AlternateB> + Sealed
+{
+}
 
-/// Marker trait representing [`PosChannel`]'s which measures one of the various CPU voltages
+/// Marker trait representing [`PosChannel`]'s which measures one of the various
+/// CPU voltages
 pub trait CpuVoltageSource<I: AdcInstance>: PosChannel<I> {}
 
 /// Sampling mode for the ADC
@@ -85,7 +85,6 @@ where
     I: AdcInstance,
     P: PosChannel<I>,
 {
-
     fn new() -> Self {
         Self {
             adc: PhantomData,
@@ -139,7 +138,6 @@ where
     P: PosChannel<I>,
     N: NegChannel<I>,
 {
-
     fn new() -> Self {
         Self {
             adc: PhantomData,

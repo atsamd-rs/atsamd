@@ -323,6 +323,8 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
     }
 
+    /// Sets the sample mode and various ADC settings based on sample mode & the user supplied
+    /// [`AdcSettings`].
     #[inline]
     pub(super) fn set_sample_mode(&mut self, sample_mode: SampleMode) {
         self.adc.inputctrl().modify(|_, w| {

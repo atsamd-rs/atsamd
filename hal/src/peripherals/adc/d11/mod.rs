@@ -201,7 +201,6 @@ impl<I: AdcInstance> Adc<I> {
     }
 
     #[inline]
-    #[hal_macro_helper]
     pub(super) fn mux(
         &mut self,
         pos_ch: pac::adc::inputctrl::Muxposselect,
@@ -222,6 +221,8 @@ impl<I: AdcInstance> Adc<I> {
     }
 
 
+    /// Sets the sample mode and various ADC settings based on sample mode & the user supplied
+    /// [`AdcSettings`].
     #[inline]
     #[hal_macro_helper]
     pub(super) fn set_sample_mode(&mut self, sample_mode: SampleMode) {

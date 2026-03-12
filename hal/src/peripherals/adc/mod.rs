@@ -142,7 +142,6 @@ pub trait AdcInstance {
     fn waker() -> &'static embassy_sync::waitqueue::AtomicWaker;
 }
 
-
 /// ADC Instance
 #[hal_cfg(any("adc-d11", "adc-d21"))]
 pub struct Adc<I: AdcInstance> {
