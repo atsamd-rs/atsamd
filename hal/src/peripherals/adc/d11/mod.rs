@@ -238,7 +238,7 @@ impl<I: AdcInstance> Adc<I> {
                 SampleMode::Differential => w.diffmode().set_bit(),
             };
 
-            if self.cfg.auto_left_adjust == true {
+            if self.cfg.auto_left_adjust {
                 match sample_mode {
                     SampleMode::SingleEnded => w.leftadj().clear_bit(),
                     SampleMode::Differential => w.leftadj().set_bit(),
