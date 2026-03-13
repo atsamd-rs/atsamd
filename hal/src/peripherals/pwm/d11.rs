@@ -58,11 +58,12 @@ impl $TYPE {
     }
 
     #[inline]
-    // Disables the TCC, then releases it
+    // Disables the TC, then releases it
     pub fn free(self) -> crate::pac::$TC {
-        self.tcc.ctrla().write(|w| w.swrst().set_bit());
-        while self.tcc.syncbusy().read().swrst().bit_is_set() {}
-        self.tcc
+        let count = self.tc.count16();
+        count.ctrla().write(|w| w.swrst().set_bit());
+        while count.ctrla().read().bits() & 1 != 0 {}
+        self.tc
     }
 
     pub fn set_period(&mut self, period: Hertz)
