@@ -57,6 +57,14 @@ impl $TYPE {
         }
     }
 
+    #[inline]
+    // Disables the TCC, then releases it
+    pub fn free(self) -> $TC {
+        self.tcc.ctrla().write(|w| w.swrst().set_bit());
+        while self.tcc.syncbusy().read().swrst().bit_is_set() {}
+        self.tcc
+    }
+
     pub fn set_period(&mut self, period: Hertz)
     {
         let params = TimerParams::new(period, self.clock_freq);

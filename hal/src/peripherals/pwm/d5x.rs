@@ -606,6 +606,14 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
             pinout,
         }
     }
+
+    #[inline]
+    // Disables the TCC, then releases it
+    pub fn free(self) -> $TCC {
+        self.tcc.ctrla().write(|w| w.swrst().set_bit());
+        while self.tcc.syncbusy().read().swrst().bit_is_set() {}
+        self.tcc
+    }
 }
 
 impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
