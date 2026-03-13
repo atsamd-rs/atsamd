@@ -59,7 +59,7 @@ impl $TYPE {
 
     #[inline]
     // Disables the TCC, then releases it
-    pub fn free(self) -> $TC {
+    pub fn free(self) -> crate::pac::$TC {
         self.tcc.ctrla().write(|w| w.swrst().set_bit());
         while self.tcc.syncbusy().read().swrst().bit_is_set() {}
         self.tcc

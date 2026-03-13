@@ -609,7 +609,7 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
 
     #[inline]
     // Disables the TCC, then releases it
-    pub fn free(self) -> $TCC {
+    pub fn free(self) -> crate::pac::$TCC {
         self.tcc.ctrla().write(|w| w.swrst().set_bit());
         while self.tcc.syncbusy().read().swrst().bit_is_set() {}
         self.tcc
