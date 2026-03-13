@@ -133,9 +133,9 @@ impl TimerCounter<$TC>
     #[inline]
     // Disables the TC, then releases it
     pub fn free(self) -> $TC {
-        let count = self.tc.count_16();
+        let count = self.tc.count16();
         count.ctrla().write(|w| w.swrst().set_bit());
-        while count.syncbusy().read().swrst().bit_is_set() {}
+        while count.ctrla().read().bits() & 1 != 0 {}
         self.tc
     }
 }
