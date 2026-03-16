@@ -263,10 +263,10 @@ impl AdcBuilder {
     /// Configure the ADC offset compensation
     ///
     /// ## Important
-    /// * (D5x) Enabling offset compesation forces the clock cycles per sample
-    ///   to be 4 GCLK cycles, any change to the cycles per sample via
+    /// * Enabling offset compesation forces the clock cycles per sample to be 4
+    ///   GCLK cycles, any change to the cycles per sample via
     ///   [`Self::with_clock_cycles_per_sample()`] will be ignored.
-    /// * (D11/D21) Not supported.
+    #[hal_cfg("adc-d5x")]
     pub fn enable_offset_compensation(mut self, enable: bool) -> Self {
         self.offset_compensation = Some(enable);
         self
@@ -292,10 +292,10 @@ impl AdcBuilder {
     /// differential inputs and allows measurments closer to supply rails.
     ///
     /// ## Important
-    /// * (D5x) Enabling auto rail-to-rail incurs a slight runtime performance
-    ///   hit as the CTRLA.R2R bit is enable-protected, meaning the ADC must be
-    ///   shut down and re-enabled to enable/disable rail-to-rail mode.
-    /// * (D11/D21) Not supported.
+    /// * Enabling auto rail-to-rail incurs a slight runtime performance hit as
+    ///   the CTRLA.R2R bit is enable-protected, meaning the ADC must be shut
+    ///   down and re-enabled to enable/disable rail-to-rail mode.
+    #[hal_cfg("adc-d5x")]
     pub fn enable_auto_rail_to_rail(mut self, enable: bool) -> Self {
         self.auto_rail_to_rail = Some(enable);
         self
