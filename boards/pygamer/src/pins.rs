@@ -934,8 +934,8 @@ impl JoystickReader {
         // unnecessary? note adafruit recenters around zero.. Im not doing that
         // either atm.
 
-        let y_data: u16 = adc.read(&mut hal::adc::SingleEndedInput::from_pin(&mut self.joy_y));
-        let x_data: u16 = adc.read(&mut hal::adc::SingleEndedInput::from_pin(&mut self.joy_x));
+        let y_data: u16 = adc.read(&mut self.joy_y);
+        let x_data: u16 = adc.read(&mut self.joy_x);
 
         (x_data, y_data)
     }
@@ -969,7 +969,7 @@ pub struct BatteryReader {
 impl BatteryReader {
     /// Returns a float for voltage of battery
     pub fn read(&mut self, adc: &mut hal::adc::Adc<hal::adc::Adc0>) -> f32 {
-        let data: u16 = adc.read(&mut hal::adc::SingleEndedInput::from_pin(&mut self.battery));
+        let data: u16 = adc.read(&mut self.battery);
         let result: f32 = (data as f32 / 4095.0) * 2.0 * 3.3;
         result
     }

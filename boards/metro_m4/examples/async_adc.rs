@@ -16,7 +16,7 @@ use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc, Adc0, Prescaler, Resolution, SingleEndedInput},
+    adc::{Accumulation, Adc, Adc0, Prescaler, Resolution},
     clock::v2::{clock_system_at_reset, pclk::Pclk},
 };
 
@@ -54,10 +54,9 @@ async fn main(_s: embassy_executor::Spawner) -> ! {
         .into_future(Irqs);
 
     let mut adc_pin = pins.a0.into_alternate();
-    let mut adc_input = SingleEndedInput::from_pin(&mut adc_pin);
 
     loop {
-        let res = adc.read(&mut adc_input).await;
+        let res = adc.read(&mut adc_pin).await;
         #[cfg(feature = "use_semihosting")]
         cortex_m_semihosting::hprintln!("ADC Result: {}", res).unwrap();
     }
