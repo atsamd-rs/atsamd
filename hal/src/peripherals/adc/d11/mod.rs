@@ -299,7 +299,11 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
             // Settings
             adc.adc.inputctrl().modify(|_, w| w.gain()._1x());
             adc.discard = true;
-            let res = adc.read_channel(TEMP::get_channel(), GND::get_channel());
+            let res = adc.read_channel(
+                TEMP::get_channel(),
+                GND::get_channel(),
+                SampleMode::SingleEnded
+            );
             // Set gain back to normal
             adc.adc.inputctrl().modify(|_, w| w.gain().div2());
             adc.discard = true;
@@ -314,7 +318,7 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     #[inline]
     pub fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: C) -> u16 {
         let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-            let res = adc.read_channel(src);
+            let res = adc.read_channel(src, GND::get_channel(), SampleMode::SingleEnded);
             let mut res_f = adc.reading_to_f32(res) * 3.3;
             if C::MUXVAL != Muxposselect::Bandgap {
                 res_f *= 4.0;
@@ -340,7 +344,11 @@ where
         self.inner.adc.inputctrl().modify(|_, w| w.gain()._1x());
         self.inner.discard = true;
 
-        let res = self.read_channel(TEMP::get_channel(), GND::get_channel()).await;
+        let res = self.read_channel(
+            TEMP::get_channel(),
+            GND::get_channel(),
+            SampleMode::SingleEnded
+        ).await;
 
         self.inner.adc.inputctrl().modify(|_, w| w.gain().div2());
         self.inner.configure(old_adc_settings);
@@ -356,7 +364,7 @@ where
         let old_adc_settings = self.inner.cfg;
         self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
 
-        let res = self.read_channel(src, GND::get_channel()).await;
+        let res = self.read_channel(src, GND::get_channel(), SampleMode::SingleEnded).await;
         let mut voltage = self.inner.reading_to_f32(res) * 3.3;
         if C::MUXVAL != Muxposselect::Bandgap {
             voltage *= 4.0;
