@@ -306,22 +306,55 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
     }
 
-    /// Read a single value from the provided ADC input.
+    /// Reads a single value from the provided ADC pin, referenced to internal
+    /// GND (single ended)
     #[inline]
-    pub fn read<P: AdcInput<I>>(&mut self, _input: &mut P) -> P::Output {
+    pub fn read<P>(&mut self, _pin: &mut P) -> u16
+    where
+        P: PosAdcPin<I>,
+    {
+        self.read_channel(
+            P::Channel::get_channel(),
+            GND::get_channel(),
+            SampleMode::SingleEnded,
+        )
+    }
+
+    /// Reads a single value from a pair of ADC pins (differentially)
+    #[inline]
+    pub fn read_differential<P, N>(&mut self, _pos_pin: &mut P, _neg_pin: &mut N) -> i16
+    where
+        P: PosAdcPin<I>,
+        N: NegAdcPin<I>,
+    {
+        self.read_channel(
+            P::Channel::get_channel(),
+            N::Channel::get_channel(),
+            SampleMode::Differential,
+        )
+        .cast_signed()
+    }
+
+    /// Read a single value from the provided ADC channels.
+    #[inline]
+    fn read_channel<P, N>(&mut self, _pos: P, _neg: N, sample_mode: SampleMode) -> u16
+    where
+        P: PosChannel<I>,
+        N: NegChannel<I>,
+    {
         // Clear overrun errors that might've occured before we try to read anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
         self.disable_freerunning();
         self.sync();
-        self.set_sample_mode(P::SAMPLE_MODE);
-        self.mux(P::Pos::MUXVAL, P::Neg::MUXVAL);
+        self.set_sample_mode(sample_mode);
+        self.mux(P::MUXVAL, N::MUXVAL);
         self.check_read_discard();
         self.start_conversion();
         while !self.read_flags().contains(Flags::RESRDY) {
             core::hint::spin_loop();
         }
-        P::cast_result(self.conversion_result())
+        self.conversion_result()
     }
 
     // If the ADC has to discard the next value, then we try to read it
@@ -338,18 +371,60 @@ impl<I: AdcInstance> Adc<I> {
         }
     }
 
+    /// Read into a buffer from the provided pin (single-ended, referenced to
+    /// GND), in a blocking fashion
+    #[inline]
+    pub fn read_buffer<P>(&mut self, _pin: P, dst: &mut [u16]) -> Result<(), Error>
+    where
+        P: PosAdcPin<I>,
+    {
+        self.read_buffer_channel(
+            P::Channel::get_channel(),
+            GND::get_channel(),
+            SampleMode::SingleEnded,
+            dst,
+        )
+    }
+
+    /// Read into a buffer from the provided pins (differentially), in a
+    /// blocking fashion
+    #[inline]
+    pub fn read_buffer_differential<P, N>(
+        &mut self,
+        _pos: P,
+        _neg: N,
+        dst: &mut [i16],
+    ) -> Result<(), Error>
+    where
+        P: PosAdcPin<I>,
+        N: NegAdcPin<I>,
+    {
+        self.read_buffer_channel(
+            P::Channel::get_channel(),
+            N::Channel::get_channel(),
+            SampleMode::Differential,
+            unsafe { &mut *(dst as *mut [i16] as *mut [u16]) },
+        )
+    }
+
     /// Read into a buffer from the provided channel, in a blocking fashion
     #[inline]
-    pub fn read_buffer<P: AdcInput<I>>(
+    fn read_buffer_channel<P, N>(
         &mut self,
-        _input: &mut P,
-        dst: &mut [P::Output],
-    ) -> Result<(), Error> {
+        _pos: P,
+        _neg: N,
+        sample_mode: SampleMode,
+        dst: &mut [u16],
+    ) -> Result<(), Error>
+    where
+        P: PosChannel<I>,
+        N: NegChannel<I>,
+    {
         // Clear overrun errors that might've occured before we try to read anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
-        self.set_sample_mode(P::SAMPLE_MODE);
-        self.mux(P::Pos::MUXVAL, P::Neg::MUXVAL);
+        self.set_sample_mode(sample_mode);
+        self.mux(P::MUXVAL, N::MUXVAL);
         self.enable_freerunning();
         self.start_conversion();
         self.check_read_discard();
@@ -367,7 +442,7 @@ impl<I: AdcInstance> Adc<I> {
                 return Err(e);
             }
 
-            *result = P::cast_result(self.conversion_result());
+            *result = self.conversion_result();
         }
         //self.power_down();
         self.disable_freerunning();
@@ -419,14 +494,49 @@ where
         (self.inner, self.irqs)
     }
 
-    /// Read a single value from the provided ADC input
+    /// Read a single value from the provided ADC pin (single-ended, referenced
+    /// to GND)
     #[inline]
-    pub async fn read<P: AdcInput<I>>(&mut self, _input: &mut P) -> P::Output {
+    pub async fn read<P>(&mut self, _pin: &mut P) -> u16
+    where
+        P: PosAdcPin<I>,
+    {
+        self.read_channel(
+            P::Channel::get_channel(),
+            GND::get_channel(),
+            SampleMode::SingleEnded,
+        )
+        .await
+    }
+
+    /// Read a single value from the provided ADC pins (differentially)
+    #[inline]
+    pub async fn read_differential<P, N>(&mut self, _pos: &mut P, _neg: &mut N) -> i16
+    where
+        P: PosAdcPin<I>,
+        N: NegAdcPin<I>,
+    {
+        self.read_channel(
+            P::Channel::get_channel(),
+            N::Channel::get_channel(),
+            SampleMode::Differential,
+        )
+        .await
+        .cast_signed()
+    }
+
+    /// Read a single value from the provided ADC channels
+    #[inline]
+    async fn read_channel<P, N>(&mut self, _pos: P, _neg: N, sample_mode: SampleMode) -> u16
+    where
+        P: PosChannel<I>,
+        N: NegChannel<I>,
+    {
         // Clear overrun errors that might've occured before we try to read anything
         self.inner.clear_all_flags();
         self.inner.disable_freerunning();
-        self.inner.set_sample_mode(P::SAMPLE_MODE);
-        self.inner.mux(P::Pos::MUXVAL, P::Neg::MUXVAL);
+        self.inner.set_sample_mode(sample_mode);
+        self.inner.mux(P::MUXVAL, N::MUXVAL);
         if self.inner.discard {
             // Read and discard if something was changed
             self.inner.start_conversion();
@@ -438,23 +548,66 @@ where
         // Here we explicitly ignore the result, because we know that
         // overrun errors are impossible since the ADC is configured in one-shot mode.
         let _ = self.wait_flags(Flags::RESRDY).await;
-        let res = P::cast_result(self.inner.conversion_result());
+        let res = self.inner.conversion_result();
         //self.inner.power_down();
         self.inner.sync();
         res
     }
 
-    /// Read into a buffer from the provided ADC input
+    /// Read into a buffer from the provided ADC pin (single-ended, referenced
+    /// to GND)
     #[inline]
-    pub async fn read_buffer<P: AdcInput<I>>(
+    pub async fn read_buffer<P>(&mut self, _pos: &mut P, dst: &mut [u16]) -> Result<(), Error>
+    where
+        P: PosAdcPin<I>,
+    {
+        self.read_buffer_channel(
+            P::Channel::get_channel(),
+            GND::get_channel(),
+            SampleMode::SingleEnded,
+            dst,
+        )
+        .await
+    }
+
+    /// Read into a buffer from the provided ADC pin (differentially)
+    #[inline]
+    pub async fn read_buffer_differential<P, N>(
         &mut self,
-        _pin: &mut P,
-        dst: &mut [P::Output],
-    ) -> Result<(), Error> {
+        _pos: &mut P,
+        _neg: &mut N,
+        dst: &mut [i16],
+    ) -> Result<(), Error>
+    where
+        P: PosAdcPin<I>,
+        N: NegAdcPin<I>,
+    {
+        self.read_buffer_channel(
+            P::Channel::get_channel(),
+            N::Channel::get_channel(),
+            SampleMode::Differential,
+            unsafe { &mut *(dst as *mut [i16] as *mut [u16]) },
+        )
+        .await
+    }
+
+    /// Read into a buffer from the provided ADC channels
+    #[inline]
+    async fn read_buffer_channel<P, N>(
+        &mut self,
+        _pos: P,
+        _neg: N,
+        sample_mode: SampleMode,
+        dst: &mut [u16],
+    ) -> Result<(), Error>
+    where
+        P: PosChannel<I>,
+        N: NegChannel<I>,
+    {
         // Clear overrun errors that might've occured before we try to read anything
         self.inner.clear_all_flags();
-        self.inner.set_sample_mode(P::SAMPLE_MODE);
-        self.inner.mux(P::Pos::MUXVAL, P::Neg::MUXVAL);
+        self.inner.set_sample_mode(sample_mode);
+        self.inner.mux(P::MUXVAL, N::MUXVAL);
         self.inner.enable_freerunning();
 
         if self.inner.discard {
@@ -473,7 +626,7 @@ where
 
                 return Err(e);
             }
-            *result = P::cast_result(self.inner.conversion_result());
+            *result = self.inner.conversion_result();
         }
 
         //self.inner.power_down();

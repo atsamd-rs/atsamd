@@ -24,24 +24,28 @@ macro_rules! channel {
                 $(
                     impl<I: AdcInstance> PosChannel<I> for $CH<I> {
                         const MUXVAL: Muxposselect = $PMUX;
+
+                        fn get_channel() -> Self {
+                            Self {
+                                adc: PhantomData
+                            }
+                        }
                     }
                 )?
                 $(
                     impl<I: AdcInstance> NegChannel<I> for $CH<I> {
                         const MUXVAL: Muxnegselect = $NMUX;
+
+                        fn get_channel() -> Self {
+                            Self {
+                                adc: PhantomData
+                            }
+                        }
                     }
                 )?
                 $(
                     impl<I: AdcInstance> $MARKER<I> for $CH<I> {}
                 )*
-
-                impl<I: AdcInstance> $CH<I> {
-                    pub fn get_channel() -> Self {
-                        Self {
-                            adc: PhantomData
-                        }
-                    }
-                }
             )+
         }
     };

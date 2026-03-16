@@ -8,8 +8,8 @@ use super::{FutureAdc, async_api};
 
 use super::{
     ADC_SETTINGS_INTERNAL_READ, Accumulation, Adc, AdcInstance, AdcSettings, Error, Flags,
-    PrimaryAdc, SampleCount, SampleMode, Resolution, SingleEndedInput, PTAT, CTAT,
-    input::CpuVoltageSource,
+    PrimaryAdc, SampleCount, SampleMode, Resolution, PTAT, CTAT, GND, input::CpuVoltageSource,
+    PosChannel, NegChannel,
 };
 use crate::{calibration, pac};
 
@@ -173,8 +173,16 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
 
         let (tp, tc) = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
             (
-                adc.read(&mut SingleEndedInput::from_channel(&PTAT::get_channel())) as f32, // Tp
-                adc.read(&mut SingleEndedInput::from_channel(&CTAT::get_channel())) as f32, // Tc
+                adc.read_channel(
+                    PTAT::get_channel(),
+                    GND::get_channel(),
+                    SampleMode::SingleEnded
+                ) as f32, // Tp
+                adc.read_channel(
+                    CTAT::get_channel(),
+                    GND::get_channel(),
+                    SampleMode::SingleEnded
+                ) as f32, // Tc
             )
         });
         // Restore vrefs old state
@@ -184,9 +192,9 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     }
 
     #[inline]
-    pub fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: &C) -> u16 {
+    pub fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: C) -> u16 {
         let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-            let res = adc.read(&mut SingleEndedInput::from_channel(src));
+            let res = adc.read_channel(src, GND::get_channel(), SampleMode::SingleEnded);
             adc.reading_to_f32(res) * 3.3 * 4.0 // x4 since the voltages are 1/4 scaled
         });
         (voltage * 1000.0) as u16
@@ -412,8 +420,18 @@ where
         });
 
         self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
-        let tp = self.read(&mut SingleEndedInput::from_channel(&PTAT::get_channel())).await as f32;
-        let tc = self.read(&mut SingleEndedInput::from_channel(&CTAT::get_channel())).await as f32;
+        let tp = self.read_channel(
+            PTAT::get_channel(),
+            GND::get_channel(),
+            SampleMode::SingleEnded
+        ).await as f32;
+
+        let tc = self.read_channel(
+            CTAT::get_channel(),
+            GND::get_channel(),
+            SampleMode::SingleEnded
+        ).await as f32;
+
         // Restore vrefs old state
         supc.vref().write(|w| unsafe { w.bits(old_state) });
         self.inner.configure(old_adc_settings);
@@ -421,11 +439,11 @@ where
     }
 
     /// Reads a CPU voltage source. Value returned is in millivolts (mV)
-    pub async fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: &C) -> u16 {
+    pub async fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: C) -> u16 {
         let old_adc_settings = self.inner.cfg;
         self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
 
-        let res = self.read(&mut SingleEndedInput::from_channel(src)).await;
+        let res = self.read_channel(src, GND::get_channel(), SampleMode::SingleEnded).await;
 
         // x4 since the voltages are 1/4 scaled
         let voltage = self.inner.reading_to_f32(res) * 3.3 * 4.0;

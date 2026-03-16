@@ -13,7 +13,10 @@ macro_rules! pos_adc_pins {
         crate::paste::item! {
             $(
                 $( #[$cfg] )?
-                impl PosAdcPin<$Adc, $CHAN<$Adc>> for Pin<$PinId, AlternateB> {}
+                impl PosAdcPin<$Adc> for Pin<$PinId, AlternateB> {
+                    type Channel = $CHAN<$Adc>;
+
+                }
             )+
         }
     };
@@ -30,7 +33,9 @@ macro_rules! neg_adc_pins {
         crate::paste::item! {
             $(
                 $( #[$cfg] )?
-                impl NegAdcPin<$Adc, $CHAN<$Adc>> for Pin<$PinId, AlternateB> {}
+                impl NegAdcPin<$Adc> for Pin<$PinId, AlternateB> {
+                    type Channel = $CHAN<$Adc>;
+                }
             )+
         }
     };

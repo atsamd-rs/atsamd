@@ -1,7 +1,7 @@
 use super::{
     ADC_SETTINGS_INTERNAL_READ, ADC_SETTINGS_INTERNAL_READ_D21_TEMP, Accumulation, Adc,
-    AdcInstance, AdcSettings, Error, Flags, PrimaryAdc, SampleCount, SampleMode, SingleEndedInput,
-    TEMP, input::CpuVoltageSource,
+    AdcInstance, AdcSettings, Error, Flags, PrimaryAdc, SampleCount, SampleMode, TEMP, GND,
+    input::CpuVoltageSource, PosChannel, NegChannel,
 };
 
 use atsamd_hal_macros::{hal_macro_helper};
@@ -299,7 +299,7 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
             // Settings
             adc.adc.inputctrl().modify(|_, w| w.gain()._1x());
             adc.discard = true;
-            let res = adc.read(&mut SingleEndedInput::from_channel(&TEMP::get_channel()));
+            let res = adc.read_channel(TEMP::get_channel(), GND::get_channel());
             // Set gain back to normal
             adc.adc.inputctrl().modify(|_, w| w.gain().div2());
             adc.discard = true;
@@ -312,9 +312,9 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     }
 
     #[inline]
-    pub fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: &C) -> u16 {
+    pub fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: C) -> u16 {
         let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-            let res = adc.read(&mut SingleEndedInput::from_channel(src));
+            let res = adc.read_channel(src);
             let mut res_f = adc.reading_to_f32(res) * 3.3;
             if C::MUXVAL != Muxposselect::Bandgap {
                 res_f *= 4.0;
@@ -340,7 +340,7 @@ where
         self.inner.adc.inputctrl().modify(|_, w| w.gain()._1x());
         self.inner.discard = true;
 
-        let res = self.read(&mut SingleEndedInput::from_channel(&TEMP::get_channel())).await;
+        let res = self.read_channel(TEMP::get_channel(), GND::get_channel()).await;
 
         self.inner.adc.inputctrl().modify(|_, w| w.gain().div2());
         self.inner.configure(old_adc_settings);
@@ -352,11 +352,11 @@ where
     }
 
     /// Reads a CPU voltage source. Value returned is in millivolts (mV)
-    pub async fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: &C) -> u16 {
+    pub async fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: C) -> u16 {
         let old_adc_settings = self.inner.cfg;
         self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
 
-        let res = self.read(&mut SingleEndedInput::from_channel(src)).await;
+        let res = self.read_channel(src, GND::get_channel()).await;
         let mut voltage = self.inner.reading_to_f32(res) * 3.3;
         if C::MUXVAL != Muxposselect::Bandgap {
             voltage *= 4.0;
