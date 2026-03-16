@@ -17,10 +17,9 @@
 //!     .unwrap();
 //!
 //! let mut adc_pin = pins.a0.into_alternate();
-//! let mut adc_input = SingleEndedInput::from_pin(adc_pin);
 //!
 //! let mut _buffer = [0; 16];
-//! adc.read_buffer(&mut adc_input, &mut _buffer).unwrap();
+//! adc.read_buffer(&mut adc_pin, &mut _buffer).unwrap();
 //! ```
 
 use crate::{gpio::AnyPin, typelevel::Sealed};
@@ -129,12 +128,12 @@ pub trait NegChannel<I: AdcInstance>: Sealed {
     fn get_channel() -> Self;
 }
 
-/// Marker trait for ADC pins which can be used as positive ADC inputs
+/// Trait for ADC pins which can be used as positive ADC inputs
 pub trait PosAdcPin<I: AdcInstance>: AnyPin<Mode = crate::gpio::AlternateB> + Sealed {
     type Channel: PosChannel<I>;
 }
 
-/// Marker trait for ADC pins which can be used as negative ADC inputs
+/// Trait for ADC pins which can be used as negative ADC inputs
 pub trait NegAdcPin<I: AdcInstance>: AnyPin<Mode = crate::gpio::AlternateB> + Sealed {
     type Channel: NegChannel<I>;
 }

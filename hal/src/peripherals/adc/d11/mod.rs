@@ -223,6 +223,10 @@ impl<I: AdcInstance> Adc<I> {
 
     /// Sets the sample mode and various ADC settings based on sample mode & the user supplied
     /// [`AdcSettings`].
+    ///
+    /// ## Important
+    /// * (For D11) The ADC is automatically powered down before modifying the the enable-protected
+    ///   CTRLB.DIFFMODE and CTRLB.LEFTADJ bits, then turned back on.
     #[inline]
     #[hal_macro_helper]
     pub(super) fn set_sample_mode(&mut self, sample_mode: SampleMode) {
