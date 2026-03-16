@@ -23,6 +23,7 @@
 //! adc.read_buffer(&mut adc_input, &mut _buffer).unwrap();
 //! ```
 
+use crate::{gpio::AnyPin, typelevel::Sealed};
 use core::ops::Deref;
 
 use atsamd_hal_macros::{hal_cfg, hal_module};
@@ -45,9 +46,6 @@ pub use async_api::*;
 
 mod builder;
 pub use builder::*;
-
-mod input;
-pub use input::*;
 
 #[hal_cfg(any("adc-d11", "adc-d21"))]
 use crate::pac::adc as adc0;
@@ -115,6 +113,41 @@ bitflags::bitflags! {
         /// Result ready interrupt
         const RESRDY = 0x01;
     }
+}
+
+/// Trait for positive ADC channels
+pub trait PosChannel<I: AdcInstance>: Sealed {
+    const MUXVAL: adc0::inputctrl::Muxposselect;
+
+    fn get_channel() -> Self;
+}
+
+/// Trait for negative ADC channels
+pub trait NegChannel<I: AdcInstance>: Sealed {
+    const MUXVAL: adc0::inputctrl::Muxnegselect;
+
+    fn get_channel() -> Self;
+}
+
+/// Marker trait for ADC pins which can be used as positive ADC inputs
+pub trait PosAdcPin<I: AdcInstance>: AnyPin<Mode = crate::gpio::AlternateB> + Sealed {
+    type Channel: PosChannel<I>;
+}
+
+/// Marker trait for ADC pins which can be used as negative ADC inputs
+pub trait NegAdcPin<I: AdcInstance>: AnyPin<Mode = crate::gpio::AlternateB> + Sealed {
+    type Channel: NegChannel<I>;
+}
+
+/// Marker trait representing [`PosChannel`]'s which measures one of the various
+/// CPU voltages
+pub trait CpuVoltageSource<I: AdcInstance>: PosChannel<I> {}
+
+/// Sampling mode for the ADC
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub enum SampleMode {
+    SingleEnded,
+    Differential,
 }
 
 /// Marker for which ADC has access to the CPUs internal sensors

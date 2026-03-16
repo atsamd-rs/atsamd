@@ -1,7 +1,7 @@
 use super::{
     ADC_SETTINGS_INTERNAL_READ, ADC_SETTINGS_INTERNAL_READ_D21_TEMP, Accumulation, Adc,
     AdcInstance, AdcSettings, Error, Flags, PrimaryAdc, SampleCount, SampleMode, TEMP, GND,
-    input::CpuVoltageSource, PosChannel, NegChannel,
+    CpuVoltageSource, PosChannel, NegChannel,
 };
 
 use atsamd_hal_macros::{hal_macro_helper};

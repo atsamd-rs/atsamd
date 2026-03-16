@@ -8,8 +8,8 @@ use super::{FutureAdc, async_api};
 
 use super::{
     ADC_SETTINGS_INTERNAL_READ, Accumulation, Adc, AdcInstance, AdcSettings, Error, Flags,
-    PrimaryAdc, SampleCount, SampleMode, Resolution, PTAT, CTAT, GND, input::CpuVoltageSource,
-    PosChannel, NegChannel,
+    PrimaryAdc, SampleCount, SampleMode, Resolution, PTAT, CTAT, GND, CpuVoltageSource, PosChannel,
+    NegChannel,
 };
 use crate::{calibration, pac};
 

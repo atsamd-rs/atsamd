@@ -1,7 +1,6 @@
 use core::marker::PhantomData;
-use crate::adc::*;
-use crate::adc::input::CpuVoltageSource;
 use crate::{
+    adc::*,
     pac::adc0::inputctrl::{Muxposselect, Muxnegselect},
     typelevel::Sealed,
 };
