@@ -63,27 +63,27 @@ macro_rules! pad_table {
         #[$id_cfg:meta]
         $PinId:ident {
             $(
-                $( #[$sercom_cfg:meta] )?
+                $( #[$sercom_cfg:meta] )*
                 $Cfg:ident: ( $Sercom:ident, $PadNum:ident, $( $IoSet:ident ),+ ) $( + $I2C:ident )?,
             )+
         }
     ) => {
         $(
             #[$id_cfg]
-            $( #[$sercom_cfg] )?
+            $( #[$sercom_cfg] )*
             pad_info!( $PinId, $Cfg, $Sercom, $PadNum, $( $IoSet ),+ $( + $I2C )?);
         )+
     };
     (
         $PinId:ident {
             $(
-                $( #[$sercom_cfg:meta] )?
+                $( #[$sercom_cfg:meta] )*
                 $Cfg:ident: ( $Sercom:ident, $PadNum:ident, $( $IoSet:ident ),+ ) $( + $I2C:ident )?,
             )+
         }
     ) => {
         $(
-            $( #[$sercom_cfg] )?
+            $( #[$sercom_cfg] )*
             pad_info!( $PinId, $Cfg, $Sercom, $PadNum, $( $IoSet ),+ $( + $I2C )?);
         )+
     };
@@ -92,7 +92,7 @@ macro_rules! pad_table {
             $( #[$id_cfg:meta] )?
             $PinId:ident {
                 $(
-                    $( #[$sercom_cfg:meta] )?
+                    $( #[$sercom_cfg:meta] )*
                     $Cfg:ident: ( $Sercom:ident, $PadNum:ident, $( $IoSet:ident ),+ ) $( + $I2C:ident )?,
                 )+
             }
@@ -103,7 +103,7 @@ macro_rules! pad_table {
                 $( #[$id_cfg] )?
                 $PinId{
                     $(
-                        $( #[$sercom_cfg] )?
+                        $( #[$sercom_cfg] )*
                         $Cfg: ( $Sercom, $PadNum, $( $IoSet),+ ) $( + $I2C )?,
                     )+
                 }
@@ -123,11 +123,21 @@ macro_rules! pad_table {
 pad_table!(
     #[hal_cfg("pa00")]
     PA00 {
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom1")]
+        D: (Sercom1, Pad0, IoSet4),
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom1")]
         D: (Sercom1, Pad0, IoSet4, UndocIoSet2),
     }
     #[hal_cfg("pa01")]
     PA01 {
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom1")]
+        D: (Sercom1, Pad1, IoSet4),
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom1")]
         D: (Sercom1, Pad1, IoSet4, UndocIoSet2),
     }
@@ -210,12 +220,22 @@ pad_table!(
     #[hal_cfg("pa16")]
     PA16 {
         #[hal_cfg("sercom1")]
+        #[cfg(not(feature = "undoc-features"))]
+        C: (Sercom1, Pad0, IoSet1) + I2C,
+
+        #[cfg(feature = "undoc-features")]
+        #[hal_cfg("sercom1")]
         C: (Sercom1, Pad0, IoSet1, UndocIoSet1) + I2C,
         #[hal_cfg("sercom3")]
         D: (Sercom3, Pad1, IoSet3) + I2C,
     }
     #[hal_cfg("pa17")]
     PA17 {
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad1, IoSet1) + I2C,
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom1")]
         C: (Sercom1, Pad1, IoSet1, UndocIoSet1) + I2C,
         #[hal_cfg("sercom3")]
@@ -305,13 +325,21 @@ pad_table!(
     }
     #[hal_cfg("pb02")]
     PB02 {
-        // According to Metro M4, PB02 is I2C-capable. This disagrees with datasheet table 6-8.
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad0, IoSet6),
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom5")]
         D: (Sercom5, Pad0, IoSet6) + I2C,
     }
     #[hal_cfg("pb03")]
     PB03 {
-        // According to Metro M4, PB03 is I2C-capable. This disagrees with datasheet table 6-8.
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom5")]
+        D: (Sercom5, Pad1, IoSet6),
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom5")]
         D: (Sercom5, Pad1, IoSet6) + I2C,
     }
@@ -399,6 +427,11 @@ pad_table!(
     }
     #[hal_cfg("pb22")]
     PB22 {
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad2, IoSet3),
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom1")]
         C: (Sercom1, Pad2, IoSet3, UndocIoSet1, UndocIoSet2),
         #[hal_cfg("sercom5")]
@@ -406,6 +439,11 @@ pad_table!(
     }
     #[hal_cfg("pb23")]
     PB23 {
+        #[cfg(not(feature = "undoc-features"))]
+        #[hal_cfg("sercom1")]
+        C: (Sercom1, Pad3, IoSet3),
+
+        #[cfg(feature = "undoc-features")]
         #[hal_cfg("sercom1")]
         C: (Sercom1, Pad3, IoSet3, UndocIoSet1, UndocIoSet2),
         #[hal_cfg("sercom5")]

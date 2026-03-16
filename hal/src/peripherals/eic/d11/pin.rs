@@ -4,7 +4,7 @@ use crate::ehal::digital::{ErrorType, InputPin};
 use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
 use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
+    self, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt, pin::*,
 };
 use core::convert::Infallible;
 
@@ -213,16 +213,9 @@ mod async_impls {
             self.disable_interrupt();
 
             match sense {
-                Sense::High => {
-                    if self.is_high().unwrap() {
-                        return;
-                    }
-                }
-                Sense::Low => {
-                    if self.is_low().unwrap() {
-                        return;
-                    }
-                }
+                Sense::High if self.is_high().unwrap() => return,
+
+                Sense::Low if self.is_low().unwrap() => return,
                 _ => (),
             }
 

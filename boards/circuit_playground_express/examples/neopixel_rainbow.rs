@@ -20,13 +20,14 @@ use circuit_playground_express as bsp;
 use bsp::entry;
 use hal::clock::GenericClockController;
 use hal::delay::Delay;
-use hal::prelude::*;
+use hal::fugit::ExtU32;
 use hal::timer::TimerCounter;
+use hal::timer_traits::InterruptDrivenTimer;
 use pac::{CorePeripherals, Peripherals};
 
 use smart_leds::{
-    hsv::{hsv2rgb, Hsv},
     SmartLedsWrite,
+    hsv::{Hsv, hsv2rgb},
 };
 use ws2812_timer_delay as ws2812;
 
@@ -35,24 +36,25 @@ fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
-        peripherals.GCLK,
-        &mut peripherals.PM,
-        &mut peripherals.SYSCTRL,
-        &mut peripherals.NVMCTRL,
+        peripherals.gclk,
+        &mut peripherals.pm,
+        &mut peripherals.sysctrl,
+        &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.PORT);
+    let pins = bsp::Pins::new(peripherals.port);
     let mut delay = Delay::new(core.SYST, &mut clocks);
 
     let gclk0 = clocks.gclk0();
     let timer_clock = clocks.tcc2_tc3(&gclk0).unwrap();
-    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.TC3, &mut peripherals.PM);
-    timer.start(3.mhz());
+    let mut timer = TimerCounter::tc3_(&timer_clock, peripherals.tc3, &mut peripherals.pm);
+    timer.start(1.micros());
 
     let neopixel_pin: bsp::NeoPixel = pins.d8.into();
     let mut neopixel = ws2812::Ws2812::new(timer, neopixel_pin);
 
     // Loop through all of the available hue values (colors) to make a
     // rainbow effect from the onboard neopixel
+    use hal::ehal::delay::DelayNs;
     loop {
         for j in 0..255u8 {
             let colors = [hsv2rgb(Hsv {
@@ -61,7 +63,7 @@ fn main() -> ! {
                 val: 2,
             }); 10];
             neopixel.write(colors.iter().cloned()).unwrap();
-            delay.delay_ms(5u8);
+            delay.delay_ms(5);
         }
     }
 }

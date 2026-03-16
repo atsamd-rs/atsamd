@@ -309,6 +309,14 @@ mod ioset {
     });
 
     // Implement IoSets for NoneT, making it act as a wildcard.
+    #[cfg(not(feature = "undoc-features"))]
+    seq!(N in 1..=5 {
+        impl IoSets for NoneT {
+            type SetList = mk_hlist! ( #(<IoSet~N as IoSet>::Order, )* <IoSet6 as IoSet>::Order );
+        }
+    });
+
+    #[cfg(feature = "undoc-features")]
     seq!(N in 1..=6 {
         impl IoSets for NoneT {
             type SetList = mk_hlist! ( #(<IoSet~N as IoSet>::Order, )* <UndocIoSet1 as IoSet>::Order, <UndocIoSet2 as IoSet>::Order );
@@ -335,8 +343,11 @@ mod ioset {
     /// variants.
     ///
     /// [type-level enum]: crate::typelevel#type-level-enum
+    #[cfg(feature = "undoc-features")]
     pub enum UndocIoSet1 {}
+    #[cfg(feature = "undoc-features")]
     impl Sealed for UndocIoSet1 {}
+    #[cfg(feature = "undoc-features")]
     impl IoSet for UndocIoSet1 {
         type Order = typenum::U8;
     }
@@ -361,8 +372,11 @@ mod ioset {
     /// variants.
     ///
     /// [type-level enum]: crate::typelevel#type-level-enum
+    #[cfg(feature = "undoc-features")]
     pub enum UndocIoSet2 {}
+    #[cfg(feature = "undoc-features")]
     impl Sealed for UndocIoSet2 {}
+    #[cfg(feature = "undoc-features")]
     impl IoSet for UndocIoSet2 {
         type Order = typenum::U9;
     }

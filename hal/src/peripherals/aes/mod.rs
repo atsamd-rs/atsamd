@@ -119,11 +119,6 @@
 //! assert_eq!(block, block_copy);
 //! ```
 
-// The cipher crate has an outdated dependency on the generic-array crate
-// (by way of the crypto_common crate)
-// Nothing we can do about this until the dependency chain is up to date
-#![allow(deprecated)]
-
 // Re-exports
 pub use pac::aes::ctrla::{
     Aesmodeselect, Cfbsselect, Cipherselect, Keysizeselect, Lodselect, Startmodeselect,
