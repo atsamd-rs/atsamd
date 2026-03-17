@@ -5,27 +5,27 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `OVF` reader - Overflow/Underflow"]
 pub type OvfR = crate::BitReader;
 #[doc = "Field `OVF` writer - Overflow/Underflow"]
-pub type OvfW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type OvfW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERR` reader - Error"]
 pub type ErrR = crate::BitReader;
 #[doc = "Field `ERR` writer - Error"]
-pub type ErrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DIR` reader - Direction Change"]
 pub type DirR = crate::BitReader;
 #[doc = "Field `DIR` writer - Direction Change"]
-pub type DirW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DirW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `VLC` reader - Velocity"]
 pub type VlcR = crate::BitReader;
 #[doc = "Field `VLC` writer - Velocity"]
-pub type VlcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type VlcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `MC0` reader - Channel 0 Compare Match"]
 pub type Mc0R = crate::BitReader;
 #[doc = "Field `MC0` writer - Channel 0 Compare Match"]
-pub type Mc0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Mc0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `MC1` reader - Channel 1 Compare Match"]
 pub type Mc1R = crate::BitReader;
 #[doc = "Field `MC1` writer - Channel 1 Compare Match"]
-pub type Mc1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Mc1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Overflow/Underflow"]
     #[inline(always)]
@@ -107,7 +107,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x3f;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

@@ -527,7 +527,7 @@ use atsamd_hal_macros::{hal_cfg, hal_module};
 
 #[hal_module(
     any("sercom0-d11", "sercom0-d21") => "uart/pads_thumbv6m.rs",
-    "sercom0-d5x" => "uart/pads_thumbv7em.rs",
+    any("sercom0-d5x", "sercom0-pic32cxsg") => "uart/pads_thumbv7em.rs",
 )]
 mod pads {}
 
@@ -564,7 +564,7 @@ use num_traits::AsPrimitive;
 pub type DataReg = u16;
 
 /// Size of the SERCOM's `DATA` register
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 pub type DataReg = u32;
 
 //=============================================================================

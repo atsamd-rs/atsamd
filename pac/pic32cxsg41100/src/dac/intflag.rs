@@ -5,19 +5,19 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `UNDERRUN0` reader - Result 0 Underrun"]
 pub type Underrun0R = crate::BitReader;
 #[doc = "Field `UNDERRUN0` writer - Result 0 Underrun"]
-pub type Underrun0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Underrun0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `UNDERRUN1` reader - Result 1 Underrun"]
 pub type Underrun1R = crate::BitReader;
 #[doc = "Field `UNDERRUN1` writer - Result 1 Underrun"]
-pub type Underrun1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Underrun1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EMPTY0` reader - Data Buffer 0 Empty"]
 pub type Empty0R = crate::BitReader;
 #[doc = "Field `EMPTY0` writer - Data Buffer 0 Empty"]
-pub type Empty0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Empty0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EMPTY1` reader - Data Buffer 1 Empty"]
 pub type Empty1R = crate::BitReader;
 #[doc = "Field `EMPTY1` writer - Data Buffer 1 Empty"]
-pub type Empty1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Empty1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Result 0 Underrun"]
     #[inline(always)]
@@ -77,7 +77,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x0f;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

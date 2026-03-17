@@ -5,11 +5,11 @@ pub type W = crate::W<ChintflagSpec>;
 #[doc = "Field `OVR` reader - Channel Overrun"]
 pub type OvrR = crate::BitReader;
 #[doc = "Field `OVR` writer - Channel Overrun"]
-pub type OvrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type OvrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EVD` reader - Channel Event Detected"]
 pub type EvdR = crate::BitReader;
 #[doc = "Field `EVD` writer - Channel Event Detected"]
-pub type EvdW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EvdW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Channel Overrun"]
     #[inline(always)]
@@ -47,7 +47,7 @@ impl crate::Readable for ChintflagSpec {}
 impl crate::Writable for ChintflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x03;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHINTFLAG to value 0"]
 impl crate::Resettable for ChintflagSpec {

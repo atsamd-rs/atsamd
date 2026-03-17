@@ -5,27 +5,27 @@ pub type W = crate::W<PintenclrSpec>;
 #[doc = "Field `TRCPT0` reader - Transfer Complete 0 Disable"]
 pub type Trcpt0R = crate::BitReader;
 #[doc = "Field `TRCPT0` writer - Transfer Complete 0 Disable"]
-pub type Trcpt0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Trcpt0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TRCPT1` reader - Transfer Complete 1 Disable"]
 pub type Trcpt1R = crate::BitReader;
 #[doc = "Field `TRCPT1` writer - Transfer Complete 1 Disable"]
-pub type Trcpt1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Trcpt1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TRFAIL` reader - Error Flow Interrupt Disable"]
 pub type TrfailR = crate::BitReader;
 #[doc = "Field `TRFAIL` writer - Error Flow Interrupt Disable"]
-pub type TrfailW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TrfailW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PERR` reader - Pipe Error Interrupt Disable"]
 pub type PerrR = crate::BitReader;
 #[doc = "Field `PERR` writer - Pipe Error Interrupt Disable"]
-pub type PerrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type PerrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXSTP` reader - Transmit Setup Interrupt Disable"]
 pub type TxstpR = crate::BitReader;
 #[doc = "Field `TXSTP` writer - Transmit Setup Interrupt Disable"]
-pub type TxstpW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TxstpW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `STALL` reader - Stall Inetrrupt Disable"]
 pub type StallR = crate::BitReader;
 #[doc = "Field `STALL` writer - Stall Inetrrupt Disable"]
-pub type StallW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type StallW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Transfer Complete 0 Disable"]
     #[inline(always)]
@@ -107,7 +107,7 @@ impl crate::Readable for PintenclrSpec {}
 impl crate::Writable for PintenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x3f;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets PINTENCLR to value 0"]
 impl crate::Resettable for PintenclrSpec {

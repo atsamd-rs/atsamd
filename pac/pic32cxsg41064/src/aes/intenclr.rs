@@ -5,11 +5,11 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `ENCCMP` reader - Encryption Complete Interrupt Enable"]
 pub type EnccmpR = crate::BitReader;
 #[doc = "Field `ENCCMP` writer - Encryption Complete Interrupt Enable"]
-pub type EnccmpW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EnccmpW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `GFMCMP` reader - GF Multiplication Complete Interrupt Enable"]
 pub type GfmcmpR = crate::BitReader;
 #[doc = "Field `GFMCMP` writer - GF Multiplication Complete Interrupt Enable"]
-pub type GfmcmpW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type GfmcmpW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Encryption Complete Interrupt Enable"]
     #[inline(always)]
@@ -47,7 +47,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x03;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

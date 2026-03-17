@@ -5,23 +5,23 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `BOD33RDY` reader - BOD33 Ready"]
 pub type Bod33rdyR = crate::BitReader;
 #[doc = "Field `BOD33RDY` writer - BOD33 Ready"]
-pub type Bod33rdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Bod33rdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `BOD33DET` reader - BOD33 Detection"]
 pub type Bod33detR = crate::BitReader;
 #[doc = "Field `BOD33DET` writer - BOD33 Detection"]
-pub type Bod33detW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Bod33detW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `B33SRDY` reader - BOD33 Synchronization Ready"]
 pub type B33srdyR = crate::BitReader;
 #[doc = "Field `B33SRDY` writer - BOD33 Synchronization Ready"]
-pub type B33srdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type B33srdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `VREGRDY` reader - Voltage Regulator Ready"]
 pub type VregrdyR = crate::BitReader;
 #[doc = "Field `VREGRDY` writer - Voltage Regulator Ready"]
-pub type VregrdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type VregrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `VCORERDY` reader - VDDCORE Ready"]
 pub type VcorerdyR = crate::BitReader;
 #[doc = "Field `VCORERDY` writer - VDDCORE Ready"]
-pub type VcorerdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type VcorerdyW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - BOD33 Ready"]
     #[inline(always)]
@@ -92,7 +92,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0x0507;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

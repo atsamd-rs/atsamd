@@ -5,11 +5,11 @@ pub type W = crate::W<ChintenclrSpec>;
 #[doc = "Field `OVR` reader - Channel Overrun Interrupt Disable"]
 pub type OvrR = crate::BitReader;
 #[doc = "Field `OVR` writer - Channel Overrun Interrupt Disable"]
-pub type OvrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type OvrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EVD` reader - Channel Event Detected Interrupt Disable"]
 pub type EvdR = crate::BitReader;
 #[doc = "Field `EVD` writer - Channel Event Detected Interrupt Disable"]
-pub type EvdW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EvdW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Channel Overrun Interrupt Disable"]
     #[inline(always)]
@@ -47,7 +47,7 @@ impl crate::Readable for ChintenclrSpec {}
 impl crate::Writable for ChintenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x03;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHINTENCLR to value 0"]
 impl crate::Resettable for ChintenclrSpec {

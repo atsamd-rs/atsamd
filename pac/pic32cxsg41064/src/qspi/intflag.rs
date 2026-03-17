@@ -5,27 +5,27 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `RXC` reader - Receive Data Register Full"]
 pub type RxcR = crate::BitReader;
 #[doc = "Field `RXC` writer - Receive Data Register Full"]
-pub type RxcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RxcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DRE` reader - Transmit Data Register Empty"]
 pub type DreR = crate::BitReader;
 #[doc = "Field `DRE` writer - Transmit Data Register Empty"]
-pub type DreW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DreW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXC` reader - Transmission Complete"]
 pub type TxcR = crate::BitReader;
 #[doc = "Field `TXC` writer - Transmission Complete"]
-pub type TxcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TxcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERROR` reader - Overrun Error"]
 pub type ErrorR = crate::BitReader;
 #[doc = "Field `ERROR` writer - Overrun Error"]
-pub type ErrorW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrorW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CSRISE` reader - Chip Select Rise"]
 pub type CsriseR = crate::BitReader;
 #[doc = "Field `CSRISE` writer - Chip Select Rise"]
-pub type CsriseW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type CsriseW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `INSTREND` reader - Instruction End"]
 pub type InstrendR = crate::BitReader;
 #[doc = "Field `INSTREND` writer - Instruction End"]
-pub type InstrendW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type InstrendW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Receive Data Register Full"]
     #[inline(always)]
@@ -107,7 +107,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0x050f;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

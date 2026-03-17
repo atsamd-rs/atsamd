@@ -5,11 +5,11 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `XOSC32KRDY` reader - XOSC32K Ready"]
 pub type Xosc32krdyR = crate::BitReader;
 #[doc = "Field `XOSC32KRDY` writer - XOSC32K Ready"]
-pub type Xosc32krdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Xosc32krdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `XOSC32KFAIL` reader - XOSC32K Clock Failure Detector"]
 pub type Xosc32kfailR = crate::BitReader;
 #[doc = "Field `XOSC32KFAIL` writer - XOSC32K Clock Failure Detector"]
-pub type Xosc32kfailW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Xosc32kfailW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - XOSC32K Ready"]
     #[inline(always)]
@@ -47,7 +47,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0x05;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

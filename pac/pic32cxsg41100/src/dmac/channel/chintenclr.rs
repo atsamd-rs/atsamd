@@ -5,15 +5,15 @@ pub type W = crate::W<ChintenclrSpec>;
 #[doc = "Field `TERR` reader - Channel Transfer Error Interrupt Enable"]
 pub type TerrR = crate::BitReader;
 #[doc = "Field `TERR` writer - Channel Transfer Error Interrupt Enable"]
-pub type TerrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TerrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TCMPL` reader - Channel Transfer Complete Interrupt Enable"]
 pub type TcmplR = crate::BitReader;
 #[doc = "Field `TCMPL` writer - Channel Transfer Complete Interrupt Enable"]
-pub type TcmplW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TcmplW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SUSP` reader - Channel Suspend Interrupt Enable"]
 pub type SuspR = crate::BitReader;
 #[doc = "Field `SUSP` writer - Channel Suspend Interrupt Enable"]
-pub type SuspW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SuspW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Channel Transfer Error Interrupt Enable"]
     #[inline(always)]
@@ -62,7 +62,7 @@ impl crate::Readable for ChintenclrSpec {}
 impl crate::Writable for ChintenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x07;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHINTENCLR to value 0"]
 impl crate::Resettable for ChintenclrSpec {

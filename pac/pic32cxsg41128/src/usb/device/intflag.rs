@@ -5,39 +5,39 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `SUSPEND` reader - Suspend"]
 pub type SuspendR = crate::BitReader;
 #[doc = "Field `SUSPEND` writer - Suspend"]
-pub type SuspendW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SuspendW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SOF` reader - Start Of Frame"]
 pub type SofR = crate::BitReader;
 #[doc = "Field `SOF` writer - Start Of Frame"]
-pub type SofW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SofW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EORST` reader - End of Reset"]
 pub type EorstR = crate::BitReader;
 #[doc = "Field `EORST` writer - End of Reset"]
-pub type EorstW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EorstW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WAKEUP` reader - Wake Up"]
 pub type WakeupR = crate::BitReader;
 #[doc = "Field `WAKEUP` writer - Wake Up"]
-pub type WakeupW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type WakeupW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EORSM` reader - End Of Resume"]
 pub type EorsmR = crate::BitReader;
 #[doc = "Field `EORSM` writer - End Of Resume"]
-pub type EorsmW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EorsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `UPRSM` reader - Upstream Resume"]
 pub type UprsmR = crate::BitReader;
 #[doc = "Field `UPRSM` writer - Upstream Resume"]
-pub type UprsmW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type UprsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RAMACER` reader - Ram Access"]
 pub type RamacerR = crate::BitReader;
 #[doc = "Field `RAMACER` writer - Ram Access"]
-pub type RamacerW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RamacerW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `LPMNYET` reader - Link Power Management Not Yet"]
 pub type LpmnyetR = crate::BitReader;
 #[doc = "Field `LPMNYET` writer - Link Power Management Not Yet"]
-pub type LpmnyetW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type LpmnyetW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `LPMSUSP` reader - Link Power Management Suspend"]
 pub type LpmsuspR = crate::BitReader;
 #[doc = "Field `LPMSUSP` writer - Link Power Management Suspend"]
-pub type LpmsuspW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type LpmsuspW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Suspend"]
     #[inline(always)]
@@ -152,7 +152,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0x03fd;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

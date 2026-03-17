@@ -1,5 +1,8 @@
 pub mod pin;
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
+#[hal_cfg(not("adc-pic32cxsg"))]
 use pac::Supc;
 
 #[cfg(feature = "async")]
@@ -97,6 +100,7 @@ impl AdcInstance for Adc1 {
     }
 }
 
+#[hal_macro_helper]
 impl<I: AdcInstance> Adc<I> {
     #[inline]
     /// Configures the ADC.
@@ -124,7 +128,10 @@ impl<I: AdcInstance> Adc<I> {
             .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
         self.sync();
         self.adc.inputctrl().modify(|_, w| {
+            #[hal_cfg(not("adc-pic32cxsg"))]
             w.muxneg().gnd();
+            #[hal_cfg("adc-pic32cxsg")]
+            w.muxneg().avss();
             w.diffmode().clear_bit()
         }); // No negative input (internal gnd)
         self.sync();
@@ -160,6 +167,7 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     /// n.b. Microchip's errata document for SAM D5x/E5x states:
     /// > Both internal temperature sensors, TSENSP and TSENSC, are not
     /// > supported and should not be used.
+    #[hal_cfg(not("adc-pic32cxsg"))]
     pub fn read_cpu_temperature(&mut self, supc: &mut Supc) -> f32 {
         let old_state = supc.vref().read().bits();
         supc.vref().modify(|_, w| {
@@ -235,7 +243,7 @@ impl<I: AdcInstance> Adc<I> {
         Flags::from_bits_truncate(bits)
     }
 
-    #[cfg(feature="async")]
+    #[cfg(feature = "async")]
     /// Clear the specified interrupt flags
     #[inline]
     pub(super) fn clear_flags(&mut self, flags: &Flags) {
@@ -302,6 +310,7 @@ where
     /// n.b. Microchip's errata document for SAM D5x/E5x states:
     /// > Both internal temperature sensors, TSENSP and TSENSC, are not
     /// > supported and should not be used.
+    #[hal_cfg(not("adc-pic32cxsg"))]
     pub async fn read_cpu_temperature(&mut self, supc: &mut Supc) -> f32 {
         // We cannot pass into an async closure yet, so settings switching
         // has to be done manually!

@@ -5,7 +5,7 @@ pub type W = crate::W<NmiflagSpec>;
 #[doc = "Field `NMI` reader - Non-Maskable Interrupt"]
 pub type NmiR = crate::BitReader;
 #[doc = "Field `NMI` writer - Non-Maskable Interrupt"]
-pub type NmiW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type NmiW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Non-Maskable Interrupt"]
     #[inline(always)]
@@ -32,7 +32,7 @@ impl crate::Readable for NmiflagSpec {}
 impl crate::Writable for NmiflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0x01;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets NMIFLAG to value 0"]
 impl crate::Resettable for NmiflagSpec {

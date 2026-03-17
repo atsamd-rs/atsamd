@@ -5,7 +5,7 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `DONE` reader - Measurement Done Interrupt Enable"]
 pub type DoneR = crate::BitReader;
 #[doc = "Field `DONE` writer - Measurement Done Interrupt Enable"]
-pub type DoneW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DoneW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Measurement Done Interrupt Enable"]
     #[inline(always)]
@@ -32,7 +32,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x01;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

@@ -5,47 +5,47 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `DONE` reader - Command Done Interrupt Clear"]
 pub type DoneR = crate::BitReader;
 #[doc = "Field `DONE` writer - Command Done Interrupt Clear"]
-pub type DoneW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DoneW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ADDRE` reader - Address Error"]
 pub type AddreR = crate::BitReader;
 #[doc = "Field `ADDRE` writer - Address Error"]
-pub type AddreW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type AddreW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PROGE` reader - Programming Error Interrupt Clear"]
 pub type ProgeR = crate::BitReader;
 #[doc = "Field `PROGE` writer - Programming Error Interrupt Clear"]
-pub type ProgeW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ProgeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `LOCKE` reader - Lock Error Interrupt Clear"]
 pub type LockeR = crate::BitReader;
 #[doc = "Field `LOCKE` writer - Lock Error Interrupt Clear"]
-pub type LockeW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type LockeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ECCSE` reader - ECC Single Error Interrupt Clear"]
 pub type EccseR = crate::BitReader;
 #[doc = "Field `ECCSE` writer - ECC Single Error Interrupt Clear"]
-pub type EccseW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EccseW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ECCDE` reader - ECC Dual Error Interrupt Clear"]
 pub type EccdeR = crate::BitReader;
 #[doc = "Field `ECCDE` writer - ECC Dual Error Interrupt Clear"]
-pub type EccdeW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EccdeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `NVME` reader - NVM Error Interrupt Clear"]
 pub type NvmeR = crate::BitReader;
 #[doc = "Field `NVME` writer - NVM Error Interrupt Clear"]
-pub type NvmeW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type NvmeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SUSP` reader - Suspended Write Or Erase Interrupt Clear"]
 pub type SuspR = crate::BitReader;
 #[doc = "Field `SUSP` writer - Suspended Write Or Erase Interrupt Clear"]
-pub type SuspW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SuspW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SEESFULL` reader - Active SEES Full Interrupt Clear"]
 pub type SeesfullR = crate::BitReader;
 #[doc = "Field `SEESFULL` writer - Active SEES Full Interrupt Clear"]
-pub type SeesfullW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SeesfullW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SEESOVF` reader - Active SEES Overflow Interrupt Clear"]
 pub type SeesovfR = crate::BitReader;
 #[doc = "Field `SEESOVF` writer - Active SEES Overflow Interrupt Clear"]
-pub type SeesovfW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SeesovfW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SEEWRC` reader - SEE Write Completed Interrupt Clear"]
 pub type SeewrcR = crate::BitReader;
 #[doc = "Field `SEEWRC` writer - SEE Write Completed Interrupt Clear"]
-pub type SeewrcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SeewrcW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Command Done Interrupt Clear"]
     #[inline(always)]
@@ -182,7 +182,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0x07ff;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

@@ -1,10 +1,10 @@
-use atsamd_hal_macros::hal_cfg;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use crate::ehal::digital::{ErrorType, InputPin};
 use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
 use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
+    self, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt, pin::*,
 };
 use core::convert::Infallible;
 
@@ -110,12 +110,11 @@ where
         }
     }
 
+    #[hal_cfg(not("eic-pic32cxsg"))]
     pub fn sense(&mut self, sense: Sense) {
         self.chan.with_disable(|e| {
-            // Which of the two config blocks this eic config is in
             let offset = (P::ChId::ID >> 3) & 0b0001;
             let config = &e.config(offset);
-
             config.modify(|_, w| unsafe {
                 // Which of the eight eic configs in this config block
                 match P::ChId::ID & 0b111 {
@@ -133,6 +132,32 @@ where
         });
     }
 
+    #[hal_cfg("eic-pic32cxsg")]
+    pub fn sense(&mut self, sense: Sense) {
+        self.chan.with_disable(|e| unsafe {
+            match P::ChId::ID {
+                0 => e.config0().modify(|_, w| w.sense0().bits(sense as u8)),
+                1 => e.config0().modify(|_, w| w.sense1().bits(sense as u8)),
+                2 => e.config0().modify(|_, w| w.sense2().bits(sense as u8)),
+                3 => e.config0().modify(|_, w| w.sense3().bits(sense as u8)),
+                4 => e.config0().modify(|_, w| w.sense4().bits(sense as u8)),
+                5 => e.config0().modify(|_, w| w.sense5().bits(sense as u8)),
+                6 => e.config0().modify(|_, w| w.sense6().bits(sense as u8)),
+                7 => e.config0().modify(|_, w| w.sense7().bits(sense as u8)),
+                8 => e.config1().modify(|_, w| w.sense8().bits(sense as u8)),
+                9 => e.config1().modify(|_, w| w.sense9().bits(sense as u8)),
+                10 => e.config1().modify(|_, w| w.sense10().bits(sense as u8)),
+                11 => e.config1().modify(|_, w| w.sense11().bits(sense as u8)),
+                12 => e.config1().modify(|_, w| w.sense12().bits(sense as u8)),
+                13 => e.config1().modify(|_, w| w.sense13().bits(sense as u8)),
+                14 => e.config1().modify(|_, w| w.sense14().bits(sense as u8)),
+                15 => e.config1().modify(|_, w| w.sense15().bits(sense as u8)),
+                _ => unreachable!(),
+            }
+        });
+    }
+
+    #[hal_cfg(not("eic-pic32cxsg"))]
     pub fn filter(&mut self, filter: bool) {
         self.chan.with_disable(|e| {
             // Which of the two config blocks this eic config is in
@@ -153,6 +178,29 @@ where
                     _ => unreachable!(),
                 }
             });
+        });
+    }
+
+    #[hal_cfg("eic-pic32cxsg")]
+    pub fn filter(&mut self, filter: bool) {
+        self.chan.with_disable(|e| match P::ChId::ID {
+            0 => e.config0().modify(|_, w| w.filten0().bit(filter)),
+            1 => e.config0().modify(|_, w| w.filten1().bit(filter)),
+            2 => e.config0().modify(|_, w| w.filten2().bit(filter)),
+            3 => e.config0().modify(|_, w| w.filten3().bit(filter)),
+            4 => e.config0().modify(|_, w| w.filten4().bit(filter)),
+            5 => e.config0().modify(|_, w| w.filten5().bit(filter)),
+            6 => e.config0().modify(|_, w| w.filten6().bit(filter)),
+            7 => e.config0().modify(|_, w| w.filten7().bit(filter)),
+            8 => e.config1().modify(|_, w| w.filten8().bit(filter)),
+            9 => e.config1().modify(|_, w| w.filten9().bit(filter)),
+            10 => e.config1().modify(|_, w| w.filten10().bit(filter)),
+            11 => e.config1().modify(|_, w| w.filten11().bit(filter)),
+            12 => e.config1().modify(|_, w| w.filten12().bit(filter)),
+            13 => e.config1().modify(|_, w| w.filten13().bit(filter)),
+            14 => e.config1().modify(|_, w| w.filten14().bit(filter)),
+            15 => e.config1().modify(|_, w| w.filten15().bit(filter)),
+            _ => unreachable!(),
         });
     }
 

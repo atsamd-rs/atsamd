@@ -178,7 +178,7 @@ pub mod v1 {
 
 mod backends;
 
-#[hal_cfg("rtc-d5x")]
+#[hal_cfg(any("rtc-d5x", "rtc-pic32cxsg"))]
 use super::modes::{RtcMode, mode0::RtcMode0};
 #[hal_cfg(any("rtc-d11", "rtc-d21"))]
 use super::modes::{RtcMode, mode1::RtcMode1};
@@ -228,7 +228,7 @@ trait RtcModeMonotonic: RtcMode {
     const MIN_COMPARE_TICKS: Self::Count;
 }
 
-#[hal_cfg("rtc-d5x")]
+#[hal_cfg(any("rtc-d5x", "rtc-pic32cxsg"))]
 impl RtcModeMonotonic for RtcMode0 {
     const HALF_PERIOD: Self::Count = 0x8000_0000;
     const MIN_COMPARE_TICKS: Self::Count = 8;
@@ -252,10 +252,10 @@ mod backend {
     );
 
     // For SAMx5x mode 0 is the best option
-    #[hal_cfg("rtc-d5x")]
+    #[hal_cfg(any("rtc-d5x", "rtc-pic32cxsg"))]
     use crate::rtc::modes::mode0::{Compare0, Compare1, Overflow};
 
-    #[hal_cfg("rtc-d5x")]
+    #[hal_cfg(any("rtc-d5x", "rtc-pic32cxsg"))]
     crate::__internal_half_period_counting_backend!(
         RtcBackend, RtcMode0, 0, Compare0, Compare1, Overflow
     );

@@ -5,35 +5,35 @@ pub type W = crate::W<IntflagdSpec>;
 #[doc = "Field `SERCOM4_` reader - SERCOM4"]
 pub type Sercom4_R = crate::BitReader;
 #[doc = "Field `SERCOM4_` writer - SERCOM4"]
-pub type Sercom4_W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Sercom4_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SERCOM5_` reader - SERCOM5"]
 pub type Sercom5_R = crate::BitReader;
 #[doc = "Field `SERCOM5_` writer - SERCOM5"]
-pub type Sercom5_W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Sercom5_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TCC4_` reader - TCC4"]
 pub type Tcc4_R = crate::BitReader;
 #[doc = "Field `TCC4_` writer - TCC4"]
-pub type Tcc4_W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Tcc4_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ADC0_` reader - ADC0"]
 pub type Adc0_R = crate::BitReader;
 #[doc = "Field `ADC0_` writer - ADC0"]
-pub type Adc0_W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Adc0_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ADC1_` reader - ADC1"]
 pub type Adc1_R = crate::BitReader;
 #[doc = "Field `ADC1_` writer - ADC1"]
-pub type Adc1_W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Adc1_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DAC_` reader - DAC"]
 pub type Dac_R = crate::BitReader;
 #[doc = "Field `DAC_` writer - DAC"]
-pub type Dac_W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Dac_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `I2S_` reader - I2S"]
 pub type I2s_R = crate::BitReader;
 #[doc = "Field `I2S_` writer - I2S"]
-pub type I2s_W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type I2s_W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `PCC_` reader - PCC"]
 pub type Pcc_R = crate::BitReader;
 #[doc = "Field `PCC_` writer - PCC"]
-pub type Pcc_W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Pcc_W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - SERCOM4"]
     #[inline(always)]
@@ -137,7 +137,7 @@ impl crate::Readable for IntflagdSpec {}
 impl crate::Writable for IntflagdSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0x0f93;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTFLAGD to value 0"]
 impl crate::Resettable for IntflagdSpec {
