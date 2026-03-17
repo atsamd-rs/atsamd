@@ -5,31 +5,31 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `DRE` reader - Data Register Empty Interrupt"]
 pub type DreR = crate::BitReader;
 #[doc = "Field `DRE` writer - Data Register Empty Interrupt"]
-pub type DreW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DreW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXC` reader - Transmit Complete Interrupt"]
 pub type TxcR = crate::BitReader;
 #[doc = "Field `TXC` writer - Transmit Complete Interrupt"]
-pub type TxcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TxcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXC` reader - Receive Complete Interrupt"]
 pub type RxcR = crate::BitReader;
 #[doc = "Field `RXC` writer - Receive Complete Interrupt"]
-pub type RxcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RxcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXS` reader - Receive Start Interrupt"]
 pub type RxsR = crate::BitReader;
 #[doc = "Field `RXS` writer - Receive Start Interrupt"]
-pub type RxsW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RxsW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CTSIC` reader - Clear To Send Input Change Interrupt"]
 pub type CtsicR = crate::BitReader;
 #[doc = "Field `CTSIC` writer - Clear To Send Input Change Interrupt"]
-pub type CtsicW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type CtsicW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXBRK` reader - Break Received Interrupt"]
 pub type RxbrkR = crate::BitReader;
 #[doc = "Field `RXBRK` writer - Break Received Interrupt"]
-pub type RxbrkW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RxbrkW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERROR` reader - Combined Error Interrupt"]
 pub type ErrorR = crate::BitReader;
 #[doc = "Field `ERROR` writer - Combined Error Interrupt"]
-pub type ErrorW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrorW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Data Register Empty Interrupt"]
     #[inline(always)]
@@ -122,7 +122,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0xbf;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

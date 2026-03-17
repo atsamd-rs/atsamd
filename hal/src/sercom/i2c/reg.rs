@@ -15,7 +15,7 @@ const MASTER_ACT_REPEATED_START: u8 = 1;
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 type DataReg = u8;
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 type DataReg = u32;
 
 pub(in super::super) struct Registers<S: Sercom> {

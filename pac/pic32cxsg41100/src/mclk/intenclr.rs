@@ -5,7 +5,7 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `CKRDY` reader - Clock Ready Interrupt Enable"]
 pub type CkrdyR = crate::BitReader;
 #[doc = "Field `CKRDY` writer - Clock Ready Interrupt Enable"]
-pub type CkrdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type CkrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Clock Ready Interrupt Enable"]
     #[inline(always)]
@@ -32,7 +32,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x01;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

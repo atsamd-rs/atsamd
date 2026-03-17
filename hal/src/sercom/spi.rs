@@ -441,12 +441,12 @@ use reg::Registers;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use crate::pac::sercom0::spi::ctrla::Modeselect;
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 use crate::pac::sercom0::spim::ctrla::Modeselect;
 
 #[hal_module(
     any("sercom0-d11", "sercom0-d21") => "spi/pads_thumbv6m.rs",
-    "sercom0-d5x" => "spi/pads_thumbv7em.rs",
+    any("sercom0-d5x", "sercom0-pic32cxsg") => "spi/pads_thumbv7em.rs",
 )]
 pub mod pads {}
 
@@ -454,7 +454,7 @@ pub use pads::*;
 
 #[hal_module(
     any("sercom0-d11", "sercom0-d21") => "spi/char_size.rs",
-    "sercom0-d5x" => "spi/length.rs",
+    any("sercom0-d5x", "sercom0-pic32cxsg") => "spi/length.rs",
 )]
 pub mod size {}
 
@@ -481,7 +481,7 @@ pub trait CharSize {
 }
 
 #[cfg(doc)]
-#[hal_cfg(not("sercom0-d5x"))]
+#[hal_cfg(not(any("sercom0-d5x", "sercom0-pic32cxsg")))]
 /// This trait is not present with the selected feature set, defined for
 /// documentation only
 pub trait Length {}
@@ -489,7 +489,7 @@ pub trait Length {}
 pub use size::*;
 
 /// Valid transaction [`Length`]s from the [`typenum`] crate
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 pub mod lengths {
     seq_macro::seq!(N in 1..=255 {
         pub use typenum::U~N;
@@ -670,7 +670,7 @@ impl MasterMode for MasterHWSS {}
 pub type DataWidth = u16;
 
 /// Type alias for the width of the `DATA` register
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 pub type DataWidth = u32;
 
 /// Trait alias whose definition varies by chip
@@ -689,14 +689,14 @@ pub type DefaultSize = EightBit;
 /// Trait alias whose definition varies by chip
 ///
 /// On SAMx5x chips, this represents the transaction [`Length`].
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 pub trait Size: Length {}
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 impl<L: Length> Size for L {}
 
 /// Type alias for the default [`Size`] type, which varies by chip
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 pub type DefaultSize = typenum::U1;
 
 //==============================================================================
@@ -710,7 +710,7 @@ pub trait AtomicSize: Size {}
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 impl<C: CharSize> AtomicSize for C {}
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 seq_macro::seq!(N in 1..=4 {
     impl AtomicSize for lengths::U~N {}
 });
@@ -821,7 +821,7 @@ impl<P: ValidPads> Config<P> {
         regs.set_dipo_dopo(P::DIPO_DOPO);
         #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
         regs.set_char_size(EightBit::BITS);
-        #[hal_cfg("sercom0-d5x")]
+        #[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
         regs.set_length(1);
         Self {
             regs,
@@ -845,7 +845,7 @@ impl<P: ValidPads> Config<P> {
         any("sercom0-d11", "sercom0-d21") => {
             /// [`EightBit`] [`CharSize`]
         }
-        "sercom0-d5x" => {
+        any("sercom0-d5x", "sercom0-pic32cxsg") => {
             /// `EightBit` `CharSize`
         }
         {
@@ -854,7 +854,7 @@ impl<P: ValidPads> Config<P> {
         any("sercom0-d11", "sercom0-d21") => {
             /// `Length` of `U1`
         }
-        "sercom0-d5x" => {
+        any("sercom0-d5x", "sercom0-pic32cxsg") => {
             /// [`Length`] of `U1`
         }
         {
@@ -947,7 +947,7 @@ where
     /// [`DynLength`] and then use the [`dyn_length`] method.
     ///
     /// [`dyn_length`]: Config::dyn_length
-    #[hal_cfg("sercom0-d5x")]
+    #[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
     #[inline]
     pub fn length<L2: Length>(mut self) -> Config<P, M, L2> {
         self.regs.set_length(L2::U8);
@@ -1170,7 +1170,7 @@ where
     }
 }
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 impl<P, M> Config<P, M, DynLength>
 where
     P: ValidPads,
@@ -1364,7 +1364,7 @@ where
     /// [`Length`].
     #[inline]
     #[allow(clippy::type_complexity)]
-    #[hal_cfg("sercom0-d5x")]
+    #[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
     pub fn length<L: Length>(self) -> Spi<Config<C::Pads, C::OpMode, L>, A, RxDma, TxDma>
     where
         Config<C::Pads, C::OpMode, L>: ValidConfig,
@@ -1725,7 +1725,7 @@ impl<C: ValidConfig, R, T> Spi<C, Tx, R, T> {
     }
 }
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 impl<P, M, A> Spi<Config<P, M, DynLength>, A>
 where
     P: ValidPads,

@@ -5,39 +5,39 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `SUSPEND` reader - Suspend Interrupt Enable"]
 pub type SuspendR = crate::BitReader;
 #[doc = "Field `SUSPEND` writer - Suspend Interrupt Enable"]
-pub type SuspendW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SuspendW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SOF` reader - Start Of Frame Interrupt Enable"]
 pub type SofR = crate::BitReader;
 #[doc = "Field `SOF` writer - Start Of Frame Interrupt Enable"]
-pub type SofW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SofW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EORST` reader - End of Reset Interrupt Enable"]
 pub type EorstR = crate::BitReader;
 #[doc = "Field `EORST` writer - End of Reset Interrupt Enable"]
-pub type EorstW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EorstW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WAKEUP` reader - Wake Up Interrupt Enable"]
 pub type WakeupR = crate::BitReader;
 #[doc = "Field `WAKEUP` writer - Wake Up Interrupt Enable"]
-pub type WakeupW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type WakeupW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `EORSM` reader - End Of Resume Interrupt Enable"]
 pub type EorsmR = crate::BitReader;
 #[doc = "Field `EORSM` writer - End Of Resume Interrupt Enable"]
-pub type EorsmW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EorsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `UPRSM` reader - Upstream Resume Interrupt Enable"]
 pub type UprsmR = crate::BitReader;
 #[doc = "Field `UPRSM` writer - Upstream Resume Interrupt Enable"]
-pub type UprsmW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type UprsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RAMACER` reader - Ram Access Interrupt Enable"]
 pub type RamacerR = crate::BitReader;
 #[doc = "Field `RAMACER` writer - Ram Access Interrupt Enable"]
-pub type RamacerW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RamacerW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `LPMNYET` reader - Link Power Management Not Yet Interrupt Enable"]
 pub type LpmnyetR = crate::BitReader;
 #[doc = "Field `LPMNYET` writer - Link Power Management Not Yet Interrupt Enable"]
-pub type LpmnyetW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type LpmnyetW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `LPMSUSP` reader - Link Power Management Suspend Interrupt Enable"]
 pub type LpmsuspR = crate::BitReader;
 #[doc = "Field `LPMSUSP` writer - Link Power Management Suspend Interrupt Enable"]
-pub type LpmsuspW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type LpmsuspW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Suspend Interrupt Enable"]
     #[inline(always)]
@@ -152,7 +152,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0x03fd;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

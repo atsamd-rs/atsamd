@@ -5,19 +5,19 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `PREC` reader - Stop Received Interrupt Disable"]
 pub type PrecR = crate::BitReader;
 #[doc = "Field `PREC` writer - Stop Received Interrupt Disable"]
-pub type PrecW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type PrecW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `AMATCH` reader - Address Match Interrupt Disable"]
 pub type AmatchR = crate::BitReader;
 #[doc = "Field `AMATCH` writer - Address Match Interrupt Disable"]
-pub type AmatchW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type AmatchW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DRDY` reader - Data Interrupt Disable"]
 pub type DrdyR = crate::BitReader;
 #[doc = "Field `DRDY` writer - Data Interrupt Disable"]
-pub type DrdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERROR` reader - Combined Error Interrupt Disable"]
 pub type ErrorR = crate::BitReader;
 #[doc = "Field `ERROR` writer - Combined Error Interrupt Disable"]
-pub type ErrorW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrorW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Stop Received Interrupt Disable"]
     #[inline(always)]
@@ -77,7 +77,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x87;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

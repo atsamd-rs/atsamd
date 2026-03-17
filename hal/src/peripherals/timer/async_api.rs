@@ -50,7 +50,7 @@ type RegBlock = pac::tc1::RegisterBlock;
 #[hal_cfg("tc3-d21")]
 type RegBlock = pac::tc3::RegisterBlock;
 
-#[hal_cfg("tc1-d5x")]
+#[hal_cfg(any("tc1-d5x", "tc1-pic32cxsg"))]
 type RegBlock = pac::tc0::RegisterBlock;
 
 /// Trait enabling the use of a Timer/Counter in async mode. Specifically, this
@@ -130,16 +130,16 @@ impl_async_count16!(Tc4, 1);
 #[hal_cfg("tc5-d21")]
 impl_async_count16!(Tc5, 2);
 
-#[hal_cfg("tc2-d5x")]
+#[hal_cfg(any("tc2-d5x", "tc2-pic32cxsg"))]
 impl_async_count16!(Tc2, 0);
 
-#[hal_cfg("tc3-d5x")]
+#[hal_cfg(any("tc3-d5x", "tc3-pic32cxsg"))]
 impl_async_count16!(Tc3, 1);
 
-#[hal_cfg("tc4-d5x")]
+#[hal_cfg(any("tc4-d5x", "tc4-pic32cxsg"))]
 impl_async_count16!(Tc4, 2);
 
-#[hal_cfg("tc5-d5x")]
+#[hal_cfg(any("tc5-d5x", "tc5-pic32cxsg"))]
 impl_async_count16!(Tc5, 3);
 
 // Reserve space for the max number of timer peripherals based on chip type,
@@ -151,7 +151,7 @@ const NUM_TIMERS: usize = 1;
 #[hal_cfg("tc3-d21")]
 const NUM_TIMERS: usize = 3;
 
-#[hal_cfg("tc3-d5x")]
+#[hal_cfg(any("tc3-d5x", "tc3-pic32cxsg"))]
 const NUM_TIMERS: usize = 4;
 
 impl<T> TimerCounter<T>

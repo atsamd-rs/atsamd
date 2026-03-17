@@ -5,19 +5,19 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `OVF` reader - OVF Interrupt Disable"]
 pub type OvfR = crate::BitReader;
 #[doc = "Field `OVF` writer - OVF Interrupt Disable"]
-pub type OvfW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type OvfW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERR` reader - ERR Interrupt Disable"]
 pub type ErrR = crate::BitReader;
 #[doc = "Field `ERR` writer - ERR Interrupt Disable"]
-pub type ErrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `MC0` reader - MC Interrupt Disable 0"]
 pub type Mc0R = crate::BitReader;
 #[doc = "Field `MC0` writer - MC Interrupt Disable 0"]
-pub type Mc0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Mc0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `MC1` reader - MC Interrupt Disable 1"]
 pub type Mc1R = crate::BitReader;
 #[doc = "Field `MC1` writer - MC Interrupt Disable 1"]
-pub type Mc1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Mc1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - OVF Interrupt Disable"]
     #[inline(always)]
@@ -77,7 +77,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x33;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

@@ -57,7 +57,7 @@ pub type Clock = pac::Pm;
 
 /// Clock type needed to create a new [`Config`]. [`Mclk`](pac::Mclk) for
 /// thumbv7em targets.
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 pub type Clock = pac::Mclk;
 
 impl<P: ValidPads> Config<P> {

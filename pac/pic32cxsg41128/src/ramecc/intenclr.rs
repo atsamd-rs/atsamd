@@ -5,11 +5,11 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `SINGLEE` reader - Single Bit ECC Error Interrupt Enable Clear"]
 pub type SingleeR = crate::BitReader;
 #[doc = "Field `SINGLEE` writer - Single Bit ECC Error Interrupt Enable Clear"]
-pub type SingleeW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SingleeW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DUALE` reader - Dual Bit ECC Error Interrupt Enable Clear"]
 pub type DualeR = crate::BitReader;
 #[doc = "Field `DUALE` writer - Dual Bit ECC Error Interrupt Enable Clear"]
-pub type DualeW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DualeW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Single Bit ECC Error Interrupt Enable Clear"]
     #[inline(always)]
@@ -47,7 +47,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x03;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

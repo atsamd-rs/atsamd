@@ -5,27 +5,27 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `OVF` reader - Overflow/Underflow Interrupt Disable"]
 pub type OvfR = crate::BitReader;
 #[doc = "Field `OVF` writer - Overflow/Underflow Interrupt Disable"]
-pub type OvfW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type OvfW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERR` reader - Error Interrupt Disable"]
 pub type ErrR = crate::BitReader;
 #[doc = "Field `ERR` writer - Error Interrupt Disable"]
-pub type ErrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DIR` reader - Direction Interrupt Disable"]
 pub type DirR = crate::BitReader;
 #[doc = "Field `DIR` writer - Direction Interrupt Disable"]
-pub type DirW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DirW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `VLC` reader - Velocity Interrupt Disable"]
 pub type VlcR = crate::BitReader;
 #[doc = "Field `VLC` writer - Velocity Interrupt Disable"]
-pub type VlcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type VlcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `MC0` reader - Channel 0 Compare Match Disable"]
 pub type Mc0R = crate::BitReader;
 #[doc = "Field `MC0` writer - Channel 0 Compare Match Disable"]
-pub type Mc0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Mc0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `MC1` reader - Channel 1 Compare Match Disable"]
 pub type Mc1R = crate::BitReader;
 #[doc = "Field `MC1` writer - Channel 1 Compare Match Disable"]
-pub type Mc1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Mc1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Overflow/Underflow Interrupt Disable"]
     #[inline(always)]
@@ -107,7 +107,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x3f;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

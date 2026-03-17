@@ -5,7 +5,7 @@ pub type W = crate::W<CtrlbclrSpec>;
 #[doc = "Field `LUPD` reader - Lock Update"]
 pub type LupdR = crate::BitReader;
 #[doc = "Field `LUPD` writer - Lock Update"]
-pub type LupdW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type LupdW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Command\n\nValue on reset: 0"]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u8)]
@@ -155,7 +155,7 @@ impl crate::Readable for CtrlbclrSpec {}
 impl crate::Writable for CtrlbclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0xe2;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CTRLBCLR to value 0"]
 impl crate::Resettable for CtrlbclrSpec {

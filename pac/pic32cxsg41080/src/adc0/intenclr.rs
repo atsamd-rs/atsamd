@@ -5,15 +5,15 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `RESRDY` reader - Result Ready Interrupt Disable"]
 pub type ResrdyR = crate::BitReader;
 #[doc = "Field `RESRDY` writer - Result Ready Interrupt Disable"]
-pub type ResrdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ResrdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `OVERRUN` reader - Overrun Interrupt Disable"]
 pub type OverrunR = crate::BitReader;
 #[doc = "Field `OVERRUN` writer - Overrun Interrupt Disable"]
-pub type OverrunW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type OverrunW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WINMON` reader - Window Monitor Interrupt Disable"]
 pub type WinmonR = crate::BitReader;
 #[doc = "Field `WINMON` writer - Window Monitor Interrupt Disable"]
-pub type WinmonW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type WinmonW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Result Ready Interrupt Disable"]
     #[inline(always)]
@@ -62,7 +62,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x07;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

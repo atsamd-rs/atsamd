@@ -15,7 +15,7 @@ const NEW_WAKER: AtomicWaker = AtomicWaker::new();
 
 #[hal_module(any("adc-d11", "adc-d21"))]
 pub static ADC_WAKERS: [AtomicWaker; 1] = [NEW_WAKER; 1];
-#[hal_module("adc-d5x")]
+#[hal_module(any("adc-d5x", "adc-pic32cxsg"))]
 pub static ADC_WAKERS: [AtomicWaker; 2] = [NEW_WAKER; 2];
 
 /// Interrupt handler for the ADC peripheral.

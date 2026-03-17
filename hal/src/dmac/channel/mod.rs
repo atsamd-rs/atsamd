@@ -50,7 +50,7 @@ use modular_bitfield::prelude::*;
 mod reg;
 use reg::RegisterBlock;
 
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 use super::dma_controller::{BurstLength, FifoThreshold};
 
 //==============================================================================
@@ -210,7 +210,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         // Setup priority level
         self.regs.chctrlb.modify(|_, w| w.lvl().variant(lvl));
 
-        #[hal_cfg("dmac-d5x")]
+        #[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
         self.regs.chprilvl.modify(|_, w| w.prilvl().variant(lvl));
 
         self.change_status()
@@ -395,7 +395,7 @@ where
     /// Set the FIFO threshold length. The channel will wait until it has
     /// received the selected number of Beats before triggering the Burst
     /// transfer, reducing the DMA transfer latency.
-    #[hal_cfg("dmac-d5x")]
+    #[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
     #[inline]
     pub fn fifo_threshold(&mut self, threshold: FifoThreshold) {
         self.regs
@@ -404,7 +404,7 @@ where
     }
 
     #[cfg(doc)]
-    #[hal_cfg(not("dmac-d5x"))]
+    #[hal_cfg(not(any("dmac-d5x", "dmac-pic32cxsg")))]
     /// This method is not present with the selected feature set, defined for
     /// documentation only
     pub fn fifo_threshold(&mut self) {
@@ -413,7 +413,7 @@ where
 
     /// Set burst length for the channel, in number of beats. A burst transfer
     /// is an atomic, uninterruptible operation.
-    #[hal_cfg("dmac-d5x")]
+    #[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
     #[inline]
     pub fn burst_length(&mut self, burst_length: BurstLength) {
         self.regs
@@ -422,7 +422,7 @@ where
     }
 
     #[cfg(doc)]
-    #[hal_cfg(not("dmac-d5x"))]
+    #[hal_cfg(not(any("dmac-d5x", "dmac-pic32cxsg")))]
     /// This method is not present with the selected feature set, defined for
     /// documentation only
     pub fn burst_length(&mut self) {
@@ -463,7 +463,7 @@ where
             w.trigact().variant(trig_act)
         });
 
-        #[hal_cfg("dmac-d5x")]
+        #[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
         self.regs.chctrla.modify(|_, w| {
             w.trigsrc().variant(trig_src);
             w.trigact().variant(trig_act)

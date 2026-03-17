@@ -5,35 +5,35 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `HSOF` reader - Host Start Of Frame Interrupt Disable"]
 pub type HsofR = crate::BitReader;
 #[doc = "Field `HSOF` writer - Host Start Of Frame Interrupt Disable"]
-pub type HsofW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type HsofW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RST` reader - BUS Reset Interrupt Disable"]
 pub type RstR = crate::BitReader;
 #[doc = "Field `RST` writer - BUS Reset Interrupt Disable"]
-pub type RstW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RstW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WAKEUP` reader - Wake Up Interrupt Disable"]
 pub type WakeupR = crate::BitReader;
 #[doc = "Field `WAKEUP` writer - Wake Up Interrupt Disable"]
-pub type WakeupW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type WakeupW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DNRSM` reader - DownStream to Device Interrupt Disable"]
 pub type DnrsmR = crate::BitReader;
 #[doc = "Field `DNRSM` writer - DownStream to Device Interrupt Disable"]
-pub type DnrsmW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DnrsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `UPRSM` reader - Upstream Resume from Device Interrupt Disable"]
 pub type UprsmR = crate::BitReader;
 #[doc = "Field `UPRSM` writer - Upstream Resume from Device Interrupt Disable"]
-pub type UprsmW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type UprsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RAMACER` reader - Ram Access Interrupt Disable"]
 pub type RamacerR = crate::BitReader;
 #[doc = "Field `RAMACER` writer - Ram Access Interrupt Disable"]
-pub type RamacerW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RamacerW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DCONN` reader - Device Connection Interrupt Disable"]
 pub type DconnR = crate::BitReader;
 #[doc = "Field `DCONN` writer - Device Connection Interrupt Disable"]
-pub type DconnW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DconnW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DDISC` reader - Device Disconnection Interrupt Disable"]
 pub type DdiscR = crate::BitReader;
 #[doc = "Field `DDISC` writer - Device Disconnection Interrupt Disable"]
-pub type DdiscW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DdiscW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 2 - Host Start Of Frame Interrupt Disable"]
     #[inline(always)]
@@ -137,7 +137,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0x03fc;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

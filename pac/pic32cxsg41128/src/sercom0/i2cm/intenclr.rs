@@ -5,15 +5,15 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `MB` reader - Master On Bus Interrupt Disable"]
 pub type MbR = crate::BitReader;
 #[doc = "Field `MB` writer - Master On Bus Interrupt Disable"]
-pub type MbW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type MbW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SB` reader - Slave On Bus Interrupt Disable"]
 pub type SbR = crate::BitReader;
 #[doc = "Field `SB` writer - Slave On Bus Interrupt Disable"]
-pub type SbW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SbW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERROR` reader - Combined Error Interrupt Disable"]
 pub type ErrorR = crate::BitReader;
 #[doc = "Field `ERROR` writer - Combined Error Interrupt Disable"]
-pub type ErrorW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrorW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Master On Bus Interrupt Disable"]
     #[inline(always)]
@@ -62,7 +62,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x83;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

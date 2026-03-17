@@ -5,15 +5,15 @@ pub type W = crate::W<ChintflagSpec>;
 #[doc = "Field `TERR` reader - Channel Transfer Error"]
 pub type TerrR = crate::BitReader;
 #[doc = "Field `TERR` writer - Channel Transfer Error"]
-pub type TerrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TerrW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TCMPL` reader - Channel Transfer Complete"]
 pub type TcmplR = crate::BitReader;
 #[doc = "Field `TCMPL` writer - Channel Transfer Complete"]
-pub type TcmplW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TcmplW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `SUSP` reader - Channel Suspend"]
 pub type SuspR = crate::BitReader;
 #[doc = "Field `SUSP` writer - Channel Suspend"]
-pub type SuspW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SuspW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Channel Transfer Error"]
     #[inline(always)]
@@ -62,7 +62,7 @@ impl crate::Readable for ChintflagSpec {}
 impl crate::Writable for ChintflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x07;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets CHINTFLAG to value 0"]
 impl crate::Resettable for ChintflagSpec {

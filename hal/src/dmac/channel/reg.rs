@@ -28,7 +28,7 @@ use crate::pac::{
 #[hal_cfg(any("dmac-d11", "dmac-d21"))]
 use pac::dmac as channel_regs;
 
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 use pac::dmac::channel as channel_regs;
 
 use channel_regs::{
@@ -37,7 +37,7 @@ use channel_regs::{
     chintflag::ChintflagSpec, chstatus::ChstatusSpec,
 };
 
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 use pac::dmac::channel::{Chprilvl, chprilvl::ChprilvlSpec};
 
 //==============================================================================
@@ -90,7 +90,7 @@ pub(super) trait Register<Id: ChId> {
     /// the registers are accessed in an interrupt-safe way, as the SAMD21
     /// DMAC is a little funky. For the SAMD51/SAMEx, we simply take a reference
     /// to the correct channel number and run the closure on that.
-    #[hal_cfg("dmac-d5x")]
+    #[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
     #[inline]
     fn with_chid<F: FnOnce(&pac::dmac::Channel) -> R, R>(&mut self, fun: F) -> R {
         // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
@@ -264,7 +264,7 @@ reg_proxy!(chintenclr, register, rw);
 reg_proxy!(chintenset, register, rw);
 reg_proxy!(chintflag, register, rw);
 reg_proxy!(chstatus, register, r);
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 reg_proxy!(chprilvl, register, rw);
 
 reg_proxy!(intstatus, bit, r);
@@ -291,7 +291,7 @@ pub(super) struct RegisterBlock<Id: ChId> {
     pub busych: BusychProxy<Id, Busych>,
     pub pendch: PendchProxy<Id, Pendch>,
     pub swtrigctrl: SwtrigctrlProxy<Id, Swtrigctrl>,
-    #[hal_cfg("dmac-d5x")]
+    #[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
     pub chprilvl: ChprilvlProxy<Id, Chprilvl>,
 }
 
@@ -309,7 +309,7 @@ impl<Id: ChId> RegisterBlock<Id> {
             busych: BusychProxy::new(),
             pendch: PendchProxy::new(),
             swtrigctrl: SwtrigctrlProxy::new(),
-            #[hal_cfg("dmac-d5x")]
+            #[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
             chprilvl: ChprilvlProxy::new(),
         }
     }

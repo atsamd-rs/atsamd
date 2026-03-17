@@ -5,35 +5,35 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `RXRDY0` reader - Receive Ready 0"]
 pub type Rxrdy0R = crate::BitReader;
 #[doc = "Field `RXRDY0` writer - Receive Ready 0"]
-pub type Rxrdy0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Rxrdy0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXRDY1` reader - Receive Ready 1"]
 pub type Rxrdy1R = crate::BitReader;
 #[doc = "Field `RXRDY1` writer - Receive Ready 1"]
-pub type Rxrdy1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Rxrdy1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXOR0` reader - Receive Overrun 0"]
 pub type Rxor0R = crate::BitReader;
 #[doc = "Field `RXOR0` writer - Receive Overrun 0"]
-pub type Rxor0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Rxor0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXOR1` reader - Receive Overrun 1"]
 pub type Rxor1R = crate::BitReader;
 #[doc = "Field `RXOR1` writer - Receive Overrun 1"]
-pub type Rxor1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Rxor1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXRDY0` reader - Transmit Ready 0"]
 pub type Txrdy0R = crate::BitReader;
 #[doc = "Field `TXRDY0` writer - Transmit Ready 0"]
-pub type Txrdy0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Txrdy0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXRDY1` reader - Transmit Ready 1"]
 pub type Txrdy1R = crate::BitReader;
 #[doc = "Field `TXRDY1` writer - Transmit Ready 1"]
-pub type Txrdy1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Txrdy1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXUR0` reader - Transmit Underrun 0"]
 pub type Txur0R = crate::BitReader;
 #[doc = "Field `TXUR0` writer - Transmit Underrun 0"]
-pub type Txur0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Txur0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXUR1` reader - Transmit Underrun 1"]
 pub type Txur1R = crate::BitReader;
 #[doc = "Field `TXUR1` writer - Transmit Underrun 1"]
-pub type Txur1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Txur1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Receive Ready 0"]
     #[inline(always)]
@@ -137,7 +137,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0x3333;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

@@ -5,15 +5,15 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `COMP0` reader - Comparator 0"]
 pub type Comp0R = crate::BitReader;
 #[doc = "Field `COMP0` writer - Comparator 0"]
-pub type Comp0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Comp0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `COMP1` reader - Comparator 1"]
 pub type Comp1R = crate::BitReader;
 #[doc = "Field `COMP1` writer - Comparator 1"]
-pub type Comp1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Comp1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WIN0` reader - Window 0"]
 pub type Win0R = crate::BitReader;
 #[doc = "Field `WIN0` writer - Window 0"]
-pub type Win0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Win0W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Comparator 0"]
     #[inline(always)]
@@ -62,7 +62,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x13;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

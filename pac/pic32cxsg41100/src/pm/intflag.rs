@@ -5,7 +5,7 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `SLEEPRDY` reader - Sleep Mode Entry Ready"]
 pub type SleeprdyR = crate::BitReader;
 #[doc = "Field `SLEEPRDY` writer - Sleep Mode Entry Ready"]
-pub type SleeprdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type SleeprdyW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Sleep Mode Entry Ready"]
     #[inline(always)]
@@ -32,7 +32,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x01;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

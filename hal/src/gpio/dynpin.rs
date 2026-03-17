@@ -111,19 +111,19 @@ pub enum DynAlternate {
     E,
     F,
     G,
-    #[hal_cfg(any("port-d21", "port-d5x"))]
+    #[hal_cfg(any("port-d21", "port-d5x", "port-pic32cxsg"))]
     H,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     I,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     J,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     K,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     L,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     M,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     N,
 }
 
@@ -183,9 +183,9 @@ macro_rules! dyn_alternate {
 }
 
 dyn_alternate!(B, C, D, E, F, G);
-#[hal_cfg(any("port-d21", "port-d5x"))]
+#[hal_cfg(any("port-d21", "port-d5x", "port-pic32cxsg"))]
 dyn_alternate!(H);
-#[hal_cfg("port-d5x")]
+#[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
 dyn_alternate!(I, J, K, L, M, N);
 
 //==============================================================================

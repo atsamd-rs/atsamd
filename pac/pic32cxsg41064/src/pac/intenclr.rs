@@ -5,7 +5,7 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `ERR` reader - Peripheral access error interrupt disable"]
 pub type ErrR = crate::BitReader;
 #[doc = "Field `ERR` writer - Peripheral access error interrupt disable"]
-pub type ErrW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Peripheral access error interrupt disable"]
     #[inline(always)]
@@ -32,7 +32,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x01;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

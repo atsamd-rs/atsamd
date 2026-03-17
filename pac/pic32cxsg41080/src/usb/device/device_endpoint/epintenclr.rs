@@ -5,31 +5,31 @@ pub type W = crate::W<EpintenclrSpec>;
 #[doc = "Field `TRCPT0` reader - Transfer Complete 0 Interrupt Disable"]
 pub type Trcpt0R = crate::BitReader;
 #[doc = "Field `TRCPT0` writer - Transfer Complete 0 Interrupt Disable"]
-pub type Trcpt0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Trcpt0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TRCPT1` reader - Transfer Complete 1 Interrupt Disable"]
 pub type Trcpt1R = crate::BitReader;
 #[doc = "Field `TRCPT1` writer - Transfer Complete 1 Interrupt Disable"]
-pub type Trcpt1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Trcpt1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TRFAIL0` reader - Error Flow 0 Interrupt Disable"]
 pub type Trfail0R = crate::BitReader;
 #[doc = "Field `TRFAIL0` writer - Error Flow 0 Interrupt Disable"]
-pub type Trfail0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Trfail0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TRFAIL1` reader - Error Flow 1 Interrupt Disable"]
 pub type Trfail1R = crate::BitReader;
 #[doc = "Field `TRFAIL1` writer - Error Flow 1 Interrupt Disable"]
-pub type Trfail1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Trfail1W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXSTP` reader - Received Setup Interrupt Disable"]
 pub type RxstpR = crate::BitReader;
 #[doc = "Field `RXSTP` writer - Received Setup Interrupt Disable"]
-pub type RxstpW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RxstpW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `STALL0` reader - Stall 0 In/Out Interrupt Disable"]
 pub type Stall0R = crate::BitReader;
 #[doc = "Field `STALL0` writer - Stall 0 In/Out Interrupt Disable"]
-pub type Stall0W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Stall0W<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `STALL1` reader - Stall 1 In/Out Interrupt Disable"]
 pub type Stall1R = crate::BitReader;
 #[doc = "Field `STALL1` writer - Stall 1 In/Out Interrupt Disable"]
-pub type Stall1W<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Stall1W<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Transfer Complete 0 Interrupt Disable"]
     #[inline(always)]
@@ -122,7 +122,7 @@ impl crate::Readable for EpintenclrSpec {}
 impl crate::Writable for EpintenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x7f;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets EPINTENCLR to value 0"]
 impl crate::Resettable for EpintenclrSpec {

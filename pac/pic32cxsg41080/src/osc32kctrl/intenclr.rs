@@ -5,11 +5,11 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `XOSC32KRDY` reader - XOSC32K Ready Interrupt Enable"]
 pub type Xosc32krdyR = crate::BitReader;
 #[doc = "Field `XOSC32KRDY` writer - XOSC32K Ready Interrupt Enable"]
-pub type Xosc32krdyW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Xosc32krdyW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `XOSC32KFAIL` reader - XOSC32K Clock Failure Detector Interrupt Enable"]
 pub type Xosc32kfailR = crate::BitReader;
 #[doc = "Field `XOSC32KFAIL` writer - XOSC32K Clock Failure Detector Interrupt Enable"]
-pub type Xosc32kfailW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type Xosc32kfailW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - XOSC32K Ready Interrupt Enable"]
     #[inline(always)]
@@ -47,7 +47,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0x05;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u32 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

@@ -5,31 +5,31 @@ pub type W = crate::W<IntenclrSpec>;
 #[doc = "Field `DRE` reader - Data Register Empty Interrupt Disable"]
 pub type DreR = crate::BitReader;
 #[doc = "Field `DRE` writer - Data Register Empty Interrupt Disable"]
-pub type DreW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DreW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `TXC` reader - Transmit Complete Interrupt Disable"]
 pub type TxcR = crate::BitReader;
 #[doc = "Field `TXC` writer - Transmit Complete Interrupt Disable"]
-pub type TxcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type TxcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXC` reader - Receive Complete Interrupt Disable"]
 pub type RxcR = crate::BitReader;
 #[doc = "Field `RXC` writer - Receive Complete Interrupt Disable"]
-pub type RxcW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RxcW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXS` reader - Receive Start Interrupt Disable"]
 pub type RxsR = crate::BitReader;
 #[doc = "Field `RXS` writer - Receive Start Interrupt Disable"]
-pub type RxsW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RxsW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `CTSIC` reader - Clear To Send Input Change Interrupt Disable"]
 pub type CtsicR = crate::BitReader;
 #[doc = "Field `CTSIC` writer - Clear To Send Input Change Interrupt Disable"]
-pub type CtsicW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type CtsicW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RXBRK` reader - Break Received Interrupt Disable"]
 pub type RxbrkR = crate::BitReader;
 #[doc = "Field `RXBRK` writer - Break Received Interrupt Disable"]
-pub type RxbrkW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RxbrkW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `ERROR` reader - Combined Error Interrupt Disable"]
 pub type ErrorR = crate::BitReader;
 #[doc = "Field `ERROR` writer - Combined Error Interrupt Disable"]
-pub type ErrorW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type ErrorW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Data Register Empty Interrupt Disable"]
     #[inline(always)]
@@ -122,7 +122,7 @@ impl crate::Readable for IntenclrSpec {}
 impl crate::Writable for IntenclrSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0xbf;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTENCLR to value 0"]
 impl crate::Resettable for IntenclrSpec {

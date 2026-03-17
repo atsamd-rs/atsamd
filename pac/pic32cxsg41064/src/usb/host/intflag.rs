@@ -5,35 +5,35 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `HSOF` reader - Host Start Of Frame"]
 pub type HsofR = crate::BitReader;
 #[doc = "Field `HSOF` writer - Host Start Of Frame"]
-pub type HsofW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type HsofW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RST` reader - Bus Reset"]
 pub type RstR = crate::BitReader;
 #[doc = "Field `RST` writer - Bus Reset"]
-pub type RstW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RstW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `WAKEUP` reader - Wake Up"]
 pub type WakeupR = crate::BitReader;
 #[doc = "Field `WAKEUP` writer - Wake Up"]
-pub type WakeupW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type WakeupW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DNRSM` reader - Downstream"]
 pub type DnrsmR = crate::BitReader;
 #[doc = "Field `DNRSM` writer - Downstream"]
-pub type DnrsmW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DnrsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `UPRSM` reader - Upstream Resume from the Device"]
 pub type UprsmR = crate::BitReader;
 #[doc = "Field `UPRSM` writer - Upstream Resume from the Device"]
-pub type UprsmW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type UprsmW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `RAMACER` reader - Ram Access"]
 pub type RamacerR = crate::BitReader;
 #[doc = "Field `RAMACER` writer - Ram Access"]
-pub type RamacerW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type RamacerW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DCONN` reader - Device Connection"]
 pub type DconnR = crate::BitReader;
 #[doc = "Field `DCONN` writer - Device Connection"]
-pub type DconnW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DconnW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `DDISC` reader - Device Disconnection"]
 pub type DdiscR = crate::BitReader;
 #[doc = "Field `DDISC` writer - Device Disconnection"]
-pub type DdiscW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type DdiscW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 2 - Host Start Of Frame"]
     #[inline(always)]
@@ -137,7 +137,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0x03fc;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u16 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {

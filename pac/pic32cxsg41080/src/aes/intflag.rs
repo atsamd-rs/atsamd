@@ -5,11 +5,11 @@ pub type W = crate::W<IntflagSpec>;
 #[doc = "Field `ENCCMP` reader - Encryption Complete"]
 pub type EnccmpR = crate::BitReader;
 #[doc = "Field `ENCCMP` writer - Encryption Complete"]
-pub type EnccmpW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type EnccmpW<'a, REG> = crate::BitWriter<'a, REG>;
 #[doc = "Field `GFMCMP` reader - GF Multiplication Complete"]
 pub type GfmcmpR = crate::BitReader;
 #[doc = "Field `GFMCMP` writer - GF Multiplication Complete"]
-pub type GfmcmpW<'a, REG> = crate::BitWriter1C<'a, REG>;
+pub type GfmcmpW<'a, REG> = crate::BitWriter<'a, REG>;
 impl R {
     #[doc = "Bit 0 - Encryption Complete"]
     #[inline(always)]
@@ -47,7 +47,7 @@ impl crate::Readable for IntflagSpec {}
 impl crate::Writable for IntflagSpec {
     type Safety = crate::Unsafe;
     const ZERO_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
-    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0x03;
+    const ONE_TO_MODIFY_FIELDS_BITMAP: u8 = 0;
 }
 #[doc = "`reset()` method sets INTFLAG to value 0"]
 impl crate::Resettable for IntflagSpec {
