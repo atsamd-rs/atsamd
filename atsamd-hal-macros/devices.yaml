@@ -148,8 +148,10 @@ families:
       pic32cxsg41080: ["pins-80"]
       pic32cxsg41100: ["pins-100"]
       pic32cxsg41128: ["pins-128"]
-      pic32cxsg6x100: ["pins-100"]
-      pic32cxsg6x128: ["pins-128"]
+      pic32cxsg60100: ["pins-100"]
+      pic32cxsg60128: ["pins-128"]
+      pic32cxsg61100: ["pins-100"]
+      pic32cxsg61128: ["pins-128"]
     peripherals:
       - nvic
       - serial-numbers
@@ -176,12 +178,12 @@ families:
       - evsys
       - port
       - sercom: { count: 6, only: ["pic32cxsg41064"] }
-      - sercom: { count: 8, only: ["pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
+      - sercom: { count: 8, except: ["pic32cxsg41064"] }
       - qspi
       - usb
       - can: { count: 2 }
       - sdhc: { count: 1, only: ["pic32cxsg41064"] }
-      - sdhc: { count: 2, only: ["pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
+      - sdhc: { count: 2, except: ["pic32cxsg41064"] }
       - ccl
       - aes
       - pukcc
@@ -191,10 +193,11 @@ families:
       - ac
       - dac
       - tc: { count: 6, only: ["pic32cxsg41064", "pic32cxsg41080"] }
-      - tc: { count: 8, only: ["pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
-      - tcc: { count: 5, only: ["pic32cxsg41064", "pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg6x100", "pic32cxsg6x128"] }
+      - tc: { count: 8, only: ["pic32cxsg41100", "pic32cxsg41128", "pic32cxsg60100, pic32cxsg60128", "pic32cxsg61100, pic32cxsg61128"] }
+      - tcc: { count: 5, only: ["pic32cxsg41064", "pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg60100, pic32cxsg60128", "pic32cxsg61100, pic32cxsg61128"] }
       - ptc
       - i2s
       - pcc
       - pdec
-      - hsm: {only: ["pic32cxsg6x100, pic32cxsg6x128"] }
+      - hsm: {only: ["pic32cxsg60100, pic32cxsg60128", "pic32cxsg61100, pic32cxsg61128"] }
+      - immutableboot: {only: ["pic32cxsg41100, pic32cxsg41128", "pic32cxsg61100, pic32cxsg61128"] }

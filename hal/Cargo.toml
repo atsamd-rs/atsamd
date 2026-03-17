@@ -114,6 +114,12 @@ pic32cxsg41100 = { version = "0.1.0", path = "../pac/pic32cxsg41100", optional =
 pic32cxsg41080 = { version = "0.1.0", path = "../pac/pic32cxsg41080", optional = true }
 pic32cxsg41064 = { version = "0.1.0", path = "../pac/pic32cxsg41064", optional = true }
 
+pic32cxsg60128 = { version = "0.1.0", path = "../pac/pic32cxsg60128", optional = true }
+pic32cxsg60100 = { version = "0.1.0", path = "../pac/pic32cxsg60100", optional = true }
+
+pic32cxsg61128 = { version = "0.1.0", path = "../pac/pic32cxsg61128", optional = true }
+pic32cxsg61100 = { version = "0.1.0", path = "../pac/pic32cxsg61100", optional = true }
+
 #===============================================================================
 # Features
 #===============================================================================
@@ -159,8 +165,10 @@ pic32cxsg41064 = ["device", "dep:pic32cxsg41064"]
 pic32cxsg41080 = ["device", "dep:pic32cxsg41080"]
 pic32cxsg41100 = ["device", "dep:pic32cxsg41100"]
 pic32cxsg41128 = ["device", "dep:pic32cxsg41128"]
-pic32cxsg6x100 = ["device", "dep:atsame54p"]
-pic32cxsg6x128 = ["device", "dep:atsame54p"]
+pic32cxsg60100 = ["device", "dep:pic32cxsg60100"]
+pic32cxsg60128 = ["device", "dep:pic32cxsg60128"]
+pic32cxsg61100 = ["device", "dep:pic32cxsg61100"]
+pic32cxsg61128 = ["device", "dep:pic32cxsg61128"]
 
 #-------------------------------------------------------------------------------
 # RT features
@@ -198,9 +206,10 @@ pic32cxsg41064-rt = ["device", "pic32cxsg41064/rt"]
 pic32cxsg41080-rt = ["device", "pic32cxsg41080/rt"]
 pic32cxsg41100-rt = ["device", "pic32cxsg41100/rt"]
 pic32cxsg41128-rt = ["device", "pic32cxsg41128/rt"]
-pic32cxsg6x100-rt = ["device", "atsame54p/rt"]
-pic32cxsg6x128-rt = ["device", "atsame54p/rt"]
-
+pic32cxsg60100-rt = ["device", "pic32cxsg60100/rt"]
+pic32cxsg60128-rt = ["device", "pic32cxsg60128/rt"]
+pic32cxsg61100-rt = ["device", "pic32cxsg61100/rt"]
+pic32cxsg61128-rt = ["device", "pic32cxsg61128/rt"]
 
 #-------------------------------------------------------------------------------
 # User-selectable features
@@ -232,7 +241,9 @@ usb = ["usb-device"] # Default with 2048 byte buffer
 # The buffer is split between all device endpoints equally
 
 usb-buffer-1k = ["usb"] # 1024 byte buffer shared between all USB endpoints
-usb-buffer-2k = ["usb",] # 2048 byte buffer shared between all USB endpoints (Default)
+usb-buffer-2k = [
+  "usb",
+] # 2048 byte buffer shared between all USB endpoints (Default)
 usb-buffer-4k = ["usb"] # 4096 byte buffer shared between all USB endpoints
 usb-buffer-8k = ["usb"] # 8192 byte buffer shared between all USB endpoints
 
