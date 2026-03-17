@@ -15,7 +15,4 @@
     </xsl:template>
     <xsl:template match="modifiedWriteValues[text()='oneToClear']"/>
 
-    <!--
-  EIC in SVD has Config0 and Config1, instead, convert it into an array of Config0, to match the layout of SAMx5x EIC
-  -->
 </xsl:stylesheet>
