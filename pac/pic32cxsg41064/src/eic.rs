@@ -11,7 +11,8 @@ pub struct RegisterBlock {
     intflag: Intflag,
     asynch: Asynch,
     config0: Config0,
-    _reserved10: [u8; 0x10],
+    config1: Config1,
+    _reserved11: [u8; 0x0c],
     debouncen: Debouncen,
     dprescaler: Dprescaler,
     pinstate: Pinstate,
@@ -66,6 +67,11 @@ impl RegisterBlock {
     #[inline(always)]
     pub const fn config0(&self) -> &Config0 {
         &self.config0
+    }
+    #[doc = "0x20 - External Interrupt Sense Configuration"]
+    #[inline(always)]
+    pub const fn config1(&self) -> &Config1 {
+        &self.config1
     }
     #[doc = "0x30 - Debouncer Enable"]
     #[inline(always)]
@@ -161,3 +167,9 @@ module"]
 pub type Pinstate = crate::Reg<pinstate::PinstateSpec>;
 #[doc = "Pin State"]
 pub mod pinstate;
+#[doc = "CONFIG1 (rw) register accessor: External Interrupt Sense Configuration\n\nYou can [`read`](crate::Reg::read) this register and get [`config1::R`]. You can [`reset`](crate::Reg::reset), [`write`](crate::Reg::write), [`write_with_zero`](crate::Reg::write_with_zero) this register using [`config1::W`]. You can also [`modify`](crate::Reg::modify) this register. See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [`mod@config1`]
+module"]
+#[doc(alias = "CONFIG1")]
+pub type Config1 = crate::Reg<config1::Config1Spec>;
+#[doc = "External Interrupt Sense Configuration"]
+pub mod config1;
