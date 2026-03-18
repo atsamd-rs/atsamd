@@ -109,16 +109,16 @@ atsame53n = { version = "0.14.2", path = "../pac/atsame53n", optional = true }
 atsame54n = { version = "0.14.2", path = "../pac/atsame54n", optional = true }
 atsame54p = { version = "0.14.2", path = "../pac/atsame54p", optional = true }
 
-pic32cxsg41128 = { version = "0.1.0", path = "../pac/pic32cxsg41128", optional = true }
-pic32cxsg41100 = { version = "0.1.0", path = "../pac/pic32cxsg41100", optional = true }
-pic32cxsg41080 = { version = "0.1.0", path = "../pac/pic32cxsg41080", optional = true }
 pic32cxsg41064 = { version = "0.1.0", path = "../pac/pic32cxsg41064", optional = true }
+pic32cxsg41080 = { version = "0.1.0", path = "../pac/pic32cxsg41080", optional = true }
+pic32cxsg41100 = { version = "0.1.0", path = "../pac/pic32cxsg41100", optional = true }
+pic32cxsg41128 = { version = "0.1.0", path = "../pac/pic32cxsg41128", optional = true }
 
-pic32cxsg60128 = { version = "0.1.0", path = "../pac/pic32cxsg60128", optional = true }
 pic32cxsg60100 = { version = "0.1.0", path = "../pac/pic32cxsg60100", optional = true }
+pic32cxsg60128 = { version = "0.1.0", path = "../pac/pic32cxsg60128", optional = true }
 
-pic32cxsg61128 = { version = "0.1.0", path = "../pac/pic32cxsg61128", optional = true }
 pic32cxsg61100 = { version = "0.1.0", path = "../pac/pic32cxsg61100", optional = true }
+pic32cxsg61128 = { version = "0.1.0", path = "../pac/pic32cxsg61128", optional = true }
 
 #===============================================================================
 # Features
