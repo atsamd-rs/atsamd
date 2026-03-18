@@ -7,27 +7,27 @@ pub type W = crate::W<AvgctrlSpec>;
 #[repr(u8)]
 pub enum Samplenumselect {
     #[doc = "0: 1 sample"]
-    Samplenum1 = 0,
+    _1 = 0,
     #[doc = "1: 2 samples"]
-    Samplenum2 = 1,
+    _2 = 1,
     #[doc = "2: 4 samples"]
-    Samplenum4 = 2,
+    _4 = 2,
     #[doc = "3: 8 samples"]
-    Samplenum8 = 3,
+    _8 = 3,
     #[doc = "4: 16 samples"]
-    Samplenum16 = 4,
+    _16 = 4,
     #[doc = "5: 32 samples"]
-    Samplenum32 = 5,
+    _32 = 5,
     #[doc = "6: 64 samples"]
-    Samplenum64 = 6,
+    _64 = 6,
     #[doc = "7: 128 samples"]
-    Samplenum128 = 7,
+    _128 = 7,
     #[doc = "8: 256 samples"]
-    Samplenum256 = 8,
+    _256 = 8,
     #[doc = "9: 512 samples"]
-    Samplenum512 = 9,
+    _512 = 9,
     #[doc = "10: 1024 samples"]
-    Samplenum1024 = 10,
+    _1024 = 10,
 }
 impl From<Samplenumselect> for u8 {
     #[inline(always)]
@@ -46,74 +46,74 @@ impl SamplenumR {
     #[inline(always)]
     pub const fn variant(&self) -> Option<Samplenumselect> {
         match self.bits {
-            0 => Some(Samplenumselect::Samplenum1),
-            1 => Some(Samplenumselect::Samplenum2),
-            2 => Some(Samplenumselect::Samplenum4),
-            3 => Some(Samplenumselect::Samplenum8),
-            4 => Some(Samplenumselect::Samplenum16),
-            5 => Some(Samplenumselect::Samplenum32),
-            6 => Some(Samplenumselect::Samplenum64),
-            7 => Some(Samplenumselect::Samplenum128),
-            8 => Some(Samplenumselect::Samplenum256),
-            9 => Some(Samplenumselect::Samplenum512),
-            10 => Some(Samplenumselect::Samplenum1024),
+            0 => Some(Samplenumselect::_1),
+            1 => Some(Samplenumselect::_2),
+            2 => Some(Samplenumselect::_4),
+            3 => Some(Samplenumselect::_8),
+            4 => Some(Samplenumselect::_16),
+            5 => Some(Samplenumselect::_32),
+            6 => Some(Samplenumselect::_64),
+            7 => Some(Samplenumselect::_128),
+            8 => Some(Samplenumselect::_256),
+            9 => Some(Samplenumselect::_512),
+            10 => Some(Samplenumselect::_1024),
             _ => None,
         }
     }
     #[doc = "1 sample"]
     #[inline(always)]
-    pub fn is_samplenum_1(&self) -> bool {
-        *self == Samplenumselect::Samplenum1
+    pub fn is_1(&self) -> bool {
+        *self == Samplenumselect::_1
     }
     #[doc = "2 samples"]
     #[inline(always)]
-    pub fn is_samplenum_2(&self) -> bool {
-        *self == Samplenumselect::Samplenum2
+    pub fn is_2(&self) -> bool {
+        *self == Samplenumselect::_2
     }
     #[doc = "4 samples"]
     #[inline(always)]
-    pub fn is_samplenum_4(&self) -> bool {
-        *self == Samplenumselect::Samplenum4
+    pub fn is_4(&self) -> bool {
+        *self == Samplenumselect::_4
     }
     #[doc = "8 samples"]
     #[inline(always)]
-    pub fn is_samplenum_8(&self) -> bool {
-        *self == Samplenumselect::Samplenum8
+    pub fn is_8(&self) -> bool {
+        *self == Samplenumselect::_8
     }
     #[doc = "16 samples"]
     #[inline(always)]
-    pub fn is_samplenum_16(&self) -> bool {
-        *self == Samplenumselect::Samplenum16
+    pub fn is_16(&self) -> bool {
+        *self == Samplenumselect::_16
     }
     #[doc = "32 samples"]
     #[inline(always)]
-    pub fn is_samplenum_32(&self) -> bool {
-        *self == Samplenumselect::Samplenum32
+    pub fn is_32(&self) -> bool {
+        *self == Samplenumselect::_32
     }
     #[doc = "64 samples"]
     #[inline(always)]
-    pub fn is_samplenum_64(&self) -> bool {
-        *self == Samplenumselect::Samplenum64
+    pub fn is_64(&self) -> bool {
+        *self == Samplenumselect::_64
     }
     #[doc = "128 samples"]
     #[inline(always)]
-    pub fn is_samplenum_128(&self) -> bool {
-        *self == Samplenumselect::Samplenum128
+    pub fn is_128(&self) -> bool {
+        *self == Samplenumselect::_128
     }
     #[doc = "256 samples"]
     #[inline(always)]
-    pub fn is_samplenum_256(&self) -> bool {
-        *self == Samplenumselect::Samplenum256
+    pub fn is_256(&self) -> bool {
+        *self == Samplenumselect::_256
     }
     #[doc = "512 samples"]
     #[inline(always)]
-    pub fn is_samplenum_512(&self) -> bool {
-        *self == Samplenumselect::Samplenum512
+    pub fn is_512(&self) -> bool {
+        *self == Samplenumselect::_512
     }
     #[doc = "1024 samples"]
     #[inline(always)]
-    pub fn is_samplenum_1024(&self) -> bool {
-        *self == Samplenumselect::Samplenum1024
+    pub fn is_1024(&self) -> bool {
+        *self == Samplenumselect::_1024
     }
 }
 #[doc = "Field `SAMPLENUM` writer - Number of Samples to be Collected"]
@@ -125,58 +125,58 @@ where
 {
     #[doc = "1 sample"]
     #[inline(always)]
-    pub fn samplenum_1(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum1)
+    pub fn _1(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_1)
     }
     #[doc = "2 samples"]
     #[inline(always)]
-    pub fn samplenum_2(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum2)
+    pub fn _2(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_2)
     }
     #[doc = "4 samples"]
     #[inline(always)]
-    pub fn samplenum_4(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum4)
+    pub fn _4(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_4)
     }
     #[doc = "8 samples"]
     #[inline(always)]
-    pub fn samplenum_8(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum8)
+    pub fn _8(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_8)
     }
     #[doc = "16 samples"]
     #[inline(always)]
-    pub fn samplenum_16(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum16)
+    pub fn _16(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_16)
     }
     #[doc = "32 samples"]
     #[inline(always)]
-    pub fn samplenum_32(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum32)
+    pub fn _32(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_32)
     }
     #[doc = "64 samples"]
     #[inline(always)]
-    pub fn samplenum_64(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum64)
+    pub fn _64(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_64)
     }
     #[doc = "128 samples"]
     #[inline(always)]
-    pub fn samplenum_128(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum128)
+    pub fn _128(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_128)
     }
     #[doc = "256 samples"]
     #[inline(always)]
-    pub fn samplenum_256(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum256)
+    pub fn _256(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_256)
     }
     #[doc = "512 samples"]
     #[inline(always)]
-    pub fn samplenum_512(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum512)
+    pub fn _512(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_512)
     }
     #[doc = "1024 samples"]
     #[inline(always)]
-    pub fn samplenum_1024(self) -> &'a mut crate::W<REG> {
-        self.variant(Samplenumselect::Samplenum1024)
+    pub fn _1024(self) -> &'a mut crate::W<REG> {
+        self.variant(Samplenumselect::_1024)
     }
 }
 #[doc = "Field `ADJRES` reader - Adjusting Result / Division Coefficient"]

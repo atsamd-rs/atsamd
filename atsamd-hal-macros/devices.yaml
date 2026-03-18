@@ -193,11 +193,11 @@ families:
       - ac
       - dac
       - tc: { count: 6, only: ["pic32cxsg41064", "pic32cxsg41080"] }
-      - tc: { count: 8, only: ["pic32cxsg41100", "pic32cxsg41128", "pic32cxsg60100, pic32cxsg60128", "pic32cxsg61100, pic32cxsg61128"] }
-      - tcc: { count: 5, only: ["pic32cxsg41064", "pic32cxsg41080", "pic32cxsg41100", "pic32cxsg41128", "pic32cxsg60100, pic32cxsg60128", "pic32cxsg61100, pic32cxsg61128"] }
+      - tc: { count: 8, only: ["pic32cxsg41100", "pic32cxsg41128", "pic32cxsg60100", "pic32cxsg60128", "pic32cxsg61100", "pic32cxsg61128"] }
+      - tcc: { count: 5 }
       - ptc
       - i2s
       - pcc
       - pdec
-      - hsm: {only: ["pic32cxsg60100, pic32cxsg60128", "pic32cxsg61100, pic32cxsg61128"] }
-      - immutableboot: {only: ["pic32cxsg41100, pic32cxsg41128", "pic32cxsg61100, pic32cxsg61128"] }
+      - hsm: {only: ["pic32cxsg60100", "pic32cxsg60128", "pic32cxsg61100", pic32cxsg61128"] }
+      - immutableboot: {only: ["pic32cxsg41100", pic32cxsg41128", "pic32cxsg61100", pic32cxsg61128"] }
