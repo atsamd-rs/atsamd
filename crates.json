@@ -399,7 +399,7 @@
     },
     "pic32cxsg60100": {
       "features": [
-        "pic32cxsg6x100",
+        "pic32cxsg60100",
         "usb",
         "dma",
         "sdmmc",
@@ -412,7 +412,7 @@
     },
     "pic32cxsg60128": {
       "features": [
-        "pic32cxsg6x128",
+        "pic32cxsg60128",
         "usb",
         "dma",
         "sdmmc",
@@ -425,7 +425,7 @@
     },
     "pic32cxsg61100": {
       "features": [
-        "pic32cxsg6x100",
+        "pic32cxsg61100",
         "usb",
         "dma",
         "sdmmc",
@@ -438,7 +438,7 @@
     },
     "pic32cxsg61128": {
       "features": [
-        "pic32cxsg6x128",
+        "pic32cxsg61128",
         "usb",
         "dma",
         "sdmmc",
