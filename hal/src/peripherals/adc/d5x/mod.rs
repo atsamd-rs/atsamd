@@ -51,8 +51,9 @@ impl AdcInstance for Adc0 {
     }
 }
 
-#[inline]
 /// Convert TP and TC values to degrees C for CPU temperature
+#[inline]
+#[hal_cfg(not("adc-pic32cxsg"))]
 fn tp_tc_to_temp(tp: f32, tc: f32) -> f32 {
     let tl = calibration::tl();
     let th = calibration::th();
