@@ -7,21 +7,21 @@ pub type NvmpR = crate::FieldReader<u16>;
 #[repr(u8)]
 pub enum Pszselect {
     #[doc = "0: 8 bytes"]
-    Psz8 = 0,
+    _8 = 0,
     #[doc = "1: 16 bytes"]
-    Psz16 = 1,
+    _16 = 1,
     #[doc = "2: 32 bytes"]
-    Psz32 = 2,
+    _32 = 2,
     #[doc = "3: 64 bytes"]
-    Psz64 = 3,
+    _64 = 3,
     #[doc = "4: 128 bytes"]
-    Psz128 = 4,
+    _128 = 4,
     #[doc = "5: 256 bytes"]
-    Psz256 = 5,
+    _256 = 5,
     #[doc = "6: 512 bytes"]
-    Psz512 = 6,
+    _512 = 6,
     #[doc = "7: 1024 bytes"]
-    Psz1024 = 7,
+    _1024 = 7,
 }
 impl From<Pszselect> for u8 {
     #[inline(always)]
@@ -40,56 +40,56 @@ impl PszR {
     #[inline(always)]
     pub const fn variant(&self) -> Pszselect {
         match self.bits {
-            0 => Pszselect::Psz8,
-            1 => Pszselect::Psz16,
-            2 => Pszselect::Psz32,
-            3 => Pszselect::Psz64,
-            4 => Pszselect::Psz128,
-            5 => Pszselect::Psz256,
-            6 => Pszselect::Psz512,
-            7 => Pszselect::Psz1024,
+            0 => Pszselect::_8,
+            1 => Pszselect::_16,
+            2 => Pszselect::_32,
+            3 => Pszselect::_64,
+            4 => Pszselect::_128,
+            5 => Pszselect::_256,
+            6 => Pszselect::_512,
+            7 => Pszselect::_1024,
             _ => unreachable!(),
         }
     }
     #[doc = "8 bytes"]
     #[inline(always)]
-    pub fn is_psz_8(&self) -> bool {
-        *self == Pszselect::Psz8
+    pub fn is_8(&self) -> bool {
+        *self == Pszselect::_8
     }
     #[doc = "16 bytes"]
     #[inline(always)]
-    pub fn is_psz_16(&self) -> bool {
-        *self == Pszselect::Psz16
+    pub fn is_16(&self) -> bool {
+        *self == Pszselect::_16
     }
     #[doc = "32 bytes"]
     #[inline(always)]
-    pub fn is_psz_32(&self) -> bool {
-        *self == Pszselect::Psz32
+    pub fn is_32(&self) -> bool {
+        *self == Pszselect::_32
     }
     #[doc = "64 bytes"]
     #[inline(always)]
-    pub fn is_psz_64(&self) -> bool {
-        *self == Pszselect::Psz64
+    pub fn is_64(&self) -> bool {
+        *self == Pszselect::_64
     }
     #[doc = "128 bytes"]
     #[inline(always)]
-    pub fn is_psz_128(&self) -> bool {
-        *self == Pszselect::Psz128
+    pub fn is_128(&self) -> bool {
+        *self == Pszselect::_128
     }
     #[doc = "256 bytes"]
     #[inline(always)]
-    pub fn is_psz_256(&self) -> bool {
-        *self == Pszselect::Psz256
+    pub fn is_256(&self) -> bool {
+        *self == Pszselect::_256
     }
     #[doc = "512 bytes"]
     #[inline(always)]
-    pub fn is_psz_512(&self) -> bool {
-        *self == Pszselect::Psz512
+    pub fn is_512(&self) -> bool {
+        *self == Pszselect::_512
     }
     #[doc = "1024 bytes"]
     #[inline(always)]
-    pub fn is_psz_1024(&self) -> bool {
-        *self == Pszselect::Psz1024
+    pub fn is_1024(&self) -> bool {
+        *self == Pszselect::_1024
     }
 }
 #[doc = "SmartEEPROM Supported\n\nValue on reset: 0"]
