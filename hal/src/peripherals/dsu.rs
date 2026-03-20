@@ -12,13 +12,25 @@ use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 #[hal_cfg("dsu-d5x")]
 use crate::pac::{self, Pac};
 
+#[hal_cfg("dsu-d5x")]
+type DsuAhbClk = crate::clock::v2::ahb::AhbClk<crate::clock::v2::types::Dsu>;
+#[hal_cfg("dsu-d5x")]
+type DsuApbClk = crate::clock::v2::apb::ApbClk<crate::clock::v2::types::Dsu>;
+
 #[hal_cfg(any("dsu-d21", "dsu-d11"))]
 use crate::pac::{self, Pac1};
 
 /// Device Service Unit
+#[hal_macro_helper]
 pub struct Dsu {
     /// PAC peripheral
     dsu: pac::Dsu,
+    /// AHB Clock
+    #[hal_cfg("dsu-d5x")]
+    ahb: DsuAhbClk,
+    /// APB Clock
+    #[hal_cfg("dsu-d5x")]
+    apb: DsuApbClk,
 }
 
 /// Errors from hardware
@@ -61,7 +73,7 @@ impl Dsu {
     /// Unlock the DSU and instantiate peripheral
     #[inline]
     #[hal_cfg("dsu-d5x")]
-    pub fn new(dsu: pac::Dsu, pac: &Pac) -> Result<Self> {
+    pub fn new(dsu: pac::Dsu, ahb: DsuAhbClk, apb: DsuApbClk, pac: &Pac) -> Result<Self> {
         // Attempt to unlock DSU
         pac.wrctrl()
             .write(|w| unsafe { w.perid().bits(33).key().clr() });
@@ -70,7 +82,7 @@ impl Dsu {
         if pac.statusb().read().dsu_().bit_is_set() {
             Err(Error::PacUnlockFailed)
         } else {
-            Ok(Self { dsu })
+            Ok(Self { dsu, ahb, apb })
         }
     }
 
@@ -89,8 +101,15 @@ impl Dsu {
     }
 
     /// Releases the DSU peripheral
+    #[hal_cfg(any("dsu-d21", "dsu-d11"))]
     pub fn free(self) -> pac::Dsu {
         self.dsu
+    }
+
+    /// Releases the DSU peripheral
+    #[hal_cfg(any("dsu-d5x"))]
+    pub fn free(self) -> (pac::Dsu, DsuAhbClk, DsuApbClk) {
+        (self.dsu, self.ahb, self.apb)
     }
 
     /// Clear statusa bits (all errors and done flag)
