@@ -55,11 +55,11 @@ where
         count.ctrla().write(|w| w.swrst().set_bit());
         while count.syncbusy().read().swrst().bit_is_set() {}
 
-        count.ctrlbset().write(|w| {
+        count.ctrlbclr().write(|w| {
             // Count up when the direction bit is zero
-            w.dir().clear_bit();
+            w.dir().set_bit();
             // Periodic
-            w.oneshot().clear_bit()
+            w.oneshot().set_bit()
         });
 
         // Set TOP value for mfrq mode
