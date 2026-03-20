@@ -2,25 +2,41 @@
 //!
 //! The SERCOM module is used to configure the SERCOM peripherals as USART, SPI
 //! or I2C interfaces.
+//!
 //! # Undocumented features
 //!
 //! The ATSAMx5x chips contain certain features that aren't documented in the
 //! datasheet. These features are implemented in the HAL based on
 //! experimentation with certain boards which have verifiably demonstrated that
-//! those features work as intended.
+//! those features work as intended. These undocumented features are disabled by
+//! default, and can be enabled by enabling the `undoc-features` Cargo feature
 //!
-//! * [`UndocIoSet1`]: Implement an undocumented `IoSet` for PA16, PA17, PB22 &
-//!   PB23 configured for [`Sercom1`]. The pygamer & feather_m4 use this
+//! ## SAMD21:
+//! * `PA00` is I2C-capable according to `circuit_playground_express`. As such,
+//!   `PA00` implements [`IsI2cPad`].
+//!
+//! * `PA01` is I2C-capable according to `circuit_playground_express`. As such,
+//!   PA01 implements [`IsI2cPad`].
+//!
+//! * `PB02` is I2C-capable according to `circuit_playground_express`. As such,
+//!   PB02 implements [`IsI2cPad`].
+//!
+//! * `PB03` is I2C-capable according to `circuit_playground_express`. As such,
+//!   PB03 implements [`IsI2cPad`].
+//!
+//! ## SAMx5x devices:
+//! * `UndocIoSet1`: Implement an undocumented `IoSet` for PA16, PA17, PB22 &
+//!   PB23 configured for [`Sercom1`]. The `pygamer` & `feather_m4` use this
 //!   combination, but it is not listed as valid in the datasheet.
 //!
-//! * [`UndocIoSet2`]: Implement an undocumented `IoSet` for PA00, PA01, PB22 &
-//!   PB23 configured for [`Sercom1`]. The itsybitsy_m4 uses this combination,
+//! * `UndocIoSet2`: Implement an undocumented `IoSet` for PA00, PA01, PB22 &
+//!   PB23 configured for [`Sercom1`]. The `itsybitsy_m4` uses this combination,
 //!   but it is not listed as valid in the datasheet.
 //!
-//! * [`PB02`] is I2C-capable according to metro_m4. As such, [`PB02`]
+//! * [`PB02`] is I2C-capable according to `metro_m4`. As such, [`PB02`]
 //!   implements [`IsI2cPad`].
 //!
-//! * [`PB03`] is I2C-capable according to metro_m4. As such, [`PB03`]
+//! * [`PB03`] is I2C-capable according to `metro_m4`. As such, [`PB03`]
 //!   implements [`IsI2cPad`].
 //!
 //! [`PB02`]: crate::gpio::pin::PB02

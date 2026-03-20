@@ -20,7 +20,7 @@ name = "atsamd-hal"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
 rust-version = "1.85.1"
-version = "0.22.2"
+version = "0.23.3"
 
 [package.metadata.docs.rs]
 features = ["samd21g", "samd21g-rt", "usb", "dma", "async", "rtic"]
@@ -195,8 +195,20 @@ dma = []
 max-channels = ["dma"]
 rtic = ["rtic-monotonic", "rtic-time", "portable-atomic"]
 sdmmc = ["embedded-sdmmc"]
-usb = ["usb-device"]
 use_rtt = ["jlink_rtt"]
+undoc-features = []
+
+# USB features
+usb = ["usb-device"] # Default with 2048 byte buffer
+
+# USB buffer sizes
+# These denote the size of the global buffer for all USB endpoints.
+# The buffer is split between all device endpoints equally
+
+usb-buffer-1k = ["usb"] # 1024 byte buffer shared between all USB endpoints
+usb-buffer-2k = ["usb"] # 2048 byte buffer shared between all USB endpoints (Default)
+usb-buffer-4k = ["usb"] # 4096 byte buffer shared between all USB endpoints
+usb-buffer-8k = ["usb"] # 8192 byte buffer shared between all USB endpoints
 
 #===============================================================================
 # Implementation-details

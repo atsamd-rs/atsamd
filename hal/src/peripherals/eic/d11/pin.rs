@@ -4,7 +4,7 @@ use crate::ehal::digital::{ErrorType, InputPin};
 use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
 use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
+    self, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt, pin::*,
 };
 use core::convert::Infallible;
 
@@ -59,7 +59,18 @@ where
     pub fn enable_event(&mut self) {
         self.chan.with_disable(|e| {
             e.evctrl()
-                .modify(|_, w| unsafe { w.bits(1 << P::ChId::ID) });
+                .modify(|r, w| unsafe { w.bits(r.bits() | 1 << P::ChId::ID) });
+        });
+    }
+
+    /// Disables the event output of the channel for the event system.
+    ///
+    /// Note that whilst this function is executed, the EIC peripheral is disabled
+    /// in order to write to the evctrl register
+    pub fn disable_event(&mut self) {
+        self.chan.with_disable(|e| {
+            e.evctrl()
+                .modify(|r, w| unsafe { w.bits(r.bits() & !(1 << P::ChId::ID)) });
         });
     }
 
@@ -202,16 +213,9 @@ mod async_impls {
             self.disable_interrupt();
 
             match sense {
-                Sense::High => {
-                    if self.is_high().unwrap() {
-                        return;
-                    }
-                }
-                Sense::Low => {
-                    if self.is_low().unwrap() {
-                        return;
-                    }
-                }
+                Sense::High if self.is_high().unwrap() => return,
+
+                Sense::Low if self.is_low().unwrap() => return,
                 _ => (),
             }
 

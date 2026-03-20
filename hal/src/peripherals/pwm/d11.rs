@@ -46,7 +46,7 @@ impl $TYPE {
             }
         });
         count.ctrla().write(|w| w.wavegen().mpwm());
-        count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
+        count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16 - 1) });
         count.cc(1).write(|w| unsafe { w.cc().bits(0) });
         count.ctrla().modify(|_, w| w.enable().set_bit());
         while count.status().read().syncbusy().bit_is_set() {}
@@ -78,7 +78,7 @@ impl $TYPE {
         });
         count.ctrla().modify(|_, w| w.enable().set_bit());
         while count.status().read().syncbusy().bit_is_set() {}
-        count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16) });
+        count.cc(0).write(|w| unsafe { w.cc().bits(params.cycles as u16 - 1) });
     }
 
     pub fn get_period(&self) -> Hertz {
@@ -97,7 +97,7 @@ impl $crate::ehal::pwm::SetDutyCycle for $TYPE {
     fn max_duty_cycle(&self) -> u16 {
         let count = self.tc.count16();
         let top = count.cc(0).read().cc().bits();
-        top
+        top.saturating_add(1)
     }
 
     fn set_duty_cycle(&mut self, duty: u16) -> Result<(), Self::Error> {
@@ -210,7 +210,7 @@ impl $TYPE {
             });
             tcc.wave().write(|w| w.wavegen().npwm());
             while tcc.syncbusy().read().wave().bit_is_set() {}
-            tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
+            tcc.per().write(|w| unsafe { w.bits(params.cycles as u32 - 1) });
             while tcc.syncbusy().read().per().bit_is_set() {}
             tcc.ctrla().modify(|_, w| w.enable().set_bit());
             while tcc.syncbusy().read().enable().bit_is_set() {}
@@ -252,7 +252,7 @@ impl $crate::ehal_02::Pwm for $TYPE {
 
     fn get_max_duty(&self) -> Self::Duty {
         let top = self.tcc.per().read().bits();
-        top
+        top + 1
     }
 
     fn set_duty(&mut self, channel: Self::Channel, duty: Self::Duty) {
@@ -283,7 +283,7 @@ impl $crate::ehal_02::Pwm for $TYPE {
         });
         self.tcc.ctrla().modify(|_, w| w.enable().set_bit());
         while self.tcc.syncbusy().read().enable().bit_is_set() {}
-        self.tcc.per().write(|w| unsafe { w.bits(params.cycles as u32) });
+        self.tcc.per().write(|w| unsafe { w.bits(params.cycles as u32 - 1) });
         while self.tcc.syncbusy().read().per().bit() {}
     }
 }
