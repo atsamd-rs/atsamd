@@ -13,11 +13,11 @@ use panic_semihosting as _;
 
 use bsp::entry;
 use ehal::digital::StatefulOutputPin;
-use hal::clock::GenericClockController;
 use hal::dsu::Dsu;
 use hal::nvm::{retrieve_bank_size, Bank, Nvm, WriteGranularity, BLOCKSIZE};
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::usb::UsbBus;
+use hal::clock::v2::{clock_system_at_reset, pclk::Pclk};
 
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
@@ -25,33 +25,45 @@ use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
-
 use core::sync::atomic;
 
 #[entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_external_32kosc(
+
+    // Clocks configured as they are on reset - Gclk0 at 48Mhz
+    let (mut buses, clocks, tokens) = clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
+    // This is required because the `usb` module have not yet
+    // been update to use `clock::v2`
+    let (_, _, _, mut mclk) = unsafe { clocks.pac.steal() };
+
     let pins = bsp::Pins::new(peripherals.port);
     let mut red_led = pins.d13.into_push_pull_output();
     let mut nvm = Nvm::new(peripherals.nvmctrl);
-    let mut dsu = Dsu::new(peripherals.dsu, &peripherals.pac).unwrap();
 
+    let ahb_dsu = clocks.ahbs.dsu;
+    let apb_dsu = clocks.apbs.dsu;  
+    let mut dsu = Dsu::new(peripherals.dsu, ahb_dsu, apb_dsu, &peripherals.pac).unwrap();
+    // USB Can be ran off 48Mhz clock, so we can derive the Pclk directly from Gclk0
+
+    let (pclk_usb, _gclk0) = Pclk::enable(tokens.pclks.usb, clocks.gclk0);
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(bsp::usb_allocator(
-            pins.usb_dm,
-            pins.usb_dp,
-            peripherals.usb,
-            &mut clocks,
-            &mut peripherals.mclk,
-        ));
+        // Not using the BSP USB constructor as that has not yet
+        // been ported to use clock::v2
+        USB_ALLOCATOR = Some(UsbBusAllocator::new(UsbBus::new(
+            &pclk_usb.into(), 
+            &mut mclk, 
+            pins.usb_dm, 
+            pins.usb_dp, 
+            peripherals.usb
+        )));
         USB_ALLOCATOR.as_ref().unwrap()
     };
 
