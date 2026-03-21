@@ -13,19 +13,19 @@ use panic_semihosting as _;
 
 use bsp::entry;
 use ehal::digital::StatefulOutputPin;
+use hal::clock::v2::{clock_system_at_reset, pclk::Pclk};
 use hal::dsu::Dsu;
 use hal::nvm::{retrieve_bank_size, Bank, Nvm, WriteGranularity, BLOCKSIZE};
 use hal::pac::{interrupt, CorePeripherals, Peripherals};
 use hal::usb::UsbBus;
-use hal::clock::v2::{clock_system_at_reset, pclk::Pclk};
 
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
+use core::sync::atomic;
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
-use core::sync::atomic;
 
 #[entry]
 fn main() -> ! {
@@ -49,7 +49,7 @@ fn main() -> ! {
     let mut nvm = Nvm::new(peripherals.nvmctrl);
 
     let ahb_dsu = clocks.ahbs.dsu;
-    let apb_dsu = clocks.apbs.dsu;  
+    let apb_dsu = clocks.apbs.dsu;
     let mut dsu = Dsu::new(peripherals.dsu, ahb_dsu, apb_dsu, &peripherals.pac).unwrap();
     // USB Can be ran off 48Mhz clock, so we can derive the Pclk directly from Gclk0
 
@@ -58,11 +58,11 @@ fn main() -> ! {
         // Not using the BSP USB constructor as that has not yet
         // been ported to use clock::v2
         USB_ALLOCATOR = Some(UsbBusAllocator::new(UsbBus::new(
-            &pclk_usb.into(), 
-            &mut mclk, 
-            pins.usb_dm, 
-            pins.usb_dp, 
-            peripherals.usb
+            &pclk_usb.into(),
+            &mut mclk,
+            pins.usb_dm,
+            pins.usb_dp,
+            peripherals.usb,
         )));
         USB_ALLOCATOR.as_ref().unwrap()
     };
