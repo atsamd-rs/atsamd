@@ -132,11 +132,11 @@ macro_rules! __internal_basic_backend {
             }
 
             fn enable_timer() {
-                <$mode>::enable(unsafe { &pac::Rtc::steal() });
+                <$mode>::enable_interrupt::<$rtic_int>(unsafe { &pac::Rtc::steal() });
             }
 
             fn disable_timer() {
-                <$mode>::disable(unsafe { &pac::Rtc::steal() });
+                <$mode>::disable_interrupt::<$rtic_int>(unsafe { &pac::Rtc::steal() });
             }
 
             fn on_interrupt() {
@@ -243,12 +243,12 @@ macro_rules! __internal_half_period_counting_backend {
 
             fn enable_timer() {
                 let rtc = unsafe { pac::Rtc::steal() };
-                <$mode>::enable(&rtc);
+                <$mode>::enable_interrupt::<$rtic_int>(&rtc);
             }
 
             fn disable_timer() {
                 let rtc = unsafe { pac::Rtc::steal() };
-                <$mode>::disable(&rtc);
+                <$mode>::disable_interrupt::<$rtic_int>(&rtc);
             }
 
             fn on_interrupt() {
