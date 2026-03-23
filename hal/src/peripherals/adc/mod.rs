@@ -363,8 +363,7 @@ impl<I: AdcInstance> Adc<I> {
             P::Channel::get_channel(),
             N::Channel::get_channel(),
             SampleMode::Differential,
-        )
-        .cast_signed()
+        ) as i16
     }
 
     /// Read a single value from the provided ADC channels.
@@ -553,8 +552,7 @@ where
             N::Channel::get_channel(),
             SampleMode::Differential,
         )
-        .await
-        .cast_signed()
+        .await as i16
     }
 
     /// Read a single value from the provided ADC channels
