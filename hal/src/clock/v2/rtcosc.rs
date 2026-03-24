@@ -93,16 +93,16 @@
 
 use core::marker::PhantomData;
 
-use crate::pac::osc32kctrl::rtcctrl::Rtcselselect;
-use crate::pac::osc32kctrl::Rtcctrl;
 use crate::pac::Osc32kctrl;
+use crate::pac::osc32kctrl::Rtcctrl;
+use crate::pac::osc32kctrl::rtcctrl::Rtcselselect;
 
 use crate::time::Hertz;
 use crate::typelevel::{Decrement, Increment};
 
+use super::Source;
 use super::osculp32k::{OscUlp1kId, OscUlp32kId};
 use super::xosc32k::{Xosc1kId, Xosc32kId};
-use super::Source;
 
 //==============================================================================
 // RtcOscToken

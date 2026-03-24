@@ -15,7 +15,7 @@ use crate::clock::v2::pclk::{Pclk, PclkSourceId, ids::*};
 use crate::pac::gclk::genctrl::Srcselect::*;
 use crate::pac::gclk::pchctrl::Genselect::*;
 use crate::pac::{self, Gclk, Mclk, Nvmctrl, Osc32kctrl, Oscctrl};
-use crate::sercom::*;
+// use crate::sercom::*; // TODO why does this warn now but not before?
 use crate::time::Hertz;
 
 pub type ClockGenId = pac::gclk::pchctrl::Genselect;
@@ -439,6 +439,7 @@ clock_generator!(
     (tc0_tc1, Tc0Tc1Clock, TC0_TC1, Tc0Tc1),
     (tcc0_tcc1, Tcc0Tcc1Clock, TCC0_TCC1, Tcc0Tcc1),
     (tc2_tc3, Tc2Tc3Clock, TC2_TC3, Tc2Tc3),
+    #[hal_cfg(all("tcc2", "tcc3"))]
     (tcc2_tcc3, Tcc2Tcc3Clock, TCC2_TCC3, Tcc2Tcc3),
     #[hal_cfg(all("tc4", "tc5"))]
     (tc4_tc5, Tc4Tc5Clock, TC4_TC5, Tc4Tc5),
