@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2](https://github.com/atsamd-rs/atsamd/compare/itsybitsy_m4-0.9.1...itsybitsy_m4-0.9.2) - 2026-03-24
+
+### Dependencies
+
+- *(itsybitsy_m4)* Switch itsybitsy_m4 BSP to latest HAL release. ([#954](https://github.com/atsamd-rs/atsamd/pull/954))
+
 ## [0.9.1](https://github.com/atsamd-rs/atsamd/compare/itsybitsy_m4-0.9.0...itsybitsy_m4-0.9.1) - 2025-04-12
 
 ### Other

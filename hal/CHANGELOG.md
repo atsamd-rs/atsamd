@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.4](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.3...atsamd-hal-0.23.4) - 2026-03-24
+
+### Fixed
+
+- *(rtc)* disable compare interrupt instead of stopping the RTC counter ([#992](https://github.com/atsamd-rs/atsamd/pull/992))
+
+### Other
+
+- Make ADC `check_read_discard` private again ([#1003](https://github.com/atsamd-rs/atsamd/pull/1003))
+
 ## [0.23.3](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.2...atsamd-hal-0.23.3) - 2026-03-02
 
 ### Fixed
