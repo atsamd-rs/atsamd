@@ -51,7 +51,7 @@ use crate::pac;
 use pac::Peripherals;
 use pac::sercom0;
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 use pac::Mclk as ApbClkCtrl;
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use pac::Pm as ApbClkCtrl;
@@ -135,7 +135,7 @@ macro_rules! sercom {
                 type Interrupt = $crate::async_hal::interrupts::[< SERCOM $N >];
 
                 #[cfg(feature = "async")]
-                #[hal_cfg("sercom0-d5x")]
+                #[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
                 type Interrupt = $crate::async_hal::interrupts::[< SERCOM $N >];
 
                 #[inline]
@@ -174,28 +174,28 @@ sercom!(apbcmask, 4);
 sercom!(apbcmask, 5);
 
 // d5x family
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 sercom!(apbamask, 0);
 
-#[hal_cfg("sercom1-d5x")]
+#[hal_cfg(any("sercom1-d5x", "sercom1-pic32cxsg"))]
 sercom!(apbamask, 1);
 
-#[hal_cfg("sercom2-d5x")]
+#[hal_cfg(any("sercom2-d5x", "sercom2-pic32cxsg"))]
 sercom!(apbbmask, 2);
 
-#[hal_cfg("sercom3-d5x")]
+#[hal_cfg(any("sercom3-d5x", "sercom3-pic32cxsg"))]
 sercom!(apbbmask, 3);
 
-#[hal_cfg("sercom4-d5x")]
+#[hal_cfg(any("sercom4-d5x", "sercom4-pic32cxsg"))]
 sercom!(apbdmask, 4);
 
-#[hal_cfg("sercom5-d5x")]
+#[hal_cfg(any("sercom5-d5x", "sercom5-pic32cxsg"))]
 sercom!(apbdmask, 5);
 
-#[hal_cfg("sercom6-d5x")]
+#[hal_cfg(any("sercom6-d5x", "sercom6-pic32cxsg"))]
 sercom!(apbdmask, 6);
 
-#[hal_cfg("sercom7-d5x")]
+#[hal_cfg(any("sercom7-d5x", "sercom7-pic32cxsg"))]
 sercom!(apbdmask, 7);
 
 // Reserve space for the max number of SERCOM peripherals based on chip type,
@@ -209,7 +209,7 @@ const NUM_SERCOM: usize = 3;
 #[cfg(feature = "async")]
 const NUM_SERCOM: usize = 6;
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 #[cfg(feature = "async")]
 const NUM_SERCOM: usize = 8;
 

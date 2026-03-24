@@ -47,7 +47,15 @@ define_pac!(
     (atsame53j, "same53j"),
     (atsame53n, "same53n"),
     (atsame54n, "same54n"),
-    (atsame54p, "same54p")
+    (atsame54p, "same54p"),
+    (pic32cxsg41064, "pic32cxsg41064"),
+    (pic32cxsg41080, "pic32cxsg41080"),
+    (pic32cxsg41100, "pic32cxsg41100"),
+    (pic32cxsg41128, "pic32cxsg41128"),
+    (pic32cxsg60100, "pic32cxsg60100"),
+    (pic32cxsg60128, "pic32cxsg60128"),
+    (pic32cxsg61100, "pic32cxsg61100"),
+    (pic32cxsg61128, "pic32cxsg61128")
 );
 
 #[cfg(feature = "use_rtt")]

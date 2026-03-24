@@ -31,6 +31,8 @@
 
 use core::marker::PhantomData;
 
+use atsamd_hal_macros::hal_macro_helper;
+
 use super::Nvm;
 use crate::pac::{Nvmctrl, nvmctrl::ctrlb::Cmdselect};
 use crate::typelevel::Sealed;
@@ -100,6 +102,7 @@ fn wait_if_busy() {
     while nvmctrl.seestat().read().busy().bit_is_set() {}
 }
 
+#[hal_macro_helper]
 impl<'a> SmartEepromMode<'a> {
     /// Retrieve [`SmartEeprom`] instance using information found in relevant HW
     /// registers.
@@ -109,6 +112,8 @@ impl<'a> SmartEepromMode<'a> {
         if nvm.nvm.seecfg().read().aprdis().bit_is_set() {
             return Err(DisabledAutomaticPageReallocationNotSupported);
         }
+        #[hal_cfg(not("clock-pic32cxsg"))]
+        // PIC32CXSG does not use this field
         if nvm.nvm.seecfg().read().wmode().is_buffered() {
             return Err(BufferedWritesNotSupported);
         }

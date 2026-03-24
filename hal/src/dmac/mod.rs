@@ -318,7 +318,7 @@ macro_rules! with_num_channels {
 }
 
 #[cfg(feature = "max-channels")]
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
@@ -345,7 +345,7 @@ macro_rules! with_num_channels {
 }
 
 #[cfg(not(feature = "max-channels"))]
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 #[macro_export]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {

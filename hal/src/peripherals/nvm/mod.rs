@@ -29,6 +29,7 @@ use core::num::NonZeroU32;
 use core::ops::Range;
 use core::ptr::addr_of;
 
+use atsamd_hal_macros::{hal_cfg, hal_docs};
 use bitfield::bitfield;
 
 /// Retrieve a total NVM size using HW registers
@@ -209,8 +210,16 @@ impl Nvm {
 
     /// Check if the flash is boot protected
     #[inline]
+    #[hal_cfg(not("immutableboot"))]
     pub fn is_boot_protected(&self) -> bool {
         !self.nvm.status().read().bpdis().bit()
+    }
+
+    /// Check if flash is boot protected
+    #[hal_cfg("immutableboot")]
+    #[inline]
+    pub fn is_boot_protected() {
+        !self.nvm.status().read().bpdis().bit() || self.nvm.status().read().bphl().bit()
     }
 
     /// Get first bank
@@ -407,11 +416,17 @@ impl Nvm {
         self.command_sync(Cmdselect::Ceulck)
     }
 
-    /// Enable/disable boot protection
-    ///
-    /// Userpage's NVM BOOT field defines a memory region that is supposed to be
-    /// protected. `Nvmctrl.STATUS.BOOTPROT` is a readonly HW register populated
-    /// on reset with a value from a userpage. By default, 0
+    #[hal_docs({
+        /// Userpage's NVM BOOT field defines a memory region that is supposed to be
+        /// protected. `Nvmctrl.STATUS.BOOTPROT` is a readonly HW register populated
+        /// on reset with a value from a userpage. By default, 0
+        }
+        "immutableboot" => {
+        ///
+        /// If permanent boot protection is enabled, then trying to clear
+        /// boot protection will always result in an error.
+        }
+    )]
     #[inline]
     pub fn boot_protection(&mut self, protect: bool) -> Result<()> {
         // Check if requested state differs from current state

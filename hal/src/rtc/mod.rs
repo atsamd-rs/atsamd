@@ -25,7 +25,7 @@ mod modes;
 pub mod rtic;
 
 // SAMx5x imports
-#[hal_cfg("rtc-d5x")]
+#[hal_cfg(any("rtc-d5x", "rtc-pic32cxsg"))]
 use crate::pac::{Mclk as Pm, rtc::mode0::ctrla::Prescalerselect};
 
 // SAMD11/SAMD21 imports
