@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0](https://github.com/atsamd-rs/atsamd/compare/qt_py_m0-0.10.1...qt_py_m0-0.11.0) - 2026-03-24
+
+### Dependencies
+
+- *(qt_py_m0)* Update QT PY M0 to latest HAL version ([#970](https://github.com/atsamd-rs/atsamd/pull/970))
+
 ## [0.10.1](https://github.com/atsamd-rs/atsamd/compare/qt_py_m0-0.10.0...qt_py_m0-0.10.1) - 2024-10-17
 
 ### Refactored
