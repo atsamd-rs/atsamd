@@ -628,12 +628,15 @@ pub trait OpMode: Sealed {
 pub enum Master {}
 
 /// [`OpMode`] variant for Master mode with hardware-controlled slave select
+#[hal_cfg(not("sercom0-pic32cxsg"))]
 pub enum MasterHWSS {}
 
 /// [`OpMode`] variant for Slave mode
 pub enum Slave {}
 
 impl Sealed for Master {}
+
+#[hal_cfg(not("sercom0-pic32cxsg"))]
 impl Sealed for MasterHWSS {}
 impl Sealed for Slave {}
 
@@ -642,6 +645,7 @@ impl OpMode for Master {
     const MSSEN: bool = false;
 }
 
+#[hal_cfg(not("sercom0-pic32cxsg"))]
 impl OpMode for MasterHWSS {
     const MODE: Modeselect = Modeselect::SpiMaster;
     const MSSEN: bool = true;
@@ -659,6 +663,8 @@ impl OpMode for Slave {
 pub trait MasterMode: OpMode {}
 
 impl MasterMode for Master {}
+
+#[hal_cfg(not("sercom0-pic32cxsg"))]
 impl MasterMode for MasterHWSS {}
 
 //=============================================================================
@@ -1302,6 +1308,7 @@ where
 {
 }
 
+#[hal_cfg(not("sercom0-pic32cxsg"))]
 impl<P, Z> ValidConfig for Config<P, MasterHWSS, Z>
 where
     P: ValidPads,
