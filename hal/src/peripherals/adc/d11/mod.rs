@@ -1,7 +1,10 @@
 use super::{
     ADC_SETTINGS_INTERNAL_READ, ADC_SETTINGS_INTERNAL_READ_D21_TEMP, Accumulation, Adc,
-    AdcInstance, AdcSettings, CpuVoltageSource, Error, Flags, PrimaryAdc, SampleCount,
+    AdcInstance, AdcSettings, Error, Flags, PrimaryAdc, SampleCount, SampleMode, TEMP, GND,
+    CpuVoltageSource, PosChannel, NegChannel,
 };
+
+use atsamd_hal_macros::{hal_macro_helper};
 
 #[cfg(feature = "async")]
 use super::{FutureAdc, async_api};
@@ -9,8 +12,9 @@ use super::{FutureAdc, async_api};
 use crate::{calibration, pac};
 use pac::Peripherals;
 use pac::Sysctrl;
-use pac::adc::inputctrl::Gainselect;
+use pac::adc::inputctrl::{Gainselect, Muxposselect};
 pub mod pin;
+pub mod channel;
 
 /// Wrapper around the ADC instance
 pub struct Adc0 {
@@ -76,10 +80,9 @@ impl<I: AdcInstance> Adc<I> {
             .sampctrl()
             .modify(|_, w| unsafe { w.samplen().bits(cfg.sample_clock_cycles.saturating_sub(1)) }); // sample length
         self.sync();
-        self.adc.inputctrl().modify(|_, w| {
-            w.muxneg().gnd();
-            w.gain().variant(Gainselect::Div2)
-        }); // No negative input (internal gnd)
+        self.adc
+            .inputctrl()
+            .modify(|_, w| w.gain().variant(Gainselect::Div2));
         self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
@@ -99,6 +102,8 @@ impl<I: AdcInstance> Adc<I> {
         });
         self.sync();
         self.set_reference(cfg.vref);
+        self.sync();
+        self.adc.refctrl().modify(|_, w| w.refcomp().bit(cfg.reference_compensation));
         self.sync();
         self.adc.ctrla().modify(|_, w| w.enable().set_bit());
         self.sync();
@@ -196,14 +201,60 @@ impl<I: AdcInstance> Adc<I> {
     }
 
     #[inline]
-    pub(super) fn mux(&mut self, ch: u8) {
+    pub(super) fn mux(
+        &mut self,
+        pos_ch: pac::adc::inputctrl::Muxposselect,
+        neg_ch: pac::adc::inputctrl::Muxnegselect,
+    ) {
         self.adc.inputctrl().modify(|r, w| {
-            if r.muxpos().bits() != ch {
+            if (r.muxpos().bits() != pos_ch.into()) || (r.muxneg().bits() != neg_ch.into()) {
                 self.discard = true;
             }
-            unsafe { w.muxpos().bits(ch) }
+
+            // Safe as pos_ch and neg_ch are derived from Muxposselect and Muxnegselect PAC enums
+            unsafe {
+                w.muxpos().bits(pos_ch.into());
+                w.muxpos().bits(neg_ch.into())
+            }
         });
         self.sync()
+    }
+
+
+    /// Sets the sample mode and various ADC settings based on sample mode & the user supplied
+    /// [`AdcSettings`].
+    ///
+    /// ## Important
+    /// * (For D11) The ADC is automatically powered down before modifying the the enable-protected
+    ///   CTRLB.DIFFMODE and CTRLB.LEFTADJ bits, then turned back on.
+    #[inline]
+    #[hal_macro_helper]
+    pub(super) fn set_sample_mode(&mut self, sample_mode: SampleMode) {
+        // Disable the ADC if chip is SAMD11 family
+        // SAMD11 datasheet section 31.8.5 states that the ADC must be disabled to modify
+        // the DIFFMODE and LEFTADJ bits.
+        #[hal_cfg("adc-d11")]
+        self.power_down();
+
+        self.adc.ctrlb().modify(|_, w| {
+            match sample_mode {
+                SampleMode::SingleEnded => w.diffmode().clear_bit(),
+                SampleMode::Differential => w.diffmode().set_bit(),
+            };
+
+            if self.cfg.auto_left_adjust {
+                match sample_mode {
+                    SampleMode::SingleEnded => w.leftadj().clear_bit(),
+                    SampleMode::Differential => w.leftadj().set_bit(),
+                };
+            }
+            w
+        });
+        self.sync();
+
+        // Re-enable the ADC if chip is SAMD11 family
+        #[hal_cfg("adc-d11")]
+        self.power_up();
     }
 
     #[inline]
@@ -252,7 +303,11 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
             // Settings
             adc.adc.inputctrl().modify(|_, w| w.gain()._1x());
             adc.discard = true;
-            let res = adc.read_channel(0x18);
+            let res = adc.read_channel(
+                TEMP::get_channel(),
+                GND::get_channel(),
+                SampleMode::SingleEnded
+            );
             // Set gain back to normal
             adc.adc.inputctrl().modify(|_, w| w.gain().div2());
             adc.discard = true;
@@ -265,11 +320,11 @@ impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     }
 
     #[inline]
-    pub fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
+    pub fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: C) -> u16 {
         let voltage = self.with_specific_settings(ADC_SETTINGS_INTERNAL_READ, |adc| {
-            let res = adc.read_channel(src as u8);
+            let res = adc.read_channel(src, GND::get_channel(), SampleMode::SingleEnded);
             let mut res_f = adc.reading_to_f32(res) * 3.3;
-            if CpuVoltageSource::Bandgap != src {
+            if C::MUXVAL != Muxposselect::Bandgap {
                 res_f *= 4.0;
             }
             res_f
@@ -293,7 +348,11 @@ where
         self.inner.adc.inputctrl().modify(|_, w| w.gain()._1x());
         self.inner.discard = true;
 
-        let res = self.read_channel(0x18).await;
+        let res = self.read_channel(
+            TEMP::get_channel(),
+            GND::get_channel(),
+            SampleMode::SingleEnded
+        ).await;
 
         self.inner.adc.inputctrl().modify(|_, w| w.gain().div2());
         self.inner.configure(old_adc_settings);
@@ -305,13 +364,13 @@ where
     }
 
     /// Reads a CPU voltage source. Value returned is in millivolts (mV)
-    pub async fn read_cpu_voltage(&mut self, src: CpuVoltageSource) -> u16 {
+    pub async fn read_cpu_voltage<C: CpuVoltageSource<I>>(&mut self, src: C) -> u16 {
         let old_adc_settings = self.inner.cfg;
         self.inner.configure(ADC_SETTINGS_INTERNAL_READ);
 
-        let res = self.read_channel(src as u8).await;
+        let res = self.read_channel(src, GND::get_channel(), SampleMode::SingleEnded).await;
         let mut voltage = self.inner.reading_to_f32(res) * 3.3;
-        if CpuVoltageSource::Bandgap != src {
+        if C::MUXVAL != Muxposselect::Bandgap {
             voltage *= 4.0;
         }
 
