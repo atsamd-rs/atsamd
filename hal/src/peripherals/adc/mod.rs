@@ -352,7 +352,7 @@ impl<I: AdcInstance> Adc<I> {
     // If the ADC has to discard the next value, then we try to read it
     // and then discard it
     #[inline]
-    pub fn check_read_discard(&mut self) {
+    fn check_read_discard(&mut self) {
         if self.discard {
             self.start_conversion();
             while !self.read_flags().contains(Flags::RESRDY) {
