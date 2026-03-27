@@ -48,7 +48,10 @@ pub use builder::*;
 #[hal_cfg(any("adc-d11", "adc-d21"))]
 use crate::pac::adc as adc0;
 #[hal_cfg("adc-d5x")]
-use crate::pac::adc0;
+use crate::{
+    clock::v2::{apb::ApbClk, pclk::DynPclk},
+    pac::adc0,
+};
 
 pub use adc0::refctrl::Refselselect as Reference;
 
@@ -174,7 +177,8 @@ pub struct Adc<I: AdcInstance> {
 #[hal_cfg("adc-d5x")]
 pub struct Adc<I: AdcInstance> {
     adc: I::Instance,
-    _apbclk: crate::clock::v2::apb::ApbClk<I::ClockId>,
+    _apbclk: ApbClk<I::ClockId>,
+    _pclk: DynPclk<I::ClockId>,
     cfg: AdcSettings,
     discard: bool,
 }
@@ -203,11 +207,11 @@ impl<I: AdcInstance> Adc<I> {
     /// frequency for the ADC is restricted to 90Mhz for stable performance.
     #[hal_cfg("adc-d5x")]
     #[inline]
-    pub(crate) fn new<PS: crate::clock::v2::pclk::PclkSourceId>(
+    pub(crate) fn new(
         adc: I::Instance,
         settings: AdcSettings,
-        clk: crate::clock::v2::apb::ApbClk<I::ClockId>,
-        pclk: &crate::clock::v2::pclk::Pclk<I::ClockId, PS>,
+        clk: ApbClk<I::ClockId>,
+        pclk: DynPclk<I::ClockId>,
     ) -> Result<Self, Error> {
         // TODO: Ideally, the ADC struct would take ownership of the Pclk type here.
         // However, since clock::v2 is not implemented for all chips yet, the
@@ -226,6 +230,7 @@ impl<I: AdcInstance> Adc<I> {
         let mut new_adc = Self {
             adc,
             _apbclk: clk,
+            _pclk: pclk,
             cfg: settings,
             discard: true,
         };
@@ -416,9 +421,9 @@ impl<I: AdcInstance> Adc<I> {
     /// Return the underlying ADC PAC object and the enabled APB ADC clock.
     #[hal_cfg("adc-d5x")]
     #[inline]
-    pub fn free(mut self) -> (I::Instance, crate::clock::v2::apb::ApbClk<I::ClockId>) {
+    pub fn free(mut self) -> (I::Instance, ApbClk<I::ClockId>, DynPclk<I::ClockId>) {
         self.software_reset();
-        (self.adc, self._apbclk)
+        (self.adc, self._apbclk, self._pclk)
     }
 
     /// Reset the peripheral.
