@@ -210,7 +210,7 @@ where
                         &mut sercom_ptr,
                         &mut sink,
                         // Add a null descriptor pointer to end the transfer.
-                        core::ptr::null_mut(),
+                        None,
                     );
                 }
 
@@ -228,7 +228,7 @@ where
                         &mut source,
                         &mut sercom_ptr,
                         // Add a null descriptor pointer to end the transfer.
-                        core::ptr::null_mut(),
+                        None,
                     );
                 }
 

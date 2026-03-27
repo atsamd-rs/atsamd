@@ -18,10 +18,9 @@ use paste::paste;
 
 use crate::pac::{
     self, Dmac, Peripherals,
-    dmac::{Busych, Intstatus, Pendch, Swtrigctrl},
     dmac::{
-        busych::BusychSpec, intstatus::IntstatusSpec, pendch::PendchSpec,
-        swtrigctrl::SwtrigctrlSpec,
+        Busych, Intstatus, Pendch, Swtrigctrl, busych::BusychSpec, intstatus::IntstatusSpec,
+        pendch::PendchSpec, swtrigctrl::SwtrigctrlSpec,
     },
 };
 
@@ -324,9 +323,6 @@ impl<Id: ChId> Drop for RegisterBlock<Id> {
             core::hint::spin_loop();
         }
 
-        // Prevent the compiler from re-ordering read/write
-        // operations beyond this fence.
-        // (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
-        core::sync::atomic::fence(core::sync::atomic::Ordering::Acquire); // ▼
+        crate::dmac::channel::asm_fence(); // ▼
     }
 }
