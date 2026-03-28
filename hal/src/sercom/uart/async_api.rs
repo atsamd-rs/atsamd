@@ -218,7 +218,12 @@ where
     /// Use a DMA channel for receiving words on the RX line
     #[cfg(feature = "dma")]
     #[inline]
-    pub fn with_rx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
+    pub fn with_rx_dma_channel<
+        Chan: crate::dmac::AnyChannel<
+                Status = crate::dmac::ReadyFuture,
+                Interrupts = crate::dmac::Blocked,
+            >,
+    >(
         self,
         rx_channel: Chan,
     ) -> UartFuture<C, D, Chan, T> {
@@ -291,7 +296,12 @@ where
     /// Use a DMA channel for sending words on the TX line
     #[cfg(feature = "dma")]
     #[inline]
-    pub fn with_tx_dma_channel<Chan: crate::dmac::AnyChannel<Status = crate::dmac::ReadyFuture>>(
+    pub fn with_tx_dma_channel<
+        Chan: crate::dmac::AnyChannel<
+                Status = crate::dmac::ReadyFuture,
+                Interrupts = crate::dmac::Blocked,
+            >,
+    >(
         self,
         tx_channel: Chan,
     ) -> UartFuture<C, D, R, Chan> {
@@ -368,7 +378,7 @@ where
 mod dma {
     use super::*;
     use crate::{
-        dmac::{AnyChannel, Beat, Channel, ReadyFuture},
+        dmac::{AnyChannel, Beat, Blocked, Channel, ReadyFuture},
         sercom::dma::{
             SharedSliceBuffer,
             async_dma::{read_dma, write_dma},
@@ -381,35 +391,37 @@ mod dma {
     /// The type parameter `R` represents the RX DMA channel ID (`ChX`), and
     /// `T` represents the TX DMA channel ID.
     pub type UartFutureDuplexDma<C, R, T> =
-        UartFuture<C, Duplex, Channel<R, ReadyFuture>, Channel<T, ReadyFuture>>;
+        UartFuture<C, Duplex, Channel<R, ReadyFuture, Blocked>, Channel<T, ReadyFuture, Blocked>>;
 
     /// Convenience type for a RX-only [`UartFuture`] in DMA mode.
     ///
     /// The type parameter `R` represents the RX DMA channel ID (`ChX`).
-    pub type UartFutureRxDma<C, R> = UartFuture<C, Rx, Channel<R, ReadyFuture>, NoneT>;
+    pub type UartFutureRxDma<C, R> = UartFuture<C, Rx, Channel<R, ReadyFuture, Blocked>, NoneT>;
 
     /// Convenience type for the RX half of a [`Duplex`] [`UartFuture`] in DMA
     /// mode.
     ///
     /// The type parameter `R` represents the RX DMA channel ID (`ChX`).
-    pub type UartFutureRxDuplexDma<C, R> = UartFuture<C, RxDuplex, Channel<R, ReadyFuture>, NoneT>;
+    pub type UartFutureRxDuplexDma<C, R> =
+        UartFuture<C, RxDuplex, Channel<R, ReadyFuture, Blocked>, NoneT>;
 
     /// Convenience type for a TX-only [`UartFuture`] in DMA mode.
     ///
     /// The type parameter `T` represents the TX DMA channel ID (`ChX`).
-    pub type UartFutureTxDma<C, T> = UartFuture<C, Tx, NoneT, Channel<T, ReadyFuture>>;
+    pub type UartFutureTxDma<C, T> = UartFuture<C, Tx, NoneT, Channel<T, ReadyFuture, Blocked>>;
 
     /// Convenience type for the TX half of a [`Duplex`] [`UartFuture`] in DMA
     /// mode.
     ///
     /// The type parameter `T` represents the TX DMA channel ID (`ChX`).
-    pub type UartFutureTxDuplexDma<C, T> = UartFuture<C, TxDuplex, NoneT, Channel<T, ReadyFuture>>;
+    pub type UartFutureTxDuplexDma<C, T> =
+        UartFuture<C, TxDuplex, NoneT, Channel<T, ReadyFuture, Blocked>>;
 
     impl<C, D, R, T> UartFuture<C, D, R, T>
     where
         C: ValidConfig,
         D: Capability,
-        R: AnyChannel<Status = ReadyFuture>,
+        R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         /// Reclaim the RX DMA channel. Subsequent RX operations will no longer
         /// use DMA.
@@ -423,7 +435,7 @@ mod dma {
     where
         C: ValidConfig,
         D: Capability,
-        T: AnyChannel<Status = ReadyFuture>,
+        T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         /// Reclaim the TX DMA channel. Subsequent TX operations will no longer
         /// use DMA.
@@ -440,7 +452,7 @@ mod dma {
         D: Receive,
         S: Sercom + 'static,
         DataReg: AsPrimitive<C::Word>,
-        R: AnyChannel<Status = ReadyFuture>,
+        R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         /// Read the specified number of [`Word`](crate::sercom::uart::Word)s
         /// into a buffer using DMA.
@@ -461,7 +473,7 @@ mod dma {
         D: Receive,
         S: Sercom + 'static,
         DataReg: AsPrimitive<C::Word>,
-        R: AnyChannel<Status = ReadyFuture>,
+        R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         #[inline]
         async fn read(&mut self, words: &mut [u8]) -> Result<usize, Error> {
@@ -476,7 +488,7 @@ mod dma {
         C::Word: Beat,
         D: Transmit,
         S: Sercom + 'static,
-        T: AnyChannel<Status = ReadyFuture>,
+        T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         /// Write words from a buffer asynchronously, using DMA.
         #[inline]
@@ -497,7 +509,7 @@ mod dma {
         C: ValidConfig<Sercom = S, Word = u8>,
         D: Transmit,
         S: Sercom + 'static,
-        T: AnyChannel<Status = ReadyFuture>,
+        T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         #[inline]
         async fn write(&mut self, words: &[u8]) -> Result<usize, Error> {
