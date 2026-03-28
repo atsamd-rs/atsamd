@@ -12,8 +12,8 @@ use panic_semihosting as _;
 use metro_m4 as bsp;
 
 use bsp::hal;
-use bsp::pac;
 use bsp::{entry, periph_alias};
+use bsp::{pac, Scl, Sda};
 
 use cortex_m::asm;
 use pac::Peripherals;
@@ -44,7 +44,7 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.port);
 
     // Take SDA and SCL
-    let (sda, scl) = (pins.sda, pins.scl);
+    let (sda, scl): (Sda, Scl) = (pins.sda.into(), pins.scl.into());
 
     // Setup DMA channels for later use
     let mut dmac = DmaController::init(dmac, &mut peripherals.pm);
