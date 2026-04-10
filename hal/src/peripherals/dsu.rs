@@ -217,7 +217,7 @@ impl Dsu {
 
         #[hal_cfg("dsu-d21")]
         {
-            // Errita for D21 silicon versions A-D
+            // Errata for D21 silicon versions A-D
             if address > 0x20000000 {
                 // Address is in RAM
                 unsafe {
@@ -239,7 +239,7 @@ impl Dsu {
 
         #[hal_cfg("dsu-d21")]
         {
-            // Errita for D21 silicon versions A-D
+            // Errata for D21 silicon versions A-D
             if address > 0x20000000 {
                 // Address is in RAM
                 unsafe {
