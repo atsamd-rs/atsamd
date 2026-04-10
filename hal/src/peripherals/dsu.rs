@@ -8,6 +8,7 @@
 #![warn(missing_docs)]
 #![allow(clippy::doc_lazy_continuation)]
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+use core::convert::Infallible;
 
 #[hal_cfg("dsu-d5x")]
 use crate::pac::{self, Pac};
@@ -260,13 +261,10 @@ impl Dsu {
         }
     }
 
-    /// Performs a memory test on a section of RAM using "March LR"
-    /// algorithm, blocking until the test is completed.
+    /// Begins a DSU Memory test on a section of memory, returning
+    /// a handle that can be polled for the result of the test.
     ///
-    /// **CAUTION** This can overwrite critical data in RAM, use
-    /// with caution
-    ///
-    /// ## Algorithm:
+    /// ## Algorithm (Implemented by the DSU peripheral):
     /// 1. Write entire memory to '0', in any order.
     /// 2. Bit by bit read '0', write '1', in descending order.
     /// 3. Bit by bit read '1', write '0', read '0', write '1', in ascending
@@ -281,63 +279,22 @@ impl Dsu {
     ///   word-aligned
     /// - `length` is a length of memory region that is being tested. Must be
     ///   word-aligned
-    pub unsafe fn memory_test(&mut self, address: u32, length: u32) -> Result<()> {
-        self.setup_mem_addr_regs(address, length)?;
-
-        self.clear_status_a();
-
-        // Initialize RAM Test
-        self.dsu.ctrl().write(|w| w.mbist().set_bit());
-
-        // Wait until done
-        while !self.is_done() {
-            core::hint::spin_loop();
-        }
-        if self.has_failed() {
-            let addr = self.dsu.addr().read().addr().bits();
-            let data = self.dsu.data().read().data().bits();
-            let bit = (data & 0b11111) as u8;
-            let phase = ((data >> 8) & 0b111) as u8;
-            Err(Error::RamTestFailed { addr, phase, bit })
-        } else if self.bus_error() {
-            Err(Error::Peripheral(PeripheralError::BusError))
-        } else if self.protection_error() {
-            Err(Error::Peripheral(PeripheralError::ProtectionError))
-        } else {
-            Ok(())
-        }
-    }
-
-    /// Begins a DSU Memory test on a section of memory, returning
-    /// a handle that can be polled for the result of the test.
     ///
-    /// **CAUTION** This can overwrite critical data in RAM, use
-    /// with caution
-    ///
-    /// This is useful for background memory check tasks when the
-    /// CPU is at idle, as the test can be aborted immediately
-    /// using the handle once the CPU receives an incomming
-    /// interrupt.
-    ///
-    /// This should always be ran inside a critical-section
-    /// to avoid the CPU context-switching mid memory test.
-    ///
-    /// (See [Self::memory_test] for how the algorithm works)
-    ///
-    /// - `address` is an address within the CPUs RAM space; must be
-    ///   word-aligned
-    /// - `length` is a length of memory region that is being tested. Must be
-    ///   word-aligned
-    pub unsafe fn polling_memory_test(
+    /// # Safety
+    /// This function can overwrite critical data in RAM, it is up to the caller
+    /// to ensure that the RAM being tested is not in use by the application.
+    /// It is recommended to run this in a critical section so that an
+    /// interrupt cannot potentially access currently tested memory.
+    pub unsafe fn memory_test(
         &mut self,
         address: u32,
         length: u32,
-    ) -> Result<PollingMemoryTest<'_>> {
+    ) -> Result<MemoryTestHandle<'_>> {
         self.setup_mem_addr_regs(address, length)?;
         self.clear_status_a();
         // Initialize RAM Test
         self.dsu.ctrl().write(|w| w.mbist().set_bit());
-        Ok(PollingMemoryTest { dsu: self })
+        Ok(MemoryTestHandle { dsu: self })
     }
 }
 
@@ -404,11 +361,11 @@ impl Dsu {
 ///     }
 /// }
 /// ```
-pub struct PollingMemoryTest<'a> {
+pub struct MemoryTestHandle<'a> {
     dsu: &'a mut Dsu,
 }
 
-/// Tri-state result for [PollingMemoryTest]
+/// Tri-state result for [MemoryTestHandle]
 pub enum MemoryTestResult {
     /// Memory test OK
     Ok,
@@ -418,10 +375,17 @@ pub enum MemoryTestResult {
     Error(Error),
 }
 
-impl<'a> PollingMemoryTest<'a> {
-    /// Attempts to get the result of a memory test currently running,
-    /// If the memory test is not yet completed when called,
-    /// it is aborted, and the returned result will show this.
+impl<'a> MemoryTestHandle<'a> {
+    /// Gets the result of the completed memory test if it is completed,
+    /// or forces the memory test to abort right now.
+    ///
+    /// If the memory test is still in progress when called,
+    /// then it is aborted immediately, and will return [MemoryTestResult::Aborted].
+    /// This functionality is used when the RAM being tested must be released
+    /// by the memory test and given back to the application.
+    ///
+    /// If the memory test had finished before this is called, then
+    /// it will either return [MemoryTestResult::Ok], or [MemoryTestResult::Error]
     pub fn finish_now(self) -> MemoryTestResult {
         if self.dsu.is_done() {
             if self.dsu.has_failed() {
@@ -443,13 +407,16 @@ impl<'a> PollingMemoryTest<'a> {
         }
     }
 
-    /// Polls to see if the memory test is completed, without
-    /// aborting it.
+    /// Polls to see if the memory test is completed using nb's API
     ///
-    /// Use [Self::finish_now] to obtain the result of the
-    /// memory test
+    /// Use [Self::finish_now] to actually obtain the result of the
+    /// test once completed
     #[inline]
-    pub fn is_completed(&self) -> bool {
-        self.dsu.is_done()
+    pub fn is_completed(&self) -> nb::Result<(), Infallible> {
+        if self.dsu.is_done() {
+            Ok(())
+        } else {
+            Err(nb::Error::WouldBlock)
+        }
     }
 }
