@@ -56,11 +56,7 @@ struct EPConfig {
 }
 
 impl EPConfig {
-    fn new(
-        ep_type: EndpointType,
-        max_packet_size: u16,
-        buffer_addr: *mut u8,
-    ) -> Self {
+    fn new(ep_type: EndpointType, max_packet_size: u16, buffer_addr: *mut u8) -> Self {
         Self {
             ep_type: ep_type.into(),
             max_packet_size,
@@ -361,7 +357,7 @@ impl Bank<'_, OutBank> {
             desc.get_address()
                 .copy_to_nonoverlapping(buf.as_mut_ptr(), size);
         }
-        
+
         desc.set_byte_count(0);
         desc.set_multi_packet_size(mp_size);
 
@@ -674,14 +670,8 @@ impl Inner {
             Some(addr) => addr.index(),
         };
 
-        let addr = endpoints.allocate_endpoint(
-            dir,
-            idx,
-            ep_type,
-            max_packet_size,
-            interval,
-            buffer,
-        )?;
+        let addr =
+            endpoints.allocate_endpoint(dir, idx, ep_type, max_packet_size, interval, buffer)?;
 
         Ok(addr)
     }
@@ -880,21 +870,21 @@ impl UsbBus {
     /// |`usb-buffer-4k`|256|4|
     /// |`usb-buffer-8k`|512|8|
     /// |`usb-buffer-16k`|1024|16|
-    /// 
+    ///
     /// **NOTE**: Above table assumes a 64 byte packet size (USB FS Standard)
-    /// 
+    ///
     /// ## Requirements
     /// 1. `size` is less than the allocated buffer of the endpoint.
     /// 2. `size` is a multiple of the endpoints packet size.
     /// 3.  The provided `ep` is an OUT endpoint.
-    /// 
+    ///
     /// ## Notes
     /// * For IN endpoints, multi-packet transfer is automatically handled without
-    /// any user input.
+    ///     any user input.
     /// * If less than `size` bytes are received by the endpoint, then it will NOT
-    /// fire an interrupt.
+    ///     fire an interrupt.
     /// * ZLP packets still result in an interrupt being fired, regardless
-    /// of the endpoints received data length
+    ///     of the endpoints received data length
     pub fn configure_out_endpoint_multipacket_rx(
         &self,
         ep: EndpointAddress,

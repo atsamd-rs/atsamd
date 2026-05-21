@@ -8,7 +8,7 @@
 use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
-use crate::gpio::{AlternateG, AnyPin, Pin, PA24, PA25};
+use crate::gpio::{AlternateG, AnyPin, PA24, PA25, Pin};
 use crate::pac::usb::Device;
 use crate::pac::{Pm, Usb};
 use crate::usb::buffer::*;
@@ -853,11 +853,11 @@ impl UsbBus {
     ///
     /// ## Notes
     /// * For IN endpoints, multi-packet transfer is automatically handled without
-    /// any user input.
+    ///     any user input.
     /// * If less than `size` bytes are received by the endpoint, then it will NOT
-    /// fire an interrupt.
+    ///     fire an interrupt.
     /// * ZLP packets still result in an interrupt being fired, regardless
-    /// of the endpoints received data length
+    ///     of the endpoints received data length
     pub fn configure_out_endpoint_multipacket_rx(
         &self,
         ep: EndpointAddress,
