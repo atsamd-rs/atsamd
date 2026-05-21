@@ -853,11 +853,11 @@ impl UsbBus {
     ///
     /// ## Notes
     /// * For IN endpoints, multi-packet transfer is automatically handled without
-    ///     any user input.
+    ///   any user input.
     /// * If less than `size` bytes are received by the endpoint, then it will NOT
-    ///     fire an interrupt.
+    ///   fire an interrupt.
     /// * ZLP packets still result in an interrupt being fired, regardless
-    ///     of the endpoints received data length
+    ///   of the endpoints received data length
     pub fn configure_out_endpoint_multipacket_rx(
         &self,
         ep: EndpointAddress,
