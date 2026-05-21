@@ -8,7 +8,7 @@
 use super::Descriptors;
 use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
-use crate::gpio::{AlternateH, AnyPin, Pin, PA24, PA25};
+use crate::gpio::{AlternateH, AnyPin, PA24, PA25, Pin};
 use crate::pac;
 use crate::pac::usb::Device;
 use crate::pac::{Mclk, Usb};
@@ -51,6 +51,7 @@ impl From<EndpointType> for EndpointTypeBits {
 struct EPConfig {
     ep_type: EndpointTypeBits,
     max_packet_size: u16,
+    multi_packet_size: u16,
     addr: usize,
 }
 
@@ -63,6 +64,7 @@ impl EPConfig {
         Self {
             ep_type: ep_type.into(),
             max_packet_size,
+            multi_packet_size: 0,
             addr: buffer_addr as usize,
         }
     }
@@ -333,7 +335,7 @@ impl Bank<'_, OutBank> {
             let desc = self.desc_bank();
             desc.set_address(config.addr as *mut u8);
             desc.set_endpoint_size(config.max_packet_size);
-            desc.set_multi_packet_size(0);
+            desc.set_multi_packet_size(config.multi_packet_size);
             desc.set_byte_count(0);
         }
     }
@@ -348,6 +350,7 @@ impl Bank<'_, OutBank> {
     /// must call set_ready to indicate the buffer is free for the next
     /// transfer.
     pub fn read(&mut self, buf: &mut [u8]) -> UsbResult<usize> {
+        let mp_size = self.config().multi_packet_size;
         let desc = self.desc_bank();
         let size = desc.get_byte_count() as usize;
 
@@ -358,9 +361,9 @@ impl Bank<'_, OutBank> {
             desc.get_address()
                 .copy_to_nonoverlapping(buf.as_mut_ptr(), size);
         }
-
+        
         desc.set_byte_count(0);
-        desc.set_multi_packet_size(0);
+        desc.set_multi_packet_size(mp_size);
 
         Ok(size)
     }
@@ -697,6 +700,26 @@ impl Inner {
         false
     }
 
+    /// Configure the multi-packet reception of an OUT endpoint
+    fn set_out_ep_multi_packet_size(
+        &mut self,
+        ep: EndpointAddress,
+        size: u16,
+    ) -> Result<(), UsbError> {
+        {
+            let config = &mut self.endpoints.borrow_mut().endpoints[ep.index()].bank0;
+            if size > ALLOC_SIZE_MAX_PER_EP as u16 {
+                return Err(UsbError::EndpointMemoryOverflow);
+            } else if size % config.max_packet_size != 0 {
+                return Err(UsbError::Unsupported);
+            } else {
+                config.multi_packet_size = size;
+            }
+        }
+        self.bank0(ep)?.flush_config();
+        Ok(())
+    }
+
     fn poll(&self) -> PollResult {
         let intflags = self.usb().intflag().read();
         if intflags.eorst().bit() {
@@ -837,6 +860,52 @@ impl UsbBus {
     /// Checks, and clears if set, the Start Of Frame (SOF) interrupt flag
     pub fn check_sof_interrupt(&self) -> bool {
         disable_interrupts(|cs| self.inner.borrow(cs).borrow_mut().check_sof_interrupt())
+    }
+
+    /// Configures the Multi-Packet-Rx feature of the USB peripheral.
+    ///
+    /// This allows for the USB Peripheral to ACK multiple incomming packets in hardware, and then
+    /// only fire an interrupt once the buffer is full. This will reduce the number of USB interrupts,
+    /// especially when dealing with BULK endpoints.
+    ///
+    /// The default behaviour of the endpoint is to trigger an interrupt as soon as any amount of
+    /// data is received (`size = 0`).
+    ///
+    /// The Buffer size can be configured using the HAL's feature flags:
+    ///
+    /// |Feature flag|Endpoint buffer size|Max number of hardware ACK packets|
+    /// |:-:|:-:|:-:|
+    /// |`usb-buffer-1k`|64|1|
+    /// |`usb-buffer-2k`|128|2|
+    /// |`usb-buffer-4k`|256|4|
+    /// |`usb-buffer-8k`|512|8|
+    /// |`usb-buffer-16k`|1024|16|
+    /// 
+    /// **NOTE**: Above table assumes a 64 byte packet size (USB FS Standard)
+    /// 
+    /// ## Requirements
+    /// 1. `size` is less than the allocated buffer of the endpoint.
+    /// 2. `size` is a multiple of the endpoints packet size.
+    /// 3.  The provided `ep` is an OUT endpoint.
+    /// 
+    /// ## Notes
+    /// * For IN endpoints, multi-packet transfer is automatically handled without
+    /// any user input.
+    /// * If less than `size` bytes are received by the endpoint, then it will NOT
+    /// fire an interrupt.
+    /// * ZLP packets still result in an interrupt being fired, regardless
+    /// of the endpoints received data length
+    pub fn configure_out_endpoint_multipacket_rx(
+        &self,
+        ep: EndpointAddress,
+        size: u16,
+    ) -> Result<(), UsbError> {
+        disable_interrupts(|cs| {
+            self.inner
+                .borrow(cs)
+                .borrow_mut()
+                .set_out_ep_multi_packet_size(ep, size)
+        })
     }
 }
 
