@@ -50,7 +50,6 @@ impl From<EndpointType> for EndpointTypeBits {
 #[derive(Default, Clone, Copy)]
 struct EPConfig {
     ep_type: EndpointTypeBits,
-    allocated_size: u16,
     max_packet_size: u16,
     addr: usize,
 }
@@ -58,13 +57,11 @@ struct EPConfig {
 impl EPConfig {
     fn new(
         ep_type: EndpointType,
-        allocated_size: u16,
         max_packet_size: u16,
         buffer_addr: *mut u8,
     ) -> Self {
         Self {
             ep_type: ep_type.into(),
-            allocated_size,
             max_packet_size,
             addr: buffer_addr as usize,
         }
@@ -126,7 +123,6 @@ impl AllEndpoints {
         dir: UsbDirection,
         idx: usize,
         ep_type: EndpointType,
-        allocated_size: u16,
         max_packet_size: u16,
         _interval: u8,
         buffer_addr: *mut u8,
@@ -139,7 +135,7 @@ impl AllEndpoints {
             return Err(UsbError::EndpointOverflow);
         }
 
-        *bank = EPConfig::new(ep_type, allocated_size, max_packet_size, buffer_addr);
+        *bank = EPConfig::new(ep_type, max_packet_size, buffer_addr);
 
         Ok(EndpointAddress::from_parts(idx, dir))
     }
@@ -253,7 +249,7 @@ impl Bank<'_, InBank> {
     /// bank1 buffer. The caller must call set_ready() to finalize the
     /// transfer.
     pub fn write(&mut self, buf: &[u8]) -> UsbResult<usize> {
-        let size = buf.len().min(self.config().allocated_size as usize);
+        let size = buf.len().min(ALLOC_SIZE_MAX_PER_EP);
         let desc = self.desc_bank();
 
         unsafe {
@@ -661,23 +657,8 @@ impl Inner {
         max_packet_size: u16,
         interval: u8,
     ) -> UsbResult<EndpointAddress> {
-        // The USB hardware encodes the maximum packet size in 3 bits, so
-        // reserve enough buffer that the hardware won't overwrite it even if
-        // the other side issues an overly-long transfer.
-        let allocated_size = match max_packet_size {
-            1..=8 => 8,
-            9..=16 => 16,
-            17..=32 => 32,
-            33..=64 => 64,
-            65..=128 => 128,
-            129..=256 => 256,
-            257..=512 => 512,
-            513..=1023 => 1024,
-            _ => return Err(UsbError::Unsupported),
-        };
-
         // packet size is too big to fit into an endpoint buffer
-        if allocated_size > ALLOC_SIZE_MAX_PER_EP as u16 {
+        if max_packet_size > ALLOC_SIZE_MAX_PER_EP as u16 {
             return Err(UsbError::EndpointMemoryOverflow);
         }
 
@@ -694,7 +675,6 @@ impl Inner {
             dir,
             idx,
             ep_type,
-            allocated_size,
             max_packet_size,
             interval,
             buffer,
