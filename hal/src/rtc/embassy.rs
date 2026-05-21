@@ -33,11 +33,21 @@ impl EmbassyBackend {
         // Embassy uses u64::MAX as a "no upcoming interrupt" sentinel
         let at = match u32::try_from(at) {
             Ok(at) => at,
-            _ if at == u64::MAX => u32::MAX,
+            _ if at == u64::MAX => return true,
             Err(_) => return false,
         };
 
+        if RtcMode0::count(rtc) >= at {
+            // This is in the past
+            return false
+        }
+
         RtcMode0::set_compare(rtc, 0, at);
+        // double check that the timestamp is still in the future
+        if RtcMode0::count(rtc) >= at {
+            // This is in the past
+            return false
+        }
         true
     }
 
@@ -46,8 +56,12 @@ impl EmbassyBackend {
             // Due to synchronization delay, the RTC may be slightly behind
             // Assume the current time is the time the interrupt is set for
             let now = RtcMode0::get_compare(rtc, 0) as u64;
-            let next = self.queue.borrow_ref_mut(cs).next_expiration(now);
-            self.set_alarm(&cs, next, rtc);
+            loop {
+                let next = self.queue.borrow_ref_mut(cs).next_expiration(now);
+                if self.set_alarm(&cs, next, rtc) {
+                    break
+                }
+            }
             RtcMode0::clear_interrupt_flag::<Compare0>(rtc);
         }
     }
@@ -89,9 +103,12 @@ impl Driver for EmbassyBackend {
             let rtc = unsafe { Rtc::steal() };
             let mut queue = self.queue.borrow(cs).borrow_mut();
             if queue.schedule_wake(at, waker) {
-                let next = queue.next_expiration(self.now());
-                // We can only handle one alarm at a time right now
-                self.set_alarm(&cs, next, &rtc);
+                loop {
+                    let next = self.queue.borrow_ref_mut(cs).next_expiration(self.now());
+
+                    // We can only handle one alarm at a time right now
+                    self.set_alarm(&cs, next, &rtc);
+                }
             }
         });
     }
