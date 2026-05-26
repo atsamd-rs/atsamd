@@ -45,8 +45,8 @@ embassy-time = "0.4"
 critical-section = "1.2.0"
 
 [dev-dependencies.embassy-executor]
-version = "0.7"
-features = ["arch-cortex-m", "executor-thread", "task-arena-size-256"]
+version = "0.10"
+features = ["platform-cortex-m", "executor-thread", "embassy-time-driver"]
 
 [dev-dependencies.cortex-m]
 features = ["critical-section-single-core"]
