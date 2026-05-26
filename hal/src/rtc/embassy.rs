@@ -39,14 +39,14 @@ impl EmbassyBackend {
 
         if RtcMode0::count(rtc) >= at {
             // This is in the past
-            return false
+            return false;
         }
 
         RtcMode0::set_compare(rtc, 0, at);
         // double check that the timestamp is still in the future
         if RtcMode0::count(rtc) >= at {
             // This is in the past
-            return false
+            return false;
         }
         true
     }
@@ -59,7 +59,7 @@ impl EmbassyBackend {
             loop {
                 let next = self.queue.borrow_ref_mut(cs).next_expiration(now);
                 if self.set_alarm(&cs, next, rtc) {
-                    break
+                    break;
                 }
             }
             RtcMode0::clear_interrupt_flag::<Compare0>(rtc);
