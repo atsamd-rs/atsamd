@@ -11,14 +11,15 @@ use crate::rtc::modes::{
     mode0::{Compare0, RtcMode0},
 };
 use atsamd_hal_macros::hal_cfg;
-use critical_section::{CriticalSection, Mutex};
+use critical_section::CriticalSection;
+use embassy_sync::blocking_mutex::{Mutex, raw::CriticalSectionRawMutex};
 use embassy_time_driver::Driver;
 use embassy_time_queue_utils::Queue;
 
 /// Used internally by the embassy time driver.
 /// You shouldn't need this
 pub struct EmbassyBackend {
-    queue: Mutex<RefCell<Queue>>,
+    queue: Mutex<CriticalSectionRawMutex, RefCell<Queue>>,
 }
 
 impl EmbassyBackend {
@@ -57,7 +58,7 @@ impl EmbassyBackend {
             // Assume the current time is the time the interrupt is set for
             let now = RtcMode0::get_compare(rtc, 0) as u64;
             loop {
-                let next = self.queue.borrow_ref_mut(cs).next_expiration(now);
+                let next = self.queue.borrow(cs).borrow_mut().next_expiration(now);
                 if self.set_alarm(&cs, next, rtc) {
                     break;
                 }
@@ -104,7 +105,11 @@ impl Driver for EmbassyBackend {
             let mut queue = self.queue.borrow(cs).borrow_mut();
             if queue.schedule_wake(at, waker) {
                 loop {
-                    let next = self.queue.borrow_ref_mut(cs).next_expiration(self.now());
+                    let next = self
+                        .queue
+                        .borrow(cs)
+                        .borrow_mut()
+                        .next_expiration(self.now());
 
                     // We can only handle one alarm at a time right now
                     self.set_alarm(&cs, next, &rtc);
