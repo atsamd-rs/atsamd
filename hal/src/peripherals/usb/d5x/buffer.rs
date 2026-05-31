@@ -16,10 +16,15 @@ pub const BUFFER_SIZE: usize = {
     {
         8192
     }
+    #[cfg(feature = "usb-buffer-16k")]
+    {
+        16384
+    }
     #[cfg(not(any(
         feature = "usb-buffer-1k",
         feature = "usb-buffer-4k",
-        feature = "usb-buffer-8k"
+        feature = "usb-buffer-8k",
+        feature = "usb-buffer-16k"
     )))]
     {
         2048 // Default

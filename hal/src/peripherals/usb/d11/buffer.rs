@@ -16,10 +16,15 @@ pub const BUFFER_SIZE: usize = {
     {
         8192
     }
+    #[cfg(feature = "usb-buffer-16k")]
+    {
+        16384
+    }
     #[cfg(not(any(
         feature = "usb-buffer-1k",
         feature = "usb-buffer-4k",
-        feature = "usb-buffer-8k"
+        feature = "usb-buffer-8k",
+        feature = "usb-buffer-16k"
     )))]
     {
         2048 // Default
@@ -75,7 +80,6 @@ impl Default for BufferAllocator {
 }
 
 impl BufferAllocator {
-
     /// Allocates a fixed buffer of [`ALLOC_SIZE_MAX_PER_EP`]
     pub fn allocate_buffer(&mut self) -> UsbResult<*mut u8> {
         // Do all range checks first
