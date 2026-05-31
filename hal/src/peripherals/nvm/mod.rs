@@ -176,6 +176,12 @@ impl Nvm {
         Self { nvm }
     }
 
+    /// Releases the NvmCtrl resource
+    #[inline]
+    pub fn free(self) -> Nvmctrl {
+        self.nvm
+    }
+
     /// Raw access to the registers.
     ///
     /// # Safety
