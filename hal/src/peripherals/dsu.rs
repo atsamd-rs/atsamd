@@ -380,12 +380,14 @@ impl<'a> MemoryTestHandle<'a> {
     /// or forces the memory test to abort right now.
     ///
     /// If the memory test is still in progress when called,
-    /// then it is aborted immediately, and will return [MemoryTestResult::Aborted].
-    /// This functionality is used when the RAM being tested must be released
-    /// by the memory test and given back to the application.
+    /// then it is aborted immediately, and will return 
+    /// [MemoryTestResult::Aborted]. This functionality is used when the RAM 
+    /// being tested must be released by the memory test and given back to 
+    /// the application.
     ///
     /// If the memory test had finished before this is called, then
-    /// it will either return [MemoryTestResult::Ok], or [MemoryTestResult::Error]
+    /// it will either return [MemoryTestResult::Ok], or 
+    /// [MemoryTestResult::Error]
     pub fn finish_now(self) -> MemoryTestResult {
         if self.dsu.is_done() {
             if self.dsu.has_failed() {
