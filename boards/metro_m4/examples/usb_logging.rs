@@ -4,8 +4,10 @@
 use metro_m4 as bsp;
 
 use bsp::ehal;
+use bsp::entry;
 use bsp::hal;
 use bsp::pac;
+use bsp::pin_alias;
 
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
@@ -14,8 +16,11 @@ use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
-use bsp::entry;
-use hal::clock::GenericClockController;
+use hal::clock::v2::{
+    clock_system_at_reset, dfll,
+    gclk::{Gclk, Gclk1Id},
+    pclk::Pclk,
+};
 use hal::usb::UsbBus;
 use pac::{interrupt, CorePeripherals, Peripherals};
 
@@ -28,32 +33,43 @@ use panic_semihosting as _;
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let mut core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_external_32kosc(
+    let (mut buses, clocks, tokens) = clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
 
     let pins = bsp::Pins::new(peripherals.port);
-    let mut red_led: bsp::RedLed = pins.d13.into();
+    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
+
+    // Set up USB clocking
+    let (dfll_usb, _) = clocks.dfll.into_mode(dfll::FromUsb, |_| {});
+    // GCLK1 comes from DFLL, outputs to USB
+    let (gclk_1, _) = Gclk::from_source(tokens.gclks.gclk1, dfll_usb);
+    let gclk_1_48mhz = gclk_1.enable();
+    let (pclk_usb, _) = Pclk::enable(tokens.pclks.usb, gclk_1_48mhz);
+
+    let usb_bus = UsbBus::new(
+        pclk_usb,
+        clocks.ahbs.usb,
+        buses.apb.enable(tokens.apbs.usb),
+        pins.usb_dm,
+        pins.usb_dp,
+        peripherals.usb,
+    )
+    .unwrap();
 
     let bus_allocator = unsafe {
-        USB_ALLOCATOR = Some(bsp::usb_allocator(
-            peripherals.usb,
-            &mut clocks,
-            &mut peripherals.mclk,
-            pins.usb_dm,
-            pins.usb_dp,
-        ));
+        USB_ALLOCATOR = Some(UsbBusAllocator::new(usb_bus));
         USB_ALLOCATOR.as_ref().unwrap()
     };
 
     unsafe {
         USB_SERIAL = Some(SerialPort::new(bus_allocator));
         USB_BUS = Some(
-            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x2222, 0x3333))
+            UsbDeviceBuilder::new(bus_allocator, UsbVidPid(0x1209, 0x0001))
                 .strings(&[StringDescriptors::new(LangID::EN)
                     .manufacturer("Fake company")
                     .product("Serial port")
@@ -69,8 +85,6 @@ fn main() -> ! {
         NVIC::unmask(interrupt::USB_TRCPT0);
         core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
         NVIC::unmask(interrupt::USB_TRCPT1);
-        core.NVIC.set_priority(interrupt::USB_SOF_HSOF, 1);
-        NVIC::unmask(interrupt::USB_SOF_HSOF);
         core.NVIC.set_priority(interrupt::USB_OTHER, 1);
         NVIC::unmask(interrupt::USB_OTHER);
     }
@@ -91,9 +105,9 @@ fn main() -> ! {
     }
 }
 
-static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus>> = None;
-static mut USB_BUS: Option<UsbDevice<UsbBus>> = None;
-static mut USB_SERIAL: Option<SerialPort<UsbBus>> = None;
+static mut USB_ALLOCATOR: Option<UsbBusAllocator<UsbBus<Gclk1Id>>> = None;
+static mut USB_BUS: Option<UsbDevice<UsbBus<Gclk1Id>>> = None;
+static mut USB_SERIAL: Option<SerialPort<UsbBus<Gclk1Id>>> = None;
 
 fn poll_usb() {
     unsafe {
@@ -116,11 +130,6 @@ fn USB_TRCPT0() {
 
 #[interrupt]
 fn USB_TRCPT1() {
-    poll_usb();
-}
-
-#[interrupt]
-fn USB_SOF_HSOF() {
     poll_usb();
 }
 

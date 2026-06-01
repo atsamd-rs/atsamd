@@ -16,13 +16,6 @@ use hal::typelevel::NoneT;
 
 use st7735_lcd::{Orientation, ST7735};
 
-#[cfg(feature = "usb")]
-use hal::usb::usb_device::bus::UsbBusAllocator;
-#[cfg(feature = "usb")]
-pub use hal::usb::UsbBus;
-#[cfg(feature = "usb")]
-use pac::gclk::{genctrl::Srcselect, pchctrl::Genselect};
-
 hal::bsp_peripherals!(
     Sercom2 { I2cSercom }
     Sercom5 { UartSercom }
@@ -796,24 +789,6 @@ pub struct Speaker {
 pub struct USB {
     pub dm: UsbDmReset,
     pub dp: UsbDpReset,
-}
-
-impl USB {
-    #[cfg(feature = "usb")]
-    /// Convenience for setting up the onboard usb port to operate
-    /// as a USB device.
-    pub fn init(
-        self,
-        usb: pac::Usb,
-        clocks: &mut GenericClockController,
-        mclk: &mut pac::Mclk,
-    ) -> UsbBusAllocator<UsbBus> {
-        clocks.configure_gclk_divider_and_source(Genselect::Gclk2, 1, Srcselect::Dfll, false);
-        let usb_gclk = clocks.get_gclk(Genselect::Gclk2).unwrap();
-        let usb_clock = &clocks.usb(&usb_gclk).unwrap();
-        let (dm, dp): (UsbDm, UsbDp) = (self.dm.into(), self.dp.into());
-        UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
-    }
 }
 
 /// UART pins

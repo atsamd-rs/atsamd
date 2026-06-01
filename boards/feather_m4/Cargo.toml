@@ -28,10 +28,6 @@ default-features = false
 path = "../../hal"
 version = "0.22.2"
 
-[dependencies.usb-device]
-optional = true
-version = "0.3.1"
-
 [dev-dependencies]
 heapless = "0.7"
 panic-halt = "0.2"
@@ -40,6 +36,7 @@ panic-semihosting = "0.5"
 rtic = {version = "2.1.1", features = ["thumbv7-backend"]}
 smart-leds = "0.3"
 usbd-serial = "0.2"
+usb-device = "0.3.1"
 ws2812-timer-delay = "0.3"
 
 [features]
@@ -49,7 +46,7 @@ dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/dma"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 rtic = ["atsamd-hal/rtic"]
-usb = ["atsamd-hal/usb", "usb-device"]
+usb = ["atsamd-hal/usb"]
 # Enable async support from atsamd-hal
 async = ["atsamd-hal/async"]
 use_semihosting = []

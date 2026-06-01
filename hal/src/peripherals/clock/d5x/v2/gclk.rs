@@ -547,7 +547,7 @@ pub enum DynGclkId {
 ///
 /// [type-level programming]: crate::typelevel
 /// [type-level enums]: crate::typelevel#type-level-enums
-pub trait GclkId: Sealed {
+pub trait GclkId: Sealed + Send {
     /// Corresponding variant of [`DynGclkId`]
     const DYN: DynGclkId;
     /// Corresponding numeric index (0..12)
