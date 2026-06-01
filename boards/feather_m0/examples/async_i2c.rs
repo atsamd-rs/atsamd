@@ -41,7 +41,7 @@ async fn main(_s: embassy_executor::Spawner) {
     let i2c_sercom = bsp::periph_alias!(peripherals.i2c_sercom);
 
     // Initialize DMA Controller
-    let dmac = DmaController::init(peripherals.dmac, &mut peripherals.pm);
+    let dmac = DmaController::new(peripherals.dmac, &mut peripherals.pm);
 
     // Turn dmac into an async controller
     let mut dmac = dmac.into_future(Irqs);

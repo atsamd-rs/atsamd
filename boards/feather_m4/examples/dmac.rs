@@ -9,28 +9,21 @@ use cortex_m::asm;
 use feather_m4 as bsp;
 use panic_halt as _;
 
-use hal::{
-    clock::GenericClockController,
-    pac::{CorePeripherals, Peripherals},
-};
-
 use hal::dmac::{DmaController, PriorityLevel, Transfer, TriggerAction, TriggerSource};
+use hal::pac::Peripherals;
 
 #[bsp::entry]
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
-    let core = CorePeripherals::take().unwrap();
-    let _clocks = GenericClockController::with_external_32kosc(
+    let (mut _buses, clocks, _tokens) = hal::clock::v2::clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
 
-    let mut pm = peripherals.pm;
     let dmac = peripherals.dmac;
-    let _nvic = core.NVIC;
 
     // Initialize buffers
     const LENGTH: usize = 50;
@@ -40,7 +33,7 @@ fn main() -> ! {
         cortex_m::singleton!(: [u8; LENGTH] = [0x00; LENGTH]).unwrap();
 
     // Initialize DMA Controller
-    let mut dmac = DmaController::init(dmac, &mut pm);
+    let mut dmac = DmaController::new(dmac, clocks.ahbs.dmac);
     // Get individual handles to DMA channels
     let mut channels = dmac.split();
 
@@ -95,7 +88,7 @@ fn main() -> ! {
     // Move split channels back into the Channels struct
     channels.0 = chan0.into();
     // Free the DmaController and return the PAC DMAC struct
-    let _dmac = dmac.free(channels, &mut pm);
+    let (_dmac, _ahb_clk) = dmac.free(channels);
 
     loop {
         asm::nop();

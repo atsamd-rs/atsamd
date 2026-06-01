@@ -36,7 +36,7 @@ fn main() -> ! {
     let pins = bsp::Pins::new(peripherals.port);
 
     // Setup DMA channels for later use
-    let mut dmac = DmaController::init(dmac, &mut pm);
+    let mut dmac = DmaController::new(dmac, &mut pm);
     let channels = dmac.split();
 
     let chan0 = channels.0.init(PriorityLevel::Lvl0);

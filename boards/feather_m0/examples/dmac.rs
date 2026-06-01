@@ -41,7 +41,7 @@ fn main() -> ! {
         cortex_m::singleton!(: [u8; LENGTH] = [0x00; LENGTH]).unwrap();
 
     // Initialize DMA Controller
-    let mut dmac = DmaController::init(dmac, &mut pm);
+    let mut dmac = DmaController::new(dmac, &mut pm);
     // Get individual handles to DMA channels
     let mut channels = dmac.split();
 
