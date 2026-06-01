@@ -121,28 +121,35 @@
 //!
 //! ```no_run
 //! # use atsamd_hal::{pac::Peripherals, icm::*};
-//!
 //! // SHA Test data
 //! static MESSAGE_REF0: [u32; 16] = [
-//!     0x11111111, 0x22222222, 0x33333333, 0x44444444, 0x55555555, 0x66666666, 0x77777777, 0x88888888,
-//!     0x99999999, 0xaaaaaaaa, 0xbbbbbbbb, 0xcccccccc, 0xdddddddd, 0xeeeeeeee, 0xffffffff, 0x00000000,
+//!     0x11111111, 0x22222222, 0x33333333, 0x44444444, 0x55555555, 0x66666666, 0x77777777,
+//!     0x88888888, 0x99999999, 0xaaaaaaaa, 0xbbbbbbbb, 0xcccccccc, 0xdddddddd, 0xeeeeeeee,
+//!     0xffffffff, 0x00000000,
 //! ];
 //!
 //! static MESSAGE_REF1: [u32; 16] = [
-//!     0x80636261, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-//!     0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x18000000,
+//!     0x80636261, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+//!     0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+//!     0x00000000, 0x18000000,
 //! ];
 //!
 //! // Expected SHA1 sum result
-//! static MESSAGE_SHA1_RES: [u32; 8] = [
-//!     0x363e99a9, 0x6a810647, 0x71253eba, 0x6cc25078, 0x9dd8d09c, 0x00000000, 0x00000000, 0x00000000,
+//! static _MESSAGE_SHA1_RES: [u32; 8] = [
+//!     0x363e99a9, 0x6a810647, 0x71253eba, 0x6cc25078, 0x9dd8d09c, 0x00000000, 0x00000000,
+//!     0x00000000,
 //! ];
 //!
-//! static MESSAGE_SHA224_RES: [u32; 8] = [
-//!     0x227d0923, 0x22d80534, 0x77a44286, 0xb355a2bd, 0xe4bcad2a, 0xf7b3a0bd, 0xa79d6ce3, 0x00000000,
+//! // Expected SHA224 sum result
+//! static _MESSAGE_SHA224_RES: [u32; 8] = [
+//!     0x227d0923, 0x22d80534, 0x77a44286, 0xb355a2bd, 0xe4bcad2a, 0xf7b3a0bd, 0xa79d6ce3,
+//!     0x00000000,
 //! ];
-//! static MESSAGE_SHA256_RES: [u32; 8] = [
-//!     0xbf1678ba, 0xeacf018f, 0xde404141, 0x2322ae5d, 0xa36103b0, 0x9c7a1796, 0x61ff10b4, 0xad1500f2,
+//!
+//! // Expected SHA256 sum result
+//! static _MESSAGE_SHA256_RES: [u32; 8] = [
+//!     0xbf1678ba, 0xeacf018f, 0xde404141, 0x2322ae5d, 0xa36103b0, 0x9c7a1796, 0x61ff10b4,
+//!     0xad1500f2,
 //! ];
 //! static mut HASH: HashArea = HashArea::default();
 //! static mut ICM_REGION_DESC: Regions = Regions::default();
@@ -151,16 +158,21 @@
 //! //use cortex_m::singleton;
 //! //let hasharea: &'static mut HashArea = singleton!(: HashArea = HashArea::default()).unwrap();
 //!
-//! // Enable ICM apb clock
-//! // Clock v1
-//! //mclk.apbcmask.modify(|_, w| w.icm_().set_bit());
-//! // Clock v2
-//! //tokens.apbs.icm.enable();
-//!
+//! // Setup the clocks
 //! let mut peripherals = Peripherals::take().unwrap();
+//! let (mut buses, clocks, tokens) = hal::clock::v2::clock_system_at_reset(
+//!     peripherals.oscctrl,
+//!     peripherals.osc32kctrl,
+//!     peripherals.gclk,
+//!     peripherals.mclk,
+//!     &mut peripherals.nvmctrl,
+//! );
+//!
+//! // Enable the APB clock
+//! let apb_clk = buses.apb.enable(tokens.apbs.icm);
 //!
 //! // Create new ICM
-//! let mut icm = Icm::new(peripherals.ICM);
+//! let mut icm = Icm::new(peripherals.icm, clocks.ahbs.icm, apb_clk);
 //!
 //! // Reset the ICM, clearing past error states
 //! icm.swrst();
@@ -187,7 +199,9 @@
 //! icm_region0.set_rhc_int();
 //!
 //! // Region0 raddr
-//! icm_region_desc.region0.set_region_address(MESSAGE_REF0.as_ptr());
+//! icm_region_desc
+//!     .region0
+//!     .set_region_address(MESSAGE_REF0.as_ptr());
 //!
 //! // Configure the RCFG
 //!
@@ -203,7 +217,7 @@
 //! // in a descriptor of the main or second list
 //! icm_region_desc.region0.rcfg.set_rhien(false);
 //! // Set Algorithm to SHA1
-//! icm_region_desc.region0.rcfg.set_algo(icm_algorithm::SHA1);
+//! icm_region_desc.region0.rcfg.set_algo(icm_algorithm::Sha1);
 //!
 //! // Get the interface for region1
 //! let icm_region1 = icm.enable_region1();
@@ -217,14 +231,16 @@
 //! icm_region1.set_rhc_int();
 //!
 //! // Region1 raddr
-//! icm_region_desc.region1.set_region_address(MESSAGE_REF1.as_ptr());
+//! icm_region_desc
+//!     .region1
+//!     .set_region_address(MESSAGE_REF1.as_ptr());
 //!
 //! // Configure the RCFG
 //! // The RHC flag is set when the field NEXT = 0
 //! // in a descriptor of the main or second list
 //! icm_region_desc.region1.rcfg.set_rhien(false);
 //! // Set Algorithm to SHA1
-//! icm_region_desc.region1.rcfg.set_algo(icm_algorithm::SHA1);
+//! icm_region_desc.region1.rcfg.set_algo(icm_algorithm::Sha1);
 //!
 //! // Get the interface for region2
 //! let icm_region2 = icm.enable_region2();
@@ -238,14 +254,16 @@
 //! icm_region2.set_rhc_int();
 //!
 //! // Region2 raddr
-//! icm_region_desc.region2.set_region_address(MESSAGE_REF1.as_ptr());
+//! icm_region_desc
+//!     .region2
+//!     .set_region_address(MESSAGE_REF1.as_ptr());
 //!
 //! // Configure the RCFG
 //! // The RHC flag is set when the field NEXT = 0
 //! // in a descriptor of the main or second list
 //! icm_region_desc.region2.rcfg.set_rhien(false);
 //! // Set Algorithm to SHA224
-//! icm_region_desc.region2.rcfg.set_algo(icm_algorithm::SHA224);
+//! icm_region_desc.region2.rcfg.set_algo(icm_algorithm::Sha224);
 //!
 //! // Get the interface for region3
 //! let icm_region3 = icm.enable_region3();
@@ -259,7 +277,9 @@
 //! icm_region3.set_rhc_int();
 //!
 //! // Region3 raddr
-//! icm_region_desc.region3.set_region_address(MESSAGE_REF1.as_ptr());
+//! icm_region_desc
+//!     .region3
+//!     .set_region_address(MESSAGE_REF1.as_ptr());
 //!
 //! // Configure the RCFG
 //! //
@@ -269,22 +289,18 @@
 //! // in a descriptor of the main or second list
 //! icm_region_desc.region3.rcfg.set_rhien(false);
 //! // Set Algorithm to SHA256
-//! icm_region_desc.region3.rcfg.set_algo(icm_algorithm::SHA256);
+//! icm_region_desc.region3.rcfg.set_algo(icm_algorithm::Sha256);
 //!
-//! unsafe {
-//!     // Hash Area
-//!     // Set HASH addr to the beginning of the Hash area
-//!     icm.set_hash_addr(&HASH);
-//! }
+//! // Hash Area
+//! // Set HASH addr to the beginning of the Hash area
+//! icm.set_hash_addr(&HASH);
 //!
-//! unsafe {
-//!     // Move the icm_region_desc into static
-//!     ICM_REGION_DESC = icm_region_desc;
-//!     // Set DSCR to the beginning of the region descriptor
-//!     icm.set_dscr_addr(&ICM_REGION_DESC.region0);
-//!     // the same but via helper function
-//!     //ICM_REGION_DESC.region0.set_dscr_addr(&icm);
-//! }
+//! // Move the icm_region_desc into static
+//! *ICM_REGION_DESC = icm_region_desc;
+//! // Set DSCR to the beginning of the region descriptor
+//! icm.set_dscr_addr(&ICM_REGION_DESC.region0);
+//! // the same but via helper function
+//! //ICM_REGION_DESC.region0.set_dscr_addr(&icm);
 //!
 //! // Start the ICM calculation
 //! icm.enable();
@@ -318,8 +334,11 @@
 //! icm_region_desc
 //!     .region0
 //!     .set_region_address(&message_region0_sha1);
-//! icm_region_desc.region0.rcfg.reset_region_configuration_to_default();
-//! icm_region_desc.region0.rcfg.set_algo(icm_algorithm::SHA1);
+//! icm_region_desc
+//!     .region0
+//!     .rcfg
+//!     .reset_region_configuration_to_default();
+//! icm_region_desc.region0.rcfg.set_algo(icm_algorithm::Sha1);
 //! // Activate Compare Digest (should be true when comparing memory)
 //! icm_region_desc.region0.rcfg.set_cdwbn(true);
 //! // Digest Mismatch Interrupt Disable (enabled)
@@ -332,8 +351,11 @@
 //! icm_region_desc
 //!     .region1
 //!     .set_region_address(&message_region1_sha1);
-//! icm_region_desc.region1.rcfg.reset_region_configuration_to_default();
-//! icm_region_desc.region1.rcfg.set_algo(icm_algorithm::SHA1);
+//! icm_region_desc
+//!     .region1
+//!     .rcfg
+//!     .reset_region_configuration_to_default();
+//! icm_region_desc.region1.rcfg.set_algo(icm_algorithm::Sha1);
 //! // Activate Compare Digest (should be true when comparing memory)
 //! icm_region_desc.region1.rcfg.set_cdwbn(true);
 //! // Digest Mismatch Interrupt Disable (enabled)
@@ -346,8 +368,11 @@
 //! icm_region_desc
 //!     .region2
 //!     .set_region_address(&message_region2_sha224);
-//! icm_region_desc.region2.rcfg.reset_region_configuration_to_default();
-//! icm_region_desc.region2.rcfg.set_algo(icm_algorithm::SHA224);
+//! icm_region_desc
+//!     .region2
+//!     .rcfg
+//!     .reset_region_configuration_to_default();
+//! icm_region_desc.region2.rcfg.set_algo(icm_algorithm::Sha224);
 //! // Activate Compare Digest (should be true when comparing memory)
 //! icm_region_desc.region2.rcfg.set_cdwbn(true);
 //! // Digest Mismatch Interrupt Disable (enabled)
@@ -360,8 +385,11 @@
 //! icm_region_desc
 //!     .region3
 //!     .set_region_address(&message_region3_sha256);
-//! icm_region_desc.region3.rcfg.reset_region_configuration_to_default();
-//! icm_region_desc.region3.rcfg.set_algo(icm_algorithm::SHA256);
+//! icm_region_desc
+//!     .region3
+//!     .rcfg
+//!     .reset_region_configuration_to_default();
+//! icm_region_desc.region3.rcfg.set_algo(icm_algorithm::Sha256);
 //! // Activate Compare Digest (should be true when comparing memory)
 //! icm_region_desc.region3.rcfg.set_cdwbn(true);
 //! // Digest Mismatch Interrupt Disable (enabled)
@@ -378,7 +406,9 @@
 //! message_region2_sha224[5] = 0xDEAD_BEEF;
 //! message_region3_sha256[6] = 0xDEAD_BEEF;
 //!
-//! icm.enable()
+//! icm.enable();
+//! ```
+
 use crate::pac::icm::uasr::Uratselect;
 
 use paste::paste;
@@ -392,6 +422,9 @@ use core::marker::PhantomData;
 
 /// Reexport the User SHA Algorithm
 pub use crate::icm::cfg::Ualgoselect as icm_algorithm;
+
+type IcmAhbClk = crate::clock::v2::ahb::AhbClk<crate::clock::v2::types::Icm>;
+type IcmApbClk = crate::clock::v2::apb::ApbClk<crate::clock::v2::types::Icm>;
 
 // Convenient bitflags representing select parts of
 // the status interrupt register `ICM->ISR`
@@ -877,23 +910,19 @@ impl<I: RegionNum> Region<I> {
 pub struct Icm {
     /// ICM pac register providing hardware access
     icm: crate::pac::Icm,
+    ahb_clk: IcmAhbClk,
+    apb_clk: IcmApbClk,
 }
 
 impl Icm {
     /// Create the interface for the ICM peripheral
-    ///
-    /// Don't forget to enable the `APB` bus for ICM
-    ///
-    /// `AHB` bus is on by default at reset
-    ///
-    /// Clock::v1
-    /// `mclk.apbcmask.modify(|_, w| w.icm_().set_bit());`
-    ///
-    /// Clock::v2
-    /// `tokens.apbs.icm.enable();`
     #[inline]
-    pub fn new(icm: crate::pac::Icm) -> Self {
-        Self { icm }
+    pub fn new(icm: crate::pac::Icm, ahb_clk: IcmAhbClk, apb_clk: IcmApbClk) -> Self {
+        Self {
+            icm,
+            ahb_clk,
+            apb_clk,
+        }
     }
 
     // Register Interface
@@ -995,10 +1024,10 @@ impl Icm {
         self.ctrl().write(|w| w.swrst().set_bit());
     }
 
-    /// Destroy the ICM peripheral and return the underlying ICM register
+    /// Destroy the ICM peripheral and return its resources
     #[inline]
-    pub fn destroy(self) -> crate::pac::Icm {
-        self.icm
+    pub fn free(self) -> (crate::pac::Icm, IcmAhbClk, IcmApbClk) {
+        (self.icm, self.ahb_clk, self.apb_clk)
     }
 
     // Region specifics
