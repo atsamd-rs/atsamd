@@ -224,7 +224,7 @@ impl Nvm {
     /// Check if flash is boot protected
     #[hal_cfg("immutableboot")]
     #[inline]
-    pub fn is_boot_protected() {
+    pub fn is_boot_protected(&self) -> bool {
         !self.nvm.status().read().bpdis().bit() || self.nvm.status().read().bphl().bit()
     }
 
