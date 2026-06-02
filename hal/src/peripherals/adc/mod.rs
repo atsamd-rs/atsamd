@@ -27,7 +27,12 @@ use core::ops::Deref;
 use atsamd_hal_macros::{hal_cfg, hal_module};
 use pac::Peripherals;
 
-use crate::{gpio::AnyPin, pac, typelevel::Sealed};
+use crate::{
+    clock::v2::{apb::ApbClk, pclk::DynPclk},
+    gpio::AnyPin,
+    pac,
+    typelevel::Sealed,
+};
 
 #[hal_module(
     any("adc-d11", "adc-d21") => "d11/mod.rs",
@@ -48,10 +53,7 @@ pub use builder::*;
 #[hal_cfg(any("adc-d11", "adc-d21"))]
 use crate::pac::adc as adc0;
 #[hal_cfg("adc-d5x")]
-use crate::{
-    clock::v2::{apb::ApbClk, pclk::DynPclk},
-    pac::adc0,
-};
+use crate::pac::adc0;
 
 pub use adc0::refctrl::Refselselect as Reference;
 
@@ -163,8 +165,8 @@ where
 
 pub struct Adc<I: AdcInstance> {
     adc: I::Instance,
-    _apbclk: ApbClk<I::ClockId>,
-    _pclk: DynPclk<I::ClockId>,
+    _apbclk: crate::clock::v2::apb::ApbClk<I::ClockId>,
+    _pclk: crate::clock::v2::pclk::DynPclk<I::ClockId>,
     cfg: AdcSettings,
     discard: bool,
 }
@@ -196,8 +198,8 @@ impl<I: AdcInstance> Adc<I> {
     pub(crate) fn new(
         adc: I::Instance,
         settings: AdcSettings,
-        clk: ApbClk<I::ClockId>,
-        pclk: DynPclk<I::ClockId>,
+        clk: crate::clock::v2::apb::ApbClk<I::ClockId>,
+        pclk: crate::clock::v2::pclk::DynPclk<I::ClockId>,
     ) -> Result<Self, Error> {
         // TODO: Ideally, the ADC struct would take ownership of the Pclk type here.
         // However, since clock::v2 is not implemented for all chips yet, the
