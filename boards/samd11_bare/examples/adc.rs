@@ -37,14 +37,14 @@ fn main() -> ! {
     let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
         .with_clock_cycles_per_sample(5)
         .with_clock_divider(Prescaler::Div128)
-        .with_vref(atsamd_hal::adc::Reference::Intvcc0)
+        .with_vref(atsamd_hal::adc::Reference::Arefa)
         .enable(peripherals.adc, adc_apb, &adc_pclk)
         .unwrap();
-    let mut adc_pin = pins.a0.into_alternate();
+    let mut adc_pin = pins.d1.into_alternate();
 
     loop {
         let res = adc.read(&mut adc_pin);
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("ADC value: {}", read).unwrap();
+        cortex_m_semihosting::hprintln!("ADC value: {}", read);
     }
 }
