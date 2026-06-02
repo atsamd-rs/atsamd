@@ -122,14 +122,24 @@
 //! [`Clocks`]: super::Clocks
 //! [`Buses`]: super::Buses
 
-use atsamd_hal_macros::hal_macro_helper;
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 
 use core::marker::PhantomData;
 
 use bitflags;
 use paste::paste;
 
-use crate::pac::{Mclk, mclk};
+#[hal_cfg("clock-d5x")]
+mod imports {
+    pub use crate::pac::{Mclk as Peripheral, mclk::Ahbmask};
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod imports {
+    pub use crate::pac::{Pm as Peripheral, pm::Ahbmask};
+}
+
+use imports::*;
 
 use super::types::*;
 
@@ -160,11 +170,11 @@ impl Ahb {
     }
 
     #[inline]
-    fn ahbmask(&mut self) -> &mclk::Ahbmask {
+    fn ahbmask(&mut self) -> &Ahbmask {
         // Safety: The `Ahb` type has exclusive access to the `AHBMASK`
         // register. See the notes on `Token` types and memory safety in the
         // root of the `clock` module for more details.
-        unsafe { (*Mclk::PTR).ahbmask() }
+        unsafe { (*Peripheral::PTR).ahbmask() }
     }
 
     #[inline]
@@ -373,6 +383,7 @@ macro_rules! define_ahb_types {
 }
 
 #[hal_macro_helper]
+#[hal_cfg("clock-d5x")]
 define_ahb_types!(
     Hpb0 = 0,
     Hpb1 = 1,
@@ -383,7 +394,7 @@ define_ahb_types!(
     Cmcc = 8,
     Dmac = 9,
     Usb = 10,
-    Pac = 12,
+    Pac0 = 12,
     Qspi = 13,
     #[hal_cfg("gmac")]
     Gmac = 14,
@@ -399,4 +410,15 @@ define_ahb_types!(
     Qspi2x = 21,
     NvmCtrlSmeeProm = 22,
     NvmCtrlCache = 23,
+);
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+define_ahb_types!(
+    Hpb0 = 0,
+    Hpb1 = 1,
+    Hpb2 = 2,
+    Dsu = 3,
+    NvmCtrl = 4,
+    Dmac = 5,
+    Usb = 6, // TODO this should be conditional.  Others?
 );

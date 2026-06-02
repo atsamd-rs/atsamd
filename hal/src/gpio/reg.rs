@@ -125,7 +125,6 @@ impl From<DynPinMode> for ModeFields {
                     G => {
                         fields.pmux = 6;
                     }
-                    #[hal_cfg(any("port-d21", "port-d5x"))]
                     H => {
                         fields.pmux = 7;
                     }

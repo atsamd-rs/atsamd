@@ -111,7 +111,6 @@ pub enum DynAlternate {
     E,
     F,
     G,
-    #[hal_cfg(any("port-d21", "port-d5x"))]
     H,
     #[hal_cfg("port-d5x")]
     I,
@@ -182,9 +181,7 @@ macro_rules! dyn_alternate {
     };
 }
 
-dyn_alternate!(B, C, D, E, F, G);
-#[hal_cfg(any("port-d21", "port-d5x"))]
-dyn_alternate!(H);
+dyn_alternate!(B, C, D, E, F, G, H);
 #[hal_cfg("port-d5x")]
 dyn_alternate!(I, J, K, L, M, N);
 
