@@ -2,6 +2,8 @@
 #![no_main]
 
 use atsamd_hal::adc::AdcBuilder;
+use atsamd_hal::clock::v2::clock_system_at_reset;
+use atsamd_hal::clock::v2::pclk::Pclk;
 use feather_m0 as bsp;
 
 use bsp::hal;
@@ -17,31 +19,26 @@ use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc, Prescaler, Resolution},
-    clock::GenericClockController,
+    adc::{Accumulation, Prescaler},
 };
 
 #[entry]
 fn main() -> ! {
-    let mut peripherals = Peripherals::take().unwrap();
+    let peripherals = Peripherals::take().unwrap();
     let _core = CorePeripherals::take().unwrap();
 
     let pins = Pins::new(peripherals.port);
 
-    let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.gclk,
-        &mut peripherals.pm,
-        &mut peripherals.sysctrl,
-        &mut peripherals.nvmctrl,
-    );
-    let gclk0 = clocks.gclk0();
-    let adc_clock = clocks.adc(&gclk0).unwrap();
 
+    let (_buses, clocks, tokens) = clock_system_at_reset(peripherals.gclk, peripherals.pm, peripherals.sysctrl);
+    let (adc_pclk, _gclk0) = Pclk::enable(tokens.pclks.adc, clocks.gclk0);
+    let adc_apb = clocks.apbs.adc0;
+    
     let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
         .with_clock_cycles_per_sample(5)
         .with_clock_divider(Prescaler::Div128)
         .with_vref(atsamd_hal::adc::Reference::Intvcc0)
-        .enable(peripherals.adc, &mut peripherals.pm, &adc_clock)
+        .enable(peripherals.adc, adc_apb, &adc_pclk)
         .unwrap();
     let mut adc_pin = pins.a0.into_alternate();
 
