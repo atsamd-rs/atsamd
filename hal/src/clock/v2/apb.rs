@@ -565,6 +565,8 @@ define_apb_types!(
         #[hal_cfg("i2s")]
         I2S = (20, any, all)
         Ac1 = (21, any, all)
+        #[hal_cfg("tcc3")]
+        Tcc3 = (22, any, all)
     }
 );
 
