@@ -338,6 +338,7 @@
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::cmp::max;
 use core::marker::PhantomData;
+use seq_macro::seq;
 
 use paste::paste;
 use typenum::{U0, U1};
@@ -454,37 +455,6 @@ impl<G: GclkId> GclkToken<G> {
 }
 
 //==============================================================================
-// DynGclkId
-//==============================================================================
-
-/// Value-level enum identifying one of the possible [`Gclk`]s
-///
-/// The variants of this enum identify one generic clock generator.
-///
-/// `DynGclkId` is the value-level equivalent of [`GclkId`].
-#[hal_macro_helper]
-pub enum DynGclkId {
-    Gclk0,
-    Gclk1,
-    Gclk2,
-    Gclk3,
-    Gclk4,
-    Gclk5,
-    #[hal_cfg("gclk6")]
-    Gclk6,
-    #[hal_cfg("gclk7")]
-    Gclk7,
-    #[hal_cfg("gclk8")]
-    Gclk8,
-    #[hal_cfg("gclk9")]
-    Gclk9,
-    #[hal_cfg("gclk10")]
-    Gclk10,
-    #[hal_cfg("gclk11")]
-    Gclk11,
-}
-
-//==============================================================================
 // GclkId
 //==============================================================================
 
@@ -541,44 +511,6 @@ impl GclkId for Gclk1Id {
     const NUM: usize = 1;
     type Divider = GclkDiv16;
 }
-
-macro_rules! make_gclk_id {
-    ($num:literal) => {
-        paste! {
-            #[doc = GCLK $num]
-            ///
-            /// See the documentation on [type-level programming] and specifically
-            /// [type-level enums] for more details.
-            ///
-            /// [type-level programming]: crate::typelevel
-            /// [type-level enums]: crate::typelevel#type-level-enums
-            pub enum [<Gclk $num Id>] {}
-            impl Sealed for [<Gclk $num Id>] {}
-            impl GclkId for [<Gclk $num Id>] {
-                const DYN: DynGclkId = DynGclkId::[<Gclk $num>];
-                const NUM: usize = $num;
-                type Divider = GclkDiv8;
-            }
-        }
-    };
-}
-
-make_gclk_id!(2);
-make_gclk_id!(3);
-make_gclk_id!(4);
-make_gclk_id!(5);
-#[hal_cfg("gclk6")]
-make_gclk_id!(6);
-#[hal_cfg("gclk7")]
-make_gclk_id!(7);
-#[hal_cfg("gclk8")]
-make_gclk_id!(8);
-#[hal_cfg("gclk9")]
-make_gclk_id!(9);
-#[hal_cfg("gclk10")]
-make_gclk_id!(10);
-#[hal_cfg("gclk11")]
-make_gclk_id!(11);
 
 //==============================================================================
 // GclkDivider
@@ -1136,36 +1068,6 @@ pub type Gclk0<I> = Gclk<Gclk0Id, I>;
 /// on [`EnabledGclk0`] to configure the `Gclk` while it is actively running.
 pub type EnabledGclk0<I, N = U1> = EnabledGclk<Gclk0Id, I, N>;
 
-macro_rules! make_gclk {
-    ($num:literal) => {
-        paste! {
-            /// Type alias for the corresponding [`Gclk`]
-            pub type [<Gclk $num>]<I> = Gclk<[<Gclk $num Id>], I>;
-
-            /// Type alias for the corresponding [`EnabledGclk`]
-            pub type [<EnabledGclk $num>]<I, N = U0> = EnabledGclk<[<Gclk $num Id>], I, N>;
-        }
-    };
-}
-
-make_gclk!(1);
-make_gclk!(2);
-make_gclk!(3);
-make_gclk!(4);
-make_gclk!(5);
-#[hal_cfg("gclk6")]
-make_gclk!(6);
-#[hal_cfg("gclk7")]
-make_gclk!(7);
-#[hal_cfg("gclk8")]
-make_gclk!(8);
-#[hal_cfg("gclk9")]
-make_gclk!(9);
-#[hal_cfg("gclk10")]
-make_gclk!(10);
-#[hal_cfg("gclk11")]
-make_gclk!(11);
-
 impl<G, I> Gclk<G, I>
 where
     G: GclkId,
@@ -1584,67 +1486,6 @@ where
 }
 
 //==============================================================================
-// Tokens
-//==============================================================================
-
-/// Set of [`GclkToken`]s representing the disabled [`Gclk`]s at
-/// power-on reset
-#[hal_macro_helper]
-pub struct GclkTokens {
-    pub gclk0: GclkToken<Gclk0Id>,
-    pub gclk1: GclkToken<Gclk1Id>,
-    pub gclk2: GclkToken<Gclk2Id>,
-    pub gclk3: GclkToken<Gclk3Id>,
-    pub gclk4: GclkToken<Gclk4Id>,
-    pub gclk5: GclkToken<Gclk5Id>,
-    #[hal_cfg("gclk6")]
-    pub gclk6: GclkToken<Gclk6Id>,
-    #[hal_cfg("gclk7")]
-    pub gclk7: GclkToken<Gclk7Id>,
-    #[hal_cfg("gclk8")]
-    pub gclk8: GclkToken<Gclk8Id>,
-    #[hal_cfg("gclk9")]
-    pub gclk9: GclkToken<Gclk9Id>,
-    #[hal_cfg("gclk10")]
-    pub gclk10: GclkToken<Gclk10Id>,
-    #[hal_cfg("gclk11")]
-    pub gclk11: GclkToken<Gclk11Id>,
-}
-
-#[hal_macro_helper]
-impl GclkTokens {
-    /// Create the set of [`GclkToken`]s
-    ///
-    /// # Safety
-    ///
-    /// All of the invariants required by `GclkToken::new` must be
-    /// upheld here as well.
-    #[inline]
-    pub(super) unsafe fn new() -> Self {
-        GclkTokens {
-            gclk0: unsafe { GclkToken::new() },
-            gclk1: unsafe { GclkToken::new() },
-            gclk2: unsafe { GclkToken::new() },
-            gclk3: unsafe { GclkToken::new() },
-            gclk4: unsafe { GclkToken::new() },
-            gclk5: unsafe { GclkToken::new() },
-            #[hal_cfg("gclk6")]
-            gclk6: unsafe { GclkToken::new() },
-            #[hal_cfg("gclk7")]
-            gclk7: unsafe { GclkToken::new() },
-            #[hal_cfg("gclk8")]
-            gclk8: unsafe { GclkToken::new() },
-            #[hal_cfg("gclk9")]
-            gclk9: unsafe { GclkToken::new() },
-            #[hal_cfg("gclk10")]
-            gclk10: unsafe { GclkToken::new() },
-            #[hal_cfg("gclk11")]
-            gclk11: unsafe { GclkToken::new() },
-        }
-    }
-}
-
-//==============================================================================
 // GclkOut
 //==============================================================================
 
@@ -1729,3 +1570,121 @@ where
         (self.dec(), gclk_out.pin)
     }
 }
+
+// Macro to generate all the per-GCLK code
+macro_rules! make_all_gclks {
+    ($count:literal) => {
+        seq!(N in 0..=$count {
+            //==============================================================================
+            // DynGclkId
+            //==============================================================================
+
+            /// Value-level enum identifying one of the possible [`Gclk`]s
+            ///
+            /// The variants of this enum identify one generic clock generator.
+            ///
+            /// `DynGclkId` is the value-level equivalent of [`GclkId`].
+            #[hal_macro_helper]
+            pub enum DynGclkId {
+                #(
+                    Gclk~N,
+                )*
+            }
+        });
+
+        seq!(N in 2..=$count {
+            paste! {
+                #(
+                    #[doc = stringify!(GCLK~N)]
+                    ///
+                    /// See the documentation on [type-level programming] and specifically
+                    /// [type-level enums] for more details.
+                    ///
+                    /// [type-level programming]: crate::typelevel
+                    /// [type-level enums]: crate::typelevel#type-level-enums
+                    pub enum [<Gclk ~N Id>] {}
+                    impl Sealed for [<Gclk ~N Id>] {}
+                    impl GclkId for [<Gclk ~N Id>] {
+                        const DYN: DynGclkId = DynGclkId::[<Gclk ~N>];
+                        const NUM: usize = N;
+                        type Divider = GclkDiv8;
+                    }
+                )*
+            }
+
+        });
+
+        // call make_gclk! macro (Separately!)
+        seq!(NUM in 1..=$count {
+            paste! {
+                #(
+                    /// Type alias for the corresponding [`Gclk`]
+                    pub type [<Gclk ~NUM>]<I> = Gclk<[<Gclk ~NUM Id>], I>;
+
+                    /// Type alias for the corresponding [`EnabledGclk`]
+                    pub type [<EnabledGclk ~NUM>]<I, N = U0> = EnabledGclk<[<Gclk ~NUM Id>], I, N>;
+                )*
+            }
+        });
+
+        // Create all GCLK Tokens (Includes GCLK0)
+        seq!(N in 0..=$count {
+            paste! {
+                /// Set of [`GclkToken`]s representing the disabled [`Gclk`]s at
+                /// power-on reset
+                pub struct GclkTokens {
+                    #(
+                        pub [<gclk ~N>]: GclkToken<[<Gclk ~N Id>]>,
+                    )*
+                }
+
+                impl GclkTokens {
+                    /// Create the set of [`GclkToken`]s
+                    ///
+                    /// # Safety
+                    ///
+                    /// All of the invariants required by `GclkToken::new` must be
+                    /// upheld here as well.
+                    #[inline]
+                    pub(super) unsafe fn new() -> Self {
+                        GclkTokens {
+                            #(
+                                [<gclk ~N>]: unsafe { GclkToken::new() },
+                            )*
+                        }
+                    }
+                }
+            }
+        });
+    };
+}
+
+// TODO - Maybe there is a neater way of defining things like this
+#[hal_cfg("gclk11")]
+make_all_gclks!(11);
+#[hal_cfg(all(not("gclk11"), "gclk10"))]
+make_all_gclks!(10);
+#[hal_cfg(all(not("gclk11"), not("gclk10"), "gclk9"))]
+make_all_gclks!(9);
+#[hal_cfg(all(not("gclk11"), not("gclk10"), not("gclk9"), "gclk8"))]
+make_all_gclks!(8);
+#[hal_cfg(all(not("gclk11"), not("gclk10"), not("gclk9"), not("gclk8"), "gclk7"))]
+make_all_gclks!(7);
+#[hal_cfg(all(
+    not("gclk11"),
+    not("gclk10"),
+    not("gclk9"),
+    not("gclk8"),
+    not("gclk7"),
+    "gclk6"
+))]
+make_all_gclks!(6);
+#[hal_cfg(all(
+    not("gclk11"),
+    not("gclk10"),
+    not("gclk9"),
+    not("gclk8"),
+    not("gclk7"),
+    not("gclk6")
+))]
+make_all_gclks!(5);
