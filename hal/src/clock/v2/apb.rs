@@ -300,18 +300,17 @@ enum ApbMask {
 ///
 /// Define the [`DynApbId`], `ApbXMask`, [`ApbTokens`] and [`ApbClks`] types.
 ///
-/// This macro uses a slight hack to simplify its implementation. It uses
-/// `#[cfg(all())]` and `#[cfg(any())]` to represent `#[cfg(true)]` and
-/// `#[cfg(false)]`, respectively. We can use this to selectively place each
-/// APB type into the [`ApbTokens`] struct or the [`ApbClks`] struct, depending
-/// on whether or not the corresponding bit is enabled at power-on reset.
+/// This macro takes a parameter `enabled_at_reset` which is a boolean.
+/// If the clock is enabled at reset, then the clock is placed into the
+/// [`ApbClks`] struct, otherwise, the clock APB type is placed as a token
+/// into [`ApbTokens`]
 macro_rules! define_apb_types {
     (
         $(
             $Reg:ident {
                 $(
                     $( #[$( $cfg:tt )+] )?
-                    $Type:ident = ($BIT:literal, $token:ident, $clk:ident)
+                    $Type:ident = ($BIT:literal, $enabled_at_reset:literal)
                 )+
             }
         )+
@@ -382,7 +381,7 @@ macro_rules! define_apb_types {
                 $(
                     $(
                         $( #[$( $cfg )+] )?
-                        #[cfg($token())]
+                        #[cfg(not($enabled_at_reset))]
                         pub [<$Type:snake>]: ApbToken<$Type>,
                     )+
                 )+
@@ -400,7 +399,7 @@ macro_rules! define_apb_types {
                         $(
                             $(
                                 $( #[$( $cfg )+] )?
-                                #[cfg($token())]
+                                #[cfg(not($enabled_at_reset))]
                                 [<$Type:snake>]: unsafe { ApbToken::new() },
                             )+
                         )+
@@ -413,7 +412,7 @@ macro_rules! define_apb_types {
                 $(
                     $(
                         $( #[$( $cfg )+] )?
-                        #[cfg($clk())]
+                        #[cfg($enabled_at_reset)]
                         pub [<$Type:snake>]: ApbClk<$Type>,
                     )+
                 )+
@@ -431,7 +430,7 @@ macro_rules! define_apb_types {
                         $(
                             $(
                                 $( #[$( $cfg )+] )?
-                                #[cfg($clk())]
+                                #[cfg($enabled_at_reset)]
                                 [<$Type:snake>]: ApbClk::new( unsafe { ApbToken::new() } ),
                             )+
                         )+
@@ -447,74 +446,74 @@ macro_rules! define_apb_types {
 #[hal_cfg("clock-d5x")]
 define_apb_types!(
     A {
-        Pac0 = (0, all, any)
-        Pm = (1, all, any)
-        Mclk = (2, all, any)
-        RstC = (3, all, any)
-        OscCtrl = (4, all, any)
-        Osc32kCtrl = (5, all, any)
-        SupC = (6, all, any)
-        Gclk = (7, all, any)
-        Wdt = (8, all, any)
-        Rtc = (9, all, any)
-        Eic = (10, all, any)
-        FreqM = (11, any, all)
-        Sercom0 = (12, any, all)
-        Sercom1 = (13, any, all)
-        Tc0 = (14, any, all)
-        Tc1 = (15, any, all)
+        Pac0 = (0, true)
+        Pm = (1, true)
+        Mclk = (2, true)
+        RstC = (3, true)
+        OscCtrl = (4, true)
+        Osc32kCtrl = (5, true)
+        SupC = (6, true)
+        Gclk = (7, true)
+        Wdt = (8, true)
+        Rtc = (9, true)
+        Eic = (10, true)
+        FreqM = (11, false)
+        Sercom0 = (12, false)
+        Sercom1 = (13, false)
+        Tc0 = (14, false)
+        Tc1 = (15, false)
     }
     B {
-        Usb = (0, any, all)
-        Dsu = (1, all, any)
-        NvmCtrl = (2, all, any)
-        Port = (4, all, any)
-        EvSys = (7, any, all)
-        Sercom2 = (9, any, all)
-        Sercom3 = (10, any, all)
-        Tcc0 = (11, any, all)
-        Tcc1 = (12, any, all)
-        Tc2 = (13, any, all)
-        Tc3 = (14, any, all)
-        RamEcc = (16, all, any)
+        Usb = (0, false)
+        Dsu = (1, true)
+        NvmCtrl = (2, true)
+        Port = (4, true)
+        EvSys = (7, false)
+        Sercom2 = (9, false)
+        Sercom3 = (10, false)
+        Tcc0 = (11, false)
+        Tcc1 = (12, false)
+        Tc2 = (13, false)
+        Tc3 = (14, false)
+        RamEcc = (16, true)
     }
     C {
         #[hal_cfg("gmac")]
-        Gmac = (2, all, any)
-        Tcc2 = (3, any, all)
+        Gmac = (2, false)
+        Tcc2 = (3, false)
         #[hal_cfg("tcc3")]
-        Tcc3 = (4, any, all)
+        Tcc3 = (4, false)
         #[hal_cfg("tc4")]
-        Tc4 = (5, any, all) // TODO double check this is correct
+        Tc4 = (5, false) // TODO double check this is correct
         #[hal_cfg("tc5")]
-        Tc5 = (6, any, all)
-        PDec = (7, any, all)
-        Ac = (8, any, all)
-        Aes = (9, any, all)
-        Trng = (10, any, all)
-        Icm = (11, any, all)
-        Qspi = (13, all, any)
-        Ccl = (14, any, all)
+        Tc5 = (6, false)
+        PDec = (7, false)
+        Ac = (8, false)
+        Aes = (9, false)
+        Trng = (10, false)
+        Icm = (11, false)
+        Qspi = (13, true)
+        Ccl = (14, false)
     }
     D {
-        Sercom4 = (0, all, any)
-        Sercom5 = (1, all, any)
+        Sercom4 = (0, false)
+        Sercom5 = (1, false)
         #[hal_cfg("sercom6")]
-        Sercom6 = (2, all, any)
+        Sercom6 = (2, false)
         #[hal_cfg("sercom7")]
-        Sercom7 = (3, all, any)
+        Sercom7 = (3, false)
         #[hal_cfg("tcc4")]
-        Tcc4 = (4, all, any)
+        Tcc4 = (4, false)
         #[hal_cfg("tc6")]
-        Tc6 = (5, all, any)
+        Tc6 = (5, false)
         #[hal_cfg("tc7")]
-        Tc7 = (6, all, any)
-        Adc0 = (7, all, any)
-        Adc1 = (8, all, any)
-        Dac = (9, all, any)
+        Tc7 = (6, false)
+        Adc0 = (7, false)
+        Adc1 = (8, false)
+        Dac = (9, false)
         #[hal_cfg("i2s")]
-        I2S = (10, all, any)
-        Pcc = (11, all, any)
+        I2S = (10, false)
+        Pcc = (11, false)
     }
 );
 
@@ -524,49 +523,49 @@ define_apb_types!(
 #[hal_cfg("clock-d21")]
 define_apb_types!(
     A {
-        Pac0 = (0, all, any)
-        Pm = (1, all, any)
-        SysCtrl = (2, all, any)
-        Gclk = (3, all, any)
-        Wdt = (4, all, any)
-        Rtc = (5, all, any)
-        Eic = (6, all, any)
+        Pac0 = (0, true)
+        Pm = (1, true)
+        SysCtrl = (2, true)
+        Gclk = (3, true)
+        Wdt = (4, true)
+        Rtc = (5, true)
+        Eic = (6, true)
     }
     B {
-        Pac1 = (0, all, any)
-        Dsu = (1, all, any)
-        NvmCtrl = (2, all, any)
-        Port = (3, all, any)
-        Dmac = (4, all, any)
+        Pac1 = (0, true)
+        Dsu = (1, true)
+        NvmCtrl = (2, true)
+        Port = (3, true)
+        Dmac = (4, true)
         #[hal_cfg("usb")]
-        Usb = (5, all, any)
+        Usb = (5, true)
     }
     C {
-        Pac2 = (0, any, all)
-        EvSys = (1, any, all)
-        Sercom0 = (2, any, all)
-        Sercom1 = (3, any, all)
-        Sercom2 = (4, any, all)
-        Sercom3 = (5, any, all)
+        Pac2 = (0, false)
+        EvSys = (1, true)
+        Sercom0 = (2, false)
+        Sercom1 = (3, false)
+        Sercom2 = (4, false)
+        Sercom3 = (5, false)
         #[hal_cfg("sercom4")]
-        Sercom4 = (6, any, all)
+        Sercom4 = (6, false)
         #[hal_cfg("sercom5")]
-        Sercom5 = (7, any, all)
-        Tcc0 = (8, any, all)
-        Tcc1 = (9, any, all)
-        Tcc2 = (10, any, all)
-        Tc3 = (11, any, all)
-        Tc4 = (12, any, all)
-        Tc5 = (13, any, all)
-        Adc0 = (16, any, all)
-        Ac = (17, any, all)
-        Dac = (18, any, all)
-        Ptc = (19, any, all)
+        Sercom5 = (7, false)
+        Tcc0 = (8, false)
+        Tcc1 = (9, false)
+        Tcc2 = (10, false)
+        Tc3 = (11, false)
+        Tc4 = (12, false)
+        Tc5 = (13, false)
+        Adc0 = (16, true)
+        Ac = (17, false)
+        Dac = (18, false)
+        Ptc = (19, false)
         #[hal_cfg("i2s")]
-        I2S = (20, any, all)
-        Ac1 = (21, any, all)
+        I2S = (20, false)
+        Ac1 = (21, false)
         #[hal_cfg("tcc3")]
-        Tcc3 = (22, any, all)
+        Tcc3 = (22, false)
     }
 );
 
@@ -576,37 +575,37 @@ define_apb_types!(
 #[hal_cfg("clock-d11")]
 define_apb_types!(
     A {
-        Pac0 = (0, all, any)
-        Pm = (1, all, any)
-        SysCtrl = (2, all, any)
-        Gclk = (3, all, any)
-        Wdt = (4, all, any)
-        Rtc = (5, all, any)
-        Eic = (6, all, any)
+        Pac0 = (0, true)
+        Pm = (1, true)
+        SysCtrl = (2, true)
+        Gclk = (3, true)
+        Wdt = (4, true)
+        Rtc = (5, true)
+        Eic = (6, true)
     }
     B {
-        Pac1 = (0, all, any)
-        Dsu = (1, all, any)
-        NvmCtrl = (2, all, any)
-        Port = (3, all, any)
-        Dmac = (4, all, any)
+        Pac1 = (0, true)
+        Dsu = (1, true)
+        NvmCtrl = (2, true)
+        Port = (3, true)
+        Dmac = (4, true)
         #[hal_cfg("usb")]
-        Usb = (5, all, any)
+        Usb = (5, true)
     }
     C {
-        Pac2 = (0, any, all)
-        EvSys = (1, any, all)
-        Sercom0 = (2, any, all)
-        Sercom1 = (3, any, all)
+        Pac2 = (0, false)
+        EvSys = (1, true)
+        Sercom0 = (2, false)
+        Sercom1 = (3, false)
         #[hal_cfg("sercom2")]
-        Sercom2 = (4, any, all)
-        Tcc0 = (5, any, all)
-        Tc1 = (6, any, all)
-        Tc2 = (7, any, all)
-        Adc0 = (8, any, all)
-        Ac = (9, any, all)
-        Dac = (10, any, all)
-        Ptc = (11, any, all)
+        Sercom2 = (4, false)
+        Tcc0 = (5, false)
+        Tc1 = (6, false)
+        Tc2 = (7, false)
+        Adc0 = (8, true)
+        Ac = (9, false)
+        Dac = (10, false)
+        Ptc = (11, false)
     }
 );
 
