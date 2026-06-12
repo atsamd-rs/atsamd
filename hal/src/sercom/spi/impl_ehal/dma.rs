@@ -70,6 +70,8 @@ where
 
         // Reenable receiver only if necessary
         if D::RX_ENABLE {
+            // must wait for transmit to complete before re-enable to avoid spurious receives
+            self.flush_tx();
             self.config.as_mut().regs.rx_enable();
         }
 
