@@ -24,10 +24,10 @@ pub use hal::pac;
 
 use hal::bsp_pins;
 use hal::clock::GenericClockController;
-use hal::sercom::v2::spi;
-use hal::sercom::v2::uart::{self, BaudMode, Oversampling};
-use hal::sercom::v2::{Sercom0, Sercom2};
-use hal::sercom::I2CMaster1;
+use hal::sercom::i2c;
+use hal::sercom::spi;
+use hal::sercom::uart::{self, BaudMode, Oversampling};
+use hal::sercom::{Sercom0, Sercom2};
 use hal::time::Hertz;
 
 #[cfg(feature = "rt")]
@@ -37,6 +37,12 @@ pub use cortex_m_rt::entry;
 use hal::usb::UsbBus;
 #[cfg(feature = "usb")]
 use usb_device::bus::UsbBusAllocator;
+
+hal::bsp_peripherals! {
+    Sercom0 { UartSercom }
+    Sercom1 { I2cSercom }
+    Sercom2 { SpiSercom }
+}
 
 bsp_pins! {
     // General purpose pins.
@@ -273,8 +279,8 @@ impl Uart {
         self,
         clocks: &mut GenericClockController,
         freq: impl Into<Hertz>,
-        sercom0: pac::SERCOM0,
-        pm: &mut pac::PM,
+        sercom0: pac::Sercom0,
+        pm: &mut pac::Pm,
     ) -> UartConfig {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom0_core(&gclk0).unwrap();
@@ -308,9 +314,9 @@ impl Spi {
     pub fn init(
         self,
         clocks: &mut GenericClockController,
-        baud: impl Into<Hertz>,
-        sercom2: pac::SERCOM2,
-        pm: &mut pac::PM,
+        baud: Hertz,
+        sercom2: pac::Sercom2,
+        pm: &mut pac::Pm,
     ) -> SpiConfig {
         let gclk0 = clocks.gclk0();
         let clock = clocks.sercom2_core(&gclk0).unwrap();
@@ -333,25 +339,32 @@ pub struct I2c {
     pub scl: I2cSclReset,
 }
 
+/// I2C pads for the labelled I2C peripheral
+///
+/// You can use these pads with other, user-defined [`i2c::Config`]urations.
+pub type I2cPads = i2c::Pads<I2cSercom, I2cSda, I2cScl>;
+
+/// I2C master for the labelled I2C peripheral
+///
+/// This type implements [`Read`](ehal::blocking::i2c::Read),
+/// [`Write`](ehal::blocking::i2c::Write) and
+/// [`WriteRead`](ehal::blocking::i2c::WriteRead).
+pub type I2cConfig = i2c::I2c<i2c::Config<I2cPads>>;
+
 impl I2c {
     /// Convenience function for creating an I2C host on the I2C pins.
     pub fn init(
         self,
         clocks: &mut GenericClockController,
-        freq: impl Into<Hertz>,
-        sercom1: pac::SERCOM1,
-        pm: &mut pac::PM,
-    ) -> I2CMaster1<I2cSda, I2cScl> {
+        baud: Hertz,
+        sercom: I2cSercom,
+        pm: &mut pac::Pm,
+    ) -> I2cConfig {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom1_core(&gclk0).unwrap();
-        I2CMaster1::new(
-            clock,
-            freq.into(),
-            sercom1,
-            pm,
-            self.sda.into(),
-            self.scl.into(),
-        )
+        let freq = clock.freq();
+        let pads = i2c::Pads::new(self.sda, self.scl);
+        i2c::Config::new(pm, sercom, pads, freq).baud(baud).enable()
     }
 }
 
@@ -377,9 +390,9 @@ impl Usb {
     #[cfg(feature = "usb")]
     pub fn init(
         self,
-        usb: pac::USB,
+        usb: pac::Usb,
         clocks: &mut GenericClockController,
-        pm: &mut pac::PM,
+        pm: &mut pac::Pm,
     ) -> UsbBusAllocator<UsbBus> {
         let gclk0 = clocks.gclk0();
         let usb_clock = &clocks.usb(&gclk0).unwrap();

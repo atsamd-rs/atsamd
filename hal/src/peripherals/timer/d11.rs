@@ -57,11 +57,11 @@ where
         // need to manually read the bit here
         while count.ctrla().read().bits() & 1 != 0 {}
 
-        count.ctrlbset().write(|w| {
+        count.ctrlbclr().write(|w| {
             // Count up when the direction bit is zero
-            w.dir().clear_bit();
+            w.dir().set_bit();
             // Periodic
-            w.oneshot().clear_bit()
+            w.oneshot().set_bit()
         });
 
         // Set TOP value for mfrq mode
@@ -128,6 +128,15 @@ impl TimerCounter<$TC>
             freq: clock.freq(),
             tc,
         }
+    }
+
+    #[inline]
+    // Disables the TC, then releases it
+    pub fn free(self) -> $TC {
+        let count = self.tc.count16();
+        count.ctrla().write(|w| w.swrst().set_bit());
+        while count.ctrla().read().bits() & 1 != 0 {}
+        self.tc
     }
 }
         )+
