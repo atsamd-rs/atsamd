@@ -32,6 +32,7 @@
 use core::marker::PhantomData;
 
 use super::Nvm;
+use crate::clock::v2::{ahb::AhbClk, types::NvmCtrlSmeeProm};
 use crate::pac::{Nvmctrl, nvmctrl::ctrlb::Cmdselect};
 use crate::typelevel::Sealed;
 
@@ -42,6 +43,7 @@ use crate::typelevel::Sealed;
 /// - current state ([`Locked`]/[`Unlocked`])
 pub struct SmartEeprom<'a, T: SmartEepromState> {
     nvm: &'a mut Nvm,
+    ahb_clk: AhbClk<NvmCtrlSmeeProm>,
     virtual_size: usize,
     __: PhantomData<T>,
 }
@@ -103,7 +105,7 @@ fn wait_if_busy() {
 impl<'a> SmartEepromMode<'a> {
     /// Retrieve [`SmartEeprom`] instance using information found in relevant HW
     /// registers.
-    pub(super) fn retrieve(nvm: &'a mut Nvm) -> Result<'a> {
+    pub(super) fn retrieve(nvm: &'a mut Nvm, ahb_clk: AhbClk<NvmCtrlSmeeProm>) -> Result<'a> {
         use SmartEepromMode as Mode;
         use SmartEepromRetrievalFailure::*;
         if nvm.nvm.seecfg().read().aprdis().bit_is_set() {
@@ -125,12 +127,14 @@ impl<'a> SmartEepromMode<'a> {
         if nvm.nvm.seestat().read().lock().bit_is_set() {
             Ok(Mode::Locked(SmartEeprom {
                 nvm,
+                ahb_clk,
                 virtual_size,
                 __: PhantomData::<Locked>,
             }))
         } else {
             Ok(Mode::Unlocked(SmartEeprom {
                 nvm,
+                ahb_clk,
                 virtual_size,
                 __: PhantomData::<Unlocked>,
             }))
@@ -209,6 +213,12 @@ impl SmartEepromPointableSize for u8 {}
 impl SmartEepromPointableSize for u16 {}
 impl SmartEepromPointableSize for u32 {}
 
+impl<'a, T: SmartEepromState> SmartEeprom<'a, T> {
+    /// Destroy the SmartEEPROM instance and return the bus clock
+    pub fn free(self) -> AhbClk<NvmCtrlSmeeProm> {
+        self.ahb_clk
+    }
+}
 impl<'a> SmartEeprom<'a, Unlocked> {
     /// Returns a mutable slice to SmartEEPROM mapped address space.
     ///
@@ -257,10 +267,14 @@ impl<'a> SmartEeprom<'a, Unlocked> {
             .command_sync(Cmdselect::Lsee)
             .expect("SmartEEPROM locking failed");
         let Self {
-            nvm, virtual_size, ..
+            nvm,
+            ahb_clk,
+            virtual_size,
+            ..
         } = self;
         SmartEeprom {
             nvm,
+            ahb_clk,
             virtual_size,
             __: PhantomData,
         }
@@ -275,10 +289,14 @@ impl<'a> SmartEeprom<'a, Locked> {
             .command_sync(Cmdselect::Usee)
             .expect("SmartEEPROM unlocking failed");
         let Self {
-            nvm, virtual_size, ..
+            nvm,
+            ahb_clk,
+            virtual_size,
+            ..
         } = self;
         SmartEeprom {
             nvm,
+            ahb_clk,
             virtual_size,
             __: PhantomData,
         }
