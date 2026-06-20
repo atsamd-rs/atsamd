@@ -22,12 +22,13 @@
 #![no_std]
 #![no_main]
 
+use atsamd_hal::qspi::QspiBuilder;
 use bsp::{entry, hal, pac, Pins};
+use hal::clock::v2::clock_system_at_reset;
 #[cfg(not(feature = "panic_led"))]
 use panic_halt as _;
 use pygamer as bsp;
 
-use hal::clock::GenericClockController;
 use hal::delay::Delay;
 use hal::prelude::*;
 use hal::qspi::{self, Command};
@@ -37,18 +38,37 @@ use pac::{CorePeripherals, Peripherals};
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_internal_32kosc(
+
+    let (_buses, clocks, _tokens) = clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
-    let mut delay = Delay::new(core.SYST, &mut clocks);
+
+    let (mut delay, gclk0) = Delay::new_with_source(core.SYST, clocks.gclk0);
 
     let sets = Pins::new(peripherals.port).split();
 
-    let mut flash = sets.flash.init(&mut peripherals.mclk, peripherals.qspi);
+    let apb_qspi = clocks.apbs.qspi;
+    let ahb_qspi = clocks.ahbs.qspi;
+
+    let (mut flash, _gclk0) = QspiBuilder::new(
+        sets.flash.sclk,
+        sets.flash.cs,
+        sets.flash.data0,
+        sets.flash.data1,
+        sets.flash.data2,
+        sets.flash.data3
+    )
+    // QSPI freq can never be more than 1/2 of the CPU freq.
+    // CPU is running at 48Mhz by default, so max QSPI speed
+    // like this is 24Mhz
+    .with_freq(24_000_000)
+    .with_mode(qspi::QspiMode::_0)
+    .build(peripherals.qspi, ahb_qspi, apb_qspi, gclk0)
+    .unwrap();
 
     // Startup delay. Can't find documented but Adafruit use 5ms
     delay.delay_ms(5u8);
@@ -63,10 +83,6 @@ fn main() -> ! {
     let mut read_buf = [0u8; 3];
     flash.read_command(Command::ReadId, &mut read_buf).unwrap();
     assert_eq!(read_buf, [0x17, 0x40, 0xc8]);
-
-    // 120MHz / 2 = 60mhz
-    // faster than 104mhz at 3.3v would require High Performance Mode
-    flash.set_clk_divider(2);
 
     // Enable Quad SPI mode. Requires write enable. Check WIP.
     flash.run_command(Command::WriteEnable).unwrap();

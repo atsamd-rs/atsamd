@@ -8,7 +8,6 @@ use embedded_hal_bus::spi as bspi;
 use hal::clock::GenericClockController;
 use hal::gpio::PA01;
 use hal::pwm;
-use hal::qspi;
 use hal::sercom::uart::{self, BaudMode, Oversampling};
 use hal::sercom::{i2c, spi, Sercom1, Sercom4};
 use hal::time::Hertz;
@@ -881,14 +880,6 @@ pub struct QSPIFlash {
     pub data1: QspiD1Reset,
     pub data2: QspiD2Reset,
     pub data3: QspiD3Reset,
-}
-
-impl QSPIFlash {
-    pub fn init(self, mclk: &mut pac::Mclk, qspi: pac::Qspi) -> qspi::Qspi<qspi::OneShot> {
-        qspi::Qspi::new(
-            mclk, qspi, self.sclk, self.cs, self.data0, self.data1, self.data2, self.data3,
-        )
-    }
 }
 
 /// Button pins
