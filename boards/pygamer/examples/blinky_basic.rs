@@ -8,7 +8,7 @@ use bsp::{entry, hal, pac, Pins, RedLed};
 use panic_halt as _;
 use pygamer as bsp;
 
-use hal::clock::GenericClockController;
+use hal::clock::v2::clock_system_at_reset;
 use hal::delay::Delay;
 use hal::prelude::*;
 use hal::watchdog::{Watchdog, WatchdogTimeout};
@@ -18,14 +18,15 @@ use pac::{CorePeripherals, Peripherals};
 fn main() -> ! {
     let mut peripherals = Peripherals::take().unwrap();
     let core = CorePeripherals::take().unwrap();
-    let mut clocks = GenericClockController::with_internal_32kosc(
+    let (mut _buses, clocks, _tokens) = clock_system_at_reset(
+        peripherals.oscctrl,
+        peripherals.osc32kctrl,
         peripherals.gclk,
-        &mut peripherals.mclk,
-        &mut peripherals.osc32kctrl,
-        &mut peripherals.oscctrl,
+        peripherals.mclk,
         &mut peripherals.nvmctrl,
     );
-    let mut delay = Delay::new(core.SYST, &mut clocks);
+
+    let (mut delay, _gclk0) = Delay::new(core.SYST, clocks.gclk0);
     delay.delay_ms(400u16);
 
     let pins = Pins::new(peripherals.port);
