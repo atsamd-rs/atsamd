@@ -44,6 +44,7 @@
 //! [`IsI2cPad`]: pad::IsI2cPad
 
 use atsamd_hal_macros::hal_cfg;
+use sorted_hlist::mk_hlist;
 
 use core::ops::Deref;
 
@@ -59,10 +60,12 @@ use pac::Pm as ApbClkCtrl;
 #[cfg(feature = "dma")]
 use crate::dmac::TriggerSource;
 
-use crate::typelevel::Sealed;
+use crate::typelevel::{NoneT, Sealed};
 
 pub mod pad;
 pub use pad::*;
+
+pub mod pads;
 
 pub mod i2c;
 pub mod spi;
@@ -112,6 +115,14 @@ pub trait Sercom: Sealed + Deref<Target = sercom0::RegisterBlock> {
     fn tx_waker() -> &'static embassy_sync::waitqueue::AtomicWaker {
         &crate::sercom::async_api::TX_WAKERS[Self::NUM]
     }
+
+    /// Associate SercomN with typenum unsigned integer N
+    type Order;
+}
+
+// Conversion of typenum unsigned integer back to Sercom
+pub trait TypenumToSercom {
+    type Sercom: Sercom;
 }
 
 macro_rules! sercom {
@@ -120,6 +131,7 @@ macro_rules! sercom {
             // use pac::$pac_type;
             /// Type alias for the corresponding SERCOM instance
             pub type [< Sercom $N >] = $crate::pac::[< Sercom $N >];
+            impl TypenumToSercom for typenum::[<U $N>] { type Sercom = [< Sercom $N >]; }
             impl Sealed for [< Sercom $N >] {}
             impl Sercom for [< Sercom $N >] {
                 const NUM: usize = $N;
@@ -147,6 +159,8 @@ macro_rules! sercom {
                 fn reg_block(peripherals: &mut Peripherals) -> &crate::pac::sercom0::RegisterBlock {
                     &*peripherals.[< sercom $N >]
                 }
+
+                type Order = typenum::[<U $N>];
             }
 
 
@@ -197,6 +211,20 @@ sercom!(apbdmask, 6);
 
 #[hal_cfg("sercom7-d5x")]
 sercom!(apbdmask, 7);
+
+// NoneT Pad can be any Sercom
+impl HasSercomList for NoneT {
+    type List = mk_hlist!(
+        typenum::U0,
+        typenum::U1,
+        typenum::U2,
+        typenum::U3,
+        typenum::U4,
+        typenum::U5,
+        typenum::U6,
+        typenum::U7
+    );
+}
 
 // Reserve space for the max number of SERCOM peripherals based on chip type,
 // even though some wakers may not be used on some chips if they actually don't

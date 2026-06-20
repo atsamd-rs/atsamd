@@ -10,7 +10,7 @@ use hal::gpio::PA01;
 use hal::pwm;
 use hal::qspi;
 use hal::sercom::uart::{self, BaudMode, Oversampling};
-use hal::sercom::{i2c, spi, Sercom1, Sercom4};
+use hal::sercom::{i2c, spi};
 use hal::time::Hertz;
 use hal::typelevel::NoneT;
 
@@ -601,7 +601,7 @@ impl From<()> for DisplayError {
     }
 }
 
-pub type TftPads = spi::Pads<Sercom4, NoneT, TftMosi, TftSclk>;
+pub type TftPads = spi::Pads<NoneT, TftMosi, TftSclk>;
 pub type TftSpi = bspi::ExclusiveDevice<
     spi::PanicOnRead<spi::Spi<spi::Config<TftPads>, spi::Tx>>,
     TftCs,
@@ -628,8 +628,8 @@ impl Display {
             .sercom4_core(&gclk0)
             .ok_or(DisplayError::SercomClock)?;
         let pads = spi::Pads::default()
-            .sclk(self.tft_sclk)
-            .data_out(self.tft_mosi);
+            .sclk(self.tft_sclk.into())
+            .data_out(self.tft_mosi.into());
         let mut tft_cs: TftCs = self.tft_cs.into();
         tft_cs.set_low().ok();
         let tft_spi = bspi::ExclusiveDevice::new_no_delay(
@@ -667,7 +667,7 @@ pub struct Neopixel {
 
 /// Pads for the neopixel SPI driver
 #[cfg(feature = "neopixel-spi")]
-pub type NeopixelSpiPads = spi::Pads<hal::sercom::Sercom2, NoneT, NeopixelPinSpi, Scl>;
+pub type NeopixelSpiPads = spi::Pads<NoneT, NeopixelPinSpi, Scl>;
 
 /// SPI master neopixel driver
 #[cfg(feature = "neopixel-spi")]
@@ -685,7 +685,7 @@ impl Neopixel {
     pub fn init_spi(
         self,
         clocks: &mut GenericClockController,
-        scl: impl hal::gpio::AnyPin<Id = hal::gpio::PA13>,
+        scl: impl Into<Scl>,
         sercom2: pac::Sercom2,
         mclk: &mut pac::Mclk,
     ) -> ws2812_spi::Ws2812<NeopixelSpi> {
@@ -694,7 +694,7 @@ impl Neopixel {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom2_core(&gclk0).unwrap();
         let pads = spi::Pads::default()
-            .data_out(self.neopixel)
+            .data_out(self.neopixel.into())
             .sclk(scl.into());
         let spi = spi::Config::new(mclk, sercom2, pads, clock.freq())
             .spi_mode(spi::MODE_0)
@@ -718,7 +718,7 @@ pub struct SPI {
 /// According to the datasheet, the combination of PA17, PB22 & PB23 shouldn't
 /// work, even though it does. We have added an undocumented `UndocIoSet1` to
 /// `Sercom1` for this combination.
-pub type SpiPads = spi::Pads<Sercom1, SpiMiso, SpiMosi, SpiSclk>;
+pub type SpiPads = spi::Pads<SpiMiso, SpiMosi, SpiSclk>;
 
 /// SPI master for the labelled pins
 pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
@@ -736,9 +736,9 @@ impl SPI {
         let gclk0 = clocks.gclk0();
         let clock = &clocks.sercom1_core(&gclk0).unwrap();
         let pads = spi::Pads::default()
-            .data_in(self.miso)
-            .data_out(self.mosi)
-            .sclk(self.sclk);
+            .data_in(self.miso.into())
+            .data_out(self.mosi.into())
+            .sclk(self.sclk.into());
         spi::Config::new(mclk, sercom1, pads, clock.freq())
             .spi_mode(spi::MODE_0)
             .baud(baud.into())
@@ -755,7 +755,7 @@ pub struct I2C {
 /// I2C pads for the labelled I2C peripheral
 ///
 /// You can use these pads with other, user-defined [`i2c::Config`]urations.
-pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
+pub type I2cPads = i2c::Pads<Sda, Scl>;
 
 /// I2C master for the labelled I2C peripheral
 ///
@@ -823,7 +823,7 @@ pub struct UART {
 }
 
 /// UART Pads for the labelled UART peripheral
-pub type UartPads = uart::Pads<UartSercom, UartRx, UartTx>;
+pub type UartPads = uart::Pads<UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;

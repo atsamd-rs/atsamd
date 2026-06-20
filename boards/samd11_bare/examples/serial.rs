@@ -52,7 +52,7 @@ fn main() -> ! {
         .sercom0_core(&gclk2)
         .expect("Could not configure sercom0 clock");
 
-    let pads = uart::Pads::<Sercom0>::default().rx(rx).tx(tx);
+    let pads = uart::Pads::default().rx(rx).tx(tx);
 
     let mut uart = uart::Config::new(&peripherals.pm, peripherals.sercom0, pads, uart_clk.freq())
         .baud(9600.Hz(), BaudMode::Fractional(Oversampling::Bits16))
