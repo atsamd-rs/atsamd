@@ -533,3 +533,19 @@ mod waker {
     pub(super) static WAKERS: [AtomicWaker; with_num_channels!(get)] =
         [NEW_WAKER; with_num_channels!(get)];
 }
+
+/// Prevent the compiler from re-ordering read/write
+/// operations beyond this function.
+/// (see https://docs.rust-embedded.org/embedonomicon/dma.html#compiler-misoptimizations)
+#[inline(always)]
+fn asm_fence() {
+    // TODO: Seems like compiler fences aren't enough to guarantee memory accesses
+    // won't be reordered. (see https://users.rust-lang.org/t/compiler-fence-dma/132027)
+    // core::sync::atomic::fence(core::sync::atomic::Ordering::Acquire); // ▼
+
+    // Apparently, the only truly foolproof way to prevent reordering is with inline
+    // asm
+    unsafe {
+        core::arch::asm!("dmb");
+    }
+}
