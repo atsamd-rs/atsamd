@@ -25,6 +25,68 @@
 //! [`Busy`]. These statuses are checked at compile time to ensure they are
 //! properly initialized before launching DMA transfers.
 //!
+//! # Interrupt availability
+//!
+//! Channels carry an [`Interrupts`] type parameter — either [`Available`] or
+//! [`Blocked`] — that controls access to interrupt configuration.
+//!
+//! Channels from [`DmaController::split`](super::DmaController::split) are
+//! [`Available`], allowing [`enable_interrupts`](Channel::enable_interrupts)
+//! and [`disable_interrupts`](Channel::disable_interrupts) to be called freely.
+//!
+//! Channels from the async
+//! [`DmaController::split`](super::DmaController::split) are [`Blocked`],
+//! because the async runtime manages interrupts internally. [`Blocked`]
+//! channels can be converted between async and blocking statuses via [`From`]
+//! impls, for use with the [`Transfer`] API, while retaining the interrupt
+//! restriction.
+//!
+//! # Converting between async and blocking channels
+//!
+//! [`Blocked`] channels support [`From`] conversions between their async
+//! (`ReadyFuture`, `UninitializedFuture`) and blocking ([`Ready`],
+//! [`Uninitialized`]) statuses. This enables using the [`Transfer`] API
+//! with channels obtained from the async
+//! [`DmaController`](super::DmaController).
+//!
+//! Each conversion performs a hardware channel reset (SWRST), which clears
+//! all channel register configuration back to defaults. This includes the
+//! priority level set by [`Channel::init`], which resets to
+//! `PriorityLevel::LVL0`. If you need a non-default priority level after
+//! conversion, call [`init`](Channel::init) again.
+//!
+//! ```
+//! // Assume `async_chan` is a Channel<Id, ReadyFuture, Blocked> from the
+//! // async DmaController.
+//!
+//! // Convert to a blocking-mode channel. The channel hardware is reset,
+//! // so priority returns to LVL0. We want a higher priority for this
+//! // circular transfer, so we chain .init() to set LVL3.
+//! let blocking_chan: Channel<_, Ready, Blocked> =
+//!     Channel::from(async_chan).init(PriorityLevel::LVL3);
+//!
+//! // Use with the Transfer API — for example, a circular transfer,
+//! // which is not available through the async channel API.
+//! let xfer = Transfer::new(blocking_chan, buf_src, buf_dest, true)
+//!     .unwrap()
+//!     .begin(TriggerSource::Disable, TriggerAction::Block);
+//!
+//! // ... do work while the circular transfer runs ...
+//!
+//! let (chan, src, dest) = xfer.stop();
+//!
+//! // Convert back to async when done. The channel is reset again;
+//! // LVL0 is fine for async use, so no .init() call needed.
+//! let async_chan: Channel<_, ReadyFuture, Blocked> = chan.into();
+//! ```
+//!
+//! Note that [`Blocked`] channels cannot call
+//! [`enable_interrupts`](Channel::enable_interrupts) or
+//! [`disable_interrupts`](Channel::disable_interrupts). Blocking DMA methods
+//! that enable interrupts internally (such as
+//! [`Uart::receive_with_dma`](crate::sercom::uart::Uart::receive_with_dma))
+//! require [`Available`] channels.
+//!
 //! # Resetting
 //!
 //! Calling the [`Channel::reset`] method will reset the channel to its
@@ -112,39 +174,61 @@ impl ReadyChannel for Ready {}
 #[cfg(feature = "async")]
 impl ReadyChannel for ReadyFuture {}
 
+/// Tracks whether the channel can use interrupts, or if they're in use already
+/// by the Async impl
+pub trait Interrupts: Sealed {}
+
+/// Interrupts are available
+pub enum Available {}
+impl Sealed for Available {}
+impl Interrupts for Available {}
+
+/// Interrupts are managed by the `async` runtime and cannot be directly
+/// configured
+pub enum Blocked {}
+impl Sealed for Blocked {}
+impl Interrupts for Blocked {}
+
 //==============================================================================
 // AnyChannel
 //==============================================================================
 pub trait AnyChannel: Sealed + Is<Type = SpecificChannel<Self>> {
     type Status: Status;
     type Id: ChId;
+    type Interrupts: Interrupts;
 }
 
-pub type SpecificChannel<C> = Channel<<C as AnyChannel>::Id, <C as AnyChannel>::Status>;
+pub type SpecificChannel<C> =
+    Channel<<C as AnyChannel>::Id, <C as AnyChannel>::Status, <C as AnyChannel>::Interrupts>;
 
 pub type ChannelStatus<C> = <C as AnyChannel>::Status;
 pub type ChannelId<C> = <C as AnyChannel>::Id;
+pub type ChannelInterrupts<C> = <C as AnyChannel>::Interrupts;
 
-impl<Id, S> Sealed for Channel<Id, S>
+impl<Id, S, I> Sealed for Channel<Id, S, I>
 where
     Id: ChId,
     S: Status,
+    I: Interrupts,
 {
 }
 
-impl<Id, S> AnyChannel for Channel<Id, S>
+impl<Id, S, I> AnyChannel for Channel<Id, S, I>
 where
     Id: ChId,
     S: Status,
+    I: Interrupts,
 {
     type Id = Id;
     type Status = S;
+    type Interrupts = I;
 }
 
-impl<Id, S> AsRef<Self> for Channel<Id, S>
+impl<Id, S, I> AsRef<Self> for Channel<Id, S, I>
 where
     Id: ChId,
     S: Status,
+    I: Interrupts,
 {
     #[inline]
     fn as_ref(&self) -> &Self {
@@ -152,10 +236,11 @@ where
     }
 }
 
-impl<Id, S> AsMut<Self> for Channel<Id, S>
+impl<Id, S, I> AsMut<Self> for Channel<Id, S, I>
 where
     Id: ChId,
     S: Status,
+    I: Interrupts,
 {
     #[inline]
     fn as_mut(&mut self) -> &mut Self {
@@ -169,31 +254,37 @@ where
 
 /// DMA channel, capable of executing
 /// [`Transfer`]s. Ongoing DMA transfers are automatically stopped when a
-/// [`Channel`] is dropped.
-pub struct Channel<Id: ChId, S: Status> {
+/// [`Channel`] is dropped. [`Interrupts`] are either [`Available`] or
+/// [`Blocked`], depending on whether the async controller is used.
+pub struct Channel<Id: ChId, S: Status, I: Interrupts = Available> {
     regs: RegisterBlock<Id>,
     _status: PhantomData<S>,
+    _interrupts: PhantomData<I>,
 }
 
 #[inline]
-pub(super) fn new_chan<Id: ChId>(_id: PhantomData<Id>) -> Channel<Id, Uninitialized> {
+pub(super) fn new_chan<Id: ChId>(_id: PhantomData<Id>) -> Channel<Id, Uninitialized, Available> {
     Channel {
         regs: RegisterBlock::new(_id),
         _status: PhantomData,
+        _interrupts: PhantomData,
     }
 }
 
 #[cfg(feature = "async")]
 #[inline]
-pub(super) fn new_chan_future<Id: ChId>(_id: PhantomData<Id>) -> Channel<Id, UninitializedFuture> {
+pub(super) fn new_chan_future<Id: ChId>(
+    _id: PhantomData<Id>,
+) -> Channel<Id, UninitializedFuture, Blocked> {
     Channel {
         regs: RegisterBlock::new(_id),
         _status: PhantomData,
+        _interrupts: PhantomData,
     }
 }
 
 /// These methods may be used on any DMA channel in any configuration
-impl<Id: ChId, S: Status> Channel<Id, S> {
+impl<Id: ChId, S: Status, I: Interrupts> Channel<Id, S, I> {
     /// Configure the DMA channel so that it is ready to be used by a
     /// [`Transfer`].
     ///
@@ -202,7 +293,7 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     /// A `Channel` with a `Ready` status
     #[inline]
     #[hal_macro_helper]
-    pub fn init(mut self, lvl: PriorityLevel) -> Channel<Id, S::Ready> {
+    pub fn init(mut self, lvl: PriorityLevel) -> Channel<Id, S::Ready, I> {
         // Software reset the channel for good measure
         self._reset_private();
 
@@ -214,26 +305,6 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         self.regs.chprilvl.modify(|_, w| w.prilvl().variant(lvl));
 
         self.change_status()
-    }
-
-    /// Selectively enable interrupts
-    #[inline]
-    pub fn enable_interrupts(&mut self, flags: InterruptFlags) {
-        // SAFETY: This is safe as InterruptFlags is only capable of writing in
-        // non-reserved bits
-        self.regs
-            .chintenset
-            .write(|w| unsafe { w.bits(flags.into()) });
-    }
-
-    /// Selectively disable interrupts
-    #[inline]
-    pub fn disable_interrupts(&mut self, flags: InterruptFlags) {
-        // SAFETY: This is safe as InterruptFlags is only capable of writing in
-        // non-reserved bits
-        self.regs
-            .chintenclr
-            .write(|w| unsafe { w.bits(flags.into()) });
     }
 
     /// Check the specified `flags`, clear then return any that were set
@@ -249,10 +320,11 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     }
 
     #[inline]
-    pub(super) fn change_status<N: Status>(self) -> Channel<Id, N> {
+    pub(super) fn change_status<N: Status>(self) -> Channel<Id, N, I> {
         Channel {
             regs: self.regs,
             _status: PhantomData,
+            _interrupts: PhantomData,
         }
     }
 
@@ -379,15 +451,93 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     }
 }
 
-impl<Id, R> Channel<Id, R>
+/// Interrupt configuration methods, only available on channels with
+/// [`Available`] interrupts. Channels from the async
+/// [`DmaController`](super::DmaController) are [`Blocked`] and cannot use these
+/// methods.
+impl<Id: ChId, S: Status> Channel<Id, S, Available> {
+    /// Selectively enable interrupts.
+    ///
+    /// Only available on channels with [`Available`] interrupts.
+    #[inline]
+    pub fn enable_interrupts(&mut self, flags: InterruptFlags) {
+        // SAFETY: Type parameters ensure this is valid for this channel
+        unsafe { self._enable_interrupts_unchecked(flags) }
+    }
+
+    /// Selectively disable interrupts.
+    ///
+    /// Only available on channels with [`Available`] interrupts.
+    #[inline]
+    pub fn disable_interrupts(&mut self, flags: InterruptFlags) {
+        // SAFETY: Type parameters ensure this is valid for this channel
+        unsafe { self._disable_interrupts_unchecked(flags) }
+    }
+
+    /// Irreversibly consider this channel to be [`Blocked`]. For API
+    /// compatibility, this will promise that this channel will never have
+    /// interrupts enabled.
+    ///
+    /// Be aware that calling `.into::<Channel<ID, ReadyFuture, Blocked>>()` on
+    /// a [`Blocked`] channel you got from `into_blocked()` will produce
+    /// a nonfunctional channel - Async channels don't work if the DMAC wasn't
+    /// initialized as Async.
+    pub fn into_blocked(mut self) -> Channel<Id, S, Blocked> {
+        self.disable_interrupts(
+            InterruptFlags::new()
+                .with_tcmpl(true)
+                .with_terr(true)
+                .with_susp(true),
+        );
+        Channel {
+            _interrupts: PhantomData,
+            _status: self._status,
+            regs: self.regs,
+        }
+    }
+}
+
+/// Unsafe internals for async impl
+impl<Id: ChId, S: Status, I: Interrupts> Channel<Id, S, I> {
+    /// Selectively enable interrupts.
+    ///
+    /// # Safety
+    /// Ensure the channel is Interrupts=Available, or you're correctly enabling
+    /// TCMPL for Async
+    #[inline]
+    pub(crate) unsafe fn _enable_interrupts_unchecked(&mut self, flags: InterruptFlags) {
+        // SAFETY: This is safe as InterruptFlags is only capable of writing in
+        // non-reserved bits
+        self.regs
+            .chintenset
+            .write(|w| unsafe { w.bits(flags.into()) });
+    }
+
+    /// Selectively disable interrupts
+    ///
+    /// # Safety
+    /// Ensure the channel is Interrupts=Available, or you're correctly
+    /// disabling TCMPL for Async
+    #[inline]
+    pub(crate) unsafe fn _disable_interrupts_unchecked(&mut self, flags: InterruptFlags) {
+        // SAFETY: This is safe as InterruptFlags is only capable of writing in
+        // non-reserved bits
+        self.regs
+            .chintenclr
+            .write(|w| unsafe { w.bits(flags.into()) });
+    }
+}
+
+impl<Id, R, I> Channel<Id, R, I>
 where
     Id: ChId,
     R: ReadyChannel,
+    I: Interrupts,
 {
     /// Issue a software reset to the channel. This will return the channel to
     /// its startup state
     #[inline]
-    pub fn reset(mut self) -> Channel<Id, R::Uninitialized> {
+    pub fn reset(mut self) -> Channel<Id, R::Uninitialized, I> {
         self._reset_private();
         self.change_status()
     }
@@ -471,7 +621,7 @@ where
     }
 }
 
-impl<Id: ChId> Channel<Id, Ready> {
+impl<Id: ChId, I: Interrupts> Channel<Id, Ready, I> {
     /// Start transfer on channel using the specified trigger source.
     ///
     /// # Return
@@ -482,7 +632,7 @@ impl<Id: ChId> Channel<Id, Ready> {
         mut self,
         trig_src: TriggerSource,
         trig_act: TriggerAction,
-    ) -> Channel<Id, Busy> {
+    ) -> Channel<Id, Busy, I> {
         unsafe {
             self._start_private(trig_src, trig_act);
         }
@@ -583,7 +733,7 @@ impl<Id: ChId> Channel<Id, Ready> {
 }
 
 /// These methods may only be used on a `Busy` DMA channel
-impl<Id: ChId> Channel<Id, Busy> {
+impl<Id: ChId, I: Interrupts> Channel<Id, Busy, I> {
     /// Issue a software trigger to the channel
     #[inline]
     pub(crate) fn software_trigger(&mut self) {
@@ -598,7 +748,7 @@ impl<Id: ChId> Channel<Id, Busy> {
     /// A `Channel` with a `Ready` status, ready to be reused by a new
     /// [`Transfer`](super::transfer::Transfer)
     #[inline]
-    pub(crate) fn free(mut self) -> Channel<Id, Ready> {
+    pub(crate) fn free(mut self) -> Channel<Id, Ready, I> {
         self.stop();
         self.change_status()
     }
@@ -610,15 +760,15 @@ impl<Id: ChId> Channel<Id, Busy> {
     }
 }
 
-impl<Id: ChId> From<Channel<Id, Ready>> for Channel<Id, Uninitialized> {
-    fn from(mut item: Channel<Id, Ready>) -> Self {
+impl<Id: ChId, I: Interrupts> From<Channel<Id, Ready, I>> for Channel<Id, Uninitialized, I> {
+    fn from(mut item: Channel<Id, Ready, I>) -> Self {
         item._reset_private();
         item.change_status()
     }
 }
 
 #[cfg(feature = "async")]
-impl<Id: ChId> Channel<Id, ReadyFuture> {
+impl<Id: ChId> Channel<Id, ReadyFuture, Blocked> {
     /// Begin DMA transfer using `async` operation.
     ///
     /// If [`TriggerSource::Disable`] is used, a software
@@ -708,12 +858,15 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
             }
         }
 
-        self.disable_interrupts(
-            InterruptFlags::new()
-                .with_susp(true)
-                .with_tcmpl(true)
-                .with_terr(true),
-        );
+        // SAFETY: This is the only place this is allowed
+        unsafe {
+            self._disable_interrupts_unchecked(
+                InterruptFlags::new()
+                    .with_susp(true)
+                    .with_tcmpl(true)
+                    .with_terr(true),
+            );
+        }
 
         self.configure_trigger(trig_src, trig_act);
 
@@ -725,6 +878,58 @@ impl<Id: ChId> Channel<Id, ReadyFuture> {
         // *absolutely* must be called before this function is returned,
         // because it emits the compiler fence which ensures memory operations
         // aren't reordered beyond the DMA transfer's bounds.
+    }
+}
+
+/// Convert an async [`ReadyFuture`] channel to a blocking [`Ready`] channel,
+/// enabling use with the [`Transfer`] API. The channel retains [`Blocked`]
+/// interrupts.
+///
+/// The channel hardware is reset during conversion, which clears all channel
+/// configuration including the priority level. If you need a non-default
+/// priority level, call [`init`](Channel::init) again after conversion.
+#[cfg(feature = "async")]
+impl<Id: ChId> From<Channel<Id, ReadyFuture, Blocked>> for Channel<Id, Ready, Blocked> {
+    fn from(mut item: Channel<Id, ReadyFuture, Blocked>) -> Self {
+        item._reset_private();
+        item.change_status()
+    }
+}
+
+#[cfg(feature = "async")]
+impl<Id: ChId> From<Channel<Id, UninitializedFuture, Blocked>>
+    for Channel<Id, Uninitialized, Blocked>
+{
+    fn from(mut item: Channel<Id, UninitializedFuture, Blocked>) -> Self {
+        item._reset_private();
+        item.change_status()
+    }
+}
+
+/// Restore a blocking [`Ready`] channel to async [`ReadyFuture`] status.
+///
+/// The channel hardware is reset during conversion, which clears all channel
+/// configuration including the priority level. If you need a non-default
+/// priority level, call [`init`](Channel::init) again after conversion.
+///
+/// Be aware that calling this on a [`Blocked`] channel you got from
+/// `into_blocked()` will produce a nonfunctional channel - Async channels don't
+/// work if the DMAC wasn't initialized as Async.
+#[cfg(feature = "async")]
+impl<Id: ChId> From<Channel<Id, Ready, Blocked>> for Channel<Id, ReadyFuture, Blocked> {
+    fn from(mut item: Channel<Id, Ready, Blocked>) -> Self {
+        item._reset_private();
+        item.change_status()
+    }
+}
+
+#[cfg(feature = "async")]
+impl<Id: ChId> From<Channel<Id, Uninitialized, Blocked>>
+    for Channel<Id, UninitializedFuture, Blocked>
+{
+    fn from(mut item: Channel<Id, Uninitialized, Blocked>) -> Self {
+        item._reset_private();
+        item.change_status()
     }
 }
 
@@ -744,11 +949,14 @@ mod transfer_future {
     pub(super) struct TransferFuture<'a, Id: ChId> {
         triggered: bool,
         trig_src: TriggerSource,
-        chan: &'a mut Channel<Id, ReadyFuture>,
+        chan: &'a mut Channel<Id, ReadyFuture, Blocked>,
     }
 
     impl<'a, Id: ChId> TransferFuture<'a, Id> {
-        pub(super) fn new(chan: &'a mut Channel<Id, ReadyFuture>, trig_src: TriggerSource) -> Self {
+        pub(super) fn new(
+            chan: &'a mut Channel<Id, ReadyFuture, Blocked>,
+            trig_src: TriggerSource,
+        ) -> Self {
             Self {
                 triggered: false,
                 trig_src,
@@ -782,7 +990,8 @@ mod transfer_future {
                 Poll::Ready(Err(super::Error::TransferError))
             } else {
                 WAKERS[Id::USIZE].register(cx.waker());
-                self.chan.enable_interrupts(flags_to_check);
+                // SAFETY: This is the only place this is allowed
+                unsafe { self.chan._enable_interrupts_unchecked(flags_to_check) };
                 self.chan._enable_private();
 
                 if !self.triggered && self.trig_src == TriggerSource::Disable {

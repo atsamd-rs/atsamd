@@ -4,7 +4,7 @@ use num_traits::{AsPrimitive, PrimInt};
 use super::SpiFuture;
 use crate::{
     dmac::{
-        AnyChannel, Beat, Buffer, ReadyFuture,
+        AnyChannel, Beat, Blocked, Buffer, ReadyFuture,
         channel::{self, Channel},
         sram::DmacDescriptor,
     },
@@ -28,17 +28,17 @@ use crate::{
 /// The type parameter `R` represents the RX DMA channel ID (`ChX`), and
 /// `T` represents the TX DMA channel ID.
 pub type SpiFutureDuplexDma<C, R, T> =
-    SpiFuture<C, Duplex, Channel<R, ReadyFuture>, Channel<T, ReadyFuture>>;
+    SpiFuture<C, Duplex, Channel<R, ReadyFuture, Blocked>, Channel<T, ReadyFuture, Blocked>>;
 
 /// Convenience type for a [`SpiFuture`] with RX capabilities in DMA mode.
 ///
 /// The type parameter `R` represents the RX DMA channel ID (`ChX`).
-pub type SpiFutureRxDma<C, R> = SpiFuture<C, Rx, Channel<R, ReadyFuture>, NoneT>;
+pub type SpiFutureRxDma<C, R> = SpiFuture<C, Rx, Channel<R, ReadyFuture, Blocked>, NoneT>;
 
 /// Convenience type for a [`SpiFuture`] with TX capabilities in DMA mode.
 ///
 /// The type parameter `T` represents the TX DMA channel ID (`ChX`).
-pub type SpiFutureTxDma<C, T> = SpiFuture<C, Tx, NoneT, Channel<T, ReadyFuture>>;
+pub type SpiFutureTxDma<C, T> = SpiFuture<C, Tx, NoneT, Channel<T, ReadyFuture, Blocked>>;
 
 impl<C, D, T> SpiFuture<C, D, NoneT, T>
 where
@@ -51,7 +51,7 @@ where
     /// carry out its transactions. In Slave mode, a [`Rx`] [`SpiFuture`] only
     /// needs a single DMA channel.
     #[inline]
-    pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
+    pub fn with_rx_dma_channel<Chan: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>>(
         self,
         rx_channel: Chan,
     ) -> SpiFuture<C, D, Chan, T> {
@@ -77,7 +77,7 @@ where
     /// carry out its transactions. For [`Tx`] [`SpiFuture`]s, only a single DMA
     /// channel is necessary.
     #[inline]
-    pub fn with_tx_dma_channel<Chan: AnyChannel<Status = ReadyFuture>>(
+    pub fn with_tx_dma_channel<Chan: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>>(
         self,
         tx_channel: Chan,
     ) -> SpiFuture<C, D, R, Chan> {
@@ -106,8 +106,8 @@ where
     #[inline]
     pub fn with_dma_channels<R, T>(self, rx_channel: R, tx_channel: T) -> SpiFuture<C, D, R, T>
     where
-        R: AnyChannel<Status = ReadyFuture>,
-        T: AnyChannel<Status = ReadyFuture>,
+        R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
+        T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         SpiFuture {
             spi: Spi {
@@ -130,8 +130,8 @@ where
     /// needs two DMA channels.
     pub fn with_dma_channels_slave<R, T>(self, rx: R, tx: T) -> SpiFuture<C, Duplex, R, T>
     where
-        R: AnyChannel<Status = ReadyFuture>,
-        T: AnyChannel<Status = ReadyFuture>,
+        R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
+        T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         SpiFuture {
             spi: Spi {
@@ -153,8 +153,8 @@ where
     /// not use DMA.
     pub fn take_dma_channels(self) -> (SpiFuture<C, D, NoneT, NoneT>, R, T)
     where
-        R: AnyChannel<Status = ReadyFuture>,
-        T: AnyChannel<Status = ReadyFuture>,
+        R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
+        T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         let (spi, rx, tx) = self.spi.take_dma_channels();
         (SpiFuture { spi }, rx, tx)
@@ -164,7 +164,7 @@ where
     /// use DMA.
     pub fn take_rx_channel(self) -> (SpiFuture<C, D, NoneT, T>, R)
     where
-        R: AnyChannel<Status = ReadyFuture>,
+        R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         let (spi, channel) = self.spi.take_rx_channel();
         (SpiFuture { spi }, channel)
@@ -174,7 +174,7 @@ where
     /// use DMA.
     pub fn take_tx_channel(self) -> (SpiFuture<C, D, R, NoneT>, T)
     where
-        T: AnyChannel<Status = ReadyFuture>,
+        T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
     {
         let (spi, channel) = self.spi.take_tx_channel();
         (SpiFuture { spi }, channel)
@@ -192,7 +192,7 @@ where
     S: Sercom,
     Z::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
     DataWidth: AsPrimitive<Z::Word>,
-    T: AnyChannel<Status = ReadyFuture>,
+    T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
 {
     /// Write words from a buffer asynchronously, using DMA.
     #[inline]
@@ -230,8 +230,8 @@ where
     C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
     D: Capability,
     DataWidth: AsPrimitive<C::Word>,
-    R: AnyChannel<Status = ReadyFuture>,
-    T: AnyChannel<Status = ReadyFuture>,
+    R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
+    T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
 {
     #[inline]
     async fn transfer_blocking<Source: Buffer<Beat = C::Word>, Dest: Buffer<Beat = C::Word>>(
@@ -278,8 +278,8 @@ where
     C: Size + 'static,
     C::Word: PrimInt + AsPrimitive<DataWidth> + Beat,
     DataWidth: AsPrimitive<C::Word>,
-    R: AnyChannel<Status = ReadyFuture>,
-    T: AnyChannel<Status = ReadyFuture>,
+    R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
+    T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
 {
     #[inline]
     async fn read(&mut self, words: &mut [C::Word]) -> Result<(), Self::Error> {
@@ -423,7 +423,7 @@ where
     Z: Size<Word = u8> + 'static,
     Config<P, M, Z>: ValidConfig<Sercom: Sercom>,
     D: Transmit,
-    T: AnyChannel<Status = ReadyFuture>,
+    T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
 {
     async fn write(&mut self, buf: &[u8]) -> Result<usize, Self::Error> {
         SpiFuture::write_dma(self, buf).await
@@ -444,8 +444,8 @@ where
     Z: Size<Word = u8> + 'static,
     Config<P, M, Z>: ValidConfig<Sercom: Sercom>,
     D: Receive,
-    R: AnyChannel<Status = ReadyFuture>,
-    T: AnyChannel<Status = ReadyFuture>,
+    R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
+    T: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
 {
     async fn read(&mut self, buf: &mut [u8]) -> Result<usize, Self::Error> {
         self.read_dma_master(buf).await?;
@@ -462,7 +462,7 @@ where
     Config<P, Slave, Z>: ValidConfig<Sercom = S>,
     D: Receive,
     S: Sercom,
-    R: AnyChannel<Status = ReadyFuture>,
+    R: AnyChannel<Status = ReadyFuture, Interrupts = Blocked>,
 {
     async fn read(&mut self, mut buf: &mut [u8]) -> Result<usize, Self::Error> {
         if buf.is_empty() {
