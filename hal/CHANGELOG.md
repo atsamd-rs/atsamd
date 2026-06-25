@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.4](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.3...atsamd-hal-0.23.4) - 2026-06-25
+
+### Added
+
+- *(usb)* Enable Multi-Packet Rx and Tx ([#1009](https://github.com/atsamd-rs/atsamd/pull/1009))
+
+### Fixed
+
+- *(timer)* Fix misuse of ctrlbset and ctrlbclr ([#1001](https://github.com/atsamd-rs/atsamd/pull/1001))
+- *(rtc)* disable compare interrupt instead of stopping the RTC counter ([#992](https://github.com/atsamd-rs/atsamd/pull/992))
+
+### Other
+
+- Introduce more peripheral free methods for consistency ([#1000](https://github.com/atsamd-rs/atsamd/pull/1000))
+- Fix nightly clippy lint ([#1006](https://github.com/atsamd-rs/atsamd/pull/1006))
+- Update DMAC documentation ([#1005](https://github.com/atsamd-rs/atsamd/pull/1005))
+- Make ADC `check_read_discard` private again ([#1003](https://github.com/atsamd-rs/atsamd/pull/1003))
+
 ## [0.23.3](https://github.com/atsamd-rs/atsamd/compare/atsamd-hal-0.23.2...atsamd-hal-0.23.3) - 2026-03-02
 
 ### Fixed
