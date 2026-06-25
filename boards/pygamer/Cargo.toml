@@ -53,6 +53,8 @@ usbd-serial = "0.2"
 [features]
 # ask the HAL to enable atsamd51j support
 default = ["rt", "atsamd-hal/samd51j"]
+# Use DEFMT_LOG environment variable to set logging level, defaults to `error`
+defmt = ["atsamd-hal/defmt"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 neopixel-spi = ["dep:ws2812-spi"]

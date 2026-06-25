@@ -38,6 +38,8 @@ rtt-target = {version = "0.3", features = ["cortex-m"]}
 
 [features]
 default = ["rt", "atsamd-hal/same54p"]
+# Use DEFMT_LOG environment variable to set logging level, defaults to `error`
+defmt = ["atsamd-hal/defmt"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable async support from atsamd-hal

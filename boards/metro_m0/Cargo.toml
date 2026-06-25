@@ -45,6 +45,8 @@ usbd-serial = "0.2"
 [features]
 # ask the HAL to enable atsamd21g support
 default = ["rt", "atsamd-hal/samd21g"]
+# Use DEFMT_LOG environment variable to set logging level, defaults to `error`
+defmt = ["atsamd-hal/defmt"]
 dma = ["atsamd-hal/dma"]
 max-channels = ["dma", "atsamd-hal/max-channels"]
 # Enable async support from atsamd-hal
