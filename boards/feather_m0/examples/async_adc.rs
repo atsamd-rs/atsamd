@@ -16,7 +16,7 @@ use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
 use hal::{
-    adc::{Accumulation, Adc, Adc0, Prescaler, Resolution},
+    adc::{Accumulation, Adc0, Prescaler},
     clock::GenericClockController,
 };
 
