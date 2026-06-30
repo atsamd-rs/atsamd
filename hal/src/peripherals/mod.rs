@@ -5,13 +5,13 @@ pub mod adc;
 
 #[hal_module(
     any("nvmctrl-d11", "nvmctrl-d21") => "calibration/d11.rs",
-    "nvmctrl-d5x" => "calibration/d5x.rs",
+    any("nvmctrl-d5x", "nvmctrl-pic32cxsg") => "calibration/d5x.rs",
 )]
 pub mod calibration {}
 
 #[hal_module(
     any("clock-d11", "clock-d21") => "timer/d11.rs",
-    "clock-d5x" => "timer/d5x.rs",
+    any("clock-d5x", "clock-pic32cxsg") => "timer/d5x.rs",
 )]
 pub mod timer {}
 
@@ -21,26 +21,26 @@ pub mod eic;
 #[cfg(feature = "usb")]
 #[hal_module(
     any("usb-d11", "usb-d21") => "usb/d11/mod.rs",
-    "usb-d5x" => "usb/d5x/mod.rs",
+    any("usb-d5x", "usb-pic32cxsg") => "usb/d5x/mod.rs",
 )]
 pub mod usb {}
 
 #[hal_module(
     any("clock-d11", "clock-d21") => "pwm/d11.rs",
-    "clock-d5x" => "pwm/d5x.rs",
+    any("clock-d5x", "clock-pic32cxsg") => "pwm/d5x.rs",
 )]
 pub mod pwm {}
 
 #[hal_module(
     any("clock-d11", "clock-d21") => "clock/d11.rs",
-    "clock-d5x" => "clock/d5x/mod.rs",
+    any("clock-d5x", "clock-pic32cxsg") => "clock/d5x/mod.rs",
 )]
 pub mod clock {}
 
 #[hal_module("aes")]
 pub mod aes {}
 
-#[hal_module("dsu-d5x")]
+#[hal_module(any("dsu-d5x", "dsu-pic32cxsg"))]
 pub mod dsu {}
 
 #[hal_module("pukcc")]
@@ -55,7 +55,7 @@ pub mod trng {}
 #[hal_module("icm")]
 pub mod icm {}
 
-#[hal_module("nvmctrl-d5x")]
+#[hal_module(any("nvmctrl-d5x", "nvmctrl-pic32cxsg"))]
 pub mod nvm {}
 
 #[cfg(feature = "can")]
@@ -65,10 +65,10 @@ pub mod can {}
 #[hal_module("wdt")]
 pub mod watchdog {}
 
-#[hal_module(any("pm-d11", "pm-d21", "rstc-d5x"))]
+#[hal_module(any("pm-d11", "pm-d21", "rstc-d5x", "rstc-pic32cxsg"))]
 mod reset_cause {}
 
-#[hal_cfg(any("pm-d11", "pm-d21", "rstc-d5x"))]
+#[hal_cfg(any("pm-d11", "pm-d21", "rstc-d5x", "rstc-pic32cxsg"))]
 pub use reset_cause::*;
 
 #[hal_module("serial-numbers")]
