@@ -3,13 +3,17 @@ pub mod pin;
 use pac::Supc;
 
 #[cfg(feature = "async")]
-use super::{FutureAdc, async_api};
+use super::{async_api, FutureAdc};
 
 use super::{
-    ADC_SETTINGS_INTERNAL_READ, Accumulation, Adc, AdcInstance, AdcSettings, CpuVoltageSource,
-    Error, Flags, PrimaryAdc, SampleCount,
+    Accumulation, Adc, AdcInstance, AdcSettings, CpuVoltageSource, Error, Flags, PrimaryAdc,
+    SampleCount, ADC_SETTINGS_INTERNAL_READ,
 };
-use crate::{calibration, pac};
+use crate::{
+    calibration,
+    dac::{Dac0, Dac1, DacWriteHandle, Differential, Single},
+    pac,
+};
 
 /// ADC instance 0
 pub struct Adc0 {
@@ -155,6 +159,21 @@ impl<I: AdcInstance> Adc<I> {
 
 impl<I: AdcInstance + PrimaryAdc> Adc<I> {
     #[inline]
+    /// Reads the output of DAC0 when in the DAC is in single mode
+    pub fn read_dac0_single_output(&mut self, _channel: &DacWriteHandle<'_, Single<Dac0>>) -> u16 {
+        self.read_channel(0x1E)
+    }
+
+    #[inline]
+    /// Reads the output of DAC0 when in the DAC is in differential mode
+    pub fn read_dac0_differential_output(
+        &mut self,
+        _channel: &DacWriteHandle<'_, Differential<Dac0, Dac1>>,
+    ) -> u16 {
+        self.read_channel(0x1E)
+    }
+
+    #[inline]
     /// Reads the CPU temperature in degrees C.
     ///
     /// n.b. Microchip's errata document for SAM D5x/E5x states:
@@ -235,7 +254,7 @@ impl<I: AdcInstance> Adc<I> {
         Flags::from_bits_truncate(bits)
     }
 
-    #[cfg(feature="async")]
+    #[cfg(feature = "async")]
     /// Clear the specified interrupt flags
     #[inline]
     pub(super) fn clear_flags(&mut self, flags: &Flags) {
@@ -297,6 +316,24 @@ impl<I: AdcInstance + PrimaryAdc, F> FutureAdc<I, F>
 where
     F: crate::async_hal::interrupts::Binding<I::Interrupt, async_api::InterruptHandler<I>>,
 {
+    #[inline]
+    /// Reads the output of DAC0 when in the DAC is in single mode
+    pub async fn read_dac0_single_output(
+        &mut self,
+        _channel: &DacWriteHandle<'_, Single<Dac0>>,
+    ) -> u16 {
+        self.read_channel(0x1E).await
+    }
+
+    #[inline]
+    /// Reads the output of DAC0 when in the DAC is in differential mode
+    pub async fn read_dac0_differential_output(
+        &mut self,
+        _channel: &DacWriteHandle<'_, Differential<Dac0, Dac1>>,
+    ) -> u16 {
+        self.read_channel(0x1E).await
+    }
+
     /// Reads the CPU temperature in degrees C.
     ///
     /// n.b. Microchip's errata document for SAM D5x/E5x states:
