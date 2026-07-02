@@ -411,7 +411,13 @@ impl DfllToken {
 
     #[hal_cfg(any("clock-d11", "clock-d21"))]
     #[inline]
+    #[hal_macro_helper]
     fn enable(&mut self, settings: settings::All) {
+        #[hal_cfg("clock-d21")]
+        {
+            // Errita work around (1.2)
+            self.dfllctrl().modify(|_, w| w.ondemand().clear_bit());
+        }
         if settings.closed_loop {
             self.dfllmul().write(|w|
             // Safety: All bit patterns are valid for these fields
