@@ -335,7 +335,6 @@
 //! [`Pins`]: crate::gpio::Pins
 //! [`Sercom0`]: crate::sercom::Sercom0
 
-#[cfg(any(feature="samd11c",feature="samd11d",feature="samd21e",feature="samd21el",feature="samd21g",feature="samd21gl",feature="samd21j"))]
 use atsamd_hal_macros::hal_docs;
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::cmp::max;
