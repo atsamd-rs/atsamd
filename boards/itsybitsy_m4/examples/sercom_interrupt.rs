@@ -42,12 +42,12 @@ use bsp::hal::{
     prelude::*,
     sercom::{
         uart::{self, BaudMode, Flags, Oversampling},
-        IoSet3, Sercom0,
+        Sercom0,
     },
     time::Hertz,
 };
 
-type UartPads0 = uart::Pads<Sercom0, IoSet3, IoSet3Sercom0Pad2, IoSet3Sercom0Pad0>;
+type UartPads0 = uart::Pads<Sercom0, IoSet3Sercom0Pad2, IoSet3Sercom0Pad0>;
 type Uart0 = uart::Uart<uart::Config<UartPads0>, uart::Duplex>;
 
 /// Utility function for setting up SERCOM0 pins as an additional

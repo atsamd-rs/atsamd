@@ -120,20 +120,20 @@
 //! # Example
 //! ```
 //! let mut peripherals = Peripherals::take().unwrap();
-//! let mut dmac = DmaController::init(peripherals.DMAC, &mut peripherals.PM);
+//! let mut dmac = DmaController::init(peripherals.dmac, &mut peripherals.pm);
 //! // Get individual handles to DMA channels
 //! let channels = dmac.split();
 //!
 //! // Initialize DMA Channel 0
-//! let chan0 = channels.0.init(PriorityLevel::LVL0, false, &mut dmac);
+//! let chan0 = channels.0.init(PriorityLevel::Lvl0);
 //!
 //! // Setup a DMA transfer (memory-to-memory -> incrementing source, incrementing destination)
 //! // NOTE: buf_src and buf_dest should be either:
 //! // &'static mut T, &'static mut [T], or &'static mut [T; N] where T: BeatSize
 //! let xfer = Transfer::new(chan0, buf_src, buf_dest, false).begin(
 //!     &mut dmac,
-//!     TriggerSource::DISABLE,
-//!     TriggerAction::BLOCK,
+//!     TriggerSource::Disable,
+//!     TriggerAction::Block,
 //! );
 //!
 //! // Wait for transfer to complete and grab resulting buffers
@@ -141,7 +141,7 @@
 //!
 //! // (Optional) free the [`DmaController`] struct and return the underlying PAC struct
 //! channels.0 = chan0.into();
-//! let dmac = dmac.free(channels, &mut peripherals.PM);
+//! let dmac = dmac.free(channels, &mut peripherals.pm);
 //! ```
 //!
 //! # [`Transfer`] recycling
