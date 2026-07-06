@@ -29,16 +29,10 @@ use hal::{
 
 #[entry]
 fn main() -> ! {
-    let device = Peripherals::take().unwrap();
+    let mut device = Peripherals::take().unwrap();
     let _core = CorePeripherals::take().unwrap();
 
     let pins = Pins::new(device.port);
-
-    // IMPORTANT - If reclocking the CPU itself, set wait state to half to avoid hard faults.
-    device
-        .nvmctrl
-        .ctrlb()
-        .modify(|_, w| w.rws().variant(pac::nvmctrl::ctrlb::Rwsselect::Half));
 
     // --- Clocks setup ---
     let (_buses, clocks, tokens) =
@@ -55,7 +49,7 @@ fn main() -> ! {
     // Start the DFLL at 48Mhz
     let dfll_48m = Dfll::from_pclk(tokens.dfll, pclk_dfll).enable();
     // Swap CPU clock source
-    let (gclk0_48, _osc, _dfll_48m) = clocks.gclk0.swap_sources(osc, dfll_48m);
+    let (gclk0_48, _osc, _dfll_48m) = clocks.gclk0.swap_sources(osc, dfll_48m, &mut device.nvmctrl, 2);
 
     // --- ADC Configuration ---
     let (adc_pclk, _gclk0_48) = Pclk::enable(tokens.pclks.adc, gclk0_48);
