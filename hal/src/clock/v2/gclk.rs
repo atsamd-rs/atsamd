@@ -1423,7 +1423,7 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
         /// |1.62V-2.7V|42 Mhz|2|
         /// |1.62V-2.7V|48 Mhz|3|
         /// |2.7V-3.63V|24 Mhz|0|
-        /// |2.7V-3.63V|67 Mhz|1|
+        /// |2.7V-3.63V|48 Mhz|1|
     })]
     #[inline]
     #[hal_cfg(any("clock-d21", "clock-d11"))]
