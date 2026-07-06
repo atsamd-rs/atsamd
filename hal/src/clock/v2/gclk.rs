@@ -335,6 +335,8 @@
 //! [`Pins`]: crate::gpio::Pins
 //! [`Sercom0`]: crate::sercom::Sercom0
 
+#[cfg(any(feature="samd11c",feature="samd11d",feature="samd21e",feature="samd21el",feature="samd21g",feature="samd21gl",feature="samd21j"))]
+use atsamd_hal_macros::hal_docs;
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use core::cmp::max;
 use core::marker::PhantomData;
@@ -366,6 +368,9 @@ use super::xosc::Xosc1Id;
 #[hal_cfg("xosc32k")]
 use super::xosc32k::Xosc32kId;
 use super::{Enabled, Source};
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+use pac::Nvmctrl;
 
 //==============================================================================
 // GclkToken
@@ -1341,18 +1346,97 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
     /// Swap [`Gclk0`] from one clock [`Source`] to another
     ///
     /// `Gclk0` will remain fully enabled during the swap.
-    ///
-    /// Note for thumbv6m chips: Before switching the Generic Clock Generator 0
-    /// (GCLKGEN0) from a clock source A to another clock source B, enable the
-    /// "ONDEMAND" feature of the clock source A to ensure a proper transition
-    /// from clock source A to clock source B.
     #[inline]
+    #[hal_cfg(any("clock-d5x"))]
     pub fn swap_sources<O, N>(self, old: O, new: N) -> (EnabledGclk0<N::Id, U1>, O::Dec, N::Inc)
     where
         O: Source<Id = I> + Decrement,
         N: Source + Increment,
         N::Id: NotGclkIo,
     {
+        let (gclk, _) = self.0.change_source((), new.freq());
+        let enabled = Enabled::new(gclk);
+        (enabled, old.dec(), new.inc())
+    }
+
+    #[hal_docs(
+        {
+        /// Swap [`Gclk0`] from one clock [`Source`] to another
+        ///
+        /// `Gclk0` will remain fully enabled during the swap.
+        ///
+        /// Before switching the Generic Clock Generator 0
+        /// (GCLKGEN0) from a clock source A to another clock source B, enable the
+        /// "ONDEMAND" feature of the clock source A to ensure a proper transition
+        /// from clock source A to clock source B.
+        /// 
+        /// Flash wait states are not automatically handled by the chip, therefore,
+        /// the number of flash wait states must be manually provided to ensure
+        /// that the CPU can read flash after reclocking. This requirement varies
+        /// based on the CPU's maximum operating temperature, clock freq and supplied
+        /// core voltage.
+        /// 
+        /// A higher than required wait state can be provided (With an absolute max value of 15), 
+        /// but this will cause higher latency between flash and the CPU, impacting performance.
+    }
+    "clock-d21" => {
+        ///
+        /// See the tables below for the requirements based on chip operating environments.
+        /// 
+        /// ## Wait state requirements for operating up to 85°C
+        /// 
+        /// |*Vdd range*|*Max operating frequency*|*Required minimum wait states*|
+        /// |:-:|:-:|:--|
+        /// |1.62V-2.7V|14 Mhz|0|
+        /// |1.62V-2.7V|28 Mhz|1|
+        /// |1.62V-2.7V|42 Mhz|2|
+        /// |1.62V-2.7V|48 Mhz|3|
+        /// |2.7V-3.63V|24 Mhz|0|
+        /// |2.7V-3.63V|48 Mhz|1|
+        /// 
+        /// ## Wait state requirements for operating up to 125°C
+        /// 
+        /// |*Vdd range*|*Max operating frequency*|*Required minimum wait states*|
+        /// |:-:|:-:|:--|
+        /// |1.62V-2.7V|14 Mhz|0|
+        /// |1.62V-2.7V|28 Mhz|1|
+        /// |1.62V-2.7V|40 Mhz|2|
+        /// |2.7V-3.63V|24 Mhz|0|
+        /// |2.7V-3.63V|40 Mhz|1|
+        /// 
+        /// ## Wait state requirements for operating up to 125°C (AEC-Q100 chips)
+        /// 
+        /// |*Vdd range*|*Max operating frequency*|*Required minimum wait states*|*Device variant*|
+        /// |:-:|:-:|:--|:--|
+        /// |2.7V-3.63V|24 Mhz|0|A,B,D|
+        /// |2.7V-3.63V|40 Mhz|1|A|
+        /// |2.7V-3.63V|48 Mhz|1|B,D|
+        /// 
+    }
+    "clock-d11" => {
+        ///
+        /// See the table below for the requirements based on chip operating environments.
+        /// 
+        /// |*Vdd range*|*Max operating frequency*|*Required minimum wait states*|
+        /// |:-:|:-:|:--|
+        /// |1.62V-2.7V|14 Mhz|0|
+        /// |1.62V-2.7V|28 Mhz|1|
+        /// |1.62V-2.7V|42 Mhz|2|
+        /// |1.62V-2.7V|48 Mhz|3|
+        /// |2.7V-3.63V|24 Mhz|0|
+        /// |2.7V-3.63V|67 Mhz|1|
+    })]
+    #[inline]
+    #[hal_cfg(any("clock-d21", "clock-d11"))]
+    pub fn swap_sources<O, N>(self, old: O, new: N, nvm: &mut Nvmctrl, wait_states: u8) -> (EnabledGclk0<N::Id, U1>, O::Dec, N::Inc)
+    where
+        O: Source<Id = I> + Decrement,
+        N: Source + Increment,
+        N::Id: NotGclkIo,
+    {
+        nvm.ctrlb().modify(|_, w| unsafe{
+            w.rws().bits(core::cmp::min(15, wait_states))
+        });
         let (gclk, _) = self.0.change_source((), new.freq());
         let enabled = Enabled::new(gclk);
         (enabled, old.dec(), new.inc())
@@ -1378,6 +1462,8 @@ impl<I: GclkSourceId> EnabledGclk0<I, U1> {
         let enabled = Enabled::new(gclk);
         (enabled, pin)
     }
+
+    
 
     /// Swap [`Gclk0`] from a clock [`Source`] to a [`GclkIo`] [`Pin`]
     ///
