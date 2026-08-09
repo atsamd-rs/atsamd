@@ -38,8 +38,17 @@ macro_rules! __internal_backend_methods {
             // before `RtcBackend::on_interrupt` is called.
             if <$mode>::check_interrupt_flag::<$rtic_int>(&rtc) {
                 let compare = <$mode>::get_compare(&rtc, 0);
+                let limit =
+                    <$mode>::count(&rtc).wrapping_add(<$mode>::SYNC_SLACK_TICKS);
 
-                while less_than_with_wrap(<$mode>::count(&rtc), compare) {}
+                // A compare that actually fired can be at most the sync
+                // staleness ahead of our read. If CC0 is further out than
+                // that, it was re-armed to a later deadline after this flag
+                // was raised and there is nothing to catch up to. Otherwise
+                // the wait below is bounded by the slack (~370µs @ 32.768 kHz).
+                if !less_than_with_wrap(limit, compare) {
+                    while less_than_with_wrap(<$mode>::count(&rtc), compare) {}
+                }
             }
 
             unsafe { Self::timer_queue().on_monotonic_interrupt(); }
@@ -146,17 +155,33 @@ macro_rules! __internal_basic_backend {
             fn set_compare(mut instant: Self::Ticks) {
                 let rtc = unsafe { pac::Rtc::steal() };
 
-                // Evidently the compare interrupt will not trigger if the instant is within a
-                // couple of ticks, so delay it a bit if it is too close.
-                // This is not mentioned in the documentation or errata, but is known to be an
-                // issue for other microcontrollers as well (e.g. nRF family).
+                // A compare armed within the sync slack of the (possibly
+                // stale) COUNT read may already be in the past by the time
+                // the write synchronizes, and would then never trigger, so
+                // delay it past the sync horizon.
                 if instant.saturating_sub(Self::now())
-                    < <$mode>::MIN_COMPARE_TICKS
+                    < <$mode>::SYNC_SLACK_TICKS
                 {
-                    instant = instant.wrapping_add(<$mode>::MIN_COMPARE_TICKS)
+                    instant = instant.wrapping_add(<$mode>::SYNC_SLACK_TICKS)
                 }
 
                 unsafe { <$mode>::set_compare(&rtc, 0, instant) };
+
+                // Verify the arm: the compare only matches on equality, and
+                // COUNT reads lag the counter by up to the sync slack. If the
+                // counter may have reached the armed value before the write
+                // latched, the match may never fire and the wake would be
+                // lost until a full counter wrap — re-pend the handler so the
+                // queue is re-evaluated and re-armed. A false positive costs
+                // one spurious, idempotent handler pass.
+                let read = <$mode>::count(&rtc);
+                if read
+                    .wrapping_add(<$mode>::SYNC_SLACK_TICKS)
+                    .wrapping_sub(instant)
+                    < <$mode>::HALF_PERIOD
+                {
+                    pac::NVIC::pend(pac::Interrupt::RTC);
+                }
             }
 
             fn clear_compare_flag() {
@@ -289,16 +314,18 @@ macro_rules! __internal_half_period_counting_backend {
 
                     // Wrapping_sub deals with the u64 overflow corner case
                     let diff = instant.wrapping_sub(now);
-                    let val = if diff <= MAX {
+                    let near = diff <= MAX;
+                    let val = if near {
                         // Now we know `instant` will happen within one `MAX` time duration.
 
-                        // Evidently the compare interrupt will not trigger if the instant is within a
-                        // couple of ticks, so delay it a bit if it is too close.
-                        // This is not mentioned in the documentation or errata, but is known to be an
-                        // issue for other microcontrollers as well (e.g. nRF family).
-                        if diff < <$mode>::MIN_COMPARE_TICKS.into() {
+                        // A compare armed within the sync slack of the
+                        // (possibly stale) COUNT read may already be in the
+                        // past by the time the write synchronizes, and would
+                        // then never trigger, so delay it past the sync
+                        // horizon.
+                        if diff < <$mode>::SYNC_SLACK_TICKS.into() {
                             instant = instant
-                                .wrapping_add(<$mode>::MIN_COMPARE_TICKS.into());
+                                .wrapping_add(<$mode>::SYNC_SLACK_TICKS.into());
                         }
 
                         (instant & MAX) as <$mode as RtcMode>::Count
@@ -308,6 +335,25 @@ macro_rules! __internal_half_period_counting_backend {
                     };
 
                     <$mode>::set_compare(&rtc, 0, val);
+
+                    // Verify the arm (near arms only — the far branch arms
+                    // behind COUNT on purpose to wait out a full period): if
+                    // the counter may have reached the armed value before the
+                    // write latched, the equality match may never fire and
+                    // the wake would be lost until a full counter wrap —
+                    // re-pend the handler so the queue is re-evaluated and
+                    // re-armed. A false positive costs one spurious,
+                    // idempotent handler pass.
+                    if near {
+                        let read = <$mode>::count(&rtc);
+                        if read
+                            .wrapping_add(<$mode>::SYNC_SLACK_TICKS)
+                            .wrapping_sub(val)
+                            < <$mode>::HALF_PERIOD
+                        {
+                            pac::NVIC::pend(pac::Interrupt::RTC);
+                        }
+                    }
                 });
             }
 
