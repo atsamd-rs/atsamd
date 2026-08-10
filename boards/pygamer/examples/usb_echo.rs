@@ -1,24 +1,22 @@
+//! Makes the pygamer appear as a USB serial port loop back device.
+//! Repeats back all characters sent to it, but in upper case.
+
 #![no_std]
 #![no_main]
 #![allow(static_mut_refs)]
 
-#[cfg(not(feature = "use_semihosting"))]
-use panic_halt as _;
-#[cfg(feature = "use_semihosting")]
-use panic_semihosting as _;
-
 use core::cell::OnceCell;
 use cortex_m::asm::delay as cycle_delay;
 use cortex_m::peripheral::NVIC;
+#[cfg(not(feature = "panic_led"))]
+use panic_halt as _;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::prelude::*;
 use usbd_serial::{SerialPort, USB_CLASS_CDC};
 
-use bsp::hal;
-use bsp::pac;
-use feather_m0 as bsp;
+use pygamer as bsp;
 
-use bsp::{entry, pin_alias};
+use bsp::{entry, hal, pac, Pins};
 use hal::clock::GenericClockController;
 use hal::prelude::*;
 use hal::usb::UsbBus;
@@ -30,20 +28,19 @@ fn main() -> ! {
     let mut core = CorePeripherals::take().unwrap();
     let mut clocks = GenericClockController::with_internal_32kosc(
         peripherals.gclk,
-        &mut peripherals.pm,
-        &mut peripherals.sysctrl,
+        &mut peripherals.mclk,
+        &mut peripherals.osc32kctrl,
+        &mut peripherals.oscctrl,
         &mut peripherals.nvmctrl,
     );
-    let pins = bsp::Pins::new(peripherals.port);
-    let mut red_led: bsp::RedLed = pin_alias!(pins.red_led).into();
+    let pins = Pins::new(peripherals.port).split();
+    let mut red_led: bsp::RedLed = pins.led_pin.into();
 
     let bus_allocator = unsafe {
-        let _ = USB_ALLOCATOR.set(bsp::usb_allocator(
+        let _ = USB_ALLOCATOR.set(pins.usb.init(
             peripherals.usb,
             &mut clocks,
-            &mut peripherals.pm,
-            pins.usb_dm,
-            pins.usb_dp,
+            &mut peripherals.mclk,
         ));
         USB_ALLOCATOR.get().unwrap()
     };
@@ -60,10 +57,15 @@ fn main() -> ! {
                 .device_class(USB_CLASS_CDC)
                 .build(),
         );
+    }
 
-        // Enable USB interrupt
-        core.NVIC.set_priority(interrupt::USB, 1);
-        NVIC::unmask(interrupt::USB);
+    unsafe {
+        core.NVIC.set_priority(interrupt::USB_OTHER, 1);
+        core.NVIC.set_priority(interrupt::USB_TRCPT0, 1);
+        core.NVIC.set_priority(interrupt::USB_TRCPT1, 1);
+        NVIC::unmask(interrupt::USB_OTHER);
+        NVIC::unmask(interrupt::USB_TRCPT0);
+        NVIC::unmask(interrupt::USB_TRCPT1);
     }
 
     // Flash the LED in a spin loop to demonstrate that USB is
@@ -78,12 +80,11 @@ static mut USB_ALLOCATOR: OnceCell<UsbBusAllocator<UsbBus>> = OnceCell::new();
 static mut USB_BUS: OnceCell<UsbDevice<UsbBus>> = OnceCell::new();
 static mut USB_SERIAL: OnceCell<SerialPort<UsbBus>> = OnceCell::new();
 
-#[inline]
 fn poll_usb() {
     unsafe {
-        if let Some(usb_dev) = USB_BUS.get_mut() {
+        if let Some(usb_bus) = USB_BUS.get_mut() {
             if let Some(serial) = USB_SERIAL.get_mut() {
-                usb_dev.poll(&mut [serial]);
+                usb_bus.poll(&mut [serial]);
                 let mut buf = [0u8; 64];
 
                 if let Ok(count) = serial.read(&mut buf) {
@@ -95,11 +96,21 @@ fn poll_usb() {
                     }
                 };
             };
-        };
+        }
     };
 }
 
 #[interrupt]
-fn USB() {
+fn USB_OTHER() {
+    poll_usb();
+}
+
+#[interrupt]
+fn USB_TRCPT0() {
+    poll_usb();
+}
+
+#[interrupt]
+fn USB_TRCPT1() {
     poll_usb();
 }

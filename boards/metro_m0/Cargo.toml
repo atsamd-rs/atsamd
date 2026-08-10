@@ -71,5 +71,9 @@ name = "spi"
 required-features = ["dma"]
 
 [[example]]
-name = "usb_echo"
+name = "usb_echo_basic"
 required-features = ["usb"]
+
+[[example]]
+name = "usb_echo_rtic"
+required-features = ["usb", "rtic"]
