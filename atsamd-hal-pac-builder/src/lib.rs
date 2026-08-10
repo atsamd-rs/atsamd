@@ -4,10 +4,9 @@ use std::io::{BufReader, Read, Write};
 use std::path::Path;
 use std::process::Command;
 
-use anyhow::Context;
-use libxml::{parser::Parser as XMLParser, tree::SaveOptions};
-use libxslt::parser as xslt_parser;
+use anyhow::{Context, Result};
 use svd2rust::config::IdentFormats;
+use svdtools::patch::{Config as PatchConfig, process_file};
 use tap::Tap;
 
 /// Generate the PAC code using svd2rust, and write it to the provided
@@ -26,30 +25,28 @@ pub fn generate_pac(
     pac_pkg_name: impl AsRef<str>,
     pac_out_dir: impl AsRef<Path>,
     svd_root: impl AsRef<Path>,
-) -> anyhow::Result<()> {
+) -> Result<()> {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=../../svd");
 
     let out_dir = pac_out_dir.as_ref();
 
-    // Extract chip name, and find SVD + XSL
+    // Extract chip name, and find the device patch YAML
     let chip_name = get_chip_name(pac_pkg_name).context("Could not extract chip name")?;
-    let xsl = find_chip_file(&chip_name, "xsl", svd_root.as_ref().join("devices"))
-        .context("Could not find xsl")?;
-    let svd = find_chip_file(&chip_name.to_ascii_uppercase(), "svd", svd_root)
-        .context("Could not find SVD")?;
+    let yaml = find_chip_file(&chip_name, "yml", svd_root.as_ref().join("devices"))
+        .context("Could not find device patch YAML")?;
 
-    // Parse SVD
-    let xml_parser = XMLParser::default();
-    let source = xml_parser.parse_file(&svd).unwrap();
+    let patched_svd_path = out_dir.join("patched.svd");
+    process_file(
+        Path::new(&yaml),
+        Some(&patched_svd_path),
+        None,
+        &PatchConfig::default(),
+    )
+    .with_context(|| format!("Failed to patch SVD using {yaml}"))?;
 
-    // Apply XSLT
-    let mut stylesheet = xslt_parser::parse_file(&xsl).unwrap();
-    let transform_result = stylesheet.transform(source, Vec::new()).unwrap();
-    let patched_svd = transform_result.to_string_with_options(SaveOptions {
-        format: true,
-        ..SaveOptions::default()
-    });
+    let patched_svd =
+        fs::read_to_string(&patched_svd_path).context("Could not read patched SVD")?;
 
     // svd2rust config
     let config = svd2rust::config::Config::default().tap_mut(|c| {
@@ -88,7 +85,7 @@ pub fn generate_pac(
 pub fn include_linker_script(
     pac_out_dir: impl AsRef<Path>,
     linker_script: impl AsRef<Path>,
-) -> anyhow::Result<()> {
+) -> Result<()> {
     println!("cargo:rerun-if-changed=device.x");
     println!("cargo:rerun-if-env-changed=CARGO_FEATURE_RT");
 
@@ -113,25 +110,18 @@ pub fn include_linker_script(
 // Find a file for `chip_name`, ending with `extension` in the provided `dir`.
 // Omits the part number suffix, i.e., the memory variant.
 //
-// May be used to find SVD or XSL files for ATSAMD chips.
-fn find_chip_file(chip_name: &str, extension: &str, dir: impl AsRef<Path>) -> Option<String> {
+// May be used to find SVD or yaml patch files for ATSAMD chips.
+fn find_chip_file(chip_name: &str, extension: &str, dir: impl AsRef<Path>) -> Result<String> {
     // Get all entries in the svd directory
     let dir = dir.as_ref();
 
     // Check if the svd directory exists
     if !dir.exists() || !dir.is_dir() {
-        println!("SVD directory not found");
-        return None;
+        return Err(anyhow::anyhow!("SVD directory not found"));
     }
 
     // Read all entries in the directory
-    let entries = match fs::read_dir(dir) {
-        Ok(entries) => entries,
-        Err(e) => {
-            println!("Error reading SVD directory: {}", e);
-            return None;
-        }
-    };
+    let entries = fs::read_dir(dir).context("Error reading SVD directory")?;
 
     // Look for files that start with the chip name
     for entry in entries.flatten() {
@@ -161,20 +151,18 @@ fn find_chip_file(chip_name: &str, extension: &str, dir: impl AsRef<Path>) -> Op
                             .into_os_string()
                             .into_string()
                             .expect("Could not get path");
-                        return Some(path);
+                        return Ok(path);
                     }
                 }
             }
         }
     }
 
-    None
+    Err(anyhow::anyhow!("Chip not found"))
 }
 
 /// Get the chip name from the PAC package name
 fn get_chip_name(pkg_name: impl AsRef<str>) -> Option<String> {
-    // let pkg_name = env!("CARGO_PKG_NAME");
     let re = regex::Regex::new(r"atsam[a-z]\d{2}[a-z]+").unwrap();
-
     Some(re.captures(pkg_name.as_ref())?.get(0)?.as_str().to_owned())
 }

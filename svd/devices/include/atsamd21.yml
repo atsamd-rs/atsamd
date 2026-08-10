@@ -1,0 +1,84 @@
+# The DMAC trigger sources in the original SVD only have the 0=DISABLE
+# enumeration value.
+DMAC:
+  CHCTRLB:
+    TRIGSRC:
+      _replace_enum:
+        _name: TRIGSRCSelect
+        DISABLE: [0x00, "Only software/event triggers"]
+        SERCOM0_RX: [0x01, "SERCOM0 RX Trigger"]
+        SERCOM0_TX: [0x02, "SERCOM0 TX Trigger"]
+        SERCOM1_RX: [0x03, "SERCOM1 RX Trigger"]
+        SERCOM1_TX: [0x04, "SERCOM1 TX Trigger"]
+        SERCOM2_RX: [0x05, "SERCOM2 RX Trigger"]
+        SERCOM2_TX: [0x06, "SERCOM2 TX Trigger"]
+        SERCOM3_RX: [0x07, "SERCOM3 RX Trigger"]
+        SERCOM3_TX: [0x08, "SERCOM3 TX Trigger"]
+        SERCOM4_RX: [0x09, "SERCOM4 RX Trigger"]
+        SERCOM4_TX: [0x0A, "SERCOM4 TX Trigger"]
+        SERCOM5_RX: [0x0B, "SERCOM5 RX Trigger"]
+        SERCOM5_TX: [0x0C, "SERCOM5 TX Trigger"]
+        TCC0_OVF:   [0x0D, "TCC0 Overflow Trigger"]
+        TCC0_MC0:   [0x0E, "TCC0 Match/Compare 0 Trigger"]
+        TCC0_MC1:   [0x0F, "TCC0 Match/Compare 1 Trigger"]
+        TCC0_MC2:   [0x10, "TCC0 Match/Compare 2 Trigger"]
+        TCC0_MC3:   [0x11, "TCC0 Match/Compare 3 Trigger"]
+        TCC1_OVF:   [0x12, "TCC1 Overflow Trigger"]
+        TCC1_MC0:   [0x13, "TCC1 Match/Compare 0 Trigger"]
+        TCC1_MC1:   [0x14, "TCC1 Match/Compare 1 Trigger"]
+        TCC2_OVF:   [0x15, "TCC2 Overflow Trigger"]
+        TCC2_MC0:   [0x16, "TCC2 Match/Compare 0 Trigger"]
+        TCC2_MC1:   [0x17, "TCC2 Match/Compare 1 Trigger"]
+        TC3_OVF:    [0x18, "TC3 Overflow Trigger"]
+        TC3_MC0:    [0x19, "TC3 Match/Compare 0 Trigger"]
+        TC3_MC1:    [0x1A, "TC3 Match/Compare 1 Trigger"]
+        TC4_OVF:    [0x1B, "TC4 Overflow Trigger"]
+        TC4_MC0:    [0x1C, "TC4 Match/Compare 0 Trigger"]
+        TC4_MC1:    [0x1D, "TC4 Match/Compare 1 Trigger"]
+        TC5_OVF:    [0x1E, "TC5 Overflow Trigger"]
+        TC5_MC0:    [0x1F, "TC5 Match/Compare 0 Trigger"]
+        TC5_MC1:    [0x20, "TC5 Match/Compare 1 Trigger"]
+        TC6_OVF:    [0x21, "TC6 Overflow Trigger"]
+        TC6_MC0:    [0x22, "TC6 Match/Compare 0 Trigger"]
+        TC6_MC1:    [0x23, "TC6 Match/Compare 1 Trigger"]
+        TC7_OVF:    [0x24, "TC7 Overflow Trigger"]
+        TC7_MC0:    [0x25, "TC7 Match/Compare 0 Trigger"]
+        TC7_MC1:    [0x26, "TC7 Match/Compare 1 Trigger"]
+        ADC_RESRDY: [0x27, "ADC Result Ready Trigger"]
+        DAC_EMPTY:  [0x28, "DAC Empty Trigger"]
+        I2S_RX_0:   [0x29, "I2S RX 0 Trigger"]
+        I2S_RX_1:   [0x2A, "I2S RX 1 Trigger"]
+        I2S_TX_0:   [0x2B, "I2S TX 0 Trigger"]
+        I2S_TX_1:   [0x2C, "I2S TX 1 Trigger"]
+        TCC3_OVF:   [0x2D, "TCC3 Overflow Trigger"]
+        TCC3_MC0:   [0x2E, "TCC3 Match/Compare 0 Trigger"]
+        TCC3_MC1:   [0x2F, "TCC3 Match/Compare 1 Trigger"]
+        TCC3_MC2:   [0x30, "Match/Compare 2 Trigger"]
+        TCC3_MC3:   [0x31, "Match/Compare 3 Trigger"]
+
+# Some register bits are erroneously write-only in the original SVD;
+# clear the access override so it falls back to the field/register default.
+RTC:
+  "MODE?":
+    CTRL:
+      _modify:
+        SWRST:
+          access: read-write
+
+USB:
+  HOST:
+    "HOST_PIPE?%s?":
+      _modify:
+        "PSTATUSCLR":
+          access: read-write
+          _modify:
+            DTGL:
+              access: read-write
+            CURBK:
+              access: read-write
+            PFREEZE:
+              access: read-write
+            BK0RDY:
+              access: read-write
+            BK1RDY:
+              access: read-write
