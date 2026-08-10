@@ -171,6 +171,11 @@
       "tier": 2,
       "build": "cargo build --examples --all-features",
       "target": "thumbv6m-none-eabi"
+    },
+    "trrs_trinkey": {
+      "tier": 2,
+      "build": "cargo build --examples --all-features",
+      "target": "thumbv6m-none-eabi"
     }
   },
   "hal_doc_variants": {
