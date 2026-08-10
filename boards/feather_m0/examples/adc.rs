@@ -48,6 +48,6 @@ fn main() -> ! {
     loop {
         let res = adc.read(&mut adc_pin);
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("ADC value: {}", read).unwrap();
+        cortex_m_semihosting::hprintln!("ADC value: {}", res).unwrap();
     }
 }

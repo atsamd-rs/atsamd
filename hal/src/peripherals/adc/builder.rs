@@ -152,6 +152,10 @@ pub struct AdcBuilder {
     pub sample_clock_cycles: Option<u8>,
     pub accumulation: Accumulation,
     pub vref: Option<Reference>,
+    pub offset_compensation: Option<bool>,
+    pub reference_compensation: Option<bool>,
+    pub auto_left_adjust: Option<bool>,
+    pub auto_rail_to_rail: Option<bool>,
 }
 
 /// Version of [AdcBuilder] without any optional settings.
@@ -162,6 +166,10 @@ pub(crate) struct AdcSettings {
     pub sample_clock_cycles: u8,
     pub accumulation: Accumulation,
     pub vref: Reference,
+    pub offset_compensation: bool,
+    pub reference_compensation: bool,
+    pub auto_left_adjust: bool,
+    pub auto_rail_to_rail: bool,
 }
 
 impl AdcBuilder {
@@ -172,6 +180,10 @@ impl AdcBuilder {
             sample_clock_cycles: None,
             accumulation: accumulation_method,
             vref: None,
+            offset_compensation: None,
+            reference_compensation: None,
+            auto_left_adjust: None,
+            auto_rail_to_rail: None,
         }
     }
 
@@ -190,6 +202,10 @@ impl AdcBuilder {
             sample_clock_cycles: self.sample_clock_cycles.unwrap(),
             accumulation: self.accumulation,
             vref: self.vref.unwrap(),
+            offset_compensation: self.offset_compensation.unwrap_or(false),
+            reference_compensation: self.reference_compensation.unwrap_or(false),
+            auto_left_adjust: self.auto_left_adjust.unwrap_or(false),
+            auto_rail_to_rail: self.auto_rail_to_rail.unwrap_or(false),
         })
     }
 
@@ -242,6 +258,47 @@ impl AdcBuilder {
         let samples = self.accumulation.samples();
         clocks_per_sample *= samples as u32;
         Ok(adc_clk_freq / clocks_per_sample)
+    }
+
+    /// Configure the ADC offset compensation
+    ///
+    /// ## Important
+    /// * Enabling offset compesation forces the clock cycles per sample to be 4
+    ///   GCLK cycles, any change to the cycles per sample via
+    ///   [`Self::with_clock_cycles_per_sample()`] will be ignored.
+    #[hal_cfg("adc-d5x")]
+    pub fn enable_offset_compensation(mut self, enable: bool) -> Self {
+        self.offset_compensation = Some(enable);
+        self
+    }
+
+    /// Configure the ADC reference compensation
+    pub fn enable_reference_compensation(mut self, enable: bool) -> Self {
+        self.reference_compensation = Some(enable);
+        self
+    }
+
+    /// Enables automatic left-adjustment when measuring differential inputs.
+    /// This allows use of the ADC summation or averaging hardware with
+    /// negative result values. Results are automatically right-shifted back
+    /// appropriately.
+    pub fn enable_auto_left_adjust(mut self, enable: bool) -> Self {
+        self.auto_left_adjust = Some(enable);
+        self
+    }
+
+    /// Automatically enables rail-to-rail operation when measuring a
+    /// differential input. This relaxes common-mode input requirements on
+    /// differential inputs and allows measurments closer to supply rails.
+    ///
+    /// ## Important
+    /// * Enabling auto rail-to-rail incurs a slight runtime performance hit as
+    ///   the CTRLA.R2R bit is enable-protected, meaning the ADC must be shut
+    ///   down and re-enabled to enable/disable rail-to-rail mode.
+    #[hal_cfg("adc-d5x")]
+    pub fn enable_auto_rail_to_rail(mut self, enable: bool) -> Self {
+        self.auto_rail_to_rail = Some(enable);
+        self
     }
 
     /// Turn the builder into an ADC
