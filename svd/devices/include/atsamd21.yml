@@ -82,3 +82,22 @@ USB:
               access: read-write
             BK1RDY:
               access: read-write
+
+# Rename Samplenumselect values to match
+# what's found in the SAMx5x SVDs
+"ADC":
+  AVGCTRL:
+    SAMPLENUM:
+      _replace_enum:
+        _name: SAMPLENUMSelect
+        SAMPLENUM_1:    [0x0, "1 sample"]
+        SAMPLENUM_2:    [0x1, "2 samples"]
+        SAMPLENUM_4:    [0x2, "4 samples"]
+        SAMPLENUM_8:    [0x3, "8 samples"]
+        SAMPLENUM_16:   [0x4, "16 samples"]
+        SAMPLENUM_32:   [0x5, "32 samples"]
+        SAMPLENUM_64:   [0x6, "64 samples"]
+        SAMPLENUM_128:  [0x7, "128 samples"]
+        SAMPLENUM_256:  [0x8, "256 samples"]
+        SAMPLENUM_512:  [0x9, "512 samples"]
+        SAMPLENUM_1024: [0xA, "1024 samples"]

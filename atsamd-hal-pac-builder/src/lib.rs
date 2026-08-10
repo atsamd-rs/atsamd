@@ -28,6 +28,8 @@ pub fn generate_pac(
 ) -> Result<()> {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=../../svd");
+    println!("cargo:rerun-if-changed=../../svd/devices");
+    println!("cargo:rerun-if-changed=../../svd/include");
 
     let out_dir = pac_out_dir.as_ref();
 

@@ -57,7 +57,7 @@ pub use adc0::refctrl::Refselselect as Reference;
 const ADC_SETTINGS_INTERNAL_READ: AdcSettings = AdcSettings {
     clk_divider: Prescaler::Div64,
     sample_clock_cycles: 32,
-    accumulation: Accumulation::average(SampleCount::_4),
+    accumulation: Accumulation::average(SampleCount::Samplenum4),
     vref: Reference::Intvcc1,
 };
 
@@ -66,7 +66,7 @@ const ADC_SETTINGS_INTERNAL_READ: AdcSettings = AdcSettings {
 const ADC_SETTINGS_INTERNAL_READ_D21_TEMP: AdcSettings = AdcSettings {
     clk_divider: Prescaler::Div64,
     sample_clock_cycles: 32,
-    accumulation: Accumulation::average(SampleCount::_4),
+    accumulation: Accumulation::average(SampleCount::Samplenum4),
     vref: Reference::Int1v,
 };
 
