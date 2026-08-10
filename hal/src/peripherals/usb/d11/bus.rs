@@ -273,11 +273,11 @@ impl Bank<'_, InBank> {
         if stall {
             self.usb()
                 .epstatusset(self.index())
-                .write(|w| w.stallrq1().set_bit())
+                .write(|w| w.stallrq1().set_bit());
         } else {
             self.usb()
                 .epstatusclr(self.index())
-                .write(|w| w.stallrq1().set_bit())
+                .write(|w| w.stallrq1().set_bit());
         }
     }
 }
@@ -384,11 +384,11 @@ impl Bank<'_, OutBank> {
         if stall {
             self.usb()
                 .epstatusset(self.index())
-                .write(|w| w.stallrq0().set_bit())
+                .write(|w| w.stallrq0().set_bit());
         } else {
             self.usb()
                 .epstatusclr(self.index())
-                .write(|w| w.stallrq0().set_bit())
+                .write(|w| w.stallrq0().set_bit());
         }
     }
 }
@@ -827,12 +827,13 @@ impl UsbBus {
 
     /// Configures the Multi-Packet-Rx feature of the USB peripheral.
     ///
-    /// This allows for the USB Peripheral to ACK multiple incomming packets in hardware, and then
-    /// only fire an interrupt once the buffer is full. This will reduce the number of USB interrupts,
-    /// especially when dealing with BULK endpoints.
+    /// This allows for the USB Peripheral to ACK multiple incomming packets in
+    /// hardware, and then only fire an interrupt once the buffer is full.
+    /// This will reduce the number of USB interrupts, especially when
+    /// dealing with BULK endpoints.
     ///
-    /// The default behaviour of the endpoint is to trigger an interrupt as soon as any amount of
-    /// data is received (`size = 0`).
+    /// The default behaviour of the endpoint is to trigger an interrupt as soon
+    /// as any amount of data is received (`size = 0`).
     ///
     /// The Buffer size can be configured using the HAL's feature flags:
     ///
@@ -849,15 +850,15 @@ impl UsbBus {
     /// ## Requirements
     /// 1. `size` is less than the allocated buffer of the endpoint.
     /// 2. `size` is a multiple of the endpoints packet size.
-    /// 3.  The provided `ep` is an OUT endpoint.
+    /// 3. The provided `ep` is an OUT endpoint.
     ///
     /// ## Notes
-    /// * For IN endpoints, multi-packet transfer is automatically handled without
-    ///   any user input.
-    /// * If less than `size` bytes are received by the endpoint, then it will NOT
-    ///   fire an interrupt.
-    /// * ZLP packets still result in an interrupt being fired, regardless
-    ///   of the endpoints received data length
+    /// * For IN endpoints, multi-packet transfer is automatically handled
+    ///   without any user input.
+    /// * If less than `size` bytes are received by the endpoint, then it will
+    ///   NOT fire an interrupt.
+    /// * ZLP packets still result in an interrupt being fired, regardless of
+    ///   the endpoints received data length
     pub fn configure_out_endpoint_multipacket_rx(
         &self,
         ep: EndpointAddress,
