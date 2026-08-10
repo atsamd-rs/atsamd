@@ -11,5 +11,5 @@
 
 include!(concat!(env!("OUT_DIR"), "/pac.rs"));
 
-pub use pac::generic::*;
-pub use pac::*;
+pub use __pac_impl::generic::*;
+pub use __pac_impl::*;
