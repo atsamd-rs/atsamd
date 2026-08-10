@@ -1,2 +1,0 @@
-reexport_core_peripherals = true
-reexport_interrupt = true

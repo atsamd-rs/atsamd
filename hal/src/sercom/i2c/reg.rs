@@ -117,7 +117,7 @@ impl<S: Sercom> Registers<S> {
         #[allow(unused_unsafe)]
         self.i2c_master()
             .ctrla()
-            .modify(|_, w| unsafe { w.inactout().bits(timeout as u8) })
+            .modify(|_, w| unsafe { w.inactout().bits(timeout as u8) });
     }
 
     /// Get the inactive timeout setting.

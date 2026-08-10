@@ -103,7 +103,6 @@ atsame53n = {version = "0.14.2", path = "../pac/atsame53n", optional = true}
 atsame54n = {version = "0.14.2", path = "../pac/atsame54n", optional = true}
 atsame54p = {version = "0.14.2", path = "../pac/atsame54p", optional = true}
 
-form = "0.13.0"
 #===============================================================================
 # Features
 #===============================================================================

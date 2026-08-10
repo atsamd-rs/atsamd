@@ -402,7 +402,7 @@ impl<S: Sercom> Registers<S> {
     pub(super) unsafe fn write_data(&mut self, data: super::DataReg) {
         self.usart()
             .data()
-            .write(|w| unsafe { w.data().bits(data) })
+            .write(|w| unsafe { w.data().bits(data) });
     }
 
     /// Enable the UART peripheral
