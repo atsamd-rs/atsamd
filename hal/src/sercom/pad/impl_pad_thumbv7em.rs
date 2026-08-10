@@ -52,8 +52,11 @@ macro_rules! pad_info {
             type Sercom = $Sercom;
             type PadNum = $PadNum;
         }
-        impl IoSets for Pin<$PinId, Alternate<$Cfg>> {
-            type SetList = mk_hlist!($( <$IoSet as IoSet>::Order ),+);
+        impl HasIoSetList for Pin<$PinId, Alternate<$Cfg>> {
+            type List = mk_hlist!($( <$IoSet as IoSet>::Order ),+);
+        }
+        impl HasSercomList for Pin<$PinId, Alternate<$Cfg>> {
+			type List = mk_hlist!(<$Sercom as Sercom>::Order);
         }
     };
 }

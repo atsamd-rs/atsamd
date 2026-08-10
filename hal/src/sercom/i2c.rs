@@ -360,13 +360,7 @@
 //! [`Future`]: core::future::Future
 //! [`poll`]: core::future::Future::poll
 
-use atsamd_hal_macros::hal_module;
-
-#[hal_module(
-    any("sercom0-d11", "sercom0-d21") => "i2c/pads_thumbv6m.rs",
-    "sercom0-d5x" => "i2c/pads_thumbv7em.rs",
-)]
-mod pads {}
+mod pads;
 
 pub use pads::*;
 
@@ -581,7 +575,7 @@ where
     }
 }
 
-impl<P: PadSet> AsRef<Config<P>> for I2c<Config<P>> {
+impl<P: ValidPads> AsRef<Config<P>> for I2c<Config<P>> {
     #[inline]
     fn as_ref(&self) -> &Config<P> {
         self.config.as_ref()

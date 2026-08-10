@@ -36,8 +36,9 @@
 use atsamd_hal_macros::{hal_cfg, hal_module};
 use paste::paste;
 use seq_macro::seq;
+use sorted_hlist::{HCons, HList, Intersect};
 
-use super::Sercom;
+use super::{Sercom, TypenumToSercom};
 #[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
 use crate::gpio::OptionalPinId;
 use crate::gpio::{AnyPin, OptionalPin, Pin, PinId, PinMode};
@@ -260,6 +261,32 @@ where
     type Pad = Pad<S, I>;
 }
 
+pub trait HasSercomList {
+    type List: HList;
+}
+
+/// Shortcut trait for Pad tuples that share at least one Sercom, exposes the head of the intersection
+pub trait ShareSercom {
+    type Sercom: Sercom;
+}
+
+impl<
+        P0: HasSercomList,
+        P1: HasSercomList,
+        P2: HasSercomList,
+        P3: HasSercomList,
+        H: TypenumToSercom,
+        T,
+    > ShareSercom for (P0, P1, P2, P3)
+where
+    P0::List: Intersect<
+        P1::List,
+        Output: Intersect<P2::List, Output: Intersect<P3::List, Output = HCons<H, T>>>,
+    >,
+{
+    type Sercom = H::Sercom;
+}
+
 //==============================================================================
 // IoSet
 //==============================================================================
@@ -318,8 +345,8 @@ mod ioset {
 
     #[cfg(feature = "undoc-features")]
     seq!(N in 1..=6 {
-        impl IoSets for NoneT {
-            type SetList = mk_hlist! ( #(<IoSet~N as IoSet>::Order, )* <UndocIoSet1 as IoSet>::Order, <UndocIoSet2 as IoSet>::Order );
+        impl HasIoSetList for NoneT {
+            type List = mk_hlist! ( #(<IoSet~N as IoSet>::Order, )* <UndocIoSet1 as IoSet>::Order, <UndocIoSet2 as IoSet>::Order );
         }
     });
 
@@ -396,43 +423,20 @@ mod ioset {
     {
     }
 
-    /// Type class for corresponding IoSet indices for OptionalPads, NoneT
-    /// serves as a wildcard
-    pub trait IoSets: OptionalPad {
-        type SetList: HList;
+    /// Trait that links an IoSet HList to a type
+    pub trait HasIoSetList {
+        type List: HList;
     }
 
-    /// Type class for accessing the intersection of IoSets of OptionalPads
-    /// Currently implemented for tuples of 2 and 4 elements
-    pub trait CommonIoSets {
-        type IoSets: HList;
-    }
-
-    impl<P0: IoSets, P1: IoSets> CommonIoSets for (P0, P1)
-    where
-        P0::SetList: Intersect<P1::SetList>,
-    {
-        type IoSets = <P0::SetList as Intersect<P1::SetList>>::Output;
-    }
-
-    impl<P0: IoSets, P1: IoSets, P2: IoSets, P3: IoSets> CommonIoSets for (P0, P1, P2, P3)
-    where
-        P0::SetList: Intersect<P1::SetList>,
-        <P0::SetList as Intersect<P1::SetList>>::Output: Intersect<P2::SetList>,
-        <<P0::SetList as Intersect<P1::SetList>>::Output as Intersect<P2::SetList>>::Output:
-            Intersect<P3::SetList>,
-    {
-        type IoSets = <<<P0::SetList as Intersect<P1::SetList>>::Output as Intersect<
-            P2::SetList,
-        >>::Output as Intersect<P3::SetList>>::Output;
-    }
-
-    /// Shortcut trait for Pad tuples that share at least one IoSet
+    /// Shortcut trait for Pad tuples that share at least one IoSet, implemented for tuples with 2 or 4 elements
     pub trait ShareIoSet {}
-    impl<A> ShareIoSet for A
+    impl<P0: HasIoSetList, P1: HasIoSetList, P2: HasIoSetList, P3: HasIoSetList> ShareIoSet
+        for (P0, P1, P2, P3)
     where
-        A: CommonIoSets,
-        <A as CommonIoSets>::IoSets: NonEmptyHList,
+        P0::List: Intersect<
+            P1::List,
+            Output: Intersect<P2::List, Output: Intersect<P3::List, Output: NonEmptyHList>>,
+        >,
     {
     }
 }
