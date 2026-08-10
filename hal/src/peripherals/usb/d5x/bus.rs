@@ -216,7 +216,7 @@ impl Bank<'_, InBank> {
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
         self.epintflag(self.index())
-            .write(|w| w.trcpt1().set_bit().trfail1().set_bit());
+            .write(|w| w.trcpt1().clear_bit_by_one().trfail1().clear_bit_by_one());
     }
 
     /// Indicates if a transfer is complete or pending.
@@ -306,7 +306,7 @@ impl Bank<'_, OutBank> {
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
         self.epintflag(self.index())
-            .write(|w| w.trcpt0().set_bit().trfail0().set_bit());
+            .write(|w| w.trcpt0().clear_bit_by_one().trfail0().clear_bit_by_one());
     }
 
     /// Returns true if a Received Setup interrupt has occurred.
@@ -321,7 +321,8 @@ impl Bank<'_, OutBank> {
     #[inline]
     fn clear_received_setup_interrupt(&self) {
         // Clear bits in epintflag by writing them to 1
-        self.epintflag(self.index()).write(|w| w.rxstp().set_bit());
+        self.epintflag(self.index())
+            .write(|w| w.rxstp().clear_bit_by_one());
     }
 
     /// Writes out endpoint configuration to its in-memory descriptor.
@@ -569,7 +570,7 @@ impl Inner {
         if enable {
             self.usb().intenset().write(|w| w.sof().set_bit());
         } else {
-            self.usb().intenclr().write(|w| w.sof().set_bit());
+            self.usb().intenclr().write(|w| w.sof().clear_bit_by_one());
         }
     }
 
@@ -684,7 +685,7 @@ impl Inner {
 
     fn check_sof_interrupt(&self) -> bool {
         if self.usb().intflag().read().sof().bit() {
-            self.usb().intflag().write(|w| w.sof().set_bit());
+            self.usb().intflag().write(|w| w.sof().clear_bit_by_one());
             return true;
         }
         false
@@ -714,7 +715,7 @@ impl Inner {
         let intflags = self.usb().intflag().read();
         if intflags.eorst().bit() {
             // end of reset interrupt
-            self.usb().intflag().write(|w| w.eorst().set_bit());
+            self.usb().intflag().write(|w| w.eorst().clear_bit_by_one());
             return PollResult::Reset;
         }
         // As the suspend & wakup interrupts/states cannot distinguish between

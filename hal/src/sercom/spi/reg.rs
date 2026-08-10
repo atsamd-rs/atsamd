@@ -3,12 +3,12 @@ use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
 use crate::ehal;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-use crate::pac::sercom0::Spi;
+use crate::pac::sercom0::Spim;
 #[hal_cfg("sercom0-d5x")]
 use crate::pac::sercom0::Spim;
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-use crate::pac::sercom0::spi::ctrla::Modeselect;
+use crate::pac::sercom0::spim::ctrla::Modeselect;
 #[hal_cfg("sercom0-d5x")]
 use crate::pac::sercom0::spim::ctrla::Modeselect;
 
@@ -38,8 +38,8 @@ unsafe impl<S: Sercom> Sync for Registers<S> {}
 impl<S: Sercom> Registers<S> {
     #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
     #[inline]
-    pub fn spi(&self) -> &Spi {
-        self.sercom.spi()
+    pub fn spi(&self) -> &Spim {
+        self.sercom.spim()
     }
 
     #[hal_cfg("sercom0-d5x")]

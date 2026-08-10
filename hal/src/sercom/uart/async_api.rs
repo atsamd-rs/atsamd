@@ -28,9 +28,9 @@ impl<S: Sercom> Handler<S::Interrupt> for InterruptHandler<S> {
         unsafe {
             let mut peripherals = crate::pac::Peripherals::steal();
 
-            #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
+            #[hal_cfg("sercom0-d11")]
             let uart = S::reg_block(&mut peripherals).usart();
-            #[hal_cfg("sercom0-d5x")]
+            #[hal_cfg(any("sercom0-d21", "sercom0-d5x"))]
             let uart = S::reg_block(&mut peripherals).usart_int();
 
             let flags_pending = Flags::from_bits_retain(uart.intflag().read().bits());

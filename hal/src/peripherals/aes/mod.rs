@@ -481,13 +481,13 @@ impl Aes {
     /// Disable Encryption Complete Interrupt
     #[inline]
     pub fn disable_enccmp(&self) {
-        self.intenclr().modify(|_, w| w.enccmp().set_bit());
+        self.intenclr().modify(|_, w| w.enccmp().clear_bit_by_one());
     }
 
     /// Disable GF Multiplication Complete Interrupt
     #[inline]
     pub fn disable_gfmcmp(&self) {
-        self.intenclr().modify(|_, w| w.gfmcmp().set_bit());
+        self.intenclr().modify(|_, w| w.gfmcmp().clear_bit_by_one());
     }
 
     // Interrupt Enable Set
@@ -514,7 +514,7 @@ impl Aes {
     /// 2. Reading from GHASHx register
     #[inline]
     pub fn clear_enccmp(&self) {
-        self.intflag().modify(|_, w| w.enccmp().set_bit());
+        self.intflag().modify(|_, w| w.enccmp().clear_bit_by_one());
     }
 
     /// Clear GF Multiplication Complete Interrupt
@@ -527,7 +527,7 @@ impl Aes {
     /// 2. Reading from Hash Key register (`HASHKEYx`)
     #[inline]
     pub fn clear_gfmcmp(&self) {
-        self.intflag().modify(|_, w| w.gfmcmp().set_bit());
+        self.intflag().modify(|_, w| w.gfmcmp().clear_bit_by_one());
     }
 
     /// Read Encryption Complete Interrupt
