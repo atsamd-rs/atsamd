@@ -73,7 +73,7 @@ pub fn generate_pac(
     // generated code
     fs::write(
         &pac_mod_out,
-        format!(r#"#[path="{}"] mod pac;"#, generated_out.display()),
+        format!(r#"#[path="{}"] mod __pac_impl;"#, generated_out.display()),
     )?;
 
     // `rustfmt`ting the generated files is important, otherwise `cargo doc` takes
