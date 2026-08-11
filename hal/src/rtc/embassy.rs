@@ -33,8 +33,8 @@ impl EmbassyBackend {
     fn set_alarm(&self, _cs: &CriticalSection, at: u64, rtc: &Rtc) -> bool {
         // Embassy uses u64::MAX as a "no upcoming interrupt" sentinel
         let at = match u32::try_from(at) {
-            Ok(at) => at,
             _ if at == u64::MAX => return true,
+            Ok(at) => at,
             Err(_) => return false,
         };
 
@@ -105,11 +105,7 @@ impl Driver for EmbassyBackend {
             let mut queue = self.queue.borrow(cs).borrow_mut();
             if queue.schedule_wake(at, waker) {
                 loop {
-                    let next = self
-                        .queue
-                        .borrow(cs)
-                        .borrow_mut()
-                        .next_expiration(self.now());
+                    let next = queue.next_expiration(self.now());
 
                     // We can only handle one alarm at a time right now
                     self.set_alarm(&cs, next, &rtc);
