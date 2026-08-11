@@ -17,6 +17,11 @@ pub use embedded_io_async;
 #[cfg(feature = "rtic")]
 pub use rtic_time;
 
+// Exposed only so the macro can initialize it
+#[cfg(feature = "embassy-time")]
+#[doc(hidden)]
+pub use embassy_time_driver;
+
 pub mod typelevel;
 mod util;
 
