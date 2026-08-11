@@ -28,7 +28,3 @@ lto = "thin"
 lto = true
 opt-level = "s"
 debug = true
-
-[patch.crates-io]
-svd-parser = { git = "https://github.com/rust-embedded/svd.git", revision = "34b9afc802edd7151c128005a5a5fd2588c194d4" }
-svd-rs = { git = "https://github.com/rust-embedded/svd.git", revision = "34b9afc802edd7151c128005a5a5fd2588c194d4" }
