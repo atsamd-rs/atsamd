@@ -69,15 +69,17 @@ mod app {
     /// This function is spawned and never returns.
     #[task(priority = 1, local=[led])]
     async fn blink_led(ctx: blink_led::Context) {
-        StatefulOutputPin::toggle(ctx.local.led).unwrap();
-        rprintln!(
-            "LED {}!",
-            if ctx.local.led.is_set_high().unwrap() {
-                "OFF"
-            } else {
-                "ON"
-            }
-        );
-        Mono::delay(200u64.millis()).await;
+        loop {
+            StatefulOutputPin::toggle(ctx.local.led).unwrap();
+            rprintln!(
+                "LED {}!",
+                if ctx.local.led.is_set_high().unwrap() {
+                    "OFF"
+                } else {
+                    "ON"
+                }
+            );
+            Mono::delay(200u64.millis()).await;
+        }
     }
 }
