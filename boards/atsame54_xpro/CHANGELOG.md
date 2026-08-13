@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.5](https://github.com/atsamd-rs/atsamd/compare/atsame54_xpro-0.13.4...atsame54_xpro-0.13.5) - 2026-08-13
+
+### Fixed
+
+- *(atsame54_xpro)* Add loop to RTIC blinky example ([#1015](https://github.com/atsamd-rs/atsamd/pull/1015))
+
 ## [0.13.4](https://github.com/atsamd-rs/atsamd/compare/atsame54_xpro-0.13.3...atsame54_xpro-0.13.4) - 2026-08-09
 
 ### Other
