@@ -11,7 +11,7 @@ license = "MIT OR Apache-2.0"
 name = "atsame54_xpro"
 readme = "README.md"
 repository = "https://github.com/atsamd-rs/atsamd"
-version = "0.13.4"
+version = "0.13.5"
 
 [dependencies.cortex-m-rt]
 optional = true
