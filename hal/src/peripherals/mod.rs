@@ -40,8 +40,8 @@ pub mod clock {}
 #[hal_module("aes")]
 pub mod aes {}
 
-#[hal_module("dsu-d5x")]
-pub mod dsu {}
+#[cfg(feature = "device")]
+pub mod dsu;
 
 #[hal_module("pukcc")]
 pub mod pukcc {}
