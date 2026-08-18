@@ -23,7 +23,7 @@ use atsame54_xpro as bsp;
 use bsp::hal;
 use clock::{osculp32k::OscUlp1k, rtcosc::RtcOsc};
 use hal::clock::v2 as clock;
-use hal::eic::{Ch15, Eic, ExtInt, Sense};
+use hal::eic::{Ch15, DebounceConfig, Eic, ExtInt, Sense};
 use hal::gpio::{Interrupt as GpioInterrupt, *};
 use hal::prelude::*;
 use hal::rtc::rtic::rtc_clock;
@@ -147,10 +147,13 @@ mod app {
 
         let (pclk_eic, gclk0) = clock::pclk::Pclk::enable(tokens.pclks.eic, clocks.gclk0);
 
-        let eic_channels = Eic::new(&mut mclk, &pclk_eic.into(), device.eic).split();
+        let mut eic = Eic::new(&mut mclk, &pclk_eic.into(), device.eic);
+        // The default debounce configuration is appropriate for buttons
+        eic.set_debounce_config(DebounceConfig::default());
+        let eic_channels = eic.split();
         let mut button = bsp::pin_alias!(pins.button).into_pull_up_ei(eic_channels.15);
         button.sense(Sense::Fall);
-        button.debounce();
+        button.enable_debouncing();
         button.enable_interrupt();
 
         let can1_rx = bsp::pin_alias!(pins.ata6561_rx).into_mode();

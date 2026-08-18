@@ -31,7 +31,7 @@
 //! ```no_run
 //! let eic_clock = clocks.eic(&gclk0).unwrap();
 //! // Initialize the EIC peripheral
-//! let eic = Eic::new(&mut peripherals.pm, eic_clock, peripherals.eic);
+//! let mut eic = Eic::new(&mut peripherals.pm, eic_clock, peripherals.eic);
 //! // Split into channels
 //! let eic_channels = eic.split();
 //!
@@ -41,6 +41,35 @@
 //! // Turn the EXTINT[2] channel into an ExtInt struct
 //! let mut extint = eic_channels.2.with_pin(button);
 //! ```
+//!
+//! ## Debouncing <span class="stab portability" title="Available on SAMx5x chips only">SAMx5x</span>
+//!
+//! The SAMx5x EIC contains a hardware debouncer, which qualifies edge
+//! detection on a pin by requiring its new state to be sampled on a number
+//! of consecutive debouncer clock ticks before the transition is validated.
+//! The debouncer's timing characteristics are shared hardware state: one
+//! prescaler/sample-count pair applies to EXTINT channels 0-7 (`bank0`),
+//! another to channels 8-15 (`bank1`), and the bounce sampler clock
+//! selection applies to all channels. They are therefore configured on the
+//! [`Eic`] itself, via `Eic::set_debounce_config`; individual channels then
+//! opt in with `ExtInt::enable_debouncing`:
+//!
+//! ```no_run
+//! let mut eic = Eic::new(&mut mclk, &eic_clock, peripherals.eic);
+//! // The default configuration is appropriate for debouncing buttons.
+//! eic.set_debounce_config(DebounceConfig::default());
+//! let eic_channels = eic.split();
+//!
+//! let button: Pin<_, PullUpInterrupt> = pins.d10.into();
+//! let mut extint = eic_channels.2.with_pin(button);
+//! extint.sense(Sense::Fall);
+//! extint.enable_debouncing();
+//! ```
+//!
+//! Debouncing can only be selected for a pin whose sense mode is an edge
+//! (`Rise`, `Fall` or `Both`), and is mutually exclusive with the majority
+//! filter (`ExtInt::filter`) on that pin. Refer to the "Interrupt Pin
+//! Debouncing" section of the datasheet for details.
 //!
 //! ## `async` operation <span class="stab portability" title="Available on crate feature `async` only"><code>async</code></span>
 //!
@@ -86,6 +115,103 @@ pub use impls::async_api::*;
 use super::clock::v2::{self, gclk::GclkId, osculp32k::OscUlp32kId, pclk::Pclk, rtcosc::RtcOsc};
 
 pub type Sense = pac::eic::config::Sense0select;
+
+/// Prescaler dividing the EIC clock (selected by `CTRLA.CKSEL`; [`Eic::new`]
+/// selects the ultra-low-power 32 kHz clock) to produce the debouncer's
+/// low-frequency tick.
+#[hal_cfg("eic-d5x")]
+pub type DebouncePrescaler = pac::eic::dprescaler::Prescaler0select;
+
+/// Clock used by the debouncer's bounce sampler: the EIC clock
+/// (`ClkGclkEic`) or the prescaled low-frequency tick (`ClkLfreq`).
+///
+/// Pin transitions are always counted on the low-frequency tick; this
+/// selects how often a bounce (a sample equal to the current valid pin
+/// state, resetting the transition counter) is detected.
+#[hal_cfg("eic-d5x")]
+pub type DebounceClock = pac::eic::dprescaler::Tickonselect;
+
+/// Number of consecutive low-frequency ticks on which a differing pin value
+/// must be sampled before the debouncer validates a pin state transition
+/// (`STATESx`).
+///
+/// This threshold applies to synchronous debouncing; in asynchronous mode
+/// (`ASYNCH`) the threshold is always 4 ticks, regardless of this setting.
+/// Note that the datasheet's DPRESCALER register description (and hence the
+/// PAC) refers to these settings as "3" and "7 low frequency samples", but
+/// its functional description specifies 4 and 8 consecutive ticks.
+#[hal_cfg("eic-d5x")]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum DebounceSamples {
+    /// Transition validated after 4 consecutive differing ticks.
+    Samples4,
+    /// Transition validated after 8 consecutive differing ticks.
+    Samples8,
+}
+
+#[hal_cfg("eic-d5x")]
+impl From<DebounceSamples> for bool {
+    fn from(samples: DebounceSamples) -> Self {
+        match samples {
+            DebounceSamples::Samples4 => false,
+            DebounceSamples::Samples8 => true,
+        }
+    }
+}
+
+/// Debouncer timing settings for a bank of eight EXTINT channels.
+#[hal_cfg("eic-d5x")]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct DebounceBankConfig {
+    /// Prescaler dividing the debouncer clock to derive its sampling rate.
+    pub prescaler: DebouncePrescaler,
+    /// Consecutive identical samples required to accept a transition.
+    pub samples: DebounceSamples,
+}
+
+#[hal_cfg("eic-d5x")]
+impl Default for DebounceBankConfig {
+    fn default() -> Self {
+        Self {
+            prescaler: DebouncePrescaler::Div16,
+            samples: DebounceSamples::Samples8,
+        }
+    }
+}
+
+/// Debouncer configuration, applied with [`Eic::set_debounce_config`].
+///
+/// Timing characteristics are shared hardware state: [`bank0`](Self::bank0)
+/// covers EXTINT channels 0-7, [`bank1`](Self::bank1) covers channels 8-15,
+/// and [`clock`](Self::clock) applies to all channels. Individual channels
+/// opt into debouncing with [`ExtInt::enable_debouncing`].
+///
+/// The [`Default`] value is appropriate for debouncing physical buttons:
+/// with the EIC clocked from the ultra-low-power 32.768 kHz clock (the
+/// [`Eic::new`] default), a prescaler of 16 gives a 2.048 kHz debouncer
+/// tick, and an edge is validated once the pin has held its new value for
+/// 8 ticks (roughly 3.9 ms).
+#[hal_cfg("eic-d5x")]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct DebounceConfig {
+    /// Timing settings for EXTINT channels 0-7.
+    pub bank0: DebounceBankConfig,
+    /// Timing settings for EXTINT channels 8-15.
+    pub bank1: DebounceBankConfig,
+    /// Clock the debouncer samples pins with, common to all channels.
+    pub clock: DebounceClock,
+}
+
+#[hal_cfg("eic-d5x")]
+impl Default for DebounceConfig {
+    fn default() -> Self {
+        Self {
+            bank0: DebounceBankConfig::default(),
+            bank1: DebounceBankConfig::default(),
+            clock: DebounceClock::ClkLfreq,
+        }
+    }
+}
 
 /// Trait representing an EXTINT channel ID.
 pub trait ChId {
@@ -285,6 +411,34 @@ impl Eic {
         self.sync();
     }
 
+    /// Configure the timing characteristics of the debouncer.
+    ///
+    /// These settings are shared hardware state:
+    /// [`bank0`](DebounceConfig::bank0) applies to EXTINT channels 0-7,
+    /// [`bank1`](DebounceConfig::bank1) to channels 8-15, and
+    /// [`clock`](DebounceConfig::clock) to all channels. Individual channels
+    /// opt into debouncing with [`ExtInt::enable_debouncing`].
+    ///
+    /// Note that whilst this function is executed, the EIC peripheral is
+    /// disabled in order to write to the enable-protected DPRESCALER
+    /// register.
+    #[hal_cfg("eic-d5x")]
+    pub fn set_debounce_config(&mut self, config: DebounceConfig) {
+        self.eic.ctrla().modify(|_, w| w.enable().clear_bit());
+        self.sync();
+
+        self.eic.dprescaler().write(|w| {
+            w.prescaler0().variant(config.bank0.prescaler);
+            w.states0().bit(config.bank0.samples.into());
+            w.prescaler1().set(config.bank1.prescaler as u8);
+            w.states1().bit(config.bank1.samples.into());
+            w.tickon().variant(config.clock)
+        });
+
+        self.eic.ctrla().modify(|_, w| w.enable().set_bit());
+        self.sync();
+    }
+
     #[hal_cfg("eic-d5x")]
     fn sync(&self) {
         while self.eic.syncbusy().read().enable().bit_is_set() {
@@ -413,7 +567,7 @@ macro_rules! define_split {
         seq!(N in 0..$num_channels {
             /// Split the EIC into individual channels.
             #[inline]
-            pub fn split(self) -> Channels {
+            pub fn split(&mut self) -> Channels {
                 Channels(
                     #(
                        unsafe { Channel::new(core::ptr::read(&self.eic as *const _)) },
@@ -435,7 +589,7 @@ macro_rules! define_split_future {
         seq!(N in 0..$num_channels {
             /// Split the EIC into individual channels
             #[inline]
-            pub fn split(self) -> FutureChannels {
+            pub fn split(&mut self) -> FutureChannels {
                 FutureChannels(
                     #(
                         unsafe { Channel::new(core::ptr::read(&self.eic as *const _)) },
