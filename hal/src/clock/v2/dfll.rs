@@ -272,7 +272,24 @@
 //! [`from_usb`]: Dfll::from_usb
 //! [`into_mode`]: EnabledDfll::into_mode
 
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
+#[hal_cfg("oscctrl")]
+mod imports {
+    pub use crate::pac::Oscctrl as PERIPHERAL;
+    pub use crate::pac::oscctrl::{
+        Dfllctrla as Dfllctrl, Dfllctrlb, Dfllmul, Dfllsync, RegisterBlock,
+    };
+}
+
+#[hal_cfg("sysctrl")]
+mod imports {
+    pub use crate::pac::Sysctrl as PERIPHERAL;
+    pub use crate::pac::sysctrl::{Dfllctrl, Dfllmul, RegisterBlock};
+}
+
 use fugit::RateExtU32;
+use imports::*;
 use typenum::U0;
 
 use crate::time::Hertz;
@@ -309,51 +326,64 @@ impl DfllToken {
     }
 
     #[inline]
-    fn oscctrl(&self) -> &crate::pac::oscctrl::RegisterBlock {
+    fn reg_block(&self) -> &RegisterBlock {
         // Safety: The `DfllToken` only has access to a mutually exclusive set
         // of registers for the DFLL, and we use a shared reference to the
         // register block. See the notes on `Token` types and memory safety in
         // the root of the `clock` module for more details.
-        unsafe { &*crate::pac::Oscctrl::PTR }
+        unsafe { &*PERIPHERAL::PTR }
+    }
+
+    #[hal_cfg("clock-d5x")]
+    #[inline]
+    fn dfllctrl(&self) -> &Dfllctrl {
+        self.reg_block().dfllctrla()
+    }
+
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    #[inline]
+    fn dfllctrl(&self) -> &Dfllctrl {
+        self.reg_block().dfllctrl()
+    }
+
+    #[hal_cfg("clock-d5x")]
+    #[inline]
+    fn dfllctrlb(&self) -> &Dfllctrlb {
+        self.reg_block().dfllctrlb()
     }
 
     #[inline]
-    fn dfllctrla(&self) -> &crate::pac::oscctrl::Dfllctrla {
-        self.oscctrl().dfllctrla()
+    fn dfllmul(&self) -> &Dfllmul {
+        self.reg_block().dfllmul()
     }
 
+    #[hal_cfg("clock-d5x")]
     #[inline]
-    fn dfllctrlb(&self) -> &crate::pac::oscctrl::Dfllctrlb {
-        self.oscctrl().dfllctrlb()
+    fn dfllsync(&self) -> &Dfllsync {
+        self.reg_block().dfllsync()
     }
 
-    #[inline]
-    fn dfllmul(&self) -> &crate::pac::oscctrl::Dfllmul {
-        self.oscctrl().dfllmul()
-    }
-
-    #[inline]
-    fn dfllsync(&self) -> &crate::pac::oscctrl::Dfllsync {
-        self.oscctrl().dfllsync()
-    }
-
+    #[hal_cfg("clock-d5x")]
     #[inline]
     fn wait_sync_enable(&self) {
         while self.dfllsync().read().enable().bit() {}
     }
 
+    #[hal_cfg("clock-d5x")]
     #[inline]
     fn wait_sync_dfllmul(&self) {
         while self.dfllsync().read().dfllmul().bit() {}
     }
 
+    #[hal_cfg("clock-d5x")]
     #[inline]
     fn wait_sync_dfllctrlb(&self) {
         while self.dfllsync().read().dfllctrlb().bit() {}
     }
 
+    #[hal_cfg("clock-d5x")]
     #[inline]
-    fn configure(&mut self, settings: settings::All) {
+    fn enable(&mut self, settings: settings::All) {
         self.dfllctrlb().modify(|_, w| {
             w.mode().bit(settings.closed_loop);
             w.usbcrm().bit(settings.usb_recovery);
@@ -371,27 +401,55 @@ impl DfllToken {
             });
             self.wait_sync_dfllmul();
         }
-        self.dfllctrla().modify(|_, w| {
+        self.dfllctrl().modify(|_, w| {
             w.runstdby().bit(settings.run_standby);
-            w.ondemand().bit(settings.on_demand)
+            w.ondemand().bit(settings.on_demand);
+            w.enable().set_bit()
+        });
+        self.wait_sync_enable();
+    }
+
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    #[inline]
+    fn enable(&mut self, settings: settings::All) {
+        if settings.closed_loop {
+            self.dfllmul().write(|w|
+            // Safety: All bit patterns are valid for these fields
+            unsafe {
+                w.mul().bits(settings.mult_factor);
+                w.cstep().bits(settings.coarse_max_step);
+                w.fstep().bits(settings.fine_max_step)
+            });
+        }
+        self.dfllctrl().write(|w| {
+            w.mode().bit(settings.closed_loop);
+            w.usbcrm().bit(settings.usb_recovery);
+            w.ccdis().bit(!settings.chill_cycle);
+            w.qldis().bit(!settings.quick_lock);
+            w.runstdby().bit(settings.run_standby);
+            w.ondemand().bit(settings.on_demand);
+            w.enable().set_bit()
         });
     }
 
     #[inline]
-    fn enable(&mut self) {
-        self.dfllctrla().modify(|_, w| w.enable().set_bit());
-        self.wait_sync_enable();
-    }
-
-    #[inline]
+    #[hal_macro_helper]
     fn disable(&mut self) {
-        self.dfllctrla().modify(|_, w| w.enable().clear_bit());
+        self.dfllctrl().write(|w| w.enable().clear_bit());
+        #[hal_cfg("clock-d5x")]
         self.wait_sync_enable();
     }
 
+    #[hal_cfg("clock-d5x")]
     #[inline]
     fn is_ready(&self) -> bool {
-        self.oscctrl().status().read().dfllrdy().bit()
+        self.reg_block().status().read().dfllrdy().bit()
+    }
+
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    #[inline]
+    fn is_ready(&self) -> bool {
+        self.reg_block().pclksr().read().dfllrdy().bit()
     }
 }
 
@@ -401,7 +459,10 @@ impl DfllToken {
 
 type MultFactor = u16;
 type CoarseMaxStep = u8;
+#[hal_cfg("clock-d5x")]
 type FineMaxStep = u8;
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+type FineMaxStep = u16;
 
 //==============================================================================
 // DfllId
@@ -1122,8 +1183,7 @@ impl<M: Mode> Dfll<M> {
     /// [`Source`] for other clocks.
     #[inline]
     pub fn enable(mut self) -> EnabledDfll<M> {
-        self.token.configure(self.settings.all());
-        self.token.enable();
+        self.token.enable(self.settings.all());
         Enabled::new(self)
     }
 }
