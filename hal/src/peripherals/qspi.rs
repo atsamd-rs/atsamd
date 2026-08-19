@@ -291,9 +291,11 @@ impl<MODE> Qspi<MODE> {
         });
 
         while self.qspi.intflag().read().instrend().bit_is_clear() {}
-        self.qspi.intflag().write(|w| w.instrend().set_bit());
+        self.qspi
+            .intflag()
+            .write(|w| w.instrend().clear_bit_by_one());
         while self.qspi.intflag().read().csrise().bit_is_clear() {}
-        self.qspi.intflag().write(|w| w.csrise().set_bit());
+        self.qspi.intflag().write(|w| w.csrise().clear_bit_by_one());
     }
 
     unsafe fn run_write_instruction(

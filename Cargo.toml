@@ -2,10 +2,11 @@
 resolver = "2"
 default-members = ["hal"]
 members = [
-	"hal",
-	"atsamd-hal-macros",
-	"pac/*",
-	"boards/*",
+    "hal",
+    "atsamd-hal-macros",
+    "atsamd-hal-pac-builder",
+    "pac/*",
+    "boards/*",
 ]
 
 [profile.dev]

@@ -43,7 +43,7 @@ pub fn retrieve_flash_size() -> u32 {
             None => {
                 let nvm = &*Nvmctrl::ptr();
                 let nvm_params = nvm.param().read();
-                if !nvm_params.psz().is_512() {
+                if !nvm_params.psz().is_psz_512() {
                     unreachable!("NVM page size is always expected to be 512 bytes");
                 }
                 let nvm_pages = nvm_params.nvmp().bits() as u32;
@@ -252,7 +252,7 @@ impl Nvm {
         // Wait until INTFLAG.DONE
         while !self.nvm.intflag().read().done().bit() {}
         // Clear INTFLAG.DONE
-        self.nvm.intflag().write(|w| w.done().set_bit());
+        self.nvm.intflag().write(|w| w.done().clear_bit_by_one());
 
         self.manage_error_states()
     }
@@ -274,9 +274,14 @@ impl Nvm {
         };
 
         // Clear error flags
-        self.nvm
-            .intflag()
-            .write(|w| w.addre().set_bit().locke().set_bit().proge().set_bit());
+        self.nvm.intflag().write(|w| {
+            w.addre()
+                .clear_bit_by_one()
+                .locke()
+                .clear_bit_by_one()
+                .proge()
+                .clear_bit_by_one()
+        });
 
         state
     }

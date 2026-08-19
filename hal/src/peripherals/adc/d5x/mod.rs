@@ -130,7 +130,7 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
-            Accumulation::Single(_) => (SampleCount::_1, 0),
+            Accumulation::Single(_) => (SampleCount::Samplenum1, 0),
             // A total of `adc_sample_count` elements will be averaged by the ADC
             // before it returns the result
             // Table 45-3 SAMx5x datasheet
@@ -235,7 +235,7 @@ impl<I: AdcInstance> Adc<I> {
         Flags::from_bits_truncate(bits)
     }
 
-    #[cfg(feature="async")]
+    #[cfg(feature = "async")]
     /// Clear the specified interrupt flags
     #[inline]
     pub(super) fn clear_flags(&mut self, flags: &Flags) {

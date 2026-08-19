@@ -152,7 +152,7 @@ impl State {
         self.gclk
             .pchctrl(u8::from(clock) as usize)
             .write(|w| unsafe {
-                w.r#gen().bits(generator.into());
+                w.gen_().bits(generator.into());
                 w.chen().set_bit()
             });
         self.wait_for_sync();
@@ -550,7 +550,7 @@ fn wait_for_dpllrdy(oscctrl: &mut Oscctrl) {
 fn configure_and_enable_dpll0(oscctrl: &mut Oscctrl, gclk: &mut Gclk) {
     gclk.pchctrl(ClockId::FDPLL0 as usize).write(|w| {
         w.chen().set_bit();
-        w.r#gen().gclk5()
+        w.gen_().gclk5()
     });
     unsafe {
         oscctrl.dpll(0).dpllratio().write(|w| {
