@@ -1,6 +1,6 @@
 # atsamd & atsame support for Rust
 
-This repository holds various crates that support/enable working with Microchip (nee Atmel) `samd11`, `samd21`, `samd51` and `same5x` based devices using Rust.
+This repository holds various crates that support/enable working with Microchip (nee Atmel) `samd11`, `samd21`, `samd51` and `same5x` based devices using Rust, and also the newer Microchip `PIC32CX SG` series
 
 ![CI Build](https://github.com/atsamd-rs/atsamd/workflows/Build%20BSPs/badge.svg)
 

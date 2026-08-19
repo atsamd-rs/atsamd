@@ -10,7 +10,7 @@ use crate::sercom::Sercom;
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
 use pac::sercom0::usart::ctrla::Modeselect;
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 use pac::sercom0::usart_int::ctrla::Modeselect;
 
 use crate::time::Hertz;
@@ -39,7 +39,7 @@ impl<S: Sercom> Registers<S> {
 
     /// Helper function to access the underlying `USART_INT` from the given
     /// `SERCOM`
-    #[hal_cfg("sercom0-d5x")]
+    #[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
     #[inline]
     fn usart(&self) -> &pac::sercom0::UsartInt {
         self.sercom.usart_int()

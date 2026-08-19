@@ -117,7 +117,7 @@ macro_rules! declare_multiple_interrupts {
 
 // ---------- DMAC Interrupts ---------- //
 #[cfg(feature = "dma")]
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 declare_multiple_interrupts!(DMAC: [DMAC_0, DMAC_1, DMAC_2, DMAC_OTHER]);
 
 #[cfg(feature = "dma")]
@@ -143,28 +143,28 @@ declare_interrupts!(SERCOM4);
 #[hal_cfg("sercom5-d21")]
 declare_interrupts!(SERCOM5);
 
-#[hal_cfg("sercom0-d5x")]
+#[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
 declare_multiple_interrupts!(SERCOM0: [SERCOM0_0, SERCOM0_1, SERCOM0_2, SERCOM0_OTHER ]);
 
-#[hal_cfg("sercom1-d5x")]
+#[hal_cfg(any("sercom1-d5x", "sercom1-pic32cxsg"))]
 declare_multiple_interrupts!(SERCOM1: [SERCOM1_0, SERCOM1_1, SERCOM1_2, SERCOM1_OTHER ]);
 
-#[hal_cfg("sercom2-d5x")]
+#[hal_cfg(any("sercom2-d5x", "sercom2-pic32cxsg"))]
 declare_multiple_interrupts!(SERCOM2: [SERCOM0_2, SERCOM2_1, SERCOM2_2, SERCOM2_OTHER ]);
 
-#[hal_cfg("sercom3-d5x")]
+#[hal_cfg(any("sercom3-d5x", "sercom3-pic32cxsg"))]
 declare_multiple_interrupts!(SERCOM3: [SERCOM3_0, SERCOM3_1, SERCOM3_2, SERCOM3_OTHER ]);
 
-#[hal_cfg("sercom4-d5x")]
+#[hal_cfg(any("sercom4-d5x", "sercom4-pic32cxsg"))]
 declare_multiple_interrupts!(SERCOM4: [SERCOM4_0, SERCOM4_1, SERCOM4_2, SERCOM4_OTHER ]);
 
-#[hal_cfg("sercom5-d5x")]
+#[hal_cfg(any("sercom5-d5x", "sercom5-pic32cxsg"))]
 declare_multiple_interrupts!(SERCOM5: [SERCOM5_0, SERCOM5_1, SERCOM5_2, SERCOM5_OTHER ]);
 
-#[hal_cfg("sercom6-d5x")]
+#[hal_cfg(any("sercom6-d5x", "sercom6-pic32cxsg"))]
 declare_multiple_interrupts!(SERCOM6: [SERCOM6_0, SERCOM6_1, SERCOM6_2, SERCOM6_OTHER ]);
 
-#[hal_cfg("sercom7-d5x")]
+#[hal_cfg(any("sercom7-d5x", "sercom7-pic32cxsg"))]
 declare_multiple_interrupts!(SERCOM7: [SERCOM7_0, SERCOM7_1, SERCOM7_2, SERCOM7_OTHER ]);
 
 // ----------  TC Interrupts ---------- //
@@ -197,7 +197,7 @@ declare_interrupts!(TC7);
 #[hal_cfg(any("eic-d11", "eic-d21"))]
 declare_interrupts!(EIC);
 
-#[hal_cfg("eic-d5x")]
+#[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
 seq_macro::seq!(N in 0..= 15 {
     paste::paste! {
         declare_interrupts! {
@@ -208,9 +208,9 @@ seq_macro::seq!(N in 0..= 15 {
 });
 
 // ----------  ADC Interrupt ---------- //
-#[hal_cfg("adc-d5x")]
+#[hal_cfg(any("adc-d5x", "adc-pic32cxsg"))]
 declare_multiple_interrupts!(ADC0: [ADC0_RESRDY, ADC0_OTHER]);
-#[hal_cfg("adc-d5x")]
+#[hal_cfg(any("adc-d5x", "adc-pic32cxsg"))]
 declare_multiple_interrupts!(ADC1: [ADC1_RESRDY, ADC1_OTHER]);
 #[hal_cfg(any("adc-d11", "adc-d21"))]
 declare_interrupts!(ADC);

@@ -31,7 +31,7 @@ pub use crate::pac::dmac::chctrlb::{
     Lvlselect as PriorityLevel, Trigactselect as TriggerAction, Trigsrcselect as TriggerSource,
 };
 
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 pub use crate::pac::dmac::channel::{
     chctrla::{
         Burstlenselect as BurstLength, Thresholdselect as FifoThreshold,

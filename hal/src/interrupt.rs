@@ -25,7 +25,7 @@ pub enum Priority {
 /// Logical interrupt priority level.
 ///
 /// P8 is the most urgent, and P1 is the least urgent priority.
-#[hal_cfg("nvic-d5x")]
+#[hal_cfg(any("nvic-d5x", "nvic-pic32cxsg"))]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[repr(u8)]
@@ -153,7 +153,7 @@ pub trait InterruptExt: cortex_m::interrupt::InterruptNumber + Copy {
             #[hal_cfg(any("nvic-d11", "nvic-d21"))]
             critical_section::with(|_| nvic.set_priority(self, prio.logical2hw()));
             // On thumbv7+, set_priority does an atomic 8bit write, so no CS needed.
-            #[hal_cfg("nvic-d5x")]
+            #[hal_cfg(any("nvic-d5x", "nvic-pic32cxsg"))]
             nvic.set_priority(self, prio.logical2hw());
         }
     }

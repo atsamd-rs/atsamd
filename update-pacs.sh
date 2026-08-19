@@ -17,11 +17,22 @@ SED=${SED:-/bin/sed}
 for xsl in svd/devices/*\.xsl; do
   chip=$(basename "${xsl}" .xsl)
   CHIP=$(echo "${chip}" | tr '[:lower:]' '[:upper:]')
-  svd=svd/${CHIP:0:9}.svd
+
+  # Shorten chip names to remove memory size parts of the name
+  if [[ "${CHIP}" == "ATSAM"* ]]; then
+    short_name="${CHIP:0:9}"
+  elif [[ "${CHIP}" == "PIC32CX"* ]]; then
+    # PIC32CX<memsize>SG41<pin count>
+    short_name="${CHIP:0:7}${CHIP:11}"
+  fi
+
+  short_name_lower_case=$(echo "$short_name" | tr '[:upper:]' '[:lower:]')
+
+  svd="${short_name}.svd"
+
   cp "svd/${CHIP}.svd" "$svd"
 
-  # remove last characters, because they just represent the memory size
-  pushd "${TOP}/pac/${chip:0:9}"
+  pushd "${TOP}/pac/${short_name_lower_case}"
 
   xsltproc "${TOP}/${xsl}" "${TOP}/${svd}" | svd2rust --reexport-core-peripherals --reexport-interrupt
 
@@ -30,8 +41,7 @@ for xsl in svd/devices/*\.xsl; do
   form -i lib.rs -o src
   rm lib.rs
 
-  # remove last characters, because they just represent the memory size
-  ${SED} -i "s/${CHIP}/${CHIP:0:9}/g" src/lib.rs
+  ${SED} -i "s/${CHIP}/${short_name}/g" src/lib.rs
 
   cargo +nightly fmt
   rustfmt +nightly build.rs

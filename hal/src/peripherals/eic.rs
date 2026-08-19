@@ -76,16 +76,20 @@ use crate::{
 
 #[hal_module(
     any("eic-d11", "eic-d21") => "eic/d11/mod.rs",
-    "eic-d5x" => "eic/d5x/mod.rs",
+    any("eic-d5x", "eic-pic32cxsg") => "eic/d5x/mod.rs",
 )]
 mod impls {}
 #[cfg(feature = "async")]
 pub use impls::async_api::*;
 
-#[hal_cfg("eic-d5x")]
+#[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
 use super::clock::v2::{self, gclk::GclkId, osculp32k::OscUlp32kId, pclk::Pclk, rtcosc::RtcOsc};
 
+#[hal_cfg(any("eic-d11", "eic-d21", "eic-d5x"))]
 pub type Sense = pac::eic::config::Sense0select;
+
+#[hal_cfg("eic-pic32cxsg")]
+pub type Sense = pac::eic::config0::Sense0select;
 
 /// Trait representing an EXTINT channel ID.
 pub trait ChId {
@@ -105,7 +109,7 @@ pub trait EicPin: AnyPin + Sealed {
 
     type ChId: ChId;
 
-    #[hal_cfg("eic-d5x")]
+    #[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
     #[cfg(feature = "async")]
     type InterruptSource: crate::async_hal::interrupts::InterruptSource;
 
@@ -151,7 +155,7 @@ where
     }
 
     #[cfg(all(doc, feature = "async"))]
-    #[hal_cfg(not("eic-d5x"))]
+    #[hal_cfg(not(any("eic-d5x", "eic-pic32cxsg")))]
     /// This method is not present with the selected feature set, defined for
     /// documentation only
     pub fn into_future(self) {
@@ -184,7 +188,7 @@ impl<Id: ChId, F> Channel<Id, F> {
         }
     }
 
-    #[hal_cfg("eic-d5x")]
+    #[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
     #[cfg(feature = "async")]
     fn change_mode<N>(self) -> Channel<Id, N> {
         Channel {
@@ -229,7 +233,7 @@ impl Eic {
 
     /// Create and initialize a new [`Eic`], and wire it up to the
     /// ultra-low-power 32kHz clock source.
-    #[hal_cfg("eic-d5x")]
+    #[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
     pub fn new(mclk: &mut pac::Mclk, _clock: &EicClock, eic: pac::Eic) -> Self {
         mclk.apbamask().modify(|_, w| w.eic_().set_bit());
 
@@ -254,7 +258,7 @@ impl Eic {
         eic
     }
 
-    #[hal_cfg("eic-d5x")]
+    #[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
     /// Switch the EIC to use the OSC32K clock
     /// as a source. This enables it to run in deep-sleep
     ///
@@ -269,7 +273,7 @@ impl Eic {
         self.sync();
     }
 
-    #[hal_cfg("eic-d5x")]
+    #[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
     /// Switch the EIC to use a GCLK source as its clock
     /// source.
     ///
@@ -285,7 +289,7 @@ impl Eic {
         self.sync();
     }
 
-    #[hal_cfg("eic-d5x")]
+    #[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
     fn sync(&self) {
         while self.eic.syncbusy().read().enable().bit_is_set() {
             core::hint::spin_loop();
@@ -320,7 +324,7 @@ impl<F> Eic<F> {
         #[hal_cfg(any("eic-d11", "eic-d21"))]
         let ctrl = self.eic.ctrl();
 
-        #[hal_cfg("eic-d5x")]
+        #[hal_cfg(any("eic-d5x", "eic-pic32cxsg"))]
         let ctrl = self.eic.ctrla();
 
         ctrl.modify(|_, w| w.swrst().set_bit());
@@ -351,7 +355,7 @@ macro_rules! with_num_channels {
     };
 }
 
-#[hal_cfg(any("eic-d5x", "eic-d21"))]
+#[hal_cfg(any("eic-d5x", "eic-d21", "eic-pic32cxsg"))]
 macro_rules! with_num_channels {
     ($some_macro:ident) => {
         $some_macro! {16}
