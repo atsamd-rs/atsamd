@@ -72,7 +72,7 @@ hal::bsp_pins! {
     }
 }
 
-pub type UartPads = uart::Pads<Sercom0, UartRx, UartTx>;
+pub type UartPads = uart::Pads<UartRx, UartTx>;
 
 /// UART device for the labelled RX & TX pins
 pub type Uart = uart::Uart<uart::Config<UartPads>, uart::Duplex>;
@@ -99,7 +99,7 @@ pub fn uart(
 /// I2C pads for the labelled I2C peripheral
 ///
 /// You can use these pads with other, user-defined [`i2c::Config`]urations.
-pub type I2cPads = i2c::Pads<Sercom0, Sda, Scl>;
+pub type I2cPads = i2c::Pads<Sda, Scl>;
 
 /// I2C master for the labelled I2C peripheral
 ///

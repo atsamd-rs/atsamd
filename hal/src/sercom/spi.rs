@@ -444,11 +444,7 @@ use crate::pac::sercom0::spi::ctrla::Modeselect;
 #[hal_cfg("sercom0-d5x")]
 use crate::pac::sercom0::spim::ctrla::Modeselect;
 
-#[hal_module(
-    any("sercom0-d11", "sercom0-d21") => "spi/pads_thumbv6m.rs",
-    "sercom0-d5x" => "spi/pads_thumbv7em.rs",
-)]
-pub mod pads {}
+pub mod pads;
 
 pub use pads::*;
 

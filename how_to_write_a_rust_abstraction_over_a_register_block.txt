@@ -1,0 +1,76 @@
+
+
+- For each register, for each field:
+	- find out type of field
+
+Types:
+	- Generic Phantom
+		- persistent
+		- effects other fields / functionality -> changes what functions users can use
+		- does not claim resources
+		e.g. UART Frame Format
+	- Generic Storage
+		- persistent
+		- effects other fields / functionality -> changes what functions users can use
+		- claims resources
+		e.g. UART Rxpo / Txpo -> GPIO pin configuration
+	- Field
+		- persistent
+		- does not effect other fields / functionality -> does not change what functions users can use
+		e.g. UART baud rate
+	- Volatile
+		- carries volatile data or is not persistent
+		e.g. UART data register, status flags
+
+Create your struct:
+	- claim register block using hardware marker
+	- Generic Phantoms receive a generic parameter and a PhantomData field of its type
+	- Generic Storage receives a generic parameter and a field of its type (or higher abstraction)
+	- Fields use associated register block field
+	- Volatile uses functions
+
+
+
+CTRLA -> checked with ENABLE , except enable, SWRST
+	DORD -> Field
+	CPOL -> Field
+	CMODE -> Field, checked with TXPO
+	FORM -> Generic Phantom
+	SAMPA -> Field
+	RXPO -> Generic Storage
+	TXPO -> Generic Storage
+	SAMPR -> Field
+	RXINV -> Field
+	TXINV -> Field
+	IBON -> Field
+	RUNSTDBY -> Field
+	MODE -> Field, checked with clock config?
+	ENABLE -> Generic Phantom
+	SWRST -> Volatile
+
+CTRLB -> checked with ENABLE , except RXEN, TXEN
+	LINCMD -> Field, checked with FORM
+	RXEN -> Field
+	TXEN -> Field
+	PMODE -> Field, checked with FORM
+	ENC -> Field
+	SFDE -> Field
+	COLDEN -> Field
+	SBMODE -> Field
+	CHSIZE -> Generic Phantom
+
+CTRLC -> checked with ENABLE
+	DATA32B -> Generic Phantom
+	MAXITER -> Field, checked with FORM
+	DSNACK -> Field, checked with FORM, INACK
+	INACK -> Generic Phantom, checked with FORM?
+	HDRDLY -> Field, checked with FORM, LINCMD?
+	BRKLEN -> Field, checked with FORM
+	GTIME -> Field, checked with FORM, TXPO?
+
+BAUD -> checked with ENABLE
+	BAUD -> Field
+
+
+RXPL -> checked with ENABLE
+	RXPL -> Field checked with ENC?

@@ -1,6 +1,7 @@
 //! Implementations of the [`IsPad`], [`IsI2cPad`], [`GetPad`] traits
 
 use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+use sorted_hlist::mk_hlist;
 
 use crate::gpio::*;
 use crate::sercom::*;
@@ -53,6 +54,10 @@ macro_rules! pad_info {
         impl IsPad for Pin<$PinId, Alternate<$Cfg>> {
             type Sercom = $Sercom;
             type PadNum = $PadNum;
+        }
+
+        impl HasSercomList for Pin<$PinId, Alternate<$Cfg>> {
+			type List = mk_hlist!(<$Sercom as Sercom>::Order);
         }
     };
 }
