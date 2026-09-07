@@ -19,7 +19,8 @@ version = "0.7.5"
 optional = true
 
 [dependencies.atsamd-hal]
-version = "0.21.0"
+# TODO(stillinbeta): set to release version
+path = "../../hal"
 default-features = false
 
 [dependencies.display-interface-parallel-gpio]
@@ -34,27 +35,58 @@ optional=true
 version = "0.3.2"
 optional = true
 
+[dependencies.embassy-nina]
+version = "0.1"
+optional = true
+features = []
+git = "https://github.com/stillinbeta/embassy-nina.git"
+rev = "ce3ecde85e0fdd0cfe81f40478f46322de099abf"
+
 [dev-dependencies]
 panic-halt = "0.2"
 panic-semihosting = "0.5"
 smart-leds = "~0.3"
 usbd-serial = "0.2.2"
 embedded-graphics = "0.8.1"
+embassy-time = "0.5"
+embassy-sync = "0.7.2"
+critical-section = "1.2.0"
+defmt-rtt = "1.2"
+defmt = "1.1"
+panic-probe = "1.0"
+embedded-nal-async = "0.9.0"
+
+[dev-dependencies.embassy-executor]
+version = "0.10"
+features = ["platform-cortex-m", "executor-thread"]
 
 [dev-dependencies.cortex-m]
 features = ["critical-section-single-core"]
 version = "0.7.5"
 
+[dev-dependencies.cortex-m-semihosting]
+version = "0.5"
+
 [dev-dependencies.ws2812-timer-delay]
 version = "~0.3"
 
+[dev-dependencies.reqwless]
+version = "0.14.0"
+default-features = false
+features = ["defmt"]
+
 [features]
 # ask the HAL to enable atsamd51j support
-default = ["rt", "atsamd-hal/samd51j"]
+dma = ["atsamd-hal/dma"]
+default = ["rt", "atsamd-hal/samd51j", "atsamd-hal/undoc-features"]
 rt = ["cortex-m-rt", "atsamd-hal/samd51j-rt"]
 usb = ["atsamd-hal/usb", "usb-device"]
 display = ["display-interface-parallel-gpio", "ili9341"]
 use_semihosting = []
+rtic = ["atsamd-hal/rtic"]
+embassy-time = ["atsamd-hal/embassy-time"]
+wifi = ["atsamd-hal/async", "embassy-nina"]
+defmt = ["atsamd-hal/defmt", "embassy-nina/defmt"] # add defmt codegen link
 
 # for cargo flash
 [package.metadata]
@@ -73,3 +105,11 @@ name = "neopixel_rainbow"
 [[example]]
 name = "usb_echo"
 required-features = ["usb"]
+
+[[example]]
+name = "embassy_timer"
+required-features = ["embassy-time"]
+
+[[example]]
+name = "embassy_wifi"
+required-features = ["wifi", "embassy-time", "defmt"]

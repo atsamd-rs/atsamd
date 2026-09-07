@@ -13,4 +13,8 @@ fn main() {
         println!("cargo:rerun-if-changed=memory.x");
     }
     println!("cargo:rerun-if-changed=build.rs");
+
+    if env::var_os("CARGO_FEATURE_DEFMT").is_some() {
+        println!("cargo::rustc-link-arg=-Tdefmt.x")
+    }
 }

@@ -340,6 +340,13 @@ where
         self.write(buffer).await;
         Ok(buffer.len())
     }
+
+
+    #[inline]
+    async fn flush(&mut self) -> Result<(), Self::Error> {
+        // self.write already calls self.wait_flags(Flags::TXC).await;
+        Ok(())
+    }
 }
 
 impl<C, D, R, T, S> AsRef<Uart<C, D, R, T>> for UartFuture<C, D, R, T>
@@ -499,11 +506,19 @@ mod dma {
         S: Sercom + 'static,
         T: AnyChannel<Status = ReadyFuture>,
     {
+
         #[inline]
         async fn write(&mut self, words: &[u8]) -> Result<usize, Error> {
             self.write(words).await?;
             Ok(words.len())
         }
+
+        #[inline]
+        async fn flush(&mut self) -> Result<(), Self::Error> {
+            // self.write already calls self.wait_flags(Flags::TXC).await;
+            Ok(())
+        }
+
     }
 }
 

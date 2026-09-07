@@ -24,6 +24,9 @@ mod modes;
 #[cfg(feature = "rtic")]
 pub mod rtic;
 
+#[cfg(feature = "embassy-time")]
+pub mod embassy;
+
 // SAMx5x imports
 #[hal_cfg("rtc-d5x")]
 use crate::pac::{Mclk as Pm, rtc::mode0::ctrla::Prescalerselect};

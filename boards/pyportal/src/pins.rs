@@ -221,13 +221,15 @@ hal::bsp_pins!(
         name: esp_cs,
         aliases: {
             Reset: EspCsReset,
+            PushPullOutput: EspCs,
         }
     }
     PB15 {
         /// Pin ESP GPIO0
         name: esp_gpio0,
         aliases: {
-            Reset: EspGpio0Reset
+            Reset: EspGpio0Reset,
+            PushPullOutput: EspGpio,
         }
     }
     PB16 {
@@ -235,6 +237,7 @@ hal::bsp_pins!(
         name: esp_busy,
         aliases: {
             Reset: EspBusyReset,
+            FloatingInterrupt: EspBusy,
         }
     }
     PB17 {
@@ -242,6 +245,7 @@ hal::bsp_pins!(
         name: esp_reset,
         aliases: {
             Reset: EspResetReset,
+            PushPullOutput: EspReset,
         }
     }
     PA15 {

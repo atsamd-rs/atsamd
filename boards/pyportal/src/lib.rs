@@ -8,10 +8,10 @@ pub use hal::pac;
 pub use cortex_m_rt::entry;
 
 use hal::clock::GenericClockController;
-use hal::sercom::uart;
-use hal::sercom::uart::BaudMode;
-use hal::sercom::uart::Oversampling;
-use hal::sercom::{i2c, spi, IoSet1, IoSet6};
+use hal::sercom::{
+    i2c, spi,
+    uart::{self, BaudMode, Oversampling},
+};
 use hal::time::Hertz;
 
 pub mod pins;
@@ -25,13 +25,19 @@ pub use display::*;
 #[cfg(feature = "usb")]
 use hal::usb::{usb_device::bus::UsbBusAllocator, UsbBus};
 
+#[cfg(feature = "wifi")]
+use hal::{
+    eic,
+    sercom::{spi::Duplex, Sercom2},
+};
+
 hal::bsp_peripherals!(
     Sercom2 { SpiSercom }
     Sercom4 { EspUartSercom }
     Sercom5 { I2cSercom }
 );
 
-pub type SpiPads = spi::Pads<SpiSercom, IoSet1, Miso, Mosi, Sck>;
+pub type SpiPads = spi::Pads<SpiSercom, Miso, Mosi, Sck>;
 
 pub type Spi = spi::Spi<spi::Config<SpiPads>, spi::Duplex>;
 
@@ -61,10 +67,49 @@ pub fn spi_master(
         .enable()
 }
 
+#[cfg(feature = "wifi")]
+/// Initialize embassy-nina to talk to the ESP32 coprocessor
+/// see examples/embassy_wifi.rs
+pub async fn wifi<SI, BI>(
+    spi: Spi,
+    spi_interrupt: SI,
+    ch: hal::eic::Channel<hal::eic::Ch0>,
+    cs: impl Into<EspCs>,
+    busy: impl Into<EspBusy>,
+    busy_interrupt: BI,
+    reset: impl Into<EspReset>,
+    gpio: impl Into<EspGpio>,
+) -> Result<
+    embassy_nina::Nina<
+        spi::SpiFuture<spi::Config<SpiPads>, Duplex>,
+        EspCs,
+        eic::ExtInt<EspBusy, hal::eic::Ch0, eic::EicFuture>,
+        EspReset,
+        EspGpio,
+    >,
+    embassy_nina::Error<spi::Error>,
+>
+where
+    SI: hal::async_hal::interrupts::Binding<
+        hal::async_hal::interrupts::SERCOM2,
+        spi::InterruptHandler<Sercom2>,
+    >,
+    BI: hal::async_hal::interrupts::Binding<
+        hal::async_hal::interrupts::EIC_EXTINT_0,
+        eic::InterruptHandler,
+    >,
+{
+    let spi = spi.into_future(spi_interrupt);
+    let busy2 = ch.with_pin(busy.into()).into_future(busy_interrupt);
+    let mut nina = embassy_nina::Nina::new(spi, cs.into(), busy2, reset.into(), gpio.into());
+    nina.init().await?;
+    Ok(nina)
+}
+
 /// I2C pads for the labelled I2C peripheral
 ///
-/// You can use these pads with other, user-defined [`i2c::Config`]urations.
-pub type I2cPads = i2c::Pads<I2cSercom, IoSet6, Sda, Scl>;
+/// You can use these pads with other, user-defined Durations.
+pub type I2cPads = i2c::Pads<I2cSercom, Sda, Scl>;
 
 /// I2C master for the labelled I2C peripheral
 ///
@@ -94,7 +139,7 @@ pub fn i2c_master(
 }
 
 /// UART Pads for the ESP32 Wi-Fi co-processor
-pub type EspUartPads = uart::Pads<EspUartSercom, IoSet1, EspUartRx, EspUartTx>;
+pub type EspUartPads = uart::Pads<EspUartSercom, EspUartRx, EspUartTx>;
 
 /// UART device for the ESP32 Wi-Fi co-processor
 pub type EspUart = uart::Uart<uart::Config<EspUartPads>, uart::Duplex>;
