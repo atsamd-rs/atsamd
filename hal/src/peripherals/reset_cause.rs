@@ -8,12 +8,12 @@ pub enum ResetCause {
     POR,
     BOD12,
     BOD33,
-    #[hal_cfg("rstc-d5x")]
+    #[hal_cfg(any("rstc-d5x", "rstc-pic32cxsg"))]
     NVM,
     External,
     Watchdog,
     System,
-    #[hal_cfg("rstc-d5x")]
+    #[hal_cfg(any("rstc-d5x", "rstc-pic32cxsg"))]
     Backup,
 }
 
@@ -24,12 +24,12 @@ impl From<u8> for ResetCause {
             1 => Self::POR,
             2 => Self::BOD12,
             4 => Self::BOD33,
-            #[hal_cfg("rstc-d5x")]
+            #[hal_cfg(any("rstc-d5x", "rstc-pic32cxsg"))]
             8 => Self::NVM,
             16 => Self::External,
             32 => Self::Watchdog,
             64 => Self::System,
-            #[hal_cfg("rstc-d5x")]
+            #[hal_cfg(any("rstc-d5x", "rstc-pic32cxsg"))]
             128 => Self::Backup,
             _ => Self::Unknown,
         }
@@ -43,7 +43,7 @@ pub fn reset_cause(pm: &crate::pac::Pm) -> ResetCause {
 }
 
 /// Returns the cause of the last reset.
-#[hal_cfg("rstc-d5x")]
+#[hal_cfg(any("rstc-d5x", "rstc-pic32cxsg"))]
 pub fn reset_cause(rstc: &crate::pac::Rstc) -> ResetCause {
     ResetCause::from(rstc.rcause().read().bits())
 }

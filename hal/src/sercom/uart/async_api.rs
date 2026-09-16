@@ -30,7 +30,7 @@ impl<S: Sercom> Handler<S::Interrupt> for InterruptHandler<S> {
 
             #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
             let uart = S::reg_block(&mut peripherals).usart();
-            #[hal_cfg("sercom0-d5x")]
+            #[hal_cfg(any("sercom0-d5x", "sercom0-pic32cxsg"))]
             let uart = S::reg_block(&mut peripherals).usart_int();
 
             let flags_pending = Flags::from_bits_retain(uart.intflag().read().bits());

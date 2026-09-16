@@ -1,6 +1,5 @@
 {
   "boards": {
-    
     "atsame54_xpro": {
       "tier": 1,
       "build": "cargo build --examples --all-features",
@@ -36,7 +35,6 @@
       "build": "cargo build --profile dev-optimized --examples --all-features",
       "target": "thumbv6m-none-eabi"
     },
-
     "arduino_mkr1000": {
       "tier": 2,
       "build": "cargo build --examples --all-features",
@@ -335,7 +333,120 @@
       "target": "thumbv7em-none-eabihf"
     },
     "same54p": {
-      "features": [ "same54p", "usb", "dma", "sdmmc", "rtic", "can", "defmt", "async", "undoc-features" ],
+      "features": [
+        "same54p",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cxsg41064": {
+      "features": [
+        "pic32cxsg41064",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cxsg41080": {
+      "features": [
+        "pic32cxsg41080",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cxsg41100": {
+      "features": [
+        "pic32cxsg41100",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cxsg41128": {
+      "features": [
+        "pic32cxsg41128",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cxsg60100": {
+      "features": [
+        "pic32cxsg60100",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cxsg60128": {
+      "features": [
+        "pic32cxsg60128",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cxsg61100": {
+      "features": [
+        "pic32cxsg61100",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
+      "target": "thumbv7em-none-eabihf"
+    },
+    "pic32cxsg61128": {
+      "features": [
+        "pic32cxsg61128",
+        "usb",
+        "dma",
+        "sdmmc",
+        "rtic",
+        "can",
+        "defmt",
+        "async"
+      ],
       "target": "thumbv7em-none-eabihf"
     }
   }

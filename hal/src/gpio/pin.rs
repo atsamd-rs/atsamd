@@ -343,10 +343,10 @@ macro_rules! alternate {
 
 alternate!(B, C, D, E, F, G);
 
-#[hal_cfg(any("port-d21", "port-d5x"))]
+#[hal_cfg(any("port-d21", "port-d5x", "port-pic32cxsg"))]
 alternate!(H);
 
-#[hal_cfg("port-d5x")]
+#[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
 alternate!(I, J, K, L, M, N);
 
 /// Type-level variant of [`PinMode`] for alternate peripheral functions
@@ -752,19 +752,19 @@ impl_core_convert_from!(
     AlternateE,
     AlternateF,
     AlternateG,
-    #[hal_cfg(any("port-d21", "port-d5x"))]
+    #[hal_cfg(any("port-d21", "port-d5x", "port-pic32cxsg"))]
     AlternateH,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     AlternateI,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     AlternateJ,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     AlternateK,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     AlternateL,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     AlternateM,
-    #[hal_cfg("port-d5x")]
+    #[hal_cfg(any("port-d5x", "port-pic32cxsg"))]
     AlternateN,
 );
 

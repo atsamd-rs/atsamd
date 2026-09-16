@@ -1,0 +1,23 @@
+[package]
+name = "pic32cxsg60100"
+description = "Peripheral access API for PIC32CXSG60100 microcontrollers (generated using svd2rust)"
+version = "0.1.0"
+authors = ["Ashcon Mohseninia <ashconm@outlook.com>"]
+keywords = ["no-std", "arm", "cortex-m"]
+categories = ["embedded", "hardware-support", "no-std"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/atsamd-rs/atsamd"
+readme = "README.md"
+edition = "2021"
+
+[dependencies]
+cortex-m = "0.7"
+vcell = "0.1.2"
+critical-section = "1.1"
+
+[dependencies.cortex-m-rt]
+version = "0.7"
+optional = true
+
+[features]
+rt = ["cortex-m-rt/device"]

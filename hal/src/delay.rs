@@ -9,10 +9,10 @@ use crate::ehal::delay::DelayNs;
 use crate::ehal_02;
 use crate::time::Hertz;
 
-#[hal_cfg("rtc-d5x")]
+#[hal_cfg(any("rtc-d5x", "rtc-pic32cxsg"))]
 use crate::typelevel::Increment;
 
-#[hal_cfg("rtc-d5x")]
+#[hal_cfg(any("rtc-d5x", "rtc-pic32cxsg"))]
 use crate::clock::v2::{Source, gclk::Gclk0Id};
 
 /// System timer (SysTick) as a delay provider
@@ -32,7 +32,7 @@ impl Delay {
         }
     }
 
-    #[hal_cfg("rtc-d5x")]
+    #[hal_cfg(any("rtc-d5x", "rtc-pic32cxsg"))]
     /// Configures the system timer (SysTick) as a delay provide, compatible
     /// with the V2 clocking API
     pub fn new_with_source<S>(mut syst: SYST, gclk0: S) -> (Self, S::Inc)

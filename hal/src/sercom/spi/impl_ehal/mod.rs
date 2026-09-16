@@ -11,7 +11,7 @@ mod panic_on;
 
 #[hal_module(
     any("sercom0-d11", "sercom0-d21") => "thumbv6m.rs",
-    "sercom0-d5x" => "thumbv7em.rs")]
+    any("sercom0-d5x", "sercom0-pic32cxsg") => "thumbv7em.rs")]
 pub mod impl_ehal_02 {}
 
 impl spi::Error for Error {

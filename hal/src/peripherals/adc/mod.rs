@@ -31,7 +31,7 @@ use crate::{gpio::AnyPin, pac, typelevel::Sealed};
 
 #[hal_module(
     any("adc-d11", "adc-d21") => "d11/mod.rs",
-    "adc-d5x" => "d5x/mod.rs",
+    any("adc-d5x", "adc-pic32cxsg") => "d5x/mod.rs",
 )]
 mod impls {}
 
@@ -47,7 +47,7 @@ pub use builder::*;
 
 #[hal_cfg(any("adc-d11", "adc-d21"))]
 use crate::pac::adc as adc0;
-#[hal_cfg("adc-d5x")]
+#[hal_cfg(any("adc-d5x", "adc-pic32cxsg"))]
 use crate::pac::adc0;
 
 pub use adc0::refctrl::Refselselect as Reference;
@@ -91,7 +91,7 @@ pub enum Error {
 }
 
 /// Voltage source to use when using the ADC to measure the CPU voltage
-#[hal_cfg("adc-d5x")]
+#[hal_cfg(any("adc-d5x", "adc-pic32cxsg"))]
 #[derive(Copy, Clone, PartialEq, Eq)]
 #[repr(u8)]
 pub enum CpuVoltageSource {
@@ -140,7 +140,7 @@ pub trait AdcInstance {
     // The Adc0 and Adc1 PAC types implement Deref
     type Instance: Deref<Target = adc0::RegisterBlock>;
 
-    #[hal_cfg("adc-d5x")]
+    #[hal_cfg(any("adc-d5x", "adc-pic32cxsg"))]
     type ClockId: crate::clock::v2::apb::ApbId + crate::clock::v2::pclk::PclkId;
 
     fn peripheral_reg_block(p: &mut Peripherals) -> &adc0::RegisterBlock;
@@ -171,7 +171,7 @@ pub struct Adc<I: AdcInstance> {
 }
 
 /// ADC Instance
-#[hal_cfg("adc-d5x")]
+#[hal_cfg(any("adc-d5x", "adc-pic32cxsg"))]
 pub struct Adc<I: AdcInstance> {
     adc: I::Instance,
     _apbclk: crate::clock::v2::apb::ApbClk<I::ClockId>,
@@ -201,7 +201,7 @@ impl<I: AdcInstance> Adc<I> {
     ///
     /// NOTE: If you plan to run the chip above 100°C, then the maximum GCLK
     /// frequency for the ADC is restricted to 90Mhz for stable performance.
-    #[hal_cfg("adc-d5x")]
+    #[hal_cfg(any("adc-d5x", "adc-pic32cxsg"))]
     #[inline]
     pub(crate) fn new<PS: crate::clock::v2::pclk::PclkSourceId>(
         adc: I::Instance,
@@ -414,7 +414,7 @@ impl<I: AdcInstance> Adc<I> {
     }
 
     /// Return the underlying ADC PAC object and the enabled APB ADC clock.
-    #[hal_cfg("adc-d5x")]
+    #[hal_cfg(any("adc-d5x", "adc-pic32cxsg"))]
     #[inline]
     pub fn free(mut self) -> (I::Instance, crate::clock::v2::apb::ApbClk<I::ClockId>) {
         self.software_reset();

@@ -50,7 +50,7 @@ impl watchdog::WatchdogDisable for Watchdog {
             // Wait for watchdog timer to be disabled.
             while self.wdt.status().read().syncbusy().bit_is_set() {}
         }
-        #[hal_cfg("wdt-d5x")]
+        #[hal_cfg(any("wdt-d5x", "wdt-pic32cxsg"))]
         {
             // Disable the watchdog timer.
             self.wdt.ctrla().write(|w| w.enable().clear_bit());
@@ -88,7 +88,7 @@ impl watchdog::WatchdogEnable for Watchdog {
             while self.wdt.status().read().syncbusy().bit_is_set() {}
         }
 
-        #[hal_cfg("wdt-d5x")]
+        #[hal_cfg(any("wdt-d5x", "wdt-pic32cxsg"))]
         {
             // Enable the watchdog timer.
             self.wdt.ctrla().write(|w| w.enable().set_bit());

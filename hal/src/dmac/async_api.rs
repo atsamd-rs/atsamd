@@ -72,7 +72,7 @@ impl Handler<DMAC> for InterruptHandler {
     }
 }
 
-#[hal_cfg("dmac-d5x")]
+#[hal_cfg(any("dmac-d5x", "dmac-pic32cxsg"))]
 impl Handler<DMAC> for InterruptHandler {
     unsafe fn on_interrupt() {
         let dmac = unsafe { crate::pac::Peripherals::steal().dmac };

@@ -1,6 +1,6 @@
-# HAL for working with atsamd & atsame devices
+# HAL for working with Atmels ATSAMD/E devices, and Microchip's ARM PIC32 devices
 
-This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51`, `same51`, `same53`, and `same54` based devices.
+This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51`, `same51`, `same53`, `same54` and `pic32cxsg` based devices.
 
 [![Crates.io](https://img.shields.io/crates/v/atsamd-hal.svg)](https://crates.io/crates/atsamd-hal)
 [![Docs](https://docs.rs/atsamd-hal/badge.svg)](https://docs.rs/atsamd-hal/)
@@ -9,6 +9,8 @@ This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51
 ## [Documentation](https://docs.rs/atsamd-hal)
 
 ## Supported Devices
+
+### Formerly Atmel devices
 
 * `atsamd11c` (via the `samd11c` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd11c)
 * `atsamd21e` (via the `samd21e` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsamd21e)
@@ -27,6 +29,17 @@ This crate provides a type-safe API for working with `samd11`, `samd21`, `samd51
 * `atsame53n` (via the `same53n` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsame53n)
 * `atsame54n` (via the `same54n` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsame54n)
 * `atsame54p` (via the `same54p` feature) [[pac]](https://github.com/atsamd-rs/atsamd/tree/master/pac/atsame54p)
+
+### Microchip devices
+
+* `PIC32CXSG41064` (via the `pic32cxsg41064` feature) [[pac]]()
+* `PIC32CXSG41080` (via the `pic32cxsg41080` feature) [[pac]]()
+* `PIC32CXSG41100` (via the `pic32cxsg41100` feature) [[pac]]()
+* `PIC32CXSG41128` (via the `pic32cxsg41128` feature) [[pac]]()
+* `PIC32CXSG60100` (via the `pic32cxsg60100` feature) [[pac]]()
+* `PIC32CXSG60128` (via the `pic32cxsg60128` feature) [[pac]]()
+* `PIC32CXSG61100` (via the `pic32cxsg61100` feature) [[pac]]()
+* `PIC32CXSG61128` (via the `pic32cxsg61128` feature) [[pac]]()
 
 This crate can support other variants in a similar fashion; pull requests for this are welcomed!
 

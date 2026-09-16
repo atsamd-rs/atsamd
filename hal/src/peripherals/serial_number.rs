@@ -15,13 +15,13 @@ const SN_3: u32 = 0x0080A044;
 const SN_4: u32 = 0x0080A048;
 
 // See 9.6 Memories --> Serial Number, page 60
-#[hal_cfg("serial-numbers-d5x")]
+#[hal_cfg(any("serial-numbers-d5x", "serial-numbers-pic32cxsg"))]
 const SN_1: u32 = 0x008061FC;
-#[hal_cfg("serial-numbers-d5x")]
+#[hal_cfg(any("serial-numbers-d5x", "serial-numbers-pic32cxsg"))]
 const SN_2: u32 = 0x00806010;
-#[hal_cfg("serial-numbers-d5x")]
+#[hal_cfg(any("serial-numbers-d5x", "serial-numbers-pic32cxsg"))]
 const SN_3: u32 = 0x00806014;
-#[hal_cfg("serial-numbers-d5x")]
+#[hal_cfg(any("serial-numbers-d5x", "serial-numbers-pic32cxsg"))]
 const SN_4: u32 = 0x00806018;
 
 /// Returns the serial number of the chip as 4 32-bit integers. The serial

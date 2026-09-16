@@ -1,12 +1,7 @@
 [workspace]
 resolver = "2"
 default-members = ["hal"]
-members = [
-	"hal",
-	"atsamd-hal-macros",
-	"pac/*",
-	"boards/*",
-]
+members = ["hal", "atsamd-hal-macros", "pac/*", "boards/*"]
 
 [profile.dev]
 debug = true
