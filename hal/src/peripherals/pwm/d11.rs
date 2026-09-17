@@ -200,7 +200,7 @@ impl $TYPE {
             pm.$apmask().modify(|_, w| w.$apbits().set_bit());
             tcc.ctrla().write(|w| w.swrst().set_bit());
             while tcc.syncbusy().read().swrst().bit_is_set() {}
-            tcc.ctrlbclr().write(|w| w.dir().set_bit() );
+            tcc.ctrlbclr().write(|w| w.dir().clear_bit_by_one() );
             while tcc.syncbusy().read().ctrlb().bit_is_set() {}
             tcc.ctrla().modify(|_, w| w.enable().clear_bit());
             while tcc.syncbusy().read().enable().bit_is_set() {}

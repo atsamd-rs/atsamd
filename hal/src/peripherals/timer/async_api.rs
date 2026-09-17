@@ -94,7 +94,7 @@ impl<A: AsyncCount16> Handler<A::Interrupt> for InterruptHandler<A> {
 
         if intflag.read().ovf().bit_is_set() {
             // Clear the flag
-            intflag.modify(|_, w| w.ovf().set_bit());
+            intflag.write(|w| w.ovf().clear_bit_by_one());
             STATE[A::STATE_ID].wake();
         }
     }
