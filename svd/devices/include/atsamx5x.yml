@@ -1,0 +1,163 @@
+# CCBUF & DITHERBUF wrong offset & size for CCBUF_DITH4_MODE
+"TCC?":
+  "CCBUF_DITH4_MODE?%s?":
+    _modify:
+      DITHERBUF:
+        bitOffset: 0
+        bitWidth: 4
+      CCBUF:
+        bitOffset: 4
+        bitWidth: 20
+
+# The NVMCTRL::PARAM::SEE field is specified as 1 bit wide, but several
+# devices include much wider enumeration values that don't correspond to
+# the actual values expected for this field.
+NVMCTRL:
+  PARAM:
+    SEE:
+      _replace_enum:
+        _name: SEESelect
+        SMARTEEPROM: [0x1, "SmartEEPROM is supported"]
+        NOSMARTEEPROM: [0x0, "No SmartEEPROM support"]
+
+# The SDHC peripheral on some devices contains reset values for certain
+# fields that are wider than their corresponding storage. Replace the
+# invalid values with the ones from the datasheet.
+"SDHC?":
+  _modify:
+    HC1R:
+      resetValue: 0x00
+    HC1R_EMMC_MODE:
+      resetValue: 0x00
+    SISR:
+      resetValue: 0x00
+
+# The TCn::COUNTn::CTRLA::DMAOS fields are all missing.
+"TC?":
+  "*":
+    CTRLA:
+      _add:
+        DMAOS:
+          description: DMA One-Shot Trigger Mode
+          bitOffset: 15
+          bitWidth: 1
+
+# EVSYS::CHANNEL[%s] cluster is misnamed; should be CHANNELS[%s].
+EVSYS:
+  _modify:
+    "CHANNEL?%s?":
+      name: "CHANNELS[%s]"
+
+# The SERCOM USART TXPO enumerated values of the original SVD don't match
+# the datasheet.
+"SERCOM?":
+  USART_INT:
+    CTRLA:
+      TXPO:
+        _replace_enum:
+          _name: TXPOSelect
+          TXPO_0: [0x0, "TxD on PAD0, XCK on PAD1"]
+          TXPO_2: [0x2, "TxD on PAD0, RTS/TE on PAD2, CTS on PAD3"]
+          TXPO_3: [0x3, "TxD on PAD0, XCK on PAD1, RTS/TE on PAD2"]
+  USART_EXT:
+    CTRLA:
+      TXPO:
+        _replace_enum:
+          _name: TXPOSelect
+          TXPO_0: [0x0, "TxD on PAD0, XCK on PAD1"]
+          TXPO_2: [0x2, "TxD on PAD0, RTS/TE on PAD2, CTS on PAD3"]
+          TXPO_3: [0x3, "TxD on PAD0, XCK on PAD1, RTS/TE on PAD2"]
+
+# The DMAC trigger sources in the original SVD only have the 0=disabled
+# enumeration value.
+DMAC:
+  "CHANNEL?%s?":
+    CHCTRLA:
+      TRIGSRC:
+        _replace_enum:
+          _name: TRIGSRCSelect
+          DISABLE:      [0x00, "Only software/event triggers"]
+          RTC_TIMESTAMP: [0x01, "DMA RTC timestamp trigger"]
+          DSU_DCC0:     [0x02, "DMAC ID for DCC0 register"]
+          DSU_DCC1:     [0x03, "DMAC ID for DCC1 register"]
+          SERCOM0_RX:   [0x04, "Index of DMA RX trigger"]
+          SERCOM0_TX:   [0x05, "Index of DMA TX trigger"]
+          SERCOM1_RX:   [0x06, "Index of DMA RX trigger"]
+          SERCOM1_TX:   [0x07, "Index of DMA TX trigger"]
+          SERCOM2_RX:   [0x08, "Index of DMA RX trigger"]
+          SERCOM2_TX:   [0x09, "Index of DMA TX trigger"]
+          SERCOM3_RX:   [0x0A, "Index of DMA RX trigger"]
+          SERCOM3_TX:   [0x0B, "Index of DMA TX trigger"]
+          SERCOM4_RX:   [0x0C, "Index of DMA RX trigger"]
+          SERCOM4_TX:   [0x0D, "Index of DMA TX trigger"]
+          SERCOM5_RX:   [0x0E, "Index of DMA RX trigger"]
+          SERCOM5_TX:   [0x0F, "Index of DMA TX trigger"]
+          SERCOM6_RX:   [0x10, "Index of DMA RX trigger"]
+          SERCOM6_TX:   [0x11, "Index of DMA TX trigger"]
+          SERCOM7_RX:   [0x12, "Index of DMA RX trigger"]
+          SERCOM7_TX:   [0x13, "Index of DMA TX trigger"]
+          CAN0_DEBUG:   [0x14, "DMA CAN Debug Req"]
+          CAN1_DEBUG:   [0x15, "DMA CAN Debug Req"]
+          TCC0_OVF:     [0x16, "DMA overflow/underflow/retrigger trigger"]
+          TCC0_MC_0:    [0x17, "Indexes of DMA Match/Compare triggers"]
+          TCC0_MC_1:    [0x18, "Indexes of DMA Match/Compare triggers"]
+          TCC0_MC_2:    [0x19, "Indexes of DMA Match/Compare triggers"]
+          TCC0_MC_3:    [0x1A, "Indexes of DMA Match/Compare triggers"]
+          TCC0_MC_4:    [0x1B, "Indexes of DMA Match/Compare triggers"]
+          TCC0_MC_5:    [0x1C, "Indexes of DMA Match/Compare triggers"]
+          TCC1_OVF:     [0x1D, "DMA overflow/underflow/retrigger trigger"]
+          TCC1_MC_0:    [0x1E, "Indexes of DMA Match/Compare triggers"]
+          TCC1_MC_1:    [0x1F, "Indexes of DMA Match/Compare triggers"]
+          TCC1_MC_2:    [0x20, "Indexes of DMA Match/Compare triggers"]
+          TCC1_MC_3:    [0x21, "Indexes of DMA Match/Compare triggers"]
+          TCC2_OVF:     [0x22, "DMA overflow/underflow/retrigger trigger"]
+          TCC2_MC_0:    [0x23, "Indexes of DMA Match/Compare triggers"]
+          TCC2_MC_1:    [0x24, "Indexes of DMA Match/Compare triggers"]
+          TCC2_MC_2:    [0x25, "Indexes of DMA Match/Compare triggers"]
+          TCC3_OVF:     [0x26, "DMA overflow/underflow/retrigger trigger"]
+          TCC3_MC_0:    [0x27, "Indexes of DMA Match/Compare triggers"]
+          TCC3_MC_1:    [0x28, "Indexes of DMA Match/Compare triggers"]
+          TCC4_OVF:     [0x29, "DMA overflow/underflow/retrigger trigger"]
+          TCC4_MC_0:    [0x2A, "Indexes of DMA Match/Compare triggers"]
+          TCC4_MC_1:    [0x2B, "Indexes of DMA Match/Compare triggers"]
+          TC0_OVF:      [0x2C, "Indexes of DMA Overflow trigger"]
+          TC0_MC_0:     [0x2D, "Indexes of DMA Match/Compare triggers"]
+          TC0_MC_1:     [0x2E, "Indexes of DMA Match/Compare triggers"]
+          TC1_OVF:      [0x2F, "Indexes of DMA Overflow trigger"]
+          TC1_MC_0:     [0x30, "Indexes of DMA Match/Compare triggers"]
+          TC1_MC_1:     [0x31, "Indexes of DMA Match/Compare triggers"]
+          TC2_OVF:      [0x32, "Indexes of DMA Overflow trigger"]
+          TC2_MC_0:     [0x33, "Indexes of DMA Match/Compare triggers"]
+          TC2_MC_1:     [0x34, "Indexes of DMA Match/Compare triggers"]
+          TC3_OVF:      [0x35, "Indexes of DMA Overflow trigger"]
+          TC3_MC_0:     [0x36, "Indexes of DMA Match/Compare triggers"]
+          TC3_MC_1:     [0x37, "Indexes of DMA Match/Compare triggers"]
+          TC4_OVF:      [0x38, "Indexes of DMA Overflow trigger"]
+          TC4_MC_0:     [0x39, "Indexes of DMA Match/Compare triggers"]
+          TC4_MC_1:     [0x3A, "Indexes of DMA Match/Compare triggers"]
+          TC5_OVF:      [0x3B, "Indexes of DMA Overflow trigger"]
+          TC5_MC_0:     [0x3C, "Indexes of DMA Match/Compare triggers"]
+          TC5_MC_1:     [0x3D, "Indexes of DMA Match/Compare triggers"]
+          TC6_OVF:      [0x3E, "Indexes of DMA Overflow trigger"]
+          TC6_MC_0:     [0x3F, "Indexes of DMA Match/Compare triggers"]
+          TC6_MC_1:     [0x40, "Indexes of DMA Match/Compare triggers"]
+          TC7_OVF:      [0x41, "Indexes of DMA Overflow trigger"]
+          TC7_MC_0:     [0x42, "Indexes of DMA Match/Compare triggers"]
+          TC7_MC_1:     [0x43, "Indexes of DMA Match/Compare triggers"]
+          ADC0_RESRDY:  [0x44, "index of DMA RESRDY trigger"]
+          ADC0_SEQ:     [0x45, "Index of DMA SEQ trigger"]
+          ADC1_RESRDY:  [0x46, "Index of DMA RESRDY trigger"]
+          ADC1_SEQ:     [0x47, "Index of DMA SEQ trigger"]
+          DAC_EMPTY_0:  [0x48, "DMA DAC Empty Req"]
+          DAC_EMPTY_1:  [0x49, "DMA DAC Empty Req"]
+          DAC_RESRDY_0: [0x4A, "DMA DAC Result Ready Req"]
+          DAC_RESRDY_1: [0x4B, "DMA DAC Result Ready Req"]
+          I2S_RX_0:     [0x4C, "Indexes of DMA RX triggers"]
+          I2S_RX_1:     [0x4D, "Indexes of DMA RX triggers"]
+          I2S_TX_0:     [0x4E, "Indexes of DMA TX triggers"]
+          I2S_TX_1:     [0x4F, "Indexes of DMA TX triggers"]
+          PCC_RX:       [0x50, "Indexes of PCC RX trigger"]
+          AES_WR:       [0x51, "DMA DATA Write trigger"]
+          AES_RD:       [0x52, "DMA DATA Read trigger"]
+          QSPI_RX:      [0x53, "Indexes of QSPI RX trigger"]
+          QSPI_TX:      [0x54, "Indexes of QSPI TX trigger"]
