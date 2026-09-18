@@ -37,8 +37,9 @@ impl<S: Sercom> Handler<S::Interrupt> for InterruptHandler<S> {
             let enabled_flags = Flags::from_bits_retain(uart.intenset().read().bits());
             uart.intenclr().write(|w| w.bits(flags_pending.bits()));
 
-            // Disable interrupts, but don't clear the flags. The future will take care of
-            // clearing flags and re-enabling interrupts when woken.
+            // Disable interrupts, but don't clear the flags. The future will
+            // take care of clearing flags and re-enabling
+            // interrupts when woken.
             if (Flags::RX & enabled_flags).intersects(flags_pending) {
                 S::rx_waker().wake();
             }
@@ -179,7 +180,8 @@ where
         let flags_to_wait = flags_to_wait & Flags::from_bits_retain(D::FLAG_MASK);
 
         core::future::poll_fn(|cx| {
-            // Scope maybe_pending so we don't forget to re-poll the register later down.
+            // Scope maybe_pending so we don't forget to re-poll the register
+            // later down.
             {
                 let maybe_pending = self.uart.config.as_ref().registers.read_flags();
                 if flags_to_wait.intersects(maybe_pending) {

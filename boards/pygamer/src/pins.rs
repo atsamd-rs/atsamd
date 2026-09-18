@@ -930,9 +930,9 @@ impl JoystickReader {
     /// returns a tuple (x,y) where values are 12 bit, between 0-4095
     /// values are NOT centered, but could be by subtracting 2048
     pub fn read(&mut self, adc: &mut hal::adc::Adc<hal::adc::Adc1>) -> (u16, u16) {
-        //note adafruit averages 3 readings on x and y (not inside the adc) seems
-        // unnecessary? note adafruit recenters around zero.. Im not doing that
-        // either atm.
+        //note adafruit averages 3 readings on x and y (not inside the adc)
+        // seems unnecessary? note adafruit recenters around zero.. Im
+        // not doing that either atm.
 
         let y_data: u16 = adc.read(&mut self.joy_y);
         let x_data: u16 = adc.read(&mut self.joy_x);

@@ -103,10 +103,12 @@ fn EIC() {
             // toggle LED
             LED_1.borrow(cs).borrow_mut().as_mut().map(|l| l.toggle());
 
-            // The interrupt request remains active until the interrupt flag is cleared,
-            // the interrupt is disabled or the peripheral is reset. An interrupt flag is
-            // cleared by writing a one to the corresponding bit in the INTFLAG register.
-            // read more: SAM-D21DA1-Family-Data-Sheet-DS40001882G.pdf # 16.6.5 Interrupts
+            // The interrupt request remains active until the interrupt flag is
+            // cleared, the interrupt is disabled or the peripheral
+            // is reset. An interrupt flag is cleared by writing a
+            // one to the corresponding bit in the INTFLAG register.
+            // read more: SAM-D21DA1-Family-Data-Sheet-DS40001882G.pdf # 16.6.5
+            // Interrupts
             eic.intflag.modify(|_, w| w.extint5().set_bit());
         }
     });

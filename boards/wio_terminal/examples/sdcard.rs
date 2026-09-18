@@ -44,8 +44,8 @@ fn main() -> ! {
     let mut delay = Delay::new(core.SYST, &mut clocks);
     let sets = wio::Pins::new(peripherals.port).split();
 
-    // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
-    // the screen.
+    // Initialize the ILI9341-based LCD display. Create a black backdrop the
+    // size of the screen.
     let (mut display, _backlight) = sets
         .display
         .init(

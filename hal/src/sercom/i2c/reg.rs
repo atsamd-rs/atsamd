@@ -67,8 +67,8 @@ impl<S: Sercom> Registers<S> {
 
     /// Configure the baudrate for I2C master mode
     pub(super) fn set_baud(&mut self, clock_freq: impl Into<Hertz>, baud: impl Into<Hertz>) {
-        // Since BAUDLOW is 0, the baud rate is used to generate both SCL high and SCL
-        // low periods.
+        // Since BAUDLOW is 0, the baud rate is used to generate both SCL high
+        // and SCL low periods.
         let baud = (clock_freq.into().to_Hz() / (2 * baud.into().to_Hz()) - 1) as u8;
 
         unsafe {
@@ -112,8 +112,8 @@ impl<S: Sercom> Registers<S> {
     /// Necessary for SMBus compatibility.
     #[inline]
     pub(super) fn set_inactive_timeout(&mut self, timeout: super::InactiveTimeout) {
-        // `unused_unsafe` is allowed here because `inactout().bits()` is unsafe on
-        // thumbv6m targets, but not thumbv7em.
+        // `unused_unsafe` is allowed here because `inactout().bits()` is unsafe
+        // on thumbv6m targets, but not thumbv7em.
         #[allow(unused_unsafe)]
         self.i2c_master()
             .ctrla()
@@ -414,8 +414,8 @@ impl<S: Sercom> Registers<S> {
     #[inline]
     #[allow(clippy::unnecessary_cast)]
     pub(super) fn read_one(&mut self) -> u8 {
-        // SAMx5x: u32 -> u8 conversion is fine as long as we don't set CTRLC.DATA32B to
-        // 1.
+        // SAMx5x: u32 -> u8 conversion is fine as long as we don't set
+        // CTRLC.DATA32B to 1.
         self.i2c_master().data().read().bits() as u8
     }
 
@@ -429,7 +429,8 @@ impl<S: Sercom> Registers<S> {
 
     #[inline]
     pub(super) fn fill_buffer(&mut self, buffer: &mut [u8]) -> Result<(), Error> {
-        // Some manual iterator gumph because we need to ack bytes after the first.
+        // Some manual iterator gumph because we need to ack bytes after the
+        // first.
         let mut iter = buffer.iter_mut();
         *iter.next().expect("buffer len is at least 1") = self.read_one_blocking();
 

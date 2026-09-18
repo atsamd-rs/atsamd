@@ -58,14 +58,16 @@ impl Delay {
 impl DelayNs for Delay {
     // The default method is delay_ns. If we don't provide implementations for
     // delay_us and delay_ms, the trait impl will use delay_ns to implement the
-    // other two methods. As the delay implementation is actually defined in terms
-    // of microseconds, we need to provide implementations for all three methods.
+    // other two methods. As the delay implementation is actually defined in
+    // terms of microseconds, we need to provide implementations for all
+    // three methods.
     fn delay_ns(&mut self, ns: u32) {
         self.delay_us(ns / 1000);
     }
 
     fn delay_us(&mut self, us: u32) {
-        // The SysTick Reload Value register supports values between 1 and 0x00FFFFFF.
+        // The SysTick Reload Value register supports values between 1 and
+        // 0x00FFFFFF.
         const MAX_RVR: u32 = 0x00FF_FFFF;
 
         let mut total_rvr = us * (self.sysclock.to_Hz() / 1_000_000);

@@ -209,12 +209,13 @@ impl<I: AdcInstance> Adc<I> {
         clk: crate::clock::v2::apb::ApbClk<I::ClockId>,
         pclk: &crate::clock::v2::pclk::Pclk<I::ClockId, PS>,
     ) -> Result<Self, Error> {
-        // TODO: Ideally, the ADC struct would take ownership of the Pclk type here.
-        // However, since clock::v2 is not implemented for all chips yet, the
-        // generics for the Adc type would be different between chip families,
-        // leading to massive and unnecessary code duplication. In the meantime,
-        // we use a "lite" variation of the typelevel guarantees laid out by the
-        // clock::v2 module, meaning that we can guarantee that the clocks are enabled
+        // TODO: Ideally, the ADC struct would take ownership of the Pclk type
+        // here. However, since clock::v2 is not implemented for all
+        // chips yet, the generics for the Adc type would be different
+        // between chip families, leading to massive and unnecessary
+        // code duplication. In the meantime, we use a "lite" variation
+        // of the typelevel guarantees laid out by the clock::v2 module,
+        // meaning that we can guarantee that the clocks are enabled
         // at the time of creation of the Adc struct; however we can't guarantee
         // that the clock will stay enabled for the duration of its lifetime.
 
@@ -335,7 +336,8 @@ impl<I: AdcInstance> Adc<I> {
     /// Read a single value from the provided channel, in a blocking fashion
     #[inline]
     fn read_channel(&mut self, ch: u8) -> u16 {
-        // Clear overrun errors that might've occured before we try to read anything
+        // Clear overrun errors that might've occured before we try to read
+        // anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
         self.disable_freerunning();
@@ -376,7 +378,8 @@ impl<I: AdcInstance> Adc<I> {
     /// Read into a buffer from the provided channel, in a blocking fashion
     #[inline]
     fn read_buffer_channel(&mut self, ch: u8, dst: &mut [u16]) -> Result<(), Error> {
-        // Clear overrun errors that might've occured before we try to read anything
+        // Clear overrun errors that might've occured before we try to read
+        // anything
         self.clear_all_flags();
         self.disable_interrupts(Flags::all());
         self.mux(ch);
@@ -452,7 +455,8 @@ where
     /// Read a single value from the provided channel ID
     #[inline]
     async fn read_channel(&mut self, ch: u8) -> u16 {
-        // Clear overrun errors that might've occured before we try to read anything
+        // Clear overrun errors that might've occured before we try to read
+        // anything
         self.inner.clear_all_flags();
         self.inner.disable_freerunning();
         self.inner.mux(ch);
@@ -465,7 +469,8 @@ where
         }
         self.inner.start_conversion();
         // Here we explicitly ignore the result, because we know that
-        // overrun errors are impossible since the ADC is configured in one-shot mode.
+        // overrun errors are impossible since the ADC is configured in one-shot
+        // mode.
         let _ = self.wait_flags(Flags::RESRDY).await;
         let res = self.inner.conversion_result();
         //self.inner.power_down();
@@ -486,7 +491,8 @@ where
     /// Read into a buffer from the provided channel ID
     #[inline]
     async fn read_buffer_channel(&mut self, ch: u8, dst: &mut [u16]) -> Result<(), Error> {
-        // Clear overrun errors that might've occured before we try to read anything
+        // Clear overrun errors that might've occured before we try to read
+        // anything
         self.inner.clear_all_flags();
         self.inner.mux(ch);
         self.inner.enable_freerunning();
@@ -499,7 +505,8 @@ where
             self.inner.clear_all_flags();
         }
 
-        // Don't re-trigger start conversion now, its already enabled in free running
+        // Don't re-trigger start conversion now, its already enabled in free
+        // running
         for result in dst.iter_mut() {
             if let Err(e) = self.wait_flags(Flags::RESRDY).await {
                 //self.inner.power_down();

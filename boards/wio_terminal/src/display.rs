@@ -73,14 +73,15 @@ impl Display {
             .enable()
             .into_panic_on_read();
 
-        // Configure the chip select, data/command, and reset pins as push-pull outputs.
+        // Configure the chip select, data/command, and reset pins as push-pull
+        // outputs.
         let cs = self.cs.into_push_pull_output();
         let dc = self.dc.into_push_pull_output();
         let reset = self.reset.into_push_pull_output();
 
         let spi = LcdDevice::new_no_delay(spi, cs).unwrap();
-        // Create a SPIInterface over the peripheral, then create the ILI9341 driver
-        // using said interface and set its default orientation.
+        // Create a SPIInterface over the peripheral, then create the ILI9341
+        // driver using said interface and set its default orientation.
         let interface = SPIInterface::new(spi, dc);
         let ili9341 = Ili9341::new(
             interface,
@@ -91,15 +92,15 @@ impl Display {
         )
         .map_err(|_| ())?;
 
-        // Configure the backlight pin as a push-pull output; unfortunately this pin
-        // does not appear to support PWM.
+        // Configure the backlight pin as a push-pull output; unfortunately this
+        // pin does not appear to support PWM.
         //   HIGH - backlight enabled
         //   LOW  - backlight disabled
         let mut backlight = self.backlight.into_push_pull_output();
         backlight.set_high().ok();
 
-        // Return a result consisting of a Tuple containing the display driver and
-        // backlight pin.
+        // Return a result consisting of a Tuple containing the display driver
+        // and backlight pin.
         Ok((ili9341, backlight))
     }
 }

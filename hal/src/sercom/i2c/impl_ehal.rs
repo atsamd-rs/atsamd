@@ -32,19 +32,19 @@ impl<C: AnyConfig, D> I2c<C, D> {
 
         while let Some(group) = op_groups.next() {
             let mut group = group.iter_mut();
-            // Unwrapping is OK here because chunk_operations will never give us a 0-length
-            // chunk.
+            // Unwrapping is OK here because chunk_operations will never give us
+            // a 0-length chunk.
             let op = group.next().unwrap();
 
-            // First operation in the group - send a START with the address, and the first
-            // operation.
+            // First operation in the group - send a START with the address, and
+            // the first operation.
             match op {
                 Operation::Read(buf) => self.do_read(address, buf)?,
                 Operation::Write(buf) => self.do_write(address, buf)?,
             }
 
-            // For all subsequent operations, just send/read more bytes without any more
-            // ceremony.
+            // For all subsequent operations, just send/read more bytes without
+            // any more ceremony.
             for op in group {
                 match op {
                     Operation::Read(buf) => self.continue_read(buf)?,
@@ -170,8 +170,8 @@ mod dma {
 
             self.check_bus_status()?;
 
-            // Calculate the total number of bytes for this transaction across all linked
-            // transfers, including the first transfer.
+            // Calculate the total number of bytes for this transaction across
+            // all linked transfers, including the first transfer.
             let transfer_len = unsafe { dest.len() + Self::linked_transfer_length(next) };
 
             assert!(
@@ -206,8 +206,8 @@ mod dma {
                 return Ok(());
             }
 
-            // Calculate the total number of bytes for this transaction across all linked
-            // transfers, including the first transfer.
+            // Calculate the total number of bytes for this transaction across
+            // all linked transfers, including the first transfer.
             let transfer_len = unsafe { source.len() + Self::linked_transfer_length(next) };
 
             assert!(
@@ -249,8 +249,8 @@ mod dma {
                 let sercom_ptr = self.sercom_ptr();
                 let channel = self._dma_channel.as_mut();
 
-                // SAFETY: We must make sure that any DMA transfer is complete or stopped before
-                // returning.
+                // SAFETY: We must make sure that any DMA transfer is complete
+                // or stopped before returning.
                 read_dma_linked::<_, _, S>(channel, sercom_ptr, &mut dest, next);
 
                 while !channel.xfer_complete() {
@@ -291,8 +291,8 @@ mod dma {
                 let mut bytes = SharedSliceBuffer::from_slice(source);
                 let channel = self._dma_channel.as_mut();
 
-                // SAFETY: We must make sure that any DMA transfer is complete or stopped before
-                // returning.
+                // SAFETY: We must make sure that any DMA transfer is complete
+                // or stopped before returning.
 
                 write_dma_linked::<_, _, S>(channel, sercom_ptr, &mut bytes, next);
 
@@ -345,7 +345,8 @@ mod dma {
             // commands, and there is no way to turn off that behaviour.
             //
             //  In the event that we have more than 17 contiguous operations of
-            //  the same type, we must revert to the byte-by-byte I2C implementations.
+            //  the same type, we must revert to the byte-by-byte I2C
+            // implementations.
             let mut descriptors = heapless::Vec::<DmacDescriptor, NUM_LINKED_TRANSFERS>::new();
 
             let op_groups = chunk_operations(operations);
@@ -353,16 +354,19 @@ mod dma {
             for group in op_groups {
                 descriptors.clear();
 
-                // Default to byte-by-byte impl if we have more than 17 continuous operations,
-                // as we would overflow our DMA linked transfer reeserved space otherwise.
+                // Default to byte-by-byte impl if we have more than 17
+                // continuous operations, as we would overflow
+                // our DMA linked transfer reeserved space otherwise.
                 if group.len() > NUM_LINKED_TRANSFERS {
                     self.transaction_byte_by_byte(address, group)?;
                 } else {
                     // --- Setup all linked descriptors ---
 
-                    // Skip the first operation; we will deal with it when creating the I2C transfer
-                    // (read_dma_linked/write_dma_linked). Every other operation is a linked
-                    // transfer, and we must treat them accordingly.
+                    // Skip the first operation; we will deal with it when
+                    // creating the I2C transfer
+                    // (read_dma_linked/write_dma_linked). Every other operation
+                    // is a linked transfer, and we must
+                    // treat them accordingly.
                     for op in group.iter_mut().skip(1) {
                         match op {
                             Read(buffer) => {
@@ -416,8 +420,9 @@ mod dma {
                         }
                     }
 
-                    // Set the last descriptor to a null pointer to stop the transfer, and avoid
-                    // buffer overflow UB.
+                    // Set the last descriptor to a null pointer to stop the
+                    // transfer, and avoid buffer overflow
+                    // UB.
                     if let Some(d) = descriptors.last_mut() {
                         d.set_next_descriptor(core::ptr::null_mut());
                     }

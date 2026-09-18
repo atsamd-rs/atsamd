@@ -47,8 +47,8 @@ fn main() -> ! {
         &mut peripherals.nvmctrl,
     );
 
-    // Get a clock & make a sleeping delay object. use internal 32k clock that runs
-    // in standby
+    // Get a clock & make a sleeping delay object. use internal 32k clock that
+    // runs in standby
     enable_internal_32kosc(&mut peripherals.sysctrl);
     let timer_clock = clocks
         .configure_gclk_divider_and_source(ClockGenId::Gclk1, 1, ClockSource::Osc32k, false)
@@ -58,12 +58,12 @@ fn main() -> ! {
     let timer = timer::TimerCounter::tc4_(tc45, peripherals.tc4, &mut peripherals.pm);
     let mut sleeping_delay = SleepingDelay::new(timer, &INTERRUPT_FIRED);
 
-    // Timer overflow interrupts are asynchronous, we can use IDLE2 sleep for max
-    //   power savings. The CPU, AHB and APB clock domains are stopped
+    // Timer overflow interrupts are asynchronous, we can use IDLE2 sleep for
+    // max   power savings. The CPU, AHB and APB clock domains are stopped
     // peripherals.PM.sleep.modify(|_, w| w.idle().apb());
 
-    // We can also use it in standby mode, if all of the clocks are configured to
-    //   opperate in standby, for even more power savings
+    // We can also use it in standby mode, if all of the clocks are configured
+    // to   opperate in standby, for even more power savings
     core.SCB.set_sleepdeep();
 
     // enable interrupts

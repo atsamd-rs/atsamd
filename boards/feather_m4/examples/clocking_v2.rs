@@ -90,8 +90,8 @@ mod app {
             .loop_div(50, 0)
             .enable();
 
-        // Output `Dpll1` on PB20 pin via `Gclk6`, divided by 200 resulting in 0.5 MHz
-        // output frequency
+        // Output `Dpll1` on PB20 pin via `Gclk6`, divided by 200 resulting in
+        // 0.5 MHz output frequency
         let (gclk6, _dpll1) = Gclk::from_source(tokens.gclks.gclk6, dpll1);
         let gclk6 = gclk6.div(GclkDiv8::Div(200)).enable();
         let (_gclk6, _gclk6_out) = gclk6.enable_gclk_out(pins.pb12);
@@ -105,14 +105,14 @@ mod app {
         let (xosc1k, xosc32k_base) = Xosc1k::enable(tokens.xosc32k.xosc1k, xosc32k_base);
         let (xosc32k, _xosc32k_base) = Xosc32k::enable(tokens.xosc32k.xosc32k, xosc32k_base);
 
-        // Output `Xosc32k` on PB16 pin via `Gclk2`, divided by 2 resulting in 16 kHz
-        // output frequency
+        // Output `Xosc32k` on PB16 pin via `Gclk2`, divided by 2 resulting in
+        // 16 kHz output frequency
         let (gclk2, _xosc32k) = Gclk::from_source(tokens.gclks.gclk2, xosc32k);
         let gclk2 = gclk2.div(GclkDiv8::Div(2)).enable();
         let (_gclk2, _gclk2_out) = gclk2.enable_gclk_out(pins.pb16);
 
-        // Output `OscUlp32k` on PB11 pin via `Gclk5`, without any division resulting in
-        // 32 kHz output frequency
+        // Output `OscUlp32k` on PB11 pin via `Gclk5`, without any division
+        // resulting in 32 kHz output frequency
         let (osculp32k, _osculp_base) =
             OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
         let (gclk5, _osculp32k) = Gclk::from_source(tokens.gclks.gclk5, osculp32k);

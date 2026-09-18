@@ -158,8 +158,8 @@ pub trait RtcMode {
     #[inline]
     #[hal_macro_helper]
     fn reset(rtc: &Rtc) {
-        // Reset RTC back to initial settings, which disables it and enters mode 0.
-        // NOTE: This register and field are the same in all modes.
+        // Reset RTC back to initial settings, which disables it and enters mode
+        // 0. NOTE: This register and field are the same in all modes.
         // SYNC: Write
         Self::sync(rtc);
         #[hal_cfg(any("rtc-d11", "rtc-d21"))]
@@ -222,8 +222,8 @@ pub trait RtcMode {
                 w
             });
 
-            // Errata: The first read of the count is incorrect so we need to read it
-            // then wait for it to change.
+            // Errata: The first read of the count is incorrect so we need to
+            // read it then wait for it to change.
             Self::_wait_for_count_change(rtc);
         }
     }

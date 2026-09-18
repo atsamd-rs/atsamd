@@ -153,8 +153,8 @@ pub mod v1 {
         type Instant = Instant;
         type Duration = Duration;
         unsafe fn reset(&mut self) {
-            // Since reset is only called once, we use it to enable the interrupt generation
-            // bit.
+            // Since reset is only called once, we use it to enable the
+            // interrupt generation bit.
             RtcMode0::enable_interrupt::<Compare0>(&self.rtc);
         }
 
@@ -346,8 +346,8 @@ unsafe fn set_monotonic_prio(interrupt: impl cortex_m::interrupt::InterruptNumbe
         let max_prio = RTIC_ASYNC_MAX_LOGICAL_PRIO.clamp(1, 1 << NVIC_PRIO_BITS);
         let hw_prio = Priority::from_numeric(max_prio).unwrap().logical2hw();
 
-        // We take ownership of the entire IRQ and all settings to it, we only change
-        // settings for the IRQ we control.
+        // We take ownership of the entire IRQ and all settings to it, we only
+        // change settings for the IRQ we control.
         // This will also compile-error in case the NVIC changes in size.
         let mut nvic: cortex_m::peripheral::NVIC = core::mem::transmute(());
 
