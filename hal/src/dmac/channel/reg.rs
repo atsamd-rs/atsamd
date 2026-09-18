@@ -57,13 +57,13 @@ pub(super) trait Register<Id: ChId> {
     #[hal_cfg(any("dmac-d11", "dmac-d21"))]
     #[inline]
     fn with_chid<F: FnOnce(&Dmac) -> R, R>(&mut self, fun: F) -> R {
-        // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
-        // not to mess with either:
+        // SAFETY: This method is ONLY safe if the individual channels are
+        // GUARANTEED not to mess with either:
         // - The global DMAC configuration
         // - The configuration of other channels.
         //
-        // In practice, this means that the channel-specific registers should only be
-        // accessed through the `with_chid` method.
+        // In practice, this means that the channel-specific registers should
+        // only be accessed through the `with_chid` method.
 
         let dmac = self.dmac();
 
@@ -78,9 +78,9 @@ pub(super) trait Register<Id: ChId> {
 
         // Run the provided closure on the channel we own
         let ret = fun(dmac);
-        // Restore the old CHID value. This way, if we're running `with_chid` from an
-        // ISR, the CHID value will still be what the preempted context expects
-        // when the method returns.
+        // Restore the old CHID value. This way, if we're running `with_chid`
+        // from an ISR, the CHID value will still be what the preempted
+        // context expects when the method returns.
         unsafe { dmac.chid().write(|w| w.id().bits(old_id)) };
 
         ret
@@ -93,13 +93,13 @@ pub(super) trait Register<Id: ChId> {
     #[hal_cfg("dmac-d5x")]
     #[inline]
     fn with_chid<F: FnOnce(&pac::dmac::Channel) -> R, R>(&mut self, fun: F) -> R {
-        // SAFETY: This method is ONLY safe if the individual channels are GUARANTEED
-        // not to mess with either:
+        // SAFETY: This method is ONLY safe if the individual channels are
+        // GUARANTEED not to mess with either:
         // - The global DMAC configuration
         // - The configuration of other channels.
         //
-        // In practice, this means that the channel-specific registers should only be
-        // accessed through the `with_chid` method.
+        // In practice, this means that the channel-specific registers should
+        // only be accessed through the `with_chid` method.
         let ch = &self.dmac().channel(Id::USIZE);
         fun(ch)
     }

@@ -314,9 +314,9 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
     #[inline]
     fn descriptor_mut(&mut self) -> &mut DmacDescriptor {
         // SAFETY this is only safe as long as we read/write to the descriptor
-        // belonging to OUR channel. We assume this is the case, as there can only ever
-        // exist one (safely created) instance of Self, and we're taking an exclusive
-        // reference to Self.
+        // belonging to OUR channel. We assume this is the case, as there can
+        // only ever exist one (safely created) instance of Self, and
+        // we're taking an exclusive reference to Self.
         unsafe {
             let id = ChannelId::<Self>::USIZE;
             &mut *sram::get_descriptor(id)
@@ -343,9 +343,9 @@ impl<Id: ChId, S: Status> Channel<Id, S> {
         // be the same address as the current block descriptor.
         // Otherwise we set it to NULL, which terminates the transaction.
         let descaddr = if circular {
-            // SAFETY This is safe as we are only reading the descriptor's address,
-            // and not actually writing any data to it. We also assume the descriptor
-            // will never be moved.
+            // SAFETY This is safe as we are only reading the descriptor's
+            // address, and not actually writing any data to it. We
+            // also assume the descriptor will never be moved.
             descriptor as *mut _
         } else {
             core::ptr::null_mut()

@@ -47,8 +47,8 @@ fn main() -> ! {
         &mut peripherals.nvmctrl,
     );
 
-    // Get a clock & make a sleeping delay object. use internal 32k clock that runs
-    // in standby
+    // Get a clock & make a sleeping delay object. use internal 32k clock that
+    // runs in standby
     enable_internal_32kosc(&mut peripherals.sysctrl);
     let timer_clock = clocks
         .configure_gclk_divider_and_source(ClockGenId::Gclk1, 1, ClockSource::Osc32k, false)

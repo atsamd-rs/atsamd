@@ -139,8 +139,8 @@ mod app {
         // Start the monotonic
         Mono::start(device.rtc);
 
-        // Need to get the MCLK peripheral back due to things in the HAL still using v1
-        // of the clocks API
+        // Need to get the MCLK peripheral back due to things in the HAL still
+        // using v1 of the clocks API
         let (_, _, _, mut mclk) = unsafe { clocks.pac.steal() };
 
         let pins = bsp::Pins::new(device.port);

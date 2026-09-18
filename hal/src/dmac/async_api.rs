@@ -19,10 +19,11 @@ impl crate::typelevel::Sealed for InterruptHandler {}
 #[hal_cfg(any("dmac-d11", "dmac-d21"))]
 impl Handler<DMAC> for InterruptHandler {
     unsafe fn on_interrupt() {
-        // SAFETY: Here we can't go through the `with_chid` method to safely access
-        // the different channel interrupt flags. Instead, we read the ID in a short
-        // critical section, and make sure to RESET the CHID field to whatever
-        // it was before this function ran.
+        // SAFETY: Here we can't go through the `with_chid` method to safely
+        // access the different channel interrupt flags. Instead, we
+        // read the ID in a short critical section, and make sure to
+        // RESET the CHID field to whatever it was before this function
+        // ran.
         let dmac = unsafe { crate::pac::Peripherals::steal().dmac };
 
         critical_section::with(|_| {

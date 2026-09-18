@@ -134,8 +134,9 @@ impl Rtc<Count32Mode> {
         RtcMode0::disable(&rtc);
 
         // Enable the RTC clock.
-        // TODO: This will probably be done eventually using the clock v2 API instead.
-        // This should also allow automatic determination of the clock rate.
+        // TODO: This will probably be done eventually using the clock v2 API
+        // instead. This should also allow automatic determination of
+        // the clock rate.
         pm.apbamask().modify(|_, w| w.rtc_().set_bit());
 
         Self::set_count32_mode(&rtc);

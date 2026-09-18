@@ -64,8 +64,8 @@ async fn main(spawner: embassy_executor::Spawner) {
     .with_tx_dma_channel(channel1)
     .split();
 
-    // For embassy-executor, spawning multiple tasks on the same executor requires
-    // either:
+    // For embassy-executor, spawning multiple tasks on the same executor
+    // requires either:
     // * Tuning the task arena size either via a Cargo feature or the
     //   `EMBASSY_EXECUTOR_TASK_ARENA_SIZE` environment variable
     // * Using the `nightly` Cargo feature along with

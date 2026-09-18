@@ -603,8 +603,8 @@ pub enum Error {
 }
 
 impl core::fmt::Display for Error {
-     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-         write!(f, "SPI Error: {:?}", self)
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "SPI Error: {:?}", self)
     }
 }
 
@@ -1496,8 +1496,8 @@ where
     fn check_and_clear_error(&mut self, flags: Flags) -> Result<(), Error> {
         if flags.contains(Flags::ERROR) {
             let errors = self.read_status();
-            // Clear all status flags at once; BUFOVF has priority, and will mask LENERR if
-            // both show up at the same time.
+            // Clear all status flags at once; BUFOVF has priority, and will
+            // mask LENERR if both show up at the same time.
             self.clear_status(errors);
             self.clear_flags(Flags::ERROR);
             return errors.check_bus_error();

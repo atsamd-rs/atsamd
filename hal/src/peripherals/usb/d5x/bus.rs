@@ -102,11 +102,11 @@ impl AllEndpoints {
     }
 
     fn find_free_endpoint(&self, dir: UsbDirection) -> UsbResult<usize> {
-        // start with 1 because 0 is reserved for Control
-        for idx in 1..8 {
+        // Skip 1 because 0 is reserved for Control
+        for (idx, ep) in self.endpoints.iter().enumerate().skip(1) {
             let ep_type = match dir {
-                UsbDirection::Out => self.endpoints[idx].bank0.ep_type,
-                UsbDirection::In => self.endpoints[idx].bank1.ep_type,
+                UsbDirection::Out => ep.bank0.ep_type,
+                UsbDirection::In => ep.bank1.ep_type,
             };
             if ep_type == EndpointTypeBits::Disabled {
                 return Ok(idx);

@@ -54,9 +54,10 @@ where
         let tx = self._tx_channel.as_mut();
         let mut words = crate::sercom::dma::SharedSliceBuffer::from_slice(buf);
 
-        // SAFETY: We make sure that any DMA transfer is complete or stopped before
-        // returning. The order of operations is important; the RX transfer
-        // must be ready to receive before the TX transfer is initiated.
+        // SAFETY: We make sure that any DMA transfer is complete or stopped
+        // before returning. The order of operations is important; the
+        // RX transfer must be ready to receive before the TX transfer
+        // is initiated.
         unsafe {
             crate::sercom::dma::write_dma::<_, _, S>(tx, sercom_ptr, &mut words);
         }
@@ -103,9 +104,10 @@ where
         let rx = self._rx_channel.as_mut();
         let tx = self._tx_channel.as_mut();
 
-        // SAFETY: We make sure that any DMA transfer is complete or stopped before
-        // returning. The order of operations is important; the RX transfer
-        // must be ready to receive before the TX transfer is initiated.
+        // SAFETY: We make sure that any DMA transfer is complete or stopped
+        // before returning. The order of operations is important; the
+        // RX transfer must be ready to receive before the TX transfer
+        // is initiated.
         unsafe {
             read_dma::<_, _, S>(rx, sercom_ptr.clone(), dest);
             write_dma::<_, _, S>(tx, sercom_ptr, source);
@@ -187,11 +189,12 @@ where
         // or have been stopped.
         let mut linked_descriptor = DmacDescriptor::default();
 
-        // If read < write, the incoming words will be written to this memory location;
-        // it will be discarded after. If read > write, all writes after the
-        // buffer has been exhausted will write the nop word to "stimulate" the slave
-        // into sending data. Must not be dropped until all transfers have
-        // completed or have been stopped.
+        // If read < write, the incoming words will be written to this memory
+        // location; it will be discarded after. If read > write, all
+        // writes after the buffer has been exhausted will write the nop
+        // word to "stimulate" the slave into sending data. Must not be
+        // dropped until all transfers have completed or have been
+        // stopped.
         let mut source_sink_word = self.config.nop_word.as_();
         let mut sercom_ptr = self.sercom_ptr();
 
@@ -243,9 +246,10 @@ where
 
         let mut write = SharedSliceBuffer::from_slice(write);
 
-        // SAFETY: We make sure that any DMA transfer is complete or stopped before
-        // returning. The order of operations is important; the RX transfer
-        // must be ready to receive before the TX transfer is initiated.
+        // SAFETY: We make sure that any DMA transfer is complete or stopped
+        // before returning. The order of operations is important; the
+        // RX transfer must be ready to receive before the TX transfer
+        // is initiated.
         unsafe {
             read_dma_linked::<_, _, S>(rx, sercom_ptr.clone(), &mut read, read_link);
             write_dma_linked::<_, _, S>(tx, sercom_ptr, &mut write, write_link);
@@ -270,12 +274,14 @@ where
 
     #[inline]
     fn transfer_in_place(&mut self, words: &mut [C::Word]) -> Result<(), Self::Error> {
-        // Safety: Aliasing the buffer is only safe because the DMA read will always be
-        // lagging one word behind the write, so they don't overlap on the same memory.
-        // It's preferable to use two `SharedSliceBuffer`s here; using the `words` slice
-        // directly as a buffer could potentially cause UB issues if not careful when
-        // aliasing, as it could be easy to create two `&mut` references pointing to the
-        // same buffer. `read_buf` and `write_buf` may only be read/written to by the
+        // Safety: Aliasing the buffer is only safe because the DMA read will
+        // always be lagging one word behind the write, so they don't
+        // overlap on the same memory. It's preferable to use two
+        // `SharedSliceBuffer`s here; using the `words` slice
+        // directly as a buffer could potentially cause UB issues if not careful
+        // when aliasing, as it could be easy to create two `&mut`
+        // references pointing to the same buffer. `read_buf` and
+        // `write_buf` may only be read/written to by the
         // DMAC, otherwise an `UnsafeCell` would be necessary.
         unsafe {
             let mut read_buf = SharedSliceBuffer::from_slice_unchecked(words);
@@ -348,15 +354,16 @@ where
             return Ok(0);
         }
 
-        // In Slave mode, RX words can come in even if we haven't sent anything. This
-        // means some words can arrive asynchronously while we weren't looking (similar
-        // to UART RX). We need to check if we haven't missed any.
+        // In Slave mode, RX words can come in even if we haven't sent anything.
+        // This means some words can arrive asynchronously while we
+        // weren't looking (similar to UART RX). We need to check if we
+        // haven't missed any.
         self.flush_rx()?;
         let sercom_ptr = self.sercom_ptr();
         let rx = self._rx_channel.as_mut();
 
-        // SAFETY: We make sure that any DMA transfer is complete or stopped before
-        // returning.
+        // SAFETY: We make sure that any DMA transfer is complete or stopped
+        // before returning.
         unsafe {
             read_dma::<_, _, S>(rx, sercom_ptr.clone(), &mut buf);
         }
