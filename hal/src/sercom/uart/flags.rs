@@ -134,8 +134,8 @@ pub enum Error {
 }
 
 impl core::fmt::Display for Error {
-     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-         write!(f, "UART Error: {:?}", self)
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "UART Error: {:?}", self)
     }
 }
 

@@ -343,7 +343,6 @@ where
         Ok(buffer.len())
     }
 
-
     #[inline]
     async fn flush(&mut self) -> Result<(), Self::Error> {
         // self.write already calls self.wait_flags(Flags::TXC).await;
@@ -508,7 +507,6 @@ mod dma {
         S: Sercom + 'static,
         T: AnyChannel<Status = ReadyFuture>,
     {
-
         #[inline]
         async fn write(&mut self, words: &[u8]) -> Result<usize, Error> {
             self.write(words).await?;
@@ -520,7 +518,6 @@ mod dma {
             // self.write already calls self.wait_flags(Flags::TXC).await;
             Ok(())
         }
-
     }
 }
 
