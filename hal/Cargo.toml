@@ -119,30 +119,30 @@ atsame54p = {version = "0.14.2", path = "../pac/atsame54p", optional = true}
 # to change. But all implied features are considered implementation details and
 # subject to change without notice.
 
-samd11c = ["device", "dep:atsamd11c"]
-samd11d = ["device", "dep:atsamd11d"]
+samd11c = ["device", "dep:atsamd11c", "atsamd11c/critical-section"]
+samd11d = ["device", "dep:atsamd11d", "atsamd11d/critical-section"]
 
-samd21e = ["device", "dep:atsamd21e"]
-samd21g = ["device", "dep:atsamd21g"]
-samd21j = ["device", "dep:atsamd21j"]
+samd21e = ["device", "dep:atsamd21e", "atsamd21e/critical-section"]
+samd21g = ["device", "dep:atsamd21g", "atsamd21g/critical-section"]
+samd21j = ["device", "dep:atsamd21j", "atsamd21j/critical-section"]
 
-samd21el = ["device", "dep:atsamd21e"]
-samd21gl = ["device", "dep:atsamd21g"]
+samd21el = ["device", "dep:atsamd21e", "atsamd21e/critical-section"]
+samd21gl = ["device", "dep:atsamd21g", "atsamd21g/critical-section"]
 
-samd51g = ["device", "dep:atsamd51g"]
-samd51j = ["device", "dep:atsamd51j"]
-samd51n = ["device", "dep:atsamd51n"]
-samd51p = ["device", "dep:atsamd51p"]
+samd51g = ["device", "dep:atsamd51g", "atsamd51g/critical-section"]
+samd51j = ["device", "dep:atsamd51j", "atsamd51j/critical-section"]
+samd51n = ["device", "dep:atsamd51n", "atsamd51n/critical-section"]
+samd51p = ["device", "dep:atsamd51p", "atsamd51p/critical-section"]
 
-same51g = ["device", "dep:atsame51g"]
-same51j = ["device", "dep:atsame51j"]
-same51n = ["device", "dep:atsame51n"]
+same51g = ["device", "dep:atsame51g", "atsame51g/critical-section"]
+same51j = ["device", "dep:atsame51j", "atsame51j/critical-section"]
+same51n = ["device", "dep:atsame51n", "atsame51n/critical-section"]
 
-same53j = ["device", "dep:atsame53j"]
-same53n = ["device", "dep:atsame53n"]
+same53j = ["device", "dep:atsame53j", "atsame53j/critical-section"]
+same53n = ["device", "dep:atsame53n", "atsame53n/critical-section"]
 
-same54n = ["device", "dep:atsame54n"]
-same54p = ["device", "dep:atsame54p"]
+same54n = ["device", "dep:atsame54n", "atsame54n/critical-section"]
+same54p = ["device", "dep:atsame54p", "atsame54p/critical-section"]
 
 #-------------------------------------------------------------------------------
 # RT features

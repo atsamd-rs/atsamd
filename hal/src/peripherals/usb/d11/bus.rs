@@ -10,6 +10,7 @@ use crate::calibration::{usb_transn_cal, usb_transp_cal, usb_trim_cal};
 use crate::clock;
 use crate::gpio::{AlternateG, AnyPin, PA24, PA25, Pin};
 use crate::pac::usb::Device;
+use crate::pac::usb::device::DeviceEndpoint;
 use crate::pac::{Pm, Usb};
 use crate::usb::buffer::*;
 use crate::usb::devicedesc::DeviceDescBank;
@@ -164,6 +165,10 @@ impl<T> Bank<'_, T> {
         self.usb
     }
 
+    fn endpoint(&self) -> &DeviceEndpoint {
+        self.usb().device_endpoint(self.index())
+    }
+
     #[inline]
     fn index(&self) -> usize {
         self.address.index()
@@ -195,7 +200,7 @@ impl Bank<'_, InBank> {
     /// Returns true if Bank 1 is Ready and thus has data that can be written
     #[inline]
     fn is_ready(&self) -> bool {
-        self.usb().epstatus(self.index()).read().bk1rdy().bit()
+        self.endpoint().epstatus().read().bk1rdy().bit()
     }
 
     /// Set Bank 1 Ready.
@@ -203,12 +208,12 @@ impl Bank<'_, InBank> {
     #[inline]
     fn set_ready(&self, ready: bool) {
         if ready {
-            self.usb()
-                .epstatusset(self.index())
+            self.endpoint()
+                .epstatusset()
                 .write(|w| w.bk1rdy().set_bit());
         } else {
-            self.usb()
-                .epstatusclr(self.index())
+            self.endpoint()
+                .epstatusclr()
                 .write(|w| w.bk1rdy().set_bit());
         }
     }
@@ -217,15 +222,15 @@ impl Bank<'_, InBank> {
     #[inline]
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
-        self.usb()
-            .epintflag(self.index())
-            .write(|w| w.trcpt1().set_bit().trfail1().set_bit());
+        self.endpoint()
+            .epintflag()
+            .write(|w| w.trcpt1().clear_bit_by_one().trfail1().clear_bit_by_one());
     }
 
     /// Indicates if a transfer is complete or pending.
     #[inline]
     fn is_transfer_complete(&self) -> bool {
-        self.usb().epintflag(self.index()).read().trcpt1().bit()
+        self.endpoint().epintflag().read().trcpt1().bit()
     }
 
     /// Writes out endpoint configuration to its in-memory descriptor.
@@ -242,9 +247,7 @@ impl Bank<'_, InBank> {
 
     /// Enables endpoint-specific interrupts.
     fn setup_ep_interrupts(&mut self) {
-        self.usb()
-            .epintenset(self.index())
-            .write(|w| w.trcpt1().set_bit());
+        self.endpoint().epintenset().write(|w| w.trcpt1().set_bit());
     }
 
     /// Prepares to transfer a series of bytes by copying the data into the
@@ -266,18 +269,18 @@ impl Bank<'_, InBank> {
     }
 
     fn is_stalled(&self) -> bool {
-        self.usb().epintflag(self.index()).read().stall1().bit()
+        self.endpoint().epintflag().read().stall1().bit()
     }
 
     fn set_stall(&mut self, stall: bool) {
         if stall {
-            self.usb()
-                .epstatusset(self.index())
-                .write(|w| w.stallrq1().set_bit())
+            self.endpoint()
+                .epstatusset()
+                .write(|w| w.stallrq1().set_bit());
         } else {
-            self.usb()
-                .epstatusclr(self.index())
-                .write(|w| w.stallrq1().set_bit())
+            self.endpoint()
+                .epstatusclr()
+                .write(|w| w.stallrq1().set_bit());
         }
     }
 }
@@ -291,7 +294,7 @@ impl Bank<'_, OutBank> {
     /// Returns true if Bank 0 is Ready and thus has data that can be read.
     #[inline]
     fn is_ready(&self) -> bool {
-        self.usb().epstatus(self.index()).read().bk0rdy().bit()
+        self.endpoint().epstatus().read().bk0rdy().bit()
     }
 
     /// Set Bank 0 Ready.
@@ -299,12 +302,12 @@ impl Bank<'_, OutBank> {
     #[inline]
     fn set_ready(&self, ready: bool) {
         if ready {
-            self.usb()
-                .epstatusset(self.index())
+            self.endpoint()
+                .epstatusset()
                 .write(|w| w.bk0rdy().set_bit());
         } else {
-            self.usb()
-                .epstatusclr(self.index())
+            self.endpoint()
+                .epstatusclr()
                 .write(|w| w.bk0rdy().set_bit());
         }
     }
@@ -313,16 +316,16 @@ impl Bank<'_, OutBank> {
     #[inline]
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
-        self.usb()
-            .epintflag(self.index())
-            .write(|w| w.trcpt0().set_bit().trfail0().set_bit());
+        self.endpoint()
+            .epintflag()
+            .write(|w| w.trcpt0().clear_bit_by_one().trfail0().clear_bit_by_one());
     }
 
     /// Returns true if a Received Setup interrupt has occurred.
     /// This indicates that the read buffer holds a SETUP packet.
     #[inline]
     fn received_setup_interrupt(&self) -> bool {
-        self.usb().epintflag(self.index()).read().rxstp().bit()
+        self.endpoint().epintflag().read().rxstp().bit()
     }
 
     /// Acknowledges the signal that a SETUP packet was received
@@ -330,9 +333,9 @@ impl Bank<'_, OutBank> {
     #[inline]
     fn clear_received_setup_interrupt(&self) {
         // Clear bits in epintflag by writing them to 1
-        self.usb()
-            .epintflag(self.index())
-            .write(|w| w.rxstp().set_bit());
+        self.endpoint()
+            .epintflag()
+            .write(|w| w.rxstp().clear_bit_by_one());
     }
 
     /// Writes out endpoint configuration to its in-memory descriptor.
@@ -349,8 +352,8 @@ impl Bank<'_, OutBank> {
 
     /// Enables endpoint-specific interrupts.
     fn setup_ep_interrupts(&mut self) {
-        self.usb()
-            .epintenset(self.index())
+        self.endpoint()
+            .epintenset()
             .write(|w| w.rxstp().set_bit().trcpt0().set_bit());
     }
 
@@ -377,18 +380,18 @@ impl Bank<'_, OutBank> {
     }
 
     fn is_stalled(&self) -> bool {
-        self.usb().epintflag(self.index()).read().stall0().bit()
+        self.endpoint().epintflag().read().stall0().bit()
     }
 
     fn set_stall(&mut self, stall: bool) {
         if stall {
-            self.usb()
-                .epstatusset(self.index())
-                .write(|w| w.stallrq0().set_bit())
+            self.endpoint()
+                .epstatusset()
+                .write(|w| w.stallrq0().set_bit());
         } else {
-            self.usb()
-                .epstatusclr(self.index())
-                .write(|w| w.stallrq0().set_bit())
+            self.endpoint()
+                .epstatusclr()
+                .write(|w| w.stallrq0().set_bit());
         }
     }
 }
@@ -541,7 +544,7 @@ impl Inner {
         if enable {
             self.usb().intenset().write(|w| w.sof().set_bit());
         } else {
-            self.usb().intenclr().write(|w| w.sof().set_bit());
+            self.usb().intenclr().write(|w| w.sof().clear_bit_by_one());
         }
     }
 
@@ -580,7 +583,7 @@ impl Inner {
     /// flush_ep commits bank descriptor information for the endpoint pair,
     /// and enables the endpoint according to its type.
     fn flush_ep(&self, idx: usize) {
-        let cfg = self.usb().epcfg(idx);
+        let cfg = self.usb().device_endpoint(idx).epcfg();
         let info = &self.endpoints.borrow().endpoints[idx];
         // Write bank descriptors first. We do this so there is no period in
         // which the endpoint is enabled but has an invalid descriptor.
@@ -657,7 +660,7 @@ impl Inner {
 
     fn check_sof_interrupt(&self) -> bool {
         if self.usb().intflag().read().sof().bit() {
-            self.usb().intflag().write(|w| w.sof().set_bit());
+            self.usb().intflag().write(|w| w.sof().clear_bit_by_one());
             return true;
         }
         false
@@ -687,7 +690,7 @@ impl Inner {
         let intflags = self.usb().intflag().read();
         if intflags.eorst().bit() {
             // end of reset interrupt
-            self.usb().intflag().write(|w| w.eorst().set_bit());
+            self.usb().intflag().write(|w| w.eorst().clear_bit_by_one());
             return PollResult::Reset;
         }
         // As the suspend & wakup interrupts/states cannot distinguish between
@@ -827,12 +830,13 @@ impl UsbBus {
 
     /// Configures the Multi-Packet-Rx feature of the USB peripheral.
     ///
-    /// This allows for the USB Peripheral to ACK multiple incomming packets in hardware, and then
-    /// only fire an interrupt once the buffer is full. This will reduce the number of USB interrupts,
-    /// especially when dealing with BULK endpoints.
+    /// This allows for the USB Peripheral to ACK multiple incomming packets in
+    /// hardware, and then only fire an interrupt once the buffer is full.
+    /// This will reduce the number of USB interrupts, especially when
+    /// dealing with BULK endpoints.
     ///
-    /// The default behaviour of the endpoint is to trigger an interrupt as soon as any amount of
-    /// data is received (`size = 0`).
+    /// The default behaviour of the endpoint is to trigger an interrupt as soon
+    /// as any amount of data is received (`size = 0`).
     ///
     /// The Buffer size can be configured using the HAL's feature flags:
     ///
@@ -849,15 +853,15 @@ impl UsbBus {
     /// ## Requirements
     /// 1. `size` is less than the allocated buffer of the endpoint.
     /// 2. `size` is a multiple of the endpoints packet size.
-    /// 3.  The provided `ep` is an OUT endpoint.
+    /// 3. The provided `ep` is an OUT endpoint.
     ///
     /// ## Notes
-    /// * For IN endpoints, multi-packet transfer is automatically handled without
-    ///   any user input.
-    /// * If less than `size` bytes are received by the endpoint, then it will NOT
-    ///   fire an interrupt.
-    /// * ZLP packets still result in an interrupt being fired, regardless
-    ///   of the endpoints received data length
+    /// * For IN endpoints, multi-packet transfer is automatically handled
+    ///   without any user input.
+    /// * If less than `size` bytes are received by the endpoint, then it will
+    ///   NOT fire an interrupt.
+    /// * ZLP packets still result in an interrupt being fired, regardless of
+    ///   the endpoints received data length
     pub fn configure_out_endpoint_multipacket_rx(
         &self,
         ep: EndpointAddress,

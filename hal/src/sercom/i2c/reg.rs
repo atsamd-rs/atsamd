@@ -117,7 +117,7 @@ impl<S: Sercom> Registers<S> {
         #[allow(unused_unsafe)]
         self.i2c_master()
             .ctrla()
-            .modify(|_, w| unsafe { w.inactout().bits(timeout as u8) })
+            .modify(|_, w| unsafe { w.inactout().bits(timeout as u8) });
     }
 
     /// Get the inactive timeout setting.
@@ -265,7 +265,7 @@ impl<S: Sercom> Registers<S> {
 
         self.i2c_master()
             .intflag()
-            .modify(|_, w| w.error().clear_bit());
+            .write(|w| w.error().clear_bit_by_one());
 
         // RESET the `ADDR` register, then signal start (or repeated start if
         // appropriate) and transmit encoded address for a read transaction.

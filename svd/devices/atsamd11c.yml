@@ -1,0 +1,7 @@
+_svd: "../ATSAMD11C14A.svd"
+
+_include:
+  - "include/atsamd11.yml"
+
+_modify:
+  version: "2.8.208"

@@ -100,7 +100,7 @@ impl State {
     fn enable_clock_generator(&mut self, clock: ClockId, generator: ClockGenId) {
         self.gclk.clkctrl().write(|w| unsafe {
             w.id().bits(u8::from(clock));
-            w.r#gen().bits(u8::from(generator));
+            w.gen_().bits(u8::from(generator));
             w.clken().set_bit()
         });
         self.wait_for_sync();
@@ -197,7 +197,7 @@ impl GenericClockController {
 
         // Reset various dividers back to 1
         sysctrl.osc8m().modify(|_, w| {
-            w.presc()._0();
+            w.presc().presc_0();
             w.ondemand().clear_bit()
         });
         pm.cpusel().write(|w| w.cpudiv().div1());
@@ -249,7 +249,7 @@ impl GenericClockController {
 
         // Reset various dividers back to 1
         sysctrl.osc8m().modify(|_, w| {
-            w.presc()._0();
+            w.presc().presc_0();
             w.ondemand().clear_bit()
         });
         pm.cpusel().write(|w| w.cpudiv().div1());

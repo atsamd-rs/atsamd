@@ -1,16 +1,10 @@
 //! Register-level access to UART configuration
 
-use atsamd_hal_macros::hal_cfg;
-
 use super::{BaudMode, BitOrder, CharSizeEnum, Flags, Oversampling, Parity, Status, StopBits};
 
 use crate::pac;
 use crate::sercom::Sercom;
 
-#[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-use pac::sercom0::usart::ctrla::Modeselect;
-
-#[hal_cfg("sercom0-d5x")]
 use pac::sercom0::usart_int::ctrla::Modeselect;
 
 use crate::time::Hertz;
@@ -30,16 +24,8 @@ impl<S: Sercom> Registers<S> {
         Self { sercom }
     }
 
-    /// Helper function to access the underlying `USART` from the given `SERCOM`
-    #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-    #[inline]
-    fn usart(&self) -> &pac::sercom0::Usart {
-        self.sercom.usart()
-    }
-
     /// Helper function to access the underlying `USART_INT` from the given
     /// `SERCOM`
-    #[hal_cfg("sercom0-d5x")]
     #[inline]
     fn usart(&self) -> &pac::sercom0::UsartInt {
         self.sercom.usart_int()
@@ -402,7 +388,7 @@ impl<S: Sercom> Registers<S> {
     pub(super) unsafe fn write_data(&mut self, data: super::DataReg) {
         self.usart()
             .data()
-            .write(|w| unsafe { w.data().bits(data) })
+            .write(|w| unsafe { w.data().bits(data) });
     }
 
     /// Enable the UART peripheral

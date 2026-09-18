@@ -84,7 +84,7 @@ fn EIC() {
     unsafe {
         // Accessing registers from interrupts context is safe
         let eic = &*pac::Eic::ptr();
-        eic.intflag().modify(|_, w| w.extint2().set_bit());
+        eic.intflag().modify(|_, w| w.extint2().clear_bit_by_one());
     }
     COUNTER.store(COUNTER.load(Ordering::SeqCst) + 1, Ordering::SeqCst);
 }

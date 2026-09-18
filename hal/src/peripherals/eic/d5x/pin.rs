@@ -4,7 +4,7 @@ use crate::ehal::digital::{ErrorType, InputPin};
 use crate::ehal_02::digital::v2::InputPin as InputPin_02;
 use crate::eic::*;
 use crate::gpio::{
-    self, pin::*, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt,
+    self, AnyPin, FloatingInterrupt, PinMode, PullDownInterrupt, PullUpInterrupt, pin::*,
 };
 use core::convert::Infallible;
 
@@ -60,8 +60,8 @@ where
 {
     /// Enables the event output of the channel for the event system.
     ///
-    /// Note that whilst this function is executed, the EIC peripheral is disabled
-    /// in order to write to the evctrl register
+    /// Note that whilst this function is executed, the EIC peripheral is
+    /// disabled in order to write to the evctrl register
     pub fn enable_event(&mut self) {
         self.chan.with_disable(|e| {
             e.evctrl()
@@ -71,8 +71,8 @@ where
 
     /// Disables the event output of the channel for the event system.
     ///
-    /// Note that whilst this function is executed, the EIC peripheral is disabled
-    /// in order to write to the evctrl register
+    /// Note that whilst this function is executed, the EIC peripheral is
+    /// disabled in order to write to the evctrl register
     pub fn disable_event(&mut self) {
         self.chan.with_disable(|e| {
             e.evctrl()
@@ -84,14 +84,14 @@ where
         self.chan
             .eic
             .intenset()
-            .write(|w| unsafe { w.bits(1 << P::ChId::ID) })
+            .write(|w| unsafe { w.bits(1 << P::ChId::ID) });
     }
 
     pub fn disable_interrupt(&mut self) {
         self.chan
             .eic
             .intenclr()
-            .write(|w| unsafe { w.bits(1 << P::ChId::ID) })
+            .write(|w| unsafe { w.bits(1 << P::ChId::ID) });
     }
 
     pub fn is_interrupt(&mut self) -> bool {
@@ -156,7 +156,8 @@ where
         });
     }
 
-    /// Enable debouncing for this pin, with a configuration appropriate for debouncing physical buttons.
+    /// Enable debouncing for this pin, with a configuration appropriate for
+    /// debouncing physical buttons.
     pub fn debounce(&mut self) {
         self.chan.with_disable(|e| {
             e.dprescaler().modify(|_, w| {
@@ -235,8 +236,9 @@ mod async_impls {
         P: EicPin,
         Id: ChId,
     {
-        /// Turn an EIC pin into a pin usable as a [`Future`](core::future::Future).
-        /// The correct interrupt source is needed.
+        /// Turn an EIC pin into a pin usable as a
+        /// [`Future`](core::future::Future). The correct interrupt
+        /// source is needed.
         pub fn into_future<I>(self, _irq: I) -> ExtInt<P, Id, EicFuture>
         where
             I: Binding<P::InterruptSource, InterruptHandler>,
