@@ -156,19 +156,35 @@ where
         });
     }
 
-    /// Enable debouncing for this pin, with a configuration appropriate for debouncing physical buttons.
-    pub fn debounce(&mut self) {
+    /// Enable hardware debouncing for this pin.
+    ///
+    /// The debouncer's timing characteristics are shared between banks of
+    /// channels (EXTINT0-7 and EXTINT8-15) and are configured through
+    /// [`Eic::set_debounce_config`]; the hardware reset values provide only
+    /// minimal debouncing.
+    ///
+    /// Debouncing can only be selected for a pin whose [`sense`](Self::sense)
+    /// mode is an edge ([`Rise`](Sense::Rise), [`Fall`](Sense::Fall) or
+    /// [`Both`](Sense::Both)), and is mutually exclusive with the majority
+    /// [`filter`](Self::filter) on this pin.
+    ///
+    /// Note that whilst this function is executed, the EIC peripheral is
+    /// disabled in order to write to the debouncen register
+    pub fn enable_debouncing(&mut self) {
         self.chan.with_disable(|e| {
-            e.dprescaler().modify(|_, w| {
-                w.tickon().set_bit()    // Use the 32k clock for debouncing.
-                .states0().set_bit()    // Require 7 0 samples to see a falling edge.
-                .states1().set_bit()    // Require 7 1 samples to see a rising edge.
-                .prescaler0().div16()
-                .prescaler1().div16()
-            });
-
             e.debouncen()
-                .modify(|_, w| unsafe { w.bits(P::ChId::ID as u32) });
+                .modify(|r, w| unsafe { w.bits(r.bits() | (1 << P::ChId::ID)) });
+        });
+    }
+
+    /// Disable hardware debouncing for this pin.
+    ///
+    /// Note that whilst this function is executed, the EIC peripheral is
+    /// disabled in order to write to the debouncen register
+    pub fn disable_debouncing(&mut self) {
+        self.chan.with_disable(|e| {
+            e.debouncen()
+                .modify(|r, w| unsafe { w.bits(r.bits() & !(1 << P::ChId::ID)) });
         });
     }
 }
