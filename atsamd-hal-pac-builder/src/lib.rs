@@ -9,6 +9,35 @@ use svd2rust::config::IdentFormats;
 use svdtools::patch::{Config as PatchConfig, process_file};
 use tap::Tap;
 
+/// Get the chip name from the `Cargo.toml` manifest.
+///
+/// The `Cargo.toml` must specify the chip name as following:
+/// ```toml
+/// [package.metadata]
+/// chip = "atsamd21j"
+/// ```
+pub fn get_chip_name() -> Result<String> {
+    let manifest_dir = env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
+    let cargo_toml_path = format!("{}/Cargo.toml", manifest_dir);
+
+    let contents = fs::read_to_string(&cargo_toml_path)
+        .context(format!("Failed to read {cargo_toml_path}"))?;
+
+    eprintln!("cargo: {contents}");
+
+    let value = toml::from_str::<toml::Value>(&contents).context("Failed to parse Cargo.toml")?;
+
+    let chip_name = value
+        .get("package")
+        .and_then(|pkg| pkg.get("metadata"))
+        .and_then(|meta| meta.get("chip"))
+        .and_then(|chip| chip.as_str())
+        .context("Missing package.metadata.chip in Cargo.toml")?
+        .to_string();
+
+    Ok(chip_name)
+}
+
 /// Generate the PAC code using svd2rust, and write it to the provided
 /// directory. First reads the SVD file associated with the relevant part number
 /// (which is extracted from the PAC's package name), then applies the relevant
@@ -16,13 +45,14 @@ use tap::Tap;
 ///
 /// # Inputs
 ///
-/// * `pac_pkg_name`: The PAC's package name as reported by the `CARGO_PKG_NAME`
-///   environment variable
+/// * `chip_name`: The name of the chip for which the PAC is being built,
+///   including package configuration. Excludes memory configuration, e.g.
+///   `ATSAMD51J`. Can be extracted from the PAC's `Cargo.toml` by using [`get_chip_name`].
 /// * `pac_out_dir`: The PAC's output directory as reported by the `OUT_DIR`
 ///   environment variable
 /// * `svd_dir`: The root directory where the SVD and XSLT files are stored
 pub fn generate_pac(
-    pac_pkg_name: impl AsRef<str>,
+    chip_name: impl AsRef<str>,
     pac_out_dir: impl AsRef<Path>,
     svd_root: impl AsRef<Path>,
 ) -> Result<()> {
@@ -32,10 +62,10 @@ pub fn generate_pac(
     println!("cargo:rerun-if-changed=../../svd/include");
 
     let out_dir = pac_out_dir.as_ref();
+    let chip_name = chip_name.as_ref();
 
-    // Extract chip name, and find the device patch YAML
-    let chip_name = get_chip_name(pac_pkg_name).context("Could not extract chip name")?;
-    let yaml = find_chip_file(&chip_name, "yml", svd_root.as_ref().join("devices"))
+    // Find the device patch YAML
+    let yaml = find_chip_file(chip_name, "yml", svd_root.as_ref().join("devices"))
         .context("Could not find device patch YAML")?;
 
     let patched_svd_path = out_dir.join("patched.svd");
@@ -76,8 +106,8 @@ pub fn generate_pac(
         format!(r#"#[path="{}"] mod __pac_impl;"#, generated_out.display()),
     )?;
 
-    // `rustfmt`ting the generated files is important, otherwise `cargo doc` takes
-    // FOREVER. I'm guessing it works line by line.
+    // `rustfmt`ting the generated files is important, otherwise `cargo doc`
+    // takes FOREVER. I'm guessing it works line by line.
     let _ = Command::new("rustfmt").arg(pac_mod_out).status();
     let _ = Command::new("rustfmt").arg(generated_out).status();
 
@@ -111,9 +141,8 @@ pub fn include_linker_script(
 }
 
 // Find a file for `chip_name`, ending with `extension` in the provided `dir`.
-// Omits the part number suffix, i.e., the memory variant.
 //
-// May be used to find SVD or yaml patch files for ATSAMD chips.
+// May be used to find yaml patch files for ATSAMD chips.
 fn find_chip_file(chip_name: &str, extension: &str, dir: impl AsRef<Path>) -> Result<String> {
     // Get all entries in the svd directory
     let dir = dir.as_ref();
@@ -136,16 +165,13 @@ fn find_chip_file(chip_name: &str, extension: &str, dir: impl AsRef<Path>) -> Re
         }
 
         // Get file stem and extension
-        if let Some(file_name) = path.file_name() {
-            let file_name_str = file_name
+        if let Some(file_stem) = path.file_stem() {
+            let file_stem = file_stem
                 .to_os_string()
                 .into_string()
-                .expect("Could not get path")
-                .to_lowercase();
-            let chip_name_lower = chip_name.to_lowercase();
+                .expect("Could not get path");
 
-            // Check if the file name starts with the chip name (case insensitive)
-            if file_name_str.starts_with(&chip_name_lower) {
+            if file_stem.to_lowercase() == chip_name.to_lowercase() {
                 // Check for extension
                 if let Some(ext) = path.extension() {
                     let ext_str = ext.to_string_lossy();
@@ -162,10 +188,4 @@ fn find_chip_file(chip_name: &str, extension: &str, dir: impl AsRef<Path>) -> Re
     }
 
     Err(anyhow::anyhow!("Chip not found"))
-}
-
-/// Get the chip name from the PAC package name
-fn get_chip_name(pkg_name: impl AsRef<str>) -> Option<String> {
-    let re = regex::Regex::new(r"atsam[a-z]\d{2}[a-z]+").unwrap();
-    Some(re.captures(pkg_name.as_ref())?.get(0)?.as_str().to_owned())
 }

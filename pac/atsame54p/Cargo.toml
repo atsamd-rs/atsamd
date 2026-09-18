@@ -28,3 +28,6 @@ atsamd-hal-pac-builder = { path = "../../atsamd-hal-pac-builder" }
 [features]
 rt = ["cortex-m-rt/device"]
 critical-section = ["dep:critical-section"]
+
+[package.metadata]
+chip = "atsame54p"

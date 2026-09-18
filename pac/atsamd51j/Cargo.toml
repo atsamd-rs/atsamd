@@ -24,3 +24,6 @@ atsamd-hal-pac-builder = { path = "../../atsamd-hal-pac-builder" }
 rt = ["cortex-m-rt/device"]
 critical-section = ["dep:critical-section"]
 
+[package.metadata]
+chip = "atsamd51j"
+
