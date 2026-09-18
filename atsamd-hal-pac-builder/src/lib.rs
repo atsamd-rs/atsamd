@@ -1,6 +1,5 @@
 use std::env;
-use std::fs::{self, File};
-use std::io::{BufReader, Read, Write};
+use std::fs;
 use std::path::Path;
 use std::process::Command;
 
@@ -22,8 +21,6 @@ pub fn get_chip_name() -> Result<String> {
 
     let contents = fs::read_to_string(&cargo_toml_path)
         .context(format!("Failed to read {cargo_toml_path}"))?;
-
-    eprintln!("cargo: {contents}");
 
     let value = toml::from_str::<toml::Value>(&contents).context("Failed to parse Cargo.toml")?;
 
@@ -57,6 +54,7 @@ pub fn generate_pac(
     svd_root: impl AsRef<Path>,
 ) -> Result<()> {
     println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=../build.rs");
     println!("cargo:rerun-if-changed=../../svd");
     println!("cargo:rerun-if-changed=../../svd/devices");
     println!("cargo:rerun-if-changed=../../svd/include");
@@ -82,6 +80,7 @@ pub fn generate_pac(
 
     // svd2rust config
     let config = svd2rust::config::Config::default().tap_mut(|c| {
+        c.target = svd2rust::Target::CortexM;
         c.atomics = true;
         c.make_mod = true;
         c.ident_formats = IdentFormats::default_theme();
@@ -96,8 +95,17 @@ pub fn generate_pac(
 
     let pac_mod_out = out_dir.join("pac.rs");
     let generated_out = out_dir.join("pac_impl.rs");
+    let linker_script = out_dir.join("device.x");
+    let build_script = out_dir.join("build.rs");
+
+    let device_specific_code = generated
+        .device_specific
+        .ok_or_else(|| anyhow::anyhow!("No device specific generated code"))?;
+
     fs::write(&generated_out, &generated.lib_rs)
         .context("failed to write generated code to pac_impl.rs")?;
+    fs::write(&linker_script, device_specific_code.device_x)?;
+    fs::write(&build_script, device_specific_code.build_rs)?;
 
     // Write a "wrapper" module in OUT_DIR/pac.rs, which links to the real PAC
     // generated code
@@ -114,26 +122,14 @@ pub fn generate_pac(
     Ok(())
 }
 
-/// Include `memory.x` in the linker search path
-pub fn include_linker_script(
-    pac_out_dir: impl AsRef<Path>,
-    linker_script: impl AsRef<Path>,
-) -> Result<()> {
-    println!("cargo:rerun-if-changed=device.x");
+/// Include `device.x` in the linker search path
+pub fn include_linker_script(pac_out_dir: impl AsRef<Path>) -> Result<()> {
     println!("cargo:rerun-if-env-changed=CARGO_FEATURE_RT");
 
     let out_dir = pac_out_dir.as_ref();
 
-    // Copy linker script to out dir
+    // Add out dir to link search. device.x is generated directly by svd2rust and written into OUT_DIR by generate_pac.
     if env::var_os("CARGO_FEATURE_RT").is_some() {
-        let mut rdr = BufReader::new(File::open(linker_script.as_ref())?);
-        let mut buf = vec![];
-        rdr.read_to_end(&mut buf)?;
-
-        File::create(out_dir.join("device.x"))
-            .unwrap()
-            .write_all(&buf)
-            .unwrap();
         println!("cargo:rustc-link-search={}", out_dir.display());
     }
 
