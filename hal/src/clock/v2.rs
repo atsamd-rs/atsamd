@@ -254,7 +254,7 @@
 //! enabling an APB clock by converting an [`ApbToken`] into an `ApbClk`
 //! requires exclusive access to the `Apb` in the form of `&mut Apb`.
 //!
-//! ## Getting started
+//! ## Getting started (D5x devices)
 //!
 //! To set up a clock tree, start by trading the [PAC](crate::pac)-level
 //! clocking structs for their HAL equivalents. Right now, the only way to do so
@@ -765,6 +765,171 @@
 //! let apb_sercom0 = buses.apb.enable(tokens.apbs.sercom0);
 //! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, gclk0);
 //! let (gclk0, gclk0_out) = gclk0.enable_gclk_out(pins.pb14);
+//! ```
+//!
+//! ## Getting started (D21 and D11 devices)
+//!
+//! To set up a clock tree, start by trading the [PAC](crate::pac)-level
+//! clocking structs for their HAL equivalents. Right now, the only way to do so
+//! safely is using the [`clock_system_at_reset`] function, which assumes all
+//! clocks are in their default state at power-on reset. If this is not the
+//! case, because, for example, a bootloader has modified the clocks, then you
+//! may need to manually create the matching configuration using `unsafe` code.
+//!
+//! ```no_run
+//! use atsamd_hal::clock::v2::clock_system_at_reset;
+//! use atsamd_hal::pac::Peripherals;
+//! let mut pac = Peripherals::take().unwrap();
+//! let (buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.gclk,
+//!     pac.pm,
+//!     pac.sysctrl,
+//! );
+//! ```
+//!
+//! At this point, you may notice that the function returned three different
+//! objects, the [`Buses`], [`Clocks`] and [`Tokens`].
+//!
+//! The [`Buses`] struct contains the [`Ahb`] and [`Apb`] objects, which
+//! represent the corresponding AHB and APB buses. See the [notes on memory
+//! safety](self#notes-on-memory-safety) for more details on these types.
+//!
+//! The [`Clocks`] struct contains all of the clocks that are enabled and
+//! running at power-on reset, specifically:
+//! - All of the [`AhbClks`]
+//! - Some of the [`ApbClks`]
+//! - [`Gclk0`], sources by the 1Mhz `Osc`
+//! - The 1 MHz [`Osc`], running in open-loop mode, represented as as
+//!   `Enabled<Osc, U1>`. `N = U1` here because [`Gclk0`] consumes it. See
+//!   [above](self#tracking-n-at-compile-time-for-1n-clocks) for details on
+//!   [`Enabled<T, N>`].
+//! - [`Gclk0`], sourced by the 1 MHz `OSC` and represented as `Enabled<Gclk0<OscId>, U1>`
+//! - [`Gclk2`], sourced by the `OscUlp32k` and represented as `Enabled<Gclk0<OscUlp32kId>, U1>`
+//! - The 8 MHz oscillator running at 1Mhz (['Osc'])
+//! - Pclk for the Watchdog, sourced by Gclk2
+//! 
+//! The [`Tokens`] struct contains all of the available `Token`s, which
+//! [represent clocks that are disabled](self#clock-state-machines) at power-on
+//! reset. Each `Token` can be exchanged for a corresponding clock object.
+//!
+//! ## Example clock tree
+//!
+//! Finally, we will walk through the creation of a simple clock tree to
+//! illustrate some of the remaining concepts inherent to this module.
+//!
+//! Starting from the previous snippet, we have the [`Buses`], [`Clocks`] and
+//! [`Tokens`] to work with, and our clock tree at power-on reset looks like
+//! this.
+//!
+//! ```text
+//! OSC8M (8 MHz)
+//! └── OSC (1 MHz)
+//!     └── GCLK0 (1 MHz)
+//!         └── Main clock (1 MHz)
+//! ```
+//!
+//! Our goal will be a clock tree that looks like this:
+//!
+//! ```text
+//! OSC8M (8 MHz)
+//! └── OSC (1 MHz)
+//!     └── GCLK3 (10 Khz)
+//!         └── DFLL48 (48 MHz)
+//!             └── GCLK0 (48 MHz)
+//!                 ├── Main clock (48 MHz)
+//!                 └── ADC
+//! ```
+//!
+//! We will use a GCLK3 to clock the DFLL, which will then enable us
+//! to increase GCLK0 (And thus the CPU) to its maximum of 48 MHz.
+//!
+//! First, let's import some of the necessary types. We will see what each type
+//! represents in turn.
+//!
+//! ```no_run
+//! use hal::clock::v2::{
+//!    self as clock,
+//!    dfll::Dfll,
+//!    gclk::{Gclk, GclkDiv8},
+//!    pclk::Pclk,
+//! };
+//! ```
+//!
+//! Next, we enable GCLK3, and drive it using the internal OSC (1 MHz derived from OSC8M),
+//! with a division of 100. This will give us a clean 10 KHz clock that can be used
+//! to generate DFLL48M.
+//!
+//! ```
+//! let (gclk3, osc) = Gclk::from_source(tokens.gclks.gclk3, clocks.osc);
+//! let gclk3_10k = gclk3.div(GclkDiv8::Div(100)).enable();
+//! ```
+//!
+//! Now our clock tree looks like this:
+//! ```text
+//! OSC8M (8 MHz)
+//! └── OSC (1 MHz)
+//!     ├── GCLK0 (1 MHz)
+//!     |   └── Main clock (1 MHz)
+//!     └── GCLK3 (10 KHz)
+//! ```
+//!
+//! Next, enable DFLL48, using GCLK3 as its source clock. The source clock of DFLL48M
+//! should always be devisable cleanly by 48,000,000.
+//! ```
+//! let (pclk_dfll, _gclk3_10k) = Pclk::enable(tokens.pclks.dfll, gclk3_10k);
+//! let dfll_48m = Dfll::from_pclk(tokens.dfll, pclk_dfll).enable();
+//! ```
+//!
+//! Now, our clock tree is almost ready:
+//! ```text
+//! OSC8M (8 MHz)
+//! └── OSC (1 MHz)
+//!     ├── GCLK0 (1 MHz)
+//!     |   └── Main clock (1 MHz)
+//!     └── GCLK3 (10 KHz)
+//!         └── DFLL48 (48 MHz)
+//! ```
+//!
+//! All that remains, is to swap GCLK0's source from OSC to DFLL48.
+//!
+//! IMPORTANT: Unlike D5x series of chips, the flash wait-states are NOT auto-managed
+//! by the NVM controller. Therfore, the `swap_sources` method will require us to
+//! provide the flash wait state number manually. Operating temperature, CPU
+//! frequency and VDD voltage all affect the minimum number of flash wait
+//! states that are required. See [`gclk::EnabledGclk0::swap_sources`] for the
+//! requirements.
+//!
+//! ```
+//! // 3 Wait states is safe for 48Mhz up to 125C with 3.3V VDD
+//! let (gclk0_48, _osc, _dfll_48m) = clocks.gclk0.swap_sources(osc, dfll_48m, &mut device.nvmctrl, 3);
+//! ```
+//! Now, our clock tree is complete:
+//!
+//! ```text
+//! OSC8M (8 MHz)
+//! └── OSC (1 MHz)
+//!     └── GCLK3 (10 Khz)
+//!         └── DFLL48 (48 MHz)
+//!             └── GCLK0 (48 MHz)
+//!                 └── Main clock (48 MHz)
+//! ```
+//!
+//! All that is left is to enable and start the ADC:
+//!
+//! ```
+//! let (adc_pclk, _gclk0_48) = Pclk::enable(tokens.pclks.adc, gclk0_48);
+//! let adc_apb = clocks.apbs.adc0;
+//! let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
+//!     .with_clock_cycles_per_sample(5)
+//!     .with_clock_divider(Prescaler::Div128)
+//!     .with_vref(atsamd_hal::adc::Reference::Intvcc0)
+//!     .enable(device.adc, adc_apb, adc_pclk)
+//!     .unwrap();
+//! let mut adc_pin = pins.a0.into_alternate();
+//! loop {
+//!     let _res = adc.read(&mut adc_pin);
+//!     defmt::println!("ADC value: {}", _res).unwrap();
+//! }
 //! ```
 //!
 //! [PAC]: crate::pac
