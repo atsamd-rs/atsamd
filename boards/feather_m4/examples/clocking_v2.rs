@@ -111,8 +111,7 @@ mod app {
 
         // Output `OscUlp32k` on PB11 pin via `Gclk5`, without any division
         // resulting in 32 kHz output frequency
-        let (osculp32k, _osculp_base) =
-            OscUlp32k::enable(tokens.osculp32k.osculp32k, clocks.osculp32k_base);
+        let osculp32k = clocks.osculp.osculp32k;
         let (gclk5, _osculp32k) = Gclk::from_source(tokens.gclks.gclk5, osculp32k);
         let gclk5 = gclk5.enable();
         let (_gclk5, _gclk5_out) = gclk5.enable_gclk_out(pins.pb11);
