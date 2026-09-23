@@ -24,11 +24,11 @@
 //! dropping the [`Osc32kBase`] clock, which prevents any further access to the
 //! `OSC32K` register.
 //!
-//! ## Example
-//!
 //! Creating and configuring the OSC32K clocks proceeds according to the
 //! principles outlined in the [`clock` module documentation]. It is best shown
 //! with an example.
+//!
+//! ## Example (D5x)
 //!
 //! Let's start by using [`clock_system_at_reset`] to access the HAL clocking
 //! structs.
@@ -51,25 +51,11 @@
 //! );
 //! ```
 //!
+//!
 //! Next, we can extract the [`EnabledOsc32kBase`] clock from the [`Clocks`]
 //! struct and use it to enable the [`Osc1k`] and [`Osc32k`] clocks.
 //!
 //! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         osc32k::{Osc1k, Osc32k},
-//! #     },
-//! #     pac::Peripherals,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
-//! # );
 //! let base = clocks.osc32k_base;
 //! let (osc1k, base) = Osc1k::enable(tokens.osc32k.osc1k, base);
 //! let (osc32k, base) = Osc32k::enable(tokens.osc32k.osc32k, base);
@@ -78,24 +64,6 @@
 //! We can then override the calibration value read from flash at start up.
 //!
 //! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         osc32k::{Osc1k, Osc32k},
-//! #     },
-//! #     pac::Peripherals,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
-//! # );
-//! # let base = clocks.osc32k_base;
-//! # let (osc1k, base) = Osc1k::enable(tokens.osc32k.osc1k, base);
-//! # let (osc32k, mut base) = Osc32k::enable(tokens.osc32k.osc32k, base);
 //! base.set_calibration(128);
 //! ```
 //!
@@ -103,25 +71,6 @@
 //! the next power-on reset. Doing so also drops the `EnabledOsc32kBase` clock.
 //!
 //! ```no_run
-//! # use atsamd_hal::{
-//! #     clock::v2::{
-//! #         clock_system_at_reset,
-//! #         osc32k::{Osc1k, Osc32k},
-//! #     },
-//! #     pac::Peripherals,
-//! # };
-//! # let mut pac = Peripherals::take().unwrap();
-//! # let (buses, clocks, tokens) = clock_system_at_reset(
-//! #     pac.OSCCTRL,
-//! #     pac.OSC32KCTRL,
-//! #     pac.GCLK,
-//! #     pac.MCLK,
-//! #     &mut pac.NVMCTRL,
-//! # );
-//! # let base = clocks.osc32k_base;
-//! # let (osc1k, base) = Osc1k::enable(tokens.osc32k.osc1k, base);
-//! # let (osc32k, mut base) = Osc32k::enable(tokens.osc32k.osc32k, base);
-//! # base.set_calibration(128);
 //! base.write_lock();
 //! ```
 //!
@@ -150,6 +99,74 @@
 //! base.write_lock();
 //! ```
 //!
+//! ## Example (D21/D11)
+//!
+//! <div class="warning">Note. OSC1K is not available on D21 devices, only on D11. 
+//! Therefore, this example will only show how to setup the 32k clock</div>
+//!
+//! Let's start by using [`clock_system_at_reset`] to access the HAL clocking
+//! structs.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!         osc32k::{Osc32k, Osc32kBase},
+//!     },
+//!     pac::Peripherals,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let (buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.gclk,
+//!     pac.pm,
+//!     pac.sysctrl
+//! );
+//! ```
+//!
+//!
+//! Next, we can extract the [`EnabledOsc32kBase`] clock from the [`Clocks`]
+//! struct and use it to enable the [`Osc32k`] clock.
+//!
+//! ```no_run
+//! let base_32k = Osc32kBase::new(tokens.osc32k.base).enable();
+//! let (osc32k, base) = Osc32k::enable(tokens.osc32k.osc32k, base);
+//! ```
+//!
+//! We can then override the calibration value read from flash at start up.
+//!
+//! ```no_run
+//! base.set_calibration(128);
+//! ```
+//!
+//! And finally, we can set the write lock bit to freeze the configuation until
+//! the next power-on reset. Doing so also drops the `EnabledOsc32kBase` clock.
+//!
+//! ```no_run
+//! base.write_lock();
+//! ```
+//!
+//! The complete example is shown below.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{
+//!         clock_system_at_reset,
+//!         osc32k::{Osc32k, Osc32kBase},
+//!     },
+//!     pac::Peripherals,
+//! };
+//! let mut pac = Peripherals::take().unwrap();
+//! let (buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.gclk,
+//!     pac.pm,
+//!     pac.sysctrl
+//! );
+//! let base_32k = Osc32kBase::new(tokens.osc32k.base).enable();
+//! let (osc32k, base) = Osc32k::enable(tokens.osc32k.osc32k, base);
+//! base.set_calibration(128);
+//! base.write_lock();
+//! ```
+//!
 //! [`clock` module documentation]: super
 //! [`clock_system_at_reset`]: super::clock_system_at_reset
 //! [`Clocks`]: super::Clocks
@@ -162,9 +179,9 @@ use crate::pac::sysctrl::Osc32k as OSC32K;
 
 use crate::typelevel::{Decrement, Increment, PrivateDecrement, PrivateIncrement};
 
-use fugit::RateExtU32;
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
+use fugit::RateExtU32;
 
 use super::{Enabled, Source};
 
