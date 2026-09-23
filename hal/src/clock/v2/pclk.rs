@@ -41,6 +41,7 @@
 //!     clock::v2::{clock_system_at_reset, pclk::Pclk},
 //!     pac::Peripherals,
 //! };
+//! // Clock setup (shown here for D5x) - For D21/D11 setup refer to the V2 clock docs
 //! let mut pac = Peripherals::take().unwrap();
 //! let (buses, clocks, tokens) = clock_system_at_reset(
 //!     pac.oscctrl,
@@ -49,6 +50,7 @@
 //!     pac.mclk,
 //!     &mut pac.nvmctrl,
 //! );
+//! // tokens.pclks.* works on all chip families
 //! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, clocks.gclk0);
 //! ```
 //!
