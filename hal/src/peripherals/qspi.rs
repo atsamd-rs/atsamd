@@ -246,7 +246,7 @@ impl Qspi<OneShot> {
     ///
     /// If this returns None, then the chip erase failed to start.
     pub fn erase_sector<'a>(&'a mut self, addr: u32) -> Option<EraseHandle<'a>> {
-        self.into_spi_mode();
+        self.to_spi_mode();
         let handle = EraseHandle(self);
         handle.start_sector_erase(addr);
         if handle.is_erase_complete() {
@@ -268,7 +268,7 @@ impl Qspi<OneShot> {
     ///
     /// If this returns None, then the chip erase failed to start.
     pub fn erase_block<'a>(&'a mut self, addr: u32) -> Option<EraseHandle<'a>> {
-        self.into_spi_mode();
+        self.to_spi_mode();
         let handle = EraseHandle(self);
         handle.start_block_erase(addr);
         if handle.is_erase_complete() {
