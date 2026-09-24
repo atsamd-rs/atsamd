@@ -191,7 +191,7 @@ impl Qspi<OneShot> {
     }
 
     /// Convert the QSPI peripheral from QSPI to SPI mode
-    fn into_spi_mode(&self) {
+    fn to_spi_mode(&self) {
         // Switch to Normal SPI mode to not block the CPU
         self.qspi.ctrla().modify(|_, w| w.enable().clear_bit());
         self.qspi.ctrlb().modify(|_, w| {
@@ -202,7 +202,7 @@ impl Qspi<OneShot> {
     }
 
     /// Convert the QSPI peripheral from SPI to QSPI mode
-    fn into_qspi_mode(&self) {
+    fn to_qspi_mode(&self) {
         // Switch to Normal SPI mode to not block the CPU
         self.qspi.ctrla().modify(|_, w| w.enable().clear_bit());
         self.qspi.ctrlb().write(|w| {
@@ -224,7 +224,7 @@ impl Qspi<OneShot> {
     ///
     /// If this returns None, then the chip erase failed to start.
     pub fn erase_chip<'a>(&'a mut self) -> Option<EraseHandle<'a>> {
-        self.into_spi_mode();
+        self.to_spi_mode();
         let handle = EraseHandle(self);
         handle.start_chip_erase();
         if handle.is_erase_complete() {
@@ -582,7 +582,7 @@ impl<'a> Drop for EraseHandle<'a> {
     // Return QSPI into normal mode
     fn drop(&mut self) {
         // Return to QSPI mode
-        self.0.into_qspi_mode();
+        self.0.to_qspi_mode();
     }
 }
 
