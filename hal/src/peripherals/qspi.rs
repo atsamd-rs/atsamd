@@ -155,6 +155,13 @@ impl Qspi<OneShot> {
     }
 
     /// Run one of the erase commands
+    ///
+    /// **CAUTION** - This command will BLOCK the CPU completely until the erase is
+    /// completed. Not even interrupts can occur whilst the erase is in progress. On
+    /// some chips, erase can take multiple minutes to complete.
+    ///
+    /// Non-blocking alternative functions are provided with [`Self::erase_chip`],
+    /// [`Self::erase_sector`] and [`Self::erase_block`]
     pub fn erase_command(&self, command: Command, address: u32) -> Result<(), Error> {
         match command {
             //TODO verify this list of commands
@@ -181,6 +188,94 @@ impl Qspi<OneShot> {
         }
 
         Ok(())
+    }
+
+    /// Convert the QSPI peripheral from QSPI to SPI mode
+    fn into_spi_mode(&self) {
+        // Switch to Normal SPI mode to not block the CPU
+        self.qspi.ctrla().modify(|_, w| w.enable().clear_bit());
+        self.qspi.ctrlb().modify(|_, w| {
+            w.csmode().noreload();
+            w.mode().spi()
+        });
+        self.qspi.ctrla().modify(|_, w| w.enable().set_bit());
+    }
+
+    /// Convert the QSPI peripheral from SPI to QSPI mode
+    fn into_qspi_mode(&self) {
+        // Switch to Normal SPI mode to not block the CPU
+        self.qspi.ctrla().modify(|_, w| w.enable().clear_bit());
+        self.qspi.ctrlb().write(|w| {
+            w.mode().memory();
+            w.csmode().lastxfer()
+        });
+        self.qspi.ctrla().modify(|_, w| w.enable().set_bit());
+    }
+
+    /// Starts a whole chip erase, returning an [`EraseHandle`] so the erase
+    /// progress can be tracked by application code without blocking.
+    ///
+    /// The sector erased is the sector containing the address provided.
+    ///
+    /// It is recommended prior to calling this function
+    /// to call [`Self::set_clk_divider`] with a high divider in order to
+    /// bring the SPI clock speed down low-enough that the CPU can fill the QSPI
+    /// registers fast enough.
+    ///
+    /// If this returns None, then the chip erase failed to start.
+    pub fn erase_chip<'a>(&'a mut self) -> Option<EraseHandle<'a>> {
+        self.into_spi_mode();
+        let handle = EraseHandle(self);
+        handle.start_chip_erase();
+        if handle.is_erase_complete() {
+            None
+        } else {
+            Some(handle)
+        }
+    }
+
+    /// Starts a sector erase, returning an [`EraseHandle`] so the erase
+    /// progress can be tracked by application code without blocking.
+    ///
+    /// The sector erased is the sector containing the address provided.
+    ///
+    /// It is recommended prior to calling this function
+    /// to call [`Self::set_clk_divider`] with a high divider in order to
+    /// bring the SPI clock speed down low-enough that the CPU can fill the QSPI
+    /// registers fast enough.
+    ///
+    /// If this returns None, then the chip erase failed to start.
+    pub fn erase_sector<'a>(&'a mut self, addr: u32) -> Option<EraseHandle<'a>> {
+        self.into_spi_mode();
+        let handle = EraseHandle(self);
+        handle.start_sector_erase(addr);
+        if handle.is_erase_complete() {
+            None
+        } else {
+            Some(handle)
+        }
+    }
+
+    /// Starts a block erase, returning an [`EraseHandle`] so the erase
+    /// progress can be tracked by application code without blocking.
+    ///
+    /// The block erased is the block containing the address provided.
+    ///
+    /// It is recommended prior to calling this function
+    /// to call [`Self::set_clk_divider`] with a high divider in order to
+    /// bring the SPI clock speed down low-enough that the CPU can fill the QSPI
+    /// registers fast enough
+    ///
+    /// If this returns None, then the chip erase failed to start.
+    pub fn erase_block<'a>(&'a mut self, addr: u32) -> Option<EraseHandle<'a>> {
+        self.into_spi_mode();
+        let handle = EraseHandle(self);
+        handle.start_block_erase(addr);
+        if handle.is_erase_complete() {
+            None
+        } else {
+            Some(handle)
+        }
     }
 
     /// Quad Fast Read a sequential block of memory to buf
@@ -380,6 +475,114 @@ impl<MODE> Qspi<MODE> {
         self.qspi
             .baud()
             .write(|w| unsafe { w.baud().bits(value.saturating_sub(1)) });
+    }
+}
+
+bitflags::bitflags! {
+    #[derive(Copy, Clone)]
+    struct QspiFlags: u32 {
+        const RXC = 1 << 0;
+        const DRE = 1 << 1;
+        const TXC = 1 << 2;
+        const ERR = 1 << 3;
+        const CSRISE = 1 << 8;
+        const INSREND = 1 << 10;
+    }
+}
+
+/// The EraseHandle is a way to query QSPI flash erases without
+/// blocking the CPU.
+///
+/// ## Example:
+/// ```no_run
+/// let qspi = ...;
+/// if let Some(handle) = qspi.erase_chip() {
+///     // We have a handle now to query the chip erase
+///     let now = Mono::now();
+///     loop {
+///         Mono::delay(500u64.millis()).await;
+///         if handle.is_erase_complete() {
+///             let ms = Mono::now().sub(now).to_millis();
+///             println!("Erase complete after {}ms!", ms);
+///             break;
+///         }
+///     }
+/// } else {
+///     defmt::error!("Chip erase failed");
+/// }
+/// // After the handle is dropped, the QSPI peripheral is
+/// // returned back to QSPI mode
+/// ```
+pub struct EraseHandle<'a>(&'a Qspi<OneShot>);
+
+impl<'a> EraseHandle<'a> {
+    fn read_flags(&self) -> QspiFlags {
+        QspiFlags::from_bits_truncate(self.0.qspi.intflag().read().bits())
+    }
+
+    fn clear_flags(&self, flags: QspiFlags) {
+        unsafe {
+            self.0.qspi.intflag().write(|w| w.bits(flags.bits()));
+        }
+    }
+
+    fn start_chip_erase(&self) {
+        self.xfer_in_place(&mut [Command::WriteEnable as u8]);
+        self.xfer_in_place(&mut [Command::EraseChip as u8]);
+    }
+
+    fn start_sector_erase(&self, addr: u32) {
+        self.xfer_in_place(&mut [Command::WriteEnable as u8]);
+        let mut cmd = [Command::EraseSector as u8, 0, 0, 0];
+        cmd[1..].copy_from_slice(&addr.to_be_bytes()[1..]);
+        self.xfer_in_place(&mut cmd);
+    }
+
+    fn start_block_erase(&self, addr: u32) {
+        self.xfer_in_place(&mut [Command::WriteEnable as u8]);
+        let mut cmd = [Command::EraseBlock as u8, 0, 0, 0];
+        cmd[1..].copy_from_slice(&addr.to_be_bytes()[1..]);
+        self.xfer_in_place(&mut cmd);
+    }
+
+    /// Polls the QSPI flash chip status registers
+    /// to query if the chip has completed the erase
+    pub fn is_erase_complete(&self) -> bool {
+        let mut req = [0x05, 0x00];
+        self.xfer_in_place(&mut req);
+        let status = req[1];
+        status & 0b1 == 0
+    }
+
+    #[inline]
+    fn xfer_in_place(&self, buf: &mut [u8]) {
+        // Clear anything in RXC
+        let _ = self.0.qspi.rxdata().read().data().bits();
+        self.clear_flags(QspiFlags::RXC | QspiFlags::ERR);
+        let mut bytes_read = 0;
+        let mut written_bytes = 0;
+        while bytes_read != buf.len() {
+            let flags = self.read_flags();
+            if flags.contains(QspiFlags::DRE) && written_bytes < buf.len() {
+                self.0
+                    .qspi
+                    .txdata()
+                    .write(|x| unsafe { x.data().bits(buf[written_bytes] as u16) });
+                written_bytes += 1;
+            }
+            if flags.contains(QspiFlags::RXC) {
+                buf[bytes_read] = self.0.qspi.rxdata().read().data().bits() as u8;
+                bytes_read += 1;
+            }
+        }
+    }
+}
+
+impl<'a> Drop for EraseHandle<'a> {
+    // Return QSPI into normal mode
+    fn drop(&mut self) {
+        // Return to QSPI mode
+        self.0.into_qspi_mode();
     }
 }
 
