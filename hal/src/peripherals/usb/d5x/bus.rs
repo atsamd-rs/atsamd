@@ -216,7 +216,7 @@ impl Bank<'_, InBank> {
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
         self.epintflag(self.index())
-            .write(|w| w.trcpt1().set_bit().trfail1().set_bit());
+            .write(|w| w.trcpt1().clear_bit_by_one().trfail1().clear_bit_by_one());
     }
 
     /// Indicates if a transfer is complete or pending.
@@ -268,10 +268,10 @@ impl Bank<'_, InBank> {
     fn set_stall(&mut self, stall: bool) {
         if stall {
             self.epstatusset(self.index())
-                .write(|w| w.stallrq1().set_bit())
+                .write(|w| w.stallrq1().set_bit());
         } else {
             self.epstatusclr(self.index())
-                .write(|w| w.stallrq1().set_bit())
+                .write(|w| w.stallrq1().set_bit());
         }
     }
 }
@@ -306,7 +306,7 @@ impl Bank<'_, OutBank> {
     fn clear_transfer_complete(&self) {
         // Clear bits in epintflag by writing them to 1
         self.epintflag(self.index())
-            .write(|w| w.trcpt0().set_bit().trfail0().set_bit());
+            .write(|w| w.trcpt0().clear_bit_by_one().trfail0().clear_bit_by_one());
     }
 
     /// Returns true if a Received Setup interrupt has occurred.
@@ -321,7 +321,8 @@ impl Bank<'_, OutBank> {
     #[inline]
     fn clear_received_setup_interrupt(&self) {
         // Clear bits in epintflag by writing them to 1
-        self.epintflag(self.index()).write(|w| w.rxstp().set_bit());
+        self.epintflag(self.index())
+            .write(|w| w.rxstp().clear_bit_by_one());
     }
 
     /// Writes out endpoint configuration to its in-memory descriptor.
@@ -371,10 +372,10 @@ impl Bank<'_, OutBank> {
     fn set_stall(&mut self, stall: bool) {
         if stall {
             self.epstatusset(self.index())
-                .write(|w| w.stallrq0().set_bit())
+                .write(|w| w.stallrq0().set_bit());
         } else {
             self.epstatusclr(self.index())
-                .write(|w| w.stallrq0().set_bit())
+                .write(|w| w.stallrq0().set_bit());
         }
     }
 }
@@ -569,7 +570,7 @@ impl Inner {
         if enable {
             self.usb().intenset().write(|w| w.sof().set_bit());
         } else {
-            self.usb().intenclr().write(|w| w.sof().set_bit());
+            self.usb().intenclr().write(|w| w.sof().clear_bit_by_one());
         }
     }
 
@@ -684,7 +685,7 @@ impl Inner {
 
     fn check_sof_interrupt(&self) -> bool {
         if self.usb().intflag().read().sof().bit() {
-            self.usb().intflag().write(|w| w.sof().set_bit());
+            self.usb().intflag().write(|w| w.sof().clear_bit_by_one());
             return true;
         }
         false
@@ -714,7 +715,7 @@ impl Inner {
         let intflags = self.usb().intflag().read();
         if intflags.eorst().bit() {
             // end of reset interrupt
-            self.usb().intflag().write(|w| w.eorst().set_bit());
+            self.usb().intflag().write(|w| w.eorst().clear_bit_by_one());
             return PollResult::Reset;
         }
         // As the suspend & wakup interrupts/states cannot distinguish between
@@ -854,12 +855,13 @@ impl UsbBus {
 
     /// Configures the Multi-Packet-Rx feature of the USB peripheral.
     ///
-    /// This allows for the USB Peripheral to ACK multiple incomming packets in hardware, and then
-    /// only fire an interrupt once the buffer is full. This will reduce the number of USB interrupts,
-    /// especially when dealing with BULK endpoints.
+    /// This allows for the USB Peripheral to ACK multiple incomming packets in
+    /// hardware, and then only fire an interrupt once the buffer is full.
+    /// This will reduce the number of USB interrupts, especially when
+    /// dealing with BULK endpoints.
     ///
-    /// The default behaviour of the endpoint is to trigger an interrupt as soon as any amount of
-    /// data is received (`size = 0`).
+    /// The default behaviour of the endpoint is to trigger an interrupt as soon
+    /// as any amount of data is received (`size = 0`).
     ///
     /// The Buffer size can be configured using the HAL's feature flags:
     ///
@@ -876,15 +878,15 @@ impl UsbBus {
     /// ## Requirements
     /// 1. `size` is less than the allocated buffer of the endpoint.
     /// 2. `size` is a multiple of the endpoints packet size.
-    /// 3.  The provided `ep` is an OUT endpoint.
+    /// 3. The provided `ep` is an OUT endpoint.
     ///
     /// ## Notes
-    /// * For IN endpoints, multi-packet transfer is automatically handled without
-    ///   any user input.
-    /// * If less than `size` bytes are received by the endpoint, then it will NOT
-    ///   fire an interrupt.
-    /// * ZLP packets still result in an interrupt being fired, regardless
-    ///   of the endpoints received data length
+    /// * For IN endpoints, multi-packet transfer is automatically handled
+    ///   without any user input.
+    /// * If less than `size` bytes are received by the endpoint, then it will
+    ///   NOT fire an interrupt.
+    /// * ZLP packets still result in an interrupt being fired, regardless of
+    ///   the endpoints received data length
     pub fn configure_out_endpoint_multipacket_rx(
         &self,
         ep: EndpointAddress,

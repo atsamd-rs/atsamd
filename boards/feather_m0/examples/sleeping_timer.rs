@@ -117,6 +117,6 @@ fn TC4() {
             .unwrap()
             .count16()
             .intflag()
-            .modify(|_, w| w.ovf().set_bit());
+            .modify(|_, w| w.ovf().clear_bit_by_one());
     }
 }
