@@ -46,8 +46,8 @@ mod app {
             &mut peripherals.nvmctrl,
         );
 
-        // Set the RTC clock to use a 2.048 kHz clock derived from the external 32 kHz
-        // oscillator.
+        // Set the RTC clock to use a 2.048 kHz clock derived from the external
+        // 32 kHz oscillator.
         let rtc_clock_src = clocks
             .configure_gclk_divider_and_source(ClockGenId::Gclk2, 16, ClockSource::Xosc32k, false)
             .unwrap();

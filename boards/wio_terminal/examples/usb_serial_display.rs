@@ -49,8 +49,8 @@ fn main() -> ! {
     let mut user_led = sets.user_led.into_push_pull_output();
     user_led.set_low().unwrap();
 
-    // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
-    // the screen.
+    // Initialize the ILI9341-based LCD display. Create a black backdrop the
+    // size of the screen.
     let (display, _backlight) = sets
         .display
         .init(

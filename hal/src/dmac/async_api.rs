@@ -19,10 +19,11 @@ impl crate::typelevel::Sealed for InterruptHandler {}
 #[hal_cfg(any("dmac-d11", "dmac-d21"))]
 impl Handler<DMAC> for InterruptHandler {
     unsafe fn on_interrupt() {
-        // SAFETY: Here we can't go through the `with_chid` method to safely access
-        // the different channel interrupt flags. Instead, we read the ID in a short
-        // critical section, and make sure to RESET the CHID field to whatever
-        // it was before this function ran.
+        // SAFETY: Here we can't go through the `with_chid` method to safely
+        // access the different channel interrupt flags. Instead, we
+        // read the ID in a short critical section, and make sure to
+        // RESET the CHID field to whatever it was before this function
+        // ran.
         let dmac = unsafe { crate::pac::Peripherals::steal().dmac };
 
         critical_section::with(|_| {
@@ -36,11 +37,11 @@ impl Handler<DMAC> for InterruptHandler {
                 let wake = if dmac.chintflag().read().tcmpl().bit_is_set() {
                     // Transfer complete. Don't clear the flag, but
                     // disable the interrupt. Flag will be cleared when polled
-                    dmac.chintenclr().modify(|_, w| w.tcmpl().set_bit());
+                    dmac.chintenclr().write(|w| w.tcmpl().clear_bit_by_one());
                     true
                 } else if dmac.chintflag().read().terr().bit_is_set() {
                     // Transfer error
-                    dmac.chintenclr().modify(|_, w| w.terr().set_bit());
+                    dmac.chintenclr().write(|w| w.terr().clear_bit_by_one());
                     true
                 } else {
                     false
@@ -90,13 +91,13 @@ impl Handler<DMAC> for InterruptHandler {
                 // disable the interrupt. Flag will be cleared when polled
                 dmac.channel(channel)
                     .chintenclr()
-                    .modify(|_, w| w.tcmpl().set_bit());
+                    .write(|w| w.tcmpl().clear_bit_by_one());
                 true
             } else if dmac.channel(channel).chintflag().read().terr().bit_is_set() {
                 // Transfer error
                 dmac.channel(channel)
                     .chintenclr()
-                    .modify(|_, w| w.terr().set_bit());
+                    .write(|w| w.terr().clear_bit_by_one());
                 true
             } else {
                 false

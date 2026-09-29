@@ -576,7 +576,7 @@ impl<I: PinId, M: PinMode> $TYPE<I, M> {
         mclk.$apmask().modify(|_, w| w.$apbits().set_bit());
         tcc.ctrla().write(|w| w.swrst().set_bit());
         while tcc.syncbusy().read().swrst().bit_is_set() {}
-        tcc.ctrlbclr().write(|w| w.dir().set_bit() );
+        tcc.ctrlbclr().write(|w| w.dir().clear_bit_by_one() );
         while tcc.syncbusy().read().ctrlb().bit_is_set() {}
         tcc.ctrla().modify(|_, w| w.enable().clear_bit());
         while tcc.syncbusy().read().enable().bit_is_set() {}
@@ -688,9 +688,9 @@ impl<I: PinId, M: PinMode> $crate::ehal_02::Pwm for $TYPE<I, M> {
 pwm_tcc! { Tcc0Pwm: (Tcc0, TCC0Pinout, Tcc0Tcc1Clock, apbbmask, tcc0_, TccPwm0Wrapper) }
 #[hal_cfg("tcc1")]
 pwm_tcc! { Tcc1Pwm: (Tcc1, TCC1Pinout, Tcc0Tcc1Clock, apbbmask, tcc1_, TccPwm1Wrapper) }
-#[hal_cfg("tcc2")]
+#[hal_cfg(all("tcc2", "tcc3"))]
 pwm_tcc! { Tcc2Pwm: (Tcc2, TCC2Pinout, Tcc2Tcc3Clock, apbcmask, tcc2_, TccPwm2Wrapper) }
-#[hal_cfg("tcc3")]
+#[hal_cfg(all("tcc2", "tcc3"))]
 pwm_tcc! { Tcc3Pwm: (Tcc3, TCC3Pinout, Tcc2Tcc3Clock, apbcmask, tcc3_, TccPwm3Wrapper) }
 #[hal_cfg("tcc4")]
 pwm_tcc! { Tcc4Pwm: (Tcc4, TCC4Pinout, Tcc4Clock,     apbdmask, tcc4_, TccPwm4Wrapper) }

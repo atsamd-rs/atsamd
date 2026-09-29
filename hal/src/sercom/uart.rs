@@ -1127,8 +1127,8 @@ impl<C: ValidConfig, R, T> AsMut<Uart<C, Duplex, R, T>>
     #[inline]
     fn as_mut(&mut self) -> &mut Uart<C, Duplex, R, T> {
         // SAFETY: Pointer casting &mut Uart<C, RxDuplex> into &mut
-        // Uart<C, Duplex> should be safe as long as RxDuplex, TxDuplex, R and T are all
-        // zero-sized types
+        // Uart<C, Duplex> should be safe as long as RxDuplex, TxDuplex, R and T
+        // are all zero-sized types
         unsafe { &mut *(self.0 as *mut _ as *mut Uart<C, Duplex, R, T>) }
     }
 }

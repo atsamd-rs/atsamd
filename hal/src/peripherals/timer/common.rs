@@ -45,7 +45,7 @@ where
         let count = self.tc.count_16();
         if count.intflag().read().ovf().bit_is_set() {
             // Writing a 1 clears the flag
-            count.intflag().modify(|_, w| w.ovf().set_bit());
+            count.intflag().write(|w| w.ovf().clear_bit_by_one());
             Ok(())
         } else {
             Err(nb::Error::WouldBlock)
@@ -57,7 +57,10 @@ where
     /// triggering the interrupt; it does not configure the interrupt
     /// controller.
     fn disable_interrupt(&mut self) {
-        self.tc.count_16().intenclr().write(|w| w.ovf().set_bit());
+        self.tc
+            .count_16()
+            .intenclr()
+            .write(|w| w.ovf().clear_bit_by_one());
     }
 }
 

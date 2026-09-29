@@ -1,0 +1,7 @@
+_svd: "../ATSAMD51P19A.svd"
+
+_include:
+  - "include/atsamx5x.yml"
+
+_modify:
+  version: "3.9.276"

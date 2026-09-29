@@ -52,7 +52,8 @@ fn main() -> ! {
 
     // Startup delay. Can't find documented but Adafruit use 5ms
     delay.delay_ms(5u8);
-    // Reset. It is recommended to check the BUSY(WIP?) bit and the SUS before reset
+    // Reset. It is recommended to check the BUSY(WIP?) bit and the SUS before
+    // reset
     wait_ready(&mut flash);
     flash.run_command(Command::EnableReset).unwrap();
     flash.run_command(Command::Reset).unwrap();

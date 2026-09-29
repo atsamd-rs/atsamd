@@ -143,8 +143,8 @@ where
 {
     #[inline]
     fn read_word_by_word(&mut self, words: &mut [Word<C>]) -> Result<(), Error> {
-        // Due to the nature of how SPI works, we must send a word in order to clock a
-        // receive
+        // Due to the nature of how SPI works, we must send a word in order to
+        // clock a receive
         for word in words.iter_mut() {
             *word = self.transfer_word_in_place(self.config.nop_word.as_())?;
         }
@@ -165,6 +165,8 @@ where
 
         // Reenable receiver only if necessary
         if D::RX_ENABLE {
+            // must wait for write to complete first to avoid spurious receives
+            self.flush_tx();
             self.config.as_mut().regs.rx_enable();
         }
         Ok(())

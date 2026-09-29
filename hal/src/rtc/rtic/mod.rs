@@ -153,8 +153,8 @@ pub mod v1 {
         type Instant = Instant;
         type Duration = Duration;
         unsafe fn reset(&mut self) {
-            // Since reset is only called once, we use it to enable the interrupt generation
-            // bit.
+            // Since reset is only called once, we use it to enable the
+            // interrupt generation bit.
             RtcMode0::enable_interrupt::<Compare0>(&self.rtc);
         }
 
@@ -223,20 +223,26 @@ pub mod rtc_clock {
 trait RtcModeMonotonic: RtcMode {
     /// The COUNT value representing a half period.
     const HALF_PERIOD: Self::Count;
-    /// The minimum number of ticks that compares need to be ahead of the COUNT
-    /// in order to trigger.
-    const MIN_COMPARE_TICKS: Self::Count;
+    /// Slack covering the COUNT register synchronization horizon.
+    ///
+    /// A read of COUNT returns the last synchronized value, which can lag the
+    /// counter by up to two synchronization periods of 5-6 CLK_RTC cycles
+    /// each (DS60001507M 13.3.3/13.3.7), i.e. ~12 ticks at DIV1. This bounds
+    /// both how far a compare that actually fired can be ahead of a read
+    /// (the interrupt handler's catch-up wait) and the minimum margin a
+    /// compare must be armed ahead of the COUNT in order to reliably trigger.
+    const SYNC_SLACK_TICKS: Self::Count;
 }
 
 #[hal_cfg("rtc-d5x")]
 impl RtcModeMonotonic for RtcMode0 {
     const HALF_PERIOD: Self::Count = 0x8000_0000;
-    const MIN_COMPARE_TICKS: Self::Count = 8;
+    const SYNC_SLACK_TICKS: Self::Count = 12;
 }
 #[hal_cfg(any("rtc-d11", "rtc-d21"))]
 impl RtcModeMonotonic for RtcMode1 {
     const HALF_PERIOD: Self::Count = 0x8000;
-    const MIN_COMPARE_TICKS: Self::Count = 8;
+    const SYNC_SLACK_TICKS: Self::Count = 12;
 }
 
 mod backend {
@@ -340,8 +346,8 @@ unsafe fn set_monotonic_prio(interrupt: impl cortex_m::interrupt::InterruptNumbe
         let max_prio = RTIC_ASYNC_MAX_LOGICAL_PRIO.clamp(1, 1 << NVIC_PRIO_BITS);
         let hw_prio = Priority::from_numeric(max_prio).unwrap().logical2hw();
 
-        // We take ownership of the entire IRQ and all settings to it, we only change
-        // settings for the IRQ we control.
+        // We take ownership of the entire IRQ and all settings to it, we only
+        // change settings for the IRQ we control.
         // This will also compile-error in case the NVIC changes in size.
         let mut nvic: cortex_m::peripheral::NVIC = core::mem::transmute(());
 

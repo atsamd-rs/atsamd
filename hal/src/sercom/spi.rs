@@ -440,7 +440,7 @@ use reg::Registers;
 //=============================================================================
 
 #[hal_cfg(any("sercom0-d11", "sercom0-d21"))]
-use crate::pac::sercom0::spi::ctrla::Modeselect;
+use crate::pac::sercom0::spim::ctrla::Modeselect;
 #[hal_cfg("sercom0-d5x")]
 use crate::pac::sercom0::spim::ctrla::Modeselect;
 
@@ -601,6 +601,14 @@ pub enum Error {
     #[cfg(feature = "dma")]
     Dma(crate::dmac::Error),
 }
+
+impl core::fmt::Display for Error {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "SPI Error: {:?}", self)
+    }
+}
+
+impl core::error::Error for Error {}
 
 //=============================================================================
 // Operating mode
@@ -1488,8 +1496,8 @@ where
     fn check_and_clear_error(&mut self, flags: Flags) -> Result<(), Error> {
         if flags.contains(Flags::ERROR) {
             let errors = self.read_status();
-            // Clear all status flags at once; BUFOVF has priority, and will mask LENERR if
-            // both show up at the same time.
+            // Clear all status flags at once; BUFOVF has priority, and will
+            // mask LENERR if both show up at the same time.
             self.clear_status(errors);
             self.clear_flags(Flags::ERROR);
             return errors.check_bus_error();

@@ -16,38 +16,53 @@ use bsp::entry;
 use bsp::Pins;
 use pac::{CorePeripherals, Peripherals};
 
-use hal::{
-    adc::{Accumulation, Adc, Prescaler, Resolution},
-    clock::GenericClockController,
+use hal::adc::{Accumulation, Prescaler};
+use hal::clock::v2::{
+    self as clock,
+    dfll::Dfll,
+    gclk::{Gclk, GclkDiv8},
+    pclk::Pclk,
 };
 
 #[entry]
 fn main() -> ! {
-    let mut peripherals = Peripherals::take().unwrap();
+    let mut device = Peripherals::take().unwrap();
     let _core = CorePeripherals::take().unwrap();
 
-    let pins = Pins::new(peripherals.port);
+    let pins = Pins::new(device.port);
 
-    let mut clocks = GenericClockController::with_external_32kosc(
-        peripherals.gclk,
-        &mut peripherals.pm,
-        &mut peripherals.sysctrl,
-        &mut peripherals.nvmctrl,
-    );
-    let gclk0 = clocks.gclk0();
-    let adc_clock = clocks.adc(&gclk0).unwrap();
+    // --- Clocks setup ---
+    let (_buses, clocks, tokens) =
+        clock::clock_system_at_reset(device.gclk, device.pm, device.sysctrl);
+
+    // We will use the internal 8 MHz oscillator on GCLK3 to clock the CPU
+    //
+    // Clock GCLK3 down from 1Mhz to 10000Hz (Div 100), this gives us a
+    // clean factor of 48Mhz for DFLL to use
+    let (gclk3, osc) = Gclk::from_source(tokens.gclks.gclk3, clocks.osc);
+    let gclk3_10k = gclk3.div(GclkDiv8::Div(100)).enable();
+
+    let (pclk_dfll, _gclk3_10k) = Pclk::enable(tokens.pclks.dfll, gclk3_10k);
+    // Start the DFLL at 48Mhz
+    let dfll_48m = Dfll::from_pclk(tokens.dfll, pclk_dfll).enable();
+    // Swap CPU clock source
+    let (gclk0_48, _osc, _dfll_48m) = clocks.gclk0.swap_sources(osc, dfll_48m, &mut device.nvmctrl, 3);
+
+    // --- ADC Configuration ---
+    let (adc_pclk, _gclk0_48) = Pclk::enable(tokens.pclks.adc, gclk0_48);
+    let adc_apb = clocks.apbs.adc0;
 
     let mut adc = AdcBuilder::new(Accumulation::single(atsamd_hal::adc::AdcResolution::_12))
         .with_clock_cycles_per_sample(5)
         .with_clock_divider(Prescaler::Div128)
         .with_vref(atsamd_hal::adc::Reference::Intvcc0)
-        .enable(peripherals.adc, &mut peripherals.pm, &adc_clock)
+        .enable(device.adc, adc_apb, adc_pclk)
         .unwrap();
     let mut adc_pin = pins.a0.into_alternate();
 
     loop {
-        let res = adc.read(&mut adc_pin);
+        let _res = adc.read(&mut adc_pin);
         #[cfg(feature = "use_semihosting")]
-        cortex_m_semihosting::hprintln!("ADC value: {}", read).unwrap();
+        cortex_m_semihosting::hprintln!("ADC value: {}", _res).unwrap();
     }
 }

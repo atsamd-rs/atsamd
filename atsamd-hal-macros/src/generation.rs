@@ -101,3 +101,24 @@ pub fn add_cfgs_to_input(cfgs: Group, input: TokenStream) -> TokenStream {
     .chain(input)
     .collect::<TokenStream>()
 }
+
+pub fn gen_cfg_attrs<'a>(devices: impl IntoIterator<Item = &'a str>, attrs: TokenStream) -> Group {
+    let mut inner: Vec<TokenTree> = cfg_args(devices);
+    inner.push(TokenTree::Punct(Punct::new(',', Spacing::Alone)));
+    inner.extend(attrs);
+
+    let cfg_attr_args = TokenTree::Group(Group::new(
+        Delimiter::Parenthesis,
+        inner.into_iter().collect(),
+    ));
+
+    Group::new(
+        Delimiter::Bracket,
+        [
+            TokenTree::Ident(Ident::new("cfg_attr", Span::call_site())),
+            cfg_attr_args,
+        ]
+        .into_iter()
+        .collect(),
+    )
+}

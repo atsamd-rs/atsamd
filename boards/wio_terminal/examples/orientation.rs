@@ -39,16 +39,16 @@ fn main() -> ! {
     let sets = wio::Pins::new(peripherals.port).split();
 
     // Initialize the LIS3DH accelerometer, and create the orientation tracker.
-    // The calibration value for Tracker was obtained experimentally, as directed in
-    // the documentation.
+    // The calibration value for Tracker was obtained experimentally, as
+    // directed in the documentation.
     let mut lis3dh =
         sets.accelerometer
             .init(&mut clocks, peripherals.sercom4, &mut peripherals.mclk);
     let mut tracker = Tracker::new(3700.0);
 
-    // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
-    // the screen, load an image of Ferris from a RAW file, and draw it to the
-    // screen.
+    // Initialize the ILI9341-based LCD display. Create a black backdrop the
+    // size of the screen, load an image of Ferris from a RAW file, and draw
+    // it to the screen.
     // By default, the display is in the LandscapeFlipped orientation.
     let (mut display, _backlight) = sets
         .display
@@ -61,9 +61,9 @@ fn main() -> ! {
         )
         .unwrap();
 
-    // The display's resolution is 320x240. I'm too lazy to deal with orientation
-    // for something as trivial as a backdrop, so it's larger than the display in
-    // one dimension.
+    // The display's resolution is 320x240. I'm too lazy to deal with
+    // orientation for something as trivial as a backdrop, so it's larger
+    // than the display in one dimension.
     let style = PrimitiveStyleBuilder::new()
         .fill_color(Rgb565::BLACK)
         .build();
@@ -71,16 +71,17 @@ fn main() -> ! {
         Rectangle::with_corners(Point::new(0, 0), Point::new(320, 320)).into_styled(style);
     backdrop.draw(&mut display).unwrap();
 
-    // Load the RAW image file into a renderable format. Determine the coordinate to
-    // center the image on the display, and draw the image there.
+    // Load the RAW image file into a renderable format. Determine the
+    // coordinate to center the image on the display, and draw the image
+    // there.
     let image_data: ImageRawLE<Rgb565> =
         ImageRaw::new(include_bytes!("../assets/ferris.raw"), IMG_WIDTH);
     let position = center_image(display.width(), display.height());
     let image = Image::new(&image_data, position);
     image.draw(&mut display).unwrap();
 
-    // Determine a baseline orientation. This doesn't really matter initially, but
-    // will be updated periodically.
+    // Determine a baseline orientation. This doesn't really matter initially,
+    // but will be updated periodically.
     let acceleration = lis3dh.accel_raw().unwrap();
     let mut prev_orientation = tracker.update(acceleration);
 
@@ -94,9 +95,9 @@ fn main() -> ! {
             continue;
         }
 
-        // Attempt to convert the accelerometer orientation to a display orientation. If
-        // successful, set the display to the correct orientation and re-center the
-        // image.
+        // Attempt to convert the accelerometer orientation to a display
+        // orientation. If successful, set the display to the correct
+        // orientation and re-center the image.
         if let Some(mode) = try_convert_orientation(orientation) {
             display.set_orientation(mode).unwrap();
             prev_orientation = orientation;

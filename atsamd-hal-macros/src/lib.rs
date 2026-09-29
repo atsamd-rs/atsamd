@@ -32,7 +32,7 @@ mod generation;
 mod parsing;
 
 use error::Error;
-use generation::{add_cfgs_to_input, cfg_args, gen_cfgs, hal_expr_to_devices};
+use generation::{add_cfgs_to_input, cfg_args, gen_cfg_attrs, gen_cfgs, hal_expr_to_devices};
 use parsing::{eat_attribute, eat_eof, eat_group, eat_hal_expr, eat_operator, eat_string_literal};
 
 /// Attribute macro which expands to a suitable `#[cfg(...)]` expression.
@@ -59,6 +59,34 @@ fn hal_cfg_impl(args: TokenStream) -> Result<Group, Error> {
     eat_eof(&mut args)?;
     let cfgs = gen_cfgs(&expr)?;
     Ok(cfgs)
+}
+
+/// Attribute macro which expands to a suitable `#[cfg_attr(...)]` expression.
+///
+/// It can be used like `#[hal_cfg_attr([peripheral expression], attr1, attr2, ...)]`.
+///
+/// The macro will look up all devices that fulfill the expression and expand
+/// into a `cfg_attr` of the form `#[cfg_attr(any(feature = "device1",
+/// feature = "device2", ...), attr1, attr2, ...)]`.
+#[proc_macro_attribute]
+pub fn hal_cfg_attr(args: TokenStream, input: TokenStream) -> TokenStream {
+    hal_cfg_attr_impl(args).map_or_else(
+        |e| e.to_compile_error("hal_cfg_attr"),
+        |cfg_attr| add_cfgs_to_input(cfg_attr, input),
+    )
+}
+
+fn hal_cfg_attr_impl(args: TokenStream) -> Result<Group, Error> {
+    let mut args = args.into_iter().peekable();
+
+    let expr = eat_hal_expr(&mut args)?;
+    // There must be at least one attribute.
+    eat_operator(",", &mut args)?;
+
+    let attrs: TokenStream = args.collect();
+
+    let devices = hal_expr_to_devices(&expr)?;
+    Ok(gen_cfg_attrs(devices, attrs))
 }
 
 /// Macro which expands to a `mod foo;` item with different paths for each

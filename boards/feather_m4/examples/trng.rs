@@ -35,7 +35,8 @@ fn main() -> ! {
     let mut red_led = pins.d13.into_push_pull_output();
     let mut delay = hal::delay::Delay::new(core.SYST, &mut clocks);
 
-    // Create a struct as a representation of the random number generator peripheral
+    // Create a struct as a representation of the random number generator
+    // peripheral
     let trng = Trng::new(&mut peripherals.mclk, peripherals.trng);
 
     // Simple loop that blinks the red led with random on and off times that are

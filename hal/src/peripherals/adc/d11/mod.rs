@@ -22,17 +22,14 @@ impl PrimaryAdc for Adc0 {}
 impl AdcInstance for Adc0 {
     type Instance = pac::Adc;
 
+    type ClockId = crate::clock::v2::pclk::ids::Adc0;
+
     #[cfg(feature = "async")]
     type Interrupt = crate::async_hal::interrupts::ADC;
 
     #[inline]
     fn peripheral_reg_block(p: &mut Peripherals) -> &pac::adc::RegisterBlock {
         &p.adc
-    }
-
-    #[inline]
-    fn enable_pm(pm: &mut pac::Pm) {
-        pm.apbcmask().modify(|_, w| w.adc_().set_bit());
     }
 
     #[inline]
@@ -83,7 +80,7 @@ impl<I: AdcInstance> Adc<I> {
         self.sync();
         let (sample_cnt, adjres) = match cfg.accumulation {
             // 1 sample to be used as is
-            Accumulation::Single(_) => (SampleCount::_1, 0),
+            Accumulation::Single(_) => (SampleCount::Samplenum1, 0),
             // A total of `adc_sample_count` elements will be averaged by the ADC
             // before it returns the result
             // Table 45-3 SAMx5x datasheet
