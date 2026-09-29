@@ -663,7 +663,20 @@ pub enum Gain {
     Four,
 }
 
-#[hal_cfg(any("clock-d11", "clock-d21"))]
+#[hal_cfg("clock-d11")]
+impl From<Gain> for Gainselect {
+    fn from(gain: Gain) -> Self {
+        match gain {
+            Gain::Zero => Gainselect::Gain0,
+            Gain::One => Gainselect::Gain1,
+            Gain::Two => Gainselect::Gain2,
+            Gain::Three => Gainselect::Gain3,
+            Gain::Four => Gainselect::Gain4,
+        }
+    }
+}
+
+#[hal_cfg("clock-d21")]
 impl From<Gain> for Gainselect {
     fn from(gain: Gain) -> Self {
         match gain {

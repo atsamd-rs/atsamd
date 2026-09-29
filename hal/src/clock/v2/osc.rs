@@ -4,6 +4,7 @@ use crate::pac::sysctrl::osc8m::{Frangeselect, Prescselect};
 use crate::pac::sysctrl::Osc8m;
 use crate::pac::Sysctrl;
 
+use atsamd_hal_macros::hal_cfg;
 use fugit::RateExtU32;
 use crate::time::Hertz;
 use crate::typelevel::Sealed;
@@ -39,7 +40,7 @@ impl OscToken {
     }
 
     fn disable(&mut self) {
-        self.osc8m().modify(|_, w| w.enable().clear_bit())
+        self.osc8m().modify(|_, w| w.enable().clear_bit());
     }
 }
 
@@ -61,6 +62,7 @@ pub enum FreqRange {
     ElevenToFifteen,
 }
 
+#[hal_cfg(any("clock-d21", "clock-d5x"))]
 impl From<FreqRange> for Frangeselect {
     fn from(freq_range: FreqRange) -> Self {
         match freq_range {
@@ -68,6 +70,18 @@ impl From<FreqRange> for Frangeselect {
             FreqRange::SixToEight => Self::_1,
             FreqRange::EightToEleven => Self::_2,
             FreqRange::ElevenToFifteen => Self::_3,
+        }
+    }
+}
+
+#[hal_cfg("clock-d11")]
+impl From<FreqRange> for Frangeselect {
+    fn from(freq_range: FreqRange) -> Self {
+        match freq_range {
+            FreqRange::FourToSix => Self::Frange0,
+            FreqRange::SixToEight => Self::Frange1,
+            FreqRange::EightToEleven => Self::Frange2,
+            FreqRange::ElevenToFifteen => Self::Frange3,
         }
     }
 }
@@ -83,10 +97,10 @@ pub enum Prescaler {
 impl From<Prescaler> for Prescselect {
     fn from(prescaler: Prescaler) -> Self {
         match prescaler {
-            Prescaler::One => Self::_0,
-            Prescaler::Two => Self::_1,
-            Prescaler::Four => Self::_2,
-            Prescaler::Eight => Self::_3,
+            Prescaler::One => Self::Presc0,
+            Prescaler::Two => Self::Presc1,
+            Prescaler::Four => Self::Presc2,
+            Prescaler::Eight => Self::Presc3,
         }
     }
 }

@@ -148,7 +148,7 @@ impl<P: PclkId> PclkToken<P> {
     #[hal_macro_helper]
     fn enable(&mut self, source: DynPclkSourceId) {
         self.ctrl().write(|w| {
-            w.r#gen().variant(source.into());
+            w.gen_().variant(source.into());
             #[hal_cfg(any("clock-d11", "clock-d21"))]
             {
                 w.clken().set_bit();
