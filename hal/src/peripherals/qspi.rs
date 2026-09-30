@@ -281,6 +281,9 @@ impl Qspi<OneShot> {
     /// Quad Fast Read a sequential block of memory to buf
     /// Note: Hardcodes 8 dummy cycles
     pub fn read_memory(&mut self, addr: u32, buf: &mut [u8]) {
+        if buf.is_empty() {
+            return;
+        }
         let tfm = TransferMode {
             quad_width: true,
             address_enable: true,
@@ -297,6 +300,9 @@ impl Qspi<OneShot> {
     /// Note more than page size bytes are sent to the device, some bytes will
     /// be discarded. Check your device for specific handling.
     pub fn write_memory(&mut self, addr: u32, buf: &[u8]) {
+        if buf.is_empty() {
+            return;
+        }
         let tfm = TransferMode {
             quad_width: true,
             address_enable: true,
