@@ -12,5 +12,9 @@ fn main() {
         println!("cargo:rustc-link-search={}", out.display());
         println!("cargo:rerun-if-changed=memory.x");
     }
+    if env::var_os("CARGO_FEATURE_DEFMT").is_some() {
+        println!("cargo:rustc-link-arg=-Tdefmt.x");
+    }
+
     println!("cargo:rerun-if-changed=build.rs");
 }
