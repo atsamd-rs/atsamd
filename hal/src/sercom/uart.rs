@@ -523,14 +523,9 @@
 //! [`IsPad`]: crate::sercom::pad::IsPad
 //! [`OptionalPad`]: crate::sercom::pad::OptionalPad
 
-use atsamd_hal_macros::{hal_cfg, hal_module};
+use atsamd_hal_macros::hal_cfg;
 
-#[hal_module(
-    any("sercom0-d11", "sercom0-d21") => "uart/pads_thumbv6m.rs",
-    "sercom0-d5x" => "uart/pads_thumbv7em.rs",
-)]
-mod pads {}
-
+mod pads;
 pub use pads::*;
 
 mod reg;
@@ -899,7 +894,7 @@ where
 impl<C, D, R, T> Uart<C, D, R, T>
 where
     C: ValidConfig,
-    <C::Pads as PadSet>::Cts: SomePad,
+    <C::Pads as ValidPads>::CTS: SomePad,
     D: Transmit,
 {
     /// Clear the `CTSIC` interrupt flag

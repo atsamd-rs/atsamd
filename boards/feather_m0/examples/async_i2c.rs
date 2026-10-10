@@ -5,7 +5,7 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 use bsp::hal;
-use bsp::pac;
+use bsp::{pac, Scl, Sda};
 use feather_m0 as bsp;
 use hal::ehal_async::i2c::I2c;
 use hal::{
@@ -37,7 +37,7 @@ async fn main(_s: embassy_executor::Spawner) {
     let pins = bsp::Pins::new(peripherals.port);
 
     // Take SDA and SCL
-    let (sda, scl) = (pins.sda, pins.scl);
+    let (sda, scl): (Sda, Scl) = (pins.sda.into(), pins.scl.into());
     let i2c_sercom = bsp::periph_alias!(peripherals.i2c_sercom);
 
     // Initialize DMA Controller

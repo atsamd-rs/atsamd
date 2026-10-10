@@ -1,6 +1,6 @@
 //! I2C [`Config`] definition and implementation
 
-use super::{I2c, InactiveTimeout, PadSet, Registers};
+use super::{I2c, InactiveTimeout, Registers, ValidPads};
 use crate::{
     pac::sercom0::i2cm::ctrla::Modeselect,
     sercom::{ApbClkCtrl, Sercom},
@@ -28,14 +28,14 @@ use crate::{
 /// [`Pads`]: super::Pads
 pub struct Config<P>
 where
-    P: PadSet,
+    P: ValidPads,
 {
     pub(in super::super) registers: Registers<P::Sercom>,
     pads: P,
     freq: Hertz,
 }
 
-impl<P: PadSet> Config<P> {
+impl<P: ValidPads> Config<P> {
     /// Create a new [`Config`] in the default configuration.
     #[inline]
     fn default(sercom: P::Sercom, pads: P, freq: impl Into<Hertz>) -> Self {
@@ -72,7 +72,7 @@ impl<P: PadSet> Config<P> {
     }
 }
 
-impl<P: PadSet> Config<P> {
+impl<P: ValidPads> Config<P> {
     /// Obtain a reference to the PAC `SERCOM` struct
     ///
     /// # Safety
@@ -255,7 +255,7 @@ impl<P: PadSet> Config<P> {
 /// [type class]: crate::typelevel#type-classes
 pub trait AnyConfig: Is<Type = SpecificConfig<Self>> {
     type Sercom: Sercom;
-    type Pads: PadSet<Sercom = Self::Sercom>;
+    type Pads: ValidPads<Sercom = Self::Sercom>;
 }
 
 /// Type alias to recover the specific [`Config`] type from an implementation of
@@ -266,21 +266,21 @@ pub type SpecificConfig<C> = Config<<C as AnyConfig>::Pads>;
 /// [`AnyConfig`]
 pub type ConfigSercom<C> = <C as AnyConfig>::Sercom;
 
-impl<P: PadSet> Sealed for Config<P> {}
+impl<P: ValidPads> Sealed for Config<P> {}
 
-impl<P: PadSet> AnyConfig for Config<P> {
+impl<P: ValidPads> AnyConfig for Config<P> {
     type Sercom = P::Sercom;
     type Pads = P;
 }
 
-impl<P: PadSet> AsRef<Self> for Config<P> {
+impl<P: ValidPads> AsRef<Self> for Config<P> {
     #[inline]
     fn as_ref(&self) -> &Self {
         self
     }
 }
 
-impl<P: PadSet> AsMut<Self> for Config<P> {
+impl<P: ValidPads> AsMut<Self> for Config<P> {
     #[inline]
     fn as_mut(&mut self) -> &mut Self {
         self
