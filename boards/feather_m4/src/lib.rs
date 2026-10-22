@@ -272,5 +272,6 @@ pub fn usb_allocator(
     let usb_gclk = clocks.get_gclk(Genselect::Gclk2).unwrap();
     let usb_clock = &clocks.usb(&usb_gclk).unwrap();
     let (dm, dp) = (dm.into(), dp.into());
-    UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb))
+    /// Safety - V1 clocking API forces a 48Mhz USB clock
+    UsbBusAllocator::new(UsbBus::new(usb_clock, mclk, dm, dp, usb).unwrap())
 }
