@@ -90,4 +90,55 @@ Display Ferris centered on the screen. Maintain the correct orientation of the i
 Makes the Wio Terminal appear as a USB serial port. The screen can be written to by sending messages down the serial port.
 
 ### [`snake`](snake.rs)
-Generic snake game where you use the 5-way-switch to control the snake. 
+Generic snake game where you use the 5-way-switch to control the snake.
+
+### [`wifi_connect`](wifi_connect.rs)
+
+Connects to an access point and shows the IP address, netmask and gateway on the LCD. The network name and password are taken from the `WIFI_SSID` and `WIFI_PASS` environment variables at build time:
+
+```
+WIFI_SSID=mynetwork WIFI_PASS=secret cargo run --release --example wifi_connect
+```
+
+Add `--features wifi-dma` to use the DMA transport.
+
+### [`wifi_scan`](wifi_scan.rs)
+
+Scans for access points repeatedly and lists them on the LCD, with a scan counter and an error counter: a failed RPC is counted and the scan retried. Add `--features wifi-dma` to use the DMA transport.
+
+### [`wifi_bench`](wifi_bench.rs)
+
+Benchmark the wifi UART transport: RPC round trip times, transport interrupt load, and tolerance to other interrupt handlers stalling the CPU. Results are shown on the LCD. Requires the `wifi-stats` feature.
+
+#### interrupt backend
+
+RTL8720 firmware 2.1.3, 614400 baud.
+
+| Test | Count | Errors | us min / avg / max | ISRs per RPC | ISR CPU |
+|------|-------|--------|--------------------|--------------|---------|
+| Get Version | 200 | 0 | 994 / 1000 / 1034 | 35 | 4.2% |
+| ScanGetAP | 20 | 0 | 19888 / 20008 / 20040 | 1028 | 7.1% |
+
+1 kHz stall test (us stalled per ms):
+
+| Stall (us) | 0 | 10 | 20 | 30 | 50 | 100 | 200 | 400 |
+|------------|---|----|----|----|----|-----|-----|-----|
+| Errors (of 60 RPCs) | 0 | 0 | 0 | 0 | 10 | 60 | 60 | 60 |
+
+Before receive errors were returned as RPC errors, the interrupt transport
+panicked at the 50 us step.
+
+#### DMA backend (`--features wifi-stats,wifi-dma`)
+
+| Test | Count | Errors | us min / avg / max | ISRs per RPC | ISR CPU |
+|------|-------|--------|--------------------|--------------|---------|
+| Get Version | 200 | 0 | 805 / 1000 / 1010 | 0 | 0.0% |
+| ScanGetAP | 20 | 0 | 20004 / 20033 / 20057 | 0 | 0.0% |
+
+| Stall (us) | 0 | 10 | 20 | 30 | 50 | 100 | 200 | 400 |
+|------------|---|----|----|----|----|-----|-----|-----|
+| Result | ok | ok | ok | ok | ok | ok | ok | ok |
+
+All steps ran without errors.
+
+Note: ending a debug-probe session clears `DEMCR.TRCENA` and stops the cycle counter. The bench re-enables it before each run and inside the stall loop, so its numbers stay valid when flashed with `probe-rs`.

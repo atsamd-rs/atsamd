@@ -58,8 +58,17 @@ fn main() -> ! {
     user_led.set_low().unwrap();
 
     // Initialize the wifi peripheral.
+    #[cfg(feature = "wifi-dma")]
+    let mut dmac = wio::hal::dmac::DmaController::init(peripherals.dmac, &mut peripherals.pm);
+    #[cfg(feature = "wifi-dma")]
+    let channels = dmac.split();
+    #[cfg(feature = "wifi-dma")]
+    let rx_channel = channels.0.init(wio::hal::dmac::PriorityLevel::Lvl3);
+    #[cfg(feature = "wifi-dma")]
+    let tx_channel = channels.1.init(wio::hal::dmac::PriorityLevel::Lvl0);
     let nvic = &mut core.NVIC;
     disable_interrupts(|cs| unsafe {
+        #[cfg(not(feature = "wifi-dma"))]
         wifi_init(
             cs,
             sets.wifi,
@@ -67,6 +76,17 @@ fn main() -> ! {
             &mut clocks,
             &mut peripherals.mclk,
             &mut delay,
+        );
+        #[cfg(feature = "wifi-dma")]
+        wifi_init(
+            cs,
+            sets.wifi,
+            peripherals.sercom0,
+            &mut clocks,
+            &mut peripherals.mclk,
+            &mut delay,
+            rx_channel,
+            tx_channel,
         );
         if let Some(wifi) = WIFI.as_mut() {
             wifi.enable(cs, nvic);
@@ -100,8 +120,8 @@ fn main() -> ! {
             .map(|wifi| {
                 wifi.connect_to_ap(
                     &mut delay,
-                    "NETWORK_NAME",
-                    "PASSWORD_HERE",
+                    option_env!("WIFI_SSID").unwrap_or("NETWORK_NAME"),
+                    option_env!("WIFI_PASS").unwrap_or("PASSWORD_HERE"),
                     Security::WPA2_SECURITY | Security::AES_ENABLED,
                 )
                 .unwrap()

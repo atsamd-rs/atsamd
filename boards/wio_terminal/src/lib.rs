@@ -44,6 +44,8 @@ pub use storage::*;
 
 #[cfg(feature = "wifi")]
 mod wifi;
+#[cfg(feature = "wifi-stats")]
+pub use wifi::stats as wifi_stats;
 #[cfg(feature = "wifi")]
 pub use wifi::{rpcs as wifi_rpcs, wifi_prelude, Wifi, WifiPins};
 #[cfg(feature = "wifi")]

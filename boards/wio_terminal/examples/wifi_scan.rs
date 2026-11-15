@@ -57,8 +57,17 @@ fn main() -> ! {
     user_led.set_high().unwrap();
 
     // Initialize the wifi peripheral.
+    #[cfg(feature = "wifi-dma")]
+    let mut dmac = wio::hal::dmac::DmaController::init(peripherals.dmac, &mut peripherals.pm);
+    #[cfg(feature = "wifi-dma")]
+    let channels = dmac.split();
+    #[cfg(feature = "wifi-dma")]
+    let rx_channel = channels.0.init(wio::hal::dmac::PriorityLevel::Lvl3);
+    #[cfg(feature = "wifi-dma")]
+    let tx_channel = channels.1.init(wio::hal::dmac::PriorityLevel::Lvl0);
     let nvic = &mut core.NVIC;
     disable_interrupts(|cs| unsafe {
+        #[cfg(not(feature = "wifi-dma"))]
         wifi_init(
             cs,
             sets.wifi,
@@ -66,6 +75,17 @@ fn main() -> ! {
             &mut clocks,
             &mut peripherals.mclk,
             &mut delay,
+        );
+        #[cfg(feature = "wifi-dma")]
+        wifi_init(
+            cs,
+            sets.wifi,
+            peripherals.sercom0,
+            &mut clocks,
+            &mut peripherals.mclk,
+            &mut delay,
+            rx_channel,
+            tx_channel,
         );
 
         if let Some(wifi) = WIFI.as_mut() {
@@ -95,46 +115,46 @@ fn main() -> ! {
     write(&mut display, textbuffer.as_str(), Point::new(3, 3));
     textbuffer.truncate(0);
 
+    let mut scans: u32 = 0;
+    let mut errors: u32 = 0;
+    let wifi = unsafe { WIFI.as_mut().unwrap() };
     loop {
         user_led.set_low().ok();
-        // Start scanning
-        unsafe {
-            WIFI.as_mut()
-                .map(|wifi| wifi.blocking_rpc(rpc::ScanStart {}).unwrap())
-                .unwrap()
-        };
-        // Block until the scan is complete
-        loop {
-            let scanning = unsafe {
-                WIFI.as_mut()
-                    .map(|wifi| wifi.blocking_rpc(rpc::IsScanning {}).unwrap())
-                    .unwrap()
-            };
-            if !scanning {
-                break;
+        // Start a scan, wait for it to finish and fetch the results. A failed
+        // RPC is counted and the scan retried, so the screen shows whether
+        // the link recovers instead of halting on the first error.
+        let result = (|| {
+            wifi.blocking_rpc(rpc::ScanStart {}).map_err(|_| ())?;
+            while wifi.blocking_rpc(rpc::IsScanning {}).map_err(|_| ())? {}
+            let num = wifi.blocking_rpc(rpc::ScanGetNumAPs {}).map_err(|_| ())?;
+            let aps = wifi
+                .blocking_rpc(rpc::ScanGetAP::<generic_array::typenum::consts::U16>::new())
+                .map_err(|_| ())?;
+            Ok::<_, ()>((num, aps))
+        })();
+        let (num, aps) = match result {
+            Ok(r) => r,
+            Err(()) => {
+                errors += 1;
+                writeln!(textbuffer, "errors: {}", errors).unwrap();
+                write_with_clear(&mut display, textbuffer.as_str(), 14, Point::new(90, 16));
+                textbuffer.truncate(0);
+                continue;
             }
-        }
-
-        let num = unsafe {
-            WIFI.as_mut()
-                .map(|wifi| wifi.blocking_rpc(rpc::ScanGetNumAPs {}).unwrap())
-                .unwrap()
-        };
-        let aps = unsafe {
-            WIFI.as_mut()
-                .map(|wifi| {
-                    wifi.blocking_rpc(rpc::ScanGetAP::<generic_array::typenum::consts::U16>::new())
-                })
-                .unwrap()
         };
         user_led.set_high().ok();
 
         // Write the information to the screen.
+        scans += 1;
+        writeln!(textbuffer, "scan #{}", scans).unwrap();
+        write_with_clear(&mut display, textbuffer.as_str(), 14, Point::new(3, 16));
+        textbuffer.truncate(0);
+
         writeln!(textbuffer, "{:?} APs", num).unwrap();
         write_with_clear(&mut display, textbuffer.as_str(), 3, Point::new(170, 3));
         textbuffer.truncate(0);
 
-        for (i, ap) in aps.unwrap().0.iter().enumerate() {
+        for (i, ap) in aps.0.iter().enumerate() {
             if i >= num as usize {
                 break;
             }

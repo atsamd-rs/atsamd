@@ -67,6 +67,10 @@ usb = ["atsamd-hal/usb", "usb-device"]
 # enable feature for RTL8720 firmware older than 2.1.2
 wifi-fw-before-212 = []
 wifi = ["bbqueue", "generic-array", "seeed-erpc"]
+# count interrupts and time spent in the wifi transport (used by wifi_bench)
+wifi-stats = ["wifi"]
+# move the wifi UART from per-byte interrupts to DMA (uses DMA channels 0 and 1)
+wifi-dma = ["wifi", "atsamd-hal/dma"]
 
 [[example]]
 name = "blinky"
@@ -101,6 +105,10 @@ required-features = ["wifi"]
 [[example]]
 name = "wifi_connect"
 required-features = ["wifi"]
+
+[[example]]
+name = "wifi_bench"
+required-features = ["wifi-stats"]
 
 [[example]]
 name = "snake"
