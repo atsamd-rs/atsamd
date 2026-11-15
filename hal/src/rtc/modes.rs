@@ -114,7 +114,7 @@ pub trait RtcMode {
     ///
     /// Should be called only after setting the RTC mode using
     /// [`set_mode`](RtcMode::set_mode).
-    #[cfg(feature = "rtic")]
+    #[cfg(any(feature = "rtic", feature = "embassy-time"))]
     fn get_compare(rtc: &Rtc, number: usize) -> Self::Count;
 
     /// Returns the current synced COUNT value.
@@ -394,7 +394,7 @@ pub mod mode0 {
 
         #[inline]
         #[hal_macro_helper]
-        fn set_compare(rtc: &Rtc, _number: usize, value: Self::Count) {
+        fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
             // SYNC: Write
             Self::sync(rtc);
             unsafe {
@@ -402,20 +402,20 @@ pub mod mode0 {
                 rtc.mode0().comp().write(|w| w.comp().bits(value));
 
                 #[hal_cfg("rtc-d5x")]
-                rtc.mode0().comp(_number).write(|w| w.comp().bits(value));
+                rtc.mode0().comp(number).write(|w| w.comp().bits(value));
             }
         }
 
         #[inline]
-        #[cfg(feature = "rtic")]
         #[hal_macro_helper]
-        fn get_compare(rtc: &Rtc, _number: usize) -> Self::Count {
+        #[cfg(any(feature = "rtic", feature = "embassy-time"))]
+        fn get_compare(rtc: &Rtc, number: usize) -> Self::Count {
             // SYNC: Write (we just read though)
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
             let cmp = rtc.mode0().comp().read().bits();
 
             #[hal_cfg("rtc-d5x")]
-            let cmp = rtc.mode0().comp(_number).read().bits();
+            let cmp = rtc.mode0().comp(number).read().bits();
 
             cmp
         }
@@ -451,9 +451,7 @@ pub mod mode1 {
     use super::*;
 
     create_rtc_interrupt!(mode1, Compare0, cmp0);
-    #[cfg(feature = "rtic")]
     create_rtc_interrupt!(mode1, Compare1, cmp1);
-    #[cfg(feature = "rtic")]
     create_rtc_interrupt!(mode1, Overflow, ovf);
 
     /// The RTC operating in MODE1 (16-bit COUNT)
@@ -487,7 +485,7 @@ pub mod mode1 {
         }
 
         #[inline]
-        #[cfg(feature = "rtic")]
+        #[cfg(any(feature = "rtic", feature = "embassy-time"))]
         fn get_compare(rtc: &Rtc, number: usize) -> Self::Count {
             // SYNC: Write (we just read though)
             rtc.mode1().comp(number).read().bits()
@@ -603,14 +601,14 @@ pub mod mode2 {
 
         #[inline]
         #[hal_macro_helper]
-        fn set_compare(rtc: &Rtc, _number: usize, value: Self::Count) {
+        fn set_compare(rtc: &Rtc, number: usize, value: Self::Count) {
             // SYNC: Write
             Self::sync(rtc);
 
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
             rtc.mode2().alarm().write(|w| write_datetime!(w, value));
             #[hal_cfg("rtc-d5x")]
-            if _number == 0 {
+            if number == 0 {
                 rtc.mode2().alarm0().write(|w| write_datetime!(w, value));
             } else {
                 rtc.mode2().alarm1().write(|w| write_datetime!(w, value));
@@ -619,13 +617,13 @@ pub mod mode2 {
 
         #[inline]
         #[hal_macro_helper]
-        #[cfg(feature = "rtic")]
-        fn get_compare(rtc: &Rtc, _number: usize) -> Self::Count {
+        #[cfg(any(feature = "rtic", feature = "embassy-time"))]
+        fn get_compare(rtc: &Rtc, number: usize) -> Self::Count {
             // SYNC: Write (we just read though)
             #[hal_cfg(any("rtc-d11", "rtc-d21"))]
             return rtc.mode2().alarm().read().into();
             #[hal_cfg("rtc-d5x")]
-            if _number == 0 {
+            if number == 0 {
                 rtc.mode2().alarm0().read().into()
             } else {
                 rtc.mode2().alarm1().read().into()
