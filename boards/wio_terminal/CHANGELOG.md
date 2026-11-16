@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - *(wio_terminal)* Wifi receive errors no longer panic. A lost byte, UART overflow or framing error, an oversized reply (`Err::ResponseOverrun`) or a missing reply (about 10 s; about 10 ms between bytes) fails the RPC with an error, and the transport resynchronises. Previously the interrupt transport panicked on overrun, and a missing reply blocked forever.
 - *(wio_terminal)* [**breaking change**] Firmware now links at `0x0` by default; enable `bootloader` to keep the previous 16 KiB offset for UF2 flashing.
 
+### Fixed
+
+- *(wio_terminal)* Wifi DMA transports: count receive-ring wraps. The RX descriptor now uses `BLOCKACT = INT`; with the HAL's `NOACT`, the transfer-complete flag is never set in a circular transfer, so every 2 KiB received made an RPC time out.
+
+- Check Wi-Fi association and DHCP firmware statuses before reporting a
+  successful connection, and reject an unspecified IP address.
+- The interrupt transport no longer drops request bytes when a request is
+  longer than its 128-byte transmit queue; it waits for the queue to drain.
+
 ## [0.9.0](https://github.com/atsamd-rs/atsamd/compare/wio_terminal-0.8.0...wio_terminal-0.9.0) - 2025-07-06
 
 ### Dependencies

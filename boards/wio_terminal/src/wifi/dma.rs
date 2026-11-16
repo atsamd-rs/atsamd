@@ -23,6 +23,29 @@ type TxHalf = Uart<Config<WifiUartPads>, TxDuplex, NoneT, WifiTxChannel>;
 type RxTransfer = Transfer<Channel<Ch0, Busy>, BufferPair<RxHalf, &'static mut [u8; RX_RING_LEN]>>;
 const RX_CHANNEL: usize = <Ch0 as ChId>::USIZE;
 
+/// Makes every completed block of `channel`'s first descriptor set the
+/// transfer-complete flag (`BTCTRL.BLOCKACT = INT`). Call after the transfer
+/// is built and before it is started.
+///
+/// The HAL leaves `BLOCKACT = NOACT`. With that, `CHINTFLAG.TCMPL` is set only
+/// when a whole transaction ends, which a circular transfer never does, so
+/// ring wraps would go uncounted (observed on hardware: no flag at a wrap,
+/// with or without the interrupt enabled). `INT` sets the flag at the end of
+/// every block; it raises an interrupt only if the channel's TCMPL interrupt
+/// is enabled, and it does not stop the channel while the descriptor links to
+/// itself.
+pub(super) fn set_block_flag(channel: usize) {
+    let dmac = unsafe { pac::Dmac::steal() };
+    // Descriptor section: 16 bytes per channel, BTCTRL is the first half-word.
+    let base = dmac.baseaddr().read().bits() as *mut u16;
+    unsafe {
+        let btctrl = base.add(channel * 8);
+        let value = core::ptr::read_volatile(btctrl);
+        // BLOCKACT is bits 4:3; INT = 1.
+        core::ptr::write_volatile(btctrl, (value & !(0b11 << 3)) | (1 << 3));
+    }
+}
+
 /// Number of times the receive ring has wrapped, counted by the `DMAC_0`
 /// interrupt (RX channel transfer complete).
 static RX_WRAPS: AtomicU32 = AtomicU32::new(0);
@@ -130,9 +153,9 @@ impl Transport {
         // Count ring wraps (see `written_total`); the NVIC line is unmasked in
         // `enable`.
         rx_channel.enable_interrupts(InterruptFlags::new().with_tcmpl(true));
-        let rx: RxTransfer = Transfer::new(rx_channel, rx, ring, true)
-            .unwrap()
-            .begin(<Sercom0 as Sercom>::DMA_RX_TRIGGER, TriggerAction::Burst);
+        let rx = Transfer::new(rx_channel, rx, ring, true).unwrap();
+        set_block_flag(RX_CHANNEL);
+        let rx: RxTransfer = rx.begin(<Sercom0 as Sercom>::DMA_RX_TRIGGER, TriggerAction::Burst);
 
         Transport {
             _rx: rx,

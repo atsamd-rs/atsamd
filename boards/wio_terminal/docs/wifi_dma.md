@@ -98,6 +98,18 @@ Channel 0 runs one circular transfer for the life of the program: its
 descriptor links to itself, so after the 2048th byte it starts again at
 index 0. The transport never stops or restarts it.
 
+**Wraps need `BLOCKACT = INT`.** The HAL fills descriptors with
+`BTCTRL.BLOCKACT = NOACT`. With that, the transfer-complete flag
+(`CHINTFLAG.TCMPL`) is set only when a whole transaction ends, which a
+circular transfer never does. On hardware (2026-11-16) channel 2 wrapped with
+the flag staying 0, while a one-shot TX channel next to it did set its flag at
+the end. So no wrap was ever counted, and every wrap made the write position
+appear to jump back by 2048 bytes. Both transports therefore set
+`BLOCKACT = INT` on the RX descriptor before starting it (`set_block_flag` in
+`dma.rs`). That sets the flag at the end of every block; it raises an
+interrupt only if the channel's TCMPL interrupt is enabled, and it does not
+stop a channel whose descriptor links to itself.
+
 ```text
             read_total % 2048                 write index
                    │                               │
@@ -204,12 +216,29 @@ flowchart LR
 - **The ring is read through a raw pointer** while the HAL's `Transfer` owns
   the `&'static mut` buffer. Only volatile reads are used and no reference to
   the buffer is formed, the same pattern as the HAL's own DMA code.
+- **Until 2026-11-16 no ring wrap was counted** (`BLOCKACT = NOACT`, see
+  [The receive ring](#the-receive-ring)). The blocking transport hid it: each
+  wrap made one RPC time out, `discard_pending` re-based the counters and the
+  next RPC worked. Earlier soak-test failures (one failed RPC now and then)
+  may have this cause. Timeout poisons the
+  client and costs a radio reset. In `rust_ot_wio` every session died at its
+  first wrap, a few seconds after connecting, and the supervisor's backoff
+  turned that into ~100 s online and ~3 min 40 s offline.
+- **A debugger can cause UART overflows.** `DMAC.DBGCTRL.DBGRUN` is 0 (reset
+  value), so the DMAC stops while the debugger halts the core. Attaching
+  `probe-rs` repeatedly to read memory (several times a second) produced 4
+  `BUFOVF` errors in about 2.5 minutes of traffic; with no probe access, none
+  occurred. Set `DBGRUN` if you debug with breakpoints while Wi-Fi is active.
 - **A UART overflow can still happen with DMA.** In a 5-minute `wifi_scan`
   soak test, polling `IsScanning` in a tight loop, `SERCOM0.STATUS.BUFOVF`
   occurred within about a minute, losing up to ~8 consecutive bytes. The
   interrupt transport fails the same soak test (queue overrun). The cause is
   unknown. It now produces a failed RPC and a retry, not a hang. Ruled out:
   polling rate, the TX DMA channel, an attached debugger, stale write-back.
+  (That test predates the `BLOCKACT` fix above.)
+- **Wrap counting by polling** undercounts if the ring wraps twice between
+  two polls during an RPC (task held off for more than ~33 ms while a reply
+  arrives). The frame CRC then rejects the corrupted frame.
 - **Debugging tip:** ending a `probe-rs` session clears `DEMCR.TRCENA`, which
   stops the DWT cycle counter after the firmware enabled it. `wifi_bench`
   re-enables it before each measurement.
