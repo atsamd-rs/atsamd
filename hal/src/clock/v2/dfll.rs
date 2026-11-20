@@ -427,6 +427,11 @@ impl DfllToken {
                 w.fstep().bits(settings.fine_max_step)
             });
         }
+
+        while !self.is_ready() {
+            core::hint::spin_loop();
+        }
+
         self.dfllctrl().write(|w| {
             w.mode().bit(settings.closed_loop);
             w.usbcrm().bit(settings.usb_recovery);
