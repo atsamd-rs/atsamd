@@ -557,7 +557,9 @@ define_apb_types!(
         Tc3 = (11, false)
         Tc4 = (12, false)
         Tc5 = (13, false)
+        #[hal_cfg("tc6")]
         Tc6 = (14, false)
+        #[hal_cfg("tc7")]
         Tc7 = (15, false)
         Adc0 = (16, true)
         Ac = (17, false)
