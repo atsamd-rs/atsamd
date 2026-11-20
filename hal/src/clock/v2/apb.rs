@@ -557,6 +557,8 @@ define_apb_types!(
         Tc3 = (11, false)
         Tc4 = (12, false)
         Tc5 = (13, false)
+        Tc6 = (14, false)
+        Tc7 = (15, false)
         Adc0 = (16, true)
         Ac = (17, false)
         Dac = (18, false)
@@ -565,7 +567,7 @@ define_apb_types!(
         I2S = (20, false)
         Ac1 = (21, false)
         #[hal_cfg("tcc3")]
-        Tcc3 = (22, false)
+        Tcc3 = (24, false)
     }
 );
 
