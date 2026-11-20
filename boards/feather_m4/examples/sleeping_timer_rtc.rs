@@ -86,6 +86,6 @@ fn RTC() {
             .unwrap()
             .mode0()
             .intflag()
-            .modify(|_, w| w.cmp0().set_bit());
+            .modify(|_, w| w.cmp0().clear_bit_by_one());
     }
 }

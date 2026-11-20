@@ -46,8 +46,8 @@ fn main() -> ! {
     InterruptDrivenTimer::start(&mut timer, 300.nanos());
     InterruptDrivenTimer::enable_interrupt(&mut timer);
 
-    // The neopixel sources power from a GPIO pin. It must be driven high to power
-    // up the neopixel before it can be used.
+    // The neopixel sources power from a GPIO pin. It must be driven high to
+    // power up the neopixel before it can be used.
     pins.neopixel
         .power
         .into_push_pull_output()

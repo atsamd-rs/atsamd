@@ -1,0 +1,7 @@
+_svd: "../ATSAMD21J18A.svd"
+
+_include:
+  - "include/atsamd21.yml"
+
+_modify:
+  version: "3.8.270"

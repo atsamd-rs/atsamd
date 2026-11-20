@@ -1,5 +1,7 @@
 use atsamd_hal_macros::hal_cfg;
 
+use crate::clock::v2::{apb::ApbClk, pclk::DynPclk};
+
 #[hal_cfg("adc-d5x")]
 use crate::pac::adc0;
 
@@ -13,9 +15,7 @@ pub use adc0::ctrlb::Prescalerselect as Prescaler;
 pub use adc0::ctrla::Prescalerselect as Prescaler;
 
 pub use adc0::avgctrl::Samplenumselect as SampleCount;
-
 pub use adc0::ctrlb::Resselselect as Resolution;
-
 pub use adc0::refctrl::Refselselect as Reference;
 
 use super::{Adc, AdcInstance};
@@ -244,28 +244,18 @@ impl AdcBuilder {
         Ok(adc_clk_freq / clocks_per_sample)
     }
 
-    /// Turn the builder into an ADC
-    #[hal_cfg("adc-d5x")]
-    #[inline]
-    pub fn enable<I: AdcInstance, PS: crate::clock::v2::pclk::PclkSourceId>(
-        self,
-        adc: I::Instance,
-        clk: crate::clock::v2::apb::ApbClk<I::ClockId>,
-        pclk: &crate::clock::v2::pclk::Pclk<I::ClockId, PS>,
-    ) -> Result<Adc<I>, BuilderError> {
-        let settings = self.to_settings()?;
-        Adc::new(adc, settings, clk, pclk).map_err(|e| e.into())
-    }
-
-    #[hal_cfg(any("adc-d11", "adc-d21"))]
+    /// Turn the builder into an ADC.
+    ///
+    /// This function will convert the provided
+    /// [`Pclk`](crate::clock::v2::pclk::Pclk) into a [`DynPclk`](crate::clock::v2::pclk::DynPclk).
     #[inline]
     pub fn enable<I: AdcInstance>(
         self,
         adc: I::Instance,
-        pm: &mut crate::pac::Pm,
-        clock: &crate::clock::AdcClock,
+        clk: ApbClk<I::ClockId>,
+        pclk: impl Into<DynPclk<I::ClockId>>,
     ) -> Result<Adc<I>, BuilderError> {
         let settings = self.to_settings()?;
-        Adc::new(adc, settings, pm, clock).map_err(|e| e.into())
+        Adc::new(adc, settings, clk, pclk.into()).map_err(|e| e.into())
     }
 }

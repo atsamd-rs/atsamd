@@ -1,0 +1,845 @@
+//! # Peripheral Channel Clocks
+//!
+//! ## Overview
+//!
+//! Peripheral channel clocks, or [`Pclk`]s, connect generic clock controllers
+//! ([`Gclk`]s) to various peripherals within the chip. Each [`Pclk`] maps 1:1
+//! with a corresponding peripheral.
+//!
+//! The 48 possible [`Pclk`]s are distinguished by their corresponding
+//! [`PclkId`] types. Ideally, each [`PclkId`] type would be a relevant type
+//! from a corresponding HAL module. For example, each of the eight different
+//! [`Sercom`] types implements [`PclkId`]. However, the HAL does not yet
+//! support all peripherals, nor have all existing HAL peripherals been
+//! integrated with `clock::v2`. In those cases, a dummy type is defined in the
+//! [`clock::v2::types`] module.
+//!
+//! [`Pclk`]s are typically leaves in the clock tree. The only exceptions are
+//! [`Pclk`]s used for the [`DFLL`] or [`DPLL`] peripherals. In those cases, the
+//! [`Pclk`] acts as a branch clock.
+//!
+//! Each [`Pclk`] powers only a single peripheral; they do not act as general
+//! purpose clock [`Source`]s for other clocks in the tree. As a result, they do
+//! not need to be wrapped with [`Enabled`].
+//!
+//! [`Pclk`]s also do not have any meaningful configuration beyond identifying
+//! which [`EnabledGclk`] is its [`Source`]. Consequently, [`PclkToken`]s can be
+//! directly converted into enabled [`Pclk`]s with [`Pclk::enable`].
+//!
+//! See the [`clock` module documentation] for a more thorough explanation of
+//! the various concepts discussed above.
+//!
+//! ## Example
+//!
+//! The following example shows how to enable the [`Pclk`] for [`Sercom0`]. It
+//! derives the [`Sercom0`] clock from [`EnabledGclk0`], which is already
+//! running at power-on reset. In doing so, the [`EnabledGclk0`] counter is
+//! [`Increment`]ed.
+//!
+//! ```no_run
+//! use atsamd_hal::{
+//!     clock::v2::{clock_system_at_reset, pclk::Pclk},
+//!     pac::Peripherals,
+//! };
+//! // Clock setup (shown here for D5x) - For D21/D11 setup refer to the V2 clock docs
+//! let mut pac = Peripherals::take().unwrap();
+//! let (buses, clocks, tokens) = clock_system_at_reset(
+//!     pac.oscctrl,
+//!     pac.osc32kctrl,
+//!     pac.gclk,
+//!     pac.mclk,
+//!     &mut pac.nvmctrl,
+//! );
+//! // tokens.pclks.* works on all chip families
+//! let (pclk_sercom0, gclk0) = Pclk::enable(tokens.pclks.sercom0, clocks.gclk0);
+//! ```
+//!
+//! [`Gclk`]: super::gclk::Gclk
+//! [`DFLL`]: super::dfll
+//! [`DPLL`]: super::dpll
+//! [`Enabled`]: super::Enabled
+//! [`EnabledGclk`]: super::gclk::EnabledGclk
+//! [`EnabledGclk0`]: super::gclk::EnabledGclk0
+//! [`clock` module documentation]: super
+//! [`clock::v2::types`]: super::types
+//! [`Sercom`]: crate::sercom::Sercom
+
+use atsamd_hal_macros::{hal_cfg, hal_macro_helper};
+
+use core::marker::PhantomData;
+
+use paste::paste;
+
+use crate::pac;
+
+#[hal_cfg("clock-d5x")]
+mod imports {
+    pub use crate::pac::gclk::Pchctrl as Ctrl;
+    pub use crate::pac::gclk::pchctrl::Genselect;
+}
+
+#[hal_cfg(any("clock-d11", "clock-d21"))]
+mod imports {
+    pub use crate::pac::gclk::Clkctrl as Ctrl;
+    pub use crate::pac::gclk::clkctrl::Genselect;
+}
+
+use imports::*;
+
+use crate::time::Hertz;
+use crate::typelevel::{Decrement, Increment, Sealed};
+
+use super::Source;
+use super::gclk::{DynGclkId, GclkId};
+
+//==============================================================================
+// PclkToken
+//==============================================================================
+
+/// Singleton token that can be exchanged for a [`Pclk`]
+///
+/// As explained in the [`clock` module documentation](super), instances of
+/// various `Token` types can be exchanged for actual clock types. They
+/// typically represent clocks that are disabled at power-on reset.
+///
+/// [`PclkToken`]s are no different. All [`Pclk`]s are disabled at power-on
+/// reset. To use a [`Pclk`], you must first exchange the token for an actual
+/// clock with the [`Pclk::enable`] function.
+///
+/// [`PclkToken`] is generic over the [`PclkId`], where each token represents a
+/// corresponding peripheral clock channel.
+pub struct PclkToken<P: PclkId> {
+    pclk: PhantomData<P>,
+}
+
+impl<P: PclkId> PclkToken<P> {
+    /// Create a new instance of [`PclkToken`]
+    ///
+    /// # Safety
+    ///
+    /// Each `PclkToken`s is a singleton. There must never be two simulatenous
+    /// instances with the same [`PclkId`]. See the notes on `Token` types and
+    /// memory safety in the root of the `clock` module for more details.
+    #[inline]
+    pub(super) unsafe fn new() -> Self {
+        PclkToken { pclk: PhantomData }
+    }
+
+    /// Access the corresponding `PCHCTRL` register
+    #[inline]
+    #[hal_macro_helper]
+    fn ctrl(&self) -> &Ctrl {
+        // Safety: Each `PclkToken` only has access to a mutually exclusive set
+        // of registers for the corresponding `PclkId`, and we use a shared
+        // reference to the register block. See the notes on `Token` types and
+        // memory safety in the root of the `clock` module for more details.
+        #[hal_cfg("clock-d5x")]
+        unsafe {
+            (*pac::Gclk::PTR).pchctrl(P::DYN as usize)
+        }
+        #[hal_cfg(any("clock-d11", "clock-d21"))]
+        unsafe {
+            (*pac::Gclk::PTR).clkctrl()
+        }
+    }
+
+    /// Set the [`Pclk`] source
+    #[inline]
+    #[hal_macro_helper]
+    fn enable(&mut self, source: DynPclkSourceId) {
+        self.ctrl().write(|w| {
+            w.gen_().variant(source.into());
+            #[hal_cfg(any("clock-d11", "clock-d21"))]
+            {
+                w.clken().set_bit();
+                unsafe { w.id().bits(P::DYN as u8) }
+            }
+            #[hal_cfg("clock-d5x")]
+            w.chen().set_bit()
+        });
+    }
+
+    /// Disable the [`Pclk`]
+    #[inline]
+    #[hal_macro_helper]
+    fn disable(&mut self) {
+        self.ctrl().modify(|_, w| {
+            #[hal_cfg(any("clock-d11", "clock-d21"))]
+            {
+                w.clken().clear_bit();
+                unsafe { w.id().bits(P::DYN as u8) }
+            }
+            #[hal_cfg("clock-d5x")]
+            w.chen().clear_bit()
+        });
+    }
+}
+
+//==============================================================================
+// PclkId types
+//==============================================================================
+
+/// Module containing only the types implementing [`PclkId`]
+///
+/// Because there are so many types that implement [`PclkId`], it is helpful to
+/// have them defined in a separate module, so that you can import all of them
+/// using a wildcard (`*`) without importing anything else, i.e.
+///
+/// ```
+/// use atsamd_hal::clock::v2::pclk::ids::*;
+/// ```
+pub mod ids {
+    use atsamd_hal_macros::hal_cfg;
+
+    pub use crate::sercom::{Sercom0, Sercom1};
+
+    #[hal_cfg("sercom2")]
+    pub use crate::sercom::Sercom2;
+    #[hal_cfg("sercom3")]
+    pub use crate::sercom::Sercom3;
+    #[hal_cfg("sercom4")]
+    pub use crate::sercom::Sercom4;
+    #[hal_cfg("sercom5")]
+    pub use crate::sercom::Sercom5;
+    #[hal_cfg("sercom6")]
+    pub use crate::sercom::Sercom6;
+    #[hal_cfg("sercom7")]
+    pub use crate::sercom::Sercom7;
+
+    pub use super::super::dfll::DfllId;
+    pub use super::super::dpll::Dpll0Id;
+    #[hal_cfg("clock-d5x")]
+    pub use super::super::dpll::Dpll1Id;
+
+    // TODO crude hack
+    #[hal_cfg("clock-d5x")]
+    pub use super::super::types::{
+        Ac, Adc0, Adc1, CM4Trace, Ccl, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5,
+        EvSys6, EvSys7, EvSys8, EvSys9, EvSys10, EvSys11, FreqMMeasure, FreqMReference, PDec,
+        Sdhc0, SlowClk, Tc0Tc1, Tc2Tc3, Usb,
+    };
+
+    #[hal_cfg(any("clock-d11", "clock-d21"))]
+    pub use super::super::types::{
+        Ac, AcAna, AcDig, Adc0, Dac, Eic, EvSys0, EvSys1, EvSys2, EvSys3, EvSys4, EvSys5, EvSys6,
+        EvSys7, EvSys8, EvSys9, EvSys10, EvSys11, Ptc, Rtc, SercomSlow, SlowClk, Usb, Wdt,
+    };
+
+    #[hal_cfg("clock-d11")]
+    pub use super::super::types::{Tc1Tc2, Tcc0};
+
+    #[hal_cfg("can0")]
+    pub use super::super::types::Can0;
+    #[hal_cfg("can1")]
+    pub use super::super::types::Can1;
+    #[hal_cfg("sdhc1")]
+    pub use super::super::types::Sdhc1;
+    #[hal_cfg(all("tc4", "tc5"))]
+    pub use super::super::types::Tc4Tc5;
+    #[hal_cfg(all("tc6", "tc7"))]
+    pub use super::super::types::Tc6Tc7;
+    #[hal_cfg(all("tcc0", "tcc1"))]
+    pub use super::super::types::Tcc0Tcc1;
+    #[hal_cfg(all("tcc2", "tcc3"))]
+    pub use super::super::types::Tcc2Tcc3;
+    #[hal_cfg("tcc4")]
+    pub use super::super::types::Tcc4;
+
+    // TODO would it make sense to just pub use super::super::types::* and
+    // conditionally restrict what types we make there?
+    #[hal_cfg(all("tcc2", "tc3-d21"))]
+    pub use super::super::types::Tcc2Tc3;
+
+    #[hal_cfg("i2s")]
+    pub use super::super::types::{I2S0, I2S1};
+}
+use ids::*;
+
+/// Append the list of all [`PclkId`] types and `snake_case` id names to the
+/// arguments of a macro call
+///
+/// This macro will perform the embedded macro call with a list of tuples
+/// appended to the arguments. Each tuple contains a type implementing
+/// [`PclkId`], its corresponding `PCHCTRL` register index, and the `snake_case`
+/// name of the corresponding token in the [`PclkTokens`] struct.
+///
+/// **Note:** The entries within [`DynPclkId`] do not match the type names.
+/// Rather, they match the `snake_case` names converted to `CamelCase`.
+///
+/// An optional attribute is added just before each tuple. These are mainly used
+/// to declare the conditions under which the corresponding peripheral exists.
+///
+/// The example below shows the pattern that should be used to match against the
+/// appended tokens.
+///
+/// ```ignore
+/// macro_rules! some_macro {
+///     (
+///         $first_arg:tt,
+///         $second_arg:tt
+///         $(
+///             $( #[$cfg:meta] )?
+///             ($Type:ident = $N:literal, $Id:ident)
+///         )+
+///     ) =>
+///     {
+///         // implementation here ...
+///     }
+/// }
+///
+/// with_pclk_types_ids!(some_macro!(first, second));
+/// ```
+#[hal_cfg("clock-d5x")]
+#[hal_macro_helper]
+macro_rules! with_pclk_types_ids {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        $some_macro!(
+            $( $args )*
+            (DfllId = 0, dfll)
+            (Dpll0Id = 1, dpll0)
+            (Dpll1Id = 2, dpll1)
+            (SlowClk = 3, slow)
+            (Eic = 4, eic)
+            (FreqMMeasure = 5, freq_m_measure)
+            (FreqMReference = 6, freq_m_reference)
+            (Sercom0 = 7, sercom0)
+            (Sercom1 = 8, sercom1)
+            (Tc0Tc1 = 9, tc0_tc1)
+            (Usb = 10, usb)
+            (EvSys0 = 11, ev_sys0)
+            (EvSys1 = 12, ev_sys1)
+            (EvSys2 = 13, ev_sys2)
+            (EvSys3 = 14, ev_sys3)
+            (EvSys4 = 15, ev_sys4)
+            (EvSys5 = 16, ev_sys5)
+            (EvSys6 = 17, ev_sys6)
+            (EvSys7 = 18, ev_sys7)
+            (EvSys8 = 19, ev_sys8)
+            (EvSys9 = 20, ev_sys9)
+            (EvSys10 = 21, ev_sys10)
+            (EvSys11 = 22, ev_sys11)
+            (Sercom2 = 23, sercom2)
+            (Sercom3 = 24, sercom3)
+            (Tcc0Tcc1 = 25, tcc0_tcc1)
+            (Tc2Tc3 = 26, tc2_tc3)
+            #[hal_cfg("can0")]
+            (Can0 = 27, can0)
+            #[hal_cfg("can1")]
+            (Can1 = 28, can1)
+            #[hal_cfg(all("tcc2", "tcc3"))]
+            (Tcc2Tcc3 = 29, tcc2_tcc3)
+            #[hal_cfg(all("tc4", "tc5"))]
+            (Tc4Tc5 = 30, tc4_tc5)
+            (PDec = 31, pdec)
+            (Ac = 32, ac)
+            (Ccl = 33, ccl)
+            (Sercom4 = 34, sercom4)
+            (Sercom5 = 35, sercom5)
+            #[hal_cfg("sercom6")]
+            (Sercom6 = 36, sercom6)
+            #[hal_cfg("sercom7")]
+            (Sercom7 = 37, sercom7)
+            #[hal_cfg("tcc4")]
+            (Tcc4 = 38, tcc4)
+            #[hal_cfg(all("tc6", "tc7"))]
+            (Tc6Tc7 = 39, tc6_tc7)
+            (Adc0 = 40, adc0)
+            (Adc1 = 41, adc1)
+            (Dac = 42, dac)
+            #[hal_cfg("i2s")]
+            (I2S0 = 43, i2s0)
+            #[hal_cfg("i2s")]
+            (I2S1 = 44, i2s1)
+            (Sdhc0 = 45, sdhc0)
+            #[hal_cfg("sdhc1")]
+            (Sdhc1 = 46, sdhc1)
+            (CM4Trace = 47, cm4_trace)
+        );
+    };
+}
+
+#[hal_cfg("clock-d21")]
+#[hal_macro_helper]
+macro_rules! with_pclk_types_ids {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        $some_macro!(
+            $( $args )*
+            (DfllId = 0, dfll)
+            (Dpll0Id = 1, dpll)
+            (SlowClk = 2, slow)
+            (Wdt = 3, wdt)
+            (Rtc = 4, rtc)
+            (Eic = 5, eic)
+            (Usb = 6, usb)
+            (EvSys0 = 7, ev_sys0)
+            (EvSys1 = 8, ev_sys1)
+            (EvSys2 = 9, ev_sys2)
+            (EvSys3 = 10, ev_sys3)
+            (EvSys4 = 11, ev_sys4)
+            (EvSys5 = 12, ev_sys5)
+            (EvSys6 = 13, ev_sys6)
+            (EvSys7 = 14, ev_sys7)
+            (EvSys8 = 15, ev_sys8)
+            (EvSys9 = 16, ev_sys9)
+            (EvSys10 = 17, ev_sys10)
+            (EvSys11 = 18, ev_sys11)
+            (SercomSlow = 19, sercom_slow)
+            (Sercom0 = 20, sercom0)
+            (Sercom1 = 21, sercom1)
+            #[hal_cfg("sercom2")]
+            (Sercom2 = 22, sercom2)
+            #[hal_cfg("sercom3")]
+            (Sercom3 = 23, sercom3)
+            #[hal_cfg("sercom4")]
+            (Sercom4 = 24, sercom4)
+            #[hal_cfg("sercom5")]
+            (Sercom5 = 25, sercom5)
+            (Tcc0Tcc1 = 26, tcc0_tcc1)
+            (Tcc2Tc3 = 27, tcc2_tc3)
+            (Tc4Tc5 = 28, tc4_tc5)
+            #[hal_cfg(all("tc6", "tc7"))]
+            (Tc6Tc7 = 29, tc6_tc7)
+            (Adc0 = 30, adc)
+            (AcDig = 31, ac_dig)
+            (AcAna = 32, ac_ana)
+            (Dac = 33, dac)
+            (Ptc = 34, ptc)
+            #[hal_cfg("i2s")]
+            (I2S0 = 35, i2s0)
+            #[hal_cfg("i2s")]
+            (I2S1 = 36, i2s1)
+        );
+    };
+}
+
+#[hal_cfg("clock-d11")]
+#[hal_macro_helper]
+macro_rules! with_pclk_types_ids {
+    ( $some_macro:ident ! ( $( $args:tt )* ) ) => {
+        $some_macro!(
+            $( $args )*
+            (DfllId = 0, dfll)
+            (Dpll0Id = 1, dpll)
+            (SlowClk = 2, slow)
+            (Wdt = 3, wdt)
+            (Rtc = 4, rtc)
+            (Eic = 5, eic)
+            (Usb = 6, usb)
+            (EvSys0 = 7, ev_sys0)
+            (EvSys1 = 8, ev_sys1)
+            (EvSys2 = 9, ev_sys2)
+            (EvSys3 = 10, ev_sys3)
+            (EvSys4 = 11, ev_sys4)
+            (EvSys5 = 12, ev_sys5)
+            (SercomSlow = 13, sercom_slow)
+            (Sercom0 = 14, sercom0)
+            (Sercom1 = 15, sercom1)
+            #[hal_cfg("sercom2")]
+            (Sercom2 = 16, sercom2)
+            (Tcc0 = 17, tcc0)
+            (Tc1Tc2 = 18, tc1_tc2)
+            (Adc0 = 19, adc)
+            (AcDig = 20, ac_dig)
+            (AcAna = 21, ac_ana)
+            (Dac = 22, dac)
+            (Ptc = 23, ptc)
+        );
+    };
+}
+
+//==============================================================================
+// DynPclkId
+//==============================================================================
+
+macro_rules! dyn_pclk_id {
+    (
+        $(
+            $( #[$cfg:meta] )?
+            ($Type:ident = $N:literal, $id:ident)
+        )+
+    ) => {
+        paste! {
+            /// Value-level enum identifying one of the 48 possible [`Pclk`]s
+            ///
+            /// The variants of this enum identify one of the 48 possible
+            /// peripheral channel clocks. When cast to a `u8`, each variant
+            /// maps to its corresponding `PCHCTRL` index.
+            ///
+            /// `DynPclkId` is the value-level equivalent of [`PclkId`].
+            #[repr(u8)]
+            pub enum DynPclkId {
+                $(
+                    $( #[$cfg] )?
+                    [<$id:camel>] = $N,
+                )+
+            }
+
+            $(
+                $( #[$cfg] )?
+                impl PclkId for $Type {
+                    const DYN: DynPclkId = DynPclkId::[<$id:camel>];
+                }
+            )+
+        }
+    };
+}
+
+with_pclk_types_ids!(dyn_pclk_id!());
+
+//==============================================================================
+// PclkId
+//==============================================================================
+
+/// Type-level enum identifying one of the 48 possible [`Pclk`]s
+///
+/// The types implementing this trait, e.g. [`Sercom0`] or [`DfllId`], are
+/// type-level variants of `PclkId`, and they identify one of the 48 possible
+/// peripheral channel clocks.
+///
+/// `PclkId` is the type-level equivalent of [`DynPclkId`]. See the
+/// documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
+///
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
+pub trait PclkId: Sealed {
+    /// Corresponding variant of [`DynPclkId`]
+    const DYN: DynPclkId;
+}
+
+//==============================================================================
+// DynPclkSourceId
+//==============================================================================
+
+/// Value-level enum of possible clock sources for a [`Pclk`]
+///
+/// The variants of this enum identify the [`Gclk`] used as a clock source for
+/// a given [`Pclk`]. Because the variants are identical to [`DynGclkId`], we
+/// simply define it as a type alias.
+///
+/// `DynPclkSourceId` is the value-level equivalent of [`PclkSourceId`].
+///
+/// [`Gclk`]: super::gclk::Gclk
+pub type DynPclkSourceId = DynGclkId;
+
+/// Convert from [`DynPclkSourceId`] to the equivalent [PAC](crate::pac) type
+#[hal_macro_helper]
+impl From<DynPclkSourceId> for Genselect {
+    fn from(source: DynPclkSourceId) -> Self {
+        match source {
+            DynPclkSourceId::Gclk0 => Genselect::Gclk0,
+            DynPclkSourceId::Gclk1 => Genselect::Gclk1,
+            DynPclkSourceId::Gclk2 => Genselect::Gclk2,
+            DynPclkSourceId::Gclk3 => Genselect::Gclk3,
+            DynPclkSourceId::Gclk4 => Genselect::Gclk4,
+            DynPclkSourceId::Gclk5 => Genselect::Gclk5,
+            #[hal_cfg("gclk6")]
+            DynPclkSourceId::Gclk6 => Genselect::Gclk6,
+            #[hal_cfg("gclk7")]
+            DynPclkSourceId::Gclk7 => Genselect::Gclk7,
+            #[hal_cfg("gclk8")]
+            DynPclkSourceId::Gclk8 => Genselect::Gclk8,
+            #[hal_cfg("gclk9")]
+            DynPclkSourceId::Gclk9 => Genselect::Gclk9,
+            #[hal_cfg("gclk10")]
+            DynPclkSourceId::Gclk10 => Genselect::Gclk10,
+            #[hal_cfg("gclk11")]
+            DynPclkSourceId::Gclk11 => Genselect::Gclk11,
+        }
+    }
+}
+
+impl PclkSourceId for DynPclkSourceId {
+    fn source_id(&self) -> DynGclkId {
+        *self
+    }
+}
+
+impl Sealed for DynPclkSourceId {}
+
+//==============================================================================
+// PclkSourceId
+//==============================================================================
+
+pub struct PclkSource<G: GclkId> {
+    _src: PhantomData<G>,
+}
+
+impl<G: GclkId> GclkId for PclkSource<G> {
+    const DYN: DynGclkId = G::DYN;
+    const NUM: usize = G::NUM;
+    type Divider = G::Divider;
+}
+
+//==============================================================================
+// PclkSourceId
+//==============================================================================
+
+/// Type-level enum of possible clock [`Source`]s for a [`Pclk`]
+///
+/// The types implementing this trait are type-level variants of `PclkSourceId`,
+/// and they identify the [`Gclk`] acting as a clock [`Source`] for a given
+/// [`Pclk`]. Accordingly, all implementers of this trait are [`GclkId`] types,
+/// and this trait is simply a trait alias for [`GclkId`]. `Id` types in general
+/// are described in more detail in the [`clock` module documentation](super).
+///
+/// `PclkSourceId` is the type-level equivalent of [`DynPclkSourceId`]. See the
+/// documentation on [type-level programming] and specifically
+/// [type-level enums] for more details.
+///
+/// [`Gclk`]: super::gclk::Gclk
+/// [type-level programming]: crate::typelevel
+/// [type-level enums]: crate::typelevel#type-level-enums
+pub trait PclkSourceId: Sealed {
+    fn source_id(&self) -> DynGclkId;
+}
+
+// PclkSource implements PclkSourceId via its GclkId implementation
+impl<G: GclkId> PclkSourceId for G {
+    #[inline]
+    fn source_id(&self) -> DynGclkId {
+        Self::DYN
+    }
+}
+
+impl<G: GclkId> Sealed for PclkSource<G> {}
+
+//==============================================================================
+// Pclk
+//==============================================================================
+
+/// Peripheral channel clock for a given peripheral
+///
+/// Peripheral channel clocks connect generic clock generators ([`Gclk`]s) to
+/// various peripherals. `Pclk`s usually act as leaves in the clock tree, except
+/// when they feed the [`DFLL`] and [`DPLL`] peripherals.
+///
+/// The type parameter `P` is a [`PclkId`] that determines which of the 48
+/// peripherals this [`Pclk`] feeds. The type parameter `I` represents the `Id`
+/// type for the [`EnabledGclk`] acting as the `Pclk`'s [`Source`]. It must be
+/// one of the valid [`PclkSourceId`]s, which is simply a trait alias for
+/// [`GclkId`]. See the [`clock` module documentation](super) for more detail on
+/// `Id` types.
+///
+/// `Pclk`s cannot act as general purpose clock [`Source`]s; rather, they map
+/// 1:1 with corresponding peripherals. Thus, enabled `Pclk`s do not need a
+/// compile-time counter of consumer clocks, so they are not wrapped with
+/// [`Enabled`]. Enabled `Pclk`s are created directly from [`PclkToken`]s with
+/// [`Pclk::enable`].
+///
+/// See the [module-level documentation](self) for an example.
+///
+/// [`Enabled`]: super::Enabled
+/// [`Gclk`]: super::gclk::Gclk
+/// [`EnabledGclk`]: super::gclk::EnabledGclk
+/// [`DFLL`]: super::dfll
+/// [`DPLL`]: super::dpll
+pub struct Pclk<P, I>
+where
+    P: PclkId,
+    I: PclkSourceId,
+{
+    token: PclkToken<P>,
+    src: I,
+    freq: Hertz,
+}
+
+/// [`Pclk`] with a dynamic source ID ([`DynPclkSourceId`]).
+pub type DynPclk<P> = Pclk<P, DynPclkSourceId>;
+
+impl<P, G> From<Pclk<P, PclkSource<G>>> for DynPclk<P>
+where
+    P: PclkId,
+    G: GclkId,
+{
+    fn from(value: Pclk<P, PclkSource<G>>) -> Self {
+        Pclk {
+            token: value.token,
+            freq: value.freq,
+            src: G::DYN,
+        }
+    }
+}
+
+impl<P, G> Pclk<P, PclkSource<G>>
+where
+    P: PclkId,
+    G: GclkId,
+{
+    pub(super) fn new(token: PclkToken<P>, freq: Hertz) -> Self {
+        Self {
+            token,
+            src: PclkSource { _src: PhantomData },
+            freq,
+        }
+    }
+
+    /// Create and enable a [`Pclk`] with a type-checked source ID.
+    ///
+    /// Creating a [`Pclk`] immediately enables the corresponding peripheral
+    /// channel clock. It also [`Increment`]s the [`Source`]'s [`Enabled`]
+    /// counter.
+    ///
+    /// Note that the [`Source`] will always be an [`EnabledGclk`].
+    ///
+    /// [`Enabled`]: super::Enabled
+    /// [`EnabledGclk`]: super::gclk::EnabledGclk
+    #[inline]
+    pub fn enable<S>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
+    where
+        S: Source<Id = G> + Increment,
+    {
+        let freq = gclk.freq();
+        token.enable(G::DYN);
+        let pclk = Self::new(token, freq);
+        (pclk, gclk.inc())
+    }
+
+    /// Disable and destroy a [`Pclk`].
+    ///
+    /// Consume the [`Pclk`], release the [`PclkToken`], and [`Decrement`] the
+    /// [`EnabledGclk`]'s counter
+    ///
+    /// [`Enabled`]: super::Enabled
+    /// [`EnabledGclk`]: super::gclk::EnabledGclk
+    #[inline]
+    pub fn disable<S>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)
+    where
+        S: Source<Id = G> + Decrement,
+    {
+        self.token.disable();
+        (self.token, gclk.dec())
+    }
+}
+
+impl<P> DynPclk<P>
+where
+    P: PclkId,
+{
+    pub(super) fn new<G: GclkId>(token: PclkToken<P>, freq: Hertz) -> Self {
+        Self {
+            token,
+            src: G::DYN,
+            freq,
+        }
+    }
+
+    /// Create and enable a [`Pclk`] with an underlying [`DynPclkSourceId`]
+    /// source ID type.
+    ///
+    /// Some peripherals require a dynamic PCLK source ID type parameter; use
+    /// this method to create a [`Pclk`] where this type parameter is
+    /// type-erased.
+    ///
+    /// Creating a [`Pclk`] immediately enables the corresponding peripheral
+    /// channel clock. It also [`Increment`]s the [`Source`]'s [`Enabled`]
+    /// counter.
+    ///
+    /// Note that the [`Source`] will always be an [`EnabledGclk`].
+    ///
+    /// [`Enabled`]: super::Enabled
+    /// [`EnabledGclk`]: super::gclk::EnabledGclk
+    #[inline]
+    pub fn enable_dyn<S, G: GclkId>(mut token: PclkToken<P>, gclk: S) -> (Self, S::Inc)
+    where
+        S: Source<Id = G> + Increment,
+    {
+        let freq = gclk.freq();
+        token.enable(G::DYN);
+        let pclk = Self::new::<G>(token, freq);
+        (pclk, gclk.inc())
+    }
+
+    /// Disable and destroy a [`Pclk`].
+    ///
+    /// Consume the [`Pclk`], release the [`PclkToken`], and [`Decrement`] the
+    /// [`EnabledGclk`]'s counter.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the [`Pclk`]'s underlying GCLK source ID does not match the ID
+    /// of the provided [`Source`].
+    ///
+    /// [`Enabled`]: super::Enabled
+    /// [`EnabledGclk`]: super::gclk::EnabledGclk
+    #[inline]
+    pub fn disable<S, G: GclkId>(mut self, gclk: S) -> (PclkToken<P>, S::Dec)
+    where
+        S: Source<Id = G> + Decrement,
+    {
+        // Make sure that we can only decrement the source we are actually using
+        assert_eq!(
+            G::DYN,
+            self.src,
+            "Expected GCLK ID {:?}, found {:?}",
+            G::DYN,
+            self.src
+        );
+
+        self.token.disable();
+        (self.token, gclk.dec())
+    }
+}
+
+impl<P, I> Pclk<P, I>
+where
+    P: PclkId,
+    I: PclkSourceId,
+{
+    /// Return the [`Pclk`] frequency
+    #[inline]
+    pub fn freq(&self) -> Hertz {
+        self.freq
+    }
+}
+
+impl<P, I> Sealed for Pclk<P, I>
+where
+    P: PclkId,
+    I: PclkSourceId,
+{
+}
+
+//==============================================================================
+// PclkTokens
+//==============================================================================
+
+macro_rules! define_pclk_tokens_struct {
+    (
+        $(
+            $( #[$cfg:meta] )?
+            ($Type:ident = $_:literal, $id:ident)
+        )+
+    ) =>
+    {
+        /// Set of [`PclkToken`]s representing the disabled [`Pclk`]s at
+        /// power-on reset
+        pub struct PclkTokens {
+            $(
+                $( #[$cfg] )?
+                pub $id: PclkToken<$Type>,
+            )+
+        }
+
+        impl PclkTokens {
+            /// Create the set of [`PclkToken`]s
+            ///
+            /// # Safety
+            ///
+            /// All invariants required by `PclkToken::new` must be upheld here
+            #[inline]
+            pub(super) fn new() -> Self {
+                unsafe {
+                    Self {
+                        $(
+                            $( #[$cfg] )?
+                            $id: PclkToken::new(),
+                        )+
+                    }
+                }
+            }
+        }
+    };
+}
+
+with_pclk_types_ids!(define_pclk_tokens_struct!());

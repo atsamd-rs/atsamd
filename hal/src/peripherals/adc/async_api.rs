@@ -56,7 +56,8 @@ where
         self.inner.disable_interrupts(Flags::all());
 
         core::future::poll_fn(|cx| {
-            // Scope maybe_pending so we don't forget to re-poll the register later down.
+            // Scope maybe_pending so we don't forget to re-poll the register
+            // later down.
             {
                 let maybe_pending = self.inner.read_flags();
                 if flags_to_wait.intersects(maybe_pending) {

@@ -176,10 +176,9 @@ where
     /// the provided buffer.
     ///
     /// In order to be (safely) non-blocking, his method has to take a `'static`
-    /// buffer. If you'd rather use DMA with the blocking
-    /// [`embedded_io::Read`] trait, and avoid having
-    /// to use static buffers,
-    /// use [`Uart::with_rx_channel`](Self::with_tx_channel) instead.
+    /// buffer. If you'd rather use DMA with the blocking [`embedded_io::Read`]
+    /// trait, and avoid having to use static buffers, use
+    /// [`Uart::with_rx_channel`](Self::with_tx_channel) instead.
     #[inline]
     #[hal_macro_helper]
     pub fn receive_with_dma<Ch, B>(
@@ -202,7 +201,8 @@ where
         let trigger_action = TriggerAction::Beat;
 
         // SAFETY: This is safe because the of the `'static` bound check
-        // for `B`, and the fact that the buffer length of an `Uart` is always 1.
+        // for `B`, and the fact that the buffer length of an `Uart` is always
+        // 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, self, buf, false) };
         xfer.begin(C::Sercom::DMA_RX_TRIGGER, trigger_action)
     }
@@ -218,10 +218,9 @@ where
     /// provided buffer.
     ///
     /// In order to be (safely) non-blocking, his method takes a `'static`
-    /// buffer. If you'd rather use DMA with the blocking
-    /// [`embedded_io::Write`] trait, and avoid
-    /// having to use static buffers,
-    /// use[`Uart::with_tx_channel`](Self::with_tx_channel) instead.
+    /// buffer. If you'd rather use DMA with the blocking [`embedded_io::Write`]
+    /// trait, and avoid having to use static buffers, use
+    /// [`Uart::with_tx_channel`](Self::with_tx_channel) instead.
     #[inline]
     #[hal_macro_helper]
     pub fn send_with_dma<Ch, B>(
@@ -244,7 +243,8 @@ where
         let trigger_action = TriggerAction::Beat;
 
         // SAFETY: This is safe because the of the `'static` bound check
-        // for `B`, and the fact that the buffer length of an `Uart` is always 1.
+        // for `B`, and the fact that the buffer length of an `Uart` is always
+        // 1.
         let xfer = unsafe { dmac::Transfer::new_unchecked(channel, buf, self, false) };
         xfer.begin(C::Sercom::DMA_TX_TRIGGER, trigger_action)
     }
@@ -419,8 +419,8 @@ pub(crate) mod async_dma {
         #[hal_cfg(any("dmac-d11", "dmac-d21"))]
         let trigger_action = TriggerAction::Beat;
 
-        // Safety: It is safe to bypass the buffer length check because `SercomPtr`
-        // always has a buffer length of 1.
+        // Safety: It is safe to bypass the buffer length check because
+        // `SercomPtr` always has a buffer length of 1.
         unsafe {
             channel
                 .as_mut()
@@ -477,8 +477,8 @@ pub(crate) mod async_dma {
         #[hal_cfg(any("dmac-d11", "dmac-d21"))]
         let trigger_action = TriggerAction::Beat;
 
-        // Safety: It is safe to bypass the buffer length check because `SercomPtr`
-        // always has a buffer length of 1.
+        // Safety: It is safe to bypass the buffer length check because
+        // `SercomPtr` always has a buffer length of 1.
         unsafe {
             channel
                 .as_mut()

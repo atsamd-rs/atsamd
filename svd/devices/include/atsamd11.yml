@@ -1,0 +1,27 @@
+# The DMAC trigger sources in the original SVD only have the 0=DISABLE
+# enumeration value.
+DMAC:
+  CHCTRLB:
+    TRIGSRC:
+      _replace_enum:
+        _name: TRIGSRCSelect
+        DISABLE:    [0x00, "Only software/event triggers"]
+        SERCOM0_RX: [0x01, "SERCOM0 RX Trigger"]
+        SERCOM0_TX: [0x02, "SERCOM0 TX Trigger"]
+        SERCOM1_RX: [0x03, "SERCOM1 RX Trigger"]
+        SERCOM1_TX: [0x04, "SERCOM1 TX Trigger"]
+        SERCOM2_RX: [0x05, "SERCOM2 RX Trigger"]
+        SERCOM2_TX: [0x06, "SERCOM2 TX Trigger"]
+        TCC0_OVF:   [0x07, "TCC0 Overflow Trigger"]
+        TCC0_MC0:   [0x08, "TCC0 Match/Compare 0 Trigger"]
+        TCC0_MC1:   [0x09, "TCC0 Match/Compare 1 Trigger"]
+        TCC0_MC2:   [0x0A, "TCC0 Match/Compare 2 Trigger"]
+        TCC0_MC3:   [0x0B, "TCC0 Match/Compare 3 Trigger"]
+        TC1_OVF:    [0x0C, "TC1 Overflow Trigger"]
+        TC1_MC0:    [0x0D, "TC1 Match/Compare 0 Trigger"]
+        TC1_MC1:    [0x0E, "TC1 Match/Compare 1 Trigger"]
+        TC2_OVF:    [0x0F, "TC2 Overflow Trigger"]
+        TC2_MC0:    [0x10, "TC2 Match/Compare 0 Trigger"]
+        TC2_MC1:    [0x11, "TC2 Match/Compare 1 Trigger"]
+        ADC_RESRDY: [0x12, "ADC Result Ready Trigger"]
+        DAC_EMPTY:  [0x13, "DAC Empty Trigger"]

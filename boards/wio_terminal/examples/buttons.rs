@@ -36,9 +36,9 @@ fn main() -> ! {
 
     let sets = wio::Pins::new(peripherals.port).split();
 
-    // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
-    // the screen, load an image of Ferris from a RAW file, and draw it to the
-    // screen.
+    // Initialize the ILI9341-based LCD display. Create a black backdrop the
+    // size of the screen, load an image of Ferris from a RAW file, and draw
+    // it to the screen.
     // By default, the display is in the LandscapeFlipped orientation.
     let (mut display, _backlight) = sets
         .display

@@ -56,14 +56,14 @@ fn main() -> ! {
     let tx_buffer = b"Hello, world!";
 
     loop {
-        // Send data. We block on each byte, but we could also perform some tasks while
-        // waiting for the byte to finish sending.
+        // Send data. We block on each byte, but we could also perform some
+        // tasks while waiting for the byte to finish sending.
         for c in tx_buffer.iter() {
             nb::block!(tx.write(*c)).unwrap();
         }
 
-        // Receive data. We block on each byte, but we could also perform some tasks
-        // while waiting for the byte to finish sending.
+        // Receive data. We block on each byte, but we could also perform some
+        // tasks while waiting for the byte to finish sending.
         rx.flush_rx_buffer();
         for c in rx_buffer.iter_mut() {
             *c = nb::block!(rx.read()).unwrap();

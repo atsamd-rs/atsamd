@@ -59,8 +59,9 @@ where
 impl<TIM: InterruptDrivenTimer> DelayNs for SleepingDelay<TIM> {
     fn delay_ns(&mut self, ns: u32) {
         // Determine how many cycles we need to run for this delay, if any
-        // Avoid timers that run longer than a second because for 48 MHz-based timers,
-        //   there is no valid divisor + cycle count greater than ~1.3s, so we'd panic.
+        // Avoid timers that run longer than a second because for 48 MHz-based
+        // timers,   there is no valid divisor + cycle count greater
+        // than ~1.3s, so we'd panic.
         let mut loop_counter: u32 = 1 + (ns / NUM_NS_IN_S);
 
         // Start the timer and sleep!

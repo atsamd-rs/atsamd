@@ -87,8 +87,8 @@ static USB_BUS: Mutex<RefCell<Option<UsbDevice<UsbBus>>>> = Mutex::new(RefCell::
 static USB_SERIAL: Mutex<RefCell<Option<SerialPort<UsbBus>>>> = Mutex::new(RefCell::new(None));
 
 fn poll_usb() {
-    // Disable interrupts while accessing USB_SERIAL and USB_BUS to prevent possible
-    // race conditions
+    // Disable interrupts while accessing USB_SERIAL and USB_BUS to prevent
+    // possible race conditions
     cortex_m::interrupt::free(|cs| {
         if let Some(usb_dev) = USB_BUS.borrow(cs).borrow_mut().as_mut() {
             if let Some(serial) = USB_SERIAL.borrow(cs).borrow_mut().as_mut() {

@@ -57,9 +57,9 @@ where
 
         count.ctrlbclr().write(|w| {
             // Count up when the direction bit is zero
-            w.dir().set_bit();
+            w.dir().clear_bit_by_one();
             // Periodic
-            w.oneshot().set_bit()
+            w.oneshot().clear_bit_by_one()
         });
 
         // Set TOP value for mfrq mode

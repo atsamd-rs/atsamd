@@ -97,13 +97,14 @@ fn main() -> ! {
         let mut min = f32::INFINITY;
         let mut max = f32::NEG_INFINITY;
         let mut sum = 0f32;
-        // Though the ADC sampling rate is set to 250[kSPS] according to the comment in
-        // the adc.rs, actual sampling rate seems 83.333[kSPS], which is 1/3 of
-        // expected sampling rate.
+        // Though the ADC sampling rate is set to 250[kSPS] according to the
+        // comment in the adc.rs, actual sampling rate seems
+        // 83.333[kSPS], which is 1/3 of expected sampling rate.
         let count_max = 83333;
         for _count in 0..count_max {
             // Uncomment if you use single conversion mode.
-            // unsafe { CTX.as_mut().unwrap().adc.start_conversion(&mut microphone_pin); }
+            // unsafe { CTX.as_mut().unwrap().adc.start_conversion(&mut
+            // microphone_pin); }
             let value = loop {
                 if let Some(value) = consumer.dequeue() {
                     break value as f32;

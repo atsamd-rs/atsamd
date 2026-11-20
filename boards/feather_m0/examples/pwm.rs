@@ -47,7 +47,8 @@ fn main() -> ! {
 
     loop {
         // The embedded-hal spec requires that set_duty_cycle returns a Result.
-        // In our case, the function is infaillible so we can safely ignore the result.
+        // In our case, the function is infaillible so we can safely ignore the
+        // result.
         let _ = pwm3.set_duty_cycle(max_duty / 2);
         delay.delay_ms(1000);
         let _ = pwm3.set_duty_cycle(max_duty / 8);

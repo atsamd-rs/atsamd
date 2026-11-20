@@ -1,0 +1,7 @@
+_svd: "../ATSAME51G18A.svd"
+
+_include:
+  - "include/atsamx5x.yml"
+
+_modify:
+  version: "3.10.279"

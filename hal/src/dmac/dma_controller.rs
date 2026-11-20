@@ -176,9 +176,9 @@ impl DmaController {
         // SAFETY:
         //
         // This is safe because we write a whole u32 to 32-bit registers,
-        // and the descriptor array addesses will never change since they are static.
-        // We just need to ensure the writeback and descriptor_section addresses
-        // are valid.
+        // and the descriptor array addesses will never change since they are
+        // static. We just need to ensure the writeback and
+        // descriptor_section addresses are valid.
         unsafe {
             dmac.baseaddr()
                 .write(|w| w.baseaddr().bits(sram::descriptor_section_addr() as u32));
@@ -232,9 +232,9 @@ impl<T> DmaController<T> {
     /// Enable multiple priority levels simultaneously
     #[inline]
     pub fn enable_levels(&mut self, mask: PriorityLevelMask) {
-        // SAFETY This is safe because the use of bitfields ensures that only the
-        // LVLENx bits are written to. The fact that we are given a mask means we need
-        // to do the bit-level setting ourselves.
+        // SAFETY This is safe because the use of bitfields ensures that only
+        // the LVLENx bits are written to. The fact that we are given a
+        // mask means we need to do the bit-level setting ourselves.
         let mask: u16 = mask.into();
         unsafe {
             self.dmac.ctrl().modify(|r, w| w.bits(r.bits() | mask));
@@ -244,9 +244,9 @@ impl<T> DmaController<T> {
     /// Disable multiple priority levels simultaneously
     #[inline]
     pub fn disable_levels(&mut self, mask: PriorityLevelMask) {
-        // SAFETY This is safe because the use of bitfields ensures that only the
-        // LVLENx bits are written to. The fact that we are given a mask means we need
-        // to do the bit-level clearing ourselves.
+        // SAFETY This is safe because the use of bitfields ensures that only
+        // the LVLENx bits are written to. The fact that we are given a
+        // mask means we need to do the bit-level clearing ourselves.
         let mask: u16 = mask.into();
         unsafe {
             self.dmac.ctrl().modify(|r, w| w.bits(r.bits() & !mask));
@@ -257,9 +257,9 @@ impl<T> DmaController<T> {
     /// simultaneously
     #[inline]
     pub fn round_robin_arbitration(&mut self, mask: RoundRobinMask) {
-        // SAFETY This is safe because the use of bitfields ensures that only the
-        // RRLVLENx bits are written to. The fact that we are given a mask means we need
-        // to do the bit-level setting ourselves.
+        // SAFETY This is safe because the use of bitfields ensures that only
+        // the RRLVLENx bits are written to. The fact that we are given
+        // a mask means we need to do the bit-level setting ourselves.
         let mask: u32 = mask.into();
         unsafe {
             self.dmac.prictrl0().modify(|r, w| w.bits(r.bits() | mask));
@@ -270,9 +270,9 @@ impl<T> DmaController<T> {
     /// multiple priority levels simultaneously
     #[inline]
     pub fn static_arbitration(&mut self, mask: RoundRobinMask) {
-        // SAFETY This is safe because the use of bitfields ensures that only the
-        // RRLVLENx bits are written to. The fact that we are given a mask means we need
-        // to do the bit-level clearing ourselves.
+        // SAFETY This is safe because the use of bitfields ensures that only
+        // the RRLVLENx bits are written to. The fact that we are given
+        // a mask means we need to do the bit-level clearing ourselves.
         let mask: u32 = mask.into();
         unsafe {
             self.dmac.prictrl0().modify(|r, w| w.bits(r.bits() & !mask));

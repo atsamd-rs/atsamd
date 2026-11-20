@@ -60,8 +60,8 @@ fn main() -> ! {
         RTC = Some(rtc);
     }
 
-    // Initialize the ILI9341-based LCD display. Create a black backdrop the size of
-    // the screen.
+    // Initialize the ILI9341-based LCD display. Create a black backdrop the
+    // size of the screen.
     let (mut display, _backlight) = sets
         .display
         .init(

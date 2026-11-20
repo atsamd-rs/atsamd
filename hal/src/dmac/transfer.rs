@@ -343,8 +343,8 @@ where
     ) -> Result<Transfer<C, BufferPair<S, D>>> {
         Self::check_buffer_pair(&source, &destination)?;
 
-        // SAFETY: The safety checks are done by the function signature and the buffer
-        // length verification
+        // SAFETY: The safety checks are done by the function signature and the
+        // buffer length verification
         Ok(unsafe { Self::new_unchecked(chan, source, destination, circular) })
     }
 }
@@ -642,8 +642,8 @@ where
     /// resources
     #[inline]
     pub fn stop(self) -> (Channel<ChannelId<C>, Ready>, S, D) {
-        // `free()` stops the transfer, waits for the burst to finish, and emits a
-        // compiler fence.
+        // `free()` stops the transfer, waits for the burst to finish, and emits
+        // a compiler fence.
         let chan = self.chan.into().free();
         (chan, self.buffers.source, self.buffers.destination)
     }
